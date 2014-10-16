@@ -26,6 +26,13 @@ message UserId {
     required int32 uid = 1;
     required int64 accessHash = 2;
 }
+
+// Идентификатор пользователя
+message UserKey {
+    required int32 uid = 1;
+    required int64 keyHash = 2;
+}
+
 // Идентификатор чата
 message ChatId {
     required int32 chatId = 1;
@@ -442,6 +449,7 @@ message UpdateGroupOnline {
 //                               Send message
 // ************************************************************************
 // API#0x0E
+// 400#: WRONG_RECEIVERS - когда неправильный набор устройств у устройства
 // Ответ: ResponseSeq#0x48
 message RequestSendMessage {
     required int32 uid = 1;
@@ -449,6 +457,13 @@ message RequestSendMessage {
     required int64 randomId = 3;
     required EncryptedRSAMessage message = 4;
 }
+
+// ErrorData при WRONG_RECEIVERS у запросе на отправку сообщения
+message ErrorSendWrongReceivers {
+    repeated UserKey invalid = 1;
+    repeated UserKey missing = 2;
+}
+
 // API#0x43
 // 400#: WRONG_KEY - когда aesKeyHash не совпадает с текущим ключом чата
 // Ответ: ResponseSeq#0x48
@@ -458,6 +473,7 @@ message RequestSendGroupMessage {
     required int64 randomId = 3;
     required EncryptedAESMessage message = 4;
 }
+
 // API#0x37
 // Ответ: ResponseVoid#0x32
 message RequestMessageReceived {
