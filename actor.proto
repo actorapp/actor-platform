@@ -1,0 +1,617 @@
+package proto;
+option java_package = "im.actor.messenger.api";
+option java_outer_classname = "Scheme";
+// ************************************************************************
+//                              Common objects
+// ************************************************************************
+// Пол пользователя
+enum Sex {
+    UNKNOWN = 1;
+    MALE = 2;
+    FEMALE = 3;
+}
+// Публичный ключ пользователя
+message PublicKey {
+    required int32 uid = 1;
+    required int64 keyHash = 2;
+    required bytes key = 3;
+}
+// Идентификатор файла
+message FileLocation {
+    required int64 fileId = 1;
+    required int64 accessHash = 2;
+}
+// Идентификатор пользователя
+message UserId {
+    required int32 uid = 1;
+    required int64 accessHash = 2;
+}
+// Идентификатор чата
+message ChatId {
+    required int32 chatId = 1;
+    required int64 accessHash = 2;
+}
+// Аватар пользователя или чата
+message Avatar {
+    // 100x100
+    optional AvatarImage smallImage = 1;
+    // 200x200
+    optional AvatarImage largeImage = 2;
+    // Original if bigger than small and large
+    optional AvatarImage fullImage = 3;
+}
+// Изображение аватара
+message AvatarImage {
+    required FileLocation fileLocation = 1;
+    required int32 width = 2;
+    required int32 height = 3;
+    required int32 fileSize = 4;
+}
+// Пользователь
+message User {
+    required int32 id = 1;
+    required int64 accessHash = 2;
+    required string name = 3;
+    optional Sex sex = 5;
+    repeated int64 keyHashes = 6;
+    required int64 phone = 7;
+    optional Avatar avatar = 8;
+}
+// Зашифрованный AES-ключ для устройства
+message EncryptedAESKey {
+    required int64 keyHash = 1;
+    required bytes aesEncryptedKey = 2;
+}
+// Зашифрованные RSA+AES данные
+message EncryptedRSAMessage {
+    required bytes encryptedMessage = 1;
+    repeated EncryptedAESKey keys = 2;
+    repeated EncryptedAESKey ownKeys = 3;
+}
+// Зашифрованные AES-данные
+message EncryptedAESMessage {
+    required bytes keyHash = 1;
+    required bytes encryptedMessage = 2;
+}
+// Зашифрованные ключи для пользователя
+message EncryptedUserAESKeys {
+    required int32 uid = 1;
+    required int64 accessHash = 2;
+    repeated EncryptedAESKey keys = 3;
+}
+// Зашифрованное сообщение для нескольких пользователей
+message EncryptedRSABroadcast {
+    required bytes encryptedMessage = 3;
+    repeated EncryptedUserAESKeys keys = 4;
+    repeated EncryptedAESKey ownKeys = 5;
+}
+// Зашифрованные RSA-сообщения
+message EncryptedRSAPackage {
+    required int64 keyHash = 1;
+    required bytes aesEncryptedKey = 2;
+    required bytes message = 3;
+}
+// Зашифрованные AES-сообщения
+message EncryptedAESPackage {
+    required bytes keyHash = 1;
+    required bytes message = 2;
+}
+// API#0x32
+// Пустой ответ на запрос
+message ResponseVoid {
+}
+// API#0x48
+// Успешный ответ на методы, которые возвращают статус цепочки
+message ResponseSeq {
+    required int32 seq = 1;
+    required bytes state = 2;
+}
+ 
+// ************************************************************************
+//                              Authentication
+// ************************************************************************
+// API#0x01
+// Ответ: ResponseAuthCode#0x02
+// Возможные ошибки
+// #400: PHONE_NUMBER_INVALID - неверный номер телефона. Отображается пользователю.
+message RequestAuthCode {
+    required int64 phoneNumber = 1;
+    required int32 appId = 2;
+    required string apiKey = 3;
+}
+// API#0x02
+message ResponseAuthCode {
+    required string smsHash = 1;
+    required bool isRegistered = 2;
+}
+// API#0x03
+// Ответ: ResponseAuth#0x05
+// Возможные ошибки
+// #400: PHONE_NUMBER_INVALID - неверный номер телефона. Отображается пользователю.
+// #400: PHONE_CODE_EMPTY - отсутствует код авторизации. Отображается пользователю.
+// #400: PHONE_CODE_EXPIRED - код устарел, требуется начать авторизацию с самого начала
+// #400: PHONE_CODE_INVALID - код неверен. Отображается пользователю.
+// #400: PHONE_NUMBER_UNOCCUPIED - Телефон не зарегистрирован, требуется перейти к регистрации
+// #400: INVALID_KEY - Публичный ключ некорректный - проверьте параметры ключа и его сериализацию.
+// На неверный smsHash будет ошибка PHONE_CODE_EXPIRED
+message RequestSignIn {
+    required int64 phoneNumber = 1;
+    required string smsHash = 2;
+    required string smsCode = 3;
+    required bytes publicKey = 4;
+}
+// API#0x04
+// Ответ: ResponseAuth#0x05
+// Возможные ошибки
+// #400: NAME_INVALID - неправильное имя. Отображается пользователю.
+// + аналогичные для RequestSignIn
+// Если пользователь уже зарегистрирован, то метод работает как RequestSignIn
+message RequestSignUp {
+    required int64 phoneNumber = 1;
+    required string smsHash = 2;
+    required string smsCode = 3;
+    required string name = 4;
+    required bytes publicKey = 6;
+}
+// API#0x05
+message ResponseAuth {
+    required int64 publicKeyHash = 1;
+    required User user = 2;
+}
+// ************************************************************************
+//                                Profile
+// ************************************************************************
+// API#0x35
+// Ответ: ResponseVoid#0x32
+message RequestEditName {
+    required string name = 1;
+}
+// API#0x1F
+// Ответ: ResponseAvatarChanged#0x44
+// #400: IMAGE_LOAD_ERROR - невозможно открыть файл
+// #400: FILE_TOO_BIG - изображение слишком большое
+message RequestEditAvatar {
+    required FileLocation fileLocation = 1;
+}
+// API#0x44
+message ResponseAvatarChanged {
+    required Avatar avatar = 1;
+}
+// ************************************************************************
+//                                Users
+// ************************************************************************
+// API#0x06
+// Ответ: RequestPublicKeys#0x18
+// Ошибки не может генерировать, все несуществующие ключи игнорируются
+message RequestPublicKeys {
+    repeated PublicKeyRequest keys = 1;
+}
+message PublicKeyRequest {
+    required int32 uid = 1;
+    required int64 accessHash = 2;
+    required int64 keyHash = 3;
+}
+// API#0x18
+message ResponsePublicKeys {
+    repeated PublicKey keys = 1;
+}
+// ************************************************************************
+//                                Contacts
+// ************************************************************************
+message ContactToImport {
+    required int64 clientPhoneId = 1; // Уникальный клиентский идентификатор телефона
+    required int64 phoneNumber = 2; // international full phone number
+}
+message ImportedContact {
+    required int64 clientPhoneId = 1;
+    required int32 userId = 2;
+}
+// API#0x07
+// Ответ: ResponseImportedContacts#0x08
+// Мы предполагем что phoneNumber и clientPhoneId будут уникальны
+// Если же не уникальны, то поведение сервера непредсказуемо
+// Крайне рекомендуется на клиенте поддержать уникальность
+message RequestImportContacts {
+    repeated ContactToImport contacts = 1;
+}
+// API#0x08
+message ResponseImportedContacts {
+    repeated User users = 1; // Импортированные пользователи
+    repeated ImportedContact contacts = 2;
+}
+// ************************************************************************
+//                                 Updates
+// ************************************************************************
+// API#0x0D
+message SeqUpdate {
+    required int32 seq = 1;
+    required bytes state = 2;
+    required int32 updateHeader = 3;
+    required bytes update = 4;
+}
+// API#0x49
+message FatSeqUpdate {
+    required int32 seq = 1;
+    required bytes state = 2;
+    required int32 updateHeader = 3;
+    required bytes update = 4;
+    repeated User users = 5;
+}
+// API#0x1A
+message WeakUpdate {
+    required int64 date = 1;
+    required int32 updateId = 2;
+    required bytes update = 3;
+}
+// API#0x19
+message SeqUpdateTooLong {
+}
+// API#0x09
+// Ответ: ResponseSeq#0x48
+message RequestGetState {
+}
+// API#0x0B
+// Ответ: Difference#0x0C
+message RequestGetDifference {
+    required int32 seq = 1;
+    required bytes state = 2;
+}
+message DifferenceUpdate {
+    required int32 updateId = 1;
+    required bytes update = 2;
+}
+// API#0x0C
+message Difference {
+    required int32 seq = 1;
+    required bytes state = 2;
+    repeated User users = 3;
+    repeated DifferenceUpdate updates = 4;
+    required bool needMore = 5;
+}
+// API#0x20
+// Игнорировать неправильных пользователей
+message SubscribeToOnline {
+    repeated UserId users = 1;
+}
+// API#0x21
+// Игнорировать неправильных пользователей
+message UnsubscribeFromOnline {
+    repeated UserId users = 1;
+}
+// API#0x4A
+// Игнорировать неправильных пользователей
+message SubscribeToGroupOnline {
+    repeated ChatId chats = 1;
+}
+// API#0x4B
+// Игнорировать неправильных пользователей
+message UnsubscribeFromGroupOnline {
+    repeated ChatId chats = 1;
+}
+// ************************************************************************
+//                        Sequence updates list
+// ************************************************************************
+// API#0x01
+// Событие о новом приватном сообщении
+message UpdateMessage {
+    required int32 senderUID = 1;
+    required int32 destUID = 2;
+    required EncryptedRSAPackage message = 3;
+}
+// API#0x24
+// Событие о созданном чате созданном чате
+message UpdateGroupCreated {
+    required int32 chatId = 1;
+    required int64 accessHash = 2;
+    required string title = 3;
+    required EncryptedRSAPackage invite = 4;
+}
+// API#0x14
+// Событие о новом групповом сообщении
+message UpdateGroupMessage {
+    required int32 senderUID = 1;
+    required int32 chatId = 2;
+    required EncryptedAESPackage message = 3;
+}
+// API#0x19
+// Событие о приглашении в чат
+message UpdateGroupInvite {
+    required int32 chatId = 1;
+    required int64 accessHash = 2;
+    required int32 chatCreatorUID = 8;
+    required string title = 3;
+    repeated UserId users = 4;
+    required EncryptedRSAPackage invite = 5;
+}
+// API#0x15
+// Событие о добавлении участника в чат
+message UpdateGroupUserAdded {
+    required int32 chatId = 1;
+    required int32 uid = 2;
+    required int32 inviterUID = 3;
+}
+// API#0x17
+// Событие о том, что пользователь сам покинул чат
+message UpdateGroupUserLeave {
+    required int32 chatId = 1;
+    required int32 uid = 2;
+}
+// API#0x18
+// Событие о том, что пользователя исключили из чата
+message UpdateGroupUserKick {
+    required int32 chatId = 1;
+    required int32 uid = 2;
+    required int32 kickerUid = 3;
+}
+// API#0x02
+// Событие о новом устройстве у пользователя
+message UpdateNewDevice {
+    required int32 uid = 1;
+    required int64 keyHash = 2;
+}
+
+// API#0x03
+// Событие о новом своем устройстве
+message UpdateNewFullDevice {
+    required int32 uid = 1;
+    required int64 keyHash = 2;
+    required bytes key = 3;
+}
+
+// API#0x25
+// Событие об удалении устройства у пользователя
+message UpdateRemoveDevice {
+    required int32 uid = 1;
+    required int64 keyHash = 2;
+}
+
+// API#0x04
+// Событие об отправлении сообщения
+message UpdateMessageSent {
+    required int32 uid = 3;
+    required int64 randomId = 2;
+}
+// API#0x23
+// Событие об отправлении сообщения в группу
+message UpdateMessageGroupSent {
+    required int32 chatId = 3;
+    required int64 randomId = 2;
+}
+// API#0x05
+// Событие о регистрации пользователя из контакт-листа
+message UpdateContactRegistered {
+    required int32 uid = 1;
+}
+// API#0x10
+// Событие о смене аватара пользователя (в том числе и себя)
+message UpdateAvatarChanged {
+    required int32 uid = 1;
+    optional Avatar  avatar = 2;
+}
+// API#0x20
+// Событие о смене имени пользователя (в том числе и себя)
+message UpdateUserNameChanged {
+    required int32 uid = 1;
+    optional string name = 2;
+}
+// API#0x12
+// Событие о доставленном сообщении
+message UpdateMessageReceived {
+    required int32 uid = 1;
+    required int64 randomId = 2;
+}
+// API#0x13
+// Событие о прочитанном сообщении
+message UpdateMessageRead {
+    required int32 uid = 1;
+    required int64 randomId = 2;
+}
+// ************************************************************************
+//                        Weak updates list
+// ************************************************************************
+// API#0x06
+message UpdateTyping {
+    required int32 uid = 1;
+    required int32 typingType = 4;
+}
+// API#0x22
+message UpdateTypingGroup {
+    required int32 chatId = 1;
+    required int32 uid = 2;
+    required int32 typingType = 4;
+}
+// API#0x07
+message UpdateUserOnline {
+    required int32 uid = 1;
+}
+// API#0x08
+message UpdateUserOffline {
+    required int32 uid = 1;
+}
+// API#0x09
+message UpdateUserLastSeen {
+    required int32 uid = 1;
+    required int64 time = 2;
+}
+// API#0x21
+message UpdateGroupOnline {
+    required int32 chatId = 1;
+    required int32 count = 2;
+}
+// ************************************************************************
+//                               Send message
+// ************************************************************************
+// API#0x0E
+// Ответ: ResponseSeq#0x48
+message RequestSendMessage {
+    required int32 uid = 1;
+    required int64 accessHash = 2;
+    required int64 randomId = 3;
+    required EncryptedRSAMessage message = 4;
+}
+// API#0x43
+// 400#: WRONG_KEY - когда aesKeyHash не совпадает с текущим ключом чата
+// Ответ: ResponseSeq#0x48
+message RequestSendGroupMessage {
+    required int32 chatId = 1;
+    required int64 accessHash = 2;
+    required int64 randomId = 3;
+    required EncryptedAESMessage message = 4;
+}
+// API#0x37
+// Ответ: ResponseVoid#0x32
+message RequestMessageReceived {
+    required int32 uid = 1;
+    required int64 randomId = 2;
+    required int64 accessHash = 3;
+}
+// API#0x39
+// Ответ: ResponseVoid#0x32
+message RequestMessageRead {
+    required int32 uid = 1;
+    required int64 randomId = 2;
+    required int64 accessHash = 3;
+}
+// ************************************************************************
+//                               Group chats
+// ************************************************************************
+// API#0x41
+message RequestCreateChat {
+    required int64 randomId = 1;
+    required string title = 2;
+    required bytes keyHash = 3;
+    required bytes publicKey = 4;
+    required EncryptedRSABroadcast invites = 5;
+}
+// API#0x42
+message ResponseCreateChat {
+    required int32 chatId = 1;
+    required int64 accessHash = 2;
+    required int32 seq = 3;
+    required bytes state = 4;
+}
+// API#0x45
+// Ответ: ResponseSeq#0x48
+// 400#: WRONG_KEY - когда aesKeyHash не совпадает с текущим ключом чата
+message RequestInviteUsers {
+    required int32 chatId = 1;
+    required int64 accessHash = 2;
+    required int64 randomId = 3;
+    required bytes chatKeyHash = 4;
+    required EncryptedRSABroadcast invite = 5;
+}
+// API#0x46
+// Ответ: ResponseSeq#0x48
+message RequestLeaveChat {
+    required int32 chatId = 1;
+    required int64 accessHash = 2;
+}
+// API#0x47
+// Ответ: ResponseSeq#0x48
+// 403#: NO_PERMISSION - когда невозможно исключить участника из чата из-за настроек приватности
+message RequestRemoveUser {
+    required int32 chatId = 1;
+    required int64 chatAccessHash = 2;
+    required int32 uid = 3;
+    required int64 userAccessHash = 4;
+}
+// ************************************************************************
+//                                  Files
+// ************************************************************************
+// File Download
+// API#0x10
+// Ответ: ResponseFilePart#0x11
+// #400: LOCATION_INVALID - неправильный FileLocation - либо id, либо accessHash
+// #400: OFFSET_INVALID - offset не кратен 1кб или меньше нуля
+// #400: OFFSET_TOO_LARGE - offset находится за пределами файла
+// #400: LIMIT_INVALID - limit отрицателен, не кратен 1кб или больше 512кб
+// #400: FILE_LOST - файл был потерян и невозможно больше его загрузить
+message RequestGetFile {
+    required FileLocation fileLocation = 1;
+    required int32 offset = 2;
+    required int32 limit = 3;
+}
+// API#0x11
+message ResponseFilePart {
+    required bytes payload = 1;
+}
+// File Upload
+// API#0x12
+message RequestStartUpload {
+}
+// API#0x13
+message ResponseUploadStarted {
+    required UploadConfig config = 1;
+}
+message UploadConfig {
+    required bytes serverData = 1;
+}
+// API#0x14
+// Ответ: ResponseVoid#0x32
+// #400: CONFIG_INCORRECT - неизвестный конфиг
+message RequestUploadPart {
+    required UploadConfig config = 1;
+    required int32 blockIndex = 2;
+    required bytes payload = 3;
+}
+// API#0x16
+// Ответ: ResponseUploadCompleted#0x17
+// #400: CONFIG_INCORRECT - неизвестный конфиг
+// #400: WRONG_BLOCKS_COUNT - количество загруженных блоков не совпадает
+// #400: WRONG_CRC - контрольная сумма не сошлась
+message RequestCompleteUpload {
+    required UploadConfig config = 1;
+    required int32 blocksCount = 2;
+    required int64 crc32 = 3;
+}
+// API#0x17
+message ResponseUploadCompleted {
+    required FileLocation location = 1;
+}
+// ************************************************************************
+//                                  Typing
+// ************************************************************************
+// API#0x1B
+// Ответ: ResponseVoid#0x32
+message RequestTyping {
+    required int32 uid = 1;
+    required int64 accessHash = 2;
+    required int32 typingType = 3;
+}
+// API#0x48
+// Ответ: ResponseVoid#0x32
+message RequestGroupTyping {
+    required int32 chatId = 1;
+    required int64 accessHash = 2;
+    required int32 typingType = 3;
+}
+// ************************************************************************
+//                                  Online
+// ************************************************************************
+// API#0x1D
+// Ответ: ResponseVoid#0x32
+message RequestSetOnline {
+    required bool isOnline = 1;
+    required int64 timeout = 2;
+}
+// ************************************************************************
+//                             Vendor pushes
+// ************************************************************************
+// API#0x33
+// Ответ: ResponseVoid#0x32
+message RequestRegisterGooglePush {
+    required int64 projectId = 1;
+    required string token = 2;
+}
+ 
+// Запрос на регистрацию эппловых пушей для ключа
+// Ответ: VoidResponse#0x32
+// API#0x4C
+message RequestRegisterApplePush {
+    required int32 apnsKey = 1; // Генерируется сервером для каждого приложения и при сборке вшивается в приложение
+    required string token = 2;
+}
+// API#0x34
+// Ответ: ResponseVoid#0x32
+message RequestUnregisterPush {
+}
