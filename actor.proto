@@ -146,6 +146,10 @@ message RequestSignIn {
     required string smsHash = 2;
     required string smsCode = 3;
     required bytes publicKey = 4;
+    required string deviceHash = 5;
+    required string deviceTitle = 6;
+    required int32 appId = 7;
+    required string appKey = 8;
 }
 // API#0x04
 // Ответ: ResponseAuth#0x05
@@ -159,6 +163,10 @@ message RequestSignUp {
     required string smsCode = 3;
     required string name = 4;
     required bytes publicKey = 6;
+    required string deviceHash = 7;
+    required string deviceTitle = 8;
+    required int32 appId = 9;
+    required string appKey = 10;
 }
 // API#0x05
 message ResponseAuth {
@@ -630,4 +638,48 @@ message RequestRegisterApplePush {
 // API#0x34
 // Ответ: ResponseVoid#0x32
 message RequestUnregisterPush {
+}
+
+// ************************************************************************
+//                               Authorizations
+// ************************************************************************
+
+message AuthItem {
+    required int32 id = 1;
+    required int32 appId = 2;
+    required string appTitle = 3;
+    required string deviceTitle = 4;
+    required int64 authTime = 5;
+    required string authLocation = 6;
+    optional double latitude = 7;
+    optional double longitude = 8;
+}
+
+// API#0x50
+// Ответ: ResponseAuth#0x51
+message RequestGetAuth {
+
+}
+
+// API#0x51
+message ResponseAuth {
+    repeated AuthItem usersAuth = 1;
+}
+
+// API#0x52
+// Ответ: ResponseVoid
+message RequestDeleteAuth {
+    required int32 id = 1;
+}
+
+// API#0x53
+// Ответ: ResponseVoid
+message RequestDeleteAllOther {
+
+}
+
+// API#0x54
+// Ответ: ResponseVoid
+message RequestLogout{
+
 }
