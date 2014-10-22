@@ -648,13 +648,14 @@ message RequestUnregisterPush {
 
 message AuthItem {
     required int32 id = 1;
-    required int32 appId = 2;
-    required string appTitle = 3;
-    required string deviceTitle = 4;
-    required int64 authTime = 5;
-    required string authLocation = 6;
-    optional double latitude = 7;
-    optional double longitude = 8;
+    required int32 authHolder = 2; // 0: current device, 1: another device
+    required int32 appId = 3;
+    required string appTitle = 4;
+    required string deviceTitle = 5;
+    required int32 authTime = 6; // Время авторизации в секундах
+    required string authLocation = 7;
+    optional double latitude = 8;
+    optional double longitude = 9;
 }
 
 // API#0x50
