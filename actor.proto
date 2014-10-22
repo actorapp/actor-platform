@@ -320,6 +320,7 @@ message UpdateGroupCreated {
     required int64 accessHash = 2;
     required string title = 3;
     required EncryptedRSAPackage invite = 4;
+    repeated UserId users = 5;
 }
 // API#0x14
 // Событие о новом групповом сообщении
