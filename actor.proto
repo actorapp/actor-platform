@@ -146,7 +146,7 @@ message RequestSignIn {
     required string smsHash = 2;
     required string smsCode = 3;
     required bytes publicKey = 4;
-    required string deviceHash = 5;
+    required bytes deviceHash = 5;
     required string deviceTitle = 6;
     required int32 appId = 7;
     required string appKey = 8;
@@ -163,7 +163,7 @@ message RequestSignUp {
     required string smsCode = 3;
     required string name = 4;
     required bytes publicKey = 6;
-    required string deviceHash = 7;
+    required bytes deviceHash = 7;
     required string deviceTitle = 8;
     required int32 appId = 9;
     required string appKey = 10;
@@ -664,24 +664,24 @@ message RequestGetAuth {
 }
 
 // API#0x51
-message ResponseAuth {
-    repeated AuthItem usersAuth = 1;
+message ResponseGetAuth {
+    repeated AuthItem usersAuths = 1;
 }
 
 // API#0x52
 // Ответ: ResponseVoid
-message RequestDeleteAuth {
+message RequestRemoveAuth {
     required int32 id = 1;
 }
 
 // API#0x53
 // Ответ: ResponseVoid
-message RequestDeleteAllOther {
+message RequestRemoveAllOtherAuths {
 
 }
 
 // API#0x54
 // Ответ: ResponseVoid
-message RequestLogout{
+message RequestLogout {
 
 }
