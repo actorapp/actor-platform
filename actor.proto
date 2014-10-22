@@ -335,6 +335,7 @@ message UpdateGroupInvite {
     required int32 chatId = 1;
     required int64 accessHash = 2;
     required int32 chatCreatorUID = 8;
+    required int32 inviterUID = 9;
     required string title = 3;
     repeated UserId users = 4;
     required EncryptedRSAPackage invite = 5;
