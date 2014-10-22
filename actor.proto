@@ -411,6 +411,22 @@ message UpdateUserNameChanged {
     required int32 uid = 1;
     optional string name = 2;
 }
+
+// API#0x26
+// Событие о смене имени группы
+message UpdateGroupTitleChanged {
+    required int32 groupId = 1;
+    required string title = 2;
+}
+
+// API#0x27
+// Событие о смене имени группы
+message UpdateGroupAvatarChanged {
+    required int32 groupId = 1;
+    optional Avatar avatar = 2;
+}
+
+
 // API#0x12
 // Событие о доставленном сообщении
 message UpdateMessageReceived {
@@ -516,6 +532,24 @@ message ResponseCreateChat {
     required int32 seq = 3;
     required bytes state = 4;
 }
+
+// API#0x55
+// Ответ: ResponseSeq#0x48
+message RequestEditGroupTitle {
+    required int32 chatId = 1;
+    required int64 accessHash = 2;
+    required string title = 1;
+}
+
+// API#0x56
+// Ответ: ResponseSeq#0x48
+message RequestEditGroupAvatar {
+    required int32 chatId = 1;
+    required int64 accessHash = 2;
+    required FileLocation fileLocation = 1;
+}
+
+
 // API#0x45
 // Ответ: ResponseSeq#0x48
 // 400#: WRONG_KEY - когда aesKeyHash не совпадает с текущим ключом чата
