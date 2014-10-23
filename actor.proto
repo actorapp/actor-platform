@@ -34,8 +34,8 @@ message UserKey {
 }
 
 // Идентификатор чата
-message ChatId {
-    required int32 chatId = 1;
+message GroupId {
+    required int32 groupId = 1;
     required int64 accessHash = 2;
 }
 // Аватар пользователя или чата
@@ -296,12 +296,12 @@ message UnsubscribeFromOnline {
 // API#0x4A
 // Игнорировать неправильных пользователей
 message SubscribeToGroupOnline {
-    repeated ChatId chats = 1;
+    repeated GroupId groups = 1;
 }
 // API#0x4B
 // Игнорировать неправильных пользователей
 message UnsubscribeFromGroupOnline {
-    repeated ChatId chats = 1;
+    repeated GroupId groups = 1;
 }
 // ************************************************************************
 //                        Sequence updates list
@@ -316,7 +316,7 @@ message UpdateMessage {
 // API#0x24
 // Событие о созданном чате созданном чате
 message UpdateGroupCreated {
-    required int32 chatId = 1;
+    required int32 groupId = 1;
     required int64 accessHash = 2;
     required string title = 3;
     required EncryptedRSAPackage invite = 4;
@@ -326,15 +326,15 @@ message UpdateGroupCreated {
 // Событие о новом групповом сообщении
 message UpdateGroupMessage {
     required int32 senderUID = 1;
-    required int32 chatId = 2;
+    required int32 groupId = 2;
     required EncryptedAESPackage message = 3;
 }
 // API#0x19
 // Событие о приглашении в чат
 message UpdateGroupInvite {
-    required int32 chatId = 1;
+    required int32 groupId = 1;
     required int64 accessHash = 2;
-    required int32 chatCreatorUID = 8;
+    required int32 groupCreatorUID = 8;
     required int32 inviterUID = 9;
     required string title = 3;
     repeated UserId users = 4;
@@ -343,20 +343,20 @@ message UpdateGroupInvite {
 // API#0x15
 // Событие о добавлении участника в чат
 message UpdateGroupUserAdded {
-    required int32 chatId = 1;
+    required int32 groupId = 1;
     required int32 uid = 2;
     required int32 inviterUID = 3;
 }
 // API#0x17
 // Событие о том, что пользователь сам покинул чат
 message UpdateGroupUserLeave {
-    required int32 chatId = 1;
+    required int32 groupId = 1;
     required int32 uid = 2;
 }
 // API#0x18
 // Событие о том, что пользователя исключили из чата
 message UpdateGroupUserKick {
-    required int32 chatId = 1;
+    required int32 groupId = 1;
     required int32 uid = 2;
     required int32 kickerUid = 3;
 }
@@ -391,7 +391,7 @@ message UpdateMessageSent {
 // API#0x23
 // Событие об отправлении сообщения в группу
 message UpdateMessageGroupSent {
-    required int32 chatId = 3;
+    required int32 groupId = 3;
     required int64 randomId = 2;
 }
 // API#0x05
@@ -449,7 +449,7 @@ message UpdateTyping {
 }
 // API#0x22
 message UpdateTypingGroup {
-    required int32 chatId = 1;
+    required int32 groupId = 1;
     required int32 uid = 2;
     required int32 typingType = 4;
 }
@@ -468,7 +468,7 @@ message UpdateUserLastSeen {
 }
 // API#0x21
 message UpdateGroupOnline {
-    required int32 chatId = 1;
+    required int32 groupId = 1;
     required int32 count = 2;
 }
 // ************************************************************************
@@ -494,7 +494,7 @@ message ErrorSendWrongReceivers {
 // 400#: WRONG_KEY - когда aesKeyHash не совпадает с текущим ключом чата
 // Ответ: ResponseSeq#0x48
 message RequestSendGroupMessage {
-    required int32 chatId = 1;
+    required int32 groupId = 1;
     required int64 accessHash = 2;
     required int64 randomId = 3;
     required EncryptedAESMessage message = 4;
@@ -515,10 +515,10 @@ message RequestMessageRead {
     required int64 accessHash = 3;
 }
 // ************************************************************************
-//                               Group chats
+//                               Groups
 // ************************************************************************
 // API#0x41
-message RequestCreateChat {
+message RequestCreateGroup {
     required int64 randomId = 1;
     required string title = 2;
     required bytes keyHash = 3;
@@ -526,8 +526,8 @@ message RequestCreateChat {
     required EncryptedRSABroadcast invites = 5;
 }
 // API#0x42
-message ResponseCreateChat {
-    required int32 chatId = 1;
+message ResponseCreateGroup {
+    required int32 groupId = 1;
     required int64 accessHash = 2;
     required int32 seq = 3;
     required bytes state = 4;
@@ -536,7 +536,7 @@ message ResponseCreateChat {
 // API#0x55
 // Ответ: ResponseSeq#0x48
 message RequestEditGroupTitle {
-    required int32 chatId = 1;
+    required int32 groupId = 1;
     required int64 accessHash = 2;
     required string title = 1;
 }
@@ -544,7 +544,7 @@ message RequestEditGroupTitle {
 // API#0x56
 // Ответ: ResponseSeq#0x48
 message RequestEditGroupAvatar {
-    required int32 chatId = 1;
+    required int32 groupId = 1;
     required int64 accessHash = 2;
     required FileLocation fileLocation = 1;
 }
@@ -554,24 +554,24 @@ message RequestEditGroupAvatar {
 // Ответ: ResponseSeq#0x48
 // 400#: WRONG_KEY - когда aesKeyHash не совпадает с текущим ключом чата
 message RequestInviteUsers {
-    required int32 chatId = 1;
+    required int32 groupId = 1;
     required int64 accessHash = 2;
     required int64 randomId = 3;
-    required bytes chatKeyHash = 4;
+    required bytes groupKeyHash = 4;
     required EncryptedRSABroadcast invite = 5;
 }
 // API#0x46
 // Ответ: ResponseSeq#0x48
-message RequestLeaveChat {
-    required int32 chatId = 1;
+message RequestLeaveGroup {
+    required int32 groupId = 1;
     required int64 accessHash = 2;
 }
 // API#0x47
 // Ответ: ResponseSeq#0x48
 // 403#: NO_PERMISSION - когда невозможно исключить участника из чата из-за настроек приватности
 message RequestRemoveUser {
-    required int32 chatId = 1;
-    required int64 chatAccessHash = 2;
+    required int32 groupId = 1;
+    required int64 groupAccessHash = 2;
     required int32 uid = 3;
     required int64 userAccessHash = 4;
 }
@@ -641,7 +641,7 @@ message RequestTyping {
 // API#0x48
 // Ответ: ResponseVoid#0x32
 message RequestGroupTyping {
-    required int32 chatId = 1;
+    required int32 groupId = 1;
     required int64 accessHash = 2;
     required int32 typingType = 3;
 }
