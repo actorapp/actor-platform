@@ -538,7 +538,7 @@ message ResponseCreateGroup {
 message RequestEditGroupTitle {
     required int32 groupId = 1;
     required int64 accessHash = 2;
-    required string title = 1;
+    required string title = 3;
 }
 
 // API#0x56
@@ -546,7 +546,7 @@ message RequestEditGroupTitle {
 message RequestEditGroupAvatar {
     required int32 groupId = 1;
     required int64 accessHash = 2;
-    required FileLocation fileLocation = 1;
+    required FileLocation fileLocation = 3;
 }
 
 
