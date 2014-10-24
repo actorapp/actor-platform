@@ -516,7 +516,7 @@ message RequestMessageRead {
     required int64 accessHash = 3;
 }
 // ************************************************************************
-//                               Group groups
+//                               Group
 // ************************************************************************
 // API#0x41
 message RequestCreateGroup {
