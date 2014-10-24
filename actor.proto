@@ -64,6 +64,7 @@ message User {
     required int64 phone = 7;
     optional Avatar avatar = 8;
 }
+
 // Зашифрованный AES-ключ для устройства
 message EncryptedAESKey {
     required int64 keyHash = 1;
@@ -515,7 +516,7 @@ message RequestMessageRead {
     required int64 accessHash = 3;
 }
 // ************************************************************************
-//                               Groups
+//                               Group groups
 // ************************************************************************
 // API#0x41
 message RequestCreateGroup {
@@ -542,13 +543,12 @@ message RequestEditGroupTitle {
 }
 
 // API#0x56
-// Ответ: ResponseSeq#0x48
+// Ответ: ResponseAvatarChanged#0x44
 message RequestEditGroupAvatar {
     required int32 groupId = 1;
     required int64 accessHash = 2;
     required FileLocation fileLocation = 3;
 }
-
 
 // API#0x45
 // Ответ: ResponseSeq#0x48
