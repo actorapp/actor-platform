@@ -65,6 +65,11 @@ message User {
     optional Avatar avatar = 8;
 }
 
+// Детали ошибки отправки сообщений
+message WrongReceiversErrorData {
+    repeated UserKey newKeys = 1;
+    repeated UserKey removedKeys = 2;
+}
 // Зашифрованный AES-ключ для устройства
 message EncryptedAESKey {
     required int64 keyHash = 1;
@@ -483,12 +488,6 @@ message RequestSendMessage {
     required int64 accessHash = 2;
     required int64 randomId = 3;
     required EncryptedRSAMessage message = 4;
-}
-
-// ErrorData при WRONG_RECEIVERS у запросе на отправку сообщения
-message ErrorSendWrongReceivers {
-    repeated UserKey invalid = 1;
-    repeated UserKey missing = 2;
 }
 
 // API#0x43
