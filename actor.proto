@@ -64,11 +64,11 @@ message User {
     required int64 phone = 7;
     optional Avatar avatar = 8;
 }
-
 // Детали ошибки отправки сообщений
 message WrongReceiversErrorData {
     repeated UserKey newKeys = 1;
     repeated UserKey removedKeys = 2;
+    repeated UserKey invalidKeys = 3;
 }
 // Зашифрованный AES-ключ для устройства
 message EncryptedAESKey {
@@ -515,7 +515,7 @@ message RequestMessageRead {
     required int64 accessHash = 3;
 }
 // ************************************************************************
-//                               Group
+//                               Groups
 // ************************************************************************
 // API#0x41
 message RequestCreateGroup {
