@@ -18,7 +18,7 @@ message PlainMessage {
 
 // ID#0x02
 message DeleteMessage {
-    required fixed64 guid = 1; // GUID сообщения
+    repeated fixed64 guid = 1; // GUID сообщения
 }
 
 // ID#0x03
