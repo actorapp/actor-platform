@@ -18,7 +18,7 @@ message PlainMessage {
 
 // ID#0x02
 message DeleteMessage {
-    required fixed64 guid = 1; // GUID сообщения
+    repeated fixed64 guids = 1; // GUID сообщения
 }
 
 // ID#0x03
@@ -44,11 +44,11 @@ message TextMessage {
 message FileMessage {
     required string name = 1; // Имя файла
     required string mimeType = 2; // Mime Type файла
-    required DecryptedFileLocation fileLocation = 3; // Расположение зашифрованного файла
+    required PlainFileLocation fileLocation = 3; // Расположение зашифрованного файла
     optional FastThumb fastThumb = 4; // Быстрое превью
 
-    required int32 extType = 2; // Тип расширения сообщения
-    optional bytes extension = 3; // Расширение
+    required int32 extType = 5; // Тип расширения сообщения
+    optional bytes extension = 6; // Расширение
 }
 
 enum EncryptionType {
