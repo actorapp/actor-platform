@@ -1,6 +1,10 @@
 package proto;
 option java_package = "im.actor.messenger.api";
 option java_outer_classname = "Scheme";
+
+// Next UPDATE SEQ = 0x33
+// Next RPC SEQ = 0x70
+
 // ************************************************************************
 //                              Common objects
 // ************************************************************************
@@ -54,6 +58,8 @@ message AvatarImage {
     required int32 height = 3;
     required int32 fileSize = 4;
 }
+
+
 // Пользователь
 message User {
     required int32 id = 1;
@@ -65,55 +71,120 @@ message User {
     required int64 phone = 7;
     optional Avatar avatar = 8;
 }
+
+// Группа
+message Group {
+    required int32 id = 1;
+    required int64 accessHash = 2;
+    required string title = 3;
+    optional Avatar avatar = 4;
+    required bool isMember = 6;
+    repeated int32 members = 7;
+    required int32 adminUid = 8;
+}
+
+message FastThumb {
+    required int32 w = 1;
+    required int32 h = 2;
+    required bytes thumb = 3;
+}
+
 // Детали ошибки отправки сообщений
 message WrongReceiversErrorData {
     repeated UserKey newKeys = 1;
     repeated UserKey removedKeys = 2;
     repeated UserKey invalidKeys = 3;
 }
-// Зашифрованный AES-ключ для устройства
-message EncryptedAESKey {
-    required int64 keyHash = 1;
-    required bytes aesEncryptedKey = 2;
+
+message MessageContent {
+    required int32 type = 1;
+    required bytes content = 2;
 }
-// Зашифрованные RSA+AES данные
-message EncryptedRSAMessage {
-    required bytes encryptedMessage = 1;
-    repeated EncryptedAESKey keys = 2;
-    repeated EncryptedAESKey ownKeys = 3;
+
+// Type#0x01
+message TextMessage {
+    required string text = 1;
+    required int32 extType = 2;
+    optional bytes ext = 3;
 }
-// Зашифрованные AES-данные
-message EncryptedAESMessage {
-    required bytes keyHash = 1;
-    required bytes encryptedMessage = 2;
+
+// Type#0x02
+message ServiceMessage {
+    required string text = 1;
+    required int32 extType = 2;
+    optional bytes ext = 3;
+
+    // EXT#0x1
+    message UserAddedExtension {
+        required int32 addedUid = 1;
+    }
+
+    // EXT#0x2
+    message UserKickedExtension {
+        required int32 kickedUid = 1;
+    }
+
+    // EXT#0x3
+    message UserLeftExtension {
+        
+    }
+
+    // EXT#0x4
+    message GroupCreatedExtension {
+        
+    }
+
+    // EXT#0x5
+    message GroupChangedTitleExtension {
+        required string title = 1;
+    }
+
+    // EXT#0x6
+    message GroupChangedAvatarExtension {
+        optional Avatar avatar = 1;
+    }
 }
-// Зашифрованные ключи для пользователя
-message EncryptedUserAESKeys {
-    required int32 uid = 1;
+
+// Type#0x03
+message FileMessage {
+    required int32 fileId = 1;
     required int64 accessHash = 2;
-    repeated EncryptedAESKey keys = 3;
+    required int32 fileSize = 3;
+    required string name = 4;
+    required string mimeType = 5;
+    optional FastThumb thumb = 6;
+
+    required int32 extType = 7;
+    optional bytes ext = 8;
+
+    // EXT#0x01
+    message PhotoExtension {
+        required int32 w = 1;
+        required int32 h = 2;
+    }
+
+    // EXT#0x02
+    message VideoExtension {
+        required int32 w = 1;
+        required int32 h = 2;
+        required int32 duration = 3;
+    }
+
+    // EXT#0x03
+    message VoiceExtension {
+        required int32 duration = 1;
+    }
 }
-// Зашифрованное сообщение для нескольких пользователей
-message EncryptedRSABroadcast {
-    required bytes encryptedMessage = 3;
-    repeated EncryptedUserAESKeys keys = 4;
-    repeated EncryptedAESKey ownKeys = 5;
+
+message Config {
+    required int32 maxGroupSize = 1;
 }
-// Зашифрованные RSA-сообщения
-message EncryptedRSAPackage {
-    required int64 keyHash = 1;
-    required bytes aesEncryptedKey = 2;
-    required bytes message = 3;
-}
-// Зашифрованные AES-сообщения
-message EncryptedAESPackage {
-    required bytes keyHash = 1;
-    required bytes message = 2;
-}
+
 // API#0x32
 // Пустой ответ на запрос
 message ResponseVoid {
 }
+
 // API#0x48
 // Успешный ответ на методы, которые возвращают статус цепочки
 message ResponseSeq {
@@ -133,11 +204,25 @@ message RequestAuthCode {
     required int32 appId = 2;
     required string apiKey = 3;
 }
+
 // API#0x02
 message ResponseAuthCode {
     required string smsHash = 1;
     required bool isRegistered = 2;
 }
+
+
+// API#0x5A
+// #400: PHONE_NUMBER_INVALID - неверный номер телефона. Отображается пользователю.
+// #400: PHONE_CODE_EXPIRED - код устарел, требуется начать авторизацию с самого начала
+// Ответ: ResponseVoid
+message RequestAuthCodeCall {
+    required int64 phoneNumber = 1;
+    required string smsHash = 2;
+    required int32 appId = 3;
+    required string apiKey = 4;
+}
+
 // API#0x03
 // Ответ: ResponseAuth#0x05
 // Возможные ошибки
@@ -158,6 +243,7 @@ message RequestSignIn {
     required int32 appId = 7;
     required string appKey = 8;
 }
+
 // API#0x04
 // Ответ: ResponseAuth#0x05
 // Возможные ошибки
@@ -174,20 +260,24 @@ message RequestSignUp {
     required string deviceTitle = 8;
     required int32 appId = 9;
     required string appKey = 10;
+    required bool isSilent = 11;
 }
+
 // API#0x05
 message ResponseAuth {
     required int64 publicKeyHash = 1;
     required User user = 2;
+    required Config config = 3;
 }
 // ************************************************************************
 //                                Profile
 // ************************************************************************
 // API#0x35
-// Ответ: ResponseVoid#0x32
+// Ответ: ResponseSeq#0x32
 message RequestEditName {
     required string name = 1;
 }
+
 // API#0x1F
 // Ответ: ResponseAvatarChanged#0x44
 // #400: IMAGE_LOAD_ERROR - невозможно открыть файл
@@ -195,9 +285,18 @@ message RequestEditName {
 message RequestEditAvatar {
     required FileLocation fileLocation = 1;
 }
+
 // API#0x44
 message ResponseAvatarChanged {
     required Avatar avatar = 1;
+    required int32 seq = 2;
+    required bytes state = 3;
+}
+
+// API#0x5B
+// Ответ: ResponseSeq#0x32
+message RequestRemoveAvatar {
+    
 }
 // ************************************************************************
 //                                Users
@@ -207,34 +306,46 @@ message ResponseAvatarChanged {
 // Ошибки не может генерировать, все несуществующие ключи игнорируются
 message RequestPublicKeys {
     repeated PublicKeyRequest keys = 1;
+
+    message PublicKeyRequest {
+        required int32 uid = 1;
+        required int64 accessHash = 2;
+        required int64 keyHash = 3;
+    }
 }
-message PublicKeyRequest {
-    required int32 uid = 1;
-    required int64 accessHash = 2;
-    required int64 keyHash = 3;
-}
+
 // API#0x18
 message ResponsePublicKeys {
     repeated PublicKey keys = 1;
 }
+
+// API#0x60
+// Ответ: ResponseSeq
+message RequestEditUserLocalName {
+    required int32 uid = 1;
+    required int64 accessHash = 2;
+    required string name = 3;
+}
+
 // ************************************************************************
 //                                Contacts
 // ************************************************************************
-message PhoneToImport {
-    required int64 phoneNumber = 1; // international full phone number
-    optional string name = 2;
-}
-
-message EmailToImport {
-    required string email = 1;
-    optional string name = 2;
-}
 
 // API#0x07
 // Ответ: ResponseImportedContacts#0x08
 message RequestImportContacts {
     repeated PhoneToImport phones = 1;
-    repeated EmailToImport emails = 1;
+    repeated EmailToImport emails = 2;
+
+    message PhoneToImport {
+        required int64 phoneNumber = 1; // international full phone number
+        optional string name = 2;
+    }
+
+    message EmailToImport {
+        required string email = 1;
+        optional string name = 2;
+    }
 }
 
 // API#0x08
@@ -265,13 +376,6 @@ message RequestDeleteContact {
     required int64 accessHash = 2;
 }
 
-// API#0x60
-// Ответ: ResponseSeq
-message RequestEditContactName {
-    required int32 uid = 1;
-    required int64 accessHash = 2;
-    required string name = 3;
-}
 // ************************************************************************
 //                                 Updates
 // ************************************************************************
@@ -289,6 +393,7 @@ message FatSeqUpdate {
     required int32 updateHeader = 3;
     required bytes update = 4;
     repeated User users = 5;
+    repeated Group groups = 6;
 }
 // API#0x1A
 message WeakUpdate {
@@ -318,9 +423,11 @@ message Difference {
     required int32 seq = 1;
     required bytes state = 2;
     repeated User users = 3;
+    repeated Group groups = 6;
     repeated DifferenceUpdate updates = 4;
     required bool needMore = 5;
 }
+
 // API#0x20
 // Игнорировать неправильных пользователей
 message SubscribeToOnline {
@@ -341,76 +448,72 @@ message SubscribeToGroupOnline {
 message UnsubscribeFromGroupOnline {
     repeated GroupId groups = 1;
 }
+
 // ************************************************************************
 //                        Sequence updates list
 // ************************************************************************
+
+///////////// COMMON //////////////
+
+// API#0x2A
+message UpdateConfig {
+    required Config config = 1;
+}
+
+/////////// PRIVATE CHATS /////////////
+
 // API#0x01
 // Событие о новом приватном сообщении
 message UpdateMessage {
     required int32 senderUID = 1;
     required int32 destUID = 2;
-    required EncryptedRSAPackage message = 3;
+
+    required int64 date = 6;
+    required int64 sortKey = 7;
+
+    required int64 keyHash = 3;
+    required bytes aesEncryptedKey = 4;
+    required bytes message = 5;
 }
-// API#0x24
-// Событие о созданном чате созданном чате
-message UpdateGroupCreated {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
-    required string title = 3;
-    required EncryptedRSAPackage invite = 4;
-    repeated UserId users = 5;
+
+// API#0x04
+// Событие об отправлении сообщения
+message UpdateMessageSent {
+    required int32 uid = 3;
+    required int64 randomId = 2;
+
+    required int64 date = 4;
+    required int64 sortKey = 5;
 }
-// API#0x14
-// Событие о новом групповом сообщении
-message UpdateGroupMessage {
-    required int32 senderUID = 1;
-    required int32 groupId = 2;
-    required EncryptedAESPackage message = 3;
+
+// API#0x2E
+// Сообщение об удалении сообщения в приватном чате
+message UpdateMessageDelete {
+    required int32 uid = 1;
+    required int32 rid = 2;
 }
-// API#0x19
-// Событие о приглашении в чат
-message UpdateGroupInvite {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
-    required int32 groupCreatorUID = 8;
-    required int32 inviterUID = 9;
-    required string title = 3;
-    repeated UserId users = 4;
-    required EncryptedRSAPackage invite = 5;
+
+// API#0x2F
+// Сообщение об очистке истории приватного чата
+message UpdatePrivateClear {
+    required int32 uid = 1;
 }
-// API#0x15
-// Событие о добавлении участника в чат
-message UpdateGroupUserAdded {
-    required int32 groupId = 1;
-    required int32 uid = 2;
-    required int32 inviterUID = 3;
+
+// API#0x30
+// Сообщение об удалении приватного чата
+message UpdatePrivateDelete {
+    required int32 uid = 1;
 }
-// API#0x17
-// Событие о том, что пользователь сам покинул чат
-message UpdateGroupUserLeave {
-    required int32 groupId = 1;
-    required int32 uid = 2;
-}
-// API#0x18
-// Событие о том, что пользователя исключили из чата
-message UpdateGroupUserKick {
-    required int32 groupId = 1;
-    required int32 uid = 2;
-    required int32 kickerUid = 3;
-}
+
 // API#0x02
 // Событие о новом устройстве у пользователя
 message UpdateNewDevice {
     required int32 uid = 1;
     required int64 keyHash = 2;
-}
+    optional bytes key = 3;
 
-// API#0x03
-// Событие о новом своем устройстве
-message UpdateNewFullDevice {
-    required int32 uid = 1;
-    required int64 keyHash = 2;
-    required bytes key = 3;
+    required int64 date = 4;
+    required int64 sortKey = 5;
 }
 
 // API#0x25
@@ -420,29 +523,35 @@ message UpdateRemoveDevice {
     required int64 keyHash = 2;
 }
 
-// API#0x04
-// Событие об отправлении сообщения
-message UpdateMessageSent {
-    required int32 uid = 3;
-    required int64 randomId = 2;
-}
-// API#0x23
-// Событие об отправлении сообщения в группу
-message UpdateMessageGroupSent {
-    required int32 groupId = 3;
-    required int64 randomId = 2;
-}
 // API#0x05
 // Событие о регистрации пользователя из контакт-листа
 message UpdateContactRegistered {
     required int32 uid = 1;
+    optional bool isSilent = 2;
+
+    required int64 date = 3;
+    required int64 sortKey = 4;
 }
+
+// API#0x28
+// Событие о добавлении пользователей в контакт-лист
+message UpdateContactsAdded {
+    repeated int32 uids = 1;
+}
+ 
+// API#0x29
+// Событие об удалении пользователей из контакт-листа
+message UpdateContactsRemoved {
+    repeated int32 uids = 2;
+}
+
 // API#0x10
 // Событие о смене аватара пользователя (в том числе и себя)
 message UpdateAvatarChanged {
     required int32 uid = 1;
     optional Avatar  avatar = 2;
 }
+
 // API#0x20
 // Событие о смене имени пользователя (в том числе и себя)
 message UpdateUserNameChanged {
@@ -457,31 +566,146 @@ message UpdateUserLocalNameChanged {
     optional string localName = 2;
 }
 
-// API#0x26
-// Событие о смене имени группы
-message UpdateGroupTitleChanged {
-    required int32 groupId = 1;
-    required string title = 2;
-}
-
-// API#0x27
-// Событие о смене имени группы
-message UpdateGroupAvatarChanged {
-    required int32 groupId = 1;
-    optional Avatar avatar = 2;
-}
-
 // API#0x12
 // Событие о доставленном сообщении
 message UpdateMessageReceived {
     required int32 uid = 1;
     required int64 randomId = 2;
 }
+
 // API#0x13
 // Событие о прочитанном сообщении
 message UpdateMessageRead {
     required int32 uid = 1;
     required int64 randomId = 2;
+}
+
+// API#0x32
+// Событие о прочитанном сообщении
+message UpdateMessageReadByMe {
+    required int32 uid = 1;
+    required int64 randomId = 2;
+}
+
+////////// GROUP CHATS //////////////
+
+// API#0x24
+// Событие о созданном чате
+message UpdateGroupInvite {
+    required int32 groupId = 1;
+    required int64 accessHash = 2;
+    required string title = 3;
+    optional Avatar avatar = 4;
+    required int32 inviteUid = 5;
+    required int32 adminUid = 6;
+    repeated int32 users = 7;
+
+    required int64 date = 8;
+    required int64 sortKey = 9;
+}
+
+// API#0x14
+// Событие о новом групповом текстовом сообщении
+message UpdateGroupMessage {
+    required int32 senderUID = 1;
+    required int32 groupId = 2;
+    required int32 rid = 3;
+
+    required int64 date = 6;
+    required int64 sortKey = 7;
+
+    required MessageContent message = 5;
+}
+
+// API#0x23
+// Событие об отправлении сообщения в группу
+message UpdateMessageGroupSent {
+    required int32 groupId = 3;
+    required int64 randomId = 2;
+
+    required int64 date = 6;
+    required int64 sortKey = 7;
+}
+
+// API#0x2B
+// Событие о том, что пользователь удалил чат, 
+// из которого его выгнали или уход из чата и удаление ата
+message UpdateGroupDelete {
+    required int32 groupId = 1;
+}
+
+// API#0x2D
+// Событие об очистке истории группы
+message UpdateGroupClear {
+    required int32 groupId = 1;
+}
+
+// API#0x31
+// Событие об удалении сообщения в группе
+message UpdateGroupMessageDelete {
+    required int32 groupId = 1;
+    required int64 rid = 2;
+}
+
+// API#0x15
+// Событие о добавлении участника в чат
+message UpdateGroupUserAdded {
+    required int32 groupId = 1;
+    required int32 uid = 2;
+    required int32 inviterUID = 3;
+
+    required int64 date = 4;
+    required int64 sortKey = 5;
+}
+
+// API#0x17
+// Событие о том, что пользователь сам покинул чат
+message UpdateGroupUserLeave {
+    required int32 groupId = 1;
+    required int32 uid = 2;
+
+    required int64 date = 3;
+    required int64 sortKey = 4;
+}
+
+// API#0x18
+// Событие о том, что пользователя исключили из чата
+message UpdateGroupUserKick {
+    required int32 groupId = 1;
+    required int32 uid = 2;
+    required int32 kickerUid = 3;
+
+    required int64 date = 4;
+    required int64 sortKey = 5;
+}
+
+// API#0x2C
+// Тихое обновление участников чата
+message UpdateGroupMembersUpdate {
+    required int32 groupId = 1;
+    repeated int32 members = 2;
+}
+
+// API#0x26
+// Событие о смене имени группы
+message UpdateGroupTitleChanged {
+    required int32 groupId = 1;
+    required int32 uid = 2;
+    required string title = 3;
+
+    required int64 date = 4;
+    required int64 sortKey = 5;
+}
+
+// API#0x27
+// Событие о смене имени группы
+message UpdateGroupAvatarChanged {
+    required int32 groupId = 1;
+    required int32 uid = 2;
+    optional Avatar avatar = 3;
+
+    required int64 date = 4;
+    required int64 sortKey = 5;
 }
 // ************************************************************************
 //                        Weak updates list
@@ -491,25 +715,30 @@ message UpdateTyping {
     required int32 uid = 1;
     required int32 typingType = 4;
 }
+
 // API#0x22
 message UpdateTypingGroup {
     required int32 groupId = 1;
     required int32 uid = 2;
     required int32 typingType = 4;
 }
+
 // API#0x07
 message UpdateUserOnline {
     required int32 uid = 1;
 }
+
 // API#0x08
 message UpdateUserOffline {
     required int32 uid = 1;
 }
+
 // API#0x09
 message UpdateUserLastSeen {
     required int32 uid = 1;
     required int64 time = 2;
 }
+
 // API#0x21
 message UpdateGroupOnline {
     required int32 groupId = 1;
@@ -525,18 +754,17 @@ message RequestSendMessage {
     required int32 uid = 1;
     required int64 accessHash = 2;
     required int64 randomId = 3;
-    required EncryptedRSAMessage message = 4;
+
+    required bytes encryptedMessage = 4;
+    repeated EncryptedAESKey keys = 5;
+    repeated EncryptedAESKey ownKeys = 6;
+
+    message EncryptedAESKey {
+        required int64 keyHash = 1;
+        required bytes aesEncryptedKey = 2;
+    }
 }
 
-// API#0x43
-// 400#: WRONG_KEY - когда aesKeyHash не совпадает с текущим ключом чата
-// Ответ: ResponseSeq#0x48
-message RequestSendGroupMessage {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
-    required int64 randomId = 3;
-    required EncryptedAESMessage message = 4;
-}
 
 // API#0x37
 // Ответ: ResponseVoid#0x32
@@ -545,6 +773,7 @@ message RequestMessageReceived {
     required int64 randomId = 2;
     required int64 accessHash = 3;
 }
+
 // API#0x39
 // Ответ: ResponseVoid#0x32
 message RequestMessageRead {
@@ -552,6 +781,98 @@ message RequestMessageRead {
     required int64 randomId = 2;
     required int64 accessHash = 3;
 }
+
+// API#0x62
+// Ответ: ResponseVoid#0x32
+message RequestMessageDelete {
+    required int32 uid = 1;
+    required int64 randomId = 2;
+    required int64 accessHash = 3;
+}
+
+// API#0x63
+// Ответ: ResponseVoid#0x32
+message RequestClearChat {
+    required int32 uid = 1;
+    required int64 accessHash = 3;
+}
+
+// API#0x64
+// Ответ: ResponseVoid#0x32
+message RequestDeleteChat {
+    required int32 uid = 1;
+    required int64 accessHash = 3;
+}
+
+// API#0x5C
+// Ответ: ResponseSeq#0x48
+message RequestSendGroupTextMessage {
+    required int32 groupId = 1;
+    required int64 accessHash = 2;
+    required int64 randomId = 3;
+    required string message = 4;
+}
+
+// API#0x5D
+// Ответ: ResponseSeq#0x48
+message RequestSendGroupImageMessage {
+    required int32 groupId = 1;
+    required int64 accessHash = 2;
+    required int64 randomId = 3;
+    required FileLocation fileLocation = 4;
+}
+
+// API#0x5E
+// Ответ: ResponseSeq#0x48
+message RequestSendGroupVideoMessage {
+    required int32 groupId = 1;
+    required int64 accessHash = 2;
+    required int64 randomId = 3;
+    required int32 width = 4;
+    required int32 height = 5;
+    required int32 duration = 6;
+
+    optional FastThumb fastThumb = 7;
+
+    required FileLocation fileLocation = 8;
+}
+
+// API#0x5F
+// Ответ: ResponseSeq#0x48
+message RequestSendGroupDocumentMessage {
+    required int32 groupId = 1;
+    required int64 accessHash = 2;
+    required int64 randomId = 3;
+    required string fileName = 4;
+    required string mimeType = 5;
+
+    optional FastThumb fastThumb = 7;
+
+   required FileLocation fileLocation = 8;
+}
+
+// API#0x65
+// Ответ: ResponseVoid#0x32
+message RequestMessageGroupDelete {
+    required int32 groupId = 1;
+    required int64 randomId = 2;
+    required int64 accessHash = 3;
+}
+
+// API#0x66
+// Ответ: ResponseVoid#0x32
+message RequestClearGroupChat {
+    required int32 groupId = 1;
+    required int64 accessHash = 3;
+}
+
+// API#0x67
+// Ответ: ResponseVoid#0x32
+message RequestDeleteGroupChat {
+    required int32 groupId = 1;
+    required int64 accessHash = 3;
+}
+
 // ************************************************************************
 //                               Groups
 // ************************************************************************
@@ -559,16 +880,16 @@ message RequestMessageRead {
 message RequestCreateGroup {
     required int64 randomId = 1;
     required string title = 2;
-    required bytes keyHash = 3;
-    required bytes publicKey = 4;
-    required EncryptedRSABroadcast invites = 5;
+    repeated UserId users = 3;
 }
+
 // API#0x42
 message ResponseCreateGroup {
     required int32 groupId = 1;
     required int64 accessHash = 2;
     required int32 seq = 3;
     required bytes state = 4;
+    repeated int32 users = 5;
 }
 
 // API#0x55
@@ -587,31 +908,74 @@ message RequestEditGroupAvatar {
     required FileLocation fileLocation = 3;
 }
 
+// API#0x60
+// Ответ: ResponseSeq#0x48
+message RequestRemoveGroupAvatar {
+    required int32 groupId = 1;
+    required int64 accessHash = 2;
+}
+
 // API#0x45
 // Ответ: ResponseSeq#0x48
-// 400#: WRONG_KEY - когда aesKeyHash не совпадает с текущим ключом чата
 message RequestInviteUsers {
     required int32 groupId = 1;
     required int64 accessHash = 2;
-    required int64 randomId = 3;
-    required bytes groupKeyHash = 4;
-    required EncryptedRSABroadcast invite = 5;
+    repeated UserId users = 3;
 }
+
 // API#0x46
 // Ответ: ResponseSeq#0x48
 message RequestLeaveGroup {
     required int32 groupId = 1;
     required int64 accessHash = 2;
 }
+
+// API#0x61
+// Ответ: ResponseSeq#0x48
+message RequestDeleteGroup {
+    required int32 groupId = 1;
+    required int64 accessHash = 2;
+}
+
 // API#0x47
 // Ответ: ResponseSeq#0x48
 // 403#: NO_PERMISSION - когда невозможно исключить участника из чата из-за настроек приватности
-message RequestRemoveUser {
+message RequestRemoveUsers {
     required int32 groupId = 1;
     required int64 groupAccessHash = 2;
-    required int32 uid = 3;
-    required int64 userAccessHash = 4;
+    repeated UserId users = 3;
 }
+
+// ************************************************************************
+//                               History
+// ************************************************************************
+
+// API#0x68
+// Ответ: ResponseHistory#0x69
+// startSortKey - 0 если загружать с начала или ключ сортировки для подгрузки
+// limit - не больше 100 сообщений
+message RequestLoadHistory {
+    required int32 groupId = 1;
+    required int64 accessHash = 2;
+    required int64 startSortKey = 3;
+    required int32 limit = 4;
+}
+
+// API#0x69
+message ResponseHistory {
+    repeated HistoryMessage history = 1;
+
+    message HistoryMessage {
+        required int32 senderUid = 1;
+        required int32 rid = 2;
+
+        required int64 date = 3;
+        required int64 sortKey = 4;
+
+        required MessageContent message = 5;
+    }
+}
+
 // ************************************************************************
 //                                  Files
 // ************************************************************************
@@ -675,6 +1039,7 @@ message RequestTyping {
     required int64 accessHash = 2;
     required int32 typingType = 3;
 }
+
 // API#0x48
 // Ответ: ResponseVoid#0x32
 message RequestGroupTyping {
