@@ -59,6 +59,7 @@ message User {
     required int32 id = 1;
     required int64 accessHash = 2;
     required string name = 3;
+    optional string localName = 9;
     optional Sex sex = 5;
     repeated int64 keyHashes = 6;
     required int64 phone = 7;
@@ -219,6 +220,7 @@ message PublicKeyRequest {
     required int64 accessHash = 2;
     required int64 keyHash = 3;
 }
+
 // API#0x18
 message ResponsePublicKeys {
     repeated PublicKey keys = 1;
@@ -226,26 +228,57 @@ message ResponsePublicKeys {
 // ************************************************************************
 //                                Contacts
 // ************************************************************************
-message ContactToImport {
-    required int64 clientPhoneId = 1; // Уникальный клиентский идентификатор телефона
-    required int64 phoneNumber = 2; // international full phone number
-}
-message ImportedContact {
-    required int64 clientPhoneId = 1;
-    required int32 userId = 2;
-}
 // API#0x07
 // Ответ: ResponseImportedContacts#0x08
-// Мы предполагем что phoneNumber и clientPhoneId будут уникальны
-// Если же не уникальны, то поведение сервера непредсказуемо
-// Крайне рекомендуется на клиенте поддержать уникальность
 message RequestImportContacts {
-    repeated ContactToImport contacts = 1;
+     repeated PhoneToImport phones = 1;
+    repeated EmailToImport emails = 2;
+
+    message PhoneToImport {
+        required int64 phoneNumber = 1; // international full phone number
+        optional string name = 2;
+    }
+
+    message EmailToImport {
+        required string email = 1;
+        optional string name = 2;
+    }
 }
+
 // API#0x08
 message ResponseImportedContacts {
     repeated User users = 1; // Импортированные пользователи
-    repeated ImportedContact contacts = 2;
+    required int32 seq = 2;
+    required bytes state = 3;
+}
+
+// API#0x57
+// Ответ: ResponseGetContacts#0x58
+// contactsHash = SHA1("uid1,uid2,..."), где uids - отсортированные 
+// в порядке возрастания идентификаторы пользователей
+message RequestGetContacts {
+    required string contactsHash = 1;
+}
+
+// API#0x58
+message ResponseGetContacts {
+    repeated User users = 1;
+    required bool isNotChanged = 2;
+}
+
+// API#0x59
+// Ответ: ResponseSeq
+message RequestDeleteContact {
+    required int32 uid = 1;
+    required int64 accessHash = 2;
+}
+
+// API#0x60
+// Ответ: ResponseSeq
+message RequestEditContactName {
+    required int32 uid = 1;
+    required int64 accessHash = 2;
+    required string name = 3;
 }
 // ************************************************************************
 //                                 Updates
@@ -412,6 +445,19 @@ message UpdateMessageGroupSent {
 message UpdateContactRegistered {
     required int32 uid = 1;
 }
+
+// API#0x28
+// Событие о добавлении пользователей в контакт-лист
+message UpdateContactsAdded {
+    repeated int32 uids = 1;
+}
+
+// API#0x29
+// Событие об удалении пользователей из контакт-листа
+message UpdateContactsRemoved {
+    repeated int32 uids = 1;
+}
+
 // API#0x10
 // Событие о смене аватара пользователя (в том числе и себя)
 message UpdateAvatarChanged {
@@ -423,6 +469,13 @@ message UpdateAvatarChanged {
 message UpdateUserNameChanged {
     required int32 uid = 1;
     optional string name = 2;
+}
+
+// API#0x28
+// Событие о смене локального имени пользователя
+message UpdateUserLocalNameChanged {
+    required int32 uid = 1;
+    optional string localName = 2;
 }
 
 // API#0x26
@@ -438,7 +491,6 @@ message UpdateGroupAvatarChanged {
     required int32 groupId = 1;
     optional Avatar avatar = 2;
 }
-
 
 // API#0x12
 // Событие о доставленном сообщении
