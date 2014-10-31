@@ -471,7 +471,7 @@ message UpdateUserNameChanged {
     optional string name = 2;
 }
 
-// API#0x28
+// API#0x33
 // Событие о смене локального имени пользователя
 message UpdateUserLocalNameChanged {
     required int32 uid = 1;
