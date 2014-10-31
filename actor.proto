@@ -64,6 +64,13 @@ message User {
     required int64 phone = 7;
     optional Avatar avatar = 8;
 }
+// Группа
+message Group {
+    required int32 id = 1;
+    required int64 accessHash = 2;
+    required string title = 3;
+    optional Avatar avatar = 4;
+}
 // Детали ошибки отправки сообщений
 message WrongReceiversErrorData {
     repeated UserKey newKeys = 1;
