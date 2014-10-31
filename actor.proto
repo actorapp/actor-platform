@@ -213,6 +213,7 @@ message PublicKeyRequest {
     required int64 accessHash = 2;
     required int64 keyHash = 3;
 }
+
 // API#0x18
 message ResponsePublicKeys {
     repeated PublicKey keys = 1;
@@ -220,21 +221,21 @@ message ResponsePublicKeys {
 // ************************************************************************
 //                                Contacts
 // ************************************************************************
-message PhoneToImport {
-    required int64 phoneNumber = 1; // international full phone number
-    optional string name = 2;
-}
-
-message EmailToImport {
-    required string email = 1;
-    optional string name = 2;
-}
-
 // API#0x07
 // Ответ: ResponseImportedContacts#0x08
 message RequestImportContacts {
-    repeated PhoneToImport phones = 1;
-    repeated EmailToImport emails = 1;
+     repeated PhoneToImport phones = 1;
+    repeated EmailToImport emails = 2;
+
+    message PhoneToImport {
+        required int64 phoneNumber = 1; // international full phone number
+        optional string name = 2;
+    }
+
+    message EmailToImport {
+        required string email = 1;
+        optional string name = 2;
+    }
 }
 
 // API#0x08
@@ -437,6 +438,19 @@ message UpdateMessageGroupSent {
 message UpdateContactRegistered {
     required int32 uid = 1;
 }
+
+// API#0x28
+// Событие о добавлении пользователей в контакт-лист
+message UpdateContactsAdded {
+    repeated int32 uids = 1;
+}
+
+// API#0x29
+// Событие об удалении пользователей из контакт-листа
+message UpdateContactsRemoved {
+    repeated int32 uids = 2;
+}
+
 // API#0x10
 // Событие о смене аватара пользователя (в том числе и себя)
 message UpdateAvatarChanged {
