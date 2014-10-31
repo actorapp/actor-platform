@@ -542,7 +542,7 @@ message UpdateContactsAdded {
 // API#0x29
 // Событие об удалении пользователей из контакт-листа
 message UpdateContactsRemoved {
-    repeated int32 uids = 2;
+    repeated int32 uids = 1;
 }
 
 // API#0x10
