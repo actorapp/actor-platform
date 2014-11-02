@@ -273,12 +273,29 @@ message RequestDeleteContact {
     required int64 accessHash = 2;
 }
 
+// API#0x72
+// Ответ: ResponseSeq
+message RequestAddContact {
+    required int32 uid = 1;
+    required int64 accessHash = 2;   
+}
+
 // API#0x60
 // Ответ: ResponseSeq
 message RequestEditContactName {
     required int32 uid = 1;
     required int64 accessHash = 2;
     required string name = 3;
+}
+
+// API#0x70
+message RequestFindContacts {
+    required string request = 1;
+}
+
+// API#0x71
+message ResponseFindContacts {
+    repeated User users = 1;
 }
 // ************************************************************************
 //                                 Updates
