@@ -469,7 +469,6 @@ message UpdateMessage {
     required int32 destUID = 2;
 
     required int64 date = 6;
-    required int64 sortKey = 7;
 
     required int64 keyHash = 3;
     required bytes aesEncryptedKey = 4;
@@ -483,7 +482,6 @@ message UpdateMessageSent {
     required int64 randomId = 2;
 
     required int64 date = 4;
-    required int64 sortKey = 5;
 }
 
 // API#0x2E
@@ -513,7 +511,6 @@ message UpdateNewDevice {
     optional bytes key = 3;
 
     required int64 date = 4;
-    required int64 sortKey = 5;
 }
 
 // API#0x25
@@ -529,7 +526,6 @@ message UpdateContactRegistered {
     required int32 uid = 1;
     required bool isSilent = 2;
     required int64 date = 3;
-    required int64 sortKey = 4;
 }
 
 // API#0x28
@@ -600,7 +596,6 @@ message UpdateGroupInvite {
     repeated int32 users = 7;
 
     required int64 date = 8;
-    required int64 sortKey = 9;
 }
 
 // API#0x14
@@ -611,7 +606,6 @@ message UpdateGroupMessage {
     required int32 rid = 3;
 
     required int64 date = 6;
-    required int64 sortKey = 7;
 
     required MessageContent message = 5;
 }
@@ -623,7 +617,6 @@ message UpdateMessageGroupSent {
     required int64 randomId = 2;
 
     required int64 date = 6;
-    required int64 sortKey = 7;
 }
 
 // API#0x2B
@@ -654,7 +647,6 @@ message UpdateGroupUserAdded {
     required int32 inviterUID = 3;
 
     required int64 date = 4;
-    required int64 sortKey = 5;
 }
 
 // API#0x17
@@ -664,7 +656,6 @@ message UpdateGroupUserLeave {
     required int32 uid = 2;
 
     required int64 date = 3;
-    required int64 sortKey = 4;
 }
 
 // API#0x18
@@ -675,7 +666,6 @@ message UpdateGroupUserKick {
     required int32 kickerUid = 3;
 
     required int64 date = 4;
-    required int64 sortKey = 5;
 }
 
 // API#0x2C
@@ -693,7 +683,6 @@ message UpdateGroupTitleChanged {
     required string title = 3;
 
     required int64 date = 4;
-    required int64 sortKey = 5;
 }
 
 // API#0x27
@@ -704,7 +693,6 @@ message UpdateGroupAvatarChanged {
     optional Avatar avatar = 3;
 
     required int64 date = 4;
-    required int64 sortKey = 5;
 }
 // ************************************************************************
 //                        Weak updates list
@@ -969,7 +957,6 @@ message ResponseHistory {
         required int32 rid = 2;
 
         required int64 date = 3;
-        required int64 sortKey = 4;
 
         required MessageContent message = 5;
     }
