@@ -14,6 +14,19 @@ enum Sex {
     MALE = 2;
     FEMALE = 3;
 }
+
+// Тип пира
+enum PeerType {
+    PRIVATE = 1;
+    GROUP = 2;
+}
+
+// Пир
+message Peer {
+    required PeerType type = 1;
+    required int32 id = 2;
+}
+
 // Публичный ключ пользователя
 message PublicKey {
     required int32 uid = 1;
@@ -460,48 +473,146 @@ message UpdateConfig {
     required Config config = 1;
 }
 
-/////////// PRIVATE CHATS /////////////
+/////////// CHATS /////////////
 
 // API#0x01
-// Событие о новом приватном сообщении
-message UpdateMessage {
-    required int32 senderUID = 1;
-    required int32 destUID = 2;
+// Событие о новом зашифрованном сообщении
+message UpdateEncryptedMessage {
+    required Peer peer = 1;
+    required int32 senderUid = 1;
 
     required int64 date = 6;
-
     required int64 keyHash = 3;
     required bytes aesEncryptedKey = 4;
     required bytes message = 5;
 }
 
+// API#0x33
+message UpdateMessage {
+    required Peer peer = 1;
+    required int32 senderUid = 2;
+
+    required int64 date = 3;
+    required int32 rid = 4;
+    required MessageContent message = 5;
+}
+
 // API#0x04
 // Событие об отправлении сообщения
 message UpdateMessageSent {
-    required int32 uid = 3;
-    required int64 randomId = 2;
+    required Peer peer = 1;
+    required int64 rid = 2;
+    required int64 date = 3;
+}
+
+// API#0x12
+// Событие о доставленном сообщении
+message UpdateMessageReceived {
+    required int32 uid = 1;
+    required int64 rid = 2;
+}
+
+// API#0x13
+// Событие о прочитанном сообщении
+message UpdateMessageRead {
+    required Peer peer = 1;
+    required int64 date = 2;
+    required int64 readDate = 3;
+}
+
+// API#0x32
+// Событие о прочитанном сообщении
+message UpdateMessageReadByMe {
+    required Peer peer = 1;
+    required int64 date = 2;
+}
+
+// API#0x2E
+// Сообщение об удалении сообщения
+message UpdateMessageDelete {
+    required Peer peer = 1;
+    repeated int32 rid = 2;
+}
+
+// API#0x2F
+// Сообщение об очистке истории чата
+message UpdateChatClear {
+    required Peer peer = 1;
+}
+
+// API#0x30
+// Сообщение об удалении чата
+message UpdateChatDelete {
+    required Peer peer = 1;
+}
+
+////////// GROUP CHATS //////////////
+
+// API#0x24
+// Событие о созданном чате
+message UpdateGroupInvite {
+    required int32 groupId = 1;
+    required int32 inviteUid = 5;
+    required int64 date = 8;
+}
+
+// API#0x15
+// Событие о добавлении участника в чат
+message UpdateGroupUserAdded {
+    required int32 groupId = 1;
+    required int32 uid = 2;
+    required int32 inviterUID = 3;
 
     required int64 date = 4;
 }
 
-// API#0x2E
-// Сообщение об удалении сообщения в приватном чате
-message UpdateMessageDelete {
-    required int32 uid = 1;
-    required int32 rid = 2;
+// API#0x17
+// Событие о том, что пользователь сам покинул чат
+message UpdateGroupUserLeave {
+    required int32 groupId = 1;
+    required int32 uid = 2;
+
+    required int64 date = 3;
 }
 
-// API#0x2F
-// Сообщение об очистке истории приватного чата
-message UpdatePrivateClear {
-    required int32 uid = 1;
+// API#0x18
+// Событие о том, что пользователя исключили из чата
+message UpdateGroupUserKick {
+    required int32 groupId = 1;
+    required int32 uid = 2;
+    required int32 kickerUid = 3;
+
+    required int64 date = 4;
 }
 
-// API#0x30
-// Сообщение об удалении приватного чата
-message UpdatePrivateDelete {
-    required int32 uid = 1;
+// API#0x2C
+// Тихое обновление участников чата
+message UpdateGroupMembersUpdate {
+    required int32 groupId = 1;
+    repeated int32 members = 2;
 }
+
+// API#0x26
+// Событие о смене имени группы
+message UpdateGroupTitleChanged {
+    required int32 groupId = 1;
+    required int32 uid = 2;
+    required string title = 3;
+
+    required int64 date = 4;
+}
+
+// API#0x27
+// Событие о смене имени группы
+message UpdateGroupAvatarChanged {
+    required int32 groupId = 1;
+    required int32 uid = 2;
+    optional Avatar avatar = 3;
+
+    required int64 date = 4;
+}
+
+/////////// USER AND CONTACTS /////////////
 
 // API#0x02
 // Событие о новом устройстве у пользователя
@@ -561,139 +672,6 @@ message UpdateUserLocalNameChanged {
     optional string localName = 2;
 }
 
-// API#0x12
-// Событие о доставленном сообщении
-message UpdateMessageReceived {
-    required int32 uid = 1;
-    required int64 randomId = 2;
-}
-
-// API#0x13
-// Событие о прочитанном сообщении
-message UpdateMessageRead {
-    required int32 uid = 1;
-    required int64 randomId = 2;
-}
-
-// API#0x32
-// Событие о прочитанном сообщении
-message UpdateMessageReadByMe {
-    required int32 uid = 1;
-    required int64 randomId = 2;
-}
-
-////////// GROUP CHATS //////////////
-
-// API#0x24
-// Событие о созданном чате
-message UpdateGroupInvite {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
-    required string title = 3;
-    optional Avatar avatar = 4;
-    required int32 inviteUid = 5;
-    required int32 adminUid = 6;
-    repeated int32 users = 7;
-
-    required int64 date = 8;
-}
-
-// API#0x14
-// Событие о новом групповом текстовом сообщении
-message UpdateGroupMessage {
-    required int32 senderUID = 1;
-    required int32 groupId = 2;
-    required int32 rid = 3;
-
-    required int64 date = 6;
-
-    required MessageContent message = 5;
-}
-
-// API#0x23
-// Событие об отправлении сообщения в группу
-message UpdateMessageGroupSent {
-    required int32 groupId = 3;
-    required int64 randomId = 2;
-
-    required int64 date = 6;
-}
-
-// API#0x2B
-// Событие о том, что пользователь удалил чат, 
-// из которого его выгнали или уход из чата и удаление ата
-message UpdateGroupDelete {
-    required int32 groupId = 1;
-}
-
-// API#0x2D
-// Событие об очистке истории группы
-message UpdateGroupClear {
-    required int32 groupId = 1;
-}
-
-// API#0x31
-// Событие об удалении сообщения в группе
-message UpdateGroupMessageDelete {
-    required int32 groupId = 1;
-    required int64 rid = 2;
-}
-
-// API#0x15
-// Событие о добавлении участника в чат
-message UpdateGroupUserAdded {
-    required int32 groupId = 1;
-    required int32 uid = 2;
-    required int32 inviterUID = 3;
-
-    required int64 date = 4;
-}
-
-// API#0x17
-// Событие о том, что пользователь сам покинул чат
-message UpdateGroupUserLeave {
-    required int32 groupId = 1;
-    required int32 uid = 2;
-
-    required int64 date = 3;
-}
-
-// API#0x18
-// Событие о том, что пользователя исключили из чата
-message UpdateGroupUserKick {
-    required int32 groupId = 1;
-    required int32 uid = 2;
-    required int32 kickerUid = 3;
-
-    required int64 date = 4;
-}
-
-// API#0x2C
-// Тихое обновление участников чата
-message UpdateGroupMembersUpdate {
-    required int32 groupId = 1;
-    repeated int32 members = 2;
-}
-
-// API#0x26
-// Событие о смене имени группы
-message UpdateGroupTitleChanged {
-    required int32 groupId = 1;
-    required int32 uid = 2;
-    required string title = 3;
-
-    required int64 date = 4;
-}
-
-// API#0x27
-// Событие о смене имени группы
-message UpdateGroupAvatarChanged {
-    required int32 groupId = 1;
-    required int32 uid = 2;
-    optional Avatar avatar = 3;
-
-    required int64 date = 4;
-}
 // ************************************************************************
 //                        Weak updates list
 // ************************************************************************
@@ -740,7 +718,7 @@ message UpdateGroupOnline {
 message RequestSendMessage {
     required int32 uid = 1;
     required int64 accessHash = 2;
-    required int64 randomId = 3;
+    required int64 rid = 3;
 
     required bytes encryptedMessage = 4;
     repeated EncryptedAESKey keys = 5;
@@ -757,64 +735,66 @@ message RequestSendMessage {
 // Ответ: ResponseVoid#0x32
 message RequestMessageReceived {
     required int32 uid = 1;
-    required int64 randomId = 2;
+    required int64 rid = 2;
     required int64 accessHash = 3;
 }
 
 // API#0x39
 // Ответ: ResponseVoid#0x32
 message RequestMessageRead {
-    required int32 uid = 1;
-    required int64 randomId = 2;
-    required int64 accessHash = 3;
+    required Peer peer = 1;
+    required int64 peerAccessHash = 2;
+
+    required int64 date = 3;
 }
 
 // API#0x62
 // Ответ: ResponseVoid#0x32
 message RequestMessageDelete {
-    required int32 uid = 1;
-    required int64 randomId = 2;
-    required int64 accessHash = 3;
+    required Peer peer = 1;
+    required int64 peerAccessHash = 2;
+
+    required int64 rid = 2;
 }
 
 // API#0x63
 // Ответ: ResponseVoid#0x32
 message RequestClearChat {
-    required int32 uid = 1;
-    required int64 accessHash = 3;
+    required Peer peer = 1;
+    required int64 peerAccessHash = 2;
 }
 
 // API#0x64
 // Ответ: ResponseVoid#0x32
 message RequestDeleteChat {
-    required int32 uid = 1;
-    required int64 accessHash = 3;
+    required Peer peer = 1;
+    required int64 peerAccessHash = 2;
 }
 
 // API#0x5C
 // Ответ: ResponseSeq#0x48
-message RequestSendGroupTextMessage {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
-    required int64 randomId = 3;
+message RequestSendTextMessage {
+    required Peer peer = 1;
+    required int64 peerAccessHash = 2;
+    required int64 rid = 3;
     required string message = 4;
 }
 
 // API#0x5D
 // Ответ: ResponseSeq#0x48
-message RequestSendGroupImageMessage {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
-    required int64 randomId = 3;
+message RequestSendImageMessage {
+    required Peer peer = 1;
+    required int64 peerAccessHash = 2;
+    required int64 rid = 3;
     required FileLocation fileLocation = 4;
 }
 
 // API#0x5E
 // Ответ: ResponseSeq#0x48
-message RequestSendGroupVideoMessage {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
-    required int64 randomId = 3;
+message RequestSendGroupMessage {
+    required Peer peer = 1;
+    required int64 peerAccessHash = 2;
+    required int64 rid = 3;
     required int32 width = 4;
     required int32 height = 5;
     required int32 duration = 6;
@@ -826,10 +806,10 @@ message RequestSendGroupVideoMessage {
 
 // API#0x5F
 // Ответ: ResponseSeq#0x48
-message RequestSendGroupDocumentMessage {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
-    required int64 randomId = 3;
+message RequestSendDocumentMessage {
+    required Peer peer = 1;
+    required int64 peerAccessHash = 2;
+    required int64 rid = 3;
     required string fileName = 4;
     required string mimeType = 5;
 
@@ -838,34 +818,12 @@ message RequestSendGroupDocumentMessage {
    required FileLocation fileLocation = 8;
 }
 
-// API#0x65
-// Ответ: ResponseVoid#0x32
-message RequestMessageGroupDelete {
-    required int32 groupId = 1;
-    required int64 randomId = 2;
-    required int64 accessHash = 3;
-}
-
-// API#0x66
-// Ответ: ResponseVoid#0x32
-message RequestClearGroupChat {
-    required int32 groupId = 1;
-    required int64 accessHash = 3;
-}
-
-// API#0x67
-// Ответ: ResponseVoid#0x32
-message RequestDeleteGroupChat {
-    required int32 groupId = 1;
-    required int64 accessHash = 3;
-}
-
 // ************************************************************************
 //                               Groups
 // ************************************************************************
 // API#0x41
 message RequestCreateGroup {
-    required int64 randomId = 1;
+    required int64 rid = 1;
     required string title = 2;
     repeated UserId users = 3;
 }
@@ -939,12 +897,12 @@ message RequestRemoveUsers {
 
 // API#0x68
 // Ответ: ResponseHistory#0x69
-// startSortKey - 0 если загружать с начала или ключ сортировки для подгрузки
+// startDate - 0 если загружать с начала или дата для подгрузки
 // limit - не больше 100 сообщений
 message RequestLoadHistory {
     required int32 groupId = 1;
     required int64 accessHash = 2;
-    required int64 startSortKey = 3;
+    required int64 startDate = 3;
     required int32 limit = 4;
 }
 
@@ -959,6 +917,35 @@ message ResponseHistory {
         required int64 date = 3;
 
         required MessageContent message = 5;
+    }
+}
+
+// API#0x68
+// Ответ: ResponseHistory#0x69
+// startDate - 0 если загружать с начала или дата для подгрузки
+// limit - не больше 100 сообщений
+message RequestLoadDialogs {
+    required int64 startDate = 1;
+    required int32 limit = 2;
+}
+
+// API#0x69
+message ResponseDialogs {
+    repeated Group groups = 1;
+    repeated User users = 2;
+    repeated Dialog dialogs = 3;
+
+    message Dialog {
+        required int32 peerType = 1;
+        required int32 peerId = 2;
+
+        required int32 unreadCount = 3;
+        required int64 sortDate = 4;
+
+        required int32 senderUid = 5;
+        required int32 rid = 6;
+        required int64 date = 7;
+        required MessageContent message = 8;
     }
 }
 
