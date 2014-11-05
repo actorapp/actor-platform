@@ -527,8 +527,7 @@ message UpdateRemoveDevice {
 // Событие о регистрации пользователя из контакт-листа
 message UpdateContactRegistered {
     required int32 uid = 1;
-    optional bool isSilent = 2;
-
+    required bool isSilent = 2;
     required int64 date = 3;
     required int64 sortKey = 4;
 }
