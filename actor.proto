@@ -753,8 +753,7 @@ message RequestMessageRead {
 message RequestMessageDelete {
     required Peer peer = 1;
     required int64 peerAccessHash = 2;
-
-    required int64 rid = 2;
+    required int64 rid = 3;
 }
 
 // API#0x63
