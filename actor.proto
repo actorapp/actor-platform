@@ -2,8 +2,8 @@ package proto;
 option java_package = "im.actor.messenger.api";
 option java_outer_classname = "Scheme";
 
-// Next UPDATE SEQ = 0x33
-// Next RPC SEQ = 0x70
+// Next UPDATE SEQ = 0x34
+// Next RPC SEQ = 0x73
 
 // ************************************************************************
 //                              Common objects
