@@ -916,7 +916,7 @@ message RequestRemoveUsers {
 // startDate - 0 если загружать с начала или дата для подгрузки
 // limit - не больше 100 сообщений
 message RequestLoadHistory {
-    required int32 groupId = 1;
+    required PeerType peerType = 1;
     required int64 accessHash = 2;
     required int64 startDate = 3;
     required int32 limit = 4;
