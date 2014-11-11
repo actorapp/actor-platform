@@ -807,7 +807,7 @@ message RequestSendImageMessage {
 
 // API#0x5E
 // Ответ: ResponseSeq#0x48
-message RequestSendGroupMessage {
+message RequestSendVideoMessage {
     required Peer peer = 1;
     required int64 peerAccessHash = 2;
     required int64 rid = 3;
