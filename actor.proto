@@ -27,18 +27,18 @@ message Peer {
     required int32 id = 2;
 }
 
-message DestPeer {
+message OutPeer {
     required PeerType type = 1;
     required int32 id = 2;
     required int64 accessHash = 3;   
 }
 
-message UserDestPeer {
+message UserOutPeer {
     required int32 uid = 1;
     required int64 accessHash = 2;
 }
 
-message GroupDestPeer {
+message GroupOutPeer {
     required int32 groupId = 1;
     required int64 accessHash = 2;
 }
@@ -467,22 +467,22 @@ message Difference {
 // API#0x20
 // Игнорировать неправильных пользователей
 message SubscribeToOnline {
-    repeated UserDestPeer users = 1;
+    repeated UserOutPeer users = 1;
 }
 // API#0x21
 // Игнорировать неправильных пользователей
 message UnsubscribeFromOnline {
-    repeated UserDestPeer users = 1;
+    repeated UserOutPeer users = 1;
 }
 // API#0x4A
 // Игнорировать неправильных пользователей
 message SubscribeToGroupOnline {
-    repeated GroupDestPeer groups = 1;
+    repeated GroupOutPeer groups = 1;
 }
 // API#0x4B
 // Игнорировать неправильных пользователей
 message UnsubscribeFromGroupOnline {
-    repeated GroupDestPeer groups = 1;
+    repeated GroupOutPeer groups = 1;
 }
 
 // ************************************************************************
@@ -759,7 +759,7 @@ message UpdateGroupOnline {
 // 400#: WRONG_RECEIVERS - когда неправильный набор устройств у устройства
 // Ответ: ResponseMessageSent#0x73
 message RequestSendEncryptedMessage {
-    required DestPeer peer = 1;
+    required OutPeer peer = 1;
 
     required int64 rid = 3;
     required bytes encryptedMessage = 4;
@@ -775,7 +775,7 @@ message RequestSendEncryptedMessage {
 // API#0x5C
 // Ответ: ResponseMessageSent#0x73
 message RequestSendMessage {
-    required DestPeer peer = 1;
+    required OutPeer peer = 1;
 
     required int64 rid = 3;
     required MessageContent message = 4;
@@ -791,48 +791,48 @@ message ResponseMessageSent {
 // API#0x74
 // Ответ: ResponseVoid#0x32
 message RequestEncryptedReceived {
-    required DestPeer peer = 1;
+    required OutPeer peer = 1;
     required int64 rid = 3;
 }
 
 // API#0x75
 // Ответ: ResponseVoid#0x32
 message RequestEncryptedRead {
-    required DestPeer peer = 1;
+    required OutPeer peer = 1;
     required int64 rid = 3;
 }
 
 // API#0x37
 // Ответ: ResponseVoid#0x32
 message RequestMessageReceived {
-    required DestPeer peer = 1;
+    required OutPeer peer = 1;
     required int64 date = 3;
 }
 
 // API#0x39
 // Ответ: ResponseVoid#0x32
 message RequestMessageRead {
-    required DestPeer peer = 1;
+    required OutPeer peer = 1;
     required int64 date = 3;
 }
 
 // API#0x62
 // Ответ: ResponseVoid#0x32
 message RequestMessageDelete {
-    required DestPeer peer = 1;
+    required OutPeer peer = 1;
     required int64 rid = 3;
 }
 
 // API#0x63
 // Ответ: ResponseVoid#0x32
 message RequestClearChat {
-    required DestPeer peer = 1;
+    required OutPeer peer = 1;
 }
 
 // API#0x64
 // Ответ: ResponseVoid#0x32
 message RequestDeleteChat {
-    required DestPeer peer = 1;
+    required OutPeer peer = 1;
 }
 
 
@@ -844,12 +844,12 @@ message RequestDeleteChat {
 message RequestCreateGroup {
     required int64 rid = 1;
     required string title = 2;
-    repeated UserDestPeer users = 3;
+    repeated UserOutPeer users = 3;
 }
 
 // API#0x42
 message ResponseCreateGroup {
-    required GroupDestPeer groupPeer = 1;
+    required GroupOutPeer groupPeer = 1;
     required int32 seq = 3;
     required bytes state = 4;
     repeated int32 users = 5;
@@ -858,48 +858,48 @@ message ResponseCreateGroup {
 // API#0x55
 // Ответ: ResponseSeq#0x48
 message RequestEditGroupTitle {
-    required GroupDestPeer groupPeer = 1;
+    required GroupOutPeer groupPeer = 1;
     required string title = 3;
 }
 
 // API#0x56
 // Ответ: ResponseAvatarChanged#0x44
 message RequestEditGroupAvatar {
-    required GroupDestPeer groupPeer = 1;
+    required GroupOutPeer groupPeer = 1;
     required FileLocation fileLocation = 3;
 }
 
 // API#0x60
 // Ответ: ResponseSeq#0x48
 message RequestRemoveGroupAvatar {
-    required GroupDestPeer groupPeer = 1;
+    required GroupOutPeer groupPeer = 1;
 }
 
 // API#0x45
 // Ответ: ResponseSeq#0x48
 message RequestInviteUsers {
-    required GroupDestPeer groupPeer = 1;
-    repeated UserDestPeer users = 3;
+    required GroupOutPeer groupPeer = 1;
+    repeated UserOutPeer users = 3;
 }
 
 // API#0x46
 // Ответ: ResponseSeq#0x48
 message RequestLeaveGroup {
-    required GroupDestPeer groupPeer = 1;
+    required GroupOutPeer groupPeer = 1;
 }
 
 // API#0x61
 // Ответ: ResponseSeq#0x48
 message RequestDeleteGroup {
-    required GroupDestPeer groupPeer = 1;
+    required GroupOutPeer groupPeer = 1;
 }
 
 // API#0x47
 // Ответ: ResponseSeq#0x48
 // 403#: NO_PERMISSION - когда невозможно исключить участника из чата из-за настроек приватности
 message RequestRemoveUsers {
-    required GroupDestPeer groupPeer = 1;
-    repeated UserDestPeer users = 3;
+    required GroupOutPeer groupPeer = 1;
+    repeated UserOutPeer users = 3;
 }
 
 // ************************************************************************
@@ -911,7 +911,7 @@ message RequestRemoveUsers {
 // startDate - 0 если загружать с начала или дата для подгрузки
 // limit - не больше 100 сообщений
 message RequestLoadHistory {
-    required DestPeer peer = 1;
+    required OutPeer peer = 1;
     required int64 startDate = 3;
     required int32 limit = 4;
 }
@@ -1017,7 +1017,7 @@ message ResponseUploadCompleted {
 // API#0x1B
 // Ответ: ResponseVoid#0x32
 message RequestTyping {
-    required DestPeer peer = 1;
+    required OutPeer peer = 1;
     required int32 typingType = 3;
 }
 // ************************************************************************
