@@ -403,12 +403,12 @@ message RequestAddContact {
 }
 
 // API#0x70
-message RequestFindContacts {
+message RequestSearchContacts {
     required string request = 1;
 }
 
 // API#0x71
-message ResponseFindContacts {
+message ResponseSearchContacts {
     repeated User users = 1;
 }
 
