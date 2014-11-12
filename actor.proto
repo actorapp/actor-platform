@@ -3,7 +3,7 @@ option java_package = "im.actor.messenger.api";
 option java_outer_classname = "Scheme";
 
 // Next UPDATE SEQ = 0x37
-// Next RPC SEQ = 0x76
+// Next RPC SEQ = 0x78
 
 // ************************************************************************
 //                              Common objects
@@ -503,7 +503,6 @@ message UpdateConfig {
 message UpdateEncryptedMessage {
     required Peer peer = 1;
     required int32 senderUid = 2;
-
     required int64 date = 6;
     required int64 keyHash = 3;
     required bytes aesEncryptedKey = 4;
@@ -514,9 +513,8 @@ message UpdateEncryptedMessage {
 message UpdateMessage {
     required Peer peer = 1;
     required int32 senderUid = 2;
-
     required int64 date = 3;
-    required int32 rid = 4;
+    required int64 rid = 4;
     required MessageContent message = 5;
 }
 
@@ -581,7 +579,7 @@ message UpdateMessageReadByMe {
 // Сообщение об удалении сообщения
 message UpdateMessageDelete {
     required Peer peer = 1;
-    repeated int32 rid = 2;
+    repeated int64 rid = 2;
 }
 
 // API#0x2F
@@ -906,7 +904,7 @@ message RequestRemoveUsers {
 //                               History
 // ************************************************************************
 
-// API#0x68
+// API#0x76
 // Ответ: ResponseHistory#0x69
 // startDate - 0 если загружать с начала или дата для подгрузки
 // limit - не больше 100 сообщений
@@ -916,13 +914,13 @@ message RequestLoadHistory {
     required int32 limit = 4;
 }
 
-// API#0x69
+// API#0x77
 message ResponseHistory {
     repeated HistoryMessage history = 1;
 
     message HistoryMessage {
         required int32 senderUid = 1;
-        required int32 rid = 2;
+        required int64 rid = 2;
 
         required int64 date = 3;
 
@@ -952,7 +950,7 @@ message ResponseDialogs {
         required int64 sortDate = 4;
 
         required int32 senderUid = 5;
-        required int32 rid = 6;
+        required int64 rid = 6;
         required int64 date = 7;
         required MessageContent message = 8;
     }
