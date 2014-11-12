@@ -928,8 +928,8 @@ message RequestRemoveUsers {
 // startDate - 0 если загружать с начала или дата для подгрузки
 // limit - не больше 100 сообщений
 message RequestLoadHistory {
-    required PeerType peerType = 1;
-    required int64 accessHash = 2;
+    required Peer peer = 1;
+    required int64 peerAccessHash = 2;
     required int64 startDate = 3;
     required int32 limit = 4;
 }
@@ -964,8 +964,7 @@ message ResponseDialogs {
     repeated Dialog dialogs = 3;
 
     message Dialog {
-        required PeerType peerType = 1;
-        required int32 peerId = 2;
+        required Peer peer = 1;
 
         required int32 unreadCount = 3;
         required int64 sortDate = 4;
@@ -1036,16 +1035,8 @@ message ResponseUploadCompleted {
 // API#0x1B
 // Ответ: ResponseVoid#0x32
 message RequestTyping {
-    required int32 uid = 1;
-    required int64 accessHash = 2;
-    required int32 typingType = 3;
-}
-
-// API#0x48
-// Ответ: ResponseVoid#0x32
-message RequestGroupTyping {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
+    required Peer peer = 1;
+    required int64 peerAccessHash = 2;
     required int32 typingType = 3;
 }
 // ************************************************************************
