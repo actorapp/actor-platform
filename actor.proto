@@ -27,6 +27,12 @@ message Peer {
     required int32 id = 2;
 }
 
+message DestPeer {
+    required PeerType type = 1;
+    required int32 id = 2;
+    required int64 accessHash = 3;   
+}
+
 // Публичный ключ пользователя
 message PublicKey {
     required int32 uid = 1;
@@ -384,7 +390,7 @@ message ResponseGetContacts {
 
 // API#0x59
 // Ответ: ResponseSeq
-message RequestDeleteContact {
+message RequestRemoveContact {
     required int32 uid = 1;
     required int64 accessHash = 2;
 }
@@ -721,15 +727,8 @@ message UpdateUserLocalNameChanged {
 // ************************************************************************
 // API#0x06
 message UpdateTyping {
-    required int32 uid = 1;
-    required int32 typingType = 4;
-}
-
-// API#0x22
-message UpdateTypingGroup {
-    required int32 groupId = 1;
-    required int32 uid = 2;
-    required int32 typingType = 4;
+    required Peer peer = 1;
+    required int32 typingType = 2;
 }
 
 // API#0x07
@@ -760,10 +759,9 @@ message UpdateGroupOnline {
 // 400#: WRONG_RECEIVERS - когда неправильный набор устройств у устройства
 // Ответ: ResponseMessageSent#0x73
 message RequestSendEncryptedMessage {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
-    required int64 rid = 3;
+    required DestPeer peer = 1;
 
+    required int64 rid = 3;
     required bytes encryptedMessage = 4;
     repeated EncryptedAESKey keys = 5;
     repeated EncryptedAESKey ownKeys = 6;
@@ -777,8 +775,8 @@ message RequestSendEncryptedMessage {
 // API#0x5C
 // Ответ: ResponseMessageSent#0x73
 message RequestSendMessage {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
+    required DestPeer peer = 1;
+
     required int64 rid = 3;
     required MessageContent message = 4;
 }
@@ -793,55 +791,48 @@ message ResponseMessageSent {
 // API#0x74
 // Ответ: ResponseVoid#0x32
 message RequestEncryptedReceived {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
+    required DestPeer peer = 1;
     required int64 rid = 3;
 }
 
 // API#0x75
 // Ответ: ResponseVoid#0x32
 message RequestEncryptedRead {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
+    required DestPeer peer = 1;
     required int64 rid = 3;
 }
 
 // API#0x37
 // Ответ: ResponseVoid#0x32
 message RequestMessageReceived {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
+    required DestPeer peer = 1;
     required int64 date = 3;
 }
 
 // API#0x39
 // Ответ: ResponseVoid#0x32
 message RequestMessageRead {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
+    required DestPeer peer = 1;
     required int64 date = 3;
 }
 
 // API#0x62
 // Ответ: ResponseVoid#0x32
 message RequestMessageDelete {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
+    required DestPeer peer = 1;
     required int64 rid = 3;
 }
 
 // API#0x63
 // Ответ: ResponseVoid#0x32
 message RequestClearChat {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
+    required DestPeer peer = 1;
 }
 
 // API#0x64
 // Ответ: ResponseVoid#0x32
 message RequestDeleteChat {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
+    required DestPeer peer = 1;
 }
 
 
@@ -928,8 +919,7 @@ message RequestRemoveUsers {
 // startDate - 0 если загружать с начала или дата для подгрузки
 // limit - не больше 100 сообщений
 message RequestLoadHistory {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
+    required DestPeer peer = 1;
     required int64 startDate = 3;
     required int32 limit = 4;
 }
@@ -1035,8 +1025,7 @@ message ResponseUploadCompleted {
 // API#0x1B
 // Ответ: ResponseVoid#0x32
 message RequestTyping {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
+    required DestPeer peer = 1;
     required int32 typingType = 3;
 }
 // ************************************************************************
