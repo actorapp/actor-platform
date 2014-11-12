@@ -964,7 +964,7 @@ message ResponseDialogs {
     repeated Dialog dialogs = 3;
 
     message Dialog {
-        required int32 peerType = 1;
+        required PeerType peerType = 1;
         required int32 peerId = 2;
 
         required int32 unreadCount = 3;
