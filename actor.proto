@@ -33,6 +33,16 @@ message DestPeer {
     required int64 accessHash = 3;   
 }
 
+message UserDestPeer {
+    required int32 uid = 1;
+    required int64 accessHash = 2;
+}
+
+message GroupDestPeer {
+    required int32 groupId = 1;
+    required int64 accessHash = 2;
+}
+
 // Публичный ключ пользователя
 message PublicKey {
     required int32 uid = 1;
@@ -44,11 +54,6 @@ message FileLocation {
     required int64 fileId = 1;
     required int64 accessHash = 2;
 }
-// Идентификатор пользователя
-message UserId {
-    required int32 uid = 1;
-    required int64 accessHash = 2;
-}
 
 // Идентификатор пользователя
 message UserKey {
@@ -56,11 +61,6 @@ message UserKey {
     required int64 keyHash = 2;
 }
 
-// Идентификатор чата
-message GroupId {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
-}
 // Аватар пользователя или чата
 message Avatar {
     // 100x100
@@ -467,22 +467,22 @@ message Difference {
 // API#0x20
 // Игнорировать неправильных пользователей
 message SubscribeToOnline {
-    repeated UserId users = 1;
+    repeated UserDestPeer users = 1;
 }
 // API#0x21
 // Игнорировать неправильных пользователей
 message UnsubscribeFromOnline {
-    repeated UserId users = 1;
+    repeated UserDestPeer users = 1;
 }
 // API#0x4A
 // Игнорировать неправильных пользователей
 message SubscribeToGroupOnline {
-    repeated GroupId groups = 1;
+    repeated GroupDestPeer groups = 1;
 }
 // API#0x4B
 // Игнорировать неправильных пользователей
 message UnsubscribeFromGroupOnline {
-    repeated GroupId groups = 1;
+    repeated GroupDestPeer groups = 1;
 }
 
 // ************************************************************************
@@ -844,13 +844,12 @@ message RequestDeleteChat {
 message RequestCreateGroup {
     required int64 rid = 1;
     required string title = 2;
-    repeated UserId users = 3;
+    repeated UserDestPeer users = 3;
 }
 
 // API#0x42
 message ResponseCreateGroup {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
+    required GroupDestPeer groupPeer = 1;
     required int32 seq = 3;
     required bytes state = 4;
     repeated int32 users = 5;
@@ -859,55 +858,48 @@ message ResponseCreateGroup {
 // API#0x55
 // Ответ: ResponseSeq#0x48
 message RequestEditGroupTitle {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
+    required GroupDestPeer groupPeer = 1;
     required string title = 3;
 }
 
 // API#0x56
 // Ответ: ResponseAvatarChanged#0x44
 message RequestEditGroupAvatar {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
+    required GroupDestPeer groupPeer = 1;
     required FileLocation fileLocation = 3;
 }
 
 // API#0x60
 // Ответ: ResponseSeq#0x48
 message RequestRemoveGroupAvatar {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
+    required GroupDestPeer groupPeer = 1;
 }
 
 // API#0x45
 // Ответ: ResponseSeq#0x48
 message RequestInviteUsers {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
-    repeated UserId users = 3;
+    required GroupDestPeer groupPeer = 1;
+    repeated UserDestPeer users = 3;
 }
 
 // API#0x46
 // Ответ: ResponseSeq#0x48
 message RequestLeaveGroup {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
+    required GroupDestPeer groupPeer = 1;
 }
 
 // API#0x61
 // Ответ: ResponseSeq#0x48
 message RequestDeleteGroup {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
+    required GroupDestPeer groupPeer = 1;
 }
 
 // API#0x47
 // Ответ: ResponseSeq#0x48
 // 403#: NO_PERMISSION - когда невозможно исключить участника из чата из-за настроек приватности
 message RequestRemoveUsers {
-    required int32 groupId = 1;
-    required int64 groupAccessHash = 2;
-    repeated UserId users = 3;
+    required GroupDestPeer groupPeer = 1;
+    repeated UserDestPeer users = 3;
 }
 
 // ************************************************************************
