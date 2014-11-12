@@ -783,7 +783,7 @@ message RequestSendMessage {
 message ResponseMessageSent {
     required int32 seq = 1;
     required bytes state = 2;
-    required int32 date = 3;
+    required int64 date = 3;
 }
 
 // API#0x74
