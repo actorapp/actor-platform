@@ -760,8 +760,8 @@ message UpdateGroupOnline {
 // 400#: WRONG_RECEIVERS - когда неправильный набор устройств у устройства
 // Ответ: ResponseMessageSent#0x73
 message RequestSendEncryptedMessage {
-    required int32 uid = 1;
-    required int64 accessHash = 2;
+    required Peer peer = 1;
+    required int64 peerAccessHash = 2;
     required int64 rid = 3;
 
     required bytes encryptedMessage = 4;
@@ -776,55 +776,11 @@ message RequestSendEncryptedMessage {
 
 // API#0x5C
 // Ответ: ResponseMessageSent#0x73
-message RequestSendTextMessage {
+message RequestSendMessage {
     required Peer peer = 1;
     required int64 peerAccessHash = 2;
     required int64 rid = 3;
-    required string message = 4;
-}
-
-// API#0x5D
-// Ответ: ResponseMessageSent#0x73
-message RequestSendImageMessage {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
-    required int64 rid = 3;
-
-    required int32 width = 4;
-    required int32 height = 5;
-
-    required FastThumb fastThumb = 6;
-
-    required FileLocation fileLocation = 7;
-}
-
-// API#0x5E
-// Ответ: ResponseMessageSent#0x73
-message RequestSendVideoMessage {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
-    required int64 rid = 3;
-    required int32 width = 4;
-    required int32 height = 5;
-    required int32 duration = 6;
-
-    optional FastThumb fastThumb = 7;
-
-    required FileLocation fileLocation = 8;
-}
-
-// API#0x5F
-// Ответ: ResponseMessageSent#0x73
-message RequestSendDocumentMessage {
-    required Peer peer = 1;
-    required int64 peerAccessHash = 2;
-    required int64 rid = 3;
-    required string fileName = 4;
-    required string mimeType = 5;
-
-    optional FastThumb fastThumb = 7;
-
-   required FileLocation fileLocation = 8;
+    required MessageContent message = 4;
 }
 
 //API#0x73
