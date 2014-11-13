@@ -509,7 +509,7 @@ message UpdateEncryptedMessage {
     required bytes message = 5;
 }
 
-// API#0x33
+// API#0x37
 message UpdateMessage {
     required Peer peer = 1;
     required int32 senderUid = 2;
