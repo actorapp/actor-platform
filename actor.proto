@@ -726,7 +726,8 @@ message UpdateUserLocalNameChanged {
 // API#0x06
 message UpdateTyping {
     required Peer peer = 1;
-    required int32 typingType = 2;
+    required int32 uid = 2;
+    required int32 typingType = 3;
 }
 
 // API#0x07
