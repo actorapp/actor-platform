@@ -1,257 +1,59 @@
-package proto;
-option java_package = "im.actor.messenger.api";
-option java_outer_classname = "Scheme";
+//////////////////////////////////////////////////////
+// Authentication
+//////////////////////////////////////////////////////
+//Actor now support only one way for authentication - by SMS or phone call.
+//Authorization steps:
+//1) Request SMS Code by calling RequestAuthCode
+//2) If SMS arrives than send Authorization code in RequestAuthCodeSignIn/SignUp
+//3) If sms doesn't arrive for a long time - request phone activation by 
+//   calling AuthCodeCall
+// 
+//* If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.
+//* If on any step API return PHONE_CODE_EXPIRED than application MUST start 
+//authorization process from begining.
+//* Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.
 
-// Next UPDATE SEQ = 0x37
-// Next RPC SEQ = 0x78
-
-// ************************************************************************
-//                              Common objects
-// ************************************************************************
-// Пол пользователя
-enum Sex {
-    UNKNOWN = 1;
-    MALE = 2;
-    FEMALE = 3;
-}
-
-// Тип пира
-enum PeerType {
-    PRIVATE = 1;
-    GROUP = 2;
-}
-
-// Пир
-message Peer {
-    required PeerType type = 1;
-    required int32 id = 2;
-}
-
-message OutPeer {
-    required PeerType type = 1;
-    required int32 id = 2;
-    required int64 accessHash = 3;   
-}
-
-message UserOutPeer {
-    required int32 uid = 1;
-    required int64 accessHash = 2;
-}
-
-message GroupOutPeer {
-    required int32 groupId = 1;
-    required int64 accessHash = 2;
-}
-
-// Публичный ключ пользователя
-message PublicKey {
-    required int32 uid = 1;
-    required int64 keyHash = 2;
-    required bytes key = 3;
-}
-// Идентификатор файла
-message FileLocation {
-    required int64 fileId = 1;
-    required int64 accessHash = 2;
-}
-
-// Идентификатор пользователя
-message UserKey {
-    required int32 uid = 1;
-    required int64 keyHash = 2;
-}
-
-// Аватар пользователя или чата
-message Avatar {
-    // 100x100
-    optional AvatarImage smallImage = 1;
-    // 200x200
-    optional AvatarImage largeImage = 2;
-    // Original if bigger than small and large
-    optional AvatarImage fullImage = 3;
-}
-// Изображение аватара
-message AvatarImage {
-    required FileLocation fileLocation = 1;
-    required int32 width = 2;
-    required int32 height = 3;
-    required int32 fileSize = 4;
-}
-
-
-// Пользователь
-message User {
-    required int32 id = 1;
-    required int64 accessHash = 2;
-    required string name = 3;
-    optional string localName = 9;
-    optional Sex sex = 5;
-    repeated int64 keyHashes = 6;
-    required int64 phone = 7;
-    optional Avatar avatar = 8;
-}
-
-// Группа
-message Group {
-    required int32 id = 1;
-    required int64 accessHash = 2;
-    required string title = 3;
-    optional Avatar avatar = 4;
-    required bool isMember = 6;
-    repeated int32 members = 7;
-    required int32 adminUid = 8;
-}
-
-message FastThumb {
-    required int32 w = 1;
-    required int32 h = 2;
-    required bytes thumb = 3;
-}
-
-// Детали ошибки отправки сообщений
-message WrongReceiversErrorData {
-    repeated UserKey newKeys = 1;
-    repeated UserKey removedKeys = 2;
-    repeated UserKey invalidKeys = 3;
-}
-
-message MessageContent {
-    required int32 type = 1;
-    required bytes content = 2;
-}
-
-// Type#0x01
-message TextMessage {
-    required string text = 1;
-    required int32 extType = 2;
-    optional bytes ext = 3;
-}
-
-// Type#0x02
-message ServiceMessage {
-    required string text = 1;
-    required int32 extType = 2;
-    optional bytes ext = 3;
-
-    // EXT#0x1
-    message UserAddedExtension {
-        required int32 addedUid = 1;
-    }
-
-    // EXT#0x2
-    message UserKickedExtension {
-        required int32 kickedUid = 1;
-    }
-
-    // EXT#0x3
-    message UserLeftExtension {
-        
-    }
-
-    // EXT#0x4
-    message GroupCreatedExtension {
-        
-    }
-
-    // EXT#0x5
-    message GroupChangedTitleExtension {
-        required string title = 1;
-    }
-
-    // EXT#0x6
-    message GroupChangedAvatarExtension {
-        optional Avatar avatar = 1;
-    }
-}
-
-// Type#0x03
-message FileMessage {
-    required int32 fileId = 1;
-    required int64 accessHash = 2;
-    required int32 fileSize = 3;
-    required string name = 4;
-    required string mimeType = 5;
-    optional FastThumb thumb = 6;
-
-    required int32 extType = 7;
-    optional bytes ext = 8;
-
-    // EXT#0x01
-    message PhotoExtension {
-        required int32 w = 1;
-        required int32 h = 2;
-    }
-
-    // EXT#0x02
-    message VideoExtension {
-        required int32 w = 1;
-        required int32 h = 2;
-        required int32 duration = 3;
-    }
-
-    // EXT#0x03
-    message VoiceExtension {
-        required int32 duration = 1;
-    }
-}
-
-message Config {
-    required int32 maxGroupSize = 1;
-}
-
-// API#0x32
-// Пустой ответ на запрос
-message ResponseVoid {
-}
-
-// API#0x48
-// Успешный ответ на методы, которые возвращают статус цепочки
-message ResponseSeq {
-    required int32 seq = 1;
-    required bytes state = 2;
-}
- 
-// ************************************************************************
-//                              Authentication
-// ************************************************************************
 // API#0x01
-// Ответ: ResponseAuthCode#0x02
-// Возможные ошибки
-// #400: PHONE_NUMBER_INVALID - неверный номер телефона. Отображается пользователю.
-message RequestAuthCode {
+// ResponseRequestAuthCode
+// #400: PHONE_NUMBER_INVALID
+message RequestRequestAuthCode {
     required int64 phoneNumber = 1;
     required int32 appId = 2;
     required string apiKey = 3;
 }
 
 // API#0x02
-message ResponseAuthCode {
+message ResponseRequestAuthCode {
     required string smsHash = 1;
     required bool isRegistered = 2;
 }
 
-
 // API#0x5A
-// #400: PHONE_NUMBER_INVALID - неверный номер телефона. Отображается пользователю.
-// #400: PHONE_CODE_EXPIRED - код устарел, требуется начать авторизацию с самого начала
-// Ответ: ResponseVoid
-message RequestAuthCodeCall {
+// ResponseVoid
+// #400: PHONE_CODE_EXPIRED
+// #400: PHONE_NUMBER_INVALID
+message RequestRequestAuthCodeCall {
     required int64 phoneNumber = 1;
     required string smsHash = 2;
     required int32 appId = 3;
     required string apiKey = 4;
 }
 
+// API#0x05
+message ResponseAuth {
+    required int64 publicKeyHash = 1;
+    required User user = 2;
+    required Config config = 3;
+}
+
 // API#0x03
-// Ответ: ResponseAuth#0x05
-// Возможные ошибки
-// #400: PHONE_NUMBER_INVALID - неверный номер телефона. Отображается пользователю.
-// #400: PHONE_CODE_EMPTY - отсутствует код авторизации. Отображается пользователю.
-// #400: PHONE_CODE_EXPIRED - код устарел, требуется начать авторизацию с самого начала
-// #400: PHONE_CODE_INVALID - код неверен. Отображается пользователю.
-// #400: PHONE_NUMBER_UNOCCUPIED - Телефон не зарегистрирован, требуется перейти к регистрации
-// #400: INVALID_KEY - Публичный ключ некорректный - проверьте параметры ключа и его сериализацию.
-// На неверный smsHash будет ошибка PHONE_CODE_EXPIRED
+// ResponseAuth
+// #400: INVALID_KEY
+// #400: PHONE_NUMBER_UNOCCUPIED
+// #400: PHONE_CODE_INVALID 
+// #400: PHONE_CODE_EXPIRED
+// #400: PHONE_CODE_EMPTY
+// #400: PHONE_NUMBER_INVALID
 message RequestSignIn {
     required int64 phoneNumber = 1;
     required string smsHash = 2;
@@ -264,11 +66,12 @@ message RequestSignIn {
 }
 
 // API#0x04
-// Ответ: ResponseAuth#0x05
-// Возможные ошибки
-// #400: NAME_INVALID - неправильное имя. Отображается пользователю.
-// + аналогичные для RequestSignIn
-// Если пользователь уже зарегистрирован, то метод работает как RequestSignIn
+// ResponseAuth
+// #400: INVALID_KEY
+// #400: PHONE_CODE_EXPIRED
+// #400: PHONE_CODE_EMPTY
+// #400: PHONE_NUMBER_INVALID
+// #400: NAME_INVALID
 message RequestSignUp {
     required int64 phoneNumber = 1;
     required string smsHash = 2;
@@ -282,102 +85,130 @@ message RequestSignUp {
     required bool isSilent = 11;
 }
 
-// API#0x05
-message ResponseAuth {
-    required int64 publicKeyHash = 1;
-    required User user = 2;
-    required Config config = 3;
-}
-// ************************************************************************
-//                                Profile
-// ************************************************************************
-// API#0x35
-// Ответ: ResponseSeq#0x32
-message RequestEditName {
-    required string name = 1;
+// API#0x50
+// ResponseGetAuth
+message RequestGetAuth {
 }
 
-// API#0x1F
-// Ответ: ResponseAvatarChanged#0x44
-// #400: IMAGE_LOAD_ERROR - невозможно открыть файл
-// #400: FILE_TOO_BIG - изображение слишком большое
-message RequestEditAvatar {
-    required FileLocation fileLocation = 1;
+// API#0x51
+message ResponseGetAuth {
+    repeated AuthItem userAuths = 1;
 }
 
-// API#0x44
-message ResponseAvatarChanged {
-    required Avatar avatar = 1;
-    required int32 seq = 2;
-    required bytes state = 3;
+// API#0x52
+// ResponseVoid
+message RequestRemoveAuth {
+    required int32 id = 1;
 }
 
-// API#0x5B
-// Ответ: ResponseSeq#0x32
-message RequestRemoveAvatar {
-    
-}
-// ************************************************************************
-//                                Users
-// ************************************************************************
-// API#0x06
-// Ответ: RequestPublicKeys#0x18
-// Ошибки не может генерировать, все несуществующие ключи игнорируются
-message RequestPublicKeys {
-    repeated PublicKeyRequest keys = 1;
-
-    message PublicKeyRequest {
-        required int32 uid = 1;
-        required int64 accessHash = 2;
-        required int64 keyHash = 3;
-    }
+// API#0x53
+// ResponseVoid
+message RequestRemoveAllOtherAuths {
 }
 
-// API#0x18
-message ResponsePublicKeys {
-    repeated PublicKey keys = 1;
+// API#0x54
+// ResponseVoid
+message RequestLogout {
+}
+
+//////////////////////////////////////////////////////
+// Users
+//////////////////////////////////////////////////////
+//Users are objects that secured by accessHash. You can't load user profile by it's id.
+//You can't send message to user without finding it's object in Updates or by calling
+//method for user search, contacts import or some other methods.
+// 
+//Applications need to keep all Users information forever.
+// 
+//Each User have optional localName - name of user that was set by current user and can be changed
+//any time by calling EditUserLocalName method.
+
+enum Sex {
+    UNKNOWN = 1;
+    MALE = 2;
+    FEMALE = 3;
 }
 
 // API#0x60
-// Ответ: ResponseSeq
+// ResponseSeq
 message RequestEditUserLocalName {
     required int32 uid = 1;
     required int64 accessHash = 2;
     required string name = 3;
 }
 
-// ************************************************************************
-//                                Contacts
-// ************************************************************************
+// API#0x10
+message UpdateUserAvatarChanged {
+    required int32 uid = 1;
+    optional Avatar avatar = 2;
+}
+
+// API#0x20
+message UpdateUserNameChanged {
+    required int32 uid = 1;
+    required string name = 2;
+}
+
+// API#0x33
+message UpdateUserLocalNameChanged {
+    required int32 uid = 1;
+    optional string localName = 2;
+}
+
+//////////////////////////////////////////////////////
+// Profile
+//////////////////////////////////////////////////////
+
+// API#0x35
+// ResponseSeq
+message RequestEditName {
+    required string name = 1;
+}
+
+// API#0x1F
+// ResponseAvatarChanged
+message RequestEditAvatar {
+    required FileLocation fileLocation = 1;
+}
+
+// API#0x5B
+// ResponseSeq
+message RequestRemoveAvatar {
+}
+
+//////////////////////////////////////////////////////
+// Contacts
+//////////////////////////////////////////////////////
+//Before working with contact list is is useful to import contacts from phone first by calling
+//method ImportContacts#0x07.
+// 
+//All phone numbers MUST be preprocessed before import by some library (like libphonenumber)
+//and build international phone number depending on current users phone and/or locale.
+// 
+//For loading contact list from server use GetContacts#0x57. 
+//If during this call there are some updates about contact list change
+//it is recommended to call it again. Also applications need to sync contacts on application start.
+// 
+//For searching for users without adding to contacts list use method FindContacts#0x70.
+// 
+//For adding/deleting contacts AddContact#0x72 and DeleteContact#0x59.
 
 // API#0x07
-// Ответ: ResponseImportedContacts#0x08
+// ResponseImportContacts
 message RequestImportContacts {
     repeated PhoneToImport phones = 1;
     repeated EmailToImport emails = 2;
-
-    message PhoneToImport {
-        required int64 phoneNumber = 1; // international full phone number
-        optional string name = 2;
-    }
-
-    message EmailToImport {
-        required string email = 1;
-        optional string name = 2;
-    }
 }
 
 // API#0x08
-message ResponseImportedContacts {
-    repeated User users = 1; // Импортированные пользователи
+message ResponseImportContacts {
+    repeated User users = 1;
     required int32 seq = 2;
-    required bytes state = 3;
+    required bytes states = 3;
 }
 
 // API#0x57
-// Ответ: ResponseGetContacts#0x58
-// contactsHash = SHA1("uid1,uid2,..."), где uids - отсортированные 
-// в порядке возрастания идентификаторы пользователей
+// ResponseGetContacts
 message RequestGetContacts {
     required string contactsHash = 1;
 }
@@ -389,20 +220,21 @@ message ResponseGetContacts {
 }
 
 // API#0x59
-// Ответ: ResponseSeq
+// ResponseSeq
 message RequestRemoveContact {
     required int32 uid = 1;
     required int64 accessHash = 2;
 }
 
 // API#0x72
-// Ответ: ResponseSeq
+// ResponseSeq
 message RequestAddContact {
     required int32 uid = 1;
-    required int64 accessHash = 2;   
+    required int64 accessHash = 2;
 }
 
 // API#0x70
+// ResponseSearchContacts
 message RequestSearchContacts {
     required string request = 1;
 }
@@ -412,94 +244,140 @@ message ResponseSearchContacts {
     repeated User users = 1;
 }
 
-// ************************************************************************
-//                                 Updates
-// ************************************************************************
-// API#0x0D
-message SeqUpdate {
+// API#0x05
+message UpdateContactRegistered {
+    required int32 uid = 1;
+    required bool isSilent = 2;
+    required int64 date = 3;
+}
+
+// API#0x28
+message UpdateContactsAdded {
+    repeated int32 uids = 1;
+}
+
+// API#0x29
+message UpdateContactsRemoved {
+    repeated int32 uids = 1;
+}
+
+//////////////////////////////////////////////////////
+// Messaging
+//////////////////////////////////////////////////////
+//<h1>Overview</h1>
+//Actor can work with encrypted and plain messages in one conversation. For both types of messages API
+//contains a bit different methods. Also encrypted and plain messages have different schemes.
+//<h1>Messages</h1>
+//Message entity contains:
+//* PeerType - group chat or private
+//* PeerId - group or user id of conversation
+//* RandomId - unique id of message that generated by sender. In Encrypted messages random id is encrypted.
+//* Date - date of message (calculated on server)
+//* Content
+//<h1>Message content</h1>
+//Message can be one of three basic types of messages: Text Message, File Message and Service message.
+//All messages can contain extensions. For example we can send text message and add markdown extension with 
+//formatted text in markdown and clients that support this extension will show markdown, and that clients that
+//not supported extension then show simple text. File messages can have photo, video or voice extensions.
+//Service message can have extensions extensions such as "user added", "group created", "avatar changed", etc.
+//<h1>Send messages</h1>
+//Sending messages looks same for encrypted and plain messages. Client MUST prepare all required data
+//before sending message (for example FastThumb for photo/video/documents) and call required methods. 
+//Encrypted messages differs here only by a little different scheme and encryption.
+//<h1>WRONG_KEYS and incorrect keys</h1>
+//For sending encrypted messages client MUST send messages encrypted for all own and receivers keys.
+//If client send encryption with missing, old or incorrect keys it will receive WRONG_KEYS.
+//In WRONG_KEYS you need to deserialize relatedData from RpcError to WrongKeysErrorData
+//and get detailed information about keys. Sometimes there are some broken keys on server and client can't 
+//encrypt messages with it than client MUST send empty encrypted key in request elsewhere API return WRONG_KEYS.
+//<h1>Encrypted messages and New Devices</h1>
+//When you send message to someone and when he registered with new device there are no way to receive old encrypted
+//messages on new device and because of this there are a problem about read/delivery statuses. 
+//Alice send messages to Bob, but Bob lose his device and  buy new iPhone and installed Actor.
+//Alice receive notification about new device and send another message. Bob open chat with Alice and
+//send read status with maximum message read date. Alice will mark all sent messages as read and one that
+//was not delivered. We can use status notifications per message, but in VERY heavy conversations it will be
+//a lot of unnecessary traffic. For resolving this small issue we have different ways of message statuses
+//for encrypted and plain messages. Also it is recomended to mark all undelivered messages on new device update as 
+//not devered with warring sign.
+//<h1>Message Read and Delivery</h1>
+//There are two different ways for read and delivery statuses for encrypted and plain messages.
+//For encrypted messages used status change by RandomId and for plain messages used by maximum
+//date of read/delivered message.
+
+// API#0x73
+message ResponseMessageSent {
     required int32 seq = 1;
     required bytes state = 2;
-    required int32 updateHeader = 3;
-    required bytes update = 4;
-}
-// API#0x49
-message FatSeqUpdate {
-    required int32 seq = 1;
-    required bytes state = 2;
-    required int32 updateHeader = 3;
-    required bytes update = 4;
-    repeated User users = 5;
-    repeated Group groups = 6;
-}
-// API#0x1A
-message WeakUpdate {
-    required int64 date = 1;
-    required int32 updateId = 2;
-    required bytes update = 3;
-}
-// API#0x19
-message SeqUpdateTooLong {
-}
-// API#0x09
-// Ответ: ResponseSeq#0x48
-message RequestGetState {
-}
-// API#0x0B
-// Ответ: Difference#0x0C
-message RequestGetDifference {
-    required int32 seq = 1;
-    required bytes state = 2;
-}
-message DifferenceUpdate {
-    required int32 updateId = 1;
-    required bytes update = 2;
-}
-// API#0x0C
-message Difference {
-    required int32 seq = 1;
-    required bytes state = 2;
-    repeated User users = 3;
-    repeated Group groups = 6;
-    repeated DifferenceUpdate updates = 4;
-    required bool needMore = 5;
+    required int64 date = 3;
 }
 
-// API#0x20
-// Игнорировать неправильных пользователей
-message SubscribeToOnline {
-    repeated UserOutPeer users = 1;
-}
-// API#0x21
-// Игнорировать неправильных пользователей
-message UnsubscribeFromOnline {
-    repeated UserOutPeer users = 1;
-}
-// API#0x4A
-// Игнорировать неправильных пользователей
-message SubscribeToGroupOnline {
-    repeated GroupOutPeer groups = 1;
-}
-// API#0x4B
-// Игнорировать неправильных пользователей
-message UnsubscribeFromGroupOnline {
-    repeated GroupOutPeer groups = 1;
+// API#0x0E
+// ResponseMessageSent
+message RequestSendEncryptedMessage {
+    required OutPeer peer = 1;
+    required int64 rid = 3;
+    required bytes encryptedMessage = 4;
+    repeated EncryptedAesKey keys = 5;
+    repeated EncryptedAesKey ownKeys = 6;
 }
 
-// ************************************************************************
-//                        Sequence updates list
-// ************************************************************************
-
-///////////// COMMON //////////////
-
-// API#0x2A
-message UpdateConfig {
-    required Config config = 1;
+// API#0x5C
+// ResponseMessageSent
+message RequestSendMessage {
+    required OutPeer peer = 1;
+    required int64 rid = 3;
+    required MessageContent message = 4;
 }
 
-/////////// CHATS /////////////
+// API#0x74
+// ResponseVoid
+message RequestEncryptedReceived {
+    required OutPeer peer = 1;
+    required int64 rid = 3;
+}
+
+// API#0x75
+// ResponseVoid
+message RequestEncryptedRead {
+    required OutPeer peer = 1;
+    required int64 rid = 3;
+}
+
+// API#0x37
+// ResponseVoid
+message RequestMessageReceived {
+    required OutPeer peer = 1;
+    required int64 rid = 3;
+}
+
+// API#0x39
+// ResponseVoid
+message RequestMessageRead {
+    required OutPeer peer = 1;
+    required int64 date = 3;
+}
+
+// API#0x62
+// ResponseVoid
+message RequestDeleteMessage {
+    required OutPeer peer = 1;
+    required int64 rid = 3;
+}
+
+// API#0x63
+// ResponseSeq
+message RequestclearChat {
+    required OutPeer peer = 1;
+}
+
+// API#0x64
+// ResponseSeq
+message RequestDeleteChat {
+    required OutPeer peer = 1;
+}
 
 // API#0x01
-// Событие о новом зашифрованном сообщении
 message UpdateEncryptedMessage {
     required Peer peer = 1;
     required int32 senderUid = 2;
@@ -519,24 +397,20 @@ message UpdateMessage {
 }
 
 // API#0x04
-// Событие об отправлении сообщения
 message UpdateMessageSent {
     required Peer peer = 1;
     required int64 rid = 2;
     required int64 date = 3;
 }
 
-// Encrypted states
-
 // API#0x12
-// Событие о доставленном сообщении
 message UpdateEncryptedReceived {
     required Peer peer = 1;
     required int64 rid = 2;
+    required int64 receivedDate = 3;
 }
 
 // API#0x34
-// Событие о доставленном сообщении
 message UpdateEncryptedRead {
     required Peer peer = 1;
     required int64 rid = 2;
@@ -544,24 +418,19 @@ message UpdateEncryptedRead {
 }
 
 // API#0x35
-// Событие о прочитанном сообщении
 message UpdateEncryptedReadByMe {
     required Peer peer = 1;
     required int64 rid = 2;
 }
 
-// Plain states
-
 // API#0x36
-// Событие о прочитанном сообщении
 message UpdateMessageReceived {
     required Peer peer = 1;
     required int64 date = 2;
-    required int64 readDate = 3;
+    required int64 receivedDate = 3;
 }
 
 // API#0x13
-// Событие о прочитанном сообщении
 message UpdateMessageRead {
     required Peer peer = 1;
     required int64 date = 2;
@@ -569,35 +438,94 @@ message UpdateMessageRead {
 }
 
 // API#0x32
-// Событие о прочитанном сообщении
 message UpdateMessageReadByMe {
     required Peer peer = 1;
     required int64 date = 2;
 }
 
 // API#0x2E
-// Сообщение об удалении сообщения
 message UpdateMessageDelete {
     required Peer peer = 1;
     repeated int64 rid = 2;
 }
 
 // API#0x2F
-// Сообщение об очистке истории чата
 message UpdateChatClear {
     required Peer peer = 1;
 }
 
 // API#0x30
-// Сообщение об удалении чата
 message UpdateChatDelete {
     required Peer peer = 1;
 }
 
-////////// GROUP CHATS //////////////
+//////////////////////////////////////////////////////
+// Groups
+//////////////////////////////////////////////////////
+
+// API#0x41
+// ResponseCreateGroup
+message RequestCreateGroup {
+    required int64 rid = 1;
+    required string title = 2;
+    repeated UserOutPeer users = 3;
+}
+
+// API#0x42
+message ResponseCreateGroup {
+    required GroupOutPeer groupPeer = 1;
+    required int32 seq = 3;
+    required bytes state = 4;
+    required int32 users = 5;
+}
+
+// API#0x55
+// ResponseSeq
+message RequestEditGroupTitle {
+    required GroupOutPeer groupPeer = 1;
+    required string title = 3;
+}
+
+// API#0x56
+// ResponseAvatarChanged
+message RequestEditGroupAvatar {
+    required GroupOutPeer groupPeer = 1;
+    required FileLocation fileLocation = 3;
+}
+
+// API#0x65
+// ResponseSeq
+message RequestRemoveGroupAvatar {
+    required GroupOutPeer groupPeer = 1;
+}
+
+// API#0x45
+// ResponseSeq
+message RequestInviteUsers {
+    required GroupOutPeer groupPeer = 1;
+    repeated UserOutPeer users = 3;
+}
+
+// API#0x46
+// ResponseSeq
+message RequestLeaveGroup {
+    required GroupOutPeer groupPeer = 1;
+}
+
+// API#0x61
+// ResponseSeq
+message RequestDeleteGroup {
+    required GroupOutPeer groupPeer = 1;
+}
+
+// API#0x47
+// ResponseSeq
+message RequestRemoveUsers {
+    required GroupOutPeer groupPeer = 1;
+    repeated UserOutPeer users = 3;
+}
 
 // API#0x24
-// Событие о созданном чате
 message UpdateGroupInvite {
     required int32 groupId = 1;
     required int32 inviteUid = 5;
@@ -605,124 +533,153 @@ message UpdateGroupInvite {
 }
 
 // API#0x15
-// Событие о добавлении участника в чат
 message UpdateGroupUserAdded {
     required int32 groupId = 1;
     required int32 uid = 2;
-    required int32 inviterUID = 3;
-
+    required int32 inviterUid = 3;
     required int64 date = 4;
 }
 
 // API#0x17
-// Событие о том, что пользователь сам покинул чат
 message UpdateGroupUserLeave {
     required int32 groupId = 1;
     required int32 uid = 2;
-
     required int64 date = 3;
 }
 
 // API#0x18
-// Событие о том, что пользователя исключили из чата
 message UpdateGroupUserKick {
     required int32 groupId = 1;
     required int32 uid = 2;
     required int32 kickerUid = 3;
-
     required int64 date = 4;
 }
 
 // API#0x2C
-// Тихое обновление участников чата
 message UpdateGroupMembersUpdate {
     required int32 groupId = 1;
     repeated int32 members = 2;
 }
 
 // API#0x26
-// Событие о смене имени группы
 message UpdateGroupTitleChanged {
     required int32 groupId = 1;
     required int32 uid = 2;
     required string title = 3;
-
     required int64 date = 4;
 }
 
 // API#0x27
-// Событие о смене имени группы
 message UpdateGroupAvatarChanged {
     required int32 groupId = 1;
     required int32 uid = 2;
     optional Avatar avatar = 3;
-
     required int64 date = 4;
 }
 
-/////////// USER AND CONTACTS /////////////
+//////////////////////////////////////////////////////
+// Message and Dialogs lists
+//////////////////////////////////////////////////////
+//<h1>Overview</h1>
+//Actor can work with encrypted and plain messages and encrypted messages does not appear in history,
+//but it affects conversation lists.
+//<h1>Messages ordering</h1>
+//Server provide date in milliseconds for accurate ordering of incoming messages in applications. 
+//NOTHING can move conversation on conversation list down on list. For example if you clean chat or delete top message
+//for the conversation conversation keep its position. Some events doesn't move conversation to top
+//of conversations list. For example leaving chat or new device notification doesn't move it up.
+//<h1>Deleting of messages</h1>
+//For deletion of messages either plain or encrypted there is method MessageDelete#0x62 deletion.
+//Deletion of message is irreversible for now.
+//<h1>Deleting and clearing of conversation</h1>
+//Clearing of conversation deletes all messages in conversation and clears top message in conversation list.
+//Deletion of conversation deletes all messages and removes conversation from conversations list.
+//For sync this operations there are updates ChatDelete#0x30 and ChatClear#0x2F.
+//Deletion by ChatDelete of group causes automatic group leaving.
+//<h1>Loading history</h1>
+//For loading conversation list use method LoadDialogs#0x68. 
+//When top message in conversation is encrypted than dialog item will contain empty text. Dialog item contains
+//two dates - visual and sort, visual used for displaying date and sort for sorting dialog in dialog list.
+// 
+//For loading history of conversation use method LoadHistory#0x68.
+// 
+//Loading initial list are called with zero startDate and after loading more messages 
+//we will use maximum date from messages for startDate value.
+
+// API#0x76
+// ResponseLoadHistory
+message RequestLoadHistory {
+    required OutPeer peer = 1;
+    required int64 startDate = 3;
+    required int32 limit = 4;
+}
+
+// API#0x77
+message ResponseLoadHistory {
+    repeated HistoryMessage history = 1;
+    repeated User users = 2;
+}
+
+// API#0x68
+// ResponseLoadDialogs
+message RequestLoadDialogs {
+    required int64 startDate = 1;
+    required int32 limit = 2;
+}
+
+// API#0x69
+message ResponseLoadDialogs {
+    repeated Group groups = 1;
+    repeated User users = 2;
+    repeated Dialog dialogs = 3;
+}
+
+//////////////////////////////////////////////////////
+// Encryption
+//////////////////////////////////////////////////////
 
 // API#0x02
-// Событие о новом устройстве у пользователя
 message UpdateNewDevice {
     required int32 uid = 1;
     required int64 keyHash = 2;
     optional bytes key = 3;
-
     required int64 date = 4;
 }
 
 // API#0x25
-// Событие об удалении устройства у пользователя
-message UpdateRemoveDevice {
+message UpdateRemovedDevice {
     required int32 uid = 1;
     required int64 keyHash = 2;
 }
 
-// API#0x05
-// Событие о регистрации пользователя из контакт-листа
-message UpdateContactRegistered {
-    required int32 uid = 1;
-    required bool isSilent = 2;
-    required int64 date = 3;
+// API#0x06
+// ResponseGetPublicKeys
+message RequestGetPublicKeys {
 }
 
-// API#0x28
-// Событие о добавлении пользователей в контакт-лист
-message UpdateContactsAdded {
-    repeated int32 uids = 1;
-}
- 
-// API#0x29
-// Событие об удалении пользователей из контакт-листа
-message UpdateContactsRemoved {
-    repeated int32 uids = 1;
+// API#0x18
+message ResponseGetPublicKeys {
+    repeated PublicKey keys = 1;
 }
 
-// API#0x10
-// Событие о смене аватара пользователя (в том числе и себя)
-message UpdateAvatarChanged {
-    required int32 uid = 1;
-    optional Avatar  avatar = 2;
+//////////////////////////////////////////////////////
+// Typing and Online
+//////////////////////////////////////////////////////
+
+// API#0x1B
+// ResponseVoid
+message RequestTyping {
+    required OutPeer peer = 1;
+    required int32 typingType = 3;
 }
 
-// API#0x20
-// Событие о смене имени пользователя (в том числе и себя)
-message UpdateUserNameChanged {
-    required int32 uid = 1;
-    optional string name = 2;
+// API#0x1D
+// ResponseVoid
+message RequestSetOnline {
+    required bool isOnline = 1;
+    required int64 timeout = 2;
 }
 
-// API#0x33
-// Событие о смене локального имени пользователя
-message UpdateUserLocalNameChanged {
-    required int32 uid = 1;
-    optional string localName = 2;
-}
-
-// ************************************************************************
-//                        Weak updates list
-// ************************************************************************
 // API#0x06
 message UpdateTyping {
     required Peer peer = 1;
@@ -751,346 +708,188 @@ message UpdateGroupOnline {
     required int32 groupId = 1;
     required int32 count = 2;
 }
-// ************************************************************************
-//                               Send message
-// ************************************************************************
-// API#0x0E
-// 400#: WRONG_RECEIVERS - когда неправильный набор устройств у устройства
-// Ответ: ResponseMessageSent#0x73
-message RequestSendEncryptedMessage {
-    required OutPeer peer = 1;
 
-    required int64 rid = 3;
-    required bytes encryptedMessage = 4;
-    repeated EncryptedAESKey keys = 5;
-    repeated EncryptedAESKey ownKeys = 6;
+//////////////////////////////////////////////////////
+// Media and Files
+//////////////////////////////////////////////////////
 
-    message EncryptedAESKey {
-        required int64 keyHash = 1;
-        required bytes aesEncryptedKey = 2;
-    }
-}
-
-// API#0x5C
-// Ответ: ResponseMessageSent#0x73
-message RequestSendMessage {
-    required OutPeer peer = 1;
-
-    required int64 rid = 3;
-    required MessageContent message = 4;
-}
-
-//API#0x73
-message ResponseMessageSent {
-    required int32 seq = 1;
-    required bytes state = 2;
-    required int64 date = 3;
-}
-
-// API#0x74
-// Ответ: ResponseVoid#0x32
-message RequestEncryptedReceived {
-    required OutPeer peer = 1;
-    required int64 rid = 3;
-}
-
-// API#0x75
-// Ответ: ResponseVoid#0x32
-message RequestEncryptedRead {
-    required OutPeer peer = 1;
-    required int64 rid = 3;
-}
-
-// API#0x37
-// Ответ: ResponseVoid#0x32
-message RequestMessageReceived {
-    required OutPeer peer = 1;
-    required int64 date = 3;
-}
-
-// API#0x39
-// Ответ: ResponseVoid#0x32
-message RequestMessageRead {
-    required OutPeer peer = 1;
-    required int64 date = 3;
-}
-
-// API#0x62
-// Ответ: ResponseVoid#0x32
-message RequestMessageDelete {
-    required OutPeer peer = 1;
-    required int64 rid = 3;
-}
-
-// API#0x63
-// Ответ: ResponseVoid#0x32
-message RequestClearChat {
-    required OutPeer peer = 1;
-}
-
-// API#0x64
-// Ответ: ResponseVoid#0x32
-message RequestDeleteChat {
-    required OutPeer peer = 1;
-}
-
-
-
-// ************************************************************************
-//                               Groups
-// ************************************************************************
-// API#0x41
-message RequestCreateGroup {
-    required int64 rid = 1;
-    required string title = 2;
-    repeated UserOutPeer users = 3;
-}
-
-// API#0x42
-message ResponseCreateGroup {
-    required GroupOutPeer groupPeer = 1;
-    required int32 seq = 3;
-    required bytes state = 4;
-    repeated int32 users = 5;
-}
-
-// API#0x55
-// Ответ: ResponseSeq#0x48
-message RequestEditGroupTitle {
-    required GroupOutPeer groupPeer = 1;
-    required string title = 3;
-}
-
-// API#0x56
-// Ответ: ResponseAvatarChanged#0x44
-message RequestEditGroupAvatar {
-    required GroupOutPeer groupPeer = 1;
-    required FileLocation fileLocation = 3;
-}
-
-// API#0x60
-// Ответ: ResponseSeq#0x48
-message RequestRemoveGroupAvatar {
-    required GroupOutPeer groupPeer = 1;
-}
-
-// API#0x45
-// Ответ: ResponseSeq#0x48
-message RequestInviteUsers {
-    required GroupOutPeer groupPeer = 1;
-    repeated UserOutPeer users = 3;
-}
-
-// API#0x46
-// Ответ: ResponseSeq#0x48
-message RequestLeaveGroup {
-    required GroupOutPeer groupPeer = 1;
-}
-
-// API#0x61
-// Ответ: ResponseSeq#0x48
-message RequestDeleteGroup {
-    required GroupOutPeer groupPeer = 1;
-}
-
-// API#0x47
-// Ответ: ResponseSeq#0x48
-// 403#: NO_PERMISSION - когда невозможно исключить участника из чата из-за настроек приватности
-message RequestRemoveUsers {
-    required GroupOutPeer groupPeer = 1;
-    repeated UserOutPeer users = 3;
-}
-
-// ************************************************************************
-//                               History
-// ************************************************************************
-
-// API#0x76
-// Ответ: ResponseHistory#0x69
-// startDate - 0 если загружать с начала или дата для подгрузки
-// limit - не больше 100 сообщений
-message RequestLoadHistory {
-    required OutPeer peer = 1;
-    required int64 startDate = 3;
-    required int32 limit = 4;
-}
-
-// API#0x77
-message ResponseHistory {
-    repeated HistoryMessage history = 1;
-
-    message HistoryMessage {
-        required int32 senderUid = 1;
-        required int64 rid = 2;
-
-        required int64 date = 3;
-
-        required MessageContent message = 5;
-    }
-}
-
-// API#0x68
-// Ответ: ResponseHistory#0x69
-// startDate - 0 если загружать с начала или дата для подгрузки
-// limit - не больше 100 сообщений
-message RequestLoadDialogs {
-    required int64 startDate = 1;
-    required int32 limit = 2;
-}
-
-// API#0x69
-message ResponseDialogs {
-    repeated Group groups = 1;
-    repeated User users = 2;
-    repeated Dialog dialogs = 3;
-
-    message Dialog {
-        required Peer peer = 1;
-
-        required int32 unreadCount = 3;
-        required int64 sortDate = 4;
-
-        required int32 senderUid = 5;
-        required int64 rid = 6;
-        required int64 date = 7;
-        required MessageContent message = 8;
-    }
-}
-
-// ************************************************************************
-//                                  Files
-// ************************************************************************
-// File Download
 // API#0x10
-// Ответ: ResponseFilePart#0x11
-// #400: LOCATION_INVALID - неправильный FileLocation - либо id, либо accessHash
-// #400: OFFSET_INVALID - offset не кратен 1кб или меньше нуля
-// #400: OFFSET_TOO_LARGE - offset находится за пределами файла
-// #400: LIMIT_INVALID - limit отрицателен, не кратен 1кб или больше 512кб
-// #400: FILE_LOST - файл был потерян и невозможно больше его загрузить
+// ResponseGetFile
 message RequestGetFile {
     required FileLocation fileLocation = 1;
     required int32 offset = 2;
     required int32 limit = 3;
 }
+
 // API#0x11
-message ResponseFilePart {
+message ResponseGetFile {
     required bytes payload = 1;
 }
-// File Upload
+
 // API#0x12
+// ResponseStartUpload
 message RequestStartUpload {
 }
+
 // API#0x13
-message ResponseUploadStarted {
+message ResponseStartUpload {
     required UploadConfig config = 1;
 }
-message UploadConfig {
-    required bytes serverData = 1;
-}
+
 // API#0x14
-// Ответ: ResponseVoid#0x32
-// #400: CONFIG_INCORRECT - неизвестный конфиг
+// ResponseVoid
 message RequestUploadPart {
     required UploadConfig config = 1;
     required int32 blockIndex = 2;
     required bytes payload = 3;
 }
+
 // API#0x16
-// Ответ: ResponseUploadCompleted#0x17
-// #400: CONFIG_INCORRECT - неизвестный конфиг
-// #400: WRONG_BLOCKS_COUNT - количество загруженных блоков не совпадает
-// #400: WRONG_CRC - контрольная сумма не сошлась
+// ResponseCompleteUpload
 message RequestCompleteUpload {
     required UploadConfig config = 1;
     required int32 blocksCount = 2;
     required int64 crc32 = 3;
 }
+
 // API#0x17
-message ResponseUploadCompleted {
+message ResponseCompleteUpload {
     required FileLocation location = 1;
 }
-// ************************************************************************
-//                                  Typing
-// ************************************************************************
-// API#0x1B
-// Ответ: ResponseVoid#0x32
-message RequestTyping {
-    required OutPeer peer = 1;
-    required int32 typingType = 3;
-}
-// ************************************************************************
-//                                  Online
-// ************************************************************************
-// API#0x1D
-// Ответ: ResponseVoid#0x32
-message RequestSetOnline {
-    required bool isOnline = 1;
-    required int64 timeout = 2;
-}
-// ************************************************************************
-//                             Vendor pushes
-// ************************************************************************
+
+//////////////////////////////////////////////////////
+// Push
+//////////////////////////////////////////////////////
+
 // API#0x33
-// Ответ: ResponseVoid#0x32
+// ResponseVoid
 message RequestRegisterGooglePush {
     required int64 projectId = 1;
-    required string token = 2;
 }
- 
-// Запрос на регистрацию эппловых пушей для ключа
-// Ответ: VoidResponse#0x32
+
 // API#0x4C
+// ResponseVoid
 message RequestRegisterApplePush {
-    required int32 apnsKey = 1; // Генерируется сервером для каждого приложения и при сборке вшивается в приложение
+    required int32 apnsKey = 1;
     required string token = 2;
 }
+
 // API#0x34
-// Ответ: ResponseVoid#0x32
+// ResponseVoid
 message RequestUnregisterPush {
 }
 
-// ************************************************************************
-//                               Authorizations
-// ************************************************************************
+//////////////////////////////////////////////////////
+// Peers
+//////////////////////////////////////////////////////
 
-message AuthItem {
-    required int32 id = 1;
-    required int32 authHolder = 2; // 0: current device, 1: another device
-    required int32 appId = 3;
-    required string appTitle = 4;
-    required string deviceTitle = 5;
-    required int32 authTime = 6; // Время авторизации в секундах
-    required string authLocation = 7;
-    optional double latitude = 8;
-    optional double longitude = 9;
+enum PeerType {
+    PRIVATE = 1;
+    GROUP = 2;
 }
 
-// API#0x50
-// Ответ: ResponseAuth#0x51
-message RequestGetAuth {
+//////////////////////////////////////////////////////
+// Sequence and Updates
+//////////////////////////////////////////////////////
 
+// API#0x0D
+message UpdateSeqUpdate {
+    required int32 seq = 1;
+    required bytes state = 2;
+    required int32 updateHeader = 3;
+    required bytes update = 4;
 }
 
-// API#0x51
-message ResponseGetAuth {
-    repeated AuthItem usersAuths = 1;
+// API#0x49
+message UpdateFatSeqUpdate {
+    required int32 seq = 1;
+    required bytes state = 2;
+    required int32 updateHeader = 3;
+    required bytes update = 4;
+    repeated User users = 5;
+    repeated Group groups = 6;
 }
 
-// API#0x52
-// Ответ: ResponseVoid
-message RequestRemoveAuth {
-    required int32 id = 1;
+// API#0x1A
+message UpdateWeakUpdate {
+    required int64 date = 1;
+    required int32 updateId = 2;
+    required bytes update = 3;
 }
 
-// API#0x53
-// Ответ: ResponseVoid
-message RequestRemoveAllOtherAuths {
-
+// API#0x19
+message UpdateSeqUpdateTooLong {
 }
 
-// API#0x54
-// Ответ: ResponseVoid
-message RequestLogout {
-
+// API#0x09
+// ResponseSeq
+message RequestGetState {
 }
+
+// API#0x0B
+// ResponseGetDifference
+message RequestGetDifference {
+    required int32 seq = 1;
+    required bytes state = 2;
+}
+
+// API#0x0C
+message ResponseGetDifference {
+    required int32 seq = 1;
+    required bytes state = 2;
+    repeated User users = 3;
+    repeated Group groups = 6;
+    repeated DifferenceUpdate updates = 4;
+    required bool needMode = 5;
+}
+
+// API#0x20
+// ResponseVoid
+message RequestSubscribeToOnline {
+    repeated UserOutPeer users = 1;
+}
+
+// API#0x21
+// ResponseVoid
+message RequestSubscribeFromOnline {
+    repeated UserOutPeer users = 1;
+}
+
+// API#0x4A
+// ResponseVoid
+message RequestSubscribeToGrouOnline {
+    repeated GroupOutPeer groups = 1;
+}
+
+// API#0x4B
+// ResponseVoid
+message RequestSubscribeFromGroupOnline {
+    repeated GroupOutPeer groups = 1;
+}
+
+//////////////////////////////////////////////////////
+// Common
+//////////////////////////////////////////////////////
+
+// API#0x32
+message ResponseVoid {
+}
+
+// API#0x48
+message ResponseSeq {
+    required int32 seq = 1;
+    required bytes state = 2;
+}
+
+// API#0x44
+message ResponseAvatarChanged {
+    required Avatar avatar = 1;
+    required int32 seq = 2;
+    required bytes state = 3;
+}
+
+// API#0x2A
+message UpdateConfig {
+    required Config config = 1;
+}
+

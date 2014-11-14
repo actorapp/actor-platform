@@ -1,0 +1,3713 @@
+{
+  "sections": [
+    {
+      "title": "Authentication",
+      "doc": [
+        "Actor now support only one way for authentication - by SMS or phone call.",
+        "Authorization steps:",
+        "1) Request SMS Code by calling RequestAuthCode",
+        "2) If SMS arrives than send Authorization code in RequestAuthCodeSignIn/SignUp",
+        "3) If sms doesn't arrive for a long time - request phone activation by ",
+        "   calling AuthCodeCall",
+        " ",
+        "* If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.",
+        "* If on any step API return PHONE_CODE_EXPIRED than application MUST start ",
+        "authorization process from begining.",
+        "* Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format."
+      ],
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RequestAuthCode",
+            "header": 1,
+            "response": {
+              "type": "anonymous",
+              "header": 2,
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "smsHash"
+                },
+                {
+                  "type": "bool",
+                  "id": 2,
+                  "name": "isRegistered"
+                }
+              ]
+            },
+            "doc": [
+              "#400: PHONE_NUMBER_INVALID"
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "phoneNumber"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "appId"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "apiKey"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RequestAuthCodeCall",
+            "header": 90,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "#400: PHONE_CODE_EXPIRED",
+              "#400: PHONE_NUMBER_INVALID"
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "phoneNumber"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "smsHash"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "appId"
+              },
+              {
+                "type": "string",
+                "id": 4,
+                "name": "apiKey"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "Auth",
+            "header": 5,
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "publicKeyHash"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "User"
+                },
+                "id": 2,
+                "name": "user"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Config"
+                },
+                "id": 3,
+                "name": "config"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SignIn",
+            "header": 3,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "#400: INVALID_KEY",
+              "#400: PHONE_NUMBER_UNOCCUPIED",
+              "#400: PHONE_CODE_INVALID ",
+              "#400: PHONE_CODE_EXPIRED",
+              "#400: PHONE_CODE_EMPTY",
+              "#400: PHONE_NUMBER_INVALID"
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "phoneNumber"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "smsHash"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "smsCode"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "publicKey"
+              },
+              {
+                "type": "bytes",
+                "id": 5,
+                "name": "deviceHash"
+              },
+              {
+                "type": "string",
+                "id": 6,
+                "name": "deviceTitle"
+              },
+              {
+                "type": "int32",
+                "id": 7,
+                "name": "appId"
+              },
+              {
+                "type": "string",
+                "id": 8,
+                "name": "appKey"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SignUp",
+            "header": 4,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "#400: INVALID_KEY",
+              "#400: PHONE_CODE_EXPIRED",
+              "#400: PHONE_CODE_EMPTY",
+              "#400: PHONE_NUMBER_INVALID",
+              "#400: NAME_INVALID"
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "phoneNumber"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "smsHash"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "smsCode"
+              },
+              {
+                "type": "string",
+                "id": 4,
+                "name": "name"
+              },
+              {
+                "type": "bytes",
+                "id": 6,
+                "name": "publicKey"
+              },
+              {
+                "type": "bytes",
+                "id": 7,
+                "name": "deviceHash"
+              },
+              {
+                "type": "string",
+                "id": 8,
+                "name": "deviceTitle"
+              },
+              {
+                "type": "int32",
+                "id": 9,
+                "name": "appId"
+              },
+              {
+                "type": "string",
+                "id": 10,
+                "name": "appKey"
+              },
+              {
+                "type": "bool",
+                "id": 11,
+                "name": "isSilent"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "AuthItem",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "authHolder"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "appId"
+              },
+              {
+                "type": "string",
+                "id": 4,
+                "name": "appTitle"
+              },
+              {
+                "type": "string",
+                "id": 5,
+                "name": "deviceTitle"
+              },
+              {
+                "type": "int32",
+                "id": 6,
+                "name": "authTime"
+              },
+              {
+                "type": "string",
+                "id": 7,
+                "name": "authLocation"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "double"
+                },
+                "id": 8,
+                "name": "latitude"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "double"
+                },
+                "id": 9,
+                "name": "longitude"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetAuth",
+            "header": 80,
+            "response": {
+              "type": "anonymous",
+              "header": 81,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "AuthItem"
+                    }
+                  },
+                  "id": 1,
+                  "name": "userAuths"
+                }
+              ]
+            },
+            "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RemoveAuth",
+            "header": 82,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RemoveAllOtherAuths",
+            "header": 83,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "Logout",
+            "header": 84,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": []
+          }
+        }
+      ]
+    },
+    {
+      "title": "Users",
+      "doc": [
+        "Users are objects that secured by accessHash. You can't load user profile by it's id.",
+        "You can't send message to user without finding it's object in Updates or by calling",
+        "method for user search, contacts import or some other methods.",
+        " ",
+        "Applications need to keep all Users information forever.",
+        " ",
+        "Each User have optional localName - name of user that was set by current user and can be changed",
+        "any time by calling EditUserLocalName method."
+      ],
+      "items": [
+        {
+          "type": "enum",
+          "content": {
+            "name": "Sex",
+            "values": [
+              {
+                "name": "Unknown",
+                "id": 1
+              },
+              {
+                "name": "Male",
+                "id": 2
+              },
+              {
+                "name": "Female",
+                "id": 3
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "User",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "name"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "localName"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "Sex"
+                },
+                "id": 5,
+                "name": "sex"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int64"
+                },
+                "id": 6,
+                "name": "keyHashes"
+              },
+              {
+                "type": "int64",
+                "id": 7,
+                "name": "phone"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 8,
+                "name": "avatar"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditUserLocalName",
+            "header": 96,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "name"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserAvatarChanged",
+            "header": 16,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 2,
+                "name": "avatar"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserNameChanged",
+            "header": 32,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "name"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserLocalNameChanged",
+            "header": 51,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "localName"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Profile",
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditName",
+            "header": 53,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "name"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditAvatar",
+            "header": 31,
+            "response": {
+              "type": "reference",
+              "name": "AvatarChanged"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "FileLocation"
+                },
+                "id": 1,
+                "name": "fileLocation"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RemoveAvatar",
+            "header": 91,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": []
+          }
+        }
+      ]
+    },
+    {
+      "title": "Contacts",
+      "doc": [
+        "Before working with contact list is is useful to import contacts from phone first by calling",
+        "method ImportContacts#0x07.",
+        " ",
+        "All phone numbers MUST be preprocessed before import by some library (like libphonenumber)",
+        "and build international phone number depending on current users phone and/or locale.",
+        " ",
+        "For loading contact list from server use GetContacts#0x57. ",
+        "If during this call there are some updates about contact list change",
+        "it is recommended to call it again. Also applications need to sync contacts on application start.",
+        " ",
+        "For searching for users without adding to contacts list use method FindContacts#0x70.",
+        " ",
+        "For adding/deleting contacts AddContact#0x72 and DeleteContact#0x59."
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "PhoneToImport",
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "phoneNumber"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "name"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EmailToImport",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "email"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "name"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ImportContacts",
+            "header": 7,
+            "response": {
+              "type": "anonymous",
+              "header": 8,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 1,
+                  "name": "users"
+                },
+                {
+                  "type": "int32",
+                  "id": 2,
+                  "name": "seq"
+                },
+                {
+                  "type": "bytes",
+                  "id": 3,
+                  "name": "states"
+                }
+              ]
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "PhoneToImport"
+                  }
+                },
+                "id": 1,
+                "name": "phones"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EmailToImport"
+                  }
+                },
+                "id": 2,
+                "name": "emails"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetContacts",
+            "header": 87,
+            "response": {
+              "type": "anonymous",
+              "header": 88,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 1,
+                  "name": "users"
+                },
+                {
+                  "type": "bool",
+                  "id": 2,
+                  "name": "isNotChanged"
+                }
+              ]
+            },
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "contactsHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RemoveContact",
+            "header": 89,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "AddContact",
+            "header": 114,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SearchContacts",
+            "header": 112,
+            "response": {
+              "type": "anonymous",
+              "header": 113,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 1,
+                  "name": "users"
+                }
+              ]
+            },
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "request"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "ContactRegistered",
+            "header": 5,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "bool",
+                "id": 2,
+                "name": "isSilent"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "ContactsAdded",
+            "header": 40,
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int32"
+                },
+                "id": 1,
+                "name": "uids"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "ContactsRemoved",
+            "header": 41,
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int32"
+                },
+                "id": 1,
+                "name": "uids"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Messaging",
+      "doc": [
+        "<h1>Overview</h1>",
+        "Actor can work with encrypted and plain messages in one conversation. For both types of messages API",
+        "contains a bit different methods. Also encrypted and plain messages have different schemes.",
+        "<h1>Messages</h1>",
+        "Message entity contains:",
+        "* PeerType - group chat or private",
+        "* PeerId - group or user id of conversation",
+        "* RandomId - unique id of message that generated by sender. In Encrypted messages random id is encrypted.",
+        "* Date - date of message (calculated on server)",
+        "* Content",
+        "<h1>Message content</h1>",
+        "Message can be one of three basic types of messages: Text Message, File Message and Service message.",
+        "All messages can contain extensions. For example we can send text message and add markdown extension with ",
+        "formatted text in markdown and clients that support this extension will show markdown, and that clients that",
+        "not supported extension then show simple text. File messages can have photo, video or voice extensions.",
+        "Service message can have extensions extensions such as \"user added\", \"group created\", \"avatar changed\", etc.",
+        "<h1>Send messages</h1>",
+        "Sending messages looks same for encrypted and plain messages. Client MUST prepare all required data",
+        "before sending message (for example FastThumb for photo/video/documents) and call required methods. ",
+        "Encrypted messages differs here only by a little different scheme and encryption.",
+        "<h1>WRONG_KEYS and incorrect keys</h1>",
+        "For sending encrypted messages client MUST send messages encrypted for all own and receivers keys.",
+        "If client send encryption with missing, old or incorrect keys it will receive WRONG_KEYS.",
+        "In WRONG_KEYS you need to deserialize relatedData from RpcError to WrongKeysErrorData",
+        "and get detailed information about keys. Sometimes there are some broken keys on server and client can't ",
+        "encrypt messages with it than client MUST send empty encrypted key in request elsewhere API return WRONG_KEYS.",
+        "<h1>Encrypted messages and New Devices</h1>",
+        "When you send message to someone and when he registered with new device there are no way to receive old encrypted",
+        "messages on new device and because of this there are a problem about read/delivery statuses. ",
+        "Alice send messages to Bob, but Bob lose his device and  buy new iPhone and installed Actor.",
+        "Alice receive notification about new device and send another message. Bob open chat with Alice and",
+        "send read status with maximum message read date. Alice will mark all sent messages as read and one that",
+        "was not delivered. We can use status notifications per message, but in VERY heavy conversations it will be",
+        "a lot of unnecessary traffic. For resolving this small issue we have different ways of message statuses",
+        "for encrypted and plain messages. Also it is recomended to mark all undelivered messages on new device update as ",
+        "not devered with warring sign.",
+        "<h1>Message Read and Delivery</h1>",
+        "There are two different ways for read and delivery statuses for encrypted and plain messages.",
+        "For encrypted messages used status change by RandomId and for plain messages used by maximum",
+        "date of read/delivered message."
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "MessageContent",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "type"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "content"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "TextMessage",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "text"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "extType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 3,
+                "name": "ext"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceMessage",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "text"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "extType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 3,
+                "name": "ext"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExUserAdded",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "addedUid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExUserKicked",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "kickedUid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExUserLeft",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExGroupCreated",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExChangedTItle",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "title"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExChangedAvatar",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 1,
+                "name": "avatar"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "FileMessage",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "fileId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "fileSize"
+              },
+              {
+                "type": "string",
+                "id": 4,
+                "name": "name"
+              },
+              {
+                "type": "string",
+                "id": 5,
+                "name": "mimeType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "FastThumb"
+                  }
+                },
+                "id": 6,
+                "name": "thumb"
+              },
+              {
+                "type": "int32",
+                "id": 7,
+                "name": "extType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 8,
+                "name": "ext"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "FileExPhoto",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "w"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "h"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "FileExVideo",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "w"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "h"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "duration"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "FileExVoice",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "duration"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "WrongKeysErrorData",
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserKey"
+                  }
+                },
+                "id": 1,
+                "name": "newKeys"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserKey"
+                  }
+                },
+                "id": 2,
+                "name": "removedKeys"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserKey"
+                  }
+                },
+                "id": 3,
+                "name": "invalidKeys"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "MessageSent",
+            "header": 115,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "seq"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "state"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedAesKey",
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "keyHash"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "aesEncryptedKey"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SendEncryptedMessage",
+            "header": 14,
+            "response": {
+              "type": "reference",
+              "name": "MessageSent"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "rid"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "encryptedMessage"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptedAesKey"
+                  }
+                },
+                "id": 5,
+                "name": "keys"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptedAesKey"
+                  }
+                },
+                "id": 6,
+                "name": "ownKeys"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SendMessage",
+            "header": 92,
+            "response": {
+              "type": "reference",
+              "name": "MessageSent"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "MessageContent"
+                },
+                "id": 4,
+                "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EncryptedReceived",
+            "header": 116,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "rid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EncryptedRead",
+            "header": 117,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "rid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "MessageReceived",
+            "header": 55,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "rid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "MessageRead",
+            "header": 57,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DeleteMessage",
+            "header": 98,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "rid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "clearChat",
+            "header": 99,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DeleteChat",
+            "header": 100,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "EncryptedMessage",
+            "header": 1,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "senderUid"
+              },
+              {
+                "type": "int64",
+                "id": 6,
+                "name": "date"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "keyHash"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "aesEncryptedKey"
+              },
+              {
+                "type": "bytes",
+                "id": 5,
+                "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "Message",
+            "header": 55,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "senderUid"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "date"
+              },
+              {
+                "type": "int64",
+                "id": 4,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "MessageContent"
+                },
+                "id": 5,
+                "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "MessageSent",
+            "header": 4,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "EncryptedReceived",
+            "header": 18,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "receivedDate"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "EncryptedRead",
+            "header": 52,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "readDate"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "EncryptedReadByMe",
+            "header": 53,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "rid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "MessageReceived",
+            "header": 54,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "date"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "receivedDate"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "MessageRead",
+            "header": 19,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "date"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "readDate"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "MessageReadByMe",
+            "header": 50,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "MessageDelete",
+            "header": 46,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int64"
+                },
+                "id": 2,
+                "name": "rid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "ChatClear",
+            "header": 47,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "ChatDelete",
+            "header": 48,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Groups",
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "Group",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 4,
+                "name": "avatar"
+              },
+              {
+                "type": "bool",
+                "id": 6,
+                "name": "isMember"
+              },
+              {
+                "type": "int32",
+                "id": 8,
+                "name": "adminUid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "CreateGroup",
+            "header": 65,
+            "response": {
+              "type": "anonymous",
+              "header": 66,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "GroupOutPeer"
+                  },
+                  "id": 1,
+                  "name": "groupPeer"
+                },
+                {
+                  "type": "int32",
+                  "id": 3,
+                  "name": "seq"
+                },
+                {
+                  "type": "bytes",
+                  "id": 4,
+                  "name": "state"
+                },
+                {
+                  "type": "int32",
+                  "id": 5,
+                  "name": "users"
+                }
+              ]
+            },
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "rid"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 3,
+                "name": "users"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditGroupTitle",
+            "header": 85,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "title"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditGroupAvatar",
+            "header": 86,
+            "response": {
+              "type": "reference",
+              "name": "AvatarChanged"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "FileLocation"
+                },
+                "id": 3,
+                "name": "fileLocation"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RemoveGroupAvatar",
+            "header": 101,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "InviteUsers",
+            "header": 69,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 3,
+                "name": "users"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LeaveGroup",
+            "header": 70,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DeleteGroup",
+            "header": 97,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RemoveUsers",
+            "header": 71,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 3,
+                "name": "users"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupInvite",
+            "header": 36,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "int32",
+                "id": 5,
+                "name": "inviteUid"
+              },
+              {
+                "type": "int64",
+                "id": 8,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupUserAdded",
+            "header": 21,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "inviterUid"
+              },
+              {
+                "type": "int64",
+                "id": 4,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupUserLeave",
+            "header": 23,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupUserKick",
+            "header": 24,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "kickerUid"
+              },
+              {
+                "type": "int64",
+                "id": 4,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupMembersUpdate",
+            "header": 44,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int32"
+                },
+                "id": 2,
+                "name": "members"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupTitleChanged",
+            "header": 38,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "title"
+              },
+              {
+                "type": "int64",
+                "id": 4,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupAvatarChanged",
+            "header": 39,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 3,
+                "name": "avatar"
+              },
+              {
+                "type": "int64",
+                "id": 4,
+                "name": "date"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Message and Dialogs lists",
+      "doc": [
+        "<h1>Overview</h1>",
+        "Actor can work with encrypted and plain messages and encrypted messages does not appear in history,",
+        "but it affects conversation lists.",
+        "<h1>Messages ordering</h1>",
+        "Server provide date in milliseconds for accurate ordering of incoming messages in applications. ",
+        "NOTHING can move conversation on conversation list down on list. For example if you clean chat or delete top message",
+        "for the conversation conversation keep its position. Some events doesn't move conversation to top",
+        "of conversations list. For example leaving chat or new device notification doesn't move it up.",
+        "<h1>Deleting of messages</h1>",
+        "For deletion of messages either plain or encrypted there is method MessageDelete#0x62 deletion.",
+        "Deletion of message is irreversible for now.",
+        "<h1>Deleting and clearing of conversation</h1>",
+        "Clearing of conversation deletes all messages in conversation and clears top message in conversation list.",
+        "Deletion of conversation deletes all messages and removes conversation from conversations list.",
+        "For sync this operations there are updates ChatDelete#0x30 and ChatClear#0x2F.",
+        "Deletion by ChatDelete of group causes automatic group leaving.",
+        "<h1>Loading history</h1>",
+        "For loading conversation list use method LoadDialogs#0x68. ",
+        "When top message in conversation is encrypted than dialog item will contain empty text. Dialog item contains",
+        "two dates - visual and sort, visual used for displaying date and sort for sorting dialog in dialog list.",
+        " ",
+        "For loading history of conversation use method LoadHistory#0x68.",
+        " ",
+        "Loading initial list are called with zero startDate and after loading more messages ",
+        "we will use maximum date from messages for startDate value."
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "HistoryMessage",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "senderUid"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "date"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "MessageContent"
+                },
+                "id": 5,
+                "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadHistory",
+            "header": 118,
+            "response": {
+              "type": "anonymous",
+              "header": 119,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "HistoryMessage"
+                    }
+                  },
+                  "id": 1,
+                  "name": "history"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                }
+              ]
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "startDate"
+              },
+              {
+                "type": "int32",
+                "id": 4,
+                "name": "limit"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Dialog",
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "unreadCount"
+              },
+              {
+                "type": "int64",
+                "id": 4,
+                "name": "sortDate"
+              },
+              {
+                "type": "int32",
+                "id": 5,
+                "name": "senderUid"
+              },
+              {
+                "type": "int64",
+                "id": 6,
+                "name": "rid"
+              },
+              {
+                "type": "int64",
+                "id": 7,
+                "name": "date"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "MessageContent"
+                },
+                "id": 8,
+                "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadDialogs",
+            "header": 104,
+            "response": {
+              "type": "anonymous",
+              "header": 105,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 1,
+                  "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Dialog"
+                    }
+                  },
+                  "id": 3,
+                  "name": "dialogs"
+                }
+              ]
+            },
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "startDate"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "limit"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Encryption",
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "UserKey",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "keyHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "PublicKey",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "keyHash"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "key"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "NewDevice",
+            "header": 2,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "keyHash"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 3,
+                "name": "key"
+              },
+              {
+                "type": "int64",
+                "id": 4,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "RemovedDevice",
+            "header": 37,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "keyHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "PublicKeyRequest",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "keyHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetPublicKeys",
+            "header": 6,
+            "response": {
+              "type": "anonymous",
+              "header": 24,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "PublicKey"
+                    }
+                  },
+                  "id": 1,
+                  "name": "keys"
+                }
+              ]
+            },
+            "attributes": []
+          }
+        }
+      ]
+    },
+    {
+      "title": "Typing and Online",
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "Typing",
+            "header": 27,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "typingType"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SetOnline",
+            "header": 29,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": "bool",
+                "id": 1,
+                "name": "isOnline"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "Typing",
+            "header": 6,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "typingType"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserOnline",
+            "header": 7,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserOffline",
+            "header": 8,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserLastSeen",
+            "header": 9,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "time"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupOnline",
+            "header": 33,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "count"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Media and Files",
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "FileLocation",
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "fileId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "AvatarImage",
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "FileLocation"
+                },
+                "id": 1,
+                "name": "fileLocation"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "width"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "height"
+              },
+              {
+                "type": "int32",
+                "id": 4,
+                "name": "fileSize"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Avatar",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "AvatarImage"
+                  }
+                },
+                "id": 1,
+                "name": "smallImage"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "AvatarImage"
+                  }
+                },
+                "id": 2,
+                "name": "largeImage"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "AvatarImage"
+                  }
+                },
+                "id": 3,
+                "name": "fullImage"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "FastThumb",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "w"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "h"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "thumb"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetFile",
+            "header": 16,
+            "response": {
+              "type": "anonymous",
+              "header": 17,
+              "attributes": [
+                {
+                  "type": "bytes",
+                  "id": 1,
+                  "name": "payload"
+                }
+              ]
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "FileLocation"
+                },
+                "id": 1,
+                "name": "fileLocation"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "offset"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "limit"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "UploadConfig",
+            "attributes": [
+              {
+                "type": "bytes",
+                "id": 1,
+                "name": "serverData"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "StartUpload",
+            "header": 18,
+            "response": {
+              "type": "anonymous",
+              "header": 19,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "UploadConfig"
+                  },
+                  "id": 1,
+                  "name": "config"
+                }
+              ]
+            },
+            "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UploadPart",
+            "header": 20,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UploadConfig"
+                },
+                "id": 1,
+                "name": "config"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "blockIndex"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "payload"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "CompleteUpload",
+            "header": 22,
+            "response": {
+              "type": "anonymous",
+              "header": 23,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "FileLocation"
+                  },
+                  "id": 1,
+                  "name": "location"
+                }
+              ]
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UploadConfig"
+                },
+                "id": 1,
+                "name": "config"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "blocksCount"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "crc32"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Push",
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RegisterGooglePush",
+            "header": 51,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "projectId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RegisterApplePush",
+            "header": 76,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "apnsKey"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UnregisterPush",
+            "header": 52,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": []
+          }
+        }
+      ]
+    },
+    {
+      "title": "Peers",
+      "items": [
+        {
+          "type": "enum",
+          "content": {
+            "name": "PeerType",
+            "values": [
+              {
+                "name": "Private",
+                "id": 1
+              },
+              {
+                "name": "Group",
+                "id": 2
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Peer",
+            "attributes": [
+              {
+                "type": "PeerType",
+                "id": 1,
+                "name": "type"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "id"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "OutPeer",
+            "attributes": [
+              {
+                "type": "PeerType",
+                "id": 1,
+                "name": "type"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "accessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "UserOutPeer",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "GroupOutPeer",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Sequence and Updates",
+      "items": [
+        {
+          "type": "update_box",
+          "content": {
+            "name": "SeqUpdate",
+            "header": 13,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "seq"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "state"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "updateHeader"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "update"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update_box",
+          "content": {
+            "name": "FatSeqUpdate",
+            "header": 73,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "seq"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "state"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "updateHeader"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "update"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "User"
+                  }
+                },
+                "id": 5,
+                "name": "users"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Group"
+                  }
+                },
+                "id": 6,
+                "name": "groups"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update_box",
+          "content": {
+            "name": "WeakUpdate",
+            "header": 26,
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "date"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "updateId"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "update"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update_box",
+          "content": {
+            "name": "SeqUpdateTooLong",
+            "header": 25,
+            "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetState",
+            "header": 9,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "DifferenceUpdate",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "updateId"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "update"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetDifference",
+            "header": 11,
+            "response": {
+              "type": "anonymous",
+              "header": 12,
+              "attributes": [
+                {
+                  "type": "int32",
+                  "id": 1,
+                  "name": "seq"
+                },
+                {
+                  "type": "bytes",
+                  "id": 2,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 3,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 6,
+                  "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "DifferenceUpdate"
+                    }
+                  },
+                  "id": 4,
+                  "name": "updates"
+                },
+                {
+                  "type": "bool",
+                  "id": 5,
+                  "name": "needMode"
+                }
+              ]
+            },
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "seq"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "state"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SubscribeToOnline",
+            "header": 32,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 1,
+                "name": "users"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SubscribeFromOnline",
+            "header": 33,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 1,
+                "name": "users"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SubscribeToGrouOnline",
+            "header": 74,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "GroupOutPeer"
+                  }
+                },
+                "id": 1,
+                "name": "groups"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SubscribeFromGroupOnline",
+            "header": 75,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "GroupOutPeer"
+                  }
+                },
+                "id": 1,
+                "name": "groups"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Common",
+      "items": [
+        {
+          "type": "response",
+          "content": {
+            "name": "Void",
+            "header": 50,
+            "attributes": []
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "Seq",
+            "header": 72,
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "seq"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "state"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "AvatarChanged",
+            "header": 68,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Avatar"
+                },
+                "id": 1,
+                "name": "avatar"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "seq"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "state"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Config",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "maxGroupSize"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "Config",
+            "header": 42,
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Config"
+                },
+                "id": 1,
+                "name": "config"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
