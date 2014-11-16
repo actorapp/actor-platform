@@ -449,7 +449,10 @@
               {
                 "type": {
                   "type": "opt",
-                  "childType": "Sex"
+                  "childType": {
+                    "type": "enum",
+                    "childType": "Sex"
+                  }
                 },
                 "id": 5,
                 "name": "sex"
@@ -1117,7 +1120,7 @@
             "name": "FileMessage",
             "attributes": [
               {
-                "type": "int32",
+                "type": "int64",
                 "id": 1,
                 "name": "fileId"
               },
@@ -1525,7 +1528,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "clearChat",
+            "name": "ClearChat",
             "header": 99,
             "response": {
               "type": "reference",
@@ -1929,6 +1932,14 @@
                 "type": "int32",
                 "id": 8,
                 "name": "adminUid"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int32"
+                },
+                "id": 9,
+                "name": "members"
               }
             ]
           }
@@ -2733,7 +2744,19 @@
                 }
               ]
             },
-            "attributes": []
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "PublicKeyRequest"
+                  }
+                },
+                "id": 1,
+                "name": "keys"
+              }
+            ]
           }
         }
       ]
@@ -3165,6 +3188,11 @@
                 "type": "int64",
                 "id": 1,
                 "name": "projectId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "token"
               }
             ]
           }
@@ -3231,7 +3259,10 @@
             "name": "Peer",
             "attributes": [
               {
-                "type": "PeerType",
+                "type": {
+                  "type": "enum",
+                  "childType": "PeerType"
+                },
                 "id": 1,
                 "name": "type"
               },
@@ -3249,7 +3280,10 @@
             "name": "OutPeer",
             "attributes": [
               {
-                "type": "PeerType",
+                "type": {
+                  "type": "enum",
+                  "childType": "PeerType"
+                },
                 "id": 1,
                 "name": "type"
               },
