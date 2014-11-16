@@ -85,6 +85,18 @@ message RequestSignUp {
     required bool isSilent = 11;
 }
 
+message AuthItem {
+    required int32 id = 1;
+    required int32 authHolder = 2;
+    required int32 appId = 3;
+    required string appTitle = 4;
+    required string deviceTitle = 5;
+    required int32 authTime = 6;
+    required string authLocation = 7;
+    optional double latitude = 8;
+    optional double longitude = 9;
+}
+
 // API#0x50
 // ResponseGetAuth
 message RequestGetAuth {
@@ -127,6 +139,17 @@ enum Sex {
     UNKNOWN = 1;
     MALE = 2;
     FEMALE = 3;
+}
+
+message User {
+    required int32 id = 1;
+    required int64 accessHash = 2;
+    required string name = 3;
+    optional string localName = 4;
+    optional Sex sex = 5;
+    repeated int64 keyHashes = 6;
+    required int64 phone = 7;
+    optional Avatar avatar = 8;
 }
 
 // API#0x60
@@ -192,6 +215,16 @@ message RequestRemoveAvatar {
 //For searching for users without adding to contacts list use method FindContacts#0x70.
 // 
 //For adding/deleting contacts AddContact#0x72 and DeleteContact#0x59.
+
+message PhoneToImport {
+    required int64 phoneNumber = 1;
+    optional string name = 2;
+}
+
+message EmailToImport {
+    required string email = 1;
+    optional string name = 2;
+}
 
 // API#0x07
 // ResponseImportContacts
@@ -305,11 +338,87 @@ message UpdateContactsRemoved {
 //For encrypted messages used status change by RandomId and for plain messages used by maximum
 //date of read/delivered message.
 
+message MessageContent {
+    required int32 type = 1;
+    required bytes content = 2;
+}
+
+message TextMessage {
+    required string text = 1;
+    required int32 extType = 2;
+    optional bytes ext = 3;
+}
+
+message ServiceMessage {
+    required string text = 1;
+    required int32 extType = 2;
+    optional bytes ext = 3;
+}
+
+message ServiceExUserAdded {
+    required int32 addedUid = 1;
+}
+
+message ServiceExUserKicked {
+    required int32 kickedUid = 1;
+}
+
+message ServiceExUserLeft {
+}
+
+message ServiceExGroupCreated {
+}
+
+message ServiceExChangedTItle {
+    required string title = 1;
+}
+
+message ServiceExChangedAvatar {
+    optional Avatar avatar = 1;
+}
+
+message FileMessage {
+    required int64 fileId = 1;
+    required int64 accessHash = 2;
+    required int32 fileSize = 3;
+    required string name = 4;
+    required string mimeType = 5;
+    optional FastThumb thumb = 6;
+    required int32 extType = 7;
+    optional bytes ext = 8;
+}
+
+message FileExPhoto {
+    required int32 w = 1;
+    required int32 h = 2;
+}
+
+message FileExVideo {
+    required int32 w = 1;
+    required int32 h = 2;
+    required int32 duration = 3;
+}
+
+message FileExVoice {
+    required int32 duration = 1;
+}
+
+message WrongKeysErrorData {
+    repeated UserKey newKeys = 1;
+    repeated UserKey removedKeys = 2;
+    repeated UserKey invalidKeys = 3;
+}
+
 // API#0x73
 message ResponseMessageSent {
     required int32 seq = 1;
     required bytes state = 2;
     required int64 date = 3;
+}
+
+message EncryptedAesKey {
+    required int64 keyHash = 1;
+    required bytes aesEncryptedKey = 2;
 }
 
 // API#0x0E
@@ -367,7 +476,7 @@ message RequestDeleteMessage {
 
 // API#0x63
 // ResponseSeq
-message RequestclearChat {
+message RequestClearChat {
     required OutPeer peer = 1;
 }
 
@@ -462,6 +571,16 @@ message UpdateChatDelete {
 //////////////////////////////////////////////////////
 // Groups
 //////////////////////////////////////////////////////
+
+message Group {
+    required int32 id = 1;
+    required int64 accessHash = 2;
+    required string title = 3;
+    optional Avatar avatar = 4;
+    required bool isMember = 6;
+    required int32 adminUid = 8;
+    repeated int32 members = 9;
+}
 
 // API#0x41
 // ResponseCreateGroup
@@ -606,6 +725,13 @@ message UpdateGroupAvatarChanged {
 //Loading initial list are called with zero startDate and after loading more messages 
 //we will use maximum date from messages for startDate value.
 
+message HistoryMessage {
+    required int32 senderUid = 1;
+    required int64 rid = 2;
+    required int64 date = 3;
+    required MessageContent message = 5;
+}
+
 // API#0x76
 // ResponseLoadHistory
 message RequestLoadHistory {
@@ -618,6 +744,16 @@ message RequestLoadHistory {
 message ResponseLoadHistory {
     repeated HistoryMessage history = 1;
     repeated User users = 2;
+}
+
+message Dialog {
+    required Peer peer = 1;
+    required int32 unreadCount = 3;
+    required int64 sortDate = 4;
+    required int32 senderUid = 5;
+    required int64 rid = 6;
+    required int64 date = 7;
+    required MessageContent message = 8;
 }
 
 // API#0x68
@@ -638,6 +774,17 @@ message ResponseLoadDialogs {
 // Encryption
 //////////////////////////////////////////////////////
 
+message UserKey {
+    required int32 uid = 1;
+    required int64 keyHash = 2;
+}
+
+message PublicKey {
+    required int32 uid = 1;
+    required int64 keyHash = 2;
+    required bytes key = 3;
+}
+
 // API#0x02
 message UpdateNewDevice {
     required int32 uid = 1;
@@ -652,9 +799,16 @@ message UpdateRemovedDevice {
     required int64 keyHash = 2;
 }
 
+message PublicKeyRequest {
+    required int32 uid = 1;
+    required int64 accessHash = 2;
+    required int64 keyHash = 3;
+}
+
 // API#0x06
 // ResponseGetPublicKeys
 message RequestGetPublicKeys {
+    repeated PublicKeyRequest keys = 1;
 }
 
 // API#0x18
@@ -713,6 +867,30 @@ message UpdateGroupOnline {
 // Media and Files
 //////////////////////////////////////////////////////
 
+message FileLocation {
+    required int64 fileId = 1;
+    required int64 accessHash = 2;
+}
+
+message AvatarImage {
+    required FileLocation fileLocation = 1;
+    required int32 width = 2;
+    required int32 height = 3;
+    required int32 fileSize = 4;
+}
+
+message Avatar {
+    optional AvatarImage smallImage = 1;
+    optional AvatarImage largeImage = 2;
+    optional AvatarImage fullImage = 3;
+}
+
+message FastThumb {
+    required int32 w = 1;
+    required int32 h = 2;
+    required bytes thumb = 3;
+}
+
 // API#0x10
 // ResponseGetFile
 message RequestGetFile {
@@ -724,6 +902,10 @@ message RequestGetFile {
 // API#0x11
 message ResponseGetFile {
     required bytes payload = 1;
+}
+
+message UploadConfig {
+    required bytes serverData = 1;
 }
 
 // API#0x12
@@ -765,6 +947,7 @@ message ResponseCompleteUpload {
 // ResponseVoid
 message RequestRegisterGooglePush {
     required int64 projectId = 1;
+    required string token = 2;
 }
 
 // API#0x4C
@@ -786,6 +969,27 @@ message RequestUnregisterPush {
 enum PeerType {
     PRIVATE = 1;
     GROUP = 2;
+}
+
+message Peer {
+    required PeerType type = 1;
+    required int32 id = 2;
+}
+
+message OutPeer {
+    required PeerType type = 1;
+    required int32 id = 2;
+    required int64 accessHash = 3;
+}
+
+message UserOutPeer {
+    required int32 uid = 1;
+    required int64 accessHash = 2;
+}
+
+message GroupOutPeer {
+    required int32 groupId = 1;
+    required int64 accessHash = 2;
 }
 
 //////////////////////////////////////////////////////
@@ -824,6 +1028,11 @@ message UpdateSeqUpdateTooLong {
 // API#0x09
 // ResponseSeq
 message RequestGetState {
+}
+
+message DifferenceUpdate {
+    required int32 updateId = 1;
+    required bytes update = 2;
 }
 
 // API#0x0B
@@ -886,6 +1095,10 @@ message ResponseAvatarChanged {
     required Avatar avatar = 1;
     required int32 seq = 2;
     required bytes state = 3;
+}
+
+message Config {
+    required int32 maxGroupSize = 1;
 }
 
 // API#0x2A
