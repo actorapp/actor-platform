@@ -1972,7 +1972,10 @@
                   "name": "state"
                 },
                 {
-                  "type": "int32",
+                  "type": {
+                    "type": "list",
+                    "childType": "int32"
+                  },
                   "id": 5,
                   "name": "users"
                 }

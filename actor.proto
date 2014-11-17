@@ -595,7 +595,7 @@ message ResponseCreateGroup {
     required GroupOutPeer groupPeer = 1;
     required int32 seq = 3;
     required bytes state = 4;
-    required int32 users = 5;
+    repeated int32 users = 5;
 }
 
 // API#0x55
