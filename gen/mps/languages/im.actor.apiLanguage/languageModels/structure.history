@@ -6,5 +6,35 @@
     </dependencies>
     <rename id="tsp6.2348480312264231121" type="CONCEPT" from="Entity" to="Strunct" />
   </StructureModification>
+  <StructureModification>
+    <dependencies>
+      <model index="tsp6" modelUID="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" version="0" />
+    </dependencies>
+    <rename id="tsp6.2861239048480449583" type="CONCEPT" from="MethodDocItem" to="MethodDocComment" />
+  </StructureModification>
+  <StructureModification>
+    <dependencies>
+      <model index="tsp6" modelUID="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" version="1" />
+    </dependencies>
+    <rename id="tsp6.2861239048480449583" type="CONCEPT" from="MethodDocComment" to="RpcDocComment" />
+  </StructureModification>
+  <StructureModification>
+    <dependencies>
+      <model index="tsp6" modelUID="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" version="2" />
+    </dependencies>
+    <rename id="tsp6.4092665470043358610" type="CONCEPT" from="MethodDocItem" to="RpcDocItem" />
+  </StructureModification>
+  <StructureModification>
+    <dependencies>
+      <model index="tsp6" modelUID="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" version="3" />
+    </dependencies>
+    <rename id="tsp6.4092665470043293715" type="CONCEPT" from="MethodDocParameter" to="RpcDocParameter" />
+  </StructureModification>
+  <StructureModification>
+    <dependencies>
+      <model index="tsp6" modelUID="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" version="4" />
+    </dependencies>
+    <rename id="tsp6.4092665470043358610" type="CONCEPT" from="RpcDocItem" to="RpcDoc" />
+  </StructureModification>
 </history>
 
