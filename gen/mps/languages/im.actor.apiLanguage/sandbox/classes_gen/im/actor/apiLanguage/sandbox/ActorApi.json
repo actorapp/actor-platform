@@ -1,7 +1,7 @@
 {"sections":[
 {"title":"Authentication"
 ,"doc":[
-"Actor now support only one way for authentication - by SMS or phone call.","Authorization steps:","1) Request SMS Code by calling RequestAuthCode","2) If SMS arrives than send Authorization code in RequestAuthCodeSignIn/SignUp","3) If sms doesn't arrive for a long time - request phone activation by ","   calling AuthCodeCall"," ","* If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.","* If on any step API return PHONE_CODE_EXPIRED than application MUST start ","authorization process from begining.","* Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format."],"items":[
+"<p>Actor now support only one way for authentication - by SMS or phone call.</p>","<p>Authorization steps:","<ol>","<li>Request SMS Code by calling RequestAuthCode</li>","<li>If SMS arrives than send Authorization code in <a href=\"#rpcSignIn\">SignIn</a>/","<a href=\"#rpcSignUp\">SignUp</a></li>","<li>If sms doesn't arrive for a long time - request phone activation by ","   calling AuthCodeCall</li>","</ol>","</p>","Some rules<br/>","If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.<br/>","If on any step API return PHONE_CODE_EXPIRED than application MUST start ","authorization process from begining.<br/>","Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.<br/>"],"items":[
 {"type":"rpc","content":{
 "name":"RequestAuthCode",
 "header":1,
@@ -9,33 +9,33 @@
 ,{"type":"bool","id":2,"name":"isRegistered"}
 ]},
 "doc":[
-"#400: PHONE_NUMBER_INVALID"],"attributes":[
+"Sends an confirmation code message to the specified phone number via SMS."],"attributes":[
 {"type":"int64","id":1,"name":"phoneNumber"}
 ,{"type":"int32","id":2,"name":"appId"}
 ,{"type":"string","id":3,"name":"apiKey"}
-]}},{"type":"rpc","content":{
+]}},{"type":"empty"},{"type":"rpc","content":{
 "name":"RequestAuthCodeCall",
 "header":90,
 "response":{"type":"reference","name":"Void"},
 "doc":[
-"#400: PHONE_CODE_EXPIRED","#400: PHONE_NUMBER_INVALID"],"attributes":[
+"Makes a voice call with confirmation code to the scpecified phone number."],"attributes":[
 {"type":"int64","id":1,"name":"phoneNumber"}
 ,{"type":"string","id":2,"name":"smsHash"}
 ,{"type":"int32","id":3,"name":"appId"}
 ,{"type":"string","id":4,"name":"apiKey"}
-]}},{"type":"response","content":{
+]}},{"type":"empty"},{"type":"response","content":{
 "name":"Auth",
 "header":5,
 "attributes":[
 {"type":"int64","id":1,"name":"publicKeyHash"}
 ,{"type":{"type":"struct","childType":"User"},"id":2,"name":"user"}
 ,{"type":{"type":"struct","childType":"Config"},"id":3,"name":"config"}
-]}},{"type":"rpc","content":{
+]}},{"type":"empty"},{"type":"rpc","content":{
 "name":"SignIn",
 "header":3,
 "response":{"type":"reference","name":"Auth"},
 "doc":[
-"#400: INVALID_KEY","#400: PHONE_NUMBER_UNOCCUPIED","#400: PHONE_CODE_INVALID ","#400: PHONE_CODE_EXPIRED","#400: PHONE_CODE_EMPTY","#400: PHONE_NUMBER_INVALID"],"attributes":[
+"Signs in a user with a phone number with confirmation code."],"attributes":[
 {"type":"int64","id":1,"name":"phoneNumber"}
 ,{"type":"string","id":2,"name":"smsHash"}
 ,{"type":"string","id":3,"name":"smsCode"}
@@ -44,12 +44,12 @@
 ,{"type":"string","id":6,"name":"deviceTitle"}
 ,{"type":"int32","id":7,"name":"appId"}
 ,{"type":"string","id":8,"name":"appKey"}
-]}},{"type":"rpc","content":{
+]}},{"type":"empty"},{"type":"rpc","content":{
 "name":"SignUp",
 "header":4,
 "response":{"type":"reference","name":"Auth"},
 "doc":[
-"#400: INVALID_KEY","#400: PHONE_CODE_EXPIRED","#400: PHONE_CODE_EMPTY","#400: PHONE_NUMBER_INVALID","#400: NAME_INVALID"],"attributes":[
+"Signs up a user with a phone number with confirmation code."],"attributes":[
 {"type":"int64","id":1,"name":"phoneNumber"}
 ,{"type":"string","id":2,"name":"smsHash"}
 ,{"type":"string","id":3,"name":"smsCode"}
@@ -60,7 +60,7 @@
 ,{"type":"int32","id":9,"name":"appId"}
 ,{"type":"string","id":10,"name":"appKey"}
 ,{"type":"bool","id":11,"name":"isSilent"}
-]}},{"type":"struct","content":{
+]}},{"type":"empty"},{"type":"comment","content":"Auth controll"},{"type":"empty"},{"type":"struct","content":{
 "name":"AuthItem",
 "attributes":[
 {"type":"int32","id":1,"name":"id"}
@@ -77,27 +77,31 @@
 "header":80,
 "response":{"type":"anonymous","header":81, "attributes":[{"type":{"type":"list","childType":{"type":"struct","childType":"AuthItem"}},"id":1,"name":"userAuths"}
 ]},
-"attributes":[
+"doc":[
+"Return all current account sessions"],"attributes":[
 ]}},{"type":"rpc","content":{
 "name":"RemoveAuth",
 "header":82,
 "response":{"type":"reference","name":"Void"},
-"attributes":[
+"doc":[
+"Logouts specified session"],"attributes":[
 {"type":"int32","id":1,"name":"id"}
 ]}},{"type":"rpc","content":{
 "name":"RemoveAllOtherAuths",
 "header":83,
 "response":{"type":"reference","name":"Void"},
-"attributes":[
+"doc":[
+"Logouts all other sessions"],"attributes":[
 ]}},{"type":"rpc","content":{
 "name":"Logout",
 "header":84,
 "response":{"type":"reference","name":"Void"},
-"attributes":[
+"doc":[
+"Logouts current session"],"attributes":[
 ]}}]},{"title":"Users"
 ,"doc":[
 "Users are objects that secured by accessHash. You can't load user profile by it's id.","You can't send message to user without finding it's object in Updates or by calling","method for user search, contacts import or some other methods."," ","Applications need to keep all Users information forever."," ","Each User have optional localName - name of user that was set by current user and can be changed","any time by calling EditUserLocalName method."],"items":[
-{"type":"enum","content":{
+{"type":"comment","content":"Model"},{"type":"enum","content":{
 "name":"Sex",
 "values":[
 {"name":"Unknown","id":1}
@@ -110,19 +114,20 @@
 ,{"type":"int64","id":2,"name":"accessHash"}
 ,{"type":"string","id":3,"name":"name"}
 ,{"type":{"type":"opt","childType":"string"},"id":4,"name":"localName"}
-,{"type":{"type":"opt","childType":"Sex"},"id":5,"name":"sex"}
+,{"type":{"type":"opt","childType":{"type":"enum","childType":"Sex"}},"id":5,"name":"sex"}
 ,{"type":{"type":"list","childType":"int64"},"id":6,"name":"keyHashes"}
 ,{"type":"int64","id":7,"name":"phone"}
 ,{"type":{"type":"opt","childType":{"type":"struct","childType":"Avatar"}},"id":8,"name":"avatar"}
-]}},{"type":"rpc","content":{
+]}},{"type":"empty"},{"type":"rpc","content":{
 "name":"EditUserLocalName",
 "header":96,
 "response":{"type":"reference","name":"Seq"},
-"attributes":[
+"doc":[
+"Renaming user's local name."],"attributes":[
 {"type":"int32","id":1,"name":"uid"}
 ,{"type":"int64","id":2,"name":"accessHash"}
 ,{"type":"string","id":3,"name":"name"}
-]}},{"type":"update","content":{
+]}},{"type":"empty"},{"type":"update","content":{
 "name":"UserAvatarChanged",
 "header":16,
 "attributes":[
@@ -162,7 +167,7 @@
 ]}}]},{"title":"Contacts"
 ,"doc":[
 "Before working with contact list is is useful to import contacts from phone first by calling","method ImportContacts#0x07."," ","All phone numbers MUST be preprocessed before import by some library (like libphonenumber)","and build international phone number depending on current users phone and/or locale."," ","For loading contact list from server use GetContacts#0x57. ","If during this call there are some updates about contact list change","it is recommended to call it again. Also applications need to sync contacts on application start."," ","For searching for users without adding to contacts list use method FindContacts#0x70."," ","For adding/deleting contacts AddContact#0x72 and DeleteContact#0x59."],"items":[
-{"type":"struct","content":{
+{"type":"comment","content":"Import"},{"type":"struct","content":{
 "name":"PhoneToImport",
 "attributes":[
 {"type":"int64","id":1,"name":"phoneNumber"}
@@ -182,13 +187,14 @@
 "attributes":[
 {"type":{"type":"list","childType":{"type":"struct","childType":"PhoneToImport"}},"id":1,"name":"phones"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"EmailToImport"}},"id":2,"name":"emails"}
-]}},{"type":"rpc","content":{
+]}},{"type":"empty"},{"type":"comment","content":"Working with list"},{"type":"rpc","content":{
 "name":"GetContacts",
 "header":87,
 "response":{"type":"anonymous","header":88, "attributes":[{"type":{"type":"list","childType":{"type":"struct","childType":"User"}},"id":1,"name":"users"}
 ,{"type":"bool","id":2,"name":"isNotChanged"}
 ]},
-"attributes":[
+"doc":[
+"Loading full contact list for user.","contacts hash is SHA256 of uids"],"attributes":[
 {"type":"string","id":1,"name":"contactsHash"}
 ]}},{"type":"rpc","content":{
 "name":"RemoveContact",
@@ -211,7 +217,7 @@
 ]},
 "attributes":[
 {"type":"string","id":1,"name":"request"}
-]}},{"type":"update","content":{
+]}},{"type":"empty"},{"type":"update","content":{
 "name":"ContactRegistered",
 "header":5,
 "attributes":[
@@ -230,8 +236,8 @@
 {"type":{"type":"list","childType":"int32"},"id":1,"name":"uids"}
 ]}}]},{"title":"Messaging"
 ,"doc":[
-"<h1>Overview</h1>","Actor can work with encrypted and plain messages in one conversation. For both types of messages API","contains a bit different methods. Also encrypted and plain messages have different schemes.","<h1>Messages</h1>","Message entity contains:","* PeerType - group chat or private","* PeerId - group or user id of conversation","* RandomId - unique id of message that generated by sender. In Encrypted messages random id is encrypted.","* Date - date of message (calculated on server)","* Content","<h1>Message content</h1>","Message can be one of three basic types of messages: Text Message, File Message and Service message.","All messages can contain extensions. For example we can send text message and add markdown extension with ","formatted text in markdown and clients that support this extension will show markdown, and that clients that","not supported extension then show simple text. File messages can have photo, video or voice extensions.","Service message can have extensions extensions such as \"user added\", \"group created\", \"avatar changed\", etc.","<h1>Send messages</h1>","Sending messages looks same for encrypted and plain messages. Client MUST prepare all required data","before sending message (for example FastThumb for photo/video/documents) and call required methods. ","Encrypted messages differs here only by a little different scheme and encryption.","<h1>WRONG_KEYS and incorrect keys</h1>","For sending encrypted messages client MUST send messages encrypted for all own and receivers keys.","If client send encryption with missing, old or incorrect keys it will receive WRONG_KEYS.","In WRONG_KEYS you need to deserialize relatedData from RpcError to WrongKeysErrorData","and get detailed information about keys. Sometimes there are some broken keys on server and client can't ","encrypt messages with it than client MUST send empty encrypted key in request elsewhere API return WRONG_KEYS.","<h1>Encrypted messages and New Devices</h1>","When you send message to someone and when he registered with new device there are no way to receive old encrypted","messages on new device and because of this there are a problem about read/delivery statuses. ","Alice send messages to Bob, but Bob lose his device and  buy new iPhone and installed Actor.","Alice receive notification about new device and send another message. Bob open chat with Alice and","send read status with maximum message read date. Alice will mark all sent messages as read and one that","was not delivered. We can use status notifications per message, but in VERY heavy conversations it will be","a lot of unnecessary traffic. For resolving this small issue we have different ways of message statuses","for encrypted and plain messages. Also it is recomended to mark all undelivered messages on new device update as ","not devered with warring sign.","<h1>Message Read and Delivery</h1>","There are two different ways for read and delivery statuses for encrypted and plain messages.","For encrypted messages used status change by RandomId and for plain messages used by maximum","date of read/delivered message."],"items":[
-{"type":"struct","content":{
+"Actor can work with encrypted and plain messages in one conversation. For both types of messages API","contains a bit different methods. Also encrypted and plain messages have different schemes.","<h3>Messages</h3>","Message entity contains:","<ul>","<li>PeerType - group chat or private</li>","<li>PeerId - group or user id of conversation</li>","<li>RandomId - unique id of message that generated by sender. In Encrypted messages random id is encrypted.</li>","<li>Date - date of message (calculated on server)</li>","<li>Content</li>","</ul>","<h3>Message content</h3>","Message can be one of three basic types of messages: Text Message, File Message and Service message.","All messages can contain extensions. For example we can send text message and add markdown extension with ","formatted text in markdown and clients that support this extension will show markdown, and that clients that","not supported extension then show simple text. File messages can have photo, video or voice extensions.","Service message can have extensions extensions such as \"user added\", \"group created\", \"avatar changed\", etc.","<h3>Send messages</h3>","Sending messages looks same for encrypted and plain messages. Client MUST prepare all required data","before sending message (for example FastThumb for photo/video/documents) and call required methods. ","Encrypted messages differs here only by a little different scheme and encryption.","<h3>WRONG_KEYS and incorrect keys</h3>","For sending encrypted messages client MUST send messages encrypted for all own and receivers keys.","If client send encryption with missing, old or incorrect keys it will receive WRONG_KEYS.","In WRONG_KEYS you need to deserialize relatedData from RpcError to WrongKeysErrorData","and get detailed information about keys. Sometimes there are some broken keys on server and client can't ","encrypt messages with it than client MUST send empty encrypted key in request elsewhere API return WRONG_KEYS.","<h3>Encrypted messages and New Devices</h3>","When you send message to someone and when he registered with new device there are no way to receive old encrypted","messages on new device and because of this there are a problem about read/delivery statuses. ","Alice send messages to Bob, but Bob lose his device and  buy new iPhone and installed Actor.","Alice receive notification about new device and send another message. Bob open chat with Alice and","send read status with maximum message read date. Alice will mark all sent messages as read and one that","was not delivered. We can use status notifications per message, but in VERY heavy conversations it will be","a lot of unnecessary traffic. For resolving this small issue we have different ways of message statuses","for encrypted and plain messages. Also it is recomended to mark all undelivered messages on new device update as ","not devered with warring sign.","<h3>Message Read and Delivery</h3>","There are two different ways for read and delivery statuses for encrypted and plain messages.","For encrypted messages used status change by RandomId and for plain messages used by maximum","date of read/delivered message."],"items":[
+{"type":"comment","content":"Model"},{"type":"struct","content":{
 "name":"MessageContent",
 "attributes":[
 {"type":"int32","id":1,"name":"type"}
@@ -273,7 +279,7 @@
 ]}},{"type":"struct","content":{
 "name":"FileMessage",
 "attributes":[
-{"type":"int32","id":1,"name":"fileId"}
+{"type":"int64","id":1,"name":"fileId"}
 ,{"type":"int64","id":2,"name":"accessHash"}
 ,{"type":"int32","id":3,"name":"fileSize"}
 ,{"type":"string","id":4,"name":"name"}
@@ -296,13 +302,13 @@
 "name":"FileExVoice",
 "attributes":[
 {"type":"int32","id":1,"name":"duration"}
-]}},{"type":"struct","content":{
+]}},{"type":"empty"},{"type":"struct","content":{
 "name":"WrongKeysErrorData",
 "attributes":[
 {"type":{"type":"list","childType":{"type":"struct","childType":"UserKey"}},"id":1,"name":"newKeys"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"UserKey"}},"id":2,"name":"removedKeys"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"UserKey"}},"id":3,"name":"invalidKeys"}
-]}},{"type":"response","content":{
+]}},{"type":"empty"},{"type":"response","content":{
 "name":"MessageSent",
 "header":115,
 "attributes":[
@@ -368,7 +374,7 @@
 {"type":{"type":"struct","childType":"OutPeer"},"id":1,"name":"peer"}
 ,{"type":"int64","id":3,"name":"rid"}
 ]}},{"type":"rpc","content":{
-"name":"clearChat",
+"name":"ClearChat",
 "header":99,
 "response":{"type":"reference","name":"Seq"},
 "attributes":[
@@ -379,7 +385,7 @@
 "response":{"type":"reference","name":"Seq"},
 "attributes":[
 {"type":{"type":"struct","childType":"OutPeer"},"id":1,"name":"peer"}
-]}},{"type":"update","content":{
+]}},{"type":"empty"},{"type":"comment","content":"Logic"},{"type":"update","content":{
 "name":"EncryptedMessage",
 "header":1,
 "attributes":[
@@ -405,7 +411,7 @@
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
 ,{"type":"int64","id":2,"name":"rid"}
 ,{"type":"int64","id":3,"name":"date"}
-]}},{"type":"update","content":{
+]}},{"type":"comment","content":"Encrypted"},{"type":"update","content":{
 "name":"EncryptedReceived",
 "header":18,
 "attributes":[
@@ -425,7 +431,7 @@
 "attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
 ,{"type":"int64","id":2,"name":"rid"}
-]}},{"type":"update","content":{
+]}},{"type":"comment","content":"Plain"},{"type":"update","content":{
 "name":"MessageReceived",
 "header":54,
 "attributes":[
@@ -445,7 +451,7 @@
 "attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
 ,{"type":"int64","id":2,"name":"date"}
-]}},{"type":"update","content":{
+]}},{"type":"comment","content":"Message deletions"},{"type":"update","content":{
 "name":"MessageDelete",
 "header":46,
 "attributes":[
@@ -472,13 +478,14 @@
 ,{"type":{"type":"opt","childType":{"type":"struct","childType":"Avatar"}},"id":4,"name":"avatar"}
 ,{"type":"bool","id":6,"name":"isMember"}
 ,{"type":"int32","id":8,"name":"adminUid"}
-]}},{"type":"rpc","content":{
+,{"type":{"type":"list","childType":"int32"},"id":9,"name":"members"}
+]}},{"type":"empty"},{"type":"rpc","content":{
 "name":"CreateGroup",
 "header":65,
 "response":{"type":"anonymous","header":66, "attributes":[{"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
 ,{"type":"int32","id":3,"name":"seq"}
 ,{"type":"bytes","id":4,"name":"state"}
-,{"type":"int32","id":5,"name":"users"}
+,{"type":{"type":"list","childType":"int32"},"id":5,"name":"users"}
 ]},
 "attributes":[
 {"type":"int64","id":1,"name":"rid"}
@@ -530,7 +537,7 @@
 "attributes":[
 {"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"UserOutPeer"}},"id":3,"name":"users"}
-]}},{"type":"update","content":{
+]}},{"type":"empty"},{"type":"update","content":{
 "name":"GroupInvite",
 "header":36,
 "attributes":[
@@ -602,7 +609,7 @@
 {"type":{"type":"struct","childType":"OutPeer"},"id":1,"name":"peer"}
 ,{"type":"int64","id":3,"name":"startDate"}
 ,{"type":"int32","id":4,"name":"limit"}
-]}},{"type":"struct","content":{
+]}},{"type":"empty"},{"type":"struct","content":{
 "name":"Dialog",
 "attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
@@ -649,7 +656,7 @@
 "attributes":[
 {"type":"int32","id":1,"name":"uid"}
 ,{"type":"int64","id":2,"name":"keyHash"}
-]}},{"type":"struct","content":{
+]}},{"type":"empty"},{"type":"struct","content":{
 "name":"PublicKeyRequest",
 "attributes":[
 {"type":"int32","id":1,"name":"uid"}
@@ -661,6 +668,7 @@
 "response":{"type":"anonymous","header":24, "attributes":[{"type":{"type":"list","childType":{"type":"struct","childType":"PublicKey"}},"id":1,"name":"keys"}
 ]},
 "attributes":[
+{"type":{"type":"list","childType":{"type":"struct","childType":"PublicKeyRequest"}},"id":1,"name":"keys"}
 ]}}]},{"title":"Typing and Online"
 ,"items":[
 {"type":"rpc","content":{
@@ -677,7 +685,7 @@
 "attributes":[
 {"type":"bool","id":1,"name":"isOnline"}
 ,{"type":"int64","id":2,"name":"timeout"}
-]}},{"type":"update","content":{
+]}},{"type":"empty"},{"type":"update","content":{
 "name":"Typing",
 "header":6,
 "attributes":[
@@ -732,7 +740,7 @@
 {"type":"int32","id":1,"name":"w"}
 ,{"type":"int32","id":2,"name":"h"}
 ,{"type":"bytes","id":3,"name":"thumb"}
-]}},{"type":"rpc","content":{
+]}},{"type":"empty"},{"type":"comment","content":"Download files"},{"type":"rpc","content":{
 "name":"GetFile",
 "header":16,
 "response":{"type":"anonymous","header":17, "attributes":[{"type":"bytes","id":1,"name":"payload"}
@@ -741,7 +749,7 @@
 {"type":{"type":"struct","childType":"FileLocation"},"id":1,"name":"fileLocation"}
 ,{"type":"int32","id":2,"name":"offset"}
 ,{"type":"int32","id":3,"name":"limit"}
-]}},{"type":"struct","content":{
+]}},{"type":"empty"},{"type":"comment","content":"Upload files"},{"type":"struct","content":{
 "name":"UploadConfig",
 "attributes":[
 {"type":"bytes","id":1,"name":"serverData"}
@@ -776,6 +784,7 @@
 "response":{"type":"reference","name":"Void"},
 "attributes":[
 {"type":"int64","id":1,"name":"projectId"}
+,{"type":"string","id":2,"name":"token"}
 ]}},{"type":"rpc","content":{
 "name":"RegisterApplePush",
 "header":76,
@@ -798,12 +807,12 @@
 ]}},{"type":"struct","content":{
 "name":"Peer",
 "attributes":[
-{"type":"PeerType","id":1,"name":"type"}
+{"type":{"type":"enum","childType":"PeerType"},"id":1,"name":"type"}
 ,{"type":"int32","id":2,"name":"id"}
 ]}},{"type":"struct","content":{
 "name":"OutPeer",
 "attributes":[
-{"type":"PeerType","id":1,"name":"type"}
+{"type":{"type":"enum","childType":"PeerType"},"id":1,"name":"type"}
 ,{"type":"int32","id":2,"name":"id"}
 ,{"type":"int64","id":3,"name":"accessHash"}
 ]}},{"type":"struct","content":{
@@ -847,7 +856,7 @@
 "name":"SeqUpdateTooLong",
 "header":25,
 "attributes":[
-]}},{"type":"rpc","content":{
+]}},{"type":"empty"},{"type":"rpc","content":{
 "name":"GetState",
 "header":9,
 "response":{"type":"reference","name":"Seq"},
@@ -870,7 +879,7 @@
 "attributes":[
 {"type":"int32","id":1,"name":"seq"}
 ,{"type":"bytes","id":2,"name":"state"}
-]}},{"type":"rpc","content":{
+]}},{"type":"empty"},{"type":"rpc","content":{
 "name":"SubscribeToOnline",
 "header":32,
 "response":{"type":"reference","name":"Void"},
