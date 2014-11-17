@@ -4,46 +4,67 @@
   <language namespace="77fdf769-432b-4ede-8171-050f8dee73fc(im.actor.apiLanguage)" />
   <language namespace="ceab5195-25ea-4f22-9b92-103b95ca8c0c(jetbrains.mps.lang.core)" />
   <import index="tpck" modelUID="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" version="0" implicit="yes" />
-  <import index="tsp6" modelUID="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" version="0" implicit="yes" />
+  <import index="tsp6" modelUID="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" version="5" implicit="yes" />
   <root type="tsp6.ApiDescription" typeId="tsp6.2348480312264232779" id="2348480312264243645" nodeInfo="ng">
     <property name="name" nameId="tpck.1169194664001" value="ActorApi" />
     <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395512738" nodeInfo="ng">
       <property name="name" nameId="tpck.1169194664001" value="Authentication" />
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481191537" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Actor now support only one way for authentication - by SMS or phone call." />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;p&gt;Actor now support only one way for authentication - by SMS or phone call.&lt;/p&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481230379" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Authorization steps:" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;p&gt;Authorization steps:" />
+      </node>
+      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="4092665470042333335" nodeInfo="ng">
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;ol&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481235572" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="1) Request SMS Code by calling RequestAuthCode" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;Request SMS Code by calling RequestAuthCode&lt;/li&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481235576" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="2) If SMS arrives than send Authorization code in RequestAuthCodeSignIn/SignUp" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;If SMS arrives than send Authorization code in &lt;a href=&quot;#rpcSignIn&quot;&gt;SignIn&lt;/a&gt;/" />
+      </node>
+      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="4092665470043279131" nodeInfo="ng">
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;a href=&quot;#rpcSignUp&quot;&gt;SignUp&lt;/a&gt;&lt;/li&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481236621" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="3) If sms doesn't arrive for a long time - request phone activation by " />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;If sms doesn't arrive for a long time - request phone activation by " />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481237668" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="   calling AuthCodeCall" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="   calling AuthCodeCall&lt;/li&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481240812" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value=" " />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;/ol&gt;" />
+      </node>
+      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="4092665470042333348" nodeInfo="ng">
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;/p&gt;" />
+      </node>
+      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="4092665470042333362" nodeInfo="ng">
+        <property name="text" nameId="tsp6.2861239048481125830" value="Some rules&lt;br/&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481237675" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="* If RequestAuthCode return isRegistered = false than use SignUp method else SignIn." />
+        <property name="text" nameId="tsp6.2861239048481125830" value="If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.&lt;br/&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481241870" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="* If on any step API return PHONE_CODE_EXPIRED than application MUST start " />
+        <property name="text" nameId="tsp6.2861239048481125830" value="If on any step API return PHONE_CODE_EXPIRED than application MUST start " />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481242924" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="authorization process from begining." />
+        <property name="text" nameId="tsp6.2861239048481125830" value="authorization process from begining.&lt;br/&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481242935" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="* Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format." />
+        <property name="text" nameId="tsp6.2861239048481125830" value="Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.&lt;br/&gt;" />
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395513514" nodeInfo="ng">
         <property name="name" nameId="tpck.1169194664001" value="RequestAuthCode" />
+        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="4092665470044666761" nodeInfo="ng">
+          <property name="description" nameId="tsp6.4092665470043359042" value="Phone number in international format" />
+          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395513520" resolveInfo="phoneNumber" />
+        </node>
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043212951" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_NUMBER_INVALID" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Throws when phone number is invalid" />
+        </node>
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395513520" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="1" />
           <property name="name" nameId="tpck.1169194664001" value="phoneNumber" />
@@ -77,11 +98,6 @@
             <property name="hexValue" nameId="tsp6.4689615199750888593" value="02" />
           </node>
         </node>
-        <node role="doc" roleId="tsp6.2861239048480461214" type="tsp6.MethodDoc" typeId="tsp6.2861239048480449505" id="2861239048480641741" nodeInfo="ng">
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480641743" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: PHONE_NUMBER_INVALID" />
-          </node>
-        </node>
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395517114" nodeInfo="ng" />
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395514047" nodeInfo="ng">
@@ -112,13 +128,15 @@
         <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395514110" nodeInfo="ng">
           <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
         </node>
-        <node role="doc" roleId="tsp6.2861239048480461214" type="tsp6.MethodDoc" typeId="tsp6.2861239048480449505" id="2861239048480690166" nodeInfo="ng">
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480690167" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: PHONE_CODE_EXPIRED" />
-          </node>
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480690170" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: PHONE_NUMBER_INVALID" />
-          </node>
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043214262" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_CODE_EXPIRED" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Code expired" />
+        </node>
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043255039" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_NUMVER_INVALID" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Phone number invalid" />
         </node>
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395517990" nodeInfo="ng" />
@@ -150,6 +168,36 @@
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395521132" nodeInfo="ng" />
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395514294" nodeInfo="ng">
         <property name="name" nameId="tpck.1169194664001" value="SignIn" />
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043257656" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="INVALID_KEY" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Invalid public key" />
+        </node>
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043257658" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_NUMBER_UNOCCUPIED" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Signup required" />
+        </node>
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043257661" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_CODE_INVALID" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Activation code invalid" />
+        </node>
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043257665" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_CODE_EXPIRED" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Activation code expired" />
+        </node>
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043257670" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_CODE_EMPTY" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Activation code empty" />
+        </node>
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043257676" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_NUMBER_INVALID" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Phine number invalid" />
+        </node>
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514328" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="1" />
           <property name="name" nameId="tpck.1169194664001" value="phoneNumber" />
@@ -196,30 +244,35 @@
         <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395515138" nodeInfo="ng">
           <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395514581" resolveInfo="Auth" />
         </node>
-        <node role="doc" roleId="tsp6.2861239048480461214" type="tsp6.MethodDoc" typeId="tsp6.2861239048480449505" id="2861239048480690456" nodeInfo="ng">
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480690457" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: INVALID_KEY" />
-          </node>
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480690770" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: PHONE_NUMBER_UNOCCUPIED" />
-          </node>
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480690773" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: PHONE_CODE_INVALID " />
-          </node>
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480690777" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: PHONE_CODE_EXPIRED" />
-          </node>
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480690782" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: PHONE_CODE_EMPTY" />
-          </node>
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480690788" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: PHONE_NUMBER_INVALID" />
-          </node>
-        </node>
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395522048" nodeInfo="ng" />
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395515376" nodeInfo="ng">
         <property name="name" nameId="tpck.1169194664001" value="SignUp" />
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043260334" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="INVALID_KEY" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Invalid public key" />
+        </node>
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043260336" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_CODE_EXPIRED" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Activation code expired" />
+        </node>
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043260339" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_CODE_EMPTY" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Activation code empty" />
+        </node>
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043260343" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_NUMBER_INVALID" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Phone number invalid" />
+        </node>
+        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043260348" nodeInfo="ng">
+          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
+          <property name="errorTag" nameId="tsp6.4092665470043053057" value="NAME_INVALID" />
+          <property name="description" nameId="tsp6.4092665470043111358" value="Name is invalid" />
+        </node>
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395515437" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="1" />
           <property name="name" nameId="tpck.1169194664001" value="phoneNumber" />
@@ -275,23 +328,6 @@
         </node>
         <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395515597" nodeInfo="ng">
           <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395514581" resolveInfo="Auth" />
-        </node>
-        <node role="doc" roleId="tsp6.2861239048480461214" type="tsp6.MethodDoc" typeId="tsp6.2861239048480449505" id="2861239048480691969" nodeInfo="ng">
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480691970" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: INVALID_KEY" />
-          </node>
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480691976" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: PHONE_CODE_EXPIRED" />
-          </node>
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480692263" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: PHONE_CODE_EMPTY" />
-          </node>
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480692268" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: PHONE_NUMBER_INVALID" />
-          </node>
-          <node role="docs" roleId="tsp6.2861239048480449664" type="tsp6.MethodDocItem" typeId="tsp6.2861239048480449583" id="2861239048480692274" nodeInfo="ng">
-            <property name="content" nameId="tsp6.2861239048480459664" value="#400: NAME_INVALID" />
-          </node>
         </node>
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395527970" nodeInfo="ng" />
@@ -896,9 +932,6 @@
     </node>
     <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395567464" nodeInfo="ng">
       <property name="name" nameId="tpck.1169194664001" value="Messaging" />
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481256646" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h1&gt;Overview&lt;/h1&gt;" />
-      </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481257703" nodeInfo="ng">
         <property name="text" nameId="tsp6.2861239048481125830" value="Actor can work with encrypted and plain messages in one conversation. For both types of messages API" />
       </node>
@@ -906,28 +939,34 @@
         <property name="text" nameId="tsp6.2861239048481125830" value="contains a bit different methods. Also encrypted and plain messages have different schemes." />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481258772" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h1&gt;Messages&lt;/h1&gt;" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h3&gt;Messages&lt;/h3&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481259835" nodeInfo="ng">
         <property name="text" nameId="tsp6.2861239048481125830" value="Message entity contains:" />
       </node>
+      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="4092665470043048962" nodeInfo="ng">
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;ul&gt;" />
+      </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481260900" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="* PeerType - group chat or private" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;PeerType - group chat or private&lt;/li&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481261967" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="* PeerId - group or user id of conversation" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;PeerId - group or user id of conversation&lt;/li&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481263036" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="* RandomId - unique id of message that generated by sender. In Encrypted messages random id is encrypted." />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;RandomId - unique id of message that generated by sender. In Encrypted messages random id is encrypted.&lt;/li&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481264107" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="* Date - date of message (calculated on server)" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;Date - date of message (calculated on server)&lt;/li&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481265180" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="* Content" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;Content&lt;/li&gt;" />
+      </node>
+      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="4092665470043049003" nodeInfo="ng">
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;/ul&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481266255" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h1&gt;Message content&lt;/h1&gt;" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h3&gt;Message content&lt;/h3&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481267332" nodeInfo="ng">
         <property name="text" nameId="tsp6.2861239048481125830" value="Message can be one of three basic types of messages: Text Message, File Message and Service message." />
@@ -945,7 +984,7 @@
         <property name="text" nameId="tsp6.2861239048481125830" value="Service message can have extensions extensions such as &quot;user added&quot;, &quot;group created&quot;, &quot;avatar changed&quot;, etc." />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481277018" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h1&gt;Send messages&lt;/h1&gt;" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h3&gt;Send messages&lt;/h3&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481277036" nodeInfo="ng">
         <property name="text" nameId="tsp6.2861239048481125830" value="Sending messages looks same for encrypted and plain messages. Client MUST prepare all required data" />
@@ -957,7 +996,7 @@
         <property name="text" nameId="tsp6.2861239048481125830" value="Encrypted messages differs here only by a little different scheme and encryption." />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481281387" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h1&gt;WRONG_KEYS and incorrect keys&lt;/h1&gt;" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h3&gt;WRONG_KEYS and incorrect keys&lt;/h3&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481282484" nodeInfo="ng">
         <property name="text" nameId="tsp6.2861239048481125830" value="For sending encrypted messages client MUST send messages encrypted for all own and receivers keys." />
@@ -975,7 +1014,7 @@
         <property name="text" nameId="tsp6.2861239048481125830" value="encrypt messages with it than client MUST send empty encrypted key in request elsewhere API return WRONG_KEYS." />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481291238" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h1&gt;Encrypted messages and New Devices&lt;/h1&gt;" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h3&gt;Encrypted messages and New Devices&lt;/h3&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481292347" nodeInfo="ng">
         <property name="text" nameId="tsp6.2861239048481125830" value="When you send message to someone and when he registered with new device there are no way to receive old encrypted" />
@@ -1005,7 +1044,7 @@
         <property name="text" nameId="tsp6.2861239048481125830" value="not devered with warring sign." />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481313229" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h1&gt;Message Read and Delivery&lt;/h1&gt;" />
+        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h3&gt;Message Read and Delivery&lt;/h3&gt;" />
       </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481315446" nodeInfo="ng">
         <property name="text" nameId="tsp6.2861239048481125830" value="There are two different ways for read and delivery statuses for encrypted and plain messages." />
