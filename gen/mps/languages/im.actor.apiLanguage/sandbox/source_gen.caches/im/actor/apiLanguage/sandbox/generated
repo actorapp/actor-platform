@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dependencies version="2" modelHash="6kulf9tltm3yhx5dcm0x7pbwv16ddfu">
-  <common hash="8cogz7ev43pr90r2gg59ca13e6vyof" />
-  <source id="2348480312264243645" name="ActorApi" hash="-a9n4c19ecd9hvvy1ejscsiodispj7fk">
+<dependencies version="2" modelHash="dpl5c2vha6yaa2rv1vwqtn7mzfk5lib">
+  <common hash="dfltcyel53p31eyuilxdhs15o0glqlq" />
+  <source id="2348480312264243645" name="ActorApi" hash="cqlmc4mkozai6rymram1br0bjpcfhhq">
     <file name="ActorApi.json" />
+  </source>
+  <source id="25480617308691955" name="ActorPlain" hash="-3727n58hfl4y18mb0xawhn9gxhxp3o6">
+    <file name="ActorPlain.json" />
   </source>
 </dependencies>
 

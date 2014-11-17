@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dependenciesRoot>
   <dependency className="im.actor.apiLanguage.sandbox.ActorApi" file="ActorApi.json" />
+  <dependency className="im.actor.apiLanguage.sandbox.ActorPlain" file="ActorPlain.json" />
 </dependenciesRoot>
 
