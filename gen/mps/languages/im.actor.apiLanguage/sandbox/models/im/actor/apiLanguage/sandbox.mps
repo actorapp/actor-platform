@@ -1853,7 +1853,9 @@
           <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395601716" nodeInfo="ng">
             <property name="id" nameId="tsp6.2348480312264746197" value="5" />
             <property name="name" nameId="tpck.1169194664001" value="users" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395601726" nodeInfo="ng" />
+            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="4092665470042288145" nodeInfo="ng">
+              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="4092665470042288151" nodeInfo="ng" />
+            </node>
           </node>
           <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395601685" nodeInfo="ng">
             <property name="hexValue" nameId="tsp6.4689615199750888593" value="42" />
