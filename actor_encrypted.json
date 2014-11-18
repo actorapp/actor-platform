@@ -2,6 +2,7 @@
   "sections": [
     {
       "title": "End-To-End messages",
+      "package": "e2e",
       "doc": [
         "Basic conainer for End-To-End message is PlainPackage.",
         "If messageType in PlainPackage == 1 than contents of body is PlainMessage.",
