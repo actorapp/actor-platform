@@ -3,17 +3,21 @@
     {
       "title": "Authentication",
       "doc": [
-        "Actor now support only one way for authentication - by SMS or phone call.",
-        "Authorization steps:",
-        "1) Request SMS Code by calling RequestAuthCode",
-        "2) If SMS arrives than send Authorization code in RequestAuthCodeSignIn/SignUp",
-        "3) If sms doesn't arrive for a long time - request phone activation by ",
-        "   calling AuthCodeCall",
-        " ",
-        "* If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.",
-        "* If on any step API return PHONE_CODE_EXPIRED than application MUST start ",
-        "authorization process from begining.",
-        "* Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format."
+        "<p>Actor now support only one way for authentication - by SMS or phone call.</p>",
+        "<p>Authorization steps:",
+        "<ol>",
+        "<li>Request SMS Code by calling RequestAuthCode</li>",
+        "<li>If SMS arrives than send Authorization code in <a href=\"#rpcSignIn\">SignIn</a>/",
+        "<a href=\"#rpcSignUp\">SignUp</a></li>",
+        "<li>If sms doesn't arrive for a long time - request phone activation by ",
+        "   calling AuthCodeCall</li>",
+        "</ol>",
+        "</p>",
+        "Some rules<br/>",
+        "If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.<br/>",
+        "If on any step API return PHONE_CODE_EXPIRED than application MUST start ",
+        "authorization process from begining.<br/>",
+        "Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.<br/>"
       ],
       "items": [
         {
@@ -38,7 +42,22 @@
               ]
             },
             "doc": [
-              "#400: PHONE_NUMBER_INVALID"
+              "Requesting SMS auth code",
+              {
+                "type": "reference",
+                "argument": "phoneNumber",
+                "description": "Phone number in international format"
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "description": "Application ID"
+              },
+              {
+                "type": "reference",
+                "argument": "apiKey",
+                "description": "Application API key"
+              }
             ],
             "attributes": [
               {
@@ -60,6 +79,9 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "RequestAuthCodeCall",
@@ -69,8 +91,27 @@
               "name": "Void"
             },
             "doc": [
-              "#400: PHONE_CODE_EXPIRED",
-              "#400: PHONE_NUMBER_INVALID"
+              "Requesting Phone activation",
+              {
+                "type": "reference",
+                "argument": "phoneNumber",
+                "description": "Phone number in international format"
+              },
+              {
+                "type": "reference",
+                "argument": "smsHash",
+                "description": "Code request hash from RequestAuthCode"
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "description": "Application ID"
+              },
+              {
+                "type": "reference",
+                "argument": "apiKey",
+                "description": "Application API key"
+              }
             ],
             "attributes": [
               {
@@ -95,6 +136,9 @@
               }
             ]
           }
+        },
+        {
+          "type": "empty"
         },
         {
           "type": "response",
@@ -127,6 +171,9 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SignIn",
@@ -136,12 +183,47 @@
               "name": "Auth"
             },
             "doc": [
-              "#400: INVALID_KEY",
-              "#400: PHONE_NUMBER_UNOCCUPIED",
-              "#400: PHONE_CODE_INVALID ",
-              "#400: PHONE_CODE_EXPIRED",
-              "#400: PHONE_CODE_EMPTY",
-              "#400: PHONE_NUMBER_INVALID"
+              "Performing user signin",
+              {
+                "type": "reference",
+                "argument": "phoneNumber",
+                "description": "Phone number in international format"
+              },
+              {
+                "type": "reference",
+                "argument": "smsHash",
+                "description": "Code request hash from RequestAuthCode"
+              },
+              {
+                "type": "reference",
+                "argument": "smsCode",
+                "description": "Confirmation code from SMS"
+              },
+              {
+                "type": "reference",
+                "argument": "publicKey",
+                "description": "Device RSA 2048 bit public key in x.509 format"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceHash",
+                "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceTitle",
+                "description": "Device title like 'Steven's iPhone'"
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "description": "Application ID"
+              },
+              {
+                "type": "reference",
+                "argument": "appKey",
+                "description": "Application API key"
+              }
             ],
             "attributes": [
               {
@@ -188,6 +270,9 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SignUp",
@@ -197,11 +282,53 @@
               "name": "Auth"
             },
             "doc": [
-              "#400: INVALID_KEY",
-              "#400: PHONE_CODE_EXPIRED",
-              "#400: PHONE_CODE_EMPTY",
-              "#400: PHONE_NUMBER_INVALID",
-              "#400: NAME_INVALID"
+              "Performing user signup. If user perform signup on already registered user it just override previous",
+              "profile information",
+              {
+                "type": "reference",
+                "argument": "phoneNumber",
+                "description": "Phone number in international format"
+              },
+              {
+                "type": "reference",
+                "argument": "smsHash",
+                "description": "Code request hash from RequestAuthCode"
+              },
+              {
+                "type": "reference",
+                "argument": "smsCode",
+                "description": "Confirmation code from SMS"
+              },
+              {
+                "type": "reference",
+                "argument": "name",
+                "description": "User name"
+              },
+              {
+                "type": "reference",
+                "argument": "publicKey",
+                "description": "Device RSA 2048 bit public key in x.509 format"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceHash",
+                "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceTitle",
+                "description": "Device title like 'Steven's iPhone'"
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "description": "Application ID"
+              },
+              {
+                "type": "reference",
+                "argument": "appKey",
+                "description": "pplication API key"
+              }
             ],
             "attributes": [
               {
@@ -258,9 +385,67 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
+          "type": "comment",
+          "content": "Auth controll"
+        },
+        {
+          "type": "empty"
+        },
+        {
           "type": "struct",
           "content": {
             "name": "AuthItem",
+            "doc": [
+              "Authentication session",
+              {
+                "type": "reference",
+                "argument": "id",
+                "description": "  Unuque ID of session"
+              },
+              {
+                "type": "reference",
+                "argument": "authHolder",
+                "description": "  holder of session. 0 - this device, 1 - other."
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "description": "  Application Id (user in SignIn/SignUp)"
+              },
+              {
+                "type": "reference",
+                "argument": "appTitle",
+                "description": "  Title of application"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceTitle",
+                "description": "  Title of device"
+              },
+              {
+                "type": "reference",
+                "argument": "authTime",
+                "description": "  Time of session creating"
+              },
+              {
+                "type": "reference",
+                "argument": "authLocation",
+                "description": "  two-letter country code of session create"
+              },
+              {
+                "type": "reference",
+                "argument": "latitude",
+                "description": "  optional latitude of auth if available"
+              },
+              {
+                "type": "reference",
+                "argument": "longitude",
+                "description": "  optional longitude of auth if available"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -338,6 +523,9 @@
                 }
               ]
             },
+            "doc": [
+              "Getting of all active user's authentication sessions"
+            ],
             "attributes": []
           }
         },
@@ -350,6 +538,14 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Logout on specified user's session",
+              {
+                "type": "reference",
+                "argument": "id",
+                "description": "id from AuthItem"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -368,6 +564,9 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Logout on all exept current sessions"
+            ],
             "attributes": []
           }
         },
@@ -380,6 +579,9 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Logout current session"
+            ],
             "attributes": []
           }
         }
@@ -398,6 +600,10 @@
         "any time by calling EditUserLocalName method."
       ],
       "items": [
+        {
+          "type": "comment",
+          "content": "Model"
+        },
         {
           "type": "enum",
           "content": {
@@ -419,9 +625,55 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "struct",
           "content": {
             "name": "User",
+            "doc": [
+              "Main user object",
+              {
+                "type": "reference",
+                "argument": "id",
+                "description": "  uid"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "description": "  user's access hash"
+              },
+              {
+                "type": "reference",
+                "argument": "name",
+                "description": "  user's name"
+              },
+              {
+                "type": "reference",
+                "argument": "localName",
+                "description": "  user's local name"
+              },
+              {
+                "type": "reference",
+                "argument": "sex",
+                "description": "  optional sex of user"
+              },
+              {
+                "type": "reference",
+                "argument": "keyHashes",
+                "description": "  key hashes of user"
+              },
+              {
+                "type": "reference",
+                "argument": "phone",
+                "description": "  Phone number of user"
+              },
+              {
+                "type": "reference",
+                "argument": "avatar",
+                "description": "  avatar of user"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -485,6 +737,9 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "EditUserLocalName",
@@ -493,6 +748,24 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Renaming of user's visible name",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "target User's uid"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "description": "User's accessHash"
+              },
+              {
+                "type": "reference",
+                "argument": "name",
+                "description": "New user name"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -513,10 +786,26 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "update",
           "content": {
             "name": "UserAvatarChanged",
             "header": 16,
+            "doc": [
+              "Update about avatar changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  user's uid"
+              },
+              {
+                "type": "reference",
+                "argument": "avatar",
+                "description": "  user's new avatar"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -542,6 +831,19 @@
           "content": {
             "name": "UserNameChanged",
             "header": 32,
+            "doc": [
+              "Update about name changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  user's uid"
+              },
+              {
+                "type": "reference",
+                "argument": "name",
+                "description": "  user's name"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -561,6 +863,19 @@
           "content": {
             "name": "UserLocalNameChanged",
             "header": 51,
+            "doc": [
+              "Update about local name changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  user's uid"
+              },
+              {
+                "type": "reference",
+                "argument": "localName",
+                "description": "  new user's local name"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -592,6 +907,14 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Changing account's name",
+              {
+                "type": "reference",
+                "argument": "name",
+                "description": "New name"
+              }
+            ],
             "attributes": [
               {
                 "type": "string",
@@ -610,6 +933,14 @@
               "type": "reference",
               "name": "AvatarChanged"
             },
+            "doc": [
+              "Changing account's avatar",
+              {
+                "type": "reference",
+                "argument": "fileLocation",
+                "description": "File Location of uploaded unencrypted avatar"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -631,6 +962,9 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Removing account's avatar"
+            ],
             "attributes": []
           }
         }
@@ -655,9 +989,26 @@
       ],
       "items": [
         {
+          "type": "comment",
+          "content": "Import"
+        },
+        {
           "type": "struct",
           "content": {
             "name": "PhoneToImport",
+            "doc": [
+              "Phone for import",
+              {
+                "type": "reference",
+                "argument": "phoneNumber",
+                "description": "  phone number for import in international format"
+              },
+              {
+                "type": "reference",
+                "argument": "name",
+                "description": "  optional name for contact"
+              }
+            ],
             "attributes": [
               {
                 "type": "int64",
@@ -679,6 +1030,19 @@
           "type": "struct",
           "content": {
             "name": "EmailToImport",
+            "doc": [
+              "Email for import",
+              {
+                "type": "reference",
+                "argument": "email",
+                "description": "  email for importing"
+              },
+              {
+                "type": "reference",
+                "argument": "name",
+                "description": "  optional name for contact"
+              }
+            ],
             "attributes": [
               {
                 "type": "string",
@@ -728,6 +1092,20 @@
                 }
               ]
             },
+            "doc": [
+              "Importing phones and emails for building contact list",
+              "Maximum amount of items for import per method call equals to 100.",
+              {
+                "type": "reference",
+                "argument": "phones",
+                "description": "Phones for import"
+              },
+              {
+                "type": "reference",
+                "argument": "emails",
+                "description": "Emails for import"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -753,6 +1131,13 @@
               }
             ]
           }
+        },
+        {
+          "type": "empty"
+        },
+        {
+          "type": "comment",
+          "content": "Working with list"
         },
         {
           "type": "rpc",
@@ -781,6 +1166,17 @@
                 }
               ]
             },
+            "doc": [
+              "Getting current contact list",
+              "SHA256 hash of list of a comma-separated list of contact UIDs in ascending ",
+              "order may be passed in contactsHash parameter. ",
+              "If the contact list was not changed, isNotChanged will be true.",
+              {
+                "type": "reference",
+                "argument": "contactsHash",
+                "description": "Hash of saved list in application"
+              }
+            ],
             "attributes": [
               {
                 "type": "string",
@@ -799,6 +1195,19 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Removing contact from contact list",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "Contact's UID"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "description": "Contact's AccessHash"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -822,6 +1231,19 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Adding contact to contact list",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "Contact's UID"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "description": "Contact's AccessHash"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -858,6 +1280,9 @@
                 }
               ]
             },
+            "doc": [
+              "Searching contacts by user's query"
+            ],
             "attributes": [
               {
                 "type": "string",
@@ -868,10 +1293,31 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "update",
           "content": {
             "name": "ContactRegistered",
             "header": 5,
+            "doc": [
+              "Update about contact registration",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  contact's uid"
+              },
+              {
+                "type": "reference",
+                "argument": "isSilent",
+                "description": "  is registration silent. If this value is true then don't show notification about registration"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  date of registration"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -896,6 +1342,14 @@
           "content": {
             "name": "ContactsAdded",
             "header": 40,
+            "doc": [
+              "Update about contacts added",
+              {
+                "type": "reference",
+                "argument": "uids",
+                "description": "  added contacts"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -913,6 +1367,14 @@
           "content": {
             "name": "ContactsRemoved",
             "header": 41,
+            "doc": [
+              "Update about contacts removed",
+              {
+                "type": "reference",
+                "argument": "uids",
+                "description": "  removed contacts"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -930,33 +1392,34 @@
     {
       "title": "Messaging",
       "doc": [
-        "<h1>Overview</h1>",
         "Actor can work with encrypted and plain messages in one conversation. For both types of messages API",
         "contains a bit different methods. Also encrypted and plain messages have different schemes.",
-        "<h1>Messages</h1>",
+        "<h3>Messages</h3>",
         "Message entity contains:",
-        "* PeerType - group chat or private",
-        "* PeerId - group or user id of conversation",
-        "* RandomId - unique id of message that generated by sender. In Encrypted messages random id is encrypted.",
-        "* Date - date of message (calculated on server)",
-        "* Content",
-        "<h1>Message content</h1>",
+        "<ul>",
+        "<li>PeerType - group chat or private</li>",
+        "<li>PeerId - group or user id of conversation</li>",
+        "<li>RandomId - unique id of message that generated by sender. In Encrypted messages random id is encrypted.</li>",
+        "<li>Date - date of message (calculated on server)</li>",
+        "<li>Content</li>",
+        "</ul>",
+        "<h3>Message content</h3>",
         "Message can be one of three basic types of messages: Text Message, File Message and Service message.",
         "All messages can contain extensions. For example we can send text message and add markdown extension with ",
         "formatted text in markdown and clients that support this extension will show markdown, and that clients that",
         "not supported extension then show simple text. File messages can have photo, video or voice extensions.",
         "Service message can have extensions extensions such as \"user added\", \"group created\", \"avatar changed\", etc.",
-        "<h1>Send messages</h1>",
+        "<h3>Send messages</h3>",
         "Sending messages looks same for encrypted and plain messages. Client MUST prepare all required data",
         "before sending message (for example FastThumb for photo/video/documents) and call required methods. ",
         "Encrypted messages differs here only by a little different scheme and encryption.",
-        "<h1>WRONG_KEYS and incorrect keys</h1>",
+        "<h3>WRONG_KEYS and incorrect keys</h3>",
         "For sending encrypted messages client MUST send messages encrypted for all own and receivers keys.",
         "If client send encryption with missing, old or incorrect keys it will receive WRONG_KEYS.",
         "In WRONG_KEYS you need to deserialize relatedData from RpcError to WrongKeysErrorData",
         "and get detailed information about keys. Sometimes there are some broken keys on server and client can't ",
         "encrypt messages with it than client MUST send empty encrypted key in request elsewhere API return WRONG_KEYS.",
-        "<h1>Encrypted messages and New Devices</h1>",
+        "<h3>Encrypted messages and New Devices</h3>",
         "When you send message to someone and when he registered with new device there are no way to receive old encrypted",
         "messages on new device and because of this there are a problem about read/delivery statuses. ",
         "Alice send messages to Bob, but Bob lose his device and  buy new iPhone and installed Actor.",
@@ -966,16 +1429,33 @@
         "a lot of unnecessary traffic. For resolving this small issue we have different ways of message statuses",
         "for encrypted and plain messages. Also it is recomended to mark all undelivered messages on new device update as ",
         "not devered with warring sign.",
-        "<h1>Message Read and Delivery</h1>",
+        "<h3>Message Read and Delivery</h3>",
         "There are two different ways for read and delivery statuses for encrypted and plain messages.",
         "For encrypted messages used status change by RandomId and for plain messages used by maximum",
         "date of read/delivered message."
       ],
       "items": [
         {
+          "type": "comment",
+          "content": "Model"
+        },
+        {
           "type": "struct",
           "content": {
             "name": "MessageContent",
+            "doc": [
+              "Content of message",
+              {
+                "type": "reference",
+                "argument": "type",
+                "description": "  type of content. 1 => TextMessage, 2 => ServiceMessage, 3 => FileMessage"
+              },
+              {
+                "type": "reference",
+                "argument": "content",
+                "description": "  serialized content of message"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -994,6 +1474,24 @@
           "type": "struct",
           "content": {
             "name": "TextMessage",
+            "doc": [
+              "Text message",
+              {
+                "type": "reference",
+                "argument": "text",
+                "description": "  the text"
+              },
+              {
+                "type": "reference",
+                "argument": "extType",
+                "description": "  type of extension. Now there are no extensions."
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "description": "  Optional bytes of extension"
+              }
+            ],
             "attributes": [
               {
                 "type": "string",
@@ -1020,6 +1518,19 @@
           "type": "struct",
           "content": {
             "name": "ServiceMessage",
+            "doc": [
+              "Service message",
+              {
+                "type": "reference",
+                "argument": "text",
+                "description": "  service message text"
+              },
+              {
+                "type": "reference",
+                "argument": "extType",
+                "description": "  extension type. 0x01 => ServiceExUserAdded, 0x02 => ServiceExUserKicked, 0x03 => ServiveExUserLeft, 0x04 => ServiceExGroupCreated, 0x05 => ServiceExGroupChangedTitle, 0x06 => ServiceExGroupChangedAvatar"
+              }
+            ],
             "attributes": [
               {
                 "type": "string",
@@ -1046,6 +1557,14 @@
           "type": "struct",
           "content": {
             "name": "ServiceExUserAdded",
+            "doc": [
+              "Service message about adding user to group",
+              {
+                "type": "reference",
+                "argument": "addedUid",
+                "description": "  added user id"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -1059,6 +1578,14 @@
           "type": "struct",
           "content": {
             "name": "ServiceExUserKicked",
+            "doc": [
+              "Service message about kicking user from group",
+              {
+                "type": "reference",
+                "argument": "kickedUid",
+                "description": "  kicked user id"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -1072,6 +1599,9 @@
           "type": "struct",
           "content": {
             "name": "ServiceExUserLeft",
+            "doc": [
+              "Service message about user left group"
+            ],
             "attributes": []
           }
         },
@@ -1079,13 +1609,19 @@
           "type": "struct",
           "content": {
             "name": "ServiceExGroupCreated",
+            "doc": [
+              "Service message about group creating"
+            ],
             "attributes": []
           }
         },
         {
           "type": "struct",
           "content": {
-            "name": "ServiceExChangedTItle",
+            "name": "ServiceExChangedTitle",
+            "doc": [
+              "Service message about group title change"
+            ],
             "attributes": [
               {
                 "type": "string",
@@ -1099,6 +1635,9 @@
           "type": "struct",
           "content": {
             "name": "ServiceExChangedAvatar",
+            "doc": [
+              "Service message about avatar change"
+            ],
             "attributes": [
               {
                 "type": {
@@ -1118,6 +1657,44 @@
           "type": "struct",
           "content": {
             "name": "FileMessage",
+            "doc": [
+              "File message",
+              {
+                "type": "reference",
+                "argument": "fileId",
+                "description": "  file id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "description": "  file access hash"
+              },
+              {
+                "type": "reference",
+                "argument": "fileSize",
+                "description": "  file size"
+              },
+              {
+                "type": "reference",
+                "argument": "name",
+                "description": "  name of file"
+              },
+              {
+                "type": "reference",
+                "argument": "mimeType",
+                "description": "  mimetype of file"
+              },
+              {
+                "type": "reference",
+                "argument": "thumb",
+                "description": "  optional thumb of file. JPEG less that 90x90 with 60-70 quality."
+              },
+              {
+                "type": "reference",
+                "argument": "extType",
+                "description": "  Extension type. 0x01 => FileExPhoto, 0x02 => FileExVideo, 0x03 => FileExVoice"
+              }
+            ],
             "attributes": [
               {
                 "type": "int64",
@@ -1175,6 +1752,19 @@
           "type": "struct",
           "content": {
             "name": "FileExPhoto",
+            "doc": [
+              "File photo extension",
+              {
+                "type": "reference",
+                "argument": "w",
+                "description": "  image width"
+              },
+              {
+                "type": "reference",
+                "argument": "h",
+                "description": "  image height"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -1193,6 +1783,24 @@
           "type": "struct",
           "content": {
             "name": "FileExVideo",
+            "doc": [
+              "File video extension",
+              {
+                "type": "reference",
+                "argument": "w",
+                "description": "  video width"
+              },
+              {
+                "type": "reference",
+                "argument": "h",
+                "description": "  video height"
+              },
+              {
+                "type": "reference",
+                "argument": "duration",
+                "description": "  video duration"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -1216,6 +1824,14 @@
           "type": "struct",
           "content": {
             "name": "FileExVoice",
+            "doc": [
+              "File voice extension",
+              {
+                "type": "reference",
+                "argument": "duration",
+                "description": "  voice duration"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -1226,9 +1842,30 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "struct",
           "content": {
             "name": "WrongKeysErrorData",
+            "doc": [
+              "Error's Related data for WRRONG_KEYS in sendMessage",
+              {
+                "type": "reference",
+                "argument": "newKeys",
+                "description": "  added keys to user"
+              },
+              {
+                "type": "reference",
+                "argument": "removedKeys",
+                "description": "  disabled keys"
+              },
+              {
+                "type": "reference",
+                "argument": "invalidKeys",
+                "description": "  invalid keys"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -1267,10 +1904,31 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "response",
           "content": {
             "name": "MessageSent",
             "header": 115,
+            "doc": [
+              "Response about message sent",
+              {
+                "type": "reference",
+                "argument": "seq",
+                "description": "  Sequence number in update sequence"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "description": "  Seuqnce state value"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  date of message"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -1294,6 +1952,19 @@
           "type": "struct",
           "content": {
             "name": "EncryptedAesKey",
+            "doc": [
+              "Encrypted AES key for encrypted messages",
+              {
+                "type": "reference",
+                "argument": "keyHash",
+                "description": "  hash of public key of encrypted aes key"
+              },
+              {
+                "type": "reference",
+                "argument": "aesEncryptedKey",
+                "description": "  encrypted aes key"
+              }
+            ],
             "attributes": [
               {
                 "type": "int64",
@@ -1317,6 +1988,34 @@
               "type": "reference",
               "name": "MessageSent"
             },
+            "doc": [
+              "Sending encrypted message",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "Destination peer for message"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "Message random id (generated on client side)"
+              },
+              {
+                "type": "reference",
+                "argument": "encryptedMessage",
+                "description": "message encrypted by random aes key"
+              },
+              {
+                "type": "reference",
+                "argument": "keys",
+                "description": "encrypted aes keys for receivers devices"
+              },
+              {
+                "type": "reference",
+                "argument": "ownKeys",
+                "description": "encrypted aes keys for own devices"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -1370,6 +2069,24 @@
               "type": "reference",
               "name": "MessageSent"
             },
+            "doc": [
+              "Sending plain message",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "Destination peer for message (now supported only user's peer)"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "Message random id (generated on clien side)"
+              },
+              {
+                "type": "reference",
+                "argument": "message",
+                "description": "The message"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -1404,6 +2121,19 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Confirmation of encrypted message receive by device",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "Message random id"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -1430,6 +2160,19 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Marking encrypted message as read",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "Message random id"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -1456,6 +2199,19 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Confirmation of plain message receive by device",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "Maximum date of received messages"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -1468,7 +2224,7 @@
               {
                 "type": "int64",
                 "id": 3,
-                "name": "rid"
+                "name": "date"
               }
             ]
           }
@@ -1482,6 +2238,19 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Marking plain messages as read",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "Maximum date of read messages"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -1508,6 +2277,19 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Deleting messages",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "Message random id"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -1534,6 +2316,14 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Clearing of conversation (without removing dialog from dialogs list)",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "Conversation peer"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -1555,6 +2345,14 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Deleting of conversation (also leave group for group conversations)",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "Conversation peer"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -1568,10 +2366,45 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
+          "type": "comment",
+          "content": "Logic"
+        },
+        {
           "type": "update",
           "content": {
             "name": "EncryptedMessage",
             "header": 1,
+            "doc": [
+              "Update about encrypted message",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "senderUid",
+                "description": "  sender of message"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  date of message"
+              },
+              {
+                "type": "reference",
+                "argument": "keyHash",
+                "description": "  device's public key hash"
+              },
+              {
+                "type": "reference",
+                "argument": "aesEncryptedKey",
+                "description": "  Encrypted key for current device"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -1677,6 +2510,10 @@
           }
         },
         {
+          "type": "comment",
+          "content": "Encrypted"
+        },
+        {
           "type": "update",
           "content": {
             "name": "EncryptedReceived",
@@ -1753,6 +2590,10 @@
           }
         },
         {
+          "type": "comment",
+          "content": "Plain"
+        },
+        {
           "type": "update",
           "content": {
             "name": "MessageReceived",
@@ -1827,6 +2668,10 @@
               }
             ]
           }
+        },
+        {
+          "type": "comment",
+          "content": "Message deletions"
         },
         {
           "type": "update",
@@ -1945,6 +2790,9 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "CreateGroup",
@@ -1981,6 +2829,24 @@
                 }
               ]
             },
+            "doc": [
+              "Creating group chat",
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "Random Id for avoiding double create"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "description": "Group title"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "description": "Members of group"
+              }
+            ],
             "attributes": [
               {
                 "type": "int64",
@@ -2015,6 +2881,19 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Changing group title",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "description": "new group title"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2041,6 +2920,19 @@
               "type": "reference",
               "name": "AvatarChanged"
             },
+            "doc": [
+              "Changing group avatar",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "fileLocation",
+                "description": "uploaded file for avatar"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2070,6 +2962,14 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Removing group avatar",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "description": "Group's peer"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2091,6 +2991,19 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Inviting users to group",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "description": "Users for invitation"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2123,6 +3036,14 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Leaving group",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "description": "Group's peer"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2144,6 +3065,14 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Leaving and deleting group (similar to DeleteChat)",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "description": "Group's peer"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2165,6 +3094,19 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Removing users from group",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "description": "users for removing"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2189,10 +3131,31 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "update",
           "content": {
             "name": "GroupInvite",
             "header": 36,
+            "doc": [
+              "Update about inviting current user to group",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "inviteUid",
+                "description": "  Inviter UID. If equals to current uid than group created by user."
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  Date of creating"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2217,6 +3180,29 @@
           "content": {
             "name": "GroupUserAdded",
             "header": 21,
+            "doc": [
+              "Update about adding user to group",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  Added user ID"
+              },
+              {
+                "type": "reference",
+                "argument": "inviterUid",
+                "description": "  Inviter user ID"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  Date of adding user to group"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2246,6 +3232,24 @@
           "content": {
             "name": "GroupUserLeave",
             "header": 23,
+            "doc": [
+              "Update about leaving user",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  User's ID"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  Date of user leave"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2270,6 +3274,29 @@
           "content": {
             "name": "GroupUserKick",
             "header": 24,
+            "doc": [
+              "Update about kicking user",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  Kicked user's ID"
+              },
+              {
+                "type": "reference",
+                "argument": "kickerUid",
+                "description": "  Kicker user's ID"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  Date of user kick"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2299,6 +3326,19 @@
           "content": {
             "name": "GroupMembersUpdate",
             "header": 44,
+            "doc": [
+              "Silent group members update",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "members",
+                "description": "  New members list"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2321,6 +3361,29 @@
           "content": {
             "name": "GroupTitleChanged",
             "header": 38,
+            "doc": [
+              "Update about group title change",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  Changer UID"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "description": "  New Title of group"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  Date of title change"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2350,6 +3413,29 @@
           "content": {
             "name": "GroupAvatarChanged",
             "header": 39,
+            "doc": [
+              "Update about group avatar change",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  Avatar changer uid"
+              },
+              {
+                "type": "reference",
+                "argument": "avatar",
+                "description": "  New Avatar. If null then avatar is removed"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  Date of avatar change"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2416,6 +3502,29 @@
           "type": "struct",
           "content": {
             "name": "HistoryMessage",
+            "doc": [
+              "Message from history",
+              {
+                "type": "reference",
+                "argument": "senderUid",
+                "description": "  Sender of mesasge"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "  Random Id of message"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  Date of message"
+              },
+              {
+                "type": "reference",
+                "argument": "message",
+                "description": "  Content of message"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2476,6 +3585,24 @@
                 }
               ]
             },
+            "doc": [
+              "Loading history of chat",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "Peer of conversation"
+              },
+              {
+                "type": "reference",
+                "argument": "startDate",
+                "description": "start date of messages for loading or 0 for loading from start"
+              },
+              {
+                "type": "reference",
+                "argument": "limit",
+                "description": "maximum amount of messages (max is 100)"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2499,9 +3626,50 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "struct",
           "content": {
             "name": "Dialog",
+            "doc": [
+              "Conversation from history",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "  Peer of conversation"
+              },
+              {
+                "type": "reference",
+                "argument": "unreadCount",
+                "description": "  plain messages unread messages count"
+              },
+              {
+                "type": "reference",
+                "argument": "sortDate",
+                "description": "  date of conversation for sorting"
+              },
+              {
+                "type": "reference",
+                "argument": "senderUid",
+                "description": "  Sender of top message (may be zero)"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "  Random ID of top message (may be zero)"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  Date of top message (can't be zero)"
+              },
+              {
+                "type": "reference",
+                "argument": "message",
+                "description": "  Content of message"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2591,6 +3759,19 @@
                 }
               ]
             },
+            "doc": [
+              "Loading conversation history",
+              {
+                "type": "reference",
+                "argument": "startDate",
+                "description": "start date of conversation loading"
+              },
+              {
+                "type": "reference",
+                "argument": "limit",
+                "description": "limit maximum amount of messages (max is 100)"
+              }
+            ],
             "attributes": [
               {
                 "type": "int64",
@@ -2609,11 +3790,30 @@
     },
     {
       "title": "Encryption",
+      "doc": [
+        "When user authenticates application send it's RSA public key for receiving encrypted messages.",
+        "Each public key has keyHash that calculated on server side.",
+        "Before sending encrypted messages application need to download all required receiver's and own",
+        "public keys"
+      ],
       "items": [
         {
           "type": "struct",
           "content": {
             "name": "UserKey",
+            "doc": [
+              "User public key reference",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  User ID"
+              },
+              {
+                "type": "reference",
+                "argument": "keyHash",
+                "description": "  Public key hash"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2632,6 +3832,24 @@
           "type": "struct",
           "content": {
             "name": "PublicKey",
+            "doc": [
+              "Public Key",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  Key's User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyHash",
+                "description": "  hash of user's key"
+              },
+              {
+                "type": "reference",
+                "argument": "key",
+                "description": "  RSA Public Key in x.509 format"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2656,6 +3874,29 @@
           "content": {
             "name": "NewDevice",
             "header": 2,
+            "doc": [
+              "Update about new public key of user",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  User's ID"
+              },
+              {
+                "type": "reference",
+                "argument": "keyHash",
+                "description": "  Public key hash"
+              },
+              {
+                "type": "reference",
+                "argument": "key",
+                "description": "  optional RSA Public Key in x.509 format"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  Date of adding new key"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2688,6 +3929,19 @@
           "content": {
             "name": "RemovedDevice",
             "header": 37,
+            "doc": [
+              "Update about removing public key of user",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  User's ID"
+              },
+              {
+                "type": "reference",
+                "argument": "keyHash",
+                "description": "  Key Hash of removed key"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2703,9 +3957,30 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "struct",
           "content": {
             "name": "PublicKeyRequest",
+            "doc": [
+              "Request for download public key",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  uiser's ID"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "description": "  Access Hash of User"
+              },
+              {
+                "type": "reference",
+                "argument": "keyHash",
+                "description": "  Public Key hash"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2747,6 +4022,14 @@
                 }
               ]
             },
+            "doc": [
+              "Loading required publick keys",
+              {
+                "type": "reference",
+                "argument": "keys",
+                "description": "key requests"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2776,6 +4059,19 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Sending typing notification",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "typingType",
+                "description": "typing type."
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2802,6 +4098,19 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Sending online state",
+              {
+                "type": "reference",
+                "argument": "isOnline",
+                "description": "is user online"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "description": "timeout of online state"
+              }
+            ],
             "attributes": [
               {
                 "type": "bool",
@@ -2817,10 +4126,31 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "update",
           "content": {
             "name": "Typing",
             "header": 6,
+            "doc": [
+              "Update about user's typing",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "description": "  Conversation peer"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "typingType",
+                "description": "  Type of typing"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2848,6 +4178,14 @@
           "content": {
             "name": "UserOnline",
             "header": 7,
+            "doc": [
+              "Update about user became online",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  User's Id"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2862,6 +4200,14 @@
           "content": {
             "name": "UserOffline",
             "header": 8,
+            "doc": [
+              "Update about user became offline",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  User's id"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2876,6 +4222,19 @@
           "content": {
             "name": "UserLastSeen",
             "header": 9,
+            "doc": [
+              "Update about user's last seen state",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "time",
+                "description": "  Last seen time"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2895,6 +4254,19 @@
           "content": {
             "name": "GroupOnline",
             "header": 33,
+            "doc": [
+              "Update about group online change",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "description": "  Group id"
+              },
+              {
+                "type": "reference",
+                "argument": "count",
+                "description": "  current online user's count"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -2918,6 +4290,19 @@
           "type": "struct",
           "content": {
             "name": "FileLocation",
+            "doc": [
+              "Location of file on server",
+              {
+                "type": "reference",
+                "argument": "fileId",
+                "description": "  Unique Id of file"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "description": "  Access hash of file"
+              }
+            ],
             "attributes": [
               {
                 "type": "int64",
@@ -2936,6 +4321,29 @@
           "type": "struct",
           "content": {
             "name": "AvatarImage",
+            "doc": [
+              "Avatar Image",
+              {
+                "type": "reference",
+                "argument": "fileLocation",
+                "description": "  Location of file"
+              },
+              {
+                "type": "reference",
+                "argument": "width",
+                "description": "  Width of avatar image"
+              },
+              {
+                "type": "reference",
+                "argument": "height",
+                "description": "  Height of avatar image"
+              },
+              {
+                "type": "reference",
+                "argument": "fileSize",
+                "description": "  Size of file"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -2967,6 +4375,24 @@
           "type": "struct",
           "content": {
             "name": "Avatar",
+            "doc": [
+              "Avatar of User or Group",
+              {
+                "type": "reference",
+                "argument": "smallImage",
+                "description": "  Optional small image of avatar box in 100x100"
+              },
+              {
+                "type": "reference",
+                "argument": "largeImage",
+                "description": "  Optional large image of avatar box in 200x200"
+              },
+              {
+                "type": "reference",
+                "argument": "fullImage",
+                "description": "  Optional full screen image of avatar"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3008,6 +4434,24 @@
           "type": "struct",
           "content": {
             "name": "FastThumb",
+            "doc": [
+              "Fast thumb of media messages. Less than 90x90 and compressed by JPEG with low quality",
+              {
+                "type": "reference",
+                "argument": "w",
+                "description": "  Width of thumb"
+              },
+              {
+                "type": "reference",
+                "argument": "h",
+                "description": "  Height of thump"
+              },
+              {
+                "type": "reference",
+                "argument": "thumb",
+                "description": "  compressed image data"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -3043,6 +4487,24 @@
                 }
               ]
             },
+            "doc": [
+              "Downloading file part",
+              {
+                "type": "reference",
+                "argument": "fileLocation",
+                "description": "location of file"
+              },
+              {
+                "type": "reference",
+                "argument": "offset",
+                "description": "offset in file in bytes"
+              },
+              {
+                "type": "reference",
+                "argument": "limit",
+                "description": "maximum size of file part"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3066,9 +4528,20 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "struct",
           "content": {
             "name": "UploadConfig",
+            "doc": [
+              "Reference for upload session",
+              {
+                "type": "reference",
+                "argument": "serverData",
+                "description": "  server related data for upload"
+              }
+            ],
             "attributes": [
               {
                 "type": "bytes",
@@ -3097,6 +4570,9 @@
                 }
               ]
             },
+            "doc": [
+              "Starting file upload"
+            ],
             "attributes": []
           }
         },
@@ -3109,6 +4585,19 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Uploading part of file",
+              {
+                "type": "reference",
+                "argument": "blockIndex",
+                "description": "index of block"
+              },
+              {
+                "type": "reference",
+                "argument": "payload",
+                "description": "block payload"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3150,6 +4639,24 @@
                 }
               ]
             },
+            "doc": [
+              "Complete uploading",
+              {
+                "type": "reference",
+                "argument": "config",
+                "description": "Upload configuration"
+              },
+              {
+                "type": "reference",
+                "argument": "blocksCount",
+                "description": "blocks count"
+              },
+              {
+                "type": "reference",
+                "argument": "crc32",
+                "description": "crc32 of uploaded file"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3176,6 +4683,10 @@
     },
     {
       "title": "Push",
+      "doc": [
+        "Vendor's pushes for receiving push notifications.",
+        "Push notification contains current sequence number of main sequence."
+      ],
       "items": [
         {
           "type": "rpc",
@@ -3186,6 +4697,19 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Registering push token on server",
+              {
+                "type": "reference",
+                "argument": "projectId",
+                "description": "Project Id of token"
+              },
+              {
+                "type": "reference",
+                "argument": "token",
+                "description": "token value"
+              }
+            ],
             "attributes": [
               {
                 "type": "int64",
@@ -3209,6 +4733,19 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Registering apple push on server",
+              {
+                "type": "reference",
+                "argument": "apnsKey",
+                "description": "apns key id"
+              },
+              {
+                "type": "reference",
+                "argument": "token",
+                "description": "token value"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -3232,6 +4769,9 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Unregister push"
+            ],
             "attributes": []
           }
         }
@@ -3239,6 +4779,9 @@
     },
     {
       "title": "Peers",
+      "doc": [
+        "Peer is an identificator of specific conversation."
+      ],
       "items": [
         {
           "type": "enum",
@@ -3260,6 +4803,19 @@
           "type": "struct",
           "content": {
             "name": "Peer",
+            "doc": [
+              "Peer",
+              {
+                "type": "reference",
+                "argument": "type",
+                "description": "  Peer Type"
+              },
+              {
+                "type": "reference",
+                "argument": "id",
+                "description": "  Peer Id"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3281,6 +4837,24 @@
           "type": "struct",
           "content": {
             "name": "OutPeer",
+            "doc": [
+              "Out peer with access hash",
+              {
+                "type": "reference",
+                "argument": "type",
+                "description": "  Peer Type"
+              },
+              {
+                "type": "reference",
+                "argument": "id",
+                "description": "  Peer Id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "description": "  Peer access hash"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3307,6 +4881,19 @@
           "type": "struct",
           "content": {
             "name": "UserOutPeer",
+            "doc": [
+              "User's out peer",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "description": "  User's access hash"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -3325,6 +4912,19 @@
           "type": "struct",
           "content": {
             "name": "GroupOutPeer",
+            "doc": [
+              "Group's out peer",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "description": "  Group's Id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "description": "  Group's access hash"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -3343,12 +4943,46 @@
     },
     {
       "title": "Sequence and Updates",
+      "doc": [
+        "Each device has it's own update sequence. At the begining application request initial sequence state by",
+        "calling GetState. On each application restart or NewSessionCreated application calls GetDifference for receiving",
+        "updates in update sequence.",
+        "GetState and GetDifference automatically subscribes session to receiving updates in session.",
+        "Each update has seq and state. Seq is sequental index of updated and used for detecting of holes in update sequence",
+        "(because of server failure or session die) on client side.",
+        "All updates needed to be processed in partucular order according to seq values.",
+        "In some updates there can be references to users that are not available at client yer. In this case application need",
+        "to ignore such update and init getting difference."
+      ],
       "items": [
         {
           "type": "update_box",
           "content": {
             "name": "SeqUpdate",
             "header": 13,
+            "doc": [
+              "Sequence update",
+              {
+                "type": "reference",
+                "argument": "seq",
+                "description": "  Sequence number of update"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "description": "  Sequece state of update"
+              },
+              {
+                "type": "reference",
+                "argument": "updateHeader",
+                "description": "  header of update"
+              },
+              {
+                "type": "reference",
+                "argument": "update",
+                "description": "  The update"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -3378,6 +5012,39 @@
           "content": {
             "name": "FatSeqUpdate",
             "header": 73,
+            "doc": [
+              "Fat sequence update with additional data",
+              {
+                "type": "reference",
+                "argument": "seq",
+                "description": "  Sequence number of update"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "description": "  Sequence state of update"
+              },
+              {
+                "type": "reference",
+                "argument": "updateHeader",
+                "description": "  header of update"
+              },
+              {
+                "type": "reference",
+                "argument": "update",
+                "description": "  The update"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "description": "  Users that are referenced in update "
+              },
+              {
+                "type": "reference",
+                "argument": "groups",
+                "description": "  Groups that are referenced in update"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -3429,6 +5096,24 @@
           "content": {
             "name": "WeakUpdate",
             "header": 26,
+            "doc": [
+              "Out of sequence update (for typing and online statuses)",
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  Date of update"
+              },
+              {
+                "type": "reference",
+                "argument": "updateHeader",
+                "description": "  Header of update"
+              },
+              {
+                "type": "reference",
+                "argument": "update",
+                "description": "  The update"
+              }
+            ],
             "attributes": [
               {
                 "type": "int64",
@@ -3438,7 +5123,7 @@
               {
                 "type": "int32",
                 "id": 2,
-                "name": "updateId"
+                "name": "updateHeader"
               },
               {
                 "type": "bytes",
@@ -3453,8 +5138,14 @@
           "content": {
             "name": "SeqUpdateTooLong",
             "header": 25,
+            "doc": [
+              "Notification about requiring performing manual GetDifference"
+            ],
             "attributes": []
           }
+        },
+        {
+          "type": "empty"
         },
         {
           "type": "rpc",
@@ -3465,6 +5156,9 @@
               "type": "reference",
               "name": "Seq"
             },
+            "doc": [
+              "Get main sequence state"
+            ],
             "attributes": []
           }
         },
@@ -3472,11 +5166,24 @@
           "type": "struct",
           "content": {
             "name": "DifferenceUpdate",
+            "doc": [
+              "Update from GetDifference",
+              {
+                "type": "reference",
+                "argument": "updateHeader",
+                "description": "  Header of update"
+              },
+              {
+                "type": "reference",
+                "argument": "update",
+                "description": "  The update"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
                 "id": 1,
-                "name": "updateId"
+                "name": "updateHeader"
               },
               {
                 "type": "bytes",
@@ -3545,6 +5252,9 @@
                 }
               ]
             },
+            "doc": [
+              "Getting difference of sequence"
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -3560,6 +5270,9 @@
           }
         },
         {
+          "type": "empty"
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SubscribeToOnline",
@@ -3568,6 +5281,14 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Subscribing for users online",
+              {
+                "type": "reference",
+                "argument": "users",
+                "description": "Users for subscription"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3592,6 +5313,14 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Removing subscription for users online",
+              {
+                "type": "reference",
+                "argument": "users",
+                "description": "Users of subscriptions"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3610,12 +5339,20 @@
         {
           "type": "rpc",
           "content": {
-            "name": "SubscribeToGrouOnline",
+            "name": "SubscribeToGroupOnline",
             "header": 74,
             "response": {
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Subscribing for groups online",
+              {
+                "type": "reference",
+                "argument": "groups",
+                "description": "Groups for subscription"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3640,6 +5377,14 @@
               "type": "reference",
               "name": "Void"
             },
+            "doc": [
+              "Removing subscription for groups online",
+              {
+                "type": "reference",
+                "argument": "groups",
+                "description": "Groups of subscriptions"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3665,6 +5410,9 @@
           "content": {
             "name": "Void",
             "header": 50,
+            "doc": [
+              "Empty response"
+            ],
             "attributes": []
           }
         },
@@ -3673,6 +5421,19 @@
           "content": {
             "name": "Seq",
             "header": 72,
+            "doc": [
+              "Sequence response. Methods that return this value must process response in particular order",
+              {
+                "type": "reference",
+                "argument": "seq",
+                "description": "  Sequence number of response"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "description": "  Sequence state of response"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -3692,6 +5453,24 @@
           "content": {
             "name": "AvatarChanged",
             "header": 68,
+            "doc": [
+              "Response of Group or Profile avatar change",
+              {
+                "type": "reference",
+                "argument": "avatar",
+                "description": "  new avatar"
+              },
+              {
+                "type": "reference",
+                "argument": "seq",
+                "description": "  Sequence number of response"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "description": "  Sequence state of response"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3718,6 +5497,14 @@
           "type": "struct",
           "content": {
             "name": "Config",
+            "doc": [
+              "Configuration of system",
+              {
+                "type": "reference",
+                "argument": "maxGroupSize",
+                "description": "  Current maximum group size"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -3732,6 +5519,14 @@
           "content": {
             "name": "Config",
             "header": 42,
+            "doc": [
+              "Update about config change",
+              {
+                "type": "reference",
+                "argument": "config",
+                "description": "  new config"
+              }
+            ],
             "attributes": [
               {
                 "type": {
