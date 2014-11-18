@@ -96,6 +96,25 @@
               </node>
               <node role="part" roleId="2omo.1237306115446" type="2omo.NewLineAppendPart" typeId="2omo.1237305208784" id="803735062396033367" nodeInfo="ng" />
             </node>
+            <node role="statement" roleId="tpee.1068581517665" type="2omo.AppendOperation" typeId="2omo.1237306079178" id="3857470926885150874" nodeInfo="nn">
+              <node role="part" roleId="2omo.1237306115446" type="2omo.ConstantStringAppendPart" typeId="2omo.1237305557638" id="3857470926885151921" nodeInfo="ng">
+                <property name="value" nameId="2omo.1237305576108" value=",&quot;package&quot;:&quot;" />
+              </node>
+              <node role="part" roleId="2omo.1237306115446" type="2omo.NodeAppendPart" typeId="2omo.1237305334312" id="3857470926885152053" nodeInfo="ng">
+                <node role="value" roleId="2omo.1237305790512" type="tpee.DotExpression" typeId="tpee.1197027756228" id="3857470926885152284" nodeInfo="nn">
+                  <node role="operand" roleId="tpee.1197027771414" type="tp2q.ForEachVariableReference" typeId="tp2q.1153944233411" id="3857470926885152140" nodeInfo="nn">
+                    <link role="variable" roleId="tp2q.1153944258490" targetNodeId="803735062395770949" resolveInfo="section" />
+                  </node>
+                  <node role="operation" roleId="tpee.1197027833540" type="tp25.SPropertyAccess" typeId="tp25.1138056022639" id="3857470926885203695" nodeInfo="nn">
+                    <link role="property" roleId="tp25.1138056395725" targetNodeId="tsp6.3857470926884615265" resolveInfo="package" />
+                  </node>
+                </node>
+              </node>
+              <node role="part" roleId="2omo.1237306115446" type="2omo.ConstantStringAppendPart" typeId="2omo.1237305557638" id="3857470926885205184" nodeInfo="ng">
+                <property name="value" nameId="2omo.1237305576108" value="&quot;" />
+              </node>
+              <node role="part" roleId="2omo.1237306115446" type="2omo.NewLineAppendPart" typeId="2omo.1237305208784" id="3857470926885205331" nodeInfo="ng" />
+            </node>
             <node role="statement" roleId="tpee.1068581517665" type="tpee.IfStatement" typeId="tpee.1068580123159" id="2861239048481396097" nodeInfo="nn">
               <node role="ifTrue" roleId="tpee.1068580123161" type="tpee.StatementList" typeId="tpee.1068580123136" id="2861239048481396100" nodeInfo="sn">
                 <node role="statement" roleId="tpee.1068581517665" type="2omo.AppendOperation" typeId="2omo.1237306079178" id="2861239048481441050" nodeInfo="nn">

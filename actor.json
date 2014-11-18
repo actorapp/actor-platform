@@ -2,13 +2,13 @@
   "sections": [
     {
       "title": "Authentication",
+      "package": "auth",
       "doc": [
         "<p>Actor now support only one way for authentication - by SMS or phone call.</p>",
         "<p>Authorization steps:",
         "<ol>",
         "<li>Request SMS Code by calling RequestAuthCode</li>",
-        "<li>If SMS arrives than send Authorization code in <a href=\"#rpcSignIn\">SignIn</a>/",
-        "<a href=\"#rpcSignUp\">SignUp</a></li>",
+        "<li>If SMS arrives than send Authorization code in SignIn/SignUp</li>",
         "<li>If sms doesn't arrive for a long time - request phone activation by ",
         "   calling AuthCodeCall</li>",
         "</ol>",
@@ -79,9 +79,6 @@
           }
         },
         {
-          "type": "empty"
-        },
-        {
           "type": "rpc",
           "content": {
             "name": "RequestAuthCodeCall",
@@ -138,13 +135,28 @@
           }
         },
         {
-          "type": "empty"
-        },
-        {
           "type": "response",
           "content": {
             "name": "Auth",
             "header": 5,
+            "doc": [
+              "Authentication result",
+              {
+                "type": "reference",
+                "argument": "publicKeyHash",
+                "description": "  Public Key Hash of current authentication"
+              },
+              {
+                "type": "reference",
+                "argument": "user",
+                "description": "  The authenticated User"
+              },
+              {
+                "type": "reference",
+                "argument": "config",
+                "description": "  Current config of server"
+              }
+            ],
             "attributes": [
               {
                 "type": "int64",
@@ -169,9 +181,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "empty"
         },
         {
           "type": "rpc",
@@ -268,9 +277,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "empty"
         },
         {
           "type": "rpc",
@@ -383,16 +389,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "empty"
-        },
-        {
-          "type": "comment",
-          "content": "Auth controll"
-        },
-        {
-          "type": "empty"
         },
         {
           "type": "struct",
@@ -589,6 +585,7 @@
     },
     {
       "title": "Users",
+      "package": "users",
       "doc": [
         "Users are objects that secured by accessHash. You can't load user profile by it's id.",
         "You can't send message to user without finding it's object in Updates or by calling",
@@ -623,9 +620,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "empty"
         },
         {
           "type": "struct",
@@ -737,9 +731,6 @@
           }
         },
         {
-          "type": "empty"
-        },
-        {
           "type": "rpc",
           "content": {
             "name": "EditUserLocalName",
@@ -784,9 +775,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "empty"
         },
         {
           "type": "update",
@@ -897,6 +885,7 @@
     },
     {
       "title": "Profile",
+      "package": "profile",
       "items": [
         {
           "type": "rpc",
@@ -972,6 +961,7 @@
     },
     {
       "title": "Contacts",
+      "package": "contacts",
       "doc": [
         "Before working with contact list is is useful to import contacts from phone first by calling",
         "method ImportContacts#0x07.",
@@ -1391,6 +1381,7 @@
     },
     {
       "title": "Messaging",
+      "package": "messaging",
       "doc": [
         "Actor can work with encrypted and plain messages in one conversation. For both types of messages API",
         "contains a bit different methods. Also encrypted and plain messages have different schemes.",
@@ -2447,6 +2438,9 @@
           "content": {
             "name": "Message",
             "header": 55,
+            "doc": [
+              "Update about plain message"
+            ],
             "attributes": [
               {
                 "type": {
@@ -2736,6 +2730,7 @@
     },
     {
       "title": "Groups",
+      "package": "groups",
       "items": [
         {
           "type": "struct",
@@ -3470,6 +3465,7 @@
     },
     {
       "title": "Message and Dialogs lists",
+      "package": "conversations",
       "doc": [
         "<h1>Overview</h1>",
         "Actor can work with encrypted and plain messages and encrypted messages does not appear in history,",
@@ -3790,6 +3786,7 @@
     },
     {
       "title": "Encryption",
+      "package": "encryption",
       "doc": [
         "When user authenticates application send it's RSA public key for receiving encrypted messages.",
         "Each public key has keyHash that calculated on server side.",
@@ -4049,6 +4046,7 @@
     },
     {
       "title": "Typing and Online",
+      "package": "weak",
       "items": [
         {
           "type": "rpc",
@@ -4285,6 +4283,7 @@
     },
     {
       "title": "Media and Files",
+      "package": "files",
       "items": [
         {
           "type": "struct",
@@ -4683,6 +4682,7 @@
     },
     {
       "title": "Push",
+      "package": "push",
       "doc": [
         "Vendor's pushes for receiving push notifications.",
         "Push notification contains current sequence number of main sequence."
@@ -4779,6 +4779,7 @@
     },
     {
       "title": "Peers",
+      "package": "peers",
       "doc": [
         "Peer is an identificator of specific conversation."
       ],
@@ -4943,6 +4944,7 @@
     },
     {
       "title": "Sequence and Updates",
+      "package": "sequence",
       "doc": [
         "Each device has it's own update sequence. At the begining application request initial sequence state by",
         "calling GetState. On each application restart or NewSessionCreated application calls GetDifference for receiving",
@@ -5403,7 +5405,8 @@
       ]
     },
     {
-      "title": "Common",
+      "title": "Miscellaneous",
+      "package": "misc",
       "items": [
         {
           "type": "response",
