@@ -156,5 +156,11 @@
       </node>
     </node>
   </root>
+  <root type="1i04.ConceptBehavior" typeId="1i04.1225194240794" id="773119248390080616" nodeInfo="ng">
+    <link role="concept" roleId="1i04.1225194240799" targetNodeId="tsp6.773119248390078458" resolveInfo="StructDocParameter" />
+    <node role="constructor" roleId="1i04.1225194240801" type="1i04.ConceptConstructorDeclaration" typeId="1i04.1225194413805" id="773119248390080768" nodeInfo="nn">
+      <node role="body" roleId="tpee.1137022507850" type="tpee.StatementList" typeId="tpee.1068580123136" id="773119248390080769" nodeInfo="sn" />
+    </node>
+  </root>
 </model>
 
