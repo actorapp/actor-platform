@@ -5,8 +5,7 @@
 //<p>Authorization steps:
 //<ol>
 //<li>Request SMS Code by calling RequestAuthCode</li>
-//<li>If SMS arrives than send Authorization code in <a href="#rpcSignIn">SignIn</a>/
-//<a href="#rpcSignUp">SignUp</a></li>
+//<li>If SMS arrives than send Authorization code in SignIn/SignUp</li>
 //<li>If sms doesn't arrive for a long time - request phone activation by 
 //   calling AuthCodeCall</li>
 //</ol>
@@ -50,6 +49,10 @@ message RequestRequestAuthCodeCall {
 }
 
 // API#0x05
+// Authentication result
+// publicKeyHash  Public Key Hash of current authentication
+// user  The authenticated User
+// config  Current config of server
 message ResponseAuth {
     required int64 publicKeyHash = 1;
     required User user = 2;
@@ -670,6 +673,7 @@ message UpdateEncryptedMessage {
 }
 
 // API#0x37
+// Update about plain message
 message UpdateMessage {
     required Peer peer = 1;
     required int32 senderUid = 2;
@@ -1460,7 +1464,7 @@ message RequestSubscribeFromGroupOnline {
 }
 
 //////////////////////////////////////////////////////
-// Common
+// Miscellaneous
 //////////////////////////////////////////////////////
 
 // API#0x32
