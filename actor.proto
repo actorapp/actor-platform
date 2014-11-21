@@ -17,19 +17,19 @@
 //Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.<br/>
 
 // API#0x01
-// ResponseRequestAuthCode
+// ResponseAuthCode
 // Requesting SMS auth code
 // phoneNumberPhone number in international format
 // appIdApplication ID
 // apiKeyApplication API key
-message RequestRequestAuthCode {
+message RequestAuthCode {
     required int64 phoneNumber = 1;
     required int32 appId = 2;
     required string apiKey = 3;
 }
 
 // API#0x02
-message ResponseRequestAuthCode {
+message ResponseAuthCode {
     required string smsHash = 1;
     required bool isRegistered = 2;
 }
@@ -41,7 +41,7 @@ message ResponseRequestAuthCode {
 // smsHashCode request hash from RequestAuthCode
 // appIdApplication ID
 // apiKeyApplication API key
-message RequestRequestAuthCodeCall {
+message RequestAuthCodeCall {
     required int64 phoneNumber = 1;
     required string smsHash = 2;
     required int32 appId = 3;
