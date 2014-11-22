@@ -1,2 +1,5 @@
 gen/mps/languages/im.actor.apiLanguage/classes_gen
 gen/mps/languages/im.actor.apiLanguage/source_gen
+gen/mps/languages/im.actor.apiLanguage/typesystem/generated
+gen/mps/languages/im.actor.apiLanguage/source_gen.caches
+gen/mps/.mps/workspace.xml
