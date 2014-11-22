@@ -1428,7 +1428,7 @@ message ResponseGetDifference {
     repeated User users = 3;
     repeated Group groups = 6;
     repeated DifferenceUpdate updates = 4;
-    required bool needMode = 5;
+    required bool needMore = 5;
 }
 
 // API#0x20
