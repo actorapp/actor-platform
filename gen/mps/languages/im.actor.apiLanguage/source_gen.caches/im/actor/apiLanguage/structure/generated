@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dependencies version="2" modelHash="-r1fifycyrvnowm7g15xg3x1jqbxt17">
+<dependencies version="2" modelHash="35cpr17awyzg2hqbupcipjs80fmttka">
   <dep model="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" hash="5sdbpqxziyuazpb9j1p4zdk6bnvbn49" />
   <dep model="r:00000000-0000-4000-0000-011c89590293(jetbrains.mps.lang.structure.generator_new.baseLanguage@generator)" hash="-5mgxduek28h3ywdzzsk4capaz4hgjm0" />
   <dep model="r:00000000-0000-4000-0000-011c895902cd(jetbrains.mps.baseLanguage.generator.java.main@generator)" hash="303xz1b2lyseld0axia86q3lpvucmq6" />
   <dep model="r:b4d7d620-6723-4aa2-856b-118497e84e9e(jetbrains.mps.baseLanguage.generator.java.strings@generator)" hash="b4ewbuz42qcbg1awca5bacgi0vopxqt" />
   <dep model="r:f04c1476-2f91-4f59-be13-c8e009abebee(jetbrains.mps.baseLanguageInternal.generator.template.main@generator)" hash="a8elw7fctzg6sg8fe36u9gzu42axhdb" />
-  <common hash="6thp7sphzq3zgx58tufwjzpfht0yzbt" dependsOnNodes="true">
+  <common hash="5nh8uotkjzk0tggutjx8iw5wdkaqrqt" dependsOnNodes="true">
     <dep root="2348480312264231121" />
     <dep root="2348480312264231173" />
     <dep root="2348480312264231180" />
@@ -49,6 +49,7 @@
     <dep root="5312209286554516176" />
     <dep root="5312209286554595283" />
     <dep root="5312209286555037514" />
+    <dep root="5857873509721568548" />
     <dep root="773119248390000806" />
     <dep root="773119248390047284" />
     <dep root="773119248390078458" />
@@ -62,7 +63,7 @@
     <dep model="r:f04c1476-2f91-4f59-be13-c8e009abebee(jetbrains.mps.baseLanguageInternal.generator.template.main@generator)" />
     <file name="StructureAspectDescriptor.java" />
   </common>
-  <source id="2348480312264231121" name="Struct" hash="3epo5svj4adqi9rlpyyi13br48g3lh7" />
+  <source id="2348480312264231121" name="Struct" hash="47g47mzbktrrhne0xjqq27asu6mws4t" />
   <source id="2348480312264231180" name="Int32" hash="-3gj8vot6v3wzgtdp5ipdt1defi18g5" />
   <source id="2348480312264231184" name="Int64" hash="c7nubhwmbvtkt4memi9ocbeqruajxkh" />
   <source id="2348480312264231189" name="Boolean" hash="-bnc7g4xsp0ocdpijv3w3pxhonmf2nz1" />
@@ -70,7 +71,7 @@
   <source id="2348480312264231173" name="SerializableType" hash="-4wddo72ebmjmvedmmch9710fcpex550" />
   <source id="2348480312264232735" name="Optional" hash="3hm6tq00lhmczjgb251rj2b2j3di01d" />
   <source id="2348480312264232754" name="List" hash="58ovedtn4kei5989rm7fd5gopav76ti" />
-  <source id="2348480312264232779" name="ApiDescription" hash="2vt55qge8wnczdttnr1y24sqgr0rd0h" />
+  <source id="2348480312264232779" name="ApiDescription" hash="c5odd9r3o0amuvkfnkgeykhyp7u2p4j" />
   <source id="2348480312264233334" name="StructType" hash="e2jl74id7w0dw0vbra5e5v772ee135g" />
   <source id="2348480312264233362" name="ApiSection" hash="4ldh7fbfysbv2wswpnnm92qtadnj5xe" />
   <source id="2348480312264233376" name="ApiDef" hash="6in9zvtj5ik6628rcx96dpjy7gw6pul" />
@@ -109,10 +110,11 @@
   <source id="773119248390000806" name="StructDoc" hash="3zrf24u992qo7lydm8na02ikpb0zng7" />
   <source id="773119248390047284" name="StructDocComment" hash="eftra9tvmsjg9dt04cfdukq25437qpq" />
   <source id="773119248390078458" name="StructDocParameter" hash="attkmmqpcv14hiwc2mykgg8wsbb0xs8" />
-  <source id="5312209286553449813" name="ApiAlias" hash="-erqfaftluxktpgodsgzcp08dw21avtr" />
+  <source id="5312209286553449813" name="ApiAlias" hash="ed3o9mvqyb9tcnu0r3byiunj0703si6" />
   <source id="5312209286553980838" name="AliasType" hash="9snl5z6ugdd9ssvsv22h3r0fv6a6qx5" />
-  <source id="5312209286554516176" name="Interface" hash="2f1otierrtsnu8oxlih953237rp978j" />
-  <source id="5312209286554595283" name="InterfaceAttribute" hash="agy2ej5y2copustoy2xv6ybw0t71ske" />
-  <source id="5312209286555037514" name="InterfaceRef" hash="-b1lvzp27uh1g91joa9qcufcthlwqxfv" />
+  <source id="5312209286554516176" name="Trait" hash="-kiktqfmojpc2omcy48ldanh1l10g6r" />
+  <source id="5312209286554595283" name="TraitAttribute" hash="81nfavpqiip4v0wzimwcacqo8137w7k" />
+  <source id="5312209286555037514" name="InterfaceRef" hash="-4rtm3ifrcmmq1otq82dppjnpmdxvhcj" />
+  <source id="5857873509721568548" name="TraitType" hash="3gysapsr0pb52uqsf50mth6gdcmwil9" />
 </dependencies>
 

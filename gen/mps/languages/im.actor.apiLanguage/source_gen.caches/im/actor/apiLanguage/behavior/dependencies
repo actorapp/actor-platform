@@ -7,10 +7,13 @@
     <classNode extendsClassName="jetbrains.mps.smodel.runtime.impl.CompiledBehaviorDescriptor" />
   </dependency>
   <dependency className="im.actor.apiLanguage.behavior.ApiAlias_BehaviorDescriptor" file="ApiAlias_BehaviorDescriptor.java">
-    <classNode dependClassName="im.actor.apiLanguage.behavior.ApiNamedDef_BehaviorDescriptor" />
     <classNode dependClassName="im.actor.apiLanguage.behavior.IEntity_BehaviorDescriptor" />
     <classNode dependClassName="java.lang.Override" />
     <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="jetbrains.mps.lang.core.behavior.BaseConcept_BehaviorDescriptor" />
+    <classNode dependClassName="jetbrains.mps.lang.core.behavior.INamedConcept_Behavior" />
+    <classNode dependClassName="jetbrains.mps.lang.core.behavior.INamedConcept_BehaviorDescriptor" />
+    <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode extendsClassName="java.lang.Cloneable" />
     <classNode extendsClassName="jetbrains.mps.smodel.runtime.impl.CompiledBehaviorDescriptor" />
   </dependency>
@@ -79,9 +82,7 @@
     <classNode dependClassName="im.actor.apiLanguage.behavior.HeaderKey_BehaviorDescriptor" />
     <classNode dependClassName="im.actor.apiLanguage.behavior.Int32_BehaviorDescriptor" />
     <classNode dependClassName="im.actor.apiLanguage.behavior.Int64_BehaviorDescriptor" />
-    <classNode dependClassName="im.actor.apiLanguage.behavior.InterfaceAttribute_BehaviorDescriptor" />
     <classNode dependClassName="im.actor.apiLanguage.behavior.InterfaceRef_BehaviorDescriptor" />
-    <classNode dependClassName="im.actor.apiLanguage.behavior.Interface_BehaviorDescriptor" />
     <classNode dependClassName="im.actor.apiLanguage.behavior.List_BehaviorDescriptor" />
     <classNode dependClassName="im.actor.apiLanguage.behavior.MethodThrows_BehaviorDescriptor" />
     <classNode dependClassName="im.actor.apiLanguage.behavior.Optional_BehaviorDescriptor" />
@@ -98,6 +99,9 @@
     <classNode dependClassName="im.actor.apiLanguage.behavior.StructDocParameter_BehaviorDescriptor" />
     <classNode dependClassName="im.actor.apiLanguage.behavior.StructType_BehaviorDescriptor" />
     <classNode dependClassName="im.actor.apiLanguage.behavior.Struct_BehaviorDescriptor" />
+    <classNode dependClassName="im.actor.apiLanguage.behavior.TraitAttribute_BehaviorDescriptor" />
+    <classNode dependClassName="im.actor.apiLanguage.behavior.TraitType_BehaviorDescriptor" />
+    <classNode dependClassName="im.actor.apiLanguage.behavior.Trait_BehaviorDescriptor" />
     <classNode dependClassName="im.actor.apiLanguage.behavior.UpdateBox_BehaviorDescriptor" />
     <classNode dependClassName="im.actor.apiLanguage.behavior.Update_BehaviorDescriptor" />
     <classNode dependClassName="java.lang.String" />
@@ -207,26 +211,10 @@
     <classNode dependClassName="java.lang.String" />
     <classNode extendsClassName="jetbrains.mps.smodel.runtime.impl.CompiledBehaviorDescriptor" />
   </dependency>
-  <dependency className="im.actor.apiLanguage.behavior.InterfaceAttribute_BehaviorDescriptor" file="InterfaceAttribute_BehaviorDescriptor.java">
-    <classNode dependClassName="java.lang.Override" />
-    <classNode dependClassName="java.lang.String" />
-    <classNode dependClassName="jetbrains.mps.lang.core.behavior.BaseConcept_BehaviorDescriptor" />
-    <classNode dependClassName="jetbrains.mps.lang.core.behavior.INamedConcept_Behavior" />
-    <classNode dependClassName="jetbrains.mps.lang.core.behavior.INamedConcept_BehaviorDescriptor" />
-    <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode extendsClassName="java.lang.Cloneable" />
-    <classNode extendsClassName="jetbrains.mps.smodel.runtime.impl.CompiledBehaviorDescriptor" />
-  </dependency>
   <dependency className="im.actor.apiLanguage.behavior.InterfaceRef_BehaviorDescriptor" file="InterfaceRef_BehaviorDescriptor.java">
     <classNode dependClassName="java.lang.Override" />
     <classNode dependClassName="java.lang.String" />
     <classNode dependClassName="jetbrains.mps.lang.core.behavior.BaseConcept_BehaviorDescriptor" />
-    <classNode extendsClassName="jetbrains.mps.smodel.runtime.impl.CompiledBehaviorDescriptor" />
-  </dependency>
-  <dependency className="im.actor.apiLanguage.behavior.Interface_BehaviorDescriptor" file="Interface_BehaviorDescriptor.java">
-    <classNode dependClassName="im.actor.apiLanguage.behavior.ApiNamedDef_BehaviorDescriptor" />
-    <classNode dependClassName="java.lang.Override" />
-    <classNode dependClassName="java.lang.String" />
     <classNode extendsClassName="jetbrains.mps.smodel.runtime.impl.CompiledBehaviorDescriptor" />
   </dependency>
   <dependency className="im.actor.apiLanguage.behavior.List_BehaviorDescriptor" file="List_BehaviorDescriptor.java">
@@ -385,6 +373,28 @@
     <classNode dependClassName="jetbrains.mps.scope.Scope" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode extendsClassName="java.lang.Cloneable" />
+    <classNode extendsClassName="jetbrains.mps.smodel.runtime.impl.CompiledBehaviorDescriptor" />
+  </dependency>
+  <dependency className="im.actor.apiLanguage.behavior.TraitAttribute_BehaviorDescriptor" file="TraitAttribute_BehaviorDescriptor.java">
+    <classNode dependClassName="java.lang.Override" />
+    <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="jetbrains.mps.lang.core.behavior.BaseConcept_BehaviorDescriptor" />
+    <classNode dependClassName="jetbrains.mps.lang.core.behavior.INamedConcept_Behavior" />
+    <classNode dependClassName="jetbrains.mps.lang.core.behavior.INamedConcept_BehaviorDescriptor" />
+    <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
+    <classNode extendsClassName="java.lang.Cloneable" />
+    <classNode extendsClassName="jetbrains.mps.smodel.runtime.impl.CompiledBehaviorDescriptor" />
+  </dependency>
+  <dependency className="im.actor.apiLanguage.behavior.TraitType_BehaviorDescriptor" file="TraitType_BehaviorDescriptor.java">
+    <classNode dependClassName="im.actor.apiLanguage.behavior.SerializableType_BehaviorDescriptor" />
+    <classNode dependClassName="java.lang.Override" />
+    <classNode dependClassName="java.lang.String" />
+    <classNode extendsClassName="jetbrains.mps.smodel.runtime.impl.CompiledBehaviorDescriptor" />
+  </dependency>
+  <dependency className="im.actor.apiLanguage.behavior.Trait_BehaviorDescriptor" file="Trait_BehaviorDescriptor.java">
+    <classNode dependClassName="im.actor.apiLanguage.behavior.ApiNamedDef_BehaviorDescriptor" />
+    <classNode dependClassName="java.lang.Override" />
+    <classNode dependClassName="java.lang.String" />
     <classNode extendsClassName="jetbrains.mps.smodel.runtime.impl.CompiledBehaviorDescriptor" />
   </dependency>
   <dependency className="im.actor.apiLanguage.behavior.UpdateBox_BehaviorDescriptor" file="UpdateBox_BehaviorDescriptor.java">

@@ -38,48 +38,50 @@ public class EditorAspectDescriptorImpl implements EditorAspectDescriptor {
       case 10:
         return Collections.<ConceptEditor>singletonList(new HeaderKey_Editor());
       case 11:
-        return Collections.<ConceptEditor>singletonList(new Interface_Editor());
-      case 12:
-        return Collections.<ConceptEditor>singletonList(new InterfaceAttribute_Editor());
-      case 13:
         return Collections.<ConceptEditor>singletonList(new InterfaceRef_Editor());
-      case 14:
+      case 12:
         return Collections.<ConceptEditor>singletonList(new List_Editor());
-      case 15:
+      case 13:
         return Collections.<ConceptEditor>singletonList(new MethodThrows_Editor());
-      case 16:
+      case 14:
         return Collections.<ConceptEditor>singletonList(new Optional_Editor());
-      case 17:
+      case 15:
         return Collections.<ConceptEditor>singletonList(new Response_Editor());
-      case 18:
+      case 16:
         return Collections.<ConceptEditor>singletonList(new ResponseRef_Editor());
-      case 19:
+      case 17:
         return Collections.<ConceptEditor>singletonList(new ResponseRefAnonymous_Editor());
-      case 20:
+      case 18:
         return Collections.<ConceptEditor>singletonList(new ResponseRefValue_Editor());
-      case 21:
+      case 19:
         return Collections.<ConceptEditor>singletonList(new Rpc_Editor());
-      case 22:
+      case 20:
         return Collections.<ConceptEditor>singletonList(new RpcDocComment_Editor());
-      case 23:
+      case 21:
         return Collections.<ConceptEditor>singletonList(new RpcDocParameter_Editor());
-      case 24:
+      case 22:
         return Collections.<ConceptEditor>singletonList(new SectionDoc_Editor());
-      case 25:
+      case 23:
         return Collections.<ConceptEditor>singletonList(new SerializableType_Editor());
-      case 26:
+      case 24:
         return Collections.<ConceptEditor>singletonList(new Struct_Editor());
-      case 27:
+      case 25:
         return Collections.<ConceptEditor>singletonList(new StructAttribute_Editor());
-      case 28:
+      case 26:
         return Collections.<ConceptEditor>singletonList(new StructDocComment_Editor());
-      case 29:
+      case 27:
         return Collections.<ConceptEditor>singletonList(new StructDocParameter_Editor());
-      case 30:
+      case 28:
         return Collections.<ConceptEditor>singletonList(new StructType_Editor());
+      case 29:
+        return Collections.<ConceptEditor>singletonList(new Trait_Editor());
+      case 30:
+        return Collections.<ConceptEditor>singletonList(new TraitAttribute_Editor());
       case 31:
-        return Collections.<ConceptEditor>singletonList(new Update_Editor());
+        return Collections.<ConceptEditor>singletonList(new TraitType_Editor());
       case 32:
+        return Collections.<ConceptEditor>singletonList(new Update_Editor());
+      case 33:
         return Collections.<ConceptEditor>singletonList(new UpdateBox_Editor());
       default:
     }
@@ -92,5 +94,5 @@ public class EditorAspectDescriptorImpl implements EditorAspectDescriptor {
 
 
 
-  private static String[] stringSwitchCases_xbvbvu_a0a0b = new String[]{"im.actor.apiLanguage.structure.AliasType", "im.actor.apiLanguage.structure.ApiAlias", "im.actor.apiLanguage.structure.ApiComment", "im.actor.apiLanguage.structure.ApiDef", "im.actor.apiLanguage.structure.ApiDescription", "im.actor.apiLanguage.structure.ApiEmptyDef", "im.actor.apiLanguage.structure.ApiSection", "im.actor.apiLanguage.structure.Enum", "im.actor.apiLanguage.structure.EnumAttribute", "im.actor.apiLanguage.structure.EnumType", "im.actor.apiLanguage.structure.HeaderKey", "im.actor.apiLanguage.structure.Interface", "im.actor.apiLanguage.structure.InterfaceAttribute", "im.actor.apiLanguage.structure.InterfaceRef", "im.actor.apiLanguage.structure.List", "im.actor.apiLanguage.structure.MethodThrows", "im.actor.apiLanguage.structure.Optional", "im.actor.apiLanguage.structure.Response", "im.actor.apiLanguage.structure.ResponseRef", "im.actor.apiLanguage.structure.ResponseRefAnonymous", "im.actor.apiLanguage.structure.ResponseRefValue", "im.actor.apiLanguage.structure.Rpc", "im.actor.apiLanguage.structure.RpcDocComment", "im.actor.apiLanguage.structure.RpcDocParameter", "im.actor.apiLanguage.structure.SectionDoc", "im.actor.apiLanguage.structure.SerializableType", "im.actor.apiLanguage.structure.Struct", "im.actor.apiLanguage.structure.StructAttribute", "im.actor.apiLanguage.structure.StructDocComment", "im.actor.apiLanguage.structure.StructDocParameter", "im.actor.apiLanguage.structure.StructType", "im.actor.apiLanguage.structure.Update", "im.actor.apiLanguage.structure.UpdateBox"};
+  private static String[] stringSwitchCases_xbvbvu_a0a0b = new String[]{"im.actor.apiLanguage.structure.AliasType", "im.actor.apiLanguage.structure.ApiAlias", "im.actor.apiLanguage.structure.ApiComment", "im.actor.apiLanguage.structure.ApiDef", "im.actor.apiLanguage.structure.ApiDescription", "im.actor.apiLanguage.structure.ApiEmptyDef", "im.actor.apiLanguage.structure.ApiSection", "im.actor.apiLanguage.structure.Enum", "im.actor.apiLanguage.structure.EnumAttribute", "im.actor.apiLanguage.structure.EnumType", "im.actor.apiLanguage.structure.HeaderKey", "im.actor.apiLanguage.structure.InterfaceRef", "im.actor.apiLanguage.structure.List", "im.actor.apiLanguage.structure.MethodThrows", "im.actor.apiLanguage.structure.Optional", "im.actor.apiLanguage.structure.Response", "im.actor.apiLanguage.structure.ResponseRef", "im.actor.apiLanguage.structure.ResponseRefAnonymous", "im.actor.apiLanguage.structure.ResponseRefValue", "im.actor.apiLanguage.structure.Rpc", "im.actor.apiLanguage.structure.RpcDocComment", "im.actor.apiLanguage.structure.RpcDocParameter", "im.actor.apiLanguage.structure.SectionDoc", "im.actor.apiLanguage.structure.SerializableType", "im.actor.apiLanguage.structure.Struct", "im.actor.apiLanguage.structure.StructAttribute", "im.actor.apiLanguage.structure.StructDocComment", "im.actor.apiLanguage.structure.StructDocParameter", "im.actor.apiLanguage.structure.StructType", "im.actor.apiLanguage.structure.Trait", "im.actor.apiLanguage.structure.TraitAttribute", "im.actor.apiLanguage.structure.TraitType", "im.actor.apiLanguage.structure.Update", "im.actor.apiLanguage.structure.UpdateBox"};
 }
