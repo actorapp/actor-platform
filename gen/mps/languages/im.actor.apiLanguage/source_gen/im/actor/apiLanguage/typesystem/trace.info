@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <debugInfo>
-  <unitInfo fileName="TypesystemDescriptor.java" startLine="8" startPosition="0" endLine="36" endPosition="0" unitName="im.actor.apiLanguage.typesystem.TypesystemDescriptor" />
+  <unitInfo fileName="TypesystemDescriptor.java" startLine="8" startPosition="0" endLine="40" endPosition="0" unitName="im.actor.apiLanguage.typesystem.TypesystemDescriptor" />
   <root nodeRef="r:6e7b088d-9a56-43ad-8e6a-4a3f15c66539(im.actor.apiLanguage.typesystem)/2348480312264445919">
     <nodeInfo nodeId="5312209286554794578" fileName="CheckUniqueStructNames_NonTypesystemRule.java" startLine="25" startPosition="7" endLine="26" endPosition="60" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
     <nodeInfo nodeId="5312209286554794578" fileName="CheckUniqueStructNames_NonTypesystemRule.java" startLine="26" startPosition="60" endLine="27" endPosition="237" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
@@ -371,6 +371,89 @@
       <varInfo nodeId="4689615199751468303" varName="typeCheckingContext" />
     </scopeInfo>
     <unitInfo nodeId="4689615199751468303" fileName="CheckUniqueUpdateNames_NonTypesystemRule.java" startLine="19" startPosition="0" endLine="57" endPosition="0" unitName="im.actor.apiLanguage.typesystem.CheckUniqueUpdateNames_NonTypesystemRule" />
+  </root>
+  <root nodeRef="r:6e7b088d-9a56-43ad-8e6a-4a3f15c66539(im.actor.apiLanguage.typesystem)/5857873509722048208">
+    <nodeInfo nodeId="5857873509722372334" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="25" startPosition="477" endLine="26" endPosition="17" conceptFqName="jetbrains.mps.baseLanguage.structure.ContinueStatement" />
+    <nodeInfo nodeId="5857873509723056090" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="27" startPosition="7" endLine="28" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.Statement" />
+    <nodeInfo nodeId="5857873509722376194" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="28" startPosition="0" endLine="29" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.Statement" />
+    <nodeInfo nodeId="5857873509722370106" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="31" startPosition="9" endLine="32" endPosition="62" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
+    <nodeInfo nodeId="5857873509722370106" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="32" startPosition="62" endLine="33" endPosition="237" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
+    <nodeInfo nodeId="5857873509722376856" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="34" startPosition="9" endLine="35" endPosition="17" conceptFqName="jetbrains.mps.baseLanguage.structure.ContinueStatement" />
+    <nodeInfo nodeId="5857873509722372769" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="36" startPosition="7" endLine="37" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.Statement" />
+    <nodeInfo nodeId="5857873509722508303" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="37" startPosition="0" endLine="38" endPosition="30" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
+    <nodeInfo nodeId="5857873509722594059" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="40" startPosition="101" endLine="41" endPosition="25" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="5857873509722703775" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="43" startPosition="13" endLine="44" endPosition="66" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
+    <nodeInfo nodeId="5857873509722703775" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="44" startPosition="66" endLine="45" endPosition="252" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
+    <nodeInfo nodeId="5857873509722667437" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="49" startPosition="7" endLine="50" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.Statement" />
+    <nodeInfo nodeId="5857873509722698059" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="52" startPosition="9" endLine="53" endPosition="62" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
+    <nodeInfo nodeId="5857873509722698059" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="53" startPosition="62" endLine="54" endPosition="245" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
+    <nodeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="60" startPosition="46" endLine="61" endPosition="52" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="65" startPosition="5" endLine="66" endPosition="130" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
+    <nodeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="66" startPosition="130" endLine="67" endPosition="45" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="71" startPosition="30" endLine="72" endPosition="17" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="20" startPosition="0" endLine="22" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.ConstructorDeclaration" propertyString="CheckValidTraitUsage_NonTypesystemRule#()V" />
+    <nodeInfo nodeId="5857873509722346808" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="24" startPosition="77" endLine="27" endPosition="7" conceptFqName="jetbrains.mps.baseLanguage.structure.IfStatement" />
+    <nodeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="60" startPosition="0" endLine="63" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="getApplicableConceptFQName#()Ljava/lang/String;" />
+    <nodeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="71" startPosition="0" endLine="74" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="overrides#()Z" />
+    <nodeInfo nodeId="5857873509722370106" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="30" startPosition="57" endLine="34" endPosition="9" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
+    <nodeInfo nodeId="5857873509722703775" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="42" startPosition="132" endLine="46" endPosition="13" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
+    <nodeInfo nodeId="5857873509722698059" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="51" startPosition="23" endLine="55" endPosition="9" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
+    <nodeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="64" startPosition="68" endLine="68" endPosition="5" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
+    <nodeInfo nodeId="5857873509722486864" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="41" startPosition="25" endLine="47" endPosition="11" conceptFqName="jetbrains.mps.baseLanguage.structure.IfStatement" />
+    <nodeInfo nodeId="5857873509722674351" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="50" startPosition="0" endLine="56" endPosition="7" conceptFqName="jetbrains.mps.baseLanguage.structure.IfStatement" />
+    <nodeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="64" startPosition="0" endLine="70" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="isApplicableAndPattern#(Lorg/jetbrains/mps/openapi/model/SNode;)Ljetbrains/mps/lang/typesystem/runtime/IsApplicableStatus;" />
+    <nodeInfo nodeId="5857873509722356797" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="29" startPosition="0" endLine="36" endPosition="7" conceptFqName="jetbrains.mps.baseLanguage.structure.IfStatement" />
+    <nodeInfo nodeId="5857873509722448009" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="39" startPosition="102" endLine="48" endPosition="9" conceptFqName="jetbrains.mps.baseLanguage.structure.IfStatement" />
+    <nodeInfo nodeId="5857873509722423437" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="38" startPosition="30" endLine="49" endPosition="7" conceptFqName="jetbrains.mps.baseLanguage.structure.ForeachStatement" />
+    <nodeInfo nodeId="5857873509722384863" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="23" startPosition="120" endLine="57" endPosition="5" conceptFqName="jetbrains.mps.baseLanguage.structure.ForeachStatement" />
+    <nodeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="23" startPosition="0" endLine="59" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="applyRule#(Lorg/jetbrains/mps/openapi/model/SNode;Ljetbrains/mps/typesystem/inference/TypeCheckingContext;Ljetbrains/mps/lang/typesystem/runtime/IsApplicableStatus;)V" />
+    <scopeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="20" startPosition="51" endLine="20" endPosition="51" />
+    <scopeInfo nodeId="5857873509722346811" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="25" startPosition="477" endLine="26" endPosition="17" />
+    <scopeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="60" startPosition="46" endLine="61" endPosition="52" />
+    <scopeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="71" startPosition="30" endLine="72" endPosition="17" />
+    <scopeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="20" startPosition="0" endLine="22" endPosition="0" />
+    <scopeInfo nodeId="5857873509722370106" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="31" startPosition="9" endLine="33" endPosition="237">
+      <varInfo nodeId="5857873509722370106" varName="_reporter_2309309498" />
+      <varInfo nodeId="5857873509722370106" varName="errorTarget" />
+    </scopeInfo>
+    <scopeInfo nodeId="5857873509722703775" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="43" startPosition="13" endLine="45" endPosition="252">
+      <varInfo nodeId="5857873509722703775" varName="_reporter_2309309498" />
+      <varInfo nodeId="5857873509722703775" varName="errorTarget" />
+    </scopeInfo>
+    <scopeInfo nodeId="5857873509722698059" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="52" startPosition="9" endLine="54" endPosition="245">
+      <varInfo nodeId="5857873509722698059" varName="_reporter_2309309498" />
+      <varInfo nodeId="5857873509722698059" varName="errorTarget" />
+    </scopeInfo>
+    <scopeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="65" startPosition="5" endLine="67" endPosition="45">
+      <varInfo nodeId="5857873509722048208" varName="b" />
+    </scopeInfo>
+    <scopeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="60" startPosition="0" endLine="63" endPosition="0" />
+    <scopeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="71" startPosition="0" endLine="74" endPosition="0" />
+    <scopeInfo nodeId="5857873509722486865" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="42" startPosition="132" endLine="46" endPosition="13" />
+    <scopeInfo nodeId="5857873509722674354" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="51" startPosition="23" endLine="55" endPosition="9" />
+    <scopeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="64" startPosition="68" endLine="68" endPosition="5" />
+    <scopeInfo nodeId="5857873509722356798" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="30" startPosition="57" endLine="35" endPosition="17" />
+    <scopeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="64" startPosition="0" endLine="70" endPosition="0">
+      <varInfo nodeId="5857873509722048208" varName="argument" />
+    </scopeInfo>
+    <scopeInfo nodeId="5857873509722448010" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="40" startPosition="101" endLine="47" endPosition="11" />
+    <scopeInfo nodeId="5857873509722423443" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="39" startPosition="102" endLine="48" endPosition="9" />
+    <scopeInfo nodeId="5857873509722423437" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="38" startPosition="30" endLine="49" endPosition="7">
+      <varInfo nodeId="5857873509722423439" varName="n" />
+    </scopeInfo>
+    <scopeInfo nodeId="5857873509722337212" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="24" startPosition="77" endLine="56" endPosition="7">
+      <varInfo nodeId="5857873509722508306" varName="founded" />
+    </scopeInfo>
+    <scopeInfo nodeId="5857873509722048560" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="23" startPosition="120" endLine="57" endPosition="5" />
+    <scopeInfo nodeId="5857873509722384863" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="23" startPosition="120" endLine="57" endPosition="5">
+      <varInfo nodeId="5857873509722384935" varName="a" />
+    </scopeInfo>
+    <scopeInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="23" startPosition="0" endLine="59" endPosition="0">
+      <varInfo nodeId="5857873509722048208" varName="iStruct" />
+      <varInfo nodeId="5857873509722048208" varName="status" />
+      <varInfo nodeId="5857873509722048208" varName="typeCheckingContext" />
+    </scopeInfo>
+    <unitInfo nodeId="5857873509722048208" fileName="CheckValidTraitUsage_NonTypesystemRule.java" startLine="19" startPosition="0" endLine="75" endPosition="0" unitName="im.actor.apiLanguage.typesystem.CheckValidTraitUsage_NonTypesystemRule" />
   </root>
 </debugInfo>
 

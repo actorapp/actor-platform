@@ -16,13 +16,13 @@ public class StructureAspectDescriptor implements jetbrains.mps.smodel.runtime.S
       case 0:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.AliasType").super_("im.actor.apiLanguage.structure.SerializableType").parents("im.actor.apiLanguage.structure.SerializableType").references("alias").create();
       case 1:
-        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.ApiAlias").super_("im.actor.apiLanguage.structure.ApiNamedDef").parents("im.actor.apiLanguage.structure.ApiNamedDef", "im.actor.apiLanguage.structure.IEntity").children(new String[]{"sourceType"}, new boolean[]{false}).alias("alias", "").create();
+        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.ApiAlias").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept", "im.actor.apiLanguage.structure.IEntity", "jetbrains.mps.lang.core.structure.INamedConcept").children(new String[]{"sourceType"}, new boolean[]{false}).alias("alias", "").create();
       case 2:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.ApiComment").super_("im.actor.apiLanguage.structure.ApiDef").parents("im.actor.apiLanguage.structure.ApiDef").properties("text").alias("//", "").create();
       case 3:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.ApiDef").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept").create();
       case 4:
-        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.ApiDescription").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept", "jetbrains.mps.lang.core.structure.INamedConcept").children(new String[]{"sections"}, new boolean[]{true}).create();
+        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.ApiDescription").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept", "jetbrains.mps.lang.core.structure.INamedConcept").properties("objcPrefix", "javaPackage").children(new String[]{"aliases", "sections"}, new boolean[]{true, true}).create();
       case 5:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.ApiEmptyDef").super_("im.actor.apiLanguage.structure.ApiDef").parents("im.actor.apiLanguage.structure.ApiDef").create();
       case 6:
@@ -60,59 +60,61 @@ public class StructureAspectDescriptor implements jetbrains.mps.smodel.runtime.S
       case 22:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.Int64").super_("im.actor.apiLanguage.structure.SerializableType").parents("im.actor.apiLanguage.structure.SerializableType").alias("int64", "").create();
       case 23:
-        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.Interface").super_("im.actor.apiLanguage.structure.ApiNamedDef").parents("im.actor.apiLanguage.structure.ApiNamedDef").children(new String[]{"interfaces"}, new boolean[]{true}).alias("interface", "").create();
-      case 24:
-        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.InterfaceAttribute").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept", "jetbrains.mps.lang.core.structure.INamedConcept").children(new String[]{"type"}, new boolean[]{false}).create();
-      case 25:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.InterfaceRef").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept").references("interface").create();
-      case 26:
+      case 24:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.List").super_("im.actor.apiLanguage.structure.SerializableType").parents("im.actor.apiLanguage.structure.SerializableType").children(new String[]{"type"}, new boolean[]{false}).alias("list", "").create();
-      case 27:
+      case 25:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.MethodThrows").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept").properties("errorCode", "errorTag", "description").create();
-      case 28:
+      case 26:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.Optional").super_("im.actor.apiLanguage.structure.SerializableType").parents("im.actor.apiLanguage.structure.SerializableType").children(new String[]{"type"}, new boolean[]{false}).alias("opt", "").create();
-      case 29:
+      case 27:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.Response").super_("im.actor.apiLanguage.structure.ApiNamedDef").parents("im.actor.apiLanguage.structure.ApiNamedDef", "im.actor.apiLanguage.structure.IRpcNamed", "im.actor.apiLanguage.structure.IStruct").children(new String[]{"docs"}, new boolean[]{true}).alias("response", "").create();
-      case 30:
+      case 28:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.ResponseRef").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept").abstract_().create();
-      case 31:
+      case 29:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.ResponseRefAnonymous").super_("im.actor.apiLanguage.structure.ResponseRef").parents("im.actor.apiLanguage.structure.ResponseRef", "im.actor.apiLanguage.structure.IRpcObject", "im.actor.apiLanguage.structure.IStruct").alias("tuple", "").create();
-      case 32:
+      case 30:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.ResponseRefValue").super_("im.actor.apiLanguage.structure.ResponseRef").parents("im.actor.apiLanguage.structure.ResponseRef").references("response").create();
-      case 33:
+      case 31:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.Rpc").super_("im.actor.apiLanguage.structure.ApiNamedDef").parents("im.actor.apiLanguage.structure.ApiNamedDef", "im.actor.apiLanguage.structure.IRpcNamed", "im.actor.apiLanguage.structure.IStruct").children(new String[]{"docs", "response", "throws"}, new boolean[]{true, false, true}).alias("rpc", "").create();
-      case 34:
+      case 32:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.RpcDoc").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept").abstract_().create();
-      case 35:
+      case 33:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.RpcDocComment").super_("im.actor.apiLanguage.structure.RpcDoc").parents("im.actor.apiLanguage.structure.RpcDoc").properties("content").alias("#", "").create();
-      case 36:
+      case 34:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.RpcDocParameter").super_("im.actor.apiLanguage.structure.RpcDoc").parents("im.actor.apiLanguage.structure.RpcDoc").properties("description").references("paramter").alias("param", "").create();
-      case 37:
+      case 35:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.SectionDoc").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept").properties("text").alias("#", "").create();
-      case 38:
+      case 36:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.SerializableType").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept").abstract_().create();
-      case 39:
+      case 37:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.String").super_("im.actor.apiLanguage.structure.SerializableType").parents("im.actor.apiLanguage.structure.SerializableType").alias("string", "").create();
-      case 40:
-        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.Struct").super_("im.actor.apiLanguage.structure.ApiNamedDef").parents("im.actor.apiLanguage.structure.ApiNamedDef", "im.actor.apiLanguage.structure.IStruct", "im.actor.apiLanguage.structure.IEntity").properties("hasInterface", "interfaceKey").references("interface").children(new String[]{"docs"}, new boolean[]{true}).alias("struct", "").create();
-      case 41:
+      case 38:
+        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.Struct").super_("im.actor.apiLanguage.structure.ApiNamedDef").parents("im.actor.apiLanguage.structure.ApiNamedDef", "im.actor.apiLanguage.structure.IStruct", "im.actor.apiLanguage.structure.IEntity").properties("hasInterface").references("interface").children(new String[]{"docs", "header"}, new boolean[]{true, false}).alias("struct", "").create();
+      case 39:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.StructAttribute").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept", "jetbrains.mps.lang.core.structure.INamedConcept").properties("id").children(new String[]{"type"}, new boolean[]{false}).create();
-      case 42:
+      case 40:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.StructDoc").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept").abstract_().create();
-      case 43:
+      case 41:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.StructDocComment").super_("im.actor.apiLanguage.structure.StructDoc").parents("im.actor.apiLanguage.structure.StructDoc").properties("content").alias("#", "").create();
-      case 44:
+      case 42:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.StructDocParameter").super_("im.actor.apiLanguage.structure.StructDoc").parents("im.actor.apiLanguage.structure.StructDoc").properties("description").references("paramter").alias("param", "").create();
-      case 45:
+      case 43:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.StructType").super_("im.actor.apiLanguage.structure.SerializableType").parents("im.actor.apiLanguage.structure.SerializableType").references("struct").create();
+      case 44:
+        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.Trait").super_("im.actor.apiLanguage.structure.ApiNamedDef").parents("im.actor.apiLanguage.structure.ApiNamedDef").children(new String[]{"interfaces"}, new boolean[]{true}).alias("trait", "").create();
+      case 45:
+        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.TraitAttribute").super_("jetbrains.mps.lang.core.structure.BaseConcept").parents("jetbrains.mps.lang.core.structure.BaseConcept", "jetbrains.mps.lang.core.structure.INamedConcept").children(new String[]{"type"}, new boolean[]{false}).create();
       case 46:
-        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.Update").super_("im.actor.apiLanguage.structure.ApiNamedDef").parents("im.actor.apiLanguage.structure.ApiNamedDef", "im.actor.apiLanguage.structure.IUpdateObject", "im.actor.apiLanguage.structure.IStruct").children(new String[]{"docs"}, new boolean[]{true}).alias("update", "").create();
+        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.TraitType").super_("im.actor.apiLanguage.structure.SerializableType").parents("im.actor.apiLanguage.structure.SerializableType").references("trait").create();
       case 47:
+        return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.Update").super_("im.actor.apiLanguage.structure.ApiNamedDef").parents("im.actor.apiLanguage.structure.ApiNamedDef", "im.actor.apiLanguage.structure.IUpdateObject", "im.actor.apiLanguage.structure.IStruct").children(new String[]{"docs"}, new boolean[]{true}).alias("update", "").create();
+      case 48:
         return new ConceptDescriptorBuilder("im.actor.apiLanguage.structure.UpdateBox").super_("im.actor.apiLanguage.structure.ApiNamedDef").parents("im.actor.apiLanguage.structure.ApiNamedDef", "im.actor.apiLanguage.structure.IRpcNamed", "im.actor.apiLanguage.structure.IStruct").children(new String[]{"docs"}, new boolean[]{true}).alias("update box", "").create();
       default:
         return StructureAspectInterpreted.getInstance().getDescriptor(conceptFqName);
     }
   }
 
-  private static String[] stringSwitchCases_1htk8d_a0a0b = new String[]{"im.actor.apiLanguage.structure.AliasType", "im.actor.apiLanguage.structure.ApiAlias", "im.actor.apiLanguage.structure.ApiComment", "im.actor.apiLanguage.structure.ApiDef", "im.actor.apiLanguage.structure.ApiDescription", "im.actor.apiLanguage.structure.ApiEmptyDef", "im.actor.apiLanguage.structure.ApiNamedDef", "im.actor.apiLanguage.structure.ApiSection", "im.actor.apiLanguage.structure.Boolean", "im.actor.apiLanguage.structure.Bytes", "im.actor.apiLanguage.structure.Double", "im.actor.apiLanguage.structure.Enum", "im.actor.apiLanguage.structure.EnumAttribute", "im.actor.apiLanguage.structure.EnumType", "im.actor.apiLanguage.structure.HeaderKey", "im.actor.apiLanguage.structure.IEntity", "im.actor.apiLanguage.structure.IHeaderStruct", "im.actor.apiLanguage.structure.IRpcNamed", "im.actor.apiLanguage.structure.IRpcObject", "im.actor.apiLanguage.structure.IStruct", "im.actor.apiLanguage.structure.IUpdateObject", "im.actor.apiLanguage.structure.Int32", "im.actor.apiLanguage.structure.Int64", "im.actor.apiLanguage.structure.Interface", "im.actor.apiLanguage.structure.InterfaceAttribute", "im.actor.apiLanguage.structure.InterfaceRef", "im.actor.apiLanguage.structure.List", "im.actor.apiLanguage.structure.MethodThrows", "im.actor.apiLanguage.structure.Optional", "im.actor.apiLanguage.structure.Response", "im.actor.apiLanguage.structure.ResponseRef", "im.actor.apiLanguage.structure.ResponseRefAnonymous", "im.actor.apiLanguage.structure.ResponseRefValue", "im.actor.apiLanguage.structure.Rpc", "im.actor.apiLanguage.structure.RpcDoc", "im.actor.apiLanguage.structure.RpcDocComment", "im.actor.apiLanguage.structure.RpcDocParameter", "im.actor.apiLanguage.structure.SectionDoc", "im.actor.apiLanguage.structure.SerializableType", "im.actor.apiLanguage.structure.String", "im.actor.apiLanguage.structure.Struct", "im.actor.apiLanguage.structure.StructAttribute", "im.actor.apiLanguage.structure.StructDoc", "im.actor.apiLanguage.structure.StructDocComment", "im.actor.apiLanguage.structure.StructDocParameter", "im.actor.apiLanguage.structure.StructType", "im.actor.apiLanguage.structure.Update", "im.actor.apiLanguage.structure.UpdateBox"};
+  private static String[] stringSwitchCases_1htk8d_a0a0b = new String[]{"im.actor.apiLanguage.structure.AliasType", "im.actor.apiLanguage.structure.ApiAlias", "im.actor.apiLanguage.structure.ApiComment", "im.actor.apiLanguage.structure.ApiDef", "im.actor.apiLanguage.structure.ApiDescription", "im.actor.apiLanguage.structure.ApiEmptyDef", "im.actor.apiLanguage.structure.ApiNamedDef", "im.actor.apiLanguage.structure.ApiSection", "im.actor.apiLanguage.structure.Boolean", "im.actor.apiLanguage.structure.Bytes", "im.actor.apiLanguage.structure.Double", "im.actor.apiLanguage.structure.Enum", "im.actor.apiLanguage.structure.EnumAttribute", "im.actor.apiLanguage.structure.EnumType", "im.actor.apiLanguage.structure.HeaderKey", "im.actor.apiLanguage.structure.IEntity", "im.actor.apiLanguage.structure.IHeaderStruct", "im.actor.apiLanguage.structure.IRpcNamed", "im.actor.apiLanguage.structure.IRpcObject", "im.actor.apiLanguage.structure.IStruct", "im.actor.apiLanguage.structure.IUpdateObject", "im.actor.apiLanguage.structure.Int32", "im.actor.apiLanguage.structure.Int64", "im.actor.apiLanguage.structure.InterfaceRef", "im.actor.apiLanguage.structure.List", "im.actor.apiLanguage.structure.MethodThrows", "im.actor.apiLanguage.structure.Optional", "im.actor.apiLanguage.structure.Response", "im.actor.apiLanguage.structure.ResponseRef", "im.actor.apiLanguage.structure.ResponseRefAnonymous", "im.actor.apiLanguage.structure.ResponseRefValue", "im.actor.apiLanguage.structure.Rpc", "im.actor.apiLanguage.structure.RpcDoc", "im.actor.apiLanguage.structure.RpcDocComment", "im.actor.apiLanguage.structure.RpcDocParameter", "im.actor.apiLanguage.structure.SectionDoc", "im.actor.apiLanguage.structure.SerializableType", "im.actor.apiLanguage.structure.String", "im.actor.apiLanguage.structure.Struct", "im.actor.apiLanguage.structure.StructAttribute", "im.actor.apiLanguage.structure.StructDoc", "im.actor.apiLanguage.structure.StructDocComment", "im.actor.apiLanguage.structure.StructDocParameter", "im.actor.apiLanguage.structure.StructType", "im.actor.apiLanguage.structure.Trait", "im.actor.apiLanguage.structure.TraitAttribute", "im.actor.apiLanguage.structure.TraitType", "im.actor.apiLanguage.structure.Update", "im.actor.apiLanguage.structure.UpdateBox"};
 }
