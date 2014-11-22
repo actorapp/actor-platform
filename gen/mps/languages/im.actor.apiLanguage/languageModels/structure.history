@@ -36,5 +36,11 @@
     </dependencies>
     <rename id="tsp6.4092665470043358610" type="CONCEPT" from="RpcDocItem" to="RpcDoc" />
   </StructureModification>
+  <StructureModification>
+    <dependencies>
+      <model index="tsp6" modelUID="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" version="5" />
+    </dependencies>
+    <rename id="tsp6.5312209286554516176" type="CONCEPT" from="ApiInterface" to="Interface" />
+  </StructureModification>
 </history>
 
