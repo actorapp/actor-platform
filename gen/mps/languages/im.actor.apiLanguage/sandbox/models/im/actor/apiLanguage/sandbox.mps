@@ -4,12 +4,16 @@
   <language namespace="77fdf769-432b-4ede-8171-050f8dee73fc(im.actor.apiLanguage)" />
   <language namespace="ceab5195-25ea-4f22-9b92-103b95ca8c0c(jetbrains.mps.lang.core)" />
   <import index="tpck" modelUID="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" version="0" implicit="yes" />
-  <import index="tsp6" modelUID="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" version="5" implicit="yes" />
+  <import index="tsp6" modelUID="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" version="6" implicit="yes" />
   <root type="tsp6.ApiDescription" typeId="tsp6.2348480312264232779" id="2348480312264243645" nodeInfo="ng">
     <property name="name" nameId="tpck.1169194664001" value="ActorApi" />
     <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395512738" nodeInfo="ng">
       <property name="name" nameId="tpck.1169194664001" value="Authentication" />
       <property name="package" nameId="tsp6.3857470926884615265" value="auth" />
+      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiAlias" typeId="tsp6.5312209286553449813" id="5312209286553971938" nodeInfo="ng">
+        <property name="name" nameId="tpck.1169194664001" value="seq_state" />
+        <node role="sourceType" roleId="tsp6.5312209286553509039" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="5312209286553977429" nodeInfo="ng" />
+      </node>
       <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481191537" nodeInfo="ng">
         <property name="text" nameId="tsp6.2861239048481125830" value="&lt;p&gt;Actor now support only one way for authentication - by SMS or phone call.&lt;/p&gt;" />
       </node>
@@ -975,6 +979,7 @@
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395551889" nodeInfo="ng">
         <property name="name" nameId="tpck.1169194664001" value="PhoneToImport" />
+        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="false" />
         <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390698295" nodeInfo="ng">
           <property name="content" nameId="tsp6.773119248390047379" value="Phone for import" />
         </node>
@@ -1001,6 +1006,7 @@
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395551921" nodeInfo="ng">
         <property name="name" nameId="tpck.1169194664001" value="EmailToImport" />
+        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="false" />
         <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390706714" nodeInfo="ng">
           <property name="content" nameId="tsp6.773119248390047379" value="Email for import" />
         </node>
@@ -1079,8 +1085,10 @@
           </node>
           <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395552376" nodeInfo="ng">
             <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-            <property name="name" nameId="tpck.1169194664001" value="states" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395552385" nodeInfo="ng" />
+            <property name="name" nameId="tpck.1169194664001" value="state" />
+            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5312209286554511056" nodeInfo="ng">
+              <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5312209286553971938" resolveInfo="seq_state" />
+            </node>
           </node>
           <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395552349" nodeInfo="ng">
             <property name="hexValue" nameId="tsp6.4689615199750888593" value="08" />
@@ -1814,7 +1822,9 @@
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395591218" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="2" />
           <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395591224" nodeInfo="ng" />
+          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5312209286554512762" nodeInfo="ng">
+            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5312209286553971938" resolveInfo="seq_state" />
+          </node>
         </node>
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395591227" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="3" />
@@ -2578,7 +2588,9 @@
           <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395601705" nodeInfo="ng">
             <property name="id" nameId="tsp6.2348480312264746197" value="4" />
             <property name="name" nameId="tpck.1169194664001" value="state" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395601713" nodeInfo="ng" />
+            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5312209286554514468" nodeInfo="ng">
+              <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5312209286553971938" resolveInfo="seq_state" />
+            </node>
           </node>
           <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395601716" nodeInfo="ng">
             <property name="id" nameId="tsp6.2348480312264746197" value="5" />
@@ -4405,7 +4417,9 @@
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395695288" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="2" />
           <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395695294" nodeInfo="ng" />
+          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5312209286554507647" nodeInfo="ng">
+            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5312209286553971938" resolveInfo="seq_state" />
+          </node>
         </node>
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395695297" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="3" />
@@ -4431,7 +4445,9 @@
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395698726" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="2" />
           <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395698732" nodeInfo="ng" />
+          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5312209286554505941" nodeInfo="ng">
+            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5312209286553971938" resolveInfo="seq_state" />
+          </node>
         </node>
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395698735" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="3" />
@@ -4587,7 +4603,9 @@
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395640610" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="2" />
           <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395640616" nodeInfo="ng" />
+          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5312209286554504232" nodeInfo="ng">
+            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5312209286553971938" resolveInfo="seq_state" />
+          </node>
         </node>
         <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395640598" nodeInfo="ng">
           <property name="hexValue" nameId="tsp6.4689615199750888593" value="0B" />
@@ -4601,7 +4619,9 @@
           <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395641617" nodeInfo="ng">
             <property name="id" nameId="tsp6.2348480312264746197" value="2" />
             <property name="name" nameId="tpck.1169194664001" value="state" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395641623" nodeInfo="ng" />
+            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5312209286554504235" nodeInfo="ng">
+              <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5312209286553971938" resolveInfo="seq_state" />
+            </node>
           </node>
           <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395641626" nodeInfo="ng">
             <property name="id" nameId="tsp6.2348480312264746197" value="3" />
@@ -4745,6 +4765,19 @@
     <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395512968" nodeInfo="ng">
       <property name="name" nameId="tpck.1169194664001" value="Miscellaneous" />
       <property name="package" nameId="tsp6.3857470926884615265" value="misc" />
+      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Interface" typeId="tsp6.5312209286554516176" id="5312209286554678775" nodeInfo="ng">
+        <property name="name" nameId="tpck.1169194664001" value="Sequence" />
+        <node role="interfaces" roleId="tsp6.5312209286554597704" type="tsp6.InterfaceAttribute" typeId="tsp6.5312209286554595283" id="5312209286554678813" nodeInfo="ng">
+          <property name="name" nameId="tpck.1169194664001" value="seq" />
+          <node role="type" roleId="tsp6.5312209286554595398" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="5312209286554678817" nodeInfo="ng" />
+        </node>
+        <node role="interfaces" roleId="tsp6.5312209286554597704" type="tsp6.InterfaceAttribute" typeId="tsp6.5312209286554595283" id="5312209286554678820" nodeInfo="ng">
+          <property name="name" nameId="tpck.1169194664001" value="state" />
+          <node role="type" roleId="tsp6.5312209286554595398" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5312209286554731141" nodeInfo="ng">
+            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5312209286553971938" resolveInfo="seq_state" />
+          </node>
+        </node>
+      </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Response" typeId="tsp6.2348480312265103643" id="803735062395513200" nodeInfo="ng">
         <property name="name" nameId="tpck.1169194664001" value="Void" />
         <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060779" nodeInfo="ng">
@@ -4773,9 +4806,11 @@
           <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395513223" nodeInfo="ng" />
         </node>
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395513226" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
           <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395513232" nodeInfo="ng" />
+          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
+          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5312209286554492905" nodeInfo="ng">
+            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5312209286553971938" resolveInfo="seq_state" />
+          </node>
         </node>
         <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395513213" nodeInfo="ng">
           <property name="hexValue" nameId="tsp6.4689615199750888593" value="48" />
@@ -4813,7 +4848,9 @@
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395604200" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="3" />
           <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395604208" nodeInfo="ng" />
+          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5312209286554502526" nodeInfo="ng">
+            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5312209286553971938" resolveInfo="seq_state" />
+          </node>
         </node>
         <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395604088" nodeInfo="ng">
           <property name="hexValue" nameId="tsp6.4689615199750888593" value="44" />
