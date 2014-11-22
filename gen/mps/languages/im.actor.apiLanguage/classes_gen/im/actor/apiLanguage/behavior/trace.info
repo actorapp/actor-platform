@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <debugInfo>
   <unitInfo fileName="AliasType_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.AliasType_BehaviorDescriptor" />
-  <unitInfo fileName="ApiAlias_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiAlias_BehaviorDescriptor" />
+  <unitInfo fileName="ApiAlias_BehaviorDescriptor.java" startLine="10" startPosition="0" endLine="23" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiAlias_BehaviorDescriptor" />
   <unitInfo fileName="ApiComment_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiComment_BehaviorDescriptor" />
   <unitInfo fileName="ApiDef_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiDef_BehaviorDescriptor" />
   <unitInfo fileName="ApiDescription_BehaviorDescriptor.java" startLine="10" startPosition="0" endLine="23" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiDescription_BehaviorDescriptor" />
   <unitInfo fileName="ApiEmptyDef_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiEmptyDef_BehaviorDescriptor" />
   <unitInfo fileName="ApiNamedDef_BehaviorDescriptor.java" startLine="9" startPosition="0" endLine="22" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiNamedDef_BehaviorDescriptor" />
   <unitInfo fileName="ApiSection_BehaviorDescriptor.java" startLine="10" startPosition="0" endLine="23" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiSection_BehaviorDescriptor" />
-  <unitInfo fileName="BehaviorAspectDescriptor.java" startLine="9" startPosition="0" endLine="96" endPosition="0" unitName="im.actor.apiLanguage.behavior.BehaviorAspectDescriptor" />
+  <unitInfo fileName="BehaviorAspectDescriptor.java" startLine="9" startPosition="0" endLine="98" endPosition="0" unitName="im.actor.apiLanguage.behavior.BehaviorAspectDescriptor" />
   <unitInfo fileName="Boolean_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Boolean_BehaviorDescriptor" />
   <unitInfo fileName="Bytes_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Bytes_BehaviorDescriptor" />
   <unitInfo fileName="Double_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Double_BehaviorDescriptor" />
@@ -24,9 +24,7 @@
   <unitInfo fileName="IUpdateObject_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="9" endPosition="0" unitName="im.actor.apiLanguage.behavior.IUpdateObject_BehaviorDescriptor" />
   <unitInfo fileName="Int32_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Int32_BehaviorDescriptor" />
   <unitInfo fileName="Int64_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Int64_BehaviorDescriptor" />
-  <unitInfo fileName="InterfaceAttribute_BehaviorDescriptor.java" startLine="10" startPosition="0" endLine="23" endPosition="0" unitName="im.actor.apiLanguage.behavior.InterfaceAttribute_BehaviorDescriptor" />
   <unitInfo fileName="InterfaceRef_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.InterfaceRef_BehaviorDescriptor" />
-  <unitInfo fileName="Interface_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Interface_BehaviorDescriptor" />
   <unitInfo fileName="List_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.List_BehaviorDescriptor" />
   <unitInfo fileName="MethodThrows_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.MethodThrows_BehaviorDescriptor" />
   <unitInfo fileName="Optional_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Optional_BehaviorDescriptor" />
@@ -47,6 +45,9 @@
   <unitInfo fileName="StructDoc_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.StructDoc_BehaviorDescriptor" />
   <unitInfo fileName="StructType_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.StructType_BehaviorDescriptor" />
   <unitInfo fileName="Struct_BehaviorDescriptor.java" startLine="9" startPosition="0" endLine="26" endPosition="0" unitName="im.actor.apiLanguage.behavior.Struct_BehaviorDescriptor" />
+  <unitInfo fileName="TraitAttribute_BehaviorDescriptor.java" startLine="10" startPosition="0" endLine="23" endPosition="0" unitName="im.actor.apiLanguage.behavior.TraitAttribute_BehaviorDescriptor" />
+  <unitInfo fileName="TraitType_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.TraitType_BehaviorDescriptor" />
+  <unitInfo fileName="Trait_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Trait_BehaviorDescriptor" />
   <unitInfo fileName="UpdateBox_BehaviorDescriptor.java" startLine="9" startPosition="0" endLine="26" endPosition="0" unitName="im.actor.apiLanguage.behavior.UpdateBox_BehaviorDescriptor" />
   <unitInfo fileName="Update_BehaviorDescriptor.java" startLine="9" startPosition="0" endLine="26" endPosition="0" unitName="im.actor.apiLanguage.behavior.Update_BehaviorDescriptor" />
   <root nodeRef="r:bdd30f2e-5459-4fbf-a624-993b87581eaf(im.actor.apiLanguage.behavior)/4092665470043481618">

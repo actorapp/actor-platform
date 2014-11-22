@@ -12,6 +12,8 @@ import org.jetbrains.mps.openapi.model.SNodeReference;
 import jetbrains.mps.smodel.SNodePointer;
 import java.util.Collections;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SConceptOperations;
 import jetbrains.mps.intentions.IntentionDescriptor;
 
 public class ToggleImplements_Intention implements IntentionFactory {
@@ -72,7 +74,15 @@ public class ToggleImplements_Intention implements IntentionFactory {
     }
 
     public void execute(final SNode node, final EditorContext editorContext) {
-      SPropertyOperations.set(node, "hasInterface", "" + (!(SPropertyOperations.getBoolean(node, "hasInterface"))));
+      if (SPropertyOperations.getBoolean(node, "hasInterface")) {
+        SPropertyOperations.set(node, "hasInterface", "" + (false));
+        SLinkOperations.setTarget(node, "interface", null, false);
+        SLinkOperations.setTarget(node, "header", null, true);
+      } else {
+        SPropertyOperations.set(node, "hasInterface", "" + (true));
+        SLinkOperations.setTarget(node, "interface", null, false);
+        SLinkOperations.setTarget(node, "header", SConceptOperations.createNewNode("im.actor.apiLanguage.structure.HeaderKey", null), true);
+      }
     }
 
     public IntentionDescriptor getDescriptor() {
