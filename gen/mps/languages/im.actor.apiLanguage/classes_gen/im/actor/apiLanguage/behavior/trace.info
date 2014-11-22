@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<debugInfo>
+  <unitInfo fileName="AliasType_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.AliasType_BehaviorDescriptor" />
+  <unitInfo fileName="ApiAlias_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiAlias_BehaviorDescriptor" />
+  <unitInfo fileName="ApiComment_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiComment_BehaviorDescriptor" />
+  <unitInfo fileName="ApiDef_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiDef_BehaviorDescriptor" />
+  <unitInfo fileName="ApiDescription_BehaviorDescriptor.java" startLine="10" startPosition="0" endLine="23" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiDescription_BehaviorDescriptor" />
+  <unitInfo fileName="ApiEmptyDef_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiEmptyDef_BehaviorDescriptor" />
+  <unitInfo fileName="ApiNamedDef_BehaviorDescriptor.java" startLine="9" startPosition="0" endLine="22" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiNamedDef_BehaviorDescriptor" />
+  <unitInfo fileName="ApiSection_BehaviorDescriptor.java" startLine="10" startPosition="0" endLine="23" endPosition="0" unitName="im.actor.apiLanguage.behavior.ApiSection_BehaviorDescriptor" />
+  <unitInfo fileName="BehaviorAspectDescriptor.java" startLine="9" startPosition="0" endLine="96" endPosition="0" unitName="im.actor.apiLanguage.behavior.BehaviorAspectDescriptor" />
+  <unitInfo fileName="Boolean_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Boolean_BehaviorDescriptor" />
+  <unitInfo fileName="Bytes_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Bytes_BehaviorDescriptor" />
+  <unitInfo fileName="Double_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Double_BehaviorDescriptor" />
+  <unitInfo fileName="EnumAttribute_BehaviorDescriptor.java" startLine="10" startPosition="0" endLine="23" endPosition="0" unitName="im.actor.apiLanguage.behavior.EnumAttribute_BehaviorDescriptor" />
+  <unitInfo fileName="EnumType_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.EnumType_BehaviorDescriptor" />
+  <unitInfo fileName="Enum_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Enum_BehaviorDescriptor" />
+  <unitInfo fileName="HeaderKey_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.HeaderKey_BehaviorDescriptor" />
+  <unitInfo fileName="IEntity_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="9" endPosition="0" unitName="im.actor.apiLanguage.behavior.IEntity_BehaviorDescriptor" />
+  <unitInfo fileName="IHeaderStruct_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="8" endPosition="0" unitName="im.actor.apiLanguage.behavior.IHeaderStruct_BehaviorDescriptor" />
+  <unitInfo fileName="IRpcNamed_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="9" endPosition="0" unitName="im.actor.apiLanguage.behavior.IRpcNamed_BehaviorDescriptor" />
+  <unitInfo fileName="IRpcObject_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="8" endPosition="0" unitName="im.actor.apiLanguage.behavior.IRpcObject_BehaviorDescriptor" />
+  <unitInfo fileName="IStruct_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="9" endPosition="0" unitName="im.actor.apiLanguage.behavior.IStruct_BehaviorDescriptor" />
+  <unitInfo fileName="IUpdateObject_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="9" endPosition="0" unitName="im.actor.apiLanguage.behavior.IUpdateObject_BehaviorDescriptor" />
+  <unitInfo fileName="Int32_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Int32_BehaviorDescriptor" />
+  <unitInfo fileName="Int64_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Int64_BehaviorDescriptor" />
+  <unitInfo fileName="InterfaceAttribute_BehaviorDescriptor.java" startLine="10" startPosition="0" endLine="23" endPosition="0" unitName="im.actor.apiLanguage.behavior.InterfaceAttribute_BehaviorDescriptor" />
+  <unitInfo fileName="InterfaceRef_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.InterfaceRef_BehaviorDescriptor" />
+  <unitInfo fileName="Interface_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Interface_BehaviorDescriptor" />
+  <unitInfo fileName="List_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.List_BehaviorDescriptor" />
+  <unitInfo fileName="MethodThrows_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.MethodThrows_BehaviorDescriptor" />
+  <unitInfo fileName="Optional_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.Optional_BehaviorDescriptor" />
+  <unitInfo fileName="ResponseRefAnonymous_BehaviorDescriptor.java" startLine="9" startPosition="0" endLine="26" endPosition="0" unitName="im.actor.apiLanguage.behavior.ResponseRefAnonymous_BehaviorDescriptor" />
+  <unitInfo fileName="ResponseRefValue_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.ResponseRefValue_BehaviorDescriptor" />
+  <unitInfo fileName="ResponseRef_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.ResponseRef_BehaviorDescriptor" />
+  <unitInfo fileName="Response_BehaviorDescriptor.java" startLine="9" startPosition="0" endLine="26" endPosition="0" unitName="im.actor.apiLanguage.behavior.Response_BehaviorDescriptor" />
+  <unitInfo fileName="RpcDocComment_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.RpcDocComment_BehaviorDescriptor" />
+  <unitInfo fileName="RpcDocParameter_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.RpcDocParameter_BehaviorDescriptor" />
+  <unitInfo fileName="RpcDoc_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.RpcDoc_BehaviorDescriptor" />
+  <unitInfo fileName="Rpc_BehaviorDescriptor.java" startLine="9" startPosition="0" endLine="26" endPosition="0" unitName="im.actor.apiLanguage.behavior.Rpc_BehaviorDescriptor" />
+  <unitInfo fileName="SectionDoc_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.SectionDoc_BehaviorDescriptor" />
+  <unitInfo fileName="SerializableType_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.SerializableType_BehaviorDescriptor" />
+  <unitInfo fileName="String_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.String_BehaviorDescriptor" />
+  <unitInfo fileName="StructAttribute_BehaviorDescriptor.java" startLine="10" startPosition="0" endLine="23" endPosition="0" unitName="im.actor.apiLanguage.behavior.StructAttribute_BehaviorDescriptor" />
+  <unitInfo fileName="StructDocComment_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.StructDocComment_BehaviorDescriptor" />
+  <unitInfo fileName="StructDocParameter_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.StructDocParameter_BehaviorDescriptor" />
+  <unitInfo fileName="StructDoc_BehaviorDescriptor.java" startLine="7" startPosition="0" endLine="16" endPosition="0" unitName="im.actor.apiLanguage.behavior.StructDoc_BehaviorDescriptor" />
+  <unitInfo fileName="StructType_BehaviorDescriptor.java" startLine="6" startPosition="0" endLine="15" endPosition="0" unitName="im.actor.apiLanguage.behavior.StructType_BehaviorDescriptor" />
+  <unitInfo fileName="Struct_BehaviorDescriptor.java" startLine="9" startPosition="0" endLine="26" endPosition="0" unitName="im.actor.apiLanguage.behavior.Struct_BehaviorDescriptor" />
+  <unitInfo fileName="UpdateBox_BehaviorDescriptor.java" startLine="9" startPosition="0" endLine="26" endPosition="0" unitName="im.actor.apiLanguage.behavior.UpdateBox_BehaviorDescriptor" />
+  <unitInfo fileName="Update_BehaviorDescriptor.java" startLine="9" startPosition="0" endLine="26" endPosition="0" unitName="im.actor.apiLanguage.behavior.Update_BehaviorDescriptor" />
+  <root nodeRef="r:bdd30f2e-5459-4fbf-a624-993b87581eaf(im.actor.apiLanguage.behavior)/4092665470043481618">
+    <nodeInfo nodeId="4092665470043481618" fileName="RpcDocParameter_Behavior.java" startLine="8" startPosition="0" endLine="10" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.StaticMethodDeclaration" propertyString="init#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+    <scopeInfo nodeId="4092665470043481771" fileName="RpcDocParameter_Behavior.java" startLine="8" startPosition="43" endLine="8" endPosition="43" />
+    <scopeInfo nodeId="4092665470043481618" fileName="RpcDocParameter_Behavior.java" startLine="8" startPosition="0" endLine="10" endPosition="0">
+      <varInfo nodeId="4092665470043481618" varName="thisNode" />
+    </scopeInfo>
+    <unitInfo nodeId="4092665470043481618" fileName="RpcDocParameter_Behavior.java" startLine="7" startPosition="0" endLine="11" endPosition="0" unitName="im.actor.apiLanguage.behavior.RpcDocParameter_Behavior" />
+  </root>
+  <root nodeRef="r:bdd30f2e-5459-4fbf-a624-993b87581eaf(im.actor.apiLanguage.behavior)/4092665470043575878">
+    <nodeInfo nodeId="4092665470043637669" fileName="IStruct_Behavior.java" startLine="16" startPosition="100" endLine="17" endPosition="149" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="4092665470043651177" fileName="IStruct_Behavior.java" startLine="18" startPosition="5" endLine="19" endPosition="16" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="4092665470043575878" fileName="IStruct_Behavior.java" startLine="12" startPosition="0" endLine="14" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.StaticMethodDeclaration" propertyString="init#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+    <nodeInfo nodeId="4092665470043606827" fileName="IStruct_Behavior.java" startLine="15" startPosition="101" endLine="18" endPosition="5" conceptFqName="jetbrains.mps.baseLanguage.structure.IfStatement" />
+    <nodeInfo nodeId="4092665470043575878" fileName="IStruct_Behavior.java" startLine="15" startPosition="0" endLine="21" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.StaticMethodDeclaration" propertyString="virtual_getScope_3734116213129936182#(Lorg/jetbrains/mps/openapi/model/SNode;Lorg/jetbrains/mps/openapi/model/SNode;Lorg/jetbrains/mps/openapi/model/SNode;)Ljetbrains/mps/scope/Scope;" />
+    <scopeInfo nodeId="4092665470043575880" fileName="IStruct_Behavior.java" startLine="12" startPosition="43" endLine="12" endPosition="43" />
+    <scopeInfo nodeId="4092665470043606828" fileName="IStruct_Behavior.java" startLine="16" startPosition="100" endLine="17" endPosition="149" />
+    <scopeInfo nodeId="4092665470043575878" fileName="IStruct_Behavior.java" startLine="12" startPosition="0" endLine="14" endPosition="0">
+      <varInfo nodeId="4092665470043575878" varName="thisNode" />
+    </scopeInfo>
+    <scopeInfo nodeId="4092665470043575891" fileName="IStruct_Behavior.java" startLine="15" startPosition="101" endLine="19" endPosition="16" />
+    <scopeInfo nodeId="4092665470043575878" fileName="IStruct_Behavior.java" startLine="15" startPosition="0" endLine="21" endPosition="0">
+      <varInfo nodeId="4092665470043575894" varName="child" />
+      <varInfo nodeId="4092665470043575892" varName="kind" />
+      <varInfo nodeId="4092665470043575878" varName="thisNode" />
+    </scopeInfo>
+    <unitInfo nodeId="4092665470043575878" fileName="IStruct_Behavior.java" startLine="11" startPosition="0" endLine="22" endPosition="0" unitName="im.actor.apiLanguage.behavior.IStruct_Behavior" />
+  </root>
+  <root nodeRef="r:bdd30f2e-5459-4fbf-a624-993b87581eaf(im.actor.apiLanguage.behavior)/4689615199750893170">
+    <nodeInfo nodeId="4689615199751112571" fileName="HeaderKey_Behavior.java" startLine="9" startPosition="43" endLine="10" endPosition="56" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="4689615199751158861" fileName="HeaderKey_Behavior.java" startLine="14" startPosition="9" endLine="15" endPosition="87" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="4689615199751158838" fileName="HeaderKey_Behavior.java" startLine="16" startPosition="27" endLine="17" endPosition="15" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="4689615199750893170" fileName="HeaderKey_Behavior.java" startLine="9" startPosition="0" endLine="12" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.StaticMethodDeclaration" propertyString="init#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+    <nodeInfo nodeId="4689615199751155804" fileName="HeaderKey_Behavior.java" startLine="13" startPosition="71" endLine="18" endPosition="5" conceptFqName="jetbrains.mps.baseLanguage.structure.TryCatchStatement" />
+    <nodeInfo nodeId="4689615199750893170" fileName="HeaderKey_Behavior.java" startLine="13" startPosition="0" endLine="20" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.StaticMethodDeclaration" propertyString="call_intValue_4689615199750893375#(Lorg/jetbrains/mps/openapi/model/SNode;)I" />
+    <scopeInfo nodeId="4689615199750893323" fileName="HeaderKey_Behavior.java" startLine="9" startPosition="43" endLine="10" endPosition="56" />
+    <scopeInfo nodeId="4689615199751155806" fileName="HeaderKey_Behavior.java" startLine="14" startPosition="9" endLine="15" endPosition="87" />
+    <scopeInfo nodeId="4689615199751155807" fileName="HeaderKey_Behavior.java" startLine="16" startPosition="0" endLine="17" endPosition="15">
+      <varInfo nodeId="4689615199751155809" varName="e" />
+    </scopeInfo>
+    <scopeInfo nodeId="4689615199751155813" fileName="HeaderKey_Behavior.java" startLine="16" startPosition="27" endLine="17" endPosition="15" />
+    <scopeInfo nodeId="4689615199750893170" fileName="HeaderKey_Behavior.java" startLine="9" startPosition="0" endLine="12" endPosition="0">
+      <varInfo nodeId="4689615199750893170" varName="thisNode" />
+    </scopeInfo>
+    <scopeInfo nodeId="4689615199750893378" fileName="HeaderKey_Behavior.java" startLine="13" startPosition="71" endLine="18" endPosition="5" />
+    <scopeInfo nodeId="4689615199750893170" fileName="HeaderKey_Behavior.java" startLine="13" startPosition="0" endLine="20" endPosition="0">
+      <varInfo nodeId="4689615199750893170" varName="thisNode" />
+    </scopeInfo>
+    <unitInfo nodeId="4689615199750893170" fileName="HeaderKey_Behavior.java" startLine="8" startPosition="0" endLine="21" endPosition="0" unitName="im.actor.apiLanguage.behavior.HeaderKey_Behavior" />
+  </root>
+  <root nodeRef="r:bdd30f2e-5459-4fbf-a624-993b87581eaf(im.actor.apiLanguage.behavior)/4689615199751135112">
+    <nodeInfo nodeId="4689615199751135116" fileName="IHeaderStruct_Behavior.java" startLine="10" startPosition="43" endLine="11" endPosition="140" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="4689615199751135112" fileName="IHeaderStruct_Behavior.java" startLine="10" startPosition="0" endLine="13" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.StaticMethodDeclaration" propertyString="init#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+    <scopeInfo nodeId="4689615199751135114" fileName="IHeaderStruct_Behavior.java" startLine="10" startPosition="43" endLine="11" endPosition="140" />
+    <scopeInfo nodeId="4689615199751135112" fileName="IHeaderStruct_Behavior.java" startLine="10" startPosition="0" endLine="13" endPosition="0">
+      <varInfo nodeId="4689615199751135112" varName="thisNode" />
+    </scopeInfo>
+    <unitInfo nodeId="4689615199751135112" fileName="IHeaderStruct_Behavior.java" startLine="9" startPosition="0" endLine="14" endPosition="0" unitName="im.actor.apiLanguage.behavior.IHeaderStruct_Behavior" />
+  </root>
+  <root nodeRef="r:bdd30f2e-5459-4fbf-a624-993b87581eaf(im.actor.apiLanguage.behavior)/773119248390080616">
+    <nodeInfo nodeId="773119248390080616" fileName="StructDocParameter_Behavior.java" startLine="8" startPosition="0" endLine="10" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.StaticMethodDeclaration" propertyString="init#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+    <scopeInfo nodeId="773119248390080769" fileName="StructDocParameter_Behavior.java" startLine="8" startPosition="43" endLine="8" endPosition="43" />
+    <scopeInfo nodeId="773119248390080616" fileName="StructDocParameter_Behavior.java" startLine="8" startPosition="0" endLine="10" endPosition="0">
+      <varInfo nodeId="773119248390080616" varName="thisNode" />
+    </scopeInfo>
+    <unitInfo nodeId="773119248390080616" fileName="StructDocParameter_Behavior.java" startLine="7" startPosition="0" endLine="11" endPosition="0" unitName="im.actor.apiLanguage.behavior.StructDocParameter_Behavior" />
+  </root>
+</debugInfo>
+

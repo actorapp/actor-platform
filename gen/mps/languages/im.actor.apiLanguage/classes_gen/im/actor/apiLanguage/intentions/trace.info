@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<debugInfo>
+  <unitInfo fileName="IntentionsDescriptor.java" startLine="10" startPosition="0" endLine="19" endPosition="0" unitName="im.actor.apiLanguage.intentions.IntentionsDescriptor" />
+  <root nodeRef="r:52c9340c-ed61-4b09-bbfb-18570a524404(im.actor.apiLanguage.intentions)/5312209286554908078">
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="18" startPosition="0" endLine="19" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.FieldDeclaration" propertyString="myCachedExecutable" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="23" startPosition="30" endLine="24" endPosition="51" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="27" startPosition="35" endLine="28" endPosition="30" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="31" startPosition="41" endLine="32" endPosition="72" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="35" startPosition="37" endLine="36" endPosition="34" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="39" startPosition="34" endLine="40" endPosition="32" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="43" startPosition="44" endLine="44" endPosition="17" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="47" startPosition="84" endLine="48" endPosition="16" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="51" startPosition="53" endLine="52" endPosition="126" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="55" startPosition="35" endLine="56" endPosition="17" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="60" startPosition="37" endLine="61" endPosition="132" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="62" startPosition="5" endLine="63" endPosition="30" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5312209286554974415" fileName="ToggleImplements_Intention.java" startLine="70" startPosition="87" endLine="71" endPosition="33" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5312209286555324118" fileName="ToggleImplements_Intention.java" startLine="74" startPosition="78" endLine="75" endPosition="116" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="78" startPosition="48" endLine="79" endPosition="45" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="20" startPosition="0" endLine="22" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.ConstructorDeclaration" propertyString="ToggleImplements_Intention#()V" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="67" startPosition="0" endLine="69" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.ConstructorDeclaration" propertyString="IntentionImplementation#()V" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="23" startPosition="0" endLine="26" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="getConcept#()Ljava/lang/String;" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="27" startPosition="0" endLine="30" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="getPresentation#()Ljava/lang/String;" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="31" startPosition="0" endLine="34" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="getPersistentStateKey#()Ljava/lang/String;" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="35" startPosition="0" endLine="38" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="getLanguageFqName#()Ljava/lang/String;" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="39" startPosition="0" endLine="42" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="getType#()Ljetbrains/mps/intentions/IntentionType;" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="43" startPosition="0" endLine="46" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="isAvailableInChildNodes#()Z" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="47" startPosition="0" endLine="50" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="isApplicable#(Lorg/jetbrains/mps/openapi/model/SNode;Ljetbrains/mps/openapi/editor/EditorContext;)Z" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="51" startPosition="0" endLine="54" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="getIntentionNodeReference#()Lorg/jetbrains/mps/openapi/model/SNodeReference;" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="55" startPosition="0" endLine="58" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="isSurroundWith#()Z" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="59" startPosition="99" endLine="62" endPosition="5" conceptFqName="jetbrains.mps.baseLanguage.structure.IfStatement" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="70" startPosition="0" endLine="73" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="getDescription#(Lorg/jetbrains/mps/openapi/model/SNode;Ljetbrains/mps/openapi/editor/EditorContext;)Ljava/lang/String;" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="74" startPosition="0" endLine="77" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="execute#(Lorg/jetbrains/mps/openapi/model/SNode;Ljetbrains/mps/openapi/editor/EditorContext;)V" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="78" startPosition="0" endLine="81" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="getDescriptor#()Ljetbrains/mps/intentions/IntentionDescriptor;" />
+    <nodeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="59" startPosition="0" endLine="65" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="instances#(Lorg/jetbrains/mps/openapi/model/SNode;Ljetbrains/mps/openapi/editor/EditorContext;)Ljava/util/Collection;" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="20" startPosition="39" endLine="20" endPosition="39" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="67" startPosition="38" endLine="67" endPosition="38" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="23" startPosition="30" endLine="24" endPosition="51" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="27" startPosition="35" endLine="28" endPosition="30" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="31" startPosition="41" endLine="32" endPosition="72" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="35" startPosition="37" endLine="36" endPosition="34" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="39" startPosition="34" endLine="40" endPosition="32" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="43" startPosition="44" endLine="44" endPosition="17" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="47" startPosition="84" endLine="48" endPosition="16" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="51" startPosition="53" endLine="52" endPosition="126" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="55" startPosition="35" endLine="56" endPosition="17" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="60" startPosition="37" endLine="61" endPosition="132" />
+    <scopeInfo nodeId="5312209286554908080" fileName="ToggleImplements_Intention.java" startLine="70" startPosition="87" endLine="71" endPosition="33" />
+    <scopeInfo nodeId="5312209286554908082" fileName="ToggleImplements_Intention.java" startLine="74" startPosition="78" endLine="75" endPosition="116" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="78" startPosition="48" endLine="79" endPosition="45" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="20" startPosition="0" endLine="22" endPosition="0" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="67" startPosition="0" endLine="69" endPosition="0" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="23" startPosition="0" endLine="26" endPosition="0" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="27" startPosition="0" endLine="30" endPosition="0" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="31" startPosition="0" endLine="34" endPosition="0" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="35" startPosition="0" endLine="38" endPosition="0" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="39" startPosition="0" endLine="42" endPosition="0" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="43" startPosition="0" endLine="46" endPosition="0" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="47" startPosition="0" endLine="50" endPosition="0">
+      <varInfo nodeId="5312209286554908078" varName="editorContext" />
+      <varInfo nodeId="5312209286554908078" varName="node" />
+    </scopeInfo>
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="51" startPosition="0" endLine="54" endPosition="0" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="55" startPosition="0" endLine="58" endPosition="0" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="70" startPosition="0" endLine="73" endPosition="0">
+      <varInfo nodeId="5312209286554908078" varName="editorContext" />
+      <varInfo nodeId="5312209286554908078" varName="node" />
+    </scopeInfo>
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="74" startPosition="0" endLine="77" endPosition="0">
+      <varInfo nodeId="5312209286554908078" varName="editorContext" />
+      <varInfo nodeId="5312209286554908078" varName="node" />
+    </scopeInfo>
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="78" startPosition="0" endLine="81" endPosition="0" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="59" startPosition="99" endLine="63" endPosition="30" />
+    <scopeInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="59" startPosition="0" endLine="65" endPosition="0">
+      <varInfo nodeId="5312209286554908078" varName="context" />
+      <varInfo nodeId="5312209286554908078" varName="node" />
+    </scopeInfo>
+    <unitInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="66" startPosition="0" endLine="82" endPosition="0" unitName="im.actor.apiLanguage.intentions.ToggleImplements_Intention$IntentionImplementation" />
+    <unitInfo nodeId="5312209286554908078" fileName="ToggleImplements_Intention.java" startLine="17" startPosition="0" endLine="83" endPosition="0" unitName="im.actor.apiLanguage.intentions.ToggleImplements_Intention" />
+  </root>
+</debugInfo>
+
