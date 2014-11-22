@@ -20,6 +20,10 @@ public class TypesystemDescriptor extends BaseHelginsDescriptor {
       this.myNonTypesystemRules.add(nonTypesystemRule);
     }
     {
+      NonTypesystemRule_Runtime nonTypesystemRule = new CheckValidTraitUsage_NonTypesystemRule();
+      this.myNonTypesystemRules.add(nonTypesystemRule);
+    }
+    {
       NonTypesystemRule_Runtime nonTypesystemRule = new UniqueRpcHeaders_NonTypesystemRule();
       this.myNonTypesystemRules.add(nonTypesystemRule);
     }

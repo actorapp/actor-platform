@@ -8,6 +8,7 @@ import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import jetbrains.mps.internal.collections.runtime.ListSequence;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
+import im.actor.apiLanguage.behavior.HeaderKey_Behavior;
 
 public class Struct_TextGen extends SNodeTextGen {
   public void doGenerateText(SNode node) {
@@ -42,6 +43,16 @@ public class Struct_TextGen extends SNodeTextGen {
         }
       }
       this.append("],");
+    }
+
+    if (SPropertyOperations.getBoolean(node, "hasInterface")) {
+      this.append("\"trait\":{");
+      this.append("\"name\":\"");
+      this.append(SPropertyOperations.getString(SLinkOperations.getTarget(node, "interface", false), "name"));
+      this.append("\",");
+      this.append("\"key\":");
+      this.append(HeaderKey_Behavior.call_intValue_4689615199750893375(SLinkOperations.getTarget(node, "header", true)) + "");
+      this.append("},");
     }
 
     this.append("\"attributes\":[");

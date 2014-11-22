@@ -13,6 +13,29 @@ import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 public class ApiDescription_TextGen extends SNodeTextGen {
   public void doGenerateText(SNode node) {
     this.append("{");
+    this.append("\"aliases\":[");
+    Boolean isFirstAlias = true;
+    for (SNode al : ListSequence.fromList(SLinkOperations.getTargets(node, "aliases", true))) {
+      if (!(isFirstAlias)) {
+        this.append(",");
+      } else {
+        isFirstAlias = false;
+      }
+      this.append("{\"type\":");
+      appendNode(SLinkOperations.getTarget(al, "sourceType", true));
+      this.append(",");
+      this.append("\"alias\":\"");
+      this.append(SPropertyOperations.getString(al, "name"));
+      this.append("\"}");
+    }
+    this.append("],");
+    this.appendNewLine();
+    this.append("\"obj-c-prefix\":\"");
+    this.append(SPropertyOperations.getString(node, "objcPrefix"));
+    this.append("\",");
+    this.append("\"java-package\":\"");
+    this.append(SPropertyOperations.getString(node, "javaPackage"));
+    this.append("\",");
     this.append("\"sections\":[");
     this.appendNewLine();
     Boolean isFirst = true;
@@ -99,6 +122,15 @@ public class ApiDescription_TextGen extends SNodeTextGen {
           }
           appendNode(SNodeOperations.cast(def, "im.actor.apiLanguage.structure.Response"));
         }
+        if (SConceptOperations.isExactly(SNodeOperations.getConceptDeclaration(def), "im.actor.apiLanguage.structure.Trait")) {
+          if (!(isFirstSection)) {
+            this.append(",");
+          } else {
+            isFirstSection = false;
+          }
+          appendNode(SNodeOperations.cast(def, "im.actor.apiLanguage.structure.Trait"));
+        }
+
         if (SConceptOperations.isExactly(SNodeOperations.getConceptDeclaration(def), "im.actor.apiLanguage.structure.ApiEmptyDef")) {
           if (!(isFirstSection)) {
             this.append(",");
