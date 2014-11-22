@@ -25,7 +25,7 @@ message PlainPackage {
 
 message PlainMessage {
     required int64 guid = 1;
-    required int32 messageTyoe = 2;
+    required int32 messageType = 2;
     required bytes body = 3;
 }
 
