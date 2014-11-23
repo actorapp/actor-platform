@@ -18,7 +18,7 @@
 //  extType == 0x03 => extension is AudioExtension
 
 message PlainPackage {
-    required int32 messsageType = 1;
+    required int32 messageType = 1;
     required bytes body = 2;
     required int64 crc32 = 3;
 }
