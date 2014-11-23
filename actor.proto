@@ -311,7 +311,7 @@ message RequestImportContacts {
 message ResponseImportContacts {
     repeated User users = 1;
     required int32 seq = 2;
-    required bytes states = 3;
+    required bytes state = 3;
 }
 
 // API#0x57
