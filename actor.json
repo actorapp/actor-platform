@@ -2277,7 +2277,7 @@
               },
               {
                 "type": "reference",
-                "argument": "rid",
+                "argument": "rids",
                 "description": "Message random id"
               }
             ],

@@ -637,7 +637,7 @@ message RequestMessageRead {
 // ridMessage random id
 message RequestDeleteMessage {
     required OutPeer peer = 1;
-    repeated int64 rid = 3;
+    repeated int64 rids = 3;
 }
 
 // API#0x63
