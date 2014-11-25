@@ -2687,7 +2687,7 @@
                   "childType": "int64"
                 },
                 "id": 2,
-                "name": "rid"
+                "name": "rids"
               }
             ]
           }
