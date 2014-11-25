@@ -732,7 +732,7 @@ message UpdateMessageReadByMe {
 // API#0x2E
 message UpdateMessageDelete {
     required Peer peer = 1;
-    repeated int64 rid = 2;
+    repeated int64 rids = 2;
 }
 
 // API#0x2F
