@@ -67,9 +67,9 @@
         <property name="text" nameId="tsp6.2861239048481125830" value="Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.&lt;br/&gt;" />
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395513514" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="RequestAuthCode" />
+        <property name="name" nameId="tpck.1169194664001" value="SendAuthCode" />
         <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="4092665470044728142" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Requesting SMS auth code" />
+          <property name="content" nameId="tsp6.2861239048480459664" value="Sending SMS with activation code" />
         </node>
         <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="4092665470044666761" nodeInfo="ng">
           <property name="description" nameId="tsp6.4092665470043359042" value="Phone number in international format" />
@@ -123,7 +123,7 @@
         </node>
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395514047" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="RequestAuthCodeCall" />
+        <property name="name" nameId="tpck.1169194664001" value="SendAuthCall" />
         <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389834419" nodeInfo="ng">
           <property name="content" nameId="tsp6.2861239048480459664" value="Requesting Phone activation" />
         </node>
@@ -461,7 +461,7 @@
         </node>
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395528291" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="AuthItem" />
+        <property name="name" nameId="tpck.1169194664001" value="AuthSession" />
         <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390669575" nodeInfo="ng">
           <property name="content" nameId="tsp6.773119248390047379" value="Authentication session" />
         </node>
@@ -552,7 +552,7 @@
         </node>
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395534933" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GetAuth" />
+        <property name="name" nameId="tpck.1169194664001" value="GetAuthSessions" />
         <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389878138" nodeInfo="ng">
           <property name="content" nameId="tsp6.2861239048480459664" value="Getting of all active user's authentication sessions" />
         </node>
@@ -565,7 +565,7 @@
             <property name="name" nameId="tpck.1169194664001" value="userAuths" />
             <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395536052" nodeInfo="ng">
               <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395536308" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395528291" resolveInfo="AuthItem" />
+                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395528291" resolveInfo="AuthSession" />
               </node>
             </node>
           </node>
@@ -575,7 +575,7 @@
         </node>
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395537186" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="RemoveAuth" />
+        <property name="name" nameId="tpck.1169194664001" value="TerminateSession" />
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395538851" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="1" />
           <property name="name" nameId="tpck.1169194664001" value="id" />
@@ -588,7 +588,7 @@
           <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
         </node>
         <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389878141" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Logout on specified user's session" />
+          <property name="content" nameId="tsp6.2861239048480459664" value="SignOut on specified user's session" />
         </node>
         <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389879482" nodeInfo="ng">
           <property name="description" nameId="tsp6.4092665470043359042" value="id from AuthItem" />
@@ -596,7 +596,7 @@
         </node>
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395538461" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="RemoveAllOtherAuths" />
+        <property name="name" nameId="tpck.1169194664001" value="TerminateAllSessions" />
         <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395538462" nodeInfo="ng">
           <property name="hexValue" nameId="tsp6.4689615199750888593" value="53" />
         </node>
@@ -604,11 +604,11 @@
           <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
         </node>
         <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389884640" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Logout on all exept current sessions" />
+          <property name="content" nameId="tsp6.2861239048480459664" value="SignOut on all exept current sessions" />
         </node>
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395540284" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Logout" />
+        <property name="name" nameId="tpck.1169194664001" value="SignOut" />
         <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395540285" nodeInfo="ng">
           <property name="hexValue" nameId="tsp6.4689615199750888593" value="54" />
         </node>
@@ -616,7 +616,7 @@
           <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
         </node>
         <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389885980" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Logout current session" />
+          <property name="content" nameId="tsp6.2861239048480459664" value="SignOut current session" />
         </node>
       </node>
     </node>
@@ -4840,7 +4840,7 @@
           </node>
           <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395641686" nodeInfo="ng">
             <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-            <property name="name" nameId="tpck.1169194664001" value="needMode" />
+            <property name="name" nameId="tpck.1169194664001" value="needMore" />
             <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Boolean" typeId="tsp6.2348480312264231189" id="803735062395641703" nodeInfo="ng" />
           </node>
           <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395641606" nodeInfo="ng">

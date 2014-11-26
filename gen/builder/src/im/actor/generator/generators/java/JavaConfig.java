@@ -108,36 +108,51 @@ public class JavaConfig {
         }
     }
 
-    public static String convertType(SchemeType type) throws IOException {
+    public static String convertType(SchemeDefinition definition, SchemeType type) throws IOException {
+        type = reduceAlias(type, definition);
         if (type instanceof SchemePrimitiveType) {
             return JavaConfig.mapPrimitiveType((SchemePrimitiveType) type);
         } else if (type instanceof SchemeStructType) {
             return getStructName(((SchemeStructType) type).getType());
         } else if (type instanceof SchemeListType) {
             SchemeListType listType = (SchemeListType) type;
-            if (listType.getType() instanceof SchemePrimitiveType) {
-                return "List<" + mapPrimitiveReferenceType((SchemePrimitiveType) listType.getType()) + ">";
-            } else if (listType.getType() instanceof SchemeStructType) {
-                return "List<" + getStructName(((SchemeStructType) listType.getType()).getType()) + ">";
+            SchemeType childType = reduceAlias(listType.getType(), definition);
+            if (childType instanceof SchemePrimitiveType) {
+                return "List<" + mapPrimitiveReferenceType((SchemePrimitiveType) childType) + ">";
+            } else if (childType instanceof SchemeStructType) {
+                return "List<" + getStructName(((SchemeStructType) childType).getType()) + ">";
             } else {
                 throw new IOException();
             }
 
         } else if (type instanceof SchemeOptionalType) {
             SchemeOptionalType optionalType = (SchemeOptionalType) type;
-            if (optionalType.getType() instanceof SchemePrimitiveType) {
-                return mapPrimitiveReferenceType((SchemePrimitiveType) optionalType.getType());
-            } else if (optionalType.getType() instanceof SchemeStructType) {
-                return getStructName(((SchemeStructType) optionalType.getType()).getType());
-            } else if (optionalType.getType() instanceof SchemeEnumType) {
-                return getEnumName(((SchemeEnumType) optionalType.getType()).getName());
+            SchemeType childType = reduceAlias(optionalType.getType(), definition);
+            if (childType instanceof SchemePrimitiveType) {
+                return mapPrimitiveReferenceType((SchemePrimitiveType) childType);
+            } else if (childType instanceof SchemeStructType) {
+                return getStructName(((SchemeStructType) childType).getType());
+            } else if (childType instanceof SchemeEnumType) {
+                return getEnumName(((SchemeEnumType) childType).getName());
+            } else if (childType instanceof SchemeTraitType) {
+                return "byte[]";
             } else {
                 throw new IOException();
             }
         } else if (type instanceof SchemeEnumType) {
             return getEnumName(((SchemeEnumType) type).getName());
+        } else if (type instanceof SchemeTraitType) {
+            return "byte[]";
         } else {
             throw new IOException();
+        }
+    }
+
+    public static SchemeType reduceAlias(SchemeType type, SchemeDefinition definition) {
+        if (type instanceof SchemeAliasType) {
+            return reduceAlias(definition.getAliases().get(((SchemeAliasType) type).getName()), definition);
+        } else {
+            return type;
         }
     }
 }

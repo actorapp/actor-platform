@@ -41,12 +41,12 @@ public class RequestGenerator {
             generator.decreaseDepth();
             generator.appendLn("}");
             generator.appendLn();
-            ContainerGenerator.generateFields(generator, u);
+            ContainerGenerator.generateFields(generator, definition, u);
 
             generator.appendLn();
 
             if (u.getAttributes().size() > 0) {
-                ContainerGenerator.generateConstructor(generator, u, javaName);
+                ContainerGenerator.generateConstructor(generator, definition, u, javaName);
             }
 
             generator.appendLn("public " + javaName + "() {");
@@ -54,10 +54,10 @@ public class RequestGenerator {
             generator.appendLn("}");
             generator.appendLn();
 
-            ContainerGenerator.generateGetters(generator, u);
+            ContainerGenerator.generateGetters(generator, definition, u);
 
-            ContainerGenerator.generateSerialization(generator, u);
-            ContainerGenerator.generateDeserialization(generator, u);
+            ContainerGenerator.generateSerialization(generator, u, definition);
+            ContainerGenerator.generateDeserialization(generator, u, definition);
 
             generator.appendLn("@Override");
             generator.appendLn("public int getHeaderKey() {");
@@ -96,12 +96,12 @@ public class RequestGenerator {
             generator.decreaseDepth();
             generator.appendLn("}");
             generator.appendLn();
-            ContainerGenerator.generateFields(generator, u);
+            ContainerGenerator.generateFields(generator, definition, u);
 
             generator.appendLn();
 
             if (u.getAttributes().size() > 0) {
-                ContainerGenerator.generateConstructor(generator, u, javaName);
+                ContainerGenerator.generateConstructor(generator, definition, u, javaName);
             }
 
             generator.appendLn("public " + javaName + "() {");
@@ -109,10 +109,10 @@ public class RequestGenerator {
             generator.appendLn("}");
             generator.appendLn();
 
-            ContainerGenerator.generateGetters(generator, u);
+            ContainerGenerator.generateGetters(generator, definition, u);
 
-            ContainerGenerator.generateSerialization(generator, u);
-            ContainerGenerator.generateDeserialization(generator, u);
+            ContainerGenerator.generateSerialization(generator, u, definition);
+            ContainerGenerator.generateDeserialization(generator, u, definition);
 
             generator.appendLn("@Override");
             generator.appendLn("public int getHeaderKey() {");
@@ -165,7 +165,7 @@ public class RequestGenerator {
 
             generator.append("public Future<" + responseJavaName + "> " + JavaConfig.getRequestsName(u.getName()) + "(");
             if (u.getAttributes().size() > 0) {
-                ContainerGenerator.generateConstructorArgs(generator, u);
+                ContainerGenerator.generateConstructorArgs(generator, definition, u);
             }
             generator.appendLn(") {");
             generator.increaseDepth();
@@ -178,7 +178,7 @@ public class RequestGenerator {
 
             generator.append("public Future<" + responseJavaName + "> " + JavaConfig.getRequestsName(u.getName()) + "(");
             if (u.getAttributes().size() > 0) {
-                ContainerGenerator.generateConstructorArgs(generator, u);
+                ContainerGenerator.generateConstructorArgs(generator, definition, u);
                 generator.append(", ");
             }
             generator.appendLn("long requestTimeout) {");
@@ -192,7 +192,7 @@ public class RequestGenerator {
 
             generator.append("public Future<" + responseJavaName + "> " + JavaConfig.getRequestsName(u.getName()) + "(");
             if (u.getAttributes().size() > 0) {
-                ContainerGenerator.generateConstructorArgs(generator, u);
+                ContainerGenerator.generateConstructorArgs(generator, definition, u);
                 generator.append(", ");
             }
             generator.appendLn("FutureCallback<" + responseJavaName + "> callback) {");
@@ -206,7 +206,7 @@ public class RequestGenerator {
 
             generator.append("public Future<" + responseJavaName + "> " + JavaConfig.getRequestsName(u.getName()) + "(");
             if (u.getAttributes().size() > 0) {
-                ContainerGenerator.generateConstructorArgs(generator, u);
+                ContainerGenerator.generateConstructorArgs(generator, definition, u);
                 generator.append(", ");
             }
             generator.appendLn("long requestTimeout, FutureCallback<" + responseJavaName + "> callback) {");
@@ -220,7 +220,7 @@ public class RequestGenerator {
 
             generator.append("public " + responseJavaName + " " + JavaConfig.getRequestsName(u.getName()) + "Sync (");
             if (u.getAttributes().size() > 0) {
-                ContainerGenerator.generateConstructorArgs(generator, u);
+                ContainerGenerator.generateConstructorArgs(generator, definition, u);
             }
             generator.appendLn(") throws TimeoutException, ApiRequestException {");
             generator.increaseDepth();
@@ -233,7 +233,7 @@ public class RequestGenerator {
 
             generator.append("public " + responseJavaName + " " + JavaConfig.getRequestsName(u.getName()) + "Sync (");
             if (u.getAttributes().size() > 0) {
-                ContainerGenerator.generateConstructorArgs(generator, u);
+                ContainerGenerator.generateConstructorArgs(generator, definition, u);
                 generator.append(", ");
             }
             generator.appendLn("long requestTimeout) throws TimeoutException, ApiRequestException {");
