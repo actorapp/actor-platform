@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dependencies version="2" modelHash="5iv76hdwusgrb7oc9gyxgl7sefxl30c">
+  <dep model="f:java_stub#6354ebe7-c22a-4a0f-ac54-50b52ab9b065#java.io(JDK/java.io@java_stub)" />
+  <dep model="f:java_stub#6354ebe7-c22a-4a0f-ac54-50b52ab9b065#java.lang(JDK/java.lang@java_stub)" />
+  <dep model="f:java_stub#6ed54515-acc8-4d1e-a16c-9fd6cfe951ea#jetbrains.mps.extapi.model(MPS.Core/jetbrains.mps.extapi.model@java_stub)" />
+  <dep model="f:java_stub#6ed54515-acc8-4d1e-a16c-9fd6cfe951ea#jetbrains.mps.smodel(MPS.Core/jetbrains.mps.smodel@java_stub)" />
+  <dep model="f:java_stub#8865b7a8-5271-43d3-884c-6fd1d9cfdd34#org.jetbrains.mps.openapi.model(MPS.OpenAPI/org.jetbrains.mps.openapi.model@java_stub)" />
+  <dep model="r:00000000-0000-4000-0000-011c89590282(jetbrains.mps.lang.core.behavior)" hash="61wht9cj3icmq9lpyigsv7597eepxrl" />
+  <dep model="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" hash="5sdbpqxziyuazpb9j1p4zdk6bnvbn49" />
+  <dep model="r:00000000-0000-4000-0000-011c895902ca(jetbrains.mps.baseLanguage.structure)" hash="46jsxl802hw5is64gtjcw36kxhxdzvx" />
+  <dep model="r:00000000-0000-4000-0000-011c895902cd(jetbrains.mps.baseLanguage.generator.java.main@generator)" hash="303xz1b2lyseld0axia86q3lpvucmq6" />
+  <dep model="r:00000000-0000-4000-0000-011c89590303(jetbrains.mps.lang.smodel.generator.baseLanguage.template.main@generator)" hash="-8z73tx2nml9xagbxlfmq60ehji8q3f5" />
+  <dep model="r:229ce18d-2bb0-4d5b-a7cd-cec65841e459(jetbrains.mps.lang.behavior.generator.template.main@generator)" hash="-1vtu6uptzx5l7n2n68xt5em9d6nhvec" />
+  <dep model="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" hash="35cpr17awyzg2hqbupcipjs80fmttka" />
+  <dep model="r:b4d7d620-6723-4aa2-856b-118497e84e9e(jetbrains.mps.baseLanguage.generator.java.strings@generator)" hash="b4ewbuz42qcbg1awca5bacgi0vopxqt" />
+  <dep model="r:c3548bac-30eb-4a2a-937c-0111d5697309(jetbrains.mps.lang.smodel.generator.smodelAdapter)" hash="e5zswcvgdspmt039m3gg97emcadi0ez" />
+  <dep model="r:f04c1476-2f91-4f59-be13-c8e009abebee(jetbrains.mps.baseLanguageInternal.generator.template.main@generator)" hash="a8elw7fctzg6sg8fe36u9gzu42axhdb" />
+  <common hash="3s97i0c1v82tl13wropkwwkr6my0b9w" dependsOnNodes="true">
+    <dep root="4092665470043481618" />
+    <dep root="4092665470043575878" />
+    <dep root="4689615199750893170" />
+    <dep root="4689615199751135112" />
+    <dep root="773119248390080616" />
+    <dep model="r:00000000-0000-4000-0000-011c89590282(jetbrains.mps.lang.core.behavior)" />
+    <dep model="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" />
+    <dep model="r:00000000-0000-4000-0000-011c895902cd(jetbrains.mps.baseLanguage.generator.java.main@generator)" />
+    <dep model="r:229ce18d-2bb0-4d5b-a7cd-cec65841e459(jetbrains.mps.lang.behavior.generator.template.main@generator)" />
+    <dep model="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" />
+    <dep model="r:b4d7d620-6723-4aa2-856b-118497e84e9e(jetbrains.mps.baseLanguage.generator.java.strings@generator)" />
+    <dep model="r:f04c1476-2f91-4f59-be13-c8e009abebee(jetbrains.mps.baseLanguageInternal.generator.template.main@generator)" />
+    <file name="AliasType_BehaviorDescriptor.java" />
+    <file name="ApiAlias_BehaviorDescriptor.java" />
+    <file name="ApiComment_BehaviorDescriptor.java" />
+    <file name="ApiDef_BehaviorDescriptor.java" />
+    <file name="ApiDescription_BehaviorDescriptor.java" />
+    <file name="ApiEmptyDef_BehaviorDescriptor.java" />
+    <file name="ApiNamedDef_BehaviorDescriptor.java" />
+    <file name="ApiSection_BehaviorDescriptor.java" />
+    <file name="BehaviorAspectDescriptor.java" />
+    <file name="Boolean_BehaviorDescriptor.java" />
+    <file name="Bytes_BehaviorDescriptor.java" />
+    <file name="Double_BehaviorDescriptor.java" />
+    <file name="EnumAttribute_BehaviorDescriptor.java" />
+    <file name="EnumType_BehaviorDescriptor.java" />
+    <file name="Enum_BehaviorDescriptor.java" />
+    <file name="HeaderKey_BehaviorDescriptor.java" />
+    <file name="IEntity_BehaviorDescriptor.java" />
+    <file name="IHeaderStruct_BehaviorDescriptor.java" />
+    <file name="IRpcNamed_BehaviorDescriptor.java" />
+    <file name="IRpcObject_BehaviorDescriptor.java" />
+    <file name="IStruct_BehaviorDescriptor.java" />
+    <file name="IUpdateObject_BehaviorDescriptor.java" />
+    <file name="Int32_BehaviorDescriptor.java" />
+    <file name="Int64_BehaviorDescriptor.java" />
+    <file name="InterfaceRef_BehaviorDescriptor.java" />
+    <file name="List_BehaviorDescriptor.java" />
+    <file name="MethodThrows_BehaviorDescriptor.java" />
+    <file name="Optional_BehaviorDescriptor.java" />
+    <file name="ResponseRefAnonymous_BehaviorDescriptor.java" />
+    <file name="ResponseRefValue_BehaviorDescriptor.java" />
+    <file name="ResponseRef_BehaviorDescriptor.java" />
+    <file name="Response_BehaviorDescriptor.java" />
+    <file name="RpcDocComment_BehaviorDescriptor.java" />
+    <file name="RpcDocParameter_BehaviorDescriptor.java" />
+    <file name="RpcDoc_BehaviorDescriptor.java" />
+    <file name="Rpc_BehaviorDescriptor.java" />
+    <file name="SectionDoc_BehaviorDescriptor.java" />
+    <file name="SerializableType_BehaviorDescriptor.java" />
+    <file name="String_BehaviorDescriptor.java" />
+    <file name="StructAttribute_BehaviorDescriptor.java" />
+    <file name="StructDocComment_BehaviorDescriptor.java" />
+    <file name="StructDocParameter_BehaviorDescriptor.java" />
+    <file name="StructDoc_BehaviorDescriptor.java" />
+    <file name="StructType_BehaviorDescriptor.java" />
+    <file name="Struct_BehaviorDescriptor.java" />
+    <file name="TraitAttribute_BehaviorDescriptor.java" />
+    <file name="TraitType_BehaviorDescriptor.java" />
+    <file name="Trait_BehaviorDescriptor.java" />
+    <file name="UpdateBox_BehaviorDescriptor.java" />
+    <file name="Update_BehaviorDescriptor.java" />
+  </common>
+  <source id="4689615199750893170" name="HeaderKey_Behavior" hash="-eae1thi0vtnqqgq0l3igozvcbnr3tx6">
+    <dep model="f:java_stub#8865b7a8-5271-43d3-884c-6fd1d9cfdd34#org.jetbrains.mps.openapi.model(MPS.OpenAPI/org.jetbrains.mps.openapi.model@java_stub)" />
+    <dep model="r:00000000-0000-4000-0000-011c895902ca(jetbrains.mps.baseLanguage.structure)" />
+    <dep model="r:00000000-0000-4000-0000-011c895902cd(jetbrains.mps.baseLanguage.generator.java.main@generator)" />
+    <dep model="r:00000000-0000-4000-0000-011c89590303(jetbrains.mps.lang.smodel.generator.baseLanguage.template.main@generator)" />
+    <dep model="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" />
+    <dep model="r:c3548bac-30eb-4a2a-937c-0111d5697309(jetbrains.mps.lang.smodel.generator.smodelAdapter)" />
+    <file name="HeaderKey_Behavior.java" />
+  </source>
+  <source id="4689615199751135112" name="IHeaderStruct_Behavior" hash="-5cy77gqotc1ddadvsl9gl2o1jtklga2">
+    <dep model="f:java_stub#6354ebe7-c22a-4a0f-ac54-50b52ab9b065#java.io(JDK/java.io@java_stub)" />
+    <dep model="f:java_stub#6354ebe7-c22a-4a0f-ac54-50b52ab9b065#java.lang(JDK/java.lang@java_stub)" />
+    <dep model="f:java_stub#6ed54515-acc8-4d1e-a16c-9fd6cfe951ea#jetbrains.mps.extapi.model(MPS.Core/jetbrains.mps.extapi.model@java_stub)" />
+    <dep model="f:java_stub#6ed54515-acc8-4d1e-a16c-9fd6cfe951ea#jetbrains.mps.smodel(MPS.Core/jetbrains.mps.smodel@java_stub)" />
+    <dep model="f:java_stub#8865b7a8-5271-43d3-884c-6fd1d9cfdd34#org.jetbrains.mps.openapi.model(MPS.OpenAPI/org.jetbrains.mps.openapi.model@java_stub)" />
+    <dep model="r:00000000-0000-4000-0000-011c895902ca(jetbrains.mps.baseLanguage.structure)" />
+    <dep model="r:00000000-0000-4000-0000-011c89590303(jetbrains.mps.lang.smodel.generator.baseLanguage.template.main@generator)" />
+    <dep model="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" />
+    <dep model="r:c3548bac-30eb-4a2a-937c-0111d5697309(jetbrains.mps.lang.smodel.generator.smodelAdapter)" />
+    <file name="IHeaderStruct_Behavior.java" />
+  </source>
+  <source id="4092665470043481618" name="RpcDocParameter_Behavior" hash="-91y0xhozxfsgh82tehyfgozbzoqyama">
+    <dep model="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" />
+    <file name="RpcDocParameter_Behavior.java" />
+  </source>
+  <source id="4092665470043575878" name="IStruct_Behavior" hash="-92fx4wxo3bv7vq9s4lnex8xj0axzjd5">
+    <dep model="r:00000000-0000-4000-0000-011c89590282(jetbrains.mps.lang.core.behavior)" />
+    <dep model="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" />
+    <file name="IStruct_Behavior.java" />
+  </source>
+  <source id="773119248390080616" name="StructDocParameter_Behavior" hash="9qeec6k3yfz6xh7jq3okc3ml5dvlazu">
+    <dep model="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" />
+    <file name="StructDocParameter_Behavior.java" />
+  </source>
+</dependencies>
+

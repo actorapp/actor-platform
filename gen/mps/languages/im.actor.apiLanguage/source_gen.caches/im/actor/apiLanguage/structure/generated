@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dependencies version="2" modelHash="35cpr17awyzg2hqbupcipjs80fmttka">
+  <dep model="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" hash="5sdbpqxziyuazpb9j1p4zdk6bnvbn49" />
+  <dep model="r:00000000-0000-4000-0000-011c89590293(jetbrains.mps.lang.structure.generator_new.baseLanguage@generator)" hash="-5mgxduek28h3ywdzzsk4capaz4hgjm0" />
+  <dep model="r:00000000-0000-4000-0000-011c895902cd(jetbrains.mps.baseLanguage.generator.java.main@generator)" hash="303xz1b2lyseld0axia86q3lpvucmq6" />
+  <dep model="r:b4d7d620-6723-4aa2-856b-118497e84e9e(jetbrains.mps.baseLanguage.generator.java.strings@generator)" hash="b4ewbuz42qcbg1awca5bacgi0vopxqt" />
+  <dep model="r:f04c1476-2f91-4f59-be13-c8e009abebee(jetbrains.mps.baseLanguageInternal.generator.template.main@generator)" hash="a8elw7fctzg6sg8fe36u9gzu42axhdb" />
+  <common hash="5nh8uotkjzk0tggutjx8iw5wdkaqrqt" dependsOnNodes="true">
+    <dep root="2348480312264231121" />
+    <dep root="2348480312264231173" />
+    <dep root="2348480312264231180" />
+    <dep root="2348480312264231184" />
+    <dep root="2348480312264231189" />
+    <dep root="2348480312264231195" />
+    <dep root="2348480312264232735" />
+    <dep root="2348480312264232754" />
+    <dep root="2348480312264232779" />
+    <dep root="2348480312264233334" />
+    <dep root="2348480312264233362" />
+    <dep root="2348480312264233376" />
+    <dep root="2348480312264620144" />
+    <dep root="2348480312264642577" />
+    <dep root="2348480312264653219" />
+    <dep root="2348480312264710733" />
+    <dep root="2348480312265103643" />
+    <dep root="2348480312265108784" />
+    <dep root="2348480312265114812" />
+    <dep root="2348480312265149313" />
+    <dep root="2348480312265149402" />
+    <dep root="2348480312265149479" />
+    <dep root="2348480312265228628" />
+    <dep root="2348480312265228678" />
+    <dep root="2348480312265228734" />
+    <dep root="2348480312265565650" />
+    <dep root="2861239048480449583" />
+    <dep root="2861239048481125696" />
+    <dep root="4092665470043052969" />
+    <dep root="4092665470043293715" />
+    <dep root="4092665470043358610" />
+    <dep root="4689615199750780323" />
+    <dep root="4689615199750788559" />
+    <dep root="4689615199750888532" />
+    <dep root="4689615199750888590" />
+    <dep root="4689615199751283321" />
+    <dep root="4689615199751415779" />
+    <dep root="4689615199751498751" />
+    <dep root="5312209286553449813" />
+    <dep root="5312209286553980838" />
+    <dep root="5312209286554516176" />
+    <dep root="5312209286554595283" />
+    <dep root="5312209286555037514" />
+    <dep root="5857873509721568548" />
+    <dep root="773119248390000806" />
+    <dep root="773119248390047284" />
+    <dep root="773119248390078458" />
+    <dep root="803735062395368411" />
+    <dep root="803735062395533120" />
+    <dep root="803735062395648228" />
+    <dep model="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" />
+    <dep model="r:00000000-0000-4000-0000-011c89590293(jetbrains.mps.lang.structure.generator_new.baseLanguage@generator)" />
+    <dep model="r:00000000-0000-4000-0000-011c895902cd(jetbrains.mps.baseLanguage.generator.java.main@generator)" />
+    <dep model="r:b4d7d620-6723-4aa2-856b-118497e84e9e(jetbrains.mps.baseLanguage.generator.java.strings@generator)" />
+    <dep model="r:f04c1476-2f91-4f59-be13-c8e009abebee(jetbrains.mps.baseLanguageInternal.generator.template.main@generator)" />
+    <file name="StructureAspectDescriptor.java" />
+  </common>
+  <source id="2348480312264231121" name="Struct" hash="47g47mzbktrrhne0xjqq27asu6mws4t" />
+  <source id="2348480312264231180" name="Int32" hash="-3gj8vot6v3wzgtdp5ipdt1defi18g5" />
+  <source id="2348480312264231184" name="Int64" hash="c7nubhwmbvtkt4memi9ocbeqruajxkh" />
+  <source id="2348480312264231189" name="Boolean" hash="-bnc7g4xsp0ocdpijv3w3pxhonmf2nz1" />
+  <source id="2348480312264231195" name="String" hash="-7fgq6alln69aqgi01ynocwqderaikn2" />
+  <source id="2348480312264231173" name="SerializableType" hash="-4wddo72ebmjmvedmmch9710fcpex550" />
+  <source id="2348480312264232735" name="Optional" hash="3hm6tq00lhmczjgb251rj2b2j3di01d" />
+  <source id="2348480312264232754" name="List" hash="58ovedtn4kei5989rm7fd5gopav76ti" />
+  <source id="2348480312264232779" name="ApiDescription" hash="c5odd9r3o0amuvkfnkgeykhyp7u2p4j" />
+  <source id="2348480312264233334" name="StructType" hash="e2jl74id7w0dw0vbra5e5v772ee135g" />
+  <source id="2348480312264233362" name="ApiSection" hash="4ldh7fbfysbv2wswpnnm92qtadnj5xe" />
+  <source id="2348480312264233376" name="ApiDef" hash="6in9zvtj5ik6628rcx96dpjy7gw6pul" />
+  <source id="2348480312264620144" name="Enum" hash="-da7bi7nsgxm1teli4uld2ixer08w183" />
+  <source id="2348480312264642577" name="ApiNamedDef" hash="3nh6vnme9z1gutoqo4w0c3k39t6sns9" />
+  <source id="2348480312264653219" name="StructAttribute" hash="2o6d956xugz0roru9iszrm4b306izr4" />
+  <source id="2348480312264710733" name="EnumAttribute" hash="-21p18gxqtjk98ng5gu9wb2r5ngkr19m" />
+  <source id="2348480312265103643" name="Response" hash="-8n5lakd8ry3zqq04oxri9rlmuheosrs" />
+  <source id="2348480312265108784" name="Bytes" hash="-1yggpyjqd573o79uzsnjcxcdxh08c7v" />
+  <source id="2348480312265114812" name="Rpc" hash="-841u6hnekmw2alo107apcpo7blfld5" />
+  <source id="2348480312265149313" name="ResponseRef" hash="-2b5t6k4jq8y0fhbdumnqjh37tnggytz" />
+  <source id="2348480312265149402" name="ResponseRefAnonymous" hash="-cvpr69y8r5zi14ith3vkzv5bvr7hdkf" />
+  <source id="2348480312265149479" name="ResponseRefValue" hash="-26x4djgzd9c9bbsntsulaberdvzbsoz" />
+  <source id="2348480312265228628" name="IHeaderStruct" hash="-ehwsh3tn5jr668stmz6g586ptblijgo" />
+  <source id="2348480312265228678" name="IRpcObject" hash="-982djhwcsv9tl5ni5kr1xih6unv4qv2" />
+  <source id="2348480312265228734" name="IUpdateObject" hash="bhgyazacj2fo9zoz8p5i0cvujkxomkw" />
+  <source id="2348480312265565650" name="IStruct" hash="bukvur2ti8f2fxn16rmolsbj4rdhc77" />
+  <source id="4689615199750780323" name="ApiEmptyDef" hash="13zzjuz2d1ntws6mvgysq5qp3wzzj24" />
+  <source id="4689615199750788559" name="ApiComment" hash="-8dd8gs3s9cm03bu8q0vpb8j2u15atr5" />
+  <source id="4689615199750888532" name="hexByte" hash="-38hcgk1g4k4avx8zvlr2vi22d12zucx">
+    <dep model="r:00000000-0000-4000-0000-011c895902cd(jetbrains.mps.baseLanguage.generator.java.main@generator)" />
+    <file name="hexByte_PropertySupport.java" />
+  </source>
+  <source id="4689615199750888590" name="HeaderKey" hash="1db16ikmnoesob4c73611vjhs988wv9" />
+  <source id="4689615199751283321" name="Update" hash="-4vyompe9py1fa1nga6mfeu4szmfwkeo" />
+  <source id="4689615199751415779" name="IEntity" hash="9943cj0iauj61dmffhighrzwy4x5c25" />
+  <source id="4689615199751498751" name="IRpcNamed" hash="-aqdweonbijkpk9n8qq323ro0v0i8o6r" />
+  <source id="803735062395368411" name="EnumType" hash="-a1ig7nl2nruzidi9mx0v93h6aak1stk" />
+  <source id="803735062395533120" name="Double" hash="1xw6g5hd21jbkk39b8isw43h46wusee" />
+  <source id="803735062395648228" name="UpdateBox" hash="-9emltfz6f9ge4ar70xzbbam1xl84gjy" />
+  <source id="2861239048480449583" name="RpcDocComment" hash="-2c81iexvkbmfn9bsrf525jgnitbwkeh" />
+  <source id="2861239048481125696" name="SectionDoc" hash="wgbnfemkp0etkes41nwrnpazgnpv0o" />
+  <source id="4092665470043052969" name="MethodThrows" hash="dbawo8tqstelvq2mu435gdzlwvuu7rf" />
+  <source id="4092665470043293715" name="RpcDocParameter" hash="-1fbj21cxc8spcr6xxjf2my0e7hejg6y" />
+  <source id="4092665470043358610" name="RpcDoc" hash="gkyftqlydqmztyh5lh8ktrz7zs197e" />
+  <source id="773119248390000806" name="StructDoc" hash="3zrf24u992qo7lydm8na02ikpb0zng7" />
+  <source id="773119248390047284" name="StructDocComment" hash="eftra9tvmsjg9dt04cfdukq25437qpq" />
+  <source id="773119248390078458" name="StructDocParameter" hash="attkmmqpcv14hiwc2mykgg8wsbb0xs8" />
+  <source id="5312209286553449813" name="ApiAlias" hash="ed3o9mvqyb9tcnu0r3byiunj0703si6" />
+  <source id="5312209286553980838" name="AliasType" hash="9snl5z6ugdd9ssvsv22h3r0fv6a6qx5" />
+  <source id="5312209286554516176" name="Trait" hash="-kiktqfmojpc2omcy48ldanh1l10g6r" />
+  <source id="5312209286554595283" name="TraitAttribute" hash="81nfavpqiip4v0wzimwcacqo8137w7k" />
+  <source id="5312209286555037514" name="InterfaceRef" hash="-4rtm3ifrcmmq1otq82dppjnpmdxvhcj" />
+  <source id="5857873509721568548" name="TraitType" hash="3gysapsr0pb52uqsf50mth6gdcmwil9" />
+</dependencies>
+

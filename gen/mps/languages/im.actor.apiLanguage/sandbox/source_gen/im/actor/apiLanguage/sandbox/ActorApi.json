@@ -197,7 +197,7 @@
 "header":7,
 "response":{"type":"anonymous","header":8, "attributes":[{"type":{"type":"list","childType":{"type":"struct","childType":"User"}},"id":1,"name":"users"}
 ,{"type":"int32","id":2,"name":"seq"}
-,{"type":"bytes","id":3,"name":"states"}
+,{"type":"seq_state","id":3,"name":"state"}
 ]},
 "doc":[
 "Importing phones and emails for building contact list","Maximum amount of items for import per method call equals to 100.",{"type":"reference","argument":"phones","description":"Phones for import"},{"type":"reference","argument":"emails","description":"Emails for import"}],"attributes":[
@@ -351,7 +351,7 @@
 "doc":[
 "Response about message sent",{"type":"reference","argument":"seq","description":"  Sequence number in update sequence"},{"type":"reference","argument":"state","description":"  Seuqnce state value"},{"type":"reference","argument":"date","description":"  date of message"}],"attributes":[
 {"type":"int32","id":1,"name":"seq"}
-,{"type":"bytes","id":2,"name":"state"}
+,{"type":"seq_state","id":2,"name":"state"}
 ,{"type":"int64","id":3,"name":"date"}
 ]}},{"type":"struct","content":{
 "name":"EncryptedAesKey",
@@ -535,7 +535,7 @@
 "header":65,
 "response":{"type":"anonymous","header":66, "attributes":[{"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
 ,{"type":"int32","id":3,"name":"seq"}
-,{"type":"bytes","id":4,"name":"state"}
+,{"type":"seq_state","id":4,"name":"state"}
 ,{"type":{"type":"list","childType":"int32"},"id":5,"name":"users"}
 ]},
 "doc":[
@@ -943,7 +943,7 @@
 "doc":[
 "Sequence update",{"type":"reference","argument":"seq","description":"  Sequence number of update"},{"type":"reference","argument":"state","description":"  Sequece state of update"},{"type":"reference","argument":"updateHeader","description":"  header of update"},{"type":"reference","argument":"update","description":"  The update"}],"attributes":[
 {"type":"int32","id":1,"name":"seq"}
-,{"type":"bytes","id":2,"name":"state"}
+,{"type":"seq_state","id":2,"name":"state"}
 ,{"type":"int32","id":3,"name":"updateHeader"}
 ,{"type":"bytes","id":4,"name":"update"}
 ]}},{"type":"update_box","content":{
@@ -952,7 +952,7 @@
 "doc":[
 "Fat sequence update with additional data",{"type":"reference","argument":"seq","description":"  Sequence number of update"},{"type":"reference","argument":"state","description":"  Sequence state of update"},{"type":"reference","argument":"updateHeader","description":"  header of update"},{"type":"reference","argument":"update","description":"  The update"},{"type":"reference","argument":"users","description":"  Users that are referenced in update "},{"type":"reference","argument":"groups","description":"  Groups that are referenced in update"}],"attributes":[
 {"type":"int32","id":1,"name":"seq"}
-,{"type":"bytes","id":2,"name":"state"}
+,{"type":"seq_state","id":2,"name":"state"}
 ,{"type":"int32","id":3,"name":"updateHeader"}
 ,{"type":"bytes","id":4,"name":"update"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"User"}},"id":5,"name":"users"}
@@ -986,7 +986,7 @@
 "name":"GetDifference",
 "header":11,
 "response":{"type":"anonymous","header":12, "attributes":[{"type":"int32","id":1,"name":"seq"}
-,{"type":"bytes","id":2,"name":"state"}
+,{"type":"seq_state","id":2,"name":"state"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"User"}},"id":3,"name":"users"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"Group"}},"id":6,"name":"groups"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"DifferenceUpdate"}},"id":4,"name":"updates"}
@@ -995,7 +995,7 @@
 "doc":[
 "Getting difference of sequence"],"attributes":[
 {"type":"int32","id":1,"name":"seq"}
-,{"type":"bytes","id":2,"name":"state"}
+,{"type":"seq_state","id":2,"name":"state"}
 ]}},{"type":"empty"},{"type":"rpc","content":{
 "name":"SubscribeToOnline",
 "header":32,
@@ -1038,7 +1038,7 @@
 "doc":[
 "Sequence response. Methods that return this value must process response in particular order",{"type":"reference","argument":"seq","description":"  Sequence number of response"},{"type":"reference","argument":"state","description":"  Sequence state of response"}],"attributes":[
 {"type":"int32","id":1,"name":"seq"}
-,{"type":"bytes","id":2,"name":"state"}
+,{"type":"seq_state","id":2,"name":"state"}
 ]}},{"type":"response","content":{
 "name":"AvatarChanged",
 "header":68,
@@ -1046,7 +1046,7 @@
 "Response of Group or Profile avatar change",{"type":"reference","argument":"avatar","description":"  new avatar"},{"type":"reference","argument":"seq","description":"  Sequence number of response"},{"type":"reference","argument":"state","description":"  Sequence state of response"}],"attributes":[
 {"type":{"type":"struct","childType":"Avatar"},"id":1,"name":"avatar"}
 ,{"type":"int32","id":2,"name":"seq"}
-,{"type":"bytes","id":3,"name":"state"}
+,{"type":"seq_state","id":3,"name":"state"}
 ]}},{"type":"struct","content":{
 "name":"Config",
 "doc":[
