@@ -1,4 +1,5 @@
-{"sections":[
+{"aliases":[{"type":"bytes","alias":"seq_state"},{"type":"int64","alias":"date"},{"type":"int64","alias":"randomId"}],
+"obj-c-prefix":"AM","java-package":"im.actor.api","sections":[
 {"title":"Authentication"
 ,"package":"auth"
 ,"doc":[
@@ -166,7 +167,10 @@
 ]}},{"type":"rpc","content":{
 "name":"EditAvatar",
 "header":31,
-"response":{"type":"reference","name":"AvatarChanged"},
+"response":{"type":"anonymous","header":103, "attributes":[{"type":{"type":"struct","childType":"Avatar"},"id":1,"name":"avatar"}
+,{"type":"int32","id":2,"name":"seq"}
+,{"type":{"type":"alias","childType":"seq_state"},"id":3,"name":"state"}
+]},
 "doc":[
 "Changing account's avatar",{"type":"reference","argument":"fileLocation","description":"File Location of uploaded unencrypted avatar"}],"attributes":[
 {"type":{"type":"struct","childType":"FileLocation"},"id":1,"name":"fileLocation"}
@@ -197,7 +201,7 @@
 "header":7,
 "response":{"type":"anonymous","header":8, "attributes":[{"type":{"type":"list","childType":{"type":"struct","childType":"User"}},"id":1,"name":"users"}
 ,{"type":"int32","id":2,"name":"seq"}
-,{"type":"seq_state","id":3,"name":"state"}
+,{"type":{"type":"alias","childType":"seq_state"},"id":3,"name":"state"}
 ]},
 "doc":[
 "Importing phones and emails for building contact list","Maximum amount of items for import per method call equals to 100.",{"type":"reference","argument":"phones","description":"Phones for import"},{"type":"reference","argument":"emails","description":"Emails for import"}],"attributes":[
@@ -243,7 +247,7 @@
 "Update about contact registration",{"type":"reference","argument":"uid","description":"  contact's uid"},{"type":"reference","argument":"isSilent","description":"  is registration silent. If this value is true then don't show notification about registration"},{"type":"reference","argument":"date","description":"  date of registration"}],"attributes":[
 {"type":"int32","id":1,"name":"uid"}
 ,{"type":"bool","id":2,"name":"isSilent"}
-,{"type":"int64","id":3,"name":"date"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"date"}
 ]}},{"type":"update","content":{
 "name":"ContactsAdded",
 "header":40,
@@ -265,53 +269,57 @@
 "doc":[
 "Content of message",{"type":"reference","argument":"type","description":"  type of content. 1 => TextMessage, 2 => ServiceMessage, 3 => FileMessage"},{"type":"reference","argument":"content","description":"  serialized content of message"}],"attributes":[
 {"type":"int32","id":1,"name":"type"}
-,{"type":"bytes","id":2,"name":"content"}
+,{"type":{"type":"trait","childType":"Message"},"id":2,"name":"content"}
+]}},{"type":"trait","content":{
+"name":"Message","attributes":[
 ]}},{"type":"struct","content":{
 "name":"TextMessage",
 "doc":[
-"Text message",{"type":"reference","argument":"text","description":"  the text"},{"type":"reference","argument":"extType","description":"  type of extension. Now there are no extensions."},{"type":"reference","argument":"ext","description":"  Optional bytes of extension"}],"attributes":[
+"Text message",{"type":"reference","argument":"text","description":"  the text"},{"type":"reference","argument":"extType","description":"  type of extension. Now there are no extensions."},{"type":"reference","argument":"ext","description":"  Optional bytes of extension"}],"trait":{"name":"Message","key":1},"attributes":[
 {"type":"string","id":1,"name":"text"}
 ,{"type":"int32","id":2,"name":"extType"}
 ,{"type":{"type":"opt","childType":"bytes"},"id":3,"name":"ext"}
 ]}},{"type":"struct","content":{
 "name":"ServiceMessage",
 "doc":[
-"Service message",{"type":"reference","argument":"text","description":"  service message text"},{"type":"reference","argument":"extType","description":"  extension type. 0x01 => ServiceExUserAdded, 0x02 => ServiceExUserKicked, 0x03 => ServiveExUserLeft, 0x04 => ServiceExGroupCreated, 0x05 => ServiceExGroupChangedTitle, 0x06 => ServiceExGroupChangedAvatar"}],"attributes":[
+"Service message",{"type":"reference","argument":"text","description":"  service message text"},{"type":"reference","argument":"extType","description":"  extension type. 0x01 => ServiceExUserAdded, 0x02 => ServiceExUserKicked, 0x03 => ServiveExUserLeft, 0x04 => ServiceExGroupCreated, 0x05 => ServiceExGroupChangedTitle, 0x06 => ServiceExGroupChangedAvatar"}],"trait":{"name":"Message","key":2},"attributes":[
 {"type":"string","id":1,"name":"text"}
 ,{"type":"int32","id":2,"name":"extType"}
-,{"type":{"type":"opt","childType":"bytes"},"id":3,"name":"ext"}
+,{"type":{"type":"opt","childType":{"type":"trait","childType":"ServiceExtension"}},"id":3,"name":"ext"}
+]}},{"type":"trait","content":{
+"name":"ServiceExtension","attributes":[
 ]}},{"type":"struct","content":{
 "name":"ServiceExUserAdded",
 "doc":[
-"Service message about adding user to group",{"type":"reference","argument":"addedUid","description":"  added user id"}],"attributes":[
+"Service message about adding user to group",{"type":"reference","argument":"addedUid","description":"  added user id"}],"trait":{"name":"ServiceExtension","key":1},"attributes":[
 {"type":"int32","id":1,"name":"addedUid"}
 ]}},{"type":"struct","content":{
 "name":"ServiceExUserKicked",
 "doc":[
-"Service message about kicking user from group",{"type":"reference","argument":"kickedUid","description":"  kicked user id"}],"attributes":[
+"Service message about kicking user from group",{"type":"reference","argument":"kickedUid","description":"  kicked user id"}],"trait":{"name":"ServiceExtension","key":2},"attributes":[
 {"type":"int32","id":1,"name":"kickedUid"}
 ]}},{"type":"struct","content":{
 "name":"ServiceExUserLeft",
 "doc":[
-"Service message about user left group"],"attributes":[
+"Service message about user left group"],"trait":{"name":"ServiceExtension","key":3},"attributes":[
 ]}},{"type":"struct","content":{
 "name":"ServiceExGroupCreated",
 "doc":[
-"Service message about group creating"],"attributes":[
+"Service message about group creating"],"trait":{"name":"ServiceExtension","key":4},"attributes":[
 ]}},{"type":"struct","content":{
 "name":"ServiceExChangedTitle",
 "doc":[
-"Service message about group title change"],"attributes":[
+"Service message about group title change"],"trait":{"name":"ServiceExtension","key":5},"attributes":[
 {"type":"string","id":1,"name":"title"}
 ]}},{"type":"struct","content":{
 "name":"ServiceExChangedAvatar",
 "doc":[
-"Service message about avatar change"],"attributes":[
+"Service message about avatar change"],"trait":{"name":"ServiceExtension","key":6},"attributes":[
 {"type":{"type":"opt","childType":{"type":"struct","childType":"Avatar"}},"id":1,"name":"avatar"}
 ]}},{"type":"struct","content":{
 "name":"FileMessage",
 "doc":[
-"File message",{"type":"reference","argument":"fileId","description":"  file id"},{"type":"reference","argument":"accessHash","description":"  file access hash"},{"type":"reference","argument":"fileSize","description":"  file size"},{"type":"reference","argument":"name","description":"  name of file"},{"type":"reference","argument":"mimeType","description":"  mimetype of file"},{"type":"reference","argument":"thumb","description":"  optional thumb of file. JPEG less that 90x90 with 60-70 quality."},{"type":"reference","argument":"extType","description":"  Extension type. 0x01 => FileExPhoto, 0x02 => FileExVideo, 0x03 => FileExVoice"}],"attributes":[
+"File message",{"type":"reference","argument":"fileId","description":"  file id"},{"type":"reference","argument":"accessHash","description":"  file access hash"},{"type":"reference","argument":"fileSize","description":"  file size"},{"type":"reference","argument":"name","description":"  name of file"},{"type":"reference","argument":"mimeType","description":"  mimetype of file"},{"type":"reference","argument":"thumb","description":"  optional thumb of file. JPEG less that 90x90 with 60-70 quality."},{"type":"reference","argument":"extType","description":"  Extension type"},{"type":"reference","argument":"ext","description":"  Extension"}],"trait":{"name":"Message","key":3},"attributes":[
 {"type":"int64","id":1,"name":"fileId"}
 ,{"type":"int64","id":2,"name":"accessHash"}
 ,{"type":"int32","id":3,"name":"fileSize"}
@@ -320,23 +328,25 @@
 ,{"type":{"type":"opt","childType":{"type":"struct","childType":"FastThumb"}},"id":6,"name":"thumb"}
 ,{"type":"int32","id":7,"name":"extType"}
 ,{"type":{"type":"opt","childType":"bytes"},"id":8,"name":"ext"}
+]}},{"type":"trait","content":{
+"name":"FileExtension","attributes":[
 ]}},{"type":"struct","content":{
 "name":"FileExPhoto",
 "doc":[
-"File photo extension",{"type":"reference","argument":"w","description":"  image width"},{"type":"reference","argument":"h","description":"  image height"}],"attributes":[
+"File photo extension",{"type":"reference","argument":"w","description":"  image width"},{"type":"reference","argument":"h","description":"  image height"}],"trait":{"name":"FileExtension","key":1},"attributes":[
 {"type":"int32","id":1,"name":"w"}
 ,{"type":"int32","id":2,"name":"h"}
 ]}},{"type":"struct","content":{
 "name":"FileExVideo",
 "doc":[
-"File video extension",{"type":"reference","argument":"w","description":"  video width"},{"type":"reference","argument":"h","description":"  video height"},{"type":"reference","argument":"duration","description":"  video duration"}],"attributes":[
+"File video extension",{"type":"reference","argument":"w","description":"  video width"},{"type":"reference","argument":"h","description":"  video height"},{"type":"reference","argument":"duration","description":"  video duration"}],"trait":{"name":"FileExtension","key":2},"attributes":[
 {"type":"int32","id":1,"name":"w"}
 ,{"type":"int32","id":2,"name":"h"}
 ,{"type":"int32","id":3,"name":"duration"}
 ]}},{"type":"struct","content":{
 "name":"FileExVoice",
 "doc":[
-"File voice extension",{"type":"reference","argument":"duration","description":"  voice duration"}],"attributes":[
+"File voice extension",{"type":"reference","argument":"duration","description":"  voice duration"}],"trait":{"name":"FileExtension","key":3},"attributes":[
 {"type":"int32","id":1,"name":"duration"}
 ]}},{"type":"empty"},{"type":"struct","content":{
 "name":"WrongKeysErrorData",
@@ -345,15 +355,7 @@
 {"type":{"type":"list","childType":{"type":"struct","childType":"UserKey"}},"id":1,"name":"newKeys"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"UserKey"}},"id":2,"name":"removedKeys"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"UserKey"}},"id":3,"name":"invalidKeys"}
-]}},{"type":"empty"},{"type":"response","content":{
-"name":"MessageSent",
-"header":115,
-"doc":[
-"Response about message sent",{"type":"reference","argument":"seq","description":"  Sequence number in update sequence"},{"type":"reference","argument":"state","description":"  Seuqnce state value"},{"type":"reference","argument":"date","description":"  date of message"}],"attributes":[
-{"type":"int32","id":1,"name":"seq"}
-,{"type":"seq_state","id":2,"name":"state"}
-,{"type":"int64","id":3,"name":"date"}
-]}},{"type":"struct","content":{
+]}},{"type":"empty"},{"type":"struct","content":{
 "name":"EncryptedAesKey",
 "doc":[
 "Encrypted AES key for encrypted messages",{"type":"reference","argument":"keyHash","description":"  hash of public key of encrypted aes key"},{"type":"reference","argument":"aesEncryptedKey","description":"  encrypted aes key"}],"attributes":[
@@ -362,22 +364,22 @@
 ]}},{"type":"rpc","content":{
 "name":"SendEncryptedMessage",
 "header":14,
-"response":{"type":"reference","name":"MessageSent"},
+"response":{"type":"reference","name":"SeqDate"},
 "doc":[
 "Sending encrypted message",{"type":"reference","argument":"peer","description":"Destination peer for message"},{"type":"reference","argument":"rid","description":"Message random id (generated on client side)"},{"type":"reference","argument":"encryptedMessage","description":"message encrypted by random aes key"},{"type":"reference","argument":"keys","description":"encrypted aes keys for receivers devices"},{"type":"reference","argument":"ownKeys","description":"encrypted aes keys for own devices"}],"attributes":[
 {"type":{"type":"struct","childType":"OutPeer"},"id":1,"name":"peer"}
-,{"type":"int64","id":3,"name":"rid"}
+,{"type":{"type":"alias","childType":"randomId"},"id":3,"name":"rid"}
 ,{"type":"bytes","id":4,"name":"encryptedMessage"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"EncryptedAesKey"}},"id":5,"name":"keys"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"EncryptedAesKey"}},"id":6,"name":"ownKeys"}
 ]}},{"type":"rpc","content":{
 "name":"SendMessage",
 "header":92,
-"response":{"type":"reference","name":"MessageSent"},
+"response":{"type":"reference","name":"SeqDate"},
 "doc":[
 "Sending plain message",{"type":"reference","argument":"peer","description":"Destination peer for message (now supported only user's peer)"},{"type":"reference","argument":"rid","description":"Message random id (generated on clien side)"},{"type":"reference","argument":"message","description":"The message"}],"attributes":[
 {"type":{"type":"struct","childType":"OutPeer"},"id":1,"name":"peer"}
-,{"type":"int64","id":3,"name":"rid"}
+,{"type":{"type":"alias","childType":"randomId"},"id":3,"name":"rid"}
 ,{"type":{"type":"struct","childType":"MessageContent"},"id":4,"name":"message"}
 ]}},{"type":"rpc","content":{
 "name":"EncryptedReceived",
@@ -386,7 +388,7 @@
 "doc":[
 "Confirmation of encrypted message receive by device",{"type":"reference","argument":"peer","description":"Destination peer"},{"type":"reference","argument":"rid","description":"Message random id"}],"attributes":[
 {"type":{"type":"struct","childType":"OutPeer"},"id":1,"name":"peer"}
-,{"type":"int64","id":3,"name":"rid"}
+,{"type":{"type":"alias","childType":"randomId"},"id":3,"name":"rid"}
 ]}},{"type":"rpc","content":{
 "name":"EncryptedRead",
 "header":117,
@@ -394,7 +396,7 @@
 "doc":[
 "Marking encrypted message as read",{"type":"reference","argument":"peer","description":"Destination peer"},{"type":"reference","argument":"rid","description":"Message random id"}],"attributes":[
 {"type":{"type":"struct","childType":"OutPeer"},"id":1,"name":"peer"}
-,{"type":"int64","id":3,"name":"rid"}
+,{"type":{"type":"alias","childType":"randomId"},"id":3,"name":"rid"}
 ]}},{"type":"rpc","content":{
 "name":"MessageReceived",
 "header":55,
@@ -402,7 +404,7 @@
 "doc":[
 "Confirmation of plain message receive by device",{"type":"reference","argument":"peer","description":"Destination peer"},{"type":"reference","argument":"date","description":"Maximum date of received messages"}],"attributes":[
 {"type":{"type":"struct","childType":"OutPeer"},"id":1,"name":"peer"}
-,{"type":"int64","id":3,"name":"date"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"date"}
 ]}},{"type":"rpc","content":{
 "name":"MessageRead",
 "header":57,
@@ -410,15 +412,15 @@
 "doc":[
 "Marking plain messages as read",{"type":"reference","argument":"peer","description":"Destination peer"},{"type":"reference","argument":"date","description":"Maximum date of read messages"}],"attributes":[
 {"type":{"type":"struct","childType":"OutPeer"},"id":1,"name":"peer"}
-,{"type":"int64","id":3,"name":"date"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"date"}
 ]}},{"type":"rpc","content":{
 "name":"DeleteMessage",
 "header":98,
 "response":{"type":"reference","name":"Void"},
 "doc":[
-"Deleting messages",{"type":"reference","argument":"peer","description":"Destination peer"},{"type":"reference","argument":"rid","description":"Message random id"}],"attributes":[
+"Deleting messages",{"type":"reference","argument":"peer","description":"Destination peer"},{"type":"reference","argument":"rids","description":"Message random id"}],"attributes":[
 {"type":{"type":"struct","childType":"OutPeer"},"id":1,"name":"peer"}
-,{"type":"int64","id":3,"name":"rid"}
+,{"type":{"type":"list","childType":{"type":"alias","childType":"randomId"}},"id":3,"name":"rids"}
 ]}},{"type":"rpc","content":{
 "name":"ClearChat",
 "header":99,
@@ -440,7 +442,7 @@
 "Update about encrypted message",{"type":"reference","argument":"peer","description":"  Destination peer"},{"type":"reference","argument":"senderUid","description":"  sender of message"},{"type":"reference","argument":"date","description":"  date of message"},{"type":"reference","argument":"keyHash","description":"  device's public key hash"},{"type":"reference","argument":"aesEncryptedKey","description":"  Encrypted key for current device"}],"attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
 ,{"type":"int32","id":2,"name":"senderUid"}
-,{"type":"int64","id":6,"name":"date"}
+,{"type":{"type":"alias","childType":"date"},"id":6,"name":"date"}
 ,{"type":"int64","id":3,"name":"keyHash"}
 ,{"type":"bytes","id":4,"name":"aesEncryptedKey"}
 ,{"type":"bytes","id":5,"name":"message"}
@@ -451,62 +453,62 @@
 "Update about plain message"],"attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
 ,{"type":"int32","id":2,"name":"senderUid"}
-,{"type":"int64","id":3,"name":"date"}
-,{"type":"int64","id":4,"name":"rid"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"date"}
+,{"type":{"type":"alias","childType":"randomId"},"id":4,"name":"rid"}
 ,{"type":{"type":"struct","childType":"MessageContent"},"id":5,"name":"message"}
 ]}},{"type":"update","content":{
 "name":"MessageSent",
 "header":4,
 "attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
-,{"type":"int64","id":2,"name":"rid"}
-,{"type":"int64","id":3,"name":"date"}
+,{"type":{"type":"alias","childType":"randomId"},"id":2,"name":"rid"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"date"}
 ]}},{"type":"comment","content":"Encrypted"},{"type":"update","content":{
 "name":"EncryptedReceived",
 "header":18,
 "attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
-,{"type":"int64","id":2,"name":"rid"}
-,{"type":"int64","id":3,"name":"receivedDate"}
+,{"type":{"type":"alias","childType":"randomId"},"id":2,"name":"rid"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"receivedDate"}
 ]}},{"type":"update","content":{
 "name":"EncryptedRead",
 "header":52,
 "attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
-,{"type":"int64","id":2,"name":"rid"}
-,{"type":"int64","id":3,"name":"readDate"}
+,{"type":{"type":"alias","childType":"randomId"},"id":2,"name":"rid"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"readDate"}
 ]}},{"type":"update","content":{
 "name":"EncryptedReadByMe",
 "header":53,
 "attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
-,{"type":"int64","id":2,"name":"rid"}
+,{"type":{"type":"alias","childType":"randomId"},"id":2,"name":"rid"}
 ]}},{"type":"comment","content":"Plain"},{"type":"update","content":{
 "name":"MessageReceived",
 "header":54,
 "attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
-,{"type":"int64","id":2,"name":"date"}
-,{"type":"int64","id":3,"name":"receivedDate"}
+,{"type":{"type":"alias","childType":"date"},"id":2,"name":"startDate"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"receivedDate"}
 ]}},{"type":"update","content":{
 "name":"MessageRead",
 "header":19,
 "attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
-,{"type":"int64","id":2,"name":"date"}
-,{"type":"int64","id":3,"name":"readDate"}
+,{"type":{"type":"alias","childType":"date"},"id":2,"name":"startDate"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"readDate"}
 ]}},{"type":"update","content":{
 "name":"MessageReadByMe",
 "header":50,
 "attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
-,{"type":"int64","id":2,"name":"date"}
+,{"type":{"type":"alias","childType":"date"},"id":2,"name":"startDate"}
 ]}},{"type":"comment","content":"Message deletions"},{"type":"update","content":{
 "name":"MessageDelete",
 "header":46,
 "attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
-,{"type":{"type":"list","childType":"int64"},"id":2,"name":"rid"}
+,{"type":{"type":"list","childType":{"type":"alias","childType":"randomId"}},"id":2,"name":"rids"}
 ]}},{"type":"update","content":{
 "name":"ChatClear",
 "header":47,
@@ -530,23 +532,25 @@
 ,{"type":"bool","id":6,"name":"isMember"}
 ,{"type":"int32","id":8,"name":"adminUid"}
 ,{"type":{"type":"list","childType":"int32"},"id":9,"name":"members"}
+,{"type":{"type":"alias","childType":"date"},"id":10,"name":"createDate"}
 ]}},{"type":"empty"},{"type":"rpc","content":{
 "name":"CreateGroup",
 "header":65,
 "response":{"type":"anonymous","header":66, "attributes":[{"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
 ,{"type":"int32","id":3,"name":"seq"}
-,{"type":"seq_state","id":4,"name":"state"}
+,{"type":{"type":"alias","childType":"seq_state"},"id":4,"name":"state"}
 ,{"type":{"type":"list","childType":"int32"},"id":5,"name":"users"}
+,{"type":{"type":"alias","childType":"date"},"id":6,"name":"date"}
 ]},
 "doc":[
 "Creating group chat",{"type":"reference","argument":"rid","description":"Random Id for avoiding double create"},{"type":"reference","argument":"title","description":"Group title"},{"type":"reference","argument":"users","description":"Members of group"}],"attributes":[
-{"type":"int64","id":1,"name":"rid"}
+{"type":{"type":"alias","childType":"randomId"},"id":1,"name":"rid"}
 ,{"type":"string","id":2,"name":"title"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"UserOutPeer"}},"id":3,"name":"users"}
 ]}},{"type":"rpc","content":{
 "name":"EditGroupTitle",
 "header":85,
-"response":{"type":"reference","name":"Seq"},
+"response":{"type":"reference","name":"SeqDate"},
 "doc":[
 "Changing group title",{"type":"reference","argument":"groupPeer","description":"Group's peer"},{"type":"reference","argument":"title","description":"new group title"}],"attributes":[
 {"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
@@ -554,7 +558,11 @@
 ]}},{"type":"rpc","content":{
 "name":"EditGroupAvatar",
 "header":86,
-"response":{"type":"reference","name":"AvatarChanged"},
+"response":{"type":"anonymous","header":115, "attributes":[{"type":{"type":"struct","childType":"Avatar"},"id":1,"name":"avatar"}
+,{"type":"int32","id":2,"name":"seq"}
+,{"type":{"type":"alias","childType":"seq_state"},"id":3,"name":"state"}
+,{"type":{"type":"alias","childType":"date"},"id":4,"name":"date"}
+]},
 "doc":[
 "Changing group avatar",{"type":"reference","argument":"groupPeer","description":"Group's peer"},{"type":"reference","argument":"fileLocation","description":"uploaded file for avatar"}],"attributes":[
 {"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
@@ -562,40 +570,40 @@
 ]}},{"type":"rpc","content":{
 "name":"RemoveGroupAvatar",
 "header":101,
-"response":{"type":"reference","name":"Seq"},
+"response":{"type":"reference","name":"SeqDate"},
 "doc":[
 "Removing group avatar",{"type":"reference","argument":"groupPeer","description":"Group's peer"}],"attributes":[
 {"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
 ]}},{"type":"rpc","content":{
-"name":"InviteUsers",
+"name":"InviteUser",
 "header":69,
-"response":{"type":"reference","name":"Seq"},
+"response":{"type":"reference","name":"SeqDate"},
 "doc":[
-"Inviting users to group",{"type":"reference","argument":"groupPeer","description":"Group's peer"},{"type":"reference","argument":"users","description":"Users for invitation"}],"attributes":[
+"Inviting users to group",{"type":"reference","argument":"groupPeer","description":"Group's peer"},{"type":"reference","argument":"user","description":"Users for invitation"}],"attributes":[
 {"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
-,{"type":{"type":"list","childType":{"type":"struct","childType":"UserOutPeer"}},"id":3,"name":"users"}
+,{"type":{"type":"struct","childType":"UserOutPeer"},"id":3,"name":"user"}
 ]}},{"type":"rpc","content":{
 "name":"LeaveGroup",
 "header":70,
-"response":{"type":"reference","name":"Seq"},
+"response":{"type":"reference","name":"SeqDate"},
 "doc":[
 "Leaving group",{"type":"reference","argument":"groupPeer","description":"Group's peer"}],"attributes":[
 {"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
 ]}},{"type":"rpc","content":{
 "name":"DeleteGroup",
 "header":97,
-"response":{"type":"reference","name":"Seq"},
+"response":{"type":"reference","name":"SeqDate"},
 "doc":[
 "Leaving and deleting group (similar to DeleteChat)",{"type":"reference","argument":"groupPeer","description":"Group's peer"}],"attributes":[
 {"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
 ]}},{"type":"rpc","content":{
-"name":"RemoveUsers",
+"name":"RemoveUser",
 "header":71,
-"response":{"type":"reference","name":"Seq"},
+"response":{"type":"reference","name":"SeqDate"},
 "doc":[
-"Removing users from group",{"type":"reference","argument":"groupPeer","description":"Group's peer"},{"type":"reference","argument":"users","description":"users for removing"}],"attributes":[
+"Removing users from group",{"type":"reference","argument":"groupPeer","description":"Group's peer"},{"type":"reference","argument":"user","description":"users for removing"}],"attributes":[
 {"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
-,{"type":{"type":"list","childType":{"type":"struct","childType":"UserOutPeer"}},"id":3,"name":"users"}
+,{"type":{"type":"struct","childType":"UserOutPeer"},"id":3,"name":"user"}
 ]}},{"type":"empty"},{"type":"update","content":{
 "name":"GroupInvite",
 "header":36,
@@ -603,7 +611,7 @@
 "Update about inviting current user to group",{"type":"reference","argument":"groupId","description":"  Group Id"},{"type":"reference","argument":"inviteUid","description":"  Inviter UID. If equals to current uid than group created by user."},{"type":"reference","argument":"date","description":"  Date of creating"}],"attributes":[
 {"type":"int32","id":1,"name":"groupId"}
 ,{"type":"int32","id":5,"name":"inviteUid"}
-,{"type":"int64","id":8,"name":"date"}
+,{"type":{"type":"alias","childType":"date"},"id":8,"name":"date"}
 ]}},{"type":"update","content":{
 "name":"GroupUserAdded",
 "header":21,
@@ -612,7 +620,7 @@
 {"type":"int32","id":1,"name":"groupId"}
 ,{"type":"int32","id":2,"name":"uid"}
 ,{"type":"int32","id":3,"name":"inviterUid"}
-,{"type":"int64","id":4,"name":"date"}
+,{"type":{"type":"alias","childType":"date"},"id":4,"name":"date"}
 ]}},{"type":"update","content":{
 "name":"GroupUserLeave",
 "header":23,
@@ -620,7 +628,7 @@
 "Update about leaving user",{"type":"reference","argument":"groupId","description":"  Group Id"},{"type":"reference","argument":"uid","description":"  User's ID"},{"type":"reference","argument":"date","description":"  Date of user leave"}],"attributes":[
 {"type":"int32","id":1,"name":"groupId"}
 ,{"type":"int32","id":2,"name":"uid"}
-,{"type":"int64","id":3,"name":"date"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"date"}
 ]}},{"type":"update","content":{
 "name":"GroupUserKick",
 "header":24,
@@ -629,7 +637,7 @@
 {"type":"int32","id":1,"name":"groupId"}
 ,{"type":"int32","id":2,"name":"uid"}
 ,{"type":"int32","id":3,"name":"kickerUid"}
-,{"type":"int64","id":4,"name":"date"}
+,{"type":{"type":"alias","childType":"date"},"id":4,"name":"date"}
 ]}},{"type":"update","content":{
 "name":"GroupMembersUpdate",
 "header":44,
@@ -645,7 +653,7 @@
 {"type":"int32","id":1,"name":"groupId"}
 ,{"type":"int32","id":2,"name":"uid"}
 ,{"type":"string","id":3,"name":"title"}
-,{"type":"int64","id":4,"name":"date"}
+,{"type":{"type":"alias","childType":"date"},"id":4,"name":"date"}
 ]}},{"type":"update","content":{
 "name":"GroupAvatarChanged",
 "header":39,
@@ -654,7 +662,7 @@
 {"type":"int32","id":1,"name":"groupId"}
 ,{"type":"int32","id":2,"name":"uid"}
 ,{"type":{"type":"opt","childType":{"type":"struct","childType":"Avatar"}},"id":3,"name":"avatar"}
-,{"type":"int64","id":4,"name":"date"}
+,{"type":{"type":"alias","childType":"date"},"id":4,"name":"date"}
 ]}}]},{"title":"Message and Dialogs lists"
 ,"package":"conversations"
 ,"doc":[
@@ -664,8 +672,8 @@
 "doc":[
 "Message from history",{"type":"reference","argument":"senderUid","description":"  Sender of mesasge"},{"type":"reference","argument":"rid","description":"  Random Id of message"},{"type":"reference","argument":"date","description":"  Date of message"},{"type":"reference","argument":"message","description":"  Content of message"}],"attributes":[
 {"type":"int32","id":1,"name":"senderUid"}
-,{"type":"int64","id":2,"name":"rid"}
-,{"type":"int64","id":3,"name":"date"}
+,{"type":{"type":"alias","childType":"randomId"},"id":2,"name":"rid"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"date"}
 ,{"type":{"type":"struct","childType":"MessageContent"},"id":5,"name":"message"}
 ]}},{"type":"rpc","content":{
 "name":"LoadHistory",
@@ -676,7 +684,7 @@
 "doc":[
 "Loading history of chat",{"type":"reference","argument":"peer","description":"Peer of conversation"},{"type":"reference","argument":"startDate","description":"start date of messages for loading or 0 for loading from start"},{"type":"reference","argument":"limit","description":"maximum amount of messages (max is 100)"}],"attributes":[
 {"type":{"type":"struct","childType":"OutPeer"},"id":1,"name":"peer"}
-,{"type":"int64","id":3,"name":"startDate"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"startDate"}
 ,{"type":"int32","id":4,"name":"limit"}
 ]}},{"type":"empty"},{"type":"struct","content":{
 "name":"Dialog",
@@ -684,10 +692,10 @@
 "Conversation from history",{"type":"reference","argument":"peer","description":"  Peer of conversation"},{"type":"reference","argument":"unreadCount","description":"  plain messages unread messages count"},{"type":"reference","argument":"sortDate","description":"  date of conversation for sorting"},{"type":"reference","argument":"senderUid","description":"  Sender of top message (may be zero)"},{"type":"reference","argument":"rid","description":"  Random ID of top message (may be zero)"},{"type":"reference","argument":"date","description":"  Date of top message (can't be zero)"},{"type":"reference","argument":"message","description":"  Content of message"}],"attributes":[
 {"type":{"type":"struct","childType":"Peer"},"id":1,"name":"peer"}
 ,{"type":"int32","id":3,"name":"unreadCount"}
-,{"type":"int64","id":4,"name":"sortDate"}
+,{"type":{"type":"alias","childType":"date"},"id":4,"name":"sortDate"}
 ,{"type":"int32","id":5,"name":"senderUid"}
-,{"type":"int64","id":6,"name":"rid"}
-,{"type":"int64","id":7,"name":"date"}
+,{"type":{"type":"alias","childType":"randomId"},"id":6,"name":"rid"}
+,{"type":{"type":"alias","childType":"date"},"id":7,"name":"date"}
 ,{"type":{"type":"struct","childType":"MessageContent"},"id":8,"name":"message"}
 ]}},{"type":"rpc","content":{
 "name":"LoadDialogs",
@@ -698,7 +706,7 @@
 ]},
 "doc":[
 "Loading conversation history",{"type":"reference","argument":"startDate","description":"start date of conversation loading"},{"type":"reference","argument":"limit","description":"limit maximum amount of messages (max is 100)"}],"attributes":[
-{"type":"int64","id":1,"name":"startDate"}
+{"type":{"type":"alias","childType":"date"},"id":1,"name":"startDate"}
 ,{"type":"int32","id":2,"name":"limit"}
 ]}}]},{"title":"Encryption"
 ,"package":"encryption"
@@ -791,9 +799,9 @@
 "name":"UserLastSeen",
 "header":9,
 "doc":[
-"Update about user's last seen state",{"type":"reference","argument":"uid","description":"  User's id"},{"type":"reference","argument":"time","description":"  Last seen time"}],"attributes":[
+"Update about user's last seen state",{"type":"reference","argument":"uid","description":"  User's id"},{"type":"reference","argument":"date","description":"  Last seen time"}],"attributes":[
 {"type":"int32","id":1,"name":"uid"}
-,{"type":"int64","id":2,"name":"time"}
+,{"type":{"type":"alias","childType":"date"},"id":2,"name":"date"}
 ]}},{"type":"update","content":{
 "name":"GroupOnline",
 "header":33,
@@ -943,7 +951,7 @@
 "doc":[
 "Sequence update",{"type":"reference","argument":"seq","description":"  Sequence number of update"},{"type":"reference","argument":"state","description":"  Sequece state of update"},{"type":"reference","argument":"updateHeader","description":"  header of update"},{"type":"reference","argument":"update","description":"  The update"}],"attributes":[
 {"type":"int32","id":1,"name":"seq"}
-,{"type":"seq_state","id":2,"name":"state"}
+,{"type":{"type":"alias","childType":"seq_state"},"id":2,"name":"state"}
 ,{"type":"int32","id":3,"name":"updateHeader"}
 ,{"type":"bytes","id":4,"name":"update"}
 ]}},{"type":"update_box","content":{
@@ -952,7 +960,7 @@
 "doc":[
 "Fat sequence update with additional data",{"type":"reference","argument":"seq","description":"  Sequence number of update"},{"type":"reference","argument":"state","description":"  Sequence state of update"},{"type":"reference","argument":"updateHeader","description":"  header of update"},{"type":"reference","argument":"update","description":"  The update"},{"type":"reference","argument":"users","description":"  Users that are referenced in update "},{"type":"reference","argument":"groups","description":"  Groups that are referenced in update"}],"attributes":[
 {"type":"int32","id":1,"name":"seq"}
-,{"type":"seq_state","id":2,"name":"state"}
+,{"type":{"type":"alias","childType":"seq_state"},"id":2,"name":"state"}
 ,{"type":"int32","id":3,"name":"updateHeader"}
 ,{"type":"bytes","id":4,"name":"update"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"User"}},"id":5,"name":"users"}
@@ -986,7 +994,7 @@
 "name":"GetDifference",
 "header":11,
 "response":{"type":"anonymous","header":12, "attributes":[{"type":"int32","id":1,"name":"seq"}
-,{"type":"seq_state","id":2,"name":"state"}
+,{"type":{"type":"alias","childType":"seq_state"},"id":2,"name":"state"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"User"}},"id":3,"name":"users"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"Group"}},"id":6,"name":"groups"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"DifferenceUpdate"}},"id":4,"name":"updates"}
@@ -995,7 +1003,7 @@
 "doc":[
 "Getting difference of sequence"],"attributes":[
 {"type":"int32","id":1,"name":"seq"}
-,{"type":"seq_state","id":2,"name":"state"}
+,{"type":{"type":"alias","childType":"seq_state"},"id":2,"name":"state"}
 ]}},{"type":"empty"},{"type":"rpc","content":{
 "name":"SubscribeToOnline",
 "header":32,
@@ -1038,15 +1046,15 @@
 "doc":[
 "Sequence response. Methods that return this value must process response in particular order",{"type":"reference","argument":"seq","description":"  Sequence number of response"},{"type":"reference","argument":"state","description":"  Sequence state of response"}],"attributes":[
 {"type":"int32","id":1,"name":"seq"}
-,{"type":"seq_state","id":2,"name":"state"}
+,{"type":{"type":"alias","childType":"seq_state"},"id":2,"name":"state"}
 ]}},{"type":"response","content":{
-"name":"AvatarChanged",
-"header":68,
+"name":"SeqDate",
+"header":102,
 "doc":[
-"Response of Group or Profile avatar change",{"type":"reference","argument":"avatar","description":"  new avatar"},{"type":"reference","argument":"seq","description":"  Sequence number of response"},{"type":"reference","argument":"state","description":"  Sequence state of response"}],"attributes":[
-{"type":{"type":"struct","childType":"Avatar"},"id":1,"name":"avatar"}
-,{"type":"int32","id":2,"name":"seq"}
-,{"type":"seq_state","id":3,"name":"state"}
+"Sequence response with date. Methods that return this value must process response in particular order",{"type":"reference","argument":"seq","description":"  Sequence number of response"},{"type":"reference","argument":"state","description":"  Sequence state of response"},{"type":"reference","argument":"date","description":"  Date of response"}],"attributes":[
+{"type":"int32","id":1,"name":"seq"}
+,{"type":{"type":"alias","childType":"seq_state"},"id":2,"name":"state"}
+,{"type":{"type":"alias","childType":"date"},"id":3,"name":"date"}
 ]}},{"type":"struct","content":{
 "name":"Config",
 "doc":[

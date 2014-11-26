@@ -17,19 +17,19 @@
 //Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.<br/>
 
 // API#0x01
-// ResponseAuthCode
-// Requesting SMS auth code
+// ResponseSendAuthCode
+// Sending SMS with activation code
 // phoneNumberPhone number in international format
 // appIdApplication ID
 // apiKeyApplication API key
-message RequestAuthCode {
+message RequestSendAuthCode {
     required int64 phoneNumber = 1;
     required int32 appId = 2;
     required string apiKey = 3;
 }
 
 // API#0x02
-message ResponseAuthCode {
+message ResponseSendAuthCode {
     required string smsHash = 1;
     required bool isRegistered = 2;
 }
@@ -41,7 +41,7 @@ message ResponseAuthCode {
 // smsHashCode request hash from RequestAuthCode
 // appIdApplication ID
 // apiKeyApplication API key
-message RequestAuthCodeCall {
+message RequestSendAuthCall {
     required int64 phoneNumber = 1;
     required string smsHash = 2;
     required int32 appId = 3;
@@ -117,7 +117,7 @@ message RequestSignUp {
 // authLocation  two-letter country code of session create
 // latitude  optional latitude of auth if available
 // longitude  optional longitude of auth if available
-message AuthItem {
+message AuthSession {
     required int32 id = 1;
     required int32 authHolder = 2;
     required int32 appId = 3;
@@ -130,34 +130,34 @@ message AuthItem {
 }
 
 // API#0x50
-// ResponseGetAuth
+// ResponseGetAuthSessions
 // Getting of all active user's authentication sessions
-message RequestGetAuth {
+message RequestGetAuthSessions {
 }
 
 // API#0x51
-message ResponseGetAuth {
-    repeated AuthItem userAuths = 1;
+message ResponseGetAuthSessions {
+    repeated AuthSession userAuths = 1;
 }
 
 // API#0x52
 // ResponseVoid
-// Logout on specified user's session
+// SignOut on specified user's session
 // idid from AuthItem
-message RequestRemoveAuth {
+message RequestTerminateSession {
     required int32 id = 1;
 }
 
 // API#0x53
 // ResponseVoid
-// Logout on all exept current sessions
-message RequestRemoveAllOtherAuths {
+// SignOut on all exept current sessions
+message RequestTerminateAllSessions {
 }
 
 // API#0x54
 // ResponseVoid
-// Logout current session
-message RequestLogout {
+// SignOut current session
+message RequestSignOut {
 }
 
 //////////////////////////////////////////////////////
@@ -1435,7 +1435,7 @@ message ResponseGetDifference {
     repeated User users = 3;
     repeated Group groups = 6;
     repeated DifferenceUpdate updates = 4;
-    required bool needMode = 5;
+    required bool needMore = 5;
 }
 
 // API#0x20

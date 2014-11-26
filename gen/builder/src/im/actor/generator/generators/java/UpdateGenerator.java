@@ -34,12 +34,12 @@ public class UpdateGenerator {
             generator.decreaseDepth();
             generator.appendLn("}");
             generator.appendLn();
-            ContainerGenerator.generateFields(generator, u);
+            ContainerGenerator.generateFields(generator, definition, u);
 
             generator.appendLn();
 
             if (u.getAttributes().size() > 0) {
-                ContainerGenerator.generateConstructor(generator, u, javaName);
+                ContainerGenerator.generateConstructor(generator, definition, u, javaName);
             }
 
             generator.appendLn("public " + javaName + "() {");
@@ -47,10 +47,10 @@ public class UpdateGenerator {
             generator.appendLn("}");
             generator.appendLn();
 
-            ContainerGenerator.generateGetters(generator, u);
+            ContainerGenerator.generateGetters(generator, definition, u);
 
-            ContainerGenerator.generateSerialization(generator, u);
-            ContainerGenerator.generateDeserialization(generator, u);
+            ContainerGenerator.generateSerialization(generator, u, definition);
+            ContainerGenerator.generateDeserialization(generator, u, definition);
 
             generator.appendLn("@Override");
             generator.appendLn("public int getHeaderKey() {");
