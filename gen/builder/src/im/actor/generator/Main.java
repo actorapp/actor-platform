@@ -29,6 +29,6 @@ public class Main {
 //        DocIndexGenerator.generate(definition, "/Users/ex3ndr/actor-doc/");
 //        DocUpdatesGenerator.generate(definition, "/Users/ex3ndr/actor-doc/");
 //        ProtoBufGenerator.generate(encryptedDefinition, "/Users/ex3ndr/actor-doc/actor_encrypted.proto");
-        ProtoBufGenerator.generate(definition, "/Users/ex3ndr/Develop/actor-api-schema/actor_gen.proto");
+        ProtoBufGenerator.generate(definition, "/Users/ex3ndr/Develop/actor-api-schema/actor.proto");
     }
 }
