@@ -19,25 +19,37 @@
     <nodeInfo nodeId="25480617308450232" fileName="SerializableType_TextGen.java" startLine="29" startPosition="87" endLine="30" endPosition="57" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
     <nodeInfo nodeId="25480617308450232" fileName="SerializableType_TextGen.java" startLine="30" startPosition="57" endLine="31" endPosition="105" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
     <nodeInfo nodeId="25480617308450232" fileName="SerializableType_TextGen.java" startLine="31" startPosition="105" endLine="32" endPosition="25" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
-    <nodeInfo nodeId="2607054633620832824" fileName="SerializableType_TextGen.java" startLine="33" startPosition="12" endLine="34" endPosition="24" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
-    <nodeInfo nodeId="2607054633620832824" fileName="SerializableType_TextGen.java" startLine="34" startPosition="24" endLine="35" endPosition="29" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
-    <nodeInfo nodeId="2607054633620832824" fileName="SerializableType_TextGen.java" startLine="35" startPosition="29" endLine="36" endPosition="24" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="5857873509724099012" fileName="SerializableType_TextGen.java" startLine="33" startPosition="96" endLine="34" endPosition="88" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
+    <nodeInfo nodeId="5857873509724095822" fileName="SerializableType_TextGen.java" startLine="34" startPosition="88" endLine="35" endPosition="58" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="5857873509724095822" fileName="SerializableType_TextGen.java" startLine="35" startPosition="58" endLine="36" endPosition="104" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="5857873509724095822" fileName="SerializableType_TextGen.java" startLine="36" startPosition="104" endLine="37" endPosition="25" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="5857873509724226294" fileName="SerializableType_TextGen.java" startLine="38" startPosition="96" endLine="39" endPosition="88" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
+    <nodeInfo nodeId="5857873509724226807" fileName="SerializableType_TextGen.java" startLine="39" startPosition="88" endLine="40" endPosition="58" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="5857873509724226807" fileName="SerializableType_TextGen.java" startLine="40" startPosition="58" endLine="41" endPosition="104" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="5857873509724226807" fileName="SerializableType_TextGen.java" startLine="41" startPosition="104" endLine="42" endPosition="25" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="2607054633620832824" fileName="SerializableType_TextGen.java" startLine="43" startPosition="12" endLine="44" endPosition="24" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="2607054633620832824" fileName="SerializableType_TextGen.java" startLine="44" startPosition="24" endLine="45" endPosition="29" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="2607054633620832824" fileName="SerializableType_TextGen.java" startLine="45" startPosition="29" endLine="46" endPosition="24" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
     <nodeInfo nodeId="2607054633620789925" fileName="SerializableType_TextGen.java" startLine="14" startPosition="85" endLine="17" endPosition="23" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
     <nodeInfo nodeId="2607054633620809238" fileName="SerializableType_TextGen.java" startLine="19" startPosition="88" endLine="22" endPosition="23" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
     <nodeInfo nodeId="2607054633620824490" fileName="SerializableType_TextGen.java" startLine="24" startPosition="90" endLine="27" endPosition="25" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
     <nodeInfo nodeId="25480617308450232" fileName="SerializableType_TextGen.java" startLine="29" startPosition="87" endLine="32" endPosition="25" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
-    <nodeInfo nodeId="2607054633620832824" fileName="SerializableType_TextGen.java" startLine="33" startPosition="12" endLine="36" endPosition="24" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
-    <nodeInfo nodeId="2607054633620832045" fileName="SerializableType_TextGen.java" startLine="33" startPosition="10" endLine="37" endPosition="5" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
-    <nodeInfo nodeId="2607054633620728713" fileName="SerializableType_TextGen.java" startLine="12" startPosition="42" endLine="37" endPosition="5" conceptFqName="jetbrains.mps.baseLanguage.structure.IfStatement" />
-    <nodeInfo nodeId="2607054633620725764" fileName="SerializableType_TextGen.java" startLine="12" startPosition="0" endLine="39" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="doGenerateText#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+    <nodeInfo nodeId="5857873509724095822" fileName="SerializableType_TextGen.java" startLine="34" startPosition="88" endLine="37" endPosition="25" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
+    <nodeInfo nodeId="5857873509724226807" fileName="SerializableType_TextGen.java" startLine="39" startPosition="88" endLine="42" endPosition="25" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
+    <nodeInfo nodeId="2607054633620832824" fileName="SerializableType_TextGen.java" startLine="43" startPosition="12" endLine="46" endPosition="24" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
+    <nodeInfo nodeId="2607054633620832045" fileName="SerializableType_TextGen.java" startLine="43" startPosition="10" endLine="47" endPosition="5" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
+    <nodeInfo nodeId="2607054633620728713" fileName="SerializableType_TextGen.java" startLine="12" startPosition="42" endLine="47" endPosition="5" conceptFqName="jetbrains.mps.baseLanguage.structure.IfStatement" />
+    <nodeInfo nodeId="2607054633620725764" fileName="SerializableType_TextGen.java" startLine="12" startPosition="0" endLine="49" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="doGenerateText#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
     <scopeInfo nodeId="2607054633620789925" fileName="SerializableType_TextGen.java" startLine="15" startPosition="55" endLine="16" endPosition="64" />
     <scopeInfo nodeId="2607054633620809238" fileName="SerializableType_TextGen.java" startLine="20" startPosition="54" endLine="21" endPosition="63" />
     <scopeInfo nodeId="2607054633620789925" fileName="SerializableType_TextGen.java" startLine="14" startPosition="85" endLine="17" endPosition="23" />
     <scopeInfo nodeId="2607054633620809238" fileName="SerializableType_TextGen.java" startLine="19" startPosition="88" endLine="22" endPosition="23" />
     <scopeInfo nodeId="2607054633620824490" fileName="SerializableType_TextGen.java" startLine="24" startPosition="90" endLine="27" endPosition="25" />
     <scopeInfo nodeId="25480617308450232" fileName="SerializableType_TextGen.java" startLine="29" startPosition="87" endLine="32" endPosition="25" />
-    <scopeInfo nodeId="2607054633620832046" fileName="SerializableType_TextGen.java" startLine="33" startPosition="12" endLine="36" endPosition="24" />
-    <scopeInfo nodeId="2607054633620832824" fileName="SerializableType_TextGen.java" startLine="33" startPosition="12" endLine="36" endPosition="24" />
+    <scopeInfo nodeId="5857873509724095822" fileName="SerializableType_TextGen.java" startLine="34" startPosition="88" endLine="37" endPosition="25" />
+    <scopeInfo nodeId="5857873509724226807" fileName="SerializableType_TextGen.java" startLine="39" startPosition="88" endLine="42" endPosition="25" />
+    <scopeInfo nodeId="2607054633620832046" fileName="SerializableType_TextGen.java" startLine="43" startPosition="12" endLine="46" endPosition="24" />
+    <scopeInfo nodeId="2607054633620832824" fileName="SerializableType_TextGen.java" startLine="43" startPosition="12" endLine="46" endPosition="24" />
     <scopeInfo nodeId="2607054633620728714" fileName="SerializableType_TextGen.java" startLine="13" startPosition="84" endLine="17" endPosition="23">
       <varInfo nodeId="2607054633620789447" varName="list" />
     </scopeInfo>
@@ -50,11 +62,17 @@
     <scopeInfo nodeId="25480617308393872" fileName="SerializableType_TextGen.java" startLine="28" startPosition="95" endLine="32" endPosition="25">
       <varInfo nodeId="25480617308445098" varName="en" />
     </scopeInfo>
-    <scopeInfo nodeId="2607054633620725764" fileName="SerializableType_TextGen.java" startLine="12" startPosition="42" endLine="37" endPosition="5" />
-    <scopeInfo nodeId="2607054633620725764" fileName="SerializableType_TextGen.java" startLine="12" startPosition="0" endLine="39" endPosition="0">
+    <scopeInfo nodeId="5857873509724057504" fileName="SerializableType_TextGen.java" startLine="33" startPosition="96" endLine="37" endPosition="25">
+      <varInfo nodeId="5857873509724099015" varName="at" />
+    </scopeInfo>
+    <scopeInfo nodeId="5857873509724219112" fileName="SerializableType_TextGen.java" startLine="38" startPosition="96" endLine="42" endPosition="25">
+      <varInfo nodeId="5857873509724226297" varName="tt" />
+    </scopeInfo>
+    <scopeInfo nodeId="2607054633620725764" fileName="SerializableType_TextGen.java" startLine="12" startPosition="42" endLine="47" endPosition="5" />
+    <scopeInfo nodeId="2607054633620725764" fileName="SerializableType_TextGen.java" startLine="12" startPosition="0" endLine="49" endPosition="0">
       <varInfo nodeId="2607054633620725764" varName="node" />
     </scopeInfo>
-    <unitInfo nodeId="2607054633620725764" fileName="SerializableType_TextGen.java" startLine="11" startPosition="0" endLine="40" endPosition="0" unitName="im.actor.apiLanguage.textGen.SerializableType_TextGen" />
+    <unitInfo nodeId="2607054633620725764" fileName="SerializableType_TextGen.java" startLine="11" startPosition="0" endLine="50" endPosition="0" unitName="im.actor.apiLanguage.textGen.SerializableType_TextGen" />
   </root>
   <root nodeRef="r:af334182-1bde-47cf-8ec6-46704236153e(im.actor.apiLanguage.textGen)/2607054633620895129">
     <nodeInfo nodeId="2607054633620897843" fileName="Struct_TextGen.java" startLine="14" startPosition="42" endLine="15" endPosition="54" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
