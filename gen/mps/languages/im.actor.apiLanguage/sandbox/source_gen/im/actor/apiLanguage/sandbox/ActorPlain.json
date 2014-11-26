@@ -1,4 +1,5 @@
-{"sections":[
+{"aliases":[],
+"obj-c-prefix":"","java-package":"","sections":[
 {"title":"End-To-End messages"
 ,"package":"e2e"
 ,"doc":[

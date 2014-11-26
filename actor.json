@@ -3,6 +3,14 @@
     {
       "type": "bytes",
       "alias": "seq_state"
+    },
+    {
+      "type": "int64",
+      "alias": "date"
+    },
+    {
+      "type": "int64",
+      "alias": "randomId"
     }
   ],
   "obj-c-prefix": "AM",
@@ -31,7 +39,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "AuthCode",
+            "name": "RequestAuthCode",
             "header": 1,
             "response": {
               "type": "anonymous",
@@ -89,7 +97,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "AuthCodeCall",
+            "name": "RequestAuthCodeCall",
             "header": 90,
             "response": {
               "type": "reference",
@@ -927,8 +935,31 @@
             "name": "EditAvatar",
             "header": 31,
             "response": {
-              "type": "reference",
-              "name": "AvatarChanged"
+              "type": "anonymous",
+              "header": 103,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  },
+                  "id": 1,
+                  "name": "avatar"
+                },
+                {
+                  "type": "int32",
+                  "id": 2,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 3,
+                  "name": "state"
+                }
+              ]
             },
             "doc": [
               "Changing account's avatar",
@@ -1331,7 +1362,10 @@
                 "name": "isSilent"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 3,
                 "name": "date"
               }
@@ -1989,51 +2023,6 @@
           "type": "empty"
         },
         {
-          "type": "response",
-          "content": {
-            "name": "MessageSent",
-            "header": 115,
-            "doc": [
-              "Response about message sent",
-              {
-                "type": "reference",
-                "argument": "seq",
-                "description": "  Sequence number in update sequence"
-              },
-              {
-                "type": "reference",
-                "argument": "state",
-                "description": "  Seuqnce state value"
-              },
-              {
-                "type": "reference",
-                "argument": "date",
-                "description": "  date of message"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "seq"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "seq_state"
-                },
-                "id": 2,
-                "name": "state"
-              },
-              {
-                "type": "int64",
-                "id": 3,
-                "name": "date"
-              }
-            ]
-          }
-        },
-        {
           "type": "struct",
           "content": {
             "name": "EncryptedAesKey",
@@ -2071,7 +2060,7 @@
             "header": 14,
             "response": {
               "type": "reference",
-              "name": "MessageSent"
+              "name": "SeqDate"
             },
             "doc": [
               "Sending encrypted message",
@@ -2111,7 +2100,10 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 3,
                 "name": "rid"
               },
@@ -2152,7 +2144,7 @@
             "header": 92,
             "response": {
               "type": "reference",
-              "name": "MessageSent"
+              "name": "SeqDate"
             },
             "doc": [
               "Sending plain message",
@@ -2182,7 +2174,10 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 3,
                 "name": "rid"
               },
@@ -2229,7 +2224,10 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 3,
                 "name": "rid"
               }
@@ -2268,7 +2266,10 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 3,
                 "name": "rid"
               }
@@ -2307,7 +2308,10 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 3,
                 "name": "date"
               }
@@ -2346,7 +2350,10 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 3,
                 "name": "date"
               }
@@ -2387,7 +2394,10 @@
               {
                 "type": {
                   "type": "list",
-                  "childType": "int64"
+                  "childType": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  }
                 },
                 "id": 3,
                 "name": "rids"
@@ -2508,7 +2518,10 @@
                 "name": "senderUid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 6,
                 "name": "date"
               },
@@ -2553,12 +2566,18 @@
                 "name": "senderUid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 3,
                 "name": "date"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 4,
                 "name": "rid"
               },
@@ -2588,12 +2607,18 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 2,
                 "name": "rid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 3,
                 "name": "date"
               }
@@ -2619,12 +2644,18 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 2,
                 "name": "rid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 3,
                 "name": "receivedDate"
               }
@@ -2646,12 +2677,18 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 2,
                 "name": "rid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 3,
                 "name": "readDate"
               }
@@ -2673,7 +2710,10 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 2,
                 "name": "rid"
               }
@@ -2699,12 +2739,18 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 2,
-                "name": "date"
+                "name": "startDate"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 3,
                 "name": "receivedDate"
               }
@@ -2726,12 +2772,18 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 2,
-                "name": "date"
+                "name": "startDate"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 3,
                 "name": "readDate"
               }
@@ -2753,9 +2805,12 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 2,
-                "name": "date"
+                "name": "startDate"
               }
             ]
           }
@@ -2781,7 +2836,10 @@
               {
                 "type": {
                   "type": "list",
-                  "childType": "int64"
+                  "childType": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  }
                 },
                 "id": 2,
                 "name": "rids"
@@ -2877,6 +2935,14 @@
                 },
                 "id": 9,
                 "name": "members"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 10,
+                "name": "createDate"
               }
             ]
           }
@@ -2921,6 +2987,14 @@
                   },
                   "id": 5,
                   "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "date"
+                  },
+                  "id": 6,
+                  "name": "date"
                 }
               ]
             },
@@ -2944,7 +3018,10 @@
             ],
             "attributes": [
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 1,
                 "name": "rid"
               },
@@ -2974,7 +3051,7 @@
             "header": 85,
             "response": {
               "type": "reference",
-              "name": "Seq"
+              "name": "SeqDate"
             },
             "doc": [
               "Changing group title",
@@ -3012,8 +3089,39 @@
             "name": "EditGroupAvatar",
             "header": 86,
             "response": {
-              "type": "reference",
-              "name": "AvatarChanged"
+              "type": "anonymous",
+              "header": 115,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  },
+                  "id": 1,
+                  "name": "avatar"
+                },
+                {
+                  "type": "int32",
+                  "id": 2,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 3,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "date"
+                  },
+                  "id": 4,
+                  "name": "date"
+                }
+              ]
             },
             "doc": [
               "Changing group avatar",
@@ -3055,7 +3163,7 @@
             "header": 101,
             "response": {
               "type": "reference",
-              "name": "Seq"
+              "name": "SeqDate"
             },
             "doc": [
               "Removing group avatar",
@@ -3080,11 +3188,11 @@
         {
           "type": "rpc",
           "content": {
-            "name": "InviteUsers",
+            "name": "InviteUser",
             "header": 69,
             "response": {
               "type": "reference",
-              "name": "Seq"
+              "name": "SeqDate"
             },
             "doc": [
               "Inviting users to group",
@@ -3095,7 +3203,7 @@
               },
               {
                 "type": "reference",
-                "argument": "users",
+                "argument": "user",
                 "description": "Users for invitation"
               }
             ],
@@ -3110,14 +3218,11 @@
               },
               {
                 "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "UserOutPeer"
-                  }
+                  "type": "struct",
+                  "childType": "UserOutPeer"
                 },
                 "id": 3,
-                "name": "users"
+                "name": "user"
               }
             ]
           }
@@ -3129,7 +3234,7 @@
             "header": 70,
             "response": {
               "type": "reference",
-              "name": "Seq"
+              "name": "SeqDate"
             },
             "doc": [
               "Leaving group",
@@ -3158,7 +3263,7 @@
             "header": 97,
             "response": {
               "type": "reference",
-              "name": "Seq"
+              "name": "SeqDate"
             },
             "doc": [
               "Leaving and deleting group (similar to DeleteChat)",
@@ -3183,11 +3288,11 @@
         {
           "type": "rpc",
           "content": {
-            "name": "RemoveUsers",
+            "name": "RemoveUser",
             "header": 71,
             "response": {
               "type": "reference",
-              "name": "Seq"
+              "name": "SeqDate"
             },
             "doc": [
               "Removing users from group",
@@ -3198,7 +3303,7 @@
               },
               {
                 "type": "reference",
-                "argument": "users",
+                "argument": "user",
                 "description": "users for removing"
               }
             ],
@@ -3213,14 +3318,11 @@
               },
               {
                 "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "UserOutPeer"
-                  }
+                  "type": "struct",
+                  "childType": "UserOutPeer"
                 },
                 "id": 3,
-                "name": "users"
+                "name": "user"
               }
             ]
           }
@@ -3263,7 +3365,10 @@
                 "name": "inviteUid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 8,
                 "name": "date"
               }
@@ -3315,7 +3420,10 @@
                 "name": "inviterUid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 4,
                 "name": "date"
               }
@@ -3357,7 +3465,10 @@
                 "name": "uid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 3,
                 "name": "date"
               }
@@ -3409,7 +3520,10 @@
                 "name": "kickerUid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 4,
                 "name": "date"
               }
@@ -3496,7 +3610,10 @@
                 "name": "title"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 4,
                 "name": "date"
               }
@@ -3554,7 +3671,10 @@
                 "name": "avatar"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 4,
                 "name": "date"
               }
@@ -3628,12 +3748,18 @@
                 "name": "senderUid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 2,
                 "name": "rid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 3,
                 "name": "date"
               },
@@ -3709,7 +3835,10 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 3,
                 "name": "startDate"
               },
@@ -3781,7 +3910,10 @@
                 "name": "unreadCount"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 4,
                 "name": "sortDate"
               },
@@ -3791,12 +3923,18 @@
                 "name": "senderUid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 6,
                 "name": "rid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 7,
                 "name": "date"
               },
@@ -3870,7 +4008,10 @@
             ],
             "attributes": [
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 1,
                 "name": "startDate"
               },
@@ -4329,7 +4470,7 @@
               },
               {
                 "type": "reference",
-                "argument": "time",
+                "argument": "date",
                 "description": "  Last seen time"
               }
             ],
@@ -4340,9 +4481,12 @@
                 "name": "uid"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
                 "id": 2,
-                "name": "time"
+                "name": "date"
               }
             ]
           }
@@ -5569,15 +5713,10 @@
         {
           "type": "response",
           "content": {
-            "name": "AvatarChanged",
-            "header": 68,
+            "name": "SeqDate",
+            "header": 102,
             "doc": [
-              "Response of Group or Profile avatar change",
-              {
-                "type": "reference",
-                "argument": "avatar",
-                "description": "  new avatar"
-              },
+              "Sequence response with date. Methods that return this value must process response in particular order",
               {
                 "type": "reference",
                 "argument": "seq",
@@ -5587,20 +5726,17 @@
                 "type": "reference",
                 "argument": "state",
                 "description": "  Sequence state of response"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "description": "  Date of response"
               }
             ],
             "attributes": [
               {
-                "type": {
-                  "type": "struct",
-                  "childType": "Avatar"
-                },
-                "id": 1,
-                "name": "avatar"
-              },
-              {
                 "type": "int32",
-                "id": 2,
+                "id": 1,
                 "name": "seq"
               },
               {
@@ -5608,8 +5744,16 @@
                   "type": "alias",
                   "childType": "seq_state"
                 },
-                "id": 3,
+                "id": 2,
                 "name": "state"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 3,
+                "name": "date"
               }
             ]
           }

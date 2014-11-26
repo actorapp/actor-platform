@@ -250,11 +250,18 @@ message RequestEditName {
 }
 
 // API#0x1F
-// ResponseAvatarChanged
+// ResponseEditAvatar
 // Changing account's avatar
 // fileLocationFile Location of uploaded unencrypted avatar
 message RequestEditAvatar {
     required FileLocation fileLocation = 1;
+}
+
+// API#0x67
+message ResponseEditAvatar {
+    required Avatar avatar = 1;
+    required int32 seq = 2;
+    required bytes state = 3;
 }
 
 // API#0x5B
@@ -544,17 +551,6 @@ message WrongKeysErrorData {
     repeated UserKey invalidKeys = 3;
 }
 
-// API#0x73
-// Response about message sent
-// seq  Sequence number in update sequence
-// state  Seuqnce state value
-// date  date of message
-message ResponseMessageSent {
-    required int32 seq = 1;
-    required bytes state = 2;
-    required int64 date = 3;
-}
-
 // Encrypted AES key for encrypted messages
 // keyHash  hash of public key of encrypted aes key
 // aesEncryptedKey  encrypted aes key
@@ -564,7 +560,7 @@ message EncryptedAesKey {
 }
 
 // API#0x0E
-// ResponseMessageSent
+// ResponseSeqDate
 // Sending encrypted message
 // peerDestination peer for message
 // ridMessage random id (generated on client side)
@@ -580,7 +576,7 @@ message RequestSendEncryptedMessage {
 }
 
 // API#0x5C
-// ResponseMessageSent
+// ResponseSeqDate
 // Sending plain message
 // peerDestination peer for message (now supported only user's peer)
 // ridMessage random id (generated on clien side)
@@ -713,21 +709,21 @@ message UpdateEncryptedReadByMe {
 // API#0x36
 message UpdateMessageReceived {
     required Peer peer = 1;
-    required int64 date = 2;
+    required int64 startDate = 2;
     required int64 receivedDate = 3;
 }
 
 // API#0x13
 message UpdateMessageRead {
     required Peer peer = 1;
-    required int64 date = 2;
+    required int64 startDate = 2;
     required int64 readDate = 3;
 }
 
 // API#0x32
 message UpdateMessageReadByMe {
     required Peer peer = 1;
-    required int64 date = 2;
+    required int64 startDate = 2;
 }
 
 // API#0x2E
@@ -758,6 +754,7 @@ message Group {
     required bool isMember = 6;
     required int32 adminUid = 8;
     repeated int32 members = 9;
+    required int64 createDate = 10;
 }
 
 // API#0x41
@@ -778,10 +775,11 @@ message ResponseCreateGroup {
     required int32 seq = 3;
     required bytes state = 4;
     repeated int32 users = 5;
+    required int64 date = 6;
 }
 
 // API#0x55
-// ResponseSeq
+// ResponseSeqDate
 // Changing group title
 // groupPeerGroup's peer
 // titlenew group title
@@ -791,7 +789,7 @@ message RequestEditGroupTitle {
 }
 
 // API#0x56
-// ResponseAvatarChanged
+// ResponseEditGroupAvatar
 // Changing group avatar
 // groupPeerGroup's peer
 // fileLocationuploaded file for avatar
@@ -800,8 +798,16 @@ message RequestEditGroupAvatar {
     required FileLocation fileLocation = 3;
 }
 
+// API#0x73
+message ResponseEditGroupAvatar {
+    required Avatar avatar = 1;
+    required int32 seq = 2;
+    required bytes state = 3;
+    required int64 date = 4;
+}
+
 // API#0x65
-// ResponseSeq
+// ResponseSeqDate
 // Removing group avatar
 // groupPeerGroup's peer
 message RequestRemoveGroupAvatar {
@@ -809,17 +815,17 @@ message RequestRemoveGroupAvatar {
 }
 
 // API#0x45
-// ResponseSeq
+// ResponseSeqDate
 // Inviting users to group
 // groupPeerGroup's peer
-// usersUsers for invitation
-message RequestInviteUsers {
+// userUsers for invitation
+message RequestInviteUser {
     required GroupOutPeer groupPeer = 1;
-    repeated UserOutPeer users = 3;
+    required UserOutPeer user = 3;
 }
 
 // API#0x46
-// ResponseSeq
+// ResponseSeqDate
 // Leaving group
 // groupPeerGroup's peer
 message RequestLeaveGroup {
@@ -827,7 +833,7 @@ message RequestLeaveGroup {
 }
 
 // API#0x61
-// ResponseSeq
+// ResponseSeqDate
 // Leaving and deleting group (similar to DeleteChat)
 // groupPeerGroup's peer
 message RequestDeleteGroup {
@@ -835,13 +841,13 @@ message RequestDeleteGroup {
 }
 
 // API#0x47
-// ResponseSeq
+// ResponseSeqDate
 // Removing users from group
 // groupPeerGroup's peer
-// usersusers for removing
-message RequestRemoveUsers {
+// userusers for removing
+message RequestRemoveUser {
     required GroupOutPeer groupPeer = 1;
-    repeated UserOutPeer users = 3;
+    required UserOutPeer user = 3;
 }
 
 // API#0x24
@@ -1144,10 +1150,10 @@ message UpdateUserOffline {
 // API#0x09
 // Update about user's last seen state
 // uid  User's id
-// time  Last seen time
+// date  Last seen time
 message UpdateUserLastSeen {
     required int32 uid = 1;
-    required int64 time = 2;
+    required int64 date = 2;
 }
 
 // API#0x21
@@ -1429,7 +1435,7 @@ message ResponseGetDifference {
     repeated User users = 3;
     repeated Group groups = 6;
     repeated DifferenceUpdate updates = 4;
-    required bool needMore = 5;
+    required bool needMode = 5;
 }
 
 // API#0x20
@@ -1482,15 +1488,15 @@ message ResponseSeq {
     required bytes state = 2;
 }
 
-// API#0x44
-// Response of Group or Profile avatar change
-// avatar  new avatar
+// API#0x66
+// Sequence response with date. Methods that return this value must process response in particular order
 // seq  Sequence number of response
 // state  Sequence state of response
-message ResponseAvatarChanged {
-    required Avatar avatar = 1;
-    required int32 seq = 2;
-    required bytes state = 3;
+// date  Date of response
+message ResponseSeqDate {
+    required int32 seq = 1;
+    required bytes state = 2;
+    required int64 date = 3;
 }
 
 // Configuration of system
