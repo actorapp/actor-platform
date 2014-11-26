@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<debugInfo>
+  <unitInfo fileName="StructureAspectDescriptor.java" startLine="10" startPosition="0" endLine="121" endPosition="0" unitName="im.actor.apiLanguage.structure.StructureAspectDescriptor" />
+  <root nodeRef="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)/4689615199750888532">
+    <nodeInfo nodeId="4689615199750888532" fileName="hexByte_PropertySupport.java" startLine="8" startPosition="44" endLine="9" endPosition="28" conceptFqName="jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
+    <nodeInfo nodeId="4689615199750888532" fileName="hexByte_PropertySupport.java" startLine="10" startPosition="24" endLine="11" endPosition="21" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="4689615199750888532" fileName="hexByte_PropertySupport.java" startLine="12" startPosition="12" endLine="13" endPosition="24" conceptFqName="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+    <nodeInfo nodeId="4689615199750888532" fileName="hexByte_PropertySupport.java" startLine="14" startPosition="5" endLine="15" endPosition="55" conceptFqName="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+    <nodeInfo nodeId="4689615199750888532" fileName="hexByte_PropertySupport.java" startLine="12" startPosition="10" endLine="14" endPosition="5" conceptFqName="jetbrains.mps.baseLanguage.structure.BlockStatement" />
+    <nodeInfo nodeId="4689615199750888532" fileName="hexByte_PropertySupport.java" startLine="9" startPosition="28" endLine="14" endPosition="5" conceptFqName="jetbrains.mps.baseLanguage.structure.IfStatement" />
+    <nodeInfo nodeId="4689615199750888532" fileName="hexByte_PropertySupport.java" startLine="8" startPosition="0" endLine="17" endPosition="0" conceptFqName="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" propertyString="canSetValue#(Ljava/lang/String;)Z" />
+    <scopeInfo nodeId="4689615199750888532" fileName="hexByte_PropertySupport.java" startLine="10" startPosition="24" endLine="11" endPosition="21" />
+    <scopeInfo nodeId="4689615199750888532" fileName="hexByte_PropertySupport.java" startLine="12" startPosition="12" endLine="13" endPosition="24" />
+    <scopeInfo nodeId="4689615199750888532" fileName="hexByte_PropertySupport.java" startLine="8" startPosition="44" endLine="15" endPosition="55">
+      <varInfo nodeId="4689615199750888532" varName="testValue" />
+    </scopeInfo>
+    <scopeInfo nodeId="4689615199750888532" fileName="hexByte_PropertySupport.java" startLine="8" startPosition="0" endLine="17" endPosition="0">
+      <varInfo nodeId="4689615199750888532" varName="value" />
+    </scopeInfo>
+    <unitInfo nodeId="4689615199750888532" fileName="hexByte_PropertySupport.java" startLine="7" startPosition="0" endLine="18" endPosition="0" unitName="im.actor.apiLanguage.structure.hexByte_PropertySupport" />
+  </root>
+</debugInfo>
+
