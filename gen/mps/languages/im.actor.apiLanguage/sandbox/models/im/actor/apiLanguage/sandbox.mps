@@ -1540,8 +1540,8 @@
           <property name="id" nameId="tsp6.2348480312264746197" value="3" />
           <property name="name" nameId="tpck.1169194664001" value="ext" />
           <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="5857873509722741746" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="5857873509722741752" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395571315" resolveInfo="ServiceMessage" />
+            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.TraitType" typeId="tsp6.5857873509721568548" id="2873759689078650295" nodeInfo="ng">
+              <link role="trait" roleId="tsp6.5857873509721852744" targetNodeId="5857873509721924493" resolveInfo="ServiceExtension" />
             </node>
           </node>
         </node>
@@ -2187,7 +2187,7 @@
         </node>
         <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389938842" nodeInfo="ng">
           <property name="description" nameId="tsp6.4092665470043359042" value="Message random id" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395598375" resolveInfo="rid" />
+          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395598375" resolveInfo="rids" />
         </node>
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395598368" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="1" />
@@ -2198,8 +2198,10 @@
         </node>
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395598375" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395598381" nodeInfo="ng" />
+          <property name="name" nameId="tpck.1169194664001" value="rids" />
+          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="2873759689078618094" nodeInfo="ng">
+            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="2873759689078618100" nodeInfo="ng" />
+          </node>
         </node>
         <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395598115" nodeInfo="ng">
           <property name="hexValue" nameId="tsp6.4689615199750888593" value="62" />
@@ -2528,7 +2530,7 @@
         </node>
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395583215" nodeInfo="ng">
           <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
+          <property name="name" nameId="tpck.1169194664001" value="rids" />
           <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395583221" nodeInfo="ng">
             <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395583227" nodeInfo="ng" />
           </node>

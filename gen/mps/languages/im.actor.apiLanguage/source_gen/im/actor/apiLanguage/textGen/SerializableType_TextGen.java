@@ -30,6 +30,16 @@ public class SerializableType_TextGen extends SNodeTextGen {
       this.append("{\"type\":\"enum\",\"childType\":\"");
       this.append(SPropertyOperations.getString(SLinkOperations.getTarget(en, "struct", false), "name"));
       this.append("\"}");
+    } else if (SNodeOperations.isInstanceOf(node, "im.actor.apiLanguage.structure.AliasType")) {
+      SNode at = SNodeOperations.cast(node, "im.actor.apiLanguage.structure.AliasType");
+      this.append("{\"type\":\"alias\",\"childType\":\"");
+      this.append(SPropertyOperations.getString(SLinkOperations.getTarget(at, "alias", false), "name"));
+      this.append("\"}");
+    } else if (SNodeOperations.isInstanceOf(node, "im.actor.apiLanguage.structure.TraitType")) {
+      SNode tt = SNodeOperations.cast(node, "im.actor.apiLanguage.structure.TraitType");
+      this.append("{\"type\":\"trait\",\"childType\":\"");
+      this.append(SPropertyOperations.getString(SLinkOperations.getTarget(tt, "trait", false), "name"));
+      this.append("\"}");
     } else {
       this.append("\"");
       this.append(node + "");
