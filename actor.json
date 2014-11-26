@@ -39,7 +39,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "RequestAuthCode",
+            "name": "AuthCode",
             "header": 1,
             "response": {
               "type": "anonymous",
@@ -97,7 +97,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "RequestAuthCodeCall",
+            "name": "AuthCodeCall",
             "header": 90,
             "response": {
               "type": "reference",
