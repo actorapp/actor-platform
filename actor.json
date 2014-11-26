@@ -39,7 +39,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "RequestAuthCode",
+            "name": "SendAuthCode",
             "header": 1,
             "response": {
               "type": "anonymous",
@@ -58,7 +58,7 @@
               ]
             },
             "doc": [
-              "Requesting SMS auth code",
+              "Sending SMS with activation code",
               {
                 "type": "reference",
                 "argument": "phoneNumber",
@@ -97,7 +97,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "RequestAuthCodeCall",
+            "name": "SendAuthCall",
             "header": 90,
             "response": {
               "type": "reference",
@@ -409,7 +409,7 @@
         {
           "type": "struct",
           "content": {
-            "name": "AuthItem",
+            "name": "AuthSession",
             "doc": [
               "Authentication session",
               {
@@ -516,7 +516,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "GetAuth",
+            "name": "GetAuthSessions",
             "header": 80,
             "response": {
               "type": "anonymous",
@@ -527,7 +527,7 @@
                     "type": "list",
                     "childType": {
                       "type": "struct",
-                      "childType": "AuthItem"
+                      "childType": "AuthSession"
                     }
                   },
                   "id": 1,
@@ -544,14 +544,14 @@
         {
           "type": "rpc",
           "content": {
-            "name": "RemoveAuth",
+            "name": "TerminateSession",
             "header": 82,
             "response": {
               "type": "reference",
               "name": "Void"
             },
             "doc": [
-              "Logout on specified user's session",
+              "SignOut on specified user's session",
               {
                 "type": "reference",
                 "argument": "id",
@@ -570,14 +570,14 @@
         {
           "type": "rpc",
           "content": {
-            "name": "RemoveAllOtherAuths",
+            "name": "TerminateAllSessions",
             "header": 83,
             "response": {
               "type": "reference",
               "name": "Void"
             },
             "doc": [
-              "Logout on all exept current sessions"
+              "SignOut on all exept current sessions"
             ],
             "attributes": []
           }
@@ -585,14 +585,14 @@
         {
           "type": "rpc",
           "content": {
-            "name": "Logout",
+            "name": "SignOut",
             "header": 84,
             "response": {
               "type": "reference",
               "name": "Void"
             },
             "doc": [
-              "Logout current session"
+              "SignOut current session"
             ],
             "attributes": []
           }
@@ -5503,7 +5503,7 @@
                 {
                   "type": "bool",
                   "id": 5,
-                  "name": "needMode"
+                  "name": "needMore"
                 }
               ]
             },
