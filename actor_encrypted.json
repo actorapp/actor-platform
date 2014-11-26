@@ -1,0 +1,326 @@
+{
+  "sections": [
+    {
+      "title": "End-To-End messages",
+      "package": "e2e",
+      "doc": [
+        "Basic conainer for End-To-End message is PlainPackage.",
+        "If messageType in PlainPackage == 1 than contents of body is PlainMessage.",
+        "PlainMessage is a conversation message.",
+        "PlainMessage contans messageType:",
+        "  messageType == 0x01 => body is TextMessage",
+        "  messageType == 0x02 => body is FileMessage",
+        "  messageType == 0x03 => body is ServiceMessage",
+        " ",
+        "TextMessage has extension",
+        "  extType == 0x01 => extension is MarkdownMessage",
+        " ",
+        "FileMessage has extensions",
+        "  extType == 0x01 => extension is PhotoExtension",
+        "  extType == 0x02 => extension is VideoExtension",
+        "  extType == 0x03 => extension is AudioExtension"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "PlainPackage",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "messsageType"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "body"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "crc32"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "PlainMessage",
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "guid"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "messageTyoe"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "body"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "TextMessage",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "text"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "extType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 3,
+                "name": "extension"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "FileMessage",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "name"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "mimeType"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "PlainFileLocation"
+                },
+                "id": 3,
+                "name": "fileLocation"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "FastThumb"
+                  }
+                },
+                "id": 4,
+                "name": "fastThumb"
+              },
+              {
+                "type": "int32",
+                "id": 5,
+                "name": "extType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 6,
+                "name": "extension"
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "EncryptionType",
+            "values": [
+              {
+                "name": "NONE",
+                "id": 0
+              },
+              {
+                "name": "AES",
+                "id": 1
+              },
+              {
+                "name": "AES_THEN_MAC",
+                "id": 2
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "PlainFileLocation",
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "fileId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "fileSize"
+              },
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "EncryptionType"
+                },
+                "id": 4,
+                "name": "encryptionType"
+              },
+              {
+                "type": "int32",
+                "id": 5,
+                "name": "encryptedFileSize"
+              },
+              {
+                "type": "bytes",
+                "id": 6,
+                "name": "encryptionKey"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "FastThumb",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "w"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "h"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "preview"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceMessage",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "text"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "extType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 3,
+                "name": "extension"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "MarkdownMessage",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "markdown"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "PhotoExtension",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "w"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "h"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "VideoExtension",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "w"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "h"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "duration"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "AudioExtension",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "duration"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

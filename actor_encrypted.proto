@@ -1,54 +1,47 @@
-package proto;
-option java_package = "im.actor.messenger.api";
-option java_outer_classname = "EncryptionScheme";
+//////////////////////////////////////////////////////
+// End-To-End messages
+//////////////////////////////////////////////////////
+//Basic conainer for End-To-End message is PlainPackage.
+//If messageType in PlainPackage == 1 than contents of body is PlainMessage.
+//PlainMessage is a conversation message.
+//PlainMessage contans messageType:
+//  messageType == 0x01 => body is TextMessage
+//  messageType == 0x02 => body is FileMessage
+//  messageType == 0x03 => body is ServiceMessage
+// 
+//TextMessage has extension
+//  extType == 0x01 => extension is MarkdownMessage
+// 
+//FileMessage has extensions
+//  extType == 0x01 => extension is PhotoExtension
+//  extType == 0x02 => extension is VideoExtension
+//  extType == 0x03 => extension is AudioExtension
 
 message PlainPackage {
-    required int32 messageType = 1; // Тип пакета
-    required bytes body = 2; // Тело пакета
-    required fixed64 crc32 = 3; // Контрольная сумма version + messageType + body
+    required int32 messageType = 1;
+    required bytes body = 2;
+    required int64 crc32 = 3;
 }
 
-// Message from chat
-// ID#0x01
 message PlainMessage {
-    required fixed64 guid = 1; // GUID сообщения
-    required int32 messageType = 2; // Тип сообщения - текстовое, медиа
-    required bytes body = 3; // Тело сообщения
+    required int64 guid = 1;
+    required int32 messageType = 2;
+    required bytes body = 3;
 }
 
-// ID#0x02
-message DeleteMessage {
-    repeated fixed64 guids = 1; // GUID сообщения
-}
-
-// ID#0x03
-message ClearChatMessage {
-    
-}
-
-// ID#0x04
-message DeleteChatMessage {
-    
-}
-
-// Text message
-// API#0x01
 message TextMessage {
-    required string text = 1; // Непосредственно текст сообщения
-    required int32 extType = 2; // Тип расширения сообщения
-    optional bytes extension = 3; // Расширение
+    required string text = 1;
+    required int32 extType = 2;
+    optional bytes extension = 3;
 }
 
-// File message
-// API#0x02
 message FileMessage {
-    required string name = 1; // Имя файла
-    required string mimeType = 2; // Mime Type файла
-    required PlainFileLocation fileLocation = 3; // Расположение зашифрованного файла
-    optional FastThumb fastThumb = 4; // Быстрое превью
-
-    required int32 extType = 5; // Тип расширения сообщения
-    optional bytes extension = 6; // Расширение
+    required string name = 1;
+    required string mimeType = 2;
+    required PlainFileLocation fileLocation = 3;
+    optional FastThumb fastThumb = 4;
+    required int32 extType = 5;
+    optional bytes extension = 6;
 }
 
 enum EncryptionType {
@@ -60,12 +53,9 @@ enum EncryptionType {
 message PlainFileLocation {
     required int64 fileId = 1;
     required int64 accessHash = 2;
-    required int32 fileSize = 3; // Размер расшифрованного файла
-    required EncryptionType encryptionType = 4; // Тип шифрования
-    // Размер зашифрованного файла обычно
-    // на несколько байт больше незашифрованного из-за выравнивания
+    required int32 fileSize = 3;
+    required EncryptionType encryptionType = 4;
     required int32 encryptedFileSize = 5;
-    // Ключ, которым зашифрован файл
     required bytes encryptionKey = 6;
 }
 
@@ -75,38 +65,28 @@ message FastThumb {
     required bytes preview = 4;
 }
 
-// Service message
-// API#0x03
 message ServiceMessage {
-    required string text = 1; // Непосредственно текст сервисного сообщения
-    required int32 extType = 2; // Тип расширения сообщения
-    optional bytes extension = 3; // Расширение
+    required string text = 1;
+    required int32 extType = 2;
+    optional bytes extension = 3;
 }
 
-// Text message extension
-
-// ID#0x01
 message MarkdownMessage {
-    required string mardkown = 1;
+    required string markdown = 1;
 }
 
-// File message extensions
-
-// ID#0x01
 message PhotoExtension {
-    required int32 w = 1; // Ширина изображения
-    required int32 h = 2; // Высота изображения
+    required int32 w = 1;
+    required int32 h = 2;
 }
 
-// ID#0x02
 message VideoExtension {
-    required int32 w = 1; // Ширина видео
-    required int32 h = 2; // Высота видео
-    required int32 duration = 3; // Длинна видео в секундах
+    required int32 w = 1;
+    required int32 h = 2;
+    required int32 duration = 3;
 }
 
-// ID#0x03
 message AudioExtension {
-    required int32 duration = 3; // Длинна аудио в секундах
+    required int32 duration = 3;
 }
 
