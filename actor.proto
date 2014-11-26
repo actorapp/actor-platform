@@ -497,7 +497,8 @@ message ServiceExChangedAvatar {
 // name  name of file
 // mimeType  mimetype of file
 // thumb  optional thumb of file. JPEG less that 90x90 with 60-70 quality.
-// extType  Extension type. 0x01 => FileExPhoto, 0x02 => FileExVideo, 0x03 => FileExVoice
+// extType  Extension type
+// ext  Extension
 message FileMessage {
     required int64 fileId = 1;
     required int64 accessHash = 2;
@@ -634,7 +635,7 @@ message RequestMessageRead {
 // ResponseVoid
 // Deleting messages
 // peerDestination peer
-// ridMessage random id
+// ridsMessage random id
 message RequestDeleteMessage {
     required OutPeer peer = 1;
     repeated int64 rids = 3;

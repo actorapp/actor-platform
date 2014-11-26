@@ -1,4 +1,12 @@
 {
+  "aliases": [
+    {
+      "type": "bytes",
+      "alias": "seq_state"
+    }
+  ],
+  "obj-c-prefix": "AM",
+  "java-package": "im.actor.api",
   "sections": [
     {
       "title": "Authentication",
@@ -1076,9 +1084,12 @@
                   "name": "seq"
                 },
                 {
-                  "type": "bytes",
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
                   "id": 3,
-                  "name": "states"
+                  "name": "state"
                 }
               ]
             },
@@ -1454,11 +1465,21 @@
                 "name": "type"
               },
               {
-                "type": "bytes",
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
                 "id": 2,
                 "name": "content"
               }
             ]
+          }
+        },
+        {
+          "type": "trait",
+          "content": {
+            "name": "Message",
+            "attributes": []
           }
         },
         {
@@ -1483,6 +1504,10 @@
                 "description": "  Optional bytes of extension"
               }
             ],
+            "trait": {
+              "name": "Message",
+              "key": 1
+            },
             "attributes": [
               {
                 "type": "string",
@@ -1522,6 +1547,10 @@
                 "description": "  extension type. 0x01 => ServiceExUserAdded, 0x02 => ServiceExUserKicked, 0x03 => ServiveExUserLeft, 0x04 => ServiceExGroupCreated, 0x05 => ServiceExGroupChangedTitle, 0x06 => ServiceExGroupChangedAvatar"
               }
             ],
+            "trait": {
+              "name": "Message",
+              "key": 2
+            },
             "attributes": [
               {
                 "type": "string",
@@ -1536,12 +1565,22 @@
               {
                 "type": {
                   "type": "opt",
-                  "childType": "bytes"
+                  "childType": {
+                    "type": "trait",
+                    "childType": "ServiceExtension"
+                  }
                 },
                 "id": 3,
                 "name": "ext"
               }
             ]
+          }
+        },
+        {
+          "type": "trait",
+          "content": {
+            "name": "ServiceExtension",
+            "attributes": []
           }
         },
         {
@@ -1556,6 +1595,10 @@
                 "description": "  added user id"
               }
             ],
+            "trait": {
+              "name": "ServiceExtension",
+              "key": 1
+            },
             "attributes": [
               {
                 "type": "int32",
@@ -1577,6 +1620,10 @@
                 "description": "  kicked user id"
               }
             ],
+            "trait": {
+              "name": "ServiceExtension",
+              "key": 2
+            },
             "attributes": [
               {
                 "type": "int32",
@@ -1593,6 +1640,10 @@
             "doc": [
               "Service message about user left group"
             ],
+            "trait": {
+              "name": "ServiceExtension",
+              "key": 3
+            },
             "attributes": []
           }
         },
@@ -1603,6 +1654,10 @@
             "doc": [
               "Service message about group creating"
             ],
+            "trait": {
+              "name": "ServiceExtension",
+              "key": 4
+            },
             "attributes": []
           }
         },
@@ -1613,6 +1668,10 @@
             "doc": [
               "Service message about group title change"
             ],
+            "trait": {
+              "name": "ServiceExtension",
+              "key": 5
+            },
             "attributes": [
               {
                 "type": "string",
@@ -1629,6 +1688,10 @@
             "doc": [
               "Service message about avatar change"
             ],
+            "trait": {
+              "name": "ServiceExtension",
+              "key": 6
+            },
             "attributes": [
               {
                 "type": {
@@ -1683,9 +1746,18 @@
               {
                 "type": "reference",
                 "argument": "extType",
-                "description": "  Extension type. 0x01 => FileExPhoto, 0x02 => FileExVideo, 0x03 => FileExVoice"
+                "description": "  Extension type"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "description": "  Extension"
               }
             ],
+            "trait": {
+              "name": "Message",
+              "key": 3
+            },
             "attributes": [
               {
                 "type": "int64",
@@ -1740,6 +1812,13 @@
           }
         },
         {
+          "type": "trait",
+          "content": {
+            "name": "FileExtension",
+            "attributes": []
+          }
+        },
+        {
           "type": "struct",
           "content": {
             "name": "FileExPhoto",
@@ -1756,6 +1835,10 @@
                 "description": "  image height"
               }
             ],
+            "trait": {
+              "name": "FileExtension",
+              "key": 1
+            },
             "attributes": [
               {
                 "type": "int32",
@@ -1792,6 +1875,10 @@
                 "description": "  video duration"
               }
             ],
+            "trait": {
+              "name": "FileExtension",
+              "key": 2
+            },
             "attributes": [
               {
                 "type": "int32",
@@ -1823,6 +1910,10 @@
                 "description": "  voice duration"
               }
             ],
+            "trait": {
+              "name": "FileExtension",
+              "key": 3
+            },
             "attributes": [
               {
                 "type": "int32",
@@ -1927,7 +2018,10 @@
                 "name": "seq"
               },
               {
-                "type": "bytes",
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
                 "id": 2,
                 "name": "state"
               },
@@ -2291,9 +2385,12 @@
                 "name": "peer"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "list",
+                  "childType": "int64"
+                },
                 "id": 3,
-                "name": "rid"
+                "name": "rids"
               }
             ]
           }
@@ -2810,7 +2907,10 @@
                   "name": "seq"
                 },
                 {
-                  "type": "bytes",
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
                   "id": 4,
                   "name": "state"
                 },
@@ -4992,7 +5092,10 @@
                 "name": "seq"
               },
               {
-                "type": "bytes",
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
                 "id": 2,
                 "name": "state"
               },
@@ -5054,7 +5157,10 @@
                 "name": "seq"
               },
               {
-                "type": "bytes",
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
                 "id": 2,
                 "name": "state"
               },
@@ -5210,7 +5316,10 @@
                   "name": "seq"
                 },
                 {
-                  "type": "bytes",
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
                   "id": 2,
                   "name": "state"
                 },
@@ -5264,7 +5373,10 @@
                 "name": "seq"
               },
               {
-                "type": "bytes",
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
                 "id": 2,
                 "name": "state"
               }
@@ -5444,7 +5556,10 @@
                 "name": "seq"
               },
               {
-                "type": "bytes",
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
                 "id": 2,
                 "name": "state"
               }
@@ -5489,7 +5604,10 @@
                 "name": "seq"
               },
               {
-                "type": "bytes",
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
                 "id": 3,
                 "name": "state"
               }
