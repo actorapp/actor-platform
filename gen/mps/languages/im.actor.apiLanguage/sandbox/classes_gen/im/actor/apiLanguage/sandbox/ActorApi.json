@@ -5,18 +5,18 @@
 ,"doc":[
 "<p>Actor now support only one way for authentication - by SMS or phone call.</p>","<p>Authorization steps:","<ol>","<li>Request SMS Code by calling RequestAuthCode</li>","<li>If SMS arrives than send Authorization code in SignIn/SignUp</li>","<li>If sms doesn't arrive for a long time - request phone activation by ","   calling AuthCodeCall</li>","</ol>","</p>","Some rules<br/>","If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.<br/>","If on any step API return PHONE_CODE_EXPIRED than application MUST start ","authorization process from begining.<br/>","Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.<br/>"],"items":[
 {"type":"rpc","content":{
-"name":"RequestAuthCode",
+"name":"SendAuthCode",
 "header":1,
 "response":{"type":"anonymous","header":2, "attributes":[{"type":"string","id":1,"name":"smsHash"}
 ,{"type":"bool","id":2,"name":"isRegistered"}
 ]},
 "doc":[
-"Requesting SMS auth code",{"type":"reference","argument":"phoneNumber","description":"Phone number in international format"},{"type":"reference","argument":"appId","description":"Application ID"},{"type":"reference","argument":"apiKey","description":"Application API key"}],"attributes":[
+"Sending SMS with activation code",{"type":"reference","argument":"phoneNumber","description":"Phone number in international format"},{"type":"reference","argument":"appId","description":"Application ID"},{"type":"reference","argument":"apiKey","description":"Application API key"}],"attributes":[
 {"type":"int64","id":1,"name":"phoneNumber"}
 ,{"type":"int32","id":2,"name":"appId"}
 ,{"type":"string","id":3,"name":"apiKey"}
 ]}},{"type":"rpc","content":{
-"name":"RequestAuthCodeCall",
+"name":"SendAuthCall",
 "header":90,
 "response":{"type":"reference","name":"Void"},
 "doc":[
@@ -998,7 +998,7 @@
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"User"}},"id":3,"name":"users"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"Group"}},"id":6,"name":"groups"}
 ,{"type":{"type":"list","childType":{"type":"struct","childType":"DifferenceUpdate"}},"id":4,"name":"updates"}
-,{"type":"bool","id":5,"name":"needMode"}
+,{"type":"bool","id":5,"name":"needMore"}
 ]},
 "doc":[
 "Getting difference of sequence"],"attributes":[
