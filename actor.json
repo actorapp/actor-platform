@@ -638,6 +638,108 @@
           }
         },
         {
+          "type": "enum",
+          "content": {
+            "name": "UserState",
+            "values": [
+              {
+                "name": "Registered",
+                "id": 1
+              },
+              {
+                "name": "Email",
+                "id": 2
+              },
+              {
+                "name": "Deleted",
+                "id": 3
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Phone",
+            "doc": [
+              "Extendend phone information",
+              {
+                "type": "reference",
+                "argument": "phone",
+                "description": "  Phone number in international format"
+              },
+              {
+                "type": "reference",
+                "argument": "phoneTitle",
+                "description": "  Title of phone"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "phone"
+              },
+              {
+                "type": "string",
+                "id": 4,
+                "name": "phoneTitle"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Email",
+            "doc": [
+              "Extendend email information",
+              {
+                "type": "reference",
+                "argument": "email",
+                "description": "  Email"
+              },
+              {
+                "type": "reference",
+                "argument": "emailTitle",
+                "description": "  Descruption of email"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "email"
+              },
+              {
+                "type": "string",
+                "id": 4,
+                "name": "emailTitle"
+              }
+            ]
+          }
+        },
+        {
           "type": "struct",
           "content": {
             "name": "User",
@@ -676,12 +778,22 @@
               {
                 "type": "reference",
                 "argument": "phone",
-                "description": "  Phone number of user"
+                "description": "  [DEPRECATED] Phone number of user"
               },
               {
                 "type": "reference",
                 "argument": "avatar",
                 "description": "  avatar of user"
+              },
+              {
+                "type": "reference",
+                "argument": "phones",
+                "description": "  phones of user"
+              },
+              {
+                "type": "reference",
+                "argument": "emails",
+                "description": "  emails of user"
               }
             ],
             "attributes": [
@@ -742,6 +854,30 @@
                 },
                 "id": 8,
                 "name": "avatar"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int32"
+                },
+                "id": 9,
+                "name": "phones"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int32"
+                },
+                "id": 10,
+                "name": "emails"
+              },
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "UserState"
+                },
+                "id": 11,
+                "name": "userState"
               }
             ]
           }
@@ -896,6 +1032,345 @@
               }
             ]
           }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserPhoneAdded",
+            "header": 87,
+            "doc": [
+              "Update about phone added to user",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  user's id"
+              },
+              {
+                "type": "reference",
+                "argument": "phoneId",
+                "description": "  added phone id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "phoneId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserPhoneRemoved",
+            "header": 88,
+            "doc": [
+              "Update about phone removed from user",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  user's id"
+              },
+              {
+                "type": "reference",
+                "argument": "phoneId",
+                "description": "  removed phone id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "phoneId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "PhoneTitleChanged",
+            "header": 89,
+            "doc": [
+              "Update about phone title changed",
+              {
+                "type": "reference",
+                "argument": "phoneId",
+                "description": "  phone number"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "description": "  new title for phone"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "phoneId"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "title"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "PhoneMoved",
+            "header": 101,
+            "doc": [
+              "Update about phone move",
+              {
+                "type": "reference",
+                "argument": "phoneId",
+                "description": "  Phone number id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  new uid for phone"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "phoneId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "uid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserEmailAdded",
+            "header": 96,
+            "doc": [
+              "Update about email added to user",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  user's id"
+              },
+              {
+                "type": "reference",
+                "argument": "emailId",
+                "description": "  added email id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "emailId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserEmailRemoved",
+            "header": 97,
+            "doc": [
+              "Update about email removed from user",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  user's id"
+              },
+              {
+                "type": "reference",
+                "argument": "emailId",
+                "description": "  removed email id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "emailId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "EmailTitleChanged",
+            "header": 98,
+            "doc": [
+              "Update about email title changed",
+              {
+                "type": "reference",
+                "argument": "emailId",
+                "description": "  email id"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "description": "  new title for email"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "emailId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "EmailMoved",
+            "header": 102,
+            "doc": [
+              "Update about email move from one user to another",
+              {
+                "type": "reference",
+                "argument": "emailId",
+                "description": "  Email id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  new uid for email"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "emailId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "uid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserContactsChanged",
+            "header": 86,
+            "doc": [
+              "Update about contact information change",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  user's uid"
+              },
+              {
+                "type": "reference",
+                "argument": "phones",
+                "description": "  new phones list"
+              },
+              {
+                "type": "reference",
+                "argument": "emails",
+                "description": "  new emails list"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int32"
+                },
+                "id": 2,
+                "name": "phones"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int32"
+                },
+                "id": 3,
+                "name": "emails"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserStateChanged",
+            "header": 100,
+            "doc": [
+              "Update about user state changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  user's id"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "description": "  new user state"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "UserState"
+                },
+                "id": 2,
+                "name": "state"
+              }
+            ]
+          }
         }
       ]
     },
@@ -994,6 +1469,150 @@
               "Removing account's avatar"
             ],
             "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SendEmailCode",
+            "header": 120,
+            "response": {
+              "type": "anonymous",
+              "header": 121,
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "codeHash"
+                }
+              ]
+            },
+            "doc": [
+              "Sending activation code to email",
+              {
+                "type": "reference",
+                "argument": "email",
+                "description": "Email for attaching to account"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "email"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "description"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DetachEmail",
+            "header": 123,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Detaching email from account",
+              {
+                "type": "reference",
+                "argument": "email",
+                "description": "Email id for deattach"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "email"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ChangePhoneTitle",
+            "header": 124,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Change phone description",
+              {
+                "type": "reference",
+                "argument": "phoneId",
+                "description": "Phone number id"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "description": "New phone title"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "phoneId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ChangeEmailTitle",
+            "header": 125,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Change email description",
+              {
+                "type": "reference",
+                "argument": "emailId",
+                "description": "Email id"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "description": "New email title"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "emailId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              }
+            ]
           }
         }
       ]
@@ -1375,6 +1994,38 @@
         {
           "type": "update",
           "content": {
+            "name": "EmailContactRegistered",
+            "header": 120,
+            "doc": [
+              "Update about email contact registered",
+              {
+                "type": "reference",
+                "argument": "emailId",
+                "description": "  Email id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "description": "  Registered user's id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "emailId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "uid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
             "name": "ContactsAdded",
             "header": 40,
             "doc": [
@@ -1737,6 +2388,26 @@
                 },
                 "id": 1,
                 "name": "avatar"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExEmailContactRegistered",
+            "doc": [
+              "Service message about email user registration"
+            ],
+            "trait": {
+              "name": "ServiceExtension",
+              "key": 7
+            },
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
               }
             ]
           }
@@ -5040,6 +5711,10 @@
               {
                 "name": "Group",
                 "id": 2
+              },
+              {
+                "name": "Email",
+                "id": 3
               }
             ]
           }
@@ -5339,6 +6014,28 @@
                 },
                 "id": 6,
                 "name": "groups"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Phone"
+                  }
+                },
+                "id": 7,
+                "name": "phones"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Email"
+                  }
+                },
+                "id": 8,
+                "name": "emails"
               }
             ]
           }
@@ -5488,6 +6185,28 @@
                   },
                   "id": 6,
                   "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Phone"
+                    }
+                  },
+                  "id": 7,
+                  "name": "phones"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Email"
+                    }
+                  },
+                  "id": 8,
+                  "name": "emails"
                 },
                 {
                   "type": {
