@@ -9,7 +9,7 @@ public class SchemeDocParameter extends SchemeDoc {
 
     public SchemeDocParameter(String argument, String description) {
         this.argument = argument;
-        this.description = description;
+        this.description = description.trim();
     }
 
     public String getArgument() {
