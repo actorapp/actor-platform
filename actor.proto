@@ -753,8 +753,14 @@ message Group {
     optional Avatar avatar = 4;
     required bool isMember = 6;
     required int32 adminUid = 8;
-    repeated int32 members = 9;
+    repeated Member members = 9;
     required int64 createDate = 10;
+}
+
+message Member {
+    required int32 uid = 1;
+    required int32 inviterUid = 2;
+    required int64 date = 3;
 }
 
 // API#0x41
@@ -916,7 +922,7 @@ message UpdateGroupUserKick {
 // members New members list
 message UpdateGroupMembersUpdate {
     required int32 groupId = 1;
-    repeated int32 members = 2;
+    repeated Member members = 2;
 }
 
 // API#0x26
