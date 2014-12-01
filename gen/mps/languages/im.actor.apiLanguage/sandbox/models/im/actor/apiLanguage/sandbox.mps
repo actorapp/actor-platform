@@ -2648,7 +2648,9 @@
           <property name="id" nameId="tsp6.2348480312264746197" value="9" />
           <property name="name" nameId="tpck.1169194664001" value="members" />
           <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="4092665470042278236" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="4092665470042278242" nodeInfo="ng" />
+            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="8314937989826865325" nodeInfo="ng">
+              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="8314937989826863282" resolveInfo="Member" />
+            </node>
           </node>
         </node>
         <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078700105" nodeInfo="ng">
@@ -2657,6 +2659,24 @@
           <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078700125" nodeInfo="ng">
             <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
           </node>
+        </node>
+      </node>
+      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="8314937989826863282" nodeInfo="ng">
+        <property name="name" nameId="tpck.1169194664001" value="Member" />
+        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="8314937989826863525" nodeInfo="ng">
+          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
+          <property name="name" nameId="tpck.1169194664001" value="uid" />
+          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="8314937989826863529" nodeInfo="ng" />
+        </node>
+        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="8314937989826863532" nodeInfo="ng">
+          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
+          <property name="name" nameId="tpck.1169194664001" value="inviterUid" />
+          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="8314937989826863538" nodeInfo="ng" />
+        </node>
+        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="8314937989826863541" nodeInfo="ng">
+          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
+          <property name="name" nameId="tpck.1169194664001" value="date" />
+          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="8314937989826863549" nodeInfo="ng" />
         </node>
       </node>
       <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395618165" nodeInfo="ng" />
@@ -3250,7 +3270,9 @@
           <property name="id" nameId="tsp6.2348480312264746197" value="2" />
           <property name="name" nameId="tpck.1169194664001" value="members" />
           <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395632476" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395632482" nodeInfo="ng" />
+            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="8314937989826867101" nodeInfo="ng">
+              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="8314937989826863282" resolveInfo="Member" />
+            </node>
           </node>
         </node>
         <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395632332" nodeInfo="ng">
