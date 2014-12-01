@@ -6,22 +6,22 @@
 //<ol>
 //<li>Request SMS Code by calling RequestAuthCode</li>
 //<li>If SMS arrives than send Authorization code in SignIn/SignUp</li>
-//<li>If sms doesn't arrive for a long time - request phone activation by 
-//   calling AuthCodeCall</li>
+//<li>If sms doesn't arrive for a long time - request phone activation by
+//calling AuthCodeCall</li>
 //</ol>
 //</p>
 //Some rules<br/>
 //If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.<br/>
-//If on any step API return PHONE_CODE_EXPIRED than application MUST start 
+//If on any step API return PHONE_CODE_EXPIRED than application MUST start
 //authorization process from begining.<br/>
 //Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.<br/>
 
 // API#0x01
 // ResponseSendAuthCode
 // Sending SMS with activation code
-// phoneNumberPhone number in international format
-// appIdApplication ID
-// apiKeyApplication API key
+// phoneNumber Phone number in international format
+// appId Application ID
+// apiKey Application API key
 message RequestSendAuthCode {
     required int64 phoneNumber = 1;
     required int32 appId = 2;
@@ -37,10 +37,10 @@ message ResponseSendAuthCode {
 // API#0x5A
 // ResponseVoid
 // Requesting Phone activation
-// phoneNumberPhone number in international format
-// smsHashCode request hash from RequestAuthCode
-// appIdApplication ID
-// apiKeyApplication API key
+// phoneNumber Phone number in international format
+// smsHash Code request hash from RequestAuthCode
+// appId Application ID
+// apiKey Application API key
 message RequestSendAuthCall {
     required int64 phoneNumber = 1;
     required string smsHash = 2;
@@ -50,9 +50,9 @@ message RequestSendAuthCall {
 
 // API#0x05
 // Authentication result
-// publicKeyHash  Public Key Hash of current authentication
-// user  The authenticated User
-// config  Current config of server
+// publicKeyHash Public Key Hash of current authentication
+// user The authenticated User
+// config Current config of server
 message ResponseAuth {
     required int64 publicKeyHash = 1;
     required User user = 2;
@@ -62,14 +62,14 @@ message ResponseAuth {
 // API#0x03
 // ResponseAuth
 // Performing user signin
-// phoneNumberPhone number in international format
-// smsHashCode request hash from RequestAuthCode
-// smsCodeConfirmation code from SMS
-// publicKeyDevice RSA 2048 bit public key in x.509 format
-// deviceHashHash of device unique id and app bundle id. Used for autologout users when app is reinstalled
-// deviceTitleDevice title like 'Steven's iPhone'
-// appIdApplication ID
-// appKeyApplication API key
+// phoneNumber Phone number in international format
+// smsHash Code request hash from RequestAuthCode
+// smsCode Confirmation code from SMS
+// publicKey Device RSA 2048 bit public key in x.509 format
+// deviceHash Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled
+// deviceTitle Device title like 'Steven's iPhone'
+// appId Application ID
+// appKey Application API key
 message RequestSignIn {
     required int64 phoneNumber = 1;
     required string smsHash = 2;
@@ -85,15 +85,15 @@ message RequestSignIn {
 // ResponseAuth
 // Performing user signup. If user perform signup on already registered user it just override previous
 // profile information
-// phoneNumberPhone number in international format
-// smsHashCode request hash from RequestAuthCode
-// smsCodeConfirmation code from SMS
-// nameUser name
-// publicKeyDevice RSA 2048 bit public key in x.509 format
-// deviceHashHash of device unique id and app bundle id. Used for autologout users when app is reinstalled
-// deviceTitleDevice title like 'Steven's iPhone'
-// appIdApplication ID
-// appKeypplication API key
+// phoneNumber Phone number in international format
+// smsHash Code request hash from RequestAuthCode
+// smsCode Confirmation code from SMS
+// name User name
+// publicKey Device RSA 2048 bit public key in x.509 format
+// deviceHash Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled
+// deviceTitle Device title like 'Steven's iPhone'
+// appId Application ID
+// appKey pplication API key
 message RequestSignUp {
     required int64 phoneNumber = 1;
     required string smsHash = 2;
@@ -108,15 +108,15 @@ message RequestSignUp {
 }
 
 // Authentication session
-// id  Unuque ID of session
-// authHolder  holder of session. 0 - this device, 1 - other.
-// appId  Application Id (user in SignIn/SignUp)
-// appTitle  Title of application
-// deviceTitle  Title of device
-// authTime  Time of session creating
-// authLocation  two-letter country code of session create
-// latitude  optional latitude of auth if available
-// longitude  optional longitude of auth if available
+// id Unuque ID of session
+// authHolder holder of session. 0 - this device, 1 - other.
+// appId Application Id (user in SignIn/SignUp)
+// appTitle Title of application
+// deviceTitle Title of device
+// authTime Time of session creating
+// authLocation two-letter country code of session create
+// latitude optional latitude of auth if available
+// longitude optional longitude of auth if available
 message AuthSession {
     required int32 id = 1;
     required int32 authHolder = 2;
@@ -143,7 +143,7 @@ message ResponseGetAuthSessions {
 // API#0x52
 // ResponseVoid
 // SignOut on specified user's session
-// idid from AuthItem
+// id id from AuthItem
 message RequestTerminateSession {
     required int32 id = 1;
 }
@@ -166,9 +166,9 @@ message RequestSignOut {
 //Users are objects that secured by accessHash. You can't load user profile by it's id.
 //You can't send message to user without finding it's object in Updates or by calling
 //method for user search, contacts import or some other methods.
-// 
+//
 //Applications need to keep all Users information forever.
-// 
+//
 //Each User have optional localName - name of user that was set by current user and can be changed
 //any time by calling EditUserLocalName method.
 
@@ -179,14 +179,14 @@ enum Sex {
 }
 
 // Main user object
-// id  uid
-// accessHash  user's access hash
-// name  user's name
-// localName  user's local name
-// sex  optional sex of user
-// keyHashes  key hashes of user
-// phone  Phone number of user
-// avatar  avatar of user
+// id uid
+// accessHash user's access hash
+// name user's name
+// localName user's local name
+// sex optional sex of user
+// keyHashes key hashes of user
+// phone Phone number of user
+// avatar avatar of user
 message User {
     required int32 id = 1;
     required int64 accessHash = 2;
@@ -201,9 +201,9 @@ message User {
 // API#0x60
 // ResponseSeq
 // Renaming of user's visible name
-// uidtarget User's uid
-// accessHashUser's accessHash
-// nameNew user name
+// uid target User's uid
+// accessHash User's accessHash
+// name New user name
 message RequestEditUserLocalName {
     required int32 uid = 1;
     required int64 accessHash = 2;
@@ -212,8 +212,8 @@ message RequestEditUserLocalName {
 
 // API#0x10
 // Update about avatar changed
-// uid  user's uid
-// avatar  user's new avatar
+// uid user's uid
+// avatar user's new avatar
 message UpdateUserAvatarChanged {
     required int32 uid = 1;
     optional Avatar avatar = 2;
@@ -221,8 +221,8 @@ message UpdateUserAvatarChanged {
 
 // API#0x20
 // Update about name changed
-// uid  user's uid
-// name  user's name
+// uid user's uid
+// name user's name
 message UpdateUserNameChanged {
     required int32 uid = 1;
     required string name = 2;
@@ -230,8 +230,8 @@ message UpdateUserNameChanged {
 
 // API#0x33
 // Update about local name changed
-// uid  user's uid
-// localName  new user's local name
+// uid user's uid
+// localName new user's local name
 message UpdateUserLocalNameChanged {
     required int32 uid = 1;
     optional string localName = 2;
@@ -244,7 +244,7 @@ message UpdateUserLocalNameChanged {
 // API#0x35
 // ResponseSeq
 // Changing account's name
-// nameNew name
+// name New name
 message RequestEditName {
     required string name = 1;
 }
@@ -252,7 +252,7 @@ message RequestEditName {
 // API#0x1F
 // ResponseEditAvatar
 // Changing account's avatar
-// fileLocationFile Location of uploaded unencrypted avatar
+// fileLocation File Location of uploaded unencrypted avatar
 message RequestEditAvatar {
     required FileLocation fileLocation = 1;
 }
@@ -275,29 +275,29 @@ message RequestRemoveAvatar {
 //////////////////////////////////////////////////////
 //Before working with contact list is is useful to import contacts from phone first by calling
 //method ImportContacts#0x07.
-// 
+//
 //All phone numbers MUST be preprocessed before import by some library (like libphonenumber)
 //and build international phone number depending on current users phone and/or locale.
-// 
-//For loading contact list from server use GetContacts#0x57. 
+//
+//For loading contact list from server use GetContacts#0x57.
 //If during this call there are some updates about contact list change
 //it is recommended to call it again. Also applications need to sync contacts on application start.
-// 
+//
 //For searching for users without adding to contacts list use method FindContacts#0x70.
-// 
+//
 //For adding/deleting contacts AddContact#0x72 and DeleteContact#0x59.
 
 // Phone for import
-// phoneNumber  phone number for import in international format
-// name  optional name for contact
+// phoneNumber phone number for import in international format
+// name optional name for contact
 message PhoneToImport {
     required int64 phoneNumber = 1;
     optional string name = 2;
 }
 
 // Email for import
-// email  email for importing
-// name  optional name for contact
+// email email for importing
+// name optional name for contact
 message EmailToImport {
     required string email = 1;
     optional string name = 2;
@@ -307,8 +307,8 @@ message EmailToImport {
 // ResponseImportContacts
 // Importing phones and emails for building contact list
 // Maximum amount of items for import per method call equals to 100.
-// phonesPhones for import
-// emailsEmails for import
+// phones Phones for import
+// emails Emails for import
 message RequestImportContacts {
     repeated PhoneToImport phones = 1;
     repeated EmailToImport emails = 2;
@@ -324,10 +324,10 @@ message ResponseImportContacts {
 // API#0x57
 // ResponseGetContacts
 // Getting current contact list
-// SHA256 hash of list of a comma-separated list of contact UIDs in ascending 
-// order may be passed in contactsHash parameter. 
+// SHA256 hash of list of a comma-separated list of contact UIDs in ascending
+// order may be passed in contactsHash parameter.
 // If the contact list was not changed, isNotChanged will be true.
-// contactsHashHash of saved list in application
+// contactsHash Hash of saved list in application
 message RequestGetContacts {
     required string contactsHash = 1;
 }
@@ -341,8 +341,8 @@ message ResponseGetContacts {
 // API#0x59
 // ResponseSeq
 // Removing contact from contact list
-// uidContact's UID
-// accessHashContact's AccessHash
+// uid Contact's UID
+// accessHash Contact's AccessHash
 message RequestRemoveContact {
     required int32 uid = 1;
     required int64 accessHash = 2;
@@ -351,8 +351,8 @@ message RequestRemoveContact {
 // API#0x72
 // ResponseSeq
 // Adding contact to contact list
-// uidContact's UID
-// accessHashContact's AccessHash
+// uid Contact's UID
+// accessHash Contact's AccessHash
 message RequestAddContact {
     required int32 uid = 1;
     required int64 accessHash = 2;
@@ -372,9 +372,9 @@ message ResponseSearchContacts {
 
 // API#0x05
 // Update about contact registration
-// uid  contact's uid
-// isSilent  is registration silent. If this value is true then don't show notification about registration
-// date  date of registration
+// uid contact's uid
+// isSilent is registration silent. If this value is true then don't show notification about registration
+// date date of registration
 message UpdateContactRegistered {
     required int32 uid = 1;
     required bool isSilent = 2;
@@ -383,14 +383,14 @@ message UpdateContactRegistered {
 
 // API#0x28
 // Update about contacts added
-// uids  added contacts
+// uids added contacts
 message UpdateContactsAdded {
     repeated int32 uids = 1;
 }
 
 // API#0x29
 // Update about contacts removed
-// uids  removed contacts
+// uids removed contacts
 message UpdateContactsRemoved {
     repeated int32 uids = 1;
 }
@@ -411,29 +411,29 @@ message UpdateContactsRemoved {
 //</ul>
 //<h3>Message content</h3>
 //Message can be one of three basic types of messages: Text Message, File Message and Service message.
-//All messages can contain extensions. For example we can send text message and add markdown extension with 
+//All messages can contain extensions. For example we can send text message and add markdown extension with
 //formatted text in markdown and clients that support this extension will show markdown, and that clients that
 //not supported extension then show simple text. File messages can have photo, video or voice extensions.
 //Service message can have extensions extensions such as "user added", "group created", "avatar changed", etc.
 //<h3>Send messages</h3>
 //Sending messages looks same for encrypted and plain messages. Client MUST prepare all required data
-//before sending message (for example FastThumb for photo/video/documents) and call required methods. 
+//before sending message (for example FastThumb for photo/video/documents) and call required methods.
 //Encrypted messages differs here only by a little different scheme and encryption.
 //<h3>WRONG_KEYS and incorrect keys</h3>
 //For sending encrypted messages client MUST send messages encrypted for all own and receivers keys.
 //If client send encryption with missing, old or incorrect keys it will receive WRONG_KEYS.
 //In WRONG_KEYS you need to deserialize relatedData from RpcError to WrongKeysErrorData
-//and get detailed information about keys. Sometimes there are some broken keys on server and client can't 
+//and get detailed information about keys. Sometimes there are some broken keys on server and client can't
 //encrypt messages with it than client MUST send empty encrypted key in request elsewhere API return WRONG_KEYS.
 //<h3>Encrypted messages and New Devices</h3>
 //When you send message to someone and when he registered with new device there are no way to receive old encrypted
-//messages on new device and because of this there are a problem about read/delivery statuses. 
+//messages on new device and because of this there are a problem about read/delivery statuses.
 //Alice send messages to Bob, but Bob lose his device and  buy new iPhone and installed Actor.
 //Alice receive notification about new device and send another message. Bob open chat with Alice and
 //send read status with maximum message read date. Alice will mark all sent messages as read and one that
 //was not delivered. We can use status notifications per message, but in VERY heavy conversations it will be
 //a lot of unnecessary traffic. For resolving this small issue we have different ways of message statuses
-//for encrypted and plain messages. Also it is recomended to mark all undelivered messages on new device update as 
+//for encrypted and plain messages. Also it is recomended to mark all undelivered messages on new device update as
 //not devered with warring sign.
 //<h3>Message Read and Delivery</h3>
 //There are two different ways for read and delivery statuses for encrypted and plain messages.
@@ -441,17 +441,17 @@ message UpdateContactsRemoved {
 //date of read/delivered message.
 
 // Content of message
-// type  type of content. 1 => TextMessage, 2 => ServiceMessage, 3 => FileMessage
-// content  serialized content of message
+// type type of content. 1 => TextMessage, 2 => ServiceMessage, 3 => FileMessage
+// content serialized content of message
 message MessageContent {
     required int32 type = 1;
     required bytes content = 2;
 }
 
 // Text message
-// text  the text
-// extType  type of extension. Now there are no extensions.
-// ext  Optional bytes of extension
+// text the text
+// extType type of extension. Now there are no extensions.
+// ext Optional bytes of extension
 message TextMessage {
     required string text = 1;
     required int32 extType = 2;
@@ -459,8 +459,8 @@ message TextMessage {
 }
 
 // Service message
-// text  service message text
-// extType  extension type. 0x01 => ServiceExUserAdded, 0x02 => ServiceExUserKicked, 0x03 => ServiveExUserLeft, 0x04 => ServiceExGroupCreated, 0x05 => ServiceExGroupChangedTitle, 0x06 => ServiceExGroupChangedAvatar
+// text service message text
+// extType extension type. 0x01 => ServiceExUserAdded, 0x02 => ServiceExUserKicked, 0x03 => ServiveExUserLeft, 0x04 => ServiceExGroupCreated, 0x05 => ServiceExGroupChangedTitle, 0x06 => ServiceExGroupChangedAvatar
 message ServiceMessage {
     required string text = 1;
     required int32 extType = 2;
@@ -468,13 +468,13 @@ message ServiceMessage {
 }
 
 // Service message about adding user to group
-// addedUid  added user id
+// addedUid added user id
 message ServiceExUserAdded {
     required int32 addedUid = 1;
 }
 
 // Service message about kicking user from group
-// kickedUid  kicked user id
+// kickedUid kicked user id
 message ServiceExUserKicked {
     required int32 kickedUid = 1;
 }
@@ -498,14 +498,14 @@ message ServiceExChangedAvatar {
 }
 
 // File message
-// fileId  file id
-// accessHash  file access hash
-// fileSize  file size
-// name  name of file
-// mimeType  mimetype of file
-// thumb  optional thumb of file. JPEG less that 90x90 with 60-70 quality.
-// extType  Extension type
-// ext  Extension
+// fileId file id
+// accessHash file access hash
+// fileSize file size
+// name name of file
+// mimeType mimetype of file
+// thumb optional thumb of file. JPEG less that 90x90 with 60-70 quality.
+// extType Extension type
+// ext Extension
 message FileMessage {
     required int64 fileId = 1;
     required int64 accessHash = 2;
@@ -518,17 +518,17 @@ message FileMessage {
 }
 
 // File photo extension
-// w  image width
-// h  image height
+// w image width
+// h image height
 message FileExPhoto {
     required int32 w = 1;
     required int32 h = 2;
 }
 
 // File video extension
-// w  video width
-// h  video height
-// duration  video duration
+// w video width
+// h video height
+// duration video duration
 message FileExVideo {
     required int32 w = 1;
     required int32 h = 2;
@@ -536,15 +536,15 @@ message FileExVideo {
 }
 
 // File voice extension
-// duration  voice duration
+// duration voice duration
 message FileExVoice {
     required int32 duration = 1;
 }
 
 // Error's Related data for WRRONG_KEYS in sendMessage
-// newKeys  added keys to user
-// removedKeys  disabled keys
-// invalidKeys  invalid keys
+// newKeys added keys to user
+// removedKeys disabled keys
+// invalidKeys invalid keys
 message WrongKeysErrorData {
     repeated UserKey newKeys = 1;
     repeated UserKey removedKeys = 2;
@@ -552,8 +552,8 @@ message WrongKeysErrorData {
 }
 
 // Encrypted AES key for encrypted messages
-// keyHash  hash of public key of encrypted aes key
-// aesEncryptedKey  encrypted aes key
+// keyHash hash of public key of encrypted aes key
+// aesEncryptedKey encrypted aes key
 message EncryptedAesKey {
     required int64 keyHash = 1;
     required bytes aesEncryptedKey = 2;
@@ -562,11 +562,11 @@ message EncryptedAesKey {
 // API#0x0E
 // ResponseSeqDate
 // Sending encrypted message
-// peerDestination peer for message
-// ridMessage random id (generated on client side)
-// encryptedMessagemessage encrypted by random aes key
-// keysencrypted aes keys for receivers devices
-// ownKeysencrypted aes keys for own devices
+// peer Destination peer for message
+// rid Message random id (generated on client side)
+// encryptedMessage message encrypted by random aes key
+// keys encrypted aes keys for receivers devices
+// ownKeys encrypted aes keys for own devices
 message RequestSendEncryptedMessage {
     required OutPeer peer = 1;
     required int64 rid = 3;
@@ -578,9 +578,9 @@ message RequestSendEncryptedMessage {
 // API#0x5C
 // ResponseSeqDate
 // Sending plain message
-// peerDestination peer for message (now supported only user's peer)
-// ridMessage random id (generated on clien side)
-// messageThe message
+// peer Destination peer for message (now supported only user's peer)
+// rid Message random id (generated on clien side)
+// message The message
 message RequestSendMessage {
     required OutPeer peer = 1;
     required int64 rid = 3;
@@ -590,8 +590,8 @@ message RequestSendMessage {
 // API#0x74
 // ResponseVoid
 // Confirmation of encrypted message receive by device
-// peerDestination peer
-// ridMessage random id
+// peer Destination peer
+// rid Message random id
 message RequestEncryptedReceived {
     required OutPeer peer = 1;
     required int64 rid = 3;
@@ -600,8 +600,8 @@ message RequestEncryptedReceived {
 // API#0x75
 // ResponseVoid
 // Marking encrypted message as read
-// peerDestination peer
-// ridMessage random id
+// peer Destination peer
+// rid Message random id
 message RequestEncryptedRead {
     required OutPeer peer = 1;
     required int64 rid = 3;
@@ -610,8 +610,8 @@ message RequestEncryptedRead {
 // API#0x37
 // ResponseVoid
 // Confirmation of plain message receive by device
-// peerDestination peer
-// dateMaximum date of received messages
+// peer Destination peer
+// date Maximum date of received messages
 message RequestMessageReceived {
     required OutPeer peer = 1;
     required int64 date = 3;
@@ -620,8 +620,8 @@ message RequestMessageReceived {
 // API#0x39
 // ResponseVoid
 // Marking plain messages as read
-// peerDestination peer
-// dateMaximum date of read messages
+// peer Destination peer
+// date Maximum date of read messages
 message RequestMessageRead {
     required OutPeer peer = 1;
     required int64 date = 3;
@@ -630,8 +630,8 @@ message RequestMessageRead {
 // API#0x62
 // ResponseVoid
 // Deleting messages
-// peerDestination peer
-// ridsMessage random id
+// peer Destination peer
+// rids Message random id
 message RequestDeleteMessage {
     required OutPeer peer = 1;
     repeated int64 rids = 3;
@@ -640,7 +640,7 @@ message RequestDeleteMessage {
 // API#0x63
 // ResponseSeq
 // Clearing of conversation (without removing dialog from dialogs list)
-// peerConversation peer
+// peer Conversation peer
 message RequestClearChat {
     required OutPeer peer = 1;
 }
@@ -648,18 +648,18 @@ message RequestClearChat {
 // API#0x64
 // ResponseSeq
 // Deleting of conversation (also leave group for group conversations)
-// peerConversation peer
+// peer Conversation peer
 message RequestDeleteChat {
     required OutPeer peer = 1;
 }
 
 // API#0x01
 // Update about encrypted message
-// peer  Destination peer
-// senderUid  sender of message
-// date  date of message
-// keyHash  device's public key hash
-// aesEncryptedKey  Encrypted key for current device
+// peer Destination peer
+// senderUid sender of message
+// date date of message
+// keyHash device's public key hash
+// aesEncryptedKey Encrypted key for current device
 message UpdateEncryptedMessage {
     required Peer peer = 1;
     required int32 senderUid = 2;
@@ -760,9 +760,9 @@ message Group {
 // API#0x41
 // ResponseCreateGroup
 // Creating group chat
-// ridRandom Id for avoiding double create
-// titleGroup title
-// usersMembers of group
+// rid Random Id for avoiding double create
+// title Group title
+// users Members of group
 message RequestCreateGroup {
     required int64 rid = 1;
     required string title = 2;
@@ -781,20 +781,24 @@ message ResponseCreateGroup {
 // API#0x55
 // ResponseSeqDate
 // Changing group title
-// groupPeerGroup's peer
-// titlenew group title
+// groupPeer Group's peer
+// title new group title
+// rid Random Id of operation
 message RequestEditGroupTitle {
     required GroupOutPeer groupPeer = 1;
+    required int64 rid = 4;
     required string title = 3;
 }
 
 // API#0x56
 // ResponseEditGroupAvatar
 // Changing group avatar
-// groupPeerGroup's peer
-// fileLocationuploaded file for avatar
+// groupPeer Group's peer
+// fileLocation uploaded file for avatar
+// rid Random Id of operation
 message RequestEditGroupAvatar {
     required GroupOutPeer groupPeer = 1;
+    required int64 rid = 4;
     required FileLocation fileLocation = 3;
 }
 
@@ -809,66 +813,70 @@ message ResponseEditGroupAvatar {
 // API#0x65
 // ResponseSeqDate
 // Removing group avatar
-// groupPeerGroup's peer
+// groupPeer Group's peer
+// rid Random Id of operation
 message RequestRemoveGroupAvatar {
     required GroupOutPeer groupPeer = 1;
+    required int64 rid = 4;
 }
 
 // API#0x45
 // ResponseSeqDate
-// Inviting users to group
-// groupPeerGroup's peer
-// userUsers for invitation
+// Inviting user to group
+// groupPeer Group's peer
+// user Users for invitation
+// rid Random Id of operation
 message RequestInviteUser {
     required GroupOutPeer groupPeer = 1;
+    required int64 rid = 4;
     required UserOutPeer user = 3;
 }
 
 // API#0x46
 // ResponseSeqDate
 // Leaving group
-// groupPeerGroup's peer
+// groupPeer Group's peer
+// rid Random Id of operation
 message RequestLeaveGroup {
     required GroupOutPeer groupPeer = 1;
-}
-
-// API#0x61
-// ResponseSeqDate
-// Leaving and deleting group (similar to DeleteChat)
-// groupPeerGroup's peer
-message RequestDeleteGroup {
-    required GroupOutPeer groupPeer = 1;
+    required int64 rid = 2;
 }
 
 // API#0x47
 // ResponseSeqDate
-// Removing users from group
-// groupPeerGroup's peer
-// userusers for removing
-message RequestRemoveUser {
+// Kicking user from group
+// groupPeer Group's peer
+// user users for removing
+// rid Random Id of operation
+message RequestKickUser {
     required GroupOutPeer groupPeer = 1;
+    required int64 rid = 4;
     required UserOutPeer user = 3;
 }
 
 // API#0x24
 // Update about inviting current user to group
-// groupId  Group Id
-// inviteUid  Inviter UID. If equals to current uid than group created by user.
-// date  Date of creating
+// groupId Group Id
+// inviteUid Inviter UID. If equals to current uid than group created by user.
+// date Date of creating
+// rid Random Id of operation
 message UpdateGroupInvite {
     required int32 groupId = 1;
+    required int64 rid = 9;
     required int32 inviteUid = 5;
     required int64 date = 8;
 }
 
 // API#0x15
 // Update about adding user to group
-// groupId  Group Id
-// uid  Added user ID
-// inviterUid  Inviter user ID
-// date  Date of adding user to group
+// groupId Group Id
+// uid Added user ID
+// inviterUid Inviter user ID
+// date Date of adding user to group
+// rid Random Id of operation
 message UpdateGroupUserAdded {
     required int32 groupId = 1;
+    required int64 rid = 5;
     required int32 uid = 2;
     required int32 inviterUid = 3;
     required int64 date = 4;
@@ -876,23 +884,27 @@ message UpdateGroupUserAdded {
 
 // API#0x17
 // Update about leaving user
-// groupId  Group Id
-// uid  User's ID
-// date  Date of user leave
+// groupId Group Id
+// uid User's ID
+// date Date of user leave
+// rid Random Id of operation
 message UpdateGroupUserLeave {
     required int32 groupId = 1;
+    required int64 rid = 4;
     required int32 uid = 2;
     required int64 date = 3;
 }
 
 // API#0x18
 // Update about kicking user
-// groupId  Group Id
-// uid  Kicked user's ID
-// kickerUid  Kicker user's ID
-// date  Date of user kick
+// groupId Group Id
+// uid Kicked user's ID
+// kickerUid Kicker user's ID
+// date Date of user kick
+// rid Random Id of operation
 message UpdateGroupUserKick {
     required int32 groupId = 1;
+    required int64 rid = 5;
     required int32 uid = 2;
     required int32 kickerUid = 3;
     required int64 date = 4;
@@ -900,8 +912,8 @@ message UpdateGroupUserKick {
 
 // API#0x2C
 // Silent group members update
-// groupId  Group Id
-// members  New members list
+// groupId Group Id
+// members New members list
 message UpdateGroupMembersUpdate {
     required int32 groupId = 1;
     repeated int32 members = 2;
@@ -909,12 +921,14 @@ message UpdateGroupMembersUpdate {
 
 // API#0x26
 // Update about group title change
-// groupId  Group Id
-// uid  Changer UID
-// title  New Title of group
-// date  Date of title change
+// groupId Group Id
+// uid Changer UID
+// title New Title of group
+// date Date of title change
+// rid Random Id of operation
 message UpdateGroupTitleChanged {
     required int32 groupId = 1;
+    required int64 rid = 5;
     required int32 uid = 2;
     required string title = 3;
     required int64 date = 4;
@@ -922,12 +936,14 @@ message UpdateGroupTitleChanged {
 
 // API#0x27
 // Update about group avatar change
-// groupId  Group Id
-// uid  Avatar changer uid
-// avatar  New Avatar. If null then avatar is removed
-// date  Date of avatar change
+// groupId Group Id
+// uid Avatar changer uid
+// avatar New Avatar. If null then avatar is removed
+// date Date of avatar change
+// rid Random Id of operation
 message UpdateGroupAvatarChanged {
     required int32 groupId = 1;
+    required int64 rid = 5;
     required int32 uid = 2;
     optional Avatar avatar = 3;
     required int64 date = 4;
@@ -940,7 +956,7 @@ message UpdateGroupAvatarChanged {
 //Actor can work with encrypted and plain messages and encrypted messages does not appear in history,
 //but it affects conversation lists.
 //<h1>Messages ordering</h1>
-//Server provide date in milliseconds for accurate ordering of incoming messages in applications. 
+//Server provide date in milliseconds for accurate ordering of incoming messages in applications.
 //NOTHING can move conversation on conversation list down on list. For example if you clean chat or delete top message
 //for the conversation conversation keep its position. Some events doesn't move conversation to top
 //of conversations list. For example leaving chat or new device notification doesn't move it up.
@@ -953,33 +969,40 @@ message UpdateGroupAvatarChanged {
 //For sync this operations there are updates ChatDelete#0x30 and ChatClear#0x2F.
 //Deletion by ChatDelete of group causes automatic group leaving.
 //<h1>Loading history</h1>
-//For loading conversation list use method LoadDialogs#0x68. 
+//For loading conversation list use method LoadDialogs#0x68.
 //When top message in conversation is encrypted than dialog item will contain empty text. Dialog item contains
 //two dates - visual and sort, visual used for displaying date and sort for sorting dialog in dialog list.
-// 
+//
 //For loading history of conversation use method LoadHistory#0x68.
-// 
-//Loading initial list are called with zero startDate and after loading more messages 
+//
+//Loading initial list are called with zero startDate and after loading more messages
 //we will use maximum date from messages for startDate value.
 
+enum MessageState {
+    SENT = 1;
+    RECEIVED = 2;
+    READ = 3;
+}
+
 // Message from history
-// senderUid  Sender of mesasge
-// rid  Random Id of message
-// date  Date of message
-// message  Content of message
+// senderUid Sender of mesasge
+// rid Random Id of message
+// date Date of message
+// message Content of message
 message HistoryMessage {
     required int32 senderUid = 1;
     required int64 rid = 2;
     required int64 date = 3;
     required MessageContent message = 5;
+    required MessageState state = 6;
 }
 
 // API#0x76
 // ResponseLoadHistory
 // Loading history of chat
-// peerPeer of conversation
-// startDatestart date of messages for loading or 0 for loading from start
-// limitmaximum amount of messages (max is 100)
+// peer Peer of conversation
+// startDate start date of messages for loading or 0 for loading from start
+// limit maximum amount of messages (max is 100)
 message RequestLoadHistory {
     required OutPeer peer = 1;
     required int64 startDate = 3;
@@ -993,13 +1016,13 @@ message ResponseLoadHistory {
 }
 
 // Conversation from history
-// peer  Peer of conversation
-// unreadCount  plain messages unread messages count
-// sortDate  date of conversation for sorting
-// senderUid  Sender of top message (may be zero)
-// rid  Random ID of top message (may be zero)
-// date  Date of top message (can't be zero)
-// message  Content of message
+// peer Peer of conversation
+// unreadCount plain messages unread messages count
+// sortDate date of conversation for sorting
+// senderUid Sender of top message (may be zero)
+// rid Random ID of top message (may be zero)
+// date Date of top message (can't be zero)
+// message Content of message
 message Dialog {
     required Peer peer = 1;
     required int32 unreadCount = 3;
@@ -1008,13 +1031,14 @@ message Dialog {
     required int64 rid = 6;
     required int64 date = 7;
     required MessageContent message = 8;
+    required MessageState state = 9;
 }
 
 // API#0x68
 // ResponseLoadDialogs
 // Loading conversation history
-// startDatestart date of conversation loading
-// limitlimit maximum amount of messages (max is 100)
+// startDate start date of conversation loading
+// limit limit maximum amount of messages (max is 100)
 message RequestLoadDialogs {
     required int64 startDate = 1;
     required int32 limit = 2;
@@ -1036,17 +1060,17 @@ message ResponseLoadDialogs {
 //public keys
 
 // User public key reference
-// uid  User ID
-// keyHash  Public key hash
+// uid User ID
+// keyHash Public key hash
 message UserKey {
     required int32 uid = 1;
     required int64 keyHash = 2;
 }
 
 // Public Key
-// uid  Key's User Id
-// keyHash  hash of user's key
-// key  RSA Public Key in x.509 format
+// uid Key's User Id
+// keyHash hash of user's key
+// key RSA Public Key in x.509 format
 message PublicKey {
     required int32 uid = 1;
     required int64 keyHash = 2;
@@ -1055,10 +1079,10 @@ message PublicKey {
 
 // API#0x02
 // Update about new public key of user
-// uid  User's ID
-// keyHash  Public key hash
-// key  optional RSA Public Key in x.509 format
-// date  Date of adding new key
+// uid User's ID
+// keyHash Public key hash
+// key optional RSA Public Key in x.509 format
+// date Date of adding new key
 message UpdateNewDevice {
     required int32 uid = 1;
     required int64 keyHash = 2;
@@ -1068,17 +1092,17 @@ message UpdateNewDevice {
 
 // API#0x25
 // Update about removing public key of user
-// uid  User's ID
-// keyHash  Key Hash of removed key
+// uid User's ID
+// keyHash Key Hash of removed key
 message UpdateRemovedDevice {
     required int32 uid = 1;
     required int64 keyHash = 2;
 }
 
 // Request for download public key
-// uid  uiser's ID
-// accessHash  Access Hash of User
-// keyHash  Public Key hash
+// uid uiser's ID
+// accessHash Access Hash of User
+// keyHash Public Key hash
 message PublicKeyRequest {
     required int32 uid = 1;
     required int64 accessHash = 2;
@@ -1088,7 +1112,7 @@ message PublicKeyRequest {
 // API#0x06
 // ResponseGetPublicKeys
 // Loading required publick keys
-// keyskey requests
+// keys key requests
 message RequestGetPublicKeys {
     repeated PublicKeyRequest keys = 1;
 }
@@ -1105,8 +1129,8 @@ message ResponseGetPublicKeys {
 // API#0x1B
 // ResponseVoid
 // Sending typing notification
-// peerDestination peer
-// typingTypetyping type.
+// peer Destination peer
+// typingType typing type.
 message RequestTyping {
     required OutPeer peer = 1;
     required int32 typingType = 3;
@@ -1115,8 +1139,8 @@ message RequestTyping {
 // API#0x1D
 // ResponseVoid
 // Sending online state
-// isOnlineis user online
-// timeouttimeout of online state
+// isOnline is user online
+// timeout timeout of online state
 message RequestSetOnline {
     required bool isOnline = 1;
     required int64 timeout = 2;
@@ -1124,9 +1148,9 @@ message RequestSetOnline {
 
 // API#0x06
 // Update about user's typing
-// peer  Conversation peer
-// uid  User's id
-// typingType  Type of typing
+// peer Conversation peer
+// uid User's id
+// typingType Type of typing
 message UpdateTyping {
     required Peer peer = 1;
     required int32 uid = 2;
@@ -1135,22 +1159,22 @@ message UpdateTyping {
 
 // API#0x07
 // Update about user became online
-// uid  User's Id
+// uid User's Id
 message UpdateUserOnline {
     required int32 uid = 1;
 }
 
 // API#0x08
 // Update about user became offline
-// uid  User's id
+// uid User's id
 message UpdateUserOffline {
     required int32 uid = 1;
 }
 
 // API#0x09
 // Update about user's last seen state
-// uid  User's id
-// date  Last seen time
+// uid User's id
+// date Last seen time
 message UpdateUserLastSeen {
     required int32 uid = 1;
     required int64 date = 2;
@@ -1158,8 +1182,8 @@ message UpdateUserLastSeen {
 
 // API#0x21
 // Update about group online change
-// groupId  Group id
-// count  current online user's count
+// groupId Group id
+// count current online user's count
 message UpdateGroupOnline {
     required int32 groupId = 1;
     required int32 count = 2;
@@ -1170,18 +1194,18 @@ message UpdateGroupOnline {
 //////////////////////////////////////////////////////
 
 // Location of file on server
-// fileId  Unique Id of file
-// accessHash  Access hash of file
+// fileId Unique Id of file
+// accessHash Access hash of file
 message FileLocation {
     required int64 fileId = 1;
     required int64 accessHash = 2;
 }
 
 // Avatar Image
-// fileLocation  Location of file
-// width  Width of avatar image
-// height  Height of avatar image
-// fileSize  Size of file
+// fileLocation Location of file
+// width Width of avatar image
+// height Height of avatar image
+// fileSize Size of file
 message AvatarImage {
     required FileLocation fileLocation = 1;
     required int32 width = 2;
@@ -1190,9 +1214,9 @@ message AvatarImage {
 }
 
 // Avatar of User or Group
-// smallImage  Optional small image of avatar box in 100x100
-// largeImage  Optional large image of avatar box in 200x200
-// fullImage  Optional full screen image of avatar
+// smallImage Optional small image of avatar box in 100x100
+// largeImage Optional large image of avatar box in 200x200
+// fullImage Optional full screen image of avatar
 message Avatar {
     optional AvatarImage smallImage = 1;
     optional AvatarImage largeImage = 2;
@@ -1200,9 +1224,9 @@ message Avatar {
 }
 
 // Fast thumb of media messages. Less than 90x90 and compressed by JPEG with low quality
-// w  Width of thumb
-// h  Height of thump
-// thumb  compressed image data
+// w Width of thumb
+// h Height of thump
+// thumb compressed image data
 message FastThumb {
     required int32 w = 1;
     required int32 h = 2;
@@ -1212,9 +1236,9 @@ message FastThumb {
 // API#0x10
 // ResponseGetFile
 // Downloading file part
-// fileLocationlocation of file
-// offsetoffset in file in bytes
-// limitmaximum size of file part
+// fileLocation location of file
+// offset offset in file in bytes
+// limit maximum size of file part
 message RequestGetFile {
     required FileLocation fileLocation = 1;
     required int32 offset = 2;
@@ -1227,7 +1251,7 @@ message ResponseGetFile {
 }
 
 // Reference for upload session
-// serverData  server related data for upload
+// serverData server related data for upload
 message UploadConfig {
     required bytes serverData = 1;
 }
@@ -1246,8 +1270,8 @@ message ResponseStartUpload {
 // API#0x14
 // ResponseVoid
 // Uploading part of file
-// blockIndexindex of block
-// payloadblock payload
+// blockIndex index of block
+// payload block payload
 message RequestUploadPart {
     required UploadConfig config = 1;
     required int32 blockIndex = 2;
@@ -1257,9 +1281,9 @@ message RequestUploadPart {
 // API#0x16
 // ResponseCompleteUpload
 // Complete uploading
-// configUpload configuration
-// blocksCountblocks count
-// crc32crc32 of uploaded file
+// config Upload configuration
+// blocksCount blocks count
+// crc32 crc32 of uploaded file
 message RequestCompleteUpload {
     required UploadConfig config = 1;
     required int32 blocksCount = 2;
@@ -1280,8 +1304,8 @@ message ResponseCompleteUpload {
 // API#0x33
 // ResponseVoid
 // Registering push token on server
-// projectIdProject Id of token
-// tokentoken value
+// projectId Project Id of token
+// token token value
 message RequestRegisterGooglePush {
     required int64 projectId = 1;
     required string token = 2;
@@ -1290,8 +1314,8 @@ message RequestRegisterGooglePush {
 // API#0x4C
 // ResponseVoid
 // Registering apple push on server
-// apnsKeyapns key id
-// tokentoken value
+// apnsKey apns key id
+// token token value
 message RequestRegisterApplePush {
     required int32 apnsKey = 1;
     required string token = 2;
@@ -1314,17 +1338,17 @@ enum PeerType {
 }
 
 // Peer
-// type  Peer Type
-// id  Peer Id
+// type Peer Type
+// id Peer Id
 message Peer {
     required PeerType type = 1;
     required int32 id = 2;
 }
 
 // Out peer with access hash
-// type  Peer Type
-// id  Peer Id
-// accessHash  Peer access hash
+// type Peer Type
+// id Peer Id
+// accessHash Peer access hash
 message OutPeer {
     required PeerType type = 1;
     required int32 id = 2;
@@ -1332,16 +1356,16 @@ message OutPeer {
 }
 
 // User's out peer
-// uid  User's id
-// accessHash  User's access hash
+// uid User's id
+// accessHash User's access hash
 message UserOutPeer {
     required int32 uid = 1;
     required int64 accessHash = 2;
 }
 
 // Group's out peer
-// groupId  Group's Id
-// accessHash  Group's access hash
+// groupId Group's Id
+// accessHash Group's access hash
 message GroupOutPeer {
     required int32 groupId = 1;
     required int64 accessHash = 2;
@@ -1362,10 +1386,10 @@ message GroupOutPeer {
 
 // API#0x0D
 // Sequence update
-// seq  Sequence number of update
-// state  Sequece state of update
-// updateHeader  header of update
-// update  The update
+// seq Sequence number of update
+// state Sequece state of update
+// updateHeader header of update
+// update The update
 message UpdateSeqUpdate {
     required int32 seq = 1;
     required bytes state = 2;
@@ -1375,12 +1399,12 @@ message UpdateSeqUpdate {
 
 // API#0x49
 // Fat sequence update with additional data
-// seq  Sequence number of update
-// state  Sequence state of update
-// updateHeader  header of update
-// update  The update
-// users  Users that are referenced in update 
-// groups  Groups that are referenced in update
+// seq Sequence number of update
+// state Sequence state of update
+// updateHeader header of update
+// update The update
+// users Users that are referenced in update
+// groups Groups that are referenced in update
 message UpdateFatSeqUpdate {
     required int32 seq = 1;
     required bytes state = 2;
@@ -1392,9 +1416,9 @@ message UpdateFatSeqUpdate {
 
 // API#0x1A
 // Out of sequence update (for typing and online statuses)
-// date  Date of update
-// updateHeader  Header of update
-// update  The update
+// date Date of update
+// updateHeader Header of update
+// update The update
 message UpdateWeakUpdate {
     required int64 date = 1;
     required int32 updateHeader = 2;
@@ -1413,8 +1437,8 @@ message RequestGetState {
 }
 
 // Update from GetDifference
-// updateHeader  Header of update
-// update  The update
+// updateHeader Header of update
+// update The update
 message DifferenceUpdate {
     required int32 updateHeader = 1;
     required bytes update = 2;
@@ -1441,7 +1465,7 @@ message ResponseGetDifference {
 // API#0x20
 // ResponseVoid
 // Subscribing for users online
-// usersUsers for subscription
+// users Users for subscription
 message RequestSubscribeToOnline {
     repeated UserOutPeer users = 1;
 }
@@ -1449,7 +1473,7 @@ message RequestSubscribeToOnline {
 // API#0x21
 // ResponseVoid
 // Removing subscription for users online
-// usersUsers of subscriptions
+// users Users of subscriptions
 message RequestSubscribeFromOnline {
     repeated UserOutPeer users = 1;
 }
@@ -1457,7 +1481,7 @@ message RequestSubscribeFromOnline {
 // API#0x4A
 // ResponseVoid
 // Subscribing for groups online
-// groupsGroups for subscription
+// groups Groups for subscription
 message RequestSubscribeToGroupOnline {
     repeated GroupOutPeer groups = 1;
 }
@@ -1465,7 +1489,7 @@ message RequestSubscribeToGroupOnline {
 // API#0x4B
 // ResponseVoid
 // Removing subscription for groups online
-// groupsGroups of subscriptions
+// groups Groups of subscriptions
 message RequestSubscribeFromGroupOnline {
     repeated GroupOutPeer groups = 1;
 }
@@ -1481,8 +1505,8 @@ message ResponseVoid {
 
 // API#0x48
 // Sequence response. Methods that return this value must process response in particular order
-// seq  Sequence number of response
-// state  Sequence state of response
+// seq Sequence number of response
+// state Sequence state of response
 message ResponseSeq {
     required int32 seq = 1;
     required bytes state = 2;
@@ -1490,9 +1514,9 @@ message ResponseSeq {
 
 // API#0x66
 // Sequence response with date. Methods that return this value must process response in particular order
-// seq  Sequence number of response
-// state  Sequence state of response
-// date  Date of response
+// seq Sequence number of response
+// state Sequence state of response
+// date Date of response
 message ResponseSeqDate {
     required int32 seq = 1;
     required bytes state = 2;
@@ -1500,14 +1524,14 @@ message ResponseSeqDate {
 }
 
 // Configuration of system
-// maxGroupSize  Current maximum group size
+// maxGroupSize Current maximum group size
 message Config {
     required int32 maxGroupSize = 1;
 }
 
 // API#0x2A
 // Update about config change
-// config  new config
+// config new config
 message UpdateConfig {
     required Config config = 1;
 }

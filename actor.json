@@ -25,13 +25,13 @@
         "<ol>",
         "<li>Request SMS Code by calling RequestAuthCode</li>",
         "<li>If SMS arrives than send Authorization code in SignIn/SignUp</li>",
-        "<li>If sms doesn't arrive for a long time - request phone activation by ",
-        "   calling AuthCodeCall</li>",
+        "<li>If sms doesn't arrive for a long time - request phone activation by",
+        "calling AuthCodeCall</li>",
         "</ol>",
         "</p>",
         "Some rules<br/>",
         "If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.<br/>",
-        "If on any step API return PHONE_CODE_EXPIRED than application MUST start ",
+        "If on any step API return PHONE_CODE_EXPIRED than application MUST start",
         "authorization process from begining.<br/>",
         "Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.<br/>"
       ],
@@ -606,9 +606,9 @@
         "Users are objects that secured by accessHash. You can't load user profile by it's id.",
         "You can't send message to user without finding it's object in Updates or by calling",
         "method for user search, contacts import or some other methods.",
-        " ",
+        "",
         "Applications need to keep all Users information forever.",
-        " ",
+        "",
         "Each User have optional localName - name of user that was set by current user and can be changed",
         "any time by calling EditUserLocalName method."
       ],
@@ -1004,16 +1004,16 @@
       "doc": [
         "Before working with contact list is is useful to import contacts from phone first by calling",
         "method ImportContacts#0x07.",
-        " ",
+        "",
         "All phone numbers MUST be preprocessed before import by some library (like libphonenumber)",
         "and build international phone number depending on current users phone and/or locale.",
-        " ",
-        "For loading contact list from server use GetContacts#0x57. ",
+        "",
+        "For loading contact list from server use GetContacts#0x57.",
         "If during this call there are some updates about contact list change",
         "it is recommended to call it again. Also applications need to sync contacts on application start.",
-        " ",
+        "",
         "For searching for users without adding to contacts list use method FindContacts#0x70.",
-        " ",
+        "",
         "For adding/deleting contacts AddContact#0x72 and DeleteContact#0x59."
       ],
       "items": [
@@ -1200,8 +1200,8 @@
             },
             "doc": [
               "Getting current contact list",
-              "SHA256 hash of list of a comma-separated list of contact UIDs in ascending ",
-              "order may be passed in contactsHash parameter. ",
+              "SHA256 hash of list of a comma-separated list of contact UIDs in ascending",
+              "order may be passed in contactsHash parameter.",
               "If the contact list was not changed, isNotChanged will be true.",
               {
                 "type": "reference",
@@ -1441,29 +1441,29 @@
         "</ul>",
         "<h3>Message content</h3>",
         "Message can be one of three basic types of messages: Text Message, File Message and Service message.",
-        "All messages can contain extensions. For example we can send text message and add markdown extension with ",
+        "All messages can contain extensions. For example we can send text message and add markdown extension with",
         "formatted text in markdown and clients that support this extension will show markdown, and that clients that",
         "not supported extension then show simple text. File messages can have photo, video or voice extensions.",
         "Service message can have extensions extensions such as \"user added\", \"group created\", \"avatar changed\", etc.",
         "<h3>Send messages</h3>",
         "Sending messages looks same for encrypted and plain messages. Client MUST prepare all required data",
-        "before sending message (for example FastThumb for photo/video/documents) and call required methods. ",
+        "before sending message (for example FastThumb for photo/video/documents) and call required methods.",
         "Encrypted messages differs here only by a little different scheme and encryption.",
         "<h3>WRONG_KEYS and incorrect keys</h3>",
         "For sending encrypted messages client MUST send messages encrypted for all own and receivers keys.",
         "If client send encryption with missing, old or incorrect keys it will receive WRONG_KEYS.",
         "In WRONG_KEYS you need to deserialize relatedData from RpcError to WrongKeysErrorData",
-        "and get detailed information about keys. Sometimes there are some broken keys on server and client can't ",
+        "and get detailed information about keys. Sometimes there are some broken keys on server and client can't",
         "encrypt messages with it than client MUST send empty encrypted key in request elsewhere API return WRONG_KEYS.",
         "<h3>Encrypted messages and New Devices</h3>",
         "When you send message to someone and when he registered with new device there are no way to receive old encrypted",
-        "messages on new device and because of this there are a problem about read/delivery statuses. ",
+        "messages on new device and because of this there are a problem about read/delivery statuses.",
         "Alice send messages to Bob, but Bob lose his device and  buy new iPhone and installed Actor.",
         "Alice receive notification about new device and send another message. Bob open chat with Alice and",
         "send read status with maximum message read date. Alice will mark all sent messages as read and one that",
         "was not delivered. We can use status notifications per message, but in VERY heavy conversations it will be",
         "a lot of unnecessary traffic. For resolving this small issue we have different ways of message statuses",
-        "for encrypted and plain messages. Also it is recomended to mark all undelivered messages on new device update as ",
+        "for encrypted and plain messages. Also it is recomended to mark all undelivered messages on new device update as",
         "not devered with warring sign.",
         "<h3>Message Read and Delivery</h3>",
         "There are two different ways for read and delivery statuses for encrypted and plain messages.",
@@ -3064,6 +3064,11 @@
                 "type": "reference",
                 "argument": "title",
                 "description": "new group title"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "Random Id of operation"
               }
             ],
             "attributes": [
@@ -3074,6 +3079,14 @@
                 },
                 "id": 1,
                 "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
               },
               {
                 "type": "string",
@@ -3134,6 +3147,11 @@
                 "type": "reference",
                 "argument": "fileLocation",
                 "description": "uploaded file for avatar"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "Random Id of operation"
               }
             ],
             "attributes": [
@@ -3144,6 +3162,14 @@
                 },
                 "id": 1,
                 "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
               },
               {
                 "type": {
@@ -3171,6 +3197,11 @@
                 "type": "reference",
                 "argument": "groupPeer",
                 "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "Random Id of operation"
               }
             ],
             "attributes": [
@@ -3181,6 +3212,14 @@
                 },
                 "id": 1,
                 "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
               }
             ]
           }
@@ -3195,7 +3234,7 @@
               "name": "SeqDate"
             },
             "doc": [
-              "Inviting users to group",
+              "Inviting user to group",
               {
                 "type": "reference",
                 "argument": "groupPeer",
@@ -3205,6 +3244,11 @@
                 "type": "reference",
                 "argument": "user",
                 "description": "Users for invitation"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "Random Id of operation"
               }
             ],
             "attributes": [
@@ -3215,6 +3259,14 @@
                 },
                 "id": 1,
                 "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
               },
               {
                 "type": {
@@ -3242,35 +3294,11 @@
                 "type": "reference",
                 "argument": "groupPeer",
                 "description": "Group's peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "groupPeer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "DeleteGroup",
-            "header": 97,
-            "response": {
-              "type": "reference",
-              "name": "SeqDate"
-            },
-            "doc": [
-              "Leaving and deleting group (similar to DeleteChat)",
+              },
               {
                 "type": "reference",
-                "argument": "groupPeer",
-                "description": "Group's peer"
+                "argument": "rid",
+                "description": "Random Id of operation"
               }
             ],
             "attributes": [
@@ -3281,6 +3309,14 @@
                 },
                 "id": 1,
                 "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
               }
             ]
           }
@@ -3288,14 +3324,14 @@
         {
           "type": "rpc",
           "content": {
-            "name": "RemoveUser",
+            "name": "KickUser",
             "header": 71,
             "response": {
               "type": "reference",
               "name": "SeqDate"
             },
             "doc": [
-              "Removing users from group",
+              "Kicking user from group",
               {
                 "type": "reference",
                 "argument": "groupPeer",
@@ -3305,6 +3341,11 @@
                 "type": "reference",
                 "argument": "user",
                 "description": "users for removing"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "Random Id of operation"
               }
             ],
             "attributes": [
@@ -3315,6 +3356,14 @@
                 },
                 "id": 1,
                 "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
               },
               {
                 "type": {
@@ -3326,9 +3375,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "empty"
         },
         {
           "type": "update",
@@ -3351,6 +3397,11 @@
                 "type": "reference",
                 "argument": "date",
                 "description": "  Date of creating"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "  Random Id of operation"
               }
             ],
             "attributes": [
@@ -3358,6 +3409,14 @@
                 "type": "int32",
                 "id": 1,
                 "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 9,
+                "name": "rid"
               },
               {
                 "type": "int32",
@@ -3401,6 +3460,11 @@
                 "type": "reference",
                 "argument": "date",
                 "description": "  Date of adding user to group"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "  Random Id of operation"
               }
             ],
             "attributes": [
@@ -3408,6 +3472,14 @@
                 "type": "int32",
                 "id": 1,
                 "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 5,
+                "name": "rid"
               },
               {
                 "type": "int32",
@@ -3451,6 +3523,11 @@
                 "type": "reference",
                 "argument": "date",
                 "description": "  Date of user leave"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "  Random Id of operation"
               }
             ],
             "attributes": [
@@ -3458,6 +3535,14 @@
                 "type": "int32",
                 "id": 1,
                 "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
               },
               {
                 "type": "int32",
@@ -3501,6 +3586,11 @@
                 "type": "reference",
                 "argument": "date",
                 "description": "  Date of user kick"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "  Random Id of operation"
               }
             ],
             "attributes": [
@@ -3508,6 +3598,14 @@
                 "type": "int32",
                 "id": 1,
                 "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 5,
+                "name": "rid"
               },
               {
                 "type": "int32",
@@ -3591,6 +3689,11 @@
                 "type": "reference",
                 "argument": "date",
                 "description": "  Date of title change"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "  Random Id of operation"
               }
             ],
             "attributes": [
@@ -3598,6 +3701,14 @@
                 "type": "int32",
                 "id": 1,
                 "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 5,
+                "name": "rid"
               },
               {
                 "type": "int32",
@@ -3646,6 +3757,11 @@
                 "type": "reference",
                 "argument": "date",
                 "description": "  Date of avatar change"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "description": "  Random Id of operation"
               }
             ],
             "attributes": [
@@ -3653,6 +3769,14 @@
                 "type": "int32",
                 "id": 1,
                 "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 5,
+                "name": "rid"
               },
               {
                 "type": "int32",
@@ -3691,7 +3815,7 @@
         "Actor can work with encrypted and plain messages and encrypted messages does not appear in history,",
         "but it affects conversation lists.",
         "<h1>Messages ordering</h1>",
-        "Server provide date in milliseconds for accurate ordering of incoming messages in applications. ",
+        "Server provide date in milliseconds for accurate ordering of incoming messages in applications.",
         "NOTHING can move conversation on conversation list down on list. For example if you clean chat or delete top message",
         "for the conversation conversation keep its position. Some events doesn't move conversation to top",
         "of conversations list. For example leaving chat or new device notification doesn't move it up.",
@@ -3704,16 +3828,36 @@
         "For sync this operations there are updates ChatDelete#0x30 and ChatClear#0x2F.",
         "Deletion by ChatDelete of group causes automatic group leaving.",
         "<h1>Loading history</h1>",
-        "For loading conversation list use method LoadDialogs#0x68. ",
+        "For loading conversation list use method LoadDialogs#0x68.",
         "When top message in conversation is encrypted than dialog item will contain empty text. Dialog item contains",
         "two dates - visual and sort, visual used for displaying date and sort for sorting dialog in dialog list.",
-        " ",
+        "",
         "For loading history of conversation use method LoadHistory#0x68.",
-        " ",
-        "Loading initial list are called with zero startDate and after loading more messages ",
+        "",
+        "Loading initial list are called with zero startDate and after loading more messages",
         "we will use maximum date from messages for startDate value."
       ],
       "items": [
+        {
+          "type": "enum",
+          "content": {
+            "name": "MessageState",
+            "values": [
+              {
+                "name": "Sent",
+                "id": 1
+              },
+              {
+                "name": "Received",
+                "id": 2
+              },
+              {
+                "name": "Read",
+                "id": 3
+              }
+            ]
+          }
+        },
         {
           "type": "struct",
           "content": {
@@ -3770,6 +3914,14 @@
                 },
                 "id": 5,
                 "name": "message"
+              },
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "MessageState"
+                },
+                "id": 6,
+                "name": "state"
               }
             ]
           }
@@ -3945,6 +4097,14 @@
                 },
                 "id": 8,
                 "name": "message"
+              },
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "MessageState"
+                },
+                "id": 9,
+                "name": "state"
               }
             ]
           }
@@ -5286,7 +5446,7 @@
               {
                 "type": "reference",
                 "argument": "users",
-                "description": "  Users that are referenced in update "
+                "description": "  Users that are referenced in update"
               },
               {
                 "type": "reference",

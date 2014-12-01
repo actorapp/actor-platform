@@ -36,7 +36,7 @@ public class ProtoBufGenerator {
                         if (d instanceof SchemeDocComment) {
                             generator.appendLn("// " + ((SchemeDocComment) d).getText());
                         } else if (d instanceof SchemeDocParameter) {
-                            generator.appendLn("// " + ((SchemeDocParameter) d).getArgument() + ((SchemeDocParameter) d).getDescription());
+                            generator.appendLn("// " + ((SchemeDocParameter) d).getArgument() + " " + ((SchemeDocParameter) d).getDescription());
                         }
                     }
                     generator.appendLn("message " + sEnum.getName() + " {");
@@ -52,7 +52,7 @@ public class ProtoBufGenerator {
                         if (d instanceof SchemeDocComment) {
                             generator.appendLn("// " + ((SchemeDocComment) d).getText());
                         } else if (d instanceof SchemeDocParameter) {
-                            generator.appendLn("// " + ((SchemeDocParameter) d).getArgument() + ((SchemeDocParameter) d).getDescription());
+                            generator.appendLn("// " + ((SchemeDocParameter) d).getArgument() + " " + ((SchemeDocParameter) d).getDescription());
                         }
                     }
                     generator.appendLn("message Update" + update.getName() + " {");
@@ -68,7 +68,7 @@ public class ProtoBufGenerator {
                         if (d instanceof SchemeDocComment) {
                             generator.appendLn("// " + ((SchemeDocComment) d).getText());
                         } else if (d instanceof SchemeDocParameter) {
-                            generator.appendLn("// " + ((SchemeDocParameter) d).getArgument() + ((SchemeDocParameter) d).getDescription());
+                            generator.appendLn("// " + ((SchemeDocParameter) d).getArgument() + " " + ((SchemeDocParameter) d).getDescription());
                         }
                     }
                     generator.appendLn("message Update" + update.getName() + " {");
@@ -84,7 +84,7 @@ public class ProtoBufGenerator {
                         if (d instanceof SchemeDocComment) {
                             generator.appendLn("// " + ((SchemeDocComment) d).getText());
                         } else if (d instanceof SchemeDocParameter) {
-                            generator.appendLn("// " + ((SchemeDocParameter) d).getArgument() + ((SchemeDocParameter) d).getDescription());
+                            generator.appendLn("// " + ((SchemeDocParameter) d).getArgument() + " " + ((SchemeDocParameter) d).getDescription());
                         }
                     }
                     generator.appendLn("message Response" + update.getName() + " {");
@@ -106,7 +106,7 @@ public class ProtoBufGenerator {
                         if (d instanceof SchemeDocComment) {
                             generator.appendLn("// " + ((SchemeDocComment) d).getText());
                         } else if (d instanceof SchemeDocParameter) {
-                            generator.appendLn("// " + ((SchemeDocParameter) d).getArgument() + ((SchemeDocParameter) d).getDescription());
+                            generator.appendLn("// " + ((SchemeDocParameter) d).getArgument() + " " + ((SchemeDocParameter) d).getDescription());
                         }
                     }
                     generator.appendLn("message " + requestName(rpc.getName()) + " {");
