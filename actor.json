@@ -2931,7 +2931,10 @@
               {
                 "type": {
                   "type": "list",
-                  "childType": "int32"
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
                 },
                 "id": 9,
                 "name": "members"
@@ -2943,6 +2946,29 @@
                 },
                 "id": 10,
                 "name": "createDate"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Member",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "inviterUid"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "date"
               }
             ]
           }
@@ -3655,7 +3681,10 @@
               {
                 "type": {
                   "type": "list",
-                  "childType": "int32"
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Member"
+                  }
                 },
                 "id": 2,
                 "name": "members"
