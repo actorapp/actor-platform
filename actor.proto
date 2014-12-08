@@ -178,15 +178,43 @@ enum Sex {
     FEMALE = 3;
 }
 
+enum UserState {
+    REGISTERED = 1;
+    EMAIL = 2;
+    DELETED = 3;
+}
+
+// Extendend phone information
+// phone  Phone number in international format
+// phoneTitle  Title of phone
+message Phone {
+    required int32 id = 1;
+    required int64 accessHash = 2;
+    required int64 phone = 3;
+    required string phoneTitle = 4;
+}
+
+// Extendend email information
+// email  Email
+// emailTitle  Descruption of email
+message Email {
+    required int32 id = 1;
+    required int64 accessHash = 2;
+    required string email = 3;
+    required string emailTitle = 4;
+}
+
 // Main user object
-// id uid
-// accessHash user's access hash
-// name user's name
-// localName user's local name
-// sex optional sex of user
-// keyHashes key hashes of user
-// phone Phone number of user
-// avatar avatar of user
+// id  uid
+// accessHash  user's access hash
+// name  user's name
+// localName  user's local name
+// sex  optional sex of user
+// keyHashes  key hashes of user
+// phone  [DEPRECATED] Phone number of user
+// avatar  avatar of user
+// phones  phones of user
+// emails  emails of user
 message User {
     required int32 id = 1;
     required int64 accessHash = 2;
@@ -196,6 +224,9 @@ message User {
     repeated int64 keyHashes = 6;
     required int64 phone = 7;
     optional Avatar avatar = 8;
+    repeated int32 phones = 9;
+    repeated int32 emails = 10;
+    required UserState userState = 11;
 }
 
 // API#0x60
@@ -237,6 +268,98 @@ message UpdateUserLocalNameChanged {
     optional string localName = 2;
 }
 
+// API#0x57
+// Update about phone added to user
+// uid  user's id
+// phoneId  added phone id
+message UpdateUserPhoneAdded {
+    required int32 uid = 1;
+    required int32 phoneId = 2;
+}
+
+// API#0x58
+// Update about phone removed from user
+// uid  user's id
+// phoneId  removed phone id
+message UpdateUserPhoneRemoved {
+    required int32 uid = 1;
+    required int32 phoneId = 2;
+}
+
+// API#0x59
+// Update about phone title changed
+// phoneId  phone number
+// title  new title for phone
+message UpdatePhoneTitleChanged {
+    required int32 phoneId = 2;
+    required string title = 3;
+}
+
+// API#0x65
+// Update about phone move
+// phoneId  Phone number id
+// uid  new uid for phone
+message UpdatePhoneMoved {
+    required int32 phoneId = 1;
+    required int32 uid = 2;
+}
+
+// API#0x60
+// Update about email added to user
+// uid  user's id
+// emailId  added email id
+message UpdateUserEmailAdded {
+    required int32 uid = 1;
+    required int32 emailId = 2;
+}
+
+// API#0x61
+// Update about email removed from user
+// uid  user's id
+// emailId  removed email id
+message UpdateUserEmailRemoved {
+    required int32 uid = 1;
+    required int32 emailId = 2;
+}
+
+// API#0x62
+// Update about email title changed
+// emailId  email id
+// title  new title for email
+message UpdateEmailTitleChanged {
+    required int32 emailId = 1;
+    required string title = 2;
+}
+
+// API#0x66
+// Update about email move from one user to another
+// emailId  Email id
+// uid  new uid for email
+message UpdateEmailMoved {
+    required int32 emailId = 1;
+    required int32 uid = 2;
+}
+
+// API#0x56
+// Update about contact information change
+// uid  user's uid
+// phones  new phones list
+// emails  new emails list
+message UpdateUserContactsChanged {
+    required int32 uid = 1;
+    repeated int32 phones = 2;
+    repeated int32 emails = 3;
+}
+
+// API#0x64
+// Update about user state changed
+// uid  user's id
+// state  new user state
+message UpdateUserStateChanged {
+    required int32 uid = 1;
+    required UserState state = 2;
+}
+
 //////////////////////////////////////////////////////
 // Profile
 //////////////////////////////////////////////////////
@@ -268,6 +391,49 @@ message ResponseEditAvatar {
 // ResponseSeq
 // Removing account's avatar
 message RequestRemoveAvatar {
+}
+
+// API#0x78
+// ResponseSendEmailCode
+// Sending activation code to email
+// emailEmail for attaching to account
+message RequestSendEmailCode {
+    required string email = 1;
+    optional string description = 2;
+}
+
+// API#0x79
+message ResponseSendEmailCode {
+    required string codeHash = 1;
+}
+
+// API#0x7B
+// ResponseSeq
+// Detaching email from account
+// emailEmail id for deattach
+message RequestDetachEmail {
+    required int32 email = 1;
+    required int64 accessHash = 2;
+}
+
+// API#0x7C
+// ResponseSeq
+// Change phone description
+// phoneIdPhone number id
+// titleNew phone title
+message RequestChangePhoneTitle {
+    required int32 phoneId = 1;
+    required string title = 2;
+}
+
+// API#0x7D
+// ResponseSeq
+// Change email description
+// emailIdEmail id
+// titleNew email title
+message RequestChangeEmailTitle {
+    required int32 emailId = 1;
+    required string title = 2;
 }
 
 //////////////////////////////////////////////////////
@@ -379,6 +545,15 @@ message UpdateContactRegistered {
     required int32 uid = 1;
     required bool isSilent = 2;
     required int64 date = 3;
+}
+
+// API#0x78
+// Update about email contact registered
+// emailId  Email id
+// uid  Registered user's id
+message UpdateEmailContactRegistered {
+    required int32 emailId = 1;
+    required int32 uid = 2;
 }
 
 // API#0x28
@@ -495,6 +670,11 @@ message ServiceExChangedTitle {
 // Service message about avatar change
 message ServiceExChangedAvatar {
     optional Avatar avatar = 1;
+}
+
+// Service message about email user registration
+message ServiceExEmailContactRegistered {
+    required int32 uid = 1;
 }
 
 // File message
@@ -1341,6 +1521,7 @@ message RequestUnregisterPush {
 enum PeerType {
     PRIVATE = 1;
     GROUP = 2;
+    EMAIL = 3;
 }
 
 // Peer
@@ -1418,6 +1599,8 @@ message UpdateFatSeqUpdate {
     required bytes update = 4;
     repeated User users = 5;
     repeated Group groups = 6;
+    repeated Phone phones = 7;
+    repeated Email emails = 8;
 }
 
 // API#0x1A
@@ -1464,6 +1647,8 @@ message ResponseGetDifference {
     required bytes state = 2;
     repeated User users = 3;
     repeated Group groups = 6;
+    repeated Phone phones = 7;
+    repeated Email emails = 8;
     repeated DifferenceUpdate updates = 4;
     required bool needMore = 5;
 }
