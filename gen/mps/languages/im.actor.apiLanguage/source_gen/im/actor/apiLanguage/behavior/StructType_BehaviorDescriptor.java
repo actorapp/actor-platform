@@ -6,7 +6,6 @@ package im.actor.apiLanguage.behavior;
 public class StructType_BehaviorDescriptor extends SerializableType_BehaviorDescriptor {
   public StructType_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.StructType";

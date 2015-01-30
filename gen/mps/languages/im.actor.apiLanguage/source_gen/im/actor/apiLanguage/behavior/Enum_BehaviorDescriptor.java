@@ -6,7 +6,6 @@ package im.actor.apiLanguage.behavior;
 public class Enum_BehaviorDescriptor extends ApiNamedDef_BehaviorDescriptor implements IEntity_BehaviorDescriptor {
   public Enum_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.Enum";

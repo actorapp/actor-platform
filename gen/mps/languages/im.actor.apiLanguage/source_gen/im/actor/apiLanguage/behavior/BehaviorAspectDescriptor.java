@@ -9,7 +9,6 @@ import jetbrains.mps.smodel.runtime.interpreted.BehaviorAspectInterpreted;
 public class BehaviorAspectDescriptor implements jetbrains.mps.smodel.runtime.BehaviorAspectDescriptor {
   public BehaviorAspectDescriptor() {
   }
-
   public BehaviorDescriptor getDescriptor(String fqName) {
     switch (Arrays.binarySearch(stringSwitchCases_846f5o_a0a0b, fqName)) {
       case 28:
@@ -92,6 +91,5 @@ public class BehaviorAspectDescriptor implements jetbrains.mps.smodel.runtime.Be
         return BehaviorAspectInterpreted.getInstance().getDescriptor(fqName);
     }
   }
-
   private static String[] stringSwitchCases_846f5o_a0a0b = new String[]{"im.actor.apiLanguage.structure.AliasType", "im.actor.apiLanguage.structure.ApiAlias", "im.actor.apiLanguage.structure.ApiComment", "im.actor.apiLanguage.structure.ApiDef", "im.actor.apiLanguage.structure.ApiDescription", "im.actor.apiLanguage.structure.ApiEmptyDef", "im.actor.apiLanguage.structure.ApiSection", "im.actor.apiLanguage.structure.Boolean", "im.actor.apiLanguage.structure.Bytes", "im.actor.apiLanguage.structure.Double", "im.actor.apiLanguage.structure.Enum", "im.actor.apiLanguage.structure.EnumAttribute", "im.actor.apiLanguage.structure.EnumType", "im.actor.apiLanguage.structure.HeaderKey", "im.actor.apiLanguage.structure.Int32", "im.actor.apiLanguage.structure.Int64", "im.actor.apiLanguage.structure.InterfaceRef", "im.actor.apiLanguage.structure.List", "im.actor.apiLanguage.structure.MethodThrows", "im.actor.apiLanguage.structure.Optional", "im.actor.apiLanguage.structure.Response", "im.actor.apiLanguage.structure.ResponseRefAnonymous", "im.actor.apiLanguage.structure.ResponseRefValue", "im.actor.apiLanguage.structure.Rpc", "im.actor.apiLanguage.structure.RpcDocComment", "im.actor.apiLanguage.structure.RpcDocParameter", "im.actor.apiLanguage.structure.SectionDoc", "im.actor.apiLanguage.structure.String", "im.actor.apiLanguage.structure.Struct", "im.actor.apiLanguage.structure.StructAttribute", "im.actor.apiLanguage.structure.StructDocComment", "im.actor.apiLanguage.structure.StructDocParameter", "im.actor.apiLanguage.structure.StructType", "im.actor.apiLanguage.structure.Trait", "im.actor.apiLanguage.structure.TraitAttribute", "im.actor.apiLanguage.structure.TraitType", "im.actor.apiLanguage.structure.Update", "im.actor.apiLanguage.structure.UpdateBox"};
 }

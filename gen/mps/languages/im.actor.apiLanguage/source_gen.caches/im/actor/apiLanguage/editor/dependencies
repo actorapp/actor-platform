@@ -7,6 +7,7 @@
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefCellCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
+    <classNode dependClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellProviders.CellProviderWithRole" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cells.EditorCell_Collection" />
     <classNode dependClassName="jetbrains.mps.openapi.editor.EditorContext" />
@@ -15,7 +16,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
-    <classNode extendsClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.ApiAlias_Editor" file="ApiAlias_Editor.java">
     <classNode dependClassName="java.lang.Class" />
@@ -64,6 +64,7 @@
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleAttributes" />
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleImpl" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
+    <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellActions.CellAction_DeleteNode" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellLayout.CellLayout_Vertical" />
@@ -80,7 +81,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="jetbrains.mps.smodel.action.NodeFactoryManager" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode extendsClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.ApiEmptyDef_Editor" file="ApiEmptyDef_Editor.java">
@@ -96,6 +96,7 @@
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleAttributes" />
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleImpl" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
+    <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.MPSColors" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellActions.CellAction_DeleteNode" />
@@ -114,7 +115,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="jetbrains.mps.smodel.action.NodeFactoryManager" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode extendsClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.EditorAspectDescriptorImpl" file="EditorAspectDescriptorImpl.java">
@@ -186,6 +186,7 @@
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefCellCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
+    <classNode dependClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellProviders.CellProviderWithRole" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cells.EditorCell_Collection" />
     <classNode dependClassName="jetbrains.mps.openapi.editor.EditorContext" />
@@ -194,7 +195,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
-    <classNode extendsClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.Enum_Editor" file="Enum_Editor.java">
     <classNode dependClassName="java.lang.Class" />
@@ -203,6 +203,7 @@
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleAttributes" />
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleImpl" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
+    <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandlerElementKeyMap" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.MPSColors" />
@@ -223,7 +224,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="jetbrains.mps.smodel.action.NodeFactoryManager" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode extendsClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.HeaderKey_Editor" file="HeaderKey_Editor.java">
@@ -250,6 +250,7 @@
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefCellCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
+    <classNode dependClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellProviders.CellProviderWithRole" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cells.EditorCell_Collection" />
     <classNode dependClassName="jetbrains.mps.openapi.editor.EditorContext" />
@@ -257,7 +258,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
-    <classNode extendsClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.List_Editor" file="List_Editor.java">
     <classNode dependClassName="java.lang.Class" />
@@ -315,6 +315,7 @@
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleAttributes" />
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleImpl" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeCellProvider" />
+    <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandlerElementKeyMap" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellActions.CellAction_DeleteNode" />
@@ -332,7 +333,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="jetbrains.mps.smodel.action.NodeFactoryManager" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode extendsClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.ResponseRefValue_Editor" file="ResponseRefValue_Editor.java">
@@ -342,6 +342,7 @@
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefCellCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
+    <classNode dependClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellProviders.CellProviderWithRole" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cells.EditorCell_Collection" />
     <classNode dependClassName="jetbrains.mps.openapi.editor.EditorContext" />
@@ -350,7 +351,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
-    <classNode extendsClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.ResponseRef_Editor" file="ResponseRef_Editor.java">
     <classNode dependClassName="jetbrains.mps.editor.runtime.cells.BigCellUtil" />
@@ -368,6 +368,7 @@
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleImpl" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeCellProvider" />
+    <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandlerElementKeyMap" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellActions.CellAction_DeleteNode" />
@@ -386,7 +387,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="jetbrains.mps.smodel.action.NodeFactoryManager" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode extendsClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.RpcDocComment_Editor" file="RpcDocComment_Editor.java">
@@ -414,6 +414,7 @@
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefCellCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
+    <classNode dependClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.MPSColors" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellProviders.CellProviderWithRole" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cells.EditorCell_Collection" />
@@ -425,7 +426,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
-    <classNode extendsClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.Rpc_Editor" file="Rpc_Editor.java">
     <classNode dependClassName="java.lang.Class" />
@@ -435,6 +435,7 @@
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleImpl" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeCellProvider" />
+    <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandlerElementKeyMap" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.MPSColors" />
@@ -455,7 +456,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="jetbrains.mps.smodel.action.NodeFactoryManager" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode extendsClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.SectionDoc_Editor" file="SectionDoc_Editor.java">
@@ -534,6 +534,7 @@
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefCellCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
+    <classNode dependClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.MPSColors" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellProviders.CellProviderWithRole" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cells.EditorCell_Collection" />
@@ -545,7 +546,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
-    <classNode extendsClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.StructType_Editor" file="StructType_Editor.java">
     <classNode dependClassName="java.lang.Class" />
@@ -554,6 +554,7 @@
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefCellCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
+    <classNode dependClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.MPSColors" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.MPSFonts" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellProviders.CellProviderWithRole" />
@@ -565,7 +566,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
-    <classNode extendsClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.Struct_Editor" file="Struct_Editor.java">
     <classNode dependClassName="java.lang.Class" />
@@ -577,9 +577,11 @@
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefCellCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeCellProvider" />
+    <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandlerElementKeyMap" />
     <classNode dependClassName="jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
+    <classNode dependClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.MPSColors" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.MPSFonts" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellActions.CellAction_DeleteNode" />
@@ -598,10 +600,9 @@
     <classNode dependClassName="jetbrains.mps.openapi.editor.style.StyleRegistry" />
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="jetbrains.mps.smodel.action.NodeFactoryManager" />
+    <classNode dependClassName="jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode extendsClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
-    <classNode extendsClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.TraitAttribute_Editor" file="TraitAttribute_Editor.java">
     <classNode dependClassName="java.lang.Class" />
@@ -623,6 +624,7 @@
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefCellCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
+    <classNode dependClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellProviders.CellProviderWithRole" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cells.EditorCell_Collection" />
     <classNode dependClassName="jetbrains.mps.openapi.editor.EditorContext" />
@@ -631,7 +633,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
-    <classNode extendsClassName="jetbrains.mps.nodeEditor.InlineCellProvider" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.Trait_Editor" file="Trait_Editor.java">
     <classNode dependClassName="java.lang.Class" />
@@ -640,6 +641,7 @@
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleAttributes" />
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleImpl" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
+    <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandlerElementKeyMap" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.MPSColors" />
@@ -659,7 +661,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="jetbrains.mps.smodel.action.NodeFactoryManager" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode extendsClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.UpdateBox_Editor" file="UpdateBox_Editor.java">
@@ -670,6 +671,7 @@
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleImpl" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeCellProvider" />
+    <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandlerElementKeyMap" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellActions.CellAction_DeleteNode" />
@@ -688,7 +690,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="jetbrains.mps.smodel.action.NodeFactoryManager" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode extendsClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
   </dependency>
   <dependency className="im.actor.apiLanguage.editor.Update_Editor" file="Update_Editor.java">
@@ -699,6 +700,7 @@
     <classNode dependClassName="jetbrains.mps.editor.runtime.style.StyleImpl" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.PropertyCellProvider" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeCellProvider" />
+    <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode dependClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandlerElementKeyMap" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.EditorManager" />
     <classNode dependClassName="jetbrains.mps.nodeEditor.cellActions.CellAction_DeleteNode" />
@@ -717,7 +719,6 @@
     <classNode dependClassName="jetbrains.mps.smodel.IOperationContext" />
     <classNode dependClassName="jetbrains.mps.smodel.action.NodeFactoryManager" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode extendsClassName="jetbrains.mps.lang.editor.cellProviders.RefNodeListHandler" />
     <classNode extendsClassName="jetbrains.mps.nodeEditor.DefaultNodeEditor" />
   </dependency>
 </dependenciesRoot>

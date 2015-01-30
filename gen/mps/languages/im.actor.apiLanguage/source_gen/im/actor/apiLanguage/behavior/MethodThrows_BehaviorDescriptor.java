@@ -7,7 +7,6 @@ import jetbrains.mps.lang.core.behavior.BaseConcept_BehaviorDescriptor;
 public class MethodThrows_BehaviorDescriptor extends BaseConcept_BehaviorDescriptor {
   public MethodThrows_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.MethodThrows";

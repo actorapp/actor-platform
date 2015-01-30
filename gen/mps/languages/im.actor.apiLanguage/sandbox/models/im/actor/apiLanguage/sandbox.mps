@@ -1,6134 +1,6256 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model modelUID="r:10dad060-2c0e-4a4f-88f7-05a2c7d5e0f5(im.actor.apiLanguage.sandbox)">
-  <persistence version="8" />
-  <language namespace="77fdf769-432b-4ede-8171-050f8dee73fc(im.actor.apiLanguage)" />
-  <language namespace="ceab5195-25ea-4f22-9b92-103b95ca8c0c(jetbrains.mps.lang.core)" />
-  <import index="tpck" modelUID="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" version="0" implicit="yes" />
-  <import index="tsp6" modelUID="r:871d4088-0da0-4f3f-8413-5b3c60c61001(im.actor.apiLanguage.structure)" version="10" implicit="yes" />
-  <root type="tsp6.ApiDescription" typeId="tsp6.2348480312264232779" id="2348480312264243645" nodeInfo="ng">
-    <property name="name" nameId="tpck.1169194664001" value="ActorApi" />
-    <property name="objcPrefix" nameId="tsp6.5857873509721229654" value="AM" />
-    <property name="javaPackage" nameId="tsp6.5857873509721316771" value="im.actor.api" />
-    <node role="aliases" roleId="tsp6.5857873509721229475" type="tsp6.ApiAlias" typeId="tsp6.5312209286553449813" id="5857873509721457697" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="seq_state" />
-      <node role="sourceType" roleId="tsp6.5312209286553509039" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="5857873509721457701" nodeInfo="ng" />
+<model ref="r:10dad060-2c0e-4a4f-88f7-05a2c7d5e0f5(im.actor.apiLanguage.sandbox)">
+  <persistence version="9" />
+  <languages>
+    <use id="77fdf769-432b-4ede-8171-050f8dee73fc" name="im.actor.apiLanguage" version="-1" />
+    <use id="ceab5195-25ea-4f22-9b92-103b95ca8c0c" name="jetbrains.mps.lang.core" version="1" />
+  </languages>
+  <imports />
+  <registry>
+    <language id="77fdf769-432b-4ede-8171-050f8dee73fc" name="im.actor.apiLanguage">
+      <concept id="2348480312265565650" name="im.actor.apiLanguage.structure.IStruct" flags="ng" index="2m0hYO">
+        <child id="2348480312265565703" name="attributes" index="2m0hLx" />
+      </concept>
+      <concept id="2348480312265228628" name="im.actor.apiLanguage.structure.IHeaderStruct" flags="ng" index="2m1zGM">
+        <child id="4689615199750927382" name="header" index="NuuwV" />
+      </concept>
+      <concept id="2348480312265149402" name="im.actor.apiLanguage.structure.ResponseRefAnonymous" flags="ng" index="2m1R6W" />
+      <concept id="2348480312265149479" name="im.actor.apiLanguage.structure.ResponseRefValue" flags="ng" index="2m1Rp1">
+        <reference id="2348480312265340979" name="response" index="2m1o9l" />
+      </concept>
+      <concept id="2348480312264620144" name="im.actor.apiLanguage.structure.Enum" flags="ng" index="2m488m">
+        <child id="2348480312264712169" name="attributes" index="2m7ymf" />
+      </concept>
+      <concept id="2348480312264233334" name="im.actor.apiLanguage.structure.StructType" flags="ng" index="2m5mGg">
+        <reference id="2348480312264233348" name="struct" index="2m5mJy" />
+      </concept>
+      <concept id="2348480312264233362" name="im.actor.apiLanguage.structure.ApiSection" flags="ng" index="2m5mJO">
+        <property id="3857470926884615265" name="package" index="3XOG$Z" />
+        <child id="2348480312264233405" name="definitions" index="2m5mJr" />
+        <child id="2861239048481128232" name="docs" index="1Dx9rD" />
+      </concept>
+      <concept id="2348480312264231121" name="im.actor.apiLanguage.structure.Struct" flags="ng" index="2m5naR">
+        <property id="5312209286555312009" name="hasInterface" index="w4tQU" />
+        <reference id="5312209286555405644" name="interface" index="w4$XZ" />
+        <child id="773119248390105235" name="docs" index="NXodf" />
+        <child id="5857873509723526645" name="header" index="3BtCOu" />
+      </concept>
+      <concept id="2348480312264231180" name="im.actor.apiLanguage.structure.Int32" flags="ng" index="2m5ndE" />
+      <concept id="2348480312264231189" name="im.actor.apiLanguage.structure.Boolean" flags="ng" index="2m5ndN" />
+      <concept id="2348480312264231184" name="im.actor.apiLanguage.structure.Int64" flags="ng" index="2m5ndQ" />
+      <concept id="2348480312264231195" name="im.actor.apiLanguage.structure.String" flags="ng" index="2m5ndX" />
+      <concept id="2348480312264232779" name="im.actor.apiLanguage.structure.ApiDescription" flags="ng" index="2m5nkH">
+        <property id="5857873509721229654" name="objcPrefix" index="3Bkp6X" />
+        <property id="5857873509721316771" name="javaPackage" index="3BlOl8" />
+        <child id="2348480312264237371" name="sections" index="2m5lHt" />
+        <child id="5857873509721229475" name="aliases" index="3Bkp18" />
+      </concept>
+      <concept id="2348480312264232754" name="im.actor.apiLanguage.structure.List" flags="ng" index="2m5nlk">
+        <child id="803735062395365470" name="type" index="3GJlyp" />
+      </concept>
+      <concept id="2348480312264232735" name="im.actor.apiLanguage.structure.Optional" flags="ng" index="2m5nlT">
+        <child id="803735062394906775" name="type" index="3GH5xg" />
+      </concept>
+      <concept id="2348480312265108784" name="im.actor.apiLanguage.structure.Bytes" flags="ng" index="2m61tm" />
+      <concept id="2348480312265103643" name="im.actor.apiLanguage.structure.Response" flags="ng" index="2m62dX">
+        <child id="773119248390109922" name="docs" index="NXp4Y" />
+      </concept>
+      <concept id="2348480312265114812" name="im.actor.apiLanguage.structure.Rpc" flags="ng" index="2m6fVq">
+        <child id="2348480312265120188" name="response" index="2m6efq" />
+        <child id="4092665470043063721" name="throws" index="2uC9gA" />
+        <child id="4092665470044220438" name="docs" index="2uGzQp" />
+      </concept>
+      <concept id="2348480312264710733" name="im.actor.apiLanguage.structure.EnumAttribute" flags="ng" index="2m7y0F">
+        <property id="2348480312264710768" name="id" index="2m7y0m" />
+      </concept>
+      <concept id="2348480312264653219" name="im.actor.apiLanguage.structure.StructAttribute" flags="ng" index="2m7Kf5">
+        <property id="2348480312264746197" name="id" index="2m7DUN" />
+        <child id="2348480312264746167" name="type" index="2m7DVh" />
+      </concept>
+      <concept id="4092665470043052969" name="im.actor.apiLanguage.structure.MethodThrows" flags="ng" index="2uC4CA">
+        <property id="4092665470043053055" name="errorCode" index="2uC4DK" />
+        <property id="4092665470043053057" name="errorTag" index="2uC4Qe" />
+        <property id="4092665470043111358" name="description" index="2uCiSL" />
+      </concept>
+      <concept id="4092665470043293715" name="im.actor.apiLanguage.structure.RpcDocParameter" flags="ng" index="2uJ1As">
+        <property id="4092665470043359042" name="description" index="2uJhrd" />
+        <reference id="4092665470043358846" name="paramter" index="2uJhvL" />
+      </concept>
+      <concept id="5312209286554516176" name="im.actor.apiLanguage.structure.Trait" flags="ng" index="w93zz" />
+      <concept id="5312209286553980838" name="im.actor.apiLanguage.structure.AliasType" flags="ng" index="wb0Ql">
+        <reference id="5312209286553980954" name="alias" index="wb18D" />
+      </concept>
+      <concept id="5312209286553449813" name="im.actor.apiLanguage.structure.ApiAlias" flags="ng" index="wd7tA">
+        <child id="5312209286553509039" name="sourceType" index="wdlUs" />
+      </concept>
+      <concept id="4689615199751283321" name="im.actor.apiLanguage.structure.Update" flags="ng" index="NpBTk">
+        <child id="773119248390107806" name="docs" index="NXp_2" />
+      </concept>
+      <concept id="4689615199750888590" name="im.actor.apiLanguage.structure.HeaderKey" flags="ng" index="Nu42z">
+        <property id="4689615199750888593" name="hexValue" index="Nu42W" />
+      </concept>
+      <concept id="4689615199750780323" name="im.actor.apiLanguage.structure.ApiEmptyDef" flags="ng" index="NvyAe" />
+      <concept id="4689615199750788559" name="im.actor.apiLanguage.structure.ApiComment" flags="ng" index="NvWBy">
+        <property id="4689615199750789856" name="text" index="NvWrd" />
+      </concept>
+      <concept id="773119248390078458" name="im.actor.apiLanguage.structure.StructDocParameter" flags="ng" index="NX1gA">
+        <property id="773119248390080030" name="description" index="NX6R2" />
+        <reference id="773119248390080451" name="paramter" index="NX6Kv" />
+      </concept>
+      <concept id="773119248390047284" name="im.actor.apiLanguage.structure.StructDocComment" flags="ng" index="NXeRC">
+        <property id="773119248390047379" name="content" index="NXePf" />
+      </concept>
+      <concept id="5857873509721568548" name="im.actor.apiLanguage.structure.TraitType" flags="ng" index="3BlaRf">
+        <reference id="5857873509721852744" name="trait" index="3BrLez" />
+      </concept>
+      <concept id="2861239048481125696" name="im.actor.apiLanguage.structure.SectionDoc" flags="ng" index="1Dx9M1">
+        <property id="2861239048481125830" name="text" index="1Dx9K7" />
+      </concept>
+      <concept id="2861239048480449583" name="im.actor.apiLanguage.structure.RpcDocComment" flags="ng" index="1D$$RI">
+        <property id="2861239048480459664" name="content" index="1D$E9h" />
+      </concept>
+      <concept id="803735062395648228" name="im.actor.apiLanguage.structure.UpdateBox" flags="ng" index="3GIgwz">
+        <child id="773119248390108862" name="docs" index="NXpPy" />
+      </concept>
+      <concept id="803735062395533120" name="im.actor.apiLanguage.structure.Double" flags="ng" index="3GIWu7" />
+      <concept id="803735062395368411" name="im.actor.apiLanguage.structure.EnumType" flags="ng" index="3GJkcs">
+        <reference id="803735062395368531" name="struct" index="3GJkik" />
+      </concept>
+    </language>
+    <language id="ceab5195-25ea-4f22-9b92-103b95ca8c0c" name="jetbrains.mps.lang.core">
+      <concept id="1169194658468" name="jetbrains.mps.lang.core.structure.INamedConcept" flags="ng" index="TrEIO">
+        <property id="1169194664001" name="name" index="TrG5h" />
+      </concept>
+    </language>
+  </registry>
+  <node concept="2m5nkH" id="22nuAqQwzAX">
+    <property role="TrG5h" value="ActorApi" />
+    <property role="3Bkp6X" value="AM" />
+    <property role="3BlOl8" value="im.actor.api" />
+    <node concept="wd7tA" id="55bmeIQ7$gx" role="3Bkp18">
+      <property role="TrG5h" value="seq_state" />
+      <node concept="2m61tm" id="55bmeIQ7$g_" role="wdlUs" />
     </node>
-    <node role="aliases" roleId="tsp6.5857873509721229475" type="tsp6.ApiAlias" typeId="tsp6.5312209286553449813" id="2873759689078686265" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="date" />
-      <node role="sourceType" roleId="tsp6.5312209286553509039" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="2873759689078686274" nodeInfo="ng" />
+    <node concept="wd7tA" id="2vxDjotnO8T" role="3Bkp18">
+      <property role="TrG5h" value="date" />
+      <node concept="2m5ndQ" id="2vxDjotnO92" role="wdlUs" />
     </node>
-    <node role="aliases" roleId="tsp6.5857873509721229475" type="tsp6.ApiAlias" typeId="tsp6.5312209286553449813" id="2873759689078712776" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="randomId" />
-      <node role="sourceType" roleId="tsp6.5312209286553509039" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="2873759689078712784" nodeInfo="ng" />
+    <node concept="wd7tA" id="2vxDjotnUB8" role="3Bkp18">
+      <property role="TrG5h" value="randomId" />
+      <node concept="2m5ndQ" id="2vxDjotnUBg" role="wdlUs" />
     </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395512738" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Authentication" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="auth" />
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481191537" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;p&gt;Actor now support only one way for authentication - by SMS or phone call.&lt;/p&gt;" />
+    <node concept="2m5mJO" id="GBscvBB6uy" role="2m5lHt">
+      <property role="TrG5h" value="Authentication" />
+      <property role="3XOG$Z" value="auth" />
+      <node concept="1Dx9M1" id="2uPas5ecFpL" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;p&gt;Actor now support only one way for authentication - by SMS or phone call.&lt;/p&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481230379" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;p&gt;Authorization steps:" />
+      <node concept="1Dx9M1" id="2uPas5ecOSF" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;p&gt;Authorization steps:" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="4092665470042333335" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;ol&gt;" />
+      <node concept="1Dx9M1" id="3zc4oYAom2n" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;ol&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481235572" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;Request SMS Code by calling RequestAuthCode&lt;/li&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecQ9O" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;li&gt;Request SMS Code by calling RequestAuthCode&lt;/li&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481235576" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;If SMS arrives than send Authorization code in SignIn/SignUp&lt;/li&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecQ9S" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;li&gt;If SMS arrives than send Authorization code in SignIn/SignUp&lt;/li&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481236621" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;If sms doesn't arrive for a long time - request phone activation by " />
+      <node concept="1Dx9M1" id="2uPas5ecQqd" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;li&gt;If sms doesn't arrive for a long time - request phone activation by " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481237668" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="   calling AuthCodeCall&lt;/li&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecQE$" role="1Dx9rD">
+        <property role="1Dx9K7" value="   calling AuthCodeCall&lt;/li&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481240812" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;/ol&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecRrG" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;/ol&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="4092665470042333348" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;/p&gt;" />
+      <node concept="1Dx9M1" id="3zc4oYAom2$" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;/p&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="4092665470042333362" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Some rules&lt;br/&gt;" />
+      <node concept="1Dx9M1" id="3zc4oYAom2M" role="1Dx9rD">
+        <property role="1Dx9K7" value="Some rules&lt;br/&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481237675" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.&lt;br/&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecQEF" role="1Dx9rD">
+        <property role="1Dx9K7" value="If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.&lt;br/&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481241870" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="If on any step API return PHONE_CODE_EXPIRED than application MUST start " />
+      <node concept="1Dx9M1" id="2uPas5ecRGe" role="1Dx9rD">
+        <property role="1Dx9K7" value="If on any step API return PHONE_CODE_EXPIRED than application MUST start " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481242924" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="authorization process from begining.&lt;br/&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecRWG" role="1Dx9rD">
+        <property role="1Dx9K7" value="authorization process from begining.&lt;br/&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481242935" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.&lt;br/&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecRWR" role="1Dx9rD">
+        <property role="1Dx9K7" value="Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.&lt;br/&gt;" />
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395513514" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SendAuthCode" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="4092665470044728142" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Sending SMS with activation code" />
+      <node concept="2m6fVq" id="GBscvBB6EE" role="2m5mJr">
+        <property role="TrG5h" value="SendAuthCode" />
+        <node concept="1D$$RI" id="3zc4oYAxuHe" role="2uGzQp">
+          <property role="1D$E9h" value="Sending SMS with activation code" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="4092665470044666761" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Phone number in international format" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395513520" resolveInfo="phoneNumber" />
+        <node concept="2uJ1As" id="3zc4oYAxfI9" role="2uGzQp">
+          <property role="2uJhrd" value="Phone number in international format" />
+          <ref role="2uJhvL" node="GBscvBB6EK" resolve="phoneNumber" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="4092665470044723274" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Application ID" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395513527" resolveInfo="appId" />
+        <node concept="2uJ1As" id="3zc4oYAxtxa" role="2uGzQp">
+          <property role="2uJhrd" value="Application ID" />
+          <ref role="2uJhvL" node="GBscvBB6ER" resolve="appId" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="4092665470044725702" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Application API key" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395513536" resolveInfo="apiKey" />
+        <node concept="2uJ1As" id="3zc4oYAxu76" role="2uGzQp">
+          <property role="2uJhrd" value="Application API key" />
+          <ref role="2uJhvL" node="GBscvBB6F0" resolve="apiKey" />
         </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043212951" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_NUMBER_INVALID" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Throws when phone number is invalid" />
+        <node concept="2uC4CA" id="3zc4oYArGMn" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_NUMBER_INVALID" />
+          <property role="2uCiSL" value="Throws when phone number is invalid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395513520" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="phoneNumber" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395513524" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB6EK" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="phoneNumber" />
+          <node concept="2m5ndQ" id="GBscvBB6EO" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395513527" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="appId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395513533" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB6ER" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="GBscvBB6EX" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395513536" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="apiKey" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395513544" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB6F0" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="apiKey" />
+          <node concept="2m5ndX" id="GBscvBB6F8" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395513515" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="01" />
+        <node concept="Nu42z" id="GBscvBB6EF" role="NuuwV">
+          <property role="Nu42W" value="01" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="803735062395513547" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395513552" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="smsHash" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395513556" nodeInfo="ng" />
+        <node concept="2m1R6W" id="GBscvBB6Fb" role="2m6efq">
+          <node concept="2m7Kf5" id="GBscvBB6Fg" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="smsHash" />
+            <node concept="2m5ndX" id="GBscvBB6Fk" role="2m7DVh" />
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395513559" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-            <property name="name" nameId="tpck.1169194664001" value="isRegistered" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Boolean" typeId="tsp6.2348480312264231189" id="803735062395513565" nodeInfo="ng" />
+          <node concept="2m7Kf5" id="GBscvBB6Fn" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="isRegistered" />
+            <node concept="2m5ndN" id="GBscvBB6Ft" role="2m7DVh" />
           </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395513548" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="02" />
-          </node>
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395514047" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SendAuthCall" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389834419" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Requesting Phone activation" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389834425" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Phone number in international format" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395514070" resolveInfo="phoneNumber" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389839289" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Code request hash from RequestAuthCode" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395514077" resolveInfo="smsHash" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389843041" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Application ID" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395514086" resolveInfo="appId" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389845485" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Application API key" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395514097" resolveInfo="apiKey" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514070" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="phoneNumber" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395514074" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514077" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="smsHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395514083" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514086" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="appId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395514094" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514097" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="apiKey" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395514107" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395514048" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="5a" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395514110" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043214262" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_CODE_EXPIRED" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Code expired" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043255039" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_NUMVER_INVALID" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Phone number invalid" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Response" typeId="tsp6.2348480312265103643" id="803735062395514581" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Auth" />
-        <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="3857470926885381678" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Authentication result" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="3857470926885381684" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Public Key Hash of current authentication" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395514631" resolveInfo="publicKeyHash" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="3857470926885383295" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="The authenticated User" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395514638" resolveInfo="user" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="3857470926885383305" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Current config of server" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395514647" resolveInfo="config" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514631" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="publicKeyHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395514635" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514638" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="user" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395514644" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395368173" resolveInfo="User" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514647" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="config" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395544209" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395513369" resolveInfo="Config" />
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395514582" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="05" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395514294" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SignIn" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389846808" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Performing user signin" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389846814" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Phone number in international format" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395514328" resolveInfo="phoneNumber" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389849260" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Code request hash from RequestAuthCode" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395514335" resolveInfo="smsHash" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389857810" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Confirmation code from SMS" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395514344" resolveInfo="smsCode" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389861485" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Device RSA 2048 bit public key in x.509 format" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395514355" resolveInfo="publicKey" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389866387" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395514368" resolveInfo="deviceHash" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389868849" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Device title like 'Steven's iPhone'" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395514383" resolveInfo="deviceTitle" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389868867" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Application ID" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395514400" resolveInfo="appId" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389868887" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Application API key" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395514419" resolveInfo="appKey" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043257656" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="INVALID_KEY" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Invalid public key" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043257658" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_NUMBER_UNOCCUPIED" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Signup required" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043257661" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_CODE_INVALID" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Activation code invalid" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043257665" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_CODE_EXPIRED" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Activation code expired" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043257670" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_CODE_EMPTY" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Activation code empty" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043257676" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_NUMBER_INVALID" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Phine number invalid" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514328" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="phoneNumber" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395514332" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514335" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="smsHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395514341" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514344" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="smsCode" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395514352" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514355" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="publicKey" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395514365" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514368" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="deviceHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395514380" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514383" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="deviceTitle" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395514397" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514400" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="7" />
-          <property name="name" nameId="tpck.1169194664001" value="appId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395514416" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395514419" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="8" />
-          <property name="name" nameId="tpck.1169194664001" value="appKey" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395514437" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395514295" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="03" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395515138" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395514581" resolveInfo="Auth" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395515376" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SignUp" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389870223" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Performing user signup. If user perform signup on already registered user it just override previous" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389870237" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="profile information" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389870248" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Phone number in international format" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395515437" resolveInfo="phoneNumber" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043260334" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="INVALID_KEY" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Invalid public key" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043260336" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_CODE_EXPIRED" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Activation code expired" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043260339" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_CODE_EMPTY" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Activation code empty" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043260343" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="PHONE_NUMBER_INVALID" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Phone number invalid" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="4092665470043260348" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="400" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="NAME_INVALID" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Name is invalid" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395515437" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="phoneNumber" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395515441" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395515444" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="smsHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395515450" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395515453" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="smsCode" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395515461" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395515464" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="name" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395515474" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395515477" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="publicKey" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395515489" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395515492" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="7" />
-          <property name="name" nameId="tpck.1169194664001" value="deviceHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395515506" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395515509" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="8" />
-          <property name="name" nameId="tpck.1169194664001" value="deviceTitle" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395515525" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395515528" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="9" />
-          <property name="name" nameId="tpck.1169194664001" value="appId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395515546" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395515549" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="10" />
-          <property name="name" nameId="tpck.1169194664001" value="appKey" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395515569" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395515572" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="11" />
-          <property name="name" nameId="tpck.1169194664001" value="isSilent" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Boolean" typeId="tsp6.2348480312264231189" id="803735062395515594" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395515377" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="04" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395515597" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395514581" resolveInfo="Auth" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389873945" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Code request hash from RequestAuthCode" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395515444" resolveInfo="smsHash" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389873957" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Confirmation code from SMS" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395515453" resolveInfo="smsCode" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389873971" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="User name" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395515464" resolveInfo="name" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389875339" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Device RSA 2048 bit public key in x.509 format" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395515477" resolveInfo="publicKey" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389875357" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395515492" resolveInfo="deviceHash" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389875377" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Device title like 'Steven's iPhone'" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395515509" resolveInfo="deviceTitle" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389875431" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Application ID" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395515528" resolveInfo="appId" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389875455" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="pplication API key" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395515549" resolveInfo="appKey" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395528291" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="AuthSession" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390669575" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Authentication session" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390603008" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Unuque ID of session" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395528612" resolveInfo="id" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390655340" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="holder of session. 0 - this device, 1 - other." />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395529069" resolveInfo="authHolder" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390663731" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Application Id (user in SignIn/SignUp)" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395529986" resolveInfo="appId" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390665219" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Title of application" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395530455" resolveInfo="appTitle" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390665231" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Title of device" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395530930" resolveInfo="deviceTitle" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390666628" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Time of session creating" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395531411" resolveInfo="authTime" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390666644" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="two-letter country code of session create" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395532133" resolveInfo="authLocation" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390666662" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="optional latitude of auth if available" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395532863" resolveInfo="latitude" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390666682" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="optional longitude of auth if available" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395533569" resolveInfo="longitude" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395528612" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="id" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395528841" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395529069" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="authHolder" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395529302" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395529986" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="appId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395530223" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395530455" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="appTitle" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395530696" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395530930" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="deviceTitle" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395531175" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395531411" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="authTime" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395531660" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395532133" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="7" />
-          <property name="name" nameId="tpck.1169194664001" value="authLocation" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395532386" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395532863" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="8" />
-          <property name="name" nameId="tpck.1169194664001" value="latitude" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395533320" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.Double" typeId="tsp6.803735062395533120" id="803735062395533326" nodeInfo="ng" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395533569" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="9" />
-          <property name="name" nameId="tpck.1169194664001" value="longitude" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395533590" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.Double" typeId="tsp6.803735062395533120" id="803735062395533596" nodeInfo="ng" />
+          <node concept="Nu42z" id="GBscvBB6Fc" role="NuuwV">
+            <property role="Nu42W" value="02" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395534933" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GetAuthSessions" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389878138" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Getting of all active user's authentication sessions" />
+      <node concept="2m6fVq" id="GBscvBB6MZ" role="2m5mJr">
+        <property role="TrG5h" value="SendAuthCall" />
+        <node concept="1D$$RI" id="EUEXKTiKqN" role="2uGzQp">
+          <property role="1D$E9h" value="Requesting Phone activation" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395534934" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="50" />
+        <node concept="2uJ1As" id="EUEXKTiKqT" role="2uGzQp">
+          <property role="2uJhrd" value="Phone number in international format" />
+          <ref role="2uJhvL" node="GBscvBB6Nm" resolve="phoneNumber" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="803735062395535549" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395536048" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="userAuths" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395536052" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395536308" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395528291" resolveInfo="AuthSession" />
+        <node concept="2uJ1As" id="EUEXKTiLAT" role="2uGzQp">
+          <property role="2uJhrd" value="Code request hash from RequestAuthCode" />
+          <ref role="2uJhvL" node="GBscvBB6Nt" resolve="smsHash" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiMxx" role="2uGzQp">
+          <property role="2uJhrd" value="Application ID" />
+          <ref role="2uJhvL" node="GBscvBB6NA" resolve="appId" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiN7H" role="2uGzQp">
+          <property role="2uJhrd" value="Application API key" />
+          <ref role="2uJhvL" node="GBscvBB6NL" resolve="apiKey" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Nm" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="phoneNumber" />
+          <node concept="2m5ndQ" id="GBscvBB6Nq" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Nt" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="smsHash" />
+          <node concept="2m5ndX" id="GBscvBB6Nz" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6NA" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="GBscvBB6NI" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6NL" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="apiKey" />
+          <node concept="2m5ndX" id="GBscvBB6NV" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBB6N0" role="NuuwV">
+          <property role="Nu42W" value="5a" />
+        </node>
+        <node concept="2m1Rp1" id="GBscvBB6NY" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArH6Q" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_CODE_EXPIRED" />
+          <property role="2uCiSL" value="Code expired" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArR3Z" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_NUMVER_INVALID" />
+          <property role="2uCiSL" value="Phone number invalid" />
+        </node>
+      </node>
+      <node concept="2m62dX" id="GBscvBB6Vl" role="2m5mJr">
+        <property role="TrG5h" value="Auth" />
+        <node concept="NXeRC" id="3m8vlV8pAoI" role="NXp4Y">
+          <property role="NXePf" value="Authentication result" />
+        </node>
+        <node concept="NX1gA" id="3m8vlV8pAoO" role="NXp4Y">
+          <property role="NX6R2" value="Public Key Hash of current authentication" />
+          <ref role="NX6Kv" node="GBscvBB6W7" resolve="publicKeyHash" />
+        </node>
+        <node concept="NX1gA" id="3m8vlV8pALZ" role="NXp4Y">
+          <property role="NX6R2" value="The authenticated User" />
+          <ref role="NX6Kv" node="GBscvBB6We" resolve="user" />
+        </node>
+        <node concept="NX1gA" id="3m8vlV8pAM9" role="NXp4Y">
+          <property role="NX6R2" value="Current config of server" />
+          <ref role="NX6Kv" node="GBscvBB6Wn" resolve="config" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6W7" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="publicKeyHash" />
+          <node concept="2m5ndQ" id="GBscvBB6Wb" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6We" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="user" />
+          <node concept="2m5mGg" id="GBscvBB6Wk" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Wn" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="config" />
+          <node concept="2m5mGg" id="GBscvBBeah" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6Cp" resolve="Config" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBB6Vm" role="NuuwV">
+          <property role="Nu42W" value="05" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBB6QQ" role="2m5mJr">
+        <property role="TrG5h" value="SignIn" />
+        <node concept="1D$$RI" id="EUEXKTiNso" role="2uGzQp">
+          <property role="1D$E9h" value="Performing user signin" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiNsu" role="2uGzQp">
+          <property role="2uJhrd" value="Phone number in international format" />
+          <ref role="2uJhvL" node="GBscvBB6Ro" resolve="phoneNumber" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiO2G" role="2uGzQp">
+          <property role="2uJhrd" value="Code request hash from RequestAuthCode" />
+          <ref role="2uJhvL" node="GBscvBB6Rv" resolve="smsHash" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiQ8i" role="2uGzQp">
+          <property role="2uJhrd" value="Confirmation code from SMS" />
+          <ref role="2uJhvL" node="GBscvBB6RC" resolve="smsCode" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiR1H" role="2uGzQp">
+          <property role="2uJhrd" value="Device RSA 2048 bit public key in x.509 format" />
+          <ref role="2uJhvL" node="GBscvBB6RN" resolve="publicKey" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiSej" role="2uGzQp">
+          <property role="2uJhrd" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
+          <ref role="2uJhvL" node="GBscvBB6S0" resolve="deviceHash" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiSOL" role="2uGzQp">
+          <property role="2uJhrd" value="Device title like 'Steven's iPhone'" />
+          <ref role="2uJhvL" node="GBscvBB6Sf" resolve="deviceTitle" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiSP3" role="2uGzQp">
+          <property role="2uJhrd" value="Application ID" />
+          <ref role="2uJhvL" node="GBscvBB6Sw" resolve="appId" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiSPn" role="2uGzQp">
+          <property role="2uJhrd" value="Application API key" />
+          <ref role="2uJhvL" node="GBscvBB6SN" resolve="appKey" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArRGS" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="INVALID_KEY" />
+          <property role="2uCiSL" value="Invalid public key" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArRGU" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_NUMBER_UNOCCUPIED" />
+          <property role="2uCiSL" value="Signup required" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArRGX" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_CODE_INVALID" />
+          <property role="2uCiSL" value="Activation code invalid" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArRH1" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_CODE_EXPIRED" />
+          <property role="2uCiSL" value="Activation code expired" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArRH6" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_CODE_EMPTY" />
+          <property role="2uCiSL" value="Activation code empty" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArRHc" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_NUMBER_INVALID" />
+          <property role="2uCiSL" value="Phine number invalid" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Ro" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="phoneNumber" />
+          <node concept="2m5ndQ" id="GBscvBB6Rs" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Rv" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="smsHash" />
+          <node concept="2m5ndX" id="GBscvBB6R_" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6RC" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="smsCode" />
+          <node concept="2m5ndX" id="GBscvBB6RK" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6RN" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="publicKey" />
+          <node concept="2m61tm" id="GBscvBB6RX" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6S0" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="deviceHash" />
+          <node concept="2m61tm" id="GBscvBB6Sc" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Sf" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="deviceTitle" />
+          <node concept="2m5ndX" id="GBscvBB6St" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Sw" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="GBscvBB6SK" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6SN" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="appKey" />
+          <node concept="2m5ndX" id="GBscvBB6T5" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBB6QR" role="NuuwV">
+          <property role="Nu42W" value="03" />
+        </node>
+        <node concept="2m1Rp1" id="GBscvBB742" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBB77K" role="2m5mJr">
+        <property role="TrG5h" value="SignUp" />
+        <node concept="1D$$RI" id="EUEXKTiTaf" role="2uGzQp">
+          <property role="1D$E9h" value="Performing user signup. If user perform signup on already registered user it just override previous" />
+        </node>
+        <node concept="1D$$RI" id="EUEXKTiTat" role="2uGzQp">
+          <property role="1D$E9h" value="profile information" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiTaC" role="2uGzQp">
+          <property role="2uJhrd" value="Phone number in international format" />
+          <ref role="2uJhvL" node="GBscvBB78H" resolve="phoneNumber" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArSmI" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="INVALID_KEY" />
+          <property role="2uCiSL" value="Invalid public key" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArSmK" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_CODE_EXPIRED" />
+          <property role="2uCiSL" value="Activation code expired" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArSmN" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_CODE_EMPTY" />
+          <property role="2uCiSL" value="Activation code empty" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArSmR" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_NUMBER_INVALID" />
+          <property role="2uCiSL" value="Phone number invalid" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArSmW" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="NAME_INVALID" />
+          <property role="2uCiSL" value="Name is invalid" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB78H" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="phoneNumber" />
+          <node concept="2m5ndQ" id="GBscvBB78L" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB78O" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="smsHash" />
+          <node concept="2m5ndX" id="GBscvBB78U" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB78X" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="smsCode" />
+          <node concept="2m5ndX" id="GBscvBB795" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB798" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="GBscvBB79i" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB79l" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="publicKey" />
+          <node concept="2m61tm" id="GBscvBB79x" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB79$" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="deviceHash" />
+          <node concept="2m61tm" id="GBscvBB79M" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB79P" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="deviceTitle" />
+          <node concept="2m5ndX" id="GBscvBB7a5" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB7a8" role="2m0hLx">
+          <property role="2m7DUN" value="9" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="GBscvBB7aq" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB7at" role="2m0hLx">
+          <property role="2m7DUN" value="10" />
+          <property role="TrG5h" value="appKey" />
+          <node concept="2m5ndX" id="GBscvBB7aL" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB7aO" role="2m0hLx">
+          <property role="2m7DUN" value="11" />
+          <property role="TrG5h" value="isSilent" />
+          <node concept="2m5ndN" id="GBscvBB7ba" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBB77L" role="NuuwV">
+          <property role="Nu42W" value="04" />
+        </node>
+        <node concept="2m1Rp1" id="GBscvBB7bd" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiU4p" role="2uGzQp">
+          <property role="2uJhrd" value="Code request hash from RequestAuthCode" />
+          <ref role="2uJhvL" node="GBscvBB78O" resolve="smsHash" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiU4_" role="2uGzQp">
+          <property role="2uJhrd" value="Confirmation code from SMS" />
+          <ref role="2uJhvL" node="GBscvBB78X" resolve="smsCode" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiU4N" role="2uGzQp">
+          <property role="2uJhrd" value="User name" />
+          <ref role="2uJhvL" node="GBscvBB798" resolve="name" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiUqb" role="2uGzQp">
+          <property role="2uJhrd" value="Device RSA 2048 bit public key in x.509 format" />
+          <ref role="2uJhvL" node="GBscvBB79l" resolve="publicKey" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiUqt" role="2uGzQp">
+          <property role="2uJhrd" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
+          <ref role="2uJhvL" node="GBscvBB79$" resolve="deviceHash" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiUqL" role="2uGzQp">
+          <property role="2uJhrd" value="Device title like 'Steven's iPhone'" />
+          <ref role="2uJhvL" node="GBscvBB79P" resolve="deviceTitle" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiUrB" role="2uGzQp">
+          <property role="2uJhrd" value="Application ID" />
+          <ref role="2uJhvL" node="GBscvBB7a8" resolve="appId" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTiUrZ" role="2uGzQp">
+          <property role="2uJhrd" value="pplication API key" />
+          <ref role="2uJhvL" node="GBscvBB7at" resolve="appKey" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="GBscvBBahz" role="2m5mJr">
+        <property role="TrG5h" value="AuthSession" />
+        <node concept="NXeRC" id="EUEXKTlWk7" role="NXodf">
+          <property role="NXePf" value="Authentication session" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTlG40" role="NXodf">
+          <property role="NX6R2" value="Unuque ID of session" />
+          <ref role="NX6Kv" node="GBscvBBam$" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTlSPG" role="NXodf">
+          <property role="NX6R2" value="holder of session. 0 - this device, 1 - other." />
+          <ref role="NX6Kv" node="GBscvBBatH" resolve="authHolder" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTlUSN" role="NXodf">
+          <property role="NX6R2" value="Application Id (user in SignIn/SignUp)" />
+          <ref role="NX6Kv" node="GBscvBBaG2" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTlVg3" role="NXodf">
+          <property role="NX6R2" value="Title of application" />
+          <ref role="NX6Kv" node="GBscvBBaNn" resolve="appTitle" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTlVgf" role="NXodf">
+          <property role="NX6R2" value="Title of device" />
+          <ref role="NX6Kv" node="GBscvBBaUM" resolve="deviceTitle" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTlVA4" role="NXodf">
+          <property role="NX6R2" value="Time of session creating" />
+          <ref role="NX6Kv" node="GBscvBBb2j" resolve="authTime" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTlVAk" role="NXodf">
+          <property role="NX6R2" value="two-letter country code of session create" />
+          <ref role="NX6Kv" node="GBscvBBbd_" resolve="authLocation" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTlVAA" role="NXodf">
+          <property role="NX6R2" value="optional latitude of auth if available" />
+          <ref role="NX6Kv" node="GBscvBBboZ" resolve="latitude" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTlVAU" role="NXodf">
+          <property role="NX6R2" value="optional longitude of auth if available" />
+          <ref role="NX6Kv" node="GBscvBBb$1" resolve="longitude" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBam$" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="GBscvBBaq9" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBatH" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="authHolder" />
+          <node concept="2m5ndE" id="GBscvBBaxm" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBaG2" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="GBscvBBaJJ" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBaNn" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="appTitle" />
+          <node concept="2m5ndX" id="GBscvBBaR8" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBaUM" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="deviceTitle" />
+          <node concept="2m5ndX" id="GBscvBBaYB" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBb2j" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="authTime" />
+          <node concept="2m5ndE" id="GBscvBBb6c" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBbd_" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="authLocation" />
+          <node concept="2m5ndX" id="GBscvBBbhy" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBboZ" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="latitude" />
+          <node concept="2m5nlT" id="GBscvBBbw8" role="2m7DVh">
+            <node concept="3GIWu7" id="GBscvBBbwe" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBb$1" role="2m0hLx">
+          <property role="2m7DUN" value="9" />
+          <property role="TrG5h" value="longitude" />
+          <node concept="2m5nlT" id="GBscvBBb$m" role="2m7DVh">
+            <node concept="3GIWu7" id="GBscvBBb$s" role="3GH5xg" />
+          </node>
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBBbTl" role="2m5mJr">
+        <property role="TrG5h" value="GetAuthSessions" />
+        <node concept="1D$$RI" id="EUEXKTiV5U" role="2uGzQp">
+          <property role="1D$E9h" value="Getting of all active user's authentication sessions" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBbTm" role="NuuwV">
+          <property role="Nu42W" value="50" />
+        </node>
+        <node concept="2m1R6W" id="GBscvBBc2X" role="2m6efq">
+          <node concept="2m7Kf5" id="GBscvBBcaK" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="userAuths" />
+            <node concept="2m5nlk" id="GBscvBBcaO" role="2m7DVh">
+              <node concept="2m5mGg" id="GBscvBBceO" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBBahz" resolve="AuthSession" />
               </node>
             </node>
           </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395535550" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="51" />
+          <node concept="Nu42z" id="GBscvBBc2Y" role="NuuwV">
+            <property role="Nu42W" value="51" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395537186" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="TerminateSession" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395538851" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="id" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395538855" nodeInfo="ng" />
+      <node concept="2m6fVq" id="GBscvBBcsy" role="2m5mJr">
+        <property role="TrG5h" value="TerminateSession" />
+        <node concept="2m7Kf5" id="GBscvBBcQz" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="GBscvBBcQB" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395537187" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="52" />
+        <node concept="Nu42z" id="GBscvBBcsz" role="NuuwV">
+          <property role="Nu42W" value="52" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395538076" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
+        <node concept="2m1Rp1" id="GBscvBBcEs" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389878141" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="SignOut on specified user's session" />
+        <node concept="1D$$RI" id="EUEXKTiV5X" role="2uGzQp">
+          <property role="1D$E9h" value="SignOut on specified user's session" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389879482" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="id from AuthItem" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395538851" resolveInfo="id" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395538461" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="TerminateAllSessions" />
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395538462" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="53" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395539890" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389884640" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="SignOut on all exept current sessions" />
+        <node concept="2uJ1As" id="EUEXKTiVqU" role="2uGzQp">
+          <property role="2uJhrd" value="id from AuthItem" />
+          <ref role="2uJhvL" node="GBscvBBcQz" resolve="id" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395540284" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SignOut" />
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395540285" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="54" />
+      <node concept="2m6fVq" id="GBscvBBcKt" role="2m5mJr">
+        <property role="TrG5h" value="TerminateAllSessions" />
+        <node concept="Nu42z" id="GBscvBBcKu" role="NuuwV">
+          <property role="Nu42W" value="53" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395540684" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
+        <node concept="2m1Rp1" id="GBscvBBd6M" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389885980" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="SignOut current session" />
+        <node concept="1D$$RI" id="EUEXKTiWFw" role="2uGzQp">
+          <property role="1D$E9h" value="SignOut on all exept current sessions" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBBdcW" role="2m5mJr">
+        <property role="TrG5h" value="SignOut" />
+        <node concept="Nu42z" id="GBscvBBdcX" role="NuuwV">
+          <property role="Nu42W" value="54" />
+        </node>
+        <node concept="2m1Rp1" id="GBscvBBdjc" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="1D$$RI" id="EUEXKTiX0s" role="2uGzQp">
+          <property role="1D$E9h" value="SignOut current session" />
         </node>
       </node>
     </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062394849919" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Users" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="users" />
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481245039" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Users are objects that secured by accessHash. You can't load user profile by it's id." />
+    <node concept="2m5mJO" id="GBscvB$$DZ" role="2m5lHt">
+      <property role="TrG5h" value="Users" />
+      <property role="3XOG$Z" value="users" />
+      <node concept="1Dx9M1" id="2uPas5ecStJ" role="1Dx9rD">
+        <property role="1Dx9K7" value="Users are objects that secured by accessHash. You can't load user profile by it's id." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481247135" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="You can't send message to user without finding it's object in Updates or by calling" />
+      <node concept="1Dx9M1" id="2uPas5ecSYv" role="1Dx9rD">
+        <property role="1Dx9K7" value="You can't send message to user without finding it's object in Updates or by calling" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481248186" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="method for user search, contacts import or some other methods." />
+      <node concept="1Dx9M1" id="2uPas5ecTeU" role="1Dx9rD">
+        <property role="1Dx9K7" value="method for user search, contacts import or some other methods." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481251337" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value=" " />
+      <node concept="1Dx9M1" id="2uPas5ecU09" role="1Dx9rD">
+        <property role="1Dx9K7" value=" " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481251342" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Applications need to keep all Users information forever." />
+      <node concept="1Dx9M1" id="2uPas5ecU0e" role="1Dx9rD">
+        <property role="1Dx9K7" value="Applications need to keep all Users information forever." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481254501" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value=" " />
+      <node concept="1Dx9M1" id="2uPas5ecUL_" role="1Dx9rD">
+        <property role="1Dx9K7" value=" " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481254522" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Each User have optional localName - name of user that was set by current user and can be changed" />
+      <node concept="1Dx9M1" id="2uPas5ecULU" role="1Dx9rD">
+        <property role="1Dx9K7" value="Each User have optional localName - name of user that was set by current user and can be changed" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481255583" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="any time by calling EditUserLocalName method." />
+      <node concept="1Dx9M1" id="2uPas5ecV2v" role="1Dx9rD">
+        <property role="1Dx9K7" value="any time by calling EditUserLocalName method." />
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiComment" typeId="tsp6.4689615199750788559" id="803735062395511462" nodeInfo="ng">
-        <property name="text" nameId="tsp6.4689615199750789856" value="Model" />
+      <node concept="NvWBy" id="GBscvBB6aA" role="2m5mJr">
+        <property role="NvWrd" value="Model" />
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Enum" typeId="tsp6.2348480312264620144" id="803735062394850075" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Sex" />
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="803735062394850077" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="Unknown" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="1" />
+      <node concept="2m488m" id="GBscvB$$Gr" role="2m5mJr">
+        <property role="TrG5h" value="Sex" />
+        <node concept="2m7y0F" id="GBscvB$$Gt" role="2m7ymf">
+          <property role="TrG5h" value="Unknown" />
+          <property role="2m7y0m" value="1" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="803735062394850085" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="Male" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="2" />
+        <node concept="2m7y0F" id="GBscvB$$G_" role="2m7ymf">
+          <property role="TrG5h" value="Male" />
+          <property role="2m7y0m" value="2" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="803735062394850093" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="Female" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="3" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Enum" typeId="tsp6.2348480312264620144" id="1769186940502050025" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserState" />
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="1769186940502050027" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="Registered" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="1" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="1769186940502050212" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="Email" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="2" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="1769186940502050215" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="Deleted" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="3" />
+        <node concept="2m7y0F" id="GBscvB$$GH" role="2m7ymf">
+          <property role="TrG5h" value="Female" />
+          <property role="2m7y0m" value="3" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="1769186940501808347" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Phone" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940501810215" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Extendend phone information" />
+      <node concept="2m488m" id="1ydqyopSCjD" role="2m5mJr">
+        <property role="TrG5h" value="UserState" />
+        <node concept="2m7y0F" id="1ydqyopSCjF" role="2m7ymf">
+          <property role="TrG5h" value="Registered" />
+          <property role="2m7y0m" value="1" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940501811992" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Phone number in international format" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940501808427" resolveInfo="phone" />
+        <node concept="2m7y0F" id="1ydqyopSCm$" role="2m7ymf">
+          <property role="TrG5h" value="Email" />
+          <property role="2m7y0m" value="2" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940501812000" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Title of phone" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940501808434" resolveInfo="phoneTitle" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502077870" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="id" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502077881" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502077884" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="1769186940502077894" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501808427" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="phone" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="1769186940501808431" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501808434" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="phoneTitle" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="1769186940501808440" nodeInfo="ng" />
+        <node concept="2m7y0F" id="1ydqyopSCmB" role="2m7ymf">
+          <property role="TrG5h" value="Deleted" />
+          <property role="2m7y0m" value="3" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="1769186940501814037" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Email" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940501814143" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Extendend email information" />
+      <node concept="2m5naR" id="1ydqyopRHjr" role="2m5mJr">
+        <property role="TrG5h" value="Phone" />
+        <node concept="NXeRC" id="1ydqyopRHKB" role="NXodf">
+          <property role="NXePf" value="Extendend phone information" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940501814149" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Email" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940501814125" resolveInfo="email" />
+        <node concept="NX1gA" id="1ydqyopRIco" role="NXodf">
+          <property role="NX6R2" value="Phone number in international format" />
+          <ref role="NX6Kv" node="1ydqyopRHkF" resolve="phone" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940501814157" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Descruption of email" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940501814132" resolveInfo="emailTitle" />
+        <node concept="NX1gA" id="1ydqyopRIcw" role="NXodf">
+          <property role="NX6R2" value="Title of phone" />
+          <ref role="NX6Kv" node="1ydqyopRHkM" resolve="phoneTitle" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502079795" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="id" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502079803" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSJ6I" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="1ydqyopSJ6T" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502079806" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="1769186940502079816" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSJ6W" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="1ydqyopSJ76" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501814125" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="email" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="1769186940501814129" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopRHkF" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="phone" />
+          <node concept="2m5ndQ" id="1ydqyopRHkJ" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501814132" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="emailTitle" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="1769186940501814138" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopRHkM" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="phoneTitle" />
+          <node concept="2m5ndX" id="1ydqyopRHkS" role="2m7DVh" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395368173" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="User" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390731201" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Main user object" />
+      <node concept="2m5naR" id="1ydqyopRIGl" role="2m5mJr">
+        <property role="TrG5h" value="Email" />
+        <node concept="NXeRC" id="1ydqyopRIHZ" role="NXodf">
+          <property role="NXePf" value="Extendend email information" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390734043" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="uid" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395368232" resolveInfo="id" />
+        <node concept="NX1gA" id="1ydqyopRII5" role="NXodf">
+          <property role="NX6R2" value="Email" />
+          <ref role="NX6Kv" node="1ydqyopRIHH" resolve="email" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390736877" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's access hash" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395368239" resolveInfo="accessHash" />
+        <node concept="NX1gA" id="1ydqyopRIId" role="NXodf">
+          <property role="NX6R2" value="Descruption of email" />
+          <ref role="NX6Kv" node="1ydqyopRIHO" resolve="emailTitle" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390739715" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's name" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395368248" resolveInfo="name" />
+        <node concept="2m7Kf5" id="1ydqyopSJ$N" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="1ydqyopSJ$V" role="2m7DVh" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390748217" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's local name" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395368259" resolveInfo="localName" />
+        <node concept="2m7Kf5" id="1ydqyopSJ$Y" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="1ydqyopSJ_8" role="2m7DVh" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390756727" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="optional sex of user" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395368278" resolveInfo="sex" />
+        <node concept="2m7Kf5" id="1ydqyopRIHH" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="email" />
+          <node concept="2m5ndX" id="1ydqyopRIHL" role="2m7DVh" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390762508" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="key hashes of user" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511102" resolveInfo="keyHashes" />
+        <node concept="2m7Kf5" id="1ydqyopRIHO" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="emailTitle" />
+          <node concept="2m5ndX" id="1ydqyopRIHU" role="2m7DVh" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390768198" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="[DEPRECATED] Phone number of user" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511130" resolveInfo="phone" />
+      </node>
+      <node concept="2m5naR" id="GBscvBAzbH" role="2m5mJr">
+        <property role="TrG5h" value="User" />
+        <node concept="NXeRC" id="EUEXKTmbn1" role="NXodf">
+          <property role="NXePf" value="Main user object" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390773896" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="avatar of user" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511152" resolveInfo="avatar" />
+        <node concept="NX1gA" id="EUEXKTmc3r" role="NXodf">
+          <property role="NX6R2" value="uid" />
+          <ref role="NX6Kv" node="GBscvBAzcC" resolve="id" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940501825272" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="phones of user" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940501817724" resolveInfo="phones" />
+        <node concept="NX1gA" id="EUEXKTmcJH" role="NXodf">
+          <property role="NX6R2" value="user's access hash" />
+          <ref role="NX6Kv" node="GBscvBAzcJ" resolve="accessHash" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940501825296" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="emails of user" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940501817764" resolveInfo="emails" />
+        <node concept="NX1gA" id="EUEXKTmds3" role="NXodf">
+          <property role="NX6R2" value="user's name" />
+          <ref role="NX6Kv" node="GBscvBAzcS" resolve="name" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395368232" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="id" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395368236" nodeInfo="ng" />
+        <node concept="NX1gA" id="EUEXKTmfwT" role="NXodf">
+          <property role="NX6R2" value="user's local name" />
+          <ref role="NX6Kv" node="GBscvBAzd3" resolve="localName" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395368239" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395368245" nodeInfo="ng" />
+        <node concept="NX1gA" id="EUEXKTmh_R" role="NXodf">
+          <property role="NX6R2" value="optional sex of user" />
+          <ref role="NX6Kv" node="GBscvBAzdm" resolve="sex" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395368248" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="name" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395368256" nodeInfo="ng" />
+        <node concept="NX1gA" id="EUEXKTmj0c" role="NXodf">
+          <property role="NX6R2" value="key hashes of user" />
+          <ref role="NX6Kv" node="GBscvBB64Y" resolve="keyHashes" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395368259" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="localName" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395368269" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395368275" nodeInfo="ng" />
+        <node concept="NX1gA" id="EUEXKTmkp6" role="NXodf">
+          <property role="NX6R2" value="[DEPRECATED] Phone number of user" />
+          <ref role="NX6Kv" node="GBscvBB65q" resolve="phone" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmlM8" role="NXodf">
+          <property role="NX6R2" value="avatar of user" />
+          <ref role="NX6Kv" node="GBscvBB65K" resolve="avatar" />
+        </node>
+        <node concept="NX1gA" id="1ydqyopRLrS" role="NXodf">
+          <property role="NX6R2" value="phones of user" />
+          <ref role="NX6Kv" node="1ydqyopRJ_W" resolve="phones" />
+        </node>
+        <node concept="NX1gA" id="1ydqyopRLsg" role="NXodf">
+          <property role="NX6R2" value="emails of user" />
+          <ref role="NX6Kv" node="1ydqyopRJA$" resolve="emails" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBAzcC" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="GBscvBAzcG" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBAzcJ" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="GBscvBAzcP" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBAzcS" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="GBscvBAzd0" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBAzd3" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="localName" />
+          <node concept="2m5nlT" id="GBscvBAzdd" role="2m7DVh">
+            <node concept="2m5ndX" id="GBscvBAzdj" role="3GH5xg" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395368278" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="sex" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395368291" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.EnumType" typeId="tsp6.803735062395368411" id="803735062395511055" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.803735062395368531" targetNodeId="803735062394850075" resolveInfo="Sex" />
+        <node concept="2m7Kf5" id="GBscvBAzdm" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="sex" />
+          <node concept="2m5nlT" id="GBscvBAzdz" role="2m7DVh">
+            <node concept="3GJkcs" id="GBscvBB64f" role="3GH5xg">
+              <ref role="3GJkik" node="GBscvB$$Gr" resolve="Sex" />
             </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511102" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="keyHashes" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395511121" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395511127" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB64Y" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="keyHashes" />
+          <node concept="2m5nlk" id="GBscvBB65h" role="2m7DVh">
+            <node concept="2m5ndQ" id="GBscvBB65n" role="3GJlyp" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511130" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="7" />
-          <property name="name" nameId="tpck.1169194664001" value="phone" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395511149" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB65q" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="phone" />
+          <node concept="2m5ndQ" id="GBscvBB65H" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511152" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="8" />
-          <property name="name" nameId="tpck.1169194664001" value="avatar" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395511173" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395525667" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850407" resolveInfo="Avatar" />
+        <node concept="2m7Kf5" id="GBscvBB65K" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="avatar" />
+          <node concept="2m5nlT" id="GBscvBB665" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBB9Cz" role="3GH5xg">
+              <ref role="2m5mJy" node="GBscvB$$LB" resolve="Avatar" />
             </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501817724" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="9" />
-          <property name="name" nameId="tpck.1169194664001" value="phones" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="1769186940501817755" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502087432" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopRJ_W" role="2m0hLx">
+          <property role="2m7DUN" value="9" />
+          <property role="TrG5h" value="phones" />
+          <node concept="2m5nlk" id="1ydqyopRJAr" role="2m7DVh">
+            <node concept="2m5ndE" id="1ydqyopSLs8" role="3GJlyp" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501817764" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="10" />
-          <property name="name" nameId="tpck.1169194664001" value="emails" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="1769186940501817791" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502087436" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopRJA$" role="2m0hLx">
+          <property role="2m7DUN" value="10" />
+          <property role="TrG5h" value="emails" />
+          <node concept="2m5nlk" id="1ydqyopRJAZ" role="2m7DVh">
+            <node concept="2m5ndE" id="1ydqyopSLsc" role="3GJlyp" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502053985" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="11" />
-          <property name="name" nameId="tpck.1169194664001" value="userState" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.EnumType" typeId="tsp6.803735062395368411" id="1769186940502054015" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.803735062395368531" targetNodeId="1769186940502050025" resolveInfo="UserState" />
+        <node concept="2m7Kf5" id="1ydqyopSDhx" role="2m0hLx">
+          <property role="2m7DUN" value="11" />
+          <property role="TrG5h" value="userState" />
+          <node concept="3GJkcs" id="1ydqyopSDhZ" role="2m7DVh">
+            <ref role="3GJkik" node="1ydqyopSCjD" resolve="UserState" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395549318" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EditUserLocalName" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389887323" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Renaming of user's visible name" />
+      <node concept="2m6fVq" id="GBscvBBfq6" role="2m5mJr">
+        <property role="TrG5h" value="EditUserLocalName" />
+        <node concept="1D$$RI" id="EUEXKTiXlr" role="2uGzQp">
+          <property role="1D$E9h" value="Renaming of user's visible name" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389888669" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="target User's uid" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395549367" resolveInfo="uid" />
+        <node concept="2uJ1As" id="EUEXKTiXEt" role="2uGzQp">
+          <property role="2uJhrd" value="target User's uid" />
+          <ref role="2uJhvL" node="GBscvBBfqR" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389891165" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="User's accessHash" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395549374" resolveInfo="accessHash" />
+        <node concept="2uJ1As" id="EUEXKTiYht" role="2uGzQp">
+          <property role="2uJhrd" value="User's accessHash" />
+          <ref role="2uJhvL" node="GBscvBBfqY" resolve="accessHash" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389893665" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="New user name" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395549383" resolveInfo="name" />
+        <node concept="2uJ1As" id="EUEXKTiYSx" role="2uGzQp">
+          <property role="2uJhrd" value="New user name" />
+          <ref role="2uJhvL" node="GBscvBBfr7" resolve="name" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395549367" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395549371" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBfqR" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBfqV" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395549374" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395549380" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBfqY" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="GBscvBBfr4" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395549383" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="name" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395549391" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBfr7" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="GBscvBBfrf" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395549319" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="60" />
+        <node concept="Nu42z" id="GBscvBBfq7" role="NuuwV">
+          <property role="Nu42W" value="60" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395549394" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513212" resolveInfo="Seq" />
+        <node concept="2m1Rp1" id="GBscvBBfri" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395550597" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserAvatarChanged" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390672559" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about avatar changed" />
+      <node concept="NpBTk" id="GBscvBBfI5" role="2m5mJr">
+        <property role="TrG5h" value="UserAvatarChanged" />
+        <node concept="NXeRC" id="EUEXKTlX2J" role="NXp_2">
+          <property role="NXePf" value="Update about avatar changed" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390674055" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's uid" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395550652" resolveInfo="uid" />
+        <node concept="NX1gA" id="EUEXKTlXq7" role="NXp_2">
+          <property role="NX6R2" value="user's uid" />
+          <ref role="NX6Kv" node="GBscvBBfIW" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390676843" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's new avatar" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395550659" resolveInfo="avatar" />
+        <node concept="NX1gA" id="EUEXKTlY5F" role="NXp_2">
+          <property role="NX6R2" value="user's new avatar" />
+          <ref role="NX6Kv" node="GBscvBBfJ3" resolve="avatar" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395550652" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395550656" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBfIW" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBfJ0" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395550659" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="avatar" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395550665" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395550671" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850407" resolveInfo="Avatar" />
+        <node concept="2m7Kf5" id="GBscvBBfJ3" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="avatar" />
+          <node concept="2m5nlT" id="GBscvBBfJ9" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBfJf" role="3GH5xg">
+              <ref role="2m5mJy" node="GBscvB$$LB" resolve="Avatar" />
             </node>
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395550598" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="10" />
+        <node concept="Nu42z" id="GBscvBBfI6" role="NuuwV">
+          <property role="Nu42W" value="10" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395550733" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserNameChanged" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390682616" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about name changed" />
+      <node concept="NpBTk" id="GBscvBBfKd" role="2m5mJr">
+        <property role="TrG5h" value="UserNameChanged" />
+        <node concept="NXeRC" id="EUEXKTlZvS" role="NXp_2">
+          <property role="NXePf" value="Update about name changed" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390682622" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's uid" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395550795" resolveInfo="uid" />
+        <node concept="NX1gA" id="EUEXKTlZvY" role="NXp_2">
+          <property role="NX6R2" value="user's uid" />
+          <ref role="NX6Kv" node="GBscvBBfLb" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390685416" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's name" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395550802" resolveInfo="name" />
+        <node concept="NX1gA" id="EUEXKTm0bC" role="NXp_2">
+          <property role="NX6R2" value="user's name" />
+          <ref role="NX6Kv" node="GBscvBBfLi" resolve="name" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395550795" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395550799" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBfLb" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBfLf" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395550802" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="name" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395550808" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBfLi" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="GBscvBBfLo" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395550734" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="20" />
+        <node concept="Nu42z" id="GBscvBBfKe" role="NuuwV">
+          <property role="Nu42W" value="20" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395550876" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserLocalNameChanged" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390689702" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about local name changed" />
+      <node concept="NpBTk" id="GBscvBBfMs" role="2m5mJr">
+        <property role="TrG5h" value="UserLocalNameChanged" />
+        <node concept="NXeRC" id="EUEXKTm1eA" role="NXp_2">
+          <property role="NXePf" value="Update about local name changed" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390691200" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's uid" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395550944" resolveInfo="uid" />
+        <node concept="NX1gA" id="EUEXKTm1A0" role="NXp_2">
+          <property role="NX6R2" value="user's uid" />
+          <ref role="NX6Kv" node="GBscvBBfNw" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390694000" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="new user's local name" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395550951" resolveInfo="localName" />
+        <node concept="NX1gA" id="EUEXKTm2hK" role="NXp_2">
+          <property role="NX6R2" value="new user's local name" />
+          <ref role="NX6Kv" node="GBscvBBfNB" resolve="localName" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395550944" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395550948" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBfNw" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBfN$" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395550951" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="localName" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395550957" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395550963" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBfNB" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="localName" />
+          <node concept="2m5nlT" id="GBscvBBfNH" role="2m7DVh">
+            <node concept="2m5ndX" id="GBscvBBfNN" role="3GH5xg" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395550877" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="33" />
+        <node concept="Nu42z" id="GBscvBBfMt" role="NuuwV">
+          <property role="Nu42W" value="33" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="1769186940502010469" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserPhoneAdded" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940502023242" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about phone added to user" />
+      <node concept="NpBTk" id="1ydqyopSuD_" role="2m5mJr">
+        <property role="TrG5h" value="UserPhoneAdded" />
+        <node concept="NXeRC" id="1ydqyopSxLa" role="NXp_2">
+          <property role="NXePf" value="Update about phone added to user" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502025115" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502010589" resolveInfo="uid" />
+        <node concept="NX1gA" id="1ydqyopSyer" role="NXp_2">
+          <property role="NX6R2" value="user's id" />
+          <ref role="NX6Kv" node="1ydqyopSuFt" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502025123" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="added phone id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502010596" resolveInfo="phoneId" />
+        <node concept="NX1gA" id="1ydqyopSyez" role="NXp_2">
+          <property role="NX6R2" value="added phone id" />
+          <ref role="NX6Kv" node="1ydqyopSuF$" resolve="phoneId" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502010589" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502010593" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSuFt" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="1ydqyopSuFx" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502010596" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="phoneId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502089342" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSuF$" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="phoneId" />
+          <node concept="2m5ndE" id="1ydqyopSLTY" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940502010470" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="57" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="1769186940502012571" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserPhoneRemoved" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940502027011" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about phone removed from user" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502028888" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502012699" resolveInfo="uid" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502028896" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="removed phone id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502012706" resolveInfo="phoneId" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502012699" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502012703" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502012706" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="phoneId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502091252" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940502012572" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="58" />
+        <node concept="Nu42z" id="1ydqyopSuDA" role="NuuwV">
+          <property role="Nu42W" value="57" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="1769186940502014682" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="PhoneTitleChanged" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940502030776" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about phone title changed" />
+      <node concept="NpBTk" id="1ydqyopSvar" role="2m5mJr">
+        <property role="TrG5h" value="UserPhoneRemoved" />
+        <node concept="NXeRC" id="1ydqyopSyG3" role="NXp_2">
+          <property role="NXePf" value="Update about phone removed from user" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502030790" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="phone number" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502014823" resolveInfo="phoneId" />
+        <node concept="NX1gA" id="1ydqyopSz9o" role="NXp_2">
+          <property role="NX6R2" value="user's id" />
+          <ref role="NX6Kv" node="1ydqyopSvcr" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502030800" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="new title for phone" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502014832" resolveInfo="title" />
+        <node concept="NX1gA" id="1ydqyopSz9w" role="NXp_2">
+          <property role="NX6R2" value="removed phone id" />
+          <ref role="NX6Kv" node="1ydqyopSvcy" resolve="phoneId" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502014823" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="phoneId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502095055" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSvcr" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="1ydqyopSvcv" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502014832" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="title" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="1769186940502014840" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSvcy" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="phoneId" />
+          <node concept="2m5ndE" id="1ydqyopSMnO" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940502014683" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="59" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="1769186940502126275" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="PhoneMoved" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940502130748" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about phone move" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502130754" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Phone number id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502126475" resolveInfo="phoneId" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502130762" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="new uid for phone" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502126482" resolveInfo="uid" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502126475" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="phoneId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502126479" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502126482" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502126488" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940502126276" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="65" />
+        <node concept="Nu42z" id="1ydqyopSvas" role="NuuwV">
+          <property role="Nu42W" value="58" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="1769186940502016826" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserEmailAdded" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940502032685" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about email added to user" />
+      <node concept="NpBTk" id="1ydqyopSvFq" role="2m5mJr">
+        <property role="TrG5h" value="PhoneTitleChanged" />
+        <node concept="NXeRC" id="1ydqyopSzAS" role="NXp_2">
+          <property role="NXePf" value="Update about phone title changed" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502032691" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502016968" resolveInfo="uid" />
+        <node concept="NX1gA" id="1ydqyopSzB6" role="NXp_2">
+          <property role="NX6R2" value="phone number" />
+          <ref role="NX6Kv" node="1ydqyopSvHB" resolve="phoneId" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502032699" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="added email id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502016975" resolveInfo="emailId" />
+        <node concept="NX1gA" id="1ydqyopSzBg" role="NXp_2">
+          <property role="NX6R2" value="new title for phone" />
+          <ref role="NX6Kv" node="1ydqyopSvHK" resolve="title" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502016968" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502016972" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSvHB" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="phoneId" />
+          <node concept="2m5ndE" id="1ydqyopSNjf" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502016975" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="emailId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502096958" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSvHK" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="1ydqyopSvHS" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940502016827" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="60" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="1769186940502017142" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserEmailRemoved" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940502038365" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about email removed from user" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502038371" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502017292" resolveInfo="uid" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502040262" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="removed email id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502017299" resolveInfo="emailId" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502017292" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502017296" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502017299" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="emailId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502098865" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940502017143" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="61" />
+        <node concept="Nu42z" id="1ydqyopSvFr" role="NuuwV">
+          <property role="Nu42W" value="59" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="1769186940502019325" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EmailTitleChanged" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940502042153" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about email title changed" />
+      <node concept="NpBTk" id="1ydqyopSUV3" role="2m5mJr">
+        <property role="TrG5h" value="PhoneMoved" />
+        <node concept="NXeRC" id="1ydqyopSW0W" role="NXp_2">
+          <property role="NXePf" value="Update about phone move" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502042167" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="email id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502019488" resolveInfo="emailId" />
+        <node concept="NX1gA" id="1ydqyopSW12" role="NXp_2">
+          <property role="NX6R2" value="Phone number id" />
+          <ref role="NX6Kv" node="1ydqyopSUYb" resolve="phoneId" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502042177" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="new title for email" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502019497" resolveInfo="title" />
+        <node concept="NX1gA" id="1ydqyopSW1a" role="NXp_2">
+          <property role="NX6R2" value="new uid for phone" />
+          <ref role="NX6Kv" node="1ydqyopSUYi" resolve="uid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502019488" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="emailId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502100765" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSUYb" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="phoneId" />
+          <node concept="2m5ndE" id="1ydqyopSUYf" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502019497" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="title" />
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="1769186940502019505" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSUYi" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="1ydqyopSUYo" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940502019326" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="62" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="1769186940502128606" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EmailMoved" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940502130777" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about email move from one user to another" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502130783" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Email id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502128812" resolveInfo="emailId" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502130791" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="new uid for email" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502128819" resolveInfo="uid" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502128812" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="emailId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502128816" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502128819" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502128825" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940502128607" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="66" />
+        <node concept="Nu42z" id="1ydqyopSUV4" role="NuuwV">
+          <property role="Nu42W" value="65" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="1769186940501819688" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserContactsChanged" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940501819834" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about contact information change" />
+      <node concept="NpBTk" id="1ydqyopSwcU" role="2m5mJr">
+        <property role="TrG5h" value="UserEmailAdded" />
+        <node concept="NXeRC" id="1ydqyopS$4H" role="NXp_2">
+          <property role="NXePf" value="Update about email added to user" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940501823436" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's uid" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940501819792" resolveInfo="uid" />
+        <node concept="NX1gA" id="1ydqyopS$4N" role="NXp_2">
+          <property role="NX6R2" value="user's id" />
+          <ref role="NX6Kv" node="1ydqyopSwf8" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940501823444" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="new phones list" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940501819799" resolveInfo="phones" />
+        <node concept="NX1gA" id="1ydqyopS$4V" role="NXp_2">
+          <property role="NX6R2" value="added email id" />
+          <ref role="NX6Kv" node="1ydqyopSwff" resolve="emailId" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940501823454" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="new emails list" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940501819814" resolveInfo="emails" />
+        <node concept="2m7Kf5" id="1ydqyopSwf8" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="1ydqyopSwfc" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501819792" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940501819796" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSwff" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="emailId" />
+          <node concept="2m5ndE" id="1ydqyopSNKY" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501819799" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="phones" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="1769186940501819805" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502102665" nodeInfo="ng" />
+        <node concept="Nu42z" id="1ydqyopSwcV" role="NuuwV">
+          <property role="Nu42W" value="60" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="1ydqyopSwhQ" role="2m5mJr">
+        <property role="TrG5h" value="UserEmailRemoved" />
+        <node concept="NXeRC" id="1ydqyopS_tt" role="NXp_2">
+          <property role="NXePf" value="Update about email removed from user" />
+        </node>
+        <node concept="NX1gA" id="1ydqyopS_tz" role="NXp_2">
+          <property role="NX6R2" value="user's id" />
+          <ref role="NX6Kv" node="1ydqyopSwkc" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="1ydqyopS_V6" role="NXp_2">
+          <property role="NX6R2" value="removed email id" />
+          <ref role="NX6Kv" node="1ydqyopSwkj" resolve="emailId" />
+        </node>
+        <node concept="2m7Kf5" id="1ydqyopSwkc" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="1ydqyopSwkg" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1ydqyopSwkj" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="emailId" />
+          <node concept="2m5ndE" id="1ydqyopSOeL" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="1ydqyopSwhR" role="NuuwV">
+          <property role="Nu42W" value="61" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="1ydqyopSwNX" role="2m5mJr">
+        <property role="TrG5h" value="EmailTitleChanged" />
+        <node concept="NXeRC" id="1ydqyopSAoD" role="NXp_2">
+          <property role="NXePf" value="Update about email title changed" />
+        </node>
+        <node concept="NX1gA" id="1ydqyopSAoR" role="NXp_2">
+          <property role="NX6R2" value="email id" />
+          <ref role="NX6Kv" node="1ydqyopSwQw" resolve="emailId" />
+        </node>
+        <node concept="NX1gA" id="1ydqyopSAp1" role="NXp_2">
+          <property role="NX6R2" value="new title for email" />
+          <ref role="NX6Kv" node="1ydqyopSwQD" resolve="title" />
+        </node>
+        <node concept="2m7Kf5" id="1ydqyopSwQw" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="emailId" />
+          <node concept="2m5ndE" id="1ydqyopSOGt" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1ydqyopSwQD" role="2m0hLx">
+          <property role="TrG5h" value="title" />
+          <property role="2m7DUN" value="2" />
+          <node concept="2m5ndX" id="1ydqyopSwQL" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="1ydqyopSwNY" role="NuuwV">
+          <property role="Nu42W" value="62" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="1ydqyopSVvu" role="2m5mJr">
+        <property role="TrG5h" value="EmailMoved" />
+        <node concept="NXeRC" id="1ydqyopSW1p" role="NXp_2">
+          <property role="NXePf" value="Update about email move from one user to another" />
+        </node>
+        <node concept="NX1gA" id="1ydqyopSW1v" role="NXp_2">
+          <property role="NX6R2" value="Email id" />
+          <ref role="NX6Kv" node="1ydqyopSVyG" resolve="emailId" />
+        </node>
+        <node concept="NX1gA" id="1ydqyopSW1B" role="NXp_2">
+          <property role="NX6R2" value="new uid for email" />
+          <ref role="NX6Kv" node="1ydqyopSVyN" resolve="uid" />
+        </node>
+        <node concept="2m7Kf5" id="1ydqyopSVyG" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="emailId" />
+          <node concept="2m5ndE" id="1ydqyopSVyK" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1ydqyopSVyN" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="1ydqyopSVyT" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="1ydqyopSVvv" role="NuuwV">
+          <property role="Nu42W" value="66" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="1ydqyopRK4C" role="2m5mJr">
+        <property role="TrG5h" value="UserContactsChanged" />
+        <node concept="NXeRC" id="1ydqyopRK6U" role="NXp_2">
+          <property role="NXePf" value="Update about contact information change" />
+        </node>
+        <node concept="NX1gA" id="1ydqyopRKZc" role="NXp_2">
+          <property role="NX6R2" value="user's uid" />
+          <ref role="NX6Kv" node="1ydqyopRK6g" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="1ydqyopRKZk" role="NXp_2">
+          <property role="NX6R2" value="new phones list" />
+          <ref role="NX6Kv" node="1ydqyopRK6n" resolve="phones" />
+        </node>
+        <node concept="NX1gA" id="1ydqyopRKZu" role="NXp_2">
+          <property role="NX6R2" value="new emails list" />
+          <ref role="NX6Kv" node="1ydqyopRK6A" resolve="emails" />
+        </node>
+        <node concept="2m7Kf5" id="1ydqyopRK6g" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="1ydqyopRK6k" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1ydqyopRK6n" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="phones" />
+          <node concept="2m5nlk" id="1ydqyopRK6t" role="2m7DVh">
+            <node concept="2m5ndE" id="1ydqyopSPa9" role="3GJlyp" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501819814" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="emails" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="1769186940501819823" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502102668" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopRK6A" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="emails" />
+          <node concept="2m5nlk" id="1ydqyopRK6J" role="2m7DVh">
+            <node concept="2m5ndE" id="1ydqyopSPac" role="3GJlyp" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940501819689" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="56" />
+        <node concept="Nu42z" id="1ydqyopRK4D" role="NuuwV">
+          <property role="Nu42W" value="56" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="1769186940502067557" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserStateChanged" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940502067767" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about user state changed" />
+      <node concept="NpBTk" id="1ydqyopSG__" role="2m5mJr">
+        <property role="TrG5h" value="UserStateChanged" />
+        <node concept="NXeRC" id="1ydqyopSGCR" role="NXp_2">
+          <property role="NXePf" value="Update about user state changed" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502067773" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="user's id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502067749" resolveInfo="uid" />
+        <node concept="NX1gA" id="1ydqyopSGCX" role="NXp_2">
+          <property role="NX6R2" value="user's id" />
+          <ref role="NX6Kv" node="1ydqyopSGC_" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502067781" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="new user state" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502067756" resolveInfo="state" />
+        <node concept="NX1gA" id="1ydqyopSGD5" role="NXp_2">
+          <property role="NX6R2" value="new user state" />
+          <ref role="NX6Kv" node="1ydqyopSGCG" resolve="state" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502067749" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502067753" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSGC_" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="1ydqyopSGCD" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502067756" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.EnumType" typeId="tsp6.803735062395368411" id="1769186940502067762" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.803735062395368531" targetNodeId="1769186940502050025" resolveInfo="UserState" />
+        <node concept="2m7Kf5" id="1ydqyopSGCG" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="state" />
+          <node concept="3GJkcs" id="1ydqyopSGCM" role="2m7DVh">
+            <ref role="3GJkik" node="1ydqyopSCjD" resolve="UserState" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940502067558" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="64" />
+        <node concept="Nu42z" id="1ydqyopSG_A" role="NuuwV">
+          <property role="Nu42W" value="64" />
         </node>
       </node>
     </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395635838" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Profile" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="profile" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395636765" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EditName" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389895016" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Changing account's name" />
+    <node concept="2m5mJO" id="GBscvBB$xY" role="2m5lHt">
+      <property role="TrG5h" value="Profile" />
+      <property role="3XOG$Z" value="profile" />
+      <node concept="2m6fVq" id="GBscvBB$Kt" role="2m5mJr">
+        <property role="TrG5h" value="EditName" />
+        <node concept="1D$$RI" id="EUEXKTiZdC" role="2uGzQp">
+          <property role="1D$E9h" value="Changing account's name" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389895022" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="New name" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395636773" resolveInfo="name" />
+        <node concept="2uJ1As" id="EUEXKTiZdI" role="2uGzQp">
+          <property role="2uJhrd" value="New name" />
+          <ref role="2uJhvL" node="GBscvBB$K_" resolve="name" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395636773" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="name" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395636777" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB$K_" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="GBscvBB$KD" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395636766" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="35" />
+        <node concept="Nu42z" id="GBscvBB$Ku" role="NuuwV">
+          <property role="Nu42W" value="35" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395636780" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513212" resolveInfo="Seq" />
+        <node concept="2m1Rp1" id="GBscvBB$KG" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395636790" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EditAvatar" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395636803" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="fileLocation" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395636807" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850146" resolveInfo="FileLocation" />
+      <node concept="2m6fVq" id="GBscvBB$KQ" role="2m5mJr">
+        <property role="TrG5h" value="EditAvatar" />
+        <node concept="2m7Kf5" id="GBscvBB$L3" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="fileLocation" />
+          <node concept="2m5mGg" id="GBscvBB$L7" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvB$$Hy" resolve="FileLocation" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395636791" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="1F" />
+        <node concept="Nu42z" id="GBscvBB$KR" role="NuuwV">
+          <property role="Nu42W" value="1F" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389895026" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Changing account's avatar" />
+        <node concept="1D$$RI" id="EUEXKTiZdM" role="2uGzQp">
+          <property role="1D$E9h" value="Changing account's avatar" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389895031" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="File Location of uploaded unencrypted avatar" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395636803" resolveInfo="fileLocation" />
+        <node concept="2uJ1As" id="EUEXKTiZdR" role="2uGzQp">
+          <property role="2uJhrd" value="File Location of uploaded unencrypted avatar" />
+          <ref role="2uJhvL" node="GBscvBB$L3" resolve="fileLocation" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="2873759689078768322" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078768327" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="avatar" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="2873759689078768331" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850407" resolveInfo="Avatar" />
+        <node concept="2m1R6W" id="2vxDjoto8b2" role="2m6efq">
+          <node concept="2m7Kf5" id="2vxDjoto8b7" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="avatar" />
+            <node concept="2m5mGg" id="2vxDjoto8bb" role="2m7DVh">
+              <ref role="2m5mJy" node="GBscvB$$LB" resolve="Avatar" />
             </node>
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078768334" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-            <property name="name" nameId="tpck.1169194664001" value="seq" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="2873759689078768340" nodeInfo="ng" />
+          <node concept="2m7Kf5" id="2vxDjoto8be" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="seq" />
+            <node concept="2m5ndE" id="2vxDjoto8bk" role="2m7DVh" />
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078768343" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-            <property name="name" nameId="tpck.1169194664001" value="state" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078768351" nodeInfo="ng">
-              <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5857873509721457697" resolveInfo="seq_state" />
+          <node concept="2m7Kf5" id="2vxDjoto8bn" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="state" />
+            <node concept="wb0Ql" id="2vxDjoto8bv" role="2m7DVh">
+              <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
             </node>
           </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="2873759689078768323" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="67" />
+          <node concept="Nu42z" id="2vxDjoto8b3" role="NuuwV">
+            <property role="Nu42W" value="67" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395637760" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="RemoveAvatar" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389897537" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Removing account's avatar" />
+      <node concept="2m6fVq" id="GBscvBB_00" role="2m5mJr">
+        <property role="TrG5h" value="RemoveAvatar" />
+        <node concept="1D$$RI" id="EUEXKTiZP1" role="2uGzQp">
+          <property role="1D$E9h" value="Removing account's avatar" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395637761" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="5B" />
+        <node concept="Nu42z" id="GBscvBB_01" role="NuuwV">
+          <property role="Nu42W" value="5B" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395637778" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513212" resolveInfo="Seq" />
+        <node concept="2m1Rp1" id="GBscvBB_0i" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="1769186940501704358" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SendEmailCode" />
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="1769186940501782668" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="500" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="INVALID_EMAIL_FORMAT" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Invalid email" />
+      <node concept="2m6fVq" id="1ydqyopRjUA" role="2m5mJr">
+        <property role="TrG5h" value="SendEmailCode" />
+        <node concept="2uC4CA" id="1ydqyopRB2c" role="2uC9gA">
+          <property role="2uC4DK" value="500" />
+          <property role="2uC4Qe" value="INVALID_EMAIL_FORMAT" />
+          <property role="2uCiSL" value="Invalid email" />
         </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="1769186940501782670" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="500" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="ALREADY_ADDED" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Email already added to account" />
+        <node concept="2uC4CA" id="1ydqyopRB2e" role="2uC9gA">
+          <property role="2uC4DK" value="500" />
+          <property role="2uC4Qe" value="ALREADY_ADDED" />
+          <property role="2uCiSL" value="Email already added to account" />
         </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="1769186940501782673" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="500" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="ALREADY_USED" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Email is already added to some different account" />
+        <node concept="2uC4CA" id="1ydqyopRB2h" role="2uC9gA">
+          <property role="2uC4DK" value="500" />
+          <property role="2uC4Qe" value="ALREADY_USED" />
+          <property role="2uCiSL" value="Email is already added to some different account" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="1769186940501772142" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Sending activation code to email" />
+        <node concept="1D$$RI" id="1ydqyopR$tI" role="2uGzQp">
+          <property role="1D$E9h" value="Sending activation code to email" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="1769186940501784432" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Email for attaching to account" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="1769186940501704391" resolveInfo="email" />
+        <node concept="2uJ1As" id="1ydqyopRBtK" role="2uGzQp">
+          <property role="2uJhrd" value="Email for attaching to account" />
+          <ref role="2uJhvL" node="1ydqyopRjV7" resolve="email" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501704391" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="email" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="1769186940501704395" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopRjV7" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="email" />
+          <node concept="2m5ndX" id="1ydqyopRjVb" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501851875" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="description" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="1769186940501851884" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.String" typeId="tsp6.2348480312264231195" id="1769186940501851890" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopRRVz" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="description" />
+          <node concept="2m5nlT" id="1ydqyopRRVG" role="2m7DVh">
+            <node concept="2m5ndX" id="1ydqyopRRVM" role="3GH5xg" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940501704359" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="78" />
+        <node concept="Nu42z" id="1ydqyopRjUB" role="NuuwV">
+          <property role="Nu42W" value="78" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="1769186940502184053" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="1769186940501834166" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="DetachEmail" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="1769186940501841018" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Detaching email from account" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="1769186940501842835" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Email id for deattach" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="1769186940501834234" resolveInfo="email" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501834234" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="email" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502112320" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502147954" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="1769186940502147960" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940501834167" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="7B" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="1769186940501834241" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513212" resolveInfo="Seq" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="1769186940501834508" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="500" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="INVALID_EMAIL_FORMAT" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Invalid email" />
-        </node>
-        <node role="throws" roleId="tsp6.4092665470043063721" type="tsp6.MethodThrows" typeId="tsp6.4092665470043052969" id="1769186940501841013" nodeInfo="ng">
-          <property name="errorCode" nameId="tsp6.4092665470043053055" value="500" />
-          <property name="errorTag" nameId="tsp6.4092665470043053057" value="UNKNOWN_EMAIL" />
-          <property name="description" nameId="tsp6.4092665470043111358" value="Email is not attached to account" />
+        <node concept="2m1Rp1" id="1ydqyopT91P" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="1769186940501995643" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ChangePhoneTitle" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="1769186940501997562" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Change phone description" />
+      <node concept="2m6fVq" id="1ydqyopRNAQ" role="2m5mJr">
+        <property role="TrG5h" value="DetachEmail" />
+        <node concept="1D$$RI" id="1ydqyopRPhU" role="2uGzQp">
+          <property role="1D$E9h" value="Detaching email from account" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="1769186940502004821" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Phone number id" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="1769186940501995730" resolveInfo="phoneId" />
+        <node concept="2uJ1As" id="1ydqyopRPIj" role="2uGzQp">
+          <property role="2uJhrd" value="Email id for deattach" />
+          <ref role="2uJhvL" node="1ydqyopRNBU" resolve="email" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="1769186940502004854" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="New phone title" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="1769186940502004828" resolveInfo="title" />
+        <node concept="2m7Kf5" id="1ydqyopRNBU" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="email" />
+          <node concept="2m5ndE" id="1ydqyopSRx0" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940501995730" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="phoneId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502108499" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopT0dM" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="1ydqyopT0dS" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502004828" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="title" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="1769186940502004834" nodeInfo="ng" />
+        <node concept="Nu42z" id="1ydqyopRNAR" role="NuuwV">
+          <property role="Nu42W" value="7B" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940501995644" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="7C" />
+        <node concept="2m1Rp1" id="1ydqyopRNC1" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="1769186940501995737" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513212" resolveInfo="Seq" />
+        <node concept="2uC4CA" id="1ydqyopRNGc" role="2uC9gA">
+          <property role="2uC4DK" value="500" />
+          <property role="2uC4Qe" value="INVALID_EMAIL_FORMAT" />
+          <property role="2uCiSL" value="Invalid email" />
+        </node>
+        <node concept="2uC4CA" id="1ydqyopRPhP" role="2uC9gA">
+          <property role="2uC4DK" value="500" />
+          <property role="2uC4Qe" value="UNKNOWN_EMAIL" />
+          <property role="2uCiSL" value="Email is not attached to account" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="1769186940502002890" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ChangeEmailTitle" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="1769186940502002988" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Change email description" />
+      <node concept="2m6fVq" id="1ydqyopSr1V" role="2m5mJr">
+        <property role="TrG5h" value="ChangePhoneTitle" />
+        <node concept="1D$$RI" id="1ydqyopSrvU" role="2uGzQp">
+          <property role="1D$E9h" value="Change phone description" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="1769186940502004846" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Email id" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="1769186940502002976" resolveInfo="emailId" />
+        <node concept="2uJ1As" id="1ydqyopSthl" role="2uGzQp">
+          <property role="2uJhrd" value="Phone number id" />
+          <ref role="2uJhvL" node="1ydqyopSr3i" resolve="phoneId" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="1769186940502004863" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="New email title" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="1769186940502004837" resolveInfo="title" />
+        <node concept="2uJ1As" id="1ydqyopSthQ" role="2uGzQp">
+          <property role="2uJhrd" value="New phone title" />
+          <ref role="2uJhvL" node="1ydqyopSths" resolve="title" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502002976" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="emailId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502108496" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSr3i" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="phoneId" />
+          <node concept="2m5ndE" id="1ydqyopSQ_j" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502004837" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="title" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="1769186940502004843" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSths" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="1ydqyopSthy" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940502002891" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="7D" />
+        <node concept="Nu42z" id="1ydqyopSr1W" role="NuuwV">
+          <property role="Nu42W" value="7C" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="1769186940502002983" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513212" resolveInfo="Seq" />
+        <node concept="2m1Rp1" id="1ydqyopSr3p" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="1ydqyopSsNa" role="2m5mJr">
+        <property role="TrG5h" value="ChangeEmailTitle" />
+        <node concept="1D$$RI" id="1ydqyopSsOG" role="2uGzQp">
+          <property role="1D$E9h" value="Change email description" />
+        </node>
+        <node concept="2uJ1As" id="1ydqyopSthI" role="2uGzQp">
+          <property role="2uJhrd" value="Email id" />
+          <ref role="2uJhvL" node="1ydqyopSsOw" resolve="emailId" />
+        </node>
+        <node concept="2uJ1As" id="1ydqyopSthZ" role="2uGzQp">
+          <property role="2uJhrd" value="New email title" />
+          <ref role="2uJhvL" node="1ydqyopSth_" resolve="title" />
+        </node>
+        <node concept="2m7Kf5" id="1ydqyopSsOw" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="emailId" />
+          <node concept="2m5ndE" id="1ydqyopSQ_g" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1ydqyopSth_" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="1ydqyopSthF" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="1ydqyopSsNb" role="NuuwV">
+          <property role="Nu42W" value="7D" />
+        </node>
+        <node concept="2m1Rp1" id="1ydqyopSsOB" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
       </node>
     </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395551273" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Contacts" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="contacts" />
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481376883" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Before working with contact list is is useful to import contacts from phone first by calling" />
+    <node concept="2m5mJO" id="GBscvBBfSD" role="2m5lHt">
+      <property role="TrG5h" value="Contacts" />
+      <property role="3XOG$Z" value="contacts" />
+      <node concept="1Dx9M1" id="2uPas5edoDN" role="1Dx9rD">
+        <property role="1Dx9K7" value="Before working with contact list is is useful to import contacts from phone first by calling" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481379243" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="method ImportContacts#0x07." />
+      <node concept="1Dx9M1" id="2uPas5edpeF" role="1Dx9rD">
+        <property role="1Dx9K7" value="method ImportContacts#0x07." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481380426" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value=" " />
+      <node concept="1Dx9M1" id="2uPas5edpxa" role="1Dx9rD">
+        <property role="1Dx9K7" value=" " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481380430" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="All phone numbers MUST be preprocessed before import by some library (like libphonenumber)" />
+      <node concept="1Dx9M1" id="2uPas5edpxe" role="1Dx9rD">
+        <property role="1Dx9K7" value="All phone numbers MUST be preprocessed before import by some library (like libphonenumber)" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481381617" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="and build international phone number depending on current users phone and/or locale." />
+      <node concept="1Dx9M1" id="2uPas5edpNL" role="1Dx9rD">
+        <property role="1Dx9K7" value="and build international phone number depending on current users phone and/or locale." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481382806" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value=" " />
+      <node concept="1Dx9M1" id="2uPas5edq6m" role="1Dx9rD">
+        <property role="1Dx9K7" value=" " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481382813" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="For loading contact list from server use GetContacts#0x57. " />
+      <node concept="1Dx9M1" id="2uPas5edq6t" role="1Dx9rD">
+        <property role="1Dx9K7" value="For loading contact list from server use GetContacts#0x57. " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481385191" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="If during this call there are some updates about contact list change" />
+      <node concept="1Dx9M1" id="2uPas5edqFB" role="1Dx9rD">
+        <property role="1Dx9K7" value="If during this call there are some updates about contact list change" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481386386" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="it is recommended to call it again. Also applications need to sync contacts on application start." />
+      <node concept="1Dx9M1" id="2uPas5edqYi" role="1Dx9rD">
+        <property role="1Dx9K7" value="it is recommended to call it again. Also applications need to sync contacts on application start." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481387595" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value=" " />
+      <node concept="1Dx9M1" id="2uPas5edrhb" role="1Dx9rD">
+        <property role="1Dx9K7" value=" " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481386396" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="For searching for users without adding to contacts list use method FindContacts#0x70." />
+      <node concept="1Dx9M1" id="2uPas5edqYs" role="1Dx9rD">
+        <property role="1Dx9K7" value="For searching for users without adding to contacts list use method FindContacts#0x70." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481388810" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value=" " />
+      <node concept="1Dx9M1" id="2uPas5edr$a" role="1Dx9rD">
+        <property role="1Dx9K7" value=" " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481387607" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="For adding/deleting contacts AddContact#0x72 and DeleteContact#0x59." />
+      <node concept="1Dx9M1" id="2uPas5edrhn" role="1Dx9rD">
+        <property role="1Dx9K7" value="For adding/deleting contacts AddContact#0x72 and DeleteContact#0x59." />
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiComment" typeId="tsp6.4689615199750788559" id="803735062395552756" nodeInfo="ng">
-        <property name="text" nameId="tsp6.4689615199750789856" value="Import" />
+      <node concept="NvWBy" id="GBscvBBgfO" role="2m5mJr">
+        <property role="NvWrd" value="Import" />
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395551889" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="PhoneToImport" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="false" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390698295" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Phone for import" />
+      <node concept="2m5naR" id="GBscvBBg2h" role="2m5mJr">
+        <property role="TrG5h" value="PhoneToImport" />
+        <property role="w4tQU" value="false" />
+        <node concept="NXeRC" id="EUEXKTm3kR" role="NXodf">
+          <property role="NXePf" value="Phone for import" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390698301" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="phone number for import in international format" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395551891" resolveInfo="phoneNumber" />
+        <node concept="NX1gA" id="EUEXKTm3kX" role="NXodf">
+          <property role="NX6R2" value="phone number for import in international format" />
+          <ref role="NX6Kv" node="GBscvBBg2j" resolve="phoneNumber" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390701107" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="optional name for contact" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395551898" resolveInfo="name" />
+        <node concept="NX1gA" id="EUEXKTm40N" role="NXodf">
+          <property role="NX6R2" value="optional name for contact" />
+          <ref role="NX6Kv" node="GBscvBBg2q" resolve="name" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395551891" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="phoneNumber" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395551895" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBg2j" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="phoneNumber" />
+          <node concept="2m5ndQ" id="GBscvBBg2n" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395551898" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="name" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395551904" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395551910" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBg2q" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5nlT" id="GBscvBBg2w" role="2m7DVh">
+            <node concept="2m5ndX" id="GBscvBBg2A" role="3GH5xg" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395551921" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EmailToImport" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="false" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390706714" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Email for import" />
+      <node concept="2m5naR" id="GBscvBBg2L" role="2m5mJr">
+        <property role="TrG5h" value="EmailToImport" />
+        <property role="w4tQU" value="false" />
+        <node concept="NXeRC" id="EUEXKTm5oq" role="NXodf">
+          <property role="NXePf" value="Email for import" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390706724" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="email for importing" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395551930" resolveInfo="email" />
+        <node concept="NX1gA" id="EUEXKTm5o$" role="NXodf">
+          <property role="NX6R2" value="email for importing" />
+          <ref role="NX6Kv" node="GBscvBBg2U" resolve="email" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390709536" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="optional name for contact" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395551937" resolveInfo="name" />
+        <node concept="NX1gA" id="EUEXKTm64w" role="NXodf">
+          <property role="NX6R2" value="optional name for contact" />
+          <ref role="NX6Kv" node="GBscvBBg31" resolve="name" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395551930" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="email" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395551934" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBg2U" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="email" />
+          <node concept="2m5ndX" id="GBscvBBg2Y" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395551937" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="name" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395551943" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395551949" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBg31" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5nlT" id="GBscvBBg37" role="2m7DVh">
+            <node concept="2m5ndX" id="GBscvBBg3d" role="3GH5xg" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395552286" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ImportContacts" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389898890" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Importing phones and emails for building contact list" />
+      <node concept="2m6fVq" id="GBscvBBg8u" role="2m5mJr">
+        <property role="TrG5h" value="ImportContacts" />
+        <node concept="1D$$RI" id="EUEXKTj0aa" role="2uGzQp">
+          <property role="1D$E9h" value="Importing phones and emails for building contact list" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389900253" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Maximum amount of items for import per method call equals to 100." />
+        <node concept="1D$$RI" id="EUEXKTj0vt" role="2uGzQp">
+          <property role="1D$E9h" value="Maximum amount of items for import per method call equals to 100." />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389900245" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Phones for import" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395552319" resolveInfo="phones" />
+        <node concept="2uJ1As" id="EUEXKTj0vl" role="2uGzQp">
+          <property role="2uJhrd" value="Phones for import" />
+          <ref role="2uJhvL" node="GBscvBBg8Z" resolve="phones" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389900263" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Emails for import" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395552332" resolveInfo="emails" />
+        <node concept="2uJ1As" id="EUEXKTj0vB" role="2uGzQp">
+          <property role="2uJhrd" value="Emails for import" />
+          <ref role="2uJhvL" node="GBscvBBg9c" resolve="emails" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395552319" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="phones" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395552323" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395552329" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395551889" resolveInfo="PhoneToImport" />
+        <node concept="2m7Kf5" id="GBscvBBg8Z" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="phones" />
+          <node concept="2m5nlk" id="GBscvBBg93" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBg99" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBBg2h" resolve="PhoneToImport" />
             </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395552332" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="emails" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395552339" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395552345" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395551921" resolveInfo="EmailToImport" />
+        <node concept="2m7Kf5" id="GBscvBBg9c" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="emails" />
+          <node concept="2m5nlk" id="GBscvBBg9j" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBg9p" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBBg2L" resolve="EmailToImport" />
             </node>
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395552287" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="07" />
+        <node concept="Nu42z" id="GBscvBBg8v" role="NuuwV">
+          <property role="Nu42W" value="07" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="803735062395552348" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395552353" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="users" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395552357" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="3857470926885405415" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395368173" resolveInfo="User" />
+        <node concept="2m1R6W" id="GBscvBBg9s" role="2m6efq">
+          <node concept="2m7Kf5" id="GBscvBBg9x" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="GBscvBBg9_" role="2m7DVh">
+              <node concept="2m5mGg" id="3m8vlV8pGbB" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
               </node>
             </node>
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395552366" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-            <property name="name" nameId="tpck.1169194664001" value="seq" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395552373" nodeInfo="ng" />
+          <node concept="2m7Kf5" id="GBscvBBg9I" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="seq" />
+            <node concept="2m5ndE" id="GBscvBBg9P" role="2m7DVh" />
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395552376" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-            <property name="name" nameId="tpck.1169194664001" value="state" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5857873509721462828" nodeInfo="ng">
-              <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5857873509721457697" resolveInfo="seq_state" />
+          <node concept="2m7Kf5" id="GBscvBBg9S" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="state" />
+            <node concept="wb0Ql" id="55bmeIQ7_wG" role="2m7DVh">
+              <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
             </node>
           </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395552349" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="08" />
+          <node concept="Nu42z" id="GBscvBBg9t" role="NuuwV">
+            <property role="Nu42W" value="08" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395553660" nodeInfo="ng" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiComment" typeId="tsp6.4689615199750788559" id="803735062395552820" nodeInfo="ng">
-        <property name="text" nameId="tsp6.4689615199750789856" value="Working with list" />
+      <node concept="NvyAe" id="GBscvBBgtW" role="2m5mJr" />
+      <node concept="NvWBy" id="GBscvBBggO" role="2m5mJr">
+        <property role="NvWrd" value="Working with list" />
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395553728" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GetContacts" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389905485" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Getting current contact list" />
+      <node concept="2m6fVq" id="GBscvBBgv0" role="2m5mJr">
+        <property role="TrG5h" value="GetContacts" />
+        <node concept="1D$$RI" id="EUEXKTj1Ld" role="2uGzQp">
+          <property role="1D$E9h" value="Getting current contact list" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389906844" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="SHA256 hash of list of a comma-separated list of contact UIDs in ascending " />
+        <node concept="1D$$RI" id="EUEXKTj26s" role="2uGzQp">
+          <property role="1D$E9h" value="SHA256 hash of list of a comma-separated list of contact UIDs in ascending " />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389912197" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="order may be passed in contactsHash parameter. " />
+        <node concept="1D$$RI" id="EUEXKTj3q5" role="2uGzQp">
+          <property role="1D$E9h" value="order may be passed in contactsHash parameter. " />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389908206" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="If the contact list was not changed, isNotChanged will be true." />
+        <node concept="1D$$RI" id="EUEXKTj2rI" role="2uGzQp">
+          <property role="1D$E9h" value="If the contact list was not changed, isNotChanged will be true." />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389910926" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Hash of saved list in application" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395553768" resolveInfo="contactsHash" />
+        <node concept="2uJ1As" id="EUEXKTj36e" role="2uGzQp">
+          <property role="2uJhrd" value="Hash of saved list in application" />
+          <ref role="2uJhvL" node="GBscvBBgvC" resolve="contactsHash" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395553768" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="contactsHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395553772" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBgvC" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="contactsHash" />
+          <node concept="2m5ndX" id="GBscvBBgvG" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395553729" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="57" />
+        <node concept="Nu42z" id="GBscvBBgv1" role="NuuwV">
+          <property role="Nu42W" value="57" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="803735062395553775" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395553780" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="users" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395553784" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="3857470926885405412" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395368173" resolveInfo="User" />
+        <node concept="2m1R6W" id="GBscvBBgvJ" role="2m6efq">
+          <node concept="2m7Kf5" id="GBscvBBgvO" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="GBscvBBgvS" role="2m7DVh">
+              <node concept="2m5mGg" id="3m8vlV8pGb$" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
               </node>
             </node>
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395553793" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-            <property name="name" nameId="tpck.1169194664001" value="isNotChanged" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Boolean" typeId="tsp6.2348480312264231189" id="803735062395553800" nodeInfo="ng" />
+          <node concept="2m7Kf5" id="GBscvBBgw1" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="isNotChanged" />
+            <node concept="2m5ndN" id="GBscvBBgw8" role="2m7DVh" />
           </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395553776" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="58" />
+          <node concept="Nu42z" id="GBscvBBgvK" role="NuuwV">
+            <property role="Nu42W" value="58" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395553856" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="RemoveContact" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389914920" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Removing contact from contact list" />
+      <node concept="2m6fVq" id="GBscvBBgx0" role="2m5mJr">
+        <property role="TrG5h" value="RemoveContact" />
+        <node concept="1D$$RI" id="EUEXKTj44C" role="2uGzQp">
+          <property role="1D$E9h" value="Removing contact from contact list" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389914934" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Contact's UID" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395553907" resolveInfo="uid" />
+        <node concept="2uJ1As" id="EUEXKTj44Q" role="2uGzQp">
+          <property role="2uJhrd" value="Contact's UID" />
+          <ref role="2uJhvL" node="GBscvBBgxN" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389917466" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Contact's AccessHash" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395553914" resolveInfo="accessHash" />
+        <node concept="2uJ1As" id="EUEXKTj4Gq" role="2uGzQp">
+          <property role="2uJhrd" value="Contact's AccessHash" />
+          <ref role="2uJhvL" node="GBscvBBgxU" resolve="accessHash" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395553907" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395553911" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBgxN" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBgxR" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395553914" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395553920" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBgxU" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="GBscvBBgy0" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395553857" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="59" />
+        <node concept="Nu42z" id="GBscvBBgx1" role="NuuwV">
+          <property role="Nu42W" value="59" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395553923" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513212" resolveInfo="Seq" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395553978" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="AddContact" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389920096" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Adding contact to contact list" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389920102" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Contact's UID" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395554036" resolveInfo="uid" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389920121" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Contact's AccessHash" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395554043" resolveInfo="accessHash" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395554036" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395554040" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395554043" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395554049" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395553979" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="72" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395554052" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513212" resolveInfo="Seq" />
+        <node concept="2m1Rp1" id="GBscvBBgy3" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395554479" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SearchContacts" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389921394" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Searching contacts by user's query" />
+      <node concept="2m6fVq" id="GBscvBBgyU" role="2m5mJr">
+        <property role="TrG5h" value="AddContact" />
+        <node concept="1D$$RI" id="EUEXKTj5lw" role="2uGzQp">
+          <property role="1D$E9h" value="Adding contact to contact list" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395554544" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="request" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395554548" nodeInfo="ng" />
+        <node concept="2uJ1As" id="EUEXKTj5lA" role="2uGzQp">
+          <property role="2uJhrd" value="Contact's UID" />
+          <ref role="2uJhvL" node="GBscvBBgzO" resolve="uid" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395554480" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="70" />
+        <node concept="2uJ1As" id="EUEXKTj5lT" role="2uGzQp">
+          <property role="2uJhrd" value="Contact's AccessHash" />
+          <ref role="2uJhvL" node="GBscvBBgzV" resolve="accessHash" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="803735062395554551" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395554556" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="users" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395554560" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="3857470926885405409" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395368173" resolveInfo="User" />
+        <node concept="2m7Kf5" id="GBscvBBgzO" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBgzS" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBgzV" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="GBscvBBg$1" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBgyV" role="NuuwV">
+          <property role="Nu42W" value="72" />
+        </node>
+        <node concept="2m1Rp1" id="GBscvBBg$4" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBBgEJ" role="2m5mJr">
+        <property role="TrG5h" value="SearchContacts" />
+        <node concept="1D$$RI" id="EUEXKTj5DM" role="2uGzQp">
+          <property role="1D$E9h" value="Searching contacts by user's query" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBgFK" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="request" />
+          <node concept="2m5ndX" id="GBscvBBgFO" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBgEK" role="NuuwV">
+          <property role="Nu42W" value="70" />
+        </node>
+        <node concept="2m1R6W" id="GBscvBBgFR" role="2m6efq">
+          <node concept="2m7Kf5" id="GBscvBBgFW" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="GBscvBBgG0" role="2m7DVh">
+              <node concept="2m5mGg" id="3m8vlV8pGbx" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
               </node>
             </node>
           </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395554552" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="71" />
+          <node concept="Nu42z" id="GBscvBBgFS" role="NuuwV">
+            <property role="Nu42W" value="71" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395555926" nodeInfo="ng" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395555996" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ContactRegistered" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390713849" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about contact registration" />
+      <node concept="NvyAe" id="GBscvBBh1m" role="2m5mJr" />
+      <node concept="NpBTk" id="GBscvBBh2s" role="2m5mJr">
+        <property role="TrG5h" value="ContactRegistered" />
+        <node concept="NXeRC" id="EUEXKTm77T" role="NXp_2">
+          <property role="NXePf" value="Update about contact registration" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390720998" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="contact's uid" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395556445" resolveInfo="uid" />
+        <node concept="NX1gA" id="EUEXKTm8RA" role="NXp_2">
+          <property role="NX6R2" value="contact's uid" />
+          <ref role="NX6Kv" node="GBscvBBh9t" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390713855" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="is registration silent. If this value is true then don't show notification about registration" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395556452" resolveInfo="isSilent" />
+        <node concept="NX1gA" id="EUEXKTm77Z" role="NXp_2">
+          <property role="NX6R2" value="is registration silent. If this value is true then don't show notification about registration" />
+          <ref role="NX6Kv" node="GBscvBBh9$" resolve="isSilent" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390716673" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="date of registration" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395556461" resolveInfo="date" />
+        <node concept="NX1gA" id="EUEXKTm7O1" role="NXp_2">
+          <property role="NX6R2" value="date of registration" />
+          <ref role="NX6Kv" node="GBscvBBh9H" resolve="date" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395556445" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395556449" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBh9t" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBh9x" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395556452" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="isSilent" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Boolean" typeId="tsp6.2348480312264231189" id="803735062395556458" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBh9$" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="isSilent" />
+          <node concept="2m5ndN" id="GBscvBBh9E" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395556461" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078688001" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBh9H" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotnO$1" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395555997" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="05" />
+        <node concept="Nu42z" id="GBscvBBh2t" role="NuuwV">
+          <property role="Nu42W" value="05" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="1769186940502150003" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EmailContactRegistered" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502155915" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="emailId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502155919" nodeInfo="ng" />
+      <node concept="NpBTk" id="1ydqyopT0HN" role="2m5mJr">
+        <property role="TrG5h" value="EmailContactRegistered" />
+        <node concept="2m7Kf5" id="1ydqyopT2ab" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="emailId" />
+          <node concept="2m5ndE" id="1ydqyopT2af" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502155922" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502155928" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopT2ai" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="1ydqyopT2ao" role="2m7DVh" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940502152050" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about email contact registered" />
+        <node concept="NXeRC" id="1ydqyopT1dM" role="NXp_2">
+          <property role="NXePf" value="Update about email contact registered" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502157864" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Email id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502155915" resolveInfo="emailId" />
+        <node concept="NX1gA" id="1ydqyopT2CC" role="NXp_2">
+          <property role="NX6R2" value="Email id" />
+          <ref role="NX6Kv" node="1ydqyopT2ab" resolve="emailId" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="1769186940502157872" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Registered user's id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="1769186940502155922" resolveInfo="uid" />
+        <node concept="NX1gA" id="1ydqyopT2CK" role="NXp_2">
+          <property role="NX6R2" value="Registered user's id" />
+          <ref role="NX6Kv" node="1ydqyopT2ai" resolve="uid" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940502150004" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="78" />
+        <node concept="Nu42z" id="1ydqyopT0HO" role="NuuwV">
+          <property role="Nu42W" value="78" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395556549" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ContactsAdded" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390725324" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about contacts added" />
+      <node concept="NpBTk" id="GBscvBBhb5" role="2m5mJr">
+        <property role="TrG5h" value="ContactsAdded" />
+        <node concept="NXeRC" id="EUEXKTm9Vc" role="NXp_2">
+          <property role="NXePf" value="Update about contacts added" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390725330" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="added contacts" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395556629" resolveInfo="uids" />
+        <node concept="NX1gA" id="EUEXKTm9Vi" role="NXp_2">
+          <property role="NX6R2" value="added contacts" />
+          <ref role="NX6Kv" node="GBscvBBhcl" resolve="uids" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395556629" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uids" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395556633" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395556639" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBhcl" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uids" />
+          <node concept="2m5nlk" id="GBscvBBhcp" role="2m7DVh">
+            <node concept="2m5ndE" id="GBscvBBhcv" role="3GJlyp" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395556550" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="28" />
+        <node concept="Nu42z" id="GBscvBBhb6" role="NuuwV">
+          <property role="Nu42W" value="28" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395556724" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ContactsRemoved" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395556809" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uids" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395556813" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395556819" nodeInfo="ng" />
+      <node concept="NpBTk" id="GBscvBBhdO" role="2m5mJr">
+        <property role="TrG5h" value="ContactsRemoved" />
+        <node concept="2m7Kf5" id="GBscvBBhf9" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uids" />
+          <node concept="2m5nlk" id="GBscvBBhfd" role="2m7DVh">
+            <node concept="2m5ndE" id="GBscvBBhfj" role="3GJlyp" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395556725" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="29" />
+        <node concept="Nu42z" id="GBscvBBhdP" role="NuuwV">
+          <property role="Nu42W" value="29" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390726846" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about contacts removed" />
+        <node concept="NXeRC" id="EUEXKTmaiY" role="NXp_2">
+          <property role="NXePf" value="Update about contacts removed" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390726859" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="removed contacts" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395556809" resolveInfo="uids" />
+        <node concept="NX1gA" id="EUEXKTmajb" role="NXp_2">
+          <property role="NX6R2" value="removed contacts" />
+          <ref role="NX6Kv" node="GBscvBBhf9" resolve="uids" />
         </node>
       </node>
     </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395567464" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Messaging" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="messaging" />
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481257703" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Actor can work with encrypted and plain messages in one conversation. For both types of messages API" />
+    <node concept="2m5mJO" id="GBscvBBjPC" role="2m5lHt">
+      <property role="TrG5h" value="Messaging" />
+      <property role="3XOG$Z" value="messaging" />
+      <node concept="1Dx9M1" id="2uPas5ecVzB" role="1Dx9rD">
+        <property role="1Dx9K7" value="Actor can work with encrypted and plain messages in one conversation. For both types of messages API" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481258768" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="contains a bit different methods. Also encrypted and plain messages have different schemes." />
+      <node concept="1Dx9M1" id="2uPas5ecVOg" role="1Dx9rD">
+        <property role="1Dx9K7" value="contains a bit different methods. Also encrypted and plain messages have different schemes." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481258772" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h3&gt;Messages&lt;/h3&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecVOk" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;h3&gt;Messages&lt;/h3&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481259835" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Message entity contains:" />
+      <node concept="1Dx9M1" id="2uPas5ecW4V" role="1Dx9rD">
+        <property role="1Dx9K7" value="Message entity contains:" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="4092665470043048962" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;ul&gt;" />
+      <node concept="1Dx9M1" id="3zc4oYAr4K2" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;ul&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481260900" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;PeerType - group chat or private&lt;/li&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecWl$" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;li&gt;PeerType - group chat or private&lt;/li&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481261967" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;PeerId - group or user id of conversation&lt;/li&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecWAf" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;li&gt;PeerId - group or user id of conversation&lt;/li&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481263036" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;RandomId - unique id of message that generated by sender. In Encrypted messages random id is encrypted.&lt;/li&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecWQW" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;li&gt;RandomId - unique id of message that generated by sender. In Encrypted messages random id is encrypted.&lt;/li&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481264107" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;Date - date of message (calculated on server)&lt;/li&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecX7F" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;li&gt;Date - date of message (calculated on server)&lt;/li&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481265180" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;li&gt;Content&lt;/li&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecXos" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;li&gt;Content&lt;/li&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="4092665470043049003" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;/ul&gt;" />
+      <node concept="1Dx9M1" id="3zc4oYAr4KF" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;/ul&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481266255" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h3&gt;Message content&lt;/h3&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ecXDf" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;h3&gt;Message content&lt;/h3&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481267332" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Message can be one of three basic types of messages: Text Message, File Message and Service message." />
+      <node concept="1Dx9M1" id="2uPas5ecXU4" role="1Dx9rD">
+        <property role="1Dx9K7" value="Message can be one of three basic types of messages: Text Message, File Message and Service message." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481268411" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="All messages can contain extensions. For example we can send text message and add markdown extension with " />
+      <node concept="1Dx9M1" id="2uPas5ecYaV" role="1Dx9rD">
+        <property role="1Dx9K7" value="All messages can contain extensions. For example we can send text message and add markdown extension with " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481272693" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="formatted text in markdown and clients that support this extension will show markdown, and that clients that" />
+      <node concept="1Dx9M1" id="2uPas5ecZdP" role="1Dx9rD">
+        <property role="1Dx9K7" value="formatted text in markdown and clients that support this extension will show markdown, and that clients that" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481273776" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="not supported extension then show simple text. File messages can have photo, video or voice extensions." />
+      <node concept="1Dx9M1" id="2uPas5ecZuK" role="1Dx9rD">
+        <property role="1Dx9K7" value="not supported extension then show simple text. File messages can have photo, video or voice extensions." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481274861" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Service message can have extensions extensions such as &quot;user added&quot;, &quot;group created&quot;, &quot;avatar changed&quot;, etc." />
+      <node concept="1Dx9M1" id="2uPas5ecZJH" role="1Dx9rD">
+        <property role="1Dx9K7" value="Service message can have extensions extensions such as &quot;user added&quot;, &quot;group created&quot;, &quot;avatar changed&quot;, etc." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481277018" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h3&gt;Send messages&lt;/h3&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ed0hq" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;h3&gt;Send messages&lt;/h3&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481277036" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Sending messages looks same for encrypted and plain messages. Client MUST prepare all required data" />
+      <node concept="1Dx9M1" id="2uPas5ed0hG" role="1Dx9rD">
+        <property role="1Dx9K7" value="Sending messages looks same for encrypted and plain messages. Client MUST prepare all required data" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481279199" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="before sending message (for example FastThumb for photo/video/documents) and call required methods. " />
+      <node concept="1Dx9M1" id="2uPas5ed0Nv" role="1Dx9rD">
+        <property role="1Dx9K7" value="before sending message (for example FastThumb for photo/video/documents) and call required methods. " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481280292" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Encrypted messages differs here only by a little different scheme and encryption." />
+      <node concept="1Dx9M1" id="2uPas5ed14$" role="1Dx9rD">
+        <property role="1Dx9K7" value="Encrypted messages differs here only by a little different scheme and encryption." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481281387" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h3&gt;WRONG_KEYS and incorrect keys&lt;/h3&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ed1lF" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;h3&gt;WRONG_KEYS and incorrect keys&lt;/h3&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481282484" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="For sending encrypted messages client MUST send messages encrypted for all own and receivers keys." />
+      <node concept="1Dx9M1" id="2uPas5ed1AO" role="1Dx9rD">
+        <property role="1Dx9K7" value="For sending encrypted messages client MUST send messages encrypted for all own and receivers keys." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481283583" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="If client send encryption with missing, old or incorrect keys it will receive WRONG_KEYS." />
+      <node concept="1Dx9M1" id="2uPas5ed1RZ" role="1Dx9rD">
+        <property role="1Dx9K7" value="If client send encryption with missing, old or incorrect keys it will receive WRONG_KEYS." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481284684" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="In WRONG_KEYS you need to deserialize relatedData from RpcError to WrongKeysErrorData" />
+      <node concept="1Dx9M1" id="2uPas5ed29c" role="1Dx9rD">
+        <property role="1Dx9K7" value="In WRONG_KEYS you need to deserialize relatedData from RpcError to WrongKeysErrorData" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481285787" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="and get detailed information about keys. Sometimes there are some broken keys on server and client can't " />
+      <node concept="1Dx9M1" id="2uPas5ed2qr" role="1Dx9rD">
+        <property role="1Dx9K7" value="and get detailed information about keys. Sometimes there are some broken keys on server and client can't " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481287971" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="encrypt messages with it than client MUST send empty encrypted key in request elsewhere API return WRONG_KEYS." />
+      <node concept="1Dx9M1" id="2uPas5ed2Wz" role="1Dx9rD">
+        <property role="1Dx9K7" value="encrypt messages with it than client MUST send empty encrypted key in request elsewhere API return WRONG_KEYS." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481291238" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h3&gt;Encrypted messages and New Devices&lt;/h3&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ed3JA" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;h3&gt;Encrypted messages and New Devices&lt;/h3&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481292347" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="When you send message to someone and when he registered with new device there are no way to receive old encrypted" />
+      <node concept="1Dx9M1" id="2uPas5ed40V" role="1Dx9rD">
+        <property role="1Dx9K7" value="When you send message to someone and when he registered with new device there are no way to receive old encrypted" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481293458" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="messages on new device and because of this there are a problem about read/delivery statuses. " />
+      <node concept="1Dx9M1" id="2uPas5ed4ii" role="1Dx9rD">
+        <property role="1Dx9K7" value="messages on new device and because of this there are a problem about read/delivery statuses. " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481296737" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Alice send messages to Bob, but Bob lose his device and  buy new iPhone and installed Actor." />
+      <node concept="1Dx9M1" id="2uPas5ed55x" role="1Dx9rD">
+        <property role="1Dx9K7" value="Alice send messages to Bob, but Bob lose his device and  buy new iPhone and installed Actor." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481298936" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Alice receive notification about new device and send another message. Bob open chat with Alice and" />
+      <node concept="1Dx9M1" id="2uPas5ed5BS" role="1Dx9rD">
+        <property role="1Dx9K7" value="Alice receive notification about new device and send another message. Bob open chat with Alice and" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481303308" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="send read status with maximum message read date. Alice will mark all sent messages as read and one that" />
+      <node concept="1Dx9M1" id="2uPas5ed6Gc" role="1Dx9rD">
+        <property role="1Dx9K7" value="send read status with maximum message read date. Alice will mark all sent messages as read and one that" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481306599" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="was not delivered. We can use status notifications per message, but in VERY heavy conversations it will be" />
+      <node concept="1Dx9M1" id="2uPas5ed7vB" role="1Dx9rD">
+        <property role="1Dx9K7" value="was not delivered. We can use status notifications per message, but in VERY heavy conversations it will be" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481309894" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="a lot of unnecessary traffic. For resolving this small issue we have different ways of message statuses" />
+      <node concept="1Dx9M1" id="2uPas5ed8j6" role="1Dx9rD">
+        <property role="1Dx9K7" value="a lot of unnecessary traffic. For resolving this small issue we have different ways of message statuses" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481313193" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="for encrypted and plain messages. Also it is recomended to mark all undelivered messages on new device update as " />
+      <node concept="1Dx9M1" id="2uPas5ed96D" role="1Dx9rD">
+        <property role="1Dx9K7" value="for encrypted and plain messages. Also it is recomended to mark all undelivered messages on new device update as " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481321024" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="not devered with warring sign." />
+      <node concept="1Dx9M1" id="2uPas5edb10" role="1Dx9rD">
+        <property role="1Dx9K7" value="not devered with warring sign." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481313229" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h3&gt;Message Read and Delivery&lt;/h3&gt;" />
+      <node concept="1Dx9M1" id="2uPas5ed97d" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;h3&gt;Message Read and Delivery&lt;/h3&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481315446" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="There are two different ways for read and delivery statuses for encrypted and plain messages." />
+      <node concept="1Dx9M1" id="2uPas5ed9DQ" role="1Dx9rD">
+        <property role="1Dx9K7" value="There are two different ways for read and delivery statuses for encrypted and plain messages." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481316575" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="For encrypted messages used status change by RandomId and for plain messages used by maximum" />
+      <node concept="1Dx9M1" id="2uPas5ed9Vv" role="1Dx9rD">
+        <property role="1Dx9K7" value="For encrypted messages used status change by RandomId and for plain messages used by maximum" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481318798" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="date of read/delivered message." />
+      <node concept="1Dx9M1" id="2uPas5edaue" role="1Dx9rD">
+        <property role="1Dx9K7" value="date of read/delivered message." />
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiComment" typeId="tsp6.4689615199750788559" id="803735062395568757" nodeInfo="ng">
-        <property name="text" nameId="tsp6.4689615199750789856" value="Model" />
+      <node concept="NvWBy" id="GBscvBBk9P" role="2m5mJr">
+        <property role="NvWrd" value="Model" />
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395570620" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="MessageContent" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390781611" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Content of message" />
+      <node concept="2m5naR" id="GBscvBBkAW" role="2m5mJr">
+        <property role="TrG5h" value="MessageContent" />
+        <node concept="NXeRC" id="EUEXKTmnEF" role="NXodf">
+          <property role="NXePf" value="Content of message" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390781617" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="type of content. 1 =&gt; TextMessage, 2 =&gt; ServiceMessage, 3 =&gt; FileMessage" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395570652" resolveInfo="type" />
+        <node concept="NX1gA" id="EUEXKTmnEL" role="NXodf">
+          <property role="NX6R2" value="type of content. 1 =&gt; TextMessage, 2 =&gt; ServiceMessage, 3 =&gt; FileMessage" />
+          <ref role="NX6Kv" node="GBscvBBkBs" resolve="type" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390781625" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="serialized content of message" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395570659" resolveInfo="content" />
+        <node concept="NX1gA" id="EUEXKTmnET" role="NXodf">
+          <property role="NX6R2" value="serialized content of message" />
+          <ref role="NX6Kv" node="GBscvBBkBz" resolve="content" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395570652" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="type" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395570656" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBkBs" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="type" />
+          <node concept="2m5ndE" id="GBscvBBkBw" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395570659" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="content" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.TraitType" typeId="tsp6.5857873509721568548" id="5857873509723290887" nodeInfo="ng">
-            <link role="trait" roleId="tsp6.5857873509721852744" targetNodeId="5857873509723283708" resolveInfo="Message" />
+        <node concept="2m7Kf5" id="GBscvBBkBz" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="content" />
+          <node concept="3BlaRf" id="55bmeIQezO7" role="2m7DVh">
+            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Trait" typeId="tsp6.5312209286554516176" id="5857873509723283708" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Message" />
+      <node concept="w93zz" id="55bmeIQey3W" role="2m5mJr">
+        <property role="TrG5h" value="Message" />
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395570704" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="TextMessage" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509723283708" resolveInfo="Message" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390784674" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Text message" />
+      <node concept="2m5naR" id="GBscvBBkCg" role="2m5mJr">
+        <property role="TrG5h" value="TextMessage" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQey3W" resolve="Message" />
+        <node concept="NXeRC" id="EUEXKTmoqy" role="NXodf">
+          <property role="NXePf" value="Text message" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390784680" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="the text" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395571238" resolveInfo="text" />
+        <node concept="NX1gA" id="EUEXKTmoqC" role="NXodf">
+          <property role="NX6R2" value="the text" />
+          <ref role="NX6Kv" node="GBscvBBkKA" resolve="text" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390787540" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="type of extension. Now there are no extensions." />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395571245" resolveInfo="extType" />
+        <node concept="NX1gA" id="EUEXKTmp7k" role="NXodf">
+          <property role="NX6R2" value="type of extension. Now there are no extensions." />
+          <ref role="NX6Kv" node="GBscvBBkKH" resolve="extType" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390790404" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Optional bytes of extension" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395571254" resolveInfo="ext" />
+        <node concept="NX1gA" id="EUEXKTmpO4" role="NXodf">
+          <property role="NX6R2" value="Optional bytes of extension" />
+          <ref role="NX6Kv" node="GBscvBBkKQ" resolve="ext" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395571238" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="text" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395571242" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBkKA" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="text" />
+          <node concept="2m5ndX" id="GBscvBBkKE" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395571245" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="extType" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395571251" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBkKH" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="extType" />
+          <node concept="2m5ndE" id="GBscvBBkKN" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395571254" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="ext" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395571262" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395571268" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBkKQ" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="ext" />
+          <node concept="2m5nlT" id="GBscvBBkKY" role="2m7DVh">
+            <node concept="2m61tm" id="GBscvBBkL4" role="3GH5xg" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="5857873509723607002" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="01" />
+        <node concept="Nu42z" id="55bmeIQfKZq" role="3BtCOu">
+          <property role="Nu42W" value="01" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395571315" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ServiceMessage" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509723283708" resolveInfo="Message" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390793268" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Service message" />
+      <node concept="2m5naR" id="GBscvBBkLN" role="2m5mJr">
+        <property role="TrG5h" value="ServiceMessage" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQey3W" resolve="Message" />
+        <node concept="NXeRC" id="EUEXKTmqwO" role="NXodf">
+          <property role="NXePf" value="Service message" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390793274" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="service message text" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395571360" resolveInfo="text" />
+        <node concept="NX1gA" id="EUEXKTmqwU" role="NXodf">
+          <property role="NX6R2" value="service message text" />
+          <ref role="NX6Kv" node="GBscvBBkMw" resolve="text" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390796142" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="extension type. 0x01 =&gt; ServiceExUserAdded, 0x02 =&gt; ServiceExUserKicked, 0x03 =&gt; ServiveExUserLeft, 0x04 =&gt; ServiceExGroupCreated, 0x05 =&gt; ServiceExGroupChangedTitle, 0x06 =&gt; ServiceExGroupChangedAvatar" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395571367" resolveInfo="extType" />
+        <node concept="NX1gA" id="EUEXKTmrdI" role="NXodf">
+          <property role="NX6R2" value="extension type. 0x01 =&gt; ServiceExUserAdded, 0x02 =&gt; ServiceExUserKicked, 0x03 =&gt; ServiveExUserLeft, 0x04 =&gt; ServiceExGroupCreated, 0x05 =&gt; ServiceExGroupChangedTitle, 0x06 =&gt; ServiceExGroupChangedAvatar" />
+          <ref role="NX6Kv" node="GBscvBBkMB" resolve="extType" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395571360" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="text" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395571364" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBkMw" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="text" />
+          <node concept="2m5ndX" id="GBscvBBkM$" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395571367" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="extType" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="5857873509722740039" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBkMB" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="extType" />
+          <node concept="2m5ndE" id="55bmeIQctl7" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395571376" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="ext" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="5857873509722741746" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.TraitType" typeId="tsp6.5857873509721568548" id="2873759689078650295" nodeInfo="ng">
-              <link role="trait" roleId="tsp6.5857873509721852744" targetNodeId="5857873509721924493" resolveInfo="ServiceExtension" />
+        <node concept="2m7Kf5" id="GBscvBBkMK" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="ext" />
+          <node concept="2m5nlT" id="55bmeIQctJM" role="2m7DVh">
+            <node concept="3BlaRf" id="2vxDjotnFmR" role="3GH5xg">
+              <ref role="3BrLez" node="55bmeIQ9med" resolve="ServiceExtension" />
             </node>
           </node>
         </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="5857873509723769402" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="02" />
+        <node concept="Nu42z" id="55bmeIQgoCU" role="3BtCOu">
+          <property role="Nu42W" value="02" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Trait" typeId="tsp6.5312209286554516176" id="5857873509721924493" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ServiceExtension" />
+      <node concept="w93zz" id="55bmeIQ9med" role="2m5mJr">
+        <property role="TrG5h" value="ServiceExtension" />
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395571957" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ServiceExUserAdded" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509721924493" resolveInfo="ServiceExtension" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390809901" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Service message about adding user to group" />
+      <node concept="2m5naR" id="GBscvBBkVP" role="2m5mJr">
+        <property role="TrG5h" value="ServiceExUserAdded" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceExtension" />
+        <node concept="NXeRC" id="EUEXKTmu$H" role="NXodf">
+          <property role="NXePf" value="Service message about adding user to group" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390809907" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="added user id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395572010" resolveInfo="addedUid" />
+        <node concept="NX1gA" id="EUEXKTmu$N" role="NXodf">
+          <property role="NX6R2" value="added user id" />
+          <ref role="NX6Kv" node="GBscvBBkWE" resolve="addedUid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395572010" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="addedUid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395572014" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBkWE" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="addedUid" />
+          <node concept="2m5ndE" id="GBscvBBkWI" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="5857873509723744539" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="01" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395572072" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ServiceExUserKicked" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509721924493" resolveInfo="ServiceExtension" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390812779" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Service message about kicking user from group" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390812785" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="kicked user id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395572128" resolveInfo="kickedUid" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395572128" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="kickedUid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395572132" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="5857873509723747763" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="02" />
+        <node concept="Nu42z" id="55bmeIQgi$r" role="3BtCOu">
+          <property role="Nu42W" value="01" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395572193" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ServiceExUserLeft" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509721924493" resolveInfo="ServiceExtension" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390812791" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Service message about user left group" />
+      <node concept="2m5naR" id="GBscvBBkXC" role="2m5mJr">
+        <property role="TrG5h" value="ServiceExUserKicked" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceExtension" />
+        <node concept="NXeRC" id="EUEXKTmvhF" role="NXodf">
+          <property role="NXePf" value="Service message about kicking user from group" />
         </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="5857873509723750989" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="03" />
+        <node concept="NX1gA" id="EUEXKTmvhL" role="NXodf">
+          <property role="NX6R2" value="kicked user id" />
+          <ref role="NX6Kv" node="GBscvBBkYw" resolve="kickedUid" />
         </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395572311" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ServiceExGroupCreated" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509721924493" resolveInfo="ServiceExtension" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390812796" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Service message about group creating" />
+        <node concept="2m7Kf5" id="GBscvBBkYw" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="kickedUid" />
+          <node concept="2m5ndE" id="GBscvBBkY$" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="5857873509723750991" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="04" />
+        <node concept="Nu42z" id="55bmeIQgjmN" role="3BtCOu">
+          <property role="Nu42W" value="02" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395572951" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ServiceExChangedTitle" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509721924493" resolveInfo="ServiceExtension" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390812801" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Service message about group title change" />
+      <node concept="2m5naR" id="GBscvBBkZx" role="2m5mJr">
+        <property role="TrG5h" value="ServiceExUserLeft" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceExtension" />
+        <node concept="NXeRC" id="EUEXKTmvhR" role="NXodf">
+          <property role="NXePf" value="Service message about user left group" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395573012" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="title" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395573016" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="5857873509723754221" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="05" />
+        <node concept="Nu42z" id="55bmeIQgk9d" role="3BtCOu">
+          <property role="Nu42W" value="03" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395573082" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ServiceExChangedAvatar" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509721924493" resolveInfo="ServiceExtension" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390812806" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Service message about avatar change" />
+      <node concept="2m5naR" id="GBscvBBl1n" role="2m5mJr">
+        <property role="TrG5h" value="ServiceExGroupCreated" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceExtension" />
+        <node concept="NXeRC" id="EUEXKTmvhW" role="NXodf">
+          <property role="NXePf" value="Service message about group creating" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395573146" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="avatar" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395573150" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395573156" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850407" resolveInfo="Avatar" />
+        <node concept="Nu42z" id="55bmeIQgk9f" role="3BtCOu">
+          <property role="Nu42W" value="04" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="GBscvBBlbn" role="2m5mJr">
+        <property role="TrG5h" value="ServiceExChangedTitle" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceExtension" />
+        <node concept="NXeRC" id="EUEXKTmvi1" role="NXodf">
+          <property role="NXePf" value="Service message about group title change" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBlck" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="GBscvBBlco" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="55bmeIQgkVH" role="3BtCOu">
+          <property role="Nu42W" value="05" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="GBscvBBldq" role="2m5mJr">
+        <property role="TrG5h" value="ServiceExChangedAvatar" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceExtension" />
+        <node concept="NXeRC" id="EUEXKTmvi6" role="NXodf">
+          <property role="NXePf" value="Service message about avatar change" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBleq" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="avatar" />
+          <node concept="2m5nlT" id="GBscvBBleu" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBle$" role="3GH5xg">
+              <ref role="2m5mJy" node="GBscvB$$LB" resolve="Avatar" />
             </node>
           </node>
         </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="5857873509723764455" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="06" />
+        <node concept="Nu42z" id="55bmeIQgnrB" role="3BtCOu">
+          <property role="Nu42W" value="06" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="1769186940502160161" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ServiceExEmailContactRegistered" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509721924493" resolveInfo="ServiceExtension" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502164291" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="1769186940502164295" nodeInfo="ng" />
+      <node concept="2m5naR" id="1ydqyopT3cx" role="2m5mJr">
+        <property role="TrG5h" value="ServiceExEmailContactRegistered" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceExtension" />
+        <node concept="2m7Kf5" id="1ydqyopT4d3" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="1ydqyopT4d7" role="2m7DVh" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="1769186940502162353" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Service message about email user registration" />
+        <node concept="NXeRC" id="1ydqyopT3IL" role="NXodf">
+          <property role="NXePf" value="Service message about email user registration" />
         </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="1769186940502160514" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="07" />
+        <node concept="Nu42z" id="1ydqyopT3i2" role="3BtCOu">
+          <property role="Nu42W" value="07" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395573753" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="FileMessage" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509723283708" resolveInfo="Message" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390814347" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="File message" />
+      <node concept="2m5naR" id="GBscvBBlnT" role="2m5mJr">
+        <property role="TrG5h" value="FileMessage" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQey3W" resolve="Message" />
+        <node concept="NXeRC" id="EUEXKTmvEb" role="NXodf">
+          <property role="NXePf" value="File message" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390814353" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="file id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395573821" resolveInfo="fileId" />
+        <node concept="NX1gA" id="EUEXKTmvEh" role="NXodf">
+          <property role="NX6R2" value="file id" />
+          <ref role="NX6Kv" node="GBscvBBloX" resolve="fileId" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390824448" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="file access hash" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395573828" resolveInfo="accessHash" />
+        <node concept="NX1gA" id="EUEXKTmy80" role="NXodf">
+          <property role="NX6R2" value="file access hash" />
+          <ref role="NX6Kv" node="GBscvBBlp4" resolve="accessHash" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390828784" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="file size" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395573837" resolveInfo="fileSize" />
+        <node concept="NX1gA" id="EUEXKTmzbK" role="NXodf">
+          <property role="NX6R2" value="file size" />
+          <ref role="NX6Kv" node="GBscvBBlpd" resolve="fileSize" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390834568" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="name of file" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395573848" resolveInfo="name" />
+        <node concept="NX1gA" id="EUEXKTm$A8" role="NXodf">
+          <property role="NX6R2" value="name of file" />
+          <ref role="NX6Kv" node="GBscvBBlpo" resolve="name" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390840358" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="mimetype of file" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395573861" resolveInfo="mimeType" />
+        <node concept="NX1gA" id="EUEXKTmA0A" role="NXodf">
+          <property role="NX6R2" value="mimetype of file" />
+          <ref role="NX6Kv" node="GBscvBBlp_" resolve="mimeType" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390843264" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="optional thumb of file. JPEG less that 90x90 with 60-70 quality." />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395573876" resolveInfo="thumb" />
+        <node concept="NX1gA" id="EUEXKTmAI0" role="NXodf">
+          <property role="NX6R2" value="optional thumb of file. JPEG less that 90x90 with 60-70 quality." />
+          <ref role="NX6Kv" node="GBscvBBlpO" resolve="thumb" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390849163" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Extension type" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395573899" resolveInfo="extType" />
+        <node concept="NX1gA" id="EUEXKTmCab" role="NXodf">
+          <property role="NX6R2" value="Extension type" />
+          <ref role="NX6Kv" node="GBscvBBlqb" resolve="extType" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="5857873509723787517" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Extension" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395573919" resolveInfo="ext" />
+        <node concept="NX1gA" id="55bmeIQgt3X" role="NXodf">
+          <property role="NX6R2" value="Extension" />
+          <ref role="NX6Kv" node="GBscvBBlqv" resolve="ext" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395573821" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="fileId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="4092665470042284233" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBloX" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="fileId" />
+          <node concept="2m5ndQ" id="3zc4oYAoa39" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395573828" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395573834" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBlp4" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="GBscvBBlpa" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395573837" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="fileSize" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395573845" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBlpd" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="fileSize" />
+          <node concept="2m5ndE" id="GBscvBBlpl" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395573848" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="name" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395573858" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBlpo" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="GBscvBBlpy" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395573861" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="mimeType" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395573873" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBlp_" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="mimeType" />
+          <node concept="2m5ndX" id="GBscvBBlpL" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395573876" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="thumb" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395573890" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395573896" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511260" resolveInfo="FastThumb" />
+        <node concept="2m7Kf5" id="GBscvBBlpO" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="thumb" />
+          <node concept="2m5nlT" id="GBscvBBlq2" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBlq8" role="3GH5xg">
+              <ref role="2m5mJy" node="GBscvBB67s" resolve="FastThumb" />
             </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395573899" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="7" />
-          <property name="name" nameId="tpck.1169194664001" value="extType" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395573916" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBlqb" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="extType" />
+          <node concept="2m5ndE" id="GBscvBBlqs" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395573919" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="8" />
-          <property name="name" nameId="tpck.1169194664001" value="ext" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395573938" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395573944" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBlqv" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="ext" />
+          <node concept="2m5nlT" id="GBscvBBlqM" role="2m7DVh">
+            <node concept="2m61tm" id="GBscvBBlqS" role="3GH5xg" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="5857873509723774352" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="03" />
+        <node concept="Nu42z" id="55bmeIQgpQg" role="3BtCOu">
+          <property role="Nu42W" value="03" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Trait" typeId="tsp6.5312209286554516176" id="5857873509722013199" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="FileExtension" />
+      <node concept="w93zz" id="55bmeIQ9FSf" role="2m5mJr">
+        <property role="TrG5h" value="FileExtension" />
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395574579" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="FileExPhoto" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509722013199" resolveInfo="FileExtension" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390850719" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="File photo extension" />
+      <node concept="2m5naR" id="GBscvBBl$N" role="2m5mJr">
+        <property role="TrG5h" value="FileExPhoto" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9FSf" resolve="FileExtension" />
+        <node concept="NXeRC" id="EUEXKTmCyv" role="NXodf">
+          <property role="NXePf" value="File photo extension" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390850725" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="image width" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395574666" resolveInfo="w" />
+        <node concept="NX1gA" id="EUEXKTmCy_" role="NXodf">
+          <property role="NX6R2" value="image width" />
+          <ref role="NX6Kv" node="GBscvBBlAa" resolve="w" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390853631" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="image height" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395574673" resolveInfo="h" />
+        <node concept="NX1gA" id="EUEXKTmDfZ" role="NXodf">
+          <property role="NX6R2" value="image height" />
+          <ref role="NX6Kv" node="GBscvBBlAh" resolve="h" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395574666" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="w" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395574670" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBlAa" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="w" />
+          <node concept="2m5ndE" id="GBscvBBlAe" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395574673" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="h" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395574679" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBlAh" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="h" />
+          <node concept="2m5ndE" id="GBscvBBlAn" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="5857873509723779305" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="01" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395574773" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="FileExVideo" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509722013199" resolveInfo="FileExtension" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390853638" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="File video extension" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390853644" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="video width" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395574865" resolveInfo="w" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390853652" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="video height" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395574872" resolveInfo="h" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390853662" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="video duration" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395574881" resolveInfo="duration" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395574865" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="w" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395574869" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395574872" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="h" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395574878" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395574881" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="duration" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395574889" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="5857873509723782545" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="02" />
+        <node concept="Nu42z" id="55bmeIQgr3D" role="3BtCOu">
+          <property role="Nu42W" value="01" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395574990" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="FileExVoice" />
-        <property name="hasInterface" nameId="tsp6.5312209286555312009" value="true" />
-        <link role="interface" roleId="tsp6.5312209286555405644" targetNodeId="5857873509722013199" resolveInfo="FileExtension" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390855124" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="File voice extension" />
+      <node concept="2m5naR" id="GBscvBBlBP" role="2m5mJr">
+        <property role="TrG5h" value="FileExVideo" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9FSf" resolve="FileExtension" />
+        <node concept="NXeRC" id="EUEXKTmDg6" role="NXodf">
+          <property role="NXePf" value="File video extension" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390855130" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="voice duration" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395575089" resolveInfo="duration" />
+        <node concept="NX1gA" id="EUEXKTmDgc" role="NXodf">
+          <property role="NX6R2" value="video width" />
+          <ref role="NX6Kv" node="GBscvBBlDh" resolve="w" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395575089" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="duration" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395575093" nodeInfo="ng" />
+        <node concept="NX1gA" id="EUEXKTmDgk" role="NXodf">
+          <property role="NX6R2" value="video height" />
+          <ref role="NX6Kv" node="GBscvBBlDo" resolve="h" />
         </node>
-        <node role="header" roleId="tsp6.5857873509723526645" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="5857873509723785787" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="03" />
+        <node concept="NX1gA" id="EUEXKTmDgu" role="NXodf">
+          <property role="NX6R2" value="video duration" />
+          <ref role="NX6Kv" node="GBscvBBlDx" resolve="duration" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBlDh" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="w" />
+          <node concept="2m5ndE" id="GBscvBBlDl" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBlDo" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="h" />
+          <node concept="2m5ndE" id="GBscvBBlDu" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBlDx" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="duration" />
+          <node concept="2m5ndE" id="GBscvBBlDD" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="55bmeIQgrQh" role="3BtCOu">
+          <property role="Nu42W" value="02" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395586701" nodeInfo="ng" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395587045" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="WrongKeysErrorData" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390858145" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Error's Related data for WRRONG_KEYS in sendMessage" />
+      <node concept="2m5naR" id="GBscvBBlFe" role="2m5mJr">
+        <property role="TrG5h" value="FileExVoice" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9FSf" resolve="FileExtension" />
+        <node concept="NXeRC" id="EUEXKTmDBk" role="NXodf">
+          <property role="NXePf" value="File voice extension" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390859720" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="added keys to user" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395587851" resolveInfo="newKeys" />
+        <node concept="NX1gA" id="EUEXKTmDBq" role="NXodf">
+          <property role="NX6R2" value="voice duration" />
+          <ref role="NX6Kv" node="GBscvBBlGL" resolve="duration" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390867033" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="disabled keys" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395587864" resolveInfo="removedKeys" />
+        <node concept="2m7Kf5" id="GBscvBBlGL" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="duration" />
+          <node concept="2m5ndE" id="GBscvBBlGP" role="2m7DVh" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390867043" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="invalid keys" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395587880" resolveInfo="invalidKeys" />
+        <node concept="Nu42z" id="55bmeIQgsCV" role="3BtCOu">
+          <property role="Nu42W" value="03" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395587851" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="newKeys" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395587855" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395587861" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511433" resolveInfo="UserKey" />
+      </node>
+      <node concept="NvyAe" id="GBscvBBoyd" role="2m5mJr" />
+      <node concept="2m5naR" id="GBscvBBoB_" role="2m5mJr">
+        <property role="TrG5h" value="WrongKeysErrorData" />
+        <node concept="NXeRC" id="EUEXKTmEmx" role="NXodf">
+          <property role="NXePf" value="Error's Related data for WRRONG_KEYS in sendMessage" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmEJ8" role="NXodf">
+          <property role="NX6R2" value="added keys to user" />
+          <ref role="NX6Kv" node="GBscvBBoOb" resolve="newKeys" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmGxp" role="NXodf">
+          <property role="NX6R2" value="disabled keys" />
+          <ref role="NX6Kv" node="GBscvBBoOo" resolve="removedKeys" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmGxz" role="NXodf">
+          <property role="NX6R2" value="invalid keys" />
+          <ref role="NX6Kv" node="GBscvBBoOC" resolve="invalidKeys" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBoOb" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="newKeys" />
+          <node concept="2m5nlk" id="GBscvBBoOf" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBoOl" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6a9" resolve="UserKey" />
             </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395587864" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="removedKeys" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395587871" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395587877" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511433" resolveInfo="UserKey" />
+        <node concept="2m7Kf5" id="GBscvBBoOo" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="removedKeys" />
+          <node concept="2m5nlk" id="GBscvBBoOv" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBoO_" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6a9" resolve="UserKey" />
             </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395587880" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="invalidKeys" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395587890" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395587896" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511433" resolveInfo="UserKey" />
+        <node concept="2m7Kf5" id="GBscvBBoOC" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="invalidKeys" />
+          <node concept="2m5nlk" id="GBscvBBoOM" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBoOS" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6a9" resolve="UserKey" />
             </node>
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395590288" nodeInfo="ng" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395592516" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EncryptedAesKey" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390859709" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Encrypted AES key for encrypted messages" />
+      <node concept="NvyAe" id="GBscvBBpqg" role="2m5mJr" />
+      <node concept="2m5naR" id="GBscvBBpX4" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedAesKey" />
+        <node concept="NXeRC" id="EUEXKTmEIX" role="NXodf">
+          <property role="NXePf" value="Encrypted AES key for encrypted messages" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390871764" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="hash of public key of encrypted aes key" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395592723" resolveInfo="keyHash" />
+        <node concept="NX1gA" id="EUEXKTmHFk" role="NXodf">
+          <property role="NX6R2" value="hash of public key of encrypted aes key" />
+          <ref role="NX6Kv" node="GBscvBBq0j" resolve="keyHash" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390871772" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="encrypted aes key" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395592730" resolveInfo="aesEncryptedKey" />
+        <node concept="NX1gA" id="EUEXKTmHFs" role="NXodf">
+          <property role="NX6R2" value="encrypted aes key" />
+          <ref role="NX6Kv" node="GBscvBBq0q" resolve="aesEncryptedKey" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395592723" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="keyHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395592727" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBq0j" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="keyHash" />
+          <node concept="2m5ndQ" id="GBscvBBq0n" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395592730" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="aesEncryptedKey" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395592736" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBq0q" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="aesEncryptedKey" />
+          <node concept="2m61tm" id="GBscvBBq0w" role="2m7DVh" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395592080" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SendEncryptedMessage" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389924127" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Sending encrypted message" />
+      <node concept="2m6fVq" id="GBscvBBpQg" role="2m5mJr">
+        <property role="TrG5h" value="SendEncryptedMessage" />
+        <node concept="1D$$RI" id="EUEXKTj6kv" role="2uGzQp">
+          <property role="1D$E9h" value="Sending encrypted message" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389924133" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Destination peer for message" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395592277" resolveInfo="peer" />
+        <node concept="2uJ1As" id="EUEXKTj6k_" role="2uGzQp">
+          <property role="2uJhrd" value="Destination peer for message" />
+          <ref role="2uJhvL" node="GBscvBBpTl" resolve="peer" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389926679" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Message random id (generated on client side)" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395592284" resolveInfo="rid" />
+        <node concept="2uJ1As" id="EUEXKTj6Wn" role="2uGzQp">
+          <property role="2uJhrd" value="Message random id (generated on client side)" />
+          <ref role="2uJhvL" node="GBscvBBpTs" resolve="rid" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389926689" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="message encrypted by random aes key" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395592293" resolveInfo="encryptedMessage" />
+        <node concept="2uJ1As" id="EUEXKTj6Wx" role="2uGzQp">
+          <property role="2uJhrd" value="message encrypted by random aes key" />
+          <ref role="2uJhvL" node="GBscvBBpT_" resolve="encryptedMessage" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389927972" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="encrypted aes keys for receivers devices" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395592304" resolveInfo="keys" />
+        <node concept="2uJ1As" id="EUEXKTj7g$" role="2uGzQp">
+          <property role="2uJhrd" value="encrypted aes keys for receivers devices" />
+          <ref role="2uJhvL" node="GBscvBBpTK" resolve="keys" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389927986" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="encrypted aes keys for own devices" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395593415" resolveInfo="ownKeys" />
+        <node concept="2uJ1As" id="EUEXKTj7gM" role="2uGzQp">
+          <property role="2uJhrd" value="encrypted aes keys for own devices" />
+          <ref role="2uJhvL" node="GBscvBBqb7" resolve="ownKeys" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395592277" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395592281" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511891" resolveInfo="OutPeer" />
+        <node concept="2m7Kf5" id="GBscvBBpTl" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBpTp" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395592284" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078714515" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="GBscvBBpTs" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2vxDjotnV2j" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395592293" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="encryptedMessage" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395592301" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBpT_" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="encryptedMessage" />
+          <node concept="2m61tm" id="GBscvBBpTH" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395592304" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="keys" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395593406" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395593412" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395592516" resolveInfo="EncryptedAesKey" />
+        <node concept="2m7Kf5" id="GBscvBBpTK" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="keys" />
+          <node concept="2m5nlk" id="GBscvBBqaY" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBqb4" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBBpX4" resolve="EncryptedAesKey" />
             </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395593415" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="ownKeys" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395593428" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395593434" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395592516" resolveInfo="EncryptedAesKey" />
+        <node concept="2m7Kf5" id="GBscvBBqb7" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="ownKeys" />
+          <node concept="2m5nlk" id="GBscvBBqbk" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBqbq" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBBpX4" resolve="EncryptedAesKey" />
             </node>
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395592081" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="0E" />
+        <node concept="Nu42z" id="GBscvBBpQh" role="NuuwV">
+          <property role="Nu42W" value="0E" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="2873759689078709318" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="2873759689078703663" resolveInfo="SeqDate" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395594993" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SendMessage" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389932009" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Sending plain message" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389932015" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Destination peer for message (now supported only user's peer)" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395595210" resolveInfo="peer" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389932023" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Message random id (generated on clien side)" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395595217" resolveInfo="rid" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389932033" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="The message" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395595226" resolveInfo="message" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395595210" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395595214" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511891" resolveInfo="OutPeer" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395595217" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078716249" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395595226" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="message" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395595234" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395570620" resolveInfo="MessageContent" />
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395594994" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="5c" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="2873759689078711047" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="2873759689078703663" resolveInfo="SeqDate" />
+        <node concept="2m1Rp1" id="2vxDjotnTL6" role="2m6efq">
+          <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395596140" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EncryptedReceived" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395596366" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395596370" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511891" resolveInfo="OutPeer" />
+      <node concept="2m6fVq" id="GBscvBBqzL" role="2m5mJr">
+        <property role="TrG5h" value="SendMessage" />
+        <node concept="1D$$RI" id="EUEXKTj8fD" role="2uGzQp">
+          <property role="1D$E9h" value="Sending plain message" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTj8fJ" role="2uGzQp">
+          <property role="2uJhrd" value="Destination peer for message (now supported only user's peer)" />
+          <ref role="2uJhvL" node="GBscvBBqBa" resolve="peer" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTj8fR" role="2uGzQp">
+          <property role="2uJhrd" value="Message random id (generated on clien side)" />
+          <ref role="2uJhvL" node="GBscvBBqBh" resolve="rid" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTj8g1" role="2uGzQp">
+          <property role="2uJhrd" value="The message" />
+          <ref role="2uJhvL" node="GBscvBBqBq" resolve="message" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBqBa" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBqBe" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395596373" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078716246" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="GBscvBBqBh" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2vxDjotnVtp" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395596141" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="74" />
+        <node concept="2m7Kf5" id="GBscvBBqBq" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="message" />
+          <node concept="2m5mGg" id="GBscvBBqBy" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBBkAW" resolve="MessageContent" />
+          </node>
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395596382" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
+        <node concept="Nu42z" id="GBscvBBqzM" role="NuuwV">
+          <property role="Nu42W" value="5c" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389935967" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Confirmation of encrypted message receive by device" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389935972" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Destination peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395596366" resolveInfo="peer" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389935980" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Message random id" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395596373" resolveInfo="rid" />
+        <node concept="2m1Rp1" id="2vxDjotnUc7" role="2m6efq">
+          <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395596612" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EncryptedRead" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389935987" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Marking encrypted message as read" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389935993" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Destination peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395596845" resolveInfo="peer" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389936001" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Message random id" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395596852" resolveInfo="rid" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395596845" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395596849" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511891" resolveInfo="OutPeer" />
+      <node concept="2m6fVq" id="GBscvBBqPG" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedReceived" />
+        <node concept="2m7Kf5" id="GBscvBBqTe" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBqTi" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395596852" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078716252" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="GBscvBBqTl" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2vxDjotnVtm" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395596613" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="75" />
+        <node concept="Nu42z" id="GBscvBBqPH" role="NuuwV">
+          <property role="Nu42W" value="74" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395596861" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
+        <node concept="2m1Rp1" id="GBscvBBqTu" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="1D$$RI" id="EUEXKTj9dv" role="2uGzQp">
+          <property role="1D$E9h" value="Confirmation of encrypted message receive by device" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTj9d$" role="2uGzQp">
+          <property role="2uJhrd" value="Destination peer" />
+          <ref role="2uJhvL" node="GBscvBBqTe" resolve="peer" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTj9dG" role="2uGzQp">
+          <property role="2uJhrd" value="Message random id" />
+          <ref role="2uJhvL" node="GBscvBBqTl" resolve="rid" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395597098" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="MessageReceived" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389937398" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Confirmation of plain message receive by device" />
+      <node concept="2m6fVq" id="GBscvBBqX4" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedRead" />
+        <node concept="1D$$RI" id="EUEXKTj9dN" role="2uGzQp">
+          <property role="1D$E9h" value="Marking encrypted message as read" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389937404" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Destination peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395597338" resolveInfo="peer" />
+        <node concept="2uJ1As" id="EUEXKTj9dT" role="2uGzQp">
+          <property role="2uJhrd" value="Destination peer" />
+          <ref role="2uJhvL" node="GBscvBBr0H" resolve="peer" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389937412" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Maximum date of received messages" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395597347" resolveInfo="date" />
+        <node concept="2uJ1As" id="EUEXKTj9e1" role="2uGzQp">
+          <property role="2uJhrd" value="Message random id" />
+          <ref role="2uJhvL" node="GBscvBBr0O" resolve="rid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395597338" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395597342" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511891" resolveInfo="OutPeer" />
+        <node concept="2m7Kf5" id="GBscvBBr0H" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBr0L" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395597347" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078691455" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBr0O" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2vxDjotnVts" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395597099" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="37" />
+        <node concept="Nu42z" id="GBscvBBqX5" role="NuuwV">
+          <property role="Nu42W" value="75" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395597356" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
+        <node concept="2m1Rp1" id="GBscvBBr0X" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395597600" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="MessageRead" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395597847" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395597851" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511891" resolveInfo="OutPeer" />
+      <node concept="2m6fVq" id="GBscvBBr4E" role="2m5mJr">
+        <property role="TrG5h" value="MessageReceived" />
+        <node concept="1D$$RI" id="EUEXKTj9zQ" role="2uGzQp">
+          <property role="1D$E9h" value="Confirmation of plain message receive by device" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTj9zW" role="2uGzQp">
+          <property role="2uJhrd" value="Destination peer" />
+          <ref role="2uJhvL" node="GBscvBBr8q" resolve="peer" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTj9$4" role="2uGzQp">
+          <property role="2uJhrd" value="Maximum date of received messages" />
+          <ref role="2uJhvL" node="GBscvBBr8z" resolve="date" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBr8q" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBr8u" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395597854" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078691458" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBr8z" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotnPpZ" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395597601" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="39" />
+        <node concept="Nu42z" id="GBscvBBr4F" role="NuuwV">
+          <property role="Nu42W" value="37" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395597863" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389938800" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Marking plain messages as read" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389938813" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Destination peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395597847" resolveInfo="peer" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389938821" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Maximum date of read messages" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395597854" resolveInfo="date" />
+        <node concept="2m1Rp1" id="GBscvBBr8G" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395598114" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="DeleteMessage" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389938828" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Deleting messages" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389938834" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Destination peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395598368" resolveInfo="peer" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389938842" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Message random id" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395598375" resolveInfo="rids" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395598368" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395598372" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511891" resolveInfo="OutPeer" />
+      <node concept="2m6fVq" id="GBscvBBrcw" role="2m5mJr">
+        <property role="TrG5h" value="MessageRead" />
+        <node concept="2m7Kf5" id="GBscvBBrgn" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBrgr" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395598375" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="rids" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="2873759689078618094" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078717983" nodeInfo="ng">
-              <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="GBscvBBrgu" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotnPq2" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBBrcx" role="NuuwV">
+          <property role="Nu42W" value="39" />
+        </node>
+        <node concept="2m1Rp1" id="GBscvBBrgB" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="1D$$RI" id="EUEXKTj9TK" role="2uGzQp">
+          <property role="1D$E9h" value="Marking plain messages as read" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTj9TX" role="2uGzQp">
+          <property role="2uJhrd" value="Destination peer" />
+          <ref role="2uJhvL" node="GBscvBBrgn" resolve="peer" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTj9U5" role="2uGzQp">
+          <property role="2uJhrd" value="Maximum date of read messages" />
+          <ref role="2uJhvL" node="GBscvBBrgu" resolve="date" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBBrky" role="2m5mJr">
+        <property role="TrG5h" value="DeleteMessage" />
+        <node concept="1D$$RI" id="EUEXKTj9Uc" role="2uGzQp">
+          <property role="1D$E9h" value="Deleting messages" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTj9Ui" role="2uGzQp">
+          <property role="2uJhrd" value="Destination peer" />
+          <ref role="2uJhvL" node="GBscvBBrow" resolve="peer" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTj9Uq" role="2uGzQp">
+          <property role="2uJhrd" value="Message random id" />
+          <ref role="2uJhvL" node="GBscvBBroB" resolve="rids" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBrow" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBro$" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBroB" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="rids" />
+          <node concept="2m5nlk" id="2vxDjotnzvI" role="2m7DVh">
+            <node concept="wb0Ql" id="2vxDjotnVSv" role="3GJlyp">
+              <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
             </node>
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395598115" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="62" />
+        <node concept="Nu42z" id="GBscvBBrkz" role="NuuwV">
+          <property role="Nu42W" value="62" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395598384" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395599357" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ClearChat" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395599621" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395599625" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511891" resolveInfo="OutPeer" />
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395599358" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="63" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395599618" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513212" resolveInfo="Seq" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389940236" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Clearing of conversation (without removing dialog from dialogs list)" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389940241" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Conversation peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395599621" resolveInfo="peer" />
+        <node concept="2m1Rp1" id="GBscvBBroK" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395600608" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="DeleteChat" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395600878" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395600882" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511891" resolveInfo="OutPeer" />
+      <node concept="2m6fVq" id="GBscvBBrBX" role="2m5mJr">
+        <property role="TrG5h" value="ClearChat" />
+        <node concept="2m7Kf5" id="GBscvBBrG5" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBrG9" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395600609" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="64" />
+        <node concept="Nu42z" id="GBscvBBrBY" role="NuuwV">
+          <property role="Nu42W" value="63" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395600885" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513212" resolveInfo="Seq" />
+        <node concept="2m1Rp1" id="GBscvBBrG2" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389940245" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Deleting of conversation (also leave group for group conversations)" />
+        <node concept="1D$$RI" id="EUEXKTjagc" role="2uGzQp">
+          <property role="1D$E9h" value="Clearing of conversation (without removing dialog from dialogs list)" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389940258" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Conversation peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395600878" resolveInfo="peer" />
+        <node concept="2uJ1As" id="EUEXKTjagh" role="2uGzQp">
+          <property role="2uJhrd" value="Conversation peer" />
+          <ref role="2uJhvL" node="GBscvBBrG5" resolve="peer" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395570588" nodeInfo="ng" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiComment" typeId="tsp6.4689615199750788559" id="803735062395569448" nodeInfo="ng">
-        <property name="text" nameId="tsp6.4689615199750789856" value="Logic" />
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395568089" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EncryptedMessage" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390859714" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about encrypted message" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390874813" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Destination peer" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395568094" resolveInfo="peer" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390876387" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="sender of message" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395568101" resolveInfo="senderUid" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390877964" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="date of message" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395568110" resolveInfo="date" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390877976" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="device's public key hash" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395568121" resolveInfo="keyHash" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390881128" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Encrypted key for current device" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395568134" resolveInfo="aesEncryptedKey" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395568094" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395568098" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+      <node concept="2m6fVq" id="GBscvBBrVw" role="2m5mJr">
+        <property role="TrG5h" value="DeleteChat" />
+        <node concept="2m7Kf5" id="GBscvBBrZI" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBrZM" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395568101" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="senderUid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395568107" nodeInfo="ng" />
+        <node concept="Nu42z" id="GBscvBBrVx" role="NuuwV">
+          <property role="Nu42W" value="64" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395568110" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078693185" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
-          </node>
+        <node concept="2m1Rp1" id="GBscvBBrZP" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395568121" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="keyHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395568131" nodeInfo="ng" />
+        <node concept="1D$$RI" id="EUEXKTjagl" role="2uGzQp">
+          <property role="1D$E9h" value="Deleting of conversation (also leave group for group conversations)" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395568134" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="aesEncryptedKey" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395568146" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395568149" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="message" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395568163" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395568090" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="01" />
+        <node concept="2uJ1As" id="EUEXKTjagy" role="2uGzQp">
+          <property role="2uJhrd" value="Conversation peer" />
+          <ref role="2uJhvL" node="GBscvBBrZI" resolve="peer" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395568658" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Message" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265792465" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about plain message" />
+      <node concept="NvyAe" id="GBscvBBkAs" role="2m5mJr" />
+      <node concept="NvWBy" id="GBscvBBkkC" role="2m5mJr">
+        <property role="NvWrd" value="Logic" />
+      </node>
+      <node concept="NpBTk" id="GBscvBBjZp" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedMessage" />
+        <node concept="NXeRC" id="EUEXKTmEJ2" role="NXp_2">
+          <property role="NXePf" value="Update about encrypted message" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395568677" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395568681" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+        <node concept="NX1gA" id="EUEXKTmIqX" role="NXp_2">
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="GBscvBBjZu" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmINz" role="NXp_2">
+          <property role="NX6R2" value="sender of message" />
+          <ref role="NX6Kv" node="GBscvBBjZ_" resolve="senderUid" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmJcc" role="NXp_2">
+          <property role="NX6R2" value="date of message" />
+          <ref role="NX6Kv" node="GBscvBBjZI" resolve="date" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmJco" role="NXp_2">
+          <property role="NX6R2" value="device's public key hash" />
+          <ref role="NX6Kv" node="GBscvBBjZT" resolve="keyHash" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmJXC" role="NXp_2">
+          <property role="NX6R2" value="Encrypted key for current device" />
+          <ref role="NX6Kv" node="GBscvBBk06" resolve="aesEncryptedKey" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBjZu" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBjZy" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395568684" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="senderUid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395568690" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBjZ_" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="senderUid" />
+          <node concept="2m5ndE" id="GBscvBBjZF" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395568693" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078694912" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBjZI" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotnPP1" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395568704" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078761393" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
-          </node>
+        <node concept="2m7Kf5" id="GBscvBBjZT" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="keyHash" />
+          <node concept="2m5ndQ" id="GBscvBBk03" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395568717" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="message" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395576238" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395570620" resolveInfo="MessageContent" />
-          </node>
+        <node concept="2m7Kf5" id="GBscvBBk06" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="aesEncryptedKey" />
+          <node concept="2m61tm" id="GBscvBBk0i" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395568659" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="37" />
+        <node concept="2m7Kf5" id="GBscvBBk0l" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="message" />
+          <node concept="2m61tm" id="GBscvBBk0z" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBjZq" role="NuuwV">
+          <property role="Nu42W" value="01" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395576903" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="MessageSent" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395577007" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395577019" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+      <node concept="NpBTk" id="GBscvBBk8i" role="2m5mJr">
+        <property role="TrG5h" value="Message" />
+        <node concept="NXeRC" id="7UKSaUun8Rh" role="NXp_2">
+          <property role="NXePf" value="Update about plain message" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBk8_" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBk8D" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395577022" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078719714" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="GBscvBBk8G" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="senderUid" />
+          <node concept="2m5ndE" id="GBscvBBk8M" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBk8P" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotnQg0" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395577031" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078698378" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBk90" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2vxDjoto6uL" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395576904" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="04" />
+        <node concept="2m7Kf5" id="GBscvBBk9d" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="message" />
+          <node concept="2m5mGg" id="GBscvBBlYI" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBBkAW" resolve="MessageContent" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBBk8j" role="NuuwV">
+          <property role="Nu42W" value="37" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiComment" typeId="tsp6.4689615199750788559" id="803735062395577720" nodeInfo="ng">
-        <property name="text" nameId="tsp6.4689615199750789856" value="Encrypted" />
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395577940" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EncryptedReceived" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395578053" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395578057" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+      <node concept="NpBTk" id="GBscvBBm97" role="2m5mJr">
+        <property role="TrG5h" value="MessageSent" />
+        <node concept="2m7Kf5" id="GBscvBBmaJ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBmaV" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395578060" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078759656" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="GBscvBBmaY" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2vxDjotnWjy" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395578915" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="receivedDate" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078698375" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBmb7" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotnR6a" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395577941" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="12" />
+        <node concept="Nu42z" id="GBscvBBm98" role="NuuwV">
+          <property role="Nu42W" value="04" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395578185" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EncryptedRead" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395578304" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395578308" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+      <node concept="NvWBy" id="GBscvBBmlS" role="2m5mJr">
+        <property role="NvWrd" value="Encrypted" />
+      </node>
+      <node concept="NpBTk" id="GBscvBBmpk" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedReceived" />
+        <node concept="2m7Kf5" id="GBscvBBmr5" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBmr9" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395578311" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078759659" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="GBscvBBmrc" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2vxDjoto63C" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395578320" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="readDate" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078698372" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBmCz" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="receivedDate" />
+          <node concept="wb0Ql" id="2vxDjotnR67" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395578186" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="34" />
+        <node concept="Nu42z" id="GBscvBBmpl" role="NuuwV">
+          <property role="Nu42W" value="12" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395579892" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EncryptedReadByMe" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395580022" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395580026" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+      <node concept="NpBTk" id="GBscvBBmt9" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedRead" />
+        <node concept="2m7Kf5" id="GBscvBBmv0" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBmv4" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395580029" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078759662" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="GBscvBBmv7" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2vxDjoto63F" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395579893" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="35" />
+        <node concept="2m7Kf5" id="GBscvBBmvg" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="readDate" />
+          <node concept="wb0Ql" id="2vxDjotnR64" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBBmta" role="NuuwV">
+          <property role="Nu42W" value="34" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiComment" typeId="tsp6.4689615199750788559" id="803735062395580300" nodeInfo="ng">
-        <property name="text" nameId="tsp6.4689615199750789856" value="Plain" />
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395580566" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="MessageReceived" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395580702" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395580706" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+      <node concept="NpBTk" id="GBscvBBmRO" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedReadByMe" />
+        <node concept="2m7Kf5" id="GBscvBBmTQ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBmTU" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395580709" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="startDate" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078696645" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBmTX" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2vxDjoto63I" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395580718" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="receivedDate" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078761402" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395580567" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="36" />
+        <node concept="Nu42z" id="GBscvBBmRP" role="NuuwV">
+          <property role="Nu42W" value="35" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395580870" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="MessageRead" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395581014" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395581018" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+      <node concept="NvWBy" id="GBscvBBmYc" role="2m5mJr">
+        <property role="NvWrd" value="Plain" />
+      </node>
+      <node concept="NpBTk" id="GBscvBBn2m" role="2m5mJr">
+        <property role="TrG5h" value="MessageReceived" />
+        <node concept="2m7Kf5" id="GBscvBBn4u" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBn4y" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395581021" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="startDate" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078696642" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBn4_" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="startDate" />
+          <node concept="wb0Ql" id="2vxDjotnQF5" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395581030" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="readDate" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078761399" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBn4I" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="receivedDate" />
+          <node concept="wb0Ql" id="2vxDjoto6uU" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395580871" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="13" />
+        <node concept="Nu42z" id="GBscvBBn2n" role="NuuwV">
+          <property role="Nu42W" value="36" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395581799" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="MessageReadByMe" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395581951" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395581955" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+      <node concept="NpBTk" id="GBscvBBn76" role="2m5mJr">
+        <property role="TrG5h" value="MessageRead" />
+        <node concept="2m7Kf5" id="GBscvBBn9m" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBn9q" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395581958" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="startDate" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078696639" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBn9t" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="startDate" />
+          <node concept="wb0Ql" id="2vxDjotnQF2" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395581800" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="32" />
+        <node concept="2m7Kf5" id="GBscvBBn9A" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="readDate" />
+          <node concept="wb0Ql" id="2vxDjoto6uR" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBBn77" role="NuuwV">
+          <property role="Nu42W" value="13" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiComment" typeId="tsp6.4689615199750788559" id="803735062395582737" nodeInfo="ng">
-        <property name="text" nameId="tsp6.4689615199750789856" value="Message deletions" />
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395583049" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="MessageDelete" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395583208" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395583212" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+      <node concept="NpBTk" id="GBscvBBnlB" role="2m5mJr">
+        <property role="TrG5h" value="MessageReadByMe" />
+        <node concept="2m7Kf5" id="GBscvBBnnZ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBno3" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395583215" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="rids" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395583221" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078761396" nodeInfo="ng">
-              <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="GBscvBBno6" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="startDate" />
+          <node concept="wb0Ql" id="2vxDjotnQEZ" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBBnlC" role="NuuwV">
+          <property role="Nu42W" value="32" />
+        </node>
+      </node>
+      <node concept="NvWBy" id="GBscvBBn$h" role="2m5mJr">
+        <property role="NvWrd" value="Message deletions" />
+      </node>
+      <node concept="NpBTk" id="GBscvBBnD9" role="2m5mJr">
+        <property role="TrG5h" value="MessageDelete" />
+        <node concept="2m7Kf5" id="GBscvBBnFC" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBnFG" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBnFJ" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rids" />
+          <node concept="2m5nlk" id="GBscvBBnFP" role="2m7DVh">
+            <node concept="wb0Ql" id="2vxDjoto6uO" role="3GJlyp">
+              <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
             </node>
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395583050" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="2E" />
+        <node concept="Nu42z" id="GBscvBBnDa" role="NuuwV">
+          <property role="Nu42W" value="2E" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395583393" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ChatClear" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395583559" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395583563" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+      <node concept="NpBTk" id="GBscvBBnIx" role="2m5mJr">
+        <property role="TrG5h" value="ChatClear" />
+        <node concept="2m7Kf5" id="GBscvBBnL7" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBnLb" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395583394" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="2F" />
+        <node concept="Nu42z" id="GBscvBBnIy" role="NuuwV">
+          <property role="Nu42W" value="2F" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395583733" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ChatDelete" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395583903" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395583907" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+      <node concept="NpBTk" id="GBscvBBnNP" role="2m5mJr">
+        <property role="TrG5h" value="ChatDelete" />
+        <node concept="2m7Kf5" id="GBscvBBnQv" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBnQz" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395583734" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="30" />
+        <node concept="Nu42z" id="GBscvBBnNQ" role="NuuwV">
+          <property role="Nu42W" value="30" />
         </node>
       </node>
     </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395512239" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Groups" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="groups" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395512439" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Group" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395512441" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="id" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395512445" nodeInfo="ng" />
+    <node concept="2m5mJO" id="GBscvBB6mJ" role="2m5lHt">
+      <property role="TrG5h" value="Groups" />
+      <property role="3XOG$Z" value="groups" />
+      <node concept="2m5naR" id="GBscvBB6pR" role="2m5mJr">
+        <property role="TrG5h" value="Group" />
+        <node concept="2m7Kf5" id="GBscvBB6pT" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="GBscvBB6pX" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395512551" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395512557" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB6rB" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="GBscvBB6rH" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395512560" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="title" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395512568" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB6rK" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="GBscvBB6rS" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395512571" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="avatar" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395512581" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395525431" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850407" resolveInfo="Avatar" />
+        <node concept="2m7Kf5" id="GBscvBB6rV" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="avatar" />
+          <node concept="2m5nlT" id="GBscvBB6s5" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBB9$R" role="3GH5xg">
+              <ref role="2m5mJy" node="GBscvB$$LB" resolve="Avatar" />
             </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395512590" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="isMember" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Boolean" typeId="tsp6.2348480312264231189" id="803735062395512603" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB6se" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="isMember" />
+          <node concept="2m5ndN" id="GBscvBB6sr" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395512606" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="8" />
-          <property name="name" nameId="tpck.1169194664001" value="adminUid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395512621" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB6su" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="adminUid" />
+          <node concept="2m5ndE" id="GBscvBB6sH" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="4092665470042278070" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="9" />
-          <property name="name" nameId="tpck.1169194664001" value="members" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="4092665470042278236" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="8314937989826865325" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="8314937989826863282" resolveInfo="Member" />
+        <node concept="2m7Kf5" id="3zc4oYAo8yQ" role="2m0hLx">
+          <property role="2m7DUN" value="9" />
+          <property role="TrG5h" value="members" />
+          <node concept="2m5nlk" id="3zc4oYAo8_s" role="2m7DVh">
+            <node concept="2m5mGg" id="7d$A0Kt1YyH" role="3GJlyp">
+              <ref role="2m5mJy" node="7d$A0Kt1Y2M" resolve="Member" />
             </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078700105" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="10" />
-          <property name="name" nameId="tpck.1169194664001" value="createDate" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078700125" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="2vxDjotnRx9" role="2m0hLx">
+          <property role="2m7DUN" value="10" />
+          <property role="TrG5h" value="createDate" />
+          <node concept="wb0Ql" id="2vxDjotnRxt" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="8314937989826863282" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Member" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="8314937989826863525" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="8314937989826863529" nodeInfo="ng" />
+      <node concept="2m5naR" id="7d$A0Kt1Y2M" role="2m5mJr">
+        <property role="TrG5h" value="Member" />
+        <node concept="2m7Kf5" id="7d$A0Kt1Y6_" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="7d$A0Kt1Y6D" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="8314937989826863532" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="inviterUid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="8314937989826863538" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="7d$A0Kt1Y6G" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="inviterUid" />
+          <node concept="2m5ndE" id="7d$A0Kt1Y6M" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="8314937989826863541" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="8314937989826863549" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="7d$A0Kt1Y6P" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="date" />
+          <node concept="2m5ndQ" id="7d$A0Kt1Y6X" role="2m7DVh" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395618165" nodeInfo="ng" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395601629" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="CreateGroup" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389941657" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Creating group chat" />
+      <node concept="NvyAe" id="GBscvBBwdP" role="2m5mJr" />
+      <node concept="2m6fVq" id="GBscvBBsbt" role="2m5mJr">
+        <property role="TrG5h" value="CreateGroup" />
+        <node concept="1D$$RI" id="EUEXKTjaAp" role="2uGzQp">
+          <property role="1D$E9h" value="Creating group chat" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389941663" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Random Id for avoiding double create" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395601651" resolveInfo="rid" />
+        <node concept="2uJ1As" id="EUEXKTjaAv" role="2uGzQp">
+          <property role="2uJhrd" value="Random Id for avoiding double create" />
+          <ref role="2uJhvL" node="GBscvBBsbN" resolve="rid" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389941671" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Group title" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395601658" resolveInfo="title" />
+        <node concept="2uJ1As" id="EUEXKTjaAB" role="2uGzQp">
+          <property role="2uJhrd" value="Group title" />
+          <ref role="2uJhvL" node="GBscvBBsbU" resolve="title" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389941681" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Members of group" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395601667" resolveInfo="users" />
+        <node concept="2uJ1As" id="EUEXKTjaAL" role="2uGzQp">
+          <property role="2uJhrd" value="Members of group" />
+          <ref role="2uJhvL" node="GBscvBBsc3" resolve="users" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395601651" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078798050" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="GBscvBBsbN" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2vxDjotofry" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395601658" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="title" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395601664" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBsbU" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="GBscvBBsc0" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395601667" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="users" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395601675" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395601681" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511946" resolveInfo="UserOutPeer" />
+        <node concept="2m7Kf5" id="GBscvBBsc3" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="users" />
+          <node concept="2m5nlk" id="GBscvBBscb" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBsch" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
             </node>
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395601630" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="41" />
+        <node concept="Nu42z" id="GBscvBBsbu" role="NuuwV">
+          <property role="Nu42W" value="41" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="803735062395601684" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395601689" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="groupPeer" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395601693" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395512002" resolveInfo="GroupOutPeer" />
+        <node concept="2m1R6W" id="GBscvBBsck" role="2m6efq">
+          <node concept="2m7Kf5" id="GBscvBBscp" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="groupPeer" />
+            <node concept="2m5mGg" id="GBscvBBsct" role="2m7DVh">
+              <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
             </node>
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395601696" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-            <property name="name" nameId="tpck.1169194664001" value="seq" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395601702" nodeInfo="ng" />
+          <node concept="2m7Kf5" id="GBscvBBscw" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="seq" />
+            <node concept="2m5ndE" id="GBscvBBscA" role="2m7DVh" />
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395601705" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-            <property name="name" nameId="tpck.1169194664001" value="state" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5857873509721466250" nodeInfo="ng">
-              <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5857873509721457697" resolveInfo="seq_state" />
+          <node concept="2m7Kf5" id="GBscvBBscD" role="2m0hLx">
+            <property role="2m7DUN" value="4" />
+            <property role="TrG5h" value="state" />
+            <node concept="wb0Ql" id="55bmeIQ7Ama" role="2m7DVh">
+              <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
             </node>
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395601716" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-            <property name="name" nameId="tpck.1169194664001" value="users" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="4092665470042288145" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="4092665470042288151" nodeInfo="ng" />
+          <node concept="2m7Kf5" id="GBscvBBscO" role="2m0hLx">
+            <property role="2m7DUN" value="5" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="3zc4oYAob0h" role="2m7DVh">
+              <node concept="2m5ndE" id="3zc4oYAob0n" role="3GJlyp" />
             </node>
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078684527" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-            <property name="name" nameId="tpck.1169194664001" value="date" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078701854" nodeInfo="ng">
-              <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+          <node concept="2m7Kf5" id="2vxDjotnNHJ" role="2m0hLx">
+            <property role="2m7DUN" value="6" />
+            <property role="TrG5h" value="date" />
+            <node concept="wb0Ql" id="2vxDjotnRWu" role="2m7DVh">
+              <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
             </node>
           </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395601685" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="42" />
+          <node concept="Nu42z" id="GBscvBBscl" role="NuuwV">
+            <property role="Nu42W" value="42" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395602508" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EditGroupTitle" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389941689" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Changing group title" />
+      <node concept="2m6fVq" id="GBscvBBspc" role="2m5mJr">
+        <property role="TrG5h" value="EditGroupTitle" />
+        <node concept="1D$$RI" id="EUEXKTjaAT" role="2uGzQp">
+          <property role="1D$E9h" value="Changing group title" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389943093" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Group's peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395602549" resolveInfo="groupPeer" />
+        <node concept="2uJ1As" id="EUEXKTjaWP" role="2uGzQp">
+          <property role="2uJhrd" value="Group's peer" />
+          <ref role="2uJhvL" node="GBscvBBspP" resolve="groupPeer" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389943101" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="new group title" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395602556" resolveInfo="title" />
+        <node concept="2uJ1As" id="EUEXKTjaWX" role="2uGzQp">
+          <property role="2uJhrd" value="new group title" />
+          <ref role="2uJhvL" node="GBscvBBspW" resolve="title" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="2618451197486690530" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Random Id of operation" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="2618451197486649305" resolveInfo="rid" />
+        <node concept="2uJ1As" id="2hmARQJSZ3y" role="2uGzQp">
+          <property role="2uJhrd" value="Random Id of operation" />
+          <ref role="2uJhvL" node="2hmARQJSOZp" resolve="rid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395602549" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupPeer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395602553" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395512002" resolveInfo="GroupOutPeer" />
+        <node concept="2m7Kf5" id="GBscvBBspP" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="GBscvBBspT" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486649305" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2618451197486649313" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="2hmARQJSOZp" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2hmARQJSOZx" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395602556" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="title" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395603313" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBspW" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="GBscvBBs_L" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395602509" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="55" />
+        <node concept="Nu42z" id="GBscvBBspd" role="NuuwV">
+          <property role="Nu42W" value="55" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="2873759689078766589" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="2873759689078703663" resolveInfo="SeqDate" />
+        <node concept="2m1Rp1" id="2vxDjoto7JX" role="2m6efq">
+          <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395605012" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EditGroupAvatar" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389943108" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Changing group avatar" />
+      <node concept="2m6fVq" id="GBscvBBt0k" role="2m5mJr">
+        <property role="TrG5h" value="EditGroupAvatar" />
+        <node concept="1D$$RI" id="EUEXKTjaX4" role="2uGzQp">
+          <property role="1D$E9h" value="Changing group avatar" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389943114" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Group's peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395605060" resolveInfo="groupPeer" />
+        <node concept="2uJ1As" id="EUEXKTjaXa" role="2uGzQp">
+          <property role="2uJhrd" value="Group's peer" />
+          <ref role="2uJhvL" node="GBscvBBt14" resolve="groupPeer" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389943122" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="uploaded file for avatar" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395605067" resolveInfo="fileLocation" />
+        <node concept="2uJ1As" id="EUEXKTjaXi" role="2uGzQp">
+          <property role="2uJhrd" value="uploaded file for avatar" />
+          <ref role="2uJhvL" node="GBscvBBt1b" resolve="fileLocation" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="2618451197486690541" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Random Id of operation" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="2618451197486651112" resolveInfo="rid" />
+        <node concept="2uJ1As" id="2hmARQJSZ3H" role="2uGzQp">
+          <property role="2uJhrd" value="Random Id of operation" />
+          <ref role="2uJhvL" node="2hmARQJSPrC" resolve="rid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395605060" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupPeer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395605064" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395512002" resolveInfo="GroupOutPeer" />
+        <node concept="2m7Kf5" id="GBscvBBt14" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="GBscvBBt18" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486651112" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2618451197486651113" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="2hmARQJSPrC" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2hmARQJSPrD" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395605067" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="fileLocation" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395605073" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850146" resolveInfo="FileLocation" />
+        <node concept="2m7Kf5" id="GBscvBBt1b" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="fileLocation" />
+          <node concept="2m5mGg" id="GBscvBBt1h" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvB$$Hy" resolve="FileLocation" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395605013" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="56" />
+        <node concept="Nu42z" id="GBscvBBt0l" role="NuuwV">
+          <property role="Nu42W" value="56" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="2873759689078770091" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078770096" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="avatar" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="2873759689078770100" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850407" resolveInfo="Avatar" />
+        <node concept="2m1R6W" id="2vxDjoto8AF" role="2m6efq">
+          <node concept="2m7Kf5" id="2vxDjoto8AK" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="avatar" />
+            <node concept="2m5mGg" id="2vxDjoto8AO" role="2m7DVh">
+              <ref role="2m5mJy" node="GBscvB$$LB" resolve="Avatar" />
             </node>
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078770103" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-            <property name="name" nameId="tpck.1169194664001" value="seq" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="2873759689078770109" nodeInfo="ng" />
+          <node concept="2m7Kf5" id="2vxDjoto8AR" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="seq" />
+            <node concept="2m5ndE" id="2vxDjoto8AX" role="2m7DVh" />
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078770112" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-            <property name="name" nameId="tpck.1169194664001" value="state" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078770120" nodeInfo="ng">
-              <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5857873509721457697" resolveInfo="seq_state" />
+          <node concept="2m7Kf5" id="2vxDjoto8B0" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="state" />
+            <node concept="wb0Ql" id="2vxDjoto8B8" role="2m7DVh">
+              <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
             </node>
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078770123" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-            <property name="name" nameId="tpck.1169194664001" value="date" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078770133" nodeInfo="ng">
-              <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+          <node concept="2m7Kf5" id="2vxDjoto8Bb" role="2m0hLx">
+            <property role="2m7DUN" value="4" />
+            <property role="TrG5h" value="date" />
+            <node concept="wb0Ql" id="2vxDjoto8Bl" role="2m7DVh">
+              <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
             </node>
           </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="2873759689078770092" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="73" />
+          <node concept="Nu42z" id="2vxDjoto8AG" role="NuuwV">
+            <property role="Nu42W" value="73" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395605894" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="RemoveGroupAvatar" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389943129" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Removing group avatar" />
+      <node concept="2m6fVq" id="GBscvBBte6" role="2m5mJr">
+        <property role="TrG5h" value="RemoveGroupAvatar" />
+        <node concept="1D$$RI" id="EUEXKTjaXp" role="2uGzQp">
+          <property role="1D$E9h" value="Removing group avatar" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389943135" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Group's peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395605949" resolveInfo="groupPeer" />
+        <node concept="2uJ1As" id="EUEXKTjaXv" role="2uGzQp">
+          <property role="2uJhrd" value="Group's peer" />
+          <ref role="2uJhvL" node="GBscvBBteX" resolve="groupPeer" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="2618451197486690551" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Random Id of operation" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="2618451197486652890" resolveInfo="rid" />
+        <node concept="2uJ1As" id="2hmARQJSZ3R" role="2uGzQp">
+          <property role="2uJhrd" value="Random Id of operation" />
+          <ref role="2uJhvL" node="2hmARQJSPRq" resolve="rid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395605949" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupPeer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395605953" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395512002" resolveInfo="GroupOutPeer" />
+        <node concept="2m7Kf5" id="GBscvBBteX" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="GBscvBBtf1" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486652890" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2618451197486652891" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="2hmARQJSPRq" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2hmARQJSPRr" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395605895" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="65" />
+        <node concept="Nu42z" id="GBscvBBte7" role="NuuwV">
+          <property role="Nu42W" value="65" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="2873759689078771880" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="2873759689078703663" resolveInfo="SeqDate" />
+        <node concept="2m1Rp1" id="2vxDjoto92C" role="2m6efq">
+          <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395609097" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="InviteUser" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389944546" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Inviting user to group" />
+      <node concept="2m6fVq" id="GBscvBBu09" role="2m5mJr">
+        <property role="TrG5h" value="InviteUser" />
+        <node concept="1D$$RI" id="EUEXKTjbjy" role="2uGzQp">
+          <property role="1D$E9h" value="Inviting user to group" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389944552" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Group's peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395609157" resolveInfo="groupPeer" />
+        <node concept="2uJ1As" id="EUEXKTjbjC" role="2uGzQp">
+          <property role="2uJhrd" value="Group's peer" />
+          <ref role="2uJhvL" node="GBscvBBu15" resolve="groupPeer" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389944560" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Users for invitation" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395609164" resolveInfo="user" />
+        <node concept="2uJ1As" id="EUEXKTjbjK" role="2uGzQp">
+          <property role="2uJhrd" value="Users for invitation" />
+          <ref role="2uJhvL" node="GBscvBBu1c" resolve="user" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="2618451197486690561" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Random Id of operation" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="2618451197486654664" resolveInfo="rid" />
+        <node concept="2uJ1As" id="2hmARQJSZ41" role="2uGzQp">
+          <property role="2uJhrd" value="Random Id of operation" />
+          <ref role="2uJhvL" node="2hmARQJSQj8" resolve="rid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395609157" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupPeer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395609161" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395512002" resolveInfo="GroupOutPeer" />
+        <node concept="2m7Kf5" id="GBscvBBu15" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="GBscvBBu19" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486654664" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2618451197486654665" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="2hmARQJSQj8" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2hmARQJSQj9" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395609164" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="user" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="2873759689078787615" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511946" resolveInfo="UserOutPeer" />
+        <node concept="2m7Kf5" id="GBscvBBu1c" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="user" />
+          <node concept="2m5mGg" id="2vxDjotocSv" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395609098" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="45" />
+        <node concept="Nu42z" id="GBscvBBu0a" role="NuuwV">
+          <property role="Nu42W" value="45" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="2873759689078773627" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="2873759689078703663" resolveInfo="SeqDate" />
+        <node concept="2m1Rp1" id="2vxDjoto9tV" role="2m6efq">
+          <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395609244" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="LeaveGroup" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389944567" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Leaving group" />
+      <node concept="2m6fVq" id="GBscvBBu2s" role="2m5mJr">
+        <property role="TrG5h" value="LeaveGroup" />
+        <node concept="1D$$RI" id="EUEXKTjbjR" role="2uGzQp">
+          <property role="1D$E9h" value="Leaving group" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389944573" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Group's peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395609312" resolveInfo="groupPeer" />
+        <node concept="2uJ1As" id="EUEXKTjbjX" role="2uGzQp">
+          <property role="2uJhrd" value="Group's peer" />
+          <ref role="2uJhvL" node="GBscvBBu3w" resolve="groupPeer" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="2618451197486690571" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Random Id of operation" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="2618451197486656442" resolveInfo="rid" />
+        <node concept="2uJ1As" id="2hmARQJSZ4b" role="2uGzQp">
+          <property role="2uJhrd" value="Random Id of operation" />
+          <ref role="2uJhvL" node="2hmARQJSQIU" resolve="rid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395609312" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupPeer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395609316" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395512002" resolveInfo="GroupOutPeer" />
+        <node concept="2m7Kf5" id="GBscvBBu3w" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="GBscvBBu3$" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486656442" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2618451197486656443" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="2hmARQJSQIU" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2hmARQJSQIV" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395609245" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="46" />
+        <node concept="Nu42z" id="GBscvBBu2t" role="NuuwV">
+          <property role="Nu42W" value="46" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="2873759689078775374" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="2873759689078703663" resolveInfo="SeqDate" />
+        <node concept="2m1Rp1" id="2vxDjoto9Te" role="2m6efq">
+          <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395609544" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="KickUser" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389944599" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Kicking user from group" />
+      <node concept="2m6fVq" id="GBscvBBu78" role="2m5mJr">
+        <property role="TrG5h" value="KickUser" />
+        <node concept="1D$$RI" id="EUEXKTjbkn" role="2uGzQp">
+          <property role="1D$E9h" value="Kicking user from group" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389944605" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Group's peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395609622" resolveInfo="groupPeer" />
+        <node concept="2uJ1As" id="EUEXKTjbkt" role="2uGzQp">
+          <property role="2uJhrd" value="Group's peer" />
+          <ref role="2uJhvL" node="GBscvBBu8m" resolve="groupPeer" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389944613" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="users for removing" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395609629" resolveInfo="user" />
+        <node concept="2uJ1As" id="EUEXKTjbk_" role="2uGzQp">
+          <property role="2uJhrd" value="users for removing" />
+          <ref role="2uJhvL" node="GBscvBBu8t" resolve="user" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="2618451197486690590" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Random Id of operation" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="2618451197486659986" resolveInfo="rid" />
+        <node concept="2uJ1As" id="2hmARQJSZ4u" role="2uGzQp">
+          <property role="2uJhrd" value="Random Id of operation" />
+          <ref role="2uJhvL" node="2hmARQJSRAi" resolve="rid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395609622" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupPeer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395609626" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395512002" resolveInfo="GroupOutPeer" />
+        <node concept="2m7Kf5" id="GBscvBBu8m" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="GBscvBBu8q" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486659986" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2618451197486659987" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="2hmARQJSRAi" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2hmARQJSRAj" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395609629" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="user" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="2873759689078785867" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511946" resolveInfo="UserOutPeer" />
+        <node concept="2m7Kf5" id="GBscvBBu8t" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="user" />
+          <node concept="2m5mGg" id="2vxDjotoctb" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395609545" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="47" />
+        <node concept="Nu42z" id="GBscvBBu79" role="NuuwV">
+          <property role="Nu42W" value="47" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="2873759689078778868" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="2873759689078703663" resolveInfo="SeqDate" />
+        <node concept="2m1Rp1" id="2vxDjotoaJO" role="2m6efq">
+          <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395629399" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GroupInvite" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390890073" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about inviting current user to group" />
+      <node concept="NpBTk" id="GBscvBByXn" role="2m5mJr">
+        <property role="TrG5h" value="GroupInvite" />
+        <node concept="NXeRC" id="EUEXKTmM9p" role="NXp_2">
+          <property role="NXePf" value="Update about inviting current user to group" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390890079" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Group Id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395629484" resolveInfo="groupId" />
+        <node concept="NX1gA" id="EUEXKTmM9v" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <ref role="NX6Kv" node="GBscvBByYG" resolve="groupId" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390890087" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Inviter UID. If equals to current uid than group created by user." />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395629491" resolveInfo="inviteUid" />
+        <node concept="NX1gA" id="EUEXKTmM9B" role="NXp_2">
+          <property role="NX6R2" value="Inviter UID. If equals to current uid than group created by user." />
+          <ref role="NX6Kv" node="GBscvBByYN" resolve="inviteUid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390891675" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Date of creating" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395629500" resolveInfo="date" />
+        <node concept="NX1gA" id="EUEXKTmMyr" role="NXp_2">
+          <property role="NX6R2" value="Date of creating" />
+          <ref role="NX6Kv" node="GBscvBByYW" resolve="date" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="2618451197486690602" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Random Id of operation" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2618451197486577674" resolveInfo="rid" />
+        <node concept="NX1gA" id="2hmARQJSZ4E" role="NXp_2">
+          <property role="NX6R2" value="Random Id of operation" />
+          <ref role="NX6Kv" node="2hmARQJSzwa" resolve="rid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395629484" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395629488" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBByYG" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="2m5ndE" id="GBscvBByYK" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486577674" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="9" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2618451197486661758" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="2hmARQJSzwa" role="2m0hLx">
+          <property role="2m7DUN" value="9" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2hmARQJSS1Y" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395629491" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="inviteUid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395629497" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBByYN" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="inviteUid" />
+          <node concept="2m5ndE" id="GBscvBByYT" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395629500" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="8" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078780615" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBByYW" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotobb7" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395629400" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="24" />
+        <node concept="Nu42z" id="GBscvBByXo" role="NuuwV">
+          <property role="Nu42W" value="24" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395629601" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GroupUserAdded" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390891667" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about adding user to group" />
+      <node concept="NpBTk" id="GBscvBBz0x" role="2m5mJr">
+        <property role="TrG5h" value="GroupUserAdded" />
+        <node concept="NXeRC" id="EUEXKTmMyj" role="NXp_2">
+          <property role="NXePf" value="Update about adding user to group" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390891684" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Group Id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395629694" resolveInfo="groupId" />
+        <node concept="NX1gA" id="EUEXKTmMy$" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <ref role="NX6Kv" node="GBscvBBz1Y" resolve="groupId" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390896129" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Added user ID" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395629701" resolveInfo="uid" />
+        <node concept="NX1gA" id="EUEXKTmNC1" role="NXp_2">
+          <property role="NX6R2" value="Added user ID" />
+          <ref role="NX6Kv" node="GBscvBBz25" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390896139" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Inviter user ID" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395629710" resolveInfo="inviterUid" />
+        <node concept="NX1gA" id="EUEXKTmNCb" role="NXp_2">
+          <property role="NX6R2" value="Inviter user ID" />
+          <ref role="NX6Kv" node="GBscvBBz2e" resolve="inviterUid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390897632" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Date of adding user to group" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395629721" resolveInfo="date" />
+        <node concept="NX1gA" id="EUEXKTmNZw" role="NXp_2">
+          <property role="NX6R2" value="Date of adding user to group" />
+          <ref role="NX6Kv" node="GBscvBBz2p" resolve="date" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="2618451197486690616" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Random Id of operation" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2618451197486579421" resolveInfo="rid" />
+        <node concept="NX1gA" id="2hmARQJSZ4S" role="NXp_2">
+          <property role="NX6R2" value="Random Id of operation" />
+          <ref role="NX6Kv" node="2hmARQJSzVt" resolve="rid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395629694" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395629698" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBz1Y" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="2m5ndE" id="GBscvBBz22" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486579421" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2618451197486661762" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="2hmARQJSzVt" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2hmARQJSS22" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395629701" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395629707" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBz25" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBz2b" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395629710" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="inviterUid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395629718" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBz2e" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="inviterUid" />
+          <node concept="2m5ndE" id="GBscvBBz2m" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395629721" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078780618" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBz2p" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotobba" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395629602" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="15" />
+        <node concept="Nu42z" id="GBscvBBz0y" role="NuuwV">
+          <property role="Nu42W" value="15" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395630712" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GroupUserLeave" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390899220" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about leaving user" />
+      <node concept="NpBTk" id="GBscvBBzhS" role="2m5mJr">
+        <property role="TrG5h" value="GroupUserLeave" />
+        <node concept="NXeRC" id="EUEXKTmOok" role="NXp_2">
+          <property role="NXePf" value="Update about leaving user" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390899226" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Group Id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395630815" resolveInfo="groupId" />
+        <node concept="NX1gA" id="EUEXKTmOoq" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <ref role="NX6Kv" node="GBscvBBzjv" resolve="groupId" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390903686" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="User's ID" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395630822" resolveInfo="uid" />
+        <node concept="NX1gA" id="EUEXKTmPu6" role="NXp_2">
+          <property role="NX6R2" value="User's ID" />
+          <ref role="NX6Kv" node="GBscvBBzjA" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390903696" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Date of user leave" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395630831" resolveInfo="date" />
+        <node concept="NX1gA" id="EUEXKTmPug" role="NXp_2">
+          <property role="NX6R2" value="Date of user leave" />
+          <ref role="NX6Kv" node="GBscvBBzjJ" resolve="date" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="2618451197486692395" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Random Id of operation" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2618451197486581172" resolveInfo="rid" />
+        <node concept="NX1gA" id="2hmARQJSZwF" role="NXp_2">
+          <property role="NX6R2" value="Random Id of operation" />
+          <ref role="NX6Kv" node="2hmARQJS$mO" resolve="rid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395630815" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395630819" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBzjv" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="2m5ndE" id="GBscvBBzjz" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486581172" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2618451197486661765" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="2hmARQJS$mO" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2hmARQJSS25" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395630822" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395630828" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBzjA" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBzjG" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395630831" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078782365" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBzjJ" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotobAt" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395630713" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="17" />
+        <node concept="Nu42z" id="GBscvBBzhT" role="NuuwV">
+          <property role="Nu42W" value="17" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395631166" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GroupUserKick" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390903704" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about kicking user" />
+      <node concept="NpBTk" id="GBscvBBzoY" role="2m5mJr">
+        <property role="TrG5h" value="GroupUserKick" />
+        <node concept="NXeRC" id="EUEXKTmPuo" role="NXp_2">
+          <property role="NXePf" value="Update about kicking user" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390903710" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Group Id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395631277" resolveInfo="groupId" />
+        <node concept="NX1gA" id="EUEXKTmPuu" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <ref role="NX6Kv" node="GBscvBBzqH" resolve="groupId" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390903718" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Kicked user's ID" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395631284" resolveInfo="uid" />
+        <node concept="NX1gA" id="EUEXKTmPuA" role="NXp_2">
+          <property role="NX6R2" value="Kicked user's ID" />
+          <ref role="NX6Kv" node="GBscvBBzqO" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390903728" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Kicker user's ID" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395631293" resolveInfo="kickerUid" />
+        <node concept="NX1gA" id="EUEXKTmPuK" role="NXp_2">
+          <property role="NX6R2" value="Kicker user's ID" />
+          <ref role="NX6Kv" node="GBscvBBzqX" resolve="kickerUid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390905230" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Date of user kick" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395631304" resolveInfo="date" />
+        <node concept="NX1gA" id="EUEXKTmPQe" role="NXp_2">
+          <property role="NX6R2" value="Date of user kick" />
+          <ref role="NX6Kv" node="GBscvBBzr8" resolve="date" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="2618451197486694175" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Random Id of operation" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2618451197486582923" resolveInfo="rid" />
+        <node concept="NX1gA" id="2hmARQJSZWv" role="NXp_2">
+          <property role="NX6R2" value="Random Id of operation" />
+          <ref role="NX6Kv" node="2hmARQJS$Mb" resolve="rid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395631277" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395631281" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBzqH" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="2m5ndE" id="GBscvBBzqL" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486582923" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2618451197486663846" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="2hmARQJS$Mb" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2hmARQJSSyA" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395631284" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395631290" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBzqO" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBzqU" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395631293" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="kickerUid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395631301" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBzqX" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="kickerUid" />
+          <node concept="2m5ndE" id="GBscvBBzr5" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395631304" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078782368" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBBzr8" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotobAw" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395631167" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="18" />
+        <node concept="Nu42z" id="GBscvBBzoZ" role="NuuwV">
+          <property role="Nu42W" value="18" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395632331" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GroupMembersUpdate" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390906827" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Silent group members update" />
+      <node concept="NpBTk" id="GBscvBBzFb" role="2m5mJr">
+        <property role="TrG5h" value="GroupMembersUpdate" />
+        <node concept="NXeRC" id="EUEXKTmQfb" role="NXp_2">
+          <property role="NXePf" value="Silent group members update" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390906833" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Group Id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395632452" resolveInfo="groupId" />
+        <node concept="NX1gA" id="EUEXKTmQfh" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <ref role="NX6Kv" node="GBscvBBzH4" resolve="groupId" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390906841" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="New members list" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395632470" resolveInfo="members" />
+        <node concept="NX1gA" id="EUEXKTmQfp" role="NXp_2">
+          <property role="NX6R2" value="New members list" />
+          <ref role="NX6Kv" node="GBscvBBzHm" resolve="members" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395632452" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395632456" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBzH4" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="2m5ndE" id="GBscvBBzH8" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395632470" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="members" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395632476" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="8314937989826867101" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="8314937989826863282" resolveInfo="Member" />
-            </node>
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395632332" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="2C" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395633513" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GroupTitleChanged" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390912824" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about group title change" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390912830" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Group Id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395633641" resolveInfo="groupId" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390914432" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Changer UID" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395633648" resolveInfo="uid" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390914442" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="New Title of group" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395633657" resolveInfo="title" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390914454" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Date of title change" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395633668" resolveInfo="date" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="2618451197486695957" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Random Id of operation" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2618451197486584678" resolveInfo="rid" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395633641" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395633645" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486584678" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2618451197486672765" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395633648" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395633654" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395633657" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="title" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395633665" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395633668" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078784115" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395633514" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="26" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395634729" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GroupAvatarChanged" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390916059" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about group avatar change" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390916065" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Group Id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395634867" resolveInfo="groupId" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390916073" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Avatar changer uid" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395634874" resolveInfo="uid" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390917690" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="New Avatar. If null then avatar is removed" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395634883" resolveInfo="avatar" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390923714" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Date of avatar change" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395634900" resolveInfo="date" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="2618451197486697740" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Random Id of operation" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2618451197486586435" resolveInfo="rid" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395634867" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395634871" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486586435" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2618451197486674550" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395634874" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395634880" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395634883" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="avatar" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395634891" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395634897" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850407" resolveInfo="Avatar" />
+        <node concept="2m7Kf5" id="GBscvBBzHm" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="members" />
+          <node concept="2m5nlk" id="GBscvBBzHs" role="2m7DVh">
+            <node concept="2m5mGg" id="7d$A0Kt1YYt" role="3GJlyp">
+              <ref role="2m5mJy" node="7d$A0Kt1Y2M" resolve="Member" />
             </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395634900" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078784118" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="Nu42z" id="GBscvBBzFc" role="NuuwV">
+          <property role="Nu42W" value="2C" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="GBscvBBzXD" role="2m5mJr">
+        <property role="TrG5h" value="GroupTitleChanged" />
+        <node concept="NXeRC" id="EUEXKTmRGS" role="NXp_2">
+          <property role="NXePf" value="Update about group title change" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmRGY" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <ref role="NX6Kv" node="GBscvBBzZD" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmS60" role="NXp_2">
+          <property role="NX6R2" value="Changer UID" />
+          <ref role="NX6Kv" node="GBscvBBzZK" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmS6a" role="NXp_2">
+          <property role="NX6R2" value="New Title of group" />
+          <ref role="NX6Kv" node="GBscvBBzZT" resolve="title" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmS6m" role="NXp_2">
+          <property role="NX6R2" value="Date of title change" />
+          <ref role="NX6Kv" node="GBscvBB$04" resolve="date" />
+        </node>
+        <node concept="NX1gA" id="2hmARQJT0ol" role="NXp_2">
+          <property role="NX6R2" value="Random Id of operation" />
+          <ref role="NX6Kv" node="2hmARQJS_dA" resolve="rid" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBzZD" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="2m5ndE" id="GBscvBBzZH" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2hmARQJS_dA" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2hmARQJSUHX" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395634730" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="27" />
+        <node concept="2m7Kf5" id="GBscvBBzZK" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBzZQ" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBzZT" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="GBscvBB$01" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB$04" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotoc1N" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBBzXE" role="NuuwV">
+          <property role="Nu42W" value="26" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="GBscvBB$gD" role="2m5mJr">
+        <property role="TrG5h" value="GroupAvatarChanged" />
+        <node concept="NXeRC" id="EUEXKTmSvr" role="NXp_2">
+          <property role="NXePf" value="Update about group avatar change" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmSvx" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <ref role="NX6Kv" node="GBscvBB$iN" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmSvD" role="NXp_2">
+          <property role="NX6R2" value="Avatar changer uid" />
+          <ref role="NX6Kv" node="GBscvBB$iU" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmSSU" role="NXp_2">
+          <property role="NX6R2" value="New Avatar. If null then avatar is removed" />
+          <ref role="NX6Kv" node="GBscvBB$j3" resolve="avatar" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmUn2" role="NXp_2">
+          <property role="NX6R2" value="Date of avatar change" />
+          <ref role="NX6Kv" node="GBscvBB$jk" resolve="date" />
+        </node>
+        <node concept="NX1gA" id="2hmARQJT0Oc" role="NXp_2">
+          <property role="NX6R2" value="Random Id of operation" />
+          <ref role="NX6Kv" node="2hmARQJS_D3" resolve="rid" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB$iN" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="2m5ndE" id="GBscvBB$iR" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2hmARQJS_D3" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2hmARQJSV9Q" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB$iU" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBB$j0" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB$j3" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="avatar" />
+          <node concept="2m5nlT" id="GBscvBB$jb" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBB$jh" role="3GH5xg">
+              <ref role="2m5mJy" node="GBscvB$$LB" resolve="Avatar" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB$jk" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotoc1Q" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBB$gE" role="NuuwV">
+          <property role="Nu42W" value="27" />
         </node>
       </node>
     </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="2861239048481322159" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Message and Dialogs lists" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="conversations" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Enum" typeId="tsp6.2348480312264620144" id="2618451197486699597" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="MessageState" />
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="2618451197486699599" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="Sent" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="1" />
+    <node concept="2m5mJO" id="2uPas5edbiJ" role="2m5lHt">
+      <property role="TrG5h" value="Message and Dialogs lists" />
+      <property role="3XOG$Z" value="conversations" />
+      <node concept="2m488m" id="2hmARQJT1hd" role="2m5mJr">
+        <property role="TrG5h" value="MessageState" />
+        <node concept="2m7y0F" id="2hmARQJT1hf" role="2m7ymf">
+          <property role="TrG5h" value="Sent" />
+          <property role="2m7y0m" value="1" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="2618451197486699681" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="Received" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="2" />
+        <node concept="2m7y0F" id="2hmARQJT1ix" role="2m7ymf">
+          <property role="TrG5h" value="Received" />
+          <property role="2m7y0m" value="2" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="2618451197486699684" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="Read" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="3" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="2861239048481363463" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="HistoryMessage" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390925324" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Message from history" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390925330" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Sender of mesasge" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2861239048481363466" resolveInfo="senderUid" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390925338" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Random Id of message" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2861239048481363473" resolveInfo="rid" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390926952" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Date of message" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2861239048481363482" resolveInfo="date" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390926964" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Content of message" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2861239048481363493" resolveInfo="message" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481363466" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="senderUid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="2861239048481363470" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481363473" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078799783" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481363482" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078799786" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481363493" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="message" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="2861239048481363503" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395570620" resolveInfo="MessageContent" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486701461" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.EnumType" typeId="tsp6.803735062395368411" id="2618451197486701473" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.803735062395368531" targetNodeId="2618451197486699597" resolveInfo="MessageState" />
-          </node>
+        <node concept="2m7y0F" id="2hmARQJT1i$" role="2m7ymf">
+          <property role="TrG5h" value="Read" />
+          <property role="2m7y0m" value="3" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="2861239048481363517" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="LoadHistory" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389948865" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Loading history of chat" />
+      <node concept="2m5naR" id="2uPas5edlo7" role="2m5mJr">
+        <property role="TrG5h" value="HistoryMessage" />
+        <node concept="NXeRC" id="EUEXKTmUKc" role="NXodf">
+          <property role="NXePf" value="Message from history" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389948871" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Peer of conversation" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="2861239048481363534" resolveInfo="peer" />
+        <node concept="NX1gA" id="EUEXKTmUKi" role="NXodf">
+          <property role="NX6R2" value="Sender of mesasge" />
+          <ref role="NX6Kv" node="2uPas5edloa" resolve="senderUid" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389948890" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="start date of messages for loading or 0 for loading from start" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="2861239048481363541" resolveInfo="startDate" />
+        <node concept="NX1gA" id="EUEXKTmUKq" role="NXodf">
+          <property role="NX6R2" value="Random Id of message" />
+          <ref role="NX6Kv" node="2uPas5edloh" resolve="rid" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389948900" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="maximum amount of messages (max is 100)" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="2861239048481363550" resolveInfo="limit" />
+        <node concept="NX1gA" id="EUEXKTmV9C" role="NXodf">
+          <property role="NX6R2" value="Date of message" />
+          <ref role="NX6Kv" node="2uPas5edloq" resolve="date" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481363534" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="2861239048481363538" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511891" resolveInfo="OutPeer" />
+        <node concept="NX1gA" id="EUEXKTmV9O" role="NXodf">
+          <property role="NX6R2" value="Content of message" />
+          <ref role="NX6Kv" node="2uPas5edlo_" resolve="message" />
+        </node>
+        <node concept="2m7Kf5" id="2uPas5edloa" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="senderUid" />
+          <node concept="2m5ndE" id="2uPas5edloe" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2uPas5edloh" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2vxDjotofQB" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481363541" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="startDate" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078799789" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="2uPas5edloq" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotofQE" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481363550" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="limit" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="2861239048481363558" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="2uPas5edlo_" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="message" />
+          <node concept="2m5mGg" id="2uPas5edloJ" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBBkAW" resolve="MessageContent" />
+          </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="2861239048481363518" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="76" />
+        <node concept="2m7Kf5" id="2hmARQJT1Il" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="state" />
+          <node concept="2m5nlT" id="4hxoBryzVTh" role="2m7DVh">
+            <node concept="3GJkcs" id="4hxoBryzVTn" role="3GH5xg">
+              <ref role="3GJkik" node="2hmARQJT1hd" resolve="MessageState" />
+            </node>
+          </node>
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="2861239048481363561" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481363566" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="history" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="2861239048481363570" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="2861239048481363576" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="2861239048481363463" resolveInfo="HistoryMessage" />
+      </node>
+      <node concept="2m6fVq" id="2uPas5edloX" role="2m5mJr">
+        <property role="TrG5h" value="LoadHistory" />
+        <node concept="1D$$RI" id="EUEXKTjcn1" role="2uGzQp">
+          <property role="1D$E9h" value="Loading history of chat" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTjcn7" role="2uGzQp">
+          <property role="2uJhrd" value="Peer of conversation" />
+          <ref role="2uJhvL" node="2uPas5edlpe" resolve="peer" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTjcnq" role="2uGzQp">
+          <property role="2uJhrd" value="start date of messages for loading or 0 for loading from start" />
+          <ref role="2uJhvL" node="2uPas5edlpl" resolve="startDate" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTjcn$" role="2uGzQp">
+          <property role="2uJhrd" value="maximum amount of messages (max is 100)" />
+          <ref role="2uJhvL" node="2uPas5edlpu" resolve="limit" />
+        </node>
+        <node concept="2m7Kf5" id="2uPas5edlpe" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="2uPas5edlpi" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2uPas5edlpl" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="startDate" />
+          <node concept="wb0Ql" id="2vxDjotofQH" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2uPas5edlpu" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="limit" />
+          <node concept="2m5ndE" id="2uPas5edlpA" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="2uPas5edloY" role="NuuwV">
+          <property role="Nu42W" value="76" />
+        </node>
+        <node concept="2m1R6W" id="2uPas5edlpD" role="2m6efq">
+          <node concept="2m7Kf5" id="2uPas5edlpI" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="history" />
+            <node concept="2m5nlk" id="2uPas5edlpM" role="2m7DVh">
+              <node concept="2m5mGg" id="2uPas5edlpS" role="3GJlyp">
+                <ref role="2m5mJy" node="2uPas5edlo7" resolve="HistoryMessage" />
               </node>
             </node>
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481365863" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-            <property name="name" nameId="tpck.1169194664001" value="users" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="2861239048481365870" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="3857470926885407119" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395368173" resolveInfo="User" />
+          <node concept="2m7Kf5" id="2uPas5edlXB" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="2uPas5edlXI" role="2m7DVh">
+              <node concept="2m5mGg" id="3m8vlV8pGAf" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
               </node>
             </node>
           </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="2861239048481363562" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="77" />
+          <node concept="Nu42z" id="2uPas5edlpE" role="NuuwV">
+            <property role="Nu42W" value="77" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="2861239048481375645" nodeInfo="ng" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="2861239048481369440" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Dialog" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390928579" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Conversation from history" />
+      <node concept="NvyAe" id="2uPas5edomt" role="2m5mJr" />
+      <node concept="2m5naR" id="2uPas5edmPw" role="2m5mJr">
+        <property role="TrG5h" value="Dialog" />
+        <node concept="NXeRC" id="EUEXKTmVz3" role="NXodf">
+          <property role="NXePf" value="Conversation from history" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390928585" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Peer of conversation" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2861239048481369475" resolveInfo="peer" />
+        <node concept="NX1gA" id="EUEXKTmVz9" role="NXodf">
+          <property role="NX6R2" value="Peer of conversation" />
+          <ref role="NX6Kv" node="2uPas5edmQ3" resolve="peer" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390928593" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="plain messages unread messages count" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2861239048481369482" resolveInfo="unreadCount" />
+        <node concept="NX1gA" id="EUEXKTmVzh" role="NXodf">
+          <property role="NX6R2" value="plain messages unread messages count" />
+          <ref role="NX6Kv" node="2uPas5edmQa" resolve="unreadCount" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390928603" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="date of conversation for sorting" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2861239048481369491" resolveInfo="sortDate" />
+        <node concept="NX1gA" id="EUEXKTmVzr" role="NXodf">
+          <property role="NX6R2" value="date of conversation for sorting" />
+          <ref role="NX6Kv" node="2uPas5edmQj" resolve="sortDate" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390928615" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Sender of top message (may be zero)" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2861239048481369502" resolveInfo="senderUid" />
+        <node concept="NX1gA" id="EUEXKTmVzB" role="NXodf">
+          <property role="NX6R2" value="Sender of top message (may be zero)" />
+          <ref role="NX6Kv" node="2uPas5edmQu" resolve="senderUid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390928629" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Random ID of top message (may be zero)" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2861239048481369515" resolveInfo="rid" />
+        <node concept="NX1gA" id="EUEXKTmVzP" role="NXodf">
+          <property role="NX6R2" value="Random ID of top message (may be zero)" />
+          <ref role="NX6Kv" node="2uPas5edmQF" resolve="rid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390928645" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Date of top message (can't be zero)" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2861239048481370693" resolveInfo="date" />
+        <node concept="NX1gA" id="EUEXKTmV$5" role="NXodf">
+          <property role="NX6R2" value="Date of top message (can't be zero)" />
+          <ref role="NX6Kv" node="2uPas5edn95" resolve="date" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390928689" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Content of message" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2861239048481370710" resolveInfo="message" />
+        <node concept="NX1gA" id="EUEXKTmV$L" role="NXodf">
+          <property role="NX6R2" value="Content of message" />
+          <ref role="NX6Kv" node="2uPas5edn9m" resolve="message" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481369475" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="2861239048481369479" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
+        <node concept="2m7Kf5" id="2uPas5edmQ3" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="2uPas5edmQ7" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481369482" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="unreadCount" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="2861239048481369488" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="2uPas5edmQa" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="unreadCount" />
+          <node concept="2m5ndE" id="2uPas5edmQg" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481369491" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="sortDate" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078801522" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="2uPas5edmQj" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="sortDate" />
+          <node concept="wb0Ql" id="2vxDjotoghM" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481369502" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="senderUid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="2861239048481369512" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="2uPas5edmQu" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="senderUid" />
+          <node concept="2m5ndE" id="2uPas5edmQC" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481369515" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="rid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078801525" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078712776" resolveInfo="randomId" />
+        <node concept="2m7Kf5" id="2uPas5edmQF" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2vxDjotoghP" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481370693" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="7" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078801528" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="2uPas5edn95" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotoghS" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481370710" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="8" />
-          <property name="name" nameId="tpck.1169194664001" value="message" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="2861239048481370726" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395570620" resolveInfo="MessageContent" />
+        <node concept="2m7Kf5" id="2uPas5edn9m" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="message" />
+          <node concept="2m5mGg" id="2uPas5edn9A" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBBkAW" resolve="MessageContent" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2618451197486703251" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="9" />
-          <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.EnumType" typeId="tsp6.803735062395368411" id="2618451197486703269" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.803735062395368531" targetNodeId="2618451197486699597" resolveInfo="MessageState" />
+        <node concept="2m7Kf5" id="2hmARQJT2aj" role="2m0hLx">
+          <property role="2m7DUN" value="9" />
+          <property role="TrG5h" value="state" />
+          <node concept="2m5nlT" id="4hxoBryzVqe" role="2m7DVh">
+            <node concept="3GJkcs" id="4hxoBryzVqk" role="3GH5xg">
+              <ref role="3GJkik" node="2hmARQJT1hd" resolve="MessageState" />
+            </node>
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="2861239048481368197" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="LoadDialogs" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389950327" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Loading conversation history" />
+      <node concept="2m6fVq" id="2uPas5edmy5" role="2m5mJr">
+        <property role="TrG5h" value="LoadDialogs" />
+        <node concept="1D$$RI" id="EUEXKTjcHR" role="2uGzQp">
+          <property role="1D$E9h" value="Loading conversation history" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389950341" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="start date of conversation loading" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="2861239048481369378" resolveInfo="startDate" />
+        <node concept="2uJ1As" id="EUEXKTjcI5" role="2uGzQp">
+          <property role="2uJhrd" value="start date of conversation loading" />
+          <ref role="2uJhvL" node="2uPas5edmOy" resolve="startDate" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389957174" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="limit maximum amount of messages (max is 100)" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="2861239048481369385" resolveInfo="limit" />
+        <node concept="2uJ1As" id="EUEXKTjeoQ" role="2uGzQp">
+          <property role="2uJhrd" value="limit maximum amount of messages (max is 100)" />
+          <ref role="2uJhvL" node="2uPas5edmOD" resolve="limit" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481369378" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="startDate" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078803261" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
+        <node concept="2m7Kf5" id="2uPas5edmOy" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="startDate" />
+          <node concept="wb0Ql" id="2vxDjotogGX" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481369385" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="limit" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="2861239048481369391" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="2uPas5edmOD" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="limit" />
+          <node concept="2m5ndE" id="2uPas5edmOJ" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="2861239048481368198" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="68" />
+        <node concept="Nu42z" id="2uPas5edmy6" role="NuuwV">
+          <property role="Nu42W" value="68" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="2861239048481371896" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481371901" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="groups" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="2861239048481371905" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="2861239048481371911" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395512439" resolveInfo="Group" />
+        <node concept="2m1R6W" id="2uPas5ednrS" role="2m6efq">
+          <node concept="2m7Kf5" id="2uPas5ednrX" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="groups" />
+            <node concept="2m5nlk" id="2uPas5edns1" role="2m7DVh">
+              <node concept="2m5mGg" id="2uPas5edns7" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
               </node>
             </node>
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481371914" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-            <property name="name" nameId="tpck.1169194664001" value="users" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="2861239048481371921" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="3857470926885407122" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395368173" resolveInfo="User" />
+          <node concept="2m7Kf5" id="2uPas5ednsa" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="2uPas5ednsh" role="2m7DVh">
+              <node concept="2m5mGg" id="3m8vlV8pGAi" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
               </node>
             </node>
           </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2861239048481371930" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-            <property name="name" nameId="tpck.1169194664001" value="dialogs" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="2861239048481371940" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="2861239048481371946" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="2861239048481369440" resolveInfo="Dialog" />
+          <node concept="2m7Kf5" id="2uPas5ednsq" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="dialogs" />
+            <node concept="2m5nlk" id="2uPas5edns$" role="2m7DVh">
+              <node concept="2m5mGg" id="2uPas5ednsE" role="3GJlyp">
+                <ref role="2m5mJy" node="2uPas5edmPw" resolve="Dialog" />
               </node>
             </node>
           </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="2861239048481371897" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="69" />
+          <node concept="Nu42z" id="2uPas5ednrT" role="NuuwV">
+            <property role="Nu42W" value="69" />
           </node>
         </node>
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481324349" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h1&gt;Overview&lt;/h1&gt;" />
+      <node concept="1Dx9M1" id="2uPas5edbOX" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;h1&gt;Overview&lt;/h1&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481325447" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Actor can work with encrypted and plain messages and encrypted messages does not appear in history," />
+      <node concept="1Dx9M1" id="2uPas5edc67" role="1Dx9rD">
+        <property role="1Dx9K7" value="Actor can work with encrypted and plain messages and encrypted messages does not appear in history," />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481327644" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="but it affects conversation lists." />
+      <node concept="1Dx9M1" id="2uPas5edcCs" role="1Dx9rD">
+        <property role="1Dx9K7" value="but it affects conversation lists." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481328746" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h1&gt;Messages ordering&lt;/h1&gt;" />
+      <node concept="1Dx9M1" id="2uPas5edcTE" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;h1&gt;Messages ordering&lt;/h1&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481329850" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Server provide date in milliseconds for accurate ordering of incoming messages in applications. " />
+      <node concept="1Dx9M1" id="2uPas5eddaU" role="1Dx9rD">
+        <property role="1Dx9K7" value="Server provide date in milliseconds for accurate ordering of incoming messages in applications. " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481330956" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="NOTHING can move conversation on conversation list down on list. For example if you clean chat or delete top message" />
+      <node concept="1Dx9M1" id="2uPas5eddsc" role="1Dx9rD">
+        <property role="1Dx9K7" value="NOTHING can move conversation on conversation list down on list. For example if you clean chat or delete top message" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481333165" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="for the conversation conversation keep its position. Some events doesn't move conversation to top" />
+      <node concept="1Dx9M1" id="2uPas5eddYH" role="1Dx9rD">
+        <property role="1Dx9K7" value="for the conversation conversation keep its position. Some events doesn't move conversation to top" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481336479" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="of conversations list. For example leaving chat or new device notification doesn't move it up." />
+      <node concept="1Dx9M1" id="2uPas5edeMv" role="1Dx9rD">
+        <property role="1Dx9K7" value="of conversations list. For example leaving chat or new device notification doesn't move it up." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481337591" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h1&gt;Deleting of messages&lt;/h1&gt;" />
+      <node concept="1Dx9M1" id="2uPas5edf3R" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;h1&gt;Deleting of messages&lt;/h1&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481339809" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="For deletion of messages either plain or encrypted there is method MessageDelete#0x62 deletion." />
+      <node concept="1Dx9M1" id="2uPas5edfAx" role="1Dx9rD">
+        <property role="1Dx9K7" value="For deletion of messages either plain or encrypted there is method MessageDelete#0x62 deletion." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481342030" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Deletion of message is irreversible for now." />
+      <node concept="1Dx9M1" id="2uPas5edg9e" role="1Dx9rD">
+        <property role="1Dx9K7" value="Deletion of message is irreversible for now." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481343148" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h1&gt;Deleting and clearing of conversation&lt;/h1&gt;" />
+      <node concept="1Dx9M1" id="2uPas5edgqG" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;h1&gt;Deleting and clearing of conversation&lt;/h1&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481344268" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Clearing of conversation deletes all messages in conversation and clears top message in conversation list." />
+      <node concept="1Dx9M1" id="2uPas5edgGc" role="1Dx9rD">
+        <property role="1Dx9K7" value="Clearing of conversation deletes all messages in conversation and clears top message in conversation list." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481346498" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Deletion of conversation deletes all messages and removes conversation from conversations list." />
+      <node concept="1Dx9M1" id="2uPas5edhf2" role="1Dx9rD">
+        <property role="1Dx9K7" value="Deletion of conversation deletes all messages and removes conversation from conversations list." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481347622" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="For sync this operations there are updates ChatDelete#0x30 and ChatClear#0x2F." />
+      <node concept="1Dx9M1" id="2uPas5edhwA" role="1Dx9rD">
+        <property role="1Dx9K7" value="For sync this operations there are updates ChatDelete#0x30 and ChatClear#0x2F." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481349858" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Deletion by ChatDelete of group causes automatic group leaving." />
+      <node concept="1Dx9M1" id="2uPas5edi3y" role="1Dx9rD">
+        <property role="1Dx9K7" value="Deletion by ChatDelete of group causes automatic group leaving." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481349875" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="&lt;h1&gt;Loading history&lt;/h1&gt;" />
+      <node concept="1Dx9M1" id="2uPas5edi3N" role="1Dx9rD">
+        <property role="1Dx9K7" value="&lt;h1&gt;Loading history&lt;/h1&gt;" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481351005" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="For loading conversation list use method LoadDialogs#0x68. " />
+      <node concept="1Dx9M1" id="2uPas5edilt" role="1Dx9rD">
+        <property role="1Dx9K7" value="For loading conversation list use method LoadDialogs#0x68. " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481353250" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="When top message in conversation is encrypted than dialog item will contain empty text. Dialog item contains" />
+      <node concept="1Dx9M1" id="2uPas5ediSy" role="1Dx9rD">
+        <property role="1Dx9K7" value="When top message in conversation is encrypted than dialog item will contain empty text. Dialog item contains" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481354384" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="two dates - visual and sort, visual used for displaying date and sort for sorting dialog in dialog list." />
+      <node concept="1Dx9M1" id="2uPas5edjag" role="1Dx9rD">
+        <property role="1Dx9K7" value="two dates - visual and sort, visual used for displaying date and sort for sorting dialog in dialog list." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481360028" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value=" " />
+      <node concept="1Dx9M1" id="2uPas5edkys" role="1Dx9rD">
+        <property role="1Dx9K7" value=" " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481357750" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="For loading history of conversation use method LoadHistory#0x68." />
+      <node concept="1Dx9M1" id="2uPas5edjYQ" role="1Dx9rD">
+        <property role="1Dx9K7" value="For loading history of conversation use method LoadHistory#0x68." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481358888" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value=" " />
+      <node concept="1Dx9M1" id="2uPas5edkgC" role="1Dx9rD">
+        <property role="1Dx9K7" value=" " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481360052" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Loading initial list are called with zero startDate and after loading more messages " />
+      <node concept="1Dx9M1" id="2uPas5edkyO" role="1Dx9rD">
+        <property role="1Dx9K7" value="Loading initial list are called with zero startDate and after loading more messages " />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="2861239048481362315" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="we will use maximum date from messages for startDate value." />
+      <node concept="1Dx9M1" id="2uPas5edl6b" role="1Dx9rD">
+        <property role="1Dx9K7" value="we will use maximum date from messages for startDate value." />
       </node>
     </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395511373" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Encryption" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="encryption" />
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389971812" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="When user authenticates application send it's RSA public key for receiving encrypted messages." />
+    <node concept="2m5mJO" id="GBscvBB69d" role="2m5lHt">
+      <property role="TrG5h" value="Encryption" />
+      <property role="3XOG$Z" value="encryption" />
+      <node concept="1Dx9M1" id="EUEXKTjhX$" role="1Dx9rD">
+        <property role="1Dx9K7" value="When user authenticates application send it's RSA public key for receiving encrypted messages." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389971814" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Each public key has keyHash that calculated on server side." />
+      <node concept="1Dx9M1" id="EUEXKTjhXA" role="1Dx9rD">
+        <property role="1Dx9K7" value="Each public key has keyHash that calculated on server side." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389971817" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Before sending encrypted messages application need to download all required receiver's and own" />
+      <node concept="1Dx9M1" id="EUEXKTjhXD" role="1Dx9rD">
+        <property role="1Dx9K7" value="Before sending encrypted messages application need to download all required receiver's and own" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389976207" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="public keys" />
+      <node concept="1Dx9M1" id="EUEXKTjj2f" role="1Dx9rD">
+        <property role="1Dx9K7" value="public keys" />
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395511433" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserKey" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390930315" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="User public key reference" />
+      <node concept="2m5naR" id="GBscvBB6a9" role="2m5mJr">
+        <property role="TrG5h" value="UserKey" />
+        <node concept="NXeRC" id="EUEXKTmVYb" role="NXodf">
+          <property role="NXePf" value="User public key reference" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390930329" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="User ID" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511490" resolveInfo="uid" />
+        <node concept="NX1gA" id="EUEXKTmVYp" role="NXodf">
+          <property role="NX6R2" value="User ID" />
+          <ref role="NX6Kv" node="GBscvBB6b2" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390930337" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Public key hash" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511497" resolveInfo="keyHash" />
+        <node concept="NX1gA" id="EUEXKTmVYx" role="NXodf">
+          <property role="NX6R2" value="Public key hash" />
+          <ref role="NX6Kv" node="GBscvBB6b9" resolve="keyHash" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511490" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395511494" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB6b2" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBB6b6" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511497" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="keyHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395511503" nodeInfo="ng" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395511579" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="PublicKey" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390931864" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Public Key" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390933496" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Key's User Id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511587" resolveInfo="uid" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390933504" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="hash of user's key" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511594" resolveInfo="keyHash" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390933514" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="RSA Public Key in x.509 format" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511603" resolveInfo="key" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511587" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395511591" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511594" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="keyHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395511600" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511603" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="key" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395511611" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB6b9" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="keyHash" />
+          <node concept="2m5ndQ" id="GBscvBB6bf" role="2m7DVh" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395558408" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="NewDevice" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390933522" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about new public key of user" />
+      <node concept="2m5naR" id="GBscvBB6cr" role="2m5mJr">
+        <property role="TrG5h" value="PublicKey" />
+        <node concept="NXeRC" id="EUEXKTmWmo" role="NXodf">
+          <property role="NXePf" value="Public Key" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390933528" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="User's ID" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395558425" resolveInfo="uid" />
+        <node concept="NX1gA" id="EUEXKTmWJS" role="NXodf">
+          <property role="NX6R2" value="Key's User Id" />
+          <ref role="NX6Kv" node="GBscvBB6cz" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390933536" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Public key hash" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395558432" resolveInfo="keyHash" />
+        <node concept="NX1gA" id="EUEXKTmWK0" role="NXodf">
+          <property role="NX6R2" value="hash of user's key" />
+          <ref role="NX6Kv" node="GBscvBB6cE" resolve="keyHash" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390933546" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="optional RSA Public Key in x.509 format" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395558441" resolveInfo="key" />
+        <node concept="NX1gA" id="EUEXKTmWKa" role="NXodf">
+          <property role="NX6R2" value="RSA Public Key in x.509 format" />
+          <ref role="NX6Kv" node="GBscvBB6cN" resolve="key" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390933558" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Date of adding new key" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395558458" resolveInfo="date" />
+        <node concept="2m7Kf5" id="GBscvBB6cz" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBB6cB" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395558425" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395558429" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB6cE" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="keyHash" />
+          <node concept="2m5ndQ" id="GBscvBB6cK" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395558432" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="keyHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395558438" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB6cN" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="key" />
+          <node concept="2m61tm" id="GBscvBB6cV" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395558441" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="key" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395558449" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395558455" nodeInfo="ng" />
+      </node>
+      <node concept="NpBTk" id="GBscvBBhC8" role="2m5mJr">
+        <property role="TrG5h" value="NewDevice" />
+        <node concept="NXeRC" id="EUEXKTmWKi" role="NXp_2">
+          <property role="NXePf" value="Update about new public key of user" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmWKo" role="NXp_2">
+          <property role="NX6R2" value="User's ID" />
+          <ref role="NX6Kv" node="GBscvBBhCp" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmWKw" role="NXp_2">
+          <property role="NX6R2" value="Public key hash" />
+          <ref role="NX6Kv" node="GBscvBBhCw" resolve="keyHash" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmWKE" role="NXp_2">
+          <property role="NX6R2" value="optional RSA Public Key in x.509 format" />
+          <ref role="NX6Kv" node="GBscvBBhCD" resolve="key" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmWKQ" role="NXp_2">
+          <property role="NX6R2" value="Date of adding new key" />
+          <ref role="NX6Kv" node="GBscvBBhCU" resolve="date" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBhCp" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBhCt" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBhCw" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="keyHash" />
+          <node concept="2m5ndQ" id="GBscvBBhCA" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBhCD" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="key" />
+          <node concept="2m5nlT" id="GBscvBBhCL" role="2m7DVh">
+            <node concept="2m61tm" id="GBscvBBhCR" role="3GH5xg" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395558458" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395558469" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBhCU" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="date" />
+          <node concept="2m5ndQ" id="GBscvBBhD5" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395558409" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="02" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395558901" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="RemovedDevice" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390933567" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about removing public key of user" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390933573" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="User's ID" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395558929" resolveInfo="uid" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390933581" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Key Hash of removed key" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395558936" resolveInfo="keyHash" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395558929" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395558933" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395558936" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="keyHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395558942" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395558902" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="25" />
+        <node concept="Nu42z" id="GBscvBBhC9" role="NuuwV">
+          <property role="Nu42W" value="02" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395560336" nodeInfo="ng" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395545933" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="PublicKeyRequest" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390935120" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Request for download public key" />
+      <node concept="NpBTk" id="GBscvBBhJP" role="2m5mJr">
+        <property role="TrG5h" value="RemovedDevice" />
+        <node concept="NXeRC" id="EUEXKTmWKZ" role="NXp_2">
+          <property role="NXePf" value="Update about removing public key of user" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390935126" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="uiser's ID" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395545965" resolveInfo="uid" />
+        <node concept="NX1gA" id="EUEXKTmWL5" role="NXp_2">
+          <property role="NX6R2" value="User's ID" />
+          <ref role="NX6Kv" node="GBscvBBhKh" resolve="uid" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390935134" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Access Hash of User" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395545972" resolveInfo="accessHash" />
+        <node concept="NX1gA" id="EUEXKTmWLd" role="NXp_2">
+          <property role="NX6R2" value="Key Hash of removed key" />
+          <ref role="NX6Kv" node="GBscvBBhKo" resolve="keyHash" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390935144" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Public Key hash" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395545981" resolveInfo="keyHash" />
+        <node concept="2m7Kf5" id="GBscvBBhKh" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBhKl" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395545965" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395545969" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBhKo" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="keyHash" />
+          <node concept="2m5ndQ" id="GBscvBBhKu" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395545972" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395545978" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395545981" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="keyHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395545989" nodeInfo="ng" />
+        <node concept="Nu42z" id="GBscvBBhJQ" role="NuuwV">
+          <property role="Nu42W" value="25" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395545868" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GetPublicKeys" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389958603" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Loading required publick keys" />
+      <node concept="NvyAe" id="GBscvBBi6g" role="2m5mJr" />
+      <node concept="2m5naR" id="GBscvBBe_d" role="2m5mJr">
+        <property role="TrG5h" value="PublicKeyRequest" />
+        <node concept="NXeRC" id="EUEXKTmX9g" role="NXodf">
+          <property role="NXePf" value="Request for download public key" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389958609" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="key requests" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="25480617308725468" resolveInfo="keys" />
+        <node concept="NX1gA" id="EUEXKTmX9m" role="NXodf">
+          <property role="NX6R2" value="uiser's ID" />
+          <ref role="NX6Kv" node="GBscvBBe_H" resolve="uid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308725468" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="keys" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="25480617308725472" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="25480617308725478" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395545933" resolveInfo="PublicKeyRequest" />
+        <node concept="NX1gA" id="EUEXKTmX9u" role="NXodf">
+          <property role="NX6R2" value="Access Hash of User" />
+          <ref role="NX6Kv" node="GBscvBBe_O" resolve="accessHash" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmX9C" role="NXodf">
+          <property role="NX6R2" value="Public Key hash" />
+          <ref role="NX6Kv" node="GBscvBBe_X" resolve="keyHash" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBe_H" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBe_L" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBe_O" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="GBscvBBe_U" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBe_X" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="keyHash" />
+          <node concept="2m5ndQ" id="GBscvBBeA5" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBBe$c" role="2m5mJr">
+        <property role="TrG5h" value="GetPublicKeys" />
+        <node concept="1D$$RI" id="EUEXKTjeJb" role="2uGzQp">
+          <property role="1D$E9h" value="Loading required publick keys" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTjeJh" role="2uGzQp">
+          <property role="2uJhrd" value="key requests" />
+          <ref role="2uJhvL" node="1qxBM7m23s" resolve="keys" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7m23s" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="keys" />
+          <node concept="2m5nlk" id="1qxBM7m23w" role="2m7DVh">
+            <node concept="2m5mGg" id="1qxBM7m23A" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBBe_d" resolve="PublicKeyRequest" />
             </node>
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395545869" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="06" />
+        <node concept="Nu42z" id="GBscvBBe$d" role="NuuwV">
+          <property role="Nu42W" value="06" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="803735062395546265" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395546270" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="keys" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395546274" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395547982" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511579" resolveInfo="PublicKey" />
+        <node concept="2m1R6W" id="GBscvBBeEp" role="2m6efq">
+          <node concept="2m7Kf5" id="GBscvBBeEu" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="keys" />
+            <node concept="2m5nlk" id="GBscvBBeEy" role="2m7DVh">
+              <node concept="2m5mGg" id="GBscvBBf5e" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6cr" resolve="PublicKey" />
               </node>
             </node>
           </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395546266" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="18" />
-          </node>
-        </node>
-      </node>
-    </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395610444" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Typing and Online" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="weak" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395611244" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Typing" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395611252" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395611256" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511891" resolveInfo="OutPeer" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395611259" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="typingType" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395611265" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395611245" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="1B" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395611268" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389961461" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Sending typing notification" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389961474" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Destination peer" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395611252" resolveInfo="peer" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389961482" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="typing type." />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395611259" resolveInfo="typingType" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395611280" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SetOnline" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389961489" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Sending online state" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389961495" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="is user online" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395611295" resolveInfo="isOnline" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389961503" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="timeout of online state" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395611302" resolveInfo="timeout" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395611295" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="isOnline" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Boolean" typeId="tsp6.2348480312264231189" id="803735062395611299" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395611302" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="timeout" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395611308" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395611281" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="1D" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395611311" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395623567" nodeInfo="ng" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395623585" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Typing" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390936785" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about user's typing" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390936791" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Conversation peer" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395623605" resolveInfo="peer" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390936799" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="User's id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395623612" resolveInfo="uid" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390936809" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Type of typing" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395623621" resolveInfo="typingType" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395623605" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="peer" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395623609" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511777" resolveInfo="Peer" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395623612" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395623618" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395623621" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="typingType" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395623629" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395623586" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="06" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395624496" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserOnline" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390936817" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about user became online" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390936827" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="User's Id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395624524" resolveInfo="uid" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395624524" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395624528" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395624497" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="07" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395624560" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserOffline" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390936833" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about user became offline" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390936839" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="User's id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395624592" resolveInfo="uid" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395624592" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395624596" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395624561" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="08" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395625479" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserLastSeen" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390936845" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about user's last seen state" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390936851" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="User's id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395625515" resolveInfo="uid" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390936859" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Last seen time" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395625522" resolveInfo="date" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395625515" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395625519" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395625522" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078804994" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395625480" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="09" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395626423" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GroupOnline" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390936866" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about group online change" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390936880" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Group id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395626465" resolveInfo="groupId" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390936888" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="current online user's count" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395626472" resolveInfo="count" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395626465" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395626469" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395626472" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="count" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395626478" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395626424" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="21" />
-        </node>
-      </node>
-    </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062394850116" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Media and Files" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="files" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062394850146" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="FileLocation" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390940189" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Location of file on server" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390940195" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Unique Id of file" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062394850296" resolveInfo="fileId" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390940203" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Access hash of file" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062394850303" resolveInfo="accessHash" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062394850296" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="fileId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062394850300" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062394850303" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062394850309" nodeInfo="ng" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062394850132" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="AvatarImage" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062394850327" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="fileLocation" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062394850331" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850146" resolveInfo="FileLocation" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062394850334" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="width" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062394850340" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062394850343" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="height" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062394850351" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062394850354" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="fileSize" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062394850364" nodeInfo="ng" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="773119248390941858" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Avatar Image" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390941863" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Location of file" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062394850327" resolveInfo="fileLocation" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="773119248390946827" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Width of avatar image" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062394850334" resolveInfo="width" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265059868" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Height of avatar image" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062394850343" resolveInfo="height" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265059880" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Size of file" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062394850354" resolveInfo="fileSize" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062394850407" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Avatar" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265059889" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Avatar of User or Group" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265059895" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Optional small image of avatar box in 100x100" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395320485" resolveInfo="smallImage" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265059903" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Optional large image of avatar box in 200x200" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395367959" resolveInfo="largeImage" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265059913" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Optional full screen image of avatar" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395367989" resolveInfo="fullImage" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395320485" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="smallImage" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395320639" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395367956" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850132" resolveInfo="AvatarImage" />
-            </node>
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395367959" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="largeImage" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395367980" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395367986" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850132" resolveInfo="AvatarImage" />
-            </node>
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395367989" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="fullImage" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="803735062395367999" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395368005" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850132" resolveInfo="AvatarImage" />
-            </node>
-          </node>
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395511260" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="FastThumb" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265059921" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Fast thumb of media messages. Less than 90x90 and compressed by JPEG with low quality" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265059935" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Width of thumb" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511287" resolveInfo="w" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265059943" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Height of thump" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511294" resolveInfo="h" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265059953" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="compressed image data" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511303" resolveInfo="thumb" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511287" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="w" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395511291" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511294" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="h" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395511300" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511303" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="thumb" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395511311" nodeInfo="ng" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395562121" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GetFile" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389962940" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Downloading file part" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389962946" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="location of file" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395562161" resolveInfo="fileLocation" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389962954" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="offset in file in bytes" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395562168" resolveInfo="offset" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389962964" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="maximum size of file part" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395562177" resolveInfo="limit" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395562161" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="fileLocation" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395562165" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850146" resolveInfo="FileLocation" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395562168" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="offset" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395562174" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395562177" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="limit" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395562185" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395562122" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="10" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="803735062395562188" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395562193" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="payload" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395562197" nodeInfo="ng" />
-          </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395562189" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="11" />
-          </node>
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395563996" nodeInfo="ng" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395564624" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UploadConfig" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265059961" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Reference for upload session" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265059967" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="server related data for upload" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395564674" resolveInfo="serverData" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395564674" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="serverData" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395564678" nodeInfo="ng" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395565327" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="StartUpload" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389964406" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Starting file upload" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395565328" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="12" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="803735062395565385" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395565390" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="config" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395565394" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395564624" resolveInfo="UploadConfig" />
-            </node>
-          </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395565386" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="13" />
-          </node>
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395565891" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UploadPart" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395565955" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="config" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395565959" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395564624" resolveInfo="UploadConfig" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395565962" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="blockIndex" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395565968" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395565971" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="payload" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395565979" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395565892" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="14" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395565982" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389964409" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Uploading part of file" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389964414" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="index of block" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395565962" resolveInfo="blockIndex" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389964422" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="block payload" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395565971" resolveInfo="payload" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395566052" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="CompleteUpload" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389964429" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Complete uploading" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389964435" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Upload configuration" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395566125" resolveInfo="config" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389964443" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="blocks count" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395566132" resolveInfo="blocksCount" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389964453" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="crc32 of uploaded file" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395566141" resolveInfo="crc32" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395566125" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="config" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395566129" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395564624" resolveInfo="UploadConfig" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395566132" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="blocksCount" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395566138" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395566141" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="crc32" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395566149" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395566053" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="16" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="803735062395566152" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395566157" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="location" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395566161" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062394850146" resolveInfo="FileLocation" />
-            </node>
-          </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395566153" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="17" />
+          <node concept="Nu42z" id="GBscvBBeEq" role="NuuwV">
+            <property role="Nu42W" value="18" />
           </node>
         </node>
       </node>
     </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395612126" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Push" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="push" />
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389980605" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Vendor's pushes for receiving push notifications." />
-      </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389983537" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Push notification contains current sequence number of main sequence." />
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395613754" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="RegisterGooglePush" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389965903" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Registering push token on server" />
+    <node concept="2m5mJO" id="GBscvBBulc" role="2m5lHt">
+      <property role="TrG5h" value="Typing and Online" />
+      <property role="3XOG$Z" value="weak" />
+      <node concept="2m6fVq" id="GBscvBBuxG" role="2m5mJr">
+        <property role="TrG5h" value="Typing" />
+        <node concept="2m7Kf5" id="GBscvBBuxO" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBuxS" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389965909" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Project Id of token" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395613762" resolveInfo="projectId" />
+        <node concept="2m7Kf5" id="GBscvBBuxV" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="typingType" />
+          <node concept="2m5ndE" id="GBscvBBuy1" role="2m7DVh" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389965917" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="token value" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="25480617308730673" resolveInfo="token" />
+        <node concept="Nu42z" id="GBscvBBuxH" role="NuuwV">
+          <property role="Nu42W" value="1B" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395613762" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="projectId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395613766" nodeInfo="ng" />
+        <node concept="2m1Rp1" id="GBscvBBuy4" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308730673" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="token" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="25480617308730679" nodeInfo="ng" />
+        <node concept="1D$$RI" id="EUEXKTjfrP" role="2uGzQp">
+          <property role="1D$E9h" value="Sending typing notification" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395613755" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="33" />
+        <node concept="2uJ1As" id="EUEXKTjfs2" role="2uGzQp">
+          <property role="2uJhrd" value="Destination peer" />
+          <ref role="2uJhvL" node="GBscvBBuxO" resolve="peer" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395613769" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
+        <node concept="2uJ1As" id="EUEXKTjfsa" role="2uGzQp">
+          <property role="2uJhrd" value="typing type." />
+          <ref role="2uJhvL" node="GBscvBBuxV" resolve="typingType" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395613779" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="RegisterApplePush" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395613792" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="apnsKey" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395613796" nodeInfo="ng" />
+      <node concept="2m6fVq" id="GBscvBBuyg" role="2m5mJr">
+        <property role="TrG5h" value="SetOnline" />
+        <node concept="1D$$RI" id="EUEXKTjfsh" role="2uGzQp">
+          <property role="1D$E9h" value="Sending online state" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395613799" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="token" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="803735062395613805" nodeInfo="ng" />
+        <node concept="2uJ1As" id="EUEXKTjfsn" role="2uGzQp">
+          <property role="2uJhrd" value="is user online" />
+          <ref role="2uJhvL" node="GBscvBBuyv" resolve="isOnline" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395613780" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="4C" />
+        <node concept="2uJ1As" id="EUEXKTjfsv" role="2uGzQp">
+          <property role="2uJhrd" value="timeout of online state" />
+          <ref role="2uJhvL" node="GBscvBBuyA" resolve="timeout" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395613808" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
+        <node concept="2m7Kf5" id="GBscvBBuyv" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="isOnline" />
+          <node concept="2m5ndN" id="GBscvBBuyz" role="2m7DVh" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389965922" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Registering apple push on server" />
+        <node concept="2m7Kf5" id="GBscvBBuyA" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="timeout" />
+          <node concept="2m5ndQ" id="GBscvBBuyG" role="2m7DVh" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389965927" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="apns key id" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395613792" resolveInfo="apnsKey" />
+        <node concept="Nu42z" id="GBscvBBuyh" role="NuuwV">
+          <property role="Nu42W" value="1D" />
         </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389965935" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="token value" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395613799" resolveInfo="token" />
+        <node concept="2m1Rp1" id="GBscvBBuyJ" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395614650" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UnregisterPush" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389967390" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Unregister push" />
+      <node concept="NvyAe" id="GBscvBBxyf" role="2m5mJr" />
+      <node concept="NpBTk" id="GBscvBBxyx" role="2m5mJr">
+        <property role="TrG5h" value="Typing" />
+        <node concept="NXeRC" id="EUEXKTmXzh" role="NXp_2">
+          <property role="NXePf" value="Update about user's typing" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395614651" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="34" />
+        <node concept="NX1gA" id="EUEXKTmXzn" role="NXp_2">
+          <property role="NX6R2" value="Conversation peer" />
+          <ref role="NX6Kv" node="GBscvBBxyP" resolve="peer" />
         </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395614674" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
+        <node concept="NX1gA" id="EUEXKTmXzv" role="NXp_2">
+          <property role="NX6R2" value="User's id" />
+          <ref role="NX6Kv" node="GBscvBBxyW" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmXzD" role="NXp_2">
+          <property role="NX6R2" value="Type of typing" />
+          <ref role="NX6Kv" node="GBscvBBxz5" resolve="typingType" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBxyP" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="GBscvBBxyT" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBxyW" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBxz2" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBxz5" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="typingType" />
+          <node concept="2m5ndE" id="GBscvBBxzd" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBxyy" role="NuuwV">
+          <property role="Nu42W" value="06" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="GBscvBBxKK" role="2m5mJr">
+        <property role="TrG5h" value="UserOnline" />
+        <node concept="NXeRC" id="EUEXKTmXzL" role="NXp_2">
+          <property role="NXePf" value="Update about user became online" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmXzV" role="NXp_2">
+          <property role="NX6R2" value="User's Id" />
+          <ref role="NX6Kv" node="GBscvBBxLc" resolve="uid" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBxLc" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBxLg" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBxKL" role="NuuwV">
+          <property role="Nu42W" value="07" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="GBscvBBxLK" role="2m5mJr">
+        <property role="TrG5h" value="UserOffline" />
+        <node concept="NXeRC" id="EUEXKTmX$1" role="NXp_2">
+          <property role="NXePf" value="Update about user became offline" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmX$7" role="NXp_2">
+          <property role="NX6R2" value="User's id" />
+          <ref role="NX6Kv" node="GBscvBBxMg" resolve="uid" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBxMg" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBxMk" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBxLL" role="NuuwV">
+          <property role="Nu42W" value="08" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="GBscvBBy07" role="2m5mJr">
+        <property role="TrG5h" value="UserLastSeen" />
+        <node concept="NXeRC" id="EUEXKTmX$d" role="NXp_2">
+          <property role="NXePf" value="Update about user's last seen state" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmX$j" role="NXp_2">
+          <property role="NX6R2" value="User's id" />
+          <ref role="NX6Kv" node="GBscvBBy0F" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmX$r" role="NXp_2">
+          <property role="NX6R2" value="Last seen time" />
+          <ref role="NX6Kv" node="GBscvBBy0M" resolve="date" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBy0F" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBBy0J" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBy0M" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotoh82" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBBy08" role="NuuwV">
+          <property role="Nu42W" value="09" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="GBscvBByeR" role="2m5mJr">
+        <property role="TrG5h" value="GroupOnline" />
+        <node concept="NXeRC" id="EUEXKTmX$y" role="NXp_2">
+          <property role="NXePf" value="Update about group online change" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmX$K" role="NXp_2">
+          <property role="NX6R2" value="Group id" />
+          <ref role="NX6Kv" node="GBscvBByfx" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmX$S" role="NXp_2">
+          <property role="NX6R2" value="current online user's count" />
+          <ref role="NX6Kv" node="GBscvBByfC" resolve="count" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBByfx" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="2m5ndE" id="GBscvBByf_" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBByfC" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="count" />
+          <node concept="2m5ndE" id="GBscvBByfI" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBByeS" role="NuuwV">
+          <property role="Nu42W" value="21" />
         </node>
       </node>
     </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395511687" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Peers" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="peers" />
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389977675" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Peer is an identificator of specific conversation." />
+    <node concept="2m5mJO" id="GBscvB$$H4" role="2m5lHt">
+      <property role="TrG5h" value="Media and Files" />
+      <property role="3XOG$Z" value="files" />
+      <node concept="2m5naR" id="GBscvB$$Hy" role="2m5mJr">
+        <property role="TrG5h" value="FileLocation" />
+        <node concept="NXeRC" id="EUEXKTmYot" role="NXodf">
+          <property role="NXePf" value="Location of file on server" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmYoz" role="NXodf">
+          <property role="NX6R2" value="Unique Id of file" />
+          <ref role="NX6Kv" node="GBscvB$$JS" resolve="fileId" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmYoF" role="NXodf">
+          <property role="NX6R2" value="Access hash of file" />
+          <ref role="NX6Kv" node="GBscvB$$JZ" resolve="accessHash" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvB$$JS" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="fileId" />
+          <node concept="2m5ndQ" id="GBscvB$$JW" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvB$$JZ" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="GBscvB$$K5" role="2m7DVh" />
+        </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Enum" typeId="tsp6.2348480312264620144" id="803735062395511763" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="PeerType" />
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="803735062395511765" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="Private" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="1" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="803735062395511769" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="Group" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="2" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="1769186940502085525" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="Email" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="3" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395511777" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Peer" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060482" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Peer" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060488" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Peer Type" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511783" resolveInfo="type" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060496" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Peer Id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511790" resolveInfo="id" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511783" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="type" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.EnumType" typeId="tsp6.803735062395368411" id="803735062395511787" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.803735062395368531" targetNodeId="803735062395511763" resolveInfo="PeerType" />
+      <node concept="2m5naR" id="GBscvB$$Hk" role="2m5mJr">
+        <property role="TrG5h" value="AvatarImage" />
+        <node concept="2m7Kf5" id="GBscvB$$Kn" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="fileLocation" />
+          <node concept="2m5mGg" id="GBscvB$$Kr" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvB$$Hy" resolve="FileLocation" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511790" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="id" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395511796" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvB$$Ku" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="width" />
+          <node concept="2m5ndE" id="GBscvB$$K$" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvB$$KB" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="height" />
+          <node concept="2m5ndE" id="GBscvB$$KJ" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvB$$KM" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="fileSize" />
+          <node concept="2m5ndE" id="GBscvB$$KW" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="EUEXKTmYMy" role="NXodf">
+          <property role="NXePf" value="Avatar Image" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTmYMB" role="NXodf">
+          <property role="NX6R2" value="Location of file" />
+          <ref role="NX6Kv" node="GBscvB$$Kn" resolve="fileLocation" />
+        </node>
+        <node concept="NX1gA" id="EUEXKTn00b" role="NXodf">
+          <property role="NX6R2" value="Width of avatar image" />
+          <ref role="NX6Kv" node="GBscvB$$Ku" resolve="width" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukm0s" role="NXodf">
+          <property role="NX6R2" value="Height of avatar image" />
+          <ref role="NX6Kv" node="GBscvB$$KB" resolve="height" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukm0C" role="NXodf">
+          <property role="NX6R2" value="Size of file" />
+          <ref role="NX6Kv" node="GBscvB$$KM" resolve="fileSize" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395511891" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="OutPeer" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511902" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="type" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.EnumType" typeId="tsp6.803735062395368411" id="803735062395511906" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.803735062395368531" targetNodeId="803735062395511763" resolveInfo="PeerType" />
+      <node concept="2m5naR" id="GBscvB$$LB" role="2m5mJr">
+        <property role="TrG5h" value="Avatar" />
+        <node concept="NXeRC" id="7UKSaUukm0L" role="NXodf">
+          <property role="NXePf" value="Avatar of User or Group" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukm0R" role="NXodf">
+          <property role="NX6R2" value="Optional small image of avatar box in 100x100" />
+          <ref role="NX6Kv" node="GBscvBAny_" resolve="smallImage" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukm0Z" role="NXodf">
+          <property role="NX6R2" value="Optional large image of avatar box in 200x200" />
+          <ref role="NX6Kv" node="GBscvBAz8n" resolve="largeImage" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukm19" role="NXodf">
+          <property role="NX6R2" value="Optional full screen image of avatar" />
+          <ref role="NX6Kv" node="GBscvBAz8P" resolve="fullImage" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBAny_" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="smallImage" />
+          <node concept="2m5nlT" id="GBscvBAn$Z" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBAz8k" role="3GH5xg">
+              <ref role="2m5mJy" node="GBscvB$$Hk" resolve="AvatarImage" />
+            </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511909" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="id" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395511915" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBAz8n" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="largeImage" />
+          <node concept="2m5nlT" id="GBscvBAz8G" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBAz8M" role="3GH5xg">
+              <ref role="2m5mJy" node="GBscvB$$Hk" resolve="AvatarImage" />
+            </node>
+          </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511918" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395511926" nodeInfo="ng" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060501" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Out peer with access hash" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060506" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Peer Type" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511902" resolveInfo="type" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060517" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Peer Id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511909" resolveInfo="id" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060527" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Peer access hash" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511918" resolveInfo="accessHash" />
+        <node concept="2m7Kf5" id="GBscvBAz8P" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="fullImage" />
+          <node concept="2m5nlT" id="GBscvBAz8Z" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBAz95" role="3GH5xg">
+              <ref role="2m5mJy" node="GBscvB$$Hk" resolve="AvatarImage" />
+            </node>
+          </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395511946" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="UserOutPeer" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060535" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="User's out peer" />
+      <node concept="2m5naR" id="GBscvBB67s" role="2m5mJr">
+        <property role="TrG5h" value="FastThumb" />
+        <node concept="NXeRC" id="7UKSaUukm1h" role="NXodf">
+          <property role="NXePf" value="Fast thumb of media messages. Less than 90x90 and compressed by JPEG with low quality" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060541" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="User's id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511964" resolveInfo="uid" />
+        <node concept="NX1gA" id="7UKSaUukm1v" role="NXodf">
+          <property role="NX6R2" value="Width of thumb" />
+          <ref role="NX6Kv" node="GBscvBB67R" resolve="w" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060549" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="User's access hash" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395511971" resolveInfo="accessHash" />
+        <node concept="NX1gA" id="7UKSaUukm1B" role="NXodf">
+          <property role="NX6R2" value="Height of thump" />
+          <ref role="NX6Kv" node="GBscvBB67Y" resolve="h" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511964" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="uid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395511968" nodeInfo="ng" />
+        <node concept="NX1gA" id="7UKSaUukm1L" role="NXodf">
+          <property role="NX6R2" value="compressed image data" />
+          <ref role="NX6Kv" node="GBscvBB687" resolve="thumb" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395511971" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395511977" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBB67R" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="w" />
+          <node concept="2m5ndE" id="GBscvBB67V" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB67Y" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="h" />
+          <node concept="2m5ndE" id="GBscvBB684" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB687" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="thumb" />
+          <node concept="2m61tm" id="GBscvBB68f" role="2m7DVh" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395512002" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GroupOutPeer" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060556" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Group's out peer" />
+      <node concept="2m6fVq" id="GBscvBBiy9" role="2m5mJr">
+        <property role="TrG5h" value="GetFile" />
+        <node concept="1D$$RI" id="EUEXKTjfMW" role="2uGzQp">
+          <property role="1D$E9h" value="Downloading file part" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060562" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Group's Id" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395512025" resolveInfo="groupId" />
+        <node concept="2uJ1As" id="EUEXKTjfN2" role="2uGzQp">
+          <property role="2uJhrd" value="location of file" />
+          <ref role="2uJhvL" node="GBscvBBiyL" resolve="fileLocation" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060570" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Group's access hash" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395512032" resolveInfo="accessHash" />
+        <node concept="2uJ1As" id="EUEXKTjfNa" role="2uGzQp">
+          <property role="2uJhrd" value="offset in file in bytes" />
+          <ref role="2uJhvL" node="GBscvBBiyS" resolve="offset" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395512025" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groupId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395512029" nodeInfo="ng" />
+        <node concept="2uJ1As" id="EUEXKTjfNk" role="2uGzQp">
+          <property role="2uJhrd" value="maximum size of file part" />
+          <ref role="2uJhvL" node="GBscvBBiz1" resolve="limit" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395512032" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395512137" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBiyL" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="fileLocation" />
+          <node concept="2m5mGg" id="GBscvBBiyP" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvB$$Hy" resolve="FileLocation" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBiyS" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="offset" />
+          <node concept="2m5ndE" id="GBscvBBiyY" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBiz1" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="limit" />
+          <node concept="2m5ndE" id="GBscvBBiz9" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBiya" role="NuuwV">
+          <property role="Nu42W" value="10" />
+        </node>
+        <node concept="2m1R6W" id="GBscvBBizc" role="2m6efq">
+          <node concept="2m7Kf5" id="GBscvBBizh" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="payload" />
+            <node concept="2m61tm" id="GBscvBBizl" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="GBscvBBizd" role="NuuwV">
+            <property role="Nu42W" value="11" />
+          </node>
+        </node>
+      </node>
+      <node concept="NvyAe" id="GBscvBBiZs" role="2m5mJr" />
+      <node concept="2m5naR" id="GBscvBBj9g" role="2m5mJr">
+        <property role="TrG5h" value="UploadConfig" />
+        <node concept="NXeRC" id="7UKSaUukm1T" role="NXodf">
+          <property role="NXePf" value="Reference for upload session" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukm1Z" role="NXodf">
+          <property role="NX6R2" value="server related data for upload" />
+          <ref role="NX6Kv" node="GBscvBBja2" resolve="serverData" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBja2" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="serverData" />
+          <node concept="2m61tm" id="GBscvBBja6" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBBjkf" role="2m5mJr">
+        <property role="TrG5h" value="StartUpload" />
+        <node concept="1D$$RI" id="EUEXKTjg9Q" role="2uGzQp">
+          <property role="1D$E9h" value="Starting file upload" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBjkg" role="NuuwV">
+          <property role="Nu42W" value="12" />
+        </node>
+        <node concept="2m1R6W" id="GBscvBBjl9" role="2m6efq">
+          <node concept="2m7Kf5" id="GBscvBBjle" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="config" />
+            <node concept="2m5mGg" id="GBscvBBjli" role="2m7DVh">
+              <ref role="2m5mJy" node="GBscvBBj9g" resolve="UploadConfig" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="GBscvBBjla" role="NuuwV">
+            <property role="Nu42W" value="13" />
+          </node>
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBBjt3" role="2m5mJr">
+        <property role="TrG5h" value="UploadPart" />
+        <node concept="2m7Kf5" id="GBscvBBju3" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="config" />
+          <node concept="2m5mGg" id="GBscvBBju7" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBBj9g" resolve="UploadConfig" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBjua" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="blockIndex" />
+          <node concept="2m5ndE" id="GBscvBBjug" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBjuj" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="payload" />
+          <node concept="2m61tm" id="GBscvBBjur" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBjt4" role="NuuwV">
+          <property role="Nu42W" value="14" />
+        </node>
+        <node concept="2m1Rp1" id="GBscvBBjuu" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="1D$$RI" id="EUEXKTjg9T" role="2uGzQp">
+          <property role="1D$E9h" value="Uploading part of file" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTjg9Y" role="2uGzQp">
+          <property role="2uJhrd" value="index of block" />
+          <ref role="2uJhvL" node="GBscvBBjua" resolve="blockIndex" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTjga6" role="2uGzQp">
+          <property role="2uJhrd" value="block payload" />
+          <ref role="2uJhvL" node="GBscvBBjuj" resolve="payload" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBBjv$" role="2m5mJr">
+        <property role="TrG5h" value="CompleteUpload" />
+        <node concept="1D$$RI" id="EUEXKTjgad" role="2uGzQp">
+          <property role="1D$E9h" value="Complete uploading" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTjgaj" role="2uGzQp">
+          <property role="2uJhrd" value="Upload configuration" />
+          <ref role="2uJhvL" node="GBscvBBjwH" resolve="config" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTjgar" role="2uGzQp">
+          <property role="2uJhrd" value="blocks count" />
+          <ref role="2uJhvL" node="GBscvBBjwO" resolve="blocksCount" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTjga_" role="2uGzQp">
+          <property role="2uJhrd" value="crc32 of uploaded file" />
+          <ref role="2uJhvL" node="GBscvBBjwX" resolve="crc32" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBjwH" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="config" />
+          <node concept="2m5mGg" id="GBscvBBjwL" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBBj9g" resolve="UploadConfig" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBjwO" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="blocksCount" />
+          <node concept="2m5ndE" id="GBscvBBjwU" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBjwX" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="crc32" />
+          <node concept="2m5ndQ" id="GBscvBBjx5" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBjv_" role="NuuwV">
+          <property role="Nu42W" value="16" />
+        </node>
+        <node concept="2m1R6W" id="GBscvBBjx8" role="2m6efq">
+          <node concept="2m7Kf5" id="GBscvBBjxd" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="location" />
+            <node concept="2m5mGg" id="GBscvBBjxh" role="2m7DVh">
+              <ref role="2m5mJy" node="GBscvB$$Hy" resolve="FileLocation" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="GBscvBBjx9" role="NuuwV">
+            <property role="Nu42W" value="17" />
+          </node>
         </node>
       </node>
     </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395638719" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Sequence and Updates" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="sequence" />
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389986472" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Each device has it's own update sequence. At the begining application request initial sequence state by" />
+    <node concept="2m5mJO" id="GBscvBBuJu" role="2m5lHt">
+      <property role="TrG5h" value="Push" />
+      <property role="3XOG$Z" value="push" />
+      <node concept="1Dx9M1" id="EUEXKTjk6X" role="1Dx9rD">
+        <property role="1Dx9K7" value="Vendor's pushes for receiving push notifications." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389989408" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="calling GetState. On each application restart or NewSessionCreated application calls GetDifference for receiving" />
+      <node concept="1Dx9M1" id="EUEXKTjkOL" role="1Dx9rD">
+        <property role="1Dx9K7" value="Push notification contains current sequence number of main sequence." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389992357" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="updates in update sequence." />
-      </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389992353" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="GetState and GetDifference automatically subscribes session to receiving updates in session." />
-      </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389993832" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Each update has seq and state. Seq is sequental index of updated and used for detecting of holes in update sequence" />
-      </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389996780" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="(because of server failure or session die) on client side." />
-      </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389996787" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="All updates needed to be processed in partucular order according to seq values." />
-      </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389998268" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="In some updates there can be references to users that are not available at client yer. In this case application need" />
-      </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="773119248389998277" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="to ignore such update and init getting difference." />
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.UpdateBox" typeId="tsp6.803735062395648228" id="803735062395694223" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SeqUpdate" />
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060577" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Sequence update" />
+      <node concept="2m6fVq" id="GBscvBBv8U" role="2m5mJr">
+        <property role="TrG5h" value="RegisterGooglePush" />
+        <node concept="1D$$RI" id="EUEXKTjgxf" role="2uGzQp">
+          <property role="1D$E9h" value="Registering push token on server" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060583" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Sequence number of update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395695281" resolveInfo="seq" />
+        <node concept="2uJ1As" id="EUEXKTjgxl" role="2uGzQp">
+          <property role="2uJhrd" value="Project Id of token" />
+          <ref role="2uJhvL" node="GBscvBBv92" resolve="projectId" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060591" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Sequece state of update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395695288" resolveInfo="state" />
+        <node concept="2uJ1As" id="EUEXKTjgxt" role="2uGzQp">
+          <property role="2uJhrd" value="token value" />
+          <ref role="2uJhvL" node="1qxBM7m3kL" resolve="token" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060601" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="header of update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395695297" resolveInfo="updateHeader" />
+        <node concept="2m7Kf5" id="GBscvBBv92" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="projectId" />
+          <node concept="2m5ndQ" id="GBscvBBv96" role="2m7DVh" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060613" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="The update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395695308" resolveInfo="update" />
+        <node concept="2m7Kf5" id="1qxBM7m3kL" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="token" />
+          <node concept="2m5ndX" id="1qxBM7m3kR" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395695281" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="seq" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395695285" nodeInfo="ng" />
+        <node concept="Nu42z" id="GBscvBBv8V" role="NuuwV">
+          <property role="Nu42W" value="33" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395695288" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5857873509721467964" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5857873509721457697" resolveInfo="seq_state" />
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395695297" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="updateHeader" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395695305" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395695308" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="update" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395695318" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395694224" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="0D" />
+        <node concept="2m1Rp1" id="GBscvBBv99" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.UpdateBox" typeId="tsp6.803735062395648228" id="803735062395698648" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="FatSeqUpdate" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395698719" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="seq" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395698723" nodeInfo="ng" />
+      <node concept="2m6fVq" id="GBscvBBv9j" role="2m5mJr">
+        <property role="TrG5h" value="RegisterApplePush" />
+        <node concept="2m7Kf5" id="GBscvBBv9w" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="apnsKey" />
+          <node concept="2m5ndE" id="GBscvBBv9$" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395698726" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5857873509721467961" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5857873509721457697" resolveInfo="seq_state" />
-          </node>
+        <node concept="2m7Kf5" id="GBscvBBv9B" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="token" />
+          <node concept="2m5ndX" id="GBscvBBv9H" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395698735" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="updateHeader" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395698743" nodeInfo="ng" />
+        <node concept="Nu42z" id="GBscvBBv9k" role="NuuwV">
+          <property role="Nu42W" value="4C" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395698746" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="update" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395698756" nodeInfo="ng" />
+        <node concept="2m1Rp1" id="GBscvBBv9K" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395698759" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="users" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395698771" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395699795" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395368173" resolveInfo="User" />
-            </node>
-          </node>
+        <node concept="1D$$RI" id="EUEXKTjgxy" role="2uGzQp">
+          <property role="1D$E9h" value="Registering apple push on server" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395699798" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="groups" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395699813" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395699819" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395512439" resolveInfo="Group" />
-            </node>
-          </node>
+        <node concept="2uJ1As" id="EUEXKTjgxB" role="2uGzQp">
+          <property role="2uJhrd" value="apns key id" />
+          <ref role="2uJhvL" node="GBscvBBv9w" resolve="apnsKey" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502104568" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="7" />
-          <property name="name" nameId="tpck.1169194664001" value="phones" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="1769186940502104586" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="1769186940502104592" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="1769186940501808347" resolveInfo="Phone" />
-            </node>
-          </node>
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502104595" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="8" />
-          <property name="name" nameId="tpck.1169194664001" value="emails" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="1769186940502104616" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="1769186940502104622" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="1769186940501814037" resolveInfo="Email" />
-            </node>
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395698649" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="49" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060620" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Fat sequence update with additional data" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060625" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Sequence number of update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395698719" resolveInfo="seq" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060633" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Sequence state of update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395698726" resolveInfo="state" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060643" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="header of update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395698735" resolveInfo="updateHeader" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060655" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="The update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395698746" resolveInfo="update" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060669" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Users that are referenced in update " />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395698759" resolveInfo="users" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060685" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Groups that are referenced in update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395699798" resolveInfo="groups" />
+        <node concept="2uJ1As" id="EUEXKTjgxJ" role="2uGzQp">
+          <property role="2uJhrd" value="token value" />
+          <ref role="2uJhvL" node="GBscvBBv9B" resolve="token" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.UpdateBox" typeId="tsp6.803735062395648228" id="803735062395703075" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="WeakUpdate" />
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060696" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Out of sequence update (for typing and online statuses)" />
+      <node concept="2m6fVq" id="GBscvBBvmU" role="2m5mJr">
+        <property role="TrG5h" value="UnregisterPush" />
+        <node concept="1D$$RI" id="EUEXKTjgSu" role="2uGzQp">
+          <property role="1D$E9h" value="Unregister push" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060702" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Date of update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395703162" resolveInfo="date" />
+        <node concept="Nu42z" id="GBscvBBvmV" role="NuuwV">
+          <property role="Nu42W" value="34" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060710" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Header of update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395703169" resolveInfo="updateHeader" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060741" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="The update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395703178" resolveInfo="update" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395703162" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="803735062395703166" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395703169" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="updateHeader" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395703175" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395703178" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="update" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395703186" nodeInfo="ng" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395703076" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="1A" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.UpdateBox" typeId="tsp6.803735062395648228" id="803735062395706474" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SeqUpdateTooLong" />
-        <node role="docs" roleId="tsp6.773119248390108862" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060749" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Notification about requiring performing manual GetDifference" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395706475" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="19" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395708831" nodeInfo="ng" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395642703" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GetState" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389968844" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Get main sequence state" />
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395642704" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="09" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="803735062395642739" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513212" resolveInfo="Seq" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395640628" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="DifferenceUpdate" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060758" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update from GetDifference" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060764" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Header of update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395640638" resolveInfo="updateHeader" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060772" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="The update" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395640645" resolveInfo="update" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395640638" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="updateHeader" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395640642" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395640645" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="update" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="803735062395640651" nodeInfo="ng" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395640597" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="GetDifference" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389968849" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Getting difference of sequence" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395640603" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="seq" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395640607" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395640610" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5857873509721469675" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5857873509721457697" resolveInfo="seq_state" />
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395640598" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="0B" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefAnonymous" typeId="tsp6.2348480312265149402" id="803735062395641605" nodeInfo="ng">
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395641610" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-            <property name="name" nameId="tpck.1169194664001" value="seq" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395641614" nodeInfo="ng" />
-          </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395641617" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-            <property name="name" nameId="tpck.1169194664001" value="state" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5857873509721469678" nodeInfo="ng">
-              <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5857873509721457697" resolveInfo="seq_state" />
-            </node>
-          </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395641626" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-            <property name="name" nameId="tpck.1169194664001" value="users" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395641634" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="3857470926885408826" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395368173" resolveInfo="User" />
-              </node>
-            </node>
-          </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395641643" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-            <property name="name" nameId="tpck.1169194664001" value="groups" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395641654" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395641660" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395512439" resolveInfo="Group" />
-              </node>
-            </node>
-          </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502106528" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="7" />
-            <property name="name" nameId="tpck.1169194664001" value="phones" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="1769186940502106547" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="1769186940502106553" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="1769186940501808347" resolveInfo="Phone" />
-              </node>
-            </node>
-          </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="1769186940502106556" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="8" />
-            <property name="name" nameId="tpck.1169194664001" value="emails" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="1769186940502106578" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="1769186940502106584" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="1769186940501814037" resolveInfo="Email" />
-              </node>
-            </node>
-          </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395641663" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-            <property name="name" nameId="tpck.1169194664001" value="updates" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395641677" nodeInfo="ng">
-              <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395641683" nodeInfo="ng">
-                <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395640628" resolveInfo="DifferenceUpdate" />
-              </node>
-            </node>
-          </node>
-          <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395641686" nodeInfo="ng">
-            <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-            <property name="name" nameId="tpck.1169194664001" value="needMore" />
-            <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Boolean" typeId="tsp6.2348480312264231189" id="803735062395641703" nodeInfo="ng" />
-          </node>
-          <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395641606" nodeInfo="ng">
-            <property name="hexValue" nameId="tsp6.4689615199750888593" value="0C" />
-          </node>
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.ApiEmptyDef" typeId="tsp6.4689615199750780323" id="803735062395645781" nodeInfo="ng" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395646820" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SubscribeToOnline" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389968854" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Subscribing for users online" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389968860" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Users for subscription" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395646860" resolveInfo="users" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395646860" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="users" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395646864" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395646870" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511946" resolveInfo="UserOutPeer" />
-            </node>
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395646821" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="20" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="5857873509721842649" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395646916" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SubscribeFromOnline" />
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389968866" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Removing subscription for users online" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389968872" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Users of subscriptions" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395646962" resolveInfo="users" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395646962" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="users" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395646966" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395646975" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395511946" resolveInfo="UserOutPeer" />
-            </node>
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395646917" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="21" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="5857873509721842646" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395647027" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SubscribeToGroupOnline" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395647079" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groups" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395647083" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395647089" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395512002" resolveInfo="GroupOutPeer" />
-            </node>
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395647028" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="4A" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="5857873509721842643" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389968876" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Subscribing for groups online" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389968881" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Groups for subscription" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395647079" resolveInfo="groups" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Rpc" typeId="tsp6.2348480312265114812" id="803735062395647147" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SubscribeFromGroupOnline" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395647205" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="groups" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.List" typeId="tsp6.2348480312264232754" id="803735062395647209" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062395365470" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395647215" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395512002" resolveInfo="GroupOutPeer" />
-            </node>
-          </node>
-        </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395647148" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="4B" />
-        </node>
-        <node role="response" roleId="tsp6.2348480312265120188" type="tsp6.ResponseRefValue" typeId="tsp6.2348480312265149479" id="5857873509721842640" nodeInfo="ng">
-          <link role="response" roleId="tsp6.2348480312265340979" targetNodeId="803735062395513200" resolveInfo="Void" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocComment" typeId="tsp6.2861239048480449583" id="773119248389968885" nodeInfo="ng">
-          <property name="content" nameId="tsp6.2861239048480459664" value="Removing subscription for groups online" />
-        </node>
-        <node role="docs" roleId="tsp6.4092665470044220438" type="tsp6.RpcDocParameter" typeId="tsp6.4092665470043293715" id="773119248389968890" nodeInfo="ng">
-          <property name="description" nameId="tsp6.4092665470043359042" value="Groups of subscriptions" />
-          <link role="paramter" roleId="tsp6.4092665470043358846" targetNodeId="803735062395647205" resolveInfo="groups" />
+        <node concept="2m1Rp1" id="GBscvBBvni" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
       </node>
     </node>
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="803735062395512968" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="Miscellaneous" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="misc" />
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Response" typeId="tsp6.2348480312265103643" id="803735062395513200" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Void" />
-        <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060779" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Empty response" />
+    <node concept="2m5mJO" id="GBscvBB6e7" role="2m5lHt">
+      <property role="TrG5h" value="Peers" />
+      <property role="3XOG$Z" value="peers" />
+      <node concept="1Dx9M1" id="EUEXKTjjpb" role="1Dx9rD">
+        <property role="1Dx9K7" value="Peer is an identificator of specific conversation." />
+      </node>
+      <node concept="2m488m" id="GBscvBB6fj" role="2m5mJr">
+        <property role="TrG5h" value="PeerType" />
+        <node concept="2m7y0F" id="GBscvBB6fl" role="2m7ymf">
+          <property role="TrG5h" value="Private" />
+          <property role="2m7y0m" value="1" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395513201" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="32" />
+        <node concept="2m7y0F" id="GBscvBB6fp" role="2m7ymf">
+          <property role="TrG5h" value="Group" />
+          <property role="2m7y0m" value="2" />
+        </node>
+        <node concept="2m7y0F" id="1ydqyopSKYl" role="2m7ymf">
+          <property role="TrG5h" value="Email" />
+          <property role="2m7y0m" value="3" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Response" typeId="tsp6.2348480312265103643" id="803735062395513212" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Seq" />
-        <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060784" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Sequence response. Methods that return this value must process response in particular order" />
+      <node concept="2m5naR" id="GBscvBB6fx" role="2m5mJr">
+        <property role="TrG5h" value="Peer" />
+        <node concept="NXeRC" id="7UKSaUukma2" role="NXodf">
+          <property role="NXePf" value="Peer" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060790" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Sequence number of response" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395513219" resolveInfo="seq" />
+        <node concept="NX1gA" id="7UKSaUukma8" role="NXodf">
+          <property role="NX6R2" value="Peer Type" />
+          <ref role="NX6Kv" node="GBscvBB6fB" resolve="type" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060798" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Sequence state of response" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395513226" resolveInfo="state" />
+        <node concept="NX1gA" id="7UKSaUukmag" role="NXodf">
+          <property role="NX6R2" value="Peer Id" />
+          <ref role="NX6Kv" node="GBscvBB6fI" resolve="id" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395513219" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="seq" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395513223" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395513226" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="state" />
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="5857873509721471392" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5857873509721457697" resolveInfo="seq_state" />
+        <node concept="2m7Kf5" id="GBscvBB6fB" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="type" />
+          <node concept="3GJkcs" id="GBscvBB6fF" role="2m7DVh">
+            <ref role="3GJkik" node="GBscvBB6fj" resolve="PeerType" />
           </node>
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395513213" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="48" />
+        <node concept="2m7Kf5" id="GBscvBB6fI" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="GBscvBB6fO" role="2m7DVh" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Response" typeId="tsp6.2348480312265103643" id="2873759689078703663" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="SeqDate" />
-        <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="2873759689078707200" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Sequence response with date. Methods that return this value must process response in particular order" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="2873759689078707206" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Sequence number of response" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2873759689078703703" resolveInfo="seq" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="2873759689078707214" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Sequence state of response" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2873759689078703710" resolveInfo="state" />
-        </node>
-        <node role="docs" roleId="tsp6.773119248390109922" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="2873759689078707224" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Date of response" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="2873759689078703719" resolveInfo="date" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078703703" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="seq" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="2873759689078703707" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078703710" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="state" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078703716" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="5857873509721457697" resolveInfo="seq_state" />
+      <node concept="2m5naR" id="GBscvBB6hj" role="2m5mJr">
+        <property role="TrG5h" value="OutPeer" />
+        <node concept="2m7Kf5" id="GBscvBB6hu" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="type" />
+          <node concept="3GJkcs" id="GBscvBB6hy" role="2m7DVh">
+            <ref role="3GJkik" node="GBscvBB6fj" resolve="PeerType" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="2873759689078703719" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="date" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.AliasType" typeId="tsp6.5312209286553980838" id="2873759689078703727" nodeInfo="ng">
-            <link role="alias" roleId="tsp6.5312209286553980954" targetNodeId="2873759689078686265" resolveInfo="date" />
-          </node>
+        <node concept="2m7Kf5" id="GBscvBB6h_" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="GBscvBB6hF" role="2m7DVh" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="2873759689078703664" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="66" />
+        <node concept="2m7Kf5" id="GBscvBB6hI" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="GBscvBB6hQ" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="7UKSaUukmal" role="NXodf">
+          <property role="NXePf" value="Out peer with access hash" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmaq" role="NXodf">
+          <property role="NX6R2" value="Peer Type" />
+          <ref role="NX6Kv" node="GBscvBB6hu" resolve="type" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukma_" role="NXodf">
+          <property role="NX6R2" value="Peer Id" />
+          <ref role="NX6Kv" node="GBscvBB6h_" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmaJ" role="NXodf">
+          <property role="NX6R2" value="Peer access hash" />
+          <ref role="NX6Kv" node="GBscvBB6hI" resolve="accessHash" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="803735062395513369" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Config" />
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265060848" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Configuration of system" />
+      <node concept="2m5naR" id="GBscvBB6ia" role="2m5mJr">
+        <property role="TrG5h" value="UserOutPeer" />
+        <node concept="NXeRC" id="7UKSaUukmaR" role="NXodf">
+          <property role="NXePf" value="User's out peer" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390105235" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265060854" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="Current maximum group size" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395513380" resolveInfo="maxGroupSize" />
+        <node concept="NX1gA" id="7UKSaUukmaX" role="NXodf">
+          <property role="NX6R2" value="User's id" />
+          <ref role="NX6Kv" node="GBscvBB6is" resolve="uid" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395513380" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="maxGroupSize" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="803735062395513384" nodeInfo="ng" />
+        <node concept="NX1gA" id="7UKSaUukmb5" role="NXodf">
+          <property role="NX6R2" value="User's access hash" />
+          <ref role="NX6Kv" node="GBscvBB6iz" resolve="accessHash" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6is" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="GBscvBB6iw" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6iz" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="GBscvBB6iD" role="2m7DVh" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Update" typeId="tsp6.4689615199751283321" id="803735062395566634" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="Config" />
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocComment" typeId="tsp6.773119248390047284" id="9129043485265062468" nodeInfo="ng">
-          <property name="content" nameId="tsp6.773119248390047379" value="Update about config change" />
+      <node concept="2m5naR" id="GBscvBB6j2" role="2m5mJr">
+        <property role="TrG5h" value="GroupOutPeer" />
+        <node concept="NXeRC" id="7UKSaUukmbc" role="NXodf">
+          <property role="NXePf" value="Group's out peer" />
         </node>
-        <node role="docs" roleId="tsp6.773119248390107806" type="tsp6.StructDocParameter" typeId="tsp6.773119248390078458" id="9129043485265062474" nodeInfo="ng">
-          <property name="description" nameId="tsp6.773119248390080030" value="new config" />
-          <link role="paramter" roleId="tsp6.773119248390080451" targetNodeId="803735062395566650" resolveInfo="config" />
+        <node concept="NX1gA" id="7UKSaUukmbi" role="NXodf">
+          <property role="NX6R2" value="Group's Id" />
+          <ref role="NX6Kv" node="GBscvBB6jp" resolve="groupId" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="803735062395566650" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="config" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="803735062395566654" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="803735062395513369" resolveInfo="Config" />
-          </node>
+        <node concept="NX1gA" id="7UKSaUukmbq" role="NXodf">
+          <property role="NX6R2" value="Group's access hash" />
+          <ref role="NX6Kv" node="GBscvBB6jw" resolve="accessHash" />
         </node>
-        <node role="header" roleId="tsp6.4689615199750927382" type="tsp6.HeaderKey" typeId="tsp6.4689615199750888590" id="803735062395566635" nodeInfo="ng">
-          <property name="hexValue" nameId="tsp6.4689615199750888593" value="2A" />
+        <node concept="2m7Kf5" id="GBscvBB6jp" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="2m5ndE" id="GBscvBB6jt" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6jw" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="GBscvBB6l9" role="2m7DVh" />
         </node>
       </node>
     </node>
-  </root>
-  <root type="tsp6.ApiDescription" typeId="tsp6.2348480312264232779" id="25480617308691955" nodeInfo="ng">
-    <property name="name" nameId="tpck.1169194664001" value="ActorPlain" />
-    <node role="sections" roleId="tsp6.2348480312264237371" type="tsp6.ApiSection" typeId="tsp6.2348480312264233362" id="25480617308691956" nodeInfo="ng">
-      <property name="name" nameId="tpck.1169194664001" value="End-To-End messages" />
-      <property name="package" nameId="tsp6.3857470926884615265" value="e2e" />
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721448" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="Basic conainer for End-To-End message is PlainPackage." />
+    <node concept="2m5mJO" id="GBscvBB_eZ" role="2m5lHt">
+      <property role="TrG5h" value="Sequence and Updates" />
+      <property role="3XOG$Z" value="sequence" />
+      <node concept="1Dx9M1" id="EUEXKTjlyC" role="1Dx9rD">
+        <property role="1Dx9K7" value="Each device has it's own update sequence. At the begining application request initial sequence state by" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721450" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="If messageType in PlainPackage == 1 than contents of body is PlainMessage." />
+      <node concept="1Dx9M1" id="EUEXKTjmgw" role="1Dx9rD">
+        <property role="1Dx9K7" value="calling GetState. On each application restart or NewSessionCreated application calls GetDifference for receiving" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721453" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="PlainMessage is a conversation message." />
+      <node concept="1Dx9M1" id="EUEXKTjmY_" role="1Dx9rD">
+        <property role="1Dx9K7" value="updates in update sequence." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721457" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="PlainMessage contans messageType:" />
+      <node concept="1Dx9M1" id="EUEXKTjmYx" role="1Dx9rD">
+        <property role="1Dx9K7" value="GetState and GetDifference automatically subscribes session to receiving updates in session." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721462" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="  messageType == 0x01 =&gt; body is TextMessage" />
+      <node concept="1Dx9M1" id="EUEXKTjnlC" role="1Dx9rD">
+        <property role="1Dx9K7" value="Each update has seq and state. Seq is sequental index of updated and used for detecting of holes in update sequence" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721468" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="  messageType == 0x02 =&gt; body is FileMessage" />
+      <node concept="1Dx9M1" id="EUEXKTjo3G" role="1Dx9rD">
+        <property role="1Dx9K7" value="(because of server failure or session die) on client side." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721475" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="  messageType == 0x03 =&gt; body is ServiceMessage" />
+      <node concept="1Dx9M1" id="EUEXKTjo3N" role="1Dx9rD">
+        <property role="1Dx9K7" value="All updates needed to be processed in partucular order according to seq values." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721483" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value=" " />
+      <node concept="1Dx9M1" id="EUEXKTjoqW" role="1Dx9rD">
+        <property role="1Dx9K7" value="In some updates there can be references to users that are not available at client yer. In this case application need" />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721492" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="TextMessage has extension" />
+      <node concept="1Dx9M1" id="EUEXKTjor5" role="1Dx9rD">
+        <property role="1Dx9K7" value="to ignore such update and init getting difference." />
       </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721502" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="  extType == 0x01 =&gt; extension is MarkdownMessage" />
-      </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721525" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value=" " />
-      </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721513" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="FileMessage has extensions" />
-      </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721538" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="  extType == 0x01 =&gt; extension is PhotoExtension" />
-      </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721552" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="  extType == 0x02 =&gt; extension is VideoExtension" />
-      </node>
-      <node role="docs" roleId="tsp6.2861239048481128232" type="tsp6.SectionDoc" typeId="tsp6.2861239048481125696" id="25480617308721567" nodeInfo="ng">
-        <property name="text" nameId="tsp6.2861239048481125830" value="  extType == 0x03 =&gt; extension is AudioExtension" />
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="25480617308693151" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="PlainPackage" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308695541" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="messsageType" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308695545" nodeInfo="ng" />
+      <node concept="3GIgwz" id="GBscvBBMMf" role="2m5mJr">
+        <property role="TrG5h" value="SeqUpdate" />
+        <node concept="NXeRC" id="7UKSaUukmbx" role="NXpPy">
+          <property role="NXePf" value="Sequence update" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308697940" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="body" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="25480617308699144" nodeInfo="ng" />
+        <node concept="NX1gA" id="7UKSaUukmbB" role="NXpPy">
+          <property role="NX6R2" value="Sequence number of update" />
+          <ref role="NX6Kv" node="GBscvBBN2L" resolve="seq" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308700345" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="crc32" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="25480617308701553" nodeInfo="ng" />
+        <node concept="NX1gA" id="7UKSaUukmbJ" role="NXpPy">
+          <property role="NX6R2" value="Sequece state of update" />
+          <ref role="NX6Kv" node="GBscvBBN2S" resolve="state" />
         </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="25480617308703966" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="PlainMessage" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308706378" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="guid" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="25480617308706382" nodeInfo="ng" />
+        <node concept="NX1gA" id="7UKSaUukmbT" role="NXpPy">
+          <property role="NX6R2" value="header of update" />
+          <ref role="NX6Kv" node="GBscvBBN31" resolve="updateHeader" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308707588" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="messageTyoe" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308708799" nodeInfo="ng" />
+        <node concept="NX1gA" id="7UKSaUukmc5" role="NXpPy">
+          <property role="NX6R2" value="The update" />
+          <ref role="NX6Kv" node="GBscvBBN3c" resolve="update" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308711212" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="body" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="25480617308712427" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBN2L" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="seq" />
+          <node concept="2m5ndE" id="GBscvBBN2P" role="2m7DVh" />
         </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="25480617308714860" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="TextMessage" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716085" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="text" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="25480617308716089" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716092" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="extType" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308716098" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716101" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="extension" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="25480617308716109" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="25480617308716115" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBN2S" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="state" />
+          <node concept="wb0Ql" id="55bmeIQ7AKW" role="2m7DVh">
+            <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
           </node>
         </node>
+        <node concept="2m7Kf5" id="GBscvBBN31" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="updateHeader" />
+          <node concept="2m5ndE" id="GBscvBBN39" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBN3c" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="update" />
+          <node concept="2m61tm" id="GBscvBBN3m" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBMMg" role="NuuwV">
+          <property role="Nu42W" value="0D" />
+        </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="25480617308716142" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="FileMessage" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716167" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="name" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="25480617308716171" nodeInfo="ng" />
+      <node concept="3GIgwz" id="GBscvBBNRo" role="2m5mJr">
+        <property role="TrG5h" value="FatSeqUpdate" />
+        <node concept="2m7Kf5" id="GBscvBBNSv" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="seq" />
+          <node concept="2m5ndE" id="GBscvBBNSz" role="2m7DVh" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716174" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="mimeType" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="25480617308716180" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716183" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="fileLocation" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="25480617308718850" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="25480617308716391" resolveInfo="PlainFileLocation" />
+        <node concept="2m7Kf5" id="GBscvBBNSA" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="state" />
+          <node concept="wb0Ql" id="55bmeIQ7AKT" role="2m7DVh">
+            <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308718651" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="fastThumb" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="25480617308718661" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.StructType" typeId="tsp6.2348480312264233334" id="25480617308718667" nodeInfo="ng">
-              <link role="struct" roleId="tsp6.2348480312264233348" targetNodeId="25480617308716547" resolveInfo="FastThumb" />
+        <node concept="2m7Kf5" id="GBscvBBNSJ" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="updateHeader" />
+          <node concept="2m5ndE" id="GBscvBBNSR" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBNSU" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="update" />
+          <node concept="2m61tm" id="GBscvBBNT4" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBNT7" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="users" />
+          <node concept="2m5nlk" id="GBscvBBNTj" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBO9j" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
             </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308720128" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="extType" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308720141" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBO9m" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="groups" />
+          <node concept="2m5nlk" id="GBscvBBO9_" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBO9F" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+            </node>
+          </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308720144" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="extension" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="25480617308720159" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="25480617308720165" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="1ydqyopSPBS" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="phones" />
+          <node concept="2m5nlk" id="1ydqyopSPCa" role="2m7DVh">
+            <node concept="2m5mGg" id="1ydqyopSPCg" role="3GJlyp">
+              <ref role="2m5mJy" node="1ydqyopRHjr" resolve="Phone" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1ydqyopSPCj" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="emails" />
+          <node concept="2m5nlk" id="1ydqyopSPCC" role="2m7DVh">
+            <node concept="2m5mGg" id="1ydqyopSPCI" role="3GJlyp">
+              <ref role="2m5mJy" node="1ydqyopRIGl" resolve="Email" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBBNRp" role="NuuwV">
+          <property role="Nu42W" value="49" />
+        </node>
+        <node concept="NXeRC" id="7UKSaUukmcc" role="NXpPy">
+          <property role="NXePf" value="Fat sequence update with additional data" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmch" role="NXpPy">
+          <property role="NX6R2" value="Sequence number of update" />
+          <ref role="NX6Kv" node="GBscvBBNSv" resolve="seq" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmcp" role="NXpPy">
+          <property role="NX6R2" value="Sequence state of update" />
+          <ref role="NX6Kv" node="GBscvBBNSA" resolve="state" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmcz" role="NXpPy">
+          <property role="NX6R2" value="header of update" />
+          <ref role="NX6Kv" node="GBscvBBNSJ" resolve="updateHeader" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmcJ" role="NXpPy">
+          <property role="NX6R2" value="The update" />
+          <ref role="NX6Kv" node="GBscvBBNSU" resolve="update" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmcX" role="NXpPy">
+          <property role="NX6R2" value="Users that are referenced in update " />
+          <ref role="NX6Kv" node="GBscvBBNT7" resolve="users" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmdd" role="NXpPy">
+          <property role="NX6R2" value="Groups that are referenced in update" />
+          <ref role="NX6Kv" node="GBscvBBO9m" resolve="groups" />
+        </node>
+      </node>
+      <node concept="3GIgwz" id="GBscvBBOWz" role="2m5mJr">
+        <property role="TrG5h" value="WeakUpdate" />
+        <node concept="NXeRC" id="7UKSaUukmdo" role="NXpPy">
+          <property role="NXePf" value="Out of sequence update (for typing and online statuses)" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmdu" role="NXpPy">
+          <property role="NX6R2" value="Date of update" />
+          <ref role="NX6Kv" node="GBscvBBOXU" resolve="date" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmdA" role="NXpPy">
+          <property role="NX6R2" value="Header of update" />
+          <ref role="NX6Kv" node="GBscvBBOY1" resolve="updateHeader" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukme5" role="NXpPy">
+          <property role="NX6R2" value="The update" />
+          <ref role="NX6Kv" node="GBscvBBOYa" resolve="update" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBOXU" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="date" />
+          <node concept="2m5ndQ" id="GBscvBBOXY" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBOY1" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="updateHeader" />
+          <node concept="2m5ndE" id="GBscvBBOY7" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBOYa" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="update" />
+          <node concept="2m61tm" id="GBscvBBOYi" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBOW$" role="NuuwV">
+          <property role="Nu42W" value="1A" />
+        </node>
+      </node>
+      <node concept="3GIgwz" id="GBscvBBPLE" role="2m5mJr">
+        <property role="TrG5h" value="SeqUpdateTooLong" />
+        <node concept="NXeRC" id="7UKSaUukmed" role="NXpPy">
+          <property role="NXePf" value="Notification about requiring performing manual GetDifference" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBPLF" role="NuuwV">
+          <property role="Nu42W" value="19" />
+        </node>
+      </node>
+      <node concept="NvyAe" id="GBscvBBQmv" role="2m5mJr" />
+      <node concept="2m6fVq" id="GBscvBBAdf" role="2m5mJr">
+        <property role="TrG5h" value="GetState" />
+        <node concept="1D$$RI" id="EUEXKTjhfc" role="2uGzQp">
+          <property role="1D$E9h" value="Get main sequence state" />
+        </node>
+        <node concept="Nu42z" id="GBscvBBAdg" role="NuuwV">
+          <property role="Nu42W" value="09" />
+        </node>
+        <node concept="2m1Rp1" id="GBscvBBAdN" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="GBscvBB_GO" role="2m5mJr">
+        <property role="TrG5h" value="DifferenceUpdate" />
+        <node concept="NXeRC" id="7UKSaUukmem" role="NXodf">
+          <property role="NXePf" value="Update from GetDifference" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmes" role="NXodf">
+          <property role="NX6R2" value="Header of update" />
+          <ref role="NX6Kv" node="GBscvBB_GY" resolve="updateHeader" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukme$" role="NXodf">
+          <property role="NX6R2" value="The update" />
+          <ref role="NX6Kv" node="GBscvBB_H5" resolve="update" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB_GY" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="updateHeader" />
+          <node concept="2m5ndE" id="GBscvBB_H2" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB_H5" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="update" />
+          <node concept="2m61tm" id="GBscvBB_Hb" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBB_Gl" role="2m5mJr">
+        <property role="TrG5h" value="GetDifference" />
+        <node concept="1D$$RI" id="EUEXKTjhfh" role="2uGzQp">
+          <property role="1D$E9h" value="Getting difference of sequence" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB_Gr" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="seq" />
+          <node concept="2m5ndE" id="GBscvBB_Gv" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB_Gy" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="state" />
+          <node concept="wb0Ql" id="55bmeIQ7BbF" role="2m7DVh">
+            <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBB_Gm" role="NuuwV">
+          <property role="Nu42W" value="0B" />
+        </node>
+        <node concept="2m1R6W" id="GBscvBB_W5" role="2m6efq">
+          <node concept="2m7Kf5" id="GBscvBB_Wa" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="seq" />
+            <node concept="2m5ndE" id="GBscvBB_We" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="GBscvBB_Wh" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="state" />
+            <node concept="wb0Ql" id="55bmeIQ7BbI" role="2m7DVh">
+              <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="GBscvBB_Wq" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="GBscvBB_Wy" role="2m7DVh">
+              <node concept="2m5mGg" id="3m8vlV8pH0U" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="GBscvBB_WF" role="2m0hLx">
+            <property role="2m7DUN" value="6" />
+            <property role="TrG5h" value="groups" />
+            <node concept="2m5nlk" id="GBscvBB_WQ" role="2m7DVh">
+              <node concept="2m5mGg" id="GBscvBB_WW" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="1ydqyopSQ6w" role="2m0hLx">
+            <property role="2m7DUN" value="7" />
+            <property role="TrG5h" value="phones" />
+            <node concept="2m5nlk" id="1ydqyopSQ6N" role="2m7DVh">
+              <node concept="2m5mGg" id="1ydqyopSQ6T" role="3GJlyp">
+                <ref role="2m5mJy" node="1ydqyopRHjr" resolve="Phone" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="1ydqyopSQ6W" role="2m0hLx">
+            <property role="2m7DUN" value="8" />
+            <property role="TrG5h" value="emails" />
+            <node concept="2m5nlk" id="1ydqyopSQ7i" role="2m7DVh">
+              <node concept="2m5mGg" id="1ydqyopSQ7o" role="3GJlyp">
+                <ref role="2m5mJy" node="1ydqyopRIGl" resolve="Email" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="GBscvBB_WZ" role="2m0hLx">
+            <property role="2m7DUN" value="4" />
+            <property role="TrG5h" value="updates" />
+            <node concept="2m5nlk" id="GBscvBB_Xd" role="2m7DVh">
+              <node concept="2m5mGg" id="GBscvBB_Xj" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB_GO" resolve="DifferenceUpdate" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="GBscvBB_Xm" role="2m0hLx">
+            <property role="2m7DUN" value="5" />
+            <property role="TrG5h" value="needMore" />
+            <node concept="2m5ndN" id="GBscvBB_XB" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="GBscvBB_W6" role="NuuwV">
+            <property role="Nu42W" value="0C" />
           </node>
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Enum" typeId="tsp6.2348480312264620144" id="25480617308716314" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="EncryptionType" />
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="25480617308716316" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="NONE" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="0" />
+      <node concept="NvyAe" id="GBscvBBAXl" role="2m5mJr" />
+      <node concept="2m6fVq" id="GBscvBBBd$" role="2m5mJr">
+        <property role="TrG5h" value="SubscribeToOnline" />
+        <node concept="1D$$RI" id="EUEXKTjhfm" role="2uGzQp">
+          <property role="1D$E9h" value="Subscribing for users online" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="25480617308716349" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="AES" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="1" />
+        <node concept="2uJ1As" id="EUEXKTjhfs" role="2uGzQp">
+          <property role="2uJhrd" value="Users for subscription" />
+          <ref role="2uJhvL" node="GBscvBBBec" resolve="users" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312264712169" type="tsp6.EnumAttribute" typeId="tsp6.2348480312264710733" id="25480617308716352" nodeInfo="ng">
-          <property name="name" nameId="tpck.1169194664001" value="AES_THEN_MAC" />
-          <property name="id" nameId="tsp6.2348480312264710768" value="2" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="25480617308716391" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="PlainFileLocation" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716427" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="fileId" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="25480617308716431" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716434" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="accessHash" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int64" typeId="tsp6.2348480312264231184" id="25480617308716440" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716443" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="fileSize" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308716451" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716454" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="encryptionType" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.EnumType" typeId="tsp6.803735062395368411" id="25480617308716464" nodeInfo="ng">
-            <link role="struct" roleId="tsp6.803735062395368531" targetNodeId="25480617308716314" resolveInfo="EncryptionType" />
+        <node concept="2m7Kf5" id="GBscvBBBec" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="users" />
+          <node concept="2m5nlk" id="GBscvBBBeg" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBBem" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+            </node>
           </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716467" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="5" />
-          <property name="name" nameId="tpck.1169194664001" value="encryptedFileSize" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308716479" nodeInfo="ng" />
+        <node concept="Nu42z" id="GBscvBBBd_" role="NuuwV">
+          <property role="Nu42W" value="20" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716482" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="6" />
-          <property name="name" nameId="tpck.1169194664001" value="encryptionKey" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="25480617308716496" nodeInfo="ng" />
+        <node concept="2m1Rp1" id="55bmeIQ92fp" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="25480617308716547" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="FastThumb" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716596" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="w" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308716600" nodeInfo="ng" />
+      <node concept="2m6fVq" id="GBscvBBBf4" role="2m5mJr">
+        <property role="TrG5h" value="SubscribeFromOnline" />
+        <node concept="1D$$RI" id="EUEXKTjhfy" role="2uGzQp">
+          <property role="1D$E9h" value="Removing subscription for users online" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716603" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="h" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308716609" nodeInfo="ng" />
+        <node concept="2uJ1As" id="EUEXKTjhfC" role="2uGzQp">
+          <property role="2uJhrd" value="Users of subscriptions" />
+          <ref role="2uJhvL" node="GBscvBBBfM" resolve="users" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716612" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="4" />
-          <property name="name" nameId="tpck.1169194664001" value="preview" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="25480617308716620" nodeInfo="ng" />
-        </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="25480617308716678" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="ServiceMessage" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716734" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="text" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="25480617308716738" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716741" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="extType" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308716747" nodeInfo="ng" />
-        </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716750" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="extension" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Optional" typeId="tsp6.2348480312264232735" id="25480617308716758" nodeInfo="ng">
-            <node role="type" roleId="tsp6.803735062394906775" type="tsp6.Bytes" typeId="tsp6.2348480312265108784" id="25480617308716764" nodeInfo="ng" />
+        <node concept="2m7Kf5" id="GBscvBBBfM" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="users" />
+          <node concept="2m5nlk" id="GBscvBBBfQ" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBBfZ" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+            </node>
           </node>
         </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="25480617308716830" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="MarkdownMessage" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308716894" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="markdown" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.String" typeId="tsp6.2348480312264231195" id="25480617308716898" nodeInfo="ng" />
+        <node concept="Nu42z" id="GBscvBBBf5" role="NuuwV">
+          <property role="Nu42W" value="21" />
+        </node>
+        <node concept="2m1Rp1" id="55bmeIQ92fm" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="25480617308716967" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="PhotoExtension" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308717034" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="w" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308717038" nodeInfo="ng" />
+      <node concept="2m6fVq" id="GBscvBBBgN" role="2m5mJr">
+        <property role="TrG5h" value="SubscribeToGroupOnline" />
+        <node concept="2m7Kf5" id="GBscvBBBhB" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groups" />
+          <node concept="2m5nlk" id="GBscvBBBhF" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBBhL" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+            </node>
+          </node>
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308717041" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="h" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308717047" nodeInfo="ng" />
+        <node concept="Nu42z" id="GBscvBBBgO" role="NuuwV">
+          <property role="Nu42W" value="4A" />
         </node>
-      </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="25480617308717121" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="VideoExtension" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308717193" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="1" />
-          <property name="name" nameId="tpck.1169194664001" value="w" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308717197" nodeInfo="ng" />
+        <node concept="2m1Rp1" id="55bmeIQ92fj" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308717200" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="2" />
-          <property name="name" nameId="tpck.1169194664001" value="h" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308717206" nodeInfo="ng" />
+        <node concept="1D$$RI" id="EUEXKTjhfG" role="2uGzQp">
+          <property role="1D$E9h" value="Subscribing for groups online" />
         </node>
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308718476" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="duration" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308718484" nodeInfo="ng" />
+        <node concept="2uJ1As" id="EUEXKTjhfL" role="2uGzQp">
+          <property role="2uJhrd" value="Groups for subscription" />
+          <ref role="2uJhvL" node="GBscvBBBhB" resolve="groups" />
         </node>
       </node>
-      <node role="definitions" roleId="tsp6.2348480312264233405" type="tsp6.Struct" typeId="tsp6.2348480312264231121" id="25480617308718565" nodeInfo="ng">
-        <property name="name" nameId="tpck.1169194664001" value="AudioExtension" />
-        <node role="attributes" roleId="tsp6.2348480312265565703" type="tsp6.StructAttribute" typeId="tsp6.2348480312264653219" id="25480617308718644" nodeInfo="ng">
-          <property name="id" nameId="tsp6.2348480312264746197" value="3" />
-          <property name="name" nameId="tpck.1169194664001" value="duration" />
-          <node role="type" roleId="tsp6.2348480312264746167" type="tsp6.Int32" typeId="tsp6.2348480312264231180" id="25480617308718648" nodeInfo="ng" />
+      <node concept="2m6fVq" id="GBscvBBBiF" role="2m5mJr">
+        <property role="TrG5h" value="SubscribeFromGroupOnline" />
+        <node concept="2m7Kf5" id="GBscvBBBj_" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groups" />
+          <node concept="2m5nlk" id="GBscvBBBjD" role="2m7DVh">
+            <node concept="2m5mGg" id="GBscvBBBjJ" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBBBiG" role="NuuwV">
+          <property role="Nu42W" value="4B" />
+        </node>
+        <node concept="2m1Rp1" id="55bmeIQ92fg" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="1D$$RI" id="EUEXKTjhfP" role="2uGzQp">
+          <property role="1D$E9h" value="Removing subscription for groups online" />
+        </node>
+        <node concept="2uJ1As" id="EUEXKTjhfU" role="2uGzQp">
+          <property role="2uJhrd" value="Groups of subscriptions" />
+          <ref role="2uJhvL" node="GBscvBBBj_" resolve="groups" />
         </node>
       </node>
     </node>
-  </root>
+    <node concept="2m5mJO" id="GBscvBB6y8" role="2m5lHt">
+      <property role="TrG5h" value="Miscellaneous" />
+      <property role="3XOG$Z" value="misc" />
+      <node concept="2m62dX" id="GBscvBB6_K" role="2m5mJr">
+        <property role="TrG5h" value="Void" />
+        <node concept="NXeRC" id="7UKSaUukmeF" role="NXp4Y">
+          <property role="NXePf" value="Empty response" />
+        </node>
+        <node concept="Nu42z" id="GBscvBB6_L" role="NuuwV">
+          <property role="Nu42W" value="32" />
+        </node>
+      </node>
+      <node concept="2m62dX" id="GBscvBB6_W" role="2m5mJr">
+        <property role="TrG5h" value="Seq" />
+        <node concept="NXeRC" id="7UKSaUukmeK" role="NXp4Y">
+          <property role="NXePf" value="Sequence response. Methods that return this value must process response in particular order" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmeQ" role="NXp4Y">
+          <property role="NX6R2" value="Sequence number of response" />
+          <ref role="NX6Kv" node="GBscvBB6A3" resolve="seq" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmeY" role="NXp4Y">
+          <property role="NX6R2" value="Sequence state of response" />
+          <ref role="NX6Kv" node="GBscvBB6Aa" resolve="state" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6A3" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="seq" />
+          <node concept="2m5ndE" id="GBscvBB6A7" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Aa" role="2m0hLx">
+          <property role="TrG5h" value="state" />
+          <property role="2m7DUN" value="2" />
+          <node concept="wb0Ql" id="55bmeIQ7BAw" role="2m7DVh">
+            <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBB6_X" role="NuuwV">
+          <property role="Nu42W" value="48" />
+        </node>
+      </node>
+      <node concept="2m62dX" id="2vxDjotnSoJ" role="2m5mJr">
+        <property role="TrG5h" value="SeqDate" />
+        <node concept="NXeRC" id="2vxDjotnTg0" role="NXp4Y">
+          <property role="NXePf" value="Sequence response with date. Methods that return this value must process response in particular order" />
+        </node>
+        <node concept="NX1gA" id="2vxDjotnTg6" role="NXp4Y">
+          <property role="NX6R2" value="Sequence number of response" />
+          <ref role="NX6Kv" node="2vxDjotnSpn" resolve="seq" />
+        </node>
+        <node concept="NX1gA" id="2vxDjotnTge" role="NXp4Y">
+          <property role="NX6R2" value="Sequence state of response" />
+          <ref role="NX6Kv" node="2vxDjotnSpu" resolve="state" />
+        </node>
+        <node concept="NX1gA" id="2vxDjotnTgo" role="NXp4Y">
+          <property role="NX6R2" value="Date of response" />
+          <ref role="NX6Kv" node="2vxDjotnSpB" resolve="date" />
+        </node>
+        <node concept="2m7Kf5" id="2vxDjotnSpn" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="seq" />
+          <node concept="2m5ndE" id="2vxDjotnSpr" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2vxDjotnSpu" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="state" />
+          <node concept="wb0Ql" id="2vxDjotnSp$" role="2m7DVh">
+            <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2vxDjotnSpB" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2vxDjotnSpJ" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="2vxDjotnSoK" role="NuuwV">
+          <property role="Nu42W" value="66" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="GBscvBB6Cp" role="2m5mJr">
+        <property role="TrG5h" value="Config" />
+        <node concept="NXeRC" id="7UKSaUukmfK" role="NXodf">
+          <property role="NXePf" value="Configuration of system" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmfQ" role="NXodf">
+          <property role="NX6R2" value="Current maximum group size" />
+          <ref role="NX6Kv" node="GBscvBB6C$" resolve="maxGroupSize" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6C$" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="maxGroupSize" />
+          <node concept="2m5ndE" id="GBscvBB6CC" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="GBscvBBjCE" role="2m5mJr">
+        <property role="TrG5h" value="Config" />
+        <node concept="NXeRC" id="7UKSaUukmD4" role="NXp_2">
+          <property role="NXePf" value="Update about config change" />
+        </node>
+        <node concept="NX1gA" id="7UKSaUukmDa" role="NXp_2">
+          <property role="NX6R2" value="new config" />
+          <ref role="NX6Kv" node="GBscvBBjCU" resolve="config" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBBjCU" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="config" />
+          <node concept="2m5mGg" id="GBscvBBjCY" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6Cp" resolve="Config" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="GBscvBBjCF" role="NuuwV">
+          <property role="Nu42W" value="2A" />
+        </node>
+      </node>
+    </node>
+  </node>
+  <node concept="2m5nkH" id="1qxBM7lTRN">
+    <property role="TrG5h" value="ActorPlain" />
+    <node concept="2m5mJO" id="1qxBM7lTRO" role="2m5lHt">
+      <property role="TrG5h" value="End-To-End messages" />
+      <property role="3XOG$Z" value="e2e" />
+      <node concept="1Dx9M1" id="1qxBM7m14C" role="1Dx9rD">
+        <property role="1Dx9K7" value="Basic conainer for End-To-End message is PlainPackage." />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m14E" role="1Dx9rD">
+        <property role="1Dx9K7" value="If messageType in PlainPackage == 1 than contents of body is PlainMessage." />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m14H" role="1Dx9rD">
+        <property role="1Dx9K7" value="PlainMessage is a conversation message." />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m14L" role="1Dx9rD">
+        <property role="1Dx9K7" value="PlainMessage contans messageType:" />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m14Q" role="1Dx9rD">
+        <property role="1Dx9K7" value="  messageType == 0x01 =&gt; body is TextMessage" />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m14W" role="1Dx9rD">
+        <property role="1Dx9K7" value="  messageType == 0x02 =&gt; body is FileMessage" />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m153" role="1Dx9rD">
+        <property role="1Dx9K7" value="  messageType == 0x03 =&gt; body is ServiceMessage" />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m15b" role="1Dx9rD">
+        <property role="1Dx9K7" value=" " />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m15k" role="1Dx9rD">
+        <property role="1Dx9K7" value="TextMessage has extension" />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m15u" role="1Dx9rD">
+        <property role="1Dx9K7" value="  extType == 0x01 =&gt; extension is MarkdownMessage" />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m15P" role="1Dx9rD">
+        <property role="1Dx9K7" value=" " />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m15D" role="1Dx9rD">
+        <property role="1Dx9K7" value="FileMessage has extensions" />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m162" role="1Dx9rD">
+        <property role="1Dx9K7" value="  extType == 0x01 =&gt; extension is PhotoExtension" />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m16g" role="1Dx9rD">
+        <property role="1Dx9K7" value="  extType == 0x02 =&gt; extension is VideoExtension" />
+      </node>
+      <node concept="1Dx9M1" id="1qxBM7m16v" role="1Dx9rD">
+        <property role="1Dx9K7" value="  extType == 0x03 =&gt; extension is AudioExtension" />
+      </node>
+      <node concept="2m5naR" id="1qxBM7lUav" role="2m5mJr">
+        <property role="TrG5h" value="PlainPackage" />
+        <node concept="2m7Kf5" id="1qxBM7lUJP" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="messsageType" />
+          <node concept="2m5ndE" id="1qxBM7lUJT" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lVlk" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="body" />
+          <node concept="2m61tm" id="1qxBM7lVC8" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lVUT" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="crc32" />
+          <node concept="2m5ndQ" id="1qxBM7lWdL" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="1qxBM7lWNu" role="2m5mJr">
+        <property role="TrG5h" value="PlainMessage" />
+        <node concept="2m7Kf5" id="1qxBM7lXpa" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="guid" />
+          <node concept="2m5ndQ" id="1qxBM7lXpe" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lXG4" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="messageTyoe" />
+          <node concept="2m5ndE" id="1qxBM7lXYZ" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lY$G" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="body" />
+          <node concept="2m61tm" id="1qxBM7lYRF" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="1qxBM7lZtG" role="2m5mJr">
+        <property role="TrG5h" value="TextMessage" />
+        <node concept="2m7Kf5" id="1qxBM7lZKP" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="text" />
+          <node concept="2m5ndX" id="1qxBM7lZKT" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZKW" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="extType" />
+          <node concept="2m5ndE" id="1qxBM7lZL2" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZL5" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="extension" />
+          <node concept="2m5nlT" id="1qxBM7lZLd" role="2m7DVh">
+            <node concept="2m61tm" id="1qxBM7lZLj" role="3GH5xg" />
+          </node>
+        </node>
+      </node>
+      <node concept="2m5naR" id="1qxBM7lZLI" role="2m5mJr">
+        <property role="TrG5h" value="FileMessage" />
+        <node concept="2m7Kf5" id="1qxBM7lZM7" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="1qxBM7lZMb" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZMe" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="mimeType" />
+          <node concept="2m5ndX" id="1qxBM7lZMk" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZMn" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="fileLocation" />
+          <node concept="2m5mGg" id="1qxBM7m0s2" role="2m7DVh">
+            <ref role="2m5mJy" node="1qxBM7lZPB" resolve="PlainFileLocation" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7m0oV" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="fastThumb" />
+          <node concept="2m5nlT" id="1qxBM7m0p5" role="2m7DVh">
+            <node concept="2m5mGg" id="1qxBM7m0pb" role="3GH5xg">
+              <ref role="2m5mJy" node="1qxBM7lZS3" resolve="FastThumb" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7m0K0" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="extType" />
+          <node concept="2m5ndE" id="1qxBM7m0Kd" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7m0Kg" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="extension" />
+          <node concept="2m5nlT" id="1qxBM7m0Kv" role="2m7DVh">
+            <node concept="2m61tm" id="1qxBM7m0K_" role="3GH5xg" />
+          </node>
+        </node>
+      </node>
+      <node concept="2m488m" id="1qxBM7lZOq" role="2m5mJr">
+        <property role="TrG5h" value="EncryptionType" />
+        <node concept="2m7y0F" id="1qxBM7lZOs" role="2m7ymf">
+          <property role="TrG5h" value="NONE" />
+          <property role="2m7y0m" value="0" />
+        </node>
+        <node concept="2m7y0F" id="1qxBM7lZOX" role="2m7ymf">
+          <property role="TrG5h" value="AES" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="1qxBM7lZP0" role="2m7ymf">
+          <property role="TrG5h" value="AES_THEN_MAC" />
+          <property role="2m7y0m" value="2" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="1qxBM7lZPB" role="2m5mJr">
+        <property role="TrG5h" value="PlainFileLocation" />
+        <node concept="2m7Kf5" id="1qxBM7lZQb" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="fileId" />
+          <node concept="2m5ndQ" id="1qxBM7lZQf" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZQi" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="1qxBM7lZQo" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZQr" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="fileSize" />
+          <node concept="2m5ndE" id="1qxBM7lZQz" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZQA" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="encryptionType" />
+          <node concept="3GJkcs" id="1qxBM7lZQK" role="2m7DVh">
+            <ref role="3GJkik" node="1qxBM7lZOq" resolve="EncryptionType" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZQN" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="encryptedFileSize" />
+          <node concept="2m5ndE" id="1qxBM7lZQZ" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZR2" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="encryptionKey" />
+          <node concept="2m61tm" id="1qxBM7lZRg" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="1qxBM7lZS3" role="2m5mJr">
+        <property role="TrG5h" value="FastThumb" />
+        <node concept="2m7Kf5" id="1qxBM7lZSO" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="w" />
+          <node concept="2m5ndE" id="1qxBM7lZSS" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZSV" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="h" />
+          <node concept="2m5ndE" id="1qxBM7lZT1" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZT4" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="preview" />
+          <node concept="2m61tm" id="1qxBM7lZTc" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="1qxBM7lZU6" role="2m5mJr">
+        <property role="TrG5h" value="ServiceMessage" />
+        <node concept="2m7Kf5" id="1qxBM7lZUY" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="text" />
+          <node concept="2m5ndX" id="1qxBM7lZV2" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZV5" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="extType" />
+          <node concept="2m5ndE" id="1qxBM7lZVb" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZVe" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="extension" />
+          <node concept="2m5nlT" id="1qxBM7lZVm" role="2m7DVh">
+            <node concept="2m61tm" id="1qxBM7lZVs" role="3GH5xg" />
+          </node>
+        </node>
+      </node>
+      <node concept="2m5naR" id="1qxBM7lZWu" role="2m5mJr">
+        <property role="TrG5h" value="MarkdownMessage" />
+        <node concept="2m7Kf5" id="1qxBM7lZXu" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="markdown" />
+          <node concept="2m5ndX" id="1qxBM7lZXy" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="1qxBM7lZYB" role="2m5mJr">
+        <property role="TrG5h" value="PhotoExtension" />
+        <node concept="2m7Kf5" id="1qxBM7lZZE" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="w" />
+          <node concept="2m5ndE" id="1qxBM7lZZI" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7lZZL" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="h" />
+          <node concept="2m5ndE" id="1qxBM7lZZR" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="1qxBM7m011" role="2m5mJr">
+        <property role="TrG5h" value="VideoExtension" />
+        <node concept="2m7Kf5" id="1qxBM7m029" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="w" />
+          <node concept="2m5ndE" id="1qxBM7m02d" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7m02g" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="h" />
+          <node concept="2m5ndE" id="1qxBM7m02m" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1qxBM7m0mc" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="duration" />
+          <node concept="2m5ndE" id="1qxBM7m0mk" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="1qxBM7m0n_" role="2m5mJr">
+        <property role="TrG5h" value="AudioExtension" />
+        <node concept="2m7Kf5" id="1qxBM7m0oO" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="duration" />
+          <node concept="2m5ndE" id="1qxBM7m0oS" role="2m7DVh" />
+        </node>
+      </node>
+    </node>
+  </node>
 </model>
 

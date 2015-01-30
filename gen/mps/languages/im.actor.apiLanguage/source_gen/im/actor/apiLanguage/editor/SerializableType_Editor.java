@@ -19,7 +19,6 @@ public class SerializableType_Editor extends DefaultNodeEditor {
   public EditorCell createEditorCell(EditorContext editorContext, SNode node) {
     return this.createAlternation_mja8cp_a(editorContext, node);
   }
-
   private EditorCell createAlternation_mja8cp_a(EditorContext editorContext, SNode node) {
     boolean alternationCondition = true;
     alternationCondition = SerializableType_Editor.renderingCondition_mja8cp_a0(node, editorContext);
@@ -35,22 +34,19 @@ public class SerializableType_Editor extends DefaultNodeEditor {
     }
     return editorCell;
   }
-
   private static boolean renderingCondition_mja8cp_a0(SNode node, EditorContext editorContext) {
     return "SerializableType".equals(node + "");
   }
-
   private EditorCell createError_mja8cp_a0(EditorContext editorContext, SNode node) {
     EditorCell_Error editorCell = new EditorCell_Error(editorContext, node, "<no def>");
     editorCell.setCellId("Error_mja8cp_a0");
     return editorCell;
   }
-
   private EditorCell createComponent_mja8cp_a0(EditorContext editorContext, SNode node) {
     EditorCell editorCell = editorContext.getCellFactory().createEditorComponentCell(node, "jetbrains.mps.lang.core.editor.alias");
     Style style = new StyleImpl();
-    style.set(StyleAttributes.FONT_STYLE, MPSFonts.BOLD);
-    style.set(StyleAttributes.TEXT_COLOR, StyleRegistry.getInstance().getSimpleColor(MPSColors.DARK_BLUE));
+    style.set(StyleAttributes.FONT_STYLE, 0, MPSFonts.BOLD);
+    style.set(StyleAttributes.TEXT_COLOR, 0, StyleRegistry.getInstance().getSimpleColor(MPSColors.DARK_BLUE));
     editorCell.getStyle().putAll(style);
     return editorCell;
   }

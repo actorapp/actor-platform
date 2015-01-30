@@ -7,7 +7,6 @@ import jetbrains.mps.lang.core.behavior.BaseConcept_BehaviorDescriptor;
 public class ApiDef_BehaviorDescriptor extends BaseConcept_BehaviorDescriptor {
   public ApiDef_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.ApiDef";

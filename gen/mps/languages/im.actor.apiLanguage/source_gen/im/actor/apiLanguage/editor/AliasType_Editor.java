@@ -21,7 +21,6 @@ public class AliasType_Editor extends DefaultNodeEditor {
   public EditorCell createEditorCell(EditorContext editorContext, SNode node) {
     return this.createCollection_x7srg1_a(editorContext, node);
   }
-
   private EditorCell createCollection_x7srg1_a(EditorContext editorContext, SNode node) {
     EditorCell_Collection editorCell = EditorCell_Collection.createIndent2(editorContext, node);
     editorCell.setCellId("Collection_x7srg1_a");
@@ -29,7 +28,6 @@ public class AliasType_Editor extends DefaultNodeEditor {
     editorCell.addEditorCell(this.createRefCell_x7srg1_a0(editorContext, node));
     return editorCell;
   }
-
   private EditorCell createRefCell_x7srg1_a0(EditorContext editorContext, SNode node) {
     CellProviderWithRole provider = new RefCellCellProvider(node, editorContext);
     provider.setRole("alias");
@@ -51,20 +49,16 @@ public class AliasType_Editor extends DefaultNodeEditor {
     } else
     return editorCell;
   }
-
   public static class _Inline_x7srg1_a0a extends InlineCellProvider {
     public _Inline_x7srg1_a0a() {
       super();
     }
-
     public EditorCell createEditorCell(EditorContext editorContext) {
       return this.createEditorCell(editorContext, this.getSNode());
     }
-
     public EditorCell createEditorCell(EditorContext editorContext, SNode node) {
       return this.createProperty_x7srg1_a0a0(editorContext, node);
     }
-
     private EditorCell createProperty_x7srg1_a0a0(EditorContext editorContext, SNode node) {
       CellProviderWithRole provider = new PropertyCellProvider(node, editorContext);
       provider.setRole("name");
@@ -74,7 +68,7 @@ public class AliasType_Editor extends DefaultNodeEditor {
       editorCell = provider.createEditorCell(editorContext);
       editorCell.setCellId("property_name");
       Style style = new StyleImpl();
-      style.set(StyleAttributes.AUTO_DELETABLE, true);
+      style.set(StyleAttributes.AUTO_DELETABLE, 0, true);
       editorCell.getStyle().putAll(style);
       editorCell.setSubstituteInfo(provider.createDefaultSubstituteInfo());
       SNode attributeConcept = provider.getRoleAttribute();
