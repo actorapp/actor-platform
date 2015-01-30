@@ -6,7 +6,6 @@ package im.actor.apiLanguage.behavior;
 public class ResponseRefValue_BehaviorDescriptor extends ResponseRef_BehaviorDescriptor {
   public ResponseRefValue_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.ResponseRefValue";

@@ -13,7 +13,6 @@ public class ApiDef_Editor extends DefaultNodeEditor {
   public EditorCell createEditorCell(EditorContext editorContext, SNode node) {
     return this.createAlternation_vc77m8_a(editorContext, node);
   }
-
   private EditorCell createAlternation_vc77m8_a(EditorContext editorContext, SNode node) {
     boolean alternationCondition = true;
     alternationCondition = ApiDef_Editor.renderingCondition_vc77m8_a0(node, editorContext);
@@ -29,17 +28,14 @@ public class ApiDef_Editor extends DefaultNodeEditor {
     }
     return editorCell;
   }
-
   private static boolean renderingCondition_vc77m8_a0(SNode node, EditorContext editorContext) {
     return "ApiDef".equals(node + "");
   }
-
   private EditorCell createError_vc77m8_a0(EditorContext editorContext, SNode node) {
     EditorCell_Error editorCell = new EditorCell_Error(editorContext, node, "<no def>");
     editorCell.setCellId("Error_vc77m8_a0");
     return editorCell;
   }
-
   private EditorCell createComponent_vc77m8_a0(EditorContext editorContext, SNode node) {
     EditorCell editorCell = editorContext.getCellFactory().createEditorComponentCell(node, "jetbrains.mps.lang.core.editor.alias");
     return editorCell;

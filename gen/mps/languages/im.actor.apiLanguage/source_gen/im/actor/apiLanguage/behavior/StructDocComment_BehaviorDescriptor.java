@@ -6,7 +6,6 @@ package im.actor.apiLanguage.behavior;
 public class StructDocComment_BehaviorDescriptor extends StructDoc_BehaviorDescriptor {
   public StructDocComment_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.StructDocComment";

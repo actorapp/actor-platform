@@ -6,7 +6,6 @@ package im.actor.apiLanguage.behavior;
 public class Optional_BehaviorDescriptor extends SerializableType_BehaviorDescriptor {
   public Optional_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.Optional";

@@ -7,7 +7,6 @@ import jetbrains.mps.lang.core.behavior.BaseConcept_BehaviorDescriptor;
 public class InterfaceRef_BehaviorDescriptor extends BaseConcept_BehaviorDescriptor {
   public InterfaceRef_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.InterfaceRef";

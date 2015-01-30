@@ -10,5 +10,9 @@
     <usedLanguage>77fdf769-432b-4ede-8171-050f8dee73fc(im.actor.apiLanguage)</usedLanguage>
     <usedLanguage>ceab5195-25ea-4f22-9b92-103b95ca8c0c(jetbrains.mps.lang.core)</usedLanguage>
   </usedLanguages>
+  <languageVersions>
+    <language id="77fdf769-432b-4ede-8171-050f8dee73fc" fqName="im.actor.apiLanguage" version="0" />
+    <language id="ceab5195-25ea-4f22-9b92-103b95ca8c0c" fqName="jetbrains.mps.lang.core" version="1" />
+  </languageVersions>
 </solution>
 

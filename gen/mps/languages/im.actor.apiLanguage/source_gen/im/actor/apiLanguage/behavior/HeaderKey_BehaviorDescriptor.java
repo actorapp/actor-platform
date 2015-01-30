@@ -7,7 +7,6 @@ import jetbrains.mps.lang.core.behavior.BaseConcept_BehaviorDescriptor;
 public class HeaderKey_BehaviorDescriptor extends BaseConcept_BehaviorDescriptor {
   public HeaderKey_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.HeaderKey";

@@ -185,8 +185,8 @@ enum UserState {
 }
 
 // Extendend phone information
-// phone  Phone number in international format
-// phoneTitle  Title of phone
+// phone Phone number in international format
+// phoneTitle Title of phone
 message Phone {
     required int32 id = 1;
     required int64 accessHash = 2;
@@ -195,8 +195,8 @@ message Phone {
 }
 
 // Extendend email information
-// email  Email
-// emailTitle  Descruption of email
+// email Email
+// emailTitle Descruption of email
 message Email {
     required int32 id = 1;
     required int64 accessHash = 2;
@@ -205,16 +205,16 @@ message Email {
 }
 
 // Main user object
-// id  uid
-// accessHash  user's access hash
-// name  user's name
-// localName  user's local name
-// sex  optional sex of user
-// keyHashes  key hashes of user
-// phone  [DEPRECATED] Phone number of user
-// avatar  avatar of user
-// phones  phones of user
-// emails  emails of user
+// id uid
+// accessHash user's access hash
+// name user's name
+// localName user's local name
+// sex optional sex of user
+// keyHashes key hashes of user
+// phone [DEPRECATED] Phone number of user
+// avatar avatar of user
+// phones phones of user
+// emails emails of user
 message User {
     required int32 id = 1;
     required int64 accessHash = 2;
@@ -270,8 +270,8 @@ message UpdateUserLocalNameChanged {
 
 // API#0x57
 // Update about phone added to user
-// uid  user's id
-// phoneId  added phone id
+// uid user's id
+// phoneId added phone id
 message UpdateUserPhoneAdded {
     required int32 uid = 1;
     required int32 phoneId = 2;
@@ -279,8 +279,8 @@ message UpdateUserPhoneAdded {
 
 // API#0x58
 // Update about phone removed from user
-// uid  user's id
-// phoneId  removed phone id
+// uid user's id
+// phoneId removed phone id
 message UpdateUserPhoneRemoved {
     required int32 uid = 1;
     required int32 phoneId = 2;
@@ -288,8 +288,8 @@ message UpdateUserPhoneRemoved {
 
 // API#0x59
 // Update about phone title changed
-// phoneId  phone number
-// title  new title for phone
+// phoneId phone number
+// title new title for phone
 message UpdatePhoneTitleChanged {
     required int32 phoneId = 2;
     required string title = 3;
@@ -297,8 +297,8 @@ message UpdatePhoneTitleChanged {
 
 // API#0x65
 // Update about phone move
-// phoneId  Phone number id
-// uid  new uid for phone
+// phoneId Phone number id
+// uid new uid for phone
 message UpdatePhoneMoved {
     required int32 phoneId = 1;
     required int32 uid = 2;
@@ -306,8 +306,8 @@ message UpdatePhoneMoved {
 
 // API#0x60
 // Update about email added to user
-// uid  user's id
-// emailId  added email id
+// uid user's id
+// emailId added email id
 message UpdateUserEmailAdded {
     required int32 uid = 1;
     required int32 emailId = 2;
@@ -315,8 +315,8 @@ message UpdateUserEmailAdded {
 
 // API#0x61
 // Update about email removed from user
-// uid  user's id
-// emailId  removed email id
+// uid user's id
+// emailId removed email id
 message UpdateUserEmailRemoved {
     required int32 uid = 1;
     required int32 emailId = 2;
@@ -324,8 +324,8 @@ message UpdateUserEmailRemoved {
 
 // API#0x62
 // Update about email title changed
-// emailId  email id
-// title  new title for email
+// emailId email id
+// title new title for email
 message UpdateEmailTitleChanged {
     required int32 emailId = 1;
     required string title = 2;
@@ -333,8 +333,8 @@ message UpdateEmailTitleChanged {
 
 // API#0x66
 // Update about email move from one user to another
-// emailId  Email id
-// uid  new uid for email
+// emailId Email id
+// uid new uid for email
 message UpdateEmailMoved {
     required int32 emailId = 1;
     required int32 uid = 2;
@@ -342,9 +342,9 @@ message UpdateEmailMoved {
 
 // API#0x56
 // Update about contact information change
-// uid  user's uid
-// phones  new phones list
-// emails  new emails list
+// uid user's uid
+// phones new phones list
+// emails new emails list
 message UpdateUserContactsChanged {
     required int32 uid = 1;
     repeated int32 phones = 2;
@@ -353,8 +353,8 @@ message UpdateUserContactsChanged {
 
 // API#0x64
 // Update about user state changed
-// uid  user's id
-// state  new user state
+// uid user's id
+// state new user state
 message UpdateUserStateChanged {
     required int32 uid = 1;
     required UserState state = 2;
@@ -394,23 +394,18 @@ message RequestRemoveAvatar {
 }
 
 // API#0x78
-// ResponseSendEmailCode
+// ResponseVoid
 // Sending activation code to email
-// emailEmail for attaching to account
+// email Email for attaching to account
 message RequestSendEmailCode {
     required string email = 1;
     optional string description = 2;
 }
 
-// API#0x79
-message ResponseSendEmailCode {
-    required string codeHash = 1;
-}
-
 // API#0x7B
 // ResponseSeq
 // Detaching email from account
-// emailEmail id for deattach
+// email Email id for deattach
 message RequestDetachEmail {
     required int32 email = 1;
     required int64 accessHash = 2;
@@ -419,8 +414,8 @@ message RequestDetachEmail {
 // API#0x7C
 // ResponseSeq
 // Change phone description
-// phoneIdPhone number id
-// titleNew phone title
+// phoneId Phone number id
+// title New phone title
 message RequestChangePhoneTitle {
     required int32 phoneId = 1;
     required string title = 2;
@@ -429,8 +424,8 @@ message RequestChangePhoneTitle {
 // API#0x7D
 // ResponseSeq
 // Change email description
-// emailIdEmail id
-// titleNew email title
+// emailId Email id
+// title New email title
 message RequestChangeEmailTitle {
     required int32 emailId = 1;
     required string title = 2;
@@ -549,8 +544,8 @@ message UpdateContactRegistered {
 
 // API#0x78
 // Update about email contact registered
-// emailId  Email id
-// uid  Registered user's id
+// emailId Email id
+// uid Registered user's id
 message UpdateEmailContactRegistered {
     required int32 emailId = 1;
     required int32 uid = 2;
@@ -1180,7 +1175,7 @@ message HistoryMessage {
     required int64 rid = 2;
     required int64 date = 3;
     required MessageContent message = 5;
-    required MessageState state = 6;
+    optional MessageState state = 6;
 }
 
 // API#0x76
@@ -1217,7 +1212,7 @@ message Dialog {
     required int64 rid = 6;
     required int64 date = 7;
     required MessageContent message = 8;
-    required MessageState state = 9;
+    optional MessageState state = 9;
 }
 
 // API#0x68
