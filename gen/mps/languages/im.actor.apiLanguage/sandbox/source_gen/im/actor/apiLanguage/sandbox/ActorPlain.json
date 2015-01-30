@@ -3,7 +3,7 @@
 {"title":"End-To-End messages"
 ,"package":"e2e"
 ,"doc":[
-"Basic conainer for End-To-End message is PlainPackage.","If messageType in PlainPackage == 1 than contents of body is PlainMessage.","PlainMessage is a conversation message.","PlainMessage contans messageType:","  messageType == 0x01 => body is TextMessage","  messageType == 0x02 => body is FileMessage","  messageType == 0x03 => body is ServiceMessage"," ","TextMessage has extension","  extType == 0x01 => extension is MarkdownMessage"," ","FileMessage has extensions","  extType == 0x01 => extension is PhotoExtension","  extType == 0x02 => extension is VideoExtension","  extType == 0x03 => extension is AudioExtension"],"items":[
+"Basic conainer for End-To-End message is PlainPackage.","If messageType in PlainPackage == 1 than contents of body is PlainMessage.","PlainMessage is a conversation message.","PlainMessage contans messageType:","messageType == 0x01 => body is TextMessage","messageType == 0x02 => body is FileMessage","messageType == 0x03 => body is ServiceMessage","","TextMessage has extension","extType == 0x01 => extension is MarkdownMessage","","FileMessage has extensions","extType == 0x01 => extension is PhotoExtension","extType == 0x02 => extension is VideoExtension","extType == 0x03 => extension is AudioExtension"],"items":[
 {"type":"struct","content":{
 "name":"PlainPackage",
 "attributes":[

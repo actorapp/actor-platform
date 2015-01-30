@@ -8,6 +8,7 @@ import org.jetbrains.mps.openapi.model.SNode;
 import jetbrains.mps.typesystem.inference.TypeCheckingContext;
 import jetbrains.mps.lang.typesystem.runtime.IsApplicableStatus;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
+import jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory;
 import jetbrains.mps.internal.collections.runtime.ListSequence;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import im.actor.apiLanguage.behavior.HeaderKey_Behavior;
@@ -19,23 +20,22 @@ import jetbrains.mps.smodel.SModelUtil_new;
 public class UniqueRpcHeaders_NonTypesystemRule extends AbstractNonTypesystemRule_Runtime implements NonTypesystemRule_Runtime {
   public UniqueRpcHeaders_NonTypesystemRule() {
   }
-
   public void applyRule(final SNode rpcObject, final TypeCheckingContext typeCheckingContext, IsApplicableStatus status) {
-    SNode root = SNodeOperations.cast(SNodeOperations.getContainingRoot(rpcObject), "im.actor.apiLanguage.structure.ApiDescription");
+    SNode root = SNodeOperations.cast(SNodeOperations.getContainingRoot(rpcObject), MetaAdapterFactory.getConcept(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b6820f4bL, "im.actor.apiLanguage.structure.ApiDescription"));
 
     Integer count = 0;
-    for (SNode section : ListSequence.fromList(SLinkOperations.getTargets(root, "sections", true))) {
-      for (SNode child : ListSequence.fromList(SLinkOperations.getTargets(section, "definitions", true))) {
-        if (SNodeOperations.isInstanceOf(child, "im.actor.apiLanguage.structure.IRpcObject")) {
-          if (HeaderKey_Behavior.call_intValue_4689615199750893375(SLinkOperations.getTarget(SNodeOperations.cast(child, "im.actor.apiLanguage.structure.IRpcObject"), "header", true)) == HeaderKey_Behavior.call_intValue_4689615199750893375(SLinkOperations.getTarget(rpcObject, "header", true))) {
+    for (SNode section : ListSequence.fromList(SLinkOperations.getChildren(root, MetaAdapterFactory.getContainmentLink(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b6820f4bL, 0x20977a66b682213bL, "sections")))) {
+      for (SNode child : ListSequence.fromList(SLinkOperations.getChildren(section, MetaAdapterFactory.getContainmentLink(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b6821192L, 0x20977a66b68211bdL, "definitions")))) {
+        if (SNodeOperations.isInstanceOf(child, MetaAdapterFactory.getInterfaceConcept(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b6914186L, "im.actor.apiLanguage.structure.IRpcObject"))) {
+          if (HeaderKey_Behavior.call_intValue_4689615199750893375(SLinkOperations.getTarget(SNodeOperations.cast(child, MetaAdapterFactory.getInterfaceConcept(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b6914186L, "im.actor.apiLanguage.structure.IRpcObject")), MetaAdapterFactory.getContainmentLink(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b6914154L, 0x4114dc2d726d3416L, "header"))) == HeaderKey_Behavior.call_intValue_4689615199750893375(SLinkOperations.getTarget(rpcObject, MetaAdapterFactory.getContainmentLink(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b6914154L, 0x4114dc2d726d3416L, "header")))) {
             count++;
           }
         }
-        if (SNodeOperations.isInstanceOf(child, "im.actor.apiLanguage.structure.Rpc")) {
-          SNode rpc = SNodeOperations.cast(child, "im.actor.apiLanguage.structure.Rpc");
-          if (SNodeOperations.isInstanceOf(SLinkOperations.getTarget(rpc, "response", true), "im.actor.apiLanguage.structure.ResponseRefAnonymous")) {
-            SNode response = SNodeOperations.cast(SLinkOperations.getTarget(rpc, "response", true), "im.actor.apiLanguage.structure.ResponseRefAnonymous");
-            if (HeaderKey_Behavior.call_intValue_4689615199750893375(SLinkOperations.getTarget(response, "header", true)) == HeaderKey_Behavior.call_intValue_4689615199750893375(SLinkOperations.getTarget(rpcObject, "header", true))) {
+        if (SNodeOperations.isInstanceOf(child, MetaAdapterFactory.getConcept(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b68f84bcL, "im.actor.apiLanguage.structure.Rpc"))) {
+          SNode rpc = SNodeOperations.cast(child, MetaAdapterFactory.getConcept(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b68f84bcL, "im.actor.apiLanguage.structure.Rpc"));
+          if (SNodeOperations.isInstanceOf(SLinkOperations.getTarget(rpc, MetaAdapterFactory.getContainmentLink(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b68f84bcL, 0x20977a66b68f99bcL, "response")), MetaAdapterFactory.getConcept(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b6900bdaL, "im.actor.apiLanguage.structure.ResponseRefAnonymous"))) {
+            SNode response = SNodeOperations.cast(SLinkOperations.getTarget(rpc, MetaAdapterFactory.getContainmentLink(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b68f84bcL, 0x20977a66b68f99bcL, "response")), MetaAdapterFactory.getConcept(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b6900bdaL, "im.actor.apiLanguage.structure.ResponseRefAnonymous"));
+            if (HeaderKey_Behavior.call_intValue_4689615199750893375(SLinkOperations.getTarget(response, MetaAdapterFactory.getContainmentLink(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b6914154L, 0x4114dc2d726d3416L, "header"))) == HeaderKey_Behavior.call_intValue_4689615199750893375(SLinkOperations.getTarget(rpcObject, MetaAdapterFactory.getContainmentLink(0x77fdf769432b4edeL, 0x8171050f8dee73fcL, 0x20977a66b6914154L, 0x4114dc2d726d3416L, "header")))) {
               count++;
             }
           }
@@ -49,18 +49,15 @@ public class UniqueRpcHeaders_NonTypesystemRule extends AbstractNonTypesystemRul
       }
     }
   }
-
   public String getApplicableConceptFQName() {
     return "im.actor.apiLanguage.structure.IRpcObject";
   }
-
   public IsApplicableStatus isApplicableAndPattern(SNode argument) {
     {
       boolean b = SModelUtil_new.isAssignableConcept(argument.getConcept().getQualifiedName(), this.getApplicableConceptFQName());
       return new IsApplicableStatus(b, null);
     }
   }
-
   public boolean overrides() {
     return false;
   }

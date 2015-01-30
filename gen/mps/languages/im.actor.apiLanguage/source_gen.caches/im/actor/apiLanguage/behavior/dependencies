@@ -156,6 +156,7 @@
     <classNode dependClassName="java.lang.Exception" />
     <classNode dependClassName="java.lang.Integer" />
     <classNode dependClassName="jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations" />
+    <classNode dependClassName="jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
   </dependency>
   <dependency className="im.actor.apiLanguage.behavior.HeaderKey_BehaviorDescriptor" file="HeaderKey_BehaviorDescriptor.java">
@@ -171,6 +172,8 @@
   <dependency className="im.actor.apiLanguage.behavior.IHeaderStruct_Behavior" file="IHeaderStruct_Behavior.java">
     <classNode dependClassName="jetbrains.mps.lang.smodel.generator.smodelAdapter.SConceptOperations" />
     <classNode dependClassName="jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations" />
+    <classNode dependClassName="jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations" />
+    <classNode dependClassName="jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
   </dependency>
   <dependency className="im.actor.apiLanguage.behavior.IHeaderStruct_BehaviorDescriptor" file="IHeaderStruct_BehaviorDescriptor.java" />
@@ -186,8 +189,10 @@
   <dependency className="im.actor.apiLanguage.behavior.IStruct_Behavior" file="IStruct_Behavior.java">
     <classNode dependClassName="jetbrains.mps.lang.smodel.generator.smodelAdapter.SConceptOperations" />
     <classNode dependClassName="jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations" />
+    <classNode dependClassName="jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations" />
     <classNode dependClassName="jetbrains.mps.scope.Scope" />
     <classNode dependClassName="jetbrains.mps.scope.SimpleRoleScope" />
+    <classNode dependClassName="jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
   </dependency>
   <dependency className="im.actor.apiLanguage.behavior.IStruct_BehaviorDescriptor" file="IStruct_BehaviorDescriptor.java">

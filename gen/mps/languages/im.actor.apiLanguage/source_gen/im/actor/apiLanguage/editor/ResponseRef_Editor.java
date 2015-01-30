@@ -13,7 +13,6 @@ public class ResponseRef_Editor extends DefaultNodeEditor {
   public EditorCell createEditorCell(EditorContext editorContext, SNode node) {
     return this.createAlternation_aizlrx_a(editorContext, node);
   }
-
   private EditorCell createAlternation_aizlrx_a(EditorContext editorContext, SNode node) {
     boolean alternationCondition = true;
     alternationCondition = ResponseRef_Editor.renderingCondition_aizlrx_a0(node, editorContext);
@@ -29,17 +28,14 @@ public class ResponseRef_Editor extends DefaultNodeEditor {
     }
     return editorCell;
   }
-
   private static boolean renderingCondition_aizlrx_a0(SNode node, EditorContext editorContext) {
     return "ResponseRef".equals(node + "");
   }
-
   private EditorCell createError_aizlrx_a0(EditorContext editorContext, SNode node) {
     EditorCell_Error editorCell = new EditorCell_Error(editorContext, node, "<no response>");
     editorCell.setCellId("Error_aizlrx_a0");
     return editorCell;
   }
-
   private EditorCell createComponent_aizlrx_a0(EditorContext editorContext, SNode node) {
     EditorCell editorCell = editorContext.getCellFactory().createEditorComponentCell(node, "jetbrains.mps.lang.core.editor.alias");
     return editorCell;

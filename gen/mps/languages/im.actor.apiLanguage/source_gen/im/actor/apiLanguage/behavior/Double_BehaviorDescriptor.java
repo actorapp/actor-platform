@@ -6,7 +6,6 @@ package im.actor.apiLanguage.behavior;
 public class Double_BehaviorDescriptor extends SerializableType_BehaviorDescriptor {
   public Double_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.Double";

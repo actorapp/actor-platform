@@ -6,7 +6,6 @@ package im.actor.apiLanguage.behavior;
 public class EnumType_BehaviorDescriptor extends SerializableType_BehaviorDescriptor {
   public EnumType_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.EnumType";

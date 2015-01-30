@@ -1477,15 +1477,8 @@
             "name": "SendEmailCode",
             "header": 120,
             "response": {
-              "type": "anonymous",
-              "header": 121,
-              "attributes": [
-                {
-                  "type": "string",
-                  "id": 1,
-                  "name": "codeHash"
-                }
-              ]
+              "type": "reference",
+              "name": "Void"
             },
             "doc": [
               "Sending activation code to email",
@@ -4617,8 +4610,11 @@
               },
               {
                 "type": {
-                  "type": "enum",
-                  "childType": "MessageState"
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "MessageState"
+                  }
                 },
                 "id": 6,
                 "name": "state"
@@ -4800,8 +4796,11 @@
               },
               {
                 "type": {
-                  "type": "enum",
-                  "childType": "MessageState"
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "MessageState"
+                  }
                 },
                 "id": 9,
                 "name": "state"
