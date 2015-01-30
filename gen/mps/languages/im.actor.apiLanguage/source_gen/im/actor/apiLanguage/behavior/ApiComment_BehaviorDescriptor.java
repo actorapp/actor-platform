@@ -6,7 +6,6 @@ package im.actor.apiLanguage.behavior;
 public class ApiComment_BehaviorDescriptor extends ApiDef_BehaviorDescriptor {
   public ApiComment_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.ApiComment";

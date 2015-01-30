@@ -12,7 +12,6 @@ public class ApiEmptyDef_Editor extends DefaultNodeEditor {
   public EditorCell createEditorCell(EditorContext editorContext, SNode node) {
     return this.createConstant_7bl8x9_a(editorContext, node);
   }
-
   private EditorCell createConstant_7bl8x9_a(EditorContext editorContext, SNode node) {
     EditorCell_Constant editorCell = new EditorCell_Constant(editorContext, node, "");
     editorCell.setCellId("Constant_7bl8x9_a");

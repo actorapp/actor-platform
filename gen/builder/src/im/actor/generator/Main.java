@@ -13,15 +13,15 @@ public class Main {
         SchemeDefinition definition = SchemeFactory.fromFile("/Users/ex3ndr/actor-api-schema/actor.json");
 //        SchemeDefinition encryptedDefinition = SchemeFactory.fromFile("/Users/ex3ndr/Documents/actor_encrypted.json");
 
-//        String destJava ="/Users/ex3ndr/Develop/actor-api-schema/java/";
-//        EnumGenerator.generate(definition, destJava);
-//        UpdateGenerator.generate(definition, destJava);
-//        UpdateGenerator.generateParser(definition, destJava);
-//        StructGenerator.generate(definition,destJava);
-//        RequestGenerator.generate(definition, destJava);
-//        RequestGenerator.generateParser(definition, destJava);
-//        RequestGenerator.generateRpcList(definition, destJava);
-//        UpdateBoxGenerator.generate(definition, destJava);
+        String destJava ="/Users/ex3ndr/Develop/actor-api-schema/java/";
+        EnumGenerator.generate(definition, destJava);
+        UpdateGenerator.generate(definition, destJava);
+        UpdateGenerator.generateParser(definition, destJava);
+        StructGenerator.generate(definition,destJava);
+        RequestGenerator.generate(definition, destJava);
+        RequestGenerator.generateParser(definition, destJava);
+        RequestGenerator.generateRpcList(definition, destJava);
+        UpdateBoxGenerator.generate(definition, destJava);
 
         //        DocIndexGenerator.generate(definition, "/Users/ex3ndr/actor-doc/");
 //        DocUpdatesGenerator.generate(definition, "/Users/ex3ndr/actor-doc/");

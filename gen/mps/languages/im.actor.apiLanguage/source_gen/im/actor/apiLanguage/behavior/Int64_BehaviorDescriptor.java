@@ -6,7 +6,6 @@ package im.actor.apiLanguage.behavior;
 public class Int64_BehaviorDescriptor extends SerializableType_BehaviorDescriptor {
   public Int64_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.Int64";

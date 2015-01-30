@@ -6,7 +6,6 @@ package im.actor.apiLanguage.behavior;
 public class Bytes_BehaviorDescriptor extends SerializableType_BehaviorDescriptor {
   public Bytes_BehaviorDescriptor() {
   }
-
   @Override
   public String getConceptFqName() {
     return "im.actor.apiLanguage.structure.Bytes";
