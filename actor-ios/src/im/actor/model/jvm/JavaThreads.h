@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/jvm/JavaThreads.java
 //
 
-#ifndef _ImActorModelJvmJavaThreads_H_
-#define _ImActorModelJvmJavaThreads_H_
+#ifndef _AMJavaThreads_H_
+#define _AMJavaThreads_H_
 
 @class ComDroidkitActorsMailboxActorDispatcher;
 @class DAActorSystem;
@@ -13,7 +13,7 @@
 #include "J2ObjC_header.h"
 #include "com/droidkit/actors/conf/DispatcherFactory.h"
 
-@interface ImActorModelJvmJavaThreads : NSObject {
+@interface AMJavaThreads : NSObject {
 }
 
 + (void)init__ OBJC_METHOD_FAMILY_NONE;
@@ -22,16 +22,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelJvmJavaThreads)
+J2OBJC_EMPTY_STATIC_INIT(AMJavaThreads)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT void ImActorModelJvmJavaThreads_init__();
+FOUNDATION_EXPORT void AMJavaThreads_init__();
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmJavaThreads)
+typedef AMJavaThreads ImActorModelJvmJavaThreads;
 
-@interface ImActorModelJvmJavaThreads_$1 : NSObject < DADispatcherFactory > {
+J2OBJC_TYPE_LITERAL_HEADER(AMJavaThreads)
+
+@interface AMJavaThreads_$1 : NSObject < DADispatcherFactory > {
 }
 
 - (ComDroidkitActorsMailboxActorDispatcher *)createDispatcherWithNSString:(NSString *)name
@@ -43,11 +45,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmJavaThreads)
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelJvmJavaThreads_$1)
+J2OBJC_EMPTY_STATIC_INIT(AMJavaThreads_$1)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmJavaThreads_$1)
+J2OBJC_TYPE_LITERAL_HEADER(AMJavaThreads_$1)
 
-#endif // _ImActorModelJvmJavaThreads_H_
+#endif // _AMJavaThreads_H_
