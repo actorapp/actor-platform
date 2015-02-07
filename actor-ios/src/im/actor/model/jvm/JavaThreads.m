@@ -11,10 +11,10 @@
 #include "im/actor/model/jvm/JavaThreads.h"
 #include "im/actor/model/jvm/actors/JavaDispatcher.h"
 
-@implementation ImActorModelJvmJavaThreads
+@implementation AMJavaThreads
 
 + (void)init__ {
-  ImActorModelJvmJavaThreads_init__();
+  AMJavaThreads_init__();
 }
 
 - (instancetype)init {
@@ -26,20 +26,20 @@
     { "init__", "init", "V", 0x9, NULL },
     { "init", NULL, NULL, 0x1, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelJvmJavaThreads = { 1, "JavaThreads", "im.actor.model.jvm", NULL, 0x1, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelJvmJavaThreads;
+  static const J2ObjcClassInfo _AMJavaThreads = { 1, "JavaThreads", "im.actor.model.jvm", NULL, 0x1, 2, methods, 0, NULL, 0, NULL};
+  return &_AMJavaThreads;
 }
 
 @end
 
-void ImActorModelJvmJavaThreads_init__() {
-  ImActorModelJvmJavaThreads_init();
-  DAEnvConfig_setDispatcherFactoryWithDADispatcherFactory_([[[ImActorModelJvmJavaThreads_$1 alloc] init] autorelease]);
+void AMJavaThreads_init__() {
+  AMJavaThreads_init();
+  DAEnvConfig_setDispatcherFactoryWithDADispatcherFactory_([[[AMJavaThreads_$1 alloc] init] autorelease]);
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmJavaThreads)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads)
 
-@implementation ImActorModelJvmJavaThreads_$1
+@implementation AMJavaThreads_$1
 
 - (ComDroidkitActorsMailboxActorDispatcher *)createDispatcherWithNSString:(NSString *)name
                                                                   withInt:(jint)threadsCount
@@ -57,10 +57,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmJavaThreads)
     { "createDispatcherWithNSString:withInt:withDAThreadPriorityEnum:withDAActorSystem:", "createDispatcher", "Lcom.droidkit.actors.mailbox.ActorDispatcher;", 0x1, NULL },
     { "init", NULL, NULL, 0x0, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelJvmJavaThreads_$1 = { 1, "$1", "im.actor.model.jvm", "JavaThreads", 0x8000, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelJvmJavaThreads_$1;
+  static const J2ObjcClassInfo _AMJavaThreads_$1 = { 1, "$1", "im.actor.model.jvm", "JavaThreads", 0x8000, 2, methods, 0, NULL, 0, NULL};
+  return &_AMJavaThreads_$1;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmJavaThreads_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads_$1)
