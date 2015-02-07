@@ -1,0 +1,3 @@
+include ':actor-common', ':actor-java', ':actor-java-threads', ':actor-ios'
+rootProject.name = 'actor-model'
+
