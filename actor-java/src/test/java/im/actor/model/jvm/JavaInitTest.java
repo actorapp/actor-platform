@@ -1,15 +1,26 @@
 package im.actor.model.jvm;
 
-import im.actor.model.network.ConnectionEndpoint;
-import im.actor.model.network.Endpoints;
+import im.actor.model.api.ContactRecord;
+import im.actor.model.api.Group;
+import im.actor.model.api.User;
+import im.actor.model.api.rpc.RequestSendAuthCode;
+import im.actor.model.api.rpc.ResponseSendAuthCode;
+import im.actor.model.jvm.network.MemoryAuthIdStorage;
+import im.actor.model.log.Log;
+import im.actor.model.network.*;
 import im.actor.model.network.mtp.AuthIdRetriever;
 import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.Ping;
+import im.actor.model.network.parser.Response;
+import im.actor.model.network.parser.Update;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Random;
 
 public class JavaInitTest {
+
+    private static final String TAG = "jUnit";
 
     private Endpoints endpoints = new Endpoints(new ConnectionEndpoint[]{
             new ConnectionEndpoint("mtproto-api.actor.im", 8080, ConnectionEndpoint.Type.TCP)});
@@ -19,19 +30,63 @@ public class JavaInitTest {
     @Test
     public void testInit() throws Exception {
         JavaInit.init();
-        
-        AuthIdRetriever.requestAuthId(endpoints, new AuthIdRetriever.AuthIdCallback() {
+
+        ActorApi actorApi = new ActorApi(endpoints, new MemoryAuthIdStorage(), new ActorApiCallback() {
             @Override
-            public void onSuccess(long authId) {
-                MTProto mtProto = new MTProto(authId, random.nextLong(), endpoints);
-                mtProto.sendMTMessage(new Ping(random.nextLong()));
+            public void onAuthIdInvalidated(long authKey) {
+
             }
 
             @Override
-            public void onFailure() {
+            public void onNewSessionCreated() {
+
+            }
+
+            @Override
+            public void onSeqFatUpdate(int seq, byte[] state, Update update, List<User> users, List<Group> groups, List<ContactRecord> contactRecords) {
+
+            }
+
+            @Override
+            public void onSeqUpdate(int seq, byte[] state, Update update) {
+
+            }
+
+            @Override
+            public void onSeqTooLong() {
+
+            }
+
+            @Override
+            public void onWeakUpdate(long date, Update update) {
 
             }
         });
+
+        actorApi.request(new RequestSendAuthCode(75552232323L, 1, "??"), new RpcCallback<ResponseSendAuthCode>() {
+            @Override
+            public void onResult(ResponseSendAuthCode response) {
+                Log.d(TAG, "SmsHash = " + response.getSmsHash() + ", isRegistered = " + response.isRegistered());
+            }
+
+            @Override
+            public void onError(RpcException e) {
+
+            }
+        });
+
+//        AuthIdRetriever.requestAuthId(endpoints, new AuthIdRetriever.AuthIdCallback() {
+//            @Override
+//            public void onSuccess(long authId) {
+//                MTProto mtProto = new MTProto(authId, random.nextLong(), endpoints);
+//                mtProto.sendRpcMessage(new Ping(random.nextLong()));
+//            }
+//
+//            @Override
+//            public void onFailure() {
+//
+//            }
+//        });
 
         Thread.sleep(30000);
     }

@@ -58,6 +58,6 @@ public class RpcOk extends ProtoStruct {
 
     @Override
     public String toString() {
-        return "RpcOk{" + responseType + "]";
+        return "RpcOk{" + responseType + "}";
     }
 }

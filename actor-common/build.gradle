@@ -8,6 +8,14 @@ compileJava {
     targetCompatibility = 1.6
 }
 
-task dist(dependsOn: ['build', 'j2objcCopy']) {
+artifacts {
+    archives jar
+}
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.droidkit:bser:1.2'
 }
