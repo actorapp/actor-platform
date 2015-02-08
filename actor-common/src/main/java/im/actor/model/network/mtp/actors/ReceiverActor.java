@@ -76,16 +76,9 @@ public class ReceiverActor extends Actor {
 
             Log.d(TAG, obj + "");
 
-            if (obj instanceof Pong) {
-                // TODO: Implement pong
-            } else if (obj instanceof Ping) {
-                // TODO: Implement ping
-            } else if (obj instanceof Drop) {
-                // TODO: Implement drop
-            } else if (obj instanceof NewSessionCreated) {
+            if (obj instanceof NewSessionCreated) {
                 sender.send(new SenderActor.NewSession());
-                // TODO: Implement
-                // stateBroker.send(new NewSessionCreated());
+                proto.getCallback().onSessionCreated();
             } else if (obj instanceof Container) {
                 Container container = (Container) obj;
                 for (ProtoMessage m : container.getMessages()) {
@@ -95,8 +88,8 @@ public class ReceiverActor extends Actor {
                 MTRpcResponse responseBox = (MTRpcResponse) obj;
                 // Forget messages
                 sender.send(new SenderActor.ForgetMessage(responseBox.getMessageId()));
+                proto.getCallback().onRpcResponse(responseBox.getMessageId(), responseBox.getPayload());
 
-                // TODO: Implement Response processing
 //                try {
 //                    ProtoStruct payload = ProtoSerializer.readRpcResponsePayload(new ByteArrayInputStream(responseBox.getPayload()));
 //                    Log.d(TAG, "Loaded " + payload + " from RpcResponseBox");
@@ -124,8 +117,7 @@ public class ReceiverActor extends Actor {
                 }
             } else if (obj instanceof MTPush) {
                 MTPush box = (MTPush) obj;
-
-                // TODO: Implement Push
+                proto.getCallback().onUpdate(box.getPayload());
 //                try {
 //                    Update update = ProtoSerializer.readUpdate(box.getPayload());
 //                    stateBroker.send(new im.actor.api.mtp.messages.Update(update.updateType, update.body));
@@ -150,9 +142,12 @@ public class ReceiverActor extends Actor {
                             new RequestResend(unsent.getMessageId()).toByteArray()));
                 }
             } else {
-                Log.w(TAG, "Unsupported package " + obj.getClass().getCanonicalName());
+                Log.w(TAG, "Unsupported package " + obj);
             }
+        } catch (Exception e) {
+            Log.w(TAG, "Parsing error");
         } finally {
+
             if (!disableConfirm) {
                 sender.send(new SenderActor.ConfirmMessage(message.getMessageId()));
             }

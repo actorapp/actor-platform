@@ -50,6 +50,10 @@ public class ProtoSerializer {
         throw new IOException("Unable to read proto object with header #" + header);
     }
 
+    public static ProtoStruct readRpcResponsePayload(byte[] bs) throws IOException {
+        return readRpcResponsePayload(new ByteArrayInputStream(bs));
+    }
+
     public static ProtoStruct readRpcResponsePayload(InputStream bs) throws IOException {
         final byte header = readByte(bs);
         switch (header) {
@@ -65,20 +69,11 @@ public class ProtoSerializer {
         throw new IOException("Unable to read proto object");
     }
 
-    public static ProtoStruct readRpcRequestPayload(InputStream bs) throws IOException {
-        final byte header = readByte(bs);
-        switch (header) {
-            case RpcRequest.HEADER:
-                return new RpcRequest(bs);
-        }
-        throw new IOException("Unable to read proto object with header #" + header);
-    }
-
-    public static PushSimple readUpdate(byte[] bs) throws IOException {
+    public static Push readUpdate(byte[] bs) throws IOException {
         return readUpdate(new ByteArrayInputStream(bs));
     }
 
-    public static PushSimple readUpdate(InputStream bs) throws IOException {
-        return new PushSimple(bs);
+    public static Push readUpdate(InputStream bs) throws IOException {
+        return new Push(bs);
     }
 }

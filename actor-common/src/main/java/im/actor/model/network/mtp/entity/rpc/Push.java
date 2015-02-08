@@ -11,15 +11,15 @@ import static im.actor.model.util.StreamingUtils.*;
 /**
  * Created by ex3ndr on 03.09.14.
  */
-public class PushSimple extends ProtoStruct {
+public class Push extends ProtoStruct {
     public int updateType;
     public byte[] body;
 
-    public PushSimple(InputStream stream) throws IOException {
+    public Push(InputStream stream) throws IOException {
         super(stream);
     }
 
-    public PushSimple(int updateType, byte[] body) {
+    public Push(int updateType, byte[] body) {
         this.updateType = updateType;
         this.body = body;
     }
