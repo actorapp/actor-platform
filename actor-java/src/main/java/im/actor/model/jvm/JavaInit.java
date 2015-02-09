@@ -1,20 +1,11 @@
 package im.actor.model.jvm;
 
-import com.droidkit.actors.ActorSystem;
-import com.droidkit.actors.ThreadPriority;
-import com.droidkit.actors.conf.DispatcherFactory;
-import com.droidkit.actors.conf.EnvConfig;
-import com.droidkit.actors.mailbox.ActorDispatcher;
-import im.actor.model.config.ConnectionFactory;
-import im.actor.model.jvm.actors.JavaDispatcher;
+import im.actor.model.network.ConnectionFactory;
 import im.actor.model.jvm.network.TcpConnection;
 import im.actor.model.jvm.utils.JavaLog;
 import im.actor.model.log.Log;
-import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.ConnectionEndpoint;
-
-import java.io.IOException;
 
 /**
  * Created by ex3ndr on 06.02.15.

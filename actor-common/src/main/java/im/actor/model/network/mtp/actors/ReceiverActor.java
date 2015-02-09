@@ -53,7 +53,7 @@ public class ReceiverActor extends Actor {
     private void onReceive(ProtoMessage message) {
         boolean disableConfirm = false;
         try {
-            Log.d(TAG, "Received message #" + message.getMessageId());
+            // Log.d(TAG, "Received message #" + message.getMessageId());
 
             if (receivedMessages.contains(message.getMessageId())) {
                 Log.w(TAG, "Already received message #" + message.getMessageId() + ": ignoring");
@@ -74,7 +74,7 @@ public class ReceiverActor extends Actor {
                 return;
             }
 
-            Log.d(TAG, obj + "");
+            // Log.d(TAG, obj + "");
 
             if (obj instanceof NewSessionCreated) {
                 sender.send(new SenderActor.NewSession());
@@ -89,26 +89,6 @@ public class ReceiverActor extends Actor {
                 // Forget messages
                 sender.send(new SenderActor.ForgetMessage(responseBox.getMessageId()));
                 proto.getCallback().onRpcResponse(responseBox.getMessageId(), responseBox.getPayload());
-
-//                try {
-//                    ProtoStruct payload = ProtoSerializer.readRpcResponsePayload(new ByteArrayInputStream(responseBox.getPayload()));
-//                    Log.d(TAG, "Loaded " + payload + " from RpcResponseBox");
-//                    if (payload instanceof RpcOk) {
-//                        RpcOk rpcOk = (RpcOk) payload;
-//                        // stateBroker.send(new RpcMessage(responseBox.getMessageId(), rpcOk.responseType, rpcOk.payload));
-//
-//                    } else if (payload instanceof RpcError) {
-//                        RpcError rpcError = (RpcError) payload;
-////                        stateBroker.send(new im.actor.api.mtp.messages
-////                                .RpcError(responseBox.getMessageId(), rpcError.errorCode, rpcError.errorTag,
-////                                rpcError.userMessage, rpcError.canTryAgain, rpcError.relatedData));
-//                    } else {
-//                        Log.w(TAG, "Unsupported RpcResponse type");
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    Log.w(TAG, "Unable to load data from MTRpcResponse");
-//                }
             } else if (obj instanceof MessageAck) {
                 MessageAck ack = (MessageAck) obj;
 

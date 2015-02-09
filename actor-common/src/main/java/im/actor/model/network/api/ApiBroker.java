@@ -12,6 +12,7 @@ import im.actor.model.network.mtp.entity.ProtoStruct;
 import im.actor.model.network.mtp.entity.rpc.*;
 import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
+import im.actor.model.network.parser.RpcScope;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -76,6 +77,8 @@ public class ApiBroker extends Actor {
             processResponse(((ProtoResponse) message).getResponseId(), ((ProtoResponse) message).getData());
         } else if (message instanceof ForceResend) {
             forceResend(((ForceResend) message).id);
+        } else if (message instanceof ProtoUpdate) {
+            processUpdate(((ProtoUpdate) message).getData());
         }
     }
 
@@ -125,12 +128,12 @@ public class ApiBroker extends Actor {
         for (RequestHolder holder : requests.values()) {
             holder.protoId = proto.sendRpcMessage(holder.message);
             idMap.put(holder.protoId, holder.publicId);
-            Log.d(TAG, holder.message + " rid#" + holder.publicId + " <- mid#" + holder.protoId);
+            // Log.d(TAG, holder.message + " rid#" + holder.publicId + " <- mid#" + holder.protoId);
         }
     }
 
     private void performRequest(long randomId, Request message, RpcCallback callback) {
-        Log.d(TAG, message + " rid#" + randomId);
+        // Log.d(TAG, message + " rid#" + randomId);
         RequestHolder holder = new RequestHolder(
                 randomId,
                 new RpcRequest(message.getHeaderKey(), message.toByteArray()),
@@ -141,7 +144,7 @@ public class ApiBroker extends Actor {
             long mid = proto.sendRpcMessage(holder.message);
             holder.protoId = mid;
             idMap.put(mid, randomId);
-            Log.d(TAG, message + " rid#" + randomId + " <- mid#" + mid);
+            // Log.d(TAG, message + " rid#" + randomId + " <- mid#" + mid);
         }
     }
 
@@ -155,7 +158,7 @@ public class ApiBroker extends Actor {
             return;
         }
 
-        Log.w(TAG, protoStruct + " mid#" + mid);
+        // Log.w(TAG, protoStruct + " mid#" + mid);
 
         long rid;
         if (idMap.containsKey(mid)) {
@@ -233,6 +236,37 @@ public class ApiBroker extends Actor {
                 idMap.remove(holder.protoId);
                 proto.cancelRpc(holder.protoId);
             }
+        }
+    }
+
+    private void processUpdate(byte[] content) {
+        ProtoStruct protoStruct;
+        try {
+            protoStruct = ProtoSerializer.readUpdate(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.w(TAG, "Broken mt update");
+            return;
+        }
+
+        if (protoStruct instanceof Push) {
+            int type = ((Push) protoStruct).updateType;
+            byte[] body = ((Push) protoStruct).body;
+
+            RpcScope updateBox;
+            try {
+                updateBox = new RpcParser().read(type, body);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.w(TAG, "Broken update box");
+                return;
+            }
+
+            // Log.w(TAG, "Box: " + updateBox + "");
+
+            callback.onUpdateReceived(updateBox);
+        } else {
+            // Unknown
         }
     }
 

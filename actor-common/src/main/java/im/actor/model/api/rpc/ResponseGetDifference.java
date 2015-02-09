@@ -75,7 +75,7 @@ public class ResponseGetDifference extends Response {
         this.state = values.getBytes(2);
         this.users = values.getRepeatedObj(3, User.class);
         this.groups = values.getRepeatedObj(6, Group.class);
-        this.contacts = values.getRepeatedObj(7, ContactRecord.class);
+        // this.contacts = values.getRepeatedObj(7, ContactRecord.class);
         this.updates = values.getRepeatedObj(4, DifferenceUpdate.class);
         this.needMore = values.getBool(5);
     }

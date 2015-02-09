@@ -1,6 +1,6 @@
 package im.actor.model.network.mtp;
 
-import im.actor.model.config.ConnectionFactory;
+import im.actor.model.network.ConnectionFactory;
 import im.actor.model.log.Log;
 import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
