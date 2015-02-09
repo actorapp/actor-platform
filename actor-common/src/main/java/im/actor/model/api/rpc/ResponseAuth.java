@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class ResponseAuth extends Response {
 
     public static final int HEADER = 0x5;
     public static ResponseAuth fromBytes(byte[] data) throws IOException {
-        return Bser.parse(ResponseAuth.class, data);
+        return Bser.parse(new ResponseAuth(), data);
     }
 
     private long publicKeyHash;
@@ -54,9 +55,13 @@ public class ResponseAuth extends Response {
     @Override
     public void parse(BserValues values) throws IOException {
         this.publicKeyHash = values.getLong(1);
-        this.user = values.getObj(2, User.class);
-        this.contacts = values.getRepeatedObj(4, ContactRecord.class);
-        this.config = values.getObj(3, Config.class);
+        this.user = values.getObj(2, new User());
+        List<ContactRecord> _contacts = new ArrayList<ContactRecord>();
+        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
+            _contacts.add(new ContactRecord());
+        }
+        this.contacts = values.getRepeatedObj(4, _contacts);
+        this.config = values.getObj(3, new Config());
     }
 
     @Override

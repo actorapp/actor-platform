@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class ResponseCreateGroup extends Response {
 
     public static final int HEADER = 0x42;
     public static ResponseCreateGroup fromBytes(byte[] data) throws IOException {
-        return Bser.parse(ResponseCreateGroup.class, data);
+        return Bser.parse(new ResponseCreateGroup(), data);
     }
 
     private GroupOutPeer groupPeer;
@@ -59,7 +60,7 @@ public class ResponseCreateGroup extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.groupPeer = values.getObj(1, GroupOutPeer.class);
+        this.groupPeer = values.getObj(1, new GroupOutPeer());
         this.seq = values.getInt(3);
         this.state = values.getBytes(4);
         this.users = values.getRepeatedInt(5);

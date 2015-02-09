@@ -35,7 +35,7 @@ public class MessagesProcessor {
         AbsContent msgContent;
         if (content.getType() == 0x01) {
             try {
-                im.actor.model.api.TextMessage textMessage = Bser.parse(im.actor.model.api.TextMessage.class,
+                im.actor.model.api.TextMessage textMessage = Bser.parse(new im.actor.model.api.TextMessage(),
                         content.getContent());
                 msgContent = new TextContent(textMessage.getText());
             } catch (IOException e) {

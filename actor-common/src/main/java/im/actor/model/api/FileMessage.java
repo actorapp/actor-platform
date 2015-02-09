@@ -10,6 +10,7 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class FileMessage extends BserObject {
 
@@ -76,7 +77,7 @@ public class FileMessage extends BserObject {
         this.fileSize = values.getInt(3);
         this.name = values.getString(4);
         this.mimeType = values.getString(5);
-        this.thumb = values.optObj(6, FastThumb.class);
+        this.thumb = values.optObj(6, new FastThumb());
         this.extType = values.getInt(7);
         this.ext = values.optBytes(8);
     }

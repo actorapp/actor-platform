@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class ResponseSearchContacts extends Response {
 
     public static final int HEADER = 0x71;
     public static ResponseSearchContacts fromBytes(byte[] data) throws IOException {
-        return Bser.parse(ResponseSearchContacts.class, data);
+        return Bser.parse(new ResponseSearchContacts(), data);
     }
 
     private List<User> users;
@@ -35,7 +36,11 @@ public class ResponseSearchContacts extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.users = values.getRepeatedObj(1, User.class);
+        List<User> _users = new ArrayList<User>();
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+            _users.add(new User());
+        }
+        this.users = values.getRepeatedObj(1, _users);
     }
 
     @Override

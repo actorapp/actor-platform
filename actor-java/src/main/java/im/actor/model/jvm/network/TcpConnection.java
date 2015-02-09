@@ -9,12 +9,11 @@ import javax.net.ssl.SSLSocketFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.zip.CRC32;
-
-import static im.actor.model.util.StreamingUtils.*;
 
 /**
  * Created by ex3ndr on 06.02.15.
@@ -261,6 +260,67 @@ public class TcpConnection implements Connection {
                 }
             }
         }
+    }
+
+    public static byte[] intToBytes(int v) {
+        return new byte[]{
+                (byte) ((v >> 24) & 0xFF),
+                (byte) ((v >> 16) & 0xFF),
+                (byte) ((v >> 8) & 0xFF),
+                (byte) (v & 0xFF)
+        };
+    }
+
+    public static void writeByte(byte v, OutputStream stream) throws IOException {
+        stream.write(v);
+    }
+
+    public static void writeBytes(byte[] data, OutputStream stream) throws IOException {
+        stream.write(data);
+    }
+
+    public static void writeInt(int v, OutputStream stream) throws IOException {
+        writeByte((byte) ((v >> 24) & 0xFF), stream);
+        writeByte((byte) ((v >> 16) & 0xFF), stream);
+        writeByte((byte) ((v >> 8) & 0xFF), stream);
+        writeByte((byte) (v & 0xFF), stream);
+    }
+
+    public static int readInt(InputStream stream) throws IOException {
+        int a = stream.read();
+        if (a < 0) {
+            throw new IOException();
+        }
+        int b = stream.read();
+        if (b < 0) {
+            throw new IOException();
+        }
+        int c = stream.read();
+        if (c < 0) {
+            throw new IOException();
+        }
+        int d = stream.read();
+        if (d < 0) {
+            throw new IOException();
+        }
+
+        return d + (c << 8) + (b << 16) + (a << 24);
+    }
+
+    public static byte[] readBytes(int count, InputStream stream) throws IOException {
+        byte[] res = new byte[count];
+        int offset = 0;
+        while (offset < res.length) {
+            int readed = stream.read(res, offset, res.length - offset);
+            if (readed > 0) {
+                offset += readed;
+            } else if (readed < 0) {
+                throw new IOException();
+            } else {
+                Thread.yield();
+            }
+        }
+        return res;
     }
 
     private class Package {

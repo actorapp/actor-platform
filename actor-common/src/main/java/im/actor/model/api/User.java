@@ -10,6 +10,7 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class User extends BserObject {
 
@@ -93,7 +94,7 @@ public class User extends BserObject {
         }
         this.keyHashes = values.getRepeatedLong(6);
         this.phone = values.getLong(7);
-        this.avatar = values.optObj(8, Avatar.class);
+        this.avatar = values.optObj(8, new Avatar());
         this.contacts = values.getRepeatedInt(9);
         this.userState = UserState.parse(values.getInt(11));
     }

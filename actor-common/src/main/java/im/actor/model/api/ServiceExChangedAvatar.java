@@ -10,6 +10,7 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class ServiceExChangedAvatar extends BserObject {
 
@@ -29,7 +30,7 @@ public class ServiceExChangedAvatar extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.avatar = values.optObj(1, Avatar.class);
+        this.avatar = values.optObj(1, new Avatar());
     }
 
     @Override

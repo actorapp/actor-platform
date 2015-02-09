@@ -10,6 +10,7 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class HistoryMessage extends BserObject {
 
@@ -56,7 +57,7 @@ public class HistoryMessage extends BserObject {
         this.senderUid = values.getInt(1);
         this.rid = values.getLong(2);
         this.date = values.getLong(3);
-        this.message = values.getObj(5, MessageContent.class);
+        this.message = values.getObj(5, new MessageContent());
         this.state = MessageState.parse(values.getInt(6));
     }
 

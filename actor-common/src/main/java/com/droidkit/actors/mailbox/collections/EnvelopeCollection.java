@@ -1,18 +1,20 @@
 package com.droidkit.actors.mailbox.collections;
 
+import com.droidkit.actors.conf.EnvConfig;
 import com.droidkit.actors.mailbox.Envelope;
+import com.droidkit.actors.utils.AtomicIntegerCompat;
+import com.droidkit.actors.utils.ThreadLocalCompat;
 
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.PriorityQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by ex3ndr on 28.10.14.
  */
 public class EnvelopeCollection {
 
-    private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
+    private static final AtomicIntegerCompat NEXT_ID = EnvConfig.createAtomicInt(1);
     private static final int DEFAULT_QUEUE_SIZE = 8;
 
     private final PriorityQueue<ScheduledEnvelope> envelopes = new PriorityQueue<ScheduledEnvelope>(DEFAULT_QUEUE_SIZE, new ScheduledEnvelopesComparator());
@@ -152,7 +154,7 @@ public class EnvelopeCollection {
 
     public static class FetchResult {
 
-        private static ThreadLocal<FetchResult> RESULT_CACHE = new ThreadLocal<FetchResult>();
+        private static ThreadLocalCompat<FetchResult> RESULT_CACHE = EnvConfig.createThreadLocal();
 
         public static FetchResult envelope(ScheduledEnvelope envelope) {
             FetchResult res = RESULT_CACHE.get();

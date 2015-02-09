@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestRemoveContact extends Request<ResponseSeq> {
 
     public static final int HEADER = 0x59;
     public static RequestRemoveContact fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestRemoveContact.class, data);
+        return Bser.parse(new RequestRemoveContact(), data);
     }
 
     private int uid;

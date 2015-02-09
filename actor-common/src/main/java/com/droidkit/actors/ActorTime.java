@@ -1,5 +1,9 @@
 package com.droidkit.actors;
 
+import com.droidkit.actors.conf.EnvConfig;
+
+import java.util.Date;
+
 /**
  * Time used by actor system, uses System.nanoTime() inside
  *
@@ -12,6 +16,6 @@ public class ActorTime {
      * @return actor system time
      */
     public static long currentTime() {
-        return System.nanoTime() / 1000000;
+        return EnvConfig.getJavaFactory().getCurrentTime();
     }
 }

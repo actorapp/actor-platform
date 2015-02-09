@@ -4,8 +4,6 @@ import com.droidkit.actors.mailbox.ActorDispatcher;
 import com.droidkit.actors.mailbox.ActorEndpoint;
 import com.droidkit.actors.mailbox.Mailbox;
 
-import java.util.UUID;
-
 /**
  * <p>INTERNAL API</p>
  * Actor Scope contains UUID, Path, Props and Actor (if created).
@@ -14,7 +12,6 @@ import java.util.UUID;
  */
 public class ActorScope {
 
-    private final UUID uuid;
     private final String path;
     private final Props props;
 
@@ -31,13 +28,12 @@ public class ActorScope {
 
     private ActorEndpoint endpoint;
 
-    public ActorScope(ActorSystem actorSystem, Mailbox mailbox, ActorDispatcher dispatcher, UUID uuid, String path, Props props,
+    public ActorScope(ActorSystem actorSystem, Mailbox mailbox, ActorDispatcher dispatcher, String path, Props props,
                       ActorEndpoint endpoint) {
         this.actorSystem = actorSystem;
         this.mailbox = mailbox;
-        this.actorRef = new ActorRef(endpoint, actorSystem, dispatcher, uuid, path);
+        this.actorRef = new ActorRef(endpoint, actorSystem, dispatcher, path);
         this.dispatcher = dispatcher;
-        this.uuid = uuid;
         this.path = path;
         this.props = props;
         this.endpoint = endpoint;
@@ -49,10 +45,6 @@ public class ActorScope {
 
     public ActorDispatcher getDispatcher() {
         return dispatcher;
-    }
-
-    public UUID getUuid() {
-        return uuid;
     }
 
     public String getPath() {

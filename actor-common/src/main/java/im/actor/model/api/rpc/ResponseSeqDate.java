@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class ResponseSeqDate extends Response {
 
     public static final int HEADER = 0x66;
     public static ResponseSeqDate fromBytes(byte[] data) throws IOException {
-        return Bser.parse(ResponseSeqDate.class, data);
+        return Bser.parse(new ResponseSeqDate(), data);
     }
 
     private int seq;

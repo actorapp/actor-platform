@@ -39,15 +39,7 @@ public final class Props<T extends Actor> {
      * @throws Exception
      */
     public T create() throws Exception {
-        if (type == TYPE_DEFAULT) {
-            if (args == null || args.length == 0) {
-                return aClass.newInstance();
-            }
-        } else if (type == TYPE_CREATOR) {
-            return creator.create();
-        }
-
-        throw new RuntimeException("Unsupported create method");
+        return creator.create();
     }
 
     /**
@@ -82,30 +74,6 @@ public final class Props<T extends Actor> {
     public Props<T> changeDispatcher(String dispatcher) {
         return new Props<T>(aClass, args, type, dispatcher, creator, mailboxCreator);
     }
-
-    /**
-     * Create props from class
-     *
-     * @param tClass Actor class
-     * @param <T>    Actor class
-     * @return Props object
-     */
-    public static <T extends Actor> Props<T> create(Class<T> tClass) {
-        return new Props(tClass, null, TYPE_DEFAULT, null, null, null);
-    }
-
-
-    /**
-     * Create props from class with custom mailbox
-     *
-     * @param tClass Actor class
-     * @param <T>    Actor class
-     * @return Props object
-     */
-    public static <T extends Actor> Props<T> create(Class<T> tClass, MailboxCreator mailboxCreator) {
-        return new Props(tClass, null, TYPE_DEFAULT, null, null, mailboxCreator);
-    }
-
 
     /**
      * Create props from Actor creator

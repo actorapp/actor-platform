@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestGetContacts extends Request<ResponseGetContacts> {
 
     public static final int HEADER = 0x57;
     public static RequestGetContacts fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestGetContacts.class, data);
+        return Bser.parse(new RequestGetContacts(), data);
     }
 
     private String contactsHash;

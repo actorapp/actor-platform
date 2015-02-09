@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class ResponseCompleteUpload extends Response {
 
     public static final int HEADER = 0x17;
     public static ResponseCompleteUpload fromBytes(byte[] data) throws IOException {
-        return Bser.parse(ResponseCompleteUpload.class, data);
+        return Bser.parse(new ResponseCompleteUpload(), data);
     }
 
     private FileLocation location;
@@ -35,7 +36,7 @@ public class ResponseCompleteUpload extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.location = values.getObj(1, FileLocation.class);
+        this.location = values.getObj(1, new FileLocation());
     }
 
     @Override

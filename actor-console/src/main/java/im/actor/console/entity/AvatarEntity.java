@@ -52,9 +52,9 @@ public class AvatarEntity extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        smallImage = values.optObj(1, AvatarImageEntity.class);
-        largeImage = values.optObj(2, AvatarImageEntity.class);
-        fullImage = values.optObj(3, AvatarImageEntity.class);
+        smallImage = values.optObj(1, new AvatarImageEntity());
+        largeImage = values.optObj(2, new AvatarImageEntity());
+        fullImage = values.optObj(3, new AvatarImageEntity());
     }
 
     @Override

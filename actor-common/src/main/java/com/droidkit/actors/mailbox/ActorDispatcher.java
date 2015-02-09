@@ -9,7 +9,6 @@ import com.droidkit.actors.messages.PoisonPill;
 import com.droidkit.actors.messages.StartActor;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * Abstract Actor Dispatcher, used for dispatching messages for actors
@@ -57,7 +56,7 @@ public abstract class ActorDispatcher {
                 endpoints.put(path, endpoint);
             }
 
-            ActorScope scope = new ActorScope(actorSystem, mailbox, this, UUID.randomUUID(), path, props, endpoint);
+            ActorScope scope = new ActorScope(actorSystem, mailbox, this, path, props, endpoint);
             endpoint.connect(mailbox, scope);
             scopes.put(scope.getPath(), scope);
 
@@ -149,8 +148,7 @@ public abstract class ActorDispatcher {
             }
             try {
                 Actor actor = scope.getProps().create();
-                CurrentActor.setCurrentActor(actor);
-                actor.initActor(scope.getUuid(), scope.getPath(), new ActorContext(scope), scope.getMailbox());
+                actor.initActor(scope.getPath(), new ActorContext(scope), scope.getMailbox());
                 for (ActorExtension e : actor.getExtensions()) {
                     e.preStart();
                 }
@@ -191,7 +189,6 @@ public abstract class ActorDispatcher {
                     dispatcher.getQueue().disconnectMailbox(scope.getMailbox());
                 }
             } else {
-                CurrentActor.setCurrentActor(scope.getActor());
                 scope.setSender(envelope.getSender());
                 for (ActorExtension e : scope.getActor().getExtensions()) {
                     if (e.onReceive(envelope.getMessage())) {
@@ -215,7 +212,6 @@ public abstract class ActorDispatcher {
             if (actorSystem.getTraceInterface() != null) {
                 actorSystem.getTraceInterface().onEnvelopeProcessed(envelope, ActorTime.currentTime() - start);
             }
-            CurrentActor.setCurrentActor(null);
             if (!isDisconnected) {
                 dispatcher.getQueue().unlockMailbox(envelope.getMailbox());
             }

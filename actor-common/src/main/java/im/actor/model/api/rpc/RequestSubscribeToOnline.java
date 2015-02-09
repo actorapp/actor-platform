@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestSubscribeToOnline extends Request<ResponseVoid> {
 
     public static final int HEADER = 0x20;
     public static RequestSubscribeToOnline fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestSubscribeToOnline.class, data);
+        return Bser.parse(new RequestSubscribeToOnline(), data);
     }
 
     private List<UserOutPeer> users;
@@ -35,7 +36,11 @@ public class RequestSubscribeToOnline extends Request<ResponseVoid> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.users = values.getRepeatedObj(1, UserOutPeer.class);
+        List<UserOutPeer> _users = new ArrayList<UserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+            _users.add(new UserOutPeer());
+        }
+        this.users = values.getRepeatedObj(1, _users);
     }
 
     @Override

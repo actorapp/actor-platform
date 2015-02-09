@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestGetAuthSessions extends Request<ResponseGetAuthSessions> {
 
     public static final int HEADER = 0x50;
     public static RequestGetAuthSessions fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestGetAuthSessions.class, data);
+        return Bser.parse(new RequestGetAuthSessions(), data);
     }
 
 

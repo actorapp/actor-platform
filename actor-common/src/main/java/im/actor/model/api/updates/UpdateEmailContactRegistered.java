@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateEmailContactRegistered extends Update {
 
     public static final int HEADER = 0x78;
     public static UpdateEmailContactRegistered fromBytes(byte[] data) throws IOException {
-        return Bser.parse(UpdateEmailContactRegistered.class, data);
+        return Bser.parse(new UpdateEmailContactRegistered(), data);
     }
 
     private int emailId;

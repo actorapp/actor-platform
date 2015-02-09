@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateGroupOnline extends Update {
 
     public static final int HEADER = 0x21;
     public static UpdateGroupOnline fromBytes(byte[] data) throws IOException {
-        return Bser.parse(UpdateGroupOnline.class, data);
+        return Bser.parse(new UpdateGroupOnline(), data);
     }
 
     private int groupId;

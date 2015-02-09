@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestDetachEmail extends Request<ResponseSeq> {
 
     public static final int HEADER = 0x7b;
     public static RequestDetachEmail fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestDetachEmail.class, data);
+        return Bser.parse(new RequestDetachEmail(), data);
     }
 
     private int email;

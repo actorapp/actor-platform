@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class ResponseGetDifference extends Response {
 
     public static final int HEADER = 0xc;
     public static ResponseGetDifference fromBytes(byte[] data) throws IOException {
-        return Bser.parse(ResponseGetDifference.class, data);
+        return Bser.parse(new ResponseGetDifference(), data);
     }
 
     private int seq;
@@ -73,10 +74,26 @@ public class ResponseGetDifference extends Response {
     public void parse(BserValues values) throws IOException {
         this.seq = values.getInt(1);
         this.state = values.getBytes(2);
-        this.users = values.getRepeatedObj(3, User.class);
-        this.groups = values.getRepeatedObj(6, Group.class);
-        // this.contacts = values.getRepeatedObj(7, ContactRecord.class);
-        this.updates = values.getRepeatedObj(4, DifferenceUpdate.class);
+        List<User> _users = new ArrayList<User>();
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
+            _users.add(new User());
+        }
+        this.users = values.getRepeatedObj(3, _users);
+        List<Group> _groups = new ArrayList<Group>();
+        for (int i = 0; i < values.getRepeatedCount(6); i ++) {
+            _groups.add(new Group());
+        }
+        this.groups = values.getRepeatedObj(6, _groups);
+        List<ContactRecord> _contacts = new ArrayList<ContactRecord>();
+        for (int i = 0; i < values.getRepeatedCount(7); i ++) {
+            _contacts.add(new ContactRecord());
+        }
+        this.contacts = values.getRepeatedObj(7, _contacts);
+        List<DifferenceUpdate> _updates = new ArrayList<DifferenceUpdate>();
+        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
+            _updates.add(new DifferenceUpdate());
+        }
+        this.updates = values.getRepeatedObj(4, _updates);
         this.needMore = values.getBool(5);
     }
 

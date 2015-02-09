@@ -10,6 +10,7 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.updates.*;
 
 public class UpdatesParser extends BaseParser<Update> {

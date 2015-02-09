@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestGetDifference extends Request<ResponseGetDifference> {
 
     public static final int HEADER = 0xb;
     public static RequestGetDifference fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestGetDifference.class, data);
+        return Bser.parse(new RequestGetDifference(), data);
     }
 
     private int seq;

@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestImportContacts extends Request<ResponseImportContacts> {
 
     public static final int HEADER = 0x7;
     public static RequestImportContacts fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestImportContacts.class, data);
+        return Bser.parse(new RequestImportContacts(), data);
     }
 
     private List<PhoneToImport> phones;
@@ -41,8 +42,16 @@ public class RequestImportContacts extends Request<ResponseImportContacts> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.phones = values.getRepeatedObj(1, PhoneToImport.class);
-        this.emails = values.getRepeatedObj(2, EmailToImport.class);
+        List<PhoneToImport> _phones = new ArrayList<PhoneToImport>();
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+            _phones.add(new PhoneToImport());
+        }
+        this.phones = values.getRepeatedObj(1, _phones);
+        List<EmailToImport> _emails = new ArrayList<EmailToImport>();
+        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+            _emails.add(new EmailToImport());
+        }
+        this.emails = values.getRepeatedObj(2, _emails);
     }
 
     @Override

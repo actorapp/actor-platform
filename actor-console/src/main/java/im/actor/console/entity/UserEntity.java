@@ -28,7 +28,7 @@ public class UserEntity extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        AvatarEntity avatarEntity = values.optObj(5, AvatarEntity.class);
+        AvatarEntity avatarEntity = values.optObj(5, new AvatarEntity());
         this.user = new User(values.getInt(1), values.getLong(2), values.getString(3), values.optString(4),
                 avatarEntity != null ? avatarEntity.getAvatar() : null);
     }

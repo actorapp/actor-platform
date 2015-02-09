@@ -10,6 +10,7 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class AvatarImage extends BserObject {
 
@@ -47,7 +48,7 @@ public class AvatarImage extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.fileLocation = values.getObj(1, FileLocation.class);
+        this.fileLocation = values.getObj(1, new FileLocation());
         this.width = values.getInt(2);
         this.height = values.getInt(3);
         this.fileSize = values.getInt(4);

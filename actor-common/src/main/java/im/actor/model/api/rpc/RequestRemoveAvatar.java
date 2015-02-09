@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestRemoveAvatar extends Request<ResponseSeq> {
 
     public static final int HEADER = 0x5b;
     public static RequestRemoveAvatar fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestRemoveAvatar.class, data);
+        return Bser.parse(new RequestRemoveAvatar(), data);
     }
 
 

@@ -1,11 +1,14 @@
 package com.droidkit.actors.dispatch;
 
+import com.droidkit.actors.conf.EnvConfig;
+import com.droidkit.actors.utils.ThreadLocalCompat;
+
 /**
  * Created by ex3ndr on 29.10.14.
  */
 public class DispatchResult {
 
-    private static ThreadLocal<DispatchResult> FREE_RESULTS = new ThreadLocal<DispatchResult>();
+    private static ThreadLocalCompat<DispatchResult> FREE_RESULTS = EnvConfig.createThreadLocal();
 
     public static DispatchResult result(Object res) {
         DispatchResult result = FREE_RESULTS.get();

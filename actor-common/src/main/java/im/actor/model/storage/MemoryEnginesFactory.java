@@ -55,12 +55,12 @@ public class MemoryEnginesFactory implements EnginesFactory {
 
     @Override
     public ListEngine<Dialog> createDialogsEngine() {
-        return null;
+        return new MemoryListEngine<Dialog>();
     }
 
     @Override
     public ListEngine<Message> createMessagesEngine(Peer peer) {
-        return null;
+        return new MemoryListEngine<Message>();
     }
 
 }

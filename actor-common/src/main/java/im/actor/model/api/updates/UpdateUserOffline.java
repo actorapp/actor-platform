@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateUserOffline extends Update {
 
     public static final int HEADER = 0x8;
     public static UpdateUserOffline fromBytes(byte[] data) throws IOException {
-        return Bser.parse(UpdateUserOffline.class, data);
+        return Bser.parse(new UpdateUserOffline(), data);
     }
 
     private int uid;

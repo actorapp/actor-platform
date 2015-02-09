@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestChangePhoneTitle extends Request<ResponseSeq> {
 
     public static final int HEADER = 0x7c;
     public static RequestChangePhoneTitle fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestChangePhoneTitle.class, data);
+        return Bser.parse(new RequestChangePhoneTitle(), data);
     }
 
     private int phoneId;

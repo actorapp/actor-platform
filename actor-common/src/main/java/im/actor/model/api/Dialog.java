@@ -10,6 +10,7 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class Dialog extends BserObject {
 
@@ -71,13 +72,13 @@ public class Dialog extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, Peer.class);
+        this.peer = values.getObj(1, new Peer());
         this.unreadCount = values.getInt(3);
         this.sortDate = values.getLong(4);
         this.senderUid = values.getInt(5);
         this.rid = values.getLong(6);
         this.date = values.getLong(7);
-        this.message = values.getObj(8, MessageContent.class);
+        this.message = values.getObj(8, new MessageContent());
         this.state = MessageState.parse(values.getInt(9));
     }
 

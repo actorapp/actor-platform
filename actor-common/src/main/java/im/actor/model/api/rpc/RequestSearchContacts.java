@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestSearchContacts extends Request<ResponseSearchContacts> {
 
     public static final int HEADER = 0x70;
     public static RequestSearchContacts fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestSearchContacts.class, data);
+        return Bser.parse(new RequestSearchContacts(), data);
     }
 
     private String request;

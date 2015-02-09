@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateGroupMembersUpdate extends Update {
 
     public static final int HEADER = 0x2c;
     public static UpdateGroupMembersUpdate fromBytes(byte[] data) throws IOException {
-        return Bser.parse(UpdateGroupMembersUpdate.class, data);
+        return Bser.parse(new UpdateGroupMembersUpdate(), data);
     }
 
     private int groupId;
@@ -42,7 +43,11 @@ public class UpdateGroupMembersUpdate extends Update {
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        this.members = values.getRepeatedObj(2, Member.class);
+        List<Member> _members = new ArrayList<Member>();
+        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+            _members.add(new Member());
+        }
+        this.members = values.getRepeatedObj(2, _members);
     }
 
     @Override

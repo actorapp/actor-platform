@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateGroupAvatarChanged extends Update {
 
     public static final int HEADER = 0x27;
     public static UpdateGroupAvatarChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(UpdateGroupAvatarChanged.class, data);
+        return Bser.parse(new UpdateGroupAvatarChanged(), data);
     }
 
     private int groupId;
@@ -62,7 +63,7 @@ public class UpdateGroupAvatarChanged extends Update {
         this.groupId = values.getInt(1);
         this.rid = values.getLong(5);
         this.uid = values.getInt(2);
-        this.avatar = values.optObj(3, Avatar.class);
+        this.avatar = values.optObj(3, new Avatar());
         this.date = values.getLong(4);
     }
 

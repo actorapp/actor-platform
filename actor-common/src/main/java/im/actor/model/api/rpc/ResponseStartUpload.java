@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class ResponseStartUpload extends Response {
 
     public static final int HEADER = 0x13;
     public static ResponseStartUpload fromBytes(byte[] data) throws IOException {
-        return Bser.parse(ResponseStartUpload.class, data);
+        return Bser.parse(new ResponseStartUpload(), data);
     }
 
     private UploadConfig config;
@@ -35,7 +36,7 @@ public class ResponseStartUpload extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.config = values.getObj(1, UploadConfig.class);
+        this.config = values.getObj(1, new UploadConfig());
     }
 
     @Override

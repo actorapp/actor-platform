@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestRegisterApplePush extends Request<ResponseVoid> {
 
     public static final int HEADER = 0x4c;
     public static RequestRegisterApplePush fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestRegisterApplePush.class, data);
+        return Bser.parse(new RequestRegisterApplePush(), data);
     }
 
     private int apnsKey;

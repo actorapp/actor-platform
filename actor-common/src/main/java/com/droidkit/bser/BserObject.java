@@ -1,5 +1,7 @@
 package com.droidkit.bser;
 
+import im.actor.model.util.DataOutput;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -12,7 +14,7 @@ public abstract class BserObject {
     }
 
     public byte[] toByteArray() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        DataOutput outputStream = new DataOutput();
         BserWriter writer = new BserWriter(outputStream);
         try {
             serialize(writer);
