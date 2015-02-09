@@ -36,4 +36,24 @@ public class Peer {
     public int getPeerId() {
         return peerId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Peer peer = (Peer) o;
+
+        if (peerId != peer.peerId) return false;
+        if (peerType != peer.peerType) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = peerType.hashCode();
+        result = 31 * result + peerId;
+        return result;
+    }
 }

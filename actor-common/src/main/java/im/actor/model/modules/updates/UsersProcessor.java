@@ -37,7 +37,7 @@ public class UsersProcessor {
                 // Sending changes to dialogs
                 if (!upd.getName().equals(saved.getName()) ||
                         !equalsE(upd.getAvatar(), saved.getAvatar())) {
-                    messenger.getMessages().getDialogsActor()
+                    messenger.getMessagesModule().getDialogsActor()
                             .send(new DialogsActor.UserChanged(upd));
                 }
             }
@@ -56,7 +56,7 @@ public class UsersProcessor {
             u = u.editName(name);
             users.addOrUpdateItem(u.editName(name));
             if (u.getLocalName() == null) {
-                messenger.getMessages().getDialogsActor()
+                messenger.getMessagesModule().getDialogsActor()
                         .send(new DialogsActor.UserChanged(u));
             }
         }
@@ -74,7 +74,7 @@ public class UsersProcessor {
             u = u.editLocalName(name);
             users.addOrUpdateItem(u);
 
-            messenger.getMessages().getDialogsActor().send(
+            messenger.getMessagesModule().getDialogsActor().send(
                     new DialogsActor.UserChanged(u));
         }
     }
@@ -93,7 +93,7 @@ public class UsersProcessor {
             u = u.editAvatar(avatar);
             users.addOrUpdateItem(u);
 
-            messenger.getMessages().getDialogsActor().send(
+            messenger.getMessagesModule().getDialogsActor().send(
                     new DialogsActor.UserChanged(u));
         }
     }

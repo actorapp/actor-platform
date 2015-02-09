@@ -22,6 +22,7 @@ import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.concurrency.MainThread;
 import im.actor.model.entity.*;
+import im.actor.model.entity.content.TextContent;
 import im.actor.model.jvm.JavaInit;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
@@ -96,6 +97,11 @@ public class Main {
             @Override
             public ListEngine<Dialog> createDialogsEngine() {
                 return new MemoryListEngine<Dialog>();
+            }
+
+            @Override
+            public ListEngine<Message> createMessagesEngine(Peer peer) {
+                return new MemoryListEngine<Message>();
             }
         });
 
@@ -177,6 +183,7 @@ public class Main {
 
             Panel horisontalPanel = new Panel(new Border.Invisible(), Panel.Orientation.HORISONTAL);
             Panel leftPanel = new Panel(new Border.Invisible(), Panel.Orientation.VERTICAL);
+            final Panel rightPanel = new Panel(new Border.Invisible(), Panel.Orientation.VERTICAL);
 
             leftPanel.addComponent(new Label("Recent", 30));
 //            leftPanel.addComponent(new DialogElement(new Dialog(new Peer(PeerType.EMAIL, 0), 0,
@@ -194,6 +201,13 @@ public class Main {
                 }
             });
 
+            final ConsoleList<Message> messagesList = new ConsoleList<Message>(rightPanel, new ArrayList<Message>(), new ConsoleList.Adapter<Message>() {
+                @Override
+                public Component createComponent(Message item) {
+                    return new MessageElement(item);
+                }
+            });
+
             dialogEngine.addListener(new MemoryListEngine.EngineListener() {
                 @Override
                 public void onItemsChanged() {
@@ -201,6 +215,12 @@ public class Main {
                     messenger.getConfiguration().getMainThread().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            if (itms.size() > 0) {
+                                Dialog dialog = itms.get(0);
+                                messagesList.update(((MemoryListEngine<Message>)
+                                        messenger.getMessages(dialog.getPeer())).getList());
+                                messenger.getMessages(dialog.getPeer());
+                            }
                             dialogConsoleList.update(itms);
                         }
                     });
@@ -209,6 +229,7 @@ public class Main {
             });
 
             horisontalPanel.addComponent(leftPanel, LinearLayout.MAXIMIZES_VERTICALLY);
+            horisontalPanel.addComponent(rightPanel, LinearLayout.MAXIMIZES_VERTICALLY, LinearLayout.MAXIMIZES_HORIZONTALLY);
 
             addComponent(horisontalPanel);
 
@@ -248,6 +269,15 @@ public class Main {
 
             graphics.setForegroundColor(Terminal.Color.WHITE);
             graphics.drawString(2, 2, trim("\u25B6 " + dialog.getText(), 27));
+        }
+    }
+
+    public static class MessageElement extends Panel {
+
+        public MessageElement(Message message) {
+            User user = messenger.getUsers().getValue(message.getSenderId());
+            addComponent(new Label(user.getName() + " says:"));
+            addComponent(new Label(((TextContent) message.getContent()).getText()));
         }
     }
 

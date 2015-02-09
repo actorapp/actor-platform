@@ -45,8 +45,9 @@ public class MessagesProcessor {
         } else {
             return;
         }
-        Message message = new Message(rid, buildSortKey(), date, senderUid, MessageState.UNKNOWN, msgContent);
-        messenger.getMessages().getDialogsActor().send(new DialogsActor.InMessage(peer, message));
+        Message message = new Message(rid, buildSortKey(), date, senderUid,
+                messenger.myUid() == senderUid ? MessageState.SENT : MessageState.UNKNOWN, msgContent);
+        messenger.getMessagesModule().getConversationActor(peer).send(message);
     }
 
     public void onMessageRead(im.actor.model.api.Peer _peer, long startDate, long readDate) {
@@ -74,7 +75,18 @@ public class MessagesProcessor {
 
     }
 
+    public void onChatClear(im.actor.model.api.Peer _peer) {
+        Peer peer = EntityConverter.convert(_peer);
+        messenger.getMessagesModule().getDialogsActor().send(new DialogsActor.ChatClear(peer));
+    }
+
+    public void onChatDelete(im.actor.model.api.Peer _peer) {
+        Peer peer = EntityConverter.convert(_peer);
+        messenger.getMessagesModule().getDialogsActor().send(new DialogsActor.ChatDelete(peer));
+    }
+
+
     public void onUserRegistered(int uid) {
-        
+
     }
 }

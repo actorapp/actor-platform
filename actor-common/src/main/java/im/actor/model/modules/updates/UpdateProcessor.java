@@ -36,10 +36,15 @@ public class UpdateProcessor {
     }
 
     public void processUpdate(Update update) {
-        // Users updates
         if (update instanceof UpdateUserContactAdded) {
             // TODO: Implement
         } else if (update instanceof UpdateUserContactRemoved) {
+            // TODO: Implement
+        } else if (update instanceof UpdateContactMoved) {
+            // TODO: Implement
+        } else if (update instanceof UpdateContactTitleChanged) {
+            // TODO: Implement
+        } else if (update instanceof UpdateUserContactsChanged) {
             // TODO: Implement
         } else if (update instanceof UpdateUserNameChanged) {
             UpdateUserNameChanged userNameChanged = (UpdateUserNameChanged) update;
@@ -79,6 +84,12 @@ public class UpdateProcessor {
             // TODO: Implement
         } else if (update instanceof UpdateEncryptedReceived) {
             // TODO: Implement
+        } else if (update instanceof UpdateChatClear) {
+            UpdateChatClear chatClear = (UpdateChatClear) update;
+            messagesProcessor.onChatClear(chatClear.getPeer());
+        } else if (update instanceof UpdateChatDelete) {
+            UpdateChatDelete chatDelete = (UpdateChatDelete) update;
+            messagesProcessor.onChatDelete(chatDelete.getPeer());
         }
     }
 
