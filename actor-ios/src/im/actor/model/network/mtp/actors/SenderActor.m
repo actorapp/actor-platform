@@ -12,7 +12,6 @@
 #include "com/droidkit/actors/ActorSelection.h"
 #include "com/droidkit/actors/ActorSystem.h"
 #include "com/droidkit/actors/Props.h"
-#include "im/actor/model/log/Log.h"
 #include "im/actor/model/network/mtp/MTProto.h"
 #include "im/actor/model/network/mtp/actors/ManagerActor.h"
 #include "im/actor/model/network/mtp/actors/SenderActor.h"
@@ -106,27 +105,22 @@ NSString * MTSenderActor_TAG_ = @"ProtoSender";
 
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[MTSenderActor_SendMessage class]]) {
-    AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"Received SendMessage #", ((MTSenderActor_SendMessage *) nil_chk(((MTSenderActor_SendMessage *) check_class_cast(message, [MTSenderActor_SendMessage class]))))->mid_));
     MTSenderActor_SendMessage *sendMessage = (MTSenderActor_SendMessage *) check_class_cast(message, [MTSenderActor_SendMessage class]);
     MTProtoMessage *holder = [[[MTProtoMessage alloc] initWithLong:((MTSenderActor_SendMessage *) nil_chk(sendMessage))->mid_ withByteArray:sendMessage->message_] autorelease];
     [((JavaUtilHashMap *) nil_chk(unsentPackages_)) putWithId:JavaLangLong_valueOfWithLong_([holder getMessageId]) withId:holder];
     MTSenderActor_doSendWithMTProtoMessage_(self, holder);
   }
   else if ([message isKindOfClass:[MTSenderActor_ConnectionCreated class]]) {
-    AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, @"Received ConnectionCreated");
     JavaUtilArrayList *toSend = [[[JavaUtilArrayList alloc] init] autorelease];
     for (MTProtoMessage * __strong unsentPackage in nil_chk([((JavaUtilHashMap *) nil_chk(unsentPackages_)) values])) {
-      AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"ReSending #", [((MTProtoMessage *) nil_chk(unsentPackage)) getMessageId]));
       [toSend addWithId:unsentPackage];
     }
     MTSenderActor_doSendWithJavaUtilList_(self, toSend);
   }
   else if ([message isKindOfClass:[MTSenderActor_ForgetMessage class]]) {
-    AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"Received ForgetMessage #", ((MTSenderActor_ForgetMessage *) nil_chk(((MTSenderActor_ForgetMessage *) check_class_cast(message, [MTSenderActor_ForgetMessage class]))))->mid_));
     [((JavaUtilHashMap *) nil_chk(unsentPackages_)) removeWithId:JavaLangLong_valueOfWithLong_(((MTSenderActor_ForgetMessage *) nil_chk(((MTSenderActor_ForgetMessage *) check_class_cast(message, [MTSenderActor_ForgetMessage class]))))->mid_)];
   }
   else if ([message isKindOfClass:[MTSenderActor_ConfirmMessage class]]) {
-    AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"Confirming message #", ((MTSenderActor_ConfirmMessage *) nil_chk(((MTSenderActor_ConfirmMessage *) check_class_cast(message, [MTSenderActor_ConfirmMessage class]))))->mid_));
     [((JavaUtilHashSet *) nil_chk(confirm_)) addWithId:JavaLangLong_valueOfWithLong_(((MTSenderActor_ConfirmMessage *) nil_chk(((MTSenderActor_ConfirmMessage *) check_class_cast(message, [MTSenderActor_ConfirmMessage class]))))->mid_)];
     if ([confirm_ size] >= MTSenderActor_ACK_THRESHOLD) {
       [((DAActorRef *) nil_chk([self self__])) sendOnceWithId:[[[MTSenderActor_ForceAck alloc] init] autorelease]];
@@ -139,23 +133,13 @@ NSString * MTSenderActor_TAG_ = @"ProtoSender";
     if ([((JavaUtilHashSet *) nil_chk(confirm_)) size] == 0) {
       return;
     }
-    NSString *acks = @"";
-    for (JavaLangLong * __strong l in confirm_) {
-      if (((jint) [acks length]) != 0) {
-        acks = JreStrcat("$C", acks, ',');
-      }
-      acks = JreStrcat("$$", acks, JreStrcat("C@", '#', l));
-    }
-    AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$$", @"Sending acks ", acks));
     MTMessageAck *messageAck = MTSenderActor_buildAck(self);
     [confirm_ clear];
     MTSenderActor_doSendWithMTProtoMessage_(self, [[[MTProtoMessage alloc] initWithLong:ImActorModelNetworkUtilMTUids_nextId() withByteArray:[((MTMessageAck *) nil_chk(messageAck)) toByteArray]] autorelease]);
   }
   else if ([message isKindOfClass:[MTSenderActor_NewSession class]]) {
-    AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, @"Received NewSessionCreated");
     JavaUtilArrayList *toSend = [[[JavaUtilArrayList alloc] init] autorelease];
     for (MTProtoMessage * __strong unsentPackage in nil_chk([((JavaUtilHashMap *) nil_chk(unsentPackages_)) values])) {
-      AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"ReSending #", [((MTProtoMessage *) nil_chk(unsentPackage)) getMessageId]));
       [toSend addWithId:unsentPackage];
     }
     MTSenderActor_doSendWithJavaUtilList_(self, toSend);

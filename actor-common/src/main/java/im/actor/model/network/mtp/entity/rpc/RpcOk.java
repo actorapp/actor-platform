@@ -1,13 +1,10 @@
 package im.actor.model.network.mtp.entity.rpc;
 
-
 import im.actor.model.network.mtp.entity.ProtoStruct;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import static im.actor.model.util.StreamingUtils.*;
 
 public class RpcOk extends ProtoStruct {
 
@@ -16,7 +13,7 @@ public class RpcOk extends ProtoStruct {
     public int responseType;
     public byte[] payload;
 
-    public RpcOk(InputStream stream) throws IOException {
+    public RpcOk(DataInput stream) throws IOException {
         super(stream);
     }
 
@@ -34,30 +31,25 @@ public class RpcOk extends ProtoStruct {
     }
 
     @Override
-    public int getLength() {
-        return 1 + 4 + varintSize(payload.length) + payload.length;
-    }
-
-    @Override
     protected byte getHeader() {
         return HEADER;
     }
 
     @Override
-    protected void writeBody(OutputStream bs) throws IOException {
-        writeInt(responseType, bs);
-        writeProtoBytes(payload, bs);
+    protected void writeBody(DataOutput bs) throws IOException {
+        bs.writeInt(responseType);
+        bs.writeProtoBytes(payload, 0, payload.length);
     }
 
     @Override
-    protected void readBody(InputStream bs) throws IOException {
-        responseType = readInt(bs);
-        payload = readProtoBytes(bs);
+    protected void readBody(DataInput bs) throws IOException {
+        responseType = bs.readInt();
+        payload = bs.readProtoBytes();
     }
 
 
     @Override
     public String toString() {
-        return "RpcOk{" + responseType + "}";
+        return "RpcOk{" + responseType + "]";
     }
 }

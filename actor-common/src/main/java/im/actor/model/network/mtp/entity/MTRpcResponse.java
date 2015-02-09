@@ -1,10 +1,9 @@
 package im.actor.model.network.mtp.entity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
-import static im.actor.model.util.StreamingUtils.*;
+import java.io.IOException;
 
 public class MTRpcResponse extends ProtoStruct {
 
@@ -13,7 +12,7 @@ public class MTRpcResponse extends ProtoStruct {
     private long messageId;
     private byte[] payload;
 
-    public MTRpcResponse(InputStream stream) throws IOException {
+    public MTRpcResponse(DataInput stream) throws IOException {
         super(stream);
     }
 
@@ -26,25 +25,20 @@ public class MTRpcResponse extends ProtoStruct {
     }
 
     @Override
-    public int getLength() {
-        return 1 + 8 + varintSize(payload.length) + payload.length;
-    }
-
-    @Override
     protected byte getHeader() {
         return HEADER;
     }
 
     @Override
-    protected void writeBody(OutputStream bs) throws IOException {
-        writeLong(messageId, bs);
-        writeProtoBytes(payload, bs);
+    protected void writeBody(DataOutput bs) throws IOException {
+        bs.writeLong(messageId);
+        bs.writeProtoBytes(payload, 0, payload.length);
     }
 
     @Override
-    protected void readBody(InputStream bs) throws IOException {
-        messageId = readLong(bs);
-        payload = readProtoBytes(bs);
+    protected void readBody(DataInput bs) throws IOException {
+        messageId = bs.readLong();
+        payload = bs.readProtoBytes();
     }
 
     @Override

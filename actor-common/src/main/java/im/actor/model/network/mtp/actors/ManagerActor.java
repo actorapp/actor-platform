@@ -8,14 +8,12 @@ import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.Endpoints;
 import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.ProtoMessage;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 import im.actor.model.util.ExponentialBackoff;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static im.actor.model.util.StreamingUtils.*;
 
 /**
  * Created by ex3ndr on 02.09.14.
@@ -203,17 +201,17 @@ public class ManagerActor extends Actor {
     private void onInMessage(byte[] data, int offset, int len) {
         // Log.d(TAG, "Received package");
 
-        ByteArrayInputStream bis = new ByteArrayInputStream(data, offset, len);
+        DataInput bis = new DataInput(data, offset, len);
         try {
-            long authId = readLong(bis);
-            long sessionId = readLong(bis);
+            long authId = bis.readLong();
+            long sessionId = bis.readLong();
 
             if (authId != this.authId || sessionId != this.sessionId) {
                 throw new IOException("Incorrect header");
             }
 
-            long messageId = readLong(bis);
-            byte[] payload = readProtoBytes(bis);
+            long messageId = bis.readLong();
+            byte[] payload = bis.readProtoBytes();
 
             receiver.send(new ProtoMessage(messageId, payload));
         } catch (IOException e) {
@@ -238,14 +236,10 @@ public class ManagerActor extends Actor {
         }
 
         if (currentConnection != null) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            try {
-                writeLong(authId, bos);
-                writeLong(sessionId, bos);
-                writeBytes(data, offset, len, bos);
-            } catch (IOException e) {
-                // Never happens
-            }
+            DataOutput bos = new DataOutput();
+            bos.writeLong(authId);
+            bos.writeLong(sessionId);
+            bos.writeBytes(data, offset, len);
             byte[] pkg = bos.toByteArray();
             currentConnection.post(pkg, 0, pkg.length);
             // Log.d(TAG, "Posted message to connection #" + currentConnectionId);

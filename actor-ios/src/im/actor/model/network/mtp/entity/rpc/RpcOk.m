@@ -54,7 +54,7 @@
 }
 
 - (NSString *)description {
-  return JreStrcat("$IC", @"RpcOk{", responseType_, ']');
+  return JreStrcat("$IC", @"RpcOk{", responseType_, '}');
 }
 
 - (void)dealloc {

@@ -1,12 +1,10 @@
 package im.actor.model.network.mtp.entity.rpc;
 
 import im.actor.model.network.mtp.entity.ProtoStruct;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import static im.actor.model.util.StreamingUtils.*;
 
 /**
  * Created by ex3ndr on 03.09.14.
@@ -17,7 +15,7 @@ public class RpcInternalError extends ProtoStruct {
     private boolean canTryAgain;
     private int tryAgainDelay;
 
-    public RpcInternalError(InputStream stream) throws IOException {
+    public RpcInternalError(DataInput stream) throws IOException {
         super(stream);
     }
 
@@ -35,24 +33,19 @@ public class RpcInternalError extends ProtoStruct {
     }
 
     @Override
-    public int getLength() {
-        return 1 + 1 + 4;
-    }
-
-    @Override
     protected byte getHeader() {
         return HEADER;
     }
 
     @Override
-    protected void writeBody(OutputStream bs) throws IOException {
-        writeProtoBool(canTryAgain, bs);
-        writeInt(tryAgainDelay, bs);
+    protected void writeBody(DataOutput bs) throws IOException {
+        bs.writeProtoBool(canTryAgain);
+        bs.writeInt(tryAgainDelay);
     }
 
     @Override
-    protected void readBody(InputStream bs) throws IOException {
-        canTryAgain = readProtoBool(bs);
-        tryAgainDelay = readInt(bs);
+    protected void readBody(DataInput bs) throws IOException {
+        canTryAgain = bs.readProtoBool();
+        tryAgainDelay = bs.readInt();
     }
 }

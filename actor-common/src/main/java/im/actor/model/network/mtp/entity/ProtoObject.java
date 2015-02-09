@@ -1,13 +1,13 @@
 package im.actor.model.network.mtp.entity;
 
-import java.io.ByteArrayOutputStream;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public abstract class ProtoObject {
 
-    protected ProtoObject(InputStream stream) throws IOException {
+    protected ProtoObject(DataInput stream) throws IOException {
         readObject(stream);
     }
 
@@ -15,12 +15,12 @@ public abstract class ProtoObject {
 
     }
 
-    public abstract void writeObject(OutputStream bs) throws IOException;
+    public abstract void writeObject(DataOutput bs) throws IOException;
 
-    public abstract ProtoObject readObject(InputStream bs) throws IOException;
+    public abstract ProtoObject readObject(DataInput bs) throws IOException;
 
     public byte[] toByteArray() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        DataOutput outputStream = new DataOutput();
         try {
             writeObject(outputStream);
         } catch (IOException e) {
@@ -28,6 +28,4 @@ public abstract class ProtoObject {
         }
         return outputStream.toByteArray();
     }
-
-    public abstract int getLength();
 }

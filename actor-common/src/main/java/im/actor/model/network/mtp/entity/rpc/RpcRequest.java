@@ -1,13 +1,10 @@
 package im.actor.model.network.mtp.entity.rpc;
 
-
 import im.actor.model.network.mtp.entity.ProtoStruct;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import static im.actor.model.util.StreamingUtils.*;
 
 public class RpcRequest extends ProtoStruct {
 
@@ -17,7 +14,7 @@ public class RpcRequest extends ProtoStruct {
 
     public byte[] payload;
 
-    public RpcRequest(InputStream stream) throws IOException {
+    public RpcRequest(DataInput stream) throws IOException {
         super(stream);
     }
 
@@ -35,25 +32,20 @@ public class RpcRequest extends ProtoStruct {
     }
 
     @Override
-    public int getLength() {
-        return 1 + 4 + varintSize(payload.length) + payload.length;
-    }
-
-    @Override
     protected byte getHeader() {
         return HEADER;
     }
 
     @Override
-    protected void writeBody(OutputStream bs) throws IOException {
-        writeInt(requestType, bs);
-        writeProtoBytes(payload, bs);
+    protected void writeBody(DataOutput bs) throws IOException {
+        bs.writeInt(requestType);
+        bs.writeProtoBytes(payload, 0, payload.length);
     }
 
     @Override
-    protected void readBody(InputStream bs) throws IOException {
-        requestType = readInt(bs);
-        payload = readProtoBytes(bs);
+    protected void readBody(DataInput bs) throws IOException {
+        requestType = bs.readInt();
+        payload = bs.readProtoBytes();
     }
 
     @Override

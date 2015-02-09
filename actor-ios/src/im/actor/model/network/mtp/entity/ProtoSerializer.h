@@ -9,7 +9,7 @@
 @class IOSByteArray;
 @class JavaIoInputStream;
 @class MTProtoStruct;
-@class MTPushSimple;
+@class MTPush;
 
 #include "J2ObjC_header.h"
 
@@ -20,13 +20,13 @@
 
 + (MTProtoStruct *)readMessagePayloadWithJavaIoInputStream:(JavaIoInputStream *)bs;
 
++ (MTProtoStruct *)readRpcResponsePayloadWithByteArray:(IOSByteArray *)bs;
+
 + (MTProtoStruct *)readRpcResponsePayloadWithJavaIoInputStream:(JavaIoInputStream *)bs;
 
-+ (MTProtoStruct *)readRpcRequestPayloadWithJavaIoInputStream:(JavaIoInputStream *)bs;
++ (MTPush *)readUpdateWithByteArray:(IOSByteArray *)bs;
 
-+ (MTPushSimple *)readUpdateWithByteArray:(IOSByteArray *)bs;
-
-+ (MTPushSimple *)readUpdateWithJavaIoInputStream:(JavaIoInputStream *)bs;
++ (MTPush *)readUpdateWithJavaIoInputStream:(JavaIoInputStream *)bs;
 
 - (instancetype)init;
 
@@ -40,13 +40,13 @@ FOUNDATION_EXPORT MTProtoStruct *MTProtoSerializer_readMessagePayloadWithByteArr
 
 FOUNDATION_EXPORT MTProtoStruct *MTProtoSerializer_readMessagePayloadWithJavaIoInputStream_(JavaIoInputStream *bs);
 
+FOUNDATION_EXPORT MTProtoStruct *MTProtoSerializer_readRpcResponsePayloadWithByteArray_(IOSByteArray *bs);
+
 FOUNDATION_EXPORT MTProtoStruct *MTProtoSerializer_readRpcResponsePayloadWithJavaIoInputStream_(JavaIoInputStream *bs);
 
-FOUNDATION_EXPORT MTProtoStruct *MTProtoSerializer_readRpcRequestPayloadWithJavaIoInputStream_(JavaIoInputStream *bs);
+FOUNDATION_EXPORT MTPush *MTProtoSerializer_readUpdateWithByteArray_(IOSByteArray *bs);
 
-FOUNDATION_EXPORT MTPushSimple *MTProtoSerializer_readUpdateWithByteArray_(IOSByteArray *bs);
-
-FOUNDATION_EXPORT MTPushSimple *MTProtoSerializer_readUpdateWithJavaIoInputStream_(JavaIoInputStream *bs);
+FOUNDATION_EXPORT MTPush *MTProtoSerializer_readUpdateWithJavaIoInputStream_(JavaIoInputStream *bs);
 CF_EXTERN_C_END
 
 typedef MTProtoSerializer ImActorModelNetworkMtpEntityProtoSerializer;

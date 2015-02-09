@@ -1,10 +1,9 @@
 package im.actor.model.network.mtp.entity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
-import static im.actor.model.util.StreamingUtils.*;
+import java.io.IOException;
 
 public class ProtoPackage extends ProtoObject {
 
@@ -12,7 +11,7 @@ public class ProtoPackage extends ProtoObject {
     private long sessionId;
     private ProtoMessage payload;
 
-    public ProtoPackage(InputStream stream) throws IOException {
+    public ProtoPackage(DataInput stream) throws IOException {
         super(stream);
     }
 
@@ -35,23 +34,18 @@ public class ProtoPackage extends ProtoObject {
     }
 
     @Override
-    public void writeObject(OutputStream bs) throws IOException {
-        writeLong(authId, bs);
-        writeLong(sessionId, bs);
+    public void writeObject(DataOutput bs) throws IOException {
+        bs.writeLong(authId);
+        bs.writeLong(sessionId);
         payload.writeObject(bs);
     }
 
     @Override
-    public ProtoObject readObject(InputStream bs) throws IOException {
-        authId = readLong(bs);
-        sessionId = readLong(bs);
+    public ProtoObject readObject(DataInput bs) throws IOException {
+        authId = bs.readLong();
+        sessionId = bs.readLong();
         payload = new ProtoMessage(bs);
         return this;
-    }
-
-    @Override
-    public int getLength() {
-        return 8 + 8 + payload.getLength();
     }
 
     @Override

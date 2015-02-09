@@ -11,8 +11,6 @@
 #include "com/droidkit/actors/ActorRef.h"
 #include "com/droidkit/actors/ActorSelection.h"
 #include "com/droidkit/actors/ActorSystem.h"
-#include "com/droidkit/actors/concurrency/Future.h"
-#include "com/droidkit/actors/concurrency/FutureCallback.h"
 #include "com/droidkit/actors/debug/TraceInterface.h"
 #include "com/droidkit/actors/extensions/CallbackExtension.h"
 #include "com/droidkit/actors/extensions/RunnableExtension.h"
@@ -21,7 +19,6 @@
 #include "com/droidkit/actors/tasks/ActorAskImpl.h"
 #include "com/droidkit/actors/tasks/AskCallback.h"
 #include "com/droidkit/actors/tasks/AskFuture.h"
-#include "com/droidkit/actors/typed/TypedAskExtensions.h"
 #include "java/util/ArrayList.h"
 #include "java/util/UUID.h"
 
@@ -36,7 +33,6 @@ __attribute__((unused)) static DAActorRef *DAActor_sender(DAActor *self);
   DAActorContext *context__;
   ComDroidkitActorsMailboxMailbox *mailbox_;
   ComDroidkitActorsTasksActorAskImpl *askPattern_;
-  ComDroidkitActorsTypedTypedAskExtensions *typedAsk_;
   ComDroidkitActorsExtensionsCallbackExtension *callbackExtension_;
   JavaUtilArrayList *extensions_;
 }
@@ -47,7 +43,6 @@ J2OBJC_FIELD_SETTER(DAActor, path_, NSString *)
 J2OBJC_FIELD_SETTER(DAActor, context__, DAActorContext *)
 J2OBJC_FIELD_SETTER(DAActor, mailbox_, ComDroidkitActorsMailboxMailbox *)
 J2OBJC_FIELD_SETTER(DAActor, askPattern_, ComDroidkitActorsTasksActorAskImpl *)
-J2OBJC_FIELD_SETTER(DAActor, typedAsk_, ComDroidkitActorsTypedTypedAskExtensions *)
 J2OBJC_FIELD_SETTER(DAActor, callbackExtension_, ComDroidkitActorsExtensionsCallbackExtension *)
 J2OBJC_FIELD_SETTER(DAActor, extensions_, JavaUtilArrayList *)
 
@@ -69,10 +64,8 @@ withComDroidkitActorsMailboxMailbox:(ComDroidkitActorsMailboxMailbox *)mailbox {
   DAActor_set_context__(self, context);
   DAActor_set_mailbox_(self, mailbox);
   DAActor_setAndConsume_askPattern_(self, [[ComDroidkitActorsTasksActorAskImpl alloc] initWithDAActorRef:DAActor_self__(self)]);
-  DAActor_setAndConsume_typedAsk_(self, [[ComDroidkitActorsTypedTypedAskExtensions alloc] initWithDAActorRef:DAActor_self__(self)]);
   DAActor_setAndConsume_callbackExtension_(self, [[ComDroidkitActorsExtensionsCallbackExtension alloc] initWithDAActorRef:DAActor_self__(self)]);
   [((JavaUtilArrayList *) nil_chk(self->extensions_)) addWithId:askPattern_];
-  [self->extensions_ addWithId:typedAsk_];
   [self->extensions_ addWithId:callbackExtension_];
   [self->extensions_ addWithId:[[[ComDroidkitActorsExtensionsRunnableExtension alloc] init] autorelease]];
 }
@@ -186,11 +179,6 @@ withComDroidkitActorsMailboxMailbox:(ComDroidkitActorsMailboxMailbox *)mailbox {
   return [((ComDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithDAActorRef:ref withLong:timeout withComDroidkitActorsTasksAskCallback:callback];
 }
 
-- (void)askWithComDroidkitActorsConcurrencyFuture:(ComDroidkitActorsConcurrencyFuture *)future
-   withComDroidkitActorsConcurrencyFutureCallback:(id<ComDroidkitActorsConcurrencyFutureCallback>)callback {
-  [((ComDroidkitActorsTypedTypedAskExtensions *) nil_chk(typedAsk_)) askWithComDroidkitActorsConcurrencyFuture:future withComDroidkitActorsConcurrencyFutureCallback:callback];
-}
-
 - (id)proxyWithId:(id)src
      withIOSClass:(IOSClass *)tClass {
   return [((ComDroidkitActorsExtensionsCallbackExtension *) nil_chk(callbackExtension_)) proxyWithId:src withIOSClass:tClass];
@@ -202,7 +190,6 @@ withComDroidkitActorsMailboxMailbox:(ComDroidkitActorsMailboxMailbox *)mailbox {
   RELEASE_(context__);
   RELEASE_(mailbox_);
   RELEASE_(askPattern_);
-  RELEASE_(typedAsk_);
   RELEASE_(callbackExtension_);
   RELEASE_(extensions_);
   [super dealloc];
@@ -215,7 +202,6 @@ withComDroidkitActorsMailboxMailbox:(ComDroidkitActorsMailboxMailbox *)mailbox {
   DAActor_set_context__(other, context__);
   DAActor_set_mailbox_(other, mailbox_);
   DAActor_set_askPattern_(other, askPattern_);
-  DAActor_set_typedAsk_(other, typedAsk_);
   DAActor_set_callbackExtension_(other, callbackExtension_);
   DAActor_set_extensions_(other, extensions_);
 }
@@ -248,7 +234,6 @@ withComDroidkitActorsMailboxMailbox:(ComDroidkitActorsMailboxMailbox *)mailbox {
     { "askWithDAActorRef:withLong:", "ask", "Lcom.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
     { "askWithDAActorRef:withComDroidkitActorsTasksAskCallback:", "ask", "Lcom.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
     { "askWithDAActorRef:withLong:withComDroidkitActorsTasksAskCallback:", "ask", "Lcom.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithComDroidkitActorsConcurrencyFuture:withComDroidkitActorsConcurrencyFutureCallback:", "ask", "V", 0x1, NULL },
     { "proxyWithId:withIOSClass:", "proxy", "TT;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -257,11 +242,10 @@ withComDroidkitActorsMailboxMailbox:(ComDroidkitActorsMailboxMailbox *)mailbox {
     { "context__", "context", 0x2, "Lcom.droidkit.actors.ActorContext;", NULL,  },
     { "mailbox_", NULL, 0x2, "Lcom.droidkit.actors.mailbox.Mailbox;", NULL,  },
     { "askPattern_", NULL, 0x2, "Lcom.droidkit.actors.tasks.ActorAskImpl;", NULL,  },
-    { "typedAsk_", NULL, 0x2, "Lcom.droidkit.actors.typed.TypedAskExtensions;", NULL,  },
     { "callbackExtension_", NULL, 0x2, "Lcom.droidkit.actors.extensions.CallbackExtension;", NULL,  },
     { "extensions_", NULL, 0x2, "Ljava.util.ArrayList;", NULL,  },
   };
-  static const J2ObjcClassInfo _DAActor = { 1, "Actor", "com.droidkit.actors", NULL, 0x1, 28, methods, 8, fields, 0, NULL};
+  static const J2ObjcClassInfo _DAActor = { 1, "Actor", "com.droidkit.actors", NULL, 0x1, 27, methods, 7, fields, 0, NULL};
   return &_DAActor;
 }
 

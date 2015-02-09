@@ -1,24 +1,17 @@
 package im.actor.model.network.mtp.entity;
 
-
 import im.actor.model.network.mtp.entity.rpc.*;
+import im.actor.model.util.DataInput;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
-import static im.actor.model.util.StreamingUtils.*;
-
-/**
- * Created by ex3ndr on 03.09.14.
- */
 public class ProtoSerializer {
     public static ProtoStruct readMessagePayload(byte[] bs) throws IOException {
-        return readMessagePayload(new ByteArrayInputStream(bs));
+        return readMessagePayload(new DataInput(bs, 0, bs.length));
     }
 
-    public static ProtoStruct readMessagePayload(InputStream bs) throws IOException {
-        final byte header = readByte(bs);
+    public static ProtoStruct readMessagePayload(DataInput bs) throws IOException {
+        final int header = bs.readByte();
 
         switch (header) {
             case Ping.HEADER:
@@ -50,12 +43,9 @@ public class ProtoSerializer {
         throw new IOException("Unable to read proto object with header #" + header);
     }
 
-    public static ProtoStruct readRpcResponsePayload(byte[] bs) throws IOException {
-        return readRpcResponsePayload(new ByteArrayInputStream(bs));
-    }
-
-    public static ProtoStruct readRpcResponsePayload(InputStream bs) throws IOException {
-        final byte header = readByte(bs);
+    public static ProtoStruct readRpcResponsePayload(byte[] data) throws IOException {
+        DataInput bs = new DataInput(data, 0, data.length);
+        final int header = bs.readByte();
         switch (header) {
             case RpcOk.HEADER:
                 return new RpcOk(bs);
@@ -69,11 +59,20 @@ public class ProtoSerializer {
         throw new IOException("Unable to read proto object");
     }
 
-    public static Push readUpdate(byte[] bs) throws IOException {
-        return readUpdate(new ByteArrayInputStream(bs));
+    public static ProtoStruct readRpcRequestPayload(DataInput bs) throws IOException {
+        final int header = bs.readByte();
+        switch (header) {
+            case RpcRequest.HEADER:
+                return new RpcRequest(bs);
+        }
+        throw new IOException("Unable to read proto object with header #" + header);
     }
 
-    public static Push readUpdate(InputStream bs) throws IOException {
+    public static Push readUpdate(byte[] bs) throws IOException {
+        return readUpdate(new DataInput(bs, 0, bs.length));
+    }
+
+    public static Push readUpdate(DataInput bs) throws IOException {
         return new Push(bs);
     }
 }

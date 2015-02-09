@@ -1,10 +1,9 @@
 package im.actor.model.network.mtp.entity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
-import static im.actor.model.util.StreamingUtils.*;
+import java.io.IOException;
 
 public class NewSessionCreated extends ProtoStruct {
 
@@ -14,7 +13,7 @@ public class NewSessionCreated extends ProtoStruct {
 
     public long messageId;
 
-    public NewSessionCreated(InputStream stream) throws IOException {
+    public NewSessionCreated(DataInput stream) throws IOException {
         super(stream);
     }
 
@@ -32,25 +31,20 @@ public class NewSessionCreated extends ProtoStruct {
     }
 
     @Override
-    public int getLength() {
-        return 1 + 8 + 8;
-    }
-
-    @Override
     protected byte getHeader() {
         return HEADER;
     }
 
     @Override
-    protected void writeBody(OutputStream bs) throws IOException {
-        writeLong(sessionId, bs);
-        writeLong(messageId, bs);
+    protected void writeBody(DataOutput bs) throws IOException {
+        bs.writeLong(sessionId);
+        bs.writeLong(messageId);
     }
 
     @Override
-    protected void readBody(InputStream bs) throws IOException {
-        sessionId = readLong(bs);
-        messageId = readLong(bs);
+    protected void readBody(DataInput bs) throws IOException {
+        sessionId = bs.readLong();
+        messageId = bs.readLong();
     }
 
     @Override

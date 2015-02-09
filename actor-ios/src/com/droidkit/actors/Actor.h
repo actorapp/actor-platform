@@ -6,12 +6,10 @@
 #ifndef _DAActor_H_
 #define _DAActor_H_
 
-@class ComDroidkitActorsConcurrencyFuture;
 @class ComDroidkitActorsExtensionsCallbackExtension;
 @class ComDroidkitActorsMailboxMailbox;
 @class ComDroidkitActorsTasksActorAskImpl;
 @class ComDroidkitActorsTasksAskFuture;
-@class ComDroidkitActorsTypedTypedAskExtensions;
 @class DAActorContext;
 @class DAActorRef;
 @class DAActorSelection;
@@ -20,7 +18,6 @@
 @class IOSObjectArray;
 @class JavaUtilArrayList;
 @class JavaUtilUUID;
-@protocol ComDroidkitActorsConcurrencyFutureCallback;
 @protocol ComDroidkitActorsTasksAskCallback;
 
 #include "J2ObjC_header.h"
@@ -91,9 +88,6 @@ withComDroidkitActorsMailboxMailbox:(ComDroidkitActorsMailboxMailbox *)mailbox O
 - (ComDroidkitActorsTasksAskFuture *)askWithDAActorRef:(DAActorRef *)ref
                                               withLong:(jlong)timeout
                  withComDroidkitActorsTasksAskCallback:(id<ComDroidkitActorsTasksAskCallback>)callback;
-
-- (void)askWithComDroidkitActorsConcurrencyFuture:(ComDroidkitActorsConcurrencyFuture *)future
-   withComDroidkitActorsConcurrencyFutureCallback:(id<ComDroidkitActorsConcurrencyFutureCallback>)callback;
 
 - (id)proxyWithId:(id)src
      withIOSClass:(IOSClass *)tClass;

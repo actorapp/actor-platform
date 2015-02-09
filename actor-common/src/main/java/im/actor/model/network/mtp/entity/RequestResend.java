@@ -1,10 +1,9 @@
 package im.actor.model.network.mtp.entity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
-import static im.actor.model.util.StreamingUtils.*;
+import java.io.IOException;
 
 /**
  * Created by ex3ndr on 03.09.14.
@@ -19,7 +18,7 @@ public class RequestResend extends ProtoStruct {
         this.messageId = messageId;
     }
 
-    public RequestResend(InputStream stream) throws IOException {
+    public RequestResend(DataInput stream) throws IOException {
         super(stream);
     }
 
@@ -28,22 +27,17 @@ public class RequestResend extends ProtoStruct {
     }
 
     @Override
-    public int getLength() {
-        return 8;
-    }
-
-    @Override
     protected byte getHeader() {
         return HEADER;
     }
 
     @Override
-    protected void writeBody(OutputStream bs) throws IOException {
-        writeLong(messageId, bs);
+    protected void writeBody(DataOutput bs) throws IOException {
+        bs.writeLong(messageId);
     }
 
     @Override
-    protected void readBody(InputStream bs) throws IOException {
-        messageId = readLong(bs);
+    protected void readBody(DataInput bs) throws IOException {
+        messageId = bs.readLong();
     }
 }

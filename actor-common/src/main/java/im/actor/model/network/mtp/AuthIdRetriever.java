@@ -5,11 +5,8 @@ import im.actor.model.log.Log;
 import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.Endpoints;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import static im.actor.model.util.StreamingUtils.*;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
 /**
  * Created by ex3ndr on 07.02.15.
@@ -32,14 +29,15 @@ public class AuthIdRetriever {
                 }
 
                 try {
-                    ByteArrayInputStream bis = new ByteArrayInputStream(data, offset, len);
+                    DataInput dataInput = new DataInput(data, offset, len);
+                    long pAuthId = dataInput.readLong();
+                    long pSessionId = dataInput.readLong();
+                    long messageId = dataInput.readLong();
+                    byte[] payload = dataInput.readProtoBytes();
 
-                    long reqAuthId = readLong(bis);
-                    long sessionId = readLong(bis);
-                    long messageId = readLong(bis);
-                    byte[] content = readProtoBytes(bis);
-                    int header = content[0] & 0xFF;
-                    long authId = readLong(content, 1);
+                    DataInput msg = new DataInput(payload, 0, payload.length);
+                    int header = msg.readByte();
+                    long authId = msg.readLong();
 
                     if (!isFinished[0]) {
                         isFinished[0] = true;
@@ -77,14 +75,13 @@ public class AuthIdRetriever {
                 Log.d(TAG, "Connection created");
 
                 try {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    writeLong(0, baos);// AuthId
-                    writeLong(0, baos);// SessionId
-                    writeLong(0, baos); // MessageId
-
-                    writeVarInt(1, baos);// Payload Size
-                    writeByte(0xF0, baos);// Payload: Request AuthId header
-                    byte[] data = baos.toByteArray();
+                    DataOutput output = new DataOutput();
+                    output.writeLong(0); // AuthId
+                    output.writeLong(0); // SessionId
+                    output.writeLong(0); // MessageId
+                    output.writeVarInt(1); // Payload Size
+                    output.writeByte(0xF0); // Payload: Request AuthId header
+                    byte[] data = output.toByteArray();
                     connection.post(data, 0, data.length);
                 } catch (Exception e) {
                     Log.d(TAG, "Error during requesting auth id");

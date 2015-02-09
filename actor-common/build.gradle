@@ -15,7 +15,3 @@ artifacts {
 repositories {
     mavenCentral()
 }
-
-dependencies {
-    compile 'com.droidkit:bser:1.2'
-}

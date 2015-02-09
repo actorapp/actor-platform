@@ -1,10 +1,9 @@
 package im.actor.model.network.mtp.entity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
-import static im.actor.model.util.StreamingUtils.*;
+import java.io.IOException;
 
 /**
  * Created by ex3ndr on 03.09.14.
@@ -35,13 +34,8 @@ public class UnsentResponse extends ProtoStruct {
         return len;
     }
 
-    public UnsentResponse(InputStream stream) throws IOException {
+    public UnsentResponse(DataInput stream) throws IOException {
         super(stream);
-    }
-
-    @Override
-    public int getLength() {
-        return 1 + 8 + 8 + 4;
     }
 
     @Override
@@ -50,17 +44,17 @@ public class UnsentResponse extends ProtoStruct {
     }
 
     @Override
-    protected void writeBody(OutputStream bs) throws IOException {
-        writeLong(messageId, bs);
-        writeLong(responseMessageId, bs);
-        writeInt(len, bs);
+    protected void writeBody(DataOutput bs) throws IOException {
+        bs.writeLong(messageId);
+        bs.writeLong(responseMessageId);
+        bs.writeInt(len);
     }
 
     @Override
-    protected void readBody(InputStream bs) throws IOException {
-        messageId = readLong(bs);
-        responseMessageId = readLong(bs);
-        len = readInt(bs);
+    protected void readBody(DataInput bs) throws IOException {
+        messageId = bs.readLong();
+        responseMessageId = bs.readLong();
+        len = bs.readInt();
     }
 
     @Override
