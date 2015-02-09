@@ -7,15 +7,20 @@ import com.droidkit.bser.Bser;
 import com.droidkit.bser.BserObject;
 import com.droidkit.bser.BserValues;
 import com.droidkit.bser.BserWriter;
+
 import java.io.IOException;
+
 import im.actor.model.network.parser.*;
+
 import java.util.List;
 import java.util.ArrayList;
+
 import im.actor.model.api.*;
 
 public class ResponseGetDifference extends Response {
 
     public static final int HEADER = 0xc;
+
     public static ResponseGetDifference fromBytes(byte[] data) throws IOException {
         return Bser.parse(new ResponseGetDifference(), data);
     }
@@ -75,22 +80,25 @@ public class ResponseGetDifference extends Response {
         this.seq = values.getInt(1);
         this.state = values.getBytes(2);
         List<User> _users = new ArrayList<User>();
-        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
+        for (int i = 0; i < values.getRepeatedCount(3); i++) {
             _users.add(new User());
         }
         this.users = values.getRepeatedObj(3, _users);
         List<Group> _groups = new ArrayList<Group>();
-        for (int i = 0; i < values.getRepeatedCount(6); i ++) {
+        for (int i = 0; i < values.getRepeatedCount(6); i++) {
             _groups.add(new Group());
         }
         this.groups = values.getRepeatedObj(6, _groups);
-        List<ContactRecord> _contacts = new ArrayList<ContactRecord>();
-        for (int i = 0; i < values.getRepeatedCount(7); i ++) {
-            _contacts.add(new ContactRecord());
-        }
-        this.contacts = values.getRepeatedObj(7, _contacts);
+
+//        List<ContactRecord> _contacts = new ArrayList<ContactRecord>();
+//        for (int i = 0; i < values.getRepeatedCount(7); i ++) {
+//            _contacts.add(new ContactRecord());
+//        }
+//        this.contacts = values.getRepeatedObj(7, _contacts);
+        this.contacts = new ArrayList<ContactRecord>();
+
         List<DifferenceUpdate> _updates = new ArrayList<DifferenceUpdate>();
-        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
+        for (int i = 0; i < values.getRepeatedCount(4); i++) {
             _updates.add(new DifferenceUpdate());
         }
         this.updates = values.getRepeatedObj(4, _updates);

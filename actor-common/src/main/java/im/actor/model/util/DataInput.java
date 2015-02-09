@@ -23,6 +23,13 @@ public class DataInput {
         return data[offset++] & 0xFF;
     }
 
+    public int readByteSilent() throws IOException {
+        if (offset == maxOffset) {
+            return -1;
+        }
+        return data[offset++] & 0xFF;
+    }
+
     public int readInt() throws IOException {
         if (offset + 4 > maxOffset) {
             throw new IOException();
