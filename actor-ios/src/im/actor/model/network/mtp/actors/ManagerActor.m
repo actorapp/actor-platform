@@ -11,10 +11,10 @@
 #include "com/droidkit/actors/ActorSelection.h"
 #include "com/droidkit/actors/ActorSystem.h"
 #include "com/droidkit/actors/Props.h"
-#include "im/actor/model/config/ConnectionFactory.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/network/Connection.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
+#include "im/actor/model/network/ConnectionFactory.h"
 #include "im/actor/model/network/Endpoints.h"
 #include "im/actor/model/network/mtp/MTProto.h"
 #include "im/actor/model/network/mtp/actors/ManagerActor.h"
@@ -399,7 +399,6 @@ void MTManagerActor_checkConnection(MTManagerActor *self) {
 }
 
 void MTManagerActor_onInMessageWithByteArray_withInt_withInt_(MTManagerActor *self, IOSByteArray *data, jint offset, jint len) {
-  AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Received package");
   JavaIoByteArrayInputStream *bis = [[[JavaIoByteArrayInputStream alloc] initWithByteArray:data withInt:offset withInt:len] autorelease];
   @try {
     jlong authId = AMStreamingUtils_readLongWithJavaIoInputStream_(bis);
@@ -423,7 +422,6 @@ void MTManagerActor_onInMessageWithByteArray_withInt_withInt_(MTManagerActor *se
 }
 
 void MTManagerActor_onOutMessageWithByteArray_withInt_withInt_(MTManagerActor *self, IOSByteArray *data, jint offset, jint len) {
-  AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Out message");
   if (self->currentConnection_ != nil && [self->currentConnection_ isClosed]) {
     MTManagerActor_set_currentConnection_(self, nil);
     self->currentConnectionId_ = 0;
@@ -439,10 +437,8 @@ void MTManagerActor_onOutMessageWithByteArray_withInt_withInt_(MTManagerActor *s
     }
     IOSByteArray *pkg = [bos toByteArray];
     [self->currentConnection_ postWithByteArray:pkg withInt:0 withInt:((IOSByteArray *) nil_chk(pkg))->size_];
-    AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I", @"Posted message to connection #", self->currentConnectionId_));
   }
   else {
-    AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Unable to send message: no connections");
   }
 }
 

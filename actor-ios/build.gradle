@@ -19,10 +19,6 @@ task copySources(type: Copy, dependsOn: ['cleanBuildSources']) {
 task j2objc(type: Exec, dependsOn: ['copySources']) {
     def srcFiles = fileTree("${buildDir}/java/")
 
-    srcFiles.each { file ->
-        println file
-    }
-
     Properties properties = new Properties()
     properties.load(project.file('local.properties').newDataInputStream())
 

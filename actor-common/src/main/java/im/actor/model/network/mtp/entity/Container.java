@@ -1,10 +1,9 @@
 package im.actor.model.network.mtp.entity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
-import static im.actor.model.util.StreamingUtils.*;
+import java.io.IOException;
 
 public class Container extends ProtoStruct {
 
@@ -12,7 +11,7 @@ public class Container extends ProtoStruct {
 
     private ProtoMessage[] messages;
 
-    public Container(InputStream stream) throws IOException {
+    public Container(DataInput stream) throws IOException {
         super(stream);
     }
 
@@ -25,36 +24,25 @@ public class Container extends ProtoStruct {
     }
 
     @Override
-    public int getLength() {
-        int messagesLength = 0;
-        if (messages.length > 0) {
-            for (ProtoMessage m : messages) {
-                messagesLength += m.getLength();
-            }
-        }
-        return 1 + varintSize(messages.length) + messagesLength;
-    }
-
-    @Override
     protected byte getHeader() {
         return HEADER;
     }
 
     @Override
-    protected void writeBody(OutputStream bs) throws IOException {
+    protected void writeBody(DataOutput bs) throws IOException {
         if (messages != null && messages.length > 0) {
-            writeVarInt(messages.length, bs);
+            bs.writeVarInt(messages.length);
             for (ProtoMessage m : messages) {
                 m.writeObject(bs);
             }
         } else {
-            writeVarInt(0, bs);
+            bs.writeVarInt(0);
         }
     }
 
     @Override
-    protected void readBody(InputStream bs) throws IOException {
-        int size = (int) readVarInt(bs);
+    protected void readBody(DataInput bs) throws IOException {
+        int size = (int) bs.readVarInt();
         messages = new ProtoMessage[size];
         for (int i = 0; i < size; ++i) {
             messages[i] = new ProtoMessage(bs);

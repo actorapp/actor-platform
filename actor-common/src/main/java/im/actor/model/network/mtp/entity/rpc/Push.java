@@ -1,12 +1,11 @@
 package im.actor.model.network.mtp.entity.rpc;
 
+
 import im.actor.model.network.mtp.entity.ProtoStruct;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import static im.actor.model.util.StreamingUtils.*;
 
 /**
  * Created by ex3ndr on 03.09.14.
@@ -15,7 +14,7 @@ public class Push extends ProtoStruct {
     public int updateType;
     public byte[] body;
 
-    public Push(InputStream stream) throws IOException {
+    public Push(DataInput stream) throws IOException {
         super(stream);
     }
 
@@ -30,20 +29,15 @@ public class Push extends ProtoStruct {
     }
 
     @Override
-    protected void writeBody(OutputStream bs) throws IOException {
-        writeInt(updateType, bs);
-        writeProtoBytes(body, bs);
+    protected void writeBody(DataOutput bs) throws IOException {
+        bs.writeInt(updateType);
+        bs.writeProtoBytes(body, 0, body.length);
     }
 
     @Override
-    protected void readBody(InputStream bs) throws IOException {
-        updateType = readInt(bs);
-        body = readProtoBytes(bs);
-    }
-
-    @Override
-    public int getLength() {
-        return 4 + body.length;
+    protected void readBody(DataInput bs) throws IOException {
+        updateType = bs.readInt();
+        body = bs.readProtoBytes();
     }
 
     @Override

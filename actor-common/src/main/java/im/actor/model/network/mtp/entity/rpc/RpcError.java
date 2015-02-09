@@ -1,12 +1,10 @@
 package im.actor.model.network.mtp.entity.rpc;
 
 import im.actor.model.network.mtp.entity.ProtoStruct;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import static im.actor.model.util.StreamingUtils.*;
 
 public class RpcError extends ProtoStruct {
 
@@ -18,7 +16,7 @@ public class RpcError extends ProtoStruct {
     public boolean canTryAgain;
     public byte[] relatedData;
 
-    public RpcError(InputStream stream) throws IOException {
+    public RpcError(DataInput stream) throws IOException {
         super(stream);
     }
 
@@ -31,31 +29,26 @@ public class RpcError extends ProtoStruct {
     }
 
     @Override
-    public int getLength() {
-        return 1 + 4 + stringSize(errorTag) + stringSize(userMessage) + 1;
-    }
-
-    @Override
     protected byte getHeader() {
         return HEADER;
     }
 
     @Override
-    protected void writeBody(OutputStream bs) throws IOException {
-        writeInt(errorCode, bs);
-        writeProtoString(errorTag, bs);
-        writeProtoString(userMessage, bs);
-        writeProtoBool(canTryAgain, bs);
-        writeProtoBytes(relatedData, bs);
+    protected void writeBody(DataOutput bs) throws IOException {
+        bs.writeInt(errorCode);
+        bs.writeProtoString(errorTag);
+        bs.writeProtoString(userMessage);
+        bs.writeProtoBool(canTryAgain);
+        bs.writeProtoBytes(relatedData, 0, relatedData.length);
     }
 
     @Override
-    protected void readBody(InputStream bs) throws IOException {
-        errorCode = readInt(bs);
-        errorTag = readProtoString(bs);
-        userMessage = readProtoString(bs);
-        canTryAgain = readProtoBool(bs);
-        relatedData = readProtoBytes(bs);
+    protected void readBody(DataInput bs) throws IOException {
+        errorCode = bs.readInt();
+        errorTag = bs.readProtoString();
+        userMessage = bs.readProtoString();
+        canTryAgain = bs.readProtoBool();
+        relatedData = bs.readProtoBytes();
     }
 
     @Override

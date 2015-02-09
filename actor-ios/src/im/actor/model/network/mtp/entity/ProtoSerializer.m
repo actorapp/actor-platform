@@ -20,12 +20,11 @@
 #include "im/actor/model/network/mtp/entity/RequestResend.h"
 #include "im/actor/model/network/mtp/entity/UnsentMessage.h"
 #include "im/actor/model/network/mtp/entity/UnsentResponse.h"
-#include "im/actor/model/network/mtp/entity/rpc/PushSimple.h"
+#include "im/actor/model/network/mtp/entity/rpc/Push.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcError.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcFloodWait.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcInternalError.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcOk.h"
-#include "im/actor/model/network/mtp/entity/rpc/RpcRequest.h"
 #include "im/actor/model/util/StreamingUtils.h"
 #include "java/io/ByteArrayInputStream.h"
 #include "java/io/IOException.h"
@@ -41,19 +40,19 @@
   return MTProtoSerializer_readMessagePayloadWithJavaIoInputStream_(bs);
 }
 
++ (MTProtoStruct *)readRpcResponsePayloadWithByteArray:(IOSByteArray *)bs {
+  return MTProtoSerializer_readRpcResponsePayloadWithByteArray_(bs);
+}
+
 + (MTProtoStruct *)readRpcResponsePayloadWithJavaIoInputStream:(JavaIoInputStream *)bs {
   return MTProtoSerializer_readRpcResponsePayloadWithJavaIoInputStream_(bs);
 }
 
-+ (MTProtoStruct *)readRpcRequestPayloadWithJavaIoInputStream:(JavaIoInputStream *)bs {
-  return MTProtoSerializer_readRpcRequestPayloadWithJavaIoInputStream_(bs);
-}
-
-+ (MTPushSimple *)readUpdateWithByteArray:(IOSByteArray *)bs {
++ (MTPush *)readUpdateWithByteArray:(IOSByteArray *)bs {
   return MTProtoSerializer_readUpdateWithByteArray_(bs);
 }
 
-+ (MTPushSimple *)readUpdateWithJavaIoInputStream:(JavaIoInputStream *)bs {
++ (MTPush *)readUpdateWithJavaIoInputStream:(JavaIoInputStream *)bs {
   return MTProtoSerializer_readUpdateWithJavaIoInputStream_(bs);
 }
 
@@ -65,10 +64,10 @@
   static const J2ObjcMethodInfo methods[] = {
     { "readMessagePayloadWithByteArray:", "readMessagePayload", "Lim.actor.model.network.mtp.entity.ProtoStruct;", 0x9, "Ljava.io.IOException;" },
     { "readMessagePayloadWithJavaIoInputStream:", "readMessagePayload", "Lim.actor.model.network.mtp.entity.ProtoStruct;", 0x9, "Ljava.io.IOException;" },
+    { "readRpcResponsePayloadWithByteArray:", "readRpcResponsePayload", "Lim.actor.model.network.mtp.entity.ProtoStruct;", 0x9, "Ljava.io.IOException;" },
     { "readRpcResponsePayloadWithJavaIoInputStream:", "readRpcResponsePayload", "Lim.actor.model.network.mtp.entity.ProtoStruct;", 0x9, "Ljava.io.IOException;" },
-    { "readRpcRequestPayloadWithJavaIoInputStream:", "readRpcRequestPayload", "Lim.actor.model.network.mtp.entity.ProtoStruct;", 0x9, "Ljava.io.IOException;" },
-    { "readUpdateWithByteArray:", "readUpdate", "Lim.actor.model.network.mtp.entity.rpc.PushSimple;", 0x9, "Ljava.io.IOException;" },
-    { "readUpdateWithJavaIoInputStream:", "readUpdate", "Lim.actor.model.network.mtp.entity.rpc.PushSimple;", 0x9, "Ljava.io.IOException;" },
+    { "readUpdateWithByteArray:", "readUpdate", "Lim.actor.model.network.mtp.entity.rpc.Push;", 0x9, "Ljava.io.IOException;" },
+    { "readUpdateWithJavaIoInputStream:", "readUpdate", "Lim.actor.model.network.mtp.entity.rpc.Push;", 0x9, "Ljava.io.IOException;" },
     { "init", NULL, NULL, 0x1, NULL },
   };
   static const J2ObjcClassInfo _MTProtoSerializer = { 1, "ProtoSerializer", "im.actor.model.network.mtp.entity", NULL, 0x1, 7, methods, 0, NULL, 0, NULL};
@@ -114,6 +113,11 @@ MTProtoStruct *MTProtoSerializer_readMessagePayloadWithJavaIoInputStream_(JavaIo
   @throw [[[JavaIoIOException alloc] initWithNSString:JreStrcat("$B", @"Unable to read proto object with header #", header)] autorelease];
 }
 
+MTProtoStruct *MTProtoSerializer_readRpcResponsePayloadWithByteArray_(IOSByteArray *bs) {
+  MTProtoSerializer_init();
+  return MTProtoSerializer_readRpcResponsePayloadWithJavaIoInputStream_([[[JavaIoByteArrayInputStream alloc] initWithByteArray:bs] autorelease]);
+}
+
 MTProtoStruct *MTProtoSerializer_readRpcResponsePayloadWithJavaIoInputStream_(JavaIoInputStream *bs) {
   MTProtoSerializer_init();
   jbyte header = AMStreamingUtils_readByteWithJavaIoInputStream_(bs);
@@ -130,24 +134,14 @@ MTProtoStruct *MTProtoSerializer_readRpcResponsePayloadWithJavaIoInputStream_(Ja
   @throw [[[JavaIoIOException alloc] initWithNSString:@"Unable to read proto object"] autorelease];
 }
 
-MTProtoStruct *MTProtoSerializer_readRpcRequestPayloadWithJavaIoInputStream_(JavaIoInputStream *bs) {
-  MTProtoSerializer_init();
-  jbyte header = AMStreamingUtils_readByteWithJavaIoInputStream_(bs);
-  switch (header) {
-    case MTRpcRequest_HEADER:
-    return [[[MTRpcRequest alloc] initWithJavaIoInputStream:bs] autorelease];
-  }
-  @throw [[[JavaIoIOException alloc] initWithNSString:JreStrcat("$B", @"Unable to read proto object with header #", header)] autorelease];
-}
-
-MTPushSimple *MTProtoSerializer_readUpdateWithByteArray_(IOSByteArray *bs) {
+MTPush *MTProtoSerializer_readUpdateWithByteArray_(IOSByteArray *bs) {
   MTProtoSerializer_init();
   return MTProtoSerializer_readUpdateWithJavaIoInputStream_([[[JavaIoByteArrayInputStream alloc] initWithByteArray:bs] autorelease]);
 }
 
-MTPushSimple *MTProtoSerializer_readUpdateWithJavaIoInputStream_(JavaIoInputStream *bs) {
+MTPush *MTProtoSerializer_readUpdateWithJavaIoInputStream_(JavaIoInputStream *bs) {
   MTProtoSerializer_init();
-  return [[[MTPushSimple alloc] initWithJavaIoInputStream:bs] autorelease];
+  return [[[MTPush alloc] initWithJavaIoInputStream:bs] autorelease];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTProtoSerializer)

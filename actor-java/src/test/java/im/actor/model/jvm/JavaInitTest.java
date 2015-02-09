@@ -1,21 +1,13 @@
 package im.actor.model.jvm;
 
-import im.actor.model.api.ContactRecord;
-import im.actor.model.api.Group;
-import im.actor.model.api.User;
 import im.actor.model.api.rpc.RequestSendAuthCode;
 import im.actor.model.api.rpc.ResponseSendAuthCode;
 import im.actor.model.jvm.network.MemoryAuthIdStorage;
 import im.actor.model.log.Log;
 import im.actor.model.network.*;
-import im.actor.model.network.mtp.AuthIdRetriever;
-import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.Ping;
-import im.actor.model.network.parser.Response;
-import im.actor.model.network.parser.Update;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.Random;
 
 public class JavaInitTest {

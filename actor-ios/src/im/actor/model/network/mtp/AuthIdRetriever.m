@@ -5,10 +5,10 @@
 
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/config/ConnectionFactory.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/network/Connection.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
+#include "im/actor/model/network/ConnectionFactory.h"
 #include "im/actor/model/network/Endpoints.h"
 #include "im/actor/model/network/mtp/AuthIdRetriever.h"
 #include "im/actor/model/util/StreamingUtils.h"

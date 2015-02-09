@@ -1,10 +1,10 @@
 package im.actor.model.network.mtp.entity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
-import static im.actor.model.util.StreamingUtils.*;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
+
+import java.io.IOException;
 
 public class Ping extends ProtoStruct {
 
@@ -12,7 +12,7 @@ public class Ping extends ProtoStruct {
 
     private long randomId;
 
-    public Ping(InputStream stream) throws IOException {
+    public Ping(DataInput stream) throws IOException {
         super(stream);
     }
 
@@ -25,23 +25,18 @@ public class Ping extends ProtoStruct {
     }
 
     @Override
-    public int getLength() {
-        return 1 + 8;
-    }
-
-    @Override
     protected byte getHeader() {
         return HEADER;
     }
 
     @Override
-    protected void writeBody(OutputStream bs) throws IOException {
-        writeLong(randomId, bs);
+    protected void writeBody(DataOutput bs) throws IOException {
+        bs.writeLong(randomId);
     }
 
     @Override
-    protected void readBody(InputStream bs) throws IOException {
-        randomId = readLong(bs);
+    protected void readBody(DataInput bs) throws IOException {
+        randomId = bs.readLong();
     }
 
     @Override

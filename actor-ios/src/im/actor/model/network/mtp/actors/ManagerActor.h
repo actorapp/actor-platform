@@ -17,8 +17,8 @@
 #include "J2ObjC_header.h"
 #include "com/droidkit/actors/Actor.h"
 #include "com/droidkit/actors/ActorCreator.h"
-#include "im/actor/model/config/ConnectionFactory.h"
 #include "im/actor/model/network/ConnectionCallback.h"
+#include "im/actor/model/network/ConnectionFactory.h"
 
 @interface MTManagerActor : DAActor {
 }

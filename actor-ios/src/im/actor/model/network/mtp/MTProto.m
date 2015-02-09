@@ -8,9 +8,11 @@
 #include "com/droidkit/actors/ActorRef.h"
 #include "im/actor/model/network/Endpoints.h"
 #include "im/actor/model/network/mtp/MTProto.h"
+#include "im/actor/model/network/mtp/MTProtoCallback.h"
 #include "im/actor/model/network/mtp/actors/ManagerActor.h"
 #include "im/actor/model/network/mtp/actors/ReceiverActor.h"
 #include "im/actor/model/network/mtp/actors/SenderActor.h"
+#include "im/actor/model/network/mtp/entity/MTRpcRequest.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "im/actor/model/network/util/MTUids.h"
 
@@ -19,6 +21,7 @@
   jlong authId_;
   jlong sessionId_;
   AMEndpoints *endpoints_;
+  id<MTMTProtoCallback> callback_;
   DAActorRef *receiver_;
   DAActorRef *manager_;
   DAActorRef *sender_;
@@ -27,6 +30,7 @@
 @end
 
 J2OBJC_FIELD_SETTER(MTMTProto, endpoints_, AMEndpoints *)
+J2OBJC_FIELD_SETTER(MTMTProto, callback_, id<MTMTProtoCallback>)
 J2OBJC_FIELD_SETTER(MTMTProto, receiver_, DAActorRef *)
 J2OBJC_FIELD_SETTER(MTMTProto, manager_, DAActorRef *)
 J2OBJC_FIELD_SETTER(MTMTProto, sender_, DAActorRef *)
@@ -36,17 +40,23 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
 
 - (instancetype)initWithLong:(jlong)authId
                     withLong:(jlong)sessionId
-             withAMEndpoints:(AMEndpoints *)endpoints {
+             withAMEndpoints:(AMEndpoints *)endpoints
+       withMTMTProtoCallback:(id<MTMTProtoCallback>)callback {
   if (self = [super init]) {
     MTMTProto_set_actorPath_(self, @"mtproto");
     self->authId_ = authId;
     self->sessionId_ = sessionId;
     MTMTProto_set_endpoints_(self, endpoints);
+    MTMTProto_set_callback_(self, callback);
     MTMTProto_set_manager_(self, MTManagerActor_managerWithMTMTProto_(self));
     MTMTProto_set_sender_(self, MTSenderActor_senderActorWithMTMTProto_(self));
     MTMTProto_set_receiver_(self, MTReceiverActor_receiverWithMTMTProto_(self));
   }
   return self;
+}
+
+- (id<MTMTProtoCallback>)getCallback {
+  return callback_;
 }
 
 - (AMEndpoints *)getEndpoints {
@@ -65,12 +75,19 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
   return actorPath_;
 }
 
-- (void)sendMTMessageWithMTProtoStruct:(MTProtoStruct *)protoStruct {
-  [((DAActorRef *) nil_chk(sender_)) sendWithId:[[[MTSenderActor_SendMessage alloc] initWithLong:ImActorModelNetworkUtilMTUids_nextId() withByteArray:[((MTProtoStruct *) nil_chk(protoStruct)) toByteArray]] autorelease]];
+- (jlong)sendRpcMessageWithMTProtoStruct:(MTProtoStruct *)protoStruct {
+  jlong mtId = ImActorModelNetworkUtilMTUids_nextId();
+  [((DAActorRef *) nil_chk(sender_)) sendWithId:[[[MTSenderActor_SendMessage alloc] initWithLong:mtId withByteArray:[((MTMTRpcRequest *) [[[MTMTRpcRequest alloc] initWithByteArray:[((MTProtoStruct *) nil_chk(protoStruct)) toByteArray]] autorelease]) toByteArray]] autorelease]];
+  return mtId;
+}
+
+- (void)cancelRpcWithLong:(jlong)mtId {
+  [((DAActorRef *) nil_chk(sender_)) sendWithId:[[[MTSenderActor_ForgetMessage alloc] initWithLong:mtId] autorelease]];
 }
 
 - (void)dealloc {
   RELEASE_(endpoints_);
+  RELEASE_(callback_);
   RELEASE_(receiver_);
   RELEASE_(manager_);
   RELEASE_(sender_);
@@ -83,6 +100,7 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
   other->authId_ = authId_;
   other->sessionId_ = sessionId_;
   MTMTProto_set_endpoints_(other, endpoints_);
+  MTMTProto_set_callback_(other, callback_);
   MTMTProto_set_receiver_(other, receiver_);
   MTMTProto_set_manager_(other, manager_);
   MTMTProto_set_sender_(other, sender_);
@@ -91,23 +109,26 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withLong:withAMEndpoints:", "MTProto", NULL, 0x1, NULL },
+    { "initWithLong:withLong:withAMEndpoints:withMTMTProtoCallback:", "MTProto", NULL, 0x1, NULL },
+    { "getCallback", NULL, "Lim.actor.model.network.mtp.MTProtoCallback;", 0x1, NULL },
     { "getEndpoints", NULL, "Lim.actor.model.network.Endpoints;", 0x1, NULL },
     { "getAuthId", NULL, "J", 0x1, NULL },
     { "getSessionId", NULL, "J", 0x1, NULL },
     { "getActorPath", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "sendMTMessageWithMTProtoStruct:", "sendMTMessage", "V", 0x1, NULL },
+    { "sendRpcMessageWithMTProtoStruct:", "sendRpcMessage", "J", 0x1, NULL },
+    { "cancelRpcWithLong:", "cancelRpc", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "authId_", NULL, 0x12, "J", NULL,  },
     { "sessionId_", NULL, 0x12, "J", NULL,  },
     { "endpoints_", NULL, 0x12, "Lim.actor.model.network.Endpoints;", NULL,  },
+    { "callback_", NULL, 0x12, "Lim.actor.model.network.mtp.MTProtoCallback;", NULL,  },
     { "receiver_", NULL, 0x12, "Lcom.droidkit.actors.ActorRef;", NULL,  },
     { "manager_", NULL, 0x12, "Lcom.droidkit.actors.ActorRef;", NULL,  },
     { "sender_", NULL, 0x12, "Lcom.droidkit.actors.ActorRef;", NULL,  },
     { "actorPath_", NULL, 0x12, "Ljava.lang.String;", NULL,  },
   };
-  static const J2ObjcClassInfo _MTMTProto = { 1, "MTProto", "im.actor.model.network.mtp", NULL, 0x1, 6, methods, 7, fields, 0, NULL};
+  static const J2ObjcClassInfo _MTMTProto = { 1, "MTProto", "im.actor.model.network.mtp", NULL, 0x1, 8, methods, 8, fields, 0, NULL};
   return &_MTMTProto;
 }
 

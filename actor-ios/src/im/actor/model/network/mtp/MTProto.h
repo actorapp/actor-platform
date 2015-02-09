@@ -9,6 +9,7 @@
 @class AMEndpoints;
 @class DAActorRef;
 @class MTProtoStruct;
+@protocol MTMTProtoCallback;
 
 #include "J2ObjC_header.h"
 
@@ -17,7 +18,10 @@
 
 - (instancetype)initWithLong:(jlong)authId
                     withLong:(jlong)sessionId
-             withAMEndpoints:(AMEndpoints *)endpoints;
+             withAMEndpoints:(AMEndpoints *)endpoints
+       withMTMTProtoCallback:(id<MTMTProtoCallback>)callback;
+
+- (id<MTMTProtoCallback>)getCallback;
 
 - (AMEndpoints *)getEndpoints;
 
@@ -27,7 +31,9 @@
 
 - (NSString *)getActorPath;
 
-- (void)sendMTMessageWithMTProtoStruct:(MTProtoStruct *)protoStruct;
+- (jlong)sendRpcMessageWithMTProtoStruct:(MTProtoStruct *)protoStruct;
+
+- (void)cancelRpcWithLong:(jlong)mtId;
 
 @end
 

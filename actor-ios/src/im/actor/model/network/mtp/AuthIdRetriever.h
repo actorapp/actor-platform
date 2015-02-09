@@ -13,8 +13,8 @@
 @protocol MTAuthIdRetriever_AuthIdCallback;
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/config/ConnectionFactory.h"
 #include "im/actor/model/network/ConnectionCallback.h"
+#include "im/actor/model/network/ConnectionFactory.h"
 
 @interface MTAuthIdRetriever : NSObject {
 }

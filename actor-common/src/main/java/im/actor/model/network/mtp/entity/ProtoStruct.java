@@ -1,14 +1,13 @@
 package im.actor.model.network.mtp.entity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import im.actor.model.util.DataInput;
+import im.actor.model.util.DataOutput;
 
-import static im.actor.model.util.StreamingUtils.*;
+import java.io.IOException;
 
 public abstract class ProtoStruct extends ProtoObject {
 
-    protected ProtoStruct(InputStream stream) throws IOException {
+    protected ProtoStruct(DataInput stream) throws IOException {
         super(stream);
     }
 
@@ -18,21 +17,21 @@ public abstract class ProtoStruct extends ProtoObject {
     protected abstract byte getHeader();
 
     @Override
-    public final void writeObject(OutputStream bs) throws IOException {
+    public final void writeObject(DataOutput bs) throws IOException {
         byte header = getHeader();
         if (header != 0) {
-            writeByte(header, bs);
+            bs.writeByte(header);
         }
         writeBody(bs);
     }
 
     @Override
-    public final ProtoObject readObject(InputStream bs) throws IOException {
+    public final ProtoObject readObject(DataInput bs) throws IOException {
         readBody(bs);
         return this;
     }
 
-    protected abstract void writeBody(OutputStream bs) throws IOException;
+    protected abstract void writeBody(DataOutput bs) throws IOException;
 
-    protected abstract void readBody(InputStream bs) throws IOException;
+    protected abstract void readBody(DataInput bs) throws IOException;
 }
