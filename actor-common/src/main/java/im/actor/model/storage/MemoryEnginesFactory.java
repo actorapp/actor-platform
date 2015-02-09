@@ -1,7 +1,11 @@
 package im.actor.model.storage;
 
+import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.PeerType;
 import im.actor.model.entity.User;
 import im.actor.model.mvvm.KeyValueEngine;
+import im.actor.model.mvvm.ListEngine;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,5 +54,10 @@ public class MemoryEnginesFactory implements EnginesFactory {
                 return users.get((int) id);
             }
         };
+    }
+
+    @Override
+    public ListEngine<Dialog> createDialogsEngine() {
+        return null;
     }
 }

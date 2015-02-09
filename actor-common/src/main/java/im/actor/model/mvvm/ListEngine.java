@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by ex3ndr on 08.02.15.
  */
-public interface ListEngine<V> {
+public interface ListEngine<V extends ListEngineItem> {
     public void addOrUpdateItem(V item);
 
     public void addOrUpdateItems(List<V> values);
@@ -22,5 +22,5 @@ public interface ListEngine<V> {
 
     public V getHeadValue();
 
-    public void getCount();
+    public int getCount();
 }

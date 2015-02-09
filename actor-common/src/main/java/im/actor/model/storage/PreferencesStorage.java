@@ -21,7 +21,7 @@ public interface PreferencesStorage {
 
     public byte[] getBytes(String key);
 
-    public void putStrings(String key, String v);
+    public void putString(String key, String v);
 
-    public String getStrings(String key);
+    public String getString(String key);
 }

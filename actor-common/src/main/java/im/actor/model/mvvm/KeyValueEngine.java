@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by ex3ndr on 08.02.15.
  */
-public interface KeyValueEngine<V> {
+public interface KeyValueEngine<V extends KeyValueItem> {
     public void addOrUpdateItem(V item);
 
     public void addOrUpdateItems(List<V> values);
