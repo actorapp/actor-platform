@@ -16,7 +16,7 @@ public class BserParser {
     public static SparseArray<Object> deserialize(DataInput is) throws IOException {
         SparseArray<Object> hashMap = new SparseArray<Object>();
         int currentTag;
-        while ((currentTag = is.readByte()) > 0) {
+        while ((currentTag = is.readByteSilent()) > 0) {
             int id = currentTag >> 3;
             int type = currentTag & 0x7;
 
