@@ -1,15 +1,13 @@
 package im.actor.model.network.mtp.actors;
 
 import com.droidkit.actors.*;
-import im.actor.model.config.ConnectionFactory;
+import im.actor.model.network.ConnectionFactory;
 import im.actor.model.log.Log;
 import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.Endpoints;
 import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.ProtoMessage;
-import im.actor.model.network.mtp.entity.ProtoSerializer;
-import im.actor.model.network.mtp.entity.ProtoStruct;
 import im.actor.model.util.ExponentialBackoff;
 
 import java.io.ByteArrayInputStream;
@@ -203,7 +201,7 @@ public class ManagerActor extends Actor {
     }
 
     private void onInMessage(byte[] data, int offset, int len) {
-        Log.d(TAG, "Received package");
+        // Log.d(TAG, "Received package");
 
         ByteArrayInputStream bis = new ByteArrayInputStream(data, offset, len);
         try {
@@ -231,7 +229,7 @@ public class ManagerActor extends Actor {
     }
 
     private void onOutMessage(byte[] data, int offset, int len) {
-        Log.d(TAG, "Out message");
+        // Log.d(TAG, "Out message");
 
         // Cleanup bad connection
         if (currentConnection != null && currentConnection.isClosed()) {
@@ -250,9 +248,9 @@ public class ManagerActor extends Actor {
             }
             byte[] pkg = bos.toByteArray();
             currentConnection.post(pkg, 0, pkg.length);
-            Log.d(TAG, "Posted message to connection #" + currentConnectionId);
+            // Log.d(TAG, "Posted message to connection #" + currentConnectionId);
         } else {
-            Log.d(TAG, "Unable to send message: no connections");
+            // Log.d(TAG, "Unable to send message: no connections");
         }
     }
 

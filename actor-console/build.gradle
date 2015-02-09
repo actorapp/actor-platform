@@ -1,0 +1,23 @@
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'application'
+
+
+group = 'im.actor'
+version = '1.0'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+mainClassName = "im.actor.console.Main"
+
+dependencies {
+    compile project(':actor-common')
+    compile project(':actor-java')
+    compile project(':actor-java-threads')
+    compile 'com.googlecode.lanterna:lanterna:2.1.9'
+}

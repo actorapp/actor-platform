@@ -15,12 +15,5 @@ public interface ActorApiCallback {
 
     public void onNewSessionCreated();
 
-    public void onSeqFatUpdate(int seq, byte[] state, Update update,
-                               List<User> users, List<Group> groups, List<ContactRecord> contactRecords);
-
-    public void onSeqUpdate(int seq, byte[] state, Update update);
-
-    public void onSeqTooLong();
-
-    public void onWeakUpdate(long date, Update update);
+    public void onUpdateReceived(Object obj);
 }

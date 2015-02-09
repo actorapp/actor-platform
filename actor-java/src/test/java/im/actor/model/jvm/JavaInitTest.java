@@ -43,22 +43,7 @@ public class JavaInitTest {
             }
 
             @Override
-            public void onSeqFatUpdate(int seq, byte[] state, Update update, List<User> users, List<Group> groups, List<ContactRecord> contactRecords) {
-
-            }
-
-            @Override
-            public void onSeqUpdate(int seq, byte[] state, Update update) {
-
-            }
-
-            @Override
-            public void onSeqTooLong() {
-
-            }
-
-            @Override
-            public void onWeakUpdate(long date, Update update) {
+            public void onUpdateReceived(Object obj) {
 
             }
         });
