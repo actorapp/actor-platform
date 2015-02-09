@@ -32,6 +32,10 @@ public class DialogsActor extends Actor {
         } else if (message instanceof UserChanged) {
             UserChanged userChanged = (UserChanged) message;
             onUserChanged(userChanged.getUser());
+        } else if (message instanceof ChatClear) {
+            onChatClear(((ChatClear) message).getPeer());
+        } else if (message instanceof ChatDelete) {
+            onChatDeleted(((ChatDelete) message).getPeer());
         }
     }
 
@@ -100,6 +104,47 @@ public class DialogsActor extends Actor {
                 return;
             }
             dialogs.addOrUpdateItem(dialog.editPeerInfo(user.getName(), user.getAvatar()));
+        }
+    }
+
+    private void onChatDeleted(Peer peer) {
+        dialogs.removeItem(peer.getUid());
+    }
+
+    private void onChatClear(Peer peer) {
+        Dialog dialog = dialogs.getValue(peer.getUid());
+        if (dialog != null) {
+            dialogs.addOrUpdateItem(new DialogBuilder(dialog)
+                    .setMessageType(Dialog.ContentType.EMPTY)
+                    .setText(null)
+                    .setTime(0)
+                    .setUnreadCount(0)
+                    .setRid(0)
+                    .createDialog());
+        }
+    }
+
+    public static class ChatClear {
+        private Peer peer;
+
+        public ChatClear(Peer peer) {
+            this.peer = peer;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+    }
+
+    public static class ChatDelete {
+        private Peer peer;
+
+        public ChatDelete(Peer peer) {
+            this.peer = peer;
+        }
+
+        public Peer getPeer() {
+            return peer;
         }
     }
 

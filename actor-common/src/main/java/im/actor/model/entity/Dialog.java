@@ -103,6 +103,6 @@ public class Dialog implements ListEngineItem {
     }
 
     public enum ContentType {
-        TEXT
+        TEXT, EMPTY
     }
 }

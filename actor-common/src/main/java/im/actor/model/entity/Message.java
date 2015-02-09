@@ -1,11 +1,13 @@
 package im.actor.model.entity;
 
 import im.actor.model.entity.content.AbsContent;
+import im.actor.model.mvvm.KeyValueItem;
+import im.actor.model.mvvm.ListEngineItem;
 
 /**
  * Created by ex3ndr on 09.02.15.
  */
-public class Message {
+public class Message implements ListEngineItem {
     private final long rid;
     private final long sortKey;
     private final long time;
@@ -52,5 +54,15 @@ public class Message {
 
     public Message changeTime(long time) {
         return new Message(rid, sortKey, time, senderId, messageState, content);
+    }
+
+    @Override
+    public long getListId() {
+        return rid;
+    }
+
+    @Override
+    public long getSortingKey() {
+        return sortKey;
     }
 }

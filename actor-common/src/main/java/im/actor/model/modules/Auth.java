@@ -24,6 +24,7 @@ public class Auth {
 
     private static final String KEY_DEVICE_HASH = "device_hash";
     private static final String KEY_AUTH = "auth_yes";
+    private static final String KEY_AUTH_UID = "auth_uid";
     private static final String KEY_PHONE = "auth_phone";
     private static final String KEY_SMS_HASH = "auth_sms_hash";
 
@@ -32,11 +33,14 @@ public class Auth {
     private Messenger messenger;
     private MainThread mainThread;
     private byte[] deviceHash;
+    private int myUid;
 
     public Auth(Messenger messenger) {
         this.messenger = messenger;
         this.preferences = messenger.getConfiguration().getPreferencesStorage();
         this.mainThread = messenger.getConfiguration().getMainThread();
+
+        this.myUid = preferences.getInt(KEY_AUTH_UID, 0);
 
         deviceHash = preferences.getBytes(KEY_DEVICE_HASH);
         if (deviceHash == null) {
@@ -50,6 +54,10 @@ public class Auth {
         } else {
             state = State.AUTH_START;
         }
+    }
+
+    public int myUid() {
+        return myUid;
     }
 
     public State getState() {
@@ -109,6 +117,8 @@ public class Auth {
                             public void onResult(ResponseAuth response) {
                                 preferences.putBool(KEY_AUTH, true);
                                 state = State.LOGGED_IN;
+                                myUid = response.getUser().getId();
+                                preferences.putInt(KEY_AUTH_UID, myUid);
                                 messenger.onLoggedIn();
                                 mainThread.runOnUiThread(new Runnable() {
                                     @Override

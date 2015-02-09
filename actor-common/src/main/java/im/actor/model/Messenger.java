@@ -1,6 +1,8 @@
 package im.actor.model;
 
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
 import im.actor.model.modules.Auth;
 import im.actor.model.modules.Messages;
 import im.actor.model.modules.Updates;
@@ -55,12 +57,20 @@ public class Messenger {
         updates = new Updates(this);
     }
 
-    public Updates getUpdates() {
+    public int myUid() {
+        return auth.myUid();
+    }
+
+    public Updates getUpdatesModule() {
         return updates;
     }
 
-    public Messages getMessages() {
+    public Messages getMessagesModule() {
         return messages;
+    }
+
+    public ListEngine<Message> getMessages(Peer peer) {
+        return messages.getConversationEngine(peer);
     }
 
     public ListEngine<Dialog> getDialogs() {

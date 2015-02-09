@@ -14,6 +14,25 @@ public class DialogBuilder {
     private long time;
     private int relatedUid = 0;
 
+    public DialogBuilder() {
+
+    }
+
+    public DialogBuilder(Dialog dialog) {
+        peer = dialog.getPeer();
+        sortKey = dialog.getSortKey();
+        dialogTitle = dialog.getDialogTitle();
+        dialogAvatar = dialog.getDialogAvatar();
+        unreadCount = dialog.getUnreadCount();
+        rid = dialog.getRid();
+        messageType = dialog.getMessageType();
+        text = dialog.getText();
+        status = dialog.getStatus();
+        senderId = dialog.getSenderId();
+        time = dialog.getTime();
+        relatedUid = dialog.getRelatedUid();
+    }
+
     public DialogBuilder setPeer(Peer peer) {
         this.peer = peer;
         return this;
