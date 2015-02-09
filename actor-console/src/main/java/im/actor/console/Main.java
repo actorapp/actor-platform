@@ -85,7 +85,7 @@ public class Main {
                             @Override
                             public User deserialize(byte[] v) {
                                 try {
-                                    return Bser.parse(UserEntity.class, v).getUser();
+                                    return Bser.parse(new UserEntity(), v).getUser();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

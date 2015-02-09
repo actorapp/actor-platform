@@ -1,7 +1,9 @@
 package im.actor.model.util;
 
+import com.droidkit.actors.conf.EnvConfig;
+import com.droidkit.actors.utils.AtomicIntegerCompat;
+
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExponentialBackoff {
 
@@ -9,7 +11,9 @@ public class ExponentialBackoff {
     private static final int MAX_DELAY = 15000;
     private static final int MAX_FAILURE_COUNT = 50;
 
-    private final AtomicInteger currentFailureCount = new AtomicInteger();
+
+    private final AtomicIntegerCompat currentFailureCount = EnvConfig.createAtomicInt(1);
+
     private final Random random = new Random();
 
     public long exponentialWait() {

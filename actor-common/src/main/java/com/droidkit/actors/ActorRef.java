@@ -3,8 +3,6 @@ package com.droidkit.actors;
 import com.droidkit.actors.mailbox.ActorDispatcher;
 import com.droidkit.actors.mailbox.ActorEndpoint;
 
-import java.util.UUID;
-
 /**
  * Reference to Actor that allows to send messages to real Actor
  *
@@ -13,13 +11,8 @@ import java.util.UUID;
 public class ActorRef {
     private ActorSystem system;
     private ActorDispatcher dispatcher;
-    private UUID uuid;
     private String path;
     private ActorEndpoint endpoint;
-
-    public UUID getUuid() {
-        return uuid;
-    }
 
     public String getPath() {
         return path;
@@ -36,13 +29,11 @@ public class ActorRef {
      * @param system     actor system
      * @param dispatcher dispatcher of actor
      * @param path       path of actor
-     * @param uuid       uuid of actor
      */
-    public ActorRef(ActorEndpoint endpoint, ActorSystem system, ActorDispatcher dispatcher, UUID uuid, String path) {
+    public ActorRef(ActorEndpoint endpoint, ActorSystem system, ActorDispatcher dispatcher, String path) {
         this.endpoint = endpoint;
         this.system = system;
         this.dispatcher = dispatcher;
-        this.uuid = uuid;
         this.path = path;
     }
 

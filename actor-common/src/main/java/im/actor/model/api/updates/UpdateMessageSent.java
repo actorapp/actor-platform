@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateMessageSent extends Update {
 
     public static final int HEADER = 0x4;
     public static UpdateMessageSent fromBytes(byte[] data) throws IOException {
-        return Bser.parse(UpdateMessageSent.class, data);
+        return Bser.parse(new UpdateMessageSent(), data);
     }
 
     private Peer peer;
@@ -47,7 +48,7 @@ public class UpdateMessageSent extends Update {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, Peer.class);
+        this.peer = values.getObj(1, new Peer());
         this.rid = values.getLong(2);
         this.date = values.getLong(3);
     }

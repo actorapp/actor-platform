@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateUserLastSeen extends Update {
 
     public static final int HEADER = 0x9;
     public static UpdateUserLastSeen fromBytes(byte[] data) throws IOException {
-        return Bser.parse(UpdateUserLastSeen.class, data);
+        return Bser.parse(new UpdateUserLastSeen(), data);
     }
 
     private int uid;

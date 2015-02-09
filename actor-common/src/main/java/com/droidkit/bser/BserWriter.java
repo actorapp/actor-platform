@@ -1,8 +1,8 @@
 package com.droidkit.bser;
 
-import java.io.ByteArrayOutputStream;
+import im.actor.model.util.DataOutput;
+
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -14,9 +14,9 @@ public class BserWriter {
     private static final int TYPE_64BIT = 1;
     private static final int TYPE_LENGTH_DELIMITED = 2;
 
-    private OutputStream stream;
+    private DataOutput stream;
 
-    public BserWriter(OutputStream stream) {
+    public BserWriter(DataOutput stream) {
         this.stream = stream;
     }
 
@@ -79,19 +79,15 @@ public class BserWriter {
 
     public void writeObject(int fieldNumber, BserObject value) throws IOException {
         writeTag(fieldNumber, TYPE_LENGTH_DELIMITED);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        DataOutput outputStream = new DataOutput();
         BserWriter writer = new BserWriter(outputStream);
         value.serialize(writer);
         writeBytes(outputStream.toByteArray());
     }
 
-    public <T extends BserComposite> void writeComposite(BserCompositeFieldDescription<T> field, T val) throws IOException {
-        field.writeObject(val, this);
-    }
-
     private void writeTag(int fieldNumber, int wireType) throws IOException {
         byte tag = (byte) (fieldNumber << 3 | wireType);
-        stream.write(tag);
+        stream.writeByte(tag);
     }
 
     private void writeVarIntField(int fieldNumber, long value) throws IOException {
@@ -117,33 +113,33 @@ public class BserWriter {
 
     private void writeVarInt(long value) throws IOException {
         while ((value & 0xffffffffffffff80l) != 0l) {
-            stream.write((byte) ((value & 0x7f) | 0x80));
+            stream.writeByte((byte) ((value & 0x7f) | 0x80));
             value >>>= 7;
         }
 
-        stream.write((byte) (value & 0x7f));
+        stream.writeByte((byte) (value & 0x7f));
     }
 
     private void writeLong(long v) throws IOException {
-        stream.write((byte) (v & 0xFF));
-        stream.write((byte) ((v >> 8) & 0xFF));
-        stream.write((byte) ((v >> 16) & 0xFF));
-        stream.write((byte) ((v >> 24) & 0xFF));
-        stream.write((byte) ((v >> 32) & 0xFF));
-        stream.write((byte) ((v >> 40) & 0xFF));
-        stream.write((byte) ((v >> 48) & 0xFF));
-        stream.write((byte) ((v >> 56) & 0xFF));
+        stream.writeByte((byte) (v & 0xFF));
+        stream.writeByte((byte) ((v >> 8) & 0xFF));
+        stream.writeByte((byte) ((v >> 16) & 0xFF));
+        stream.writeByte((byte) ((v >> 24) & 0xFF));
+        stream.writeByte((byte) ((v >> 32) & 0xFF));
+        stream.writeByte((byte) ((v >> 40) & 0xFF));
+        stream.writeByte((byte) ((v >> 48) & 0xFF));
+        stream.writeByte((byte) ((v >> 56) & 0xFF));
     }
 
     private void writeInt(long v) throws IOException {
-        stream.write((byte) (v & 0xFF));
-        stream.write((byte) ((v >> 8) & 0xFF));
-        stream.write((byte) ((v >> 16) & 0xFF));
-        stream.write((byte) ((v >> 24) & 0xFF));
+        stream.writeByte((byte) (v & 0xFF));
+        stream.writeByte((byte) ((v >> 8) & 0xFF));
+        stream.writeByte((byte) ((v >> 16) & 0xFF));
+        stream.writeByte((byte) ((v >> 24) & 0xFF));
     }
 
     private void writeBytes(byte[] data) throws IOException {
         writeVarInt(data.length);
-        stream.write(data);
+        stream.writeBytes(data, 0, data.length);
     }
 }

@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestSendEmailCode extends Request<ResponseVoid> {
 
     public static final int HEADER = 0x78;
     public static RequestSendEmailCode fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestSendEmailCode.class, data);
+        return Bser.parse(new RequestSendEmailCode(), data);
     }
 
     private String email;

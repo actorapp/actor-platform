@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateUserAvatarChanged extends Update {
 
     public static final int HEADER = 0x10;
     public static UpdateUserAvatarChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(UpdateUserAvatarChanged.class, data);
+        return Bser.parse(new UpdateUserAvatarChanged(), data);
     }
 
     private int uid;
@@ -42,7 +43,7 @@ public class UpdateUserAvatarChanged extends Update {
     @Override
     public void parse(BserValues values) throws IOException {
         this.uid = values.getInt(1);
-        this.avatar = values.optObj(2, Avatar.class);
+        this.avatar = values.optObj(2, new Avatar());
     }
 
     @Override

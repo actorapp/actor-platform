@@ -10,6 +10,7 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class Group extends BserObject {
 
@@ -74,10 +75,14 @@ public class Group extends BserObject {
         this.id = values.getInt(1);
         this.accessHash = values.getLong(2);
         this.title = values.getString(3);
-        this.avatar = values.optObj(4, Avatar.class);
+        this.avatar = values.optObj(4, new Avatar());
         this.isMember = values.getBool(6);
         this.adminUid = values.getInt(8);
-        this.members = values.getRepeatedObj(9, Member.class);
+        List<Member> _members = new ArrayList<Member>();
+        for (int i = 0; i < values.getRepeatedCount(9); i ++) {
+            _members.add(new Member());
+        }
+        this.members = values.getRepeatedObj(9, _members);
         this.createDate = values.getLong(10);
     }
 

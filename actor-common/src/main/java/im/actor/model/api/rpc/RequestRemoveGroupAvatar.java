@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestRemoveGroupAvatar extends Request<ResponseSeqDate> {
 
     public static final int HEADER = 0x65;
     public static RequestRemoveGroupAvatar fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestRemoveGroupAvatar.class, data);
+        return Bser.parse(new RequestRemoveGroupAvatar(), data);
     }
 
     private GroupOutPeer groupPeer;
@@ -41,7 +42,7 @@ public class RequestRemoveGroupAvatar extends Request<ResponseSeqDate> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.groupPeer = values.getObj(1, GroupOutPeer.class);
+        this.groupPeer = values.getObj(1, new GroupOutPeer());
         this.rid = values.getLong(4);
     }
 

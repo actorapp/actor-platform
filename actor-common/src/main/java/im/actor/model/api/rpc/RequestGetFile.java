@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestGetFile extends Request<ResponseGetFile> {
 
     public static final int HEADER = 0x10;
     public static RequestGetFile fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestGetFile.class, data);
+        return Bser.parse(new RequestGetFile(), data);
     }
 
     private FileLocation fileLocation;
@@ -47,7 +48,7 @@ public class RequestGetFile extends Request<ResponseGetFile> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.fileLocation = values.getObj(1, FileLocation.class);
+        this.fileLocation = values.getObj(1, new FileLocation());
         this.offset = values.getInt(2);
         this.limit = values.getInt(3);
     }

@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestSendMessage extends Request<ResponseSeqDate> {
 
     public static final int HEADER = 0x5c;
     public static RequestSendMessage fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestSendMessage.class, data);
+        return Bser.parse(new RequestSendMessage(), data);
     }
 
     private OutPeer peer;
@@ -47,9 +48,9 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, OutPeer.class);
+        this.peer = values.getObj(1, new OutPeer());
         this.rid = values.getLong(3);
-        this.message = values.getObj(4, MessageContent.class);
+        this.message = values.getObj(4, new MessageContent());
     }
 
     @Override

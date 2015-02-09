@@ -1,6 +1,8 @@
 package im.actor.model.network.mtp.actors;
 
 import com.droidkit.actors.*;
+import com.droidkit.actors.conf.EnvConfig;
+import com.droidkit.actors.utils.AtomicIntegerCompat;
 import im.actor.model.network.ConnectionFactory;
 import im.actor.model.log.Log;
 import im.actor.model.network.Connection;
@@ -13,7 +15,6 @@ import im.actor.model.util.DataOutput;
 import im.actor.model.util.ExponentialBackoff;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by ex3ndr on 02.09.14.
@@ -32,7 +33,7 @@ public class ManagerActor extends Actor {
                 }), mtProto.getActorPath() + "/manager"));
     }
 
-    private static final AtomicInteger NEXT_CONNECTION = new AtomicInteger(1);
+    private static final AtomicIntegerCompat NEXT_CONNECTION = EnvConfig.createAtomicInt(1);
 
     private final MTProto mtProto;
     private final Endpoints endpoints;

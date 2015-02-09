@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateConfig extends Update {
 
     public static final int HEADER = 0x2a;
     public static UpdateConfig fromBytes(byte[] data) throws IOException {
-        return Bser.parse(UpdateConfig.class, data);
+        return Bser.parse(new UpdateConfig(), data);
     }
 
     private Config config;
@@ -35,7 +36,7 @@ public class UpdateConfig extends Update {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.config = values.getObj(1, Config.class);
+        this.config = values.getObj(1, new Config());
     }
 
     @Override

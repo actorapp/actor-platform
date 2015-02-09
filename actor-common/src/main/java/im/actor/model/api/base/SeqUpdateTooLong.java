@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class SeqUpdateTooLong extends RpcScope {
 
     public static final int HEADER = 0x19;
     public static SeqUpdateTooLong fromBytes(byte[] data) throws IOException {
-        return Bser.parse(SeqUpdateTooLong.class, data);
+        return Bser.parse(new SeqUpdateTooLong(), data);
     }
 
 

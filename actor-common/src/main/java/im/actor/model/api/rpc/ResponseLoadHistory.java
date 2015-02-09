@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class ResponseLoadHistory extends Response {
 
     public static final int HEADER = 0x77;
     public static ResponseLoadHistory fromBytes(byte[] data) throws IOException {
-        return Bser.parse(ResponseLoadHistory.class, data);
+        return Bser.parse(new ResponseLoadHistory(), data);
     }
 
     private List<HistoryMessage> history;
@@ -41,8 +42,16 @@ public class ResponseLoadHistory extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.history = values.getRepeatedObj(1, HistoryMessage.class);
-        this.users = values.getRepeatedObj(2, User.class);
+        List<HistoryMessage> _history = new ArrayList<HistoryMessage>();
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+            _history.add(new HistoryMessage());
+        }
+        this.history = values.getRepeatedObj(1, _history);
+        List<User> _users = new ArrayList<User>();
+        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+            _users.add(new User());
+        }
+        this.users = values.getRepeatedObj(2, _users);
     }
 
     @Override

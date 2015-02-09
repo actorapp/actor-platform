@@ -10,6 +10,7 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class Avatar extends BserObject {
 
@@ -41,9 +42,9 @@ public class Avatar extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.smallImage = values.optObj(1, AvatarImage.class);
-        this.largeImage = values.optObj(2, AvatarImage.class);
-        this.fullImage = values.optObj(3, AvatarImage.class);
+        this.smallImage = values.optObj(1, new AvatarImage());
+        this.largeImage = values.optObj(2, new AvatarImage());
+        this.fullImage = values.optObj(3, new AvatarImage());
     }
 
     @Override

@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestEditGroupTitle extends Request<ResponseSeqDate> {
 
     public static final int HEADER = 0x55;
     public static RequestEditGroupTitle fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestEditGroupTitle.class, data);
+        return Bser.parse(new RequestEditGroupTitle(), data);
     }
 
     private GroupOutPeer groupPeer;
@@ -47,7 +48,7 @@ public class RequestEditGroupTitle extends Request<ResponseSeqDate> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.groupPeer = values.getObj(1, GroupOutPeer.class);
+        this.groupPeer = values.getObj(1, new GroupOutPeer());
         this.rid = values.getLong(4);
         this.title = values.getString(3);
     }

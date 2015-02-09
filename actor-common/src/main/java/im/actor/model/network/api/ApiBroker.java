@@ -1,6 +1,8 @@
 package im.actor.model.network.api;
 
 import com.droidkit.actors.*;
+import com.droidkit.actors.conf.EnvConfig;
+import com.droidkit.actors.utils.AtomicLongCompat;
 import im.actor.model.api.parser.RpcParser;
 import im.actor.model.log.Log;
 import im.actor.model.network.*;
@@ -17,7 +19,6 @@ import im.actor.model.network.parser.RpcScope;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by ex3ndr on 08.02.15.
@@ -34,7 +35,7 @@ public class ApiBroker extends Actor {
     }
 
     private static final String TAG = "ApiBroker";
-    private static final AtomicLong NEXT_RPC_ID = new AtomicLong(1);
+    private static final AtomicLongCompat NEXT_RPC_ID = EnvConfig.createAtomicLong(1);
 
     private final Endpoints endpoints;
     private final AuthKeyStorage keyStorage;

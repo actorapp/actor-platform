@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class ResponseLoadDialogs extends Response {
 
     public static final int HEADER = 0x69;
     public static ResponseLoadDialogs fromBytes(byte[] data) throws IOException {
-        return Bser.parse(ResponseLoadDialogs.class, data);
+        return Bser.parse(new ResponseLoadDialogs(), data);
     }
 
     private List<Group> groups;
@@ -47,9 +48,21 @@ public class ResponseLoadDialogs extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.groups = values.getRepeatedObj(1, Group.class);
-        this.users = values.getRepeatedObj(2, User.class);
-        this.dialogs = values.getRepeatedObj(3, Dialog.class);
+        List<Group> _groups = new ArrayList<Group>();
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+            _groups.add(new Group());
+        }
+        this.groups = values.getRepeatedObj(1, _groups);
+        List<User> _users = new ArrayList<User>();
+        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+            _users.add(new User());
+        }
+        this.users = values.getRepeatedObj(2, _users);
+        List<Dialog> _dialogs = new ArrayList<Dialog>();
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
+            _dialogs.add(new Dialog());
+        }
+        this.dialogs = values.getRepeatedObj(3, _dialogs);
     }
 
     @Override

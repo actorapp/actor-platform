@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestSendEncryptedMessage extends Request<ResponseSeqDate> {
 
     public static final int HEADER = 0xe;
     public static RequestSendEncryptedMessage fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestSendEncryptedMessage.class, data);
+        return Bser.parse(new RequestSendEncryptedMessage(), data);
     }
 
     private OutPeer peer;
@@ -59,11 +60,19 @@ public class RequestSendEncryptedMessage extends Request<ResponseSeqDate> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, OutPeer.class);
+        this.peer = values.getObj(1, new OutPeer());
         this.rid = values.getLong(3);
         this.encryptedMessage = values.getBytes(4);
-        this.keys = values.getRepeatedObj(5, EncryptedAesKey.class);
-        this.ownKeys = values.getRepeatedObj(6, EncryptedAesKey.class);
+        List<EncryptedAesKey> _keys = new ArrayList<EncryptedAesKey>();
+        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
+            _keys.add(new EncryptedAesKey());
+        }
+        this.keys = values.getRepeatedObj(5, _keys);
+        List<EncryptedAesKey> _ownKeys = new ArrayList<EncryptedAesKey>();
+        for (int i = 0; i < values.getRepeatedCount(6); i ++) {
+            _ownKeys.add(new EncryptedAesKey());
+        }
+        this.ownKeys = values.getRepeatedObj(6, _ownKeys);
     }
 
     @Override

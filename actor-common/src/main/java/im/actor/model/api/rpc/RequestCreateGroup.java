@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestCreateGroup extends Request<ResponseCreateGroup> {
 
     public static final int HEADER = 0x41;
     public static RequestCreateGroup fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestCreateGroup.class, data);
+        return Bser.parse(new RequestCreateGroup(), data);
     }
 
     private long rid;
@@ -49,7 +50,11 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
     public void parse(BserValues values) throws IOException {
         this.rid = values.getLong(1);
         this.title = values.getString(2);
-        this.users = values.getRepeatedObj(3, UserOutPeer.class);
+        List<UserOutPeer> _users = new ArrayList<UserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
+            _users.add(new UserOutPeer());
+        }
+        this.users = values.getRepeatedObj(3, _users);
     }
 
     @Override

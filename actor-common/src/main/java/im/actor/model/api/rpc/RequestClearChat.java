@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestClearChat extends Request<ResponseSeq> {
 
     public static final int HEADER = 0x63;
     public static RequestClearChat fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestClearChat.class, data);
+        return Bser.parse(new RequestClearChat(), data);
     }
 
     private OutPeer peer;
@@ -35,7 +36,7 @@ public class RequestClearChat extends Request<ResponseSeq> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, OutPeer.class);
+        this.peer = values.getObj(1, new OutPeer());
     }
 
     @Override

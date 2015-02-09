@@ -57,6 +57,19 @@ public class DataInput {
         return res2 + (res1 << 32);
     }
 
+    public long readUInt() throws IOException {
+        if (offset + 8 > maxOffset) {
+            throw new IOException();
+        }
+
+        long a1 = data[offset + 3] & 0xFF;
+        long a2 = data[offset + 2] & 0xFF;
+        long a3 = data[offset + 1] & 0xFF;
+        long a4 = data[offset + 0] & 0xFF;
+        offset += 4;
+        return  (a1) + (a2 << 8) + (a3 << 16) + (a4 << 24);
+    }
+
     public byte[] readBytes(int count) throws IOException {
         if (offset + count > maxOffset) {
             throw new IOException();

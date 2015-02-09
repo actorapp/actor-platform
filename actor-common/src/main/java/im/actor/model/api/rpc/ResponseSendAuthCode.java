@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class ResponseSendAuthCode extends Response {
 
     public static final int HEADER = 0x2;
     public static ResponseSendAuthCode fromBytes(byte[] data) throws IOException {
-        return Bser.parse(ResponseSendAuthCode.class, data);
+        return Bser.parse(new ResponseSendAuthCode(), data);
     }
 
     private String smsHash;

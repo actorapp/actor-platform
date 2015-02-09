@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestSignIn extends Request<ResponseAuth> {
 
     public static final int HEADER = 0x3;
     public static RequestSignIn fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestSignIn.class, data);
+        return Bser.parse(new RequestSignIn(), data);
     }
 
     private long phoneNumber;

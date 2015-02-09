@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestGetPublicKeys extends Request<ResponseGetPublicKeys> {
 
     public static final int HEADER = 0x6;
     public static RequestGetPublicKeys fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestGetPublicKeys.class, data);
+        return Bser.parse(new RequestGetPublicKeys(), data);
     }
 
     private List<PublicKeyRequest> keys;
@@ -35,7 +36,11 @@ public class RequestGetPublicKeys extends Request<ResponseGetPublicKeys> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.keys = values.getRepeatedObj(1, PublicKeyRequest.class);
+        List<PublicKeyRequest> _keys = new ArrayList<PublicKeyRequest>();
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+            _keys.add(new PublicKeyRequest());
+        }
+        this.keys = values.getRepeatedObj(1, _keys);
     }
 
     @Override

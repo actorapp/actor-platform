@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class ResponseGetAuthSessions extends Response {
 
     public static final int HEADER = 0x51;
     public static ResponseGetAuthSessions fromBytes(byte[] data) throws IOException {
-        return Bser.parse(ResponseGetAuthSessions.class, data);
+        return Bser.parse(new ResponseGetAuthSessions(), data);
     }
 
     private List<AuthSession> userAuths;
@@ -35,7 +36,11 @@ public class ResponseGetAuthSessions extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.userAuths = values.getRepeatedObj(1, AuthSession.class);
+        List<AuthSession> _userAuths = new ArrayList<AuthSession>();
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+            _userAuths.add(new AuthSession());
+        }
+        this.userAuths = values.getRepeatedObj(1, _userAuths);
     }
 
     @Override

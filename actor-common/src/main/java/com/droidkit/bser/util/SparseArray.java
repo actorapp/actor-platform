@@ -78,19 +78,6 @@ public class SparseArray<E> implements Cloneable {
         mSize = 0;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public SparseArray<E> clone() {
-        SparseArray<E> clone = null;
-        try {
-            clone = (SparseArray<E>) super.clone();
-            clone.mKeys = mKeys.clone();
-            clone.mValues = mValues.clone();
-        } catch (CloneNotSupportedException cnse) {
-            /* ignore */
-        }
-        return clone;
-    }
 
     /**
      * Gets the Object mapped from the specified key, or <code>null</code>

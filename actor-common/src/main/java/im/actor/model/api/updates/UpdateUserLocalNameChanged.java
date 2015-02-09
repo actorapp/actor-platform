@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateUserLocalNameChanged extends Update {
 
     public static final int HEADER = 0x33;
     public static UpdateUserLocalNameChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(UpdateUserLocalNameChanged.class, data);
+        return Bser.parse(new UpdateUserLocalNameChanged(), data);
     }
 
     private int uid;

@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestTerminateSession extends Request<ResponseVoid> {
 
     public static final int HEADER = 0x52;
     public static RequestTerminateSession fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestTerminateSession.class, data);
+        return Bser.parse(new RequestTerminateSession(), data);
     }
 
     private int id;

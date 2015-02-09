@@ -1,6 +1,7 @@
 package com.droidkit.bser;
 
 import com.droidkit.bser.util.SparseArray;
+import im.actor.model.util.DataInput;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -164,33 +165,20 @@ public class BserValues {
     }
 
 
-    public <T extends BserObject> T getObj(int id, Class<T> clazz) throws IOException {
+    public <T extends BserObject> T getObj(int id, T obj) throws IOException {
         byte[] data = getBytes(id);
         if (data == null) {
             throw new UnknownFieldException("Unable to find field #" + id);
         }
-        return Bser.parse(clazz, data);
+        return Bser.parse(obj, new DataInput(data, 0, data.length));
     }
 
-    public <T extends BserObject> T optObj(int id, Class<T> clazz) throws IOException {
+    public <T extends BserObject> T optObj(int id, T obj) throws IOException {
         byte[] data = optBytes(id);
         if (data == null) {
             return null;
         }
-        return Bser.parse(clazz, data);
-    }
-
-
-    public <T extends BserComposite> T getComposite(BserCompositeFieldDescription<T> fieldDescritption) throws IOException {
-        T res = fieldDescritption.readObject(this);
-        if (res == null) {
-            throw new UnknownFieldException("Unable to find field for composite type");
-        }
-        return res;
-    }
-
-    public <T extends BserComposite> T optComposite(BserCompositeFieldDescription<T> fieldDescritption) throws IOException {
-        return fieldDescritption.readObject(this);
+        return Bser.parse(obj, new DataInput(data, 0, data.length));
     }
 
     public List<Integer> getRepeatedInt(int id) {
@@ -301,18 +289,32 @@ public class BserValues {
         return res;
     }
 
-    public <T extends BserObject> List<T> getRepeatedObj(int id, Class<T> clazz) throws IOException {
+    public int getRepeatedCount(int id) {
+        if (fields.containsKey(id)) {
+            Object val = fields.get(id);
+            if (val instanceof List) {
+                return ((List) val).size();
+            } else {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    public <T extends BserObject> List<T> getRepeatedObj(int id, List<T> objs) throws IOException {
         ArrayList<T> res = new ArrayList<T>();
         if (fields.containsKey(id)) {
             Object val = fields.get(id);
             if (val instanceof byte[]) {
-                res.add(Bser.parse(clazz, (byte[]) val));
+                byte[] b = (byte[]) val;
+                res.add(Bser.parse(objs.remove(0), new DataInput(b, 0, b.length)));
             } else if (val instanceof List) {
                 List<Object> rep = (List) val;
 
                 for (Object val2 : rep) {
                     if (val2 instanceof byte[]) {
-                        res.add(Bser.parse(clazz, (byte[]) val2));
+                        byte[] b = (byte[]) val2;
+                        res.add(Bser.parse(objs.remove(0), new DataInput(b, 0, b.length)));
                     } else {
                         throw new IncorrectTypeException("Expected type: byte[], got " + val2.getClass().getSimpleName());
                     }

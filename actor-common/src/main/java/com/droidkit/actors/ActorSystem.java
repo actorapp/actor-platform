@@ -31,8 +31,6 @@ public class ActorSystem {
 
     private TraceInterface traceInterface;
 
-    private ClassLoader classLoader;
-
     /**
      * Creating new actor system
      */
@@ -48,7 +46,6 @@ public class ActorSystem {
         if (addDefaultDispatcher) {
             addDispatcher(DEFAULT_DISPATCHER);
         }
-        classLoader = getClass().getClassLoader();
     }
 
     /**
@@ -79,7 +76,7 @@ public class ActorSystem {
                 return;
             }
 
-            ActorDispatcher dispatcher = EnvConfig.createDispatcher(dispatcherId, Runtime.getRuntime().availableProcessors(), ThreadPriority.LOW, this);
+            ActorDispatcher dispatcher = EnvConfig.createDispatcher(dispatcherId, EnvConfig.getJavaFactory().getCoresCount(), ThreadPriority.LOW, this);
             addDispatcher(dispatcherId, dispatcher);
         }
     }
@@ -101,18 +98,6 @@ public class ActorSystem {
 
     public <T extends Actor> ActorRef actorOf(ActorSelection selection) {
         return actorOf(selection.getProps(), selection.getPath());
-    }
-
-    /**
-     * Creating or getting existing actor from actor class
-     *
-     * @param actor Actor Class
-     * @param path  Actor Path
-     * @param <T>   Actor Class
-     * @return ActorRef
-     */
-    public <T extends Actor> ActorRef actorOf(Class<T> actor, String path) {
-        return actorOf(Props.create(actor), path);
     }
 
     /**
@@ -152,26 +137,5 @@ public class ActorSystem {
      */
     public void setTraceInterface(TraceInterface traceInterface) {
         this.traceInterface = traceInterface;
-    }
-
-    /**
-     * Getting actor system class loader
-     *
-     * @return class loader
-     */
-    public ClassLoader getClassLoader() {
-        return classLoader;
-    }
-
-    /**
-     * Setting actor system class loader
-     *
-     * @param classLoader class loader
-     */
-    public void setClassLoader(ClassLoader classLoader) {
-        if (classLoader == null) {
-            throw new IllegalArgumentException("ClassLoader cannot be null");
-        }
-        this.classLoader = classLoader;
     }
 }

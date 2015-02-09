@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestChangeEmailTitle extends Request<ResponseSeq> {
 
     public static final int HEADER = 0x7d;
     public static RequestChangeEmailTitle fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestChangeEmailTitle.class, data);
+        return Bser.parse(new RequestChangeEmailTitle(), data);
     }
 
     private int emailId;

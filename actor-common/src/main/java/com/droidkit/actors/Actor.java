@@ -1,9 +1,6 @@
 package com.droidkit.actors;
 
-import com.droidkit.actors.concurrency.Future;
-import com.droidkit.actors.concurrency.FutureCallback;
 import com.droidkit.actors.extensions.ActorExtension;
-import com.droidkit.actors.extensions.CallbackExtension;
 import com.droidkit.actors.extensions.RunnableExtension;
 import com.droidkit.actors.mailbox.Mailbox;
 import com.droidkit.actors.messages.DeadLetter;
@@ -12,7 +9,6 @@ import com.droidkit.actors.tasks.AskCallback;
 import com.droidkit.actors.tasks.AskFuture;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * Actor object
@@ -21,14 +17,12 @@ import java.util.UUID;
  */
 public class Actor {
 
-    private UUID uuid;
     private String path;
 
     private ActorContext context;
     private Mailbox mailbox;
 
     private ActorAskImpl askPattern;
-    private CallbackExtension callbackExtension;
     private ArrayList<ActorExtension> extensions = new ArrayList<ActorExtension>();
 
     public Actor() {
@@ -39,20 +33,16 @@ public class Actor {
      * <p>INTERNAL API</p>
      * Initialization of actor
      *
-     * @param uuid    uuid of actor
      * @param path    path of actor
      * @param context context of actor
      * @param mailbox mailbox of actor
      */
-    public final void initActor(UUID uuid, String path, ActorContext context, Mailbox mailbox) {
-        this.uuid = uuid;
+    public final void initActor(String path, ActorContext context, Mailbox mailbox) {
         this.path = path;
         this.context = context;
         this.mailbox = mailbox;
         this.askPattern = new ActorAskImpl(self());
-        this.callbackExtension = new CallbackExtension(self());
         this.extensions.add(askPattern);
-        this.extensions.add(callbackExtension);
         this.extensions.add(new RunnableExtension());
     }
 
@@ -99,15 +89,6 @@ public class Actor {
      */
     public final ActorRef sender() {
         return context.sender();
-    }
-
-    /**
-     * Actor UUID
-     *
-     * @return uuid
-     */
-    protected final UUID getUuid() {
-        return uuid;
     }
 
     /**
@@ -290,18 +271,5 @@ public class Actor {
      */
     public AskFuture ask(ActorRef ref, long timeout, AskCallback callback) {
         return askPattern.ask(ref, timeout, callback);
-    }
-
-
-    /**
-     * Proxy callback interface for invoking methods as actor messages
-     *
-     * @param src    sourceCallback
-     * @param tClass callback class
-     * @param <T>    type of callback
-     * @return proxy callback
-     */
-    public <T> T proxy(final T src, Class<T> tClass) {
-        return callbackExtension.proxy(src, tClass);
     }
 }

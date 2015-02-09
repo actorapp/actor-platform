@@ -10,6 +10,7 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 
 public class WrongKeysErrorData extends BserObject {
 
@@ -41,9 +42,21 @@ public class WrongKeysErrorData extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.newKeys = values.getRepeatedObj(1, UserKey.class);
-        this.removedKeys = values.getRepeatedObj(2, UserKey.class);
-        this.invalidKeys = values.getRepeatedObj(3, UserKey.class);
+        List<UserKey> _newKeys = new ArrayList<UserKey>();
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+            _newKeys.add(new UserKey());
+        }
+        this.newKeys = values.getRepeatedObj(1, _newKeys);
+        List<UserKey> _removedKeys = new ArrayList<UserKey>();
+        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+            _removedKeys.add(new UserKey());
+        }
+        this.removedKeys = values.getRepeatedObj(2, _removedKeys);
+        List<UserKey> _invalidKeys = new ArrayList<UserKey>();
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
+            _invalidKeys.add(new UserKey());
+        }
+        this.invalidKeys = values.getRepeatedObj(3, _invalidKeys);
     }
 
     @Override

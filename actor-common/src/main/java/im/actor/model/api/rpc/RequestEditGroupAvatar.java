@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
 
     public static final int HEADER = 0x56;
     public static RequestEditGroupAvatar fromBytes(byte[] data) throws IOException {
-        return Bser.parse(RequestEditGroupAvatar.class, data);
+        return Bser.parse(new RequestEditGroupAvatar(), data);
     }
 
     private GroupOutPeer groupPeer;
@@ -47,9 +48,9 @@ public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.groupPeer = values.getObj(1, GroupOutPeer.class);
+        this.groupPeer = values.getObj(1, new GroupOutPeer());
         this.rid = values.getLong(4);
-        this.fileLocation = values.getObj(3, FileLocation.class);
+        this.fileLocation = values.getObj(3, new FileLocation());
     }
 
     @Override

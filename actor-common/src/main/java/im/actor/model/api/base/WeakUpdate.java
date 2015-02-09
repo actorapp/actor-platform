@@ -10,13 +10,14 @@ import com.droidkit.bser.BserWriter;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class WeakUpdate extends RpcScope {
 
     public static final int HEADER = 0x1a;
     public static WeakUpdate fromBytes(byte[] data) throws IOException {
-        return Bser.parse(WeakUpdate.class, data);
+        return Bser.parse(new WeakUpdate(), data);
     }
 
     private long date;
