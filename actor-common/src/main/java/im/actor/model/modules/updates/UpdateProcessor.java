@@ -24,7 +24,7 @@ public class UpdateProcessor {
     public UpdateProcessor(Messenger messenger) {
         this.messenger = messenger;
         this.usersProcessor = new UsersProcessor(messenger);
-        this.messagesProcessor = new MessagesProcessor();
+        this.messagesProcessor = new MessagesProcessor(messenger);
         this.groupsProcessor = new GroupsProcessor();
     }
 
@@ -51,8 +51,34 @@ public class UpdateProcessor {
             UpdateUserAvatarChanged avatarChanged = (UpdateUserAvatarChanged) update;
             usersProcessor.onUserAvatarChanged(avatarChanged.getUid(), avatarChanged.getAvatar());
         } else if (update instanceof UpdateUserStateChanged) {
-            UpdateUserStateChanged stateChanged = (UpdateUserStateChanged) update;
-            usersProcessor.onUserStateChanged(stateChanged.getUid(), stateChanged.getState());
+            // TODO: Remove
+        } else if (update instanceof UpdateMessage) {
+            UpdateMessage message = (UpdateMessage) update;
+            messagesProcessor.onMessage(message.getPeer(), message.getSenderUid(), message.getDate(), message.getRid(),
+                    message.getMessage());
+        } else if (update instanceof UpdateMessageRead) {
+            UpdateMessageRead messageRead = (UpdateMessageRead) update;
+            messagesProcessor.onMessageRead(messageRead.getPeer(), messageRead.getStartDate(), messageRead.getReadDate());
+        } else if (update instanceof UpdateMessageReadByMe) {
+            UpdateMessageReadByMe messageReadByMe = (UpdateMessageReadByMe) update;
+            messagesProcessor.onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate());
+        } else if (update instanceof UpdateMessageReceived) {
+            UpdateMessageReceived received = (UpdateMessageReceived) update;
+            messagesProcessor.onMessageReceived(received.getPeer(), received.getStartDate(), received.getReceivedDate());
+        } else if (update instanceof UpdateMessageDelete) {
+            UpdateMessageDelete messageDelete = (UpdateMessageDelete) update;
+            messagesProcessor.onMessageDelete(messageDelete.getPeer(), messageDelete.getRids());
+        } else if (update instanceof UpdateMessageSent) {
+            UpdateMessageSent messageSent = (UpdateMessageSent) update;
+            messagesProcessor.onMessageSent(messageSent.getPeer(), messageSent.getRid(), messageSent.getDate());
+        } else if (update instanceof UpdateEncryptedMessage) {
+            // TODO: Implement
+        } else if (update instanceof UpdateEncryptedRead) {
+            // TODO: Implement
+        } else if (update instanceof UpdateEncryptedReadByMe) {
+            // TODO: Implement
+        } else if (update instanceof UpdateEncryptedReceived) {
+            // TODO: Implement
         }
     }
 

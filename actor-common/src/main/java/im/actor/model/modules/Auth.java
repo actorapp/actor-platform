@@ -44,7 +44,7 @@ public class Auth {
             preferences.putBytes(KEY_DEVICE_HASH, deviceHash);
         }
 
-        if (preferences.getBool("auth_yes", false)) {
+        if (preferences.getBool(KEY_AUTH, false)) {
             state = State.LOGGED_IN;
             messenger.onLoggedIn();
         } else {
@@ -65,7 +65,7 @@ public class Auth {
                             @Override
                             public void onResult(final ResponseSendAuthCode response) {
                                 preferences.putLong(KEY_PHONE, phone);
-                                preferences.putStrings(KEY_SMS_HASH, response.getSmsHash());
+                                preferences.putString(KEY_SMS_HASH, response.getSmsHash());
                                 state = State.CODE_VALIDATION;
 
                                 mainThread.runOnUiThread(new Runnable() {
@@ -97,7 +97,7 @@ public class Auth {
                 messenger.getActorApi().request(
                         new RequestSignIn(
                                 preferences.getLong(KEY_PHONE, 0),
-                                preferences.getStrings(KEY_SMS_HASH),
+                                preferences.getString(KEY_SMS_HASH),
                                 code,
                                 RandomUtils.seed(1024),
                                 deviceHash,

@@ -20,4 +20,6 @@ dependencies {
     compile project(':actor-java')
     compile project(':actor-java-threads')
     compile 'com.googlecode.lanterna:lanterna:2.1.9'
+    compile 'org.mapdb:mapdb:1.0.6'
+    compile 'com.droidkit:bser:1.2'
 }

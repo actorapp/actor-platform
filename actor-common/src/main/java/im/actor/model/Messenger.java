@@ -1,9 +1,12 @@
 package im.actor.model;
 
+import im.actor.model.entity.Dialog;
 import im.actor.model.modules.Auth;
+import im.actor.model.modules.Messages;
 import im.actor.model.modules.Updates;
 import im.actor.model.modules.Users;
 import im.actor.model.mvvm.KeyValueEngine;
+import im.actor.model.mvvm.ListEngine;
 import im.actor.model.network.ActorApi;
 import im.actor.model.network.ActorApiCallback;
 import im.actor.model.storage.PreferenceApiStorage;
@@ -16,6 +19,7 @@ public class Messenger {
     private Auth auth;
     private volatile Users users;
     private volatile Updates updates;
+    private volatile Messages messages;
     private ActorApi actorApi;
 
     public Messenger(Configuration configuration) {
@@ -47,11 +51,20 @@ public class Messenger {
 
     public void onLoggedIn() {
         users = new Users(this);
+        messages = new Messages(this);
         updates = new Updates(this);
     }
 
     public Updates getUpdates() {
         return updates;
+    }
+
+    public Messages getMessages() {
+        return messages;
+    }
+
+    public ListEngine<Dialog> getDialogs() {
+        return messages.getDialogsEngine();
     }
 
     public KeyValueEngine<im.actor.model.entity.User> getUsers() {

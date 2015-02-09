@@ -10,7 +10,6 @@ import com.droidkit.actors.messages.DeadLetter;
 import com.droidkit.actors.tasks.ActorAskImpl;
 import com.droidkit.actors.tasks.AskCallback;
 import com.droidkit.actors.tasks.AskFuture;
-import com.droidkit.actors.typed.TypedAskExtensions;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -29,7 +28,6 @@ public class Actor {
     private Mailbox mailbox;
 
     private ActorAskImpl askPattern;
-    private TypedAskExtensions typedAsk;
     private CallbackExtension callbackExtension;
     private ArrayList<ActorExtension> extensions = new ArrayList<ActorExtension>();
 
@@ -52,10 +50,8 @@ public class Actor {
         this.context = context;
         this.mailbox = mailbox;
         this.askPattern = new ActorAskImpl(self());
-        this.typedAsk = new TypedAskExtensions(self());
         this.callbackExtension = new CallbackExtension(self());
         this.extensions.add(askPattern);
-        this.extensions.add(typedAsk);
         this.extensions.add(callbackExtension);
         this.extensions.add(new RunnableExtension());
     }
@@ -296,16 +292,6 @@ public class Actor {
         return askPattern.ask(ref, timeout, callback);
     }
 
-    /**
-     * Ask TypedActor future method for result
-     *
-     * @param future   Future of ask
-     * @param callback callback for ask
-     * @param <T>      type of result
-     */
-    public <T> void ask(Future<T> future, FutureCallback<T> callback) {
-        typedAsk.ask(future, callback);
-    }
 
     /**
      * Proxy callback interface for invoking methods as actor messages

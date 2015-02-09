@@ -62,12 +62,12 @@ public class MemoryPreferences implements PreferencesStorage {
     }
 
     @Override
-    public void putStrings(String key, String v) {
+    public void putString(String key, String v) {
         items.put(key, v);
     }
 
     @Override
-    public String getStrings(String key) {
+    public String getString(String key) {
         if (items.containsKey(key)) {
             return (String) items.get(key);
         }
