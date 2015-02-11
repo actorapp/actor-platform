@@ -37,7 +37,7 @@ object Build extends sbt.Build {
       )
 
   lazy val root = Project(
-    "actor-server-ngen",
+    "actor-server",
     file("."),
     settings =
       defaultSettings               ++
@@ -54,4 +54,22 @@ object Build extends sbt.Build {
         scalacOptions        in (Compile,doc)     :=  Seq("-groups", "-implicits", "-diagrams")
       )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
+  .dependsOn(actorApi)
+  .aggregate(actorTests)
+
+  lazy val actorApi = Project(
+    id = "actor-api",
+    base = file("actor-api"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.root
+    )
+  )
+
+  lazy val actorTests = Project(
+    id = "actor-tests",
+    base = file("actor-tests"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.tests
+    )
+  ).dependsOn(actorApi)
 }
