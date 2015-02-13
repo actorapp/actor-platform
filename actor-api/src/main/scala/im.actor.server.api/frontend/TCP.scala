@@ -59,7 +59,6 @@ object MTProto {
   import akka.pattern.{ ask, AskTimeoutException }
   import akka.stream.stage._
   import im.actor.server.api.util.ByteConstants._
-  import im.actor.server.api.mtproto.codecs.CodecUtils
 
   val protoVersions = Set(1)
   val apiMajorVersions = Set(1)
@@ -124,19 +123,26 @@ object MTProto {
                 case -\/(e) => failedState(e.message)
               }
             }
+          case _: FailedState => ((state, BitVector.empty), Vector.empty)
         }
       }
     }
   }
 
   def mapResponse() = new PushPullStage[MTTransport, ByteString] {
+    private var packageIndex: Int = 0
+
     override def onPush(elem: MTTransport, ctx: Context[ByteString]): Directive = elem match {
-      case h: Handshake =>
-        if (h.protoVersion == 0 || h.apiMajorVersion == 0) ctx.pushAndFinish(ByteString(s"not ok: $h"))
-        ctx.push(ByteString("ok"))
-      case _ => ???
-//      case MTPackage(m) => ctx.push(m)
-//      case _: InternalError => ctx.pushAndFinish(ByteString.empty) // TODO: convert to BS
+      case h @ Handshake(protoVersion, apiMajorVersion, _, _) =>
+        val res = ByteString(HandshakeCodec.encodeValid(h).toByteBuffer)
+        if (protoVersion == 0 || apiMajorVersion == 0) ctx.pushAndFinish(res)
+        ctx.push(res)
+      case ProtoPackage(p) =>
+        packageIndex += 1
+        val pkg = TransportPackage(packageIndex, p)
+        val res = ByteString(TransportPackageCodec.encodeValid(pkg).toByteBuffer)
+        if (p.isInstanceOf[Drop]) ctx.pushAndFinish(res)
+        else ctx.push(res)
      case SilentClose => ctx.finish()
     }
 
@@ -148,13 +154,20 @@ object MTProto {
     import system.dispatcher
   
     req match {
-      case ProtoPackage(MTPackage(_, _, p)) =>
-        actorRef.ask(p).mapTo[MTTransport].recover {
-          case e: AskTimeoutException =>
-            val msg = s"handleAsk within $timeout"
-            system.log.error(e, msg)
-            ProtoPackage(InternalError(0, 0, msg))
+      case ProtoPackage(p) =>
+        val f = p match {
+          case m: MTPackage =>
+            actorRef.ask(m).mapTo[MTPackage].recover {
+              case e: AskTimeoutException =>
+                val msg = s"handleAsk within $timeout"
+                system.log.error(e, msg)
+                InternalError(0, 0, msg)
+            }
+          case Ping(bytes) => Future.successful(Pong(bytes))
+          case Pong(bytes) => Future.successful(Ping(bytes))
+          case m => Future.successful(m)
         }
+        f.map(ProtoPackage)
       case h: Handshake => Future.successful {
         val sha1Digest = MessageDigest.getInstance("SHA1")
         val clientBytes = BitVector(h.protoVersion, h.apiMajorVersion, h.apiMinorVersion) ++ h.randomBytes
