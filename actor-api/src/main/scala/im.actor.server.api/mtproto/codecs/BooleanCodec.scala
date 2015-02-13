@@ -15,6 +15,6 @@ object BooleanCodec extends Codec[Boolean] {
 
   def decode(buf: BitVector) = {
     if (buf.isEmpty) Err("empty buf").left
-    else (buf.drop(byteSize), buf.getByte(0) == 1).right
+    else (buf.drop(byteSize), buf.getByte(0) != 0).right
   }
 }

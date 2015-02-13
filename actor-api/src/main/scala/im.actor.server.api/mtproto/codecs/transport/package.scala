@@ -44,10 +44,10 @@ package object transport {
 
   val PongCodec = bytes.pxmap[Pong](Pong.apply, Pong.unapply)
 
-//  val DropCodec = bytes.pxmap[Pong](Pong.apply, Pong.unapply)
+  val DropCodec = byte ~ string
 
   object HandshakeCodec {
-    def parse(bs: ByteString): String \/ Handshake = {
+    def decode(bs: ByteString): String \/ Handshake = {
       if (bs.length < 4) "received data less than minimum handshake length".left
       else if (bs.length > 260) "received data more than maximum handshake length".left
       else {
