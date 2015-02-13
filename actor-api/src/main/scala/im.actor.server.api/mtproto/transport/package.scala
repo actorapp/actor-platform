@@ -5,7 +5,7 @@ import scodec.bits._
 
 package object transport {
   sealed trait MTProto
-  case class MTPackage(m: ByteString) extends MTProto
+  case class MTPackage(authId: Long, sessionId: Long, message: BitVector) extends MTProto
   case class InternalError(errorCode: Byte, retryTimeout: Int, msg: String) extends MTProto
   case class Ping(randomBytes: BitVector) extends MTProto
   case class Pong(randomBytes: BitVector) extends MTProto
@@ -15,7 +15,7 @@ package object transport {
   sealed trait MTTransport
   case class ProtoPackage(m: MTProto) extends MTTransport
   case class Handshake(protoVersion: Byte, apiMajorVersion: Byte, apiMinorVersion: Byte,
-                       randomBytes: ByteString) extends MTTransport
+                       randomBytes: BitVector) extends MTTransport
   case object SilentClose extends MTTransport
 
   case class TransportPackage(packageIndex: Int, pkg: MTProto)

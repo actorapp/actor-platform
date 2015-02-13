@@ -7,16 +7,16 @@ import akka.stream.scaladsl.{ Flow, ForeachSink, StreamTcp }
 import akka.stream.FlowMaterializer
 import im.actor.server.api.mtproto.codecs.transport._
 import im.actor.server.api.mtproto.transport._
+import im.actor.server.api.service.AuthorizationActor
 import scala.annotation.tailrec
 import scala.concurrent.Future
-import scala.concurrent.duration._
 import scala.util.{ Success, Failure }
 import com.typesafe.config.Config
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 import java.security.MessageDigest
 import scalaz._
-import Scalaz._
+import scodec.bits.BitVector
 
 object TCP {
   def start(appConf: Config)(implicit system: ActorSystem, materializer: FlowMaterializer): Unit = {
@@ -31,14 +31,7 @@ object TCP {
     val serverAddress = new InetSocketAddress(interface, port)
     val binding = StreamTcp().bind(serverAddress)
 
-    class TestActor extends Actor {
-      def receive = {
-        case MTPackage(m) =>
-          if (m.startsWith(ByteString("q"))) sender() ! SilentClose
-          else sender() ! MTPackage(m)
-      }
-    }
-    val actor = system.actorOf(Props(new TestActor))
+    val actor = system.actorOf(Props[AuthorizationActor]) // TODO: shard???
 
     val handleFlow = Flow[ByteString]
       .transform(() => MTProto.parse(maxBufferSize))
@@ -78,16 +71,16 @@ object MTProto {
     case class AwaitBytes(length: Int) extends ParserState
     case class FailedState(msg: String) extends ParserState
 
-    type ParserStateT = (ParserState, ByteString)
+    type ParserStateT = (ParserState, BitVector)
 
-    private var parserState: ParserStateT = (HandshakeState, ByteString.empty)
+    private var parserState: ParserStateT = (HandshakeState, BitVector.empty)
 
     @inline
-    private def failedState(msg: String) = ((FailedState(msg), ByteString.empty), Vector.empty)
+    private def failedState(msg: String) = ((FailedState(msg), BitVector.empty), Vector.empty)
 
     def initial = new State {
       override def onPush(chunk: ByteString, ctx: Context[MTTransport]): Directive = {
-        val (newState, res) = doParse(parserState._1, parserState._2 ++ chunk)(Vector.empty)
+        val (newState, res) = doParse(parserState._1, parserState._2 ++ BitVector(chunk.toByteBuffer))(Vector.empty)
         newState._1 match {
           case FailedState(msg) =>
             // ctx.fail(new IllegalStateException(msg))
@@ -98,32 +91,39 @@ object MTProto {
         }
       }
 
-      // @tailrec
-      private def doParse(state: ParserState, bs: ByteString)
+      @tailrec
+      private def doParse(state: ParserState, buf: BitVector)
                          (pSeq: Vector[MTTransport]): (ParserStateT, Vector[MTTransport]) = {
-        @inline
-        def parsePackage(bs: ByteString): (ParserStateT, Vector[MTTransport]) = {
-          TransportPackageCodec.decode(bs)
-          ???
-        }
-
-        if (bs.isEmpty) ((state, bs), pSeq)
+        if (buf.isEmpty) ((state, buf), pSeq)
         else state match {
-          case HandshakeState => HandshakeCodec.decode(bs) match {
-            case \/-(h) => ((AwaitPackage, ByteString.empty), Vector(h))
-            case -\/(e) => failedState(e)
-          }
+          case HandshakeState =>
+            HandshakeCodec.decode(buf) match {
+              case \/-((xs, h)) => ((AwaitPackage, xs), Vector(h))
+              case -\/(e) => failedState(e.message)
+            }
           case AwaitPackage =>
-            if (bs.length < int32Bytes) ((AwaitPackage, bs), pSeq)
+            if (buf.length < int32Bits) ((AwaitPackage, buf), pSeq)
             else {
-              val pkgLength = CodecUtils.readInt32(bs).get
-              val tail = bs.drop(int32Bytes)
-              if (pkgLength < bs.length) ((AwaitBytes(pkgLength), tail), pSeq)
-              else parsePackage(tail)
+              scodec.codecs.int32.decode(buf) match {
+                case \/-((bs, pkgLength)) =>
+                  if (pkgLength < (bs.length / byteSize)) ((AwaitBytes(pkgLength), bs), pSeq)
+                  else {
+                    TransportPackageCodec.decode(bs) match {
+                      case \/-((xs, p)) => doParse(AwaitPackage, xs)(pSeq.:+(ProtoPackage(p.pkg)))
+                      case -\/(e) => failedState(e.message)
+                    }
+                  }
+                case -\/(e) => failedState(e.message)
+              }
             }
           case AwaitBytes(awaitLength) =>
-            if (awaitLength > bs.length) ((AwaitBytes(awaitLength), bs), pSeq)
-            else parsePackage(bs)
+            if (awaitLength > (buf.length / byteSize)) ((AwaitBytes(awaitLength), buf), pSeq)
+            else {
+              TransportPackageCodec.decode(buf) match {
+                case \/-((xs, p)) => doParse(AwaitPackage, xs)(pSeq.:+(ProtoPackage(p.pkg)))
+                case -\/(e) => failedState(e.message)
+              }
+            }
         }
       }
     }
@@ -148,7 +148,7 @@ object MTProto {
     import system.dispatcher
   
     req match {
-      case ProtoPackage(MTPackage(p)) =>
+      case ProtoPackage(MTPackage(_, _, p)) =>
         actorRef.ask(p).mapTo[MTTransport].recover {
           case e: AskTimeoutException =>
             val msg = s"handleAsk within $timeout"
@@ -157,8 +157,8 @@ object MTProto {
         }
       case h: Handshake => Future.successful {
         val sha1Digest = MessageDigest.getInstance("SHA1")
-        val clientBytes = ByteString(h.protoVersion, h.apiMajorVersion, h.apiMinorVersion) ++ h.randomBytes
-        val sha1Sign = ByteString(sha1Digest.digest(clientBytes.toArray))
+        val clientBytes = BitVector(h.protoVersion, h.apiMajorVersion, h.apiMinorVersion) ++ h.randomBytes
+        val sha1Sign = BitVector(sha1Digest.digest(clientBytes.toByteArray))
         val protoVersion: Byte = if (protoVersions.contains(h.protoVersion)) h.protoVersion else 0
         val apiMajorVersion: Byte = if (apiMajorVersions.contains(h.apiMajorVersion)) h.apiMajorVersion else 0
         val apiMinorVersion: Byte = if (apiMajorVersion == 0) 0 else h.apiMinorVersion
