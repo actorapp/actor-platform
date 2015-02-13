@@ -55,6 +55,8 @@ public class Messenger {
         users = new Users(this);
         messages = new Messages(this);
         updates = new Updates(this);
+        messages.run();
+        updates.run();
     }
 
     public int myUid() {

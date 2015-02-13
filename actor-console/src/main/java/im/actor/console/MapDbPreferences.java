@@ -1,6 +1,5 @@
 package im.actor.console;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 import im.actor.model.storage.PreferencesStorage;
 import org.mapdb.DB;
 

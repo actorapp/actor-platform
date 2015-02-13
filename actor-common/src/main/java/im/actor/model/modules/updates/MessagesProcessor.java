@@ -2,15 +2,18 @@ package im.actor.model.modules.updates;
 
 import com.droidkit.bser.Bser;
 import im.actor.model.Messenger;
-import im.actor.model.entity.EntityConverter;
-import im.actor.model.entity.Message;
+import im.actor.model.api.*;
+import im.actor.model.api.rpc.ResponseLoadDialogs;
+import im.actor.model.entity.*;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.modules.messages.DialogsActor;
+import im.actor.model.modules.messages.DialogsHistoryActor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,22 +32,39 @@ public class MessagesProcessor {
         return System.currentTimeMillis();
     }
 
+    public void onDialogsLoaded(ResponseLoadDialogs dialogsResponse) {
+        ArrayList<DialogHistory> dialogs = new ArrayList<DialogHistory>();
+
+        long maxLoadedDate = 0;
+
+        for (im.actor.model.api.Dialog dialog : dialogsResponse.getDialogs()) {
+
+            maxLoadedDate = Math.max(dialog.getSortDate(), maxLoadedDate);
+
+            Peer peer = EntityConverter.convert(dialog.getPeer());
+            AbsContent msgContent = convertContent(dialog.getMessage());
+
+            if (msgContent == null) {
+                continue;
+            }
+
+            dialogs.add(new DialogHistory(peer, dialog.getUnreadCount(), dialog.getSortDate(),
+                    dialog.getRid(), dialog.getDate(), dialog.getSenderUid(), msgContent, convert(dialog.getState())));
+        }
+
+        messenger.getMessagesModule().getDialogsActor().send(new DialogsActor.HistoryLoaded(dialogs));
+        messenger.getMessagesModule().getDialogsHistoryActor().send(new DialogsHistoryActor.LoadedMore(maxLoadedDate == 0, maxLoadedDate));
+    }
+
     public void onMessage(im.actor.model.api.Peer _peer, int senderUid, long date, long rid,
                           im.actor.model.api.MessageContent content) {
         Peer peer = EntityConverter.convert(_peer);
-        AbsContent msgContent;
-        if (content.getType() == 0x01) {
-            try {
-                im.actor.model.api.TextMessage textMessage = Bser.parse(new im.actor.model.api.TextMessage(),
-                        content.getContent());
-                msgContent = new TextContent(textMessage.getText());
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
-        } else {
+        AbsContent msgContent = convertContent(content);
+
+        if (msgContent == null) {
             return;
         }
+
         Message message = new Message(rid, buildSortKey(), date, senderUid,
                 messenger.myUid() == senderUid ? MessageState.SENT : MessageState.UNKNOWN, msgContent);
         messenger.getMessagesModule().getConversationActor(peer).send(message);
@@ -88,5 +108,34 @@ public class MessagesProcessor {
 
     public void onUserRegistered(int uid) {
 
+    }
+
+    private AbsContent convertContent(im.actor.model.api.MessageContent content) {
+        if (content.getType() == 0x01) {
+            try {
+                im.actor.model.api.TextMessage textMessage = Bser.parse(new im.actor.model.api.TextMessage(),
+                        content.getContent());
+                return new TextContent(textMessage.getText());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    private MessageState convert(im.actor.model.api.MessageState state) {
+        if (state == null) {
+            return null;
+        }
+        switch (state) {
+            case READ:
+                return MessageState.READ;
+            case RECEIVED:
+                return MessageState.RECEIVED;
+            case SENT:
+                return MessageState.SENT;
+        }
+
+        return null;
     }
 }

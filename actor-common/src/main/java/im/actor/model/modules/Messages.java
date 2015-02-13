@@ -41,7 +41,9 @@ public class Messages {
     public Messages(final Messenger messenger) {
         this.messenger = messenger;
         this.dialogs = messenger.getConfiguration().getEnginesFactory().createDialogsEngine();
-        // TODO: Fix initialization
+    }
+
+    public void run() {
         this.dialogsActor = system().actorOf(Props.create(DialogsActor.class, new ActorCreator<DialogsActor>() {
             @Override
             public DialogsActor create() {
@@ -54,7 +56,6 @@ public class Messages {
                 return new DialogsHistoryActor(messenger);
             }
         }), "actor/dialogs/history");
-
     }
 
     public ActorRef getConversationActor(final Peer peer) {
@@ -83,6 +84,10 @@ public class Messages {
 
     public ActorRef getDialogsActor() {
         return dialogsActor;
+    }
+
+    public ActorRef getDialogsHistoryActor() {
+        return dialogsHistoryActor;
     }
 
     public ListEngine<Dialog> getDialogsEngine() {

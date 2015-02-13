@@ -5,7 +5,10 @@ import im.actor.model.api.ContactRecord;
 import im.actor.model.api.Group;
 import im.actor.model.api.PeerType;
 import im.actor.model.api.User;
+import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.api.updates.*;
+import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
+import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.network.parser.Update;
 
 import java.util.HashSet;
@@ -33,6 +36,14 @@ public class UpdateProcessor {
                              List<ContactRecord> contactRecords,
                              boolean force) {
         usersProcessor.applyUsers(users, force);
+    }
+
+    public void processInternalUpdate(InternalUpdate update) {
+        if (update instanceof DialogHistoryLoaded) {
+            ResponseLoadDialogs dialogs = ((DialogHistoryLoaded) update).getDialogs();
+            applyRelated(dialogs.getUsers(), dialogs.getGroups(), null, false);
+            messagesProcessor.onDialogsLoaded(dialogs);
+        }
     }
 
     public void processUpdate(Update update) {

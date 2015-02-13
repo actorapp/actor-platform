@@ -18,6 +18,10 @@ public class Updates {
 
     public Updates(Messenger messenger) {
         this.messenger = messenger;
+        run();
+    }
+
+    public void run() {
         this.updateActor = system().actorOf(Props.create(SequenceActor.class, new ActorCreator<SequenceActor>() {
             @Override
             public SequenceActor create() {
