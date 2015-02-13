@@ -1,3 +1,5 @@
 include ':actor-common', ':actor-java', ':actor-java-threads', ':actor-ios', ':actor-console'
 rootProject.name = 'actor-model'
 
+include 'actor-desktop'
+

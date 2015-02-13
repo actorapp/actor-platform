@@ -12,10 +12,21 @@ import im.actor.model.storage.PreferencesStorage;
  * Created by ex3ndr on 08.02.15.
  */
 public class Configuration {
+
+    private boolean persistMessages = false;
+
     private MainThread mainThread = new NoMainThread();
     private Endpoints endpoints;
     private PreferencesStorage preferencesStorage = new MemoryPreferences();
     private EnginesFactory enginesFactory = new MemoryEnginesFactory();
+
+    public boolean isPersistMessages() {
+        return persistMessages;
+    }
+
+    public void setPersistMessages(boolean persistMessages) {
+        this.persistMessages = persistMessages;
+    }
 
     public EnginesFactory getEnginesFactory() {
         return enginesFactory;
