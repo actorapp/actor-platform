@@ -11,16 +11,10 @@ import Scalaz._
 package object transport {
   import im.actor.server.api.util.ByteConstants._
 
-  object TransportPackageCodec extends Codec[TransportPackage] {
-    private val mtprotoCodec = discriminated[MTProto].by(uint8)
-      .\(MTPackage.header) { case c: MTPackage => c } (MTPackageCodec)
-      .\(Ping.header) { case c: Ping => c } (PingCodec)
-      .\(Pong.header) { case c: Pong => c } (PongCodec)
-      .\(Drop.header) { case c: Drop => c } (DropCodec)
-      .\(Redirect.header) { case c: Redirect => c } (RedirectCodec)
-      .\(InternalError.header) { case c: InternalError => c } (InternalErrorCodec)
+  val HandshakeCodec = (byte :: byte :: byte :: bytes).as[Handshake]
 
-    private val codec = (int32 ~ mtprotoCodec).pxmap[TransportPackage](TransportPackage.apply, TransportPackage.unapply)
+  object TransportPackageCodec extends Codec[TransportPackage] {
+    private val codec = (int32 ~ MTProtoCodec).pxmap[TransportPackage](TransportPackage.apply, TransportPackage.unapply)
 
     def encode(p: TransportPackage) = {
       for {
@@ -51,5 +45,11 @@ package object transport {
 
   val InternalErrorCodec = (byte :: int32 :: string).as[InternalError]
 
-  val HandshakeCodec = (byte :: byte :: byte :: bytes).as[Handshake]
+  val MTProtoCodec = discriminated[MTProto].by(uint8)
+    .\(MTPackage.header) { case c: MTPackage => c } (MTPackageCodec)
+    .\(Ping.header) { case c: Ping => c } (PingCodec)
+    .\(Pong.header) { case c: Pong => c } (PongCodec)
+    .\(Drop.header) { case c: Drop => c } (DropCodec)
+    .\(Redirect.header) { case c: Redirect => c } (RedirectCodec)
+    .\(InternalError.header) { case c: InternalError => c } (InternalErrorCodec)
 }
