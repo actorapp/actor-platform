@@ -88,7 +88,7 @@ public class MessagesProcessor {
                 .send(new ConversationActor.MessageReceived(startDate));
     }
 
-    public void onMessageEncryptedReceived(im.actor.model.api.Peer _peer, long rid, long readDate) {
+    public void onMessageEncryptedReceived(im.actor.model.api.Peer _peer, long rid, long receivedDate) {
         Peer peer = EntityConverter.convert(_peer);
         // TODO: Implement
     }
@@ -128,7 +128,7 @@ public class MessagesProcessor {
     }
 
     public void onUserRegistered(int uid) {
-
+        // TODO: Implemented
     }
 
     private AbsContent convertContent(im.actor.model.api.MessageContent content) {
