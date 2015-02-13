@@ -1,32 +1,25 @@
 package im.actor.model.entity;
 
-import im.actor.model.entity.content.AbsContent;
 import im.actor.model.mvvm.KeyValueItem;
 
 /**
  * Created by ex3ndr on 11.02.15.
  */
 public class PendingMessage implements KeyValueItem {
-    private Peer peer;
     private long rid;
-    private AbsContent content;
+    private long date;
 
-    public PendingMessage(Peer peer, long rid, AbsContent content) {
-        this.peer = peer;
+    public PendingMessage(long rid, long date) {
         this.rid = rid;
-        this.content = content;
+        this.date = date;
     }
 
-    public Peer getPeer() {
-        return peer;
+    public long getDate() {
+        return date;
     }
 
     public long getRid() {
         return rid;
-    }
-
-    public AbsContent getContent() {
-        return content;
     }
 
     @Override

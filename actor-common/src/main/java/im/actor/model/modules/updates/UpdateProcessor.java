@@ -41,7 +41,8 @@ public class UpdateProcessor {
     public void processInternalUpdate(InternalUpdate update) {
         if (update instanceof DialogHistoryLoaded) {
             ResponseLoadDialogs dialogs = ((DialogHistoryLoaded) update).getDialogs();
-            applyRelated(dialogs.getUsers(), dialogs.getGroups(), null, false);
+            applyRelated(dialogs.getUsers(), dialogs.getGroups(),
+                    null, false);
             messagesProcessor.onDialogsLoaded(dialogs);
         }
     }
@@ -90,11 +91,14 @@ public class UpdateProcessor {
         } else if (update instanceof UpdateEncryptedMessage) {
             // TODO: Implement
         } else if (update instanceof UpdateEncryptedRead) {
-            // TODO: Implement
+            UpdateEncryptedRead encryptedRead = (UpdateEncryptedRead) update;
+            messagesProcessor.onMessageEncryptedRead(encryptedRead.getPeer(), encryptedRead.getRid(), encryptedRead.getReadDate());
         } else if (update instanceof UpdateEncryptedReadByMe) {
-            // TODO: Implement
+            UpdateEncryptedReadByMe encryptedRead = (UpdateEncryptedReadByMe) update;
+            messagesProcessor.onMessageEncryptedReadByMe(encryptedRead.getPeer(), encryptedRead.getRid());
         } else if (update instanceof UpdateEncryptedReceived) {
-            // TODO: Implement
+            UpdateEncryptedReceived received = (UpdateEncryptedReceived) update;
+            messagesProcessor.onMessageEncryptedReceived(received.getPeer(), received.getRid(), received.getReceivedDate());
         } else if (update instanceof UpdateChatClear) {
             UpdateChatClear chatClear = (UpdateChatClear) update;
             messagesProcessor.onChatClear(chatClear.getPeer());

@@ -10,6 +10,10 @@ import im.actor.model.entity.PendingMessage;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created by ex3ndr on 09.02.15.
  */
@@ -44,30 +48,47 @@ public class ConversationActor extends Actor {
         messages.addOrUpdateItem(message);
         // Updating dialogs
         dialogsActor.send(new DialogsActor.InMessage(peer, message));
-    }
 
-    private void onMessageStateChanged(MessageStateChanged stateChanged) {
-        Message message = messages.getValue(stateChanged.getRid());
-        if (message == null) {
-            return;
+        if (message.getSenderId() == messenger.myUid()) {
+            pendingMessages.addOrUpdateItem(new PendingMessage(message.getRid(), message.getTime()));
         }
-        messages.addOrUpdateItem(message.changeState(stateChanged.messageState));
-        // TODO: Send to dialogs
-    }
-
-    private void onMessageEncryptedRead(long rid) {
-
     }
 
     private void onMessagePlainRead(long date) {
+        for (PendingMessage p : pendingMessages.getAll()) {
+            if (p.getDate() <= date) {
+                Message msg = messages.getValue(p.getRid());
+                if (msg != null && (msg.getMessageState() == MessageState.SENT ||
+                        msg.getMessageState() == MessageState.RECEIVED)) {
+                    messages.addOrUpdateItem(msg
+                            .changeState(MessageState.READ));
+                    dialogsActor.send(new DialogsActor.MessageStateChanged(peer, p.getRid(),
+                            MessageState.READ));
+                }
+                pendingMessages.removeItem(p.getRid());
+            }
+        }
+    }
 
+    private void onMessagePlainReceived(long date) {
+        for (PendingMessage p : pendingMessages.getAll()) {
+            if (p.getDate() <= date) {
+                Message msg = messages.getValue(p.getRid());
+                if (msg != null && msg.getMessageState() == MessageState.SENT) {
+                    messages.addOrUpdateItem(msg
+                            .changeState(MessageState.RECEIVED));
+                    dialogsActor.send(new DialogsActor.MessageStateChanged(peer, p.getRid(),
+                            MessageState.RECEIVED));
+                }
+            }
+        }
     }
 
     private void onMessageEncryptedReceived(long rid) {
 
     }
 
-    private void onMessagePlainReceived(long date) {
+    private void onMessageEncryptedRead(long rid) {
 
     }
 
@@ -75,8 +96,6 @@ public class ConversationActor extends Actor {
     public void onReceive(Object message) {
         if (message instanceof Message) {
             onInMessage((Message) message);
-        } else if (message instanceof MessageStateChanged) {
-            onMessageStateChanged((MessageStateChanged) message);
         } else if (message instanceof MessageRead) {
             onMessagePlainRead(((MessageRead) message).getDate());
         } else if (message instanceof MessageEncryptedRead) {
@@ -87,24 +106,6 @@ public class ConversationActor extends Actor {
             onMessageEncryptedReceived(((MessageEncryptedReceived) message).getRid());
         } else {
             drop(message);
-        }
-    }
-
-    public static class MessageStateChanged {
-        private long rid;
-        private MessageState messageState;
-
-        public MessageStateChanged(long rid, MessageState messageState) {
-            this.rid = rid;
-            this.messageState = messageState;
-        }
-
-        public long getRid() {
-            return rid;
-        }
-
-        public MessageState getMessageState() {
-            return messageState;
         }
     }
 
@@ -153,6 +154,36 @@ public class ConversationActor extends Actor {
 
         public long getRid() {
             return rid;
+        }
+    }
+
+    public static class MessageSent {
+        private long rid;
+        private long date;
+
+        public MessageSent(long rid, long date) {
+            this.rid = rid;
+            this.date = date;
+        }
+
+        public long getDate() {
+            return date;
+        }
+
+        public long getRid() {
+            return rid;
+        }
+    }
+
+    public static class MessageDeleted {
+        private List<Long> rids;
+
+        public MessageDeleted(List<Long> rids) {
+            this.rids = rids;
+        }
+
+        public List<Long> getRids() {
+            return rids;
         }
     }
 }

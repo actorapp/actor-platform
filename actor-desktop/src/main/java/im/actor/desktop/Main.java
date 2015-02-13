@@ -65,7 +65,7 @@ public class Main {
 
             @Override
             public KeyValueEngine<PendingMessage> pendingMessages(Peer peer) {
-                return null;
+                return new MemoryKeyValueEngine<PendingMessage>();
             }
         });
         messenger = new Messenger(configuration);
