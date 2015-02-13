@@ -65,7 +65,7 @@ public class MessagesProcessor {
             return;
         }
 
-        Message message = new Message(rid, buildSortKey(), date, senderUid,
+        Message message = new Message(rid, date, date, senderUid,
                 messenger.myUid() == senderUid ? MessageState.SENT : MessageState.UNKNOWN, msgContent);
         messenger.getMessagesModule().getConversationActor(peer).send(message);
     }

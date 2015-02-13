@@ -4,6 +4,7 @@ import im.actor.model.entity.User;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.KeyValueItem;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,6 +41,11 @@ public class MemoryKeyValueEngine<T extends KeyValueItem> implements KeyValueEng
     @Override
     public synchronized void clear() {
         users.clear();
+    }
+
+    @Override
+    public synchronized List<T> getAll() {
+        return new ArrayList<T>(users.values());
     }
 
     @Override

@@ -92,7 +92,7 @@ public class DataInput {
     public long readVarInt() throws IOException {
         long value = 0;
         long i = 0;
-        int b;
+        long b;
 
         do {
             if (offset == maxOffset) {
