@@ -1,6 +1,5 @@
 package im.actor.server.api.mtproto
 
-import akka.util.ByteString
 import scodec.bits._
 
 package object transport {
