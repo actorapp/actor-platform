@@ -1,4 +1,4 @@
-include ':actor-common', ':actor-java', ':actor-java-threads', ':actor-ios', ':actor-console'
+include ':actor-common', ':actor-java', ':actor-java-threads', ':actor-ios', ':actor-console', ':actor-android'
 rootProject.name = 'actor-model'
 
 include 'actor-desktop'

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppToolbarTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent</item>
+    </style>
+
+    <style name="MainActivityTheme" parent="AppToolbarTheme">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+    <style name="ProfileActivityTheme" parent="AppToolbarTheme">
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="ChatActivityTheme" parent="AppToolbarTheme">
+
+    </style>
+
+    <style name="CommonActivityTheme" parent="AppToolbarTheme">
+
+    </style>
+
+    <style name="NoBarActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+    </style>
+
+    <style name="AttachPopupTheme" parent="AppToolbarTheme">
+        <item name="android:popupMenuStyle">@style/AttachPopupMenu</item>
+    </style>
+
+    <style name="AttachPopupMenu" parent="android:Widget.PopupMenu">
+        <item name="android:popupBackground">@drawable/conv_attach_bg</item>
+    </style>
+
+    <style name="Theme.Transparent" parent="Theme.AppCompat.Light">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <!--<item name="android:backgroundDimEnabled">false</item>-->
+    </style>
+</resources>
