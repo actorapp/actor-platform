@@ -16,5 +16,7 @@ public interface KeyValueEngine<V extends KeyValueItem> {
 
     public void clear();
 
+    public List<V> getAll();
+
     public V getValue(long id);
 }
