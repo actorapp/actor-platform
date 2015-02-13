@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Actor</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
+    <string name="dialog_try_again">Try again</string>
+
+    <string name="pick_photo_camera">Take photo</string>
+    <string name="pick_photo_gallery">Pick from Gallery</string>
+    <string name="pick_photo_remove">Remove photo</string>
+    <string name="pick_downloading">Downloading</string>
+
+    <string name="toast_no_sdcard">No SD Card</string>
+    <string name="toast_phone_copied">Phone number copied to pastebin</string>
+    <string name="toast_messages_copied">Messages copied to pastebin</string>
+    <string name="toast_unable_kick">Unable to remove member from group</string>
+    <string name="toast_unable_add">Unable to add user to group</string>
+    <string name="toast_already_member">User is already member of group</string>
+    <string name="toast_empty_name">Name can\'t be empty</string>
+    <string name="toast_unable_change">Unable to change name</string>
+
+    <string name="menu_share">Share</string>
+    <string name="menu_next">Next</string>
+
+    <string name="invite_message">Hi! Let\'s switch to Actor! https://actor.im/dl</string>
+
+    <!-- Tour -->
+    <string name="tour_sign_up">SIGN UP</string>
+    <string name="tour_sign_in">SIGN IN</string>
+    <string name="tour_back_to_top">Back to top</string>
+
+    <string name="tour_welcome_title">Actor</string>
+    <string name="tour_welcome_subtitle">Secure messaging for Teams and Friends</string>
+
+    <string name="tour_groups_title">Huge Group Chats</string>
+    <string name="tour_groups_text">Incredibly large group chats. More than 300 users in one group. Communicate with your team and make decisions together.</string>
+
+    <string name="tour_everywhere_title">Works everywhere</string>
+    <string name="tour_everywhere_text">No matter where you are in the subway or on the mountain hills. Your message will always reach the right people.</string>
+
+    <string name="tour_secure_title">Secure &amp; Private</string>
+    <string name="tour_secure_text">Rest assured no one will read your messages. Share documents, files and photos without fear that they could fall into the wrong hands.</string>
+
+    <!-- Phone Sign Fragment -->
+    <string name="auth_phone_title">Verify phone</string>
+    <string name="auth_phone_hint">Please confirm your country code and enter your phone number.</string>
+    <string name="auth_phone_number_hint">Phone number</string>
+    <string name="auth_phone_get_code">CONFIRM NUMBER</string>
+    <string name="auth_phone_why">WHY WE NEED YOUR PHONE?</string>
+    <string name="auth_phone_why_description">We use phone for authentication because this is the most secure way in our days.\n\nPasswords usually weak and email can be hacked.</string>
+    <string name="auth_phone_why_done">Got it</string>
+    <string name="auth_phone_country_title">Select a country</string>
+    <string name="auth_phone_error_invalid_country">Invalid country code</string>
+
+    <!-- Sign In Fragment -->
+    <string name="auth_code_hint">We\'ve sent an SMS with activation code to your phone {0}</string>
+    <string name="auth_code_title">Enter SMS code</string>
+    <string name="auth_code_sms_hint">Sms code</string>
+    <string name="auth_code_done">DONE</string>
+    <string name="auth_code_wrong_number">WRONG PHONE NUMBER?</string>
+    <string name="auth_code_change">Are you sure want to change your number?</string>
+    <string name="auth_code_change_yes">Change</string>
+
+    <!-- Sign Up Fragment -->
+    <string name="auth_profile_title">Profile info</string>
+    <string name="auth_profile_hint">Please provide your name\nand an optional profile photo.</string>
+    <string name="auth_profile_name_hint">Your name</string>
+    <string name="auth_profile_done">START MESSAGING</string>
+
+    <!-- Auth errors -->
+    <string name="auth_error_empty_phone">Please, enter your phone number</string>
+    <string name="auth_error_code_expired">Code is expired. Please perform validation from scratch.</string>
+    <string name="auth_error_code_invalid">Code is invalid. Please try again.</string>
+
+    <!-- Typing -->
+    <string name="typing_private">typing…</string>
+    <string name="typing_group">{0} is typing…</string>
+    <string name="typing_group_many">{0} people are typing…</string>
+
+    <!-- Main -->
+    <string name="main_search_hint">Type something for search</string>
+    <string name="main_search_empty">Nothing found</string>
+    <string name="main_menu_help">Help</string>
+    <string name="main_menu_search">Search</string>
+
+    <string name="main_fab_compose">Compose</string>
+    <string name="main_fab_new_group">Create group</string>
+    <string name="main_fab_add_contact">Add contact</string>
+
+    <string name="main_sync_title">Sync in progress</string>
+    <string name="main_sync_message">Please, wait couple minutes while we enable your app.</string>
+
+    <string name="main_empty_title">Invite your friends</string>
+    <string name="main_empty_invite_hint">None of your contacts use Actor. Use button below to invite them.</string>
+    <string name="main_empty_invite_action">TELL A FRIEND</string>
+    <string name="main_empty_add_hint">or manually add contact</string>
+    <string name="main_empty_add_action">ADD CONTACT</string>
+
+    <!-- Own profile/settings -->
+    <string name="settings_share_profile_title">Send my contact…</string>
+    <string name="settings_share_text">My phone number is {0}</string>
+    <string name="settings_menu_edit_profile">Edit profile</string>
+    <string name="settings_menu_change_photo">Change photo</string>
+    <string name="settings_header">Settings</string>
+    <string name="settings_help">Help</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_chat">Chat Settings</string>
+    <string name="settings_security">Security</string>
+
+    <!-- Profile controls -->
+    <string name="phone_menu_call">Call {0}</string>
+    <string name="phone_menu_sms">SMS {0}</string>
+    <string name="phone_menu_share">Share {0}</string>
+    <string name="phone_menu_copy">Copy</string>
+
+    <!-- Dialogs -->
+    <string name="dialogs_title">Chats</string>
+    <string name="dialogs_hint">Long press for additional options</string>
+    <string name="dialogs_empty_title">Start messaging</string>
+    <string name="dialogs_empty">Pick a contact from your contacts list or press plus button to start the conversation right now.</string>
+
+    <string name="dialogs_menu_contact_view">View contact</string>
+    <string name="dialogs_menu_contact_rename">Rename contact</string>
+    <string name="dialogs_menu_conversation_delete">Delete conversation</string>
+
+    <string name="dialogs_menu_group_view">View group info</string>
+    <string name="dialogs_menu_group_rename">Rename group</string>
+    <string name="dialogs_menu_group_delete">Delete and exit group</string>
+
+    <string name="dialogs_video">Video</string>
+    <string name="dialogs_photo">Photo</string>
+    <string name="dialogs_document">Document</string>
+    <string name="dialogs_audio">Audio</string>
+
+    <!-- Contacts -->
+    <string name="contacts_title">Contacts</string>
+    <string name="contacts_empty_short">No contacts yet</string>
+
+    <string name="contacts_empty_title">Invite your friends</string>
+    <string name="contacts_empty_invite_hint">None of your contacts use Actor. Use button below to invite them.</string>
+    <string name="contacts_empty_invite_action">Tell a friend</string>
+    <string name="contacts_empty_add_hint">or manually add contact by pressing plus button below.</string>
+
+    <string name="contacts_menu_remove">Remove {0} from contacts</string>
+    <string name="contacts_menu_remove_progress">Removing…</string>
+    <string name="contacts_menu_edit">Edit name</string>
+
+    <!-- Chat -->
+    <string name="chat_menu_group_info">Group info</string>
+    <string name="chat_menu_view_contact">View contact</string>
+    <string name="chat_menu_call">Call</string>
+    <string name="chat_menu_files">Files</string>
+    <string name="chat_menu_clear_chat">Clear chat</string>
+    <string name="chat_menu_leave_group">Leave group</string>
+
+    <string name="chat_attach_place">Place</string>
+    <string name="chat_attach_file">File</string>
+    <string name="chat_attach_take_video">Take video</string>
+    <string name="chat_attach_take_photo">Take photo</string>
+    <string name="chat_attach_gallery">Gallery</string>
+
+    <string name="chat_group_members">{0} members</string>
+    <string name="chat_group_members_online">{0} online</string>
+
+    <string name="chat_message_hint">Your message…</string>
+
+    <string name="chat_new_messages">New messages</string>
+    <string name="chat_add_to_contacts">Add to Contacts</string>
+    <string name="chat_add_to_contacts_progress">Adding contact…</string>
+
+    <string name="chat_doc_open">Open</string>
+    <string name="chat_doc_send">Send</string>
+    <string name="chat_doc_stop">Stop</string>
+    <string name="chat_doc_download">Download</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_shared_header">Shared</string>
+    <string name="profile_shared_files">Documents</string>
+    <string name="profile_settings_header">Settings</string>
+    <string name="profile_settings_notifications">Notifications</string>
+
+    <string name="profile_adding">Adding to Contacts…</string>
+    <string name="profile_removing">Removing from Contacts…</string>
+
+    <string name="profile_menu_rename">Rename</string>
+    <string name="profile_menu_call">Call</string>
+    <string name="profile_menu_remove">Remove from contacts</string>
+    <string name="profile_menu_add">Add to Contacts</string>
+    <string name="profile_menu_security">Security</string>
+
+    <!-- Group -->
+    <string name="group_title">Group Info</string>
+    <string name="group_members_header">Members</string>
+    <string name="group_members_count">{0} of {1}</string>
+
+    <string name="group_admin">admin</string>
+
+    <string name="group_created_by">Created by {0}</string>
+    <string name="group_created_by_you">Created by You</string>
+
+    <string name="group_adding">Adding to group…</string>
+    <string name="group_removing">Removing from group…</string>
+
+    <string name="group_context_message">Message {0}</string>
+    <string name="group_context_call">Call {0}</string>
+    <string name="group_context_view">View {0}</string>
+    <string name="group_context_remove">Remove {0} from group</string>
+
+    <string name="group_menu_add">Add member</string>
+    <string name="group_menu_leave">Leave group</string>
+    <string name="group_menu_change_name">Change name</string>
+    <string name="group_menu_change_photo">Change photo</string>
+
+    <string name="group_shared_header">Shared</string>
+    <string name="group_shared_files">Documents</string>
+
+    <string name="group_add_member">Add a member</string>
+
+    <!-- Avatar -->
+    <string name="avatar_title_your">Your photo</string>
+    <string name="avatar_title_person">Photo</string>
+    <string name="avatar_title_group">Group photo</string>
+    <string name="avatar_no_photo">No photo</string>
+    <string name="avatar_menu_edit">Edit</string>
+    <string name="avatar_menu_set_as">Set as…</string>
+
+    <!-- Add Contact -->
+    <string name="add_contact_title">Add contact</string>
+    <string name="add_contact_phone_hint">Enter phone number</string>
+    <string name="add_contact_bar_cancel">CANCEL</string>
+    <string name="add_contact_bar_continue">CONTINUE</string>
+
+    <!-- Compose -->
+    <string name="compose_title">New message</string>
+
+    <!-- Create Group -->
+    <string name="create_group_title">Create group</string>
+    <string name="create_group_name_hint">Name the group</string>
+    <string name="create_group_hint">Enter group theme and set optional group picture</string>
+    <string name="create_group_search_hint">Search by name</string>
+    <string name="create_group_done">Done</string>
+
+    <!-- Documents -->
+    <string name="documents_title">Documents</string>
+    <string name="documents_empty">No documents yet</string>
+
+    <!-- Edit name -->
+    <string name="edit_name_title_you">Enter your name</string>
+    <string name="edit_name_title_contact">Enter contact name</string>
+    <string name="edit_name_title_group">Enter group name</string>
+    <string name="edit_name_cancel">CANCEL</string>
+    <string name="edit_name_save">SAVE</string>
+    <string name="edit_name_process">Changing name…</string>
+
+    <!-- Help -->
+    <string name="help_title">Help</string>
+    <string name="help_about_title">About</string>
+    <string name="help_about_subtitle">About app and service</string>
+    <string name="help_faq_title">FAQ</string>
+    <string name="help_faq_subtitle">Frequently Asked Questions</string>
+    <string name="help_feedback_title">Feedback</string>
+    <string name="help_feedback_subtitle">Give us feedback</string>
+    <string name="help_version_title">Application Version</string>
+    <string name="help_version_copy">App version copied to pastebin</string>
+    <string name="help_email_title">Send email</string>
+    <string name="help_email_subject">Feedback</string>
+
+    <!-- Notifications -->
+    <string name="not_title">Notifications</string>
+    <string name="not_conv_tones">Conversation tones</string>
+    <string name="not_conv_tones_subtitle">Play sounds for incoming and outgoing messages.</string>
+    <string name="not_sound">Sound</string>
+    <string name="not_sound_subtitle">Enable notification sounds</string>
+    <string name="not_vibration">Vibration</string>
+    <string name="not_vibration_subtitle">Enable vibration in notifications</string>
+    <string name="not_show_text">Show names and messages</string>
+    <string name="not_show_text_subtitle">Show message text and sender name in notification panel</string>
+
+    <!-- Pick user -->
+    <string name="pick_user_title">Pick person</string>
+
+    <!-- Chat Settings -->
+    <string name="settings_chat_title">Chat settings</string>
+    <string name="settings_chat_send_enter">Send by enter</string>
+    <string name="settings_chat_send_enter_subtitle">Is enter key will send your message</string>
+
+    <!-- Security -->
+    <string name="security_title">Security</string>
+    <string name="security_terminate_title">Terminate all sessions</string>
+    <string name="security_terminate_subtitle">SignOut on all devices</string>
+    <string name="security_terminate_message">Are you sure want to logout on all other devices? All data will be lost on that devices.</string>
+    <string name="security_authorized_header">Authorized devices and services</string>
+    <string name="security_authorized_loading">Loading…</string>
+
+    <!-- Service messages -->
+    <string name="service_you">You</string>
+    <string name="service_your">You</string>
+
+    <string name="service_registered">Joined Actor</string>
+    <string name="service_registered_male">@string/service_registered</string>
+    <string name="service_registered_female">@string/service_registered</string>
+
+    <string name="service_registered_full">{0} joined Actor Network</string>
+    <string name="service_registered_full_male">@string/service_registered_full</string>
+    <string name="service_registered_full_female">@string/service_registered_full</string>
+
+    <string name="service_new_device">Added new device</string>
+    <string name="service_new_device_male">@string/service_new_device</string>
+    <string name="service_new_device_female">@string/service_new_device</string>
+
+    <string name="service_new_device_full">{0} added new device to it\'s account</string>
+    <string name="service_new_device_full_male">@string/service_new_device_full</string>
+    <string name="service_new_device_full_female">@string/service_new_device_full</string>
+
+    <string name="service_created">{0} created the group</string>
+    <string name="service_created_you">@string/service_created</string>
+    <string name="service_created_male">@string/service_created</string>
+    <string name="service_created_female">@string/service_created</string>
+
+    <string name="service_created_full">{0} created the group "{1}"</string>
+    <string name="service_created_full_you">@string/service_created</string>
+    <string name="service_created_full_male">@string/service_created</string>
+    <string name="service_created_full_female">@string/service_created</string>
+
+    <string name="service_leave">{0} left group</string>
+    <string name="service_leave_you">@string/service_leave</string>
+    <string name="service_leave_male">@string/service_leave</string>
+    <string name="service_leave_female">@string/service_leave</string>
+
+    <string name="service_add">{0} added {1}</string>
+    <string name="service_add_you">@string/service_add</string>
+    <string name="service_add_male">@string/service_add</string>
+    <string name="service_add_female">@string/service_add</string>
+
+    <string name="service_kicked">{0} kicked {1}</string>
+    <string name="service_kicked_you">@string/service_kicked</string>
+    <string name="service_kicked_male">@string/service_kicked</string>
+    <string name="service_kicked_female">@string/service_kicked</string>
+
+    <string name="service_changed_title">{0} changed the group name</string>
+    <string name="service_changed_title_you">@string/service_changed_title</string>
+    <string name="service_changed_title_male">@string/service_changed_title</string>
+    <string name="service_changed_title_female">@string/service_changed_title</string>
+
+    <string name="service_changed_title_full">{0} changed the group name to {1}</string>
+    <string name="service_changed_title_full_you">@string/service_changed_title_full</string>
+    <string name="service_changed_title_full_male">@string/service_changed_title_full</string>
+    <string name="service_changed_title_full_female">@string/service_changed_title_full</string>
+
+    <string name="service_changed_avatar">{0} changed the group photo</string>
+    <string name="service_changed_avatar_you">@string/service_changed_avatar</string>
+    <string name="service_changed_avatar_male">@string/service_changed_avatar</string>
+    <string name="service_changed_avatar_female">@string/service_changed_avatar</string>
+
+    <string name="service_removed_avatar">{0} removed the group photo</string>
+    <string name="service_removed_avatar_you">@string/service_removed_avatar</string>
+    <string name="service_removed_avatar_male">@string/service_removed_avatar</string>
+    <string name="service_removed_avatar_female">@string/service_removed_avatar</string>
+
+    <!-- Online -->
+    <string name="online_on">online</string>
+    <string name="online_off">offline</string>
+
+    <string name="online_ls_now">last seen just now</string>
+    <string name="online_ls_now_male">@string/online_ls_now</string>
+    <string name="online_ls_now_female">@string/online_ls_now</string>
+
+    <string name="online_ls_today">last seen today at {0}</string>
+    <string name="online_ls_today_male">@string/online_ls_today</string>
+    <string name="online_ls_today_female">@string/online_ls_today</string>
+
+    <string name="online_ls_yesterday">last seen yesterday at {0}</string>
+    <string name="online_ls_yesterday_male">@string/online_ls_yesterday</string>
+    <string name="online_ls_yesterday_female">@string/online_ls_yesterday</string>
+
+    <string name="online_ls_date">last seen {0}</string>
+    <string name="online_ls_date_male">@string/online_ls_date</string>
+    <string name="online_ls_date_female">@string/online_ls_date</string>
+
+    <string name="online_ls_date_time">last seen {0} at {1}</string>
+    <string name="online_ls_date_time_male">@string/online_ls_date_time</string>
+    <string name="online_ls_date_time_female">@string/online_ls_date_time</string>
+
+    <!-- Time -->
+    <string name="time_short_yesterday">YEST</string>
+    <string name="time_short_now">NOW</string>
+    <string name="time_short_minutes">{0} MIN</string>
+    <string name="time_short_hours">{0} HRS</string>
+    <string name="time_short_jan">JAN</string>
+    <string name="time_short_feb">FEB</string>
+    <string name="time_short_mar">MAR</string>
+    <string name="time_short_apr">APR</string>
+    <string name="time_short_may">MAY</string>
+    <string name="time_short_jun">JUN</string>
+    <string name="time_short_jul">JUL</string>
+    <string name="time_short_aug">AUG</string>
+    <string name="time_short_sep">SEP</string>
+    <string name="time_short_oct">OCT</string>
+    <string name="time_short_nov">NOV</string>
+    <string name="time_short_dec">DEC</string>
+
+    <!-- Alerts -->
+    <string name="alert_delete_messages_text">Are you sure want to delete {0} messages?</string>
+    <string name="alert_delete_messages_yes">Delete</string>
+
+    <string name="alert_delete_all_messages_text">Are you sure want to delete ALL messages from this chat?</string>
+    <string name="alert_delete_all_messages_yes">Delete</string>
+
+    <string name="alert_remove_contact_text">Are you sure want to remove {0} from contacts?</string>
+    <string name="alert_remove_contact_yes">Remove</string>
+
+    <string name="alert_delete_group_title">Delete and exit "{0}" group?</string>
+    <string name="alert_delete_group_yes">Delete</string>
+
+    <string name="alert_delete_chat_message">Delete chat with "{0}"?</string>
+    <string name="alert_delete_chat_yes">Delete</string>
+
+    <string name="alert_group_add_text">Are you sure want to add {0} to group?</string>
+    <string name="alert_group_add_yes">Add</string>
+
+    <string name="alert_group_remove_text">Are you sure want to remove {0} from group?</string>
+    <string name="alert_group_remove_yes">Remove</string>
+
+    <string name="alert_invite_text">"{0}" is not registered in Actor. Invite him to actor?</string>
+    <string name="alert_invite_yes">Invite</string>
+
+    <!-- Errors -->
+    <string name="error_connection">Unable to connect. Please check that you are connected to the Internet and try
+        again.\n\nPlease reboot your phone if your connection problem persists.
+    </string>
+    <string name="error_unknown">Unable to perform operation.\n\nPlease, check your phone and reboot if problem
+        persists.
+    </string>
+</resources>

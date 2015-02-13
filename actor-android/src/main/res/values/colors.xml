@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Basic UI -->
+
+    <color name="primary">#4b6e99</color>
+    <color name="primary_dark">#415f84</color>
+    <color name="primary_light">#6b85a6</color>
+    <color name="primary_text">#ffffff</color>
+
+    <color name="primary_alt">#4ca665</color>
+    <color name="primary_alt_dark">#ff3d8652</color>
+    <color name="primary_alt_light">#ff5cca7b</color>
+
+    <color name="accent">#d94335</color>
+    <color name="accent_selected">#ca4a3f</color>
+
+    <color name="secondary">#eeeeee</color>
+    <color name="secondary_selected">#33999999</color>
+    <color name="secondary_pressed">#66999999</color>
+
+    <color name="settings_icon">#b5b6b7</color>
+
+    <color name="text_primary">#DE000000</color>
+    <color name="text_secondary">#8A000000</color>
+    <color name="text_hint">#42000000</color>
+    <color name="text_subheader">#ff999999</color>
+
+    <color name="text_primary_light">#DEffffff</color>
+    <color name="text_secondary_light">#8Affffff</color>
+    <color name="text_hint_light">#42ffffff</color>
+
+    <color name="selector_selected">#66999999</color>
+    <color name="selector_hover">#33999999</color>
+
+    <color name="selector_selected_light">#40cccccc</color>
+    <color name="selector_hover_light">#20cccccc</color>
+
+    <color name="selector_messages">#44000000</color>
+    <color name="selector_messages_selected">#66000000</color>
+
+    <color name="divider">#1e000000</color>
+    <color name="divider_light">#1effffff</color>
+
+    <color name="bg_light">#fffffc</color>
+
+    <color name="bg_grey">#eeeeee</color>
+
+    <color name="fab_bg">#ccffffff</color>
+
+    <!-- Main screen -->
+    <color name="main_tab_selected">#fffffc</color>
+    <color name="main_tab_divider">#15000000</color>
+
+    <!-- Profile screen -->
+    <color name="upload_overlay">#8c000000</color>
+
+    <!-- Dialogs -->
+
+    <color name="chats_state_pending">#40000000</color>
+    <color name="chats_state_sent">#40000000</color>
+    <color name="chats_state_delivered">#40000000</color>
+    <color name="chats_state_read">#ff7ea8ef</color>
+    <color name="chats_state_error">#d24a43</color>
+    <color name="chats_state_warring">#d24a43</color>
+
+    <!-- Conversation screen -->
+
+    <color name="conv_send_enabled">@color/primary</color>
+    <color name="conv_send_disabled">#42000000</color>
+
+    <color name="conv_bg">#e8e3d8</color>
+    <color name="conv_date_line">#14000000</color>
+    <color name="conv_date_text">#ffffff</color>
+    <color name="conv_date_bg">#99000000</color>
+
+    <color name="conv_text">@color/text_primary</color>
+    <color name="conv_time">#60000000</color>
+
+    <color name="conv_state_pending">#40000000</color>
+    <color name="conv_state_sent">#40000000</color>
+    <color name="conv_state_delivered">#40000000</color>
+    <color name="conv_state_read">#ff7ea8ef</color>
+    <color name="conv_state_error">#d24a43</color>
+    <color name="conv_state_warring">#d24a43</color>
+
+    <color name="conv_media_date_bg">#99000000</color>
+    <color name="conv_media_state_pending">#ffffff</color>
+    <color name="conv_media_state_sent">#ffffff</color>
+    <color name="conv_media_state_delivered">#ffffff</color>
+    <color name="conv_media_state_read">#ff7ea8ef</color>
+    <color name="conv_media_state_error">#ffed534b</color>
+    <color name="conv_media_state_warring">#ffed534b</color>
+
+    <color name="conv_delete">@color/accent</color>
+
+    <!-- Misc -->
+
+    <color name="black">#000000</color>
+    <color name="light_gray">#bbbbbb</color>
+</resources>
