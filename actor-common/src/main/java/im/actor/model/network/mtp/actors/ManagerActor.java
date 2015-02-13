@@ -1,8 +1,8 @@
 package im.actor.model.network.mtp.actors;
 
-import com.droidkit.actors.*;
-import com.droidkit.actors.conf.EnvConfig;
-import com.droidkit.actors.utils.AtomicIntegerCompat;
+import im.actor.model.droidkit.actors.*;
+import im.actor.model.droidkit.actors.conf.EnvConfig;
+import im.actor.model.droidkit.actors.utils.AtomicIntegerCompat;
 import im.actor.model.network.ConnectionFactory;
 import im.actor.model.log.Log;
 import im.actor.model.network.Connection;

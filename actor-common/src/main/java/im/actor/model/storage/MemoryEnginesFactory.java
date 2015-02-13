@@ -1,12 +1,8 @@
 package im.actor.model.storage;
 
-import im.actor.model.MemoryKeyValueEngine;
 import im.actor.model.entity.*;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
-
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by ex3ndr on 08.02.15.

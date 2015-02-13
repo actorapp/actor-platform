@@ -1,7 +1,7 @@
 package im.actor.model.network.util;
 
-import com.droidkit.actors.conf.EnvConfig;
-import com.droidkit.actors.utils.AtomicLongCompat;
+import im.actor.model.droidkit.actors.conf.EnvConfig;
+import im.actor.model.droidkit.actors.utils.AtomicLongCompat;
 
 /**
  * Created by ex3ndr on 03.09.14.

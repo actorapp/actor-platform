@@ -1,14 +1,14 @@
 package im.actor.model.jvm;
 
-import com.droidkit.actors.ActorSystem;
-import com.droidkit.actors.ThreadPriority;
-import com.droidkit.actors.conf.DispatcherFactory;
-import com.droidkit.actors.conf.EnvConfig;
-import com.droidkit.actors.conf.JavaFactory;
-import com.droidkit.actors.mailbox.ActorDispatcher;
-import com.droidkit.actors.utils.AtomicIntegerCompat;
-import com.droidkit.actors.utils.AtomicLongCompat;
-import com.droidkit.actors.utils.ThreadLocalCompat;
+import im.actor.model.droidkit.actors.ActorSystem;
+import im.actor.model.droidkit.actors.ThreadPriority;
+import im.actor.model.droidkit.actors.conf.DispatcherFactory;
+import im.actor.model.droidkit.actors.conf.EnvConfig;
+import im.actor.model.droidkit.actors.conf.JavaFactory;
+import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
+import im.actor.model.droidkit.actors.utils.AtomicIntegerCompat;
+import im.actor.model.droidkit.actors.utils.AtomicLongCompat;
+import im.actor.model.droidkit.actors.utils.ThreadLocalCompat;
 import im.actor.model.jvm.actors.JavaDispatcher;
 
 import java.util.concurrent.atomic.AtomicInteger;

@@ -1,15 +1,14 @@
 package im.actor.model.jvm.actors;
 
-import com.droidkit.actors.ThreadPriority;
-import com.droidkit.actors.conf.EnvConfig;
-import com.droidkit.actors.dispatch.AbstractDispatchQueue;
-import com.droidkit.actors.dispatch.AbstractDispatcher;
-import com.droidkit.actors.dispatch.Dispatch;
-import com.droidkit.actors.dispatch.DispatchResult;
+import im.actor.model.droidkit.actors.ThreadPriority;
+import im.actor.model.droidkit.actors.dispatch.AbstractDispatchQueue;
+import im.actor.model.droidkit.actors.dispatch.AbstractDispatcher;
+import im.actor.model.droidkit.actors.dispatch.Dispatch;
+import im.actor.model.droidkit.actors.dispatch.DispatchResult;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.droidkit.actors.ActorTime.currentTime;
+import static im.actor.model.droidkit.actors.ActorTime.currentTime;
 
 /**
  * ThreadPoolDispatcher is used for dispatching messages on it's own threads.
@@ -38,7 +37,7 @@ public class JavaThreadsDispatcher<T, Q extends AbstractDispatchQueue<T>> extend
      * @param count    thread count
      * @param priority thread priority
      * @param queue    queue for messages
-     *                 (see {@link com.droidkit.actors.dispatch.AbstractDispatchQueue} for more information)
+     *                 (see {@link im.actor.model.droidkit.actors.dispatch.AbstractDispatchQueue} for more information)
      * @param dispatch Dispatch for message processing
      */
     public JavaThreadsDispatcher(String name, int count, ThreadPriority priority, final Q queue, Dispatch<T> dispatch, boolean createThreads) {

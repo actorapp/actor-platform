@@ -1,6 +1,6 @@
 package im.actor.model.network.mtp;
 
-import com.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.network.Endpoints;
 import im.actor.model.network.mtp.actors.ManagerActor;
 import im.actor.model.network.mtp.actors.ReceiverActor;

@@ -1,6 +1,6 @@
 package im.actor.console;
 
-import com.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.Bser;
 import com.googlecode.lanterna.TerminalFacade;
 import com.googlecode.lanterna.gui.*;
 import com.googlecode.lanterna.gui.component.AbstractComponent;

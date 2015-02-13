@@ -1,11 +1,9 @@
 package im.actor.model.network;
 
-import com.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.network.api.ApiBroker;
 import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by ex3ndr on 08.02.15.

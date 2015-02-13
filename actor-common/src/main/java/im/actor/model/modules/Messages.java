@@ -1,16 +1,10 @@
 package im.actor.model.modules;
 
-import com.droidkit.actors.ActorCreator;
-import com.droidkit.actors.ActorRef;
-import com.droidkit.actors.Props;
+import im.actor.model.droidkit.actors.ActorCreator;
+import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.Props;
 import im.actor.model.Messenger;
-import im.actor.model.State;
 import im.actor.model.api.MessageContent;
-import im.actor.model.api.rpc.RequestSendMessage;
-import im.actor.model.api.rpc.RequestSignIn;
-import im.actor.model.api.rpc.ResponseAuth;
-import im.actor.model.concurrency.Command;
-import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
@@ -18,13 +12,10 @@ import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
 import im.actor.model.mvvm.ListEngine;
-import im.actor.model.network.RpcCallback;
-import im.actor.model.network.RpcException;
-import im.actor.model.util.RandomUtils;
 
 import java.util.HashMap;
 
-import static com.droidkit.actors.ActorSystem.system;
+import static im.actor.model.droidkit.actors.ActorSystem.system;
 
 /**
  * Created by ex3ndr on 09.02.15.

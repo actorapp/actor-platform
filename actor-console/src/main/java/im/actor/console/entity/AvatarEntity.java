@@ -1,8 +1,8 @@
 package im.actor.console.entity;
 
-import com.droidkit.bser.BserObject;
-import com.droidkit.bser.BserValues;
-import com.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.BserObject;
+import im.actor.model.droidkit.bser.BserValues;
+import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.entity.Avatar;
 
 import java.io.IOException;
