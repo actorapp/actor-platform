@@ -11,6 +11,7 @@ public class UiTools {
         JPanel chatsPanel = new JPanel();
         chatsPanel.setLayout(new GridLayout());
         chatsPanel.add(panel);
+        chatsPanel.setOpaque(false);
         return chatsPanel;
     }
 
@@ -25,6 +26,9 @@ public class UiTools {
         listScroller.setBorder(null);
         listScroller.setViewportBorder(null);
         listScroller.setBackground(Color.WHITE);
+        listScroller.getVerticalScrollBar().setUnitIncrement(8);
+        listScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        listScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         return listScroller;
     }
 
@@ -32,7 +36,7 @@ public class UiTools {
         JPanel res = new JPanel(new GridBagLayout());
         res.add(panel);
         res.setBorder(null);
-        res.setBackground(Color.WHITE);
+        res.setOpaque(false);
         return res;
     }
 
@@ -40,7 +44,7 @@ public class UiTools {
         JPanel res = new JPanel();
         res.setLayout(new BoxLayout(res, BoxLayout.PAGE_AXIS));
         res.setBorder(null);
-        res.setBackground(Color.WHITE);
+        res.setOpaque(false);
         return res;
     }
 
@@ -48,7 +52,7 @@ public class UiTools {
         JPanel res = new JPanel();
         res.setLayout(new BoxLayout(res, BoxLayout.Y_AXIS));
         res.setBorder(null);
-        res.setBackground(Color.WHITE);
+        res.setOpaque(false);
         return res;
     }
 
@@ -56,7 +60,7 @@ public class UiTools {
         JPanel res = new JPanel();
         res.setLayout(new BoxLayout(res, BoxLayout.X_AXIS));
         res.setBorder(null);
-        res.setBackground(Color.WHITE);
+        res.setOpaque(false);
         return res;
     }
 
