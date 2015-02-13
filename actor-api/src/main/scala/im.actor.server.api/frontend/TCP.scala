@@ -109,7 +109,7 @@ object MTProto {
 
         if (bs.isEmpty) ((state, bs), pSeq)
         else state match {
-          case HandshakeState => HandshakeCodec.parse(bs) match {
+          case HandshakeState => HandshakeCodec.decode(bs) match {
             case \/-(h) => ((AwaitPackage, ByteString.empty), Vector(h))
             case -\/(e) => failedState(e)
           }
