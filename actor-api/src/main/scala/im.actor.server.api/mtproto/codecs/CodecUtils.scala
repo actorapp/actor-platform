@@ -1,6 +1,7 @@
 package im.actor.server.api.mtproto.codecs
 
 import akka.util.ByteString
+import scodec.bits.BitVector
 import java.util.zip.CRC32
 
 object CodecUtils {
@@ -27,9 +28,9 @@ object CodecUtils {
     readVarInt(lenBS).map { l => bs.drop(lenBS.length).take(l.toInt) }
   }
 
-  def crc32(bs: ByteString): ByteString = {
+  def crc32(buf: BitVector): BitVector = {
     val ins = new CRC32()
-    ins.update(bs.toByteBuffer)
-    ByteString(ins.getValue)
+    ins.update(buf.toByteBuffer)
+    BitVector(ins.getValue)
   }
 }

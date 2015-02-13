@@ -1,8 +1,8 @@
 package im.actor.server.api.mtproto.codecs
 
-import akka.util.ByteString
 import im.actor.server.api.mtproto.transport._
 import scodec.bits._
+import scodec.Err
 import scodec.Codec
 import scodec.codecs._
 import scalaz._
@@ -11,50 +11,45 @@ import Scalaz._
 package object transport {
   import im.actor.server.api.util.ByteConstants._
 
-  object TransportPackageCodec {
-    def decode(bs: ByteString): String \/ TransportPackage = {
-      val pkgCrc = bs.takeRight(int32Bytes)
-      val bsCrc = CodecUtils.crc32(bs.dropRight(int32Bytes))
-      if (pkgCrc == bsCrc) {
-        val packageIndex = CodecUtils.readInt32(bs.take(int32Bytes))
-        val header: Byte = bs.drop(int32Bytes).head
-        val pkgBody = BitVector(CodecUtils.readBytes(bs.drop(int32Bytes + 1)).get.toByteBuffer)
-        val codec = header match {
-          case MTPackage.header => ???
-          case Ping.header => ???
-          case Pong.header => ???
-          case Drop.header => ???
-          case Redirect.header => ???
-          case InternalError.header => ???
-        }
-        ???
-      } else "invalid crc32".left
+  object TransportPackageCodec extends Codec[TransportPackage] {
+    private val mtprotoCodec = discriminated[MTProto].by(uint8)
+      .\(MTPackage.header) { case c: MTPackage => c } (MTPackageCodec)
+      .\(Ping.header) { case c: Ping => c } (PingCodec)
+      .\(Pong.header) { case c: Pong => c } (PongCodec)
+      .\(Drop.header) { case c: Drop => c } (DropCodec)
+      .\(Redirect.header) { case c: Redirect => c } (RedirectCodec)
+      .\(InternalError.header) { case c: InternalError => c } (InternalErrorCodec)
+
+    private val codec = (int32 ~ mtprotoCodec).pxmap[TransportPackage](TransportPackage.apply, TransportPackage.unapply)
+
+    def encode(p: TransportPackage) = {
+      for {
+        body <- codec.encode(p)
+        pkgBody = body ++ CodecUtils.crc32(body)
+        length <- int32.encode((pkgBody.length / byteSize).toInt)
+      }
+      yield length ++ pkgBody
     }
 
-    def encode(p: TransportPackage) = ???
+    def decode(buf: BitVector): Err \/ (BitVector, TransportPackage) = {
+      val pkgCrc = buf.takeRight(int32Bits)
+      val bsCrc = CodecUtils.crc32(buf.dropRight(int32Bits))
+      if (pkgCrc == bsCrc) codec.decode(buf)
+      else Err("invalid crc32").left
+    }
   }
 
-  object MTPackageCodec extends Codec[MTPackage] {
-    def encode(m: MTPackage) = ???
-
-    def decode(buf: BitVector) = ???
-  }
+  val MTPackageCodec = (int64 :: int64 :: bits).as[MTPackage]
 
   val PingCodec = bytes.pxmap[Ping](Ping.apply, Ping.unapply)
 
   val PongCodec = bytes.pxmap[Pong](Pong.apply, Pong.unapply)
 
-  val DropCodec = byte ~ string
+  val DropCodec = (byte ~ string).pxmap[Drop](Drop.apply, Drop.unapply)
 
-  object HandshakeCodec {
-    def decode(bs: ByteString): String \/ Handshake = {
-      if (bs.length < 4) "received data less than minimum handshake length".left
-      else if (bs.length > 260) "received data more than maximum handshake length".left
-      else {
-        val (protoVersion, apiMajorVersion, apiMinorVersion) = (bs(0), bs(1), bs(2))
-        val randomBytes = CodecUtils.readBytes(bs.drop(3)).get
-        Handshake(protoVersion, apiMajorVersion, apiMinorVersion, randomBytes).right
-      }
-    }
-  }
+  val RedirectCodec = (string :: int32 :: int32).as[Redirect]
+
+  val InternalErrorCodec = (byte :: int32 :: string).as[InternalError]
+
+  val HandshakeCodec = (byte :: byte :: byte :: bytes).as[Handshake]
 }
