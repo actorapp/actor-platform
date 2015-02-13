@@ -39,6 +39,10 @@ public class ConversationActor extends Actor {
 
     }
 
+    private void onHistoryLoaded(List<Message> history) {
+
+    }
+
     private void onInMessage(Message message) {
         if (messages.getValue(message.getListId()) != null) {
             return;
@@ -104,8 +108,22 @@ public class ConversationActor extends Actor {
             onMessagePlainReceived(((MessageReceived) message).getDate());
         } else if (message instanceof MessageEncryptedReceived) {
             onMessageEncryptedReceived(((MessageEncryptedReceived) message).getRid());
+        } else if (message instanceof HistoryLoaded) {
+            onHistoryLoaded(((HistoryLoaded) message).getMessages());
         } else {
             drop(message);
+        }
+    }
+
+    public static class HistoryLoaded {
+        private List<Message> messages;
+
+        public HistoryLoaded(List<Message> messages) {
+            this.messages = messages;
+        }
+
+        public List<Message> getMessages() {
+            return messages;
         }
     }
 

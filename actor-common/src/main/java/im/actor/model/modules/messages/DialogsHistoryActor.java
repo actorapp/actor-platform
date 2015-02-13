@@ -32,8 +32,8 @@ public class DialogsHistoryActor extends ModuleActor {
     @Override
     public void preStart() {
         preferencesStorage = messenger.getConfiguration().getPreferencesStorage();
-//        historyMaxDate = preferencesStorage.getLong("dialogs_history_date", 0);
-//        historyLoaded = preferencesStorage.getBool("dialogs_history_loaded", false);
+        historyMaxDate = preferencesStorage.getLong("dialogs_history_date", 0);
+        historyLoaded = preferencesStorage.getBool("dialogs_history_loaded", false);
         self().sendOnce(new LoadMore());
     }
 
