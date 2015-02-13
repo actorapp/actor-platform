@@ -7,9 +7,12 @@ repositories {
     mavenCentral()
 }
 
+mainClassName = "im.actor.desktop.Main"
+
 dependencies {
     compile project(':actor-common')
     compile project(':actor-java')
     compile project(':actor-java-threads')
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'org.mapdb:mapdb:1.0.6'
+    compile 'com.droidkit:bser:1.2'
 }
