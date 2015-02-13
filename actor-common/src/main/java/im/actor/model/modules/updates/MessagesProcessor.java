@@ -1,8 +1,7 @@
 package im.actor.model.modules.updates;
 
-import com.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.Messenger;
-import im.actor.model.api.*;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.entity.*;
 import im.actor.model.entity.MessageState;

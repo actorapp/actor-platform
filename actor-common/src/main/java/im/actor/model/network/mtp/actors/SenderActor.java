@@ -1,6 +1,6 @@
 package im.actor.model.network.mtp.actors;
 
-import com.droidkit.actors.*;
+import im.actor.model.droidkit.actors.*;
 import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.Container;
 import im.actor.model.network.mtp.entity.MessageAck;

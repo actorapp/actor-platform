@@ -4,6 +4,7 @@ import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.KeyValueItem;
 import org.mapdb.DB;
 
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -54,6 +55,11 @@ public class MapDbKeyValueEngine<V extends KeyValueItem> implements KeyValueEngi
     @Override
     public void clear() {
         // ???
+    }
+
+    @Override
+    public List<V> getAll() {
+        return new ArrayList<V>();
     }
 
     @Override

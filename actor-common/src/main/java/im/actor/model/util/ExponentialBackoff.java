@@ -1,7 +1,7 @@
 package im.actor.model.util;
 
-import com.droidkit.actors.conf.EnvConfig;
-import com.droidkit.actors.utils.AtomicIntegerCompat;
+import im.actor.model.droidkit.actors.conf.EnvConfig;
+import im.actor.model.droidkit.actors.utils.AtomicIntegerCompat;
 
 import java.util.Random;
 

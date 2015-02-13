@@ -1,8 +1,8 @@
 package im.actor.model.network.api;
 
-import com.droidkit.actors.*;
-import com.droidkit.actors.conf.EnvConfig;
-import com.droidkit.actors.utils.AtomicLongCompat;
+import im.actor.model.droidkit.actors.*;
+import im.actor.model.droidkit.actors.conf.EnvConfig;
+import im.actor.model.droidkit.actors.utils.AtomicLongCompat;
 import im.actor.model.api.parser.RpcParser;
 import im.actor.model.log.Log;
 import im.actor.model.network.*;

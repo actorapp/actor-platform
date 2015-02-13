@@ -2,7 +2,7 @@ package im.actor.desktop;
 
 import im.actor.desktop.engines.SwingListEngine;
 import im.actor.model.Configuration;
-import im.actor.model.MemoryKeyValueEngine;
+import im.actor.model.storage.MemoryKeyValueEngine;
 import im.actor.model.Messenger;
 import im.actor.model.State;
 import im.actor.model.concurrency.Command;

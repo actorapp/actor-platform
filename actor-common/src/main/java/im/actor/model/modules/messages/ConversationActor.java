@@ -1,7 +1,7 @@
 package im.actor.model.modules.messages;
 
-import com.droidkit.actors.Actor;
-import com.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.Actor;
+import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.Messenger;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
@@ -10,9 +10,7 @@ import im.actor.model.entity.PendingMessage;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by ex3ndr on 09.02.15.

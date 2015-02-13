@@ -1,6 +1,6 @@
 package im.actor.model.modules.sender;
 
-import com.droidkit.actors.conf.EnvConfig;
+import im.actor.model.droidkit.actors.conf.EnvConfig;
 import im.actor.model.Messenger;
 import im.actor.model.api.*;
 import im.actor.model.api.rpc.RequestSendMessage;

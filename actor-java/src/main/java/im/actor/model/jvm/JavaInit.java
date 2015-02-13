@@ -1,10 +1,10 @@
 package im.actor.model.jvm;
 
-import com.droidkit.actors.Actor;
-import com.droidkit.actors.ActorRef;
-import com.droidkit.actors.ActorSystem;
-import com.droidkit.actors.debug.TraceInterface;
-import com.droidkit.actors.mailbox.Envelope;
+import im.actor.model.droidkit.actors.Actor;
+import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.ActorSystem;
+import im.actor.model.droidkit.actors.debug.TraceInterface;
+import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.network.ConnectionFactory;
 import im.actor.model.jvm.network.TcpConnection;
 import im.actor.model.jvm.utils.JavaLog;

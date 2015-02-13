@@ -1,12 +1,12 @@
 package im.actor.model.modules;
 
-import com.droidkit.actors.ActorCreator;
-import com.droidkit.actors.ActorRef;
-import com.droidkit.actors.Props;
+import im.actor.model.droidkit.actors.ActorCreator;
+import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.Props;
 import im.actor.model.Messenger;
 import im.actor.model.modules.updates.SequenceActor;
 
-import static com.droidkit.actors.ActorSystem.system;
+import static im.actor.model.droidkit.actors.ActorSystem.system;
 
 /**
  * Created by ex3ndr on 08.02.15.

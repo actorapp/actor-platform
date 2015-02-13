@@ -1,11 +1,11 @@
 package im.actor.model.jvm.actors;
 
-import com.droidkit.actors.ActorSystem;
-import com.droidkit.actors.ThreadPriority;
-import com.droidkit.actors.dispatch.Dispatch;
-import com.droidkit.actors.mailbox.ActorDispatcher;
-import com.droidkit.actors.mailbox.Envelope;
-import com.droidkit.actors.mailbox.MailboxesQueue;
+import im.actor.model.droidkit.actors.ActorSystem;
+import im.actor.model.droidkit.actors.ThreadPriority;
+import im.actor.model.droidkit.actors.dispatch.Dispatch;
+import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
+import im.actor.model.droidkit.actors.mailbox.Envelope;
+import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
 
 /**
  * Basic ActorDispatcher backed by ThreadPoolDispatcher

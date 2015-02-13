@@ -1,6 +1,6 @@
 package im.actor.model.modules.utils;
 
-import com.droidkit.actors.Actor;
+import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.Messenger;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;

@@ -1,6 +1,6 @@
 package im.actor.model.modules.messages;
 
-import com.droidkit.actors.Actor;
+import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.Messenger;
 import im.actor.model.entity.*;
 import im.actor.model.mvvm.ListEngine;
