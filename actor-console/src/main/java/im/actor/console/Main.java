@@ -103,6 +103,11 @@ public class Main {
             public ListEngine<Message> createMessagesEngine(Peer peer) {
                 return new MemoryListEngine<Message>();
             }
+
+            @Override
+            public KeyValueEngine<PendingMessage> pendingMessages(Peer peer) {
+                return null;
+            }
         });
 
         messenger = new Messenger(configuration);

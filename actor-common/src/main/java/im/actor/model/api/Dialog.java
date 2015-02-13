@@ -7,8 +7,11 @@ import com.droidkit.bser.Bser;
 import com.droidkit.bser.BserObject;
 import com.droidkit.bser.BserValues;
 import com.droidkit.bser.BserWriter;
+
 import java.io.IOException;
+
 import im.actor.model.network.parser.*;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -79,7 +82,9 @@ public class Dialog extends BserObject {
         this.rid = values.getLong(6);
         this.date = values.getLong(7);
         this.message = values.getObj(8, new MessageContent());
-        this.state = MessageState.parse(values.getInt(9));
+        if (values.optInt(9) != 0) {
+            this.state = MessageState.parse(values.optInt(9));
+        }
     }
 
     @Override
@@ -97,10 +102,8 @@ public class Dialog extends BserObject {
             throw new IOException();
         }
         writer.writeObject(8, this.message);
-        if (this.state == null) {
-            throw new IOException();
+        if (this.state != null) {
+            writer.writeInt(9, this.state.getValue());
         }
-        writer.writeInt(9, this.state.getValue());
     }
-
 }

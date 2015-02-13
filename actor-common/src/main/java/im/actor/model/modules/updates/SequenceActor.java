@@ -16,6 +16,7 @@ import im.actor.model.api.rpc.ResponseGetDifference;
 import im.actor.model.api.rpc.ResponseSeq;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Updates;
+import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
@@ -75,6 +76,8 @@ public class SequenceActor extends ModuleActor {
             onUpdateReceived(message);
         } else if (message instanceof WeakUpdate) {
             onUpdateReceived(message);
+        } else if (message instanceof InternalUpdate) {
+            onUpdateReceived(message);
         }
     }
 
@@ -103,6 +106,10 @@ public class SequenceActor extends ModuleActor {
                 e.printStackTrace();
                 Log.w(TAG, "Unable to parse update: ignoring");
             }
+            return;
+        } else if (u instanceof InternalUpdate) {
+            Log.w(TAG, "Received internal update");
+            processor.processInternalUpdate((InternalUpdate) u);
             return;
         } else {
             return;

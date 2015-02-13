@@ -1,9 +1,9 @@
 package im.actor.model.modules.messages;
 
-import com.droidkit.actors.ActorRef;
 import im.actor.model.Messenger;
 import im.actor.model.api.rpc.RequestLoadDialogs;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
+import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
@@ -17,7 +17,6 @@ public class DialogsHistoryActor extends ModuleActor {
     private static final int LIMIT = 50;
 
     private Messenger messenger;
-    private ActorRef actorRef;
     private PreferencesStorage preferencesStorage;
 
     private long historyMaxDate;
@@ -32,10 +31,9 @@ public class DialogsHistoryActor extends ModuleActor {
 
     @Override
     public void preStart() {
-        actorRef = messenger.getMessagesModule().getDialogsActor();
         preferencesStorage = messenger.getConfiguration().getPreferencesStorage();
-        historyMaxDate = preferencesStorage.getLong("dialogs_history_date", 0);
-        historyLoaded = preferencesStorage.getBool("dialogs_history_loaded", false);
+//        historyMaxDate = preferencesStorage.getLong("dialogs_history_date", 0);
+//        historyLoaded = preferencesStorage.getBool("dialogs_history_loaded", false);
         self().sendOnce(new LoadMore());
     }
 
@@ -52,7 +50,8 @@ public class DialogsHistoryActor extends ModuleActor {
                 new RpcCallback<ResponseLoadDialogs>() {
                     @Override
                     public void onResult(ResponseLoadDialogs response) {
-
+                        // Invoke on sequence actor
+                        messenger.getUpdatesModule().onUpdateReceived(new DialogHistoryLoaded(response));
                     }
 
                     @Override
@@ -63,12 +62,28 @@ public class DialogsHistoryActor extends ModuleActor {
                 });
     }
 
+    private void onLoadedMore(boolean isFinished, long maxLoadedDate) {
+        isLoading = false;
+
+        if (isFinished) {
+            historyLoaded = true;
+        } else {
+            historyLoaded = false;
+            historyMaxDate = maxLoadedDate;
+        }
+        preferencesStorage.putBool("dialogs_history_loaded", historyLoaded);
+        preferencesStorage.putLong("dialogs_history_date", 0);
+    }
+
     // Messages
 
     @Override
     public void onReceive(Object message) {
         if (message instanceof LoadMore) {
             onLoadMore();
+        } else if (message instanceof LoadedMore) {
+            LoadedMore loaded = (LoadedMore) message;
+            onLoadedMore(loaded.isFinished, loaded.maxLoadedDate);
         } else {
             drop(message);
         }
@@ -76,5 +91,15 @@ public class DialogsHistoryActor extends ModuleActor {
 
     public static class LoadMore {
 
+    }
+
+    public static class LoadedMore {
+        private boolean isFinished;
+        private long maxLoadedDate;
+
+        public LoadedMore(boolean isFinished, long maxLoadedDate) {
+            this.isFinished = isFinished;
+            this.maxLoadedDate = maxLoadedDate;
+        }
     }
 }

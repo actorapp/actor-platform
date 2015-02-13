@@ -11,6 +11,7 @@ import java.util.List;
  * Created by ex3ndr on 08.02.15.
  */
 public class MemoryEnginesFactory implements EnginesFactory {
+
     @Override
     public KeyValueEngine<User> createUsersEngine() {
         return new KeyValueEngine<User>() {
@@ -61,6 +62,11 @@ public class MemoryEnginesFactory implements EnginesFactory {
     @Override
     public ListEngine<Message> createMessagesEngine(Peer peer) {
         return new MemoryListEngine<Message>();
+    }
+
+    @Override
+    public KeyValueEngine<PendingMessage> pendingMessages(Peer peer) {
+        return null;
     }
 
 }
