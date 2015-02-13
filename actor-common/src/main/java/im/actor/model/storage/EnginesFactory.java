@@ -13,4 +13,6 @@ public interface EnginesFactory {
     public ListEngine<Dialog> createDialogsEngine();
 
     public ListEngine<Message> createMessagesEngine(Peer peer);
+
+    public KeyValueEngine<PendingMessage> pendingMessages(Peer peer);
 }
