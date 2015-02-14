@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Actor</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Отмена</string>
     <string name="dialog_yes">Да</string>
@@ -9,12 +10,15 @@
     <string name="pick_photo_camera">Сделать фотографию</string>
     <string name="pick_photo_gallery">Выбрать из галереи</string>
     <string name="pick_photo_remove">Удалить фото</string>
+    <string name="pick_downloading">Загрузка</string>
 
     <string name="toast_no_sdcard">Нет SD-карты</string>
     <string name="toast_phone_copied">Телефон скопирован в буфер обмена</string>
     <string name="toast_messages_copied">Сообщения скопированы в буфер обмена</string>
     <string name="toast_unable_kick">Невозможно исключить участника из группы</string>
     <string name="toast_unable_add">Невозможно добавить пользователя в группу</string>
+    <string name="toast_empty_name">Имя не может быть пустым</string>
+    <string name="toast_unable_change">Невозможно поменять имя</string>
     <string name="toast_already_member">Пользователь уже участник группы</string>
 
     <string name="menu_share">Поделиться</string>

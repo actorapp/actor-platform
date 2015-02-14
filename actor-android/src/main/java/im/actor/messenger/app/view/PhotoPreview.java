@@ -12,8 +12,8 @@ import java.lang.reflect.Field;
 import im.actor.messenger.core.images.ImagePreviewTask;
 import im.actor.messenger.core.images.VideoPreviewTask;
 import im.actor.messenger.core.images.VideoTask;
-import im.actor.messenger.storage.scheme.messages.ConversationMessage;
 import im.actor.messenger.util.Screen;
+import im.actor.model.entity.Message;
 
 /**
  * Created by ex3ndr on 06.09.14.
@@ -47,11 +47,11 @@ public class PhotoPreview extends ImageReceiverView {
         requestSwitch(new VideoTask(fileName));
     }
 
-    public void requestVideo(int type, int id, ConversationMessage message) {
+    public void requestVideo(int type, int id, Message message) {
         requestSwitch(new VideoPreviewTask(type, id, message));
     }
 
-    public void requestPhoto(int type, int id, ConversationMessage message) {
+    public void requestPhoto(int type, int id, Message message) {
         requestSwitch(new ImagePreviewTask(type, id, message));
     }
 

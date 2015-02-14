@@ -6,5 +6,5 @@ package im.actor.model.mvvm;
 public interface ListEngineItem {
     public long getListId();
 
-    public long getSortingKey();
+    public long getListSortKey();
 }

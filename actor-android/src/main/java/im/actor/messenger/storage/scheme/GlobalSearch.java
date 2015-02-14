@@ -3,8 +3,7 @@ package im.actor.messenger.storage.scheme;
 import com.droidkit.bser.BserObject;
 import com.droidkit.bser.BserValues;
 import com.droidkit.bser.BserWriter;
-
-import im.actor.messenger.storage.scheme.avatar.Avatar;
+import im.actor.model.entity.Avatar;
 
 import java.io.IOException;
 
@@ -50,7 +49,7 @@ public class GlobalSearch extends BserObject {
         contType = values.getInt(1);
         contId = values.getInt(2);
         title = values.getString(3);
-        avatar = values.optObj(4, Avatar.class);
+        // avatar = values.optObj(4, Avatar.class);
     }
 
     @Override
@@ -59,7 +58,7 @@ public class GlobalSearch extends BserObject {
         writer.writeInt(2, contId);
         writer.writeString(3, title);
         if (avatar != null) {
-            writer.writeObject(4, avatar);
+            // writer.writeObject(4, avatar);
         }
     }
 }

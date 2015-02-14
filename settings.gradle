@@ -1,5 +1,5 @@
-include ':actor-common', ':actor-java', ':actor-java-threads', ':actor-ios', ':actor-console', ':actor-android'
-rootProject.name = 'actor-model'
+include ':actor-common', ':actor-java', ':actor-java-threads', ':actor-ios', ':actor-console', ':actor-android', ':actor-desktop'
 
-include 'actor-desktop'
-
+//project(':actor-common').projectDir = new File(settingsDir, "actor-common")
+//project(':actor-java').projectDir = new File(settingsDir, "actor-java")
+//project(':actor-java-threads').projectDir = new File(settingsDir, "actor-java-threads")

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -20,16 +19,15 @@ import android.widget.TextView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.PickCountryActivity;
-import im.actor.messenger.app.base.BaseBarFragmentActivity;
-import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.util.country.Country;
 import im.actor.messenger.util.country.CountryDb;
 import im.actor.messenger.util.country.CountryUtil;
+import im.actor.model.State;
+import im.actor.model.concurrency.CommandCallback;
 
-import static im.actor.messenger.core.Core.auth;
-import static im.actor.messenger.core.auth.AuthModel.AuthProcessState.*;
+import static im.actor.messenger.core.Core.messenger;
 
 public class SignPhoneFragment extends BaseAuthFragment {
 
@@ -42,8 +40,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
     private BackspaceKeyEditText phoneNumberEditText;
 
     private boolean ignoreNextCodeChange;
-    //    private Country pendingCountry;
-    private View progress;
 
     private KeyboardHelper keyboardHelper;
 
@@ -86,11 +82,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
 
         setTitle(R.string.auth_phone_title);
 
-//        if (pendingCountry != null) {
-//            setCountry(pendingCountry);
-//            pendingCountry = null;
-//        }
-
         if (TextUtils.isEmpty(countryCodeEditText.getText())) {
             focusCode();
         } else {
@@ -99,44 +90,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
         keyboardHelper.setImeVisibility(phoneNumberEditText, true);
     }
 
-
-    @Override
-    protected void onState(int stateId, Throwable t, boolean isAnimated) {
-        if (stateId == STATE_START) {
-            goneView(progress, isAnimated);
-            keyboardHelper.setImeVisibility(phoneNumberEditText, true);
-            hideError();
-        } else if (stateId == STATE_REQUESTING_SMS) {
-            showView(progress, isAnimated);
-            keyboardHelper.setImeVisibility(phoneNumberEditText, false);
-            hideError();
-        } else if (stateId == STATE_REQUESTING_SMS_ERROR) {
-            showView(progress, isAnimated);
-            keyboardHelper.setImeVisibility(phoneNumberEditText, false);
-            showError(stateId, t);
-        } else {
-            hideError();
-            rawNavigate(stateId, isAnimated);
-        }
-    }
-
-    @Override
-    protected void onErrorRepeat(int stateId) {
-        if (stateId == STATE_REQUESTING_SMS_ERROR) {
-            auth().tryAgainCodeRequest();
-        }
-    }
-
-    @Override
-    protected void onErrorCancel(int stateId) {
-        if (stateId == STATE_REQUESTING_SMS_ERROR) {
-            auth().resetCodeRequest();
-        }
-    }
-
     private void initView(View v) {
-        progress = v.findViewById(R.id.progressContainer);
-        progress.setVisibility(View.GONE);
         countrySelectButton = (Button) v.findViewById(R.id.button_country_select);
         onClick(countrySelectButton, new View.OnClickListener() {
             @Override
@@ -222,7 +176,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_GO) {
-                    requestManual();
+                    requestCode();
                     return true;
                 }
                 return false;
@@ -253,12 +207,12 @@ public class SignPhoneFragment extends BaseAuthFragment {
         onClick(v, R.id.button_continue, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestManual();
+                requestCode();
             }
         });
     }
 
-    private void requestManual() {
+    private void requestCode() {
 
         if (countryCodeEditText.getText().toString().trim().length() == 0 ||
                 phoneNumberEditText.getText().toString().trim().length() == 0) {
@@ -280,9 +234,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
             return;
         }
 
-        keyboardHelper.setImeVisibility(phoneNumberEditText, false);
-
-        auth().requestCode(Long.parseLong(rawPhoneN));
+        execute(messenger().getAuth().requestSms(Long.parseLong(rawPhoneN)));
     }
 
     private void focusCode() {
@@ -321,9 +273,4 @@ public class SignPhoneFragment extends BaseAuthFragment {
                     data.getIntExtra("country_id", 0)));
         }
     }
-
-//    @Override
-//    public void onCountrySelected(Country country) {
-//        pendingCountry = country;
-//    }
 }

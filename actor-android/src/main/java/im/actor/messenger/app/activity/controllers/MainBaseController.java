@@ -2,7 +2,7 @@ package im.actor.messenger.app.activity.controllers;
 
 import im.actor.messenger.app.activity.MainActivity;
 import im.actor.messenger.app.activity.base.Controller;
-import im.actor.messenger.storage.scheme.messages.DialogItem;
+import im.actor.model.entity.Dialog;
 
 /**
  * Created by ex3ndr on 25.10.14.
@@ -12,5 +12,5 @@ public abstract class MainBaseController extends Controller<MainActivity> {
         super(activity);
     }
 
-    public abstract void onItemClicked(DialogItem dialogItem);
+    public abstract void onItemClicked(Dialog dialogItem);
 }

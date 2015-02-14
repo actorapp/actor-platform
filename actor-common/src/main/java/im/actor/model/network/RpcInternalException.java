@@ -5,6 +5,6 @@ package im.actor.model.network;
  */
 public class RpcInternalException extends RpcException {
     public RpcInternalException() {
-        super("INTERNAL_ERROR", 500, "Internal server error", null);
+        super("INTERNAL_ERROR", 500, "Internal server error", true, null);
     }
 }

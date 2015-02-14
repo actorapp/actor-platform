@@ -26,7 +26,7 @@ public class SwingListEngine<T extends ListEngineItem> implements ListEngine<T> 
         int index = items.size();
         for (int i = 0; i < items.size(); i++) {
             T c = items.get(i);
-            if (c.getSortingKey() <= item.getSortingKey()) {
+            if (c.getListSortKey() <= item.getListSortKey()) {
                 index = i;
                 break;
             }

@@ -5,6 +5,6 @@ package im.actor.model.network;
  */
 public class RpcTimeoutException extends RpcException {
     public RpcTimeoutException() {
-        super("TIMEOUT", 500, "Request timeout", null);
+        super("TIMEOUT", 500, "Request timeout", true, null);
     }
 }

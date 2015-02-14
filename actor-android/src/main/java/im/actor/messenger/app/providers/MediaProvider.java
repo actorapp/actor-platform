@@ -13,8 +13,7 @@ import java.io.FileNotFoundException;
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.core.Core;
 import im.actor.messenger.storage.scheme.media.Downloaded;
-
-import static im.actor.messenger.storage.KeyValueEngines.downloaded;
+import im.actor.model.State;
 
 /**
  * Created by ex3ndr on 22.01.14.
@@ -33,12 +32,12 @@ public class MediaProvider extends ContentProvider {
         if (BuildConfig.ENABLE_CHROME) {
             long id = Long.parseLong(uri.getLastPathSegment());
 
-            Downloaded downloaded = downloaded().get(id);
-            if (downloaded != null) {
-                MatrixCursor matrixCursor = new MatrixCursor(new String[]{"_data"}, 1);
-                matrixCursor.addRow(new Object[]{downloaded.getName()});
-                return matrixCursor;
-            }
+//            Downloaded downloaded = downloaded().get(id);
+//            if (downloaded != null) {
+//                MatrixCursor matrixCursor = new MatrixCursor(new String[]{"_data"}, 1);
+//                matrixCursor.addRow(new Object[]{downloaded.getName()});
+//                return matrixCursor;
+//            }
         }
 
         return null;
@@ -66,17 +65,18 @@ public class MediaProvider extends ContentProvider {
 
     @Override
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
-        if (!Core.isLoggedIn()) {
+        if (Core.messenger().getAuth().getState() != State.LOGGED_IN) {
             throw new IllegalArgumentException();
         }
 
         long id = Long.parseLong(uri.getLastPathSegment());
 
-        Downloaded downloaded = downloaded().get(id);
-        File file = new File(downloaded.getDownloadedPath());
-        if (!file.exists()) {
-            throw new IllegalArgumentException();
-        }
-        return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+//        Downloaded downloaded = downloaded().get(id);
+//        File file = new File(downloaded.getDownloadedPath());
+//        if (!file.exists()) {
+//            throw new IllegalArgumentException();
+//        }
+//        return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+        throw new IllegalArgumentException();
     }
 }

@@ -1,7 +1,6 @@
 package im.actor.messenger.app.activity;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import im.actor.messenger.BuildConfig;
@@ -10,11 +9,11 @@ import im.actor.messenger.app.activity.base.ControllerActivity;
 import im.actor.messenger.app.activity.controllers.MainBaseController;
 import im.actor.messenger.app.activity.controllers.MainPhoneController;
 import im.actor.messenger.app.tour.TourActivity;
-import im.actor.messenger.storage.scheme.messages.DialogItem;
+import im.actor.messenger.core.Core;
 
+import im.actor.model.State;
+import im.actor.model.entity.Dialog;
 import net.hockeyapp.android.UpdateManager;
-
-import static im.actor.messenger.core.Core.auth;
 
 public class MainActivity extends ControllerActivity<MainBaseController> {
 
@@ -29,8 +28,7 @@ public class MainActivity extends ControllerActivity<MainBaseController> {
 
         checkForUpdates();
 
-        if (!auth().isAuthorized()) {
-            // startActivity(new Intent(this, AuthActivity.class));
+        if (Core.messenger().getAuth().getState() != State.LOGGED_IN) {
             startActivity(new Intent(this, TourActivity.class));
             finish();
             return;
@@ -39,7 +37,7 @@ public class MainActivity extends ControllerActivity<MainBaseController> {
         getWindow().setBackgroundDrawable(null);
     }
 
-    public void onDialogClicked(DialogItem item) {
+    public void onDialogClicked(Dialog item) {
         getController().onItemClicked(item);
     }
 

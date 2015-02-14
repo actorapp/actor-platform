@@ -18,7 +18,6 @@ import android.widget.*;
 import com.droidkit.engine.list.view.EngineUiList;
 import com.droidkit.engine.uilist.UiList;
 import com.droidkit.engine.uilist.UiListStateListener;
-import com.droidkit.mvvm.ui.Listener;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
@@ -26,31 +25,20 @@ import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.fragment.chat.adapter.ChatAdapter;
 import im.actor.messenger.app.view.BackgroundView;
 import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.core.actors.base.UiAskCallback;
-import im.actor.messenger.core.actors.chat.ChatActionsActor;
-import im.actor.messenger.core.actors.chat.OwnReadStateActor;
-import im.actor.messenger.core.actors.contacts.ContactsActor;
-import im.actor.messenger.model.DialogType;
-import im.actor.messenger.model.MessageModel;
-import im.actor.messenger.model.DialogUids;
-import im.actor.messenger.model.UserModel;
 import im.actor.messenger.storage.ListEngines;
-import im.actor.messenger.storage.scheme.messages.ConversationMessage;
-import im.actor.messenger.storage.scheme.messages.ReadState;
-import im.actor.messenger.storage.scheme.messages.types.TextMessage;
-import im.actor.messenger.util.BoxUtil;
 import im.actor.messenger.util.Logger;
 import im.actor.messenger.util.Screen;
 import im.actor.messenger.util.VisibleViewItem;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.TextContent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.storage.KeyValueEngines.readStates;
 import static im.actor.messenger.storage.KeyValueEngines.users;
 
 /**
@@ -58,10 +46,9 @@ import static im.actor.messenger.storage.KeyValueEngines.users;
  */
 public class MessagesFragment extends BaseFragment implements UiListStateListener, ExScrollListener {
 
-    public static MessagesFragment create(int chatType, int chatId) {
+    public static MessagesFragment create(Peer peer) {
         Bundle bundle = new Bundle();
-        bundle.putInt("CHAT_TYPE", chatType);
-        bundle.putInt("CHAT_ID", chatId);
+        bundle.putLong("CHAT_PEER", peer.getUid());
         MessagesFragment res = new MessagesFragment();
         res.setArguments(bundle);
         return res;
@@ -71,11 +58,12 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
     private static final int STATE_TOP = 1;
     private static final int STATE_UNREAD = 2;
 
-    private int chatType, chatId;
+    private Peer peer;
+
     private ConversationListView listView;
     private ChatAdapter adapter;
-    private EngineUiList<MessageModel> listEngine;
-    private UiList<MessageModel> list;
+    private EngineUiList<Message> listEngine;
+    private UiList<Message> list;
     private ImageView scrollUp;
     private ImageView scrollDown;
     private TextView scrollNewMessage;
@@ -95,19 +83,11 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
 
     private ActionMode actionMode;
 
-    private HashMap<Long, MessageModel> selected = new HashMap<Long, MessageModel>();
+    private HashMap<Long, Message> selected = new HashMap<Long, Message>();
 
     private long firstUnread = 0;
 
     private boolean isFirst = true;
-
-    public int getChatType() {
-        return chatType;
-    }
-
-    public int getChatId() {
-        return chatId;
-    }
 
     public long getFirstUnread() {
         return firstUnread;
@@ -116,8 +96,7 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        chatType = getArguments().getInt("CHAT_TYPE");
-        chatId = getArguments().getInt("CHAT_ID");
+        peer = Peer.fromUid(getArguments().getLong("CHAT_PEER"));
 
         scrollNewMessage = new TextView(getActivity());
         scrollNewMessage.setTextColor(Color.WHITE);
@@ -133,7 +112,7 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
                     listEngine.scrollToStart();
                 } else {
                     for (int i = 0; i < list.getSize(); i++) {
-                        if (list.getItem(i).getRaw().getRid() == newMessageId) {
+                        if (list.getItem(i).getRid() == newMessageId) {
                             listView.setSelectionFromTop(list.getSize() - i - 1, Screen.dp(48));
                             break;
                         }
@@ -178,9 +157,9 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
         // listView.setBackgroundColor(getResources().getColor(R.color.conv_bg));
         // listView.setStackFromBottom(true);
 
-        listEngine = ListEngines.messagesUiList(DialogUids.getDialogUid(chatType, chatId));
+        listEngine = ListEngines.getMessagesList(peer);
         list = listEngine.getUiList();
-        adapter = new ChatAdapter(chatType, chatId, this, getActivity());
+        adapter = new ChatAdapter(peer, this, getActivity());
         View view = new View(getActivity());
         view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(10)));
         listView.addFooterView(view, null, false);
@@ -200,40 +179,40 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
         addContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ask(ContactsActor.contactsList().addContact(chatId), getString(R.string.chat_add_to_contacts_progress), new UiAskCallback<Boolean>() {
-                    @Override
-                    public void onPreStart() {
-
-                    }
-
-                    @Override
-                    public void onCompleted(Boolean res) {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-
-                    }
-                });
+//                ask(ContactsActor.contactsList().addContact(chatId), getString(R.string.chat_add_to_contacts_progress), new UiAskCallback<Boolean>() {
+//                    @Override
+//                    public void onPreStart() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onCompleted(Boolean res) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable t) {
+//
+//                    }
+//                });
             }
         });
 
-        if (chatType == DialogType.TYPE_USER) {
-            UserModel u = users().get(chatId);
-            getBinder().bind(u.getContactModel(), new Listener<Boolean>() {
-                @Override
-                public void onUpdated(Boolean aBoolean) {
-                    if (aBoolean) {
-                        addContact.setVisibility(View.GONE);
-                    } else {
-                        addContact.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-        } else {
-            addContact.setVisibility(View.GONE);
-        }
+//        if (chatType == DialogType.TYPE_USER) {
+//            UserModel u = users().get(chatId);
+//            getBinder().bind(u.getContactModel(), new Listener<Boolean>() {
+//                @Override
+//                public void onUpdated(Boolean aBoolean) {
+//                    if (aBoolean) {
+//                        addContact.setVisibility(View.GONE);
+//                    } else {
+//                        addContact.setVisibility(View.VISIBLE);
+//                    }
+//                }
+//            });
+//        } else {
+//            addContact.setVisibility(View.GONE);
+//        }
 
         header.addView(addContact);
         listView.addHeaderView(header, null, false);
@@ -306,39 +285,39 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
 
     private void initUnreadLocation() {
 
-        if (list.getSize() == 0) {
-            return;
-        }
-
-        ReadState readState = readStates().get(DialogUids.getDialogUid(chatType, chatId));
-        if (readState == null || readState.getLastReadSortingKey() == 0) {
-            listView.setSelectionFromTop(list.getSize() - 1, -10000);
-            return;
-        }
-
-        long lastRead = readState.getLastReadSortingKey();
-        int index = -1;
-
-        for (int i = list.getSize() - 1; i >= 0; i--) {
-            MessageModel messageModel = list.getItem(i);
-            if (messageModel.getRaw().getSenderId() == myUid()) {
-                continue;
-            }
-            if (messageModel.getRaw().getSortKey() > lastRead) {
-                firstUnread = messageModel.getRid();
-                index = i;
-                break;
-            }
-        }
-
-        if (index >= 0) {
-            listView.setSelectionFromTop(list.getSize() - index, Screen.dp(48));
-        } else {
-            listView.setSelectionFromTop(list.getSize(), -10000);
-        }
+//        if (list.getSize() == 0) {
+//            return;
+//        }
+//
+//        ReadState readState = readStates().get(DialogUids.getDialogUid(chatType, chatId));
+//        if (readState == null || readState.getLastReadSortingKey() == 0) {
+//            listView.setSelectionFromTop(list.getSize() - 1, -10000);
+//            return;
+//        }
+//
+//        long lastRead = readState.getLastReadSortingKey();
+//        int index = -1;
+//
+//        for (int i = list.getSize() - 1; i >= 0; i--) {
+//            Message messageModel = list.getItem(i);
+//            if (messageModel.getSenderId() == myUid()) {
+//                continue;
+//            }
+//            if (messageModel.getSortKey() > lastRead) {
+//                firstUnread = messageModel.getRid();
+//                index = i;
+//                break;
+//            }
+//        }
+//
+//        if (index >= 0) {
+//            listView.setSelectionFromTop(list.getSize() - index, Screen.dp(48));
+//        } else {
+//            listView.setSelectionFromTop(list.getSize(), -10000);
+//        }
     }
 
-    public boolean onClick(MessageModel messageModel) {
+    public boolean onClick(Message messageModel) {
         if (actionMode != null) {
             if (!selected.containsKey(messageModel.getRid())) {
                 selected.put(messageModel.getRid(), messageModel);
@@ -357,7 +336,7 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
         return false;
     }
 
-    public boolean onLongClick(MessageModel messageModel) {
+    public boolean onLongClick(Message messageModel) {
         if (actionMode == null) {
             selected.clear();
             selected.put(messageModel.getRid(), messageModel);
@@ -374,8 +353,8 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
 
                     boolean isAllText = true;
                     for (long k : selected.keySet()) {
-                        MessageModel model = selected.get(k);
-                        if (!(model.getContent() instanceof TextMessage)) {
+                        Message model = selected.get(k);
+                        if (!(model.getContent() instanceof TextContent)) {
                             isAllText = false;
                             break;
                         }
@@ -395,8 +374,8 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
 
-                                        ChatActionsActor.actions().deleteMessages(chatType, chatId,
-                                                BoxUtil.unbox(selected.keySet().toArray(new Long[selected.size()])));
+//                                        ChatActionsActor.actions().deleteMessages(chatType, chatId,
+//                                                BoxUtil.unbox(selected.keySet().toArray(new Long[selected.size()])));
 
                                         mode.finish();
                                     }
@@ -408,36 +387,36 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
 
                         String text = "";
 
-                        MessageModel[] models = selected.values().toArray(new MessageModel[0]);
-                        Arrays.sort(models, new Comparator<MessageModel>() {
+                        Message[] models = selected.values().toArray(new Message[0]);
+                        Arrays.sort(models, new Comparator<Message>() {
 
                             int compare(long lhs, long rhs) {
                                 return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
                             }
 
                             @Override
-                            public int compare(MessageModel lhs, MessageModel rhs) {
-                                return compare(lhs.getRaw().getListSortKey(), rhs.getRaw().getListSortKey());
+                            public int compare(Message lhs, Message rhs) {
+                                return compare(lhs.getListSortKey(), rhs.getListSortKey());
                             }
                         });
 
                         if (models.length == 1) {
-                            for (MessageModel model : models) {
-                                if (!(model.getContent() instanceof TextMessage)) {
+                            for (Message model : models) {
+                                if (!(model.getContent() instanceof TextContent)) {
                                     continue;
                                 }
-                                text += ((TextMessage) model.getContent()).getText();
+                                text += ((TextContent) model.getContent()).getText();
                             }
                         } else {
-                            for (MessageModel model : models) {
-                                if (!(model.getContent() instanceof TextMessage)) {
+                            for (Message model : models) {
+                                if (!(model.getContent() instanceof TextContent)) {
                                     continue;
                                 }
                                 if (text.length() > 0) {
                                     text += "\n";
                                 }
-                                text += users().get(model.getRaw().getSenderId()).getName() + ": ";
-                                text += ((TextMessage) model.getContent()).getText();
+                                text += users().get(model.getSenderId()).getName() + ": ";
+                                text += ((TextContent) model.getContent()).getText();
                             }
                         }
 
@@ -481,11 +460,11 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
         return selected.containsKey(rid);
     }
 
-    public void onItemViewed(MessageModel messageModel) {
-        if (messageModel.getRaw().getSenderId() != myUid()) {
-            OwnReadStateActor.readState().messageRead(chatType, chatId, messageModel.getRid(), messageModel.getRaw().getSortKey(),
-                    messageModel.getRaw().getTime(),
-                    messageModel.getRaw().getContent().isEncrypted());
+    public void onItemViewed(Message messageModel) {
+        if (messageModel.getSenderId() != myUid()) {
+//            OwnReadStateActor.readState().messageRead(chatType, chatId, messageModel.getRid(), messageModel.getSortKey(),
+//                    messageModel.getTime(),
+//                    messageModel.getContent().isEncrypted());
         }
     }
 
@@ -529,7 +508,7 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
         preSize = list.getSize();
         bottomId = 0;
         if (preSize > 0) {
-            ConversationMessage bottomMessage = list.getItem(0).getRaw();
+            Message bottomMessage = list.getItem(0);
             bottomId = bottomMessage.getRid();
         }
     }
@@ -559,7 +538,7 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
         // Scrolling to bottom on new messages
 
         if (list.getSize() > 0 && preSize > 0 && listView.getLastVisiblePosition() >= preSize - 1
-                && bottomId != list.getItem(0).getRaw().getRid()) {
+                && bottomId != list.getItem(0).getRid()) {
             if (BuildConfig.ENABLE_CHROME) {
                 listView.smoothScrollToPosition(list.getSize());
             } else {
@@ -586,7 +565,7 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
         outer:
         for (int i = 0; i < list.getSize(); i++) {
             for (int j = 0; j < preDump.length; j++) {
-                if (preDump[j].getId() == list.getItem(list.getSize() - i - 1).getRaw().getRid()) {
+                if (preDump[j].getId() == list.getItem(list.getSize() - i - 1).getRid()) {
                     newIndex = i;
                     newTop = preDump[j].getTop();
                     break outer;
@@ -608,7 +587,7 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
             if (index >= list.getSize()) {
                 continue;
             }
-            long id = list.getItem(list.getSize() - index - 1).getRaw().getRid();
+            long id = list.getItem(list.getSize() - index - 1).getRid();
             if (id != 0) {
                 int top = ((v == null) ? 0 : v.getTop()) - listView.getPaddingTop();
                 res.add(new VisibleViewItem(index + headerCount, top, id));

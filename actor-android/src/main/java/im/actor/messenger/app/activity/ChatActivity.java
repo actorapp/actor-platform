@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.telephony.TelephonyManager;
@@ -19,7 +18,6 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.view.*;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 
@@ -37,18 +35,14 @@ import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
 import im.actor.messenger.core.AppContext;
-import im.actor.messenger.core.actors.audio.OpusRecorder;
-import im.actor.messenger.core.actors.chat.ChatActionsActor;
-import im.actor.messenger.core.actors.send.*;
-import im.actor.messenger.core.actors.typing.MyTypingActor;
 import im.actor.messenger.model.*;
 import im.actor.messenger.settings.ChatSettings;
 import im.actor.messenger.settings.NotificationSettings;
-import im.actor.messenger.storage.DialogStorage;
-import im.actor.messenger.storage.scheme.avatar.Avatar;
 import im.actor.messenger.storage.scheme.groups.GroupState;
 import im.actor.messenger.util.*;
 import im.actor.messenger.util.io.IOUtils;
+import im.actor.model.entity.Peer;
+import im.actor.model.entity.PeerType;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,11 +50,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import static com.droidkit.actors.ActorSystem.system;
 import static im.actor.messenger.app.view.ViewUtils.*;
-import static im.actor.messenger.core.actors.AppStateBroker.stateBroker;
-import static im.actor.messenger.core.actors.groups.GroupsActor.groupUpdates;
-import static im.actor.messenger.storage.KeyValueEngines.groups;
 import static im.actor.messenger.storage.KeyValueEngines.users;
 
 public class ChatActivity extends BaseBarActivity implements Listener<GroupState> {
@@ -71,8 +61,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
     private static final int REQUEST_DOC = 3;
     private static final int REQUEST_LOCATION = 4;
 
-    private int chatType;
-    private int chatId;
+    private Peer peer;
 
     private EditText messageBody;
     private TintImageView sendButton;
@@ -111,8 +100,8 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 
         keyboardUtils = new KeyboardHelper(this);
 
-        chatType = getIntent().getExtras().getInt(Intents.EXTRA_CHAT_TYPE);
-        chatId = getIntent().getExtras().getInt(Intents.EXTRA_CHAT_ID);
+        peer = Peer.fromUid(getIntent().getExtras().getLong(Intents.EXTRA_CHAT_PEER));
+
         if (saveInstance != null) {
             isCompose = false;
         } else {
@@ -142,10 +131,10 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
         customView.findViewById(R.id.titleContainer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (chatType == DialogType.TYPE_USER) {
-                    startActivity(Intents.openProfile(chatId, ChatActivity.this));
-                } else if (chatType == DialogType.TYPE_GROUP) {
-                    startActivity(Intents.openGroup(chatId, ChatActivity.this));
+                if (peer.getPeerType() == PeerType.PRIVATE) {
+                    startActivity(Intents.openProfile(peer.getPeerId(), ChatActivity.this));
+                } else if (peer.getPeerType() == PeerType.GROUP) {
+                    // startActivity(Intents.openGroup(chatId, ChatActivity.this));
                 }
             }
         });
@@ -163,7 +152,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
         getWindow().setBackgroundDrawable(null);
 
         getFragmentManager().beginTransaction()
-                .add(R.id.messagesFragment, MessagesFragment.create(chatType, chatId))
+                .add(R.id.messagesFragment, MessagesFragment.create(peer))
                 .commit();
 
         messageBody = (EditText) findViewById(R.id.et_message);
@@ -171,7 +160,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if (after > count && !isTypingDisabled) {
-                    MyTypingActor.myTyping().onType(chatType, chatId);
+                    // MyTypingActor.myTyping().onType(chatType, chatId);
                 }
             }
 
@@ -245,7 +234,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                         .setPositiveButton(R.string.alert_delete_group_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                groupUpdates().deleteChat(chatId);
+                                // groupUpdates().deleteChat(chatId);
                             }
                         })
                         .setNegativeButton(R.string.dialog_cancel, null)
@@ -260,73 +249,6 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
         audioMessage = (ImageView) findViewById(R.id.audioMessage);
         cancelView = findViewById(R.id.cancelSlide);
         recordTimer = (TextView) findViewById(R.id.recordTimer);
-
-        audioMessage.setOnTouchListener(new View.OnTouchListener() {
-
-            private int startX;
-            private boolean isActive = false;
-            private long recordStartTime;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    system().actorOf(OpusRecorder.recorder()).send(new OpusRecorder.StartRecord());
-                    startX = (int) event.getX();
-                    audioMessage.setImageResource(R.drawable.conv_voice_pressed);
-
-                    cancelView.setTranslationX(0);
-
-                    recordingPanel.setVisibility(View.VISIBLE);
-                    recordingPanel.setTranslationX(recordingPanel.getWidth());
-                    recordingPanel.setAlpha(0);
-
-                    recordingPanel.animate()
-                            .translationX(0)
-                            .alpha(1)
-                            .setInterpolator(new AccelerateDecelerateInterpolator())
-                            .setDuration(150).start();
-
-                    recordTimer.setText("00:00");
-                    recordTimer.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isActive) {
-                                recordTimer.setText(Formatter.duration(
-                                        (int) ((SystemClock.uptimeMillis() - recordStartTime) / 1000)));
-                                recordTimer.postDelayed(this, 500);
-                            }
-                        }
-                    });
-                    recordStartTime = SystemClock.uptimeMillis();
-                    isActive = true;
-                } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    if (!isActive) {
-                        return false;
-                    }
-                    int delta = (int) (startX - event.getX()) - Screen.dp(32);
-                    if (delta < 0) {
-                        delta = 0;
-                    }
-                    if (delta > Screen.dp(180)) {
-                        system().actorOf(OpusRecorder.recorder()).send(new OpusRecorder.AbortRecord());
-                        audioMessage.setImageResource(R.drawable.conv_voice_normal);
-                        recordingPanel.setVisibility(View.GONE);
-                        isActive = false;
-                    } else {
-                        cancelView.setTranslationX(-delta);
-                    }
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (!isActive) {
-                        return false;
-                    }
-                    system().actorOf(OpusRecorder.recorder()).send(new OpusRecorder.SendAudio(chatType, chatId));
-                    audioMessage.setImageResource(R.drawable.conv_voice_normal);
-                    recordingPanel.setVisibility(View.GONE);
-                    isActive = false;
-                }
-                return true;
-            }
-        });
 
         if (!BuildConfig.ENABLE_VOICE) {
             audioMessage.setVisibility(View.GONE);
@@ -444,8 +366,8 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 
         updateImeConfig();
 
-        if (chatType == DialogType.TYPE_USER) {
-            final UserModel user = users().get(chatId);
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            final UserModel user = users().get(peer.getPeerId());
 
             if (user == null) {
                 finish();
@@ -453,16 +375,16 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             }
 
             avatar.setEmptyDrawable(AvatarDrawable.create(user, 18, this));
-            getBinder().bind(user.getAvatar(), new Listener<Avatar>() {
-                @Override
-                public void onUpdated(Avatar a) {
-                    if (a != null) {
-                        avatar.bindFastAvatar(38, a);
-                    } else {
-                        avatar.unbind();
-                    }
-                }
-            });
+//            getBinder().bind(user.getAvatar(), new Listener<Avatar>() {
+//                @Override
+//                public void onUpdated(Avatar a) {
+//                    if (a != null) {
+//                        avatar.bindFastAvatar(38, a);
+//                    } else {
+//                        avatar.unbind();
+//                    }
+//                }
+//            });
 
             getBinder().bindText(title, user.getNameModel());
 
@@ -478,48 +400,49 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                     updateUserStatus(user.getPresence().getValue(), aBoolean);
                 }
             });
-        } else if (chatType == DialogType.TYPE_GROUP) {
-            final GroupModel groupInfo = groups().get(chatId);
-
-            if (groupInfo == null) {
-                finish();
-                return;
-            }
-
-
-            avatar.setEmptyDrawable(AvatarDrawable.create(groupInfo, 18, this));
-            getBinder().bind(groupInfo.getAvatarModel(), new Listener<Avatar>() {
-                @Override
-                public void onUpdated(Avatar a) {
-                    if (a != null) {
-                        avatar.bindFastAvatar(38, a);
-                    } else {
-                        avatar.unbind();
-                    }
-                }
-            });
-
-            getBinder().bindText(title, groupInfo.getTitleModel());
-
-            subtitle.setVisibility(View.VISIBLE);
-
-            getBinder().bind(groupInfo.getStateModel(), this);
-
-            getBinder().bind(TypingModel.groupChatTyping(chatId), new Listener<int[]>() {
-                @Override
-                public void onUpdated(int[] ints) {
-                    updateGroupStatus(groupInfo.getOnlineModel().getValue(), ints);
-                }
-            });
-            getBinder().bind(groupInfo.getOnlineModel(), new Listener<int[]>() {
-                @Override
-                public void onUpdated(int[] ints) {
-                    updateGroupStatus(ints, TypingModel.groupChatTyping(chatId).getValue());
-                }
-            });
-        } else if (chatType == DialogType.TYPE_NOTIFICATIONS) {
-            title.setText("Notifications");
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+//            final GroupModel groupInfo = groups().get(chatId);
+//
+//            if (groupInfo == null) {
+//                finish();
+//                return;
+//            }
+//
+//
+//            avatar.setEmptyDrawable(AvatarDrawable.create(groupInfo, 18, this));
+//            getBinder().bind(groupInfo.getAvatarModel(), new Listener<Avatar>() {
+//                @Override
+//                public void onUpdated(Avatar a) {
+//                    if (a != null) {
+//                        avatar.bindFastAvatar(38, a);
+//                    } else {
+//                        avatar.unbind();
+//                    }
+//                }
+//            });
+//
+//            getBinder().bindText(title, groupInfo.getTitleModel());
+//
+//            subtitle.setVisibility(View.VISIBLE);
+//
+//            getBinder().bind(groupInfo.getStateModel(), this);
+//
+//            getBinder().bind(TypingModel.groupChatTyping(chatId), new Listener<int[]>() {
+//                @Override
+//                public void onUpdated(int[] ints) {
+//                    updateGroupStatus(groupInfo.getOnlineModel().getValue(), ints);
+//                }
+//            });
+//            getBinder().bind(groupInfo.getOnlineModel(), new Listener<int[]>() {
+//                @Override
+//                public void onUpdated(int[] ints) {
+//                    updateGroupStatus(ints, TypingModel.groupChatTyping(chatId).getValue());
+//                }
+//            });
         }
+//        } else if (chatType == DialogType.TYPE_NOTIFICATIONS) {
+//            title.setText("Notifications");
+//        }
 
         int left = 0;
         int right = 0;
@@ -528,9 +451,9 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 //            left = R.drawable.conv_secure_name;
 //        }
 
-        if (!NotificationSettings.getInstance().convValue(DialogUids.getDialogUid(chatType, chatId)).getValue()) {
-            right = R.drawable.conv_mute;
-        }
+//        if (!NotificationSettings.getInstance().convValue(DialogUids.getDialogUid(chatType, chatId)).getValue()) {
+//            right = R.drawable.conv_mute;
+//        }
 
         title.setCompoundDrawablesWithIntrinsicBounds(left, 0, right, 0);
 
@@ -540,16 +463,16 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
         }
         isCompose = false;
 
-        stateBroker().onConversationOpen(chatType, chatId);
-
-        isTypingDisabled = true;
-        String text = DialogStorage.draftStorage().get(DialogUids.getDialogUid(chatType, chatId));
-        if (text != null) {
-            messageBody.setText(text);
-        } else {
-            messageBody.setText("");
-        }
-        isTypingDisabled = false;
+//        stateBroker().onConversationOpen(chatType, chatId);
+//
+//        isTypingDisabled = true;
+//        String text = DialogStorage.draftStorage().get(DialogUids.getDialogUid(chatType, chatId));
+//        if (text != null) {
+//            messageBody.setText(text);
+//        } else {
+//            messageBody.setText("");
+//        }
+//        isTypingDisabled = false;
 
 //        messageBody.requestFocus();
 //        messageBody.post(new Runnable() {
@@ -564,7 +487,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
     }
 
     private void updateUserStatus(UserPresence presence, boolean isTyping) {
-        String s = Formatter.formatPresence(presence, users().get(chatId).getRaw().getSex());
+        String s = Formatter.formatPresence(presence, users().get(peer.getPeerId()).getSex());
         if (s == null) {
             subtitleContainer.setVisibility(View.GONE);
         } else {
@@ -616,7 +539,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             keyboardUtils.setImeVisibility(messageBody, false);
         }
 
-        MessageDeliveryActor.messageSender().sendText(chatType, chatId, text);
+        // MessageDeliveryActor.messageSender().sendText(chatType, chatId, text);
     }
 
     @Override
@@ -627,9 +550,9 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                     sendUri(data.getData());
                 }
             } else if (requestCode == REQUEST_PHOTO) {
-                MessageDeliveryActor.messageSender().sendPhoto(chatType, chatId, fileName);
+                // MessageDeliveryActor.messageSender().sendPhoto(chatType, chatId, fileName);
             } else if (requestCode == REQUEST_VIDEO) {
-                MessageDeliveryActor.messageSender().sendVideo(chatType, chatId, fileName);
+                // MessageDeliveryActor.messageSender().sendVideo(chatType, chatId, fileName);
             } else if (requestCode == REQUEST_DOC) {
                 if (data.getData() != null) {
                     sendUri(data.getData());
@@ -637,8 +560,8 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                     ArrayList<String> files = data.getStringArrayListExtra("picked");
                     if (files != null) {
                         for (String s : files) {
-                            MessageDeliveryActor.messageSender().sendDocument(chatType, chatId, s,
-                                    new File(s).getName());
+//                            MessageDeliveryActor.messageSender().sendDocument(chatType, chatId, s,
+//                                    new File(s).getName());
                         }
                     }
                 }
@@ -694,14 +617,14 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                     }
                 }
 
-                if (mimeType.startsWith("video/")) {
-                    MessageDeliveryActor.messageSender().sendVideo(chatType, chatId, picturePath);
-                } else if (mimeType.startsWith("image/")) {
-                    MessageDeliveryActor.messageSender().sendPhoto(chatType, chatId, picturePath);
-                } else {
-                    MessageDeliveryActor.messageSender().sendDocument(chatType, chatId, picturePath,
-                            fileName);
-                }
+//                if (mimeType.startsWith("video/")) {
+//                    MessageDeliveryActor.messageSender().sendVideo(chatType, chatId, picturePath);
+//                } else if (mimeType.startsWith("image/")) {
+//                    MessageDeliveryActor.messageSender().sendPhoto(chatType, chatId, picturePath);
+//                } else {
+//                    MessageDeliveryActor.messageSender().sendDocument(chatType, chatId, picturePath,
+//                            fileName);
+//                }
 
                 return null;
             }
@@ -717,7 +640,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.chat_menu, menu);
 
-        if (chatType == DialogType.TYPE_USER) {
+        if (peer.getPeerType() == PeerType.PRIVATE) {
             menu.findItem(R.id.contact).setVisible(true);
             TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
             menu.findItem(R.id.call).setVisible(tm.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE);
@@ -726,7 +649,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             menu.findItem(R.id.call).setVisible(false);
         }
 
-        if (chatType == DialogType.TYPE_GROUP) {
+        if (peer.getPeerType() == PeerType.GROUP) {
             menu.findItem(R.id.groupInfo).setVisible(true);
             menu.findItem(R.id.leaveGroup).setVisible(true);
         } else {
@@ -749,7 +672,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                         .setPositiveButton(R.string.alert_delete_all_messages_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ChatActionsActor.actions().clearChat(chatType, chatId);
+                                // ChatActionsActor.actions().clearChat(chatType, chatId);
                             }
                         })
                         .setNegativeButton(R.string.dialog_cancel, null)
@@ -762,7 +685,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                         .setPositiveButton(R.string.alert_delete_group_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog2, int which) {
-                                groupUpdates().leaveChat(chatId);
+                                // groupUpdates().leaveChat(chatId);
                                 finish();
                             }
                         })
@@ -771,17 +694,17 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                         .setCanceledOnTouchOutside(true);
                 break;
             case R.id.contact:
-                startActivity(Intents.openProfile(chatId, ChatActivity.this));
+                // startActivity(Intents.openProfile(chatId, ChatActivity.this));
                 break;
             case R.id.groupInfo:
-                startActivity(Intents.openGroup(chatId, ChatActivity.this));
+                // startActivity(Intents.openGroup(chatId, ChatActivity.this));
                 break;
             case R.id.files:
-                startActivity(Intents.openDocs(chatType, chatId, ChatActivity.this));
+                // startActivity(Intents.openDocs(chatType, chatId, ChatActivity.this));
                 break;
             case R.id.call:
-                UserModel user = users().get(chatId);
-                startActivity(new Intent(Intent.ACTION_DIAL).setData(Uri.parse("tel:+" + user.getPhone())));
+//                UserModel user = users().get(chatId);
+//                startActivity(new Intent(Intent.ACTION_DIAL).setData(Uri.parse("tel:+" + user.getPhone())));
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -790,14 +713,14 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
     @Override
     public void onPause() {
         super.onPause();
-        String text = messageBody.getText().toString().trim();
-        if (text.length() > 0) {
-            DialogStorage.draftStorage().put(DialogUids.getDialogUid(chatType, chatId), text);
-        } else {
-            DialogStorage.draftStorage().remove(DialogUids.getDialogUid(chatType, chatId));
-        }
+//        String text = messageBody.getText().toString().trim();
+//        if (text.length() > 0) {
+//            DialogStorage.draftStorage().put(DialogUids.getDialogUid(chatType, chatId), text);
+//        } else {
+//            DialogStorage.draftStorage().remove(DialogUids.getDialogUid(chatType, chatId));
+//        }
+        // stateBroker().onConversationClose(chatType, chatId);
         keyboardUtils.setImeVisibility(messageBody, false);
-        stateBroker().onConversationClose(chatType, chatId);
     }
 
     @Override

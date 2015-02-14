@@ -27,7 +27,7 @@ if (project.hasProperty('buildIndex')) {
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion '21.1.2'
 
     defaultConfig {
         minSdkVersion 15
@@ -41,11 +41,11 @@ android {
         abortOnError false
     }
 
-//    signingConfigs {
-//        release {
-//
-//        }
-//    }
+    signingConfigs {
+        release {
+
+        }
+    }
 
     buildTypes {
         def STRING = "String"
@@ -70,7 +70,7 @@ android {
         def HOST_DEV2 = "\"mtproto-api-dev2.actor.im\"";
 
         release {
-            // signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
             buildConfigField BOOLEAN, HOCKEY_APP, TRUE
             buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
             buildConfigField BOOLEAN, REPORT_CRASHES, TRUE
@@ -84,7 +84,7 @@ android {
         }
 
         mchs {
-            // signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
             buildConfigField BOOLEAN, HOCKEY_APP, FALSE
             buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
             buildConfigField BOOLEAN, REPORT_CRASHES, TRUE
@@ -99,7 +99,7 @@ android {
         }
 
         dev1 {
-            // signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
             buildConfigField BOOLEAN, HOCKEY_APP, TRUE
             buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
             buildConfigField BOOLEAN, REPORT_CRASHES, TRUE
@@ -114,7 +114,7 @@ android {
         }
 
         dev1alt {
-            // signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
             buildConfigField BOOLEAN, HOCKEY_APP, TRUE
             buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
             buildConfigField BOOLEAN, REPORT_CRASHES, TRUE
@@ -128,7 +128,7 @@ android {
         }
 
         dev2 {
-            // signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
             buildConfigField BOOLEAN, HOCKEY_APP, TRUE
             buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
             buildConfigField BOOLEAN, REPORT_CRASHES, TRUE
@@ -144,7 +144,7 @@ android {
         }
 
         play {
-            // signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
             buildConfigField BOOLEAN, HOCKEY_APP, FALSE
             buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
             buildConfigField BOOLEAN, REPORT_CRASHES, TRUE
@@ -158,7 +158,7 @@ android {
         }
 
         chrome {
-            // signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
             buildConfigField BOOLEAN, HOCKEY_APP, FALSE
             buildConfigField BOOLEAN, GOOGLE_PLAY, FALSE
             buildConfigField BOOLEAN, REPORT_CRASHES, FALSE
@@ -251,7 +251,6 @@ android {
     }
 
 //    if (project.hasProperty('androidStore') &&
-//    if (project.hasProperty('androidStore') &&
 //            project.hasProperty('androidStorePass') &&
 //            project.hasProperty('androidAliasPass') &&
 //            project.hasProperty('androidAlias')) {
@@ -260,30 +259,48 @@ android {
 //        android.signingConfigs.release.keyAlias = androidAlias
 //        android.signingConfigs.release.keyPassword = androidAliasPass
 //    } else {
-////        Properties properties = new Properties()
-////        properties.load(project.rootProject.file('local.properties').newDataInputStream())
-////
-////        if (!properties.getProperty('androidStore', '').equals('')) {
-////            def androidStore = properties.getProperty('androidStore')
-////            def androidStorePass = properties.getProperty('androidStorePass')
-////            def androidAliasPass = properties.getProperty('androidAliasPass')
-////            def androidAlias = properties.getProperty('androidAlias')
-////
-////            android.signingConfigs.release.storeFile = file(androidStore)
-////            android.signingConfigs.release.storePassword = androidStorePass
-////            android.signingConfigs.release.keyAlias = androidAlias
-////            android.signingConfigs.release.keyPassword = androidAliasPass
-////        } else {
-////            buildTypes.release.signingConfig = null
-////        }
-//        buildTypes.release.signingConfig = null
+//        Properties properties = new Properties()
+//        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+//
+//        if (!properties.getProperty('androidStore', '').equals('')) {
+//            def androidStore = properties.getProperty('androidStore')
+//            def androidStorePass = properties.getProperty('androidStorePass')
+//            def androidAliasPass = properties.getProperty('androidAliasPass')
+//            def androidAlias = properties.getProperty('androidAlias')
+//
+//            android.signingConfigs.release.storeFile = file(androidStore)
+//            android.signingConfigs.release.storePassword = androidStorePass
+//            android.signingConfigs.release.keyAlias = androidAlias
+//            android.signingConfigs.release.keyPassword = androidAliasPass
+//        } else {
+//            buildTypes.mchs.signingConfig = null
+//            buildTypes.dev1.signingConfig = null
+//            buildTypes.dev2.signingConfig = null
+//            buildTypes.dev1alt.signingConfig = null
+//            buildTypes.play.signingConfig = null
+//            buildTypes.chrome.signingConfig = null
+//        }
 //    }
+
+    buildTypes.mchs.signingConfig = null
+    buildTypes.dev1.signingConfig = null
+    buildTypes.dev2.signingConfig = null
+    buildTypes.dev1alt.signingConfig = null
+    buildTypes.play.signingConfig = null
+    buildTypes.chrome.signingConfig = null
 
     productFlavors {
     }
 
     packagingOptions {
         exclude 'LICENSE.txt'
+    }
+    dexOptions {
+        incremental true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
     }
 }
 
@@ -296,8 +313,11 @@ if (project.hasProperty("hockeyKey")) {
 }
 
 dependencies {
+    compile project(':actor-common')
+    compile project(':actor-java')
+    compile project(':actor-java-threads')
+
     // DroidKit
-    compile 'com.droidkit:opus:1.1.1'
     compile 'com.droidkit:actors:0.6.1'
     compile 'com.droidkit:bser:1.2'
     compile('com.droidkit:actors-android:0.6.1') {
@@ -306,23 +326,26 @@ dependencies {
     compile 'com.droidkit:progress:0.5+'
     compile('com.droidkit:pickers:0.7+') {
         exclude module: 'play-services'
+        exclude module: 'support-v13'
     }
-    compile 'im.actor:actor-api-java:2.1.3'
-    // Events
-    compile 'de.greenrobot:eventbus:2.2.1'
+
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
+
     // UI
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     // compile project(':photoviewer')
-    compile 'com.github.chrisbanes.photoview:library:1.2.3'
+    compile ('com.github.chrisbanes.photoview:library:1.2.3'){
+        exclude module: 'support-v13'
+    }
     compile 'com.getbase:floatingactionbutton:1.5.1'
-    // Video
-    compile 'com.googlecode.mp4parser:isoparser:1.0-RC-27'
+
     // Android Support
+    compile 'com.android.support:support-v4:21.0.2'
     compile 'com.android.support:support-v13:21.0.2'
     compile 'com.android.support:appcompat-v7:21.0.2'
-    compile 'com.android.support:palette-v7:21.0.+'
+    compile 'com.android.support:palette-v7:21.0.2'
+
     releaseCompile 'com.google.android.gms:play-services:6.+'
     playCompile 'com.google.android.gms:play-services:6.+'
     debugCompile 'com.google.android.gms:play-services:6.+'
@@ -330,12 +353,12 @@ dependencies {
     dev1altCompile 'com.google.android.gms:play-services:6.+'
     dev2Compile 'com.google.android.gms:play-services:6.+'
     mchsCompile 'com.google.android.gms:play-services:6.+'
+
     // Integration
     compile files('libs/HockeySDK-3.0.2.jar')
-    androidTestCompile 'junit:junit:4.11'
+
     compile 'com.splunk.mint:mint:4.0.8'
 
-    compile project(':actor-common')
 }
 
 task packageChromeExtension(type: Exec, dependsOn: ['assembleChrome']) {
@@ -345,13 +368,13 @@ task packageChromeExtension(type: Exec, dependsOn: ['assembleChrome']) {
 
 task writeChromeIcon(type: Copy, dependsOn: ['packageChromeExtension']) {
     from "src/icons/icon.png"
-    into "$project.buildDir/im.actor.messenger.android/"
+    into "$project.buildDir/im.actor.android/"
 }
 
 task chromeZip(type: Zip, dependsOn: ['writeChromeIcon']) {
     classifier = 'src'
     from "$project.buildDir/"
-    include "im.actor.messenger.android/**"
+    include "im.actor.android/**"
     archiveName = "ActorChrome-" + project.version + ".zip"
 }
 

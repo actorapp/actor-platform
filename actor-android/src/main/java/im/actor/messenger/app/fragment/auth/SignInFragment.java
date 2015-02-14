@@ -19,31 +19,24 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
-import im.actor.api.ApiRequestException;
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
 
-import static im.actor.messenger.core.Core.auth;
-import static im.actor.messenger.core.auth.AuthModel.AuthProcessState.*;
-
 public class SignInFragment extends BaseAuthFragment {
 
     private EditText smsCodeEnterEditText;
-    private View progress;
     private KeyboardHelper keyboardHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         keyboardHelper = new KeyboardHelper(getActivity());
         View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
-        progress = v.findViewById(R.id.progressContainer);
-        progress.setVisibility(View.GONE);
 
         ((TextView) v.findViewById(R.id.button_confirm_sms_code_text)).setTypeface(Fonts.medium());
         ((TextView) v.findViewById(R.id.button_edit_phone)).setTypeface(Fonts.medium());
 
-        String phoneNumber = "+" + auth().getAuthProcessState().getPhoneNumber();
+        String phoneNumber = "+" + auth().getPhone();
         try {
             Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse(phoneNumber, null);
             phoneNumber = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
@@ -101,6 +94,7 @@ public class SignInFragment extends BaseAuthFragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 auth().resetAuth();
+                                updateState();
                             }
                         })
                         .setNegativeButton(R.string.dialog_cancel, null)
@@ -122,7 +116,8 @@ public class SignInFragment extends BaseAuthFragment {
                 e.printStackTrace();
                 return;
             }
-            auth().sendCode(code);
+
+            execute(auth().sendCode(code));
         }
     }
 
@@ -130,53 +125,7 @@ public class SignInFragment extends BaseAuthFragment {
     public void onResume() {
         super.onResume();
         setTitle(R.string.auth_code_title);
-    }
-
-    @Override
-    protected void onState(int stateId, Throwable t, boolean isAnimated) {
-        if (stateId == STATE_CODE_SENDING) {
-            progress.setVisibility(View.VISIBLE);
-            keyboardHelper.setImeVisibility(smsCodeEnterEditText, false);
-            hideError();
-        } else if (stateId == STATE_CODE_SEND_ERROR) {
-            progress.setVisibility(View.VISIBLE);
-            keyboardHelper.setImeVisibility(smsCodeEnterEditText, false);
-            if (t instanceof ApiRequestException) {
-                if ("PHONE_CODE_EXPIRED".equals(((ApiRequestException) t).getErrorTag())) {
-                    showError(-1, t);
-                }
-            }
-            showError(stateId, t);
-        } else if (stateId == STATE_REQUESTED_SMS) {
-            progress.setVisibility(View.GONE);
-            smsCodeEnterEditText.requestFocus();
-            keyboardHelper.setImeVisibility(smsCodeEnterEditText, true);
-            hideError();
-        } else {
-            hideError();
-            rawNavigate(stateId, isAnimated);
-        }
-    }
-
-    @Override
-    protected void onErrorRepeat(int stateId) {
-        if (stateId == STATE_CODE_SEND_ERROR) {
-            auth().tryAgainCodeSend();
-        }
-    }
-
-    @Override
-    protected void onErrorCancel(int stateId) {
-        if (stateId == STATE_CODE_SEND_ERROR) {
-            auth().resetCodeSend();
-        } else if (stateId == -1) {
-            auth().resetAuth();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        keyboardHelper.setImeVisibility(smsCodeEnterEditText, false);
+        keyboardHelper.setImeVisibility(smsCodeEnterEditText, true);
+        focus(smsCodeEnterEditText);
     }
 }

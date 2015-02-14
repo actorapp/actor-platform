@@ -155,7 +155,7 @@
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
-            android:name="im.actor.messenger.app.activity.EncryptionActivity"
+            android:name=".app.activity.SecuritySettingsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
@@ -200,11 +200,6 @@
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
 
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
-
-        <activity
-            android:name="im.actor.messenger.app.activity.IntroActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
 
         <provider
             android:name="im.actor.messenger.app.providers.MediaProvider"

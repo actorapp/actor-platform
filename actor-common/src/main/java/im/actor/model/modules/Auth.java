@@ -4,6 +4,7 @@ import im.actor.model.Messenger;
 import im.actor.model.State;
 import im.actor.model.api.rpc.RequestSendAuthCode;
 import im.actor.model.api.rpc.RequestSignIn;
+import im.actor.model.api.rpc.RequestSignUp;
 import im.actor.model.api.rpc.ResponseAuth;
 import im.actor.model.api.rpc.ResponseSendAuthCode;
 import im.actor.model.concurrency.Command;
@@ -27,6 +28,7 @@ public class Auth {
     private static final String KEY_AUTH_UID = "auth_uid";
     private static final String KEY_PHONE = "auth_phone";
     private static final String KEY_SMS_HASH = "auth_sms_hash";
+    private static final String KEY_SMS_CODE = "auth_sms_code";
 
     private State state;
     private PreferencesStorage preferences;
@@ -98,7 +100,7 @@ public class Auth {
         };
     }
 
-    public Command<State> sendCode(final String code) {
+    public Command<State> sendCode(final int code) {
         return new Command<State>() {
             @Override
             public void start(final CommandCallback<State> callback) {
@@ -106,7 +108,7 @@ public class Auth {
                         new RequestSignIn(
                                 preferences.getLong(KEY_PHONE, 0),
                                 preferences.getString(KEY_SMS_HASH),
-                                code,
+                                code + "",
                                 RandomUtils.seed(1024),
                                 deviceHash,
                                 "ActorLib",
@@ -131,6 +133,9 @@ public class Auth {
 
                             @Override
                             public void onError(final RpcException e) {
+                                if ("PHONE_CODE_EXPIRED".equals(e.getTag())) {
+                                    resetAuth();
+                                }
                                 mainThread.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -141,5 +146,60 @@ public class Auth {
                         });
             }
         };
+    }
+
+    public Command<State> signUp(final String firstName, String avatarPath, final boolean isSilent) {
+        // TODO: Perform avatar upload
+        return new Command<State>() {
+            @Override
+            public void start(final CommandCallback<State> callback) {
+                messenger.getActorApi().request(new RequestSignUp(preferences.getLong(KEY_PHONE, 0),
+                        preferences.getString(KEY_SMS_HASH),
+                        preferences.getInt(KEY_SMS_CODE, 0) + "",
+                        firstName,
+                        RandomUtils.seed(1024),
+                        deviceHash,
+                        "ActorLib",
+                        APP_ID, APP_KEY,
+                        isSilent), new RpcCallback<ResponseAuth>() {
+                    @Override
+                    public void onResult(ResponseAuth response) {
+                        preferences.putBool(KEY_AUTH, true);
+                        state = State.LOGGED_IN;
+                        myUid = response.getUser().getId();
+                        preferences.putInt(KEY_AUTH_UID, myUid);
+                        messenger.onLoggedIn();
+                        mainThread.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                state = State.LOGGED_IN;
+                                callback.onResult(state);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(final RpcException e) {
+                        if ("PHONE_CODE_EXPIRED".equals(e.getTag())) {
+                            resetAuth();
+                        }
+                        mainThread.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(e);
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public void resetAuth() {
+        state = State.AUTH_START;
+    }
+
+    public long getPhone() {
+        return preferences.getLong(KEY_PHONE, 0);
     }
 }

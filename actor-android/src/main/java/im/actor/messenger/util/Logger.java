@@ -5,7 +5,6 @@ import com.droidkit.actors.Actor;
 import com.droidkit.actors.ActorRef;
 import com.droidkit.actors.ActorSystem;
 import com.droidkit.actors.CurrentActor;
-import im.actor.messenger.core.actors.log.FileLog;
 
 import java.util.ArrayList;
 

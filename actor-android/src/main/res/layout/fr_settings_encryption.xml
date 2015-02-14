@@ -10,40 +10,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/showMyKey"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector"
-            android:gravity="center_vertical"
-            android:paddingBottom="@dimen/settings_content_padding"
-            android:paddingLeft="@dimen/settings_content_padding"
-            android:paddingRight="@dimen/settings_content_padding"
-            android:paddingTop="@dimen/settings_content_padding"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Show my encryption key"
-                    android:textColor="@color/text_primary"
-                    android:textSize="@dimen/text_primary" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Key is used for all incoming messages"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="@dimen/text_secondary" />
-            </LinearLayout>
-        </LinearLayout>
-
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/div_size"

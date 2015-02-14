@@ -40,11 +40,9 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
 import im.actor.messenger.model.ProfileSyncState;
 import im.actor.messenger.model.UserModel;
-import im.actor.messenger.storage.SearchEngines;
 import im.actor.messenger.storage.scheme.GlobalSearch;
-import im.actor.messenger.storage.scheme.avatar.Avatar;
-import im.actor.messenger.storage.scheme.messages.DialogItem;
 import im.actor.messenger.util.Screen;
+import im.actor.model.entity.Dialog;
 
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
@@ -87,8 +85,8 @@ public class MainPhoneController extends MainBaseController implements ValueChan
     }
 
     @Override
-    public void onItemClicked(DialogItem item) {
-        startActivity(Intents.openDialog(item.getType(), item.getId(), false, getActivity()));
+    public void onItemClicked(Dialog item) {
+        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()));
     }
 
     @Override
@@ -129,38 +127,38 @@ public class MainPhoneController extends MainBaseController implements ValueChan
         searchContainer = findViewById(R.id.searchCont);
         searchEmptyView = findViewById(R.id.empty);
         searchHintView = findViewById(R.id.searchHint);
-        searchAdapter = new SearchAdapter(SearchEngines.userSearch().getResultList(), getActivity());
-        searchList.setAdapter(searchAdapter);
-        searchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Object pos = parent.getItemAtPosition(position);
-                if (pos != null && pos instanceof GlobalSearch) {
-                    startActivity(Intents.openDialog(((GlobalSearch) pos).getContType(), ((GlobalSearch) pos).getContId(), false,
-                            getActivity()));
-                    searchMenu.collapseActionView();
-                }
-            }
-        });
-        SearchEngines.userSearch().getResultList().addListener(new UiListListener() {
-            @Override
-            public void onListUpdated() {
-                if (SearchEngines.userSearch().getResultList().getSize() > 0) {
-                    goneView(searchHintView);
-                    goneView(searchEmptyView);
-                    showView(searchList);
-                } else {
-                    if (SearchEngines.userSearch().getCurrentQuery().length() > 0) {
-                        goneView(searchHintView);
-                        showView(searchEmptyView);
-                    } else {
-                        showView(searchHintView);
-                        goneView(searchEmptyView);
-                    }
-                    goneView(searchList);
-                }
-            }
-        });
+//        searchAdapter = new SearchAdapter(SearchEngines.userSearch().getResultList(), getActivity());
+//        searchList.setAdapter(searchAdapter);
+//        searchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Object pos = parent.getItemAtPosition(position);
+//                if (pos != null && pos instanceof GlobalSearch) {
+//                    startActivity(Intents.openDialog(((GlobalSearch) pos).getContType(), ((GlobalSearch) pos).getContId(), false,
+//                            getActivity()));
+//                    searchMenu.collapseActionView();
+//                }
+//            }
+//        });
+//        SearchEngines.userSearch().getResultList().addListener(new UiListListener() {
+//            @Override
+//            public void onListUpdated() {
+//                if (SearchEngines.userSearch().getResultList().getSize() > 0) {
+//                    goneView(searchHintView);
+//                    goneView(searchEmptyView);
+//                    showView(searchList);
+//                } else {
+//                    if (SearchEngines.userSearch().getCurrentQuery().length() > 0) {
+//                        goneView(searchHintView);
+//                        showView(searchEmptyView);
+//                    } else {
+//                        showView(searchHintView);
+//                        goneView(searchEmptyView);
+//                    }
+//                    goneView(searchList);
+//                }
+//            }
+//        });
 
         pager = (ViewPager) findViewById(R.id.vp_pager);
         homePagerAdapter = new HomePagerAdapter(getFragmentManager());
@@ -277,16 +275,16 @@ public class MainPhoneController extends MainBaseController implements ValueChan
         UserModel userModel = users().get(myUid());
         if (userModel != null) {
             avatarView.setEmptyDrawable(AvatarDrawable.create(userModel, 18, getActivity()));
-            getActivity().getBinder().bind(userModel.getAvatar(), new Listener<Avatar>() {
-                @Override
-                public void onUpdated(Avatar avatar) {
-                    if (avatar != null) {
-                        avatarView.bindAvatar(40, avatar);
-                    } else {
-                        avatarView.unbind();
-                    }
-                }
-            });
+//            getActivity().getBinder().bind(userModel.getAvatar(), new Listener<Avatar>() {
+//                @Override
+//                public void onUpdated(Avatar avatar) {
+//                    if (avatar != null) {
+//                        avatarView.bindAvatar(40, avatar);
+//                    } else {
+//                        avatarView.unbind();
+//                    }
+//                }
+//            });
         }
         menuItem.getActionView().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -306,34 +304,34 @@ public class MainPhoneController extends MainBaseController implements ValueChan
 //                getResources().getColor(R.color.text_hint_light),
 //                getResources());
 //        SearchViewHacker.setEditText(searchView, R.drawable.search_selector);
-        MenuItemCompat.setOnActionExpandListener(searchMenu, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                SearchEngines.userSearch().clear();
-                showView(searchContainer);
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                SearchEngines.userSearch().clear();
-                goneView(searchContainer);
-                return true;
-            }
-        });
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                searchAdapter.setQuery(newText.toLowerCase());
-                SearchEngines.userSearch().query(newText);
-                return false;
-            }
-        });
+//        MenuItemCompat.setOnActionExpandListener(searchMenu, new MenuItemCompat.OnActionExpandListener() {
+//            @Override
+//            public boolean onMenuItemActionExpand(MenuItem item) {
+//                SearchEngines.userSearch().clear();
+//                showView(searchContainer);
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onMenuItemActionCollapse(MenuItem item) {
+//                SearchEngines.userSearch().clear();
+//                goneView(searchContainer);
+//                return true;
+//            }
+//        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                searchAdapter.setQuery(newText.toLowerCase());
+//                SearchEngines.userSearch().query(newText);
+//                return false;
+//            }
+//        });
         return true;
     }
 

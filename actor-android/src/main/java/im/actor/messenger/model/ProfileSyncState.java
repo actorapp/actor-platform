@@ -24,7 +24,7 @@ public class ProfileSyncState {
     private static final ValueModel<State> syncState = new ValueModel<State>("profile.sync", State.IN_PROGRESS);
 
     public static void init(Context context) {
-        persistence = new BserPersistence<>(context, "profile.bin", SyncState.class);
+        persistence = new BserPersistence<SyncState>(context, "profile.bin", SyncState.class);
         SyncState state = persistence.getObj();
         if (state == null) {
             persistence.setObj(new SyncState());

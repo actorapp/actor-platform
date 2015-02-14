@@ -1,28 +1,18 @@
 package im.actor.messenger.app.base;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.droidkit.actors.concurrency.Future;
 import com.droidkit.mvvm.ui.Binder;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.ViewUtils;
-import im.actor.messenger.core.actors.base.UiActorAsk;
-import im.actor.messenger.core.actors.base.UiAskCallback;
-
-import static im.actor.messenger.core.actors.AppStateBroker.stateBroker;
 
 public class BaseActivity extends Activity {
 
     private final Binder BINDER = new Binder();
-
-    private UiActorAsk ACTOR_ACK = new UiActorAsk();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +28,13 @@ public class BaseActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        ACTOR_ACK.resume();
-        stateBroker().onActivityOpen();
+        // stateBroker().onActivityOpen();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        stateBroker().onActivityClose();
-        ACTOR_ACK.pause();
+        // stateBroker().onActivityClose();
         BINDER.unbindAll();
     }
 
@@ -84,37 +72,5 @@ public class BaseActivity extends Activity {
 
     public void showView(final View view, boolean isAnimated, boolean isSlow) {
         ViewUtils.showView(view, isAnimated, isSlow);
-    }
-
-    public <T> void ask(Future<T> future, final UiAskCallback<T> callback) {
-        ACTOR_ACK.ask(future, callback);
-    }
-
-    public <T> void ask(Future<T> future, final String progress, final UiAskCallback<T> callback) {
-        ACTOR_ACK.ask(future, new UiAskCallback<T>() {
-            private ProgressDialog progressDialog;
-
-            @Override
-            public void onPreStart() {
-                progressDialog = new ProgressDialog(BaseActivity.this);
-                progressDialog.setMessage(progress);
-                progressDialog.setCancelable(false);
-                progressDialog.setCanceledOnTouchOutside(false);
-                progressDialog.show();
-                callback.onPreStart();
-            }
-
-            @Override
-            public void onCompleted(T res) {
-                progressDialog.dismiss();
-                callback.onCompleted(res);
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                progressDialog.dismiss();
-                callback.onError(t);
-            }
-        });
     }
 }

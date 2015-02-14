@@ -134,6 +134,7 @@ public class ApiBroker extends Actor {
     }
 
     private void performRequest(long randomId, Request message, RpcCallback callback) {
+        Log.d(TAG, "-> request#" + randomId + ": " + message);
         // Log.d(TAG, message + " rid#" + randomId);
         RequestHolder holder = new RequestHolder(
                 randomId,
@@ -190,6 +191,8 @@ public class ApiBroker extends Actor {
                 return;
             }
 
+            Log.d(TAG, "<- response#" + holder.publicId + ": " + response);
+
             holder.callback.onResult(response);
         } else if (protoStruct instanceof RpcError) {
             RpcError e = (RpcError) protoStruct;
@@ -198,7 +201,7 @@ public class ApiBroker extends Actor {
                 idMap.remove(holder.protoId);
             }
 
-            holder.callback.onError(new RpcException(e.errorTag, e.errorCode, e.userMessage, e.relatedData));
+            holder.callback.onError(new RpcException(e.errorTag, e.errorCode, e.userMessage, e.canTryAgain, e.relatedData));
         } else if (protoStruct instanceof RpcInternalError) {
             RpcInternalError e = ((RpcInternalError) protoStruct);
             if (e.isCanTryAgain()) {

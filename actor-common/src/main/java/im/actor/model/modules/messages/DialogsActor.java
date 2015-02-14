@@ -3,6 +3,7 @@ package im.actor.model.modules.messages;
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.Messenger;
 import im.actor.model.entity.*;
+import im.actor.model.modules.entity.DialogHistory;
 import im.actor.model.mvvm.ListEngine;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class DialogsActor extends Actor {
 
         DialogBuilder builder = new DialogBuilder()
                 .setRid(message.getRid())
-                .setTime(message.getTime())
+                .setTime(message.getDate())
                 .setMessageType(contentDescription.getContentType())
                 .setText(contentDescription.getText())
                 .setRelatedUid(contentDescription.getRelatedUid())
@@ -44,7 +45,7 @@ public class DialogsActor extends Actor {
 
         if (dialog != null) {
             // Ignore old messages
-            if (!isAfterDelete && dialog.getSortKey() > message.getSortKey()) {
+            if (!isAfterDelete && dialog.getSortDate() > message.getSortDate()) {
                 return;
             }
 
@@ -55,7 +56,7 @@ public class DialogsActor extends Actor {
 
             // Do not push up dialogs for silent messages
             if (!contentDescription.isSilent()) {
-                builder.setSortKey(message.getSortKey());
+                builder.setSortKey(message.getSortDate());
             }
         } else {
             // Do not create dialogs for silent messages
@@ -67,7 +68,7 @@ public class DialogsActor extends Actor {
                     .setDialogTitle(peerDesc.getTitle())
                     .setDialogAvatar(peerDesc.getAvatar())
                     .setUnreadCount(0)
-                    .setSortKey(message.getSortKey());
+                    .setSortKey(message.getSortDate());
         }
 
         dialogs.addOrUpdateItem(builder.createDialog());

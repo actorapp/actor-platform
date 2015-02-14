@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.droidkit.engine.uilist.UiList;
@@ -13,38 +12,24 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.BubbleContainer;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
 import im.actor.messenger.app.view.MessageTextFormatter;
-import im.actor.messenger.model.MessageModel;
-import im.actor.messenger.model.UserModel;
-import im.actor.messenger.storage.scheme.messages.types.GroupAdd;
-import im.actor.messenger.storage.scheme.messages.types.GroupAvatar;
-import im.actor.messenger.storage.scheme.messages.types.GroupCreated;
-import im.actor.messenger.storage.scheme.messages.types.GroupKick;
-import im.actor.messenger.storage.scheme.messages.types.GroupLeave;
-import im.actor.messenger.storage.scheme.messages.types.GroupTitle;
-import im.actor.messenger.storage.scheme.messages.types.UserAddedDeviceMessage;
-import im.actor.messenger.storage.scheme.messages.types.UserRegisteredMessage;
-
-import static im.actor.messenger.storage.KeyValueEngines.groups;
-import static im.actor.messenger.storage.KeyValueEngines.users;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.*;
 
 /**
  * Created by ex3ndr on 25.09.14.
  */
 public class ServiceHolder extends BubbleHolder {
-    private int chatType;
-    private int chatId;
 
-    protected ServiceHolder(int chatType, int chatId, MessagesFragment fragment, UiList<MessageModel> uiList) {
-        super(fragment, uiList);
-        this.chatType = chatType;
-        this.chatId = chatId;
+    protected ServiceHolder(Peer peer, MessagesFragment fragment, UiList<Message> uiList) {
+        super(peer, fragment, uiList);
     }
 
     private TextView messageText;
 
 
     @Override
-    public View init(MessageModel data, ViewGroup viewGroup, Context context) {
+    public View init(Message data, ViewGroup viewGroup, Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
         BubbleContainer v = (BubbleContainer) inflater.inflate(R.layout.adapter_dialog_service, viewGroup, false);
         messageText = (TextView) v.findViewById(R.id.serviceMessage);
@@ -53,32 +38,30 @@ public class ServiceHolder extends BubbleHolder {
     }
 
     @Override
-    public void update(MessageModel message, int pos, boolean isUpdated, Context context) {
+    public void update(Message message, int pos, boolean isUpdated, Context context) {
         super.update(message, pos, isUpdated, context);
-        if (message.getContent() instanceof UserRegisteredMessage) {
-            messageText.setText(MessageTextFormatter.joinedActorFull(chatId));
-        } else if (message.getContent() instanceof UserAddedDeviceMessage) {
-            messageText.setText(MessageTextFormatter.newDeviceFull(chatId));
-        } else if (message.getContent() instanceof GroupCreated) {
-            messageText.setText(MessageTextFormatter.groupCreatedFull(message.getRaw().getSenderId(),
-                    ((GroupCreated) message.getContent()).getTitle()));
-        } else if (message.getContent() instanceof GroupLeave) {
-            messageText.setText(MessageTextFormatter.groupLeave(message.getRaw().getSenderId()));
-        } else if (message.getContent() instanceof GroupAdd) {
-            messageText.setText(MessageTextFormatter.groupAdd(message.getRaw().getSenderId(),
-                    ((GroupAdd) message.getContent()).getAddedUid()));
-        } else if (message.getContent() instanceof GroupKick) {
-            messageText.setText(MessageTextFormatter.groupKicked(message.getRaw().getSenderId(),
-                    ((GroupKick) message.getContent()).getKickedUid()));
-        } else if (message.getContent() instanceof GroupTitle) {
-            messageText.setText(MessageTextFormatter.groupChangeTitleFull(message.getRaw().getSenderId(),
-                    ((GroupTitle) message.getContent()).getNewTitle()));
-        } else if (message.getContent() instanceof GroupAvatar) {
-            GroupAvatar avatar = (GroupAvatar) message.getContent();
+        if (message.getContent() instanceof ServiceUserRegistered) {
+            messageText.setText(MessageTextFormatter.joinedActorFull(peer.getPeerId()));
+        } else if (message.getContent() instanceof ServiceGroupCreated) {
+            messageText.setText(MessageTextFormatter.groupCreatedFull(message.getSenderId(),
+                    ((ServiceGroupCreated) message.getContent()).getGroupTitle()));
+        } else if (message.getContent() instanceof ServiceGroupUserLeave) {
+            messageText.setText(MessageTextFormatter.groupLeave(message.getSenderId()));
+        } else if (message.getContent() instanceof ServiceGroupUserAdded) {
+            messageText.setText(MessageTextFormatter.groupAdd(message.getSenderId(),
+                    ((ServiceGroupUserAdded) message.getContent()).getAddedUid()));
+        } else if (message.getContent() instanceof ServiceGroupUserKicked) {
+            messageText.setText(MessageTextFormatter.groupKicked(message.getSenderId(),
+                    ((ServiceGroupUserKicked) message.getContent()).getKickedUid()));
+        } else if (message.getContent() instanceof ServiceGroupTitleChanged) {
+            messageText.setText(MessageTextFormatter.groupChangeTitleFull(message.getSenderId(),
+                    ((ServiceGroupTitleChanged) message.getContent()).getNewTitle()));
+        } else if (message.getContent() instanceof ServiceGroupAvatarChanged) {
+            ServiceGroupAvatarChanged avatar = (ServiceGroupAvatarChanged) message.getContent();
             if (avatar.getNewAvatar() != null) {
-                messageText.setText(MessageTextFormatter.groupChangeAvatar(message.getRaw().getSenderId()));
+                messageText.setText(MessageTextFormatter.groupChangeAvatar(message.getSenderId()));
             } else {
-                messageText.setText(MessageTextFormatter.groupRemoveAvatar(message.getRaw().getSenderId()));
+                messageText.setText(MessageTextFormatter.groupRemoveAvatar(message.getSenderId()));
             }
         } else {
             messageText.setText("???");

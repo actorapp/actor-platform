@@ -3,28 +3,24 @@ package im.actor.messenger.app.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v7.graphics.Palette;
 import android.util.AttributeSet;
 
-import com.droidkit.images.cache.BitmapReference;
 import com.droidkit.images.cache.DiskCache;
 import com.droidkit.images.common.ImageLoadException;
 import com.droidkit.images.loading.view.ImageReceiverView;
 import com.droidkit.images.ops.ImageLoading;
-import com.droidkit.mvvm.ValueModel;
 
 import im.actor.messenger.R;
 import im.actor.messenger.core.Core;
 import im.actor.messenger.core.images.FileKeys;
 import im.actor.messenger.core.images.FullAvatarTask;
-import im.actor.messenger.storage.scheme.FileLocation;
-import im.actor.messenger.storage.scheme.avatar.Avatar;
 import im.actor.messenger.util.Screen;
+import im.actor.model.entity.Avatar;
+import im.actor.model.entity.FileLocation;
 
 /**
  * Created by ex3ndr on 26.12.14.
@@ -81,7 +77,7 @@ public class CoverAvatarView extends ImageReceiverView {
 
         {
             FileLocation fileLocation = avatar.getLargeImage().getFileLocation();
-            DiskCache diskCache = Core.core().getImageLoader().getInternalDiskCache();
+            DiskCache diskCache = Core.getImageLoader().getInternalDiskCache();
             String avatarKey = FileKeys.avatarKey(fileLocation.getFileId());
             String file = diskCache.lockFile(avatarKey);
             if (file != null) {
@@ -96,7 +92,7 @@ public class CoverAvatarView extends ImageReceiverView {
         }
         {
             FileLocation fileLocation = avatar.getSmallImage().getFileLocation();
-            DiskCache diskCache = Core.core().getImageLoader().getInternalDiskCache();
+            DiskCache diskCache = Core.getImageLoader().getInternalDiskCache();
             String avatarKey = FileKeys.avatarKey(fileLocation.getFileId());
             String file = diskCache.lockFile(avatarKey);
             if (file != null) {

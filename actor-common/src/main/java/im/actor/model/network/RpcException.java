@@ -7,13 +7,19 @@ public class RpcException extends Exception {
     private String tag;
     private int code;
     private String message;
+    private boolean canTryAgain;
     private byte[] relatedData;
 
-    public RpcException(String tag, int code, String message, byte[] relatedData) {
+    public RpcException(String tag, int code, String message, boolean canTryAgain, byte[] relatedData) {
         this.tag = tag;
         this.code = code;
         this.message = message;
+        this.canTryAgain = canTryAgain;
         this.relatedData = relatedData;
+    }
+
+    public boolean isCanTryAgain() {
+        return canTryAgain;
     }
 
     public byte[] getRelatedData() {

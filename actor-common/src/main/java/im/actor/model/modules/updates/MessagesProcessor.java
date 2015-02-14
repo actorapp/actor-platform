@@ -8,6 +8,8 @@ import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.TextContent;
+import im.actor.model.modules.entity.DialogHistory;
+import im.actor.model.modules.entity.EntityConverter;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;

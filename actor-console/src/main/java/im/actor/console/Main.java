@@ -1,6 +1,7 @@
 package im.actor.console;
 
 import im.actor.model.droidkit.bser.Bser;
+
 import com.googlecode.lanterna.TerminalFacade;
 import com.googlecode.lanterna.gui.*;
 import com.googlecode.lanterna.gui.component.AbstractComponent;
@@ -14,6 +15,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.TerminalPosition;
 import com.googlecode.lanterna.terminal.TerminalSize;
 import com.googlecode.lanterna.terminal.swing.SwingTerminal;
+
 import im.actor.console.entity.UserEntity;
 import im.actor.model.Configuration;
 import im.actor.model.Messenger;
@@ -29,6 +31,7 @@ import im.actor.model.mvvm.ListEngine;
 import im.actor.model.network.ConnectionEndpoint;
 import im.actor.model.network.Endpoints;
 import im.actor.model.storage.EnginesFactory;
+
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
@@ -142,7 +145,7 @@ public class Main {
             });
         } else if (messenger.getState() == State.CODE_VALIDATION) {
             String res = TextInputDialog.showTextInputBox(gui, "Validate Phone", "Please, enter activation code", "");
-            executeCommand(messenger.getAuth().sendCode(res), new CommandCallback<State>() {
+            executeCommand(messenger.getAuth().sendCode(Integer.parseInt(res)), new CommandCallback<State>() {
                 @Override
                 public void onResult(State res) {
                     updateMainUi();
