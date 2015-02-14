@@ -1,11 +1,10 @@
 package com.droidkit.engine.list.view;
 
 import com.droidkit.engine.list.FilterableDataAdapter;
-import im.actor.messenger.storage.DbProvider;
 import com.droidkit.engine.list.DataAdapter;
 import com.droidkit.engine.list.ListEngine;
 import com.droidkit.engine.list.storage.SQLiteStorageAdapter;
-import im.actor.messenger.core.AppContext;
+import im.actor.messenger.storage.SQLiteProvider;
 
 /**
  * Created by ex3ndr on 15.09.14.
@@ -27,7 +26,7 @@ public class ListHolder<T> {
             synchronized (lock) {
                 if (engine == null) {
                     SQLiteStorageAdapter storageAdapter = new SQLiteStorageAdapter(
-                            DbProvider.getDatabase(AppContext.getContext()),
+                            SQLiteProvider.db(),
                             tableName, dataAdapter instanceof FilterableDataAdapter);
                     engine = new ListEngine<T>(storageAdapter, dataAdapter);
                     uiListEngine = new EngineUiList<T>(engine);

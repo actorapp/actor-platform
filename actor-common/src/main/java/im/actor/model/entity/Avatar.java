@@ -1,17 +1,33 @@
 package im.actor.model.entity;
 
+import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
+import im.actor.model.droidkit.bser.BserValues;
+import im.actor.model.droidkit.bser.BserWriter;
+
+import java.io.IOException;
+
 /**
  * Created by ex3ndr on 09.02.15.
  */
-public class Avatar {
-    private final AvatarImage smallImage;
-    private final AvatarImage largeImage;
-    private final AvatarImage fullImage;
+public class Avatar extends BserObject {
+
+    public static Avatar fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new Avatar(), data);
+    }
+
+    private AvatarImage smallImage;
+    private AvatarImage largeImage;
+    private AvatarImage fullImage;
 
     public Avatar(AvatarImage smallImage, AvatarImage largeImage, AvatarImage fullImage) {
         this.smallImage = smallImage;
         this.largeImage = largeImage;
         this.fullImage = fullImage;
+    }
+
+    private Avatar() {
+
     }
 
     public AvatarImage getSmallImage() {
@@ -46,5 +62,36 @@ public class Avatar {
         result = 31 * result + (largeImage != null ? largeImage.hashCode() : 0);
         result = 31 * result + (fullImage != null ? fullImage.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public void parse(BserValues values) throws IOException {
+        byte[] small = values.optBytes(1);
+        if (small != null) {
+            smallImage = AvatarImage.fromBytes(small);
+        }
+
+        byte[] large = values.optBytes(2);
+        if (large != null) {
+            largeImage = AvatarImage.fromBytes(large);
+        }
+
+        byte[] full = values.optBytes(3);
+        if (full != null) {
+            fullImage = AvatarImage.fromBytes(full);
+        }
+    }
+
+    @Override
+    public void serialize(BserWriter writer) throws IOException {
+        if (smallImage != null) {
+            writer.writeObject(1, smallImage);
+        }
+        if (largeImage != null) {
+            writer.writeObject(2, smallImage);
+        }
+        if (fullImage != null) {
+            writer.writeObject(3, fullImage);
+        }
     }
 }

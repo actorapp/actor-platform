@@ -24,10 +24,10 @@ import com.droidkit.images.ops.ImageLoading;
 import im.actor.messenger.core.Core;
 import im.actor.messenger.core.images.AvatarTask;
 import im.actor.messenger.core.images.FileKeys;
-import im.actor.messenger.storage.scheme.FileLocation;
-import im.actor.messenger.storage.scheme.avatar.Avatar;
 import im.actor.messenger.util.Logger;
 import im.actor.messenger.util.Screen;
+import im.actor.model.entity.Avatar;
+import im.actor.model.entity.FileLocation;
 
 /**
  * Created by ex3ndr on 18.09.14.

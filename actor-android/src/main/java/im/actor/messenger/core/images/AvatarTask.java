@@ -1,8 +1,7 @@
 package im.actor.messenger.core.images;
 
 import com.droidkit.images.loading.AbsTask;
-
-import im.actor.messenger.storage.scheme.avatar.Avatar;
+import im.actor.model.entity.Avatar;
 
 /**
  * Created by ex3ndr on 17.09.14.

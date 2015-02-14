@@ -2,7 +2,7 @@ package im.actor.messenger.core.images;
 
 import com.droidkit.images.loading.AbsTask;
 
-import im.actor.messenger.storage.scheme.messages.ConversationMessage;
+import im.actor.model.entity.Message;
 
 /**
  * Created by ex3ndr on 05.09.14.
@@ -10,9 +10,9 @@ import im.actor.messenger.storage.scheme.messages.ConversationMessage;
 public class ImagePreviewTask extends AbsTask {
     private int type;
     private int id;
-    private ConversationMessage message;
+    private Message message;
 
-    public ImagePreviewTask(int type, int id, ConversationMessage message) {
+    public ImagePreviewTask(int type, int id, Message message) {
         this.type = type;
         this.id = id;
         this.message = message;
@@ -26,7 +26,7 @@ public class ImagePreviewTask extends AbsTask {
         return id;
     }
 
-    public ConversationMessage getMessage() {
+    public Message getMessage() {
         return message;
     }
 

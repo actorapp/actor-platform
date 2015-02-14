@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.core.Core;
 import im.actor.messenger.core.images.FileKeys;
+import im.actor.model.State;
 
 /**
  * Created by ex3ndr on 22.01.14.
@@ -61,7 +62,7 @@ public class AvatarProvider extends ContentProvider {
 
     @Override
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
-        if (!Core.isLoggedIn()) {
+        if (Core.messenger().getAuth().getState() != State.LOGGED_IN) {
             throw new IllegalArgumentException();
         }
 

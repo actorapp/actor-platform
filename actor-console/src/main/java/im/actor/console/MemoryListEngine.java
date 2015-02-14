@@ -34,7 +34,7 @@ public class MemoryListEngine<V extends ListEngineItem> implements ListEngine<V>
         sortList.sort(new Comparator<V>() {
             @Override
             public int compare(V o1, V o2) {
-                return compare(o2.getSortingKey(), o1.getSortingKey());
+                return compare(o2.getListSortKey(), o1.getListSortKey());
             }
 
             public int compare(long x, long y) {

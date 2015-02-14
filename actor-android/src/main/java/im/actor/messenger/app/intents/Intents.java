@@ -9,10 +9,10 @@ import java.io.File;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.activity.*;
-import im.actor.messenger.model.DialogType;
-import im.actor.messenger.storage.scheme.FileLocation;
 import im.actor.messenger.storage.scheme.media.Downloaded;
 import im.actor.messenger.util.io.IOUtils;
+import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.Peer;
 
 /**
  * Created by ex3ndr on 07.10.14.
@@ -23,8 +23,7 @@ public class Intents {
 
     public static final String EXTRA_GROUP_ID = "group_id";
 
-    public static final String EXTRA_CHAT_TYPE = "chat_type";
-    public static final String EXTRA_CHAT_ID = "chat_id";
+    public static final String EXTRA_CHAT_PEER = "chat_peer";
     public static final String EXTRA_CHAT_COMPOSE = "compose";
 
     public static final String EXTRA_EDIT_TYPE = "edit_type";
@@ -60,26 +59,25 @@ public class Intents {
                 .putExtra(EXTRA_EDIT_ID, groupId);
     }
 
-    public static Intent openGroup(int chatId, Context context) {
-        Intent res = new Intent(context, GroupInfoActivity.class);
-        res.putExtra(EXTRA_GROUP_ID, chatId);
-        return res;
-    }
+//    public static Intent openGroup(int chatId, Context context) {
+//        Intent res = new Intent(context, GroupInfoActivity.class);
+//        res.putExtra(EXTRA_GROUP_ID, chatId);
+//        return res;
+//    }
 
-    public static Intent openDialog(int chatType, int chatId, boolean compose, Context context) {
+    public static Intent openDialog(Peer peer, boolean compose, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);
-        intent.putExtra(EXTRA_CHAT_TYPE, chatType);
-        intent.putExtra(EXTRA_CHAT_ID, chatId);
+        intent.putExtra(EXTRA_CHAT_PEER, peer.getUid());
         intent.putExtra(EXTRA_CHAT_COMPOSE, compose);
         return intent;
     }
 
     public static Intent openPrivateDialog(int uid, boolean compose, Context context) {
-        return openDialog(DialogType.TYPE_USER, uid, compose, context);
+        return openDialog(Peer.user(uid), compose, context);
     }
 
     public static Intent openGroupDialog(int chatId, boolean compose, Context context) {
-        return openDialog(DialogType.TYPE_GROUP, chatId, compose, context);
+        return openDialog(Peer.group(chatId), compose, context);
     }
 
     public static Intent openProfile(int uid, Context context) {
@@ -104,10 +102,9 @@ public class Intents {
 
     // External intents
 
-    public static Intent openDocs(int chatType, int chatId, Context context) {
+    public static Intent openDocs(Peer peer, Context context) {
         final Intent intent = new Intent(context, DocumentsActivity.class);
-        intent.putExtra(EXTRA_CHAT_TYPE, chatType);
-        intent.putExtra(EXTRA_CHAT_ID, chatId);
+        intent.putExtra(EXTRA_CHAT_PEER, peer.getUid());
         return intent;
     }
 

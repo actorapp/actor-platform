@@ -27,8 +27,8 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.MaterialInterpolator;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.storage.ListEngines;
-import im.actor.messenger.storage.scheme.messages.DialogItem;
 import im.actor.messenger.util.Screen;
+import im.actor.model.entity.Dialog;
 
 /**
  * Created by ex3ndr on 22.11.14.
@@ -56,14 +56,14 @@ public class BaseDialogFragment extends BaseCompatFragment implements UiListStat
         noMessages = res.findViewById(R.id.noMessages);
         dialogsEmptyImage = (ImageView) res.findViewById(R.id.emptyDialogsImage);
 
-        adapter = new DialogsAdapter(ListEngines.getChatsUiListEngine(), getActivity(), new OnItemClickedListener<DialogItem>() {
+        adapter = new DialogsAdapter(ListEngines.getChatsUiListEngine(), getActivity(), new OnItemClickedListener<Dialog>() {
             @Override
-            public void onClicked(DialogItem item) {
+            public void onClicked(Dialog item) {
                 onItemClick(item);
             }
-        }, supportLongClick() ? new OnItemClickedListener<DialogItem>() {
+        }, supportLongClick() ? new OnItemClickedListener<Dialog>() {
             @Override
-            public void onClicked(final DialogItem dialog) {
+            public void onClicked(final Dialog dialog) {
                 onItemLongClick(dialog);
             }
         } : null);
@@ -149,11 +149,11 @@ public class BaseDialogFragment extends BaseCompatFragment implements UiListStat
         return false;
     }
 
-    protected void onItemClick(DialogItem item) {
+    protected void onItemClick(Dialog item) {
 
     }
 
-    protected void onItemLongClick(final DialogItem dialog) {
+    protected void onItemLongClick(final Dialog dialog) {
 
     }
 

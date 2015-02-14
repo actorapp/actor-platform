@@ -14,12 +14,8 @@ import com.droidkit.mvvm.ui.Listener;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseBarFragmentActivity;
-import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.profile.ProfileFragment;
 import im.actor.messenger.app.intents.Intents;
-import im.actor.messenger.app.view.SecurityKey;
-import im.actor.messenger.core.actors.base.UiAskCallback;
-import im.actor.messenger.core.actors.contacts.ContactsActor;
 import im.actor.messenger.model.UserModel;
 
 import static im.actor.messenger.storage.KeyValueEngines.users;
@@ -47,12 +43,12 @@ public class ProfileActivity extends BaseBarFragmentActivity {
             showFragment(ProfileFragment.create(uid), false, false);
         }
 
-        getBinder().bind(users().get(uid).getContactModel(), new Listener<Boolean>() {
-            @Override
-            public void onUpdated(Boolean aBoolean) {
-                invalidateOptionsMenu();
-            }
-        });
+//        getBinder().bind(users().get(uid).getContactModel(), new Listener<Boolean>() {
+//            @Override
+//            public void onUpdated(Boolean aBoolean) {
+//                invalidateOptionsMenu();
+//            }
+//        });
     }
 
     @Override
@@ -62,8 +58,8 @@ public class ProfileActivity extends BaseBarFragmentActivity {
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         menu.findItem(R.id.call).setVisible(tm.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE);
         UserModel userModel = users().get(uid);
-        menu.findItem(R.id.remove).setVisible(userModel.getContactModel().getValue());
-        menu.findItem(R.id.add).setVisible(!userModel.getContactModel().getValue());
+//        menu.findItem(R.id.remove).setVisible(userModel.getContactModel().getValue());
+//        menu.findItem(R.id.add).setVisible(!userModel.getContactModel().getValue());
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -73,48 +69,44 @@ public class ProfileActivity extends BaseBarFragmentActivity {
             finish();
             return true;
         } else if (item.getItemId() == R.id.call) {
-            UserModel userModel = users().get(uid);
-            startActivity(new Intent(Intent.ACTION_DIAL).setData(Uri.parse("tel:+" + userModel.getPhone())));
-            return true;
-        } else if (item.getItemId() == R.id.encryption) {
-            UserModel userModel = users().get(uid);
-            SecurityKey.showKey(userModel.getRaw().getKeyHashes(), this);
+            // UserModel userModel = users().get(uid);
+            // startActivity(new Intent(Intent.ACTION_DIAL).setData(Uri.parse("tel:+" + userModel.getPhone())));
             return true;
         } else if (item.getItemId() == R.id.add) {
-            ask(ContactsActor.contactsList().addContact(uid), getString(R.string.profile_adding), new UiAskCallback<Boolean>() {
-                @Override
-                public void onPreStart() {
-
-                }
-
-                @Override
-                public void onCompleted(Boolean res) {
-
-                }
-
-                @Override
-                public void onError(Throwable t) {
-
-                }
-            });
+//            ask(ContactsActor.contactsList().addContact(uid), getString(R.string.profile_adding), new UiAskCallback<Boolean>() {
+//                @Override
+//                public void onPreStart() {
+//
+//                }
+//
+//                @Override
+//                public void onCompleted(Boolean res) {
+//
+//                }
+//
+//                @Override
+//                public void onError(Throwable t) {
+//
+//                }
+//            });
             return true;
         } else if (item.getItemId() == R.id.remove) {
-            ask(ContactsActor.contactsList().removeContact(uid), getString(R.string.profile_removing), new UiAskCallback<Boolean>() {
-                @Override
-                public void onPreStart() {
-
-                }
-
-                @Override
-                public void onCompleted(Boolean res) {
-
-                }
-
-                @Override
-                public void onError(Throwable t) {
-
-                }
-            });
+//            ask(ContactsActor.contactsList().removeContact(uid), getString(R.string.profile_removing), new UiAskCallback<Boolean>() {
+//                @Override
+//                public void onPreStart() {
+//
+//                }
+//
+//                @Override
+//                public void onCompleted(Boolean res) {
+//
+//                }
+//
+//                @Override
+//                public void onError(Throwable t) {
+//
+//                }
+//            });
             return true;
         } else if (item.getItemId() == R.id.edit) {
             startActivity(Intents.editUserName(uid, this));

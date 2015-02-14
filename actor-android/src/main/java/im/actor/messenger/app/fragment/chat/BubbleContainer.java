@@ -14,7 +14,6 @@ import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.model.UserModel;
-import im.actor.messenger.storage.scheme.avatar.Avatar;
 import im.actor.messenger.util.Screen;
 import im.actor.messenger.util.TextUtils;
 
@@ -152,12 +151,12 @@ public class BubbleContainer extends ViewGroup {
             avatarView.setVisibility(VISIBLE);
             UserModel u = users().get(uid);
             avatarView.setEmptyDrawable(new AvatarDrawable(u.getName(), u.getId(), 12, getContext()));
-            Avatar avatar = u.getAvatar().getValue();
-            if (avatar != null) {
-                avatarView.bindAvatar(0, avatar);
-            } else {
-                avatarView.unbind();
-            }
+//            Avatar avatar = u.getAvatar().getValue();
+//            if (avatar != null) {
+//                avatarView.bindAvatar(0, avatar);
+//            } else {
+//                avatarView.unbind();
+//            }
             avatarView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

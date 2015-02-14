@@ -9,9 +9,8 @@ import android.util.TypedValue;
 import im.actor.messenger.R;
 import im.actor.messenger.model.GroupModel;
 import im.actor.messenger.model.UserModel;
-import im.actor.messenger.storage.scheme.Contact;
-import im.actor.messenger.storage.scheme.messages.DialogItem;
 import im.actor.messenger.storage.scheme.GlobalSearch;
+import im.actor.model.entity.Dialog;
 
 /**
  * Created by ex3ndr on 12.09.14.
@@ -22,17 +21,17 @@ public class AvatarDrawable extends Drawable {
         return new AvatarDrawable(groupModel.getTitle(), groupModel.getChatId(), fontSize, context);
     }
 
-    public static AvatarDrawable create(DialogItem dialogItem, float fontSize, Context context) {
-        return new AvatarDrawable(dialogItem.getDialogTitle(), dialogItem.getId(), fontSize, context);
+    public static AvatarDrawable create(Dialog dialogItem, float fontSize, Context context) {
+        return new AvatarDrawable(dialogItem.getDialogTitle(), dialogItem.getPeer().getPeerId(), fontSize, context);
     }
 
     public static AvatarDrawable create(UserModel userModel, float fontSize, Context context) {
         return new AvatarDrawable(userModel.getName(), userModel.getId(), fontSize, context);
     }
 
-    public static AvatarDrawable create(Contact contact, float fontSize, Context context) {
-        return new AvatarDrawable(contact.getName(), contact.getUid(), fontSize, context);
-    }
+//    public static AvatarDrawable create(Contact contact, float fontSize, Context context) {
+//        return new AvatarDrawable(contact.getName(), contact.getUid(), fontSize, context);
+//    }
 
     public static AvatarDrawable create(GlobalSearch dialogItem, float fontSize, Context context) {
         return new AvatarDrawable(dialogItem.getTitle(), dialogItem.getContId(), fontSize, context);

@@ -4,13 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.droidkit.engine.uilist.UiList;
@@ -26,22 +24,17 @@ import im.actor.messenger.app.intents.Intents;
 import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.app.view.PhotoPreview;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.messenger.core.actors.files.DownloadManager;
-import im.actor.messenger.core.actors.send.MediaSenderActor;
-import im.actor.messenger.core.actors.send.MessageDeliveryActor;
 import im.actor.messenger.model.DownloadModel;
 import im.actor.messenger.model.DownloadState;
-import im.actor.messenger.model.MessageModel;
 import im.actor.messenger.model.UploadModel;
 import im.actor.messenger.model.UploadState;
 import im.actor.messenger.storage.KeyValueEngines;
 import im.actor.messenger.storage.scheme.media.Downloaded;
-import im.actor.messenger.storage.scheme.messages.FastThumb;
-import im.actor.messenger.storage.scheme.messages.types.AbsFileMessage;
-import im.actor.messenger.storage.scheme.messages.types.PhotoMessage;
-import im.actor.messenger.storage.scheme.messages.types.VideoMessage;
 import im.actor.messenger.util.Screen;
 import im.actor.messenger.util.TextUtils;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.*;
 
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
@@ -52,12 +45,9 @@ import static im.actor.messenger.core.Core.myUid;
  */
 class PhotoHolder extends BubbleHolder {
 
-    private int type, id;
+    PhotoHolder(Peer peer, MessagesFragment fragment, UiList<Message> uiList) {
+        super(peer, fragment, uiList);
 
-    PhotoHolder(MessagesFragment fragment, UiList<MessageModel> uiList, int type, int id) {
-        super(fragment, uiList);
-        this.type = type;
-        this.id = id;
     }
 
     private FrameLayout messageBubble;
@@ -75,8 +65,7 @@ class PhotoHolder extends BubbleHolder {
 
     private Bitmap smallPreview;
 
-    private MessageModel message;
-    private AbsFileMessage fileMessage;
+    private DocumentContent fileMessage;
     private Context context;
 
     private TintImageView stateIcon;
@@ -102,7 +91,7 @@ class PhotoHolder extends BubbleHolder {
     };
 
     @Override
-    public View init(MessageModel data, ViewGroup viewGroup, Context context) {
+    public View init(Message data, ViewGroup viewGroup, Context context) {
         this.context = context;
         LayoutInflater inflater = LayoutInflater.from(context);
         BubbleContainer v = (BubbleContainer) inflater.inflate(R.layout.adapter_dialog_photo, viewGroup, false);
@@ -136,21 +125,20 @@ class PhotoHolder extends BubbleHolder {
     }
 
     @Override
-    public void update(final MessageModel data, int position, boolean isUpdated, final Context context) {
+    public void update(final Message data, int position, boolean isUpdated, final Context context) {
         super.update(data, position, isUpdated, context);
 
-        this.message = data;
-        this.fileMessage = (AbsFileMessage) data.getContent();
+        this.fileMessage = (DocumentContent) data.getContent();
 
-        if (data.getRaw().getSenderId() == myUid()) {
+        if (data.getSenderId() == myUid()) {
             messageBubble.setBackgroundResource(R.drawable.conv_bubble_media_out);
         } else {
             messageBubble.setBackgroundResource(R.drawable.conv_bubble_media_in);
         }
 
-        if (data.getRaw().getSenderId() == myUid()) {
+        if (data.getSenderId() == myUid()) {
             stateIcon.setVisibility(View.VISIBLE);
-            switch (data.getRaw().getMessageState()) {
+            switch (data.getMessageState()) {
                 case ERROR:
                     stateIcon.setResource(R.drawable.msg_error);
                     stateIcon.setTint(errorColor);
@@ -179,17 +167,17 @@ class PhotoHolder extends BubbleHolder {
 
         int w, h;
         FastThumb thumb;
-        if (data.getContent() instanceof PhotoMessage) {
-            w = ((PhotoMessage) data.getContent()).getW();
-            h = ((PhotoMessage) data.getContent()).getH();
-            thumb = ((PhotoMessage) data.getContent()).getFastThumb();
+        if (data.getContent() instanceof PhotoContent) {
+            w = ((PhotoContent) data.getContent()).getW();
+            h = ((PhotoContent) data.getContent()).getH();
+            thumb = ((PhotoContent) data.getContent()).getFastThumb();
             duration.setVisibility(View.GONE);
-        } else if (data.getContent() instanceof VideoMessage) {
-            w = ((VideoMessage) data.getContent()).getW();
-            h = ((VideoMessage) data.getContent()).getH();
-            thumb = ((VideoMessage) data.getContent()).getFastThumb();
+        } else if (data.getContent() instanceof VideoContent) {
+            w = ((VideoContent) data.getContent()).getW();
+            h = ((VideoContent) data.getContent()).getH();
+            thumb = ((VideoContent) data.getContent()).getFastThumb();
             duration.setVisibility(View.VISIBLE);
-            duration.setText(Formatter.duration(((VideoMessage) data.getContent()).getDuration()));
+            duration.setText(Formatter.duration(((VideoContent) data.getContent()).getDuration()));
         } else {
             return;
         }
@@ -206,7 +194,7 @@ class PhotoHolder extends BubbleHolder {
         imageKitView.setLayoutParams(new FrameLayout.LayoutParams(bubbleW, bubbleH));
         overlay.setLayoutParams(new FrameLayout.LayoutParams(bubbleW, bubbleH));
 
-        time.setText(TextUtils.formatTime(data.getRaw().getTime()));
+        time.setText(TextUtils.formatTime(data.getDate()));
 
         if (isUpdated) {
             if (thumb != null) {
@@ -235,26 +223,28 @@ class PhotoHolder extends BubbleHolder {
             isInitialBind = false;
         }
         isInitialBind = true;
-        if (fileMessage.getUploadPath() != null) {
-            // stateIcon.setImageResource(R.drawable.conv_clock_media);
-            if (message.getContent() instanceof PhotoMessage) {
-                imageKitView.requestPhoto(fileMessage.getUploadPath());
-            } else if (message.getContent() instanceof VideoMessage) {
-                imageKitView.requestVideo(fileMessage.getUploadPath());
+        if (fileMessage.getSource() instanceof FileLocalSource) {
+            FileLocalSource localSource = (FileLocalSource) fileMessage.getSource();
+            if (currentMessage.getContent() instanceof PhotoContent) {
+                imageKitView.requestPhoto(localSource.getFileName());
+            } else if (currentMessage.getContent() instanceof VideoContent) {
+                imageKitView.requestVideo(localSource.getFileName());
             }
-            UploadModel.uploadState(message.getRid()).addUiSubscriber(uploadStateListener);
-        } else {
-            if (fileMessage.isDownloaded()) {
-                if (message.getContent() instanceof PhotoMessage) {
-                    imageKitView.requestPhoto(type, id, message.getRaw());
-                    hideProgress(true);
-                } else if (message.getContent() instanceof VideoMessage) {
-                    imageKitView.requestVideo(type, id, message.getRaw());
-                    showIcon(R.drawable.conv_video_play);
-                }
-            } else {
-                DownloadModel.downloadState(fileMessage.getLocation().getFileId()).addUiSubscriber(downloadStateListener);
-            }
+            // UploadModel.uploadState(message.getRid()).addUiSubscriber(uploadStateListener);
+        } else if (fileMessage.getSource() instanceof FileRemoteSource) {
+            FileRemoteSource remoteSource = (FileRemoteSource) fileMessage.getSource();
+
+//            if (fileMessage.isDownloaded()) {
+//                if (message.getContent() instanceof PhotoMessage) {
+//                    imageKitView.requestPhoto(type, id, message);
+//                    hideProgress(true);
+//                } else if (message.getContent() instanceof VideoMessage) {
+//                    imageKitView.requestVideo(type, id, message);
+//                    showIcon(R.drawable.conv_video_play);
+//                }
+//            } else {
+//                DownloadModel.downloadState(fileMessage.getLocation().getFileId()).addUiSubscriber(downloadStateListener);
+//            }
         }
         isInitialBind = false;
     }
@@ -307,9 +297,9 @@ class PhotoHolder extends BubbleHolder {
             default:
             case NONE:
                 showIcon(R.drawable.conv_media_download);
-                if (message.getContent() instanceof PhotoMessage) {
-                    DownloadManager.downloader().request(type, id, message.getRid(), fileMessage, true);
-                }
+//                if (message.getContent() instanceof PhotoMessage) {
+//                    DownloadManager.downloader().request(type, id, message.getRid(), fileMessage, true);
+//                }
                 break;
             case DOWNLOADED:
                 hideProgress(true);
@@ -322,55 +312,55 @@ class PhotoHolder extends BubbleHolder {
 
     @Override
     public void onClicked() {
-        if (fileMessage.getUploadPath() != null) {
-            switch (UploadModel.uploadState(message.getRid()).getValue().getState()) {
-                default:
-                case NONE:
-                    MessageDeliveryActor.messageSender().mediaTryAgain(type, id, message.getRid());
-                    break;
-                case UPLOADING:
-                    MessageDeliveryActor.messageSender().mediaPause(type, id, message.getRid());
-                    break;
-                case UPLOADED:
-                    break;
-            }
-        } else {
-            if (fileMessage.isDownloaded()) {
-                if (message.getContent() instanceof PhotoMessage) {
-                    Downloaded d = KeyValueEngines.downloaded().get(((PhotoMessage) message.getContent()).getLocation().getFileId());
-                    if (d == null) {
-                        return;
-                    }
-                    context.startActivity(Intents.openPhoto(d));
-                } else if (message.getContent() instanceof VideoMessage) {
-                    Downloaded d = KeyValueEngines.downloaded().get(((VideoMessage) message.getContent()).getLocation().getFileId());
-                    if (d == null) {
-                        return;
-                    }
-                    context.startActivity(Intents.openVideo(d));
-                }
-            } else {
-                switch (DownloadModel.downloadState(fileMessage.getLocation().getFileId()).getValue().getState()) {
-                    case NONE:
-                        DownloadManager.downloader().request(type, id, message.getRid(), fileMessage, false);
-                        break;
-                    case DOWNLOADING:
-                        DownloadManager.downloader().pause(fileMessage);
-                        break;
-                    case DOWNLOADED:
-                        break;
-                }
-            }
-        }
+//        if (fileMessage.getUploadPath() != null) {
+//            switch (UploadModel.uploadState(message.getRid()).getValue().getState()) {
+//                default:
+//                case NONE:
+//                    MessageDeliveryActor.messageSender().mediaTryAgain(type, id, message.getRid());
+//                    break;
+//                case UPLOADING:
+//                    MessageDeliveryActor.messageSender().mediaPause(type, id, message.getRid());
+//                    break;
+//                case UPLOADED:
+//                    break;
+//            }
+//        } else {
+//            if (fileMessage.isDownloaded()) {
+//                if (message.getContent() instanceof PhotoMessage) {
+//                    Downloaded d = KeyValueEngines.downloaded().get(((PhotoMessage) message.getContent()).getLocation().getFileId());
+//                    if (d == null) {
+//                        return;
+//                    }
+//                    context.startActivity(Intents.openPhoto(d));
+//                } else if (message.getContent() instanceof VideoMessage) {
+//                    Downloaded d = KeyValueEngines.downloaded().get(((VideoMessage) message.getContent()).getLocation().getFileId());
+//                    if (d == null) {
+//                        return;
+//                    }
+//                    context.startActivity(Intents.openVideo(d));
+//                }
+//            } else {
+//                switch (DownloadModel.downloadState(fileMessage.getLocation().getFileId()).getValue().getState()) {
+//                    case NONE:
+//                        DownloadManager.downloader().request(type, id, message.getRid(), fileMessage, false);
+//                        break;
+//                    case DOWNLOADING:
+//                        DownloadManager.downloader().pause(fileMessage);
+//                        break;
+//                    case DOWNLOADED:
+//                        break;
+//                }
+//            }
+//        }
     }
 
     @Override
     public void unbind() {
         super.unbind();
-        UploadModel.uploadState(message.getRid()).removeUiSubscriber(uploadStateListener);
-        if (fileMessage.getLocation() != null) {
-            DownloadModel.downloadState(fileMessage.getLocation().getFileId()).removeUiSubscriber(downloadStateListener);
-        }
+//        UploadModel.uploadState(message.getRid()).removeUiSubscriber(uploadStateListener);
+//        if (fileMessage.getLocation() != null) {
+//            DownloadModel.downloadState(fileMessage.getLocation().getFileId()).removeUiSubscriber(downloadStateListener);
+//        }
         imageKitView.noRequest();
     }
 

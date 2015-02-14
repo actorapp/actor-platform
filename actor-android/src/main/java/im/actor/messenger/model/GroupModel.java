@@ -2,11 +2,9 @@ package im.actor.messenger.model;
 
 import com.droidkit.mvvm.ValueModel;
 
-import im.actor.messenger.storage.scheme.avatar.Avatar;
 import im.actor.messenger.storage.scheme.groups.GroupInfo;
 import im.actor.messenger.storage.scheme.groups.GroupMember;
 import im.actor.messenger.storage.scheme.groups.GroupState;
-import im.actor.messenger.util.BoxUtil;
 
 /**
  * Created by ex3ndr on 08.10.14.
@@ -17,12 +15,12 @@ public class GroupModel {
     private ValueModel<GroupMember[]> usersModel;
     private ValueModel<int[]> onlineModel;
     private ValueModel<String> titleModel;
-    private ValueModel<Avatar> avatarModel;
+    // private ValueModel<Avatar> avatarModel;
 
     public GroupModel(GroupInfo raw) {
         this.raw = raw;
         titleModel = new ValueModel<String>("group" + raw.getGroupId() + ".title", raw.getTitle());
-        avatarModel = new ValueModel<Avatar>("group" + raw.getGroupId() + ".avatar", raw.getAvatar());
+        // avatarModel = new ValueModel<Avatar>("group" + raw.getGroupId() + ".avatar", raw.getAvatar());
         stateModel = new ValueModel<GroupState>("group" + raw.getGroupId() + ".state", raw.getGroupState());
         usersModel = new ValueModel<GroupMember[]>("group" + raw.getGroupId() + ".users", raw.getMembers().toArray(new GroupMember[0]));
         onlineModel = new ValueModel<int[]>("group" + raw.getGroupId() + ".online", new int[]{raw.getMembers().size()});
@@ -72,15 +70,15 @@ public class GroupModel {
         return titleModel;
     }
 
-    public ValueModel<Avatar> getAvatarModel() {
-        return avatarModel;
-    }
+//    public ValueModel<Avatar> getAvatarModel() {
+//        return avatarModel;
+//    }
 
 
     public synchronized void update(GroupInfo raw) {
         this.raw = raw;
 
-        avatarModel.change(raw.getAvatar());
+        // avatarModel.change(raw.getAvatar());
         titleModel.change(raw.getTitle());
         stateModel.change(raw.getGroupState());
         usersModel.change(raw.getMembers().toArray(new GroupMember[0]));

@@ -5,20 +5,11 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.*;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
-
-import com.droidkit.engine.list.view.EngineUiList;
-import com.droidkit.engine.list.view.ListState;
-import com.droidkit.mvvm.ui.Listener;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.HelpActivity;
 import im.actor.messenger.app.base.BaseCompatFragment;
-import im.actor.messenger.app.fragment.contacts.ContactsAdapter;
-import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.messenger.storage.ListEngines;
-import im.actor.messenger.storage.scheme.Contact;
 import im.actor.messenger.util.Screen;
 
 /**
@@ -26,10 +17,10 @@ import im.actor.messenger.util.Screen;
  */
 public abstract class BaseContactFragment extends BaseCompatFragment {
 
-    private ContactsAdapter adapter;
+    // private ContactsAdapter adapter;
     private ListView listView;
     private View emptyView;
-    private EngineUiList<Contact> engineUiList;
+    // private EngineUiList<Contact> engineUiList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,34 +31,34 @@ public abstract class BaseContactFragment extends BaseCompatFragment {
         View header = new View(getActivity());
         header.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
         listView.addHeaderView(header, null, false);
-        engineUiList = new EngineUiList<Contact>(ListEngines.getContactsEngine());
-        adapter = new ContactsAdapter(engineUiList, getActivity(), false, new OnItemClickedListener<Contact>() {
-            @Override
-            public void onClicked(Contact item) {
-                onUserSelected((int) (long) item.getUid());
-                getActivity().finish();
-            }
-        }, null);
-        listView.setAdapter(adapter);
+//        engineUiList = new EngineUiList<Contact>(ListEngines.getContactsEngine());
+//        adapter = new ContactsAdapter(engineUiList, getActivity(), false, new OnItemClickedListener<Contact>() {
+//            @Override
+//            public void onClicked(Contact item) {
+//                onUserSelected((int) (long) item.getUid());
+//                getActivity().finish();
+//            }
+//        }, null);
+//        listView.setAdapter(adapter);
 
-        getBinder().bind(engineUiList.getListState(), new Listener<ListState>() {
-            @Override
-            public void onUpdated(ListState listState) {
-                switch (listState.getState()) {
-                    case LOADING_EMPTY:
-                        break;
-                    case LOADED_EMPTY:
-                        showView(emptyView, true, false);
-                        goneView(listView, true, false);
-                        break;
-                    case LOADED:
-                    default:
-                        goneView(emptyView, true, false);
-                        showView(listView, true, false);
-                        break;
-                }
-            }
-        });
+//        getBinder().bind(engineUiList.getListState(), new Listener<ListState>() {
+//            @Override
+//            public void onUpdated(ListState listState) {
+//                switch (listState.getState()) {
+//                    case LOADING_EMPTY:
+//                        break;
+//                    case LOADED_EMPTY:
+//                        showView(emptyView, true, false);
+//                        goneView(listView, true, false);
+//                        break;
+//                    case LOADED:
+//                    default:
+//                        goneView(emptyView, true, false);
+//                        showView(listView, true, false);
+//                        break;
+//                }
+//            }
+//        });
 
         return res;
     }
@@ -89,8 +80,8 @@ public abstract class BaseContactFragment extends BaseCompatFragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                engineUiList.filter(newText);
-                adapter.setQuery(newText.toLowerCase());
+                // engineUiList.filter(newText);
+                // adapter.setQuery(newText.toLowerCase());
                 return true;
             }
         });
@@ -109,14 +100,14 @@ public abstract class BaseContactFragment extends BaseCompatFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (adapter != null) {
-            adapter.dispose();
-            adapter = null;
-        }
-        if (engineUiList != null) {
-            engineUiList.release();
-            engineUiList = null;
-        }
+//        if (adapter != null) {
+//            adapter.dispose();
+//            adapter = null;
+//        }
+//        if (engineUiList != null) {
+//            engineUiList.release();
+//            engineUiList = null;
+//        }
         listView = null;
         emptyView = null;
     }

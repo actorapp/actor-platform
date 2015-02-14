@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseCompatFragment;
-import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.view.ViewHolder;
 import im.actor.messenger.util.country.Country;
 import im.actor.messenger.util.country.CountryDb;
@@ -114,9 +113,5 @@ public class CountrySelectFragment extends BaseCompatFragment {
             }
         }
 
-    }
-
-    public static interface CountrySelectCallback {
-        void onCountrySelected(final Country country);
     }
 }

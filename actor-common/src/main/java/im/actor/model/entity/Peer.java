@@ -1,15 +1,54 @@
 package im.actor.model.entity;
 
+import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
+import im.actor.model.droidkit.bser.BserValues;
+import im.actor.model.droidkit.bser.BserWriter;
+
+import java.io.IOException;
+
 /**
  * Created by ex3ndr on 09.02.15.
  */
-public class Peer {
-    private final PeerType peerType;
-    private final int peerId;
+public class Peer extends BserObject {
+
+    public static Peer fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new Peer(), data);
+    }
+
+    public static Peer fromUid(long uid) {
+        int id = (int) (uid & 0xFFFFFFFFL);
+        int type = (int) ((uid >> 32) & 0xFFFFFFFFL);
+
+        switch (type) {
+            default:
+            case 0:
+                return new Peer(PeerType.PRIVATE, id);
+            case 1:
+                return new Peer(PeerType.GROUP, id);
+            case 2:
+                return new Peer(PeerType.EMAIL, id);
+        }
+    }
+
+    public static Peer user(int uid) {
+        return new Peer(PeerType.PRIVATE, uid);
+    }
+
+    public static Peer group(int gid) {
+        return new Peer(PeerType.GROUP, gid);
+    }
+
+    private PeerType peerType;
+    private int peerId;
 
     public Peer(PeerType peerType, int peerId) {
         this.peerType = peerType;
         this.peerId = peerId;
+    }
+
+    private Peer() {
+
     }
 
     public long getUid() {
@@ -55,5 +94,39 @@ public class Peer {
         int result = peerType.hashCode();
         result = 31 * result + peerId;
         return result;
+    }
+
+    @Override
+    public void parse(BserValues values) throws IOException {
+        peerId = values.getInt(1);
+        switch (values.getInt(2)) {
+            default:
+            case 1:
+                peerType = PeerType.PRIVATE;
+                break;
+            case 2:
+                peerType = PeerType.EMAIL;
+                break;
+            case 3:
+                peerType = PeerType.GROUP;
+                break;
+        }
+    }
+
+    @Override
+    public void serialize(BserWriter writer) throws IOException {
+        writer.writeInt(1, peerId);
+        switch (peerType) {
+            default:
+            case PRIVATE:
+                writer.writeInt(2, 1);
+                break;
+            case EMAIL:
+                writer.writeInt(2, 2);
+                break;
+            case GROUP:
+                writer.writeInt(2, 3);
+                break;
+        }
     }
 }

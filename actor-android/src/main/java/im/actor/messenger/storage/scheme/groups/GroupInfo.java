@@ -4,11 +4,10 @@ import com.droidkit.bser.BserObject;
 import com.droidkit.bser.BserValues;
 import com.droidkit.bser.BserWriter;
 import com.droidkit.engine.keyvalue.KeyValueIdentity;
+import im.actor.model.entity.Avatar;
 
 import java.io.IOException;
 import java.util.List;
-
-import im.actor.messenger.storage.scheme.avatar.Avatar;
 
 /**
  * Created by ex3ndr on 15.11.14.
@@ -86,7 +85,7 @@ public class GroupInfo extends BserObject implements KeyValueIdentity {
         groupId = values.getInt(1);
         accessHash = values.getLong(2);
         title = values.getString(3);
-        avatar = values.optObj(4, Avatar.class);
+        // avatar = values.optObj(4, Avatar.class);
         members = values.getRepeatedObj(5, GroupMember.class);
         adminId = values.getInt(6);
         switch (values.getInt(7)) {
@@ -112,7 +111,7 @@ public class GroupInfo extends BserObject implements KeyValueIdentity {
         writer.writeLong(2, accessHash);
         writer.writeString(3, title);
         if (avatar != null) {
-            writer.writeObject(4, avatar);
+            // writer.writeObject(4, avatar);
         }
         writer.writeRepeatedObj(5, members);
         writer.writeInt(6, adminId);

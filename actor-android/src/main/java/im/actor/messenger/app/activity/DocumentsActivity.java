@@ -7,6 +7,7 @@ import im.actor.messenger.app.base.BaseBarFragmentActivity;
 import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.media.DocumentsFragment;
 import im.actor.messenger.app.intents.Intents;
+import im.actor.model.entity.Peer;
 
 /**
  * Created by ex3ndr on 18.10.14.
@@ -22,8 +23,7 @@ public class DocumentsActivity extends BaseBarFragmentActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(false);
         getSupportActionBar().setTitle(R.string.documents_title);
 
-        int chatType = getIntent().getIntExtra(Intents.EXTRA_CHAT_TYPE, 0);
-        int chatId = getIntent().getIntExtra(Intents.EXTRA_CHAT_ID, 0);
-        showFragment(DocumentsFragment.open(chatType, chatId), false, false);
+        Peer peer = Peer.fromUid(getIntent().getLongExtra(Intents.EXTRA_CHAT_PEER, 0));
+        showFragment(DocumentsFragment.open(peer), false, false);
     }
 }

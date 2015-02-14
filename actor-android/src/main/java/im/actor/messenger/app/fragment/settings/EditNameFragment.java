@@ -10,16 +10,10 @@ import android.widget.Toast;
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.EditNameActivity;
 import im.actor.messenger.app.base.BaseCompatFragment;
-import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.view.KeyboardHelper;
-import im.actor.messenger.core.actors.base.UiAskCallback;
-import im.actor.messenger.core.actors.groups.GroupsActor;
-import im.actor.messenger.core.actors.profile.EditNameActor;
-import im.actor.messenger.model.GroupModel;
 import im.actor.messenger.model.UserModel;
 
 import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.storage.KeyValueEngines.groups;
 import static im.actor.messenger.storage.KeyValueEngines.users;
 
 /**
@@ -59,8 +53,8 @@ public class EditNameFragment extends BaseCompatFragment {
             UserModel userModel = users().get(id);
             nameEdit.setText(userModel.getName());
         } else if (type == EditNameActivity.TYPE_GROUP) {
-            GroupModel info = groups().get(id);
-            nameEdit.setText(info.getTitle());
+//            GroupModel info = groups().get(id);
+//            nameEdit.setText(info.getTitle());
         }
         res.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,58 +71,58 @@ public class EditNameFragment extends BaseCompatFragment {
                     return;
                 }
 
-                if (type == EditNameActivity.TYPE_ME) {
-                    ask(EditNameActor.editName().editMyName(name), getString(R.string.edit_name_process), new UiAskCallback<Boolean>() {
-                        @Override
-                        public void onPreStart() {
-
-                        }
-
-                        @Override
-                        public void onCompleted(Boolean res) {
-                            getActivity().finish();
-                        }
-
-                        @Override
-                        public void onError(Throwable t) {
-                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else if (type == EditNameActivity.TYPE_GROUP) {
-                    ask(GroupsActor.groupUpdates().editGroupName(id, name), getString(R.string.edit_name_process), new UiAskCallback<Boolean>() {
-
-                        @Override
-                        public void onPreStart() {
-                        }
-
-                        @Override
-                        public void onCompleted(Boolean res) {
-                            getActivity().finish();
-                        }
-
-                        @Override
-                        public void onError(Throwable t) {
-                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else if (type == EditNameActivity.TYPE_USER) {
-                    ask(EditNameActor.editName().editName(id, name), getString(R.string.edit_name_process), new UiAskCallback<Boolean>() {
-                        @Override
-                        public void onPreStart() {
-
-                        }
-
-                        @Override
-                        public void onCompleted(Boolean res) {
-                            getActivity().finish();
-                        }
-
-                        @Override
-                        public void onError(Throwable t) {
-                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+//                if (type == EditNameActivity.TYPE_ME) {
+//                    ask(EditNameActor.editName().editMyName(name), getString(R.string.edit_name_process), new UiAskCallback<Boolean>() {
+//                        @Override
+//                        public void onPreStart() {
+//
+//                        }
+//
+//                        @Override
+//                        public void onCompleted(Boolean res) {
+//                            getActivity().finish();
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable t) {
+//                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                } else if (type == EditNameActivity.TYPE_GROUP) {
+//                    ask(GroupsActor.groupUpdates().editGroupName(id, name), getString(R.string.edit_name_process), new UiAskCallback<Boolean>() {
+//
+//                        @Override
+//                        public void onPreStart() {
+//                        }
+//
+//                        @Override
+//                        public void onCompleted(Boolean res) {
+//                            getActivity().finish();
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable t) {
+//                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                } else if (type == EditNameActivity.TYPE_USER) {
+//                    ask(EditNameActor.editName().editName(id, name), getString(R.string.edit_name_process), new UiAskCallback<Boolean>() {
+//                        @Override
+//                        public void onPreStart() {
+//
+//                        }
+//
+//                        @Override
+//                        public void onCompleted(Boolean res) {
+//                            getActivity().finish();
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable t) {
+//                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                }
             }
         });
         return res;

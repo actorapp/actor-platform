@@ -8,26 +8,15 @@ import android.text.*;
 import android.text.style.ReplacementSpan;
 import android.view.*;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.droidkit.engine.list.view.EngineUiList;
 import com.droidkit.engine.uilist.UiListListener;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseCompatFragment;
-import im.actor.messenger.app.base.BaseFragment;
-import im.actor.messenger.app.fragment.contacts.ContactsAdapter;
-import im.actor.messenger.app.intents.Intents;
-import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.messenger.core.actors.base.UiAskCallback;
-import im.actor.messenger.core.actors.groups.GroupAvatarActor;
-import im.actor.messenger.core.actors.groups.GroupsActor;
+// import im.actor.messenger.app.fragment.contacts.ContactsAdapter;
 import im.actor.messenger.model.UserModel;
-import im.actor.messenger.storage.ListEngines;
-import im.actor.messenger.storage.scheme.Contact;
-import im.actor.messenger.util.BoxUtil;
 import im.actor.messenger.util.Screen;
 
 import java.util.ArrayList;
@@ -48,10 +37,10 @@ public class GroupUsersFragment extends BaseCompatFragment implements UiListList
         return res;
     }
 
-    private ContactsAdapter adapter;
+    // private ContactsAdapter adapter;
     private ListView listView;
     private EditText searchField;
-    private EngineUiList<Contact> engineUiList;
+    // private EngineUiList<Contact> engineUiList;
     private ArrayList<Integer> selectedUsers = new ArrayList<Integer>();
     private TextWatcher textWatcher;
 
@@ -91,30 +80,30 @@ public class GroupUsersFragment extends BaseCompatFragment implements UiListList
                 while (filter.length() > 0 && filter.charAt(0) == '!') {
                     filter = filter.substring(1);
                 }
-                engineUiList.filter(filter);
+                // engineUiList.filter(filter);
             }
         };
         listView = (ListView) res.findViewById(R.id.contactsList);
         View header = new View(getActivity());
         header.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
         listView.addHeaderView(header, null, false);
-        engineUiList = new EngineUiList<Contact>(ListEngines.getContactsEngine());
-        adapter = new ContactsAdapter(engineUiList, getActivity(), true, new OnItemClickedListener<Contact>() {
-            @Override
-            public void onClicked(Contact contact) {
-                if (selectedUsers.contains(contact.getUid())) {
-                    selectedUsers.remove((Integer) contact.getUid());
-                    adapter.unselect(contact.getUid());
-                } else {
-                    selectedUsers.add(contact.getUid());
-                    adapter.select(contact.getUid());
-                }
-                getActivity().invalidateOptionsMenu();
-                updateEditText();
-            }
-        }, null);
-        listView.setAdapter(adapter);
-        engineUiList.getUiList().addListener(this);
+//        engineUiList = new EngineUiList<Contact>(ListEngines.getContactsEngine());
+//        adapter = new ContactsAdapter(engineUiList, getActivity(), true, new OnItemClickedListener<Contact>() {
+//            @Override
+//            public void onClicked(Contact contact) {
+//                if (selectedUsers.contains(contact.getUid())) {
+//                    selectedUsers.remove((Integer) contact.getUid());
+//                    adapter.unselect(contact.getUid());
+//                } else {
+//                    selectedUsers.add(contact.getUid());
+//                    adapter.select(contact.getUid());
+//                }
+//                getActivity().invalidateOptionsMenu();
+//                updateEditText();
+//            }
+//        }, null);
+//        listView.setAdapter(adapter);
+//        engineUiList.getUiList().addListener(this);
         return res;
     }
 
@@ -140,31 +129,31 @@ public class GroupUsersFragment extends BaseCompatFragment implements UiListList
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.done) {
-            ask(GroupsActor.groupUpdates().createGroup(title, BoxUtil.unbox(selectedUsers.toArray(new Integer[0]))),
-                    new UiAskCallback<Integer>() {
-                        @Override
-                        public void onPreStart() {
-                            isInProgress = true;
-                            getActivity().invalidateOptionsMenu();
-                            showView(progressView);
-                        }
-
-                        @Override
-                        public void onCompleted(Integer res) {
-                            if (avatarPath != null) {
-                                GroupAvatarActor.get().changeAvatar(res, avatarPath);
-                            }
-                            getActivity().startActivity(Intents.openGroupDialog(res, true, getActivity()));
-                            getActivity().finish();
-                        }
-
-                        @Override
-                        public void onError(Throwable t) {
-                            isInProgress = false;
-                            getActivity().invalidateOptionsMenu();
-                            goneView(progressView);
-                        }
-                    });
+//            ask(GroupsActor.groupUpdates().createGroup(title, BoxUtil.unbox(selectedUsers.toArray(new Integer[0]))),
+//                    new UiAskCallback<Integer>() {
+//                        @Override
+//                        public void onPreStart() {
+//                            isInProgress = true;
+//                            getActivity().invalidateOptionsMenu();
+//                            showView(progressView);
+//                        }
+//
+//                        @Override
+//                        public void onCompleted(Integer res) {
+//                            if (avatarPath != null) {
+//                                GroupAvatarActor.get().changeAvatar(res, avatarPath);
+//                            }
+//                            getActivity().startActivity(Intents.openGroupDialog(res, true, getActivity()));
+//                            getActivity().finish();
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable t) {
+//                            isInProgress = false;
+//                            getActivity().invalidateOptionsMenu();
+//                            goneView(progressView);
+//                        }
+//                    });
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -172,15 +161,15 @@ public class GroupUsersFragment extends BaseCompatFragment implements UiListList
 
     @Override
     public void onListUpdated() {
-        if (engineUiList.getUiList().getSize() == 1) {
-            Contact contact = engineUiList.getUiList().getItem(0);
-            if (!selectedUsers.contains(contact.getUid())) {
-                selectedUsers.add(contact.getUid());
-                adapter.select(contact.getUid());
-                getActivity().invalidateOptionsMenu();
-                updateEditText();
-            }
-        }
+//        if (engineUiList.getUiList().getSize() == 1) {
+//            Contact contact = engineUiList.getUiList().getItem(0);
+//            if (!selectedUsers.contains(contact.getUid())) {
+//                selectedUsers.add(contact.getUid());
+//                adapter.select(contact.getUid());
+//                getActivity().invalidateOptionsMenu();
+//                updateEditText();
+//            }
+//        }
     }
 
     private void updateEditText() {
@@ -196,7 +185,7 @@ public class GroupUsersFragment extends BaseCompatFragment implements UiListList
         searchField.setText(spannable);
         searchField.setSelection(spannable.length());
         searchField.addTextChangedListener(textWatcher);
-        engineUiList.filter("");
+        // engineUiList.filter("");
         listView.invalidateViews();
     }
 
@@ -236,11 +225,11 @@ public class GroupUsersFragment extends BaseCompatFragment implements UiListList
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        engineUiList.getUiList().removeListener(this);
-        if (adapter != null) {
-            adapter.dispose();
-            adapter = null;
-        }
+        // engineUiList.getUiList().removeListener(this);
+//        if (adapter != null) {
+//            adapter.dispose();
+//            adapter = null;
+//        }
         listView = null;
     }
 

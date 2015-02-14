@@ -7,29 +7,22 @@ import com.droidkit.engine.list.view.ListState;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
 import im.actor.messenger.app.view.EngineHolderAdapter;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.messenger.core.actors.chat.ConversationHistoryActor;
-import im.actor.messenger.model.MessageModel;
-import im.actor.messenger.model.DialogUids;
 import im.actor.messenger.storage.ListEngines;
-import im.actor.messenger.storage.scheme.messages.types.DocumentMessage;
-import im.actor.messenger.storage.scheme.messages.types.PhotoMessage;
-import im.actor.messenger.storage.scheme.messages.types.TextMessage;
-import im.actor.messenger.storage.scheme.messages.types.VideoMessage;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.*;
 
-public class ChatAdapter extends EngineHolderAdapter<MessageModel> {
+public class ChatAdapter extends EngineHolderAdapter<Message> {
 
     private static final int LOAD_GAP = 20;
 
-    private int type, id;
-
     private MessagesFragment fragment;
+    private Peer peer;
 
-    public ChatAdapter(int type, int id, MessagesFragment fragment, Context context) {
-        super(ListEngines.messagesUiList(DialogUids.getDialogUid(type, id)), true, false, context);
-        // ConversationHistoryActor.conv(type, id);
+    public ChatAdapter(Peer peer, MessagesFragment fragment, Context context) {
+        super(ListEngines.getMessagesList(peer), true, false, context);
         this.fragment = fragment;
-        this.type = type;
-        this.id = id;
+        this.peer = peer;
     }
 
     @Override
@@ -43,22 +36,24 @@ public class ChatAdapter extends EngineHolderAdapter<MessageModel> {
     }
 
     @Override
-    public long getItemId(MessageModel obj) {
-        return obj.getRaw().getRid();
+    public long getItemId(Message obj) {
+        return obj.getRid();
     }
 
     @Override
     public int getItemViewType(int position) {
-        MessageModel object = getItem(position);
-        if (object.getContent() instanceof TextMessage) {
+        Message object = getItem(position);
+        if (object.getContent() instanceof TextContent) {
             return 0;
-        } else if (object.getContent() instanceof VideoMessage ||
-                object.getContent() instanceof PhotoMessage) {
+        } else if (object.getContent() instanceof VideoContent ||
+                object.getContent() instanceof PhotoContent) {
             return 1;
-        } else if (object.getContent() instanceof DocumentMessage) {
+        } else if (object.getContent() instanceof DocumentContent) {
             return 2;
-        } else {
+        } else if (object.getContent() instanceof ServiceContent) {
             return 3;
+        } else {
+            throw new RuntimeException("Unknown content type");
         }
     }
 
@@ -68,21 +63,23 @@ public class ChatAdapter extends EngineHolderAdapter<MessageModel> {
     }
 
     @Override
-    protected ViewHolder<MessageModel> createHolder(MessageModel obj) {
-        if (obj.getContent() instanceof TextMessage) {
-            return new TextHolder(type, id, fragment, getUiList());
-        } else if (obj.getContent() instanceof PhotoMessage ||
-                obj.getContent() instanceof VideoMessage) {
-            return new PhotoHolder(fragment, getUiList(), type, id);
-        } else if (obj.getContent() instanceof DocumentMessage) {
-            return new DocHolder(fragment, getUiList(), type, id);
+    protected ViewHolder<Message> createHolder(Message obj) {
+        if (obj.getContent() instanceof TextContent) {
+            return new TextHolder(peer, fragment, getUiList());
+        } else if (obj.getContent() instanceof PhotoContent ||
+                obj.getContent() instanceof VideoContent) {
+            return new PhotoHolder(peer, fragment, getUiList());
+        } else if (obj.getContent() instanceof DocumentContent) {
+            return new DocHolder(peer, fragment, getUiList());
+        } else if (obj.getContent() instanceof ServiceContent) {
+            return new ServiceHolder(peer, fragment, getUiList());
         } else {
-            return new ServiceHolder(type, id, fragment, getUiList());
+            throw new RuntimeException("Unknown content type");
         }
     }
 
     @Override
-    protected void afterItemLoaded(MessageModel object, int position) {
+    protected void afterItemLoaded(Message object, int position) {
         if (getEngine().getListState().getValue().getState() == ListState.State.LOADED) {
             if (position > getCount() - LOAD_GAP) {
                 // ConversationHistoryActor.conv(type, id).onEndReached();

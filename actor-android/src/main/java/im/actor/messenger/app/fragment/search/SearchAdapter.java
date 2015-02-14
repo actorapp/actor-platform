@@ -18,8 +18,6 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.SearchHighlight;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.messenger.model.DialogType;
-import im.actor.messenger.model.DialogUids;
 import im.actor.messenger.storage.scheme.GlobalSearch;
 import im.actor.messenger.util.Screen;
 
@@ -64,7 +62,8 @@ public class SearchAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         GlobalSearch search = getItem(position);
-        return DialogUids.getDialogUid(search.getContType(), search.getContId());
+        // return DialogUids.getDialogUid(search.getContType(), search.getContId());
+        return 0;
     }
 
     @Override
@@ -138,11 +137,11 @@ public class SearchAdapter extends BaseAdapter {
                 avatar.unbind();
             }
             title.setText(SearchHighlight.highlightQuery(data.getTitle(), query, 0xff0277bd));
-            if (data.getContType() == DialogType.TYPE_GROUP) {
-                title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dialogs_group, 0, 0, 0);
-            } else {
-                title.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            }
+//            if (data.getContType() == DialogType.TYPE_GROUP) {
+//                title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dialogs_group, 0, 0, 0);
+//            } else {
+//                title.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+//            }
         }
     }
 }

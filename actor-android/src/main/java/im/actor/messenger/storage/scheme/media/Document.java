@@ -4,10 +4,9 @@ import com.droidkit.bser.BserObject;
 import com.droidkit.bser.BserValues;
 import com.droidkit.bser.BserWriter;
 import com.droidkit.engine.list.ListItemSearchIdentity;
+import im.actor.model.entity.FileLocation;
 
 import java.io.IOException;
-
-import im.actor.messenger.storage.scheme.FileLocation;
 
 /**
  * Created by ex3ndr on 18.10.14.
@@ -60,7 +59,7 @@ public class Document extends BserObject implements ListItemSearchIdentity {
     @Override
     public void parse(BserValues values) throws IOException {
         id = values.optLong(6);
-        fileLocation = values.getObj(1, FileLocation.class);
+        // fileLocation = values.getObj(1, FileLocation.class);
         fileName = values.getString(2);
         mimeType = values.getString(3);
         sender = values.getInt(4);
@@ -70,7 +69,7 @@ public class Document extends BserObject implements ListItemSearchIdentity {
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeLong(6, id);
-        writer.writeObject(1, fileLocation);
+        // writer.writeObject(1, fileLocation);
         writer.writeString(2, fileName);
         writer.writeString(3, mimeType);
         writer.writeInt(4, sender);

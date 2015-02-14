@@ -52,7 +52,7 @@ public class ConversationActor extends Actor {
         dialogsActor.send(new DialogsActor.InMessage(peer, message));
 
         if (message.getSenderId() == messenger.myUid()) {
-            pendingMessages.addOrUpdateItem(new PendingMessage(message.getRid(), message.getTime()));
+            pendingMessages.addOrUpdateItem(new PendingMessage(message.getRid(), message.getDate()));
         }
     }
 

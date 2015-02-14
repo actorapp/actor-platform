@@ -6,8 +6,8 @@ import im.actor.messenger.R;
 import im.actor.messenger.core.AppContext;
 import im.actor.messenger.model.UserModel;
 import im.actor.messenger.model.UserPresence;
-import im.actor.messenger.storage.scheme.users.Sex;
 import im.actor.messenger.util.TextUtils;
+import im.actor.model.entity.Sex;
 
 import java.util.Calendar;
 import java.util.Date;

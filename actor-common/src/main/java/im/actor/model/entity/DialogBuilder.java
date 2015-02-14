@@ -20,7 +20,7 @@ public class DialogBuilder {
 
     public DialogBuilder(Dialog dialog) {
         peer = dialog.getPeer();
-        sortKey = dialog.getSortKey();
+        sortKey = dialog.getSortDate();
         dialogTitle = dialog.getDialogTitle();
         dialogAvatar = dialog.getDialogAvatar();
         unreadCount = dialog.getUnreadCount();
@@ -29,7 +29,7 @@ public class DialogBuilder {
         text = dialog.getText();
         status = dialog.getStatus();
         senderId = dialog.getSenderId();
-        time = dialog.getTime();
+        time = dialog.getDate();
         relatedUid = dialog.getRelatedUid();
     }
 

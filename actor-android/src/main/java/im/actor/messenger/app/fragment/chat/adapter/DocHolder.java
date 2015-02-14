@@ -14,29 +14,19 @@ import com.droidkit.progress.CircularView;
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.BubbleContainer;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
-import im.actor.messenger.app.intents.Intents;
-import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.messenger.core.actors.files.DownloadManager;
-import im.actor.messenger.core.actors.send.MessageDeliveryActor;
-import im.actor.messenger.model.DownloadModel;
 import im.actor.messenger.model.DownloadState;
-import im.actor.messenger.model.MessageModel;
-import im.actor.messenger.model.UploadModel;
 import im.actor.messenger.model.UploadState;
-import im.actor.messenger.storage.KeyValueEngines;
-import im.actor.messenger.storage.scheme.media.Downloaded;
-import im.actor.messenger.storage.scheme.messages.types.DocumentMessage;
 import im.actor.messenger.util.FileTypes;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.DocumentContent;
 
-import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.storage.KeyValueEngines.downloaded;
 
 /**
  * Created by ex3ndr on 20.09.14.
  */
 public class DocHolder extends BubbleHolder {
-    private int type, id;
 
     private TextView fileName;
     private TextView fileSize;
@@ -53,13 +43,11 @@ public class DocHolder extends BubbleHolder {
 
     private View bubbleView;
 
-    private MessageModel message;
-
     private View menu;
 
     private Context context;
 
-    private DocumentMessage documentMessage;
+    private DocumentContent documentMessage;
 
     private ValueChangeListener<UploadState> uploadStateListener = new ValueChangeListener<UploadState>() {
         @Override
@@ -75,15 +63,12 @@ public class DocHolder extends BubbleHolder {
         }
     };
 
-    protected DocHolder(MessagesFragment fragment, UiList<MessageModel> uiList, int type, int id) {
-        super(fragment, uiList);
-
-        this.type = type;
-        this.id = id;
+    protected DocHolder(Peer peer, MessagesFragment fragment, UiList<Message> uiList) {
+        super(peer, fragment, uiList);
     }
 
     @Override
-    public View init(MessageModel data, ViewGroup viewGroup, final Context context) {
+    public View init(Message data, ViewGroup viewGroup, final Context context) {
         this.context = context;
         LayoutInflater inflater = LayoutInflater.from(context);
         BubbleContainer v = (BubbleContainer) inflater.inflate(R.layout.adapter_dialog_doc, viewGroup, false);
@@ -107,13 +92,13 @@ public class DocHolder extends BubbleHolder {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if (message != null && message.getContent() instanceof DocumentMessage) {
-                            DocumentMessage documentMessage = (DocumentMessage) message.getContent();
-                            Downloaded downloaded = downloaded().get(documentMessage.getLocation().getFileId());
-                            if (downloaded != null) {
-                                context.startActivity(Intents.shareDoc(downloaded));
-                            }
-                        }
+//                        if (message != null && message.getContent() instanceof DocumentMessage) {
+//                            DocumentMessage documentMessage = (DocumentMessage) message.getContent();
+//                            Downloaded downloaded = downloaded().get(documentMessage.getLocation().getFileId());
+//                            if (downloaded != null) {
+//                                context.startActivity(Intents.shareDoc(downloaded));
+//                            }
+//                        }
 
                         return true;
                     }
@@ -126,10 +111,9 @@ public class DocHolder extends BubbleHolder {
     }
 
     @Override
-    public void update(final MessageModel message, int pos, boolean isUpdated, Context context) {
+    public void update(final Message message, int pos, boolean isUpdated, Context context) {
         super.update(message, pos, isUpdated, context);
-        this.message = message;
-        this.documentMessage = (DocumentMessage) message.getContent();
+        this.documentMessage = (DocumentContent) message.getContent();
 
         String ext = "";
         int dotIndex = documentMessage.getName().lastIndexOf('.');
@@ -138,7 +122,7 @@ public class DocHolder extends BubbleHolder {
         }
 
         fileName.setText(documentMessage.getName());
-        fileSize.setText(Formatter.formatFileSize(documentMessage.getSize()) + " " + ext.toUpperCase());
+        // fileSize.setText(Formatter.formatFileSize(documentMessage.getSize()) + " " + ext.toUpperCase());
 
         boolean isAppliedThumb = false;
         if (documentMessage.getFastThumb() != null) {
@@ -201,20 +185,20 @@ public class DocHolder extends BubbleHolder {
             fileIcon.setScaleType(ImageView.ScaleType.CENTER);
         }
 
-        if (documentMessage.getUploadPath() != null) {
-            UploadModel.uploadState(message.getRid()).addUiSubscriber(uploadStateListener);
-        } else {
-            if (documentMessage.isDownloaded()) {
-                status.setText(R.string.chat_doc_open);
-                fileIcon.setVisibility(View.VISIBLE);
-                menu.setVisibility(View.VISIBLE);
-                downloadIcon.setVisibility(View.GONE);
-                progressValue.setVisibility(View.GONE);
-                progressView.setVisibility(View.GONE);
-            } else {
-                DownloadModel.downloadState(documentMessage.getLocation().getFileId()).addUiSubscriber(downloadStateListener);
-            }
-        }
+//        if (documentMessage.getUploadPath() != null) {
+//            UploadModel.uploadState(message.getRid()).addUiSubscriber(uploadStateListener);
+//        } else {
+//            if (documentMessage.isDownloaded()) {
+//                status.setText(R.string.chat_doc_open);
+//                fileIcon.setVisibility(View.VISIBLE);
+//                menu.setVisibility(View.VISIBLE);
+//                downloadIcon.setVisibility(View.GONE);
+//                progressValue.setVisibility(View.GONE);
+//                progressView.setVisibility(View.GONE);
+//            } else {
+//                DownloadModel.downloadState(documentMessage.getLocation().getFileId()).addUiSubscriber(downloadStateListener);
+//            }
+//        }
     }
 
     public void onUploadChanged(UploadState value) {
@@ -282,46 +266,46 @@ public class DocHolder extends BubbleHolder {
 
     @Override
     public void onClicked() {
-        if (documentMessage.getUploadPath() != null) {
-            switch (UploadModel.uploadState(message.getRid()).getValue().getState()) {
-                default:
-                case NONE:
-                    MessageDeliveryActor.messageSender().mediaTryAgain(type, id, message.getRid());
-                    break;
-                case UPLOADING:
-                    MessageDeliveryActor.messageSender().mediaPause(type, id, message.getRid());
-                    break;
-                case UPLOADED:
-                    break;
-            }
-        } else {
-            if (documentMessage.isDownloaded()) {
-                Downloaded d = KeyValueEngines.downloaded().get(documentMessage.getLocation().getFileId());
-                if (d == null) {
-                    return;
-                }
-                context.startActivity(Intents.openDoc(d));
-            } else {
-                switch (DownloadModel.downloadState(documentMessage.getLocation().getFileId()).getValue().getState()) {
-                    case NONE:
-                        DownloadManager.downloader().request(type, id, message.getRid(), documentMessage, false);
-                        break;
-                    case DOWNLOADING:
-                        DownloadManager.downloader().pause(documentMessage);
-                        break;
-                    case DOWNLOADED:
-                        break;
-                }
-            }
-        }
+//        if (documentMessage.getUploadPath() != null) {
+//            switch (UploadModel.uploadState(message.getRid()).getValue().getState()) {
+//                default:
+//                case NONE:
+//                    MessageDeliveryActor.messageSender().mediaTryAgain(type, id, message.getRid());
+//                    break;
+//                case UPLOADING:
+//                    MessageDeliveryActor.messageSender().mediaPause(type, id, message.getRid());
+//                    break;
+//                case UPLOADED:
+//                    break;
+//            }
+//        } else {
+//            if (documentMessage.isDownloaded()) {
+//                Downloaded d = KeyValueEngines.downloaded().get(documentMessage.getLocation().getFileId());
+//                if (d == null) {
+//                    return;
+//                }
+//                context.startActivity(Intents.openDoc(d));
+//            } else {
+//                switch (DownloadModel.downloadState(documentMessage.getLocation().getFileId()).getValue().getState()) {
+//                    case NONE:
+//                        DownloadManager.downloader().request(type, id, message.getRid(), documentMessage, false);
+//                        break;
+//                    case DOWNLOADING:
+//                        DownloadManager.downloader().pause(documentMessage);
+//                        break;
+//                    case DOWNLOADED:
+//                        break;
+//                }
+//            }
+//        }
     }
 
     @Override
     public void unbind() {
         super.unbind();
-        UploadModel.uploadState(message.getRid()).removeUiSubscriber(uploadStateListener);
-        if (documentMessage.getLocation() != null) {
-            DownloadModel.downloadState(documentMessage.getLocation().getFileId()).removeUiSubscriber(downloadStateListener);
-        }
+//        UploadModel.uploadState(message.getRid()).removeUiSubscriber(uploadStateListener);
+//        if (documentMessage.getLocation() != null) {
+//            DownloadModel.downloadState(documentMessage.getLocation().getFileId()).removeUiSubscriber(downloadStateListener);
+//        }
     }
 }

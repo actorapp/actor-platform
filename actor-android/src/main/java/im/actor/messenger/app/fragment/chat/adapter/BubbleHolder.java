@@ -2,36 +2,36 @@ package im.actor.messenger.app.fragment.chat.adapter;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.droidkit.engine.uilist.UiList;
 
-import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.BubbleContainer;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
 import im.actor.messenger.app.intents.Intents;
-import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.messenger.model.DialogType;
-import im.actor.messenger.model.MessageModel;
 import im.actor.messenger.util.TextUtils;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
+import im.actor.model.entity.PeerType;
+
+import static im.actor.messenger.core.Core.myUid;
 
 /**
  * Created by ex3ndr on 10.09.14.
  */
-public abstract class BubbleHolder extends ViewHolder<MessageModel> {
+public abstract class BubbleHolder extends ViewHolder<Message> {
 
-    private UiList<MessageModel> uiList;
-    private MessagesFragment fragment;
+    protected final Peer peer;
+    protected final UiList<Message> uiList;
+    protected final MessagesFragment fragment;
+
+    protected Message currentMessage;
 
     private BubbleContainer container;
-
-    private MessageModel currentMessage;
-
     private boolean isFullSize;
 
-    protected BubbleHolder(MessagesFragment fragment, UiList<MessageModel> uiList) {
+    protected BubbleHolder(Peer peer, MessagesFragment fragment, UiList<Message> uiList) {
+        this.peer = peer;
         this.uiList = uiList;
         this.fragment = fragment;
     }
@@ -76,7 +76,7 @@ public abstract class BubbleHolder extends ViewHolder<MessageModel> {
     }
 
     @Override
-    public final void bind(MessageModel message, int pos, Context context) {
+    public final void bind(Message message, int pos, Context context) {
         boolean isUpdated = currentMessage == null || currentMessage.getRid() != message.getRid();
         currentMessage = message;
         container.setBubbleSelected(fragment.isSelected(currentMessage.getRid()));
@@ -85,22 +85,21 @@ public abstract class BubbleHolder extends ViewHolder<MessageModel> {
         if (pos == 0) {
             useDiv = true;
         } else {
-            MessageModel prevMessage = uiList.getItem(uiList.getSize() - pos);
-            useDiv = !TextUtils.areSameDays(prevMessage.getRaw().getTime(), message.getRaw().getTime());
+            Message prevMessage = uiList.getItem(uiList.getSize() - pos);
+            useDiv = !TextUtils.areSameDays(prevMessage.getDate(), message.getDate());
         }
 
         if (useDiv) {
-            container.showDate(message.getRaw().getTime());
+            container.showDate(message.getDate());
         } else {
             container.hideDate();
         }
 
         if (!isFullSize) {
-            if (message.isOut()) {
+            if (message.getSenderId() == myUid()) {
                 container.makeOutboundBubble();
             } else {
-                container.makeInboundBubble(fragment.getChatType() == DialogType.TYPE_GROUP,
-                        message.getRaw().getSenderId());
+                container.makeInboundBubble(peer.getPeerType() == PeerType.GROUP, message.getSenderId());
             }
         }
 
@@ -115,7 +114,7 @@ public abstract class BubbleHolder extends ViewHolder<MessageModel> {
         fragment.onItemViewed(message);
     }
 
-    public void update(MessageModel message, int pos, boolean isUpdated, Context context) {
+    public void update(Message message, int pos, boolean isUpdated, Context context) {
 
     }
 

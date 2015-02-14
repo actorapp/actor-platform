@@ -7,7 +7,7 @@ import android.text.style.ForegroundColorSpan;
 import im.actor.messenger.R;
 import im.actor.messenger.core.AppContext;
 import im.actor.messenger.model.UserModel;
-import im.actor.messenger.storage.scheme.users.Sex;
+import im.actor.model.entity.Sex;
 
 import static im.actor.messenger.core.Core.myUid;
 import static im.actor.messenger.storage.KeyValueEngines.users;
@@ -211,7 +211,7 @@ public class MessageTextFormatter {
     private static Sex getUserSex(int uid) {
         UserModel u = users().get(uid);
         if (u != null) {
-            return u.getRaw().getSex();
+            return u.getSex();
         } else {
             return Sex.UNKNOWN;
         }
