@@ -17,10 +17,6 @@ public class Dialog extends BserObject implements ListEngineItem {
         return Bser.parse(new Dialog(), date);
     }
 
-    public enum ContentType {
-        TEXT, EMPTY
-    }
-
     private Peer peer;
     private String dialogTitle;
     private int unreadCount;
@@ -137,15 +133,7 @@ public class Dialog extends BserObject implements ListEngineItem {
         rid = values.getLong(6);
         senderId = values.getInt(7);
         date = values.getLong(8);
-        switch (values.getInt(9)) {
-            default:
-            case 1:
-                messageType = ContentType.EMPTY;
-                break;
-            case 2:
-                messageType = ContentType.TEXT;
-                break;
-        }
+        messageType = ContentType.fromValue(values.getInt(9));
         text = values.getString(10);
         status = MessageState.fromValue(values.getInt(11));
         relatedUid = values.getInt(12);
@@ -163,17 +151,70 @@ public class Dialog extends BserObject implements ListEngineItem {
         writer.writeLong(6, rid);
         writer.writeInt(7, senderId);
         writer.writeLong(8, date);
-        switch (messageType) {
-            default:
-            case EMPTY:
-                writer.writeInt(9, 1);
-                break;
-            case TEXT:
-                writer.writeInt(9, 2);
-                break;
-        }
+        writer.writeInt(9, messageType.getValue());
         writer.writeString(10, text);
         writer.writeInt(11, status.getValue());
         writer.writeInt(12, relatedUid);
     }
+
+    public enum ContentType {
+        TEXT(2), EMPTY(1),
+        DOCUMENT(3),
+        DOCUMENT_PHOTO(4),
+        DOCUMENT_VIDEO(5),
+        SERVICE(6),
+        SERVICE_ADD(7),
+        SERVICE_KICK(8),
+        SERVICE_LEAVE(9),
+        SERVICE_REGISTERED(10),
+        SERVICE_CREATED(11),
+        SERVICE_TITLE(12),
+        SERVICE_AVATAR(13),
+        SERVICE_AVATAR_REMOVED(14);
+
+        int value;
+
+        ContentType(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public static ContentType fromValue(int value) {
+            switch (value) {
+                default:
+                case 1:
+                    return EMPTY;
+                case 2:
+                    return TEXT;
+                case 3:
+                    return DOCUMENT;
+                case 4:
+                    return DOCUMENT_PHOTO;
+                case 5:
+                    return DOCUMENT_VIDEO;
+                case 6:
+                    return SERVICE;
+                case 7:
+                    return SERVICE_ADD;
+                case 8:
+                    return SERVICE_KICK;
+                case 9:
+                    return SERVICE_LEAVE;
+                case 10:
+                    return SERVICE_REGISTERED;
+                case 11:
+                    return SERVICE_CREATED;
+                case 12:
+                    return SERVICE_TITLE;
+                case 13:
+                    return SERVICE_AVATAR;
+                case 14:
+                    return SERVICE_AVATAR_REMOVED;
+            }
+        }
+    }
+
 }

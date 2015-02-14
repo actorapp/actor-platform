@@ -18,6 +18,7 @@ import im.actor.messenger.app.view.*;
 import im.actor.messenger.model.TypingModel;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.PeerType;
 
 import static im.actor.messenger.core.Core.myUid;
 
@@ -233,10 +234,10 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
 
             this.bindedItem = data;
             avatar.unbind();
-//            avatar.setEmptyDrawable(AvatarDrawable.create(data, 24, context));
-//            if (data.getAvatar() != null && data.getAvatar().getSmallImage() != null) {
-//                avatar.bindAvatar(54, data.getAvatar());
-//            }
+            avatar.setEmptyDrawable(AvatarDrawable.create(data, 24, context));
+            if (data.getDialogAvatar() != null && data.getDialogAvatar().getSmallImage() != null) {
+                avatar.bindAvatar(54, data.getDialogAvatar());
+            }
 
             if (data.getUnreadCount() > 0) {
                 counter.setText("" + data.getUnreadCount());
@@ -253,47 +254,43 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
 //            if (!NotificationSettings.getInstance().convValue(DialogUids.getDialogUid(data)).getValue()) {
 //                right = R.drawable.dialogs_mute;
 //            }
-//
-//            if (data.getType() == DialogType.TYPE_GROUP) {
-//                left = R.drawable.dialogs_group;
-//            }
+
+            if (data.getPeer().getPeerType() == PeerType.GROUP) {
+                left = R.drawable.dialogs_group;
+            }
 
             title.setCompoundDrawablesWithIntrinsicBounds(left, 0, right, 0);
 
             time.setText(Formatter.formatShortDate(data.getDate()));
 
-//            boolean isGroup = data.getType() == DialogType.TYPE_GROUP;
-//            if (data.getMessageType() == MessageType.TEXT) {
-//                bindedText = MessageTextFormatter.textMessage(data.getSenderId(), isGroup, data.getText());
-//            } else if (data.getMessageType() == MessageType.PHOTO) {
-//                bindedText = MessageTextFormatter.photoMessage(data.getSenderId(), isGroup);
-//            } else if (data.getMessageType() == MessageType.VIDEO) {
-//                bindedText = MessageTextFormatter.videoMessage(data.getSenderId(), isGroup);
-//            } else if (data.getMessageType() == MessageType.DOC) {
-//                bindedText = MessageTextFormatter.documentMessage(data.getSenderId(), isGroup);
-//            } else if (data.getMessageType() == MessageType.AUDIO) {
-//                bindedText = MessageTextFormatter.audioMessage(data.getSenderId(), isGroup);
-//            } else if (data.getMessageType() == MessageType.USER_REGISTERED) {
-//                bindedText = MessageTextFormatter.joinedActor(data.getSenderId());
-//            } else if (data.getMessageType() == MessageType.USER_ADDED_DEVICE) {
-//                bindedText = MessageTextFormatter.newDevice(data.getSenderId());
-//            } else if (data.getMessageType() == MessageType.GROUP_CREATED) {
-//                bindedText = MessageTextFormatter.groupCreated(data.getSenderId());
-//            } else if (data.getMessageType() == MessageType.GROUP_USER_LEAVE) {
-//                bindedText = MessageTextFormatter.groupLeave(data.getSenderId());
-//            } else if (data.getMessageType() == MessageType.GROUP_USER_ADD) {
-//                bindedText = MessageTextFormatter.groupAdd(data.getSenderId(), data.getRelatedUid());
-//            } else if (data.getMessageType() == MessageType.GROUP_USER_KICK) {
-//                bindedText = MessageTextFormatter.groupKicked(data.getSenderId(), data.getRelatedUid());
-//            } else if (data.getMessageType() == MessageType.GROUP_TITLE) {
-//                bindedText = MessageTextFormatter.groupChangeTitle(data.getSenderId());
-//            } else if (data.getMessageType() == MessageType.GROUP_AVATAR) {
-//                bindedText = MessageTextFormatter.groupChangeAvatar(data.getSenderId());
-//            } else if (data.getMessageType() == MessageType.GROUP_AVATAR_REMOVED) {
-//                bindedText = MessageTextFormatter.groupRemoveAvatar(data.getSenderId());
-//            } else {
-//                bindedText = "";
-//            }
+            boolean isGroup = data.getPeer().getPeerType() == PeerType.GROUP;
+            if (data.getMessageType() == Dialog.ContentType.TEXT) {
+                bindedText = MessageTextFormatter.textMessage(data.getSenderId(), isGroup, data.getText());
+            } else if (data.getMessageType() == Dialog.ContentType.DOCUMENT_PHOTO) {
+                bindedText = MessageTextFormatter.photoMessage(data.getSenderId(), isGroup);
+            } else if (data.getMessageType() == Dialog.ContentType.DOCUMENT_VIDEO) {
+                bindedText = MessageTextFormatter.videoMessage(data.getSenderId(), isGroup);
+            } else if (data.getMessageType() == Dialog.ContentType.DOCUMENT) {
+                bindedText = MessageTextFormatter.documentMessage(data.getSenderId(), isGroup);
+            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_REGISTERED) {
+                bindedText = MessageTextFormatter.joinedActor(data.getSenderId());
+            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_CREATED) {
+                bindedText = MessageTextFormatter.groupCreated(data.getSenderId());
+            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_LEAVE) {
+                bindedText = MessageTextFormatter.groupLeave(data.getSenderId());
+            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_ADD) {
+                bindedText = MessageTextFormatter.groupAdd(data.getSenderId(), data.getRelatedUid());
+            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_KICK) {
+                bindedText = MessageTextFormatter.groupKicked(data.getSenderId(), data.getRelatedUid());
+            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_TITLE) {
+                bindedText = MessageTextFormatter.groupChangeTitle(data.getSenderId());
+            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_AVATAR) {
+                bindedText = MessageTextFormatter.groupChangeAvatar(data.getSenderId());
+            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_AVATAR_REMOVED) {
+                bindedText = MessageTextFormatter.groupRemoveAvatar(data.getSenderId());
+            } else {
+                bindedText = "";
+            }
 
             if (privateTypingListener != null) {
                 TypingModel.privateChatTyping(bindedUid).removeUiSubscriber(privateTypingListener);
@@ -305,40 +302,43 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
                 groupTypingListener = null;
             }
 
-//            if (data.getType() == DialogType.TYPE_USER) {
-//                bindedUid = data.getId();
-//                privateTypingListener = new ValueChangeListener<Boolean>() {
-//                    @Override
-//                    public void onChanged(Boolean value) {
-//                        if (value) {
-//                            text.setText(R.string.typing_private);
-//                            text.setTextColor(context.getResources().getColor(R.color.primary));
-//                        } else {
-//                            text.setText(bindedText);
-//                            text.setTextColor(getContext().getResources().getColor(R.color.text_primary));
-//                        }
-//                    }
-//                };
-//                TypingModel.privateChatTyping(data.getId()).addUiSubscriber(privateTypingListener);
-//            } else if (data.getType() == DialogType.TYPE_GROUP) {
-//                bindedGid = data.getId();
-//                groupTypingListener = new ValueChangeListener<int[]>() {
-//                    @Override
-//                    public void onChanged(int[] value) {
-//                        if (value.length != 0) {
-//                            text.setText(Formatter.formatTyping(value));
-//                            text.setTextColor(context.getResources().getColor(R.color.primary));
-//                        } else {
-//                            text.setText(bindedText);
-//                            text.setTextColor(getContext().getResources().getColor(R.color.text_primary));
-//                        }
-//                    }
-//                };
-//                TypingModel.groupChatTyping(bindedGid).addUiSubscriber(groupTypingListener);
-//            } else {
-//                text.setText(bindedText);
-//                text.setTextColor(getContext().getResources().getColor(R.color.text_primary));
-//            }
+            text.setText(bindedText);
+            text.setTextColor(getContext().getResources().getColor(R.color.text_primary));
+
+            if (data.getPeer().getPeerType() == PeerType.PRIVATE) {
+                bindedUid = data.getPeer().getPeerId();
+                privateTypingListener = new ValueChangeListener<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean value) {
+                        if (value) {
+                            text.setText(R.string.typing_private);
+                            text.setTextColor(context.getResources().getColor(R.color.primary));
+                        } else {
+                            text.setText(bindedText);
+                            text.setTextColor(getContext().getResources().getColor(R.color.text_primary));
+                        }
+                    }
+                };
+                TypingModel.privateChatTyping(bindedUid).addUiSubscriber(privateTypingListener);
+            } else if (data.getPeer().getPeerType() == PeerType.GROUP) {
+                bindedGid = data.getPeer().getPeerId();
+                groupTypingListener = new ValueChangeListener<int[]>() {
+                    @Override
+                    public void onChanged(int[] value) {
+                        if (value.length != 0) {
+                            text.setText(Formatter.formatTyping(value));
+                            text.setTextColor(context.getResources().getColor(R.color.primary));
+                        } else {
+                            text.setText(bindedText);
+                            text.setTextColor(getContext().getResources().getColor(R.color.text_primary));
+                        }
+                    }
+                };
+                TypingModel.groupChatTyping(bindedGid).addUiSubscriber(groupTypingListener);
+            } else {
+                text.setText(bindedText);
+                text.setTextColor(getContext().getResources().getColor(R.color.text_primary));
+            }
 
             if (data.getSenderId() != myUid()) {
                 state.setVisibility(View.GONE);

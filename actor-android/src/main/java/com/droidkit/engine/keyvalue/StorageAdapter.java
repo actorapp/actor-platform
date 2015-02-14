@@ -1,6 +1,7 @@
 package com.droidkit.engine.keyvalue;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface StorageAdapter<V> {
 
@@ -10,9 +11,9 @@ public interface StorageAdapter<V> {
 
     void deleteSingle(long id);
 
-    void insertBatch(ArrayList<V> items);
+    void insertBatch(List<V> items);
 
-    void insertOrReplaceBatch(ArrayList<V> items);
+    void insertOrReplaceBatch(List<V> items);
 
     void deleteBatch(long[] ids);
 

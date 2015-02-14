@@ -236,27 +236,30 @@ public class MainPhoneController extends MainBaseController implements ValueChan
     }
 
     public void onChanged(ProfileSyncState.State value) {
-        switch (value) {
-            default:
-            case READY:
-                barTabs.setVisibility(View.VISIBLE);
-                emptyContactsView.setVisibility(View.GONE);
-                syncInProgressView.setVisibility(View.GONE);
-                getActivity().invalidateOptionsMenu();
-                break;
-            case EMPTY_APP:
-                barTabs.setVisibility(View.GONE);
-                emptyContactsView.setVisibility(View.VISIBLE);
-                syncInProgressView.setVisibility(View.GONE);
-                getActivity().invalidateOptionsMenu();
-                break;
-            case IN_PROGRESS:
-                barTabs.setVisibility(View.GONE);
-                emptyContactsView.setVisibility(View.GONE);
-                syncInProgressView.setVisibility(View.VISIBLE);
-                getActivity().invalidateOptionsMenu();
-                break;
-        }
+        barTabs.setVisibility(View.VISIBLE);
+        emptyContactsView.setVisibility(View.GONE);
+        syncInProgressView.setVisibility(View.GONE);
+//        switch (value) {
+//            default:
+//            case READY:
+//                barTabs.setVisibility(View.VISIBLE);
+//                emptyContactsView.setVisibility(View.GONE);
+//                syncInProgressView.setVisibility(View.GONE);
+//                getActivity().invalidateOptionsMenu();
+//                break;
+//            case EMPTY_APP:
+//                barTabs.setVisibility(View.GONE);
+//                emptyContactsView.setVisibility(View.VISIBLE);
+//                syncInProgressView.setVisibility(View.GONE);
+//                getActivity().invalidateOptionsMenu();
+//                break;
+//            case IN_PROGRESS:
+//                barTabs.setVisibility(View.GONE);
+//                emptyContactsView.setVisibility(View.GONE);
+//                syncInProgressView.setVisibility(View.VISIBLE);
+//                getActivity().invalidateOptionsMenu();
+//                break;
+//        }
     }
 
     @Override

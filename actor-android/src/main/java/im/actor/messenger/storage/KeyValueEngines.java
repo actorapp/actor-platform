@@ -6,6 +6,7 @@ import com.droidkit.engine.keyvalue.StorageAdapter;
 import com.droidkit.engine.keyvalue.sqlite.SQLiteStorageAdapter;
 
 import com.droidkit.mvvm.CollectionBoxer;
+
 import im.actor.messenger.model.UserModel;
 import im.actor.messenger.storage.adapters.UsersAdapter;
 import im.actor.model.entity.User;
@@ -42,6 +43,10 @@ public final class KeyValueEngines {
 
     public static CollectionBoxer<Integer, User, UserModel> users() {
         return usersBoxer;
+    }
+
+    public static KeyValueEngine<User> usersEngine() {
+        return USERS.getEngine();
     }
 
     private static class EngineHolder<T> {

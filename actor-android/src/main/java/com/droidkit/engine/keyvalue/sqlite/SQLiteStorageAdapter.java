@@ -6,6 +6,7 @@ import com.droidkit.engine.keyvalue.StorageAdapter;
 import com.droidkit.engine.keyvalue.sqlite.internal.KeyValueEngineDao;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SQLiteStorageAdapter<V> implements StorageAdapter<V> {
 
@@ -33,12 +34,12 @@ public class SQLiteStorageAdapter<V> implements StorageAdapter<V> {
     }
 
     @Override
-    public void insertBatch(ArrayList<V> items) {
+    public void insertBatch(List<V> items) {
         dao.insertInTx(items);
     }
 
     @Override
-    public void insertOrReplaceBatch(ArrayList<V> items) {
+    public void insertOrReplaceBatch(List<V> items) {
         dao.insertOrReplaceInTx(items);
     }
 

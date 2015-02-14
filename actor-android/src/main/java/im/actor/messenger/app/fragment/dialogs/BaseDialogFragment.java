@@ -87,7 +87,6 @@ public class BaseDialogFragment extends BaseCompatFragment implements UiListStat
         hint.setTextColor(getResources().getColor(R.color.text_subheader));
         hint.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         footer.addView(hint);
-
         listView.addFooterView(footer, null, false);
 
         TextView header = new TextView(getActivity());
@@ -102,15 +101,7 @@ public class BaseDialogFragment extends BaseCompatFragment implements UiListStat
         LinearLayout headerCont = new LinearLayout(getActivity());
         headerCont.setBackgroundColor(getResources().getColor(R.color.bg_light));
         headerCont.setOrientation(LinearLayout.VERTICAL);
-
         headerCont.addView(header, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(48)));
-
-//        View headerShadow = new View(getActivity());
-//        headerShadow.setBackgroundResource(R.drawable.card_shadow_bottom);
-//        headerShadow.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-//                Screen.dp(4)));
-//        headerCont.addView(headerShadow);
-
         headerCont.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         listView.addHeaderView(headerCont, null, false);
 
