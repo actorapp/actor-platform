@@ -17,6 +17,8 @@ import com.droidkit.images.cache.BitmapClasificator;
 import com.droidkit.images.loading.ImageLoader;
 
 import im.actor.messenger.core.images.*;
+import im.actor.messenger.storage.provider.AppEngineFactory;
+import im.actor.messenger.storage.provider.PropertiesProvider;
 import im.actor.model.Messenger;
 import im.actor.model.concurrency.MainThread;
 import im.actor.model.droidkit.actors.conf.EnvConfig;
@@ -123,7 +125,6 @@ public class Core {
 
         JavaInit.init();
 
-
         im.actor.model.Configuration configuration = new im.actor.model.Configuration();
         configuration.setMainThread(new MainThread() {
 
@@ -134,6 +135,9 @@ public class Core {
                 handler.post(runnable);
             }
         });
+        PropertiesProvider propertiesProvider = new PropertiesProvider();
+        configuration.setEnginesFactory(new AppEngineFactory());
+        configuration.setPreferencesStorage(propertiesProvider);
         configuration.setEndpoints(new Endpoints(new ConnectionEndpoint[]{
                 new ConnectionEndpoint(BuildConfig.API_HOST, BuildConfig.API_PORT,
                         BuildConfig.API_SSL ? ConnectionEndpoint.Type.TCP_TLS : ConnectionEndpoint.Type.TCP)

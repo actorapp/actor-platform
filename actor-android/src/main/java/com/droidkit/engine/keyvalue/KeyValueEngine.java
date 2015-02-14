@@ -9,6 +9,7 @@ import com.droidkit.engine._internal.RunnableActor;
 import com.droidkit.engine.common.ValuesCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class KeyValueEngine<V> {
@@ -61,7 +62,7 @@ public class KeyValueEngine<V> {
         storageAdapter.insertOrReplaceSingle(value);
     }
 
-    public void putAll(final ArrayList<V> values) {
+    public void putAll(final List<V> values) {
         for (V v : values) {
             inMemoryLruCache.put(dataAdapter.getId(v), v);
         }
@@ -73,7 +74,7 @@ public class KeyValueEngine<V> {
         });
     }
 
-    public void putAllSync(final ArrayList<V> values) {
+    public void putAllSync(final List<V> values) {
         for (V v : values) {
             inMemoryLruCache.put(dataAdapter.getId(v), v);
         }

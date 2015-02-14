@@ -47,6 +47,10 @@ android {
         }
     }
 
+    dexOptions {
+        preDexLibraries = false
+    }
+
     buildTypes {
         def STRING = "String"
         def BOOLEAN = "boolean"
