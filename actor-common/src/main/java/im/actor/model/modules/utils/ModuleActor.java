@@ -21,6 +21,20 @@ public class ModuleActor extends Actor {
         return messenger;
     }
 
+    public <T extends Response> void request(Request<T> request) {
+        request(request, new RpcCallback<T>() {
+            @Override
+            public void onResult(T response) {
+
+            }
+
+            @Override
+            public void onError(RpcException e) {
+
+            }
+        });
+    }
+
     public <T extends Response> void request(Request<T> request, final RpcCallback<T> callback) {
         messenger.getActorApi().request(request, new RpcCallback<T>() {
             @Override
