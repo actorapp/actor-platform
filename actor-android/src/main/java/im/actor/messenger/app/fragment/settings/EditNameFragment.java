@@ -12,7 +12,9 @@ import im.actor.messenger.app.activity.EditNameActivity;
 import im.actor.messenger.app.base.BaseCompatFragment;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.model.UserModel;
+import im.actor.model.concurrency.CommandCallback;
 
+import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.myUid;
 import static im.actor.messenger.storage.KeyValueEngines.users;
 
@@ -20,7 +22,6 @@ import static im.actor.messenger.storage.KeyValueEngines.users;
  * Created by ex3ndr on 25.10.14.
  */
 public class EditNameFragment extends BaseCompatFragment {
-
 
     public static EditNameFragment editName(int type, int id) {
         Bundle args = new Bundle();
@@ -71,11 +72,36 @@ public class EditNameFragment extends BaseCompatFragment {
                     return;
                 }
 
-//                if (type == EditNameActivity.TYPE_ME) {
-//                    ask(EditNameActor.editName().editMyName(name), getString(R.string.edit_name_process), new UiAskCallback<Boolean>() {
+
+                if (type == EditNameActivity.TYPE_ME) {
+                    execute(messenger().getUsersModule().editMyName(name), R.string.edit_name_process, new CommandCallback<Boolean>() {
+                        @Override
+                        public void onResult(Boolean res) {
+                            getActivity().finish();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else if (type == EditNameActivity.TYPE_USER) {
+                    execute(messenger().getUsersModule().editName(id, name), R.string.edit_name_process, new CommandCallback<Boolean>() {
+                        @Override
+                        public void onResult(Boolean res) {
+                            getActivity().finish();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else if (type == EditNameActivity.TYPE_GROUP) {
+                    //                    ask(GroupsActor.groupUpdates().editGroupName(id, name), getString(R.string.edit_name_process), new UiAskCallback<Boolean>() {
+//
 //                        @Override
 //                        public void onPreStart() {
-//
 //                        }
 //
 //                        @Override
@@ -88,41 +114,7 @@ public class EditNameFragment extends BaseCompatFragment {
 //                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
 //                        }
 //                    });
-//                } else if (type == EditNameActivity.TYPE_GROUP) {
-//                    ask(GroupsActor.groupUpdates().editGroupName(id, name), getString(R.string.edit_name_process), new UiAskCallback<Boolean>() {
-//
-//                        @Override
-//                        public void onPreStart() {
-//                        }
-//
-//                        @Override
-//                        public void onCompleted(Boolean res) {
-//                            getActivity().finish();
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable t) {
-//                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                } else if (type == EditNameActivity.TYPE_USER) {
-//                    ask(EditNameActor.editName().editName(id, name), getString(R.string.edit_name_process), new UiAskCallback<Boolean>() {
-//                        @Override
-//                        public void onPreStart() {
-//
-//                        }
-//
-//                        @Override
-//                        public void onCompleted(Boolean res) {
-//                            getActivity().finish();
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable t) {
-//                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                }
+                }
             }
         });
         return res;

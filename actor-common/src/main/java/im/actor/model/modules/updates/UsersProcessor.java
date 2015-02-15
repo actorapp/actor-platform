@@ -54,7 +54,7 @@ public class UsersProcessor {
                 return;
             }
             u = u.editName(name);
-            users.addOrUpdateItem(u.editName(name));
+            users.addOrUpdateItem(u);
             if (u.getLocalName() == null) {
                 messenger.getMessagesModule().getDialogsActor()
                         .send(new DialogsActor.UserChanged(u));

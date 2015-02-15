@@ -1,8 +1,20 @@
 package im.actor.model.modules;
 
 import im.actor.model.Messenger;
+import im.actor.model.api.base.SeqUpdate;
+import im.actor.model.api.rpc.RequestEditName;
+import im.actor.model.api.rpc.RequestEditUserLocalName;
+import im.actor.model.api.rpc.ResponseSeq;
+import im.actor.model.api.updates.UpdateUserLocalNameChanged;
+import im.actor.model.api.updates.UpdateUserNameChanged;
+import im.actor.model.concurrency.Command;
+import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.concurrency.MainThread;
 import im.actor.model.entity.User;
 import im.actor.model.mvvm.KeyValueEngine;
+import im.actor.model.network.RpcCallback;
+import im.actor.model.network.RpcException;
+import im.actor.model.network.RpcInternalException;
 import im.actor.model.storage.EnginesFactory;
 
 /**
@@ -11,13 +23,92 @@ import im.actor.model.storage.EnginesFactory;
 public class Users {
     private Messenger messenger;
     private KeyValueEngine<User> users;
+    private MainThread mainThread;
 
     public Users(Messenger messenger) {
         this.messenger = messenger;
+        this.mainThread = messenger.getConfiguration().getMainThread();
         this.users = messenger.getConfiguration().getEnginesFactory().createUsersEngine();
     }
 
     public KeyValueEngine<User> getUsers() {
         return users;
+    }
+
+    public Command<Boolean> editMyName(final String newName) {
+        return new Command<Boolean>() {
+            @Override
+            public void start(final CommandCallback<Boolean> callback) {
+                messenger.getActorApi().request(new RequestEditName(newName), new RpcCallback<ResponseSeq>() {
+                    @Override
+                    public void onResult(ResponseSeq response) {
+                        SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
+                                UpdateUserNameChanged.HEADER, new UpdateUserNameChanged(messenger.myUid(),
+                                newName).toByteArray());
+                        messenger.getUpdatesModule().onUpdateReceived(update);
+                        mainThread.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onResult(true);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(final RpcException e) {
+                        mainThread.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(e);
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<Boolean> editName(final int uid, final String name) {
+        return new Command<Boolean>() {
+            @Override
+            public void start(final CommandCallback<Boolean> callback) {
+                User user = getUsers().getValue(uid);
+                if (user == null) {
+                    mainThread.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(new RpcInternalException());
+                        }
+                    });
+                    return;
+                }
+                messenger.getActorApi().request(new RequestEditUserLocalName(
+                        user.getUid(), user.getAccessHash(), name), new RpcCallback<ResponseSeq>() {
+                    @Override
+                    public void onResult(ResponseSeq response) {
+                        SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
+                                UpdateUserLocalNameChanged.HEADER, new UpdateUserLocalNameChanged(uid,
+                                name).toByteArray());
+                        messenger.getUpdatesModule().onUpdateReceived(update);
+                        mainThread.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onResult(true);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        mainThread.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                    }
+                });
+            }
+        };
     }
 }

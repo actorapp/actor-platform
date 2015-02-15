@@ -26,7 +26,7 @@ public final class KeyValueEngines {
         }
 
         @Override
-        protected User load(Integer key) {
+        public User load(Integer key) {
             return USERS.getEngine().get(key);
         }
 
