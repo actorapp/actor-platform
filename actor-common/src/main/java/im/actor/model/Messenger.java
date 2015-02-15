@@ -5,6 +5,7 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.modules.Auth;
 import im.actor.model.modules.Messages;
+import im.actor.model.modules.Presence;
 import im.actor.model.modules.Updates;
 import im.actor.model.modules.Users;
 import im.actor.model.mvvm.KeyValueEngine;
@@ -22,6 +23,7 @@ public class Messenger {
     private volatile Users users;
     private volatile Updates updates;
     private volatile Messages messages;
+    private volatile Presence presence;
     private ActorApi actorApi;
 
     public Messenger(Configuration configuration) {
@@ -55,8 +57,10 @@ public class Messenger {
         users = new Users(this);
         messages = new Messages(this);
         updates = new Updates(this);
+        presence = new Presence(this);
         messages.run();
         updates.run();
+        presence.run();
     }
 
     public int myUid() {
@@ -69,6 +73,26 @@ public class Messenger {
 
     public Messages getMessagesModule() {
         return messages;
+    }
+
+    public void onAppVisible() {
+        if (presence != null) {
+            presence.onAppVisible();
+        }
+    }
+
+    public void onAppHidden() {
+        if (presence != null) {
+            presence.onAppHidden();
+        }
+    }
+
+    public void onConversationOpen(Peer peer) {
+        presence.onConversationOpen(peer);
+    }
+
+    public void onConversationClosed(Peer peer) {
+        presence.onConversationClosed(peer);
     }
 
     public ListEngine<Message> getMessages(Peer peer) {

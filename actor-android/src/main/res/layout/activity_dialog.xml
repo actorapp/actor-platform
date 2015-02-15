@@ -35,10 +35,10 @@
             android:background="@android:color/transparent"
             android:gravity="left|center_vertical"
             android:hint="@string/chat_message_hint"
-            android:inputType="text|textCapSentences"
+            android:inputType="text|textCapSentences|textAutoCorrect|textMultiLine"
             android:maxLines="4"
             android:paddingBottom="10dp"
-            android:paddingLeft="50dp"
+            android:paddingLeft="56dp"
             android:paddingRight="50dp"
             android:paddingTop="10dp"
             android:textColor="@color/text_primary"
@@ -66,65 +66,10 @@
                 android:layout_marginTop="46dp" />
         </FrameLayout>
 
-        <LinearLayout
-            android:id="@+id/recordingPanel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/bg_light"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="match_parent"
-                android:background="@color/bg_light"
-                android:scaleType="center"
-                android:src="@drawable/conv_voice_rec" />
-
-            <TextView
-                android:id="@+id/recordTimer"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/bg_light"
-                android:gravity="center_vertical"
-                android:text="00:00"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp" />
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp">
-
-                <TextView
-                    android:id="@+id/cancelSlide"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="SLIDE TO CANCEL"
-                    android:textColor="@color/text_hint"
-                    android:textSize="18sp" />
-            </FrameLayout>
-
-        </LinearLayout>
-
         <FrameLayout
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_gravity="right|bottom">
-
-            <ImageView
-                android:id="@+id/audioMessage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/selector_flat"
-                android:clickable="true"
-                android:scaleType="center"
-                android:src="@drawable/conv_voice_normal" />
 
             <im.actor.messenger.app.view.TintImageView
                 android:id="@+id/ib_send"
@@ -141,13 +86,12 @@
             android:visibility="gone">
 
             <TextView
-                android:id="@+id/kickedButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/selector"
                 android:clickable="true"
                 android:gravity="center"
-                android:text="DELETE CHAT"
+                android:text="You is not part of your chat"
                 android:textAllCaps="true"
                 android:textColor="@color/conv_delete"
                 android:textSize="18sp" />

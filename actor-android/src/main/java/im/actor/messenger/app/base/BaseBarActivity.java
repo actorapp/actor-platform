@@ -5,6 +5,8 @@ import android.support.v7.app.ActionBarActivity;
 
 import com.droidkit.mvvm.ui.Binder;
 
+import static im.actor.messenger.core.Core.messenger;
+
 /**
  * Created by ex3ndr on 29.12.14.
  */
@@ -18,13 +20,13 @@ public class BaseBarActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // stateBroker().onActivityOpen();
+        messenger().onAppVisible();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // stateBroker().onActivityClose();
+        messenger().onAppHidden();
         BINDER.unbindAll();
     }
 }

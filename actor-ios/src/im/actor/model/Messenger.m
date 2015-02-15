@@ -10,6 +10,7 @@
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/Messages.h"
+#include "im/actor/model/modules/Presence.h"
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/Users.h"
 #include "im/actor/model/mvvm/KeyValueEngine.h"
@@ -26,6 +27,7 @@
   ImActorModelModulesUsers *users_;
   ImActorModelModulesUpdates *updates_;
   ImActorModelModulesMessages *messages_;
+  ImActorModelModulesPresence *presence_;
   AMActorApi *actorApi_;
 }
 @end
@@ -35,6 +37,7 @@ J2OBJC_FIELD_SETTER(AMMessenger, auth_, ImActorModelModulesAuth *)
 J2OBJC_FIELD_SETTER(AMMessenger, users_, ImActorModelModulesUsers *)
 J2OBJC_FIELD_SETTER(AMMessenger, updates_, ImActorModelModulesUpdates *)
 J2OBJC_FIELD_SETTER(AMMessenger, messages_, ImActorModelModulesMessages *)
+J2OBJC_FIELD_SETTER(AMMessenger, presence_, ImActorModelModulesPresence *)
 J2OBJC_FIELD_SETTER(AMMessenger, actorApi_, AMActorApi *)
 
 @interface AMMessenger_$1 () {
@@ -60,8 +63,10 @@ J2OBJC_FIELD_SETTER(AMMessenger_$1, this$0_, AMMessenger *)
   users_ = [[ImActorModelModulesUsers alloc] initWithAMMessenger:self];
   messages_ = [[ImActorModelModulesMessages alloc] initWithAMMessenger:self];
   updates_ = [[ImActorModelModulesUpdates alloc] initWithAMMessenger:self];
+  presence_ = [[ImActorModelModulesPresence alloc] initWithAMMessenger:self];
   [messages_ run];
   [updates_ run];
+  [presence_ run];
 }
 
 - (jint)myUid {
@@ -74,6 +79,26 @@ J2OBJC_FIELD_SETTER(AMMessenger_$1, this$0_, AMMessenger *)
 
 - (ImActorModelModulesMessages *)getMessagesModule {
   return messages_;
+}
+
+- (void)onAppVisible {
+  if (presence_ != nil) {
+    [presence_ onAppVisible];
+  }
+}
+
+- (void)onAppHidden {
+  if (presence_ != nil) {
+    [presence_ onAppHidden];
+  }
+}
+
+- (void)onConversationOpenWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
+  [((ImActorModelModulesPresence *) nil_chk(presence_)) onConversationOpenWithImActorModelEntityPeer:peer];
+}
+
+- (void)onConversationClosedWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
+  [((ImActorModelModulesPresence *) nil_chk(presence_)) onConversationClosedWithImActorModelEntityPeer:peer];
 }
 
 - (id<ImActorModelMvvmListEngine>)getMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
@@ -111,6 +136,7 @@ J2OBJC_FIELD_SETTER(AMMessenger_$1, this$0_, AMMessenger *)
   other->users_ = users_;
   other->updates_ = updates_;
   other->messages_ = messages_;
+  other->presence_ = presence_;
   other->actorApi_ = actorApi_;
 }
 
@@ -121,6 +147,10 @@ J2OBJC_FIELD_SETTER(AMMessenger_$1, this$0_, AMMessenger *)
     { "myUid", NULL, "I", 0x1, NULL },
     { "getUpdatesModule", NULL, "Lim.actor.model.modules.Updates;", 0x1, NULL },
     { "getMessagesModule", NULL, "Lim.actor.model.modules.Messages;", 0x1, NULL },
+    { "onAppVisible", NULL, "V", 0x1, NULL },
+    { "onAppHidden", NULL, "V", 0x1, NULL },
+    { "onConversationOpenWithImActorModelEntityPeer:", "onConversationOpen", "V", 0x1, NULL },
+    { "onConversationClosedWithImActorModelEntityPeer:", "onConversationClosed", "V", 0x1, NULL },
     { "getMessagesWithImActorModelEntityPeer:", "getMessages", "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
     { "getDialogs", NULL, "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
     { "getUsers", NULL, "Lim.actor.model.mvvm.KeyValueEngine;", 0x1, NULL },
@@ -135,9 +165,10 @@ J2OBJC_FIELD_SETTER(AMMessenger_$1, this$0_, AMMessenger *)
     { "users_", NULL, 0x42, "Lim.actor.model.modules.Users;", NULL,  },
     { "updates_", NULL, 0x42, "Lim.actor.model.modules.Updates;", NULL,  },
     { "messages_", NULL, 0x42, "Lim.actor.model.modules.Messages;", NULL,  },
+    { "presence_", NULL, 0x42, "Lim.actor.model.modules.Presence;", NULL,  },
     { "actorApi_", NULL, 0x2, "Lim.actor.model.network.ActorApi;", NULL,  },
   };
-  static const J2ObjcClassInfo _AMMessenger = { 1, "Messenger", "im.actor.model", NULL, 0x1, 12, methods, 6, fields, 0, NULL};
+  static const J2ObjcClassInfo _AMMessenger = { 1, "Messenger", "im.actor.model", NULL, 0x1, 16, methods, 7, fields, 0, NULL};
   return &_AMMessenger;
 }
 

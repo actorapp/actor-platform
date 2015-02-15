@@ -12,6 +12,7 @@
 @class ImActorModelEntityPeer;
 @class ImActorModelModulesAuth;
 @class ImActorModelModulesMessages;
+@class ImActorModelModulesPresence;
 @class ImActorModelModulesUpdates;
 @class ImActorModelModulesUsers;
 @protocol ImActorModelMvvmKeyValueEngine;
@@ -32,6 +33,14 @@
 - (ImActorModelModulesUpdates *)getUpdatesModule;
 
 - (ImActorModelModulesMessages *)getMessagesModule;
+
+- (void)onAppVisible;
+
+- (void)onAppHidden;
+
+- (void)onConversationOpenWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+
+- (void)onConversationClosedWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
 
 - (id<ImActorModelMvvmListEngine>)getMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
 

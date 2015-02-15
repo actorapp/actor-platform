@@ -10,6 +10,8 @@ import com.droidkit.mvvm.ui.Binder;
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.ViewUtils;
 
+import static im.actor.messenger.core.Core.messenger;
+
 public class BaseActivity extends Activity {
 
     private final Binder BINDER = new Binder();
@@ -28,13 +30,13 @@ public class BaseActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        // stateBroker().onActivityOpen();
+        messenger().onAppVisible();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // stateBroker().onActivityClose();
+        messenger().onAppHidden();
         BINDER.unbindAll();
     }
 
