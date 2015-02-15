@@ -27,6 +27,7 @@ public class UpdateProcessor {
     private MessagesProcessor messagesProcessor;
     private GroupsProcessor groupsProcessor;
     private PresenceProcessor presenceProcessor;
+    private TypingProcessor typingProcessor;
 
     public UpdateProcessor(Messenger messenger) {
         this.messenger = messenger;
@@ -34,6 +35,7 @@ public class UpdateProcessor {
         this.messagesProcessor = new MessagesProcessor(messenger);
         this.groupsProcessor = new GroupsProcessor();
         this.presenceProcessor = new PresenceProcessor(messenger);
+        this.typingProcessor = new TypingProcessor(messenger);
     }
 
     public void applyRelated(List<User> users,
@@ -79,6 +81,7 @@ public class UpdateProcessor {
             UpdateMessage message = (UpdateMessage) update;
             messagesProcessor.onMessage(message.getPeer(), message.getSenderUid(), message.getDate(), message.getRid(),
                     message.getMessage());
+            typingProcessor.onMessage(message.getPeer(), message.getSenderUid());
         } else if (update instanceof UpdateMessageRead) {
             UpdateMessageRead messageRead = (UpdateMessageRead) update;
             messagesProcessor.onMessageRead(messageRead.getPeer(), messageRead.getStartDate(), messageRead.getReadDate());
@@ -95,7 +98,9 @@ public class UpdateProcessor {
             UpdateMessageSent messageSent = (UpdateMessageSent) update;
             messagesProcessor.onMessageSent(messageSent.getPeer(), messageSent.getRid(), messageSent.getDate());
         } else if (update instanceof UpdateEncryptedMessage) {
+            UpdateEncryptedMessage encryptedMessage = (UpdateEncryptedMessage) update;
             // TODO: Implement
+            typingProcessor.onMessage(encryptedMessage.getPeer(), encryptedMessage.getSenderUid());
         } else if (update instanceof UpdateEncryptedRead) {
             UpdateEncryptedRead encryptedRead = (UpdateEncryptedRead) update;
             messagesProcessor.onMessageEncryptedRead(encryptedRead.getPeer(), encryptedRead.getRid(), encryptedRead.getReadDate());
@@ -128,6 +133,9 @@ public class UpdateProcessor {
         } else if (update instanceof UpdateGroupOnline) {
             UpdateGroupOnline groupOnline = (UpdateGroupOnline) update;
             presenceProcessor.onGroupOnline(groupOnline.getGroupId(), groupOnline.getCount());
+        } else if (update instanceof UpdateTyping) {
+            UpdateTyping typing = (UpdateTyping) update;
+            typingProcessor.onTyping(typing.getPeer(), typing.getUid(), typing.getTypingType());
         }
     }
 

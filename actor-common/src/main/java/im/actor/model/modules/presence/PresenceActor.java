@@ -11,7 +11,11 @@ import im.actor.model.api.rpc.RequestSubscribeToOnline;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.ActorSystem;
+import im.actor.model.droidkit.actors.MailboxCreator;
 import im.actor.model.droidkit.actors.Props;
+import im.actor.model.droidkit.actors.mailbox.Envelope;
+import im.actor.model.droidkit.actors.mailbox.Mailbox;
+import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.User;
@@ -27,6 +31,19 @@ public class PresenceActor extends ModuleActor {
             @Override
             public PresenceActor create() {
                 return new PresenceActor(messenger);
+            }
+        }, new MailboxCreator() {
+            @Override
+            public Mailbox createMailbox(MailboxesQueue queue) {
+                return new Mailbox(queue) {
+                    @Override
+                    protected boolean isEqualEnvelope(Envelope a, Envelope b) {
+                        if (a.getMessage().equals(b.getMessage())) {
+                            return true;
+                        }
+                        return super.isEqualEnvelope(a, b);
+                    }
+                };
             }
         }), "actor/presence/users");
     }
@@ -134,6 +151,23 @@ public class PresenceActor extends ModuleActor {
         public int getUid() {
             return uid;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            UserOnline that = (UserOnline) o;
+
+            if (uid != that.uid) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return uid;
+        }
     }
 
     public static class UserOffline {
@@ -144,6 +178,23 @@ public class PresenceActor extends ModuleActor {
         }
 
         public int getUid() {
+            return uid;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            UserOffline that = (UserOffline) o;
+
+            if (uid != that.uid) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
             return uid;
         }
     }
@@ -164,6 +215,26 @@ public class PresenceActor extends ModuleActor {
         public long getDate() {
             return date;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            UserLastSeen that = (UserLastSeen) o;
+
+            if (date != that.date) return false;
+            if (uid != that.uid) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = uid;
+            result = 31 * result + (int) (date ^ (date >>> 32));
+            return result;
+        }
     }
 
     public static class GroupOnline {
@@ -182,6 +253,26 @@ public class PresenceActor extends ModuleActor {
         public int getCount() {
             return count;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            GroupOnline that = (GroupOnline) o;
+
+            if (count != that.count) return false;
+            if (gid != that.gid) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = gid;
+            result = 31 * result + count;
+            return result;
+        }
     }
 
     public static class Subscribe {
@@ -199,6 +290,4 @@ public class PresenceActor extends ModuleActor {
     public static class SessionCreated {
 
     }
-
-
 }
