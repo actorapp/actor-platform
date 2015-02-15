@@ -16,6 +16,10 @@
 @interface AMConfiguration : NSObject {
 }
 
+- (jboolean)isPersistMessages;
+
+- (void)setPersistMessagesWithBoolean:(jboolean)persistMessages;
+
 - (id<ImActorModelStorageEnginesFactory>)getEnginesFactory;
 
 - (void)setEnginesFactoryWithImActorModelStorageEnginesFactory:(id<ImActorModelStorageEnginesFactory>)enginesFactory;

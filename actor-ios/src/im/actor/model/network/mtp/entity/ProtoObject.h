@@ -6,26 +6,24 @@
 #ifndef _MTProtoObject_H_
 #define _MTProtoObject_H_
 
+@class AMDataInput;
+@class AMDataOutput;
 @class IOSByteArray;
-@class JavaIoInputStream;
-@class JavaIoOutputStream;
 
 #include "J2ObjC_header.h"
 
 @interface MTProtoObject : NSObject {
 }
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream;
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
 
 - (instancetype)init;
 
-- (void)writeObjectWithJavaIoOutputStream:(JavaIoOutputStream *)bs;
+- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs;
 
-- (MTProtoObject *)readObjectWithJavaIoInputStream:(JavaIoInputStream *)bs;
+- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs;
 
 - (IOSByteArray *)toByteArray;
-
-- (jint)getLength;
 
 @end
 

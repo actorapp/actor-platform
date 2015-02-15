@@ -6,8 +6,8 @@
 #ifndef _MTNewSessionCreated_H_
 #define _MTNewSessionCreated_H_
 
-@class JavaIoInputStream;
-@class JavaIoOutputStream;
+@class AMDataInput;
+@class AMDataOutput;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
@@ -20,7 +20,7 @@
   jlong messageId_;
 }
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream;
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
 
 - (instancetype)initWithLong:(jlong)sessionId
                     withLong:(jlong)messageId;
@@ -29,13 +29,11 @@
 
 - (jlong)getMessageId;
 
-- (jint)getLength;
-
 - (jbyte)getHeader;
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs;
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs;
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
 
 - (NSString *)description;
 

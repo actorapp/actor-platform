@@ -7,7 +7,7 @@
 #define _AMActorApi_H_
 
 @class AMEndpoints;
-@class DAActorRef;
+@class ImActorModelDroidkitActorsActorRef;
 @class ImActorModelNetworkParserRequest;
 @protocol AMActorApiCallback;
 @protocol AMAuthKeyStorage;

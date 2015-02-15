@@ -6,10 +6,27 @@
 #ifndef _ImActorModelEntityContentAbsContent_H_
 #define _ImActorModelEntityContentAbsContent_H_
 
-#include "J2ObjC_header.h"
+@class IOSByteArray;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
+@class ImActorModelEntityContentAbsContent_ContentTypeEnum;
 
-@interface ImActorModelEntityContentAbsContent : NSObject {
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "java/lang/Enum.h"
+
+@interface ImActorModelEntityContentAbsContent : ImActorModelDroidkitBserBserObject {
 }
+
++ (ImActorModelEntityContentAbsContent *)contentFromBytesWithByteArray:(IOSByteArray *)data;
+
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+
++ (ImActorModelEntityContentAbsContent_ContentTypeEnum *)typeFromValueWithInt:(jint)val;
+
+- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
 
 - (instancetype)init;
 
@@ -18,8 +35,91 @@
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentAbsContent)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT ImActorModelEntityContentAbsContent *ImActorModelEntityContentAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data);
+
+FOUNDATION_EXPORT ImActorModelEntityContentAbsContent_ContentTypeEnum *ImActorModelEntityContentAbsContent_typeFromValueWithInt_(jint val);
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentAbsContent)
+
+typedef NS_ENUM(NSUInteger, ImActorModelEntityContentAbsContent_ContentType) {
+  ImActorModelEntityContentAbsContent_ContentType_TEXT = 0,
+  ImActorModelEntityContentAbsContent_ContentType_DOCUMENT = 1,
+  ImActorModelEntityContentAbsContent_ContentType_DOCUMENT_PHOTO = 2,
+  ImActorModelEntityContentAbsContent_ContentType_DOCUMENT_VIDEO = 3,
+  ImActorModelEntityContentAbsContent_ContentType_SERVICE = 4,
+  ImActorModelEntityContentAbsContent_ContentType_SERVICE_CREATED = 5,
+  ImActorModelEntityContentAbsContent_ContentType_SERVICE_AVATAR = 6,
+  ImActorModelEntityContentAbsContent_ContentType_SERVICE_TITLE = 7,
+  ImActorModelEntityContentAbsContent_ContentType_SERVICE_ADDED = 8,
+  ImActorModelEntityContentAbsContent_ContentType_SERVICE_KICKED = 9,
+  ImActorModelEntityContentAbsContent_ContentType_SERVICE_LEAVE = 10,
+  ImActorModelEntityContentAbsContent_ContentType_SERVICE_REGISTERED = 11,
+};
+
+@interface ImActorModelEntityContentAbsContent_ContentTypeEnum : JavaLangEnum < NSCopying > {
+ @public
+  jint value_;
+}
+
+- (instancetype)initWithInt:(jint)value
+               withNSString:(NSString *)__name
+                    withInt:(jint)__ordinal;
+
+- (jint)getValue;
+
++ (IOSObjectArray *)values;
+FOUNDATION_EXPORT IOSObjectArray *ImActorModelEntityContentAbsContent_ContentTypeEnum_values();
+
++ (ImActorModelEntityContentAbsContent_ContentTypeEnum *)valueOfWithNSString:(NSString *)name;
+
+FOUNDATION_EXPORT ImActorModelEntityContentAbsContent_ContentTypeEnum *ImActorModelEntityContentAbsContent_ContentTypeEnum_valueOfWithNSString_(NSString *name);
+- (id)copyWithZone:(NSZone *)zone;
+
+@end
+
+FOUNDATION_EXPORT BOOL ImActorModelEntityContentAbsContent_ContentTypeEnum_initialized;
+J2OBJC_STATIC_INIT(ImActorModelEntityContentAbsContent_ContentTypeEnum)
+
+FOUNDATION_EXPORT ImActorModelEntityContentAbsContent_ContentTypeEnum *ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[];
+
+#define ImActorModelEntityContentAbsContent_ContentTypeEnum_TEXT ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[ImActorModelEntityContentAbsContent_ContentType_TEXT]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityContentAbsContent_ContentTypeEnum, TEXT)
+
+#define ImActorModelEntityContentAbsContent_ContentTypeEnum_DOCUMENT ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[ImActorModelEntityContentAbsContent_ContentType_DOCUMENT]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityContentAbsContent_ContentTypeEnum, DOCUMENT)
+
+#define ImActorModelEntityContentAbsContent_ContentTypeEnum_DOCUMENT_PHOTO ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[ImActorModelEntityContentAbsContent_ContentType_DOCUMENT_PHOTO]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityContentAbsContent_ContentTypeEnum, DOCUMENT_PHOTO)
+
+#define ImActorModelEntityContentAbsContent_ContentTypeEnum_DOCUMENT_VIDEO ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[ImActorModelEntityContentAbsContent_ContentType_DOCUMENT_VIDEO]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityContentAbsContent_ContentTypeEnum, DOCUMENT_VIDEO)
+
+#define ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[ImActorModelEntityContentAbsContent_ContentType_SERVICE]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityContentAbsContent_ContentTypeEnum, SERVICE)
+
+#define ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_CREATED ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[ImActorModelEntityContentAbsContent_ContentType_SERVICE_CREATED]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityContentAbsContent_ContentTypeEnum, SERVICE_CREATED)
+
+#define ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_AVATAR ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[ImActorModelEntityContentAbsContent_ContentType_SERVICE_AVATAR]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityContentAbsContent_ContentTypeEnum, SERVICE_AVATAR)
+
+#define ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_TITLE ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[ImActorModelEntityContentAbsContent_ContentType_SERVICE_TITLE]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityContentAbsContent_ContentTypeEnum, SERVICE_TITLE)
+
+#define ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_ADDED ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[ImActorModelEntityContentAbsContent_ContentType_SERVICE_ADDED]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityContentAbsContent_ContentTypeEnum, SERVICE_ADDED)
+
+#define ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_KICKED ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[ImActorModelEntityContentAbsContent_ContentType_SERVICE_KICKED]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityContentAbsContent_ContentTypeEnum, SERVICE_KICKED)
+
+#define ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_LEAVE ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[ImActorModelEntityContentAbsContent_ContentType_SERVICE_LEAVE]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityContentAbsContent_ContentTypeEnum, SERVICE_LEAVE)
+
+#define ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_REGISTERED ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[ImActorModelEntityContentAbsContent_ContentType_SERVICE_REGISTERED]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityContentAbsContent_ContentTypeEnum, SERVICE_REGISTERED)
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentAbsContent_ContentTypeEnum)
 
 #endif // _ImActorModelEntityContentAbsContent_H_

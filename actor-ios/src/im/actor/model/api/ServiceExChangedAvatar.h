@@ -6,14 +6,14 @@
 #ifndef _ImActorModelApiServiceExChangedAvatar_H_
 #define _ImActorModelApiServiceExChangedAvatar_H_
 
-@class ComDroidkitBserBserValues;
-@class ComDroidkitBserBserWriter;
 @class ImActorModelApiAvatar;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiServiceExChangedAvatar : ComDroidkitBserBserObject {
+@interface ImActorModelApiServiceExChangedAvatar : ImActorModelDroidkitBserBserObject {
 }
 
 - (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
@@ -22,9 +22,9 @@
 
 - (ImActorModelApiAvatar *)getAvatar;
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values;
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer;
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
 
 @end
 

@@ -3,18 +3,31 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/TextContent.java
 //
 
+#include "IOSClass.h"
+#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/entity/content/AbsContent.h"
 #include "im/actor/model/entity/content/TextContent.h"
+#include "java/io/IOException.h"
 
 @interface ImActorModelEntityContentTextContent () {
  @public
   NSString *text_;
 }
+- (instancetype)init;
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelEntityContentTextContent, text_, NSString *)
 
 @implementation ImActorModelEntityContentTextContent
+
++ (ImActorModelEntityContentTextContent *)textFromBytesWithByteArray:(IOSByteArray *)data {
+  return ImActorModelEntityContentTextContent_textFromBytesWithByteArray_(data);
+}
 
 - (instancetype)initWithNSString:(NSString *)text {
   if (self = [super init]) {
@@ -23,8 +36,24 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentTextContent, text_, NSString *)
   return self;
 }
 
+- (instancetype)init {
+  return [super init];
+}
+
 - (NSString *)getText {
   return text_;
+}
+
+- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType {
+  return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_TEXT();
+}
+
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelEntityContentTextContent_set_text_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:2]);
+}
+
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:text_];
 }
 
 - (void)dealloc {
@@ -39,16 +68,26 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentTextContent, text_, NSString *)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
+    { "textFromBytesWithByteArray:", "textFromBytes", "Lim.actor.model.entity.content.TextContent;", 0x9, "Ljava.io.IOException;" },
     { "initWithNSString:", "TextContent", NULL, 0x1, NULL },
+    { "init", "TextContent", NULL, 0x2, NULL },
     { "getText", NULL, "Ljava.lang.String;", 0x1, NULL },
+    { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "text_", NULL, 0x12, "Ljava.lang.String;", NULL,  },
+    { "text_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityContentTextContent = { 1, "TextContent", "im.actor.model.entity.content", NULL, 0x1, 2, methods, 1, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelEntityContentTextContent = { 1, "TextContent", "im.actor.model.entity.content", NULL, 0x1, 7, methods, 1, fields, 0, NULL};
   return &_ImActorModelEntityContentTextContent;
 }
 
 @end
+
+ImActorModelEntityContentTextContent *ImActorModelEntityContentTextContent_textFromBytesWithByteArray_(IOSByteArray *data) {
+  ImActorModelEntityContentTextContent_init();
+  return ((ImActorModelEntityContentTextContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityContentTextContent alloc] init] autorelease], data));
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentTextContent)

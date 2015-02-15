@@ -6,12 +6,24 @@
 #ifndef _ImActorModelEntityPeer_H_
 #define _ImActorModelEntityPeer_H_
 
+@class IOSByteArray;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
 @class ImActorModelEntityPeerTypeEnum;
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelEntityPeer : NSObject {
+@interface ImActorModelEntityPeer : ImActorModelDroidkitBserBserObject {
 }
+
++ (ImActorModelEntityPeer *)fromBytesWithByteArray:(IOSByteArray *)data;
+
++ (ImActorModelEntityPeer *)fromUidWithLong:(jlong)uid;
+
++ (ImActorModelEntityPeer *)userWithInt:(jint)uid;
+
++ (ImActorModelEntityPeer *)groupWithInt:(jint)gid;
 
 - (instancetype)initWithImActorModelEntityPeerTypeEnum:(ImActorModelEntityPeerTypeEnum *)peerType
                                                withInt:(jint)peerId;
@@ -26,11 +38,23 @@
 
 - (NSUInteger)hash;
 
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityPeer)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT ImActorModelEntityPeer *ImActorModelEntityPeer_fromBytesWithByteArray_(IOSByteArray *data);
+
+FOUNDATION_EXPORT ImActorModelEntityPeer *ImActorModelEntityPeer_fromUidWithLong_(jlong uid);
+
+FOUNDATION_EXPORT ImActorModelEntityPeer *ImActorModelEntityPeer_userWithInt_(jint uid);
+
+FOUNDATION_EXPORT ImActorModelEntityPeer *ImActorModelEntityPeer_groupWithInt_(jint gid);
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityPeer)

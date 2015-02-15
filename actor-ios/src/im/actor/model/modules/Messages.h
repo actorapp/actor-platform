@@ -7,28 +7,37 @@
 #define _ImActorModelModulesMessages_H_
 
 @class AMMessenger;
-@class DAActorRef;
+@class ImActorModelApiMessageContent;
+@class ImActorModelDroidkitActorsActorRef;
 @class ImActorModelEntityPeer;
 @class ImActorModelModulesMessagesConversationActor;
 @class ImActorModelModulesMessagesDialogsActor;
+@class ImActorModelModulesMessagesDialogsHistoryActor;
 @class JavaUtilHashMap;
 @protocol ImActorModelMvvmListEngine;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/actors/ActorCreator.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 
 @interface ImActorModelModulesMessages : NSObject {
 }
 
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
 
-- (DAActorRef *)getConversationActorWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (void)run;
+
+- (ImActorModelDroidkitActorsActorRef *)getConversationActorWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
 
 - (id<ImActorModelMvvmListEngine>)getConversationEngineWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
 
-- (DAActorRef *)getDialogsActor;
+- (ImActorModelDroidkitActorsActorRef *)getDialogsActor;
+
+- (ImActorModelDroidkitActorsActorRef *)getDialogsHistoryActor;
 
 - (id<ImActorModelMvvmListEngine>)getDialogsEngine;
+
+- (void)sendMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
+             withImActorModelApiMessageContent:(ImActorModelApiMessageContent *)message;
 
 @end
 
@@ -39,12 +48,12 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages)
 
-@interface ImActorModelModulesMessages_$1 : NSObject < DAActorCreator > {
+@interface ImActorModelModulesMessages_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
 }
 
 - (ImActorModelModulesMessagesDialogsActor *)create;
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)capture$0;
+- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$;
 
 @end
 
@@ -55,13 +64,12 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$1)
 
-@interface ImActorModelModulesMessages_$2 : NSObject < DAActorCreator > {
+@interface ImActorModelModulesMessages_$2 : NSObject < ImActorModelDroidkitActorsActorCreator > {
 }
 
-- (ImActorModelModulesMessagesConversationActor *)create;
+- (ImActorModelModulesMessagesDialogsHistoryActor *)create;
 
-- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$
-                         withImActorModelEntityPeer:(ImActorModelEntityPeer *)capture$0;
+- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$;
 
 @end
 
@@ -71,5 +79,22 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$2)
+
+@interface ImActorModelModulesMessages_$3 : NSObject < ImActorModelDroidkitActorsActorCreator > {
+}
+
+- (ImActorModelModulesMessagesConversationActor *)create;
+
+- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$
+                         withImActorModelEntityPeer:(ImActorModelEntityPeer *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessages_$3)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$3)
 
 #endif // _ImActorModelModulesMessages_H_

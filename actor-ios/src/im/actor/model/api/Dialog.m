@@ -5,12 +5,12 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/Dialog.h"
 #include "im/actor/model/api/MessageContent.h"
 #include "im/actor/model/api/MessageState.h"
 #include "im/actor/model/api/Peer.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiDialog () {
@@ -89,22 +89,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   return self->state_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiDialog_set_peer_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withIOSClass:ImActorModelApiPeer_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiDialog_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiPeer alloc] init] autorelease]]);
   self->unreadCount_ = [values getIntWithInt:3];
   self->sortDate_ = [values getLongWithInt:4];
   self->senderUid_ = [values getIntWithInt:5];
   self->rid_ = [values getLongWithInt:6];
   self->date_ = [values getLongWithInt:7];
-  ImActorModelApiDialog_set_message_(self, [values getObjWithInt:8 withIOSClass:ImActorModelApiMessageContent_class_()]);
-  ImActorModelApiDialog_set_state_(self, ImActorModelApiMessageStateEnum_parseWithInt_([values getIntWithInt:9]));
+  ImActorModelApiDialog_set_message_(self, [values getObjWithInt:8 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiMessageContent alloc] init] autorelease]]);
+  if ([values optIntWithInt:9] != 0) {
+    ImActorModelApiDialog_set_state_(self, ImActorModelApiMessageStateEnum_parseWithInt_([values optIntWithInt:9]));
+  }
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withComDroidkitBserBserObject:self->peer_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeIntWithInt:3 withInt:self->unreadCount_];
   [writer writeLongWithInt:4 withLong:self->sortDate_];
   [writer writeIntWithInt:5 withInt:self->senderUid_];
@@ -113,11 +115,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   if (self->message_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [writer writeObjectWithInt:8 withComDroidkitBserBserObject:self->message_];
-  if (self->state_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+  [writer writeObjectWithInt:8 withImActorModelDroidkitBserBserObject:self->message_];
+  if (self->state_ != nil) {
+    [writer writeIntWithInt:9 withInt:[self->state_ getValue]];
   }
-  [writer writeIntWithInt:9 withInt:[((ImActorModelApiMessageStateEnum *) nil_chk(self->state_)) getValue]];
 }
 
 - (void)dealloc {
@@ -151,8 +152,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
     { "getDate", NULL, "J", 0x1, NULL },
     { "getMessage", NULL, "Lim.actor.model.api.MessageContent;", 0x1, NULL },
     { "getState", NULL, "Lim.actor.model.api.MessageState;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "peer_", NULL, 0x2, "Lim.actor.model.api.Peer;", NULL,  },

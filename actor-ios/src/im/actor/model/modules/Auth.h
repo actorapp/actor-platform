@@ -34,7 +34,15 @@
 
 - (id<ImActorModelConcurrencyCommand>)requestSmsWithLong:(jlong)phone;
 
-- (id<ImActorModelConcurrencyCommand>)sendCodeWithNSString:(NSString *)code;
+- (id<ImActorModelConcurrencyCommand>)sendCodeWithInt:(jint)code;
+
+- (id<ImActorModelConcurrencyCommand>)signUpWithNSString:(NSString *)firstName
+                                            withNSString:(NSString *)avatarPath
+                                             withBoolean:(jboolean)isSilent;
+
+- (void)resetAuth;
+
+- (jlong)getPhone;
 
 @end
 
@@ -61,6 +69,9 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_PHONE_, NSString *)
 
 FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_SMS_HASH_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_SMS_HASH_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_SMS_CODE_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_SMS_CODE_, NSString *)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth)
@@ -140,7 +151,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$1_$1_$2)
 - (void)startWithImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)callback;
 
 - (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
-                                   withNSString:(NSString *)capture$0;
+                                        withInt:(jint)capture$0;
 
 @end
 
@@ -202,5 +213,75 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$2_$1_$2)
+
+@interface ImActorModelModulesAuth_$3 : NSObject < ImActorModelConcurrencyCommand > {
+}
+
+- (void)startWithImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)callback;
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
+                                   withNSString:(NSString *)capture$0
+                                    withBoolean:(jboolean)capture$1;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$3)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$3)
+
+@interface ImActorModelModulesAuth_$3_$1 : NSObject < AMRpcCallback > {
+}
+
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseAuth *)response;
+
+- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesAuth_$3:(ImActorModelModulesAuth_$3 *)outer$
+        withImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$3_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$3_$1)
+
+@interface ImActorModelModulesAuth_$3_$1_$1 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAuth_$3_$1:(ImActorModelModulesAuth_$3_$1 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$3_$1_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$3_$1_$1)
+
+@interface ImActorModelModulesAuth_$3_$1_$2 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAuth_$3_$1:(ImActorModelModulesAuth_$3_$1 *)outer$
+                                   withAMRpcException:(AMRpcException *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$3_$1_$2)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$3_$1_$2)
 
 #endif // _ImActorModelModulesAuth_H_

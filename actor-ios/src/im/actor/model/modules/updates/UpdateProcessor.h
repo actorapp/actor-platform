@@ -8,6 +8,7 @@
 
 @class AMMessenger;
 @class ImActorModelModulesUpdatesGroupsProcessor;
+@class ImActorModelModulesUpdatesInternalInternalUpdate;
 @class ImActorModelModulesUpdatesMessagesProcessor;
 @class ImActorModelModulesUpdatesUsersProcessor;
 @class ImActorModelNetworkParserUpdate;
@@ -24,6 +25,8 @@
                     withJavaUtilList:(id<JavaUtilList>)groups
                     withJavaUtilList:(id<JavaUtilList>)contactRecords
                          withBoolean:(jboolean)force;
+
+- (void)processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:(ImActorModelModulesUpdatesInternalInternalUpdate *)update;
 
 - (void)processUpdateWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update;
 

@@ -19,10 +19,17 @@ typedef NS_ENUM(NSUInteger, ImActorModelEntityMessageState) {
 };
 
 @interface ImActorModelEntityMessageStateEnum : JavaLangEnum < NSCopying > {
+ @public
+  jint value_;
 }
 
-- (instancetype)initWithNSString:(NSString *)__name
-                         withInt:(jint)__ordinal;
+- (instancetype)initWithInt:(jint)value
+               withNSString:(NSString *)__name
+                    withInt:(jint)__ordinal;
+
+- (jint)getValue;
+
++ (ImActorModelEntityMessageStateEnum *)fromValueWithInt:(jint)value;
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *ImActorModelEntityMessageStateEnum_values();
@@ -36,6 +43,8 @@ FOUNDATION_EXPORT ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageS
 
 FOUNDATION_EXPORT BOOL ImActorModelEntityMessageStateEnum_initialized;
 J2OBJC_STATIC_INIT(ImActorModelEntityMessageStateEnum)
+
+FOUNDATION_EXPORT ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageStateEnum_fromValueWithInt_(jint value);
 
 FOUNDATION_EXPORT ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageStateEnum_values_[];
 

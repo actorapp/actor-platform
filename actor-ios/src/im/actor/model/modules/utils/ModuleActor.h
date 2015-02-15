@@ -12,14 +12,16 @@
 @class ImActorModelNetworkParserResponse;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/network/RpcCallback.h"
 #include "java/lang/Runnable.h"
 
-@interface ImActorModelModulesUtilsModuleActor : DAActor {
+@interface ImActorModelModulesUtilsModuleActor : ImActorModelDroidkitActorsActor {
 }
 
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+
+- (AMMessenger *)getMessenger;
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback;

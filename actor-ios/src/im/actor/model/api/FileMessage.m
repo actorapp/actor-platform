@@ -6,10 +6,10 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/FastThumb.h"
 #include "im/actor/model/api/FileMessage.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiFileMessage () {
@@ -89,19 +89,19 @@ withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
   return self->ext_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->fileId_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->fileId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
   self->fileSize_ = [values getIntWithInt:3];
   ImActorModelApiFileMessage_set_name_(self, [values getStringWithInt:4]);
   ImActorModelApiFileMessage_set_mimeType_(self, [values getStringWithInt:5]);
-  ImActorModelApiFileMessage_set_thumb_(self, [values optObjWithInt:6 withIOSClass:ImActorModelApiFastThumb_class_()]);
+  ImActorModelApiFileMessage_set_thumb_(self, [values optObjWithInt:6 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiFastThumb alloc] init] autorelease]]);
   self->extType_ = [values getIntWithInt:7];
   ImActorModelApiFileMessage_set_ext_(self, [values optBytesWithInt:8]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->fileId_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->fileId_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   [writer writeIntWithInt:3 withInt:self->fileSize_];
   if (self->name_ == nil) {
@@ -113,7 +113,7 @@ withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
   }
   [writer writeStringWithInt:5 withNSString:self->mimeType_];
   if (self->thumb_ != nil) {
-    [writer writeObjectWithInt:6 withComDroidkitBserBserObject:self->thumb_];
+    [writer writeObjectWithInt:6 withImActorModelDroidkitBserBserObject:self->thumb_];
   }
   [writer writeIntWithInt:7 withInt:self->extType_];
   if (self->ext_ != nil) {
@@ -153,8 +153,8 @@ withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
     { "getThumb", NULL, "Lim.actor.model.api.FastThumb;", 0x1, NULL },
     { "getExtType", NULL, "I", 0x1, NULL },
     { "getExt", NULL, "[B", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "fileId_", NULL, 0x2, "J", NULL,  },

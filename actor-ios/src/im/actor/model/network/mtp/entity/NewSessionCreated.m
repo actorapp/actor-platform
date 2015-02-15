@@ -6,15 +6,14 @@
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/mtp/entity/NewSessionCreated.h"
-#include "im/actor/model/util/StreamingUtils.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/OutputStream.h"
 
 @implementation MTNewSessionCreated
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream {
-  return [super initWithJavaIoInputStream:stream];
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
+  return [super initWithAMDataInput:stream];
 }
 
 - (instancetype)initWithLong:(jlong)sessionId
@@ -34,22 +33,18 @@
   return messageId_;
 }
 
-- (jint)getLength {
-  return 1 + 8 + 8;
-}
-
 - (jbyte)getHeader {
   return MTNewSessionCreated_HEADER;
 }
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs {
-  AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(sessionId_, bs);
-  AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(messageId_, bs);
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
+  [((AMDataOutput *) nil_chk(bs)) writeLongWithLong:sessionId_];
+  [bs writeLongWithLong:messageId_];
 }
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs {
-  sessionId_ = AMStreamingUtils_readLongWithJavaIoInputStream_(bs);
-  messageId_ = AMStreamingUtils_readLongWithJavaIoInputStream_(bs);
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
+  sessionId_ = [((AMDataInput *) nil_chk(bs)) readLong];
+  messageId_ = [bs readLong];
 }
 
 - (NSString *)description {
@@ -64,14 +59,13 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaIoInputStream:", "NewSessionCreated", NULL, 0x1, "Ljava.io.IOException;" },
+    { "initWithAMDataInput:", "NewSessionCreated", NULL, 0x1, "Ljava.io.IOException;" },
     { "initWithLong:withLong:", "NewSessionCreated", NULL, 0x1, NULL },
     { "getSessionId", NULL, "J", 0x1, NULL },
     { "getMessageId", NULL, "J", 0x1, NULL },
-    { "getLength", NULL, "I", 0x1, NULL },
     { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithJavaIoOutputStream:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithJavaIoInputStream:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -79,7 +73,7 @@
     { "sessionId_", NULL, 0x1, "J", NULL,  },
     { "messageId_", NULL, 0x1, "J", NULL,  },
   };
-  static const J2ObjcClassInfo _MTNewSessionCreated = { 1, "NewSessionCreated", "im.actor.model.network.mtp.entity", NULL, 0x1, 9, methods, 3, fields, 0, NULL};
+  static const J2ObjcClassInfo _MTNewSessionCreated = { 1, "NewSessionCreated", "im.actor.model.network.mtp.entity", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
   return &_MTNewSessionCreated;
 }
 

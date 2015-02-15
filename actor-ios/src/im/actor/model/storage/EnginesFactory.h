@@ -20,6 +20,8 @@
 
 - (id<ImActorModelMvvmListEngine>)createMessagesEngineWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
 
+- (id<ImActorModelMvvmKeyValueEngine>)pendingMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelStorageEnginesFactory)

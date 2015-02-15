@@ -3,12 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/modules/updates/UpdateProcessor.java
 //
 
+#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Messenger.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/MessageContent.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/PeerType.h"
+#include "im/actor/model/api/rpc/ResponseLoadDialogs.h"
 #include "im/actor/model/api/updates/UpdateChatClear.h"
 #include "im/actor/model/api/updates/UpdateChatDelete.h"
 #include "im/actor/model/api/updates/UpdateContactMoved.h"
@@ -41,6 +43,8 @@
 #include "im/actor/model/modules/updates/MessagesProcessor.h"
 #include "im/actor/model/modules/updates/UpdateProcessor.h"
 #include "im/actor/model/modules/updates/UsersProcessor.h"
+#include "im/actor/model/modules/updates/internal/DialogHistoryLoaded.h"
+#include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 #include "im/actor/model/network/parser/Update.h"
 #include "java/lang/Integer.h"
 #include "java/util/HashSet.h"
@@ -77,6 +81,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
                     withJavaUtilList:(id<JavaUtilList>)contactRecords
                          withBoolean:(jboolean)force {
   [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) applyUsersWithJavaUtilCollection:users withBoolean:force];
+}
+
+- (void)processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:(ImActorModelModulesUpdatesInternalInternalUpdate *)update {
+  if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalDialogHistoryLoaded class]]) {
+    ImActorModelApiRpcResponseLoadDialogs *dialogs = [((ImActorModelModulesUpdatesInternalDialogHistoryLoaded *) nil_chk(((ImActorModelModulesUpdatesInternalDialogHistoryLoaded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalDialogHistoryLoaded class])))) getDialogs];
+    [self applyRelatedWithJavaUtilList:[((ImActorModelApiRpcResponseLoadDialogs *) nil_chk(dialogs)) getUsers] withJavaUtilList:[dialogs getGroups] withJavaUtilList:nil withBoolean:NO];
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onDialogsLoadedWithImActorModelApiRpcResponseLoadDialogs:dialogs];
+  }
 }
 
 - (void)processUpdateWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update {
@@ -131,10 +143,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateEncryptedMessage class]]) {
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateEncryptedRead class]]) {
+    ImActorModelApiUpdatesUpdateEncryptedRead *encryptedRead = (ImActorModelApiUpdatesUpdateEncryptedRead *) check_class_cast(update, [ImActorModelApiUpdatesUpdateEncryptedRead class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageEncryptedReadWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateEncryptedRead *) nil_chk(encryptedRead)) getPeer] withLong:[encryptedRead getRid] withLong:[encryptedRead getReadDate]];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateEncryptedReadByMe class]]) {
+    ImActorModelApiUpdatesUpdateEncryptedReadByMe *encryptedRead = (ImActorModelApiUpdatesUpdateEncryptedReadByMe *) check_class_cast(update, [ImActorModelApiUpdatesUpdateEncryptedReadByMe class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageEncryptedReadByMeWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateEncryptedReadByMe *) nil_chk(encryptedRead)) getPeer] withLong:[encryptedRead getRid]];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateEncryptedReceived class]]) {
+    ImActorModelApiUpdatesUpdateEncryptedReceived *received = (ImActorModelApiUpdatesUpdateEncryptedReceived *) check_class_cast(update, [ImActorModelApiUpdatesUpdateEncryptedReceived class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageEncryptedReceivedWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateEncryptedReceived *) nil_chk(received)) getPeer] withLong:[received getRid] withLong:[received getReceivedDate]];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateChatClear class]]) {
     ImActorModelApiUpdatesUpdateChatClear *chatClear = (ImActorModelApiUpdatesUpdateChatClear *) check_class_cast(update, [ImActorModelApiUpdatesUpdateChatClear class]);
@@ -143,6 +161,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateChatDelete class]]) {
     ImActorModelApiUpdatesUpdateChatDelete *chatDelete = (ImActorModelApiUpdatesUpdateChatDelete *) check_class_cast(update, [ImActorModelApiUpdatesUpdateChatDelete class]);
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onChatDeleteWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateChatDelete *) nil_chk(chatDelete)) getPeer]];
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactRegistered class]]) {
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onUserRegisteredWithInt:[((ImActorModelApiUpdatesUpdateContactRegistered *) nil_chk(((ImActorModelApiUpdatesUpdateContactRegistered *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactRegistered class])))) getUid]];
   }
 }
 
@@ -242,6 +263,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
   static const J2ObjcMethodInfo methods[] = {
     { "initWithAMMessenger:", "UpdateProcessor", NULL, 0x1, NULL },
     { "applyRelatedWithJavaUtilList:withJavaUtilList:withJavaUtilList:withBoolean:", "applyRelated", "V", 0x1, NULL },
+    { "processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:", "processInternalUpdate", "V", 0x1, NULL },
     { "processUpdateWithImActorModelNetworkParserUpdate:", "processUpdate", "V", 0x1, NULL },
     { "isCausesInvalidationWithImActorModelNetworkParserUpdate:", "isCausesInvalidation", "Z", 0x1, NULL },
   };
@@ -251,7 +273,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
     { "messagesProcessor_", NULL, 0x2, "Lim.actor.model.modules.updates.MessagesProcessor;", NULL,  },
     { "groupsProcessor_", NULL, 0x2, "Lim.actor.model.modules.updates.GroupsProcessor;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesUpdateProcessor = { 1, "UpdateProcessor", "im.actor.model.modules.updates", NULL, 0x1, 4, methods, 4, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelModulesUpdatesUpdateProcessor = { 1, "UpdateProcessor", "im.actor.model.modules.updates", NULL, 0x1, 5, methods, 4, fields, 0, NULL};
   return &_ImActorModelModulesUpdatesUpdateProcessor;
 }
 

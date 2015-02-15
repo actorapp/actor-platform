@@ -6,24 +6,24 @@
 #ifndef _ImActorModelJvmActorsJavaThreadsDispatcher_H_
 #define _ImActorModelJvmActorsJavaThreadsDispatcher_H_
 
-@class ComDroidkitActorsDispatchAbstractDispatchQueue;
-@class DAThreadPriorityEnum;
 @class IOSObjectArray;
+@class ImActorModelDroidkitActorsDispatchAbstractDispatchQueue;
+@class ImActorModelDroidkitActorsThreadPriorityEnum;
 @class JavaUtilConcurrentAtomicAtomicInteger;
-@protocol ComDroidkitActorsDispatchDispatch;
+@protocol ImActorModelDroidkitActorsDispatchDispatch;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/actors/dispatch/AbstractDispatcher.h"
+#include "im/actor/model/droidkit/actors/dispatch/AbstractDispatcher.h"
 #include "java/lang/Thread.h"
 
-@interface ImActorModelJvmActorsJavaThreadsDispatcher : ComDroidkitActorsDispatchAbstractDispatcher {
+@interface ImActorModelJvmActorsJavaThreadsDispatcher : ImActorModelDroidkitActorsDispatchAbstractDispatcher {
 }
 
 - (instancetype)initWithNSString:(NSString *)name
                          withInt:(jint)count
-        withDAThreadPriorityEnum:(DAThreadPriorityEnum *)priority
-withComDroidkitActorsDispatchAbstractDispatchQueue:(ComDroidkitActorsDispatchAbstractDispatchQueue *)queue
-withComDroidkitActorsDispatchDispatch:(id<ComDroidkitActorsDispatchDispatch>)dispatch
+withImActorModelDroidkitActorsThreadPriorityEnum:(ImActorModelDroidkitActorsThreadPriorityEnum *)priority
+withImActorModelDroidkitActorsDispatchAbstractDispatchQueue:(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue *)queue
+withImActorModelDroidkitActorsDispatchDispatch:(id<ImActorModelDroidkitActorsDispatchDispatch>)dispatch
                      withBoolean:(jboolean)createThreads;
 
 - (void)startPool;

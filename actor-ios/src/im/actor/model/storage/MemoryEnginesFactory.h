@@ -6,15 +6,11 @@
 #ifndef _ImActorModelStorageMemoryEnginesFactory_H_
 #define _ImActorModelStorageMemoryEnginesFactory_H_
 
-@class IOSLongArray;
 @class ImActorModelEntityPeer;
-@class ImActorModelEntityUser;
-@class JavaUtilHashMap;
+@protocol ImActorModelMvvmKeyValueEngine;
 @protocol ImActorModelMvvmListEngine;
-@protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/mvvm/KeyValueEngine.h"
 #include "im/actor/model/storage/EnginesFactory.h"
 
 @interface ImActorModelStorageMemoryEnginesFactory : NSObject < ImActorModelStorageEnginesFactory > {
@@ -26,6 +22,8 @@
 
 - (id<ImActorModelMvvmListEngine>)createMessagesEngineWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
 
+- (id<ImActorModelMvvmKeyValueEngine>)pendingMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+
 - (instancetype)init;
 
 @end
@@ -36,31 +34,5 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelStorageMemoryEnginesFactory)
-
-@interface ImActorModelStorageMemoryEnginesFactory_$1 : NSObject < ImActorModelMvvmKeyValueEngine > {
-}
-
-- (void)addOrUpdateItemWithImActorModelMvvmKeyValueItem:(ImActorModelEntityUser *)item;
-
-- (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
-
-- (void)removeItemWithLong:(jlong)id_;
-
-- (void)removeItemsWithLongArray:(IOSLongArray *)ids;
-
-- (void)clear;
-
-- (ImActorModelEntityUser *)getValueWithLong:(jlong)id_;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelStorageMemoryEnginesFactory_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelStorageMemoryEnginesFactory_$1)
 
 #endif // _ImActorModelStorageMemoryEnginesFactory_H_

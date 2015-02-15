@@ -6,13 +6,13 @@
 #ifndef _ImActorModelApiServiceExUserKicked_H_
 #define _ImActorModelApiServiceExUserKicked_H_
 
-@class ComDroidkitBserBserValues;
-@class ComDroidkitBserBserWriter;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiServiceExUserKicked : ComDroidkitBserBserObject {
+@interface ImActorModelApiServiceExUserKicked : ImActorModelDroidkitBserBserObject {
 }
 
 - (instancetype)initWithInt:(jint)kickedUid;
@@ -21,9 +21,9 @@
 
 - (jint)getKickedUid;
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values;
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer;
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
 
 @end
 

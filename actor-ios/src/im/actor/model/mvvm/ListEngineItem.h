@@ -12,7 +12,7 @@
 
 - (jlong)getListId;
 
-- (jlong)getSortingKey;
+- (jlong)getListSortKey;
 
 @end
 

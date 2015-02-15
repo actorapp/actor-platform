@@ -6,8 +6,8 @@
 #ifndef _MTProtoPackage_H_
 #define _MTProtoPackage_H_
 
-@class JavaIoInputStream;
-@class JavaIoOutputStream;
+@class AMDataInput;
+@class AMDataOutput;
 @class MTProtoMessage;
 
 #include "J2ObjC_header.h"
@@ -16,7 +16,7 @@
 @interface MTProtoPackage : MTProtoObject {
 }
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream;
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
 
 - (instancetype)initWithLong:(jlong)authId
                     withLong:(jlong)sessionId
@@ -28,11 +28,9 @@
 
 - (MTProtoMessage *)getPayload;
 
-- (void)writeObjectWithJavaIoOutputStream:(JavaIoOutputStream *)bs;
+- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs;
 
-- (MTProtoObject *)readObjectWithJavaIoInputStream:(JavaIoInputStream *)bs;
-
-- (jint)getLength;
+- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs;
 
 - (NSString *)description;
 

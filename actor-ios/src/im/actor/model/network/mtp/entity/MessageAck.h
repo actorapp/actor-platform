@@ -6,10 +6,10 @@
 #ifndef _MTMessageAck_H_
 #define _MTMessageAck_H_
 
+@class AMDataInput;
+@class AMDataOutput;
 @class IOSLongArray;
 @class IOSObjectArray;
-@class JavaIoInputStream;
-@class JavaIoOutputStream;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
@@ -21,19 +21,17 @@
   IOSLongArray *messagesIds_;
 }
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream;
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
 
 - (instancetype)initWithJavaLangLongArray:(IOSObjectArray *)_messagesIds;
 
 - (instancetype)initWithLongArray:(IOSLongArray *)messagesIds;
 
-- (jint)getLength;
-
 - (jbyte)getHeader;
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs;
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs;
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
 
 - (NSString *)description;
 

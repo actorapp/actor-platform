@@ -4,12 +4,43 @@
 //
 
 #include "J2ObjC_source.h"
-#include "com/droidkit/actors/ActorSystem.h"
-#include "com/droidkit/actors/ThreadPriority.h"
-#include "com/droidkit/actors/conf/EnvConfig.h"
-#include "com/droidkit/actors/mailbox/ActorDispatcher.h"
+#include "im/actor/model/droidkit/actors/ActorSystem.h"
+#include "im/actor/model/droidkit/actors/ThreadPriority.h"
+#include "im/actor/model/droidkit/actors/conf/EnvConfig.h"
+#include "im/actor/model/droidkit/actors/mailbox/ActorDispatcher.h"
+#include "im/actor/model/droidkit/actors/utils/AtomicIntegerCompat.h"
+#include "im/actor/model/droidkit/actors/utils/AtomicLongCompat.h"
+#include "im/actor/model/droidkit/actors/utils/ThreadLocalCompat.h"
 #include "im/actor/model/jvm/JavaThreads.h"
 #include "im/actor/model/jvm/actors/JavaDispatcher.h"
+#include "java/lang/Runtime.h"
+#include "java/lang/System.h"
+#include "java/lang/ThreadLocal.h"
+#include "java/util/concurrent/atomic/AtomicInteger.h"
+#include "java/util/concurrent/atomic/AtomicLong.h"
+
+@interface AMJavaThreads_$2_$1 () {
+ @public
+  JavaUtilConcurrentAtomicAtomicInteger *atomicInteger_;
+  jint val$init_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(AMJavaThreads_$2_$1, atomicInteger_, JavaUtilConcurrentAtomicAtomicInteger *)
+
+@interface AMJavaThreads_$2_$2 () {
+ @public
+  jlong val$init_;
+}
+@end
+
+@interface AMJavaThreads_$2_$3 () {
+ @public
+  JavaLangThreadLocal *tThreadLocal_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(AMJavaThreads_$2_$3, tThreadLocal_, JavaLangThreadLocal *)
 
 @implementation AMJavaThreads
 
@@ -34,18 +65,19 @@
 
 void AMJavaThreads_init__() {
   AMJavaThreads_init();
-  DAEnvConfig_setDispatcherFactoryWithDADispatcherFactory_([[[AMJavaThreads_$1 alloc] init] autorelease]);
+  ImActorModelDroidkitActorsConfEnvConfig_setDispatcherFactoryWithImActorModelDroidkitActorsConfDispatcherFactory_([[[AMJavaThreads_$1 alloc] init] autorelease]);
+  ImActorModelDroidkitActorsConfEnvConfig_setJavaFactoryWithImActorModelDroidkitActorsConfJavaFactory_([[[AMJavaThreads_$2 alloc] init] autorelease]);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads)
 
 @implementation AMJavaThreads_$1
 
-- (ComDroidkitActorsMailboxActorDispatcher *)createDispatcherWithNSString:(NSString *)name
-                                                                  withInt:(jint)threadsCount
-                                                 withDAThreadPriorityEnum:(DAThreadPriorityEnum *)priority
-                                                        withDAActorSystem:(DAActorSystem *)actorSystem {
-  return [[[ImActorModelJvmActorsJavaDispatcher alloc] initWithNSString:name withDAActorSystem:actorSystem withInt:threadsCount withDAThreadPriorityEnum:priority] autorelease];
+- (ImActorModelDroidkitActorsMailboxActorDispatcher *)createDispatcherWithNSString:(NSString *)name
+                                                                           withInt:(jint)threadsCount
+                                  withImActorModelDroidkitActorsThreadPriorityEnum:(ImActorModelDroidkitActorsThreadPriorityEnum *)priority
+                                         withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem *)actorSystem {
+  return [[[ImActorModelJvmActorsJavaDispatcher alloc] initWithNSString:name withImActorModelDroidkitActorsActorSystem:actorSystem withInt:threadsCount withImActorModelDroidkitActorsThreadPriorityEnum:priority] autorelease];
 }
 
 - (instancetype)init {
@@ -54,7 +86,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "createDispatcherWithNSString:withInt:withDAThreadPriorityEnum:withDAActorSystem:", "createDispatcher", "Lcom.droidkit.actors.mailbox.ActorDispatcher;", 0x1, NULL },
+    { "createDispatcherWithNSString:withInt:withImActorModelDroidkitActorsThreadPriorityEnum:withImActorModelDroidkitActorsActorSystem:", "createDispatcher", "Lim.actor.model.droidkit.actors.mailbox.ActorDispatcher;", 0x1, NULL },
     { "init", NULL, NULL, 0x0, NULL },
   };
   static const J2ObjcClassInfo _AMJavaThreads_$1 = { 1, "$1", "im.actor.model.jvm", "JavaThreads", 0x8000, 2, methods, 0, NULL, 0, NULL};
@@ -64,3 +96,216 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads)
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads_$1)
+
+@implementation AMJavaThreads_$2
+
+- (jlong)getCurrentTime {
+  return JavaLangSystem_nanoTime() / 1000000;
+}
+
+- (jint)getCoresCount {
+  return [((JavaLangRuntime *) nil_chk(JavaLangRuntime_getRuntime())) availableProcessors];
+}
+
+- (ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *)createAtomicIntWithInt:(jint)init_ {
+  return [[[AMJavaThreads_$2_$1 alloc] initWithInt:init_] autorelease];
+}
+
+- (ImActorModelDroidkitActorsUtilsAtomicLongCompat *)createAtomicLongWithLong:(jlong)init_ {
+  return [[[AMJavaThreads_$2_$2 alloc] initWithLong:init_] autorelease];
+}
+
+- (ImActorModelDroidkitActorsUtilsThreadLocalCompat *)createThreadLocal {
+  return [[[AMJavaThreads_$2_$3 alloc] init] autorelease];
+}
+
+- (instancetype)init {
+  return [super init];
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "getCurrentTime", NULL, "J", 0x1, NULL },
+    { "getCoresCount", NULL, "I", 0x1, NULL },
+    { "createAtomicIntWithInt:", "createAtomicInt", "Lim.actor.model.droidkit.actors.utils.AtomicIntegerCompat;", 0x1, NULL },
+    { "createAtomicLongWithLong:", "createAtomicLong", "Lim.actor.model.droidkit.actors.utils.AtomicLongCompat;", 0x1, NULL },
+    { "createThreadLocal", NULL, "Lim.actor.model.droidkit.actors.utils.ThreadLocalCompat;", 0x1, NULL },
+    { "init", NULL, NULL, 0x0, NULL },
+  };
+  static const J2ObjcClassInfo _AMJavaThreads_$2 = { 1, "$2", "im.actor.model.jvm", "JavaThreads", 0x8000, 6, methods, 0, NULL, 0, NULL};
+  return &_AMJavaThreads_$2;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads_$2)
+
+@implementation AMJavaThreads_$2_$1
+
+- (jint)get {
+  return [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) get];
+}
+
+- (jint)incrementAndGet {
+  return [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) incrementAndGet];
+}
+
+- (jint)getAndIncrement {
+  return [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) getAndIncrement];
+}
+
+- (void)compareAndSetWithInt:(jint)exp
+                     withInt:(jint)v {
+  [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) compareAndSetWithInt:exp withInt:v];
+}
+
+- (void)setWithInt:(jint)v {
+  [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) setWithInt:v];
+}
+
+- (instancetype)initWithInt:(jint)capture$0 {
+  val$init_ = capture$0;
+  if (self = [super init]) {
+    AMJavaThreads_$2_$1_setAndConsume_atomicInteger_(self, [[JavaUtilConcurrentAtomicAtomicInteger alloc] initWithInt:val$init_]);
+  }
+  return self;
+}
+
+- (void)dealloc {
+  RELEASE_(atomicInteger_);
+  [super dealloc];
+}
+
+- (void)copyAllFieldsTo:(AMJavaThreads_$2_$1 *)other {
+  [super copyAllFieldsTo:other];
+  AMJavaThreads_$2_$1_set_atomicInteger_(other, atomicInteger_);
+  other->val$init_ = val$init_;
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "get", NULL, "I", 0x1, NULL },
+    { "incrementAndGet", NULL, "I", 0x1, NULL },
+    { "getAndIncrement", NULL, "I", 0x1, NULL },
+    { "compareAndSetWithInt:withInt:", "compareAndSet", "V", 0x1, NULL },
+    { "setWithInt:", "set", "V", 0x1, NULL },
+    { "initWithInt:", "init", NULL, 0x0, NULL },
+  };
+  static const J2ObjcFieldInfo fields[] = {
+    { "atomicInteger_", NULL, 0x2, "Ljava.util.concurrent.atomic.AtomicInteger;", NULL,  },
+    { "val$init_", NULL, 0x1012, "I", NULL,  },
+  };
+  static const J2ObjcClassInfo _AMJavaThreads_$2_$1 = { 1, "$1", "im.actor.model.jvm", "JavaThreads$$2", 0x8000, 6, methods, 2, fields, 0, NULL};
+  return &_AMJavaThreads_$2_$1;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads_$2_$1)
+
+@implementation AMJavaThreads_$2_$2
+
+- (jlong)get {
+  return [((JavaUtilConcurrentAtomicAtomicLong *) nil_chk(atomicLong_)) get];
+}
+
+- (jlong)incrementAndGet {
+  return [((JavaUtilConcurrentAtomicAtomicLong *) nil_chk(atomicLong_)) incrementAndGet];
+}
+
+- (jlong)getAndIncrement {
+  return [((JavaUtilConcurrentAtomicAtomicLong *) nil_chk(atomicLong_)) getAndIncrement];
+}
+
+- (void)setWithLong:(jlong)v {
+  [((JavaUtilConcurrentAtomicAtomicLong *) nil_chk(atomicLong_)) setWithLong:v];
+}
+
+- (instancetype)initWithLong:(jlong)capture$0 {
+  val$init_ = capture$0;
+  if (self = [super init]) {
+    AMJavaThreads_$2_$2_setAndConsume_atomicLong_(self, [[JavaUtilConcurrentAtomicAtomicLong alloc] initWithLong:val$init_]);
+  }
+  return self;
+}
+
+- (void)dealloc {
+  RELEASE_(atomicLong_);
+  [super dealloc];
+}
+
+- (void)copyAllFieldsTo:(AMJavaThreads_$2_$2 *)other {
+  [super copyAllFieldsTo:other];
+  AMJavaThreads_$2_$2_set_atomicLong_(other, atomicLong_);
+  other->val$init_ = val$init_;
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "get", NULL, "J", 0x1, NULL },
+    { "incrementAndGet", NULL, "J", 0x1, NULL },
+    { "getAndIncrement", NULL, "J", 0x1, NULL },
+    { "setWithLong:", "set", "V", 0x1, NULL },
+    { "initWithLong:", "init", NULL, 0x0, NULL },
+  };
+  static const J2ObjcFieldInfo fields[] = {
+    { "atomicLong_", NULL, 0x0, "Ljava.util.concurrent.atomic.AtomicLong;", NULL,  },
+    { "val$init_", NULL, 0x1012, "J", NULL,  },
+  };
+  static const J2ObjcClassInfo _AMJavaThreads_$2_$2 = { 1, "$2", "im.actor.model.jvm", "JavaThreads$$2", 0x8000, 5, methods, 2, fields, 0, NULL};
+  return &_AMJavaThreads_$2_$2;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads_$2_$2)
+
+@implementation AMJavaThreads_$2_$3
+
+- (id)get {
+  return [((JavaLangThreadLocal *) nil_chk(tThreadLocal_)) get];
+}
+
+- (void)setWithId:(id)v {
+  [((JavaLangThreadLocal *) nil_chk(tThreadLocal_)) setWithId:v];
+}
+
+- (void)remove {
+  [((JavaLangThreadLocal *) nil_chk(tThreadLocal_)) remove];
+}
+
+- (instancetype)init {
+  if (self = [super init]) {
+    AMJavaThreads_$2_$3_setAndConsume_tThreadLocal_(self, [[JavaLangThreadLocal alloc] init]);
+  }
+  return self;
+}
+
+- (void)dealloc {
+  RELEASE_(tThreadLocal_);
+  [super dealloc];
+}
+
+- (void)copyAllFieldsTo:(AMJavaThreads_$2_$3 *)other {
+  [super copyAllFieldsTo:other];
+  AMJavaThreads_$2_$3_set_tThreadLocal_(other, tThreadLocal_);
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "get", NULL, "TT;", 0x1, NULL },
+    { "setWithId:", "set", "V", 0x1, NULL },
+    { "remove", NULL, "V", 0x1, NULL },
+    { "init", NULL, NULL, 0x0, NULL },
+  };
+  static const J2ObjcFieldInfo fields[] = {
+    { "tThreadLocal_", NULL, 0x2, "Ljava.lang.ThreadLocal;", NULL,  },
+  };
+  static const char *superclass_type_args[] = {"TT;"};
+  static const J2ObjcClassInfo _AMJavaThreads_$2_$3 = { 1, "$3", "im.actor.model.jvm", "JavaThreads$$2", 0x8000, 4, methods, 1, fields, 1, superclass_type_args};
+  return &_AMJavaThreads_$2_$3;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads_$2_$3)

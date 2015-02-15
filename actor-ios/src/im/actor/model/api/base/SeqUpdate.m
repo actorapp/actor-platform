@@ -6,11 +6,11 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/base/SeqUpdate.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiBaseSeqUpdate () {
@@ -64,15 +64,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseSeqUpdate, update_, IOSByteArray *)
   return self->update_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->seq_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->seq_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   ImActorModelApiBaseSeqUpdate_set_state_(self, [values getBytesWithInt:2]);
   self->updateHeader_ = [values getIntWithInt:3];
   ImActorModelApiBaseSeqUpdate_set_update_(self, [values getBytesWithInt:4]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
@@ -111,8 +111,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseSeqUpdate, update_, IOSByteArray *)
     { "getState", NULL, "[B", 0x1, NULL },
     { "getUpdateHeader", NULL, "I", 0x1, NULL },
     { "getUpdate", NULL, "[B", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -130,7 +130,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseSeqUpdate, update_, IOSByteArray *)
 
 ImActorModelApiBaseSeqUpdate *ImActorModelApiBaseSeqUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseSeqUpdate_init();
-  return ((ImActorModelApiBaseSeqUpdate *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiBaseSeqUpdate_class_(), data));
+  return ((ImActorModelApiBaseSeqUpdate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiBaseSeqUpdate alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiBaseSeqUpdate)

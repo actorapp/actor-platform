@@ -6,10 +6,9 @@
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/mtp/entity/UnsentMessage.h"
-#include "im/actor/model/util/StreamingUtils.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/OutputStream.h"
 
 @interface MTUnsentMessage () {
  @public
@@ -29,8 +28,8 @@
   return self;
 }
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream {
-  return [super initWithJavaIoInputStream:stream];
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
+  return [super initWithAMDataInput:stream];
 }
 
 - (jlong)getMessageId {
@@ -41,22 +40,18 @@
   return len_;
 }
 
-- (jint)getLength {
-  return 1 + 8 + 4;
-}
-
 - (jbyte)getHeader {
   return MTUnsentMessage_HEADER;
 }
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs {
-  AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(messageId_, bs);
-  AMStreamingUtils_writeIntWithInt_withJavaIoOutputStream_(len_, bs);
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
+  [((AMDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
+  [bs writeIntWithInt:len_];
 }
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs {
-  messageId_ = AMStreamingUtils_readLongWithJavaIoInputStream_(bs);
-  len_ = AMStreamingUtils_readIntWithJavaIoInputStream_(bs);
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
+  messageId_ = [((AMDataInput *) nil_chk(bs)) readLong];
+  len_ = [bs readInt];
 }
 
 - (NSString *)description {
@@ -72,13 +67,12 @@
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "initWithLong:withInt:", "UnsentMessage", NULL, 0x1, NULL },
-    { "initWithJavaIoInputStream:", "UnsentMessage", NULL, 0x1, "Ljava.io.IOException;" },
+    { "initWithAMDataInput:", "UnsentMessage", NULL, 0x1, "Ljava.io.IOException;" },
     { "getMessageId", NULL, "J", 0x1, NULL },
     { "getLen", NULL, "I", 0x1, NULL },
-    { "getLength", NULL, "I", 0x1, NULL },
     { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithJavaIoOutputStream:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithJavaIoInputStream:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -86,7 +80,7 @@
     { "messageId_", NULL, 0x2, "J", NULL,  },
     { "len_", NULL, 0x2, "I", NULL,  },
   };
-  static const J2ObjcClassInfo _MTUnsentMessage = { 1, "UnsentMessage", "im.actor.model.network.mtp.entity", NULL, 0x1, 9, methods, 3, fields, 0, NULL};
+  static const J2ObjcClassInfo _MTUnsentMessage = { 1, "UnsentMessage", "im.actor.model.network.mtp.entity", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
   return &_MTUnsentMessage;
 }
 

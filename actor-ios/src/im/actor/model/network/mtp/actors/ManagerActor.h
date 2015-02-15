@@ -8,22 +8,22 @@
 
 @class AMEndpoints;
 @class AMExponentialBackoff;
-@class DAActorRef;
 @class IOSByteArray;
-@class JavaUtilConcurrentAtomicAtomicInteger;
+@class ImActorModelDroidkitActorsActorRef;
+@class ImActorModelDroidkitActorsUtilsAtomicIntegerCompat;
 @class MTMTProto;
 @protocol AMConnection;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/actors/Actor.h"
-#include "com/droidkit/actors/ActorCreator.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/network/ConnectionCallback.h"
 #include "im/actor/model/network/ConnectionFactory.h"
 
-@interface MTManagerActor : DAActor {
+@interface MTManagerActor : ImActorModelDroidkitActorsActor {
 }
 
-+ (DAActorRef *)managerWithMTMTProto:(MTMTProto *)mtProto;
++ (ImActorModelDroidkitActorsActorRef *)managerWithMTMTProto:(MTMTProto *)mtProto;
 
 - (instancetype)initWithMTMTProto:(MTMTProto *)mtProto;
 
@@ -38,13 +38,13 @@ J2OBJC_STATIC_INIT(MTManagerActor)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT DAActorRef *MTManagerActor_managerWithMTMTProto_(MTMTProto *mtProto);
+FOUNDATION_EXPORT ImActorModelDroidkitActorsActorRef *MTManagerActor_managerWithMTMTProto_(MTMTProto *mtProto);
 
 FOUNDATION_EXPORT NSString *MTManagerActor_TAG_;
 J2OBJC_STATIC_FIELD_GETTER(MTManagerActor, TAG_, NSString *)
 
-FOUNDATION_EXPORT JavaUtilConcurrentAtomicAtomicInteger *MTManagerActor_NEXT_CONNECTION_;
-J2OBJC_STATIC_FIELD_GETTER(MTManagerActor, NEXT_CONNECTION_, JavaUtilConcurrentAtomicAtomicInteger *)
+FOUNDATION_EXPORT ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *MTManagerActor_NEXT_CONNECTION_;
+J2OBJC_STATIC_FIELD_GETTER(MTManagerActor, NEXT_CONNECTION_, ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *)
 CF_EXTERN_C_END
 
 typedef MTManagerActor ImActorModelNetworkMtpActorsManagerActor;
@@ -168,7 +168,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_ConnectionCreated)
 
-@interface MTManagerActor_$1 : NSObject < DAActorCreator > {
+@interface MTManagerActor_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
 }
 
 - (MTManagerActor *)create;

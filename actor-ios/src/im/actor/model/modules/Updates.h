@@ -7,16 +7,18 @@
 #define _ImActorModelModulesUpdates_H_
 
 @class AMMessenger;
-@class DAActorRef;
+@class ImActorModelDroidkitActorsActorRef;
 @class ImActorModelModulesUpdatesSequenceActor;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/actors/ActorCreator.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 
 @interface ImActorModelModulesUpdates : NSObject {
 }
 
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+
+- (void)run;
 
 - (AMMessenger *)getMessenger;
 
@@ -35,7 +37,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdates)
 
-@interface ImActorModelModulesUpdates_$1 : NSObject < DAActorCreator > {
+@interface ImActorModelModulesUpdates_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
 }
 
 - (ImActorModelModulesUpdatesSequenceActor *)create;

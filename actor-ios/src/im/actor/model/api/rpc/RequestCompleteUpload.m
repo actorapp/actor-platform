@@ -6,12 +6,12 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/UploadConfig.h"
 #include "im/actor/model/api/rpc/RequestCompleteUpload.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestCompleteUpload () {
@@ -57,17 +57,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCompleteUpload, config_, ImActorMod
   return self->crc32_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestCompleteUpload_set_config_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withIOSClass:ImActorModelApiUploadConfig_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiRpcRequestCompleteUpload_set_config_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiUploadConfig alloc] init] autorelease]]);
   self->blocksCount_ = [values getIntWithInt:2];
   self->crc32_ = [values getLongWithInt:3];
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->config_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withComDroidkitBserBserObject:self->config_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->config_];
   [writer writeIntWithInt:2 withInt:self->blocksCount_];
   [writer writeLongWithInt:3 withLong:self->crc32_];
 }
@@ -96,8 +96,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCompleteUpload, config_, ImActorMod
     { "getConfig", NULL, "Lim.actor.model.api.UploadConfig;", 0x1, NULL },
     { "getBlocksCount", NULL, "I", 0x1, NULL },
     { "getCrc32", NULL, "J", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -115,7 +115,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCompleteUpload, config_, ImActorMod
 
 ImActorModelApiRpcRequestCompleteUpload *ImActorModelApiRpcRequestCompleteUpload_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestCompleteUpload_init();
-  return ((ImActorModelApiRpcRequestCompleteUpload *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcRequestCompleteUpload_class_(), data));
+  return ((ImActorModelApiRpcRequestCompleteUpload *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestCompleteUpload alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestCompleteUpload)

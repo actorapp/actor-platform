@@ -6,14 +6,15 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/EncryptedAesKey.h"
 #include "im/actor/model/api/OutPeer.h"
 #include "im/actor/model/api/rpc/RequestSendEncryptedMessage.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 @interface ImActorModelApiRpcRequestSendEncryptedMessage () {
@@ -76,19 +77,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEncryptedMessage, ownKeys_, id<
   return self->ownKeys_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestSendEncryptedMessage_set_peer_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withIOSClass:ImActorModelApiOutPeer_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiRpcRequestSendEncryptedMessage_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiOutPeer alloc] init] autorelease]]);
   self->rid_ = [values getLongWithInt:3];
   ImActorModelApiRpcRequestSendEncryptedMessage_set_encryptedMessage_(self, [values getBytesWithInt:4]);
-  ImActorModelApiRpcRequestSendEncryptedMessage_set_keys_(self, [values getRepeatedObjWithInt:5 withIOSClass:ImActorModelApiEncryptedAesKey_class_()]);
-  ImActorModelApiRpcRequestSendEncryptedMessage_set_ownKeys_(self, [values getRepeatedObjWithInt:6 withIOSClass:ImActorModelApiEncryptedAesKey_class_()]);
+  id<JavaUtilList> _keys = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:5]; i++) {
+    [_keys addWithId:[[[ImActorModelApiEncryptedAesKey alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcRequestSendEncryptedMessage_set_keys_(self, [values getRepeatedObjWithInt:5 withJavaUtilList:_keys]);
+  id<JavaUtilList> _ownKeys = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:6]; i++) {
+    [_ownKeys addWithId:[[[ImActorModelApiEncryptedAesKey alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcRequestSendEncryptedMessage_set_ownKeys_(self, [values getRepeatedObjWithInt:6 withJavaUtilList:_ownKeys]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withComDroidkitBserBserObject:self->peer_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeLongWithInt:3 withLong:self->rid_];
   if (self->encryptedMessage_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
@@ -129,8 +138,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEncryptedMessage, ownKeys_, id<
     { "getEncryptedMessage", NULL, "[B", 0x1, NULL },
     { "getKeys", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getOwnKeys", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -150,7 +159,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEncryptedMessage, ownKeys_, id<
 
 ImActorModelApiRpcRequestSendEncryptedMessage *ImActorModelApiRpcRequestSendEncryptedMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSendEncryptedMessage_init();
-  return ((ImActorModelApiRpcRequestSendEncryptedMessage *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcRequestSendEncryptedMessage_class_(), data));
+  return ((ImActorModelApiRpcRequestSendEncryptedMessage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestSendEncryptedMessage alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSendEncryptedMessage)

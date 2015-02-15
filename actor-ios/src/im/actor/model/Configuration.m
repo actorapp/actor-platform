@@ -15,6 +15,7 @@
 
 @interface AMConfiguration () {
  @public
+  jboolean persistMessages_;
   id<ImActorModelConcurrencyMainThread> mainThread_;
   AMEndpoints *endpoints_;
   id<ImActorModelStoragePreferencesStorage> preferencesStorage_;
@@ -28,6 +29,14 @@ J2OBJC_FIELD_SETTER(AMConfiguration, preferencesStorage_, id<ImActorModelStorage
 J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEnginesFactory>)
 
 @implementation AMConfiguration
+
+- (jboolean)isPersistMessages {
+  return persistMessages_;
+}
+
+- (void)setPersistMessagesWithBoolean:(jboolean)persistMessages {
+  self->persistMessages_ = persistMessages;
+}
 
 - (id<ImActorModelStorageEnginesFactory>)getEnginesFactory {
   return enginesFactory_;
@@ -63,6 +72,7 @@ J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEngi
 
 - (instancetype)init {
   if (self = [super init]) {
+    persistMessages_ = NO;
     AMConfiguration_setAndConsume_mainThread_(self, [[ImActorModelConcurrencyNoMainThread alloc] init]);
     AMConfiguration_setAndConsume_preferencesStorage_(self, [[ImActorModelStorageMemoryPreferences alloc] init]);
     AMConfiguration_setAndConsume_enginesFactory_(self, [[ImActorModelStorageMemoryEnginesFactory alloc] init]);
@@ -80,6 +90,7 @@ J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEngi
 
 - (void)copyAllFieldsTo:(AMConfiguration *)other {
   [super copyAllFieldsTo:other];
+  other->persistMessages_ = persistMessages_;
   AMConfiguration_set_mainThread_(other, mainThread_);
   AMConfiguration_set_endpoints_(other, endpoints_);
   AMConfiguration_set_preferencesStorage_(other, preferencesStorage_);
@@ -88,6 +99,8 @@ J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEngi
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
+    { "isPersistMessages", NULL, "Z", 0x1, NULL },
+    { "setPersistMessagesWithBoolean:", "setPersistMessages", "V", 0x1, NULL },
     { "getEnginesFactory", NULL, "Lim.actor.model.storage.EnginesFactory;", 0x1, NULL },
     { "setEnginesFactoryWithImActorModelStorageEnginesFactory:", "setEnginesFactory", "V", 0x1, NULL },
     { "getPreferencesStorage", NULL, "Lim.actor.model.storage.PreferencesStorage;", 0x1, NULL },
@@ -99,12 +112,13 @@ J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEngi
     { "init", NULL, NULL, 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
+    { "persistMessages_", NULL, 0x2, "Z", NULL,  },
     { "mainThread_", NULL, 0x2, "Lim.actor.model.concurrency.MainThread;", NULL,  },
     { "endpoints_", NULL, 0x2, "Lim.actor.model.network.Endpoints;", NULL,  },
     { "preferencesStorage_", NULL, 0x2, "Lim.actor.model.storage.PreferencesStorage;", NULL,  },
     { "enginesFactory_", NULL, 0x2, "Lim.actor.model.storage.EnginesFactory;", NULL,  },
   };
-  static const J2ObjcClassInfo _AMConfiguration = { 1, "Configuration", "im.actor.model", NULL, 0x1, 9, methods, 4, fields, 0, NULL};
+  static const J2ObjcClassInfo _AMConfiguration = { 1, "Configuration", "im.actor.model", NULL, 0x1, 11, methods, 5, fields, 0, NULL};
   return &_AMConfiguration;
 }
 

@@ -6,9 +6,9 @@
 #ifndef _MTRpcError_H_
 #define _MTRpcError_H_
 
+@class AMDataInput;
+@class AMDataOutput;
 @class IOSByteArray;
-@class JavaIoInputStream;
-@class JavaIoOutputStream;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
@@ -24,7 +24,7 @@
   IOSByteArray *relatedData_;
 }
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream;
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
 
 - (instancetype)initWithInt:(jint)errorCode
                withNSString:(NSString *)errorTag
@@ -32,13 +32,11 @@
                 withBoolean:(jboolean)canTryAgain
               withByteArray:(IOSByteArray *)relatedData;
 
-- (jint)getLength;
-
 - (jbyte)getHeader;
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs;
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs;
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
 
 - (NSString *)description;
 

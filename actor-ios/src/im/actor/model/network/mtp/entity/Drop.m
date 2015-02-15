@@ -6,15 +6,14 @@
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/mtp/entity/Drop.h"
-#include "im/actor/model/util/StreamingUtils.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/OutputStream.h"
 
 @implementation MTDrop
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream {
-  return [super initWithJavaIoInputStream:stream];
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
+  return [super initWithAMDataInput:stream];
 }
 
 - (instancetype)initWithLong:(jlong)messageId
@@ -34,22 +33,18 @@
   return message_;
 }
 
-- (jint)getLength {
-  return 1 + 8 + AMStreamingUtils_stringSizeWithNSString_(message_);
-}
-
 - (jbyte)getHeader {
   return MTDrop_HEADER;
 }
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs {
-  AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(messageId_, bs);
-  AMStreamingUtils_writeProtoStringWithNSString_withJavaIoOutputStream_(message_, bs);
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
+  [((AMDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
+  [bs writeProtoStringWithNSString:message_];
 }
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs {
-  messageId_ = AMStreamingUtils_readLongWithJavaIoInputStream_(bs);
-  MTDrop_set_message_(self, AMStreamingUtils_readProtoStringWithJavaIoInputStream_(bs));
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
+  messageId_ = [((AMDataInput *) nil_chk(bs)) readLong];
+  MTDrop_set_message_(self, [bs readProtoString]);
 }
 
 - (NSString *)description {
@@ -69,14 +64,13 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaIoInputStream:", "Drop", NULL, 0x1, "Ljava.io.IOException;" },
+    { "initWithAMDataInput:", "Drop", NULL, 0x1, "Ljava.io.IOException;" },
     { "initWithLong:withNSString:", "Drop", NULL, 0x1, NULL },
     { "getMessageId", NULL, "J", 0x1, NULL },
     { "getMessage", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getLength", NULL, "I", 0x1, NULL },
     { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithJavaIoOutputStream:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithJavaIoInputStream:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -84,7 +78,7 @@
     { "messageId_", NULL, 0x1, "J", NULL,  },
     { "message_", NULL, 0x1, "Ljava.lang.String;", NULL,  },
   };
-  static const J2ObjcClassInfo _MTDrop = { 1, "Drop", "im.actor.model.network.mtp.entity", NULL, 0x1, 9, methods, 3, fields, 0, NULL};
+  static const J2ObjcClassInfo _MTDrop = { 1, "Drop", "im.actor.model.network.mtp.entity", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
   return &_MTDrop;
 }
 

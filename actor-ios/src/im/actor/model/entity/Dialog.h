@@ -6,17 +6,23 @@
 #ifndef _ImActorModelEntityDialog_H_
 #define _ImActorModelEntityDialog_H_
 
+@class IOSByteArray;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
 @class ImActorModelEntityAvatar;
 @class ImActorModelEntityDialog_ContentTypeEnum;
 @class ImActorModelEntityMessageStateEnum;
 @class ImActorModelEntityPeer;
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/mvvm/ListEngineItem.h"
 #include "java/lang/Enum.h"
 
-@interface ImActorModelEntityDialog : NSObject < ImActorModelMvvmListEngineItem > {
+@interface ImActorModelEntityDialog : ImActorModelDroidkitBserBserObject < ImActorModelMvvmListEngineItem > {
 }
+
++ (ImActorModelEntityDialog *)fromBytesWithByteArray:(IOSByteArray *)date;
 
 - (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
                                       withLong:(jlong)sortKey
@@ -28,14 +34,14 @@
                                   withNSString:(NSString *)text
         withImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)status
                                        withInt:(jint)senderId
-                                      withLong:(jlong)time
+                                      withLong:(jlong)date
                                        withInt:(jint)relatedUid;
 
 - (ImActorModelEntityPeer *)getPeer;
 
 - (jlong)getListId;
 
-- (jlong)getSortingKey;
+- (jlong)getListSortKey;
 
 - (NSString *)getDialogTitle;
 
@@ -43,11 +49,11 @@
 
 - (jlong)getRid;
 
-- (jlong)getSortKey;
+- (jlong)getSortDate;
 
 - (jint)getSenderId;
 
-- (jlong)getTime;
+- (jlong)getDate;
 
 - (ImActorModelEntityDialog_ContentTypeEnum *)getMessageType;
 
@@ -62,11 +68,17 @@
 - (ImActorModelEntityDialog *)editPeerInfoWithNSString:(NSString *)title
                           withImActorModelEntityAvatar:(ImActorModelEntityAvatar *)dialogAvatar;
 
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityDialog)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT ImActorModelEntityDialog *ImActorModelEntityDialog_fromBytesWithByteArray_(IOSByteArray *date);
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityDialog)
@@ -74,13 +86,32 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityDialog)
 typedef NS_ENUM(NSUInteger, ImActorModelEntityDialog_ContentType) {
   ImActorModelEntityDialog_ContentType_TEXT = 0,
   ImActorModelEntityDialog_ContentType_EMPTY = 1,
+  ImActorModelEntityDialog_ContentType_DOCUMENT = 2,
+  ImActorModelEntityDialog_ContentType_DOCUMENT_PHOTO = 3,
+  ImActorModelEntityDialog_ContentType_DOCUMENT_VIDEO = 4,
+  ImActorModelEntityDialog_ContentType_SERVICE = 5,
+  ImActorModelEntityDialog_ContentType_SERVICE_ADD = 6,
+  ImActorModelEntityDialog_ContentType_SERVICE_KICK = 7,
+  ImActorModelEntityDialog_ContentType_SERVICE_LEAVE = 8,
+  ImActorModelEntityDialog_ContentType_SERVICE_REGISTERED = 9,
+  ImActorModelEntityDialog_ContentType_SERVICE_CREATED = 10,
+  ImActorModelEntityDialog_ContentType_SERVICE_TITLE = 11,
+  ImActorModelEntityDialog_ContentType_SERVICE_AVATAR = 12,
+  ImActorModelEntityDialog_ContentType_SERVICE_AVATAR_REMOVED = 13,
 };
 
 @interface ImActorModelEntityDialog_ContentTypeEnum : JavaLangEnum < NSCopying > {
+ @public
+  jint value_;
 }
 
-- (instancetype)initWithNSString:(NSString *)__name
-                         withInt:(jint)__ordinal;
+- (instancetype)initWithInt:(jint)value
+               withNSString:(NSString *)__name
+                    withInt:(jint)__ordinal;
+
+- (jint)getValue;
+
++ (ImActorModelEntityDialog_ContentTypeEnum *)fromValueWithInt:(jint)value;
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *ImActorModelEntityDialog_ContentTypeEnum_values();
@@ -95,6 +126,8 @@ FOUNDATION_EXPORT ImActorModelEntityDialog_ContentTypeEnum *ImActorModelEntityDi
 FOUNDATION_EXPORT BOOL ImActorModelEntityDialog_ContentTypeEnum_initialized;
 J2OBJC_STATIC_INIT(ImActorModelEntityDialog_ContentTypeEnum)
 
+FOUNDATION_EXPORT ImActorModelEntityDialog_ContentTypeEnum *ImActorModelEntityDialog_ContentTypeEnum_fromValueWithInt_(jint value);
+
 FOUNDATION_EXPORT ImActorModelEntityDialog_ContentTypeEnum *ImActorModelEntityDialog_ContentTypeEnum_values_[];
 
 #define ImActorModelEntityDialog_ContentTypeEnum_TEXT ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_TEXT]
@@ -102,6 +135,42 @@ J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, TEXT)
 
 #define ImActorModelEntityDialog_ContentTypeEnum_EMPTY ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_EMPTY]
 J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, EMPTY)
+
+#define ImActorModelEntityDialog_ContentTypeEnum_DOCUMENT ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_DOCUMENT]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, DOCUMENT)
+
+#define ImActorModelEntityDialog_ContentTypeEnum_DOCUMENT_PHOTO ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_DOCUMENT_PHOTO]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, DOCUMENT_PHOTO)
+
+#define ImActorModelEntityDialog_ContentTypeEnum_DOCUMENT_VIDEO ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_DOCUMENT_VIDEO]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, DOCUMENT_VIDEO)
+
+#define ImActorModelEntityDialog_ContentTypeEnum_SERVICE ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_SERVICE]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, SERVICE)
+
+#define ImActorModelEntityDialog_ContentTypeEnum_SERVICE_ADD ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_SERVICE_ADD]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, SERVICE_ADD)
+
+#define ImActorModelEntityDialog_ContentTypeEnum_SERVICE_KICK ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_SERVICE_KICK]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, SERVICE_KICK)
+
+#define ImActorModelEntityDialog_ContentTypeEnum_SERVICE_LEAVE ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_SERVICE_LEAVE]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, SERVICE_LEAVE)
+
+#define ImActorModelEntityDialog_ContentTypeEnum_SERVICE_REGISTERED ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_SERVICE_REGISTERED]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, SERVICE_REGISTERED)
+
+#define ImActorModelEntityDialog_ContentTypeEnum_SERVICE_CREATED ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_SERVICE_CREATED]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, SERVICE_CREATED)
+
+#define ImActorModelEntityDialog_ContentTypeEnum_SERVICE_TITLE ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_SERVICE_TITLE]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, SERVICE_TITLE)
+
+#define ImActorModelEntityDialog_ContentTypeEnum_SERVICE_AVATAR ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_SERVICE_AVATAR]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, SERVICE_AVATAR)
+
+#define ImActorModelEntityDialog_ContentTypeEnum_SERVICE_AVATAR_REMOVED ImActorModelEntityDialog_ContentTypeEnum_values_[ImActorModelEntityDialog_ContentType_SERVICE_AVATAR_REMOVED]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityDialog_ContentTypeEnum, SERVICE_AVATAR_REMOVED)
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityDialog_ContentTypeEnum)
 

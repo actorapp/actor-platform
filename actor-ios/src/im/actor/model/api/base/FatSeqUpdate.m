@@ -6,15 +6,16 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/ContactRecord.h"
 #include "im/actor/model/api/Group.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/base/FatSeqUpdate.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 @interface ImActorModelApiBaseFatSeqUpdate () {
@@ -92,18 +93,30 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
   return self->contacts_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->seq_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->seq_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   ImActorModelApiBaseFatSeqUpdate_set_state_(self, [values getBytesWithInt:2]);
   self->updateHeader_ = [values getIntWithInt:3];
   ImActorModelApiBaseFatSeqUpdate_set_update_(self, [values getBytesWithInt:4]);
-  ImActorModelApiBaseFatSeqUpdate_set_users_(self, [values getRepeatedObjWithInt:5 withIOSClass:ImActorModelApiUser_class_()]);
-  ImActorModelApiBaseFatSeqUpdate_set_groups_(self, [values getRepeatedObjWithInt:6 withIOSClass:ImActorModelApiGroup_class_()]);
-  ImActorModelApiBaseFatSeqUpdate_set_contacts_(self, [values getRepeatedObjWithInt:7 withIOSClass:ImActorModelApiContactRecord_class_()]);
+  id<JavaUtilList> _users = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:5]; i++) {
+    [_users addWithId:[[[ImActorModelApiUser alloc] init] autorelease]];
+  }
+  ImActorModelApiBaseFatSeqUpdate_set_users_(self, [values getRepeatedObjWithInt:5 withJavaUtilList:_users]);
+  id<JavaUtilList> _groups = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:6]; i++) {
+    [_groups addWithId:[[[ImActorModelApiGroup alloc] init] autorelease]];
+  }
+  ImActorModelApiBaseFatSeqUpdate_set_groups_(self, [values getRepeatedObjWithInt:6 withJavaUtilList:_groups]);
+  id<JavaUtilList> _contacts = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:7]; i++) {
+    [_contacts addWithId:[[[ImActorModelApiContactRecord alloc] init] autorelease]];
+  }
+  ImActorModelApiBaseFatSeqUpdate_set_contacts_(self, [values getRepeatedObjWithInt:7 withJavaUtilList:_contacts]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
@@ -154,8 +167,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
     { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getGroups", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getContacts", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -176,7 +189,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
 
 ImActorModelApiBaseFatSeqUpdate *ImActorModelApiBaseFatSeqUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseFatSeqUpdate_init();
-  return ((ImActorModelApiBaseFatSeqUpdate *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiBaseFatSeqUpdate_class_(), data));
+  return ((ImActorModelApiBaseFatSeqUpdate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiBaseFatSeqUpdate alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiBaseFatSeqUpdate)

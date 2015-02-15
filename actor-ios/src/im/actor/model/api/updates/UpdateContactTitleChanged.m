@@ -6,11 +6,11 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/updates/UpdateContactTitleChanged.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateContactTitleChanged () {
@@ -49,13 +49,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactTitleChanged, title_, NSS
   return self->title_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->contactId_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:2];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->contactId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:2];
   ImActorModelApiUpdatesUpdateContactTitleChanged_set_title_(self, [values getStringWithInt:3]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:2 withInt:self->contactId_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:2 withInt:self->contactId_];
   if (self->title_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
@@ -84,8 +84,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactTitleChanged, title_, NSS
     { "init", "UpdateContactTitleChanged", NULL, 0x1, NULL },
     { "getContactId", NULL, "I", 0x1, NULL },
     { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -101,7 +101,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactTitleChanged, title_, NSS
 
 ImActorModelApiUpdatesUpdateContactTitleChanged *ImActorModelApiUpdatesUpdateContactTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateContactTitleChanged_init();
-  return ((ImActorModelApiUpdatesUpdateContactTitleChanged *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiUpdatesUpdateContactTitleChanged_class_(), data));
+  return ((ImActorModelApiUpdatesUpdateContactTitleChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateContactTitleChanged alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateContactTitleChanged)

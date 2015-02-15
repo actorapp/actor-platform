@@ -4,32 +4,103 @@
 //
 
 #include "J2ObjC_source.h"
-#include "com/droidkit/actors/ActorRef.h"
+#include "im/actor/model/Configuration.h"
 #include "im/actor/model/Messenger.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/entity/Message.h"
+#include "im/actor/model/entity/MessageState.h"
 #include "im/actor/model/entity/Peer.h"
+#include "im/actor/model/entity/PendingMessage.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/messages/ConversationActor.h"
 #include "im/actor/model/modules/messages/DialogsActor.h"
+#include "im/actor/model/mvvm/KeyValueEngine.h"
 #include "im/actor/model/mvvm/ListEngine.h"
+#include "im/actor/model/storage/EnginesFactory.h"
+#include "java/util/List.h"
 
+__attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilList_(ImActorModelModulesMessagesConversationActor *self, id<JavaUtilList> history);
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onInMessageWithImActorModelEntityMessage_(ImActorModelModulesMessagesConversationActor *self, ImActorModelEntityMessage *message);
+__attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong date);
+__attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong date);
+__attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReceivedWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid);
+__attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReadWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid);
 
 @interface ImActorModelModulesMessagesConversationActor () {
  @public
   AMMessenger *messenger_;
   ImActorModelEntityPeer *peer_;
   id<ImActorModelMvvmListEngine> messages_;
-  DAActorRef *dialogsActor_;
+  id<ImActorModelMvvmKeyValueEngine> pendingMessages_;
+  ImActorModelDroidkitActorsActorRef *dialogsActor_;
 }
 
+- (void)onHistoryLoadedWithJavaUtilList:(id<JavaUtilList>)history;
+
 - (void)onInMessageWithImActorModelEntityMessage:(ImActorModelEntityMessage *)message;
+
+- (void)onMessagePlainReadWithLong:(jlong)date;
+
+- (void)onMessagePlainReceivedWithLong:(jlong)date;
+
+- (void)onMessageEncryptedReceivedWithLong:(jlong)rid;
+
+- (void)onMessageEncryptedReadWithLong:(jlong)rid;
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, messenger_, AMMessenger *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, peer_, ImActorModelEntityPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, messages_, id<ImActorModelMvvmListEngine>)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, dialogsActor_, DAActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, pendingMessages_, id<ImActorModelMvvmKeyValueEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, dialogsActor_, ImActorModelDroidkitActorsActorRef *)
+
+@interface ImActorModelModulesMessagesConversationActor_HistoryLoaded () {
+ @public
+  id<JavaUtilList> messages_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor_HistoryLoaded, messages_, id<JavaUtilList>)
+
+@interface ImActorModelModulesMessagesConversationActor_MessageReceived () {
+ @public
+  jlong date_;
+}
+@end
+
+@interface ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived () {
+ @public
+  jlong rid_;
+}
+@end
+
+@interface ImActorModelModulesMessagesConversationActor_MessageRead () {
+ @public
+  jlong date_;
+}
+@end
+
+@interface ImActorModelModulesMessagesConversationActor_MessageEncryptedRead () {
+ @public
+  jlong rid_;
+}
+@end
+
+@interface ImActorModelModulesMessagesConversationActor_MessageSent () {
+ @public
+  jlong rid_;
+  jlong date_;
+}
+@end
+
+@interface ImActorModelModulesMessagesConversationActor_MessageDeleted () {
+ @public
+  id<JavaUtilList> rids_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor_MessageDeleted, rids_, id<JavaUtilList>)
 
 @implementation ImActorModelModulesMessagesConversationActor
 
@@ -44,23 +115,63 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, dialogsActor_,
 
 - (void)preStart {
   ImActorModelModulesMessagesConversationActor_set_messages_(self, [((AMMessenger *) nil_chk(messenger_)) getMessagesWithImActorModelEntityPeer:peer_]);
+  ImActorModelModulesMessagesConversationActor_set_pendingMessages_(self, [((id<ImActorModelStorageEnginesFactory>) nil_chk([((AMConfiguration *) nil_chk([messenger_ getConfiguration])) getEnginesFactory])) pendingMessagesWithImActorModelEntityPeer:peer_]);
   ImActorModelModulesMessagesConversationActor_set_dialogsActor_(self, [((ImActorModelModulesMessages *) nil_chk([messenger_ getMessagesModule])) getDialogsActor]);
 }
 
-- (void)onReceiveWithId:(id)message {
-  if ([message isKindOfClass:[ImActorModelEntityMessage class]]) {
-    ImActorModelModulesMessagesConversationActor_onInMessageWithImActorModelEntityMessage_(self, (ImActorModelEntityMessage *) check_class_cast(message, [ImActorModelEntityMessage class]));
-  }
+- (void)onHistoryLoadedWithJavaUtilList:(id<JavaUtilList>)history {
+  ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilList_(self, history);
 }
 
 - (void)onInMessageWithImActorModelEntityMessage:(ImActorModelEntityMessage *)message {
   ImActorModelModulesMessagesConversationActor_onInMessageWithImActorModelEntityMessage_(self, message);
 }
 
+- (void)onMessagePlainReadWithLong:(jlong)date {
+  ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(self, date);
+}
+
+- (void)onMessagePlainReceivedWithLong:(jlong)date {
+  ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong_(self, date);
+}
+
+- (void)onMessageEncryptedReceivedWithLong:(jlong)rid {
+  ImActorModelModulesMessagesConversationActor_onMessageEncryptedReceivedWithLong_(self, rid);
+}
+
+- (void)onMessageEncryptedReadWithLong:(jlong)rid {
+  ImActorModelModulesMessagesConversationActor_onMessageEncryptedReadWithLong_(self, rid);
+}
+
+- (void)onReceiveWithId:(id)message {
+  if ([message isKindOfClass:[ImActorModelEntityMessage class]]) {
+    ImActorModelModulesMessagesConversationActor_onInMessageWithImActorModelEntityMessage_(self, (ImActorModelEntityMessage *) check_class_cast(message, [ImActorModelEntityMessage class]));
+  }
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_MessageRead class]]) {
+    ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(self, [((ImActorModelModulesMessagesConversationActor_MessageRead *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageRead *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageRead class])))) getDate]);
+  }
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_MessageEncryptedRead class]]) {
+    ImActorModelModulesMessagesConversationActor_onMessageEncryptedReadWithLong_(self, [((ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageEncryptedRead class])))) getRid]);
+  }
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_MessageReceived class]]) {
+    ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong_(self, [((ImActorModelModulesMessagesConversationActor_MessageReceived *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageReceived *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageReceived class])))) getDate]);
+  }
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived class]]) {
+    ImActorModelModulesMessagesConversationActor_onMessageEncryptedReceivedWithLong_(self, [((ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived class])))) getRid]);
+  }
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_HistoryLoaded class]]) {
+    ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilList_(self, [((ImActorModelModulesMessagesConversationActor_HistoryLoaded *) nil_chk(((ImActorModelModulesMessagesConversationActor_HistoryLoaded *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_HistoryLoaded class])))) getMessages]);
+  }
+  else {
+    [self dropWithId:message];
+  }
+}
+
 - (void)dealloc {
   RELEASE_(messenger_);
   RELEASE_(peer_);
   RELEASE_(messages_);
+  RELEASE_(pendingMessages_);
   RELEASE_(dialogsActor_);
   [super dealloc];
 }
@@ -70,6 +181,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, dialogsActor_,
   ImActorModelModulesMessagesConversationActor_set_messenger_(other, messenger_);
   ImActorModelModulesMessagesConversationActor_set_peer_(other, peer_);
   ImActorModelModulesMessagesConversationActor_set_messages_(other, messages_);
+  ImActorModelModulesMessagesConversationActor_set_pendingMessages_(other, pendingMessages_);
   ImActorModelModulesMessagesConversationActor_set_dialogsActor_(other, dialogsActor_);
 }
 
@@ -77,27 +189,327 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, dialogsActor_,
   static const J2ObjcMethodInfo methods[] = {
     { "initWithImActorModelEntityPeer:withAMMessenger:", "ConversationActor", NULL, 0x1, NULL },
     { "preStart", NULL, "V", 0x1, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
+    { "onHistoryLoadedWithJavaUtilList:", "onHistoryLoaded", "V", 0x2, NULL },
     { "onInMessageWithImActorModelEntityMessage:", "onInMessage", "V", 0x2, NULL },
+    { "onMessagePlainReadWithLong:", "onMessagePlainRead", "V", 0x2, NULL },
+    { "onMessagePlainReceivedWithLong:", "onMessagePlainReceived", "V", 0x2, NULL },
+    { "onMessageEncryptedReceivedWithLong:", "onMessageEncryptedReceived", "V", 0x2, NULL },
+    { "onMessageEncryptedReadWithLong:", "onMessageEncryptedRead", "V", 0x2, NULL },
+    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "messenger_", NULL, 0x2, "Lim.actor.model.Messenger;", NULL,  },
     { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
     { "messages_", NULL, 0x2, "Lim.actor.model.mvvm.ListEngine;", NULL,  },
-    { "dialogsActor_", NULL, 0x2, "Lcom.droidkit.actors.ActorRef;", NULL,  },
+    { "pendingMessages_", NULL, 0x2, "Lim.actor.model.mvvm.KeyValueEngine;", NULL,  },
+    { "dialogsActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor = { 1, "ConversationActor", "im.actor.model.modules.messages", NULL, 0x1, 4, methods, 4, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor = { 1, "ConversationActor", "im.actor.model.modules.messages", NULL, 0x1, 9, methods, 5, fields, 0, NULL};
   return &_ImActorModelModulesMessagesConversationActor;
 }
 
 @end
+
+void ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilList_(ImActorModelModulesMessagesConversationActor *self, id<JavaUtilList> history) {
+}
 
 void ImActorModelModulesMessagesConversationActor_onInMessageWithImActorModelEntityMessage_(ImActorModelModulesMessagesConversationActor *self, ImActorModelEntityMessage *message) {
   if ([((id<ImActorModelMvvmListEngine>) nil_chk(self->messages_)) getValueWithLong:[((ImActorModelEntityMessage *) nil_chk(message)) getListId]] != nil) {
     return;
   }
   [self->messages_ addOrUpdateItemWithImActorModelMvvmListEngineItem:message];
-  [((DAActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[[ImActorModelModulesMessagesDialogsActor_InMessage alloc] initWithImActorModelEntityPeer:self->peer_ withImActorModelEntityMessage:message] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[[ImActorModelModulesMessagesDialogsActor_InMessage alloc] initWithImActorModelEntityPeer:self->peer_ withImActorModelEntityMessage:message] autorelease]];
+  if ([message getSenderId] == [((AMMessenger *) nil_chk(self->messenger_)) myUid]) {
+    [((id<ImActorModelMvvmKeyValueEngine>) nil_chk(self->pendingMessages_)) addOrUpdateItemWithImActorModelMvvmKeyValueItem:[[[ImActorModelEntityPendingMessage alloc] initWithLong:[message getRid] withLong:[message getDate]] autorelease]];
+  }
+}
+
+void ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong date) {
+  for (ImActorModelEntityPendingMessage * __strong p in nil_chk([((id<ImActorModelMvvmKeyValueEngine>) nil_chk(self->pendingMessages_)) getAll])) {
+    if ([((ImActorModelEntityPendingMessage *) nil_chk(p)) getDate] <= date) {
+      ImActorModelEntityMessage *msg = [((id<ImActorModelMvvmListEngine>) nil_chk(self->messages_)) getValueWithLong:[p getRid]];
+      if (msg != nil && ([msg getMessageState] == ImActorModelEntityMessageStateEnum_get_SENT() || [msg getMessageState] == ImActorModelEntityMessageStateEnum_get_RECEIVED())) {
+        [self->messages_ addOrUpdateItemWithImActorModelMvvmListEngineItem:[msg changeStateWithImActorModelEntityMessageStateEnum:ImActorModelEntityMessageStateEnum_get_READ()]];
+        [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[[ImActorModelModulesMessagesDialogsActor_MessageStateChanged alloc] initWithImActorModelEntityPeer:self->peer_ withLong:[p getRid] withImActorModelEntityMessageStateEnum:ImActorModelEntityMessageStateEnum_get_READ()] autorelease]];
+      }
+      [self->pendingMessages_ removeItemWithLong:[p getRid]];
+    }
+  }
+}
+
+void ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong date) {
+  for (ImActorModelEntityPendingMessage * __strong p in nil_chk([((id<ImActorModelMvvmKeyValueEngine>) nil_chk(self->pendingMessages_)) getAll])) {
+    if ([((ImActorModelEntityPendingMessage *) nil_chk(p)) getDate] <= date) {
+      ImActorModelEntityMessage *msg = [((id<ImActorModelMvvmListEngine>) nil_chk(self->messages_)) getValueWithLong:[p getRid]];
+      if (msg != nil && [msg getMessageState] == ImActorModelEntityMessageStateEnum_get_SENT()) {
+        [self->messages_ addOrUpdateItemWithImActorModelMvvmListEngineItem:[msg changeStateWithImActorModelEntityMessageStateEnum:ImActorModelEntityMessageStateEnum_get_RECEIVED()]];
+        [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[[ImActorModelModulesMessagesDialogsActor_MessageStateChanged alloc] initWithImActorModelEntityPeer:self->peer_ withLong:[p getRid] withImActorModelEntityMessageStateEnum:ImActorModelEntityMessageStateEnum_get_RECEIVED()] autorelease]];
+      }
+    }
+  }
+}
+
+void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReceivedWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid) {
+}
+
+void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReadWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid) {
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor)
+
+@implementation ImActorModelModulesMessagesConversationActor_HistoryLoaded
+
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)messages {
+  if (self = [super init]) {
+    ImActorModelModulesMessagesConversationActor_HistoryLoaded_set_messages_(self, messages);
+  }
+  return self;
+}
+
+- (id<JavaUtilList>)getMessages {
+  return messages_;
+}
+
+- (void)dealloc {
+  RELEASE_(messages_);
+  [super dealloc];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor_HistoryLoaded *)other {
+  [super copyAllFieldsTo:other];
+  ImActorModelModulesMessagesConversationActor_HistoryLoaded_set_messages_(other, messages_);
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "initWithJavaUtilList:", "HistoryLoaded", NULL, 0x1, NULL },
+    { "getMessages", NULL, "Ljava.util.List;", 0x1, NULL },
+  };
+  static const J2ObjcFieldInfo fields[] = {
+    { "messages_", NULL, 0x2, "Ljava.util.List;", NULL,  },
+  };
+  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_HistoryLoaded = { 1, "HistoryLoaded", "im.actor.model.modules.messages", "ConversationActor", 0x9, 2, methods, 1, fields, 0, NULL};
+  return &_ImActorModelModulesMessagesConversationActor_HistoryLoaded;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_HistoryLoaded)
+
+@implementation ImActorModelModulesMessagesConversationActor_MessageReceived
+
+- (instancetype)initWithLong:(jlong)date {
+  if (self = [super init]) {
+    self->date_ = date;
+  }
+  return self;
+}
+
+- (jlong)getDate {
+  return date_;
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor_MessageReceived *)other {
+  [super copyAllFieldsTo:other];
+  other->date_ = date_;
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "initWithLong:", "MessageReceived", NULL, 0x1, NULL },
+    { "getDate", NULL, "J", 0x1, NULL },
+  };
+  static const J2ObjcFieldInfo fields[] = {
+    { "date_", NULL, 0x2, "J", NULL,  },
+  };
+  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_MessageReceived = { 1, "MessageReceived", "im.actor.model.modules.messages", "ConversationActor", 0x9, 2, methods, 1, fields, 0, NULL};
+  return &_ImActorModelModulesMessagesConversationActor_MessageReceived;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageReceived)
+
+@implementation ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived
+
+- (instancetype)initWithLong:(jlong)rid {
+  if (self = [super init]) {
+    self->rid_ = rid;
+  }
+  return self;
+}
+
+- (jlong)getRid {
+  return rid_;
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived *)other {
+  [super copyAllFieldsTo:other];
+  other->rid_ = rid_;
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "initWithLong:", "MessageEncryptedReceived", NULL, 0x1, NULL },
+    { "getRid", NULL, "J", 0x1, NULL },
+  };
+  static const J2ObjcFieldInfo fields[] = {
+    { "rid_", NULL, 0x2, "J", NULL,  },
+  };
+  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived = { 1, "MessageEncryptedReceived", "im.actor.model.modules.messages", "ConversationActor", 0x9, 2, methods, 1, fields, 0, NULL};
+  return &_ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived)
+
+@implementation ImActorModelModulesMessagesConversationActor_MessageRead
+
+- (instancetype)initWithLong:(jlong)date {
+  if (self = [super init]) {
+    self->date_ = date;
+  }
+  return self;
+}
+
+- (jlong)getDate {
+  return date_;
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor_MessageRead *)other {
+  [super copyAllFieldsTo:other];
+  other->date_ = date_;
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "initWithLong:", "MessageRead", NULL, 0x1, NULL },
+    { "getDate", NULL, "J", 0x1, NULL },
+  };
+  static const J2ObjcFieldInfo fields[] = {
+    { "date_", NULL, 0x2, "J", NULL,  },
+  };
+  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_MessageRead = { 1, "MessageRead", "im.actor.model.modules.messages", "ConversationActor", 0x9, 2, methods, 1, fields, 0, NULL};
+  return &_ImActorModelModulesMessagesConversationActor_MessageRead;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageRead)
+
+@implementation ImActorModelModulesMessagesConversationActor_MessageEncryptedRead
+
+- (instancetype)initWithLong:(jlong)rid {
+  if (self = [super init]) {
+    self->rid_ = rid;
+  }
+  return self;
+}
+
+- (jlong)getRid {
+  return rid_;
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *)other {
+  [super copyAllFieldsTo:other];
+  other->rid_ = rid_;
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "initWithLong:", "MessageEncryptedRead", NULL, 0x1, NULL },
+    { "getRid", NULL, "J", 0x1, NULL },
+  };
+  static const J2ObjcFieldInfo fields[] = {
+    { "rid_", NULL, 0x2, "J", NULL,  },
+  };
+  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_MessageEncryptedRead = { 1, "MessageEncryptedRead", "im.actor.model.modules.messages", "ConversationActor", 0x9, 2, methods, 1, fields, 0, NULL};
+  return &_ImActorModelModulesMessagesConversationActor_MessageEncryptedRead;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageEncryptedRead)
+
+@implementation ImActorModelModulesMessagesConversationActor_MessageSent
+
+- (instancetype)initWithLong:(jlong)rid
+                    withLong:(jlong)date {
+  if (self = [super init]) {
+    self->rid_ = rid;
+    self->date_ = date;
+  }
+  return self;
+}
+
+- (jlong)getDate {
+  return date_;
+}
+
+- (jlong)getRid {
+  return rid_;
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor_MessageSent *)other {
+  [super copyAllFieldsTo:other];
+  other->rid_ = rid_;
+  other->date_ = date_;
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "initWithLong:withLong:", "MessageSent", NULL, 0x1, NULL },
+    { "getDate", NULL, "J", 0x1, NULL },
+    { "getRid", NULL, "J", 0x1, NULL },
+  };
+  static const J2ObjcFieldInfo fields[] = {
+    { "rid_", NULL, 0x2, "J", NULL,  },
+    { "date_", NULL, 0x2, "J", NULL,  },
+  };
+  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_MessageSent = { 1, "MessageSent", "im.actor.model.modules.messages", "ConversationActor", 0x9, 3, methods, 2, fields, 0, NULL};
+  return &_ImActorModelModulesMessagesConversationActor_MessageSent;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageSent)
+
+@implementation ImActorModelModulesMessagesConversationActor_MessageDeleted
+
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)rids {
+  if (self = [super init]) {
+    ImActorModelModulesMessagesConversationActor_MessageDeleted_set_rids_(self, rids);
+  }
+  return self;
+}
+
+- (id<JavaUtilList>)getRids {
+  return rids_;
+}
+
+- (void)dealloc {
+  RELEASE_(rids_);
+  [super dealloc];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor_MessageDeleted *)other {
+  [super copyAllFieldsTo:other];
+  ImActorModelModulesMessagesConversationActor_MessageDeleted_set_rids_(other, rids_);
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "initWithJavaUtilList:", "MessageDeleted", NULL, 0x1, NULL },
+    { "getRids", NULL, "Ljava.util.List;", 0x1, NULL },
+  };
+  static const J2ObjcFieldInfo fields[] = {
+    { "rids_", NULL, 0x2, "Ljava.util.List;", NULL,  },
+  };
+  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_MessageDeleted = { 1, "MessageDeleted", "im.actor.model.modules.messages", "ConversationActor", 0x9, 2, methods, 1, fields, 0, NULL};
+  return &_ImActorModelModulesMessagesConversationActor_MessageDeleted;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageDeleted)

@@ -6,27 +6,33 @@
 #ifndef _ImActorModelEntityMessage_H_
 #define _ImActorModelEntityMessage_H_
 
+@class IOSByteArray;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
 @class ImActorModelEntityContentAbsContent;
 @class ImActorModelEntityMessageStateEnum;
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/mvvm/ListEngineItem.h"
 
-@interface ImActorModelEntityMessage : NSObject < ImActorModelMvvmListEngineItem > {
+@interface ImActorModelEntityMessage : ImActorModelDroidkitBserBserObject < ImActorModelMvvmListEngineItem > {
 }
 
++ (ImActorModelEntityMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
+
 - (instancetype)initWithLong:(jlong)rid
-                    withLong:(jlong)sortKey
-                    withLong:(jlong)time
+                    withLong:(jlong)sortDate
+                    withLong:(jlong)date
                      withInt:(jint)senderId
 withImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)messageState
 withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content;
 
 - (jlong)getRid;
 
-- (jlong)getSortKey;
+- (jlong)getSortDate;
 
-- (jlong)getTime;
+- (jlong)getDate;
 
 - (jint)getSenderId;
 
@@ -36,17 +42,23 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
 
 - (ImActorModelEntityMessage *)changeStateWithImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)messageState;
 
-- (ImActorModelEntityMessage *)changeTimeWithLong:(jlong)time;
+- (ImActorModelEntityMessage *)changeDateWithLong:(jlong)date;
 
 - (jlong)getListId;
 
-- (jlong)getSortingKey;
+- (jlong)getListSortKey;
+
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityMessage)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT ImActorModelEntityMessage *ImActorModelEntityMessage_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityMessage)

@@ -4,7 +4,7 @@
 //
 
 #include "J2ObjC_source.h"
-#include "com/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/network/ActorApi.h"
 #include "im/actor/model/network/ActorApiCallback.h"
 #include "im/actor/model/network/AuthKeyStorage.h"
@@ -15,11 +15,11 @@
 
 @interface AMActorApi () {
  @public
-  DAActorRef *apiBroker_;
+  ImActorModelDroidkitActorsActorRef *apiBroker_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DAActorRef *)
+J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, ImActorModelDroidkitActorsActorRef *)
 
 @implementation AMActorApi
 
@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DAActorRef *)
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
-  [((DAActorRef *) nil_chk(apiBroker_)) sendWithId:[[[ImActorModelNetworkApiApiBroker_PerformRequest alloc] initWithImActorModelNetworkParserRequest:request withAMRpcCallback:callback] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk(apiBroker_)) sendWithId:[[[ImActorModelNetworkApiApiBroker_PerformRequest alloc] initWithImActorModelNetworkParserRequest:request withAMRpcCallback:callback] autorelease]];
 }
 
 - (void)dealloc {
@@ -53,7 +53,7 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DAActorRef *)
     { "requestWithImActorModelNetworkParserRequest:withAMRpcCallback:", "request", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "apiBroker_", NULL, 0x2, "Lcom.droidkit.actors.ActorRef;", NULL,  },
+    { "apiBroker_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
   };
   static const J2ObjcClassInfo _AMActorApi = { 1, "ActorApi", "im.actor.model.network", NULL, 0x1, 2, methods, 1, fields, 0, NULL};
   return &_AMActorApi;

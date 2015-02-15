@@ -8,10 +8,9 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/mtp/entity/ProtoMessage.h"
 #include "im/actor/model/network/mtp/entity/ProtoObject.h"
-#include "im/actor/model/util/StreamingUtils.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/OutputStream.h"
 
 @interface MTProtoMessage () {
  @public
@@ -41,23 +40,19 @@ J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
   return payload_;
 }
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream {
-  return [super initWithJavaIoInputStream:stream];
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
+  return [super initWithAMDataInput:stream];
 }
 
-- (void)writeObjectWithJavaIoOutputStream:(JavaIoOutputStream *)bs {
-  AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(messageId_, bs);
-  AMStreamingUtils_writeProtoBytesWithByteArray_withJavaIoOutputStream_(payload_, bs);
+- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs {
+  [((AMDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
+  [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
-- (MTProtoObject *)readObjectWithJavaIoInputStream:(JavaIoInputStream *)bs {
-  messageId_ = AMStreamingUtils_readLongWithJavaIoInputStream_(bs);
-  MTProtoMessage_set_payload_(self, AMStreamingUtils_readProtoBytesWithJavaIoInputStream_(bs));
+- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs {
+  messageId_ = [((AMDataInput *) nil_chk(bs)) readLong];
+  MTProtoMessage_set_payload_(self, [bs readProtoBytes]);
   return self;
-}
-
-- (jint)getLength {
-  return 8 + AMStreamingUtils_varintSizeWithLong_(((IOSByteArray *) nil_chk(payload_))->size_) + payload_->size_;
 }
 
 - (NSString *)description {
@@ -80,17 +75,16 @@ J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
     { "initWithLong:withByteArray:", "ProtoMessage", NULL, 0x1, NULL },
     { "getMessageId", NULL, "J", 0x1, NULL },
     { "getPayload", NULL, "[B", 0x1, NULL },
-    { "initWithJavaIoInputStream:", "ProtoMessage", NULL, 0x1, "Ljava.io.IOException;" },
-    { "writeObjectWithJavaIoOutputStream:", "writeObject", "V", 0x1, "Ljava.io.IOException;" },
-    { "readObjectWithJavaIoInputStream:", "readObject", "Lim.actor.model.network.mtp.entity.ProtoObject;", 0x1, "Ljava.io.IOException;" },
-    { "getLength", NULL, "I", 0x1, NULL },
+    { "initWithAMDataInput:", "ProtoMessage", NULL, 0x1, "Ljava.io.IOException;" },
+    { "writeObjectWithAMDataOutput:", "writeObject", "V", 0x1, "Ljava.io.IOException;" },
+    { "readObjectWithAMDataInput:", "readObject", "Lim.actor.model.network.mtp.entity.ProtoObject;", 0x1, "Ljava.io.IOException;" },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "messageId_", NULL, 0x2, "J", NULL,  },
     { "payload_", NULL, 0x2, "[B", NULL,  },
   };
-  static const J2ObjcClassInfo _MTProtoMessage = { 1, "ProtoMessage", "im.actor.model.network.mtp.entity", NULL, 0x1, 8, methods, 2, fields, 0, NULL};
+  static const J2ObjcClassInfo _MTProtoMessage = { 1, "ProtoMessage", "im.actor.model.network.mtp.entity", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
   return &_MTProtoMessage;
 }
 

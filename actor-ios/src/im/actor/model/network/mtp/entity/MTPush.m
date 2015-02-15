@@ -7,10 +7,9 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/mtp/entity/MTPush.h"
-#include "im/actor/model/util/StreamingUtils.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/OutputStream.h"
 
 @interface MTMTPush () {
  @public
@@ -22,28 +21,24 @@ J2OBJC_FIELD_SETTER(MTMTPush, payload_, IOSByteArray *)
 
 @implementation MTMTPush
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream {
-  return [super initWithJavaIoInputStream:stream];
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
+  return [super initWithAMDataInput:stream];
 }
 
 - (IOSByteArray *)getPayload {
   return payload_;
 }
 
-- (jint)getLength {
-  return 1 + ((IOSByteArray *) nil_chk(payload_))->size_;
-}
-
 - (jbyte)getHeader {
   return MTMTPush_HEADER;
 }
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs {
-  AMStreamingUtils_writeProtoBytesWithByteArray_withJavaIoOutputStream_(payload_, bs);
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
+  [((AMDataOutput *) nil_chk(bs)) writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs {
-  MTMTPush_set_payload_(self, AMStreamingUtils_readProtoBytesWithJavaIoInputStream_(bs));
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
+  MTMTPush_set_payload_(self, [((AMDataInput *) nil_chk(bs)) readProtoBytes]);
 }
 
 - (NSString *)description {
@@ -62,19 +57,18 @@ J2OBJC_FIELD_SETTER(MTMTPush, payload_, IOSByteArray *)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaIoInputStream:", "MTPush", NULL, 0x1, "Ljava.io.IOException;" },
+    { "initWithAMDataInput:", "MTPush", NULL, 0x1, "Ljava.io.IOException;" },
     { "getPayload", NULL, "[B", 0x1, NULL },
-    { "getLength", NULL, "I", 0x1, NULL },
     { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithJavaIoOutputStream:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithJavaIoInputStream:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTMTPush_HEADER },
     { "payload_", NULL, 0x2, "[B", NULL,  },
   };
-  static const J2ObjcClassInfo _MTMTPush = { 1, "MTPush", "im.actor.model.network.mtp.entity", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
+  static const J2ObjcClassInfo _MTMTPush = { 1, "MTPush", "im.actor.model.network.mtp.entity", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
   return &_MTMTPush;
 }
 

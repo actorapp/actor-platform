@@ -8,10 +8,9 @@
 #include "im/actor/model/network/mtp/entity/ProtoMessage.h"
 #include "im/actor/model/network/mtp/entity/ProtoObject.h"
 #include "im/actor/model/network/mtp/entity/ProtoPackage.h"
-#include "im/actor/model/util/StreamingUtils.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/OutputStream.h"
 
 @interface MTProtoPackage () {
  @public
@@ -25,8 +24,8 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 
 @implementation MTProtoPackage
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream {
-  return [super initWithJavaIoInputStream:stream];
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
+  return [super initWithAMDataInput:stream];
 }
 
 - (instancetype)initWithLong:(jlong)authId
@@ -52,21 +51,17 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
   return payload_;
 }
 
-- (void)writeObjectWithJavaIoOutputStream:(JavaIoOutputStream *)bs {
-  AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(authId_, bs);
-  AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(sessionId_, bs);
-  [((MTProtoMessage *) nil_chk(payload_)) writeObjectWithJavaIoOutputStream:bs];
+- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs {
+  [((AMDataOutput *) nil_chk(bs)) writeLongWithLong:authId_];
+  [bs writeLongWithLong:sessionId_];
+  [((MTProtoMessage *) nil_chk(payload_)) writeObjectWithAMDataOutput:bs];
 }
 
-- (MTProtoObject *)readObjectWithJavaIoInputStream:(JavaIoInputStream *)bs {
-  authId_ = AMStreamingUtils_readLongWithJavaIoInputStream_(bs);
-  sessionId_ = AMStreamingUtils_readLongWithJavaIoInputStream_(bs);
-  MTProtoPackage_setAndConsume_payload_(self, [[MTProtoMessage alloc] initWithJavaIoInputStream:bs]);
+- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs {
+  authId_ = [((AMDataInput *) nil_chk(bs)) readLong];
+  sessionId_ = [bs readLong];
+  MTProtoPackage_setAndConsume_payload_(self, [[MTProtoMessage alloc] initWithAMDataInput:bs]);
   return self;
-}
-
-- (jint)getLength {
-  return 8 + 8 + [((MTProtoMessage *) nil_chk(payload_)) getLength];
 }
 
 - (NSString *)description {
@@ -87,14 +82,13 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaIoInputStream:", "ProtoPackage", NULL, 0x1, "Ljava.io.IOException;" },
+    { "initWithAMDataInput:", "ProtoPackage", NULL, 0x1, "Ljava.io.IOException;" },
     { "initWithLong:withLong:withMTProtoMessage:", "ProtoPackage", NULL, 0x1, NULL },
     { "getAuthId", NULL, "J", 0x1, NULL },
     { "getSessionId", NULL, "J", 0x1, NULL },
     { "getPayload", NULL, "Lim.actor.model.network.mtp.entity.ProtoMessage;", 0x1, NULL },
-    { "writeObjectWithJavaIoOutputStream:", "writeObject", "V", 0x1, "Ljava.io.IOException;" },
-    { "readObjectWithJavaIoInputStream:", "readObject", "Lim.actor.model.network.mtp.entity.ProtoObject;", 0x1, "Ljava.io.IOException;" },
-    { "getLength", NULL, "I", 0x1, NULL },
+    { "writeObjectWithAMDataOutput:", "writeObject", "V", 0x1, "Ljava.io.IOException;" },
+    { "readObjectWithAMDataInput:", "readObject", "Lim.actor.model.network.mtp.entity.ProtoObject;", 0x1, "Ljava.io.IOException;" },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -102,7 +96,7 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
     { "sessionId_", NULL, 0x2, "J", NULL,  },
     { "payload_", NULL, 0x2, "Lim.actor.model.network.mtp.entity.ProtoMessage;", NULL,  },
   };
-  static const J2ObjcClassInfo _MTProtoPackage = { 1, "ProtoPackage", "im.actor.model.network.mtp.entity", NULL, 0x1, 9, methods, 3, fields, 0, NULL};
+  static const J2ObjcClassInfo _MTProtoPackage = { 1, "ProtoPackage", "im.actor.model.network.mtp.entity", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
   return &_MTProtoPackage;
 }
 

@@ -6,16 +6,16 @@
 #ifndef _ImActorModelApiDialog_H_
 #define _ImActorModelApiDialog_H_
 
-@class ComDroidkitBserBserValues;
-@class ComDroidkitBserBserWriter;
 @class ImActorModelApiMessageContent;
 @class ImActorModelApiMessageStateEnum;
 @class ImActorModelApiPeer;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiDialog : ComDroidkitBserBserObject {
+@interface ImActorModelApiDialog : ImActorModelDroidkitBserBserObject {
 }
 
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
@@ -45,9 +45,9 @@
 
 - (ImActorModelApiMessageStateEnum *)getState;
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values;
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer;
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
 
 @end
 

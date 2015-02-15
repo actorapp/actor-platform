@@ -6,7 +6,7 @@
 #ifndef _AMExponentialBackoff_H_
 #define _AMExponentialBackoff_H_
 
-@class JavaUtilConcurrentAtomicAtomicInteger;
+@class ImActorModelDroidkitActorsUtilsAtomicIntegerCompat;
 @class JavaUtilRandom;
 
 #include "J2ObjC_header.h"

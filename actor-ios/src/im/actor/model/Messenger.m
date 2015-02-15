@@ -60,6 +60,8 @@ J2OBJC_FIELD_SETTER(AMMessenger_$1, this$0_, AMMessenger *)
   AMMessenger_setAndConsume_users_(self, [[ImActorModelModulesUsers alloc] initWithAMMessenger:self]);
   AMMessenger_setAndConsume_messages_(self, [[ImActorModelModulesMessages alloc] initWithAMMessenger:self]);
   AMMessenger_setAndConsume_updates_(self, [[ImActorModelModulesUpdates alloc] initWithAMMessenger:self]);
+  [messages_ run];
+  [updates_ run];
 }
 
 - (jint)myUid {

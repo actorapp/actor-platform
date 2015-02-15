@@ -6,11 +6,11 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/rpc/ResponseGetFile.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcResponseGetFile () {
@@ -42,15 +42,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFile, payload_, IOSByteArray *)
   return self->payload_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiRpcResponseGetFile_set_payload_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:1]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiRpcResponseGetFile_set_payload_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:1]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->payload_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeBytesWithInt:1 withByteArray:self->payload_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeBytesWithInt:1 withByteArray:self->payload_];
 }
 
 - (jint)getHeaderKey {
@@ -73,8 +73,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFile, payload_, IOSByteArray *)
     { "initWithByteArray:", "ResponseGetFile", NULL, 0x1, NULL },
     { "init", "ResponseGetFile", NULL, 0x1, NULL },
     { "getPayload", NULL, "[B", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -89,7 +89,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFile, payload_, IOSByteArray *)
 
 ImActorModelApiRpcResponseGetFile *ImActorModelApiRpcResponseGetFile_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetFile_init();
-  return ((ImActorModelApiRpcResponseGetFile *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcResponseGetFile_class_(), data));
+  return ((ImActorModelApiRpcResponseGetFile *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseGetFile alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetFile)

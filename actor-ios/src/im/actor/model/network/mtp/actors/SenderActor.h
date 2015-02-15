@@ -6,8 +6,8 @@
 #ifndef _MTSenderActor_H_
 #define _MTSenderActor_H_
 
-@class DAActorRef;
 @class IOSByteArray;
+@class ImActorModelDroidkitActorsActorRef;
 @class JavaUtilHashMap;
 @class JavaUtilHashSet;
 @class MTMTProto;
@@ -16,17 +16,17 @@
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/actors/Actor.h"
-#include "com/droidkit/actors/ActorCreator.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 
 #define MTSenderActor_ACK_DELAY 10000
 #define MTSenderActor_ACK_THRESHOLD 10
 #define MTSenderActor_MAX_WORKLOAD_SIZE 1024
 
-@interface MTSenderActor : DAActor {
+@interface MTSenderActor : ImActorModelDroidkitActorsActor {
 }
 
-+ (DAActorRef *)senderActorWithMTMTProto:(MTMTProto *)proto;
++ (ImActorModelDroidkitActorsActorRef *)senderActorWithMTMTProto:(MTMTProto *)proto;
 
 - (instancetype)initWithMTMTProto:(MTMTProto *)proto;
 
@@ -40,7 +40,7 @@ J2OBJC_EMPTY_STATIC_INIT(MTSenderActor)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT DAActorRef *MTSenderActor_senderActorWithMTMTProto_(MTMTProto *proto);
+FOUNDATION_EXPORT ImActorModelDroidkitActorsActorRef *MTSenderActor_senderActorWithMTMTProto_(MTMTProto *proto);
 
 FOUNDATION_EXPORT NSString *MTSenderActor_TAG_;
 J2OBJC_STATIC_FIELD_GETTER(MTSenderActor, TAG_, NSString *)
@@ -141,7 +141,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_ForceAck)
 
-@interface MTSenderActor_$1 : NSObject < DAActorCreator > {
+@interface MTSenderActor_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
 }
 
 - (MTSenderActor *)create;

@@ -6,11 +6,13 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/actors/Actor.h"
-#include "com/droidkit/actors/ActorRef.h"
-#include "com/droidkit/actors/ActorSelection.h"
-#include "com/droidkit/actors/ActorSystem.h"
-#include "com/droidkit/actors/Props.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/actors/ActorSelection.h"
+#include "im/actor/model/droidkit/actors/ActorSystem.h"
+#include "im/actor/model/droidkit/actors/Props.h"
+#include "im/actor/model/droidkit/actors/conf/EnvConfig.h"
+#include "im/actor/model/droidkit/actors/utils/AtomicIntegerCompat.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/network/Connection.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
@@ -21,12 +23,10 @@
 #include "im/actor/model/network/mtp/actors/ReceiverActor.h"
 #include "im/actor/model/network/mtp/actors/SenderActor.h"
 #include "im/actor/model/network/mtp/entity/ProtoMessage.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "im/actor/model/util/ExponentialBackoff.h"
-#include "im/actor/model/util/StreamingUtils.h"
-#include "java/io/ByteArrayInputStream.h"
-#include "java/io/ByteArrayOutputStream.h"
 #include "java/io/IOException.h"
-#include "java/util/concurrent/atomic/AtomicInteger.h"
 
 __attribute__((unused)) static void MTManagerActor_onConnectionCreatedWithInt_withAMConnection_(MTManagerActor *self, jint id_, id<AMConnection> connection);
 __attribute__((unused)) static void MTManagerActor_onConnectionCreateFailure(MTManagerActor *self);
@@ -48,8 +48,8 @@ __attribute__((unused)) static void MTManagerActor_onOutMessageWithByteArray_wit
   id<AMConnection> currentConnection_;
   jboolean isCheckingConnections_;
   AMExponentialBackoff *backoff_;
-  DAActorRef *receiver_;
-  DAActorRef *sender_;
+  ImActorModelDroidkitActorsActorRef *receiver_;
+  ImActorModelDroidkitActorsActorRef *sender_;
 }
 
 - (void)onConnectionCreatedWithInt:(jint)id_
@@ -80,8 +80,8 @@ J2OBJC_FIELD_SETTER(MTManagerActor, mtProto_, MTMTProto *)
 J2OBJC_FIELD_SETTER(MTManagerActor, endpoints_, AMEndpoints *)
 J2OBJC_FIELD_SETTER(MTManagerActor, currentConnection_, id<AMConnection>)
 J2OBJC_FIELD_SETTER(MTManagerActor, backoff_, AMExponentialBackoff *)
-J2OBJC_FIELD_SETTER(MTManagerActor, receiver_, DAActorRef *)
-J2OBJC_FIELD_SETTER(MTManagerActor, sender_, DAActorRef *)
+J2OBJC_FIELD_SETTER(MTManagerActor, receiver_, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(MTManagerActor, sender_, ImActorModelDroidkitActorsActorRef *)
 
 @interface MTManagerActor_OutMessage () {
  @public
@@ -157,9 +157,9 @@ BOOL MTManagerActor_initialized = NO;
 @implementation MTManagerActor
 
 NSString * MTManagerActor_TAG_ = @"Manager";
-JavaUtilConcurrentAtomicAtomicInteger * MTManagerActor_NEXT_CONNECTION_;
+ImActorModelDroidkitActorsUtilsAtomicIntegerCompat * MTManagerActor_NEXT_CONNECTION_;
 
-+ (DAActorRef *)managerWithMTMTProto:(MTMTProto *)mtProto {
++ (ImActorModelDroidkitActorsActorRef *)managerWithMTMTProto:(MTMTProto *)mtProto {
   return MTManagerActor_managerWithMTMTProto_(mtProto);
 }
 
@@ -275,14 +275,14 @@ JavaUtilConcurrentAtomicAtomicInteger * MTManagerActor_NEXT_CONNECTION_;
 
 + (void)initialize {
   if (self == [MTManagerActor class]) {
-    JreStrongAssignAndConsume(&MTManagerActor_NEXT_CONNECTION_, nil, [[JavaUtilConcurrentAtomicAtomicInteger alloc] initWithInt:1]);
+    JreStrongAssign(&MTManagerActor_NEXT_CONNECTION_, nil, ImActorModelDroidkitActorsConfEnvConfig_createAtomicIntWithInt_(1));
     J2OBJC_SET_INITIALIZED(MTManagerActor)
   }
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "managerWithMTMTProto:", "manager", "Lcom.droidkit.actors.ActorRef;", 0x9, NULL },
+    { "managerWithMTMTProto:", "manager", "Lim.actor.model.droidkit.actors.ActorRef;", 0x9, NULL },
     { "initWithMTMTProto:", "ManagerActor", NULL, 0x1, NULL },
     { "preStart", NULL, "V", 0x1, NULL },
     { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
@@ -298,7 +298,7 @@ JavaUtilConcurrentAtomicAtomicInteger * MTManagerActor_NEXT_CONNECTION_;
   };
   static const J2ObjcFieldInfo fields[] = {
     { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &MTManagerActor_TAG_,  },
-    { "NEXT_CONNECTION_", NULL, 0x1a, "Ljava.util.concurrent.atomic.AtomicInteger;", &MTManagerActor_NEXT_CONNECTION_,  },
+    { "NEXT_CONNECTION_", NULL, 0x1a, "Lim.actor.model.droidkit.actors.utils.AtomicIntegerCompat;", &MTManagerActor_NEXT_CONNECTION_,  },
     { "mtProto_", NULL, 0x12, "Lim.actor.model.network.mtp.MTProto;", NULL,  },
     { "endpoints_", NULL, 0x12, "Lim.actor.model.network.Endpoints;", NULL,  },
     { "authId_", NULL, 0x12, "J", NULL,  },
@@ -307,8 +307,8 @@ JavaUtilConcurrentAtomicAtomicInteger * MTManagerActor_NEXT_CONNECTION_;
     { "currentConnection_", NULL, 0x2, "Lim.actor.model.network.Connection;", NULL,  },
     { "isCheckingConnections_", NULL, 0x2, "Z", NULL,  },
     { "backoff_", NULL, 0x12, "Lim.actor.model.util.ExponentialBackoff;", NULL,  },
-    { "receiver_", NULL, 0x2, "Lcom.droidkit.actors.ActorRef;", NULL,  },
-    { "sender_", NULL, 0x2, "Lcom.droidkit.actors.ActorRef;", NULL,  },
+    { "receiver_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
+    { "sender_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
   };
   static const J2ObjcClassInfo _MTManagerActor = { 1, "ManagerActor", "im.actor.model.network.mtp.actors", NULL, 0x1, 13, methods, 12, fields, 0, NULL};
   return &_MTManagerActor;
@@ -316,9 +316,9 @@ JavaUtilConcurrentAtomicAtomicInteger * MTManagerActor_NEXT_CONNECTION_;
 
 @end
 
-DAActorRef *MTManagerActor_managerWithMTMTProto_(MTMTProto *mtProto) {
+ImActorModelDroidkitActorsActorRef *MTManagerActor_managerWithMTMTProto_(MTMTProto *mtProto) {
   MTManagerActor_init();
-  return [((DAActorSystem *) nil_chk(DAActorSystem_system())) actorOfWithDAActorSelection:[[[DAActorSelection alloc] initWithDAProps:DAProps_createWithIOSClass_withDAActorCreator_(MTManagerActor_class_(), [[[MTManagerActor_$1 alloc] initWithMTMTProto:mtProto] autorelease]) withNSString:JreStrcat("$$", [((MTMTProto *) nil_chk(mtProto)) getActorPath], @"/manager")] autorelease]];
+  return [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsActorSelection:[[[ImActorModelDroidkitActorsActorSelection alloc] initWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(MTManagerActor_class_(), [[[MTManagerActor_$1 alloc] initWithMTMTProto:mtProto] autorelease]) withNSString:JreStrcat("$$", [((MTMTProto *) nil_chk(mtProto)) getActorPath], @"/manager")] autorelease]];
 }
 
 void MTManagerActor_onConnectionCreatedWithInt_withAMConnection_(MTManagerActor *self, jint id_, id<AMConnection> connection) {
@@ -340,7 +340,7 @@ void MTManagerActor_onConnectionCreatedWithInt_withAMConnection_(MTManagerActor 
   [((AMExponentialBackoff *) nil_chk(self->backoff_)) onSuccess];
   self->isCheckingConnections_ = NO;
   MTManagerActor_requestCheckConnection(self);
-  [((DAActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_ConnectionCreated alloc] init] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_ConnectionCreated alloc] init] autorelease]];
 }
 
 void MTManagerActor_onConnectionCreateFailure(MTManagerActor *self) {
@@ -382,7 +382,7 @@ void MTManagerActor_requestCheckConnectionWithLong_(MTManagerActor *self, jlong 
         AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$J$", @"Requesting connection creating in ", wait, @" ms"));
       }
     }
-    [((DAActorRef *) nil_chk([self self__])) sendOnceWithId:[[[MTManagerActor_PerformConnectionCheck alloc] init] autorelease] withLong:wait];
+    [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[[MTManagerActor_PerformConnectionCheck alloc] init] autorelease] withLong:wait];
   }
 }
 
@@ -393,22 +393,22 @@ void MTManagerActor_checkConnection(MTManagerActor *self) {
   if (self->currentConnection_ == nil) {
     AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Trying to create connection...");
     self->isCheckingConnections_ = YES;
-    jint id_ = [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(MTManagerActor_NEXT_CONNECTION_)) getAndIncrement];
+    jint id_ = [((ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *) nil_chk(MTManagerActor_NEXT_CONNECTION_)) getAndIncrement];
     AMConnectionFactory_createConnectionWithInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMConnectionFactory_CreateConnectionCallback_(id_, [((AMEndpoints *) nil_chk(self->endpoints_)) fetchEndpoint], [[[MTManagerActor_$2 alloc] initWithMTManagerActor:self withInt:id_] autorelease], [[[MTManagerActor_$3 alloc] initWithMTManagerActor:self withInt:id_] autorelease]);
   }
 }
 
 void MTManagerActor_onInMessageWithByteArray_withInt_withInt_(MTManagerActor *self, IOSByteArray *data, jint offset, jint len) {
-  JavaIoByteArrayInputStream *bis = [[[JavaIoByteArrayInputStream alloc] initWithByteArray:data withInt:offset withInt:len] autorelease];
+  AMDataInput *bis = [[[AMDataInput alloc] initWithByteArray:data withInt:offset withInt:len] autorelease];
   @try {
-    jlong authId = AMStreamingUtils_readLongWithJavaIoInputStream_(bis);
-    jlong sessionId = AMStreamingUtils_readLongWithJavaIoInputStream_(bis);
+    jlong authId = [bis readLong];
+    jlong sessionId = [bis readLong];
     if (authId != self->authId_ || sessionId != self->sessionId_) {
       @throw [[[JavaIoIOException alloc] initWithNSString:@"Incorrect header"] autorelease];
     }
-    jlong messageId = AMStreamingUtils_readLongWithJavaIoInputStream_(bis);
-    IOSByteArray *payload = AMStreamingUtils_readProtoBytesWithJavaIoInputStream_(bis);
-    [((DAActorRef *) nil_chk(self->receiver_)) sendWithId:[[[MTProtoMessage alloc] initWithLong:messageId withByteArray:payload] autorelease]];
+    jlong messageId = [bis readLong];
+    IOSByteArray *payload = [bis readProtoBytes];
+    [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->receiver_)) sendWithId:[[[MTProtoMessage alloc] initWithLong:messageId withByteArray:payload] autorelease]];
   }
   @catch (JavaIoIOException *e) {
     AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, @"Closing connection: incorrect package");
@@ -427,14 +427,10 @@ void MTManagerActor_onOutMessageWithByteArray_withInt_withInt_(MTManagerActor *s
     self->currentConnectionId_ = 0;
   }
   if (self->currentConnection_ != nil) {
-    JavaIoByteArrayOutputStream *bos = [[[JavaIoByteArrayOutputStream alloc] init] autorelease];
-    @try {
-      AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(self->authId_, bos);
-      AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(self->sessionId_, bos);
-      AMStreamingUtils_writeBytesWithByteArray_withInt_withInt_withJavaIoOutputStream_(data, offset, len, bos);
-    }
-    @catch (JavaIoIOException *e) {
-    }
+    AMDataOutput *bos = [[[AMDataOutput alloc] init] autorelease];
+    [bos writeLongWithLong:self->authId_];
+    [bos writeLongWithLong:self->sessionId_];
+    [bos writeBytesWithByteArray:data withInt:offset withInt:len];
     IOSByteArray *pkg = [bos toByteArray];
     [self->currentConnection_ postWithByteArray:pkg withInt:0 withInt:((IOSByteArray *) nil_chk(pkg))->size_];
   }
@@ -736,11 +732,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$1)
 - (void)onMessageWithByteArray:(IOSByteArray *)data
                        withInt:(jint)offset
                        withInt:(jint)len {
-  [((DAActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[MTManagerActor_InMessage alloc] initWithByteArray:data withInt:offset withInt:len] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[MTManagerActor_InMessage alloc] initWithByteArray:data withInt:offset withInt:len] autorelease]];
 }
 
 - (void)onConnectionDie {
-  [((DAActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[MTManagerActor_ConnectionDie alloc] initWithInt:val$id_] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[MTManagerActor_ConnectionDie alloc] initWithInt:val$id_] autorelease]];
 }
 
 - (instancetype)initWithMTManagerActor:(MTManagerActor *)outer$
@@ -782,11 +778,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$2)
 @implementation MTManagerActor_$3
 
 - (void)onConnectionCreatedWithAMConnection:(id<AMConnection>)connection {
-  [((DAActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[MTManagerActor_ConnectionCreated alloc] initWithInt:val$id_ withAMConnection:connection] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[MTManagerActor_ConnectionCreated alloc] initWithInt:val$id_ withAMConnection:connection] autorelease]];
 }
 
 - (void)onConnectionCreateError {
-  [((DAActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[MTManagerActor_ConnectionCreateFailure alloc] init] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[MTManagerActor_ConnectionCreateFailure alloc] init] autorelease]];
 }
 
 - (instancetype)initWithMTManagerActor:(MTManagerActor *)outer$

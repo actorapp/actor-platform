@@ -5,11 +5,12 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/UserKey.h"
 #include "im/actor/model/api/WrongKeysErrorData.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 @interface ImActorModelApiWrongKeysErrorData () {
@@ -53,14 +54,26 @@ J2OBJC_FIELD_SETTER(ImActorModelApiWrongKeysErrorData, invalidKeys_, id<JavaUtil
   return self->invalidKeys_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiWrongKeysErrorData_set_newKeys_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getRepeatedObjWithInt:1 withIOSClass:ImActorModelApiUserKey_class_()]);
-  ImActorModelApiWrongKeysErrorData_set_removedKeys_(self, [values getRepeatedObjWithInt:2 withIOSClass:ImActorModelApiUserKey_class_()]);
-  ImActorModelApiWrongKeysErrorData_set_invalidKeys_(self, [values getRepeatedObjWithInt:3 withIOSClass:ImActorModelApiUserKey_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  id<JavaUtilList> _newKeys = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
+    [_newKeys addWithId:[[[ImActorModelApiUserKey alloc] init] autorelease]];
+  }
+  ImActorModelApiWrongKeysErrorData_set_newKeys_(self, [values getRepeatedObjWithInt:1 withJavaUtilList:_newKeys]);
+  id<JavaUtilList> _removedKeys = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:2]; i++) {
+    [_removedKeys addWithId:[[[ImActorModelApiUserKey alloc] init] autorelease]];
+  }
+  ImActorModelApiWrongKeysErrorData_set_removedKeys_(self, [values getRepeatedObjWithInt:2 withJavaUtilList:_removedKeys]);
+  id<JavaUtilList> _invalidKeys = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:3]; i++) {
+    [_invalidKeys addWithId:[[[ImActorModelApiUserKey alloc] init] autorelease]];
+  }
+  ImActorModelApiWrongKeysErrorData_set_invalidKeys_(self, [values getRepeatedObjWithInt:3 withJavaUtilList:_invalidKeys]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->newKeys_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->newKeys_];
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->removedKeys_];
   [writer writeRepeatedObjWithInt:3 withJavaUtilList:self->invalidKeys_];
 }
@@ -86,8 +99,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiWrongKeysErrorData, invalidKeys_, id<JavaUtil
     { "getNewKeys", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getRemovedKeys", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getInvalidKeys", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "newKeys_", NULL, 0x2, "Ljava.util.List;", NULL,  },

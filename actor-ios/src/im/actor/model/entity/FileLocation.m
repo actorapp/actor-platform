@@ -4,8 +4,14 @@
 //
 
 #include "IOSClass.h"
+#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/FileLocation.h"
+#include "java/io/IOException.h"
 
 @interface ImActorModelEntityFileLocation () {
  @public
@@ -13,9 +19,14 @@
   jlong accessHash_;
   jint fileSize_;
 }
+- (instancetype)init;
 @end
 
 @implementation ImActorModelEntityFileLocation
+
++ (ImActorModelEntityFileLocation *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return ImActorModelEntityFileLocation_fromBytesWithByteArray_(data);
+}
 
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
@@ -26,6 +37,10 @@
     self->fileSize_ = fileSize;
   }
   return self;
+}
+
+- (instancetype)init {
+  return [super init];
 }
 
 - (jint)getFileSize {
@@ -52,6 +67,18 @@
   return (jint) (fileId_ ^ (URShift64(fileId_, 32)));
 }
 
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  fileId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
+  accessHash_ = [values getLongWithInt:2];
+  fileSize_ = [values getIntWithInt:3];
+}
+
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:fileId_];
+  [writer writeLongWithInt:2 withLong:accessHash_];
+  [writer writeIntWithInt:3 withInt:fileSize_];
+}
+
 - (void)copyAllFieldsTo:(ImActorModelEntityFileLocation *)other {
   [super copyAllFieldsTo:other];
   other->fileId_ = fileId_;
@@ -61,22 +88,31 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
+    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.FileLocation;", 0x9, "Ljava.io.IOException;" },
     { "initWithLong:withLong:withInt:", "FileLocation", NULL, 0x1, NULL },
+    { "init", "FileLocation", NULL, 0x2, NULL },
     { "getFileSize", NULL, "I", 0x1, NULL },
     { "getFileId", NULL, "J", 0x1, NULL },
     { "getAccessHash", NULL, "J", 0x1, NULL },
     { "isEqual:", "equals", "Z", 0x1, NULL },
     { "hash", "hashCode", "I", 0x1, NULL },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "fileId_", NULL, 0x12, "J", NULL,  },
-    { "accessHash_", NULL, 0x12, "J", NULL,  },
-    { "fileSize_", NULL, 0x12, "I", NULL,  },
+    { "fileId_", NULL, 0x2, "J", NULL,  },
+    { "accessHash_", NULL, 0x2, "J", NULL,  },
+    { "fileSize_", NULL, 0x2, "I", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityFileLocation = { 1, "FileLocation", "im.actor.model.entity", NULL, 0x1, 6, methods, 3, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelEntityFileLocation = { 1, "FileLocation", "im.actor.model.entity", NULL, 0x1, 10, methods, 3, fields, 0, NULL};
   return &_ImActorModelEntityFileLocation;
 }
 
 @end
+
+ImActorModelEntityFileLocation *ImActorModelEntityFileLocation_fromBytesWithByteArray_(IOSByteArray *data) {
+  ImActorModelEntityFileLocation_init();
+  return ((ImActorModelEntityFileLocation *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityFileLocation alloc] init] autorelease], data));
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityFileLocation)
