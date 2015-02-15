@@ -11,7 +11,7 @@ import im.actor.model.network.RpcException;
  * Actor for processing current user's online status.
  * TODO: Implement correct request cancelling and timeout
  */
-public class MyPresenceActor extends Actor {
+public class OwnPresenceActor extends Actor {
 
     private static final int RESEND_TIMEOUT = 60 * 1000; // 1 min
     private static final int TIMEOUT = 90 * 1000;
@@ -20,7 +20,7 @@ public class MyPresenceActor extends Actor {
 
     private Messenger messenger;
 
-    public MyPresenceActor(Messenger messenger) {
+    public OwnPresenceActor(Messenger messenger) {
         this.messenger = messenger;
     }
 

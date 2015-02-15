@@ -5,7 +5,7 @@ import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.entity.Peer;
-import im.actor.model.modules.presence.MyPresenceActor;
+import im.actor.model.modules.presence.OwnPresenceActor;
 import im.actor.model.modules.presence.PresenceActor;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
@@ -20,25 +20,25 @@ public class Presence {
 
     public Presence(final Messenger messenger) {
         this.messenger = messenger;
-        this.myPresence = system().actorOf(Props.create(MyPresenceActor.class, new ActorCreator<MyPresenceActor>() {
+        this.myPresence = system().actorOf(Props.create(OwnPresenceActor.class, new ActorCreator<OwnPresenceActor>() {
             @Override
-            public MyPresenceActor create() {
-                return new MyPresenceActor(messenger);
+            public OwnPresenceActor create() {
+                return new OwnPresenceActor(messenger);
             }
         }), "actor/presence/own");
         presence = PresenceActor.get(messenger);
     }
 
     public void run() {
-        myPresence.send(new MyPresenceActor.OnAppVisible());
+        myPresence.send(new OwnPresenceActor.OnAppVisible());
     }
 
     public void onAppVisible() {
-        myPresence.send(new MyPresenceActor.OnAppVisible());
+        myPresence.send(new OwnPresenceActor.OnAppVisible());
     }
 
     public void onAppHidden() {
-        myPresence.send(new MyPresenceActor.OnAppHidden());
+        myPresence.send(new OwnPresenceActor.OnAppHidden());
     }
 
     public void onConversationOpen(Peer peer) {

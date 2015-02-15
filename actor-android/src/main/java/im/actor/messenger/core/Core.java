@@ -17,11 +17,13 @@ import com.droidkit.images.cache.BitmapClasificator;
 import com.droidkit.images.loading.ImageLoader;
 
 import im.actor.messenger.core.images.*;
+import im.actor.messenger.model.TypingModel;
 import im.actor.messenger.model.UserPresence;
 import im.actor.messenger.storage.provider.AppEngineFactory;
 import im.actor.messenger.storage.provider.PropertiesProvider;
 import im.actor.model.Messenger;
 import im.actor.model.OnlineCallback;
+import im.actor.model.TypingCallback;
 import im.actor.model.concurrency.MainThread;
 import im.actor.model.droidkit.actors.conf.EnvConfig;
 import im.actor.model.jvm.JavaInit;
@@ -158,6 +160,22 @@ public class Core {
             @Override
             public void onGroupOnline(int gid, int count) {
 
+            }
+        });
+        configuration.setTypingCallback(new TypingCallback() {
+            @Override
+            public void onTypingStart(int uid) {
+                TypingModel.privateChatTyping(uid).change(true);
+            }
+
+            @Override
+            public void onTypingEnd(int uid) {
+                TypingModel.privateChatTyping(uid).change(false);
+            }
+
+            @Override
+            public void onGroupTyping(int gid, int[] uids) {
+                TypingModel.groupChatTyping(gid).change(uids);
             }
         });
         configuration.setEnginesFactory(new AppEngineFactory());

@@ -20,6 +20,7 @@ public class Configuration {
     private PreferencesStorage preferencesStorage = new MemoryPreferences();
     private EnginesFactory enginesFactory = new MemoryEnginesFactory();
     private OnlineCallback onlineCallback;
+    private TypingCallback typingCallback;
 
     public boolean isPersistMessages() {
         return persistMessages;
@@ -67,5 +68,13 @@ public class Configuration {
 
     public void setOnlineCallback(OnlineCallback onlineCallback) {
         this.onlineCallback = onlineCallback;
+    }
+
+    public TypingCallback getTypingCallback() {
+        return typingCallback;
+    }
+
+    public void setTypingCallback(TypingCallback typingCallback) {
+        this.typingCallback = typingCallback;
     }
 }
