@@ -5,7 +5,8 @@ import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.entity.Peer;
-import im.actor.model.modules.persistence.MyPresenceActor;
+import im.actor.model.modules.presence.MyPresenceActor;
+import im.actor.model.modules.presence.PresenceActor;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
@@ -15,6 +16,7 @@ import static im.actor.model.droidkit.actors.ActorSystem.system;
 public class Presence {
     private Messenger messenger;
     private ActorRef myPresence;
+    private ActorRef presence;
 
     public Presence(final Messenger messenger) {
         this.messenger = messenger;
@@ -23,7 +25,8 @@ public class Presence {
             public MyPresenceActor create() {
                 return new MyPresenceActor(messenger);
             }
-        }), "actor/presence");
+        }), "actor/presence/own");
+        presence = PresenceActor.get(messenger);
     }
 
     public void run() {
@@ -39,10 +42,14 @@ public class Presence {
     }
 
     public void onConversationOpen(Peer peer) {
-
+        presence.send(new PresenceActor.Subscribe(peer));
     }
 
     public void onConversationClosed(Peer peer) {
 
+    }
+
+    public void onNewSessionCreated() {
+        presence.send(new PresenceActor.SessionCreated());
     }
 }
