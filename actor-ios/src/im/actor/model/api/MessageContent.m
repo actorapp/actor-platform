@@ -26,7 +26,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiMessageContent, content_, IOSByteArray *)
               withByteArray:(IOSByteArray *)content {
   if (self = [super init]) {
     self->type_ = type;
-    ImActorModelApiMessageContent_set_content_(self, content);
+    self->content_ = content;
   }
   return self;
 }
@@ -45,7 +45,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiMessageContent, content_, IOSByteArray *)
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->type_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
-  ImActorModelApiMessageContent_set_content_(self, [values getBytesWithInt:2]);
+  self->content_ = [values getBytesWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -53,15 +53,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiMessageContent, content_, IOSByteArray *)
   [writer writeBytesWithInt:2 withByteArray:self->content_];
 }
 
-- (void)dealloc {
-  RELEASE_(content_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiMessageContent *)other {
   [super copyAllFieldsTo:other];
   other->type_ = type_;
-  ImActorModelApiMessageContent_set_content_(other, content_);
+  other->content_ = content_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

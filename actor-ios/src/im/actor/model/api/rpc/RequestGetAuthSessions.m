@@ -53,7 +53,7 @@
 
 ImActorModelApiRpcRequestGetAuthSessions *ImActorModelApiRpcRequestGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestGetAuthSessions_init();
-  return ((ImActorModelApiRpcRequestGetAuthSessions *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestGetAuthSessions alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestGetAuthSessions *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestGetAuthSessions alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetAuthSessions)

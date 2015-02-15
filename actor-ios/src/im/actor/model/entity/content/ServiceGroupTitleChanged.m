@@ -31,7 +31,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupTitleChanged, newTitle_
 
 - (instancetype)initWithNSString:(NSString *)newTitle {
   if (self = [super initWithNSString:@"Group theme changed"]) {
-    ImActorModelEntityContentServiceGroupTitleChanged_set_newTitle_(self, newTitle);
+    self->newTitle_ = newTitle;
   }
   return self;
 }
@@ -50,7 +50,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupTitleChanged, newTitle_
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   [super parseWithImActorModelDroidkitBserBserValues:values];
-  ImActorModelEntityContentServiceGroupTitleChanged_set_newTitle_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:10]);
+  newTitle_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:10];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -58,14 +58,9 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupTitleChanged, newTitle_
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:newTitle_];
 }
 
-- (void)dealloc {
-  RELEASE_(newTitle_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelEntityContentServiceGroupTitleChanged *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelEntityContentServiceGroupTitleChanged_set_newTitle_(other, newTitle_);
+  other->newTitle_ = newTitle_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -89,7 +84,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupTitleChanged, newTitle_
 
 ImActorModelEntityContentServiceGroupTitleChanged *ImActorModelEntityContentServiceGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentServiceGroupTitleChanged_init();
-  return ((ImActorModelEntityContentServiceGroupTitleChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityContentServiceGroupTitleChanged alloc] init] autorelease], data));
+  return ((ImActorModelEntityContentServiceGroupTitleChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupTitleChanged alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupTitleChanged)

@@ -99,7 +99,7 @@
 
 ImActorModelEntityContentPhotoContent *ImActorModelEntityContentPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentPhotoContent_init();
-  return ((ImActorModelEntityContentPhotoContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityContentPhotoContent alloc] init] autorelease], data));
+  return ((ImActorModelEntityContentPhotoContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentPhotoContent alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentPhotoContent)

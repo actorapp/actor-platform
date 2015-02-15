@@ -1,19 +1,41 @@
 package im.actor.model.modules.entity;
 
+import java.io.IOException;
+
 import im.actor.model.api.*;
+import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.entity.*;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.AvatarImage;
 import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.Sex;
 import im.actor.model.entity.User;
+import im.actor.model.entity.content.*;
+import im.actor.model.entity.content.FastThumb;
 
 /**
  * Created by ex3ndr on 08.02.15.
  */
 public class EntityConverter {
+
+    public static MessageState convert(im.actor.model.api.MessageState state) {
+        if (state == null) {
+            return MessageState.UNKNOWN;
+        }
+        switch (state) {
+            case READ:
+                return MessageState.READ;
+            case RECEIVED:
+                return MessageState.RECEIVED;
+            case SENT:
+                return MessageState.SENT;
+            default:
+                return MessageState.UNKNOWN;
+        }
+    }
 
     public static Avatar convert(im.actor.model.api.Avatar avatar) {
         if (avatar == null) {
@@ -70,5 +92,75 @@ public class EntityConverter {
 
     public static Peer convert(im.actor.model.api.Peer peer) {
         return new Peer(convert(peer.getType()), peer.getId());
+    }
+
+    public static AbsContent convert(im.actor.model.api.MessageContent content) {
+        try {
+            if (content.getType() == 0x01) {
+                im.actor.model.api.TextMessage textMessage = Bser.parse(new im.actor.model.api.TextMessage(),
+                        content.getContent());
+                return new TextContent(textMessage.getText());
+            } else if (content.getType() == 0x02) {
+                ServiceMessage serviceMessage = Bser.parse(new ServiceMessage(), content.getContent());
+                if (serviceMessage.getExtType() == 0x04) {
+                    // TODO: pass title
+                    return new ServiceGroupCreated("???");
+                } else if (serviceMessage.getExtType() == 0x05) {
+                    ServiceExChangedTitle title = Bser.parse(new ServiceExChangedTitle(), serviceMessage.getExt());
+                    return new ServiceGroupTitleChanged(title.getTitle());
+                } else if (serviceMessage.getExtType() == 0x06) {
+                    ServiceExChangedAvatar title = Bser.parse(new ServiceExChangedAvatar(), serviceMessage.getExt());
+                    return new ServiceGroupAvatarChanged(convert(title.getAvatar()));
+                } else if (serviceMessage.getExtType() == 0x01) {
+                    ServiceExUserAdded added = Bser.parse(new ServiceExUserAdded(), serviceMessage.getExt());
+                    return new ServiceGroupUserAdded(added.getAddedUid());
+                } else if (serviceMessage.getExtType() == 0x02) {
+                    ServiceExUserKicked added = Bser.parse(new ServiceExUserKicked(), serviceMessage.getExt());
+                    return new ServiceGroupUserKicked(added.getKickedUid());
+                } else if (serviceMessage.getExtType() == 0x03) {
+                    return new ServiceGroupUserLeave();
+                } else {
+                    return new ServiceContent(serviceMessage.getText());
+                }
+            } else if (content.getType() == 0x03) {
+                im.actor.model.api.FileMessage fileMessage = Bser.parse(new im.actor.model.api.FileMessage(),
+                        content.getContent());
+                String mimeType = fileMessage.getMimeType();
+                String name = fileMessage.getName();
+                im.actor.model.entity.content.FastThumb fastThumb = convert(fileMessage.getThumb());
+                FileLocation fileLocation = new FileLocation(fileMessage.getFileId(), fileMessage.getAccessHash(),
+                        fileMessage.getFileSize());
+                FileRemoteSource source = new FileRemoteSource(fileLocation);
+
+                if (fileMessage.getExtType() == 0x01) {
+                    try {
+                        FileExPhoto photo = Bser.parse(new FileExPhoto(), fileMessage.getExt());
+                        return new PhotoContent(source, mimeType, name, fastThumb, photo.getW(), photo.getH());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (fileMessage.getExtType() == 0x02) {
+                    try {
+                        FileExVideo video = Bser.parse(new FileExVideo(), fileMessage.getExt());
+                        return new VideoContent(source, mimeType, name, fastThumb,
+                                video.getDuration(), video.getW(), video.getH());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                return new DocumentContent(source, mimeType, name, fastThumb);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static FastThumb convert(im.actor.model.api.FastThumb fastThumb) {
+        if (fastThumb == null) {
+            return null;
+        }
+        return new FastThumb(fastThumb.getW(), fastThumb.getH(), fastThumb.getThumb());
     }
 }

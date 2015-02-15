@@ -112,7 +112,7 @@
 
 ImActorModelEntityContentVideoContent *ImActorModelEntityContentVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentVideoContent_init();
-  return ((ImActorModelEntityContentVideoContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityContentVideoContent alloc] init] autorelease], data));
+  return ((ImActorModelEntityContentVideoContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentVideoContent alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentVideoContent)

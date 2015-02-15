@@ -30,7 +30,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
 
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer {
   if (self = [super init]) {
-    ImActorModelApiUpdatesUpdateChatClear_set_peer_(self, peer);
+    self->peer_ = peer;
   }
   return self;
 }
@@ -44,12 +44,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiUpdatesUpdateChatClear_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiPeer alloc] init] autorelease]]);
+  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiPeer alloc] init]];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
 }
@@ -58,14 +58,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
   return ImActorModelApiUpdatesUpdateChatClear_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(peer_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateChatClear *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiUpdatesUpdateChatClear_set_peer_(other, peer_);
+  other->peer_ = peer_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -90,7 +85,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
 
 ImActorModelApiUpdatesUpdateChatClear *ImActorModelApiUpdatesUpdateChatClear_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateChatClear_init();
-  return ((ImActorModelApiUpdatesUpdateChatClear *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateChatClear alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateChatClear *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateChatClear alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateChatClear)

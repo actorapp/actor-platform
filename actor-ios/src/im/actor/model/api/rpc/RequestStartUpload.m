@@ -53,7 +53,7 @@
 
 ImActorModelApiRpcRequestStartUpload *ImActorModelApiRpcRequestStartUpload_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestStartUpload_init();
-  return ((ImActorModelApiRpcRequestStartUpload *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestStartUpload alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestStartUpload *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestStartUpload alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestStartUpload)

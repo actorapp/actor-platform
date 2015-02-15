@@ -8,14 +8,20 @@
 
 @class ImActorModelApiAvatar;
 @class ImActorModelApiAvatarImage;
+@class ImActorModelApiFastThumb;
 @class ImActorModelApiFileLocation;
+@class ImActorModelApiMessageContent;
+@class ImActorModelApiMessageStateEnum;
 @class ImActorModelApiPeer;
 @class ImActorModelApiPeerTypeEnum;
 @class ImActorModelApiSexEnum;
 @class ImActorModelApiUser;
 @class ImActorModelEntityAvatar;
 @class ImActorModelEntityAvatarImage;
+@class ImActorModelEntityContentAbsContent;
+@class ImActorModelEntityContentFastThumb;
 @class ImActorModelEntityFileLocation;
+@class ImActorModelEntityMessageStateEnum;
 @class ImActorModelEntityPeer;
 @class ImActorModelEntityPeerTypeEnum;
 @class ImActorModelEntitySexEnum;
@@ -25,6 +31,8 @@
 
 @interface ImActorModelModulesEntityEntityConverter : NSObject {
 }
+
++ (ImActorModelEntityMessageStateEnum *)convertWithImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state;
 
 + (ImActorModelEntityAvatar *)convertWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
 
@@ -41,6 +49,10 @@
 
 + (ImActorModelEntityPeer *)convertWithImActorModelApiPeer:(ImActorModelApiPeer *)peer;
 
++ (ImActorModelEntityContentAbsContent *)convertWithImActorModelApiMessageContent:(ImActorModelApiMessageContent *)content;
+
++ (ImActorModelEntityContentFastThumb *)convertWithImActorModelApiFastThumb:(ImActorModelApiFastThumb *)fastThumb;
+
 - (instancetype)init;
 
 @end
@@ -48,6 +60,8 @@
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesEntityEntityConverter)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT ImActorModelEntityMessageStateEnum *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_(ImActorModelApiMessageStateEnum *state);
 
 FOUNDATION_EXPORT ImActorModelEntityAvatar *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatar_(ImActorModelApiAvatar *avatar);
 
@@ -62,6 +76,10 @@ FOUNDATION_EXPORT ImActorModelEntityUser *ImActorModelModulesEntityEntityConvert
 FOUNDATION_EXPORT ImActorModelEntityPeerTypeEnum *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeerTypeEnum_(ImActorModelApiPeerTypeEnum *peerType);
 
 FOUNDATION_EXPORT ImActorModelEntityPeer *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(ImActorModelApiPeer *peer);
+
+FOUNDATION_EXPORT ImActorModelEntityContentAbsContent *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageContent_(ImActorModelApiMessageContent *content);
+
+FOUNDATION_EXPORT ImActorModelEntityContentFastThumb *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiFastThumb_(ImActorModelApiFastThumb *fastThumb);
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesEntityEntityConverter)

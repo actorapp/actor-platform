@@ -49,17 +49,17 @@ J2OBJC_FIELD_SETTER(AMMessenger_$1, this$0_, AMMessenger *)
 
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
   if (self = [super init]) {
-    AMMessenger_set_configuration_(self, configuration);
-    AMMessenger_setAndConsume_actorApi_(self, [[AMActorApi alloc] initWithAMEndpoints:[((AMConfiguration *) nil_chk(configuration)) getEndpoints] withAMAuthKeyStorage:[[[ImActorModelStoragePreferenceApiStorage alloc] initWithImActorModelStoragePreferencesStorage:[configuration getPreferencesStorage]] autorelease] withAMActorApiCallback:[[[AMMessenger_$1 alloc] initWithAMMessenger:self] autorelease]]);
-    AMMessenger_setAndConsume_auth_(self, [[ImActorModelModulesAuth alloc] initWithAMMessenger:self]);
+    self->configuration_ = configuration;
+    self->actorApi_ = [[AMActorApi alloc] initWithAMEndpoints:[((AMConfiguration *) nil_chk(configuration)) getEndpoints] withAMAuthKeyStorage:[[ImActorModelStoragePreferenceApiStorage alloc] initWithImActorModelStoragePreferencesStorage:[configuration getPreferencesStorage]] withAMActorApiCallback:[[AMMessenger_$1 alloc] initWithAMMessenger:self]];
+    self->auth_ = [[ImActorModelModulesAuth alloc] initWithAMMessenger:self];
   }
   return self;
 }
 
 - (void)onLoggedIn {
-  AMMessenger_setAndConsume_users_(self, [[ImActorModelModulesUsers alloc] initWithAMMessenger:self]);
-  AMMessenger_setAndConsume_messages_(self, [[ImActorModelModulesMessages alloc] initWithAMMessenger:self]);
-  AMMessenger_setAndConsume_updates_(self, [[ImActorModelModulesUpdates alloc] initWithAMMessenger:self]);
+  users_ = [[ImActorModelModulesUsers alloc] initWithAMMessenger:self];
+  messages_ = [[ImActorModelModulesMessages alloc] initWithAMMessenger:self];
+  updates_ = [[ImActorModelModulesUpdates alloc] initWithAMMessenger:self];
   [messages_ run];
   [updates_ run];
 }
@@ -104,24 +104,14 @@ J2OBJC_FIELD_SETTER(AMMessenger_$1, this$0_, AMMessenger *)
   return [((ImActorModelModulesAuth *) nil_chk(auth_)) getState];
 }
 
-- (void)dealloc {
-  RELEASE_(configuration_);
-  RELEASE_(auth_);
-  RELEASE_(users_);
-  RELEASE_(updates_);
-  RELEASE_(messages_);
-  RELEASE_(actorApi_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(AMMessenger *)other {
   [super copyAllFieldsTo:other];
-  AMMessenger_set_configuration_(other, configuration_);
-  AMMessenger_set_auth_(other, auth_);
-  AMMessenger_set_users_(other, users_);
-  AMMessenger_set_updates_(other, updates_);
-  AMMessenger_set_messages_(other, messages_);
-  AMMessenger_set_actorApi_(other, actorApi_);
+  other->configuration_ = configuration_;
+  other->auth_ = auth_;
+  other->users_ = users_;
+  other->updates_ = updates_;
+  other->messages_ = messages_;
+  other->actorApi_ = actorApi_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -173,18 +163,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessenger)
 }
 
 - (instancetype)initWithAMMessenger:(AMMessenger *)outer$ {
-  AMMessenger_$1_set_this$0_(self, outer$);
+  this$0_ = outer$;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(this$0_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(AMMessenger_$1 *)other {
   [super copyAllFieldsTo:other];
-  AMMessenger_$1_set_this$0_(other, this$0_);
+  other->this$0_ = this$0_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -21,7 +21,7 @@
               withByteArray:(IOSByteArray *)body {
   if (self = [super init]) {
     self->updateType_ = updateType;
-    MTPush_set_body_(self, body);
+    self->body_ = body;
   }
   return self;
 }
@@ -37,22 +37,17 @@
 
 - (void)readBodyWithAMDataInput:(AMDataInput *)bs {
   updateType_ = [((AMDataInput *) nil_chk(bs)) readInt];
-  MTPush_set_body_(self, [bs readProtoBytes]);
+  body_ = [bs readProtoBytes];
 }
 
 - (NSString *)description {
   return JreStrcat("$IC", @"Update[", updateType_, ']');
 }
 
-- (void)dealloc {
-  RELEASE_(body_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(MTPush *)other {
   [super copyAllFieldsTo:other];
   other->updateType_ = updateType_;
-  MTPush_set_body_(other, body_);
+  other->body_ = body_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

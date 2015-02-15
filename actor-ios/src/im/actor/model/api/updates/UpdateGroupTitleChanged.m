@@ -40,7 +40,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
     self->groupId_ = groupId;
     self->rid_ = rid;
     self->uid_ = uid;
-    ImActorModelApiUpdatesUpdateGroupTitleChanged_set_title_(self, title);
+    self->title_ = title;
     self->date_ = date;
   }
   return self;
@@ -74,7 +74,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
   self->groupId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:5];
   self->uid_ = [values getIntWithInt:2];
-  ImActorModelApiUpdatesUpdateGroupTitleChanged_set_title_(self, [values getStringWithInt:3]);
+  self->title_ = [values getStringWithInt:3];
   self->date_ = [values getLongWithInt:4];
 }
 
@@ -83,7 +83,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
   [writer writeLongWithInt:5 withLong:self->rid_];
   [writer writeIntWithInt:2 withInt:self->uid_];
   if (self->title_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:3 withNSString:self->title_];
   [writer writeLongWithInt:4 withLong:self->date_];
@@ -93,17 +93,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
   return ImActorModelApiUpdatesUpdateGroupTitleChanged_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(title_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateGroupTitleChanged *)other {
   [super copyAllFieldsTo:other];
   other->groupId_ = groupId_;
   other->rid_ = rid_;
   other->uid_ = uid_;
-  ImActorModelApiUpdatesUpdateGroupTitleChanged_set_title_(other, title_);
+  other->title_ = title_;
   other->date_ = date_;
 }
 
@@ -137,7 +132,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
 
 ImActorModelApiUpdatesUpdateGroupTitleChanged *ImActorModelApiUpdatesUpdateGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupTitleChanged_init();
-  return ((ImActorModelApiUpdatesUpdateGroupTitleChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateGroupTitleChanged alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateGroupTitleChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupTitleChanged alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupTitleChanged)

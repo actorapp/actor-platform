@@ -45,22 +45,17 @@ J2OBJC_FIELD_SETTER(MTMTRpcResponse, payload_, IOSByteArray *)
 
 - (void)readBodyWithAMDataInput:(AMDataInput *)bs {
   messageId_ = [((AMDataInput *) nil_chk(bs)) readLong];
-  MTMTRpcResponse_set_payload_(self, [bs readProtoBytes]);
+  payload_ = [bs readProtoBytes];
 }
 
 - (NSString *)description {
   return JreStrcat("$JC", @"ResponseBox [", messageId_, ']');
 }
 
-- (void)dealloc {
-  RELEASE_(payload_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(MTMTRpcResponse *)other {
   [super copyAllFieldsTo:other];
   other->messageId_ = messageId_;
-  MTMTRpcResponse_set_payload_(other, payload_);
+  other->payload_ = payload_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

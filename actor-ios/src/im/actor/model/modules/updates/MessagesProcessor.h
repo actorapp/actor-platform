@@ -8,11 +8,8 @@
 
 @class AMMessenger;
 @class ImActorModelApiMessageContent;
-@class ImActorModelApiMessageStateEnum;
 @class ImActorModelApiPeer;
 @class ImActorModelApiRpcResponseLoadDialogs;
-@class ImActorModelEntityContentAbsContent;
-@class ImActorModelEntityMessageStateEnum;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -63,7 +60,8 @@
 
 - (void)onChatDeleteWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer;
 
-- (void)onUserRegisteredWithInt:(jint)uid;
+- (void)onUserRegisteredWithInt:(jint)uid
+                       withLong:(jlong)date;
 
 @end
 

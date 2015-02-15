@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/network/util/MTUids.java
 //
 
-#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/conf/EnvConfig.h"
 #include "im/actor/model/droidkit/actors/utils/AtomicLongCompat.h"
@@ -29,7 +28,7 @@ ImActorModelDroidkitActorsUtilsAtomicLongCompat * ImActorModelNetworkUtilMTUids_
 
 + (void)initialize {
   if (self == [ImActorModelNetworkUtilMTUids class]) {
-    JreStrongAssign(&ImActorModelNetworkUtilMTUids_NEXT_ID_, nil, ImActorModelDroidkitActorsConfEnvConfig_createAtomicLongWithLong_(1));
+    ImActorModelNetworkUtilMTUids_NEXT_ID_ = ImActorModelDroidkitActorsConfEnvConfig_createAtomicLongWithLong_(1);
     J2OBJC_SET_INITIALIZED(ImActorModelNetworkUtilMTUids)
   }
 }

@@ -29,7 +29,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
                                             withInt:(jint)height
                                             withInt:(jint)fileSize {
   if (self = [super init]) {
-    ImActorModelApiAvatarImage_set_fileLocation_(self, fileLocation);
+    self->fileLocation_ = fileLocation;
     self->width_ = width;
     self->height_ = height;
     self->fileSize_ = fileSize;
@@ -58,7 +58,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiAvatarImage_set_fileLocation_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiFileLocation alloc] init] autorelease]]);
+  self->fileLocation_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiFileLocation alloc] init]];
   self->width_ = [values getIntWithInt:2];
   self->height_ = [values getIntWithInt:3];
   self->fileSize_ = [values getIntWithInt:4];
@@ -66,7 +66,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->fileLocation_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->fileLocation_];
   [writer writeIntWithInt:2 withInt:self->width_];
@@ -74,14 +74,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
   [writer writeIntWithInt:4 withInt:self->fileSize_];
 }
 
-- (void)dealloc {
-  RELEASE_(fileLocation_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiAvatarImage *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiAvatarImage_set_fileLocation_(other, fileLocation_);
+  other->fileLocation_ = fileLocation_;
   other->width_ = width_;
   other->height_ = height_;
   other->fileSize_ = fileSize_;

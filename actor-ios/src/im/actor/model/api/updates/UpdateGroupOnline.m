@@ -91,7 +91,7 @@
 
 ImActorModelApiUpdatesUpdateGroupOnline *ImActorModelApiUpdatesUpdateGroupOnline_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupOnline_init();
-  return ((ImActorModelApiUpdatesUpdateGroupOnline *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateGroupOnline alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateGroupOnline *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupOnline alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupOnline)

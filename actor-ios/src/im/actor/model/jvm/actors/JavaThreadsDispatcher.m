@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/jvm/actors/JavaThreadsDispatcher.java
 //
 
-#include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorTime.h"
@@ -56,9 +55,9 @@ withImActorModelDroidkitActorsDispatchDispatch:(id<ImActorModelDroidkitActorsDis
   if (self = [super initWithImActorModelDroidkitActorsDispatchAbstractDispatchQueue:queue withImActorModelDroidkitActorsDispatchDispatch:dispatch]) {
     isClosed_ = NO;
     self->id__ = [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(ImActorModelJvmActorsJavaThreadsDispatcher_INDEX_)) getAndIncrement];
-    ImActorModelJvmActorsJavaThreadsDispatcher_set_name_(self, name);
+    self->name_ = name;
     self->count_ = count;
-    ImActorModelJvmActorsJavaThreadsDispatcher_set_priority_(self, priority);
+    self->priority_ = priority;
     if (createThreads) {
       [self startPool];
     }
@@ -70,7 +69,7 @@ withImActorModelDroidkitActorsDispatchDispatch:(id<ImActorModelDroidkitActorsDis
   if (self->threads_ != nil) {
     return;
   }
-  ImActorModelJvmActorsJavaThreadsDispatcher_setAndConsume_threads_(self, [IOSObjectArray newArrayWithLength:count_ type:JavaLangThread_class_()]);
+  self->threads_ = [IOSObjectArray newArrayWithLength:count_ type:JavaLangThread_class_()];
   for (jint i = 0; i < count_; i++) {
     IOSObjectArray_SetAndConsume(self->threads_, i, [[ImActorModelJvmActorsJavaThreadsDispatcher_DispatcherThread alloc] initWithImActorModelJvmActorsJavaThreadsDispatcher:self]);
     [((JavaLangThread *) nil_chk(IOSObjectArray_Get(self->threads_, i))) setNameWithNSString:JreStrcat("$$CI", @"Pool_", name_, '_', i)];
@@ -112,26 +111,19 @@ withImActorModelDroidkitActorsDispatchDispatch:(id<ImActorModelDroidkitActorsDis
   }
 }
 
-- (void)dealloc {
-  RELEASE_(threads_);
-  RELEASE_(priority_);
-  RELEASE_(name_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelJvmActorsJavaThreadsDispatcher *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelJvmActorsJavaThreadsDispatcher_set_threads_(other, threads_);
+  other->threads_ = threads_;
   other->count_ = count_;
-  ImActorModelJvmActorsJavaThreadsDispatcher_set_priority_(other, priority_);
+  other->priority_ = priority_;
   other->isClosed_ = isClosed_;
   other->id__ = id__;
-  ImActorModelJvmActorsJavaThreadsDispatcher_set_name_(other, name_);
+  other->name_ = name_;
 }
 
 + (void)initialize {
   if (self == [ImActorModelJvmActorsJavaThreadsDispatcher class]) {
-    JreStrongAssignAndConsume(&ImActorModelJvmActorsJavaThreadsDispatcher_INDEX_, nil, [[JavaUtilConcurrentAtomicAtomicInteger alloc] initWithInt:1]);
+    ImActorModelJvmActorsJavaThreadsDispatcher_INDEX_ = [[JavaUtilConcurrentAtomicAtomicInteger alloc] initWithInt:1];
     J2OBJC_SET_INITIALIZED(ImActorModelJvmActorsJavaThreadsDispatcher)
   }
 }
@@ -209,21 +201,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmActorsJavaThreadsDispatcher)
 }
 
 - (instancetype)initWithImActorModelJvmActorsJavaThreadsDispatcher:(ImActorModelJvmActorsJavaThreadsDispatcher *)outer$ {
-  ImActorModelJvmActorsJavaThreadsDispatcher_DispatcherThread_set_this$0_(self, outer$);
+  this$0_ = outer$;
   if (self = [super init]) {
     isChanged__ = NO;
   }
   return self;
 }
 
-- (void)dealloc {
-  RELEASE_(this$0_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelJvmActorsJavaThreadsDispatcher_DispatcherThread *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelJvmActorsJavaThreadsDispatcher_DispatcherThread_set_this$0_(other, this$0_);
+  other->this$0_ = this$0_;
   other->isChanged__ = isChanged__;
 }
 

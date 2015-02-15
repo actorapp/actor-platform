@@ -80,7 +80,7 @@
 
 ImActorModelApiRpcRequestTerminateSession *ImActorModelApiRpcRequestTerminateSession_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestTerminateSession_init();
-  return ((ImActorModelApiRpcRequestTerminateSession *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestTerminateSession alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestTerminateSession *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestTerminateSession alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestTerminateSession)

@@ -30,7 +30,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
 
 - (instancetype)initWithImActorModelApiConfig:(ImActorModelApiConfig *)config {
   if (self = [super init]) {
-    ImActorModelApiUpdatesUpdateConfig_set_config_(self, config);
+    self->config_ = config;
   }
   return self;
 }
@@ -44,12 +44,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiUpdatesUpdateConfig_set_config_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiConfig alloc] init] autorelease]]);
+  self->config_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiConfig alloc] init]];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->config_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->config_];
 }
@@ -58,14 +58,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
   return ImActorModelApiUpdatesUpdateConfig_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(config_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateConfig *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiUpdatesUpdateConfig_set_config_(other, config_);
+  other->config_ = config_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -90,7 +85,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
 
 ImActorModelApiUpdatesUpdateConfig *ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateConfig_init();
-  return ((ImActorModelApiUpdatesUpdateConfig *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateConfig alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateConfig *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateConfig alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateConfig)

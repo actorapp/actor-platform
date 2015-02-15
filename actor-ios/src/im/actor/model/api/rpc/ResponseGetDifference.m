@@ -51,11 +51,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
                 withBoolean:(jboolean)needMore {
   if (self = [super init]) {
     self->seq_ = seq;
-    ImActorModelApiRpcResponseGetDifference_set_state_(self, state);
-    ImActorModelApiRpcResponseGetDifference_set_users_(self, users);
-    ImActorModelApiRpcResponseGetDifference_set_groups_(self, groups);
-    ImActorModelApiRpcResponseGetDifference_set_contacts_(self, contacts);
-    ImActorModelApiRpcResponseGetDifference_set_updates_(self, updates);
+    self->state_ = state;
+    self->users_ = users;
+    self->groups_ = groups;
+    self->contacts_ = contacts;
+    self->updates_ = updates;
     self->needMore__ = needMore;
   }
   return self;
@@ -95,30 +95,30 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->seq_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
-  ImActorModelApiRpcResponseGetDifference_set_state_(self, [values getBytesWithInt:2]);
-  id<JavaUtilList> _users = [[[JavaUtilArrayList alloc] init] autorelease];
+  self->state_ = [values getBytesWithInt:2];
+  id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:3]; i++) {
-    [_users addWithId:[[[ImActorModelApiUser alloc] init] autorelease]];
+    [_users addWithId:[[ImActorModelApiUser alloc] init]];
   }
-  ImActorModelApiRpcResponseGetDifference_set_users_(self, [values getRepeatedObjWithInt:3 withJavaUtilList:_users]);
-  id<JavaUtilList> _groups = [[[JavaUtilArrayList alloc] init] autorelease];
+  self->users_ = [values getRepeatedObjWithInt:3 withJavaUtilList:_users];
+  id<JavaUtilList> _groups = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:6]; i++) {
-    [_groups addWithId:[[[ImActorModelApiGroup alloc] init] autorelease]];
+    [_groups addWithId:[[ImActorModelApiGroup alloc] init]];
   }
-  ImActorModelApiRpcResponseGetDifference_set_groups_(self, [values getRepeatedObjWithInt:6 withJavaUtilList:_groups]);
-  ImActorModelApiRpcResponseGetDifference_setAndConsume_contacts_(self, [[JavaUtilArrayList alloc] init]);
-  id<JavaUtilList> _updates = [[[JavaUtilArrayList alloc] init] autorelease];
+  self->groups_ = [values getRepeatedObjWithInt:6 withJavaUtilList:_groups];
+  self->contacts_ = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> _updates = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:4]; i++) {
-    [_updates addWithId:[[[ImActorModelApiDifferenceUpdate alloc] init] autorelease]];
+    [_updates addWithId:[[ImActorModelApiDifferenceUpdate alloc] init]];
   }
-  ImActorModelApiRpcResponseGetDifference_set_updates_(self, [values getRepeatedObjWithInt:4 withJavaUtilList:_updates]);
+  self->updates_ = [values getRepeatedObjWithInt:4 withJavaUtilList:_updates];
   self->needMore__ = [values getBoolWithInt:5];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:2 withByteArray:self->state_];
   [writer writeRepeatedObjWithInt:3 withJavaUtilList:self->users_];
@@ -132,23 +132,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   return ImActorModelApiRpcResponseGetDifference_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(state_);
-  RELEASE_(users_);
-  RELEASE_(groups_);
-  RELEASE_(contacts_);
-  RELEASE_(updates_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcResponseGetDifference *)other {
   [super copyAllFieldsTo:other];
   other->seq_ = seq_;
-  ImActorModelApiRpcResponseGetDifference_set_state_(other, state_);
-  ImActorModelApiRpcResponseGetDifference_set_users_(other, users_);
-  ImActorModelApiRpcResponseGetDifference_set_groups_(other, groups_);
-  ImActorModelApiRpcResponseGetDifference_set_contacts_(other, contacts_);
-  ImActorModelApiRpcResponseGetDifference_set_updates_(other, updates_);
+  other->state_ = state_;
+  other->users_ = users_;
+  other->groups_ = groups_;
+  other->contacts_ = contacts_;
+  other->updates_ = updates_;
   other->needMore__ = needMore__;
 }
 
@@ -186,7 +177,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
 
 ImActorModelApiRpcResponseGetDifference *ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetDifference_init();
-  return ((ImActorModelApiRpcResponseGetDifference *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseGetDifference alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcResponseGetDifference *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseGetDifference alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetDifference)

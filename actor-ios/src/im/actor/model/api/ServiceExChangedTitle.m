@@ -22,7 +22,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
 
 - (instancetype)initWithNSString:(NSString *)title {
   if (self = [super init]) {
-    ImActorModelApiServiceExChangedTitle_set_title_(self, title);
+    self->title_ = title;
   }
   return self;
 }
@@ -36,24 +36,19 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiServiceExChangedTitle_set_title_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1]);
+  self->title_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->title_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->title_];
 }
 
-- (void)dealloc {
-  RELEASE_(title_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiServiceExChangedTitle *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiServiceExChangedTitle_set_title_(other, title_);
+  other->title_ = title_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

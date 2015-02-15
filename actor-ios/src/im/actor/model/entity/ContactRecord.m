@@ -30,8 +30,8 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContactRecord, value_, NSString *)
     self->id__ = id_;
     self->accessHash_ = accessHash;
     self->type_ = type;
-    ImActorModelEntityContactRecord_set_title_(self, title);
-    ImActorModelEntityContactRecord_set_value_(self, value);
+    self->title_ = title;
+    self->value_ = value;
   }
   return self;
 }
@@ -56,19 +56,13 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContactRecord, value_, NSString *)
   return value_;
 }
 
-- (void)dealloc {
-  RELEASE_(title_);
-  RELEASE_(value_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelEntityContactRecord *)other {
   [super copyAllFieldsTo:other];
   other->id__ = id__;
   other->accessHash_ = accessHash_;
   other->type_ = type_;
-  ImActorModelEntityContactRecord_set_title_(other, title_);
-  ImActorModelEntityContactRecord_set_value_(other, value_);
+  other->title_ = title_;
+  other->value_ = value_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

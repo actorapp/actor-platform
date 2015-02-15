@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
                                       withLong:(jlong)startDate
                                        withInt:(jint)limit {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestLoadHistory_set_peer_(self, peer);
+    self->peer_ = peer;
     self->startDate_ = startDate;
     self->limit_ = limit;
   }
@@ -58,14 +58,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestLoadHistory_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiOutPeer alloc] init] autorelease]]);
+  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiOutPeer alloc] init]];
   self->startDate_ = [values getLongWithInt:3];
   self->limit_ = [values getIntWithInt:4];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeLongWithInt:3 withLong:self->startDate_];
@@ -76,14 +76,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
   return ImActorModelApiRpcRequestLoadHistory_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(peer_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestLoadHistory *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestLoadHistory_set_peer_(other, peer_);
+  other->peer_ = peer_;
   other->startDate_ = startDate_;
   other->limit_ = limit_;
 }
@@ -115,7 +110,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
 
 ImActorModelApiRpcRequestLoadHistory *ImActorModelApiRpcRequestLoadHistory_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestLoadHistory_init();
-  return ((ImActorModelApiRpcRequestLoadHistory *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestLoadHistory alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestLoadHistory *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestLoadHistory alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestLoadHistory)

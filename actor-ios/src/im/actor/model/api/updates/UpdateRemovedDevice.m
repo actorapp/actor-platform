@@ -91,7 +91,7 @@
 
 ImActorModelApiUpdatesUpdateRemovedDevice *ImActorModelApiUpdatesUpdateRemovedDevice_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateRemovedDevice_init();
-  return ((ImActorModelApiUpdatesUpdateRemovedDevice *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateRemovedDevice alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateRemovedDevice *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateRemovedDevice alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateRemovedDevice)

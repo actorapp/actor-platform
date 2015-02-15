@@ -29,9 +29,9 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1, thi
 - (instancetype)initWithImActorModelDroidkitActorsDispatchAbstractDispatchQueue:(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue *)queue
                                  withImActorModelDroidkitActorsDispatchDispatch:(id<ImActorModelDroidkitActorsDispatchDispatch>)dispatch {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsDispatchAbstractDispatcher_set_queue_(self, queue);
-    ImActorModelDroidkitActorsDispatchAbstractDispatcher_set_dispatch_(self, dispatch);
-    [((ImActorModelDroidkitActorsDispatchAbstractDispatchQueue *) nil_chk(self->queue_)) setListenerWithImActorModelDroidkitActorsDispatchQueueListener:[[[ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1 alloc] initWithImActorModelDroidkitActorsDispatchAbstractDispatcher:self] autorelease]];
+    self->queue_ = queue;
+    self->dispatch_ = dispatch;
+    [((ImActorModelDroidkitActorsDispatchAbstractDispatchQueue *) nil_chk(self->queue_)) setListenerWithImActorModelDroidkitActorsDispatchQueueListener:[[ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1 alloc] initWithImActorModelDroidkitActorsDispatchAbstractDispatcher:self]];
   }
   return self;
 }
@@ -49,16 +49,10 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1, thi
 - (void)notifyDispatcher {
 }
 
-- (void)dealloc {
-  RELEASE_(queue_);
-  RELEASE_(dispatch_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsDispatchAbstractDispatcher *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsDispatchAbstractDispatcher_set_queue_(other, queue_);
-  ImActorModelDroidkitActorsDispatchAbstractDispatcher_set_dispatch_(other, dispatch_);
+  other->queue_ = queue_;
+  other->dispatch_ = dispatch_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -87,18 +81,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsDispatchAbstractDispa
 }
 
 - (instancetype)initWithImActorModelDroidkitActorsDispatchAbstractDispatcher:(ImActorModelDroidkitActorsDispatchAbstractDispatcher *)outer$ {
-  ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1_set_this$0_(self, outer$);
+  this$0_ = outer$;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(this$0_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1 *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1_set_this$0_(other, this$0_);
+  other->this$0_ = this$0_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

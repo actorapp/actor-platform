@@ -37,9 +37,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseImportContacts, state_, IOSByteArr
                              withInt:(jint)seq
                        withByteArray:(IOSByteArray *)state {
   if (self = [super init]) {
-    ImActorModelApiRpcResponseImportContacts_set_users_(self, users);
+    self->users_ = users;
     self->seq_ = seq;
-    ImActorModelApiRpcResponseImportContacts_set_state_(self, state);
+    self->state_ = state;
   }
   return self;
 }
@@ -61,20 +61,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseImportContacts, state_, IOSByteArr
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  id<JavaUtilList> _users = [[[JavaUtilArrayList alloc] init] autorelease];
+  id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_users addWithId:[[[ImActorModelApiUser alloc] init] autorelease]];
+    [_users addWithId:[[ImActorModelApiUser alloc] init]];
   }
-  ImActorModelApiRpcResponseImportContacts_set_users_(self, [values getRepeatedObjWithInt:1 withJavaUtilList:_users]);
+  self->users_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_users];
   self->seq_ = [values getIntWithInt:2];
-  ImActorModelApiRpcResponseImportContacts_set_state_(self, [values getBytesWithInt:3]);
+  self->state_ = [values getBytesWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
   [writer writeIntWithInt:2 withInt:self->seq_];
   if (self->state_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:3 withByteArray:self->state_];
 }
@@ -83,17 +83,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseImportContacts, state_, IOSByteArr
   return ImActorModelApiRpcResponseImportContacts_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(users_);
-  RELEASE_(state_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcResponseImportContacts *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcResponseImportContacts_set_users_(other, users_);
+  other->users_ = users_;
   other->seq_ = seq_;
-  ImActorModelApiRpcResponseImportContacts_set_state_(other, state_);
+  other->state_ = state_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -122,7 +116,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseImportContacts, state_, IOSByteArr
 
 ImActorModelApiRpcResponseImportContacts *ImActorModelApiRpcResponseImportContacts_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseImportContacts_init();
-  return ((ImActorModelApiRpcResponseImportContacts *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseImportContacts alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcResponseImportContacts *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseImportContacts alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseImportContacts)

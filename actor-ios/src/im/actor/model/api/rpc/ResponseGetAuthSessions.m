@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)userAuths {
   if (self = [super init]) {
-    ImActorModelApiRpcResponseGetAuthSessions_set_userAuths_(self, userAuths);
+    self->userAuths_ = userAuths;
   }
   return self;
 }
@@ -46,11 +46,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  id<JavaUtilList> _userAuths = [[[JavaUtilArrayList alloc] init] autorelease];
+  id<JavaUtilList> _userAuths = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_userAuths addWithId:[[[ImActorModelApiAuthSession alloc] init] autorelease]];
+    [_userAuths addWithId:[[ImActorModelApiAuthSession alloc] init]];
   }
-  ImActorModelApiRpcResponseGetAuthSessions_set_userAuths_(self, [values getRepeatedObjWithInt:1 withJavaUtilList:_userAuths]);
+  self->userAuths_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_userAuths];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -61,14 +61,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
   return ImActorModelApiRpcResponseGetAuthSessions_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(userAuths_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcResponseGetAuthSessions *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcResponseGetAuthSessions_set_userAuths_(other, userAuths_);
+  other->userAuths_ = userAuths_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -93,7 +88,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
 
 ImActorModelApiRpcResponseGetAuthSessions *ImActorModelApiRpcResponseGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetAuthSessions_init();
-  return ((ImActorModelApiRpcResponseGetAuthSessions *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseGetAuthSessions alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcResponseGetAuthSessions *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseGetAuthSessions alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetAuthSessions)

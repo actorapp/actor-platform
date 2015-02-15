@@ -118,8 +118,8 @@ IOSObjectArray * ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_sC
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils class]) {
-    JreStrongAssignAndConsume(&ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_EMPTY_, nil, [IOSObjectArray newArrayWithLength:0 type:NSObject_class_()]);
-    JreStrongAssignAndConsume(&ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_sCache_, nil, [IOSObjectArray newArrayWithLength:ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_CACHE_SIZE type:NSObject_class_()]);
+    ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_EMPTY_ = [IOSObjectArray newArrayWithLength:0 type:NSObject_class_()];
+    ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_sCache_ = [IOSObjectArray newArrayWithLength:ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_CACHE_SIZE type:NSObject_class_()];
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils)
   }
 }
@@ -202,7 +202,7 @@ jint ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_idealLongArray
 jboolean ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_equalsWithByteArray_withByteArray_withInt_(IOSByteArray *array1, IOSByteArray *array2, jint length) {
   ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_init();
   if (length < 0) {
-    @throw [[[JavaLangIllegalArgumentException alloc] init] autorelease];
+    @throw [[JavaLangIllegalArgumentException alloc] init];
   }
   if (array1 == array2) {
     return YES;
@@ -336,7 +336,7 @@ IOSObjectArray *ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_rem
 IOSIntArray *ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_appendIntWithIntArray_withInt_(IOSIntArray *cur, jint val) {
   ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_init();
   if (cur == nil) {
-    return [IOSIntArray arrayWithInts:(jint[]){ val } count:1];
+    return [IOSIntArray newArrayWithInts:(jint[]){ val } count:1];
   }
   jint N = ((IOSIntArray *) nil_chk(cur))->size_;
   for (jint i = 0; i < N; i++) {
@@ -344,7 +344,7 @@ IOSIntArray *ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_append
       return cur;
     }
   }
-  IOSIntArray *ret = [IOSIntArray arrayWithLength:N + 1];
+  IOSIntArray *ret = [IOSIntArray newArrayWithLength:N + 1];
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(cur, 0, ret, 0, N);
   *IOSIntArray_GetRef(ret, N) = val;
   return ret;
@@ -358,7 +358,7 @@ IOSIntArray *ImActorModelDroidkitActorsMailboxCollectionsSparseArrayUtils_remove
   jint N = ((IOSIntArray *) nil_chk(cur))->size_;
   for (jint i = 0; i < N; i++) {
     if (IOSIntArray_Get(cur, i) == val) {
-      IOSIntArray *ret = [IOSIntArray arrayWithLength:N - 1];
+      IOSIntArray *ret = [IOSIntArray newArrayWithLength:N - 1];
       if (i > 0) {
         JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(cur, 0, ret, 0, i);
       }

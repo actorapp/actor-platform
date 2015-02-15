@@ -65,8 +65,8 @@ J2OBJC_FIELD_SETTER(AMJavaThreads_$2_$3, tThreadLocal_, JavaLangThreadLocal *)
 
 void AMJavaThreads_init__() {
   AMJavaThreads_init();
-  ImActorModelDroidkitActorsConfEnvConfig_setDispatcherFactoryWithImActorModelDroidkitActorsConfDispatcherFactory_([[[AMJavaThreads_$1 alloc] init] autorelease]);
-  ImActorModelDroidkitActorsConfEnvConfig_setJavaFactoryWithImActorModelDroidkitActorsConfJavaFactory_([[[AMJavaThreads_$2 alloc] init] autorelease]);
+  ImActorModelDroidkitActorsConfEnvConfig_setDispatcherFactoryWithImActorModelDroidkitActorsConfDispatcherFactory_([[AMJavaThreads_$1 alloc] init]);
+  ImActorModelDroidkitActorsConfEnvConfig_setJavaFactoryWithImActorModelDroidkitActorsConfJavaFactory_([[AMJavaThreads_$2 alloc] init]);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads)
@@ -77,7 +77,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads)
                                                                            withInt:(jint)threadsCount
                                   withImActorModelDroidkitActorsThreadPriorityEnum:(ImActorModelDroidkitActorsThreadPriorityEnum *)priority
                                          withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem *)actorSystem {
-  return [[[ImActorModelJvmActorsJavaDispatcher alloc] initWithNSString:name withImActorModelDroidkitActorsActorSystem:actorSystem withInt:threadsCount withImActorModelDroidkitActorsThreadPriorityEnum:priority] autorelease];
+  return [[ImActorModelJvmActorsJavaDispatcher alloc] initWithNSString:name withImActorModelDroidkitActorsActorSystem:actorSystem withInt:threadsCount withImActorModelDroidkitActorsThreadPriorityEnum:priority];
 }
 
 - (instancetype)init {
@@ -108,15 +108,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads_$1)
 }
 
 - (ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *)createAtomicIntWithInt:(jint)init_ {
-  return [[[AMJavaThreads_$2_$1 alloc] initWithInt:init_] autorelease];
+  return [[AMJavaThreads_$2_$1 alloc] initWithInt:init_];
 }
 
 - (ImActorModelDroidkitActorsUtilsAtomicLongCompat *)createAtomicLongWithLong:(jlong)init_ {
-  return [[[AMJavaThreads_$2_$2 alloc] initWithLong:init_] autorelease];
+  return [[AMJavaThreads_$2_$2 alloc] initWithLong:init_];
 }
 
 - (ImActorModelDroidkitActorsUtilsThreadLocalCompat *)createThreadLocal {
-  return [[[AMJavaThreads_$2_$3 alloc] init] autorelease];
+  return [[AMJavaThreads_$2_$3 alloc] init];
 }
 
 - (instancetype)init {
@@ -166,19 +166,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads_$2)
 - (instancetype)initWithInt:(jint)capture$0 {
   val$init_ = capture$0;
   if (self = [super init]) {
-    AMJavaThreads_$2_$1_setAndConsume_atomicInteger_(self, [[JavaUtilConcurrentAtomicAtomicInteger alloc] initWithInt:val$init_]);
+    atomicInteger_ = [[JavaUtilConcurrentAtomicAtomicInteger alloc] initWithInt:val$init_];
   }
   return self;
 }
 
-- (void)dealloc {
-  RELEASE_(atomicInteger_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(AMJavaThreads_$2_$1 *)other {
   [super copyAllFieldsTo:other];
-  AMJavaThreads_$2_$1_set_atomicInteger_(other, atomicInteger_);
+  other->atomicInteger_ = atomicInteger_;
   other->val$init_ = val$init_;
 }
 
@@ -224,19 +219,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads_$2_$1)
 - (instancetype)initWithLong:(jlong)capture$0 {
   val$init_ = capture$0;
   if (self = [super init]) {
-    AMJavaThreads_$2_$2_setAndConsume_atomicLong_(self, [[JavaUtilConcurrentAtomicAtomicLong alloc] initWithLong:val$init_]);
+    atomicLong_ = [[JavaUtilConcurrentAtomicAtomicLong alloc] initWithLong:val$init_];
   }
   return self;
 }
 
-- (void)dealloc {
-  RELEASE_(atomicLong_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(AMJavaThreads_$2_$2 *)other {
   [super copyAllFieldsTo:other];
-  AMJavaThreads_$2_$2_set_atomicLong_(other, atomicLong_);
+  other->atomicLong_ = atomicLong_;
   other->val$init_ = val$init_;
 }
 
@@ -276,19 +266,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreads_$2_$2)
 
 - (instancetype)init {
   if (self = [super init]) {
-    AMJavaThreads_$2_$3_setAndConsume_tThreadLocal_(self, [[JavaLangThreadLocal alloc] init]);
+    tThreadLocal_ = [[JavaLangThreadLocal alloc] init];
   }
   return self;
 }
 
-- (void)dealloc {
-  RELEASE_(tThreadLocal_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(AMJavaThreads_$2_$3 *)other {
   [super copyAllFieldsTo:other];
-  AMJavaThreads_$2_$3_set_tThreadLocal_(other, tThreadLocal_);
+  other->tThreadLocal_ = tThreadLocal_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

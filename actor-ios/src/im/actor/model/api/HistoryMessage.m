@@ -36,8 +36,8 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
     self->senderUid_ = senderUid;
     self->rid_ = rid;
     self->date_ = date;
-    ImActorModelApiHistoryMessage_set_message_(self, message);
-    ImActorModelApiHistoryMessage_set_state_(self, state);
+    self->message_ = message;
+    self->state_ = state;
   }
   return self;
 }
@@ -70,8 +70,8 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   self->senderUid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:2];
   self->date_ = [values getLongWithInt:3];
-  ImActorModelApiHistoryMessage_set_message_(self, [values getObjWithInt:5 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiMessageContent alloc] init] autorelease]]);
-  ImActorModelApiHistoryMessage_set_state_(self, ImActorModelApiMessageStateEnum_parseWithInt_([values getIntWithInt:6]));
+  self->message_ = [values getObjWithInt:5 withImActorModelDroidkitBserBserObject:[[ImActorModelApiMessageContent alloc] init]];
+  self->state_ = ImActorModelApiMessageStateEnum_parseWithInt_([values getIntWithInt:6]);
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -79,19 +79,13 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   [writer writeLongWithInt:2 withLong:self->rid_];
   [writer writeLongWithInt:3 withLong:self->date_];
   if (self->message_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeObjectWithInt:5 withImActorModelDroidkitBserBserObject:self->message_];
   if (self->state_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeIntWithInt:6 withInt:[((ImActorModelApiMessageStateEnum *) nil_chk(self->state_)) getValue]];
-}
-
-- (void)dealloc {
-  RELEASE_(message_);
-  RELEASE_(state_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiHistoryMessage *)other {
@@ -99,8 +93,8 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   other->senderUid_ = senderUid_;
   other->rid_ = rid_;
   other->date_ = date_;
-  ImActorModelApiHistoryMessage_set_message_(other, message_);
-  ImActorModelApiHistoryMessage_set_state_(other, state_);
+  other->message_ = message_;
+  other->state_ = state_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

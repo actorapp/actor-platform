@@ -27,7 +27,7 @@ J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
                withByteArray:(IOSByteArray *)payload {
   if (self = [super init]) {
     self->messageId_ = messageId;
-    MTProtoMessage_set_payload_(self, payload);
+    self->payload_ = payload;
   }
   return self;
 }
@@ -51,7 +51,7 @@ J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
 
 - (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs {
   messageId_ = [((AMDataInput *) nil_chk(bs)) readLong];
-  MTProtoMessage_set_payload_(self, [bs readProtoBytes]);
+  payload_ = [bs readProtoBytes];
   return self;
 }
 
@@ -59,15 +59,10 @@ J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
   return JreStrcat("$JC", @"ProtoMessage [#", messageId_, ']');
 }
 
-- (void)dealloc {
-  RELEASE_(payload_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(MTProtoMessage *)other {
   [super copyAllFieldsTo:other];
   other->messageId_ = messageId_;
-  MTProtoMessage_set_payload_(other, payload_);
+  other->payload_ = payload_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

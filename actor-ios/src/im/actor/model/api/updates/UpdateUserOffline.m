@@ -79,7 +79,7 @@
 
 ImActorModelApiUpdatesUpdateUserOffline *ImActorModelApiUpdatesUpdateUserOffline_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserOffline_init();
-  return ((ImActorModelApiUpdatesUpdateUserOffline *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateUserOffline alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateUserOffline *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserOffline alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserOffline)

@@ -23,7 +23,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
 
 - (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar {
   if (self = [super init]) {
-    ImActorModelApiServiceExChangedAvatar_set_avatar_(self, avatar);
+    self->avatar_ = avatar;
   }
   return self;
 }
@@ -37,7 +37,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiServiceExChangedAvatar_set_avatar_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) optObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiAvatar alloc] init] autorelease]]);
+  self->avatar_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) optObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatar alloc] init]];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -46,14 +46,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
   }
 }
 
-- (void)dealloc {
-  RELEASE_(avatar_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiServiceExChangedAvatar *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiServiceExChangedAvatar_set_avatar_(other, avatar_);
+  other->avatar_ = avatar_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

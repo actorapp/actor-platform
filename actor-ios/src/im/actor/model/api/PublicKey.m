@@ -29,7 +29,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPublicKey, key_, IOSByteArray *)
   if (self = [super init]) {
     self->uid_ = uid;
     self->keyHash_ = keyHash;
-    ImActorModelApiPublicKey_set_key_(self, key);
+    self->key_ = key;
   }
   return self;
 }
@@ -53,28 +53,23 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPublicKey, key_, IOSByteArray *)
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->uid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->keyHash_ = [values getLongWithInt:2];
-  ImActorModelApiPublicKey_set_key_(self, [values getBytesWithInt:3]);
+  self->key_ = [values getBytesWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->keyHash_];
   if (self->key_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:3 withByteArray:self->key_];
-}
-
-- (void)dealloc {
-  RELEASE_(key_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiPublicKey *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;
   other->keyHash_ = keyHash_;
-  ImActorModelApiPublicKey_set_key_(other, key_);
+  other->key_ = key_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

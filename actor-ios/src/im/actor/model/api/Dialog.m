@@ -41,14 +41,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
           withImActorModelApiMessageContent:(ImActorModelApiMessageContent *)message
         withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   if (self = [super init]) {
-    ImActorModelApiDialog_set_peer_(self, peer);
+    self->peer_ = peer;
     self->unreadCount_ = unreadCount;
     self->sortDate_ = sortDate;
     self->senderUid_ = senderUid;
     self->rid_ = rid;
     self->date_ = date;
-    ImActorModelApiDialog_set_message_(self, message);
-    ImActorModelApiDialog_set_state_(self, state);
+    self->message_ = message;
+    self->state_ = state;
   }
   return self;
 }
@@ -90,21 +90,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiDialog_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiPeer alloc] init] autorelease]]);
+  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiPeer alloc] init]];
   self->unreadCount_ = [values getIntWithInt:3];
   self->sortDate_ = [values getLongWithInt:4];
   self->senderUid_ = [values getIntWithInt:5];
   self->rid_ = [values getLongWithInt:6];
   self->date_ = [values getLongWithInt:7];
-  ImActorModelApiDialog_set_message_(self, [values getObjWithInt:8 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiMessageContent alloc] init] autorelease]]);
+  self->message_ = [values getObjWithInt:8 withImActorModelDroidkitBserBserObject:[[ImActorModelApiMessageContent alloc] init]];
   if ([values optIntWithInt:9] != 0) {
-    ImActorModelApiDialog_set_state_(self, ImActorModelApiMessageStateEnum_parseWithInt_([values optIntWithInt:9]));
+    self->state_ = ImActorModelApiMessageStateEnum_parseWithInt_([values optIntWithInt:9]);
   }
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeIntWithInt:3 withInt:self->unreadCount_];
@@ -113,7 +113,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   [writer writeLongWithInt:6 withLong:self->rid_];
   [writer writeLongWithInt:7 withLong:self->date_];
   if (self->message_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeObjectWithInt:8 withImActorModelDroidkitBserBserObject:self->message_];
   if (self->state_ != nil) {
@@ -121,23 +121,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   }
 }
 
-- (void)dealloc {
-  RELEASE_(peer_);
-  RELEASE_(message_);
-  RELEASE_(state_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiDialog *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiDialog_set_peer_(other, peer_);
+  other->peer_ = peer_;
   other->unreadCount_ = unreadCount_;
   other->sortDate_ = sortDate_;
   other->senderUid_ = senderUid_;
   other->rid_ = rid_;
   other->date_ = date_;
-  ImActorModelApiDialog_set_message_(other, message_);
-  ImActorModelApiDialog_set_state_(other, state_);
+  other->message_ = message_;
+  other->state_ = state_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

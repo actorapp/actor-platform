@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/log/Log.java
 //
 
-#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/log/LogInterface.h"
@@ -75,7 +74,7 @@ id<AMLogInterface> AMLog_getLog() {
 
 void AMLog_setLogWithAMLogInterface_(id<AMLogInterface> log) {
   AMLog_init();
-  JreStrongAssign(&AMLog_log_, nil, log);
+  AMLog_log_ = log;
 }
 
 void AMLog_wWithNSString_withNSString_(NSString *tag, NSString *message) {

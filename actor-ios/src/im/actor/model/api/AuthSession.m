@@ -46,12 +46,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, longitude_, JavaLangDouble *)
     self->id__ = id_;
     self->authHolder_ = authHolder;
     self->appId_ = appId;
-    ImActorModelApiAuthSession_set_appTitle_(self, appTitle);
-    ImActorModelApiAuthSession_set_deviceTitle_(self, deviceTitle);
+    self->appTitle_ = appTitle;
+    self->deviceTitle_ = deviceTitle;
     self->authTime_ = authTime;
-    ImActorModelApiAuthSession_set_authLocation_(self, authLocation);
-    ImActorModelApiAuthSession_set_latitude_(self, latitude);
-    ImActorModelApiAuthSession_set_longitude_(self, longitude);
+    self->authLocation_ = authLocation;
+    self->latitude_ = latitude;
+    self->longitude_ = longitude;
   }
   return self;
 }
@@ -100,12 +100,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, longitude_, JavaLangDouble *)
   self->id__ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->authHolder_ = [values getIntWithInt:2];
   self->appId_ = [values getIntWithInt:3];
-  ImActorModelApiAuthSession_set_appTitle_(self, [values getStringWithInt:4]);
-  ImActorModelApiAuthSession_set_deviceTitle_(self, [values getStringWithInt:5]);
+  self->appTitle_ = [values getStringWithInt:4];
+  self->deviceTitle_ = [values getStringWithInt:5];
   self->authTime_ = [values getIntWithInt:6];
-  ImActorModelApiAuthSession_set_authLocation_(self, [values getStringWithInt:7]);
-  ImActorModelApiAuthSession_set_latitude_(self, JavaLangDouble_valueOfWithDouble_([values optDoubleWithInt:8]));
-  ImActorModelApiAuthSession_set_longitude_(self, JavaLangDouble_valueOfWithDouble_([values optDoubleWithInt:9]));
+  self->authLocation_ = [values getStringWithInt:7];
+  self->latitude_ = JavaLangDouble_valueOfWithDouble_([values optDoubleWithInt:8]);
+  self->longitude_ = JavaLangDouble_valueOfWithDouble_([values optDoubleWithInt:9]);
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -113,16 +113,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, longitude_, JavaLangDouble *)
   [writer writeIntWithInt:2 withInt:self->authHolder_];
   [writer writeIntWithInt:3 withInt:self->appId_];
   if (self->appTitle_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:4 withNSString:self->appTitle_];
   if (self->deviceTitle_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:5 withNSString:self->deviceTitle_];
   [writer writeIntWithInt:6 withInt:self->authTime_];
   if (self->authLocation_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:7 withNSString:self->authLocation_];
   if (self->latitude_ != nil) {
@@ -133,26 +133,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, longitude_, JavaLangDouble *)
   }
 }
 
-- (void)dealloc {
-  RELEASE_(appTitle_);
-  RELEASE_(deviceTitle_);
-  RELEASE_(authLocation_);
-  RELEASE_(latitude_);
-  RELEASE_(longitude_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiAuthSession *)other {
   [super copyAllFieldsTo:other];
   other->id__ = id__;
   other->authHolder_ = authHolder_;
   other->appId_ = appId_;
-  ImActorModelApiAuthSession_set_appTitle_(other, appTitle_);
-  ImActorModelApiAuthSession_set_deviceTitle_(other, deviceTitle_);
+  other->appTitle_ = appTitle_;
+  other->deviceTitle_ = deviceTitle_;
   other->authTime_ = authTime_;
-  ImActorModelApiAuthSession_set_authLocation_(other, authLocation_);
-  ImActorModelApiAuthSession_set_latitude_(other, latitude_);
-  ImActorModelApiAuthSession_set_longitude_(other, longitude_);
+  other->authLocation_ = authLocation_;
+  other->latitude_ = latitude_;
+  other->longitude_ = longitude_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

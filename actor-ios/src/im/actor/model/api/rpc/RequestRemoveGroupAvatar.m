@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestRemoveGroupAvatar_set_groupPeer_(self, groupPeer);
+    self->groupPeer_ = groupPeer;
     self->rid_ = rid;
   }
   return self;
@@ -51,13 +51,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestRemoveGroupAvatar_set_groupPeer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiGroupOutPeer alloc] init] autorelease]]);
+  self->groupPeer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
   self->rid_ = [values getLongWithInt:4];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->groupPeer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->groupPeer_];
   [writer writeLongWithInt:4 withLong:self->rid_];
@@ -67,14 +67,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
   return ImActorModelApiRpcRequestRemoveGroupAvatar_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(groupPeer_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestRemoveGroupAvatar *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestRemoveGroupAvatar_set_groupPeer_(other, groupPeer_);
+  other->groupPeer_ = groupPeer_;
   other->rid_ = rid_;
 }
 
@@ -103,7 +98,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
 
 ImActorModelApiRpcRequestRemoveGroupAvatar *ImActorModelApiRpcRequestRemoveGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestRemoveGroupAvatar_init();
-  return ((ImActorModelApiRpcRequestRemoveGroupAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestRemoveGroupAvatar alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestRemoveGroupAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestRemoveGroupAvatar alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestRemoveGroupAvatar)

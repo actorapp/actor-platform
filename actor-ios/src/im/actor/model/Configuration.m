@@ -43,7 +43,7 @@ J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEngi
 }
 
 - (void)setEnginesFactoryWithImActorModelStorageEnginesFactory:(id<ImActorModelStorageEnginesFactory>)enginesFactory {
-  AMConfiguration_set_enginesFactory_(self, enginesFactory);
+  self->enginesFactory_ = enginesFactory;
 }
 
 - (id<ImActorModelStoragePreferencesStorage>)getPreferencesStorage {
@@ -51,7 +51,7 @@ J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEngi
 }
 
 - (void)setPreferencesStorageWithImActorModelStoragePreferencesStorage:(id<ImActorModelStoragePreferencesStorage>)preferencesStorage {
-  AMConfiguration_set_preferencesStorage_(self, preferencesStorage);
+  self->preferencesStorage_ = preferencesStorage;
 }
 
 - (AMEndpoints *)getEndpoints {
@@ -59,7 +59,7 @@ J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEngi
 }
 
 - (void)setEndpointsWithAMEndpoints:(AMEndpoints *)endpoints {
-  AMConfiguration_set_endpoints_(self, endpoints);
+  self->endpoints_ = endpoints;
 }
 
 - (id<ImActorModelConcurrencyMainThread>)getMainThread {
@@ -67,34 +67,26 @@ J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEngi
 }
 
 - (void)setMainThreadWithImActorModelConcurrencyMainThread:(id<ImActorModelConcurrencyMainThread>)mainThread {
-  AMConfiguration_set_mainThread_(self, mainThread);
+  self->mainThread_ = mainThread;
 }
 
 - (instancetype)init {
   if (self = [super init]) {
     persistMessages_ = NO;
-    AMConfiguration_setAndConsume_mainThread_(self, [[ImActorModelConcurrencyNoMainThread alloc] init]);
-    AMConfiguration_setAndConsume_preferencesStorage_(self, [[ImActorModelStorageMemoryPreferences alloc] init]);
-    AMConfiguration_setAndConsume_enginesFactory_(self, [[ImActorModelStorageMemoryEnginesFactory alloc] init]);
+    mainThread_ = [[ImActorModelConcurrencyNoMainThread alloc] init];
+    preferencesStorage_ = [[ImActorModelStorageMemoryPreferences alloc] init];
+    enginesFactory_ = [[ImActorModelStorageMemoryEnginesFactory alloc] init];
   }
   return self;
-}
-
-- (void)dealloc {
-  RELEASE_(mainThread_);
-  RELEASE_(endpoints_);
-  RELEASE_(preferencesStorage_);
-  RELEASE_(enginesFactory_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(AMConfiguration *)other {
   [super copyAllFieldsTo:other];
   other->persistMessages_ = persistMessages_;
-  AMConfiguration_set_mainThread_(other, mainThread_);
-  AMConfiguration_set_endpoints_(other, endpoints_);
-  AMConfiguration_set_preferencesStorage_(other, preferencesStorage_);
-  AMConfiguration_set_enginesFactory_(other, enginesFactory_);
+  other->mainThread_ = mainThread_;
+  other->endpoints_ = endpoints_;
+  other->preferencesStorage_ = preferencesStorage_;
+  other->enginesFactory_ = enginesFactory_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

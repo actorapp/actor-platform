@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageSent, peer_, ImActorModel
                                    withLong:(jlong)rid
                                    withLong:(jlong)date {
   if (self = [super init]) {
-    ImActorModelApiUpdatesUpdateMessageSent_set_peer_(self, peer);
+    self->peer_ = peer;
     self->rid_ = rid;
     self->date_ = date;
   }
@@ -58,14 +58,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageSent, peer_, ImActorModel
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiUpdatesUpdateMessageSent_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiPeer alloc] init] autorelease]]);
+  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiPeer alloc] init]];
   self->rid_ = [values getLongWithInt:2];
   self->date_ = [values getLongWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeLongWithInt:2 withLong:self->rid_];
@@ -76,14 +76,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageSent, peer_, ImActorModel
   return ImActorModelApiUpdatesUpdateMessageSent_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(peer_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateMessageSent *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiUpdatesUpdateMessageSent_set_peer_(other, peer_);
+  other->peer_ = peer_;
   other->rid_ = rid_;
   other->date_ = date_;
 }
@@ -114,7 +109,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageSent, peer_, ImActorModel
 
 ImActorModelApiUpdatesUpdateMessageSent *ImActorModelApiUpdatesUpdateMessageSent_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateMessageSent_init();
-  return ((ImActorModelApiUpdatesUpdateMessageSent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateMessageSent alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateMessageSent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateMessageSent alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateMessageSent)

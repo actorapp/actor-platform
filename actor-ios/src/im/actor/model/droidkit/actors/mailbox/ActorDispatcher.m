@@ -52,20 +52,20 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxActorDispatcher, dispatcher
 - (instancetype)initWithNSString:(NSString *)name
 withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem *)actorSystem {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsMailboxActorDispatcher_setAndConsume_LOCK_(self, [[NSObject alloc] init]);
-    ImActorModelDroidkitActorsMailboxActorDispatcher_setAndConsume_endpoints_(self, [[JavaUtilHashMap alloc] init]);
-    ImActorModelDroidkitActorsMailboxActorDispatcher_setAndConsume_scopes_(self, [[JavaUtilHashMap alloc] init]);
-    ImActorModelDroidkitActorsMailboxActorDispatcher_set_name_(self, name);
-    ImActorModelDroidkitActorsMailboxActorDispatcher_set_actorSystem_(self, actorSystem);
+    LOCK_ = [[NSObject alloc] init];
+    endpoints_ = [[JavaUtilHashMap alloc] init];
+    scopes_ = [[JavaUtilHashMap alloc] init];
+    self->name_ = name;
+    self->actorSystem_ = actorSystem;
   }
   return self;
 }
 
 - (void)initDispatcherWithImActorModelDroidkitActorsDispatchAbstractDispatcher:(ImActorModelDroidkitActorsDispatchAbstractDispatcher *)dispatcher {
   if (self->dispatcher_ != nil) {
-    @throw [[[JavaLangRuntimeException alloc] initWithNSString:@"Double dispatcher init"] autorelease];
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Double dispatcher init"];
   }
-  ImActorModelDroidkitActorsMailboxActorDispatcher_set_dispatcher_(self, dispatcher);
+  self->dispatcher_ = dispatcher;
 }
 
 - (ImActorModelDroidkitActorsActorRef *)referenceActorWithNSString:(NSString *)path
@@ -77,12 +77,12 @@ withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem
     ImActorModelDroidkitActorsMailboxMailbox *mailbox = [((ImActorModelDroidkitActorsProps *) nil_chk(props)) createMailboxWithImActorModelDroidkitActorsMailboxMailboxesQueue:[((ImActorModelDroidkitActorsDispatchAbstractDispatcher *) nil_chk(dispatcher_)) getQueue]];
     ImActorModelDroidkitActorsMailboxActorEndpoint *endpoint = [((JavaUtilHashMap *) nil_chk(endpoints_)) getWithId:path];
     if (endpoint == nil) {
-      endpoint = [[[ImActorModelDroidkitActorsMailboxActorEndpoint alloc] initWithNSString:path] autorelease];
-      [endpoints_ putWithId:path withId:endpoint];
+      endpoint = [[ImActorModelDroidkitActorsMailboxActorEndpoint alloc] initWithNSString:path];
+      (void) [endpoints_ putWithId:path withId:endpoint];
     }
-    ImActorModelDroidkitActorsActorScope *scope = [[[ImActorModelDroidkitActorsActorScope alloc] initWithImActorModelDroidkitActorsActorSystem:actorSystem_ withImActorModelDroidkitActorsMailboxMailbox:mailbox withImActorModelDroidkitActorsMailboxActorDispatcher:self withNSString:path withImActorModelDroidkitActorsProps:props withImActorModelDroidkitActorsMailboxActorEndpoint:endpoint] autorelease];
+    ImActorModelDroidkitActorsActorScope *scope = [[ImActorModelDroidkitActorsActorScope alloc] initWithImActorModelDroidkitActorsActorSystem:actorSystem_ withImActorModelDroidkitActorsMailboxMailbox:mailbox withImActorModelDroidkitActorsMailboxActorDispatcher:self withNSString:path withImActorModelDroidkitActorsProps:props withImActorModelDroidkitActorsMailboxActorEndpoint:endpoint];
     [((ImActorModelDroidkitActorsMailboxActorEndpoint *) nil_chk(endpoint)) connectWithImActorModelDroidkitActorsMailboxMailbox:mailbox withImActorModelDroidkitActorsActorScope:scope];
-    [scopes_ putWithId:[scope getPath] withId:scope];
+    (void) [scopes_ putWithId:[scope getPath] withId:scope];
     [((ImActorModelDroidkitActorsActorRef *) nil_chk([scope getActorRef])) sendWithId:ImActorModelDroidkitActorsMessagesStartActor_get_INSTANCE_()];
     return [scope getActorRef];
   }
@@ -101,14 +101,14 @@ withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem
     while (b__ < e__) {
       ImActorModelDroidkitActorsMailboxEnvelope *e = *b__++;
       if ([((ImActorModelDroidkitActorsMailboxEnvelope *) nil_chk(e)) getSender] != nil) {
-        [((ImActorModelDroidkitActorsActorRef *) nil_chk([e getSender])) sendWithId:[[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:[e getMessage]] autorelease]];
+        [((ImActorModelDroidkitActorsActorRef *) nil_chk([e getSender])) sendWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:[e getMessage]]];
       }
     }
   }
   [((ImActorModelDroidkitActorsMailboxMailbox *) nil_chk([scope getMailbox])) clear];
   @synchronized(LOCK_) {
-    [((JavaUtilHashMap *) nil_chk(scopes_)) removeWithId:[scope getPath]];
-    [((JavaUtilHashMap *) nil_chk(endpoints_)) removeWithId:[scope getPath]];
+    (void) [((JavaUtilHashMap *) nil_chk(scopes_)) removeWithId:[scope getPath]];
+    (void) [((JavaUtilHashMap *) nil_chk(endpoints_)) removeWithId:[scope getPath]];
     [((ImActorModelDroidkitActorsMailboxMailboxesQueue *) nil_chk([((ImActorModelDroidkitActorsDispatchAbstractDispatcher *) nil_chk(dispatcher_)) getQueue])) disconnectMailboxWithImActorModelDroidkitActorsMailboxMailbox:[scope getMailbox]];
   }
 }
@@ -122,11 +122,11 @@ withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem
       if ([((ImActorModelDroidkitActorsActorSystem *) nil_chk(actorSystem_)) getTraceInterface] != nil) {
         [((id<ImActorModelDroidkitActorsDebugTraceInterface>) nil_chk([actorSystem_ getTraceInterface])) onDeadLetterWithImActorModelDroidkitActorsActorRef:sender withId:message];
       }
-      [sender sendWithId:[[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:message] autorelease]];
+      [sender sendWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:message]];
     }
   }
   else {
-    [((ImActorModelDroidkitActorsMailboxMailbox *) nil_chk([endpoint getMailbox])) scheduleWithImActorModelDroidkitActorsMailboxEnvelope:[[[ImActorModelDroidkitActorsMailboxEnvelope alloc] initWithId:message withImActorModelDroidkitActorsActorScope:[endpoint getScope] withImActorModelDroidkitActorsMailboxMailbox:[endpoint getMailbox] withImActorModelDroidkitActorsActorRef:sender] autorelease] withLong:time];
+    [((ImActorModelDroidkitActorsMailboxMailbox *) nil_chk([endpoint getMailbox])) scheduleWithImActorModelDroidkitActorsMailboxEnvelope:[[ImActorModelDroidkitActorsMailboxEnvelope alloc] initWithId:message withImActorModelDroidkitActorsActorScope:[endpoint getScope] withImActorModelDroidkitActorsMailboxMailbox:[endpoint getMailbox] withImActorModelDroidkitActorsActorRef:sender] withLong:time];
   }
 }
 
@@ -139,11 +139,11 @@ withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem
       if ([((ImActorModelDroidkitActorsActorSystem *) nil_chk(actorSystem_)) getTraceInterface] != nil) {
         [((id<ImActorModelDroidkitActorsDebugTraceInterface>) nil_chk([actorSystem_ getTraceInterface])) onDeadLetterWithImActorModelDroidkitActorsActorRef:sender withId:message];
       }
-      [sender sendWithId:[[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:message] autorelease]];
+      [sender sendWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:message]];
     }
   }
   else {
-    [((ImActorModelDroidkitActorsMailboxMailbox *) nil_chk([endpoint getMailbox])) scheduleOnceWithImActorModelDroidkitActorsMailboxEnvelope:[[[ImActorModelDroidkitActorsMailboxEnvelope alloc] initWithId:message withImActorModelDroidkitActorsActorScope:[endpoint getScope] withImActorModelDroidkitActorsMailboxMailbox:[endpoint getMailbox] withImActorModelDroidkitActorsActorRef:sender] autorelease] withLong:time];
+    [((ImActorModelDroidkitActorsMailboxMailbox *) nil_chk([endpoint getMailbox])) scheduleOnceWithImActorModelDroidkitActorsMailboxEnvelope:[[ImActorModelDroidkitActorsMailboxEnvelope alloc] initWithId:message withImActorModelDroidkitActorsActorScope:[endpoint getScope] withImActorModelDroidkitActorsMailboxMailbox:[endpoint getMailbox] withImActorModelDroidkitActorsActorRef:sender] withLong:time];
   }
 }
 
@@ -151,7 +151,7 @@ withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem
                                                               withId:(id)message
                               withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender {
   if (![((ImActorModelDroidkitActorsMailboxActorEndpoint *) nil_chk(endpoint)) isDisconnected]) {
-    [((ImActorModelDroidkitActorsMailboxMailbox *) nil_chk([endpoint getMailbox])) unscheduleWithImActorModelDroidkitActorsMailboxEnvelope:[[[ImActorModelDroidkitActorsMailboxEnvelope alloc] initWithId:message withImActorModelDroidkitActorsActorScope:[endpoint getScope] withImActorModelDroidkitActorsMailboxMailbox:[endpoint getMailbox] withImActorModelDroidkitActorsActorRef:sender] autorelease]];
+    [((ImActorModelDroidkitActorsMailboxMailbox *) nil_chk([endpoint getMailbox])) unscheduleWithImActorModelDroidkitActorsMailboxEnvelope:[[ImActorModelDroidkitActorsMailboxEnvelope alloc] initWithId:message withImActorModelDroidkitActorsActorScope:[endpoint getScope] withImActorModelDroidkitActorsMailboxMailbox:[endpoint getMailbox] withImActorModelDroidkitActorsActorRef:sender]];
   }
 }
 
@@ -172,7 +172,7 @@ withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem
     }
     @try {
       ImActorModelDroidkitActorsActor *actor = [((ImActorModelDroidkitActorsProps *) nil_chk([scope getProps])) create];
-      [((ImActorModelDroidkitActorsActor *) nil_chk(actor)) initActorWithNSString:[scope getPath] withImActorModelDroidkitActorsActorContext:[[[ImActorModelDroidkitActorsActorContext alloc] initWithImActorModelDroidkitActorsActorScope:scope] autorelease] withImActorModelDroidkitActorsMailboxMailbox:[scope getMailbox]];
+      [((ImActorModelDroidkitActorsActor *) nil_chk(actor)) initActorWithNSString:[scope getPath] withImActorModelDroidkitActorsActorContext:[[ImActorModelDroidkitActorsActorContext alloc] initWithImActorModelDroidkitActorsActorScope:scope] withImActorModelDroidkitActorsMailboxMailbox:[scope getMailbox]];
       for (id<ImActorModelDroidkitActorsExtensionsActorExtension> __strong e in nil_chk([actor getExtensions])) {
         [((id<ImActorModelDroidkitActorsExtensionsActorExtension>) nil_chk(e)) preStart];
       }
@@ -182,7 +182,7 @@ withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem
     @catch (JavaLangException *e) {
       [((JavaLangException *) nil_chk(e)) printStackTrace];
       if ([envelope getSender] != nil) {
-        [((ImActorModelDroidkitActorsActorRef *) nil_chk([envelope getSender])) sendWithId:[[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:@"Unable to create actor"] autorelease]];
+        [((ImActorModelDroidkitActorsActorRef *) nil_chk([envelope getSender])) sendWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:@"Unable to create actor"]];
       }
       return;
     }
@@ -208,14 +208,14 @@ withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem
         while (b__ < e__) {
           ImActorModelDroidkitActorsMailboxEnvelope *e = *b__++;
           if ([((ImActorModelDroidkitActorsMailboxEnvelope *) nil_chk(e)) getSender] != nil) {
-            [((ImActorModelDroidkitActorsActorRef *) nil_chk([e getSender])) sendWithId:[[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:[e getMessage]] autorelease]];
+            [((ImActorModelDroidkitActorsActorRef *) nil_chk([e getSender])) sendWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:[e getMessage]]];
           }
         }
       }
       [((ImActorModelDroidkitActorsMailboxMailbox *) nil_chk([scope getMailbox])) clear];
       @synchronized(LOCK_) {
-        [((JavaUtilHashMap *) nil_chk(scopes_)) removeWithId:[scope getPath]];
-        [((JavaUtilHashMap *) nil_chk(endpoints_)) removeWithId:[scope getPath]];
+        (void) [((JavaUtilHashMap *) nil_chk(scopes_)) removeWithId:[scope getPath]];
+        (void) [((JavaUtilHashMap *) nil_chk(endpoints_)) removeWithId:[scope getPath]];
         [((ImActorModelDroidkitActorsMailboxMailboxesQueue *) nil_chk([((ImActorModelDroidkitActorsDispatchAbstractDispatcher *) nil_chk(dispatcher_)) getQueue])) disconnectMailboxWithImActorModelDroidkitActorsMailboxMailbox:[scope getMailbox]];
       }
     }
@@ -236,8 +236,8 @@ withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem
     [scope onActorDie];
     isDisconnected = YES;
     @synchronized(LOCK_) {
-      [((JavaUtilHashMap *) nil_chk(scopes_)) removeWithId:[scope getPath]];
-      [((JavaUtilHashMap *) nil_chk(endpoints_)) removeWithId:[scope getPath]];
+      (void) [((JavaUtilHashMap *) nil_chk(scopes_)) removeWithId:[scope getPath]];
+      (void) [((JavaUtilHashMap *) nil_chk(endpoints_)) removeWithId:[scope getPath]];
       [((ImActorModelDroidkitActorsMailboxMailboxesQueue *) nil_chk([((ImActorModelDroidkitActorsDispatchAbstractDispatcher *) nil_chk(dispatcher_)) getQueue])) disconnectMailboxWithImActorModelDroidkitActorsMailboxMailbox:[scope getMailbox]];
     }
   }
@@ -251,24 +251,14 @@ withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem
   }
 }
 
-- (void)dealloc {
-  RELEASE_(LOCK_);
-  RELEASE_(endpoints_);
-  RELEASE_(scopes_);
-  RELEASE_(actorSystem_);
-  RELEASE_(name_);
-  RELEASE_(dispatcher_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxActorDispatcher *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsMailboxActorDispatcher_set_LOCK_(other, LOCK_);
-  ImActorModelDroidkitActorsMailboxActorDispatcher_set_endpoints_(other, endpoints_);
-  ImActorModelDroidkitActorsMailboxActorDispatcher_set_scopes_(other, scopes_);
-  ImActorModelDroidkitActorsMailboxActorDispatcher_set_actorSystem_(other, actorSystem_);
-  ImActorModelDroidkitActorsMailboxActorDispatcher_set_name_(other, name_);
-  ImActorModelDroidkitActorsMailboxActorDispatcher_set_dispatcher_(other, dispatcher_);
+  other->LOCK_ = LOCK_;
+  other->endpoints_ = endpoints_;
+  other->scopes_ = scopes_;
+  other->actorSystem_ = actorSystem_;
+  other->name_ = name_;
+  other->dispatcher_ = dispatcher_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

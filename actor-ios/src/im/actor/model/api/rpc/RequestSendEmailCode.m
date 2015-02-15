@@ -32,8 +32,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 - (instancetype)initWithNSString:(NSString *)email
                     withNSString:(NSString *)description_ {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestSendEmailCode_set_email_(self, email);
-    ImActorModelApiRpcRequestSendEmailCode_set_description__(self, description_);
+    self->email_ = email;
+    self->description__ = description_;
   }
   return self;
 }
@@ -51,13 +51,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestSendEmailCode_set_email_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1]);
-  ImActorModelApiRpcRequestSendEmailCode_set_description__(self, [values optStringWithInt:2]);
+  self->email_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1];
+  self->description__ = [values optStringWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->email_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->email_];
   if (self->description__ != nil) {
@@ -69,16 +69,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
   return ImActorModelApiRpcRequestSendEmailCode_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(email_);
-  RELEASE_(description__);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestSendEmailCode *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestSendEmailCode_set_email_(other, email_);
-  ImActorModelApiRpcRequestSendEmailCode_set_description__(other, description__);
+  other->email_ = email_;
+  other->description__ = description__;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -106,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 
 ImActorModelApiRpcRequestSendEmailCode *ImActorModelApiRpcRequestSendEmailCode_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSendEmailCode_init();
-  return ((ImActorModelApiRpcRequestSendEmailCode *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestSendEmailCode alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestSendEmailCode *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestSendEmailCode alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSendEmailCode)

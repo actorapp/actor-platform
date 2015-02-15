@@ -46,12 +46,12 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsProps, dispatcher_, NSString *)
 withImActorModelDroidkitActorsActorCreator:(id<ImActorModelDroidkitActorsActorCreator>)creator
 withImActorModelDroidkitActorsMailboxCreator:(id<ImActorModelDroidkitActorsMailboxCreator>)mailboxCreator {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsProps_set_aClass_(self, aClass);
-    ImActorModelDroidkitActorsProps_set_args_(self, args);
+    self->aClass_ = aClass;
+    self->args_ = args;
     self->type_ = type;
-    ImActorModelDroidkitActorsProps_set_creator_(self, creator);
-    ImActorModelDroidkitActorsProps_set_mailboxCreator_(self, mailboxCreator);
-    ImActorModelDroidkitActorsProps_set_dispatcher_(self, dispatcher);
+    self->creator_ = creator;
+    self->mailboxCreator_ = mailboxCreator;
+    self->dispatcher_ = dispatcher;
   }
   return self;
 }
@@ -65,7 +65,7 @@ withImActorModelDroidkitActorsMailboxCreator:(id<ImActorModelDroidkitActorsMailb
     return [mailboxCreator_ createMailboxWithImActorModelDroidkitActorsMailboxMailboxesQueue:queue];
   }
   else {
-    return [[[ImActorModelDroidkitActorsMailboxMailbox alloc] initWithImActorModelDroidkitActorsMailboxMailboxesQueue:queue] autorelease];
+    return [[ImActorModelDroidkitActorsMailboxMailbox alloc] initWithImActorModelDroidkitActorsMailboxMailboxesQueue:queue];
   }
 }
 
@@ -74,7 +74,7 @@ withImActorModelDroidkitActorsMailboxCreator:(id<ImActorModelDroidkitActorsMailb
 }
 
 - (ImActorModelDroidkitActorsProps *)changeDispatcherWithNSString:(NSString *)dispatcher {
-  return [[[ImActorModelDroidkitActorsProps alloc] initWithIOSClass:aClass_ withNSObjectArray:args_ withInt:type_ withNSString:dispatcher withImActorModelDroidkitActorsActorCreator:creator_ withImActorModelDroidkitActorsMailboxCreator:mailboxCreator_] autorelease];
+  return [[ImActorModelDroidkitActorsProps alloc] initWithIOSClass:aClass_ withNSObjectArray:args_ withInt:type_ withNSString:dispatcher withImActorModelDroidkitActorsActorCreator:creator_ withImActorModelDroidkitActorsMailboxCreator:mailboxCreator_];
 }
 
 + (ImActorModelDroidkitActorsProps *)createWithIOSClass:(IOSClass *)clazz
@@ -88,23 +88,14 @@ withImActorModelDroidkitActorsMailboxCreator:(id<ImActorModelDroidkitActorsMailb
   return ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_withImActorModelDroidkitActorsMailboxCreator_(clazz, creator, mailboxCreator);
 }
 
-- (void)dealloc {
-  RELEASE_(aClass_);
-  RELEASE_(args_);
-  RELEASE_(creator_);
-  RELEASE_(mailboxCreator_);
-  RELEASE_(dispatcher_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsProps *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsProps_set_aClass_(other, aClass_);
-  ImActorModelDroidkitActorsProps_set_args_(other, args_);
+  other->aClass_ = aClass_;
+  other->args_ = args_;
   other->type_ = type_;
-  ImActorModelDroidkitActorsProps_set_creator_(other, creator_);
-  ImActorModelDroidkitActorsProps_set_mailboxCreator_(other, mailboxCreator_);
-  ImActorModelDroidkitActorsProps_set_dispatcher_(other, dispatcher_);
+  other->creator_ = creator_;
+  other->mailboxCreator_ = mailboxCreator_;
+  other->dispatcher_ = dispatcher_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -135,12 +126,12 @@ withImActorModelDroidkitActorsMailboxCreator:(id<ImActorModelDroidkitActorsMailb
 
 ImActorModelDroidkitActorsProps *ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(IOSClass *clazz, id<ImActorModelDroidkitActorsActorCreator> creator) {
   ImActorModelDroidkitActorsProps_init();
-  return [[[ImActorModelDroidkitActorsProps alloc] initWithIOSClass:clazz withNSObjectArray:nil withInt:ImActorModelDroidkitActorsProps_TYPE_CREATOR withNSString:nil withImActorModelDroidkitActorsActorCreator:creator withImActorModelDroidkitActorsMailboxCreator:nil] autorelease];
+  return [[ImActorModelDroidkitActorsProps alloc] initWithIOSClass:clazz withNSObjectArray:nil withInt:ImActorModelDroidkitActorsProps_TYPE_CREATOR withNSString:nil withImActorModelDroidkitActorsActorCreator:creator withImActorModelDroidkitActorsMailboxCreator:nil];
 }
 
 ImActorModelDroidkitActorsProps *ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_withImActorModelDroidkitActorsMailboxCreator_(IOSClass *clazz, id<ImActorModelDroidkitActorsActorCreator> creator, id<ImActorModelDroidkitActorsMailboxCreator> mailboxCreator) {
   ImActorModelDroidkitActorsProps_init();
-  return [[[ImActorModelDroidkitActorsProps alloc] initWithIOSClass:clazz withNSObjectArray:nil withInt:ImActorModelDroidkitActorsProps_TYPE_CREATOR withNSString:nil withImActorModelDroidkitActorsActorCreator:creator withImActorModelDroidkitActorsMailboxCreator:mailboxCreator] autorelease];
+  return [[ImActorModelDroidkitActorsProps alloc] initWithIOSClass:clazz withNSObjectArray:nil withInt:ImActorModelDroidkitActorsProps_TYPE_CREATOR withNSString:nil withImActorModelDroidkitActorsActorCreator:creator withImActorModelDroidkitActorsMailboxCreator:mailboxCreator];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsProps)

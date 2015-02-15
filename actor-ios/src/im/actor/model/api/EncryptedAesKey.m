@@ -26,7 +26,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedAesKey, aesEncryptedKey_, IOSByteArr
                withByteArray:(IOSByteArray *)aesEncryptedKey {
   if (self = [super init]) {
     self->keyHash_ = keyHash;
-    ImActorModelApiEncryptedAesKey_set_aesEncryptedKey_(self, aesEncryptedKey);
+    self->aesEncryptedKey_ = aesEncryptedKey;
   }
   return self;
 }
@@ -45,26 +45,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedAesKey, aesEncryptedKey_, IOSByteArr
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->keyHash_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
-  ImActorModelApiEncryptedAesKey_set_aesEncryptedKey_(self, [values getBytesWithInt:2]);
+  self->aesEncryptedKey_ = [values getBytesWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->keyHash_];
   if (self->aesEncryptedKey_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:2 withByteArray:self->aesEncryptedKey_];
-}
-
-- (void)dealloc {
-  RELEASE_(aesEncryptedKey_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiEncryptedAesKey *)other {
   [super copyAllFieldsTo:other];
   other->keyHash_ = keyHash_;
-  ImActorModelApiEncryptedAesKey_set_aesEncryptedKey_(other, aesEncryptedKey_);
+  other->aesEncryptedKey_ = aesEncryptedKey_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

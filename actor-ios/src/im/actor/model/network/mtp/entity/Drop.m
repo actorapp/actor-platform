@@ -20,7 +20,7 @@
                 withNSString:(NSString *)message {
   if (self = [super init]) {
     self->messageId_ = messageId;
-    MTDrop_set_message_(self, message);
+    self->message_ = message;
   }
   return self;
 }
@@ -44,22 +44,17 @@
 
 - (void)readBodyWithAMDataInput:(AMDataInput *)bs {
   messageId_ = [((AMDataInput *) nil_chk(bs)) readLong];
-  MTDrop_set_message_(self, [bs readProtoString]);
+  message_ = [bs readProtoString];
 }
 
 - (NSString *)description {
   return JreStrcat("$$C", @"Drop[", message_, ']');
 }
 
-- (void)dealloc {
-  RELEASE_(message_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(MTDrop *)other {
   [super copyAllFieldsTo:other];
   other->messageId_ = messageId_;
-  MTDrop_set_message_(other, message_);
+  other->message_ = message_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -136,7 +136,7 @@
     case 42:
     return ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(payload);
   }
-  @throw [[[JavaIoIOException alloc] init] autorelease];
+  @throw [[JavaIoIOException alloc] init];
 }
 
 - (instancetype)init {

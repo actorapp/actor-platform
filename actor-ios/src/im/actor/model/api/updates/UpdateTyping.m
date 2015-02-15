@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, peer_, ImActorModelApiPe
                                     withInt:(jint)uid
                                     withInt:(jint)typingType {
   if (self = [super init]) {
-    ImActorModelApiUpdatesUpdateTyping_set_peer_(self, peer);
+    self->peer_ = peer;
     self->uid_ = uid;
     self->typingType_ = typingType;
   }
@@ -58,14 +58,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, peer_, ImActorModelApiPe
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiUpdatesUpdateTyping_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiPeer alloc] init] autorelease]]);
+  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiPeer alloc] init]];
   self->uid_ = [values getIntWithInt:2];
   self->typingType_ = [values getIntWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeIntWithInt:2 withInt:self->uid_];
@@ -76,14 +76,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, peer_, ImActorModelApiPe
   return ImActorModelApiUpdatesUpdateTyping_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(peer_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateTyping *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiUpdatesUpdateTyping_set_peer_(other, peer_);
+  other->peer_ = peer_;
   other->uid_ = uid_;
   other->typingType_ = typingType_;
 }
@@ -114,7 +109,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, peer_, ImActorModelApiPe
 
 ImActorModelApiUpdatesUpdateTyping *ImActorModelApiUpdatesUpdateTyping_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateTyping_init();
-  return ((ImActorModelApiUpdatesUpdateTyping *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateTyping alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateTyping *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateTyping alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateTyping)

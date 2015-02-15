@@ -58,16 +58,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor_$1, this$0_, 
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger {
   if (self = [super initWithAMMessenger:messenger]) {
     isLoading_ = NO;
-    ImActorModelModulesMessagesDialogsHistoryActor_set_messenger_DialogsHistoryActor_(self, messenger);
+    self->messenger_DialogsHistoryActor_ = messenger;
   }
   return self;
 }
 
 - (void)preStart {
-  ImActorModelModulesMessagesDialogsHistoryActor_set_preferencesStorage_(self, [((AMConfiguration *) nil_chk([((AMMessenger *) nil_chk(messenger_DialogsHistoryActor_)) getConfiguration])) getPreferencesStorage]);
+  preferencesStorage_ = [((AMConfiguration *) nil_chk([((AMMessenger *) nil_chk(messenger_DialogsHistoryActor_)) getConfiguration])) getPreferencesStorage];
   historyMaxDate_ = [((id<ImActorModelStoragePreferencesStorage>) nil_chk(preferencesStorage_)) getLongWithNSString:@"dialogs_history_date" withLong:0];
   historyLoaded_ = [preferencesStorage_ getBoolWithNSString:@"dialogs_history_loaded" withBoolean:NO];
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[[ImActorModelModulesMessagesDialogsHistoryActor_LoadMore alloc] init] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesMessagesDialogsHistoryActor_LoadMore alloc] init]];
 }
 
 - (void)onLoadMore {
@@ -92,16 +92,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor_$1, this$0_, 
   }
 }
 
-- (void)dealloc {
-  RELEASE_(messenger_DialogsHistoryActor_);
-  RELEASE_(preferencesStorage_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsHistoryActor *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesMessagesDialogsHistoryActor_set_messenger_DialogsHistoryActor_(other, messenger_DialogsHistoryActor_);
-  ImActorModelModulesMessagesDialogsHistoryActor_set_preferencesStorage_(other, preferencesStorage_);
+  other->messenger_DialogsHistoryActor_ = messenger_DialogsHistoryActor_;
+  other->preferencesStorage_ = preferencesStorage_;
   other->historyMaxDate_ = historyMaxDate_;
   other->historyLoaded_ = historyLoaded_;
   other->isLoading_ = isLoading_;
@@ -137,7 +131,7 @@ void ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(ImActorModelModul
     return;
   }
   self->isLoading_ = YES;
-  [self requestWithImActorModelNetworkParserRequest:[[[ImActorModelApiRpcRequestLoadDialogs alloc] initWithLong:self->historyMaxDate_ withInt:ImActorModelModulesMessagesDialogsHistoryActor_LIMIT] autorelease] withAMRpcCallback:[[[ImActorModelModulesMessagesDialogsHistoryActor_$1 alloc] initWithImActorModelModulesMessagesDialogsHistoryActor:self] autorelease]];
+  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestLoadDialogs alloc] initWithLong:self->historyMaxDate_ withInt:ImActorModelModulesMessagesDialogsHistoryActor_LIMIT] withAMRpcCallback:[[ImActorModelModulesMessagesDialogsHistoryActor_$1 alloc] initWithImActorModelModulesMessagesDialogsHistoryActor:self]];
 }
 
 void ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithBoolean_withLong_(ImActorModelModulesMessagesDialogsHistoryActor *self, jboolean isFinished, jlong maxLoadedDate) {
@@ -209,7 +203,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_
 @implementation ImActorModelModulesMessagesDialogsHistoryActor_$1
 
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseLoadDialogs *)response {
-  [((ImActorModelModulesUpdates *) nil_chk([((AMMessenger *) nil_chk(this$0_->messenger_DialogsHistoryActor_)) getUpdatesModule])) onUpdateReceivedWithId:[[[ImActorModelModulesUpdatesInternalDialogHistoryLoaded alloc] initWithImActorModelApiRpcResponseLoadDialogs:response] autorelease]];
+  [((ImActorModelModulesUpdates *) nil_chk([((AMMessenger *) nil_chk(this$0_->messenger_DialogsHistoryActor_)) getUpdatesModule])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalDialogHistoryLoaded alloc] initWithImActorModelApiRpcResponseLoadDialogs:response]];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
@@ -217,18 +211,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_
 }
 
 - (instancetype)initWithImActorModelModulesMessagesDialogsHistoryActor:(ImActorModelModulesMessagesDialogsHistoryActor *)outer$ {
-  ImActorModelModulesMessagesDialogsHistoryActor_$1_set_this$0_(self, outer$);
+  this$0_ = outer$;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(this$0_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsHistoryActor_$1 *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesMessagesDialogsHistoryActor_$1_set_this$0_(other, this$0_);
+  other->this$0_ = this$0_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -35,9 +35,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
                                            withLong:(jlong)rid
                                        withNSString:(NSString *)title {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestEditGroupTitle_set_groupPeer_(self, groupPeer);
+    self->groupPeer_ = groupPeer;
     self->rid_ = rid;
-    ImActorModelApiRpcRequestEditGroupTitle_set_title_(self, title);
+    self->title_ = title;
   }
   return self;
 }
@@ -59,19 +59,19 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestEditGroupTitle_set_groupPeer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiGroupOutPeer alloc] init] autorelease]]);
+  self->groupPeer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
   self->rid_ = [values getLongWithInt:4];
-  ImActorModelApiRpcRequestEditGroupTitle_set_title_(self, [values getStringWithInt:3]);
+  self->title_ = [values getStringWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->groupPeer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->groupPeer_];
   [writer writeLongWithInt:4 withLong:self->rid_];
   if (self->title_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:3 withNSString:self->title_];
 }
@@ -80,17 +80,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
   return ImActorModelApiRpcRequestEditGroupTitle_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(groupPeer_);
-  RELEASE_(title_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestEditGroupTitle *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestEditGroupTitle_set_groupPeer_(other, groupPeer_);
+  other->groupPeer_ = groupPeer_;
   other->rid_ = rid_;
-  ImActorModelApiRpcRequestEditGroupTitle_set_title_(other, title_);
+  other->title_ = title_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -120,7 +114,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
 
 ImActorModelApiRpcRequestEditGroupTitle *ImActorModelApiRpcRequestEditGroupTitle_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditGroupTitle_init();
-  return ((ImActorModelApiRpcRequestEditGroupTitle *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestEditGroupTitle alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestEditGroupTitle *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestEditGroupTitle alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEditGroupTitle)

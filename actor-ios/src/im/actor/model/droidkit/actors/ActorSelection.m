@@ -22,8 +22,8 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorSelection, path_, NSString *)
 - (instancetype)initWithImActorModelDroidkitActorsProps:(ImActorModelDroidkitActorsProps *)props
                                            withNSString:(NSString *)path {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsActorSelection_set_props_(self, props);
-    ImActorModelDroidkitActorsActorSelection_set_path_(self, path);
+    self->props_ = props;
+    self->path_ = path;
   }
   return self;
 }
@@ -36,16 +36,10 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorSelection, path_, NSString *)
   return path_;
 }
 
-- (void)dealloc {
-  RELEASE_(props_);
-  RELEASE_(path_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsActorSelection *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsActorSelection_set_props_(other, props_);
-  ImActorModelDroidkitActorsActorSelection_set_path_(other, path_);
+  other->props_ = props_;
+  other->path_ = path_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -20,13 +20,13 @@
 }
 
 - (IOSByteArray *)toByteArray {
-  AMDataOutput *outputStream = [[[AMDataOutput alloc] init] autorelease];
-  ImActorModelDroidkitBserBserWriter *writer = [[[ImActorModelDroidkitBserBserWriter alloc] initWithAMDataOutput:outputStream] autorelease];
+  AMDataOutput *outputStream = [[AMDataOutput alloc] init];
+  ImActorModelDroidkitBserBserWriter *writer = [[ImActorModelDroidkitBserBserWriter alloc] initWithAMDataOutput:outputStream];
   @try {
     [self serializeWithImActorModelDroidkitBserBserWriter:writer];
   }
   @catch (JavaIoIOException *e) {
-    @throw [[[JavaLangRuntimeException alloc] initWithNSString:@"Unexpected IO exception"] autorelease];
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Unexpected IO exception"];
   }
   return [outputStream toByteArray];
 }

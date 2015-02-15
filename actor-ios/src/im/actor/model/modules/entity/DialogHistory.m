@@ -37,14 +37,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesEntityDialogHistory, status_, ImActorMode
        withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content
         withImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)status {
   if (self = [super init]) {
-    ImActorModelModulesEntityDialogHistory_set_peer_(self, peer);
+    self->peer_ = peer;
     self->unreadCount_ = unreadCount;
     self->sortDate_ = sortDate;
     self->rid_ = rid;
     self->date_ = date;
     self->senderId_ = senderId;
-    ImActorModelModulesEntityDialogHistory_set_content_(self, content);
-    ImActorModelModulesEntityDialogHistory_set_status_(self, status);
+    self->content_ = content;
+    self->status_ = status;
   }
   return self;
 }
@@ -81,23 +81,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesEntityDialogHistory, status_, ImActorMode
   return status_;
 }
 
-- (void)dealloc {
-  RELEASE_(peer_);
-  RELEASE_(content_);
-  RELEASE_(status_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesEntityDialogHistory *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesEntityDialogHistory_set_peer_(other, peer_);
+  other->peer_ = peer_;
   other->unreadCount_ = unreadCount_;
   other->sortDate_ = sortDate_;
   other->rid_ = rid_;
   other->date_ = date_;
   other->senderId_ = senderId_;
-  ImActorModelModulesEntityDialogHistory_set_content_(other, content_);
-  ImActorModelModulesEntityDialogHistory_set_status_(other, status_);
+  other->content_ = content_;
+  other->status_ = status_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

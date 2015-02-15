@@ -27,10 +27,10 @@
                                                withNSString:(NSString *)name
                      withImActorModelEntityContentFastThumb:(ImActorModelEntityContentFastThumb *)fastThumb {
   if (self = [super init]) {
-    ImActorModelEntityContentDocumentContent_set_source_(self, source);
-    ImActorModelEntityContentDocumentContent_set_mimetype_(self, mimetype);
-    ImActorModelEntityContentDocumentContent_set_name_(self, name);
-    ImActorModelEntityContentDocumentContent_set_fastThumb_(self, fastThumb);
+    self->source_ = source;
+    self->mimetype_ = mimetype;
+    self->name_ = name;
+    self->fastThumb_ = fastThumb;
   }
   return self;
 }
@@ -56,12 +56,12 @@
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelEntityContentDocumentContent_set_source_(self, ImActorModelEntityContentFileSource_fromBytesWithByteArray_([((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:2]));
-  ImActorModelEntityContentDocumentContent_set_mimetype_(self, [values getStringWithInt:3]);
-  ImActorModelEntityContentDocumentContent_set_name_(self, [values getStringWithInt:4]);
+  source_ = ImActorModelEntityContentFileSource_fromBytesWithByteArray_([((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:2]);
+  mimetype_ = [values getStringWithInt:3];
+  name_ = [values getStringWithInt:4];
   IOSByteArray *ft = [values getBytesWithInt:5];
   if (ft != nil) {
-    ImActorModelEntityContentDocumentContent_set_fastThumb_(self, ImActorModelEntityContentFastThumb_fromBytesWithByteArray_(ft));
+    fastThumb_ = ImActorModelEntityContentFastThumb_fromBytesWithByteArray_(ft);
   }
 }
 
@@ -74,20 +74,12 @@
   }
 }
 
-- (void)dealloc {
-  RELEASE_(source_);
-  RELEASE_(mimetype_);
-  RELEASE_(name_);
-  RELEASE_(fastThumb_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelEntityContentDocumentContent *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelEntityContentDocumentContent_set_source_(other, source_);
-  ImActorModelEntityContentDocumentContent_set_mimetype_(other, mimetype_);
-  ImActorModelEntityContentDocumentContent_set_name_(other, name_);
-  ImActorModelEntityContentDocumentContent_set_fastThumb_(other, fastThumb_);
+  other->source_ = source_;
+  other->mimetype_ = mimetype_;
+  other->name_ = name_;
+  other->fastThumb_ = fastThumb_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -116,7 +108,7 @@
 
 ImActorModelEntityContentDocumentContent *ImActorModelEntityContentDocumentContent_docFromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentDocumentContent_init();
-  return ((ImActorModelEntityContentDocumentContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityContentDocumentContent alloc] init] autorelease], data));
+  return ((ImActorModelEntityContentDocumentContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentDocumentContent alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentDocumentContent)

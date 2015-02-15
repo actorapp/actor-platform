@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/messages/Ping.java
 //
 
-#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/messages/Ping.h"
 
@@ -27,7 +26,7 @@ ImActorModelDroidkitActorsMessagesPing * ImActorModelDroidkitActorsMessagesPing_
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsMessagesPing class]) {
-    JreStrongAssignAndConsume(&ImActorModelDroidkitActorsMessagesPing_INSTANCE_, nil, [[ImActorModelDroidkitActorsMessagesPing alloc] init]);
+    ImActorModelDroidkitActorsMessagesPing_INSTANCE_ = [[ImActorModelDroidkitActorsMessagesPing alloc] init];
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsMessagesPing)
   }
 }

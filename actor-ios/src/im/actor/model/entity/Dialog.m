@@ -61,17 +61,17 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogAvatar_, ImActorModelEntityA
                                       withLong:(jlong)date
                                        withInt:(jint)relatedUid {
   if (self = [super init]) {
-    ImActorModelEntityDialog_set_peer_(self, peer);
-    ImActorModelEntityDialog_set_dialogTitle_(self, dialogTitle);
-    ImActorModelEntityDialog_set_dialogAvatar_(self, dialogAvatar);
+    self->peer_ = peer;
+    self->dialogTitle_ = dialogTitle;
+    self->dialogAvatar_ = dialogAvatar;
     self->unreadCount_ = unreadCount;
     self->rid_ = rid;
     self->sortDate_ = sortKey;
     self->senderId_ = senderId;
     self->date_ = date;
-    ImActorModelEntityDialog_set_messageType_(self, messageType);
-    ImActorModelEntityDialog_set_text_(self, text);
-    ImActorModelEntityDialog_set_status_(self, status);
+    self->messageType_ = messageType;
+    self->text_ = text;
+    self->status_ = status;
     self->relatedUid_ = relatedUid;
   }
   return self;
@@ -139,24 +139,24 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogAvatar_, ImActorModelEntityA
 
 - (ImActorModelEntityDialog *)editPeerInfoWithNSString:(NSString *)title
                           withImActorModelEntityAvatar:(ImActorModelEntityAvatar *)dialogAvatar {
-  return [[[ImActorModelEntityDialog alloc] initWithImActorModelEntityPeer:peer_ withLong:sortDate_ withNSString:title withImActorModelEntityAvatar:dialogAvatar withInt:unreadCount_ withLong:rid_ withImActorModelEntityDialog_ContentTypeEnum:messageType_ withNSString:text_ withImActorModelEntityMessageStateEnum:status_ withInt:senderId_ withLong:date_ withInt:relatedUid_] autorelease];
+  return [[ImActorModelEntityDialog alloc] initWithImActorModelEntityPeer:peer_ withLong:sortDate_ withNSString:title withImActorModelEntityAvatar:dialogAvatar withInt:unreadCount_ withLong:rid_ withImActorModelEntityDialog_ContentTypeEnum:messageType_ withNSString:text_ withImActorModelEntityMessageStateEnum:status_ withInt:senderId_ withLong:date_ withInt:relatedUid_];
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelEntityDialog_set_peer_(self, ImActorModelEntityPeer_fromBytesWithByteArray_([((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:1]));
-  ImActorModelEntityDialog_set_dialogTitle_(self, [values getStringWithInt:2]);
+  peer_ = ImActorModelEntityPeer_fromBytesWithByteArray_([((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:1]);
+  dialogTitle_ = [values getStringWithInt:2];
   IOSByteArray *av = [values optBytesWithInt:3];
   if (av != nil) {
-    ImActorModelEntityDialog_set_dialogAvatar_(self, ImActorModelEntityAvatar_fromBytesWithByteArray_(av));
+    dialogAvatar_ = ImActorModelEntityAvatar_fromBytesWithByteArray_(av);
   }
   unreadCount_ = [values getIntWithInt:4];
   sortDate_ = [values getLongWithInt:5];
   rid_ = [values getLongWithInt:6];
   senderId_ = [values getIntWithInt:7];
   date_ = [values getLongWithInt:8];
-  ImActorModelEntityDialog_set_messageType_(self, ImActorModelEntityDialog_ContentTypeEnum_fromValueWithInt_([values getIntWithInt:9]));
-  ImActorModelEntityDialog_set_text_(self, [values getStringWithInt:10]);
-  ImActorModelEntityDialog_set_status_(self, ImActorModelEntityMessageStateEnum_fromValueWithInt_([values getIntWithInt:11]));
+  messageType_ = ImActorModelEntityDialog_ContentTypeEnum_fromValueWithInt_([values getIntWithInt:9]);
+  text_ = [values getStringWithInt:10];
+  status_ = ImActorModelEntityMessageStateEnum_fromValueWithInt_([values getIntWithInt:11]);
   relatedUid_ = [values getIntWithInt:12];
 }
 
@@ -177,29 +177,19 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogAvatar_, ImActorModelEntityA
   [writer writeIntWithInt:12 withInt:relatedUid_];
 }
 
-- (void)dealloc {
-  RELEASE_(peer_);
-  RELEASE_(dialogTitle_);
-  RELEASE_(messageType_);
-  RELEASE_(text_);
-  RELEASE_(status_);
-  RELEASE_(dialogAvatar_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelEntityDialog *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelEntityDialog_set_peer_(other, peer_);
-  ImActorModelEntityDialog_set_dialogTitle_(other, dialogTitle_);
+  other->peer_ = peer_;
+  other->dialogTitle_ = dialogTitle_;
   other->unreadCount_ = unreadCount_;
   other->rid_ = rid_;
   other->sortDate_ = sortDate_;
   other->senderId_ = senderId_;
   other->date_ = date_;
-  ImActorModelEntityDialog_set_messageType_(other, messageType_);
-  ImActorModelEntityDialog_set_text_(other, text_);
-  ImActorModelEntityDialog_set_status_(other, status_);
-  ImActorModelEntityDialog_set_dialogAvatar_(other, dialogAvatar_);
+  other->messageType_ = messageType_;
+  other->text_ = text_;
+  other->status_ = status_;
+  other->dialogAvatar_ = dialogAvatar_;
   other->relatedUid_ = relatedUid_;
 }
 
@@ -248,7 +238,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogAvatar_, ImActorModelEntityA
 
 ImActorModelEntityDialog *ImActorModelEntityDialog_fromBytesWithByteArray_(IOSByteArray *date) {
   ImActorModelEntityDialog_init();
-  return ((ImActorModelEntityDialog *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityDialog alloc] init] autorelease], date));
+  return ((ImActorModelEntityDialog *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityDialog alloc] init], date));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityDialog)
@@ -296,12 +286,12 @@ ImActorModelEntityDialog_ContentTypeEnum *ImActorModelEntityDialog_ContentTypeEn
       return e;
     }
   }
-  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name] autorelease];
+  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];
   return nil;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  return [self retain];
+  return self;
 }
 
 + (void)initialize {

@@ -34,14 +34,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates_$1, this$0_, ImActorModelModulesU
 
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger {
   if (self = [super init]) {
-    ImActorModelModulesUpdates_set_messenger_(self, messenger);
+    self->messenger_ = messenger;
     [self run];
   }
   return self;
 }
 
 - (void)run {
-  ImActorModelModulesUpdates_set_updateActor_(self, [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), [[[ImActorModelModulesUpdates_$1 alloc] initWithImActorModelModulesUpdates:self] autorelease]) withNSString:@"actor/updates"]);
+  self->updateActor_ = [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), [[ImActorModelModulesUpdates_$1 alloc] initWithImActorModelModulesUpdates:self]) withNSString:@"actor/updates"];
 }
 
 - (AMMessenger *)getMessenger {
@@ -49,27 +49,21 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates_$1, this$0_, ImActorModelModulesU
 }
 
 - (void)onSessionCreated {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(updateActor_)) sendWithId:[[[ImActorModelModulesUpdatesSequenceActor_Invalidate alloc] init] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk(updateActor_)) sendWithId:[[ImActorModelModulesUpdatesSequenceActor_Invalidate alloc] init]];
 }
 
 - (void)onPushReceivedWithInt:(jint)seq {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(updateActor_)) sendWithId:[[[ImActorModelModulesUpdatesSequenceActor_PushSeq alloc] initWithInt:seq] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk(updateActor_)) sendWithId:[[ImActorModelModulesUpdatesSequenceActor_PushSeq alloc] initWithInt:seq]];
 }
 
 - (void)onUpdateReceivedWithId:(id)update {
   [((ImActorModelDroidkitActorsActorRef *) nil_chk(updateActor_)) sendWithId:update];
 }
 
-- (void)dealloc {
-  RELEASE_(messenger_);
-  RELEASE_(updateActor_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdates *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUpdates_set_messenger_(other, messenger_);
-  ImActorModelModulesUpdates_set_updateActor_(other, updateActor_);
+  other->messenger_ = messenger_;
+  other->updateActor_ = updateActor_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -96,22 +90,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdates)
 @implementation ImActorModelModulesUpdates_$1
 
 - (ImActorModelModulesUpdatesSequenceActor *)create {
-  return [[[ImActorModelModulesUpdatesSequenceActor alloc] initWithImActorModelModulesUpdates:this$0_] autorelease];
+  return [[ImActorModelModulesUpdatesSequenceActor alloc] initWithImActorModelModulesUpdates:this$0_];
 }
 
 - (instancetype)initWithImActorModelModulesUpdates:(ImActorModelModulesUpdates *)outer$ {
-  ImActorModelModulesUpdates_$1_set_this$0_(self, outer$);
+  this$0_ = outer$;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(this$0_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdates_$1 *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUpdates_$1_set_this$0_(other, this$0_);
+  other->this$0_ = this$0_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

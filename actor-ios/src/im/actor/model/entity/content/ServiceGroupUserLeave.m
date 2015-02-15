@@ -34,7 +34,7 @@
 
 ImActorModelEntityContentServiceGroupUserLeave *ImActorModelEntityContentServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentServiceGroupUserLeave_init();
-  return ((ImActorModelEntityContentServiceGroupUserLeave *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityContentServiceGroupUserLeave alloc] init] autorelease], data));
+  return ((ImActorModelEntityContentServiceGroupUserLeave *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupUserLeave alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupUserLeave)

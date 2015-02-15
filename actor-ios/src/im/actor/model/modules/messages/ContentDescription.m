@@ -38,59 +38,59 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesContentDescription, text_, NSStri
 - (instancetype)initWithImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)msg {
   if (self = [super init]) {
     if ([msg isKindOfClass:[ImActorModelEntityContentTextContent class]]) {
-      ImActorModelModulesMessagesContentDescription_set_contentType_(self, ImActorModelEntityDialog_ContentTypeEnum_get_TEXT());
-      ImActorModelModulesMessagesContentDescription_set_text_(self, [((ImActorModelEntityContentTextContent *) nil_chk(((ImActorModelEntityContentTextContent *) check_class_cast(msg, [ImActorModelEntityContentTextContent class])))) getText]);
+      contentType_ = ImActorModelEntityDialog_ContentTypeEnum_get_TEXT();
+      text_ = [((ImActorModelEntityContentTextContent *) nil_chk(((ImActorModelEntityContentTextContent *) check_class_cast(msg, [ImActorModelEntityContentTextContent class])))) getText];
     }
     else if ([msg isKindOfClass:[ImActorModelEntityContentPhotoContent class]]) {
-      ImActorModelModulesMessagesContentDescription_set_contentType_(self, ImActorModelEntityDialog_ContentTypeEnum_get_DOCUMENT_PHOTO());
-      ImActorModelModulesMessagesContentDescription_set_text_(self, @"");
+      contentType_ = ImActorModelEntityDialog_ContentTypeEnum_get_DOCUMENT_PHOTO();
+      text_ = @"";
     }
     else if ([msg isKindOfClass:[ImActorModelEntityContentVideoContent class]]) {
-      ImActorModelModulesMessagesContentDescription_set_contentType_(self, ImActorModelEntityDialog_ContentTypeEnum_get_DOCUMENT_VIDEO());
-      ImActorModelModulesMessagesContentDescription_set_text_(self, @"");
+      contentType_ = ImActorModelEntityDialog_ContentTypeEnum_get_DOCUMENT_VIDEO();
+      text_ = @"";
     }
     else if ([msg isKindOfClass:[ImActorModelEntityContentDocumentContent class]]) {
-      ImActorModelModulesMessagesContentDescription_set_contentType_(self, ImActorModelEntityDialog_ContentTypeEnum_get_DOCUMENT());
-      ImActorModelModulesMessagesContentDescription_set_text_(self, @"");
+      contentType_ = ImActorModelEntityDialog_ContentTypeEnum_get_DOCUMENT();
+      text_ = @"";
     }
     else if ([msg isKindOfClass:[ImActorModelEntityContentServiceUserRegistered class]]) {
-      ImActorModelModulesMessagesContentDescription_set_contentType_(self, ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_REGISTERED());
-      ImActorModelModulesMessagesContentDescription_set_text_(self, @"");
+      contentType_ = ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_REGISTERED();
+      text_ = @"";
     }
     else if ([msg isKindOfClass:[ImActorModelEntityContentServiceGroupAvatarChanged class]]) {
       if ([((ImActorModelEntityContentServiceGroupAvatarChanged *) nil_chk(((ImActorModelEntityContentServiceGroupAvatarChanged *) check_class_cast(msg, [ImActorModelEntityContentServiceGroupAvatarChanged class])))) getNewAvatar] == nil) {
-        ImActorModelModulesMessagesContentDescription_set_contentType_(self, ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_AVATAR_REMOVED());
+        contentType_ = ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_AVATAR_REMOVED();
       }
       else {
-        ImActorModelModulesMessagesContentDescription_set_contentType_(self, ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_AVATAR());
+        contentType_ = ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_AVATAR();
       }
-      ImActorModelModulesMessagesContentDescription_set_text_(self, @"");
+      text_ = @"";
     }
     else if ([msg isKindOfClass:[ImActorModelEntityContentServiceGroupTitleChanged class]]) {
-      ImActorModelModulesMessagesContentDescription_set_contentType_(self, ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_TITLE());
-      ImActorModelModulesMessagesContentDescription_set_text_(self, @"");
+      contentType_ = ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_TITLE();
+      text_ = @"";
     }
     else if ([msg isKindOfClass:[ImActorModelEntityContentServiceGroupCreated class]]) {
-      ImActorModelModulesMessagesContentDescription_set_contentType_(self, ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_CREATED());
-      ImActorModelModulesMessagesContentDescription_set_text_(self, @"");
+      contentType_ = ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_CREATED();
+      text_ = @"";
     }
     else if ([msg isKindOfClass:[ImActorModelEntityContentServiceGroupUserAdded class]]) {
-      ImActorModelModulesMessagesContentDescription_set_contentType_(self, ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_ADD());
-      ImActorModelModulesMessagesContentDescription_set_text_(self, @"");
+      contentType_ = ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_ADD();
+      text_ = @"";
       relatedUid_ = [((ImActorModelEntityContentServiceGroupUserAdded *) nil_chk(((ImActorModelEntityContentServiceGroupUserAdded *) check_class_cast(msg, [ImActorModelEntityContentServiceGroupUserAdded class])))) getAddedUid];
     }
     else if ([msg isKindOfClass:[ImActorModelEntityContentServiceGroupUserKicked class]]) {
-      ImActorModelModulesMessagesContentDescription_set_contentType_(self, ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_KICK());
-      ImActorModelModulesMessagesContentDescription_set_text_(self, @"");
+      contentType_ = ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_KICK();
+      text_ = @"";
       relatedUid_ = [((ImActorModelEntityContentServiceGroupUserKicked *) nil_chk(((ImActorModelEntityContentServiceGroupUserKicked *) check_class_cast(msg, [ImActorModelEntityContentServiceGroupUserKicked class])))) getKickedUid];
     }
     else if ([msg isKindOfClass:[ImActorModelEntityContentServiceGroupUserLeave class]]) {
-      ImActorModelModulesMessagesContentDescription_set_contentType_(self, ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_LEAVE());
-      ImActorModelModulesMessagesContentDescription_set_text_(self, @"");
+      contentType_ = ImActorModelEntityDialog_ContentTypeEnum_get_SERVICE_LEAVE();
+      text_ = @"";
       isSilent__ = YES;
     }
     else {
-      @throw [[[JavaLangRuntimeException alloc] initWithNSString:@"Unknown content type"] autorelease];
+      @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Unknown content type"];
     }
   }
   return self;
@@ -112,16 +112,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesContentDescription, text_, NSStri
   return relatedUid_;
 }
 
-- (void)dealloc {
-  RELEASE_(contentType_);
-  RELEASE_(text_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesContentDescription *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesMessagesContentDescription_set_contentType_(other, contentType_);
-  ImActorModelModulesMessagesContentDescription_set_text_(other, text_);
+  other->contentType_ = contentType_;
+  other->text_ = text_;
   other->relatedUid_ = relatedUid_;
   other->isSilent__ = isSilent__;
 }

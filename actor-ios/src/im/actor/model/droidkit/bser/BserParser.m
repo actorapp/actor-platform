@@ -54,7 +54,7 @@ withImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseA
 
 ImActorModelDroidkitBserUtilSparseArray *ImActorModelDroidkitBserBserParser_deserializeWithAMDataInput_(AMDataInput *is) {
   ImActorModelDroidkitBserBserParser_init();
-  ImActorModelDroidkitBserUtilSparseArray *hashMap = [[[ImActorModelDroidkitBserUtilSparseArray alloc] init] autorelease];
+  ImActorModelDroidkitBserUtilSparseArray *hashMap = [[ImActorModelDroidkitBserUtilSparseArray alloc] init];
   jint currentTag;
   while ((currentTag = [((AMDataInput *) nil_chk(is)) readByteSilent]) > 0) {
     jint id_ = RShift32(currentTag, 3);
@@ -73,7 +73,7 @@ ImActorModelDroidkitBserUtilSparseArray *ImActorModelDroidkitBserBserParser_dese
       ImActorModelDroidkitBserBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_(id_, JavaLangLong_valueOfWithLong_([is readUInt]), hashMap);
     }
     else {
-      @throw [[[JavaIoIOException alloc] initWithNSString:JreStrcat("$I", @"Unknown Wire Type #", type)] autorelease];
+      @throw [[JavaIoIOException alloc] initWithNSString:JreStrcat("$I", @"Unknown Wire Type #", type)];
     }
   }
   return hashMap;
@@ -86,7 +86,7 @@ void ImActorModelDroidkitBserBserParser_putWithInt_withId_withImActorModelDroidk
       [((id<JavaUtilList>) nil_chk(((id<JavaUtilList>) check_protocol_cast([hashMap getWithInt:id_], @protocol(JavaUtilList))))) addWithId:res];
     }
     else {
-      JavaUtilArrayList *list = [[[JavaUtilArrayList alloc] init] autorelease];
+      JavaUtilArrayList *list = [[JavaUtilArrayList alloc] init];
       [list addWithId:[hashMap getWithInt:id_]];
       [list addWithId:res];
       [hashMap putWithInt:id_ withId:list];

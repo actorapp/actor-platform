@@ -92,7 +92,7 @@
 
 ImActorModelApiRpcRequestRemoveContact *ImActorModelApiRpcRequestRemoveContact_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestRemoveContact_init();
-  return ((ImActorModelApiRpcRequestRemoveContact *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestRemoveContact alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestRemoveContact *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestRemoveContact alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestRemoveContact)

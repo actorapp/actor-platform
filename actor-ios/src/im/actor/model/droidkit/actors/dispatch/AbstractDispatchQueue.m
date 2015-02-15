@@ -44,21 +44,16 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue, lis
 }
 
 - (void)setListenerWithImActorModelDroidkitActorsDispatchQueueListener:(id<ImActorModelDroidkitActorsDispatchQueueListener>)listener {
-  ImActorModelDroidkitActorsDispatchAbstractDispatchQueue_set_listener_(self, listener);
+  self->listener_ = listener;
 }
 
 - (instancetype)init {
   return [super init];
 }
 
-- (void)dealloc {
-  RELEASE_(listener_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsDispatchAbstractDispatchQueue_set_listener_(other, listener_);
+  other->listener_ = listener_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
                withNSString:(NSString *)token {
   if (self = [super init]) {
     self->apnsKey_ = apnsKey;
-    ImActorModelApiRpcRequestRegisterApplePush_set_token_(self, token);
+    self->token_ = token;
   }
   return self;
 }
@@ -51,13 +51,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->apnsKey_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
-  ImActorModelApiRpcRequestRegisterApplePush_set_token_(self, [values getStringWithInt:2]);
+  self->token_ = [values getStringWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->apnsKey_];
   if (self->token_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:2 withNSString:self->token_];
 }
@@ -66,15 +66,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
   return ImActorModelApiRpcRequestRegisterApplePush_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(token_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestRegisterApplePush *)other {
   [super copyAllFieldsTo:other];
   other->apnsKey_ = apnsKey_;
-  ImActorModelApiRpcRequestRegisterApplePush_set_token_(other, token_);
+  other->token_ = token_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -102,7 +97,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
 
 ImActorModelApiRpcRequestRegisterApplePush *ImActorModelApiRpcRequestRegisterApplePush_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestRegisterApplePush_init();
-  return ((ImActorModelApiRpcRequestRegisterApplePush *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestRegisterApplePush alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestRegisterApplePush *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestRegisterApplePush alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestRegisterApplePush)

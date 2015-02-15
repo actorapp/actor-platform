@@ -24,7 +24,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryPreferences, items_, JavaUtilHashMa
 - (void)putLongWithNSString:(NSString *)key
                    withLong:(jlong)v {
   @synchronized(self) {
-    [((JavaUtilHashMap *) nil_chk(items_)) putWithId:key withId:JavaLangLong_valueOfWithLong_(v)];
+    (void) [((JavaUtilHashMap *) nil_chk(items_)) putWithId:key withId:JavaLangLong_valueOfWithLong_(v)];
   }
 }
 
@@ -40,7 +40,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryPreferences, items_, JavaUtilHashMa
 
 - (void)putIntWithNSString:(NSString *)key
                    withInt:(jint)v {
-  [((JavaUtilHashMap *) nil_chk(items_)) putWithId:key withId:JavaLangInteger_valueOfWithInt_(v)];
+  (void) [((JavaUtilHashMap *) nil_chk(items_)) putWithId:key withId:JavaLangInteger_valueOfWithInt_(v)];
 }
 
 - (jint)getIntWithNSString:(NSString *)key
@@ -53,7 +53,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryPreferences, items_, JavaUtilHashMa
 
 - (void)putBoolWithNSString:(NSString *)key
                 withBoolean:(jboolean)v {
-  [((JavaUtilHashMap *) nil_chk(items_)) putWithId:key withId:JavaLangBoolean_valueOfWithBoolean_(v)];
+  (void) [((JavaUtilHashMap *) nil_chk(items_)) putWithId:key withId:JavaLangBoolean_valueOfWithBoolean_(v)];
 }
 
 - (jboolean)getBoolWithNSString:(NSString *)key
@@ -66,7 +66,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryPreferences, items_, JavaUtilHashMa
 
 - (void)putBytesWithNSString:(NSString *)key
                withByteArray:(IOSByteArray *)v {
-  [((JavaUtilHashMap *) nil_chk(items_)) putWithId:key withId:v];
+  (void) [((JavaUtilHashMap *) nil_chk(items_)) putWithId:key withId:v];
 }
 
 - (IOSByteArray *)getBytesWithNSString:(NSString *)key {
@@ -78,7 +78,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryPreferences, items_, JavaUtilHashMa
 
 - (void)putStringWithNSString:(NSString *)key
                  withNSString:(NSString *)v {
-  [((JavaUtilHashMap *) nil_chk(items_)) putWithId:key withId:v];
+  (void) [((JavaUtilHashMap *) nil_chk(items_)) putWithId:key withId:v];
 }
 
 - (NSString *)getStringWithNSString:(NSString *)key {
@@ -90,19 +90,14 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryPreferences, items_, JavaUtilHashMa
 
 - (instancetype)init {
   if (self = [super init]) {
-    ImActorModelStorageMemoryPreferences_setAndConsume_items_(self, [[JavaUtilHashMap alloc] init]);
+    items_ = [[JavaUtilHashMap alloc] init];
   }
   return self;
 }
 
-- (void)dealloc {
-  RELEASE_(items_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelStorageMemoryPreferences *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelStorageMemoryPreferences_set_items_(other, items_);
+  other->items_ = items_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

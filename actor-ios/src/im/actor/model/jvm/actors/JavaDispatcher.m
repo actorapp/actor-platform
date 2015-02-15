@@ -27,7 +27,7 @@ withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem
                          withInt:(jint)threadsCount
 withImActorModelDroidkitActorsThreadPriorityEnum:(ImActorModelDroidkitActorsThreadPriorityEnum *)priority {
   if (self = [super initWithNSString:name withImActorModelDroidkitActorsActorSystem:actorSystem]) {
-    [self initDispatcherWithImActorModelDroidkitActorsDispatchAbstractDispatcher:[[[ImActorModelJvmActorsJavaThreadsDispatcher alloc] initWithNSString:[self getName] withInt:threadsCount withImActorModelDroidkitActorsThreadPriorityEnum:priority withImActorModelDroidkitActorsDispatchAbstractDispatchQueue:[[[ImActorModelDroidkitActorsMailboxMailboxesQueue alloc] init] autorelease] withImActorModelDroidkitActorsDispatchDispatch:[[[ImActorModelJvmActorsJavaDispatcher_$1 alloc] initWithImActorModelJvmActorsJavaDispatcher:self] autorelease] withBoolean:YES] autorelease]];
+    [self initDispatcherWithImActorModelDroidkitActorsDispatchAbstractDispatcher:[[ImActorModelJvmActorsJavaThreadsDispatcher alloc] initWithNSString:[self getName] withInt:threadsCount withImActorModelDroidkitActorsThreadPriorityEnum:priority withImActorModelDroidkitActorsDispatchAbstractDispatchQueue:[[ImActorModelDroidkitActorsMailboxMailboxesQueue alloc] init] withImActorModelDroidkitActorsDispatchDispatch:[[ImActorModelJvmActorsJavaDispatcher_$1 alloc] initWithImActorModelJvmActorsJavaDispatcher:self] withBoolean:YES]];
   }
   return self;
 }
@@ -51,18 +51,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmActorsJavaDispatcher)
 }
 
 - (instancetype)initWithImActorModelJvmActorsJavaDispatcher:(ImActorModelJvmActorsJavaDispatcher *)outer$ {
-  ImActorModelJvmActorsJavaDispatcher_$1_set_this$0_(self, outer$);
+  this$0_ = outer$;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(this$0_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelJvmActorsJavaDispatcher_$1 *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelJvmActorsJavaDispatcher_$1_set_this$0_(other, this$0_);
+  other->this$0_ = this$0_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -53,7 +53,7 @@
 
 ImActorModelApiRpcRequestUnregisterPush *ImActorModelApiRpcRequestUnregisterPush_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestUnregisterPush_init();
-  return ((ImActorModelApiRpcRequestUnregisterPush *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestUnregisterPush alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestUnregisterPush *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestUnregisterPush alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestUnregisterPush)

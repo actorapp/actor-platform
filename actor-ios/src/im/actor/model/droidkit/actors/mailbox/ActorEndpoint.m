@@ -25,7 +25,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxActorEndpoint, scope_, ImAc
 
 - (instancetype)initWithNSString:(NSString *)path {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsMailboxActorEndpoint_set_path_(self, path);
+    self->path_ = path;
     isDisconnected__ = NO;
   }
   return self;
@@ -50,22 +50,15 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxActorEndpoint, scope_, ImAc
 - (void)connectWithImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox
                    withImActorModelDroidkitActorsActorScope:(ImActorModelDroidkitActorsActorScope *)scope {
   isDisconnected__ = NO;
-  ImActorModelDroidkitActorsMailboxActorEndpoint_set_mailbox_(self, mailbox);
-  ImActorModelDroidkitActorsMailboxActorEndpoint_set_scope_(self, scope);
-}
-
-- (void)dealloc {
-  RELEASE_(path_);
-  RELEASE_(mailbox_);
-  RELEASE_(scope_);
-  [super dealloc];
+  self->mailbox_ = mailbox;
+  self->scope_ = scope;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxActorEndpoint *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsMailboxActorEndpoint_set_path_(other, path_);
-  ImActorModelDroidkitActorsMailboxActorEndpoint_set_mailbox_(other, mailbox_);
-  ImActorModelDroidkitActorsMailboxActorEndpoint_set_scope_(other, scope_);
+  other->path_ = path_;
+  other->mailbox_ = mailbox_;
+  other->scope_ = scope_;
   other->isDisconnected__ = isDisconnected__;
 }
 

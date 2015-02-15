@@ -35,7 +35,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
   if (self = [super init]) {
     self->uid_ = uid;
     self->accessHash_ = accessHash;
-    ImActorModelApiRpcRequestEditUserLocalName_set_name_(self, name);
+    self->name_ = name;
   }
   return self;
 }
@@ -59,14 +59,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->uid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
-  ImActorModelApiRpcRequestEditUserLocalName_set_name_(self, [values getStringWithInt:3]);
+  self->name_ = [values getStringWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   if (self->name_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:3 withNSString:self->name_];
 }
@@ -75,16 +75,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
   return ImActorModelApiRpcRequestEditUserLocalName_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(name_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestEditUserLocalName *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;
   other->accessHash_ = accessHash_;
-  ImActorModelApiRpcRequestEditUserLocalName_set_name_(other, name_);
+  other->name_ = name_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -114,7 +109,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
 
 ImActorModelApiRpcRequestEditUserLocalName *ImActorModelApiRpcRequestEditUserLocalName_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditUserLocalName_init();
-  return ((ImActorModelApiRpcRequestEditUserLocalName *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestEditUserLocalName alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestEditUserLocalName *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestEditUserLocalName alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEditUserLocalName)

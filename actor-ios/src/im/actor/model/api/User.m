@@ -52,14 +52,14 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
   if (self = [super init]) {
     self->id__ = id_;
     self->accessHash_ = accessHash;
-    ImActorModelApiUser_set_name_(self, name);
-    ImActorModelApiUser_set_localName_(self, localName);
-    ImActorModelApiUser_set_sex_(self, sex);
-    ImActorModelApiUser_set_keyHashes_(self, keyHashes);
+    self->name_ = name;
+    self->localName_ = localName;
+    self->sex_ = sex;
+    self->keyHashes_ = keyHashes;
     self->phone_ = phone;
-    ImActorModelApiUser_set_avatar_(self, avatar);
-    ImActorModelApiUser_set_contacts_(self, contacts);
-    ImActorModelApiUser_set_userState_(self, userState);
+    self->avatar_ = avatar;
+    self->contacts_ = contacts;
+    self->userState_ = userState;
   }
   return self;
 }
@@ -111,24 +111,24 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->id__ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
-  ImActorModelApiUser_set_name_(self, [values getStringWithInt:3]);
-  ImActorModelApiUser_set_localName_(self, [values optStringWithInt:4]);
+  self->name_ = [values getStringWithInt:3];
+  self->localName_ = [values optStringWithInt:4];
   jint val_sex = [values getIntWithInt:5 withInt:0];
   if (val_sex != 0) {
-    ImActorModelApiUser_set_sex_(self, ImActorModelApiSexEnum_parseWithInt_(val_sex));
+    self->sex_ = ImActorModelApiSexEnum_parseWithInt_(val_sex);
   }
-  ImActorModelApiUser_set_keyHashes_(self, [values getRepeatedLongWithInt:6]);
+  self->keyHashes_ = [values getRepeatedLongWithInt:6];
   self->phone_ = [values getLongWithInt:7];
-  ImActorModelApiUser_set_avatar_(self, [values optObjWithInt:8 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiAvatar alloc] init] autorelease]]);
-  ImActorModelApiUser_set_contacts_(self, [values getRepeatedIntWithInt:9]);
-  ImActorModelApiUser_set_userState_(self, ImActorModelApiUserStateEnum_parseWithInt_([values getIntWithInt:11]));
+  self->avatar_ = [values optObjWithInt:8 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatar alloc] init]];
+  self->contacts_ = [values getRepeatedIntWithInt:9];
+  self->userState_ = ImActorModelApiUserStateEnum_parseWithInt_([values getIntWithInt:11]);
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   if (self->name_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:3 withNSString:self->name_];
   if (self->localName_ != nil) {
@@ -144,34 +144,23 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
   }
   [writer writeRepeatedIntWithInt:9 withJavaUtilList:self->contacts_];
   if (self->userState_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeIntWithInt:11 withInt:[((ImActorModelApiUserStateEnum *) nil_chk(self->userState_)) getValue]];
-}
-
-- (void)dealloc {
-  RELEASE_(name_);
-  RELEASE_(localName_);
-  RELEASE_(sex_);
-  RELEASE_(keyHashes_);
-  RELEASE_(avatar_);
-  RELEASE_(contacts_);
-  RELEASE_(userState_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiUser *)other {
   [super copyAllFieldsTo:other];
   other->id__ = id__;
   other->accessHash_ = accessHash_;
-  ImActorModelApiUser_set_name_(other, name_);
-  ImActorModelApiUser_set_localName_(other, localName_);
-  ImActorModelApiUser_set_sex_(other, sex_);
-  ImActorModelApiUser_set_keyHashes_(other, keyHashes_);
+  other->name_ = name_;
+  other->localName_ = localName_;
+  other->sex_ = sex_;
+  other->keyHashes_ = keyHashes_;
   other->phone_ = phone_;
-  ImActorModelApiUser_set_avatar_(other, avatar_);
-  ImActorModelApiUser_set_contacts_(other, contacts_);
-  ImActorModelApiUser_set_userState_(other, userState_);
+  other->avatar_ = avatar_;
+  other->contacts_ = contacts_;
+  other->userState_ = userState_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

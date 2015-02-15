@@ -44,11 +44,11 @@ withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
     self->fileId_ = fileId;
     self->accessHash_ = accessHash;
     self->fileSize_ = fileSize;
-    ImActorModelApiFileMessage_set_name_(self, name);
-    ImActorModelApiFileMessage_set_mimeType_(self, mimeType);
-    ImActorModelApiFileMessage_set_thumb_(self, thumb);
+    self->name_ = name;
+    self->mimeType_ = mimeType;
+    self->thumb_ = thumb;
     self->extType_ = extType;
-    ImActorModelApiFileMessage_set_ext_(self, ext);
+    self->ext_ = ext;
   }
   return self;
 }
@@ -93,11 +93,11 @@ withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
   self->fileId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
   self->fileSize_ = [values getIntWithInt:3];
-  ImActorModelApiFileMessage_set_name_(self, [values getStringWithInt:4]);
-  ImActorModelApiFileMessage_set_mimeType_(self, [values getStringWithInt:5]);
-  ImActorModelApiFileMessage_set_thumb_(self, [values optObjWithInt:6 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiFastThumb alloc] init] autorelease]]);
+  self->name_ = [values getStringWithInt:4];
+  self->mimeType_ = [values getStringWithInt:5];
+  self->thumb_ = [values optObjWithInt:6 withImActorModelDroidkitBserBserObject:[[ImActorModelApiFastThumb alloc] init]];
   self->extType_ = [values getIntWithInt:7];
-  ImActorModelApiFileMessage_set_ext_(self, [values optBytesWithInt:8]);
+  self->ext_ = [values optBytesWithInt:8];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -105,11 +105,11 @@ withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   [writer writeIntWithInt:3 withInt:self->fileSize_];
   if (self->name_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:4 withNSString:self->name_];
   if (self->mimeType_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:5 withNSString:self->mimeType_];
   if (self->thumb_ != nil) {
@@ -121,24 +121,16 @@ withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
   }
 }
 
-- (void)dealloc {
-  RELEASE_(name_);
-  RELEASE_(mimeType_);
-  RELEASE_(thumb_);
-  RELEASE_(ext_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiFileMessage *)other {
   [super copyAllFieldsTo:other];
   other->fileId_ = fileId_;
   other->accessHash_ = accessHash_;
   other->fileSize_ = fileSize_;
-  ImActorModelApiFileMessage_set_name_(other, name_);
-  ImActorModelApiFileMessage_set_mimeType_(other, mimeType_);
-  ImActorModelApiFileMessage_set_thumb_(other, thumb_);
+  other->name_ = name_;
+  other->mimeType_ = mimeType_;
+  other->thumb_ = thumb_;
   other->extType_ = extType_;
-  ImActorModelApiFileMessage_set_ext_(other, ext_);
+  other->ext_ = ext_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

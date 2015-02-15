@@ -24,8 +24,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUsers, users_, id<ImActorModelMvvmKeyValu
 
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger {
   if (self = [super init]) {
-    ImActorModelModulesUsers_set_messenger_(self, messenger);
-    ImActorModelModulesUsers_set_users_(self, [((id<ImActorModelStorageEnginesFactory>) nil_chk([((AMConfiguration *) nil_chk([((AMMessenger *) nil_chk(messenger)) getConfiguration])) getEnginesFactory])) createUsersEngine]);
+    self->messenger_ = messenger;
+    self->users_ = [((id<ImActorModelStorageEnginesFactory>) nil_chk([((AMConfiguration *) nil_chk([((AMMessenger *) nil_chk(messenger)) getConfiguration])) getEnginesFactory])) createUsersEngine];
   }
   return self;
 }
@@ -34,16 +34,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUsers, users_, id<ImActorModelMvvmKeyValu
   return users_;
 }
 
-- (void)dealloc {
-  RELEASE_(messenger_);
-  RELEASE_(users_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesUsers *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUsers_set_messenger_(other, messenger_);
-  ImActorModelModulesUsers_set_users_(other, users_);
+  other->messenger_ = messenger_;
+  other->users_ = users_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -35,9 +35,9 @@ withImActorModelApiRecordTypeEnum:(ImActorModelApiRecordTypeEnum *)recordType
   if (self = [super init]) {
     self->id__ = id_;
     self->accessHash_ = accessHash;
-    ImActorModelApiContactRecord_set_recordType_(self, recordType);
-    ImActorModelApiContactRecord_set_record_(self, record);
-    ImActorModelApiContactRecord_set_title_(self, title);
+    self->recordType_ = recordType;
+    self->record_ = record;
+    self->title_ = title;
   }
   return self;
 }
@@ -69,42 +69,35 @@ withImActorModelApiRecordTypeEnum:(ImActorModelApiRecordTypeEnum *)recordType
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->id__ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
-  ImActorModelApiContactRecord_set_recordType_(self, ImActorModelApiRecordTypeEnum_parseWithInt_([values getIntWithInt:3]));
-  ImActorModelApiContactRecord_set_record_(self, [values getStringWithInt:4]);
-  ImActorModelApiContactRecord_set_title_(self, [values getStringWithInt:5]);
+  self->recordType_ = ImActorModelApiRecordTypeEnum_parseWithInt_([values getIntWithInt:3]);
+  self->record_ = [values getStringWithInt:4];
+  self->title_ = [values getStringWithInt:5];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   if (self->recordType_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeIntWithInt:3 withInt:[((ImActorModelApiRecordTypeEnum *) nil_chk(self->recordType_)) getValue]];
   if (self->record_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:4 withNSString:self->record_];
   if (self->title_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:5 withNSString:self->title_];
-}
-
-- (void)dealloc {
-  RELEASE_(recordType_);
-  RELEASE_(record_);
-  RELEASE_(title_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiContactRecord *)other {
   [super copyAllFieldsTo:other];
   other->id__ = id__;
   other->accessHash_ = accessHash_;
-  ImActorModelApiContactRecord_set_recordType_(other, recordType_);
-  ImActorModelApiContactRecord_set_record_(other, record_);
-  ImActorModelApiContactRecord_set_title_(other, title_);
+  other->recordType_ = recordType_;
+  other->record_ = record_;
+  other->title_ = title_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

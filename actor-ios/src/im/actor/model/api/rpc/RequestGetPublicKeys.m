@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetPublicKeys, keys_, id<JavaUtilLi
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)keys {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestGetPublicKeys_set_keys_(self, keys);
+    self->keys_ = keys;
   }
   return self;
 }
@@ -46,11 +46,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetPublicKeys, keys_, id<JavaUtilLi
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  id<JavaUtilList> _keys = [[[JavaUtilArrayList alloc] init] autorelease];
+  id<JavaUtilList> _keys = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_keys addWithId:[[[ImActorModelApiPublicKeyRequest alloc] init] autorelease]];
+    [_keys addWithId:[[ImActorModelApiPublicKeyRequest alloc] init]];
   }
-  ImActorModelApiRpcRequestGetPublicKeys_set_keys_(self, [values getRepeatedObjWithInt:1 withJavaUtilList:_keys]);
+  self->keys_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_keys];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -61,14 +61,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetPublicKeys, keys_, id<JavaUtilLi
   return ImActorModelApiRpcRequestGetPublicKeys_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(keys_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestGetPublicKeys *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestGetPublicKeys_set_keys_(other, keys_);
+  other->keys_ = keys_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -94,7 +89,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetPublicKeys, keys_, id<JavaUtilLi
 
 ImActorModelApiRpcRequestGetPublicKeys *ImActorModelApiRpcRequestGetPublicKeys_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestGetPublicKeys_init();
-  return ((ImActorModelApiRpcRequestGetPublicKeys *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestGetPublicKeys alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestGetPublicKeys *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestGetPublicKeys alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetPublicKeys)

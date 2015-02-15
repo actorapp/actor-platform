@@ -58,12 +58,12 @@ ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_valueOfWithNSString_(NS
       return e;
     }
   }
-  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name] autorelease];
+  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];
   return nil;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  return [self retain];
+  return self;
 }
 
 + (void)initialize {
@@ -104,7 +104,7 @@ ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_parseWithInt_(jint valu
     case 3:
     return ImActorModelApiPeerTypeEnum_EMAIL;
   }
-  @throw [[[JavaIoIOException alloc] init] autorelease];
+  @throw [[JavaIoIOException alloc] init];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiPeerTypeEnum)

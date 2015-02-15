@@ -31,7 +31,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentTextContent, text_, NSString *)
 
 - (instancetype)initWithNSString:(NSString *)text {
   if (self = [super init]) {
-    ImActorModelEntityContentTextContent_set_text_(self, text);
+    self->text_ = text;
   }
   return self;
 }
@@ -49,21 +49,16 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentTextContent, text_, NSString *)
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelEntityContentTextContent_set_text_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:2]);
+  text_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:text_];
 }
 
-- (void)dealloc {
-  RELEASE_(text_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelEntityContentTextContent *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelEntityContentTextContent_set_text_(other, text_);
+  other->text_ = text_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -87,7 +82,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentTextContent, text_, NSString *)
 
 ImActorModelEntityContentTextContent *ImActorModelEntityContentTextContent_textFromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentTextContent_init();
-  return ((ImActorModelEntityContentTextContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityContentTextContent alloc] init] autorelease], data));
+  return ((ImActorModelEntityContentTextContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentTextContent alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentTextContent)

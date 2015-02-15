@@ -26,7 +26,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDifferenceUpdate, update_, IOSByteArray *)
               withByteArray:(IOSByteArray *)update {
   if (self = [super init]) {
     self->updateHeader_ = updateHeader;
-    ImActorModelApiDifferenceUpdate_set_update_(self, update);
+    self->update_ = update;
   }
   return self;
 }
@@ -45,26 +45,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDifferenceUpdate, update_, IOSByteArray *)
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->updateHeader_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
-  ImActorModelApiDifferenceUpdate_set_update_(self, [values getBytesWithInt:2]);
+  self->update_ = [values getBytesWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->updateHeader_];
   if (self->update_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:2 withByteArray:self->update_];
-}
-
-- (void)dealloc {
-  RELEASE_(update_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiDifferenceUpdate *)other {
   [super copyAllFieldsTo:other];
   other->updateHeader_ = updateHeader_;
-  ImActorModelApiDifferenceUpdate_set_update_(other, update_);
+  other->update_ = update_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -35,7 +35,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCode, apiKey_, NSString *)
   if (self = [super init]) {
     self->phoneNumber_ = phoneNumber;
     self->appId_ = appId;
-    ImActorModelApiRpcRequestSendAuthCode_set_apiKey_(self, apiKey);
+    self->apiKey_ = apiKey;
   }
   return self;
 }
@@ -59,14 +59,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCode, apiKey_, NSString *)
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->phoneNumber_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
   self->appId_ = [values getIntWithInt:2];
-  ImActorModelApiRpcRequestSendAuthCode_set_apiKey_(self, [values getStringWithInt:3]);
+  self->apiKey_ = [values getStringWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->phoneNumber_];
   [writer writeIntWithInt:2 withInt:self->appId_];
   if (self->apiKey_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:3 withNSString:self->apiKey_];
 }
@@ -75,16 +75,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCode, apiKey_, NSString *)
   return ImActorModelApiRpcRequestSendAuthCode_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(apiKey_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestSendAuthCode *)other {
   [super copyAllFieldsTo:other];
   other->phoneNumber_ = phoneNumber_;
   other->appId_ = appId_;
-  ImActorModelApiRpcRequestSendAuthCode_set_apiKey_(other, apiKey_);
+  other->apiKey_ = apiKey_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -114,7 +109,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCode, apiKey_, NSString *)
 
 ImActorModelApiRpcRequestSendAuthCode *ImActorModelApiRpcRequestSendAuthCode_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSendAuthCode_init();
-  return ((ImActorModelApiRpcRequestSendAuthCode *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestSendAuthCode alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestSendAuthCode *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestSendAuthCode alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSendAuthCode)

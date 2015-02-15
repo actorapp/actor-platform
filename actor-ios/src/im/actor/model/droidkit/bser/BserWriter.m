@@ -61,7 +61,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserWriter, stream_, AMDataOutput *)
 
 - (instancetype)initWithAMDataOutput:(AMDataOutput *)stream {
   if (self = [super init]) {
-    ImActorModelDroidkitBserBserWriter_set_stream_(self, stream);
+    self->stream_ = stream;
   }
   return self;
 }
@@ -139,8 +139,8 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserWriter, stream_, AMDataOutput *)
 - (void)writeObjectWithInt:(jint)fieldNumber
 withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)value {
   ImActorModelDroidkitBserBserWriter_writeTagWithInt_withInt_(self, fieldNumber, ImActorModelDroidkitBserBserWriter_TYPE_LENGTH_DELIMITED);
-  AMDataOutput *outputStream = [[[AMDataOutput alloc] init] autorelease];
-  ImActorModelDroidkitBserBserWriter *writer = [[[ImActorModelDroidkitBserBserWriter alloc] initWithAMDataOutput:outputStream] autorelease];
+  AMDataOutput *outputStream = [[AMDataOutput alloc] init];
+  ImActorModelDroidkitBserBserWriter *writer = [[ImActorModelDroidkitBserBserWriter alloc] initWithAMDataOutput:outputStream];
   [((ImActorModelDroidkitBserBserObject *) nil_chk(value)) serializeWithImActorModelDroidkitBserBserWriter:writer];
   ImActorModelDroidkitBserBserWriter_writeBytesWithByteArray_(self, [outputStream toByteArray]);
 }
@@ -186,14 +186,9 @@ withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)val
   ImActorModelDroidkitBserBserWriter_writeBytesWithByteArray_(self, data);
 }
 
-- (void)dealloc {
-  RELEASE_(stream_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitBserBserWriter *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitBserBserWriter_set_stream_(other, stream_);
+  other->stream_ = stream_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

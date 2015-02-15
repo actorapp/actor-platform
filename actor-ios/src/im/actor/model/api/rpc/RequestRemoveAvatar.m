@@ -53,7 +53,7 @@
 
 ImActorModelApiRpcRequestRemoveAvatar *ImActorModelApiRpcRequestRemoveAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestRemoveAvatar_init();
-  return ((ImActorModelApiRpcRequestRemoveAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestRemoveAvatar alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestRemoveAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestRemoveAvatar alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestRemoveAvatar)

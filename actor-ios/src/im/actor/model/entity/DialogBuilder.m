@@ -46,15 +46,15 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, status_, ImActorModelEntity
 - (instancetype)initWithImActorModelEntityDialog:(ImActorModelEntityDialog *)dialog {
   if (self = [super init]) {
     relatedUid_ = 0;
-    ImActorModelEntityDialogBuilder_set_peer_(self, [((ImActorModelEntityDialog *) nil_chk(dialog)) getPeer]);
+    peer_ = [((ImActorModelEntityDialog *) nil_chk(dialog)) getPeer];
     sortKey_ = [dialog getSortDate];
-    ImActorModelEntityDialogBuilder_set_dialogTitle_(self, [dialog getDialogTitle]);
-    ImActorModelEntityDialogBuilder_set_dialogAvatar_(self, [dialog getDialogAvatar]);
+    dialogTitle_ = [dialog getDialogTitle];
+    dialogAvatar_ = [dialog getDialogAvatar];
     unreadCount_ = [dialog getUnreadCount];
     rid_ = [dialog getRid];
-    ImActorModelEntityDialogBuilder_set_messageType_(self, [dialog getMessageType]);
-    ImActorModelEntityDialogBuilder_set_text_(self, [dialog getText]);
-    ImActorModelEntityDialogBuilder_set_status_(self, [dialog getStatus]);
+    messageType_ = [dialog getMessageType];
+    text_ = [dialog getText];
+    status_ = [dialog getStatus];
     senderId_ = [dialog getSenderId];
     time_ = [dialog getDate];
     relatedUid_ = [dialog getRelatedUid];
@@ -63,7 +63,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, status_, ImActorModelEntity
 }
 
 - (ImActorModelEntityDialogBuilder *)setPeerWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  ImActorModelEntityDialogBuilder_set_peer_(self, peer);
+  self->peer_ = peer;
   return self;
 }
 
@@ -73,7 +73,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, status_, ImActorModelEntity
 }
 
 - (ImActorModelEntityDialogBuilder *)setDialogTitleWithNSString:(NSString *)dialogTitle {
-  ImActorModelEntityDialogBuilder_set_dialogTitle_(self, dialogTitle);
+  self->dialogTitle_ = dialogTitle;
   return self;
 }
 
@@ -88,17 +88,17 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, status_, ImActorModelEntity
 }
 
 - (ImActorModelEntityDialogBuilder *)setMessageTypeWithImActorModelEntityDialog_ContentTypeEnum:(ImActorModelEntityDialog_ContentTypeEnum *)messageType {
-  ImActorModelEntityDialogBuilder_set_messageType_(self, messageType);
+  self->messageType_ = messageType;
   return self;
 }
 
 - (ImActorModelEntityDialogBuilder *)setTextWithNSString:(NSString *)text {
-  ImActorModelEntityDialogBuilder_set_text_(self, text);
+  self->text_ = text;
   return self;
 }
 
 - (ImActorModelEntityDialogBuilder *)setStatusWithImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)status {
-  ImActorModelEntityDialogBuilder_set_status_(self, status);
+  self->status_ = status;
   return self;
 }
 
@@ -118,35 +118,25 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, status_, ImActorModelEntity
 }
 
 - (ImActorModelEntityDialogBuilder *)setDialogAvatarWithImActorModelEntityAvatar:(ImActorModelEntityAvatar *)avatar {
-  ImActorModelEntityDialogBuilder_set_dialogAvatar_(self, avatar);
+  self->dialogAvatar_ = avatar;
   return self;
 }
 
 - (ImActorModelEntityDialog *)createDialog {
-  return [[[ImActorModelEntityDialog alloc] initWithImActorModelEntityPeer:peer_ withLong:sortKey_ withNSString:dialogTitle_ withImActorModelEntityAvatar:dialogAvatar_ withInt:unreadCount_ withLong:rid_ withImActorModelEntityDialog_ContentTypeEnum:messageType_ withNSString:text_ withImActorModelEntityMessageStateEnum:status_ withInt:senderId_ withLong:time_ withInt:relatedUid_] autorelease];
-}
-
-- (void)dealloc {
-  RELEASE_(peer_);
-  RELEASE_(dialogTitle_);
-  RELEASE_(dialogAvatar_);
-  RELEASE_(messageType_);
-  RELEASE_(text_);
-  RELEASE_(status_);
-  [super dealloc];
+  return [[ImActorModelEntityDialog alloc] initWithImActorModelEntityPeer:peer_ withLong:sortKey_ withNSString:dialogTitle_ withImActorModelEntityAvatar:dialogAvatar_ withInt:unreadCount_ withLong:rid_ withImActorModelEntityDialog_ContentTypeEnum:messageType_ withNSString:text_ withImActorModelEntityMessageStateEnum:status_ withInt:senderId_ withLong:time_ withInt:relatedUid_];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelEntityDialogBuilder *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelEntityDialogBuilder_set_peer_(other, peer_);
+  other->peer_ = peer_;
   other->sortKey_ = sortKey_;
-  ImActorModelEntityDialogBuilder_set_dialogTitle_(other, dialogTitle_);
-  ImActorModelEntityDialogBuilder_set_dialogAvatar_(other, dialogAvatar_);
+  other->dialogTitle_ = dialogTitle_;
+  other->dialogAvatar_ = dialogAvatar_;
   other->unreadCount_ = unreadCount_;
   other->rid_ = rid_;
-  ImActorModelEntityDialogBuilder_set_messageType_(other, messageType_);
-  ImActorModelEntityDialogBuilder_set_text_(other, text_);
-  ImActorModelEntityDialogBuilder_set_status_(other, status_);
+  other->messageType_ = messageType_;
+  other->text_ = text_;
+  other->status_ = status_;
   other->senderId_ = senderId_;
   other->time_ = time_;
   other->relatedUid_ = relatedUid_;

@@ -71,7 +71,7 @@
 
 ImActorModelEntityContentAbsContent *ImActorModelEntityContentAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentAbsContent_init();
-  ImActorModelDroidkitBserBserValues *reader = [[[ImActorModelDroidkitBserBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:ImActorModelDroidkitBserBserParser_deserializeWithAMDataInput_([[[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_] autorelease])] autorelease];
+  ImActorModelDroidkitBserBserValues *reader = [[ImActorModelDroidkitBserBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:ImActorModelDroidkitBserBserParser_deserializeWithAMDataInput_([[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_])];
   ImActorModelEntityContentAbsContent_ContentTypeEnum *type = ImActorModelEntityContentAbsContent_typeFromValueWithInt_([reader getIntWithInt:1]);
   switch ([type ordinal]) {
     case ImActorModelEntityContentAbsContent_ContentType_TEXT:
@@ -99,7 +99,7 @@ ImActorModelEntityContentAbsContent *ImActorModelEntityContentAbsContent_content
     case ImActorModelEntityContentAbsContent_ContentType_SERVICE_LEAVE:
     return ImActorModelEntityContentServiceGroupUserLeave_fromBytesWithByteArray_(data);
     default:
-    @throw [[[JavaIoIOException alloc] initWithNSString:@"Unknown type"] autorelease];
+    @throw [[JavaIoIOException alloc] initWithNSString:@"Unknown type"];
   }
 }
 
@@ -175,12 +175,12 @@ ImActorModelEntityContentAbsContent_ContentTypeEnum *ImActorModelEntityContentAb
       return e;
     }
   }
-  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name] autorelease];
+  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];
   return nil;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  return [self retain];
+  return self;
 }
 
 + (void)initialize {

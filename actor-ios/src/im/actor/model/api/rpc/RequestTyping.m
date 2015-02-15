@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, peer_, ImActorModelApiOutPe
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                                        withInt:(jint)typingType {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestTyping_set_peer_(self, peer);
+    self->peer_ = peer;
     self->typingType_ = typingType;
   }
   return self;
@@ -51,13 +51,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, peer_, ImActorModelApiOutPe
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestTyping_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiOutPeer alloc] init] autorelease]]);
+  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiOutPeer alloc] init]];
   self->typingType_ = [values getIntWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeIntWithInt:3 withInt:self->typingType_];
@@ -67,14 +67,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, peer_, ImActorModelApiOutPe
   return ImActorModelApiRpcRequestTyping_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(peer_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestTyping *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestTyping_set_peer_(other, peer_);
+  other->peer_ = peer_;
   other->typingType_ = typingType_;
 }
 
@@ -103,7 +98,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, peer_, ImActorModelApiOutPe
 
 ImActorModelApiRpcRequestTyping *ImActorModelApiRpcRequestTyping_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestTyping_init();
-  return ((ImActorModelApiRpcRequestTyping *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestTyping alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestTyping *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestTyping alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestTyping)

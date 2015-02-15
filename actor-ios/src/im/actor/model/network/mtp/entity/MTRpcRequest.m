@@ -19,7 +19,7 @@
 
 - (instancetype)initWithByteArray:(IOSByteArray *)payload {
   if (self = [super init]) {
-    MTMTRpcRequest_set_payload_(self, payload);
+    self->payload_ = payload;
   }
   return self;
 }
@@ -37,21 +37,16 @@
 }
 
 - (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  MTMTRpcRequest_set_payload_(self, [((AMDataInput *) nil_chk(bs)) readProtoBytes]);
+  payload_ = [((AMDataInput *) nil_chk(bs)) readProtoBytes];
 }
 
 - (NSString *)description {
   return @"RequestBox";
 }
 
-- (void)dealloc {
-  RELEASE_(payload_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(MTMTRpcRequest *)other {
   [super copyAllFieldsTo:other];
-  MTMTRpcRequest_set_payload_(other, payload_);
+  other->payload_ = payload_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

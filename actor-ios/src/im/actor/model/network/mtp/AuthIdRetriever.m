@@ -70,9 +70,9 @@ withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callb
 void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<MTAuthIdRetriever_AuthIdCallback> callback) {
   MTAuthIdRetriever_init();
   AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_TAG_, @"Requesting AuthId");
-  IOSBooleanArray *isFinished = [IOSBooleanArray arrayWithLength:1];
+  IOSBooleanArray *isFinished = [IOSBooleanArray newArrayWithLength:1];
   *IOSBooleanArray_GetRef(isFinished, 0) = NO;
-  AMConnectionFactory_createConnectionWithInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMConnectionFactory_CreateConnectionCallback_(0, [((AMEndpoints *) nil_chk(endpoints)) fetchEndpoint], [[[MTAuthIdRetriever_$1 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback] autorelease], [[[MTAuthIdRetriever_$2 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback] autorelease]);
+  AMConnectionFactory_createConnectionWithInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMConnectionFactory_CreateConnectionCallback_(0, [((AMEndpoints *) nil_chk(endpoints)) fetchEndpoint], [[MTAuthIdRetriever_$1 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback], [[MTAuthIdRetriever_$2 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback]);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever)
@@ -104,12 +104,12 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
     return;
   }
   @try {
-    AMDataInput *dataInput = [[[AMDataInput alloc] initWithByteArray:data withInt:offset withInt:len] autorelease];
+    AMDataInput *dataInput = [[AMDataInput alloc] initWithByteArray:data withInt:offset withInt:len];
     jlong pAuthId = [dataInput readLong];
     jlong pSessionId = [dataInput readLong];
     jlong messageId = [dataInput readLong];
     IOSByteArray *payload = [dataInput readProtoBytes];
-    AMDataInput *msg = [[[AMDataInput alloc] initWithByteArray:payload withInt:0 withInt:((IOSByteArray *) nil_chk(payload))->size_] autorelease];
+    AMDataInput *msg = [[AMDataInput alloc] initWithByteArray:payload withInt:0 withInt:((IOSByteArray *) nil_chk(payload))->size_];
     jint header = [msg readByte];
     jlong authId = [msg readLong];
     if (!IOSBooleanArray_Get(val$isFinished_, 0)) {
@@ -123,7 +123,7 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
     AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_get_TAG_(), @"Error during parsing auth id response");
     [((JavaLangException *) nil_chk(e)) printStackTrace];
   }
-  @throw [[[JavaLangRuntimeException alloc] init] autorelease];
+  @throw [[JavaLangRuntimeException alloc] init];
 }
 
 - (void)onConnectionDie {
@@ -136,21 +136,15 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
 
 - (instancetype)initWithBooleanArray:(IOSBooleanArray *)capture$0
 withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)capture$1 {
-  MTAuthIdRetriever_$1_set_val$isFinished_(self, capture$0);
-  MTAuthIdRetriever_$1_set_val$callback_(self, capture$1);
+  val$isFinished_ = capture$0;
+  val$callback_ = capture$1;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(val$isFinished_);
-  RELEASE_(val$callback_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(MTAuthIdRetriever_$1 *)other {
   [super copyAllFieldsTo:other];
-  MTAuthIdRetriever_$1_set_val$isFinished_(other, val$isFinished_);
-  MTAuthIdRetriever_$1_set_val$callback_(other, val$callback_);
+  other->val$isFinished_ = val$isFinished_;
+  other->val$callback_ = val$callback_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -179,7 +173,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
   }
   AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_get_TAG_(), @"Connection created");
   @try {
-    AMDataOutput *output = [[[AMDataOutput alloc] init] autorelease];
+    AMDataOutput *output = [[AMDataOutput alloc] init];
     [output writeLongWithLong:0];
     [output writeLongWithLong:0];
     [output writeLongWithLong:0];
@@ -208,21 +202,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
 
 - (instancetype)initWithBooleanArray:(IOSBooleanArray *)capture$0
 withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)capture$1 {
-  MTAuthIdRetriever_$2_set_val$isFinished_(self, capture$0);
-  MTAuthIdRetriever_$2_set_val$callback_(self, capture$1);
+  val$isFinished_ = capture$0;
+  val$callback_ = capture$1;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(val$isFinished_);
-  RELEASE_(val$callback_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(MTAuthIdRetriever_$2 *)other {
   [super copyAllFieldsTo:other];
-  MTAuthIdRetriever_$2_set_val$isFinished_(other, val$isFinished_);
-  MTAuthIdRetriever_$2_set_val$callback_(other, val$callback_);
+  other->val$isFinished_ = val$isFinished_;
+  other->val$callback_ = val$callback_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

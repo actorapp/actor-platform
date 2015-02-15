@@ -91,7 +91,7 @@
 
 ImActorModelApiUpdatesUpdateEmailContactRegistered *ImActorModelApiUpdatesUpdateEmailContactRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateEmailContactRegistered_init();
-  return ((ImActorModelApiUpdatesUpdateEmailContactRegistered *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateEmailContactRegistered alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateEmailContactRegistered *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateEmailContactRegistered alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateEmailContactRegistered)

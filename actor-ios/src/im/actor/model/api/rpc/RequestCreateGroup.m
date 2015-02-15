@@ -38,8 +38,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
             withJavaUtilList:(id<JavaUtilList>)users {
   if (self = [super init]) {
     self->rid_ = rid;
-    ImActorModelApiRpcRequestCreateGroup_set_title_(self, title);
-    ImActorModelApiRpcRequestCreateGroup_set_users_(self, users);
+    self->title_ = title;
+    self->users_ = users;
   }
   return self;
 }
@@ -62,18 +62,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->rid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
-  ImActorModelApiRpcRequestCreateGroup_set_title_(self, [values getStringWithInt:2]);
-  id<JavaUtilList> _users = [[[JavaUtilArrayList alloc] init] autorelease];
+  self->title_ = [values getStringWithInt:2];
+  id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:3]; i++) {
-    [_users addWithId:[[[ImActorModelApiUserOutPeer alloc] init] autorelease]];
+    [_users addWithId:[[ImActorModelApiUserOutPeer alloc] init]];
   }
-  ImActorModelApiRpcRequestCreateGroup_set_users_(self, [values getRepeatedObjWithInt:3 withJavaUtilList:_users]);
+  self->users_ = [values getRepeatedObjWithInt:3 withJavaUtilList:_users];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->rid_];
   if (self->title_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:2 withNSString:self->title_];
   [writer writeRepeatedObjWithInt:3 withJavaUtilList:self->users_];
@@ -83,17 +83,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
   return ImActorModelApiRpcRequestCreateGroup_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(title_);
-  RELEASE_(users_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestCreateGroup *)other {
   [super copyAllFieldsTo:other];
   other->rid_ = rid_;
-  ImActorModelApiRpcRequestCreateGroup_set_title_(other, title_);
-  ImActorModelApiRpcRequestCreateGroup_set_users_(other, users_);
+  other->title_ = title_;
+  other->users_ = users_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -123,7 +117,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
 
 ImActorModelApiRpcRequestCreateGroup *ImActorModelApiRpcRequestCreateGroup_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestCreateGroup_init();
-  return ((ImActorModelApiRpcRequestCreateGroup *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestCreateGroup alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestCreateGroup *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestCreateGroup alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestCreateGroup)

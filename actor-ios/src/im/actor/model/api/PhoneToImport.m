@@ -25,7 +25,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
                 withNSString:(NSString *)name {
   if (self = [super init]) {
     self->phoneNumber_ = phoneNumber;
-    ImActorModelApiPhoneToImport_set_name_(self, name);
+    self->name_ = name;
   }
   return self;
 }
@@ -44,7 +44,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->phoneNumber_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
-  ImActorModelApiPhoneToImport_set_name_(self, [values optStringWithInt:2]);
+  self->name_ = [values optStringWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -54,15 +54,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
   }
 }
 
-- (void)dealloc {
-  RELEASE_(name_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiPhoneToImport *)other {
   [super copyAllFieldsTo:other];
   other->phoneNumber_ = phoneNumber_;
-  ImActorModelApiPhoneToImport_set_name_(other, name_);
+  other->name_ = name_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -35,7 +35,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
            withJavaUtilList:(id<JavaUtilList>)members {
   if (self = [super init]) {
     self->groupId_ = groupId;
-    ImActorModelApiUpdatesUpdateGroupMembersUpdate_set_members_(self, members);
+    self->members_ = members;
   }
   return self;
 }
@@ -54,11 +54,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->groupId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
-  id<JavaUtilList> _members = [[[JavaUtilArrayList alloc] init] autorelease];
+  id<JavaUtilList> _members = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:2]; i++) {
-    [_members addWithId:[[[ImActorModelApiMember alloc] init] autorelease]];
+    [_members addWithId:[[ImActorModelApiMember alloc] init]];
   }
-  ImActorModelApiUpdatesUpdateGroupMembersUpdate_set_members_(self, [values getRepeatedObjWithInt:2 withJavaUtilList:_members]);
+  self->members_ = [values getRepeatedObjWithInt:2 withJavaUtilList:_members];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -70,15 +70,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
   return ImActorModelApiUpdatesUpdateGroupMembersUpdate_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(members_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateGroupMembersUpdate *)other {
   [super copyAllFieldsTo:other];
   other->groupId_ = groupId_;
-  ImActorModelApiUpdatesUpdateGroupMembersUpdate_set_members_(other, members_);
+  other->members_ = members_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -105,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
 
 ImActorModelApiUpdatesUpdateGroupMembersUpdate *ImActorModelApiUpdatesUpdateGroupMembersUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupMembersUpdate_init();
-  return ((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateGroupMembersUpdate alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupMembersUpdate alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupMembersUpdate)

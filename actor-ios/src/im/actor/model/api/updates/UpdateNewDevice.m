@@ -37,7 +37,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateNewDevice, key_, IOSByteArray *)
   if (self = [super init]) {
     self->uid_ = uid;
     self->keyHash_ = keyHash;
-    ImActorModelApiUpdatesUpdateNewDevice_set_key_(self, key);
+    self->key_ = key;
     self->date_ = date;
   }
   return self;
@@ -66,7 +66,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateNewDevice, key_, IOSByteArray *)
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->uid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->keyHash_ = [values getLongWithInt:2];
-  ImActorModelApiUpdatesUpdateNewDevice_set_key_(self, [values optBytesWithInt:3]);
+  self->key_ = [values optBytesWithInt:3];
   self->date_ = [values getLongWithInt:4];
 }
 
@@ -83,16 +83,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateNewDevice, key_, IOSByteArray *)
   return ImActorModelApiUpdatesUpdateNewDevice_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(key_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateNewDevice *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;
   other->keyHash_ = keyHash_;
-  ImActorModelApiUpdatesUpdateNewDevice_set_key_(other, key_);
+  other->key_ = key_;
   other->date_ = date_;
 }
 
@@ -124,7 +119,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateNewDevice, key_, IOSByteArray *)
 
 ImActorModelApiUpdatesUpdateNewDevice *ImActorModelApiUpdatesUpdateNewDevice_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateNewDevice_init();
-  return ((ImActorModelApiUpdatesUpdateNewDevice *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateNewDevice alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateNewDevice *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateNewDevice alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateNewDevice)

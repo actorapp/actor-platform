@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/concurrency/Future.java
 //
 
-#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/concurrency/Future.h"
 #include "im/actor/model/droidkit/actors/concurrency/FutureCallback.h"
@@ -101,8 +100,8 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsConcurrencyFuture, error__, JavaLa
     isCompleted__ = YES;
     isCanceled__ = NO;
     isError__ = NO;
-    ImActorModelDroidkitActorsConcurrencyFuture_set_error__(self, nil);
-    ImActorModelDroidkitActorsConcurrencyFuture_set_result_(self, res);
+    error__ = nil;
+    result_ = res;
     for (id<ImActorModelDroidkitActorsConcurrencyFutureCallback> __strong callback in nil_chk(callbacks_)) {
       [((id<ImActorModelDroidkitActorsConcurrencyFutureCallback>) nil_chk(callback)) onResultWithId:res];
     }
@@ -117,8 +116,8 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsConcurrencyFuture, error__, JavaLa
     isCompleted__ = YES;
     isCanceled__ = NO;
     isError__ = YES;
-    ImActorModelDroidkitActorsConcurrencyFuture_set_error__(self, throwable);
-    ImActorModelDroidkitActorsConcurrencyFuture_set_result_(self, nil);
+    error__ = throwable;
+    result_ = nil;
     for (id<ImActorModelDroidkitActorsConcurrencyFutureCallback> __strong callback in nil_chk(callbacks_)) {
       [((id<ImActorModelDroidkitActorsConcurrencyFutureCallback>) nil_chk(callback)) onErrorWithJavaLangThrowable:throwable];
     }
@@ -127,37 +126,30 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsConcurrencyFuture, error__, JavaLa
 
 - (void)onTimeout {
   @synchronized(self) {
-    [self onErrorWithJavaLangThrowable:[[[ImActorModelDroidkitActorsConcurrencyFutureTimeoutException alloc] init] autorelease]];
+    [self onErrorWithJavaLangThrowable:[[ImActorModelDroidkitActorsConcurrencyFutureTimeoutException alloc] init]];
   }
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsConcurrencyFuture_setAndConsume_callbacks_(self, [[JavaUtilLinkedList alloc] init]);
+    callbacks_ = [[JavaUtilLinkedList alloc] init];
     isCompleted__ = NO;
     isCanceled__ = NO;
     isError__ = NO;
-    ImActorModelDroidkitActorsConcurrencyFuture_set_result_(self, nil);
-    ImActorModelDroidkitActorsConcurrencyFuture_set_error__(self, nil);
+    result_ = nil;
+    error__ = nil;
   }
   return self;
 }
 
-- (void)dealloc {
-  RELEASE_(callbacks_);
-  RELEASE_(result_);
-  RELEASE_(error__);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsConcurrencyFuture *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsConcurrencyFuture_set_callbacks_(other, callbacks_);
+  other->callbacks_ = callbacks_;
   other->isCompleted__ = isCompleted__;
   other->isCanceled__ = isCanceled__;
   other->isError__ = isError__;
-  ImActorModelDroidkitActorsConcurrencyFuture_set_result_(other, result_);
-  ImActorModelDroidkitActorsConcurrencyFuture_set_error__(other, error__);
+  other->result_ = result_;
+  other->error__ = error__;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

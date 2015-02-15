@@ -23,7 +23,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorContext, actorScope_, ImActor
 
 - (instancetype)initWithImActorModelDroidkitActorsActorScope:(ImActorModelDroidkitActorsActorScope *)scope {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsActorContext_set_actorScope_(self, scope);
+    self->actorScope_ = scope;
   }
   return self;
 }
@@ -49,14 +49,9 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorContext, actorScope_, ImActor
   }
 }
 
-- (void)dealloc {
-  RELEASE_(actorScope_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsActorContext *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsActorContext_set_actorScope_(other, actorScope_);
+  other->actorScope_ = actorScope_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

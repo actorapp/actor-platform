@@ -91,7 +91,7 @@
 
 ImActorModelApiUpdatesUpdateUserLastSeen *ImActorModelApiUpdatesUpdateUserLastSeen_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserLastSeen_init();
-  return ((ImActorModelApiUpdatesUpdateUserLastSeen *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateUserLastSeen alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateUserLastSeen *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserLastSeen alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserLastSeen)

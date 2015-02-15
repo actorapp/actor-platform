@@ -21,7 +21,7 @@
               withByteArray:(IOSByteArray *)payload {
   if (self = [super init]) {
     self->requestType_ = requestType;
-    MTRpcRequest_set_payload_(self, payload);
+    self->payload_ = payload;
   }
   return self;
 }
@@ -45,22 +45,17 @@
 
 - (void)readBodyWithAMDataInput:(AMDataInput *)bs {
   requestType_ = [((AMDataInput *) nil_chk(bs)) readInt];
-  MTRpcRequest_set_payload_(self, [bs readProtoBytes]);
+  payload_ = [bs readProtoBytes];
 }
 
 - (NSString *)description {
   return JreStrcat("$IC", @"RpcRequest[", requestType_, ']');
 }
 
-- (void)dealloc {
-  RELEASE_(payload_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(MTRpcRequest *)other {
   [super copyAllFieldsTo:other];
   other->requestType_ = requestType_;
-  MTRpcRequest_set_payload_(other, payload_);
+  other->payload_ = payload_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

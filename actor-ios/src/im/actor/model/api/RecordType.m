@@ -58,12 +58,12 @@ ImActorModelApiRecordTypeEnum *ImActorModelApiRecordTypeEnum_valueOfWithNSString
       return e;
     }
   }
-  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name] autorelease];
+  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];
   return nil;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  return [self retain];
+  return self;
 }
 
 + (void)initialize {
@@ -100,7 +100,7 @@ ImActorModelApiRecordTypeEnum *ImActorModelApiRecordTypeEnum_parseWithInt_(jint 
     case 2:
     return ImActorModelApiRecordTypeEnum_EMAIL;
   }
-  @throw [[[JavaIoIOException alloc] init] autorelease];
+  @throw [[JavaIoIOException alloc] init];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRecordTypeEnum)

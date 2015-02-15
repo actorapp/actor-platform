@@ -35,8 +35,8 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxMailbox_$1, this$0_, ImActo
 
 - (instancetype)initWithImActorModelDroidkitActorsMailboxMailboxesQueue:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)queue {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsMailboxMailbox_setAndConsume_comparator_(self, [[ImActorModelDroidkitActorsMailboxMailbox_$1 alloc] initWithImActorModelDroidkitActorsMailboxMailbox:self]);
-    ImActorModelDroidkitActorsMailboxMailbox_setAndConsume_envelopes_(self, [[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection alloc] initWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot:[((ImActorModelDroidkitActorsMailboxMailboxesQueue *) nil_chk(queue)) getEnvelopeRoot]]);
+    comparator_ = [[ImActorModelDroidkitActorsMailboxMailbox_$1 alloc] initWithImActorModelDroidkitActorsMailboxMailbox:self];
+    self->envelopes_ = [[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection alloc] initWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot:[((ImActorModelDroidkitActorsMailboxMailboxesQueue *) nil_chk(queue)) getEnvelopeRoot]];
   }
   return self;
 }
@@ -44,7 +44,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxMailbox_$1, this$0_, ImActo
 - (void)scheduleWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope
                                                      withLong:(jlong)time {
   if ([((ImActorModelDroidkitActorsMailboxEnvelope *) nil_chk(envelope)) getMailbox] != self) {
-    @throw [[[JavaLangRuntimeException alloc] initWithNSString:@"envelope.mailbox != this mailbox"] autorelease];
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"envelope.mailbox != this mailbox"];
   }
   [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *) nil_chk(envelopes_)) putEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:envelope withLong:time];
 }
@@ -52,7 +52,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxMailbox_$1, this$0_, ImActo
 - (void)scheduleOnceWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope
                                                          withLong:(jlong)time {
   if ([((ImActorModelDroidkitActorsMailboxEnvelope *) nil_chk(envelope)) getMailbox] != self) {
-    @throw [[[JavaLangRuntimeException alloc] initWithNSString:@"envelope.mailbox != this mailbox"] autorelease];
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"envelope.mailbox != this mailbox"];
   }
   [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *) nil_chk(envelopes_)) putEnvelopeOnceWithImActorModelDroidkitActorsMailboxEnvelope:envelope withLong:time withImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator:comparator_];
 }
@@ -78,16 +78,10 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxMailbox_$1, this$0_, ImActo
   return envelopes_;
 }
 
-- (void)dealloc {
-  RELEASE_(envelopes_);
-  RELEASE_(comparator_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxMailbox *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsMailboxMailbox_set_envelopes_(other, envelopes_);
-  ImActorModelDroidkitActorsMailboxMailbox_set_comparator_(other, comparator_);
+  other->envelopes_ = envelopes_;
+  other->comparator_ = comparator_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -121,18 +115,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMailboxMailbox)
 }
 
 - (instancetype)initWithImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)outer$ {
-  ImActorModelDroidkitActorsMailboxMailbox_$1_set_this$0_(self, outer$);
+  this$0_ = outer$;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(this$0_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxMailbox_$1 *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsMailboxMailbox_$1_set_this$0_(other, this$0_);
+  other->this$0_ = this$0_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

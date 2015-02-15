@@ -250,7 +250,7 @@
     case 25:
     return ImActorModelApiBaseSeqUpdateTooLong_fromBytesWithByteArray_(payload);
   }
-  @throw [[[JavaIoIOException alloc] init] autorelease];
+  @throw [[JavaIoIOException alloc] init];
 }
 
 - (instancetype)init {

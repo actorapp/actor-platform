@@ -22,7 +22,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksMessagesTaskError, throwable_
       withJavaLangThrowable:(JavaLangThrowable *)throwable {
   if (self = [super init]) {
     self->requestId_ = requestId;
-    ImActorModelDroidkitActorsTasksMessagesTaskError_set_throwable_(self, throwable);
+    self->throwable_ = throwable;
   }
   return self;
 }
@@ -39,15 +39,10 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksMessagesTaskError, throwable_
   return JreStrcat("$I$@C", @"TaskError{requestId=", requestId_, @", throwable=", throwable_, '}');
 }
 
-- (void)dealloc {
-  RELEASE_(throwable_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksMessagesTaskError *)other {
   [super copyAllFieldsTo:other];
   other->requestId_ = requestId_;
-  ImActorModelDroidkitActorsTasksMessagesTaskError_set_throwable_(other, throwable_);
+  other->throwable_ = throwable_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

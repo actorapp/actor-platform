@@ -96,20 +96,20 @@ NSString * ImActorModelModulesUpdatesSequenceActor_KEY_STATE_ = @"updates_state"
 
 - (instancetype)initWithImActorModelModulesUpdates:(ImActorModelModulesUpdates *)updates {
   if (self = [super initWithAMMessenger:[((ImActorModelModulesUpdates *) nil_chk(updates)) getMessenger]]) {
-    ImActorModelModulesUpdatesSequenceActor_setAndConsume_further_(self, [[JavaUtilHashMap alloc] init]);
+    further_ = [[JavaUtilHashMap alloc] init];
     isValidated_ = YES;
-    ImActorModelModulesUpdatesSequenceActor_set_messenger_SequenceActor_(self, [updates getMessenger]);
-    ImActorModelModulesUpdatesSequenceActor_set_preferencesStorage_(self, [((AMConfiguration *) nil_chk([((AMMessenger *) nil_chk([updates getMessenger])) getConfiguration])) getPreferencesStorage]);
+    self->messenger_SequenceActor_ = [updates getMessenger];
+    self->preferencesStorage_ = [((AMConfiguration *) nil_chk([((AMMessenger *) nil_chk([updates getMessenger])) getConfiguration])) getPreferencesStorage];
   }
   return self;
 }
 
 - (void)preStart {
   seq_ = [((id<ImActorModelStoragePreferencesStorage>) nil_chk(preferencesStorage_)) getIntWithNSString:ImActorModelModulesUpdatesSequenceActor_KEY_SEQ_ withInt:-1];
-  ImActorModelModulesUpdatesSequenceActor_set_state_(self, [preferencesStorage_ getBytesWithNSString:ImActorModelModulesUpdatesSequenceActor_KEY_STATE_]);
-  ImActorModelModulesUpdatesSequenceActor_setAndConsume_parser_(self, [[ImActorModelApiParserUpdatesParser alloc] init]);
-  ImActorModelModulesUpdatesSequenceActor_setAndConsume_processor_(self, [[ImActorModelModulesUpdatesUpdateProcessor alloc] initWithAMMessenger:messenger_SequenceActor_]);
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelModulesUpdatesSequenceActor_Invalidate alloc] init] autorelease]];
+  state_ = [preferencesStorage_ getBytesWithNSString:ImActorModelModulesUpdatesSequenceActor_KEY_STATE_];
+  parser_ = [[ImActorModelApiParserUpdatesParser alloc] init];
+  processor_ = [[ImActorModelModulesUpdatesUpdateProcessor alloc] initWithAMMessenger:messenger_SequenceActor_];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelModulesUpdatesSequenceActor_Invalidate alloc] init]];
 }
 
 - (void)onReceiveWithId:(id)message {
@@ -146,26 +146,16 @@ NSString * ImActorModelModulesUpdatesSequenceActor_KEY_STATE_ = @"updates_state"
   ImActorModelModulesUpdatesSequenceActor_checkFuture(self);
 }
 
-- (void)dealloc {
-  RELEASE_(further_);
-  RELEASE_(preferencesStorage_);
-  RELEASE_(state_);
-  RELEASE_(messenger_SequenceActor_);
-  RELEASE_(processor_);
-  RELEASE_(parser_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesSequenceActor *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUpdatesSequenceActor_set_further_(other, further_);
-  ImActorModelModulesUpdatesSequenceActor_set_preferencesStorage_(other, preferencesStorage_);
+  other->further_ = further_;
+  other->preferencesStorage_ = preferencesStorage_;
   other->isValidated_ = isValidated_;
   other->seq_ = seq_;
-  ImActorModelModulesUpdatesSequenceActor_set_state_(other, state_);
-  ImActorModelModulesUpdatesSequenceActor_set_messenger_SequenceActor_(other, messenger_SequenceActor_);
-  ImActorModelModulesUpdatesSequenceActor_set_processor_(other, processor_);
-  ImActorModelModulesUpdatesSequenceActor_set_parser_(other, parser_);
+  other->state_ = state_;
+  other->messenger_SequenceActor_ = messenger_SequenceActor_;
+  other->processor_ = processor_;
+  other->parser_ = parser_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -242,18 +232,18 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, JreStrcat("$IC", @"SeqUpdate {seq:", seq, '}'));
   if (!self->isValidated_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Caching in further map");
-    [((JavaUtilHashMap *) nil_chk(self->further_)) putWithId:JavaLangInteger_valueOfWithInt_(seq) withId:u];
+    (void) [((JavaUtilHashMap *) nil_chk(self->further_)) putWithId:JavaLangInteger_valueOfWithInt_(seq) withId:u];
     return;
   }
   if (!ImActorModelModulesUpdatesSequenceActor_isValidSeqWithInt_(self, seq)) {
     AMLog_wWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Out of sequence: starting timer for invalidation");
-    [((JavaUtilHashMap *) nil_chk(self->further_)) putWithId:JavaLangInteger_valueOfWithInt_(seq) withId:u];
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] autorelease] withLong:ImActorModelModulesUpdatesSequenceActor_INVALIDATE_GAP];
+    (void) [((JavaUtilHashMap *) nil_chk(self->further_)) putWithId:JavaLangInteger_valueOfWithInt_(seq) withId:u];
+    [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] withLong:ImActorModelModulesUpdatesSequenceActor_INVALIDATE_GAP];
     return;
   }
   ImActorModelNetworkParserUpdate *update;
   @try {
-    update = [((ImActorModelApiParserUpdatesParser *) [[[ImActorModelApiParserUpdatesParser alloc] init] autorelease]) readWithInt:type withByteArray:body];
+    update = [((ImActorModelApiParserUpdatesParser *) [[ImActorModelApiParserUpdatesParser alloc] init]) readWithInt:type withByteArray:body];
   }
   @catch (JavaIoIOException *e) {
     AMLog_wWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Unable to parse update: ignoring");
@@ -276,11 +266,11 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
     [self->processor_ applyRelatedWithJavaUtilList:[((ImActorModelApiBaseFatSeqUpdate *) nil_chk(fatSeqUpdate)) getUsers] withJavaUtilList:[fatSeqUpdate getGroups] withJavaUtilList:[fatSeqUpdate getContacts] withBoolean:YES];
   }
   self->seq_ = seq;
-  ImActorModelModulesUpdatesSequenceActor_set_state_(self, state);
+  self->state_ = state;
   [((id<ImActorModelStoragePreferencesStorage>) nil_chk(self->preferencesStorage_)) putIntWithNSString:ImActorModelModulesUpdatesSequenceActor_KEY_SEQ_ withInt:seq];
   [self->preferencesStorage_ putBytesWithNSString:ImActorModelModulesUpdatesSequenceActor_KEY_STATE_ withByteArray:state];
   ImActorModelModulesUpdatesSequenceActor_checkFuture(self);
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] autorelease] withLong:24 * 60 * 60 * 1000LL];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] withLong:24 * 60 * 60 * 1000LL];
 }
 
 jboolean ImActorModelModulesUpdatesSequenceActor_isValidSeqWithInt_(ImActorModelModulesUpdatesSequenceActor *self, jint seq) {
@@ -294,11 +284,11 @@ void ImActorModelModulesUpdatesSequenceActor_invalidate(ImActorModelModulesUpdat
   self->isValidated_ = NO;
   if (self->seq_ < 0) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Loading fresh state...");
-    [self requestWithImActorModelNetworkParserRequest:[[[ImActorModelApiRpcRequestGetState alloc] init] autorelease] withAMRpcCallback:[[[ImActorModelModulesUpdatesSequenceActor_$1 alloc] initWithImActorModelModulesUpdatesSequenceActor:self] autorelease]];
+    [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestGetState alloc] init] withAMRpcCallback:[[ImActorModelModulesUpdatesSequenceActor_$1 alloc] initWithImActorModelModulesUpdatesSequenceActor:self]];
   }
   else {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Loading difference...");
-    [self requestWithImActorModelNetworkParserRequest:[[[ImActorModelApiRpcRequestGetDifference alloc] initWithInt:self->seq_ withByteArray:self->state_] autorelease] withAMRpcCallback:[[[ImActorModelModulesUpdatesSequenceActor_$2 alloc] initWithImActorModelModulesUpdatesSequenceActor:self] autorelease]];
+    [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestGetDifference alloc] initWithInt:self->seq_ withByteArray:self->state_] withAMRpcCallback:[[ImActorModelModulesUpdatesSequenceActor_$2 alloc] initWithImActorModelModulesUpdatesSequenceActor:self]];
   }
 }
 
@@ -388,12 +378,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_PushSeq
     return;
   }
   this$0_->seq_ = [((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq];
-  ImActorModelModulesUpdatesSequenceActor_set_state_(this$0_, [response getState]);
+  this$0_->state_ = [response getState];
   this$0_->isValidated_ = YES;
   [((id<ImActorModelStoragePreferencesStorage>) nil_chk(this$0_->preferencesStorage_)) putIntWithNSString:ImActorModelModulesUpdatesSequenceActor_get_KEY_SEQ_() withInt:this$0_->seq_];
   [this$0_->preferencesStorage_ putBytesWithNSString:ImActorModelModulesUpdatesSequenceActor_get_KEY_STATE_() withByteArray:this$0_->state_];
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_get_TAG_(), JreStrcat("$IC", @"State loaded {seq=", this$0_->seq_, '}'));
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendOnceWithId:[[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] autorelease] withLong:24 * 60 * 60 * 1000LL];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendOnceWithId:[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] withLong:24 * 60 * 60 * 1000LL];
   ImActorModelModulesUpdatesSequenceActor_checkFuture(this$0_);
 }
 
@@ -406,18 +396,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_PushSeq
 }
 
 - (instancetype)initWithImActorModelModulesUpdatesSequenceActor:(ImActorModelModulesUpdatesSequenceActor *)outer$ {
-  ImActorModelModulesUpdatesSequenceActor_$1_set_this$0_(self, outer$);
+  this$0_ = outer$;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(this$0_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesSequenceActor_$1 *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUpdatesSequenceActor_$1_set_this$0_(other, this$0_);
+  other->this$0_ = this$0_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -457,11 +442,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_$1)
   }
   [this$0_->processor_ applyRelatedWithJavaUtilList:[response getUsers] withJavaUtilList:[response getGroups] withJavaUtilList:[response getContacts] withBoolean:YES];
   this$0_->seq_ = [response getSeq];
-  ImActorModelModulesUpdatesSequenceActor_set_state_(this$0_, [response getState]);
+  this$0_->state_ = [response getState];
   this$0_->isValidated_ = YES;
   [((id<ImActorModelStoragePreferencesStorage>) nil_chk(this$0_->preferencesStorage_)) putIntWithNSString:ImActorModelModulesUpdatesSequenceActor_get_KEY_SEQ_() withInt:this$0_->seq_];
   [this$0_->preferencesStorage_ putBytesWithNSString:ImActorModelModulesUpdatesSequenceActor_get_KEY_STATE_() withByteArray:this$0_->state_];
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendOnceWithId:[[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] autorelease] withLong:24 * 60 * 60 * 1000LL];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendOnceWithId:[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] withLong:24 * 60 * 60 * 1000LL];
   ImActorModelModulesUpdatesSequenceActor_checkFuture(this$0_);
   if ([response needMore]) {
     ImActorModelModulesUpdatesSequenceActor_invalidate(this$0_);
@@ -477,18 +462,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_$1)
 }
 
 - (instancetype)initWithImActorModelModulesUpdatesSequenceActor:(ImActorModelModulesUpdatesSequenceActor *)outer$ {
-  ImActorModelModulesUpdatesSequenceActor_$2_set_this$0_(self, outer$);
+  this$0_ = outer$;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(this$0_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesSequenceActor_$2 *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUpdatesSequenceActor_$2_set_this$0_(other, this$0_);
+  other->this$0_ = this$0_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

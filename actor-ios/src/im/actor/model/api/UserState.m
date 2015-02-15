@@ -58,12 +58,12 @@ ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_valueOfWithNSString_(
       return e;
     }
   }
-  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name] autorelease];
+  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];
   return nil;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  return [self retain];
+  return self;
 }
 
 + (void)initialize {
@@ -104,7 +104,7 @@ ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_parseWithInt_(jint va
     case 3:
     return ImActorModelApiUserStateEnum_DELETED;
   }
-  @throw [[[JavaIoIOException alloc] init] autorelease];
+  @throw [[JavaIoIOException alloc] init];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUserStateEnum)

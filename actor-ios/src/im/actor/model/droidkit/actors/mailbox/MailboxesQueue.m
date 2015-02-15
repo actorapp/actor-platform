@@ -24,7 +24,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxMailboxesQueue, envelopeRoo
 
 - (instancetype)init {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsMailboxMailboxesQueue_setAndConsume_envelopeRoot_(self, [[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot alloc] initWithImActorModelDroidkitActorsMailboxMailboxesQueue:self]);
+    envelopeRoot_ = [[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot alloc] initWithImActorModelDroidkitActorsMailboxMailboxesQueue:self];
   }
   return self;
 }
@@ -62,14 +62,9 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxMailboxesQueue, envelopeRoo
   }
 }
 
-- (void)dealloc {
-  RELEASE_(envelopeRoot_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsMailboxMailboxesQueue_set_envelopeRoot_(other, envelopeRoot_);
+  other->envelopeRoot_ = envelopeRoot_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -45,22 +45,16 @@ J2OBJC_FIELD_SETTER(AMExponentialBackoff, random_, JavaUtilRandom *)
 
 - (instancetype)init {
   if (self = [super init]) {
-    AMExponentialBackoff_set_currentFailureCount_(self, ImActorModelDroidkitActorsConfEnvConfig_createAtomicIntWithInt_(1));
-    AMExponentialBackoff_setAndConsume_random_(self, [[JavaUtilRandom alloc] init]);
+    currentFailureCount_ = ImActorModelDroidkitActorsConfEnvConfig_createAtomicIntWithInt_(1);
+    random_ = [[JavaUtilRandom alloc] init];
   }
   return self;
 }
 
-- (void)dealloc {
-  RELEASE_(currentFailureCount_);
-  RELEASE_(random_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(AMExponentialBackoff *)other {
   [super copyAllFieldsTo:other];
-  AMExponentialBackoff_set_currentFailureCount_(other, currentFailureCount_);
-  AMExponentialBackoff_set_random_(other, random_);
+  other->currentFailureCount_ = currentFailureCount_;
+  other->random_ = random_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
