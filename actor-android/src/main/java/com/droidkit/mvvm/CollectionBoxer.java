@@ -36,7 +36,7 @@ public abstract class CollectionBoxer<K, R, U> {
 
     protected abstract U wrap(K key, R raw);
 
-    protected abstract R load(K key);
+    public abstract R load(K key);
 
     protected abstract void save(K key, R raw);
 

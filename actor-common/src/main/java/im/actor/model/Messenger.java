@@ -81,6 +81,10 @@ public class Messenger {
         return messages;
     }
 
+    public Users getUsersModule() {
+        return users;
+    }
+
     public void onAppVisible() {
         if (presence != null) {
             presence.onAppVisible();
