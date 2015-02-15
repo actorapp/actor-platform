@@ -6,9 +6,9 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/DifferenceUpdate.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiDifferenceUpdate () {
@@ -43,13 +43,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDifferenceUpdate, update_, IOSByteArray *)
   return self->update_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->updateHeader_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->updateHeader_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   ImActorModelApiDifferenceUpdate_set_update_(self, [values getBytesWithInt:2]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->updateHeader_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->updateHeader_];
   if (self->update_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
@@ -73,8 +73,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDifferenceUpdate, update_, IOSByteArray *)
     { "init", "DifferenceUpdate", NULL, 0x1, NULL },
     { "getUpdateHeader", NULL, "I", 0x1, NULL },
     { "getUpdate", NULL, "[B", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "updateHeader_", NULL, 0x2, "I", NULL,  },

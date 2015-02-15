@@ -6,12 +6,12 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/updates/UpdateChatDelete.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateChatDelete () {
@@ -43,15 +43,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatDelete, peer_, ImActorModelA
   return self->peer_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiUpdatesUpdateChatDelete_set_peer_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withIOSClass:ImActorModelApiPeer_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiUpdatesUpdateChatDelete_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiPeer alloc] init] autorelease]]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withComDroidkitBserBserObject:self->peer_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
 }
 
 - (jint)getHeaderKey {
@@ -74,8 +74,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatDelete, peer_, ImActorModelA
     { "initWithImActorModelApiPeer:", "UpdateChatDelete", NULL, 0x1, NULL },
     { "init", "UpdateChatDelete", NULL, 0x1, NULL },
     { "getPeer", NULL, "Lim.actor.model.api.Peer;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -90,7 +90,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatDelete, peer_, ImActorModelA
 
 ImActorModelApiUpdatesUpdateChatDelete *ImActorModelApiUpdatesUpdateChatDelete_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateChatDelete_init();
-  return ((ImActorModelApiUpdatesUpdateChatDelete *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiUpdatesUpdateChatDelete_class_(), data));
+  return ((ImActorModelApiUpdatesUpdateChatDelete *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateChatDelete alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateChatDelete)

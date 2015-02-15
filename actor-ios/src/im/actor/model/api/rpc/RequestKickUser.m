@@ -6,13 +6,13 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/GroupOutPeer.h"
 #include "im/actor/model/api/UserOutPeer.h"
 #include "im/actor/model/api/rpc/RequestKickUser.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestKickUser () {
@@ -59,22 +59,22 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUse
   return self->user_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestKickUser_set_groupPeer_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withIOSClass:ImActorModelApiGroupOutPeer_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiRpcRequestKickUser_set_groupPeer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiGroupOutPeer alloc] init] autorelease]]);
   self->rid_ = [values getLongWithInt:4];
-  ImActorModelApiRpcRequestKickUser_set_user_(self, [values getObjWithInt:3 withIOSClass:ImActorModelApiUserOutPeer_class_()]);
+  ImActorModelApiRpcRequestKickUser_set_user_(self, [values getObjWithInt:3 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiUserOutPeer alloc] init] autorelease]]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->groupPeer_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withComDroidkitBserBserObject:self->groupPeer_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->groupPeer_];
   [writer writeLongWithInt:4 withLong:self->rid_];
   if (self->user_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [writer writeObjectWithInt:3 withComDroidkitBserBserObject:self->user_];
+  [writer writeObjectWithInt:3 withImActorModelDroidkitBserBserObject:self->user_];
 }
 
 - (jint)getHeaderKey {
@@ -102,8 +102,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUse
     { "getGroupPeer", NULL, "Lim.actor.model.api.GroupOutPeer;", 0x1, NULL },
     { "getRid", NULL, "J", 0x1, NULL },
     { "getUser", NULL, "Lim.actor.model.api.UserOutPeer;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -121,7 +121,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUse
 
 ImActorModelApiRpcRequestKickUser *ImActorModelApiRpcRequestKickUser_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestKickUser_init();
-  return ((ImActorModelApiRpcRequestKickUser *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcRequestKickUser_class_(), data));
+  return ((ImActorModelApiRpcRequestKickUser *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestKickUser alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestKickUser)

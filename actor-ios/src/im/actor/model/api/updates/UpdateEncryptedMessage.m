@@ -6,12 +6,12 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/updates/UpdateEncryptedMessage.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateEncryptedMessage () {
@@ -80,8 +80,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedMessage, message_, IOSB
   return self->message_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiUpdatesUpdateEncryptedMessage_set_peer_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withIOSClass:ImActorModelApiPeer_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiUpdatesUpdateEncryptedMessage_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiPeer alloc] init] autorelease]]);
   self->senderUid_ = [values getIntWithInt:2];
   self->date_ = [values getLongWithInt:6];
   self->keyHash_ = [values getLongWithInt:3];
@@ -89,11 +89,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedMessage, message_, IOSB
   ImActorModelApiUpdatesUpdateEncryptedMessage_set_message_(self, [values getBytesWithInt:5]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withComDroidkitBserBserObject:self->peer_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeIntWithInt:2 withInt:self->senderUid_];
   [writer writeLongWithInt:6 withLong:self->date_];
   [writer writeLongWithInt:3 withLong:self->keyHash_];
@@ -139,8 +139,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedMessage, message_, IOSB
     { "getKeyHash", NULL, "J", 0x1, NULL },
     { "getAesEncryptedKey", NULL, "[B", 0x1, NULL },
     { "getMessage", NULL, "[B", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -160,7 +160,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedMessage, message_, IOSB
 
 ImActorModelApiUpdatesUpdateEncryptedMessage *ImActorModelApiUpdatesUpdateEncryptedMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateEncryptedMessage_init();
-  return ((ImActorModelApiUpdatesUpdateEncryptedMessage *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiUpdatesUpdateEncryptedMessage_class_(), data));
+  return ((ImActorModelApiUpdatesUpdateEncryptedMessage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateEncryptedMessage alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateEncryptedMessage)

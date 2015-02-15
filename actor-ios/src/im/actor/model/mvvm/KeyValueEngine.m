@@ -21,9 +21,10 @@
     { "removeItemWithLong:", "removeItem", "V", 0x401, NULL },
     { "removeItemsWithLongArray:", "removeItems", "V", 0x401, NULL },
     { "clear", NULL, "V", 0x401, NULL },
+    { "getAll", NULL, "Ljava.util.List;", 0x401, NULL },
     { "getValueWithLong:", "getValue", "TV;", 0x401, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelMvvmKeyValueEngine = { 1, "KeyValueEngine", "im.actor.model.mvvm", NULL, 0x201, 6, methods, 0, NULL, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelMvvmKeyValueEngine = { 1, "KeyValueEngine", "im.actor.model.mvvm", NULL, 0x201, 7, methods, 0, NULL, 0, NULL};
   return &_ImActorModelMvvmKeyValueEngine;
 }
 

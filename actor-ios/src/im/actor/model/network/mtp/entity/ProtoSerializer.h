@@ -6,8 +6,8 @@
 #ifndef _MTProtoSerializer_H_
 #define _MTProtoSerializer_H_
 
+@class AMDataInput;
 @class IOSByteArray;
-@class JavaIoInputStream;
 @class MTProtoStruct;
 @class MTPush;
 
@@ -18,15 +18,15 @@
 
 + (MTProtoStruct *)readMessagePayloadWithByteArray:(IOSByteArray *)bs;
 
-+ (MTProtoStruct *)readMessagePayloadWithJavaIoInputStream:(JavaIoInputStream *)bs;
++ (MTProtoStruct *)readMessagePayloadWithAMDataInput:(AMDataInput *)bs;
 
-+ (MTProtoStruct *)readRpcResponsePayloadWithByteArray:(IOSByteArray *)bs;
++ (MTProtoStruct *)readRpcResponsePayloadWithByteArray:(IOSByteArray *)data;
 
-+ (MTProtoStruct *)readRpcResponsePayloadWithJavaIoInputStream:(JavaIoInputStream *)bs;
++ (MTProtoStruct *)readRpcRequestPayloadWithAMDataInput:(AMDataInput *)bs;
 
 + (MTPush *)readUpdateWithByteArray:(IOSByteArray *)bs;
 
-+ (MTPush *)readUpdateWithJavaIoInputStream:(JavaIoInputStream *)bs;
++ (MTPush *)readUpdateWithAMDataInput:(AMDataInput *)bs;
 
 - (instancetype)init;
 
@@ -38,15 +38,15 @@ CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT MTProtoStruct *MTProtoSerializer_readMessagePayloadWithByteArray_(IOSByteArray *bs);
 
-FOUNDATION_EXPORT MTProtoStruct *MTProtoSerializer_readMessagePayloadWithJavaIoInputStream_(JavaIoInputStream *bs);
+FOUNDATION_EXPORT MTProtoStruct *MTProtoSerializer_readMessagePayloadWithAMDataInput_(AMDataInput *bs);
 
-FOUNDATION_EXPORT MTProtoStruct *MTProtoSerializer_readRpcResponsePayloadWithByteArray_(IOSByteArray *bs);
+FOUNDATION_EXPORT MTProtoStruct *MTProtoSerializer_readRpcResponsePayloadWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT MTProtoStruct *MTProtoSerializer_readRpcResponsePayloadWithJavaIoInputStream_(JavaIoInputStream *bs);
+FOUNDATION_EXPORT MTProtoStruct *MTProtoSerializer_readRpcRequestPayloadWithAMDataInput_(AMDataInput *bs);
 
 FOUNDATION_EXPORT MTPush *MTProtoSerializer_readUpdateWithByteArray_(IOSByteArray *bs);
 
-FOUNDATION_EXPORT MTPush *MTProtoSerializer_readUpdateWithJavaIoInputStream_(JavaIoInputStream *bs);
+FOUNDATION_EXPORT MTPush *MTProtoSerializer_readUpdateWithAMDataInput_(AMDataInput *bs);
 CF_EXTERN_C_END
 
 typedef MTProtoSerializer ImActorModelNetworkMtpEntityProtoSerializer;

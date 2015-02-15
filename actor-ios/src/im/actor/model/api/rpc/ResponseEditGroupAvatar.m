@@ -6,12 +6,12 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/rpc/ResponseEditGroupAvatar.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcResponseEditGroupAvatar () {
@@ -65,18 +65,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
   return self->date_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiRpcResponseEditGroupAvatar_set_avatar_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withIOSClass:ImActorModelApiAvatar_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiRpcResponseEditGroupAvatar_set_avatar_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiAvatar alloc] init] autorelease]]);
   self->seq_ = [values getIntWithInt:2];
   ImActorModelApiRpcResponseEditGroupAvatar_set_state_(self, [values getBytesWithInt:3]);
   self->date_ = [values getLongWithInt:4];
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->avatar_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withComDroidkitBserBserObject:self->avatar_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->avatar_];
   [writer writeIntWithInt:2 withInt:self->seq_];
   if (self->state_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
@@ -112,8 +112,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
     { "getSeq", NULL, "I", 0x1, NULL },
     { "getState", NULL, "[B", 0x1, NULL },
     { "getDate", NULL, "J", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -131,7 +131,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
 
 ImActorModelApiRpcResponseEditGroupAvatar *ImActorModelApiRpcResponseEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseEditGroupAvatar_init();
-  return ((ImActorModelApiRpcResponseEditGroupAvatar *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcResponseEditGroupAvatar_class_(), data));
+  return ((ImActorModelApiRpcResponseEditGroupAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseEditGroupAvatar alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseEditGroupAvatar)

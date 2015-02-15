@@ -6,21 +6,21 @@
 #ifndef _ImActorModelJvmActorsJavaDispatcher_H_
 #define _ImActorModelJvmActorsJavaDispatcher_H_
 
-@class ComDroidkitActorsMailboxEnvelope;
-@class DAActorSystem;
-@class DAThreadPriorityEnum;
+@class ImActorModelDroidkitActorsActorSystem;
+@class ImActorModelDroidkitActorsMailboxEnvelope;
+@class ImActorModelDroidkitActorsThreadPriorityEnum;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/actors/dispatch/Dispatch.h"
-#include "com/droidkit/actors/mailbox/ActorDispatcher.h"
+#include "im/actor/model/droidkit/actors/dispatch/Dispatch.h"
+#include "im/actor/model/droidkit/actors/mailbox/ActorDispatcher.h"
 
-@interface ImActorModelJvmActorsJavaDispatcher : ComDroidkitActorsMailboxActorDispatcher {
+@interface ImActorModelJvmActorsJavaDispatcher : ImActorModelDroidkitActorsMailboxActorDispatcher {
 }
 
 - (instancetype)initWithNSString:(NSString *)name
-               withDAActorSystem:(DAActorSystem *)actorSystem
+withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem *)actorSystem
                          withInt:(jint)threadsCount
-        withDAThreadPriorityEnum:(DAThreadPriorityEnum *)priority;
+withImActorModelDroidkitActorsThreadPriorityEnum:(ImActorModelDroidkitActorsThreadPriorityEnum *)priority;
 
 @end
 
@@ -31,10 +31,10 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmActorsJavaDispatcher)
 
-@interface ImActorModelJvmActorsJavaDispatcher_$1 : NSObject < ComDroidkitActorsDispatchDispatch > {
+@interface ImActorModelJvmActorsJavaDispatcher_$1 : NSObject < ImActorModelDroidkitActorsDispatchDispatch > {
 }
 
-- (void)dispatchMessageWithId:(ComDroidkitActorsMailboxEnvelope *)message;
+- (void)dispatchMessageWithId:(ImActorModelDroidkitActorsMailboxEnvelope *)message;
 
 - (instancetype)initWithImActorModelJvmActorsJavaDispatcher:(ImActorModelJvmActorsJavaDispatcher *)outer$;
 

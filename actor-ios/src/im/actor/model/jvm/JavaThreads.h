@@ -6,12 +6,19 @@
 #ifndef _AMJavaThreads_H_
 #define _AMJavaThreads_H_
 
-@class ComDroidkitActorsMailboxActorDispatcher;
-@class DAActorSystem;
-@class DAThreadPriorityEnum;
+@class ImActorModelDroidkitActorsActorSystem;
+@class ImActorModelDroidkitActorsMailboxActorDispatcher;
+@class ImActorModelDroidkitActorsThreadPriorityEnum;
+@class JavaLangThreadLocal;
+@class JavaUtilConcurrentAtomicAtomicInteger;
+@class JavaUtilConcurrentAtomicAtomicLong;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/actors/conf/DispatcherFactory.h"
+#include "im/actor/model/droidkit/actors/conf/DispatcherFactory.h"
+#include "im/actor/model/droidkit/actors/conf/JavaFactory.h"
+#include "im/actor/model/droidkit/actors/utils/AtomicIntegerCompat.h"
+#include "im/actor/model/droidkit/actors/utils/AtomicLongCompat.h"
+#include "im/actor/model/droidkit/actors/utils/ThreadLocalCompat.h"
 
 @interface AMJavaThreads : NSObject {
 }
@@ -33,13 +40,13 @@ typedef AMJavaThreads ImActorModelJvmJavaThreads;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMJavaThreads)
 
-@interface AMJavaThreads_$1 : NSObject < DADispatcherFactory > {
+@interface AMJavaThreads_$1 : NSObject < ImActorModelDroidkitActorsConfDispatcherFactory > {
 }
 
-- (ComDroidkitActorsMailboxActorDispatcher *)createDispatcherWithNSString:(NSString *)name
-                                                                  withInt:(jint)threadsCount
-                                                 withDAThreadPriorityEnum:(DAThreadPriorityEnum *)priority
-                                                        withDAActorSystem:(DAActorSystem *)actorSystem;
+- (ImActorModelDroidkitActorsMailboxActorDispatcher *)createDispatcherWithNSString:(NSString *)name
+                                                                           withInt:(jint)threadsCount
+                                  withImActorModelDroidkitActorsThreadPriorityEnum:(ImActorModelDroidkitActorsThreadPriorityEnum *)priority
+                                         withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem *)actorSystem;
 
 - (instancetype)init;
 
@@ -51,5 +58,100 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMJavaThreads_$1)
+
+@interface AMJavaThreads_$2 : NSObject < ImActorModelDroidkitActorsConfJavaFactory > {
+}
+
+- (jlong)getCurrentTime;
+
+- (jint)getCoresCount;
+
+- (ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *)createAtomicIntWithInt:(jint)init_;
+
+- (ImActorModelDroidkitActorsUtilsAtomicLongCompat *)createAtomicLongWithLong:(jlong)init_;
+
+- (ImActorModelDroidkitActorsUtilsThreadLocalCompat *)createThreadLocal;
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMJavaThreads_$2)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMJavaThreads_$2)
+
+@interface AMJavaThreads_$2_$1 : ImActorModelDroidkitActorsUtilsAtomicIntegerCompat {
+}
+
+- (jint)get;
+
+- (jint)incrementAndGet;
+
+- (jint)getAndIncrement;
+
+- (void)compareAndSetWithInt:(jint)exp
+                     withInt:(jint)v;
+
+- (void)setWithInt:(jint)v;
+
+- (instancetype)initWithInt:(jint)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMJavaThreads_$2_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMJavaThreads_$2_$1)
+
+@interface AMJavaThreads_$2_$2 : ImActorModelDroidkitActorsUtilsAtomicLongCompat {
+ @public
+  JavaUtilConcurrentAtomicAtomicLong *atomicLong_;
+}
+
+- (jlong)get;
+
+- (jlong)incrementAndGet;
+
+- (jlong)getAndIncrement;
+
+- (void)setWithLong:(jlong)v;
+
+- (instancetype)initWithLong:(jlong)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMJavaThreads_$2_$2)
+
+J2OBJC_FIELD_SETTER(AMJavaThreads_$2_$2, atomicLong_, JavaUtilConcurrentAtomicAtomicLong *)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMJavaThreads_$2_$2)
+
+@interface AMJavaThreads_$2_$3 : ImActorModelDroidkitActorsUtilsThreadLocalCompat {
+}
+
+- (id)get;
+
+- (void)setWithId:(id)v;
+
+- (void)remove;
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMJavaThreads_$2_$3)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMJavaThreads_$2_$3)
 
 #endif // _AMJavaThreads_H_

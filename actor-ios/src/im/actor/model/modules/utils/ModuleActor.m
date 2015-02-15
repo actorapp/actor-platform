@@ -4,8 +4,8 @@
 //
 
 #include "J2ObjC_source.h"
-#include "com/droidkit/actors/ActorRef.h"
 #include "im/actor/model/Messenger.h"
+#include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/network/ActorApi.h"
 #include "im/actor/model/network/RpcCallback.h"
@@ -60,6 +60,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$1_$2, val$e_, AMRpcExce
   return self;
 }
 
+- (AMMessenger *)getMessenger {
+  return messenger_;
+}
+
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
   [((AMActorApi *) nil_chk([((AMMessenger *) nil_chk(messenger_)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:[[[ImActorModelModulesUtilsModuleActor_$1 alloc] initWithImActorModelModulesUtilsModuleActor:self withAMRpcCallback:callback] autorelease]];
@@ -78,12 +82,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$1_$2, val$e_, AMRpcExce
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "initWithAMMessenger:", "ModuleActor", NULL, 0x1, NULL },
+    { "getMessenger", NULL, "Lim.actor.model.Messenger;", 0x1, NULL },
     { "requestWithImActorModelNetworkParserRequest:withAMRpcCallback:", "request", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "messenger_", NULL, 0x2, "Lim.actor.model.Messenger;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelModulesUtilsModuleActor = { 1, "ModuleActor", "im.actor.model.modules.utils", NULL, 0x1, 2, methods, 1, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelModulesUtilsModuleActor = { 1, "ModuleActor", "im.actor.model.modules.utils", NULL, 0x1, 3, methods, 1, fields, 0, NULL};
   return &_ImActorModelModulesUtilsModuleActor;
 }
 
@@ -94,11 +99,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor)
 @implementation ImActorModelModulesUtilsModuleActor_$1
 
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
-  [((DAActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelModulesUtilsModuleActor_$1_$1 alloc] initWithImActorModelModulesUtilsModuleActor_$1:self withImActorModelNetworkParserResponse:response] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelModulesUtilsModuleActor_$1_$1 alloc] initWithImActorModelModulesUtilsModuleActor_$1:self withImActorModelNetworkParserResponse:response] autorelease]];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
-  [((DAActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelModulesUtilsModuleActor_$1_$2 alloc] initWithImActorModelModulesUtilsModuleActor_$1:self withAMRpcException:e] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelModulesUtilsModuleActor_$1_$2 alloc] initWithImActorModelModulesUtilsModuleActor_$1:self withAMRpcException:e] autorelease]];
 }
 
 - (instancetype)initWithImActorModelModulesUtilsModuleActor:(ImActorModelModulesUtilsModuleActor *)outer$

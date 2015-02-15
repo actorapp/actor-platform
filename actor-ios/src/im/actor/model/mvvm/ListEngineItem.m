@@ -14,7 +14,7 @@
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "getListId", NULL, "J", 0x401, NULL },
-    { "getSortingKey", NULL, "J", 0x401, NULL },
+    { "getListSortKey", NULL, "J", 0x401, NULL },
   };
   static const J2ObjcClassInfo _ImActorModelMvvmListEngineItem = { 1, "ListEngineItem", "im.actor.model.mvvm", NULL, 0x201, 2, methods, 0, NULL, 0, NULL};
   return &_ImActorModelMvvmListEngineItem;

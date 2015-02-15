@@ -5,12 +5,13 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/Group.h"
 #include "im/actor/model/api/Member.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 @interface ImActorModelApiGroup () {
@@ -89,26 +90,30 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   return self->createDate_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->id__ = [((ComDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->id__ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
   ImActorModelApiGroup_set_title_(self, [values getStringWithInt:3]);
-  ImActorModelApiGroup_set_avatar_(self, [values optObjWithInt:4 withIOSClass:ImActorModelApiAvatar_class_()]);
+  ImActorModelApiGroup_set_avatar_(self, [values optObjWithInt:4 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiAvatar alloc] init] autorelease]]);
   self->isMember__ = [values getBoolWithInt:6];
   self->adminUid_ = [values getIntWithInt:8];
-  ImActorModelApiGroup_set_members_(self, [values getRepeatedObjWithInt:9 withIOSClass:ImActorModelApiMember_class_()]);
+  id<JavaUtilList> _members = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:9]; i++) {
+    [_members addWithId:[[[ImActorModelApiMember alloc] init] autorelease]];
+  }
+  ImActorModelApiGroup_set_members_(self, [values getRepeatedObjWithInt:9 withJavaUtilList:_members]);
   self->createDate_ = [values getLongWithInt:10];
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   if (self->title_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
   [writer writeStringWithInt:3 withNSString:self->title_];
   if (self->avatar_ != nil) {
-    [writer writeObjectWithInt:4 withComDroidkitBserBserObject:self->avatar_];
+    [writer writeObjectWithInt:4 withImActorModelDroidkitBserBserObject:self->avatar_];
   }
   [writer writeBoolWithInt:6 withBoolean:self->isMember__];
   [writer writeIntWithInt:8 withInt:self->adminUid_];
@@ -147,8 +152,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
     { "getAdminUid", NULL, "I", 0x1, NULL },
     { "getMembers", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getCreateDate", NULL, "J", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "id__", "id", 0x2, "I", NULL,  },

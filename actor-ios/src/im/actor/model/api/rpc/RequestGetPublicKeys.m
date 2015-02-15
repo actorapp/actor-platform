@@ -6,13 +6,14 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/PublicKeyRequest.h"
 #include "im/actor/model/api/rpc/RequestGetPublicKeys.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 @interface ImActorModelApiRpcRequestGetPublicKeys () {
@@ -44,12 +45,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetPublicKeys, keys_, id<JavaUtilLi
   return self->keys_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestGetPublicKeys_set_keys_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getRepeatedObjWithInt:1 withIOSClass:ImActorModelApiPublicKeyRequest_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  id<JavaUtilList> _keys = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
+    [_keys addWithId:[[[ImActorModelApiPublicKeyRequest alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcRequestGetPublicKeys_set_keys_(self, [values getRepeatedObjWithInt:1 withJavaUtilList:_keys]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->keys_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->keys_];
 }
 
 - (jint)getHeaderKey {
@@ -72,8 +77,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetPublicKeys, keys_, id<JavaUtilLi
     { "initWithJavaUtilList:", "RequestGetPublicKeys", NULL, 0x1, NULL },
     { "init", "RequestGetPublicKeys", NULL, 0x1, NULL },
     { "getKeys", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -89,7 +94,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetPublicKeys, keys_, id<JavaUtilLi
 
 ImActorModelApiRpcRequestGetPublicKeys *ImActorModelApiRpcRequestGetPublicKeys_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestGetPublicKeys_init();
-  return ((ImActorModelApiRpcRequestGetPublicKeys *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcRequestGetPublicKeys_class_(), data));
+  return ((ImActorModelApiRpcRequestGetPublicKeys *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestGetPublicKeys alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetPublicKeys)

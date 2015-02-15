@@ -6,11 +6,11 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/rpc/RequestRegisterApplePush.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestRegisterApplePush () {
@@ -49,13 +49,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
   return self->token_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->apnsKey_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->apnsKey_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   ImActorModelApiRpcRequestRegisterApplePush_set_token_(self, [values getStringWithInt:2]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->apnsKey_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->apnsKey_];
   if (self->token_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
@@ -84,8 +84,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
     { "init", "RequestRegisterApplePush", NULL, 0x1, NULL },
     { "getApnsKey", NULL, "I", 0x1, NULL },
     { "getToken", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -102,7 +102,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
 
 ImActorModelApiRpcRequestRegisterApplePush *ImActorModelApiRpcRequestRegisterApplePush_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestRegisterApplePush_init();
-  return ((ImActorModelApiRpcRequestRegisterApplePush *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcRequestRegisterApplePush_class_(), data));
+  return ((ImActorModelApiRpcRequestRegisterApplePush *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestRegisterApplePush alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestRegisterApplePush)

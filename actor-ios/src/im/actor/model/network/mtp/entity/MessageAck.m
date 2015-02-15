@@ -8,17 +8,16 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/mtp/entity/MessageAck.h"
-#include "im/actor/model/util/StreamingUtils.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/OutputStream.h"
 #include "java/lang/Long.h"
 #include "java/util/Arrays.h"
 
 @implementation MTMessageAck
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream {
-  return [super initWithJavaIoInputStream:stream];
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
+  return [super initWithAMDataInput:stream];
 }
 
 - (instancetype)initWithJavaLangLongArray:(IOSObjectArray *)_messagesIds {
@@ -38,20 +37,16 @@
   return self;
 }
 
-- (jint)getLength {
-  return 1 + AMStreamingUtils_varintSizeWithLong_(((IOSLongArray *) nil_chk(messagesIds_))->size_) + (messagesIds_->size_ * 8);
-}
-
 - (jbyte)getHeader {
   return MTMessageAck_HEADER;
 }
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs {
-  AMStreamingUtils_writeProtoLongsWithLongArray_withJavaIoOutputStream_(messagesIds_, bs);
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
+  [((AMDataOutput *) nil_chk(bs)) writeProtoLongsWithLongArray:messagesIds_];
 }
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs {
-  MTMessageAck_set_messagesIds_(self, AMStreamingUtils_readProtoLongsWithJavaIoInputStream_(bs));
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
+  MTMessageAck_set_messagesIds_(self, [((AMDataInput *) nil_chk(bs)) readProtoLongs]);
 }
 
 - (NSString *)description {
@@ -70,20 +65,19 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaIoInputStream:", "MessageAck", NULL, 0x1, "Ljava.io.IOException;" },
+    { "initWithAMDataInput:", "MessageAck", NULL, 0x1, "Ljava.io.IOException;" },
     { "initWithJavaLangLongArray:", "MessageAck", NULL, 0x1, NULL },
     { "initWithLongArray:", "MessageAck", NULL, 0x1, NULL },
-    { "getLength", NULL, "I", 0x1, NULL },
     { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithJavaIoOutputStream:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithJavaIoInputStream:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTMessageAck_HEADER },
     { "messagesIds_", NULL, 0x1, "[J", NULL,  },
   };
-  static const J2ObjcClassInfo _MTMessageAck = { 1, "MessageAck", "im.actor.model.network.mtp.entity", NULL, 0x1, 8, methods, 2, fields, 0, NULL};
+  static const J2ObjcClassInfo _MTMessageAck = { 1, "MessageAck", "im.actor.model.network.mtp.entity", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
   return &_MTMessageAck;
 }
 

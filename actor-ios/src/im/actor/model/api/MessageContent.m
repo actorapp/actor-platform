@@ -6,9 +6,9 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/MessageContent.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiMessageContent () {
@@ -43,13 +43,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiMessageContent, content_, IOSByteArray *)
   return self->content_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->type_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->type_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   ImActorModelApiMessageContent_set_content_(self, [values getBytesWithInt:2]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->type_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->type_];
   [writer writeBytesWithInt:2 withByteArray:self->content_];
 }
 
@@ -70,8 +70,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiMessageContent, content_, IOSByteArray *)
     { "init", "MessageContent", NULL, 0x1, NULL },
     { "getType", NULL, "I", 0x1, NULL },
     { "getContent", NULL, "[B", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "type_", NULL, 0x2, "I", NULL,  },

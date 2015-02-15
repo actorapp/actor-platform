@@ -6,9 +6,9 @@
 #ifndef _MTMTRpcResponse_H_
 #define _MTMTRpcResponse_H_
 
+@class AMDataInput;
+@class AMDataOutput;
 @class IOSByteArray;
-@class JavaIoInputStream;
-@class JavaIoOutputStream;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
@@ -18,19 +18,17 @@
 @interface MTMTRpcResponse : MTProtoStruct {
 }
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream;
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
 
 - (jlong)getMessageId;
 
 - (IOSByteArray *)getPayload;
 
-- (jint)getLength;
-
 - (jbyte)getHeader;
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs;
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs;
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
 
 - (NSString *)description;
 

@@ -7,15 +7,14 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcRequest.h"
-#include "im/actor/model/util/StreamingUtils.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/OutputStream.h"
 
 @implementation MTRpcRequest
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream {
-  return [super initWithJavaIoInputStream:stream];
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
+  return [super initWithAMDataInput:stream];
 }
 
 - (instancetype)initWithInt:(jint)requestType
@@ -35,22 +34,18 @@
   return payload_;
 }
 
-- (jint)getLength {
-  return 1 + 4 + AMStreamingUtils_varintSizeWithLong_(((IOSByteArray *) nil_chk(payload_))->size_) + payload_->size_;
-}
-
 - (jbyte)getHeader {
   return MTRpcRequest_HEADER;
 }
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs {
-  AMStreamingUtils_writeIntWithInt_withJavaIoOutputStream_(requestType_, bs);
-  AMStreamingUtils_writeProtoBytesWithByteArray_withJavaIoOutputStream_(payload_, bs);
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
+  [((AMDataOutput *) nil_chk(bs)) writeIntWithInt:requestType_];
+  [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs {
-  requestType_ = AMStreamingUtils_readIntWithJavaIoInputStream_(bs);
-  MTRpcRequest_set_payload_(self, AMStreamingUtils_readProtoBytesWithJavaIoInputStream_(bs));
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
+  requestType_ = [((AMDataInput *) nil_chk(bs)) readInt];
+  MTRpcRequest_set_payload_(self, [bs readProtoBytes]);
 }
 
 - (NSString *)description {
@@ -70,14 +65,13 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaIoInputStream:", "RpcRequest", NULL, 0x1, "Ljava.io.IOException;" },
+    { "initWithAMDataInput:", "RpcRequest", NULL, 0x1, "Ljava.io.IOException;" },
     { "initWithInt:withByteArray:", "RpcRequest", NULL, 0x1, NULL },
     { "getRequestType", NULL, "I", 0x1, NULL },
     { "getPayload", NULL, "[B", 0x1, NULL },
-    { "getLength", NULL, "I", 0x1, NULL },
     { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithJavaIoOutputStream:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithJavaIoInputStream:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -85,7 +79,7 @@
     { "requestType_", NULL, 0x1, "I", NULL,  },
     { "payload_", NULL, 0x1, "[B", NULL,  },
   };
-  static const J2ObjcClassInfo _MTRpcRequest = { 1, "RpcRequest", "im.actor.model.network.mtp.entity.rpc", NULL, 0x1, 9, methods, 3, fields, 0, NULL};
+  static const J2ObjcClassInfo _MTRpcRequest = { 1, "RpcRequest", "im.actor.model.network.mtp.entity.rpc", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
   return &_MTRpcRequest;
 }
 

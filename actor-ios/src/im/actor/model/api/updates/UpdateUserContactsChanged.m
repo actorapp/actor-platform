@@ -6,11 +6,11 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/updates/UpdateUserContactsChanged.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 #include "java/util/List.h"
 
@@ -50,13 +50,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, contacts_, 
   return self->contacts_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->uid_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->uid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   ImActorModelApiUpdatesUpdateUserContactsChanged_set_contacts_(self, [values getRepeatedIntWithInt:2]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeRepeatedIntWithInt:2 withJavaUtilList:self->contacts_];
 }
 
@@ -82,8 +82,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, contacts_, 
     { "init", "UpdateUserContactsChanged", NULL, 0x1, NULL },
     { "getUid", NULL, "I", 0x1, NULL },
     { "getContacts", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -99,7 +99,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, contacts_, 
 
 ImActorModelApiUpdatesUpdateUserContactsChanged *ImActorModelApiUpdatesUpdateUserContactsChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserContactsChanged_init();
-  return ((ImActorModelApiUpdatesUpdateUserContactsChanged *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiUpdatesUpdateUserContactsChanged_class_(), data));
+  return ((ImActorModelApiUpdatesUpdateUserContactsChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateUserContactsChanged alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserContactsChanged)

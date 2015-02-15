@@ -5,10 +5,10 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/AvatarImage.h"
 #include "im/actor/model/api/FileLocation.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiAvatarImage () {
@@ -57,18 +57,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
   return self->fileSize_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiAvatarImage_set_fileLocation_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withIOSClass:ImActorModelApiFileLocation_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiAvatarImage_set_fileLocation_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiFileLocation alloc] init] autorelease]]);
   self->width_ = [values getIntWithInt:2];
   self->height_ = [values getIntWithInt:3];
   self->fileSize_ = [values getIntWithInt:4];
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->fileLocation_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withComDroidkitBserBserObject:self->fileLocation_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->fileLocation_];
   [writer writeIntWithInt:2 withInt:self->width_];
   [writer writeIntWithInt:3 withInt:self->height_];
   [writer writeIntWithInt:4 withInt:self->fileSize_];
@@ -95,8 +95,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
     { "getWidth", NULL, "I", 0x1, NULL },
     { "getHeight", NULL, "I", 0x1, NULL },
     { "getFileSize", NULL, "I", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "fileLocation_", NULL, 0x2, "Lim.actor.model.api.FileLocation;", NULL,  },

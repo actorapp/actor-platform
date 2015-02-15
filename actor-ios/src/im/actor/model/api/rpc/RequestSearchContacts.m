@@ -6,11 +6,11 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/rpc/RequestSearchContacts.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestSearchContacts () {
@@ -42,15 +42,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSearchContacts, request_, NSString 
   return self->request_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestSearchContacts_set_request_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiRpcRequestSearchContacts_set_request_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->request_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->request_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->request_];
 }
 
 - (jint)getHeaderKey {
@@ -73,8 +73,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSearchContacts, request_, NSString 
     { "initWithNSString:", "RequestSearchContacts", NULL, 0x1, NULL },
     { "init", "RequestSearchContacts", NULL, 0x1, NULL },
     { "getRequest", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -90,7 +90,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSearchContacts, request_, NSString 
 
 ImActorModelApiRpcRequestSearchContacts *ImActorModelApiRpcRequestSearchContacts_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSearchContacts_init();
-  return ((ImActorModelApiRpcRequestSearchContacts *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcRequestSearchContacts_class_(), data));
+  return ((ImActorModelApiRpcRequestSearchContacts *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestSearchContacts alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSearchContacts)

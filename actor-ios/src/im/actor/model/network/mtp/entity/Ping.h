@@ -6,8 +6,8 @@
 #ifndef _MTPing_H_
 #define _MTPing_H_
 
-@class JavaIoInputStream;
-@class JavaIoOutputStream;
+@class AMDataInput;
+@class AMDataOutput;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
@@ -17,19 +17,17 @@
 @interface MTPing : MTProtoStruct {
 }
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream;
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
 
 - (instancetype)initWithLong:(jlong)randomId;
 
 - (jlong)getRandomId;
 
-- (jint)getLength;
-
 - (jbyte)getHeader;
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs;
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs;
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
 
 - (NSString *)description;
 

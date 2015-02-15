@@ -7,20 +7,22 @@
 #define _ImActorModelModulesMessagesDialogsActor_H_
 
 @class AMMessenger;
+@class ImActorModelEntityAvatar;
 @class ImActorModelEntityMessage;
+@class ImActorModelEntityMessageStateEnum;
 @class ImActorModelEntityPeer;
 @class ImActorModelEntityUser;
+@class ImActorModelModulesMessagesDialogsActor_PeerDesc;
 @protocol ImActorModelMvvmListEngine;
+@protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
 
-@interface ImActorModelModulesMessagesDialogsActor : DAActor {
+@interface ImActorModelModulesMessagesDialogsActor : ImActorModelDroidkitActorsActor {
 }
 
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
-
-- (AMMessenger *)getMessenger;
 
 - (void)onReceiveWithId:(id)message;
 
@@ -32,6 +34,22 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor)
+
+@interface ImActorModelModulesMessagesDialogsActor_PeerDesc : NSObject {
+}
+
+- (NSString *)getTitle;
+
+- (ImActorModelEntityAvatar *)getAvatar;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_PeerDesc)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_PeerDesc)
 
 @interface ImActorModelModulesMessagesDialogsActor_ChatClear : NSObject {
 }
@@ -99,5 +117,81 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_UserChanged)
+
+@interface ImActorModelModulesMessagesDialogsActor_MessageStateChanged : NSObject {
+}
+
+- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
+                                      withLong:(jlong)rid
+        withImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)state;
+
+- (ImActorModelEntityPeer *)getPeer;
+
+- (jlong)getRid;
+
+- (ImActorModelEntityMessageStateEnum *)getState;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_MessageStateChanged)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_MessageStateChanged)
+
+@interface ImActorModelModulesMessagesDialogsActor_CounterChanged : NSObject {
+}
+
+- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
+                                       withInt:(jint)count;
+
+- (ImActorModelEntityPeer *)getPeer;
+
+- (jint)getCount;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_CounterChanged)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_CounterChanged)
+
+@interface ImActorModelModulesMessagesDialogsActor_Deleted : NSObject {
+}
+
+- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
+                 withImActorModelEntityMessage:(ImActorModelEntityMessage *)message;
+
+- (ImActorModelEntityPeer *)getPeer;
+
+- (ImActorModelEntityMessage *)getMessage;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_Deleted)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_Deleted)
+
+@interface ImActorModelModulesMessagesDialogsActor_HistoryLoaded : NSObject {
+}
+
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)history;
+
+- (id<JavaUtilList>)getHistory;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_HistoryLoaded)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded)
 
 #endif // _ImActorModelModulesMessagesDialogsActor_H_

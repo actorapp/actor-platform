@@ -6,14 +6,14 @@
 #ifndef _ImActorModelApiMessageContent_H_
 #define _ImActorModelApiMessageContent_H_
 
-@class ComDroidkitBserBserValues;
-@class ComDroidkitBserBserWriter;
 @class IOSByteArray;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiMessageContent : ComDroidkitBserBserObject {
+@interface ImActorModelApiMessageContent : ImActorModelDroidkitBserBserObject {
 }
 
 - (instancetype)initWithInt:(jint)type
@@ -25,9 +25,9 @@
 
 - (IOSByteArray *)getContent;
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values;
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer;
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
 
 @end
 

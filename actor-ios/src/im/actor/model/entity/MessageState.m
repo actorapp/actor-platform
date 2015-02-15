@@ -14,9 +14,21 @@ ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageStateEnum_values_[6
 
 @implementation ImActorModelEntityMessageStateEnum
 
-- (instancetype)initWithNSString:(NSString *)__name
-                         withInt:(jint)__ordinal {
-  return [super initWithNSString:__name withInt:__ordinal];
+- (instancetype)initWithInt:(jint)value
+               withNSString:(NSString *)__name
+                    withInt:(jint)__ordinal {
+  if (self = [super initWithNSString:__name withInt:__ordinal]) {
+    self->value_ = value;
+  }
+  return self;
+}
+
+- (jint)getValue {
+  return value_;
+}
+
++ (ImActorModelEntityMessageStateEnum *)fromValueWithInt:(jint)value {
+  return ImActorModelEntityMessageStateEnum_fromValueWithInt_(value);
 }
 
 IOSObjectArray *ImActorModelEntityMessageStateEnum_values() {
@@ -49,19 +61,21 @@ ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageStateEnum_valueOfWi
 
 + (void)initialize {
   if (self == [ImActorModelEntityMessageStateEnum class]) {
-    ImActorModelEntityMessageStateEnum_PENDING = [[ImActorModelEntityMessageStateEnum alloc] initWithNSString:@"PENDING" withInt:0];
-    ImActorModelEntityMessageStateEnum_SENT = [[ImActorModelEntityMessageStateEnum alloc] initWithNSString:@"SENT" withInt:1];
-    ImActorModelEntityMessageStateEnum_RECEIVED = [[ImActorModelEntityMessageStateEnum alloc] initWithNSString:@"RECEIVED" withInt:2];
-    ImActorModelEntityMessageStateEnum_READ = [[ImActorModelEntityMessageStateEnum alloc] initWithNSString:@"READ" withInt:3];
-    ImActorModelEntityMessageStateEnum_ERROR = [[ImActorModelEntityMessageStateEnum alloc] initWithNSString:@"ERROR" withInt:4];
-    ImActorModelEntityMessageStateEnum_UNKNOWN = [[ImActorModelEntityMessageStateEnum alloc] initWithNSString:@"UNKNOWN" withInt:5];
+    ImActorModelEntityMessageStateEnum_PENDING = [[ImActorModelEntityMessageStateEnum alloc] initWithInt:1 withNSString:@"PENDING" withInt:0];
+    ImActorModelEntityMessageStateEnum_SENT = [[ImActorModelEntityMessageStateEnum alloc] initWithInt:2 withNSString:@"SENT" withInt:1];
+    ImActorModelEntityMessageStateEnum_RECEIVED = [[ImActorModelEntityMessageStateEnum alloc] initWithInt:3 withNSString:@"RECEIVED" withInt:2];
+    ImActorModelEntityMessageStateEnum_READ = [[ImActorModelEntityMessageStateEnum alloc] initWithInt:4 withNSString:@"READ" withInt:3];
+    ImActorModelEntityMessageStateEnum_ERROR = [[ImActorModelEntityMessageStateEnum alloc] initWithInt:5 withNSString:@"ERROR" withInt:4];
+    ImActorModelEntityMessageStateEnum_UNKNOWN = [[ImActorModelEntityMessageStateEnum alloc] initWithInt:6 withNSString:@"UNKNOWN" withInt:5];
     J2OBJC_SET_INITIALIZED(ImActorModelEntityMessageStateEnum)
   }
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withInt:", "init", NULL, 0x1, NULL },
+    { "initWithInt:withNSString:withInt:", "MessageState", NULL, 0x2, NULL },
+    { "getValue", NULL, "I", 0x1, NULL },
+    { "fromValueWithInt:", "fromValue", "Lim.actor.model.entity.MessageState;", 0x9, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "PENDING", "PENDING", 0x4019, "Lim.actor.model.entity.MessageState;", &ImActorModelEntityMessageStateEnum_PENDING,  },
@@ -70,12 +84,32 @@ ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageStateEnum_valueOfWi
     { "READ", "READ", 0x4019, "Lim.actor.model.entity.MessageState;", &ImActorModelEntityMessageStateEnum_READ,  },
     { "ERROR", "ERROR", 0x4019, "Lim.actor.model.entity.MessageState;", &ImActorModelEntityMessageStateEnum_ERROR,  },
     { "UNKNOWN", "UNKNOWN", 0x4019, "Lim.actor.model.entity.MessageState;", &ImActorModelEntityMessageStateEnum_UNKNOWN,  },
+    { "value_", NULL, 0x0, "I", NULL,  },
   };
   static const char *superclass_type_args[] = {"Lim.actor.model.entity.MessageState;"};
-  static const J2ObjcClassInfo _ImActorModelEntityMessageStateEnum = { 1, "MessageState", "im.actor.model.entity", NULL, 0x4011, 1, methods, 6, fields, 1, superclass_type_args};
+  static const J2ObjcClassInfo _ImActorModelEntityMessageStateEnum = { 1, "MessageState", "im.actor.model.entity", NULL, 0x4011, 3, methods, 7, fields, 1, superclass_type_args};
   return &_ImActorModelEntityMessageStateEnum;
 }
 
 @end
+
+ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageStateEnum_fromValueWithInt_(jint value) {
+  ImActorModelEntityMessageStateEnum_init();
+  switch (value) {
+    case 1:
+    return ImActorModelEntityMessageStateEnum_PENDING;
+    case 2:
+    return ImActorModelEntityMessageStateEnum_SENT;
+    case 3:
+    return ImActorModelEntityMessageStateEnum_RECEIVED;
+    case 4:
+    return ImActorModelEntityMessageStateEnum_READ;
+    case 5:
+    return ImActorModelEntityMessageStateEnum_ERROR;
+    default:
+    case 6:
+    return ImActorModelEntityMessageStateEnum_UNKNOWN;
+  }
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityMessageStateEnum)

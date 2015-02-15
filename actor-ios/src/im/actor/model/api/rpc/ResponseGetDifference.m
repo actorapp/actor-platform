@@ -6,15 +6,16 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/DifferenceUpdate.h"
 #include "im/actor/model/api/Group.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/rpc/ResponseGetDifference.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 @interface ImActorModelApiRpcResponseGetDifference () {
@@ -92,17 +93,30 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   return self->needMore__;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->seq_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->seq_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   ImActorModelApiRpcResponseGetDifference_set_state_(self, [values getBytesWithInt:2]);
-  ImActorModelApiRpcResponseGetDifference_set_users_(self, [values getRepeatedObjWithInt:3 withIOSClass:ImActorModelApiUser_class_()]);
-  ImActorModelApiRpcResponseGetDifference_set_groups_(self, [values getRepeatedObjWithInt:6 withIOSClass:ImActorModelApiGroup_class_()]);
-  ImActorModelApiRpcResponseGetDifference_set_updates_(self, [values getRepeatedObjWithInt:4 withIOSClass:ImActorModelApiDifferenceUpdate_class_()]);
+  id<JavaUtilList> _users = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:3]; i++) {
+    [_users addWithId:[[[ImActorModelApiUser alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcResponseGetDifference_set_users_(self, [values getRepeatedObjWithInt:3 withJavaUtilList:_users]);
+  id<JavaUtilList> _groups = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:6]; i++) {
+    [_groups addWithId:[[[ImActorModelApiGroup alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcResponseGetDifference_set_groups_(self, [values getRepeatedObjWithInt:6 withJavaUtilList:_groups]);
+  ImActorModelApiRpcResponseGetDifference_setAndConsume_contacts_(self, [[JavaUtilArrayList alloc] init]);
+  id<JavaUtilList> _updates = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:4]; i++) {
+    [_updates addWithId:[[[ImActorModelApiDifferenceUpdate alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcResponseGetDifference_set_updates_(self, [values getRepeatedObjWithInt:4 withJavaUtilList:_updates]);
   self->needMore__ = [values getBoolWithInt:5];
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
@@ -150,8 +164,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
     { "getContacts", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getUpdates", NULL, "Ljava.util.List;", 0x1, NULL },
     { "needMore", NULL, "Z", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -172,7 +186,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
 
 ImActorModelApiRpcResponseGetDifference *ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetDifference_init();
-  return ((ImActorModelApiRpcResponseGetDifference *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcResponseGetDifference_class_(), data));
+  return ((ImActorModelApiRpcResponseGetDifference *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseGetDifference alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetDifference)

@@ -6,9 +6,9 @@
 #ifndef _ImActorModelApiUpdatesUpdateUserNameChanged_H_
 #define _ImActorModelApiUpdatesUpdateUserNameChanged_H_
 
-@class ComDroidkitBserBserValues;
-@class ComDroidkitBserBserWriter;
 @class IOSByteArray;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -29,9 +29,9 @@
 
 - (NSString *)getName;
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values;
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer;
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
 
 - (jint)getHeaderKey;
 

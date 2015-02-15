@@ -5,22 +5,22 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/actors/ActorRef.h"
-#include "com/droidkit/actors/ActorSystem.h"
-#include "com/droidkit/actors/Props.h"
 #include "im/actor/model/Messenger.h"
+#include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/actors/ActorSystem.h"
+#include "im/actor/model/droidkit/actors/Props.h"
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/updates/SequenceActor.h"
 
 @interface ImActorModelModulesUpdates () {
  @public
   AMMessenger *messenger_;
-  DAActorRef *updateActor_;
+  ImActorModelDroidkitActorsActorRef *updateActor_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates, messenger_, AMMessenger *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates, updateActor_, DAActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates, updateActor_, ImActorModelDroidkitActorsActorRef *)
 
 @interface ImActorModelModulesUpdates_$1 () {
  @public
@@ -35,9 +35,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates_$1, this$0_, ImActorModelModulesU
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger {
   if (self = [super init]) {
     ImActorModelModulesUpdates_set_messenger_(self, messenger);
-    ImActorModelModulesUpdates_set_updateActor_(self, [((DAActorSystem *) nil_chk(DAActorSystem_system())) actorOfWithDAProps:DAProps_createWithIOSClass_withDAActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), [[[ImActorModelModulesUpdates_$1 alloc] initWithImActorModelModulesUpdates:self] autorelease]) withNSString:@"actor/updates"]);
+    [self run];
   }
   return self;
+}
+
+- (void)run {
+  ImActorModelModulesUpdates_set_updateActor_(self, [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), [[[ImActorModelModulesUpdates_$1 alloc] initWithImActorModelModulesUpdates:self] autorelease]) withNSString:@"actor/updates"]);
 }
 
 - (AMMessenger *)getMessenger {
@@ -45,15 +49,15 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates_$1, this$0_, ImActorModelModulesU
 }
 
 - (void)onSessionCreated {
-  [((DAActorRef *) nil_chk(updateActor_)) sendWithId:[[[ImActorModelModulesUpdatesSequenceActor_Invalidate alloc] init] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk(updateActor_)) sendWithId:[[[ImActorModelModulesUpdatesSequenceActor_Invalidate alloc] init] autorelease]];
 }
 
 - (void)onPushReceivedWithInt:(jint)seq {
-  [((DAActorRef *) nil_chk(updateActor_)) sendWithId:[[[ImActorModelModulesUpdatesSequenceActor_PushSeq alloc] initWithInt:seq] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk(updateActor_)) sendWithId:[[[ImActorModelModulesUpdatesSequenceActor_PushSeq alloc] initWithInt:seq] autorelease]];
 }
 
 - (void)onUpdateReceivedWithId:(id)update {
-  [((DAActorRef *) nil_chk(updateActor_)) sendWithId:update];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk(updateActor_)) sendWithId:update];
 }
 
 - (void)dealloc {
@@ -71,6 +75,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates_$1, this$0_, ImActorModelModulesU
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "initWithAMMessenger:", "Updates", NULL, 0x1, NULL },
+    { "run", NULL, "V", 0x1, NULL },
     { "getMessenger", NULL, "Lim.actor.model.Messenger;", 0x1, NULL },
     { "onSessionCreated", NULL, "V", 0x1, NULL },
     { "onPushReceivedWithInt:", "onPushReceived", "V", 0x1, NULL },
@@ -78,9 +83,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates_$1, this$0_, ImActorModelModulesU
   };
   static const J2ObjcFieldInfo fields[] = {
     { "messenger_", NULL, 0x2, "Lim.actor.model.Messenger;", NULL,  },
-    { "updateActor_", NULL, 0x2, "Lcom.droidkit.actors.ActorRef;", NULL,  },
+    { "updateActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdates = { 1, "Updates", "im.actor.model.modules", NULL, 0x1, 5, methods, 2, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelModulesUpdates = { 1, "Updates", "im.actor.model.modules", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
   return &_ImActorModelModulesUpdates;
 }
 

@@ -6,12 +6,18 @@
 #ifndef _ImActorModelEntityAvatarImage_H_
 #define _ImActorModelEntityAvatarImage_H_
 
+@class IOSByteArray;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
 @class ImActorModelEntityFileLocation;
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelEntityAvatarImage : NSObject {
+@interface ImActorModelEntityAvatarImage : ImActorModelDroidkitBserBserObject {
 }
+
++ (ImActorModelEntityAvatarImage *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithInt:(jint)width
                     withInt:(jint)height
@@ -27,11 +33,17 @@ withImActorModelEntityFileLocation:(ImActorModelEntityFileLocation *)fileLocatio
 
 - (NSUInteger)hash;
 
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityAvatarImage)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT ImActorModelEntityAvatarImage *ImActorModelEntityAvatarImage_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityAvatarImage)

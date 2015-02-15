@@ -6,8 +6,8 @@
 #ifndef _MTUnsentResponse_H_
 #define _MTUnsentResponse_H_
 
-@class JavaIoInputStream;
-@class JavaIoOutputStream;
+@class AMDataInput;
+@class AMDataOutput;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
@@ -27,15 +27,13 @@
 
 - (jint)getLen;
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream;
-
-- (jint)getLength;
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs;
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs;
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
 
 - (NSString *)description;
 

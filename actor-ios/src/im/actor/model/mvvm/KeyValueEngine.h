@@ -24,6 +24,8 @@
 
 - (void)clear;
 
+- (id<JavaUtilList>)getAll;
+
 - (id)getValueWithLong:(jlong)id_;
 
 @end

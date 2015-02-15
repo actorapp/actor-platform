@@ -6,15 +6,16 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/Config.h"
 #include "im/actor/model/api/ContactRecord.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/rpc/ResponseAuth.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 @interface ImActorModelApiRpcResponseAuth () {
@@ -69,24 +70,28 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
   return self->config_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->publicKeyHash_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
-  ImActorModelApiRpcResponseAuth_set_user_(self, [values getObjWithInt:2 withIOSClass:ImActorModelApiUser_class_()]);
-  ImActorModelApiRpcResponseAuth_set_contacts_(self, [values getRepeatedObjWithInt:4 withIOSClass:ImActorModelApiContactRecord_class_()]);
-  ImActorModelApiRpcResponseAuth_set_config_(self, [values getObjWithInt:3 withIOSClass:ImActorModelApiConfig_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->publicKeyHash_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
+  ImActorModelApiRpcResponseAuth_set_user_(self, [values getObjWithInt:2 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiUser alloc] init] autorelease]]);
+  id<JavaUtilList> _contacts = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:4]; i++) {
+    [_contacts addWithId:[[[ImActorModelApiContactRecord alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcResponseAuth_set_contacts_(self, [values getRepeatedObjWithInt:4 withJavaUtilList:_contacts]);
+  ImActorModelApiRpcResponseAuth_set_config_(self, [values getObjWithInt:3 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiConfig alloc] init] autorelease]]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->publicKeyHash_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->publicKeyHash_];
   if (self->user_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [writer writeObjectWithInt:2 withComDroidkitBserBserObject:self->user_];
+  [writer writeObjectWithInt:2 withImActorModelDroidkitBserBserObject:self->user_];
   [writer writeRepeatedObjWithInt:4 withJavaUtilList:self->contacts_];
   if (self->config_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [writer writeObjectWithInt:3 withComDroidkitBserBserObject:self->config_];
+  [writer writeObjectWithInt:3 withImActorModelDroidkitBserBserObject:self->config_];
 }
 
 - (jint)getHeaderKey {
@@ -117,8 +122,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
     { "getUser", NULL, "Lim.actor.model.api.User;", 0x1, NULL },
     { "getContacts", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getConfig", NULL, "Lim.actor.model.api.Config;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -136,7 +141,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
 
 ImActorModelApiRpcResponseAuth *ImActorModelApiRpcResponseAuth_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseAuth_init();
-  return ((ImActorModelApiRpcResponseAuth *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcResponseAuth_class_(), data));
+  return ((ImActorModelApiRpcResponseAuth *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseAuth alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseAuth)

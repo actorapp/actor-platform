@@ -6,9 +6,9 @@
 #ifndef _MTPush_H_
 #define _MTPush_H_
 
+@class AMDataInput;
+@class AMDataOutput;
 @class IOSByteArray;
-@class JavaIoInputStream;
-@class JavaIoOutputStream;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
@@ -19,18 +19,16 @@
   IOSByteArray *body_;
 }
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream;
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
 
 - (instancetype)initWithInt:(jint)updateType
               withByteArray:(IOSByteArray *)body;
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs;
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs;
-
-- (jint)getLength;
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
 
 - (NSString *)description;
 

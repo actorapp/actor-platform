@@ -19,8 +19,9 @@
     { "createUsersEngine", NULL, "Lim.actor.model.mvvm.KeyValueEngine;", 0x401, NULL },
     { "createDialogsEngine", NULL, "Lim.actor.model.mvvm.ListEngine;", 0x401, NULL },
     { "createMessagesEngineWithImActorModelEntityPeer:", "createMessagesEngine", "Lim.actor.model.mvvm.ListEngine;", 0x401, NULL },
+    { "pendingMessagesWithImActorModelEntityPeer:", "pendingMessages", "Lim.actor.model.mvvm.KeyValueEngine;", 0x401, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelStorageEnginesFactory = { 1, "EnginesFactory", "im.actor.model.storage", NULL, 0x201, 3, methods, 0, NULL, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelStorageEnginesFactory = { 1, "EnginesFactory", "im.actor.model.storage", NULL, 0x201, 4, methods, 0, NULL, 0, NULL};
   return &_ImActorModelStorageEnginesFactory;
 }
 

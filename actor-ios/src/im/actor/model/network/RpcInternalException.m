@@ -9,7 +9,7 @@
 @implementation AMRpcInternalException
 
 - (instancetype)init {
-  return [super initWithNSString:@"INTERNAL_ERROR" withInt:500 withNSString:@"Internal server error" withByteArray:nil];
+  return [super initWithNSString:@"INTERNAL_ERROR" withInt:500 withNSString:@"Internal server error" withBoolean:YES withByteArray:nil];
 }
 
 + (const J2ObjcClassInfo *)__metadata {

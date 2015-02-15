@@ -6,9 +6,9 @@
 #ifndef _MTContainer_H_
 #define _MTContainer_H_
 
+@class AMDataInput;
+@class AMDataOutput;
 @class IOSObjectArray;
-@class JavaIoInputStream;
-@class JavaIoOutputStream;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
@@ -18,19 +18,17 @@
 @interface MTContainer : MTProtoStruct {
 }
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream;
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
 
 - (instancetype)initWithMTProtoMessageArray:(IOSObjectArray *)messages;
 
 - (IOSObjectArray *)getMessages;
 
-- (jint)getLength;
-
 - (jbyte)getHeader;
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs;
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs;
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
 
 - (NSString *)description;
 

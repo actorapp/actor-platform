@@ -7,15 +7,14 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcOk.h"
-#include "im/actor/model/util/StreamingUtils.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/OutputStream.h"
 
 @implementation MTRpcOk
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream {
-  return [super initWithJavaIoInputStream:stream];
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
+  return [super initWithAMDataInput:stream];
 }
 
 - (instancetype)initWithInt:(jint)responseType
@@ -35,26 +34,22 @@
   return payload_;
 }
 
-- (jint)getLength {
-  return 1 + 4 + AMStreamingUtils_varintSizeWithLong_(((IOSByteArray *) nil_chk(payload_))->size_) + payload_->size_;
-}
-
 - (jbyte)getHeader {
   return MTRpcOk_HEADER;
 }
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs {
-  AMStreamingUtils_writeIntWithInt_withJavaIoOutputStream_(responseType_, bs);
-  AMStreamingUtils_writeProtoBytesWithByteArray_withJavaIoOutputStream_(payload_, bs);
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
+  [((AMDataOutput *) nil_chk(bs)) writeIntWithInt:responseType_];
+  [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs {
-  responseType_ = AMStreamingUtils_readIntWithJavaIoInputStream_(bs);
-  MTRpcOk_set_payload_(self, AMStreamingUtils_readProtoBytesWithJavaIoInputStream_(bs));
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
+  responseType_ = [((AMDataInput *) nil_chk(bs)) readInt];
+  MTRpcOk_set_payload_(self, [bs readProtoBytes]);
 }
 
 - (NSString *)description {
-  return JreStrcat("$IC", @"RpcOk{", responseType_, '}');
+  return JreStrcat("$IC", @"RpcOk{", responseType_, ']');
 }
 
 - (void)dealloc {
@@ -70,14 +65,13 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaIoInputStream:", "RpcOk", NULL, 0x1, "Ljava.io.IOException;" },
+    { "initWithAMDataInput:", "RpcOk", NULL, 0x1, "Ljava.io.IOException;" },
     { "initWithInt:withByteArray:", "RpcOk", NULL, 0x1, NULL },
     { "getResponseType", NULL, "I", 0x1, NULL },
     { "getPayload", NULL, "[B", 0x1, NULL },
-    { "getLength", NULL, "I", 0x1, NULL },
     { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithJavaIoOutputStream:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithJavaIoInputStream:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -85,7 +79,7 @@
     { "responseType_", NULL, 0x1, "I", NULL,  },
     { "payload_", NULL, 0x1, "[B", NULL,  },
   };
-  static const J2ObjcClassInfo _MTRpcOk = { 1, "RpcOk", "im.actor.model.network.mtp.entity.rpc", NULL, 0x1, 9, methods, 3, fields, 0, NULL};
+  static const J2ObjcClassInfo _MTRpcOk = { 1, "RpcOk", "im.actor.model.network.mtp.entity.rpc", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
   return &_MTRpcOk;
 }
 

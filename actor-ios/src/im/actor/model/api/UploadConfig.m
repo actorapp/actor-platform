@@ -6,9 +6,9 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/UploadConfig.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUploadConfig () {
@@ -36,15 +36,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUploadConfig, serverData_, IOSByteArray *)
   return self->serverData_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiUploadConfig_set_serverData_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:1]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiUploadConfig_set_serverData_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:1]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->serverData_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeBytesWithInt:1 withByteArray:self->serverData_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeBytesWithInt:1 withByteArray:self->serverData_];
 }
 
 - (void)dealloc {
@@ -62,8 +62,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUploadConfig, serverData_, IOSByteArray *)
     { "initWithByteArray:", "UploadConfig", NULL, 0x1, NULL },
     { "init", "UploadConfig", NULL, 0x1, NULL },
     { "getServerData", NULL, "[B", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "serverData_", NULL, 0x2, "[B", NULL,  },

@@ -17,7 +17,10 @@
 - (instancetype)initWithNSString:(NSString *)tag
                          withInt:(jint)code
                     withNSString:(NSString *)message
+                     withBoolean:(jboolean)canTryAgain
                    withByteArray:(IOSByteArray *)relatedData;
+
+- (jboolean)isCanTryAgain;
 
 - (IOSByteArray *)getRelatedData;
 

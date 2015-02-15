@@ -8,7 +8,11 @@
 
 @class AMMessenger;
 @class ImActorModelApiMessageContent;
+@class ImActorModelApiMessageStateEnum;
 @class ImActorModelApiPeer;
+@class ImActorModelApiRpcResponseLoadDialogs;
+@class ImActorModelEntityContentAbsContent;
+@class ImActorModelEntityMessageStateEnum;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -17,6 +21,8 @@
 }
 
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+
+- (void)onDialogsLoadedWithImActorModelApiRpcResponseLoadDialogs:(ImActorModelApiRpcResponseLoadDialogs *)dialogsResponse;
 
 - (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                                  withInt:(jint)senderUid
@@ -28,12 +34,23 @@
                                     withLong:(jlong)startDate
                                     withLong:(jlong)readDate;
 
-- (void)onMessageReadByMeWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                        withLong:(jlong)startDate;
+- (void)onMessageEncryptedReadWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
+                                             withLong:(jlong)rid
+                                             withLong:(jlong)readDate;
 
 - (void)onMessageReceivedWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                                         withLong:(jlong)startDate
                                         withLong:(jlong)receivedDate;
+
+- (void)onMessageEncryptedReceivedWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
+                                                 withLong:(jlong)rid
+                                                 withLong:(jlong)receivedDate;
+
+- (void)onMessageReadByMeWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
+                                        withLong:(jlong)startDate;
+
+- (void)onMessageEncryptedReadByMeWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
+                                                 withLong:(jlong)rid;
 
 - (void)onMessageDeleteWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                               withJavaUtilList:(id<JavaUtilList>)rids;

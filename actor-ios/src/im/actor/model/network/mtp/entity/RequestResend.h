@@ -6,8 +6,8 @@
 #ifndef _MTRequestResend_H_
 #define _MTRequestResend_H_
 
-@class JavaIoInputStream;
-@class JavaIoOutputStream;
+@class AMDataInput;
+@class AMDataOutput;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
@@ -19,17 +19,15 @@
 
 - (instancetype)initWithLong:(jlong)messageId;
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream;
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
 
 - (jlong)getMessageId;
 
-- (jint)getLength;
-
 - (jbyte)getHeader;
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs;
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs;
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
 
 @end
 

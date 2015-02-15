@@ -6,9 +6,9 @@
 #ifndef _MTProtoMessage_H_
 #define _MTProtoMessage_H_
 
+@class AMDataInput;
+@class AMDataOutput;
 @class IOSByteArray;
-@class JavaIoInputStream;
-@class JavaIoOutputStream;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoObject.h"
@@ -23,13 +23,11 @@
 
 - (IOSByteArray *)getPayload;
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream;
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
 
-- (void)writeObjectWithJavaIoOutputStream:(JavaIoOutputStream *)bs;
+- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs;
 
-- (MTProtoObject *)readObjectWithJavaIoInputStream:(JavaIoInputStream *)bs;
-
-- (jint)getLength;
+- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs;
 
 - (NSString *)description;
 

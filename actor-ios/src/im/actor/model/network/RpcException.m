@@ -12,6 +12,7 @@
   NSString *tag_;
   jint code_;
   NSString *message_;
+  jboolean canTryAgain_;
   IOSByteArray *relatedData_;
 }
 @end
@@ -25,14 +26,20 @@ J2OBJC_FIELD_SETTER(AMRpcException, relatedData_, IOSByteArray *)
 - (instancetype)initWithNSString:(NSString *)tag
                          withInt:(jint)code
                     withNSString:(NSString *)message
+                     withBoolean:(jboolean)canTryAgain
                    withByteArray:(IOSByteArray *)relatedData {
   if (self = [super init]) {
     AMRpcException_set_tag_(self, tag);
     self->code_ = code;
     AMRpcException_set_message_(self, message);
+    self->canTryAgain_ = canTryAgain;
     AMRpcException_set_relatedData_(self, relatedData);
   }
   return self;
+}
+
+- (jboolean)isCanTryAgain {
+  return canTryAgain_;
 }
 
 - (IOSByteArray *)getRelatedData {
@@ -63,12 +70,14 @@ J2OBJC_FIELD_SETTER(AMRpcException, relatedData_, IOSByteArray *)
   AMRpcException_set_tag_(other, tag_);
   other->code_ = code_;
   AMRpcException_set_message_(other, message_);
+  other->canTryAgain_ = canTryAgain_;
   AMRpcException_set_relatedData_(other, relatedData_);
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withInt:withNSString:withByteArray:", "RpcException", NULL, 0x1, NULL },
+    { "initWithNSString:withInt:withNSString:withBoolean:withByteArray:", "RpcException", NULL, 0x1, NULL },
+    { "isCanTryAgain", NULL, "Z", 0x1, NULL },
     { "getRelatedData", NULL, "[B", 0x1, NULL },
     { "getTag", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getCode", NULL, "I", 0x1, NULL },
@@ -78,9 +87,10 @@ J2OBJC_FIELD_SETTER(AMRpcException, relatedData_, IOSByteArray *)
     { "tag_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
     { "code_", NULL, 0x2, "I", NULL,  },
     { "message_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
+    { "canTryAgain_", NULL, 0x2, "Z", NULL,  },
     { "relatedData_", NULL, 0x2, "[B", NULL,  },
   };
-  static const J2ObjcClassInfo _AMRpcException = { 1, "RpcException", "im.actor.model.network", NULL, 0x1, 5, methods, 4, fields, 0, NULL};
+  static const J2ObjcClassInfo _AMRpcException = { 1, "RpcException", "im.actor.model.network", NULL, 0x1, 6, methods, 5, fields, 0, NULL};
   return &_AMRpcException;
 }
 

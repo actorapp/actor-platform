@@ -6,13 +6,14 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/rpc/ResponseImportContacts.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 @interface ImActorModelApiRpcResponseImportContacts () {
@@ -59,14 +60,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseImportContacts, state_, IOSByteArr
   return self->state_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiRpcResponseImportContacts_set_users_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getRepeatedObjWithInt:1 withIOSClass:ImActorModelApiUser_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  id<JavaUtilList> _users = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
+    [_users addWithId:[[[ImActorModelApiUser alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcResponseImportContacts_set_users_(self, [values getRepeatedObjWithInt:1 withJavaUtilList:_users]);
   self->seq_ = [values getIntWithInt:2];
   ImActorModelApiRpcResponseImportContacts_set_state_(self, [values getBytesWithInt:3]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
   [writer writeIntWithInt:2 withInt:self->seq_];
   if (self->state_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
@@ -99,8 +104,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseImportContacts, state_, IOSByteArr
     { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getSeq", NULL, "I", 0x1, NULL },
     { "getState", NULL, "[B", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -117,7 +122,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseImportContacts, state_, IOSByteArr
 
 ImActorModelApiRpcResponseImportContacts *ImActorModelApiRpcResponseImportContacts_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseImportContacts_init();
-  return ((ImActorModelApiRpcResponseImportContacts *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcResponseImportContacts_class_(), data));
+  return ((ImActorModelApiRpcResponseImportContacts *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseImportContacts alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseImportContacts)

@@ -6,14 +6,15 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/HistoryMessage.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/rpc/ResponseLoadHistory.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 @interface ImActorModelApiRpcResponseLoadHistory () {
@@ -53,13 +54,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadHistory, users_, id<JavaUtilLi
   return self->users_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiRpcResponseLoadHistory_set_history_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getRepeatedObjWithInt:1 withIOSClass:ImActorModelApiHistoryMessage_class_()]);
-  ImActorModelApiRpcResponseLoadHistory_set_users_(self, [values getRepeatedObjWithInt:2 withIOSClass:ImActorModelApiUser_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  id<JavaUtilList> _history = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
+    [_history addWithId:[[[ImActorModelApiHistoryMessage alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcResponseLoadHistory_set_history_(self, [values getRepeatedObjWithInt:1 withJavaUtilList:_history]);
+  id<JavaUtilList> _users = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:2]; i++) {
+    [_users addWithId:[[[ImActorModelApiUser alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcResponseLoadHistory_set_users_(self, [values getRepeatedObjWithInt:2 withJavaUtilList:_users]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->history_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->history_];
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->users_];
 }
 
@@ -86,8 +95,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadHistory, users_, id<JavaUtilLi
     { "init", "ResponseLoadHistory", NULL, 0x1, NULL },
     { "getHistory", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -103,7 +112,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadHistory, users_, id<JavaUtilLi
 
 ImActorModelApiRpcResponseLoadHistory *ImActorModelApiRpcResponseLoadHistory_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseLoadHistory_init();
-  return ((ImActorModelApiRpcResponseLoadHistory *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcResponseLoadHistory_class_(), data));
+  return ((ImActorModelApiRpcResponseLoadHistory *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseLoadHistory alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseLoadHistory)

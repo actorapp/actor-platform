@@ -47,7 +47,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, status_, ImActorModelEntity
   if (self = [super init]) {
     relatedUid_ = 0;
     ImActorModelEntityDialogBuilder_set_peer_(self, [((ImActorModelEntityDialog *) nil_chk(dialog)) getPeer]);
-    sortKey_ = [dialog getSortKey];
+    sortKey_ = [dialog getSortDate];
     ImActorModelEntityDialogBuilder_set_dialogTitle_(self, [dialog getDialogTitle]);
     ImActorModelEntityDialogBuilder_set_dialogAvatar_(self, [dialog getDialogAvatar]);
     unreadCount_ = [dialog getUnreadCount];
@@ -56,7 +56,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, status_, ImActorModelEntity
     ImActorModelEntityDialogBuilder_set_text_(self, [dialog getText]);
     ImActorModelEntityDialogBuilder_set_status_(self, [dialog getStatus]);
     senderId_ = [dialog getSenderId];
-    time_ = [dialog getTime];
+    time_ = [dialog getDate];
     relatedUid_ = [dialog getRelatedUid];
   }
   return self;

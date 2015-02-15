@@ -7,15 +7,14 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/mtp/entity/MTRpcRequest.h"
-#include "im/actor/model/util/StreamingUtils.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/OutputStream.h"
 
 @implementation MTMTRpcRequest
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream {
-  return [super initWithJavaIoInputStream:stream];
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
+  return [super initWithAMDataInput:stream];
 }
 
 - (instancetype)initWithByteArray:(IOSByteArray *)payload {
@@ -29,20 +28,16 @@
   return payload_;
 }
 
-- (jint)getLength {
-  return 1 + AMStreamingUtils_varintSizeWithLong_(((IOSByteArray *) nil_chk(payload_))->size_) + payload_->size_;
-}
-
 - (jbyte)getHeader {
   return MTMTRpcRequest_HEADER;
 }
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs {
-  AMStreamingUtils_writeProtoBytesWithByteArray_withJavaIoOutputStream_(payload_, bs);
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
+  [((AMDataOutput *) nil_chk(bs)) writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs {
-  MTMTRpcRequest_set_payload_(self, AMStreamingUtils_readProtoBytesWithJavaIoInputStream_(bs));
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
+  MTMTRpcRequest_set_payload_(self, [((AMDataInput *) nil_chk(bs)) readProtoBytes]);
 }
 
 - (NSString *)description {
@@ -61,20 +56,19 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaIoInputStream:", "MTRpcRequest", NULL, 0x1, "Ljava.io.IOException;" },
+    { "initWithAMDataInput:", "MTRpcRequest", NULL, 0x1, "Ljava.io.IOException;" },
     { "initWithByteArray:", "MTRpcRequest", NULL, 0x1, NULL },
     { "getPayload", NULL, "[B", 0x1, NULL },
-    { "getLength", NULL, "I", 0x1, NULL },
     { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithJavaIoOutputStream:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithJavaIoInputStream:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTMTRpcRequest_HEADER },
     { "payload_", NULL, 0x1, "[B", NULL,  },
   };
-  static const J2ObjcClassInfo _MTMTRpcRequest = { 1, "MTRpcRequest", "im.actor.model.network.mtp.entity", NULL, 0x1, 8, methods, 2, fields, 0, NULL};
+  static const J2ObjcClassInfo _MTMTRpcRequest = { 1, "MTRpcRequest", "im.actor.model.network.mtp.entity", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
   return &_MTMTRpcRequest;
 }
 

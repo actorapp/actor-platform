@@ -6,11 +6,13 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/actors/Actor.h"
-#include "com/droidkit/actors/ActorRef.h"
-#include "com/droidkit/actors/ActorSystem.h"
-#include "com/droidkit/actors/Props.h"
 #include "im/actor/model/api/parser/RpcParser.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/actors/ActorSystem.h"
+#include "im/actor/model/droidkit/actors/Props.h"
+#include "im/actor/model/droidkit/actors/conf/EnvConfig.h"
+#include "im/actor/model/droidkit/actors/utils/AtomicLongCompat.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/network/ActorApiCallback.h"
 #include "im/actor/model/network/AuthKeyStorage.h"
@@ -37,7 +39,6 @@
 #include "java/util/Collection.h"
 #include "java/util/HashMap.h"
 #include "java/util/Random.h"
-#include "java/util/concurrent/atomic/AtomicLong.h"
 
 __attribute__((unused)) static void ImActorModelNetworkApiApiBroker_requestAuthId(ImActorModelNetworkApiApiBroker *self);
 __attribute__((unused)) static void ImActorModelNetworkApiApiBroker_createMtProtoWithLong_(ImActorModelNetworkApiApiBroker *self, jlong key);
@@ -176,11 +177,11 @@ BOOL ImActorModelNetworkApiApiBroker_initialized = NO;
 @implementation ImActorModelNetworkApiApiBroker
 
 NSString * ImActorModelNetworkApiApiBroker_TAG_ = @"ApiBroker";
-JavaUtilConcurrentAtomicAtomicLong * ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_;
+ImActorModelDroidkitActorsUtilsAtomicLongCompat * ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_;
 
-+ (DAActorRef *)getWithAMEndpoints:(AMEndpoints *)endpoints
-              withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
-            withAMActorApiCallback:(id<AMActorApiCallback>)callback {
++ (ImActorModelDroidkitActorsActorRef *)getWithAMEndpoints:(AMEndpoints *)endpoints
+                                      withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
+                                    withAMActorApiCallback:(id<AMActorApiCallback>)callback {
   return ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_(endpoints, keyStorage, callback);
 }
 
@@ -199,10 +200,10 @@ JavaUtilConcurrentAtomicAtomicLong * ImActorModelNetworkApiApiBroker_NEXT_RPC_ID
 
 - (void)preStart {
   if ([((id<AMAuthKeyStorage>) nil_chk(keyStorage_)) getAuthKey] == 0) {
-    [((DAActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_RequestAuthId alloc] initWithImActorModelNetworkApiApiBroker:self] autorelease]];
+    [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_RequestAuthId alloc] initWithImActorModelNetworkApiApiBroker:self] autorelease]];
   }
   else {
-    [((DAActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_InitMTProto alloc] initWithImActorModelNetworkApiApiBroker:self withLong:[keyStorage_ getAuthKey]] autorelease]];
+    [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_InitMTProto alloc] initWithImActorModelNetworkApiApiBroker:self withLong:[keyStorage_ getAuthKey]] autorelease]];
   }
 }
 
@@ -214,7 +215,7 @@ JavaUtilConcurrentAtomicAtomicLong * ImActorModelNetworkApiApiBroker_NEXT_RPC_ID
     ImActorModelNetworkApiApiBroker_createMtProtoWithLong_(self, [((ImActorModelNetworkApiApiBroker_InitMTProto *) nil_chk(((ImActorModelNetworkApiApiBroker_InitMTProto *) check_class_cast(message, [ImActorModelNetworkApiApiBroker_InitMTProto class])))) getAuthId]);
   }
   else if ([message isKindOfClass:[ImActorModelNetworkApiApiBroker_PerformRequest class]]) {
-    ImActorModelNetworkApiApiBroker_performRequestWithLong_withImActorModelNetworkParserRequest_withAMRpcCallback_(self, [((JavaUtilConcurrentAtomicAtomicLong *) nil_chk(ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_)) getAndIncrement], [((ImActorModelNetworkApiApiBroker_PerformRequest *) nil_chk(((ImActorModelNetworkApiApiBroker_PerformRequest *) check_class_cast(message, [ImActorModelNetworkApiApiBroker_PerformRequest class])))) getMessage], [((ImActorModelNetworkApiApiBroker_PerformRequest *) nil_chk(((ImActorModelNetworkApiApiBroker_PerformRequest *) check_class_cast(message, [ImActorModelNetworkApiApiBroker_PerformRequest class])))) getCallback]);
+    ImActorModelNetworkApiApiBroker_performRequestWithLong_withImActorModelNetworkParserRequest_withAMRpcCallback_(self, [((ImActorModelDroidkitActorsUtilsAtomicLongCompat *) nil_chk(ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_)) getAndIncrement], [((ImActorModelNetworkApiApiBroker_PerformRequest *) nil_chk(((ImActorModelNetworkApiApiBroker_PerformRequest *) check_class_cast(message, [ImActorModelNetworkApiApiBroker_PerformRequest class])))) getMessage], [((ImActorModelNetworkApiApiBroker_PerformRequest *) nil_chk(((ImActorModelNetworkApiApiBroker_PerformRequest *) check_class_cast(message, [ImActorModelNetworkApiApiBroker_PerformRequest class])))) getCallback]);
   }
   else if ([message isKindOfClass:[ImActorModelNetworkApiApiBroker_CancelRequest class]]) {
     ImActorModelNetworkApiApiBroker_cancelRequestWithLong_(self, [((ImActorModelNetworkApiApiBroker_CancelRequest *) nil_chk(((ImActorModelNetworkApiApiBroker_CancelRequest *) check_class_cast(message, [ImActorModelNetworkApiApiBroker_CancelRequest class])))) getRandomId]);
@@ -283,14 +284,14 @@ withImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)message
 
 + (void)initialize {
   if (self == [ImActorModelNetworkApiApiBroker class]) {
-    JreStrongAssignAndConsume(&ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_, nil, [[JavaUtilConcurrentAtomicAtomicLong alloc] initWithLong:1]);
+    JreStrongAssign(&ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_, nil, ImActorModelDroidkitActorsConfEnvConfig_createAtomicLongWithLong_(1));
     J2OBJC_SET_INITIALIZED(ImActorModelNetworkApiApiBroker)
   }
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "getWithAMEndpoints:withAMAuthKeyStorage:withAMActorApiCallback:", "get", "Lcom.droidkit.actors.ActorRef;", 0x9, NULL },
+    { "getWithAMEndpoints:withAMAuthKeyStorage:withAMActorApiCallback:", "get", "Lim.actor.model.droidkit.actors.ActorRef;", 0x9, NULL },
     { "initWithAMEndpoints:withAMAuthKeyStorage:withAMActorApiCallback:", "ApiBroker", NULL, 0x1, NULL },
     { "preStart", NULL, "V", 0x1, NULL },
     { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
@@ -304,7 +305,7 @@ withImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)message
   };
   static const J2ObjcFieldInfo fields[] = {
     { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelNetworkApiApiBroker_TAG_,  },
-    { "NEXT_RPC_ID_", NULL, 0x1a, "Ljava.util.concurrent.atomic.AtomicLong;", &ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_,  },
+    { "NEXT_RPC_ID_", NULL, 0x1a, "Lim.actor.model.droidkit.actors.utils.AtomicLongCompat;", &ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_,  },
     { "endpoints_", NULL, 0x12, "Lim.actor.model.network.Endpoints;", NULL,  },
     { "keyStorage_", NULL, 0x12, "Lim.actor.model.network.AuthKeyStorage;", NULL,  },
     { "callback_", NULL, 0x12, "Lim.actor.model.network.ActorApiCallback;", NULL,  },
@@ -318,9 +319,9 @@ withImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)message
 
 @end
 
-DAActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback) {
+ImActorModelDroidkitActorsActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback) {
   ImActorModelNetworkApiApiBroker_init();
-  return [((DAActorSystem *) nil_chk(DAActorSystem_system())) actorOfWithDAProps:DAProps_createWithIOSClass_withDAActorCreator_(ImActorModelNetworkApiApiBroker_class_(), [[[ImActorModelNetworkApiApiBroker_$1 alloc] initWithAMEndpoints:endpoints withAMAuthKeyStorage:keyStorage withAMActorApiCallback:callback] autorelease]) withNSString:@"api/broker"];
+  return [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(ImActorModelNetworkApiApiBroker_class_(), [[[ImActorModelNetworkApiApiBroker_$1 alloc] initWithAMEndpoints:endpoints withAMAuthKeyStorage:keyStorage withAMActorApiCallback:callback] autorelease]) withNSString:@"api/broker"];
 }
 
 void ImActorModelNetworkApiApiBroker_requestAuthId(ImActorModelNetworkApiApiBroker *self) {
@@ -339,6 +340,7 @@ void ImActorModelNetworkApiApiBroker_createMtProtoWithLong_(ImActorModelNetworkA
 }
 
 void ImActorModelNetworkApiApiBroker_performRequestWithLong_withImActorModelNetworkParserRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker *self, jlong randomId, ImActorModelNetworkParserRequest *message, id<AMRpcCallback> callback) {
+  AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, JreStrcat("$J$@", @"-> request#", randomId, @": ", message));
   ImActorModelNetworkApiApiBroker_RequestHolder *holder = [[[ImActorModelNetworkApiApiBroker_RequestHolder alloc] initWithImActorModelNetworkApiApiBroker:self withLong:randomId withMTRpcRequest:[[[MTRpcRequest alloc] initWithInt:[((ImActorModelNetworkParserRequest *) nil_chk(message)) getHeaderKey] withByteArray:[message toByteArray]] autorelease] withAMRpcCallback:callback] autorelease];
   [((JavaUtilHashMap *) nil_chk(self->requests_)) putWithId:JavaLangLong_valueOfWithLong_(holder->publicId_) withId:holder];
   if (self->proto_ != nil) {
@@ -386,6 +388,7 @@ void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImAc
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
       return;
     }
+    AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, JreStrcat("$J$@", @"<- response#", holder->publicId_, @": ", response));
     [((id<AMRpcCallback>) nil_chk(holder->callback_)) onResultWithImActorModelNetworkParserResponse:response];
   }
   else if ([protoStruct isKindOfClass:[MTRpcError class]]) {
@@ -394,12 +397,12 @@ void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImAc
     if (((ImActorModelNetworkApiApiBroker_RequestHolder *) nil_chk(holder))->protoId_ != 0) {
       [self->idMap_ removeWithId:JavaLangLong_valueOfWithLong_(holder->protoId_)];
     }
-    [((id<AMRpcCallback>) nil_chk(holder->callback_)) onErrorWithAMRpcException:[[[AMRpcException alloc] initWithNSString:((MTRpcError *) nil_chk(e))->errorTag_ withInt:e->errorCode_ withNSString:e->userMessage_ withByteArray:e->relatedData_] autorelease]];
+    [((id<AMRpcCallback>) nil_chk(holder->callback_)) onErrorWithAMRpcException:[[[AMRpcException alloc] initWithNSString:((MTRpcError *) nil_chk(e))->errorTag_ withInt:e->errorCode_ withNSString:e->userMessage_ withBoolean:e->canTryAgain_ withByteArray:e->relatedData_] autorelease]];
   }
   else if ([protoStruct isKindOfClass:[MTRpcInternalError class]]) {
     MTRpcInternalError *e = ((MTRpcInternalError *) check_class_cast(protoStruct, [MTRpcInternalError class]));
     if ([((MTRpcInternalError *) nil_chk(e)) isCanTryAgain]) {
-      [((DAActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_ForceResend alloc] initWithImActorModelNetworkApiApiBroker:self withLong:rid] autorelease] withLong:[e getTryAgainDelay] * 1000LL];
+      [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_ForceResend alloc] initWithImActorModelNetworkApiApiBroker:self withLong:rid] autorelease] withLong:[e getTryAgainDelay] * 1000LL];
     }
     else {
       [self->requests_ removeWithId:JavaLangLong_valueOfWithLong_(rid)];
@@ -411,7 +414,7 @@ void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImAc
   }
   else if ([protoStruct isKindOfClass:[MTRpcFloodWait class]]) {
     MTRpcFloodWait *f = (MTRpcFloodWait *) check_class_cast(protoStruct, [MTRpcFloodWait class]);
-    [((DAActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_ForceResend alloc] initWithImActorModelNetworkApiApiBroker:self withLong:rid] autorelease] withLong:[((MTRpcFloodWait *) nil_chk(f)) getDelay] * 1000LL];
+    [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_ForceResend alloc] initWithImActorModelNetworkApiApiBroker:self withLong:rid] autorelease] withLong:[((MTRpcFloodWait *) nil_chk(f)) getDelay] * 1000LL];
   }
   else {
   }
@@ -826,12 +829,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_$1)
 
 - (void)onSuccessWithLong:(jlong)authId {
   AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_get_TAG_(), @"Key created");
-  [((DAActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_InitMTProto alloc] initWithImActorModelNetworkApiApiBroker:this$0_ withLong:authId] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_InitMTProto alloc] initWithImActorModelNetworkApiApiBroker:this$0_ withLong:authId] autorelease]];
 }
 
 - (void)onFailure {
   AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_get_TAG_(), @"Key creation failure");
-  [((DAActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_RequestAuthId alloc] initWithImActorModelNetworkApiApiBroker:this$0_] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_RequestAuthId alloc] initWithImActorModelNetworkApiApiBroker:this$0_] autorelease]];
 }
 
 - (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$ {
@@ -870,11 +873,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_$2)
 
 - (void)onRpcResponseWithLong:(jlong)mid
                 withByteArray:(IOSByteArray *)content {
-  [((DAActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_ProtoResponse alloc] initWithImActorModelNetworkApiApiBroker:this$0_ withLong:mid withByteArray:content] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_ProtoResponse alloc] initWithImActorModelNetworkApiApiBroker:this$0_ withLong:mid withByteArray:content] autorelease]];
 }
 
 - (void)onUpdateWithByteArray:(IOSByteArray *)content {
-  [((DAActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_ProtoUpdate alloc] initWithImActorModelNetworkApiApiBroker:this$0_ withByteArray:content] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelNetworkApiApiBroker_ProtoUpdate alloc] initWithImActorModelNetworkApiApiBroker:this$0_ withByteArray:content] autorelease]];
 }
 
 - (void)onAuthKeyInvalidatedWithLong:(jlong)authKey {

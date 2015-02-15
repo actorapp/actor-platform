@@ -6,21 +6,36 @@
 #ifndef _ImActorModelEntityContentTextContent_H_
 #define _ImActorModelEntityContentTextContent_H_
 
+@class IOSByteArray;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
+@class ImActorModelEntityContentAbsContent_ContentTypeEnum;
+
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/AbsContent.h"
 
 @interface ImActorModelEntityContentTextContent : ImActorModelEntityContentAbsContent {
 }
 
++ (ImActorModelEntityContentTextContent *)textFromBytesWithByteArray:(IOSByteArray *)data;
+
 - (instancetype)initWithNSString:(NSString *)text;
 
 - (NSString *)getText;
+
+- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
+
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentTextContent)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT ImActorModelEntityContentTextContent *ImActorModelEntityContentTextContent_textFromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentTextContent)

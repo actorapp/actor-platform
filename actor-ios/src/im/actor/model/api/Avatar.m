@@ -5,10 +5,10 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/AvatarImage.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiAvatar () {
@@ -52,21 +52,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
   return self->fullImage_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiAvatar_set_smallImage_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) optObjWithInt:1 withIOSClass:ImActorModelApiAvatarImage_class_()]);
-  ImActorModelApiAvatar_set_largeImage_(self, [values optObjWithInt:2 withIOSClass:ImActorModelApiAvatarImage_class_()]);
-  ImActorModelApiAvatar_set_fullImage_(self, [values optObjWithInt:3 withIOSClass:ImActorModelApiAvatarImage_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiAvatar_set_smallImage_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) optObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiAvatarImage alloc] init] autorelease]]);
+  ImActorModelApiAvatar_set_largeImage_(self, [values optObjWithInt:2 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiAvatarImage alloc] init] autorelease]]);
+  ImActorModelApiAvatar_set_fullImage_(self, [values optObjWithInt:3 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiAvatarImage alloc] init] autorelease]]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->smallImage_ != nil) {
-    [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withComDroidkitBserBserObject:self->smallImage_];
+    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->smallImage_];
   }
   if (self->largeImage_ != nil) {
-    [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withComDroidkitBserBserObject:self->largeImage_];
+    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withImActorModelDroidkitBserBserObject:self->largeImage_];
   }
   if (self->fullImage_ != nil) {
-    [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:3 withComDroidkitBserBserObject:self->fullImage_];
+    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:3 withImActorModelDroidkitBserBserObject:self->fullImage_];
   }
 }
 
@@ -91,8 +91,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
     { "getSmallImage", NULL, "Lim.actor.model.api.AvatarImage;", 0x1, NULL },
     { "getLargeImage", NULL, "Lim.actor.model.api.AvatarImage;", 0x1, NULL },
     { "getFullImage", NULL, "Lim.actor.model.api.AvatarImage;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "smallImage_", NULL, 0x2, "Lim.actor.model.api.AvatarImage;", NULL,  },

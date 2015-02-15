@@ -6,21 +6,21 @@
 #ifndef _MTReceiverActor_H_
 #define _MTReceiverActor_H_
 
-@class DAActorRef;
+@class ImActorModelDroidkitActorsActorRef;
 @class JavaUtilArrayList;
 @class MTMTProto;
 @class MTProtoMessage;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/actors/Actor.h"
-#include "com/droidkit/actors/ActorCreator.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 
 #define MTReceiverActor_MAX_RECEIVED_BUFFER 1000
 
-@interface MTReceiverActor : DAActor {
+@interface MTReceiverActor : ImActorModelDroidkitActorsActor {
 }
 
-+ (DAActorRef *)receiverWithMTMTProto:(MTMTProto *)proto;
++ (ImActorModelDroidkitActorsActorRef *)receiverWithMTMTProto:(MTMTProto *)proto;
 
 - (instancetype)initWithMTMTProto:(MTMTProto *)proto;
 
@@ -34,7 +34,7 @@ J2OBJC_EMPTY_STATIC_INIT(MTReceiverActor)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT DAActorRef *MTReceiverActor_receiverWithMTMTProto_(MTMTProto *proto);
+FOUNDATION_EXPORT ImActorModelDroidkitActorsActorRef *MTReceiverActor_receiverWithMTMTProto_(MTMTProto *proto);
 
 FOUNDATION_EXPORT NSString *MTReceiverActor_TAG_;
 J2OBJC_STATIC_FIELD_GETTER(MTReceiverActor, TAG_, NSString *)
@@ -46,7 +46,7 @@ typedef MTReceiverActor ImActorModelNetworkMtpActorsReceiverActor;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTReceiverActor)
 
-@interface MTReceiverActor_$1 : NSObject < DAActorCreator > {
+@interface MTReceiverActor_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
 }
 
 - (MTReceiverActor *)create;

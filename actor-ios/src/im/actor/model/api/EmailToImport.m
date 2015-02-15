@@ -5,9 +5,9 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/EmailToImport.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiEmailToImport () {
@@ -43,16 +43,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
   return self->name_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiEmailToImport_set_email_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiEmailToImport_set_email_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1]);
   ImActorModelApiEmailToImport_set_name_(self, [values optStringWithInt:2]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->email_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->email_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->email_];
   if (self->name_ != nil) {
     [writer writeStringWithInt:2 withNSString:self->name_];
   }
@@ -76,8 +76,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
     { "init", "EmailToImport", NULL, 0x1, NULL },
     { "getEmail", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "email_", NULL, 0x2, "Ljava.lang.String;", NULL,  },

@@ -6,11 +6,11 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/updates/UpdateGroupTitleChanged.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateGroupTitleChanged () {
@@ -70,16 +70,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
   return self->date_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->groupId_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->groupId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:5];
   self->uid_ = [values getIntWithInt:2];
   ImActorModelApiUpdatesUpdateGroupTitleChanged_set_title_(self, [values getStringWithInt:3]);
   self->date_ = [values getLongWithInt:4];
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:5 withLong:self->rid_];
   [writer writeIntWithInt:2 withInt:self->uid_];
   if (self->title_ == nil) {
@@ -117,8 +117,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
     { "getUid", NULL, "I", 0x1, NULL },
     { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getDate", NULL, "J", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -137,7 +137,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
 
 ImActorModelApiUpdatesUpdateGroupTitleChanged *ImActorModelApiUpdatesUpdateGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupTitleChanged_init();
-  return ((ImActorModelApiUpdatesUpdateGroupTitleChanged *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiUpdatesUpdateGroupTitleChanged_class_(), data));
+  return ((ImActorModelApiUpdatesUpdateGroupTitleChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateGroupTitleChanged alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupTitleChanged)

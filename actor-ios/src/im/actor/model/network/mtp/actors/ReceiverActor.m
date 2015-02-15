@@ -7,11 +7,11 @@
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/actors/Actor.h"
-#include "com/droidkit/actors/ActorRef.h"
-#include "com/droidkit/actors/ActorSelection.h"
-#include "com/droidkit/actors/ActorSystem.h"
-#include "com/droidkit/actors/Props.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/actors/ActorSelection.h"
+#include "im/actor/model/droidkit/actors/ActorSystem.h"
+#include "im/actor/model/droidkit/actors/Props.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/network/mtp/MTProto.h"
 #include "im/actor/model/network/mtp/MTProtoCallback.h"
@@ -38,7 +38,7 @@ __attribute__((unused)) static void MTReceiverActor_onReceiveWithMTProtoMessage_
 
 @interface MTReceiverActor () {
  @public
-  DAActorRef *sender_;
+  ImActorModelDroidkitActorsActorRef *sender_;
   MTMTProto *proto_;
   JavaUtilArrayList *receivedMessages_;
 }
@@ -46,7 +46,7 @@ __attribute__((unused)) static void MTReceiverActor_onReceiveWithMTProtoMessage_
 - (void)onReceiveWithMTProtoMessage:(MTProtoMessage *)message;
 @end
 
-J2OBJC_FIELD_SETTER(MTReceiverActor, sender_, DAActorRef *)
+J2OBJC_FIELD_SETTER(MTReceiverActor, sender_, ImActorModelDroidkitActorsActorRef *)
 J2OBJC_FIELD_SETTER(MTReceiverActor, proto_, MTMTProto *)
 J2OBJC_FIELD_SETTER(MTReceiverActor, receivedMessages_, JavaUtilArrayList *)
 
@@ -62,7 +62,7 @@ J2OBJC_FIELD_SETTER(MTReceiverActor_$1, val$proto_, MTMTProto *)
 
 NSString * MTReceiverActor_TAG_ = @"ProtoReceiver";
 
-+ (DAActorRef *)receiverWithMTMTProto:(MTMTProto *)proto {
++ (ImActorModelDroidkitActorsActorRef *)receiverWithMTMTProto:(MTMTProto *)proto {
   return MTReceiverActor_receiverWithMTMTProto_(proto);
 }
 
@@ -107,7 +107,7 @@ NSString * MTReceiverActor_TAG_ = @"ProtoReceiver";
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "receiverWithMTMTProto:", "receiver", "Lcom.droidkit.actors.ActorRef;", 0x9, NULL },
+    { "receiverWithMTMTProto:", "receiver", "Lim.actor.model.droidkit.actors.ActorRef;", 0x9, NULL },
     { "initWithMTMTProto:", "ReceiverActor", NULL, 0x1, NULL },
     { "preStart", NULL, "V", 0x1, NULL },
     { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
@@ -116,7 +116,7 @@ NSString * MTReceiverActor_TAG_ = @"ProtoReceiver";
   static const J2ObjcFieldInfo fields[] = {
     { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &MTReceiverActor_TAG_,  },
     { "MAX_RECEIVED_BUFFER_", NULL, 0x1a, "I", NULL, .constantValue.asInt = MTReceiverActor_MAX_RECEIVED_BUFFER },
-    { "sender_", NULL, 0x2, "Lcom.droidkit.actors.ActorRef;", NULL,  },
+    { "sender_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
     { "proto_", NULL, 0x2, "Lim.actor.model.network.mtp.MTProto;", NULL,  },
     { "receivedMessages_", NULL, 0x2, "Ljava.util.ArrayList;", NULL,  },
   };
@@ -126,9 +126,9 @@ NSString * MTReceiverActor_TAG_ = @"ProtoReceiver";
 
 @end
 
-DAActorRef *MTReceiverActor_receiverWithMTMTProto_(MTMTProto *proto) {
+ImActorModelDroidkitActorsActorRef *MTReceiverActor_receiverWithMTMTProto_(MTMTProto *proto) {
   MTReceiverActor_init();
-  return [((DAActorSystem *) nil_chk(DAActorSystem_system())) actorOfWithDAActorSelection:[[[DAActorSelection alloc] initWithDAProps:DAProps_createWithIOSClass_withDAActorCreator_(MTReceiverActor_class_(), [[[MTReceiverActor_$1 alloc] initWithMTMTProto:proto] autorelease]) withNSString:JreStrcat("$$", [((MTMTProto *) nil_chk(proto)) getActorPath], @"/receiver")] autorelease]];
+  return [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsActorSelection:[[[ImActorModelDroidkitActorsActorSelection alloc] initWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(MTReceiverActor_class_(), [[[MTReceiverActor_$1 alloc] initWithMTMTProto:proto] autorelease]) withNSString:JreStrcat("$$", [((MTMTProto *) nil_chk(proto)) getActorPath], @"/receiver")] autorelease]];
 }
 
 void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProtoMessage *message) {
@@ -152,7 +152,7 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
       return;
     }
     if ([obj isKindOfClass:[MTNewSessionCreated class]]) {
-      [((DAActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_NewSession alloc] init] autorelease]];
+      [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_NewSession alloc] init] autorelease]];
       [((id<MTMTProtoCallback>) nil_chk([((MTMTProto *) nil_chk(self->proto_)) getCallback])) onSessionCreated];
     }
     else if ([obj isKindOfClass:[MTContainer class]]) {
@@ -163,13 +163,13 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
         MTProtoMessage * const *e__ = b__ + a__->size_;
         while (b__ < e__) {
           MTProtoMessage *m = *b__++;
-          [((DAActorRef *) nil_chk([self self__])) sendWithId:m withDAActorRef:[self sender]];
+          [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:m withImActorModelDroidkitActorsActorRef:[self sender]];
         }
       }
     }
     else if ([obj isKindOfClass:[MTMTRpcResponse class]]) {
       MTMTRpcResponse *responseBox = (MTMTRpcResponse *) check_class_cast(obj, [MTMTRpcResponse class]);
-      [((DAActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_ForgetMessage alloc] initWithLong:[((MTMTRpcResponse *) nil_chk(responseBox)) getMessageId]] autorelease]];
+      [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_ForgetMessage alloc] initWithLong:[((MTMTRpcResponse *) nil_chk(responseBox)) getMessageId]] autorelease]];
       [((id<MTMTProtoCallback>) nil_chk([((MTMTProto *) nil_chk(self->proto_)) getCallback])) onRpcResponseWithLong:[responseBox getMessageId] withByteArray:[responseBox getPayload]];
     }
     else if ([obj isKindOfClass:[MTMessageAck class]]) {
@@ -180,7 +180,7 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
         jlong const *e__ = b__ + a__->size_;
         while (b__ < e__) {
           jlong ackMsgId = *b__++;
-          [((DAActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_ForgetMessage alloc] initWithLong:ackMsgId] autorelease]];
+          [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_ForgetMessage alloc] initWithLong:ackMsgId] autorelease]];
         }
       }
     }
@@ -192,14 +192,14 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
       MTUnsentResponse *unsent = (MTUnsentResponse *) check_class_cast(obj, [MTUnsentResponse class]);
       if (![self->receivedMessages_ containsWithId:JavaLangLong_valueOfWithLong_([((MTUnsentResponse *) nil_chk(unsent)) getResponseMessageId])]) {
         disableConfirm = YES;
-        [((DAActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_SendMessage alloc] initWithLong:ImActorModelNetworkUtilMTUids_nextId() withByteArray:[((MTRequestResend *) [[[MTRequestResend alloc] initWithLong:[unsent getMessageId]] autorelease]) toByteArray]] autorelease]];
+        [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_SendMessage alloc] initWithLong:ImActorModelNetworkUtilMTUids_nextId() withByteArray:[((MTRequestResend *) [[[MTRequestResend alloc] initWithLong:[unsent getMessageId]] autorelease]) toByteArray]] autorelease]];
       }
     }
     else if ([obj isKindOfClass:[MTUnsentMessage class]]) {
       MTUnsentMessage *unsent = (MTUnsentMessage *) check_class_cast(obj, [MTUnsentMessage class]);
       if (![self->receivedMessages_ containsWithId:JavaLangLong_valueOfWithLong_([((MTUnsentMessage *) nil_chk(unsent)) getMessageId])]) {
         disableConfirm = YES;
-        [((DAActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_SendMessage alloc] initWithLong:ImActorModelNetworkUtilMTUids_nextId() withByteArray:[((MTRequestResend *) [[[MTRequestResend alloc] initWithLong:[unsent getMessageId]] autorelease]) toByteArray]] autorelease]];
+        [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_SendMessage alloc] initWithLong:ImActorModelNetworkUtilMTUids_nextId() withByteArray:[((MTRequestResend *) [[[MTRequestResend alloc] initWithLong:[unsent getMessageId]] autorelease]) toByteArray]] autorelease]];
       }
     }
     else {
@@ -211,7 +211,7 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
   }
   @finally {
     if (!disableConfirm) {
-      [((DAActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_ConfirmMessage alloc] initWithLong:[((MTProtoMessage *) nil_chk(message)) getMessageId]] autorelease]];
+      [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->sender_)) sendWithId:[[[MTSenderActor_ConfirmMessage alloc] initWithLong:[((MTProtoMessage *) nil_chk(message)) getMessageId]] autorelease]];
     }
   }
 }

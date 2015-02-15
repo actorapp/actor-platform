@@ -6,12 +6,12 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/OutPeer.h"
 #include "im/actor/model/api/rpc/RequestEncryptedRead.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestEncryptedRead () {
@@ -50,16 +50,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEncryptedRead, peer_, ImActorModelA
   return self->rid_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestEncryptedRead_set_peer_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withIOSClass:ImActorModelApiOutPeer_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiRpcRequestEncryptedRead_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiOutPeer alloc] init] autorelease]]);
   self->rid_ = [values getLongWithInt:3];
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withComDroidkitBserBserObject:self->peer_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeLongWithInt:3 withLong:self->rid_];
 }
 
@@ -85,8 +85,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEncryptedRead, peer_, ImActorModelA
     { "init", "RequestEncryptedRead", NULL, 0x1, NULL },
     { "getPeer", NULL, "Lim.actor.model.api.OutPeer;", 0x1, NULL },
     { "getRid", NULL, "J", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -103,7 +103,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEncryptedRead, peer_, ImActorModelA
 
 ImActorModelApiRpcRequestEncryptedRead *ImActorModelApiRpcRequestEncryptedRead_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEncryptedRead_init();
-  return ((ImActorModelApiRpcRequestEncryptedRead *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcRequestEncryptedRead_class_(), data));
+  return ((ImActorModelApiRpcRequestEncryptedRead *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestEncryptedRead alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEncryptedRead)

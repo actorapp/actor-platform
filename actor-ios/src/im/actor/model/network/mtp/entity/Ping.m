@@ -6,10 +6,9 @@
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/mtp/entity/Ping.h"
-#include "im/actor/model/util/StreamingUtils.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/OutputStream.h"
 
 @interface MTPing () {
  @public
@@ -19,8 +18,8 @@
 
 @implementation MTPing
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream {
-  return [super initWithJavaIoInputStream:stream];
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
+  return [super initWithAMDataInput:stream];
 }
 
 - (instancetype)initWithLong:(jlong)randomId {
@@ -34,20 +33,16 @@
   return randomId_;
 }
 
-- (jint)getLength {
-  return 1 + 8;
-}
-
 - (jbyte)getHeader {
   return MTPing_HEADER;
 }
 
-- (void)writeBodyWithJavaIoOutputStream:(JavaIoOutputStream *)bs {
-  AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(randomId_, bs);
+- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
+  [((AMDataOutput *) nil_chk(bs)) writeLongWithLong:randomId_];
 }
 
-- (void)readBodyWithJavaIoInputStream:(JavaIoInputStream *)bs {
-  randomId_ = AMStreamingUtils_readLongWithJavaIoInputStream_(bs);
+- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
+  randomId_ = [((AMDataInput *) nil_chk(bs)) readLong];
 }
 
 - (NSString *)description {
@@ -61,20 +56,19 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaIoInputStream:", "Ping", NULL, 0x1, "Ljava.io.IOException;" },
+    { "initWithAMDataInput:", "Ping", NULL, 0x1, "Ljava.io.IOException;" },
     { "initWithLong:", "Ping", NULL, 0x1, NULL },
     { "getRandomId", NULL, "J", 0x1, NULL },
-    { "getLength", NULL, "I", 0x1, NULL },
     { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithJavaIoOutputStream:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithJavaIoInputStream:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
+    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTPing_HEADER },
     { "randomId_", NULL, 0x2, "J", NULL,  },
   };
-  static const J2ObjcClassInfo _MTPing = { 1, "Ping", "im.actor.model.network.mtp.entity", NULL, 0x1, 8, methods, 2, fields, 0, NULL};
+  static const J2ObjcClassInfo _MTPing = { 1, "Ping", "im.actor.model.network.mtp.entity", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
   return &_MTPing;
 }
 

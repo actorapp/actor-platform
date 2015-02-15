@@ -6,11 +6,11 @@
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/actors/ActorTime.h"
-#include "com/droidkit/actors/ThreadPriority.h"
-#include "com/droidkit/actors/dispatch/AbstractDispatchQueue.h"
-#include "com/droidkit/actors/dispatch/Dispatch.h"
-#include "com/droidkit/actors/dispatch/DispatchResult.h"
+#include "im/actor/model/droidkit/actors/ActorTime.h"
+#include "im/actor/model/droidkit/actors/ThreadPriority.h"
+#include "im/actor/model/droidkit/actors/dispatch/AbstractDispatchQueue.h"
+#include "im/actor/model/droidkit/actors/dispatch/Dispatch.h"
+#include "im/actor/model/droidkit/actors/dispatch/DispatchResult.h"
 #include "im/actor/model/jvm/actors/JavaThreadsDispatcher.h"
 #include "java/lang/InterruptedException.h"
 #include "java/lang/Thread.h"
@@ -21,7 +21,7 @@
  @public
   IOSObjectArray *threads_;
   jint count_;
-  DAThreadPriorityEnum *priority_;
+  ImActorModelDroidkitActorsThreadPriorityEnum *priority_;
   jboolean isClosed_;
   jint id__;
   NSString *name_;
@@ -29,7 +29,7 @@
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelJvmActorsJavaThreadsDispatcher, threads_, IOSObjectArray *)
-J2OBJC_FIELD_SETTER(ImActorModelJvmActorsJavaThreadsDispatcher, priority_, DAThreadPriorityEnum *)
+J2OBJC_FIELD_SETTER(ImActorModelJvmActorsJavaThreadsDispatcher, priority_, ImActorModelDroidkitActorsThreadPriorityEnum *)
 J2OBJC_FIELD_SETTER(ImActorModelJvmActorsJavaThreadsDispatcher, name_, NSString *)
 
 @interface ImActorModelJvmActorsJavaThreadsDispatcher_DispatcherThread () {
@@ -49,11 +49,11 @@ JavaUtilConcurrentAtomicAtomicInteger * ImActorModelJvmActorsJavaThreadsDispatch
 
 - (instancetype)initWithNSString:(NSString *)name
                          withInt:(jint)count
-        withDAThreadPriorityEnum:(DAThreadPriorityEnum *)priority
-withComDroidkitActorsDispatchAbstractDispatchQueue:(ComDroidkitActorsDispatchAbstractDispatchQueue *)queue
-withComDroidkitActorsDispatchDispatch:(id<ComDroidkitActorsDispatchDispatch>)dispatch
+withImActorModelDroidkitActorsThreadPriorityEnum:(ImActorModelDroidkitActorsThreadPriorityEnum *)priority
+withImActorModelDroidkitActorsDispatchAbstractDispatchQueue:(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue *)queue
+withImActorModelDroidkitActorsDispatchDispatch:(id<ImActorModelDroidkitActorsDispatchDispatch>)dispatch
                      withBoolean:(jboolean)createThreads {
-  if (self = [super initWithComDroidkitActorsDispatchAbstractDispatchQueue:queue withComDroidkitActorsDispatchDispatch:dispatch]) {
+  if (self = [super initWithImActorModelDroidkitActorsDispatchAbstractDispatchQueue:queue withImActorModelDroidkitActorsDispatchDispatch:dispatch]) {
     isClosed_ = NO;
     self->id__ = [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(ImActorModelJvmActorsJavaThreadsDispatcher_INDEX_)) getAndIncrement];
     ImActorModelJvmActorsJavaThreadsDispatcher_set_name_(self, name);
@@ -75,14 +75,14 @@ withComDroidkitActorsDispatchDispatch:(id<ComDroidkitActorsDispatchDispatch>)dis
     IOSObjectArray_SetAndConsume(self->threads_, i, [[ImActorModelJvmActorsJavaThreadsDispatcher_DispatcherThread alloc] initWithImActorModelJvmActorsJavaThreadsDispatcher:self]);
     [((JavaLangThread *) nil_chk(IOSObjectArray_Get(self->threads_, i))) setNameWithNSString:JreStrcat("$$CI", @"Pool_", name_, '_', i)];
     switch ([priority_ ordinal]) {
-      case DAThreadPriority_HIGH:
+      case ImActorModelDroidkitActorsThreadPriority_HIGH:
       [((JavaLangThread *) nil_chk(IOSObjectArray_Get(self->threads_, i))) setPriorityWithInt:JavaLangThread_MAX_PRIORITY];
       break;
-      case DAThreadPriority_LOW:
+      case ImActorModelDroidkitActorsThreadPriority_LOW:
       [((JavaLangThread *) nil_chk(IOSObjectArray_Get(self->threads_, i))) setPriorityWithInt:JavaLangThread_MIN_PRIORITY];
       break;
       default:
-      case DAThreadPriority_NORMAL:
+      case ImActorModelDroidkitActorsThreadPriority_NORMAL:
       [((JavaLangThread *) nil_chk(IOSObjectArray_Get(self->threads_, i))) setPriorityWithInt:JavaLangThread_NORM_PRIORITY];
       break;
     }
@@ -138,7 +138,7 @@ withComDroidkitActorsDispatchDispatch:(id<ComDroidkitActorsDispatchDispatch>)dis
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withInt:withDAThreadPriorityEnum:withComDroidkitActorsDispatchAbstractDispatchQueue:withComDroidkitActorsDispatchDispatch:withBoolean:", "JavaThreadsDispatcher", NULL, 0x1, NULL },
+    { "initWithNSString:withInt:withImActorModelDroidkitActorsThreadPriorityEnum:withImActorModelDroidkitActorsDispatchAbstractDispatchQueue:withImActorModelDroidkitActorsDispatchDispatch:withBoolean:", "JavaThreadsDispatcher", NULL, 0x1, NULL },
     { "startPool", NULL, "V", 0x1, NULL },
     { "close", NULL, "V", 0x1, NULL },
     { "notifyDispatcher", NULL, "V", 0x4, NULL },
@@ -147,7 +147,7 @@ withComDroidkitActorsDispatchDispatch:(id<ComDroidkitActorsDispatchDispatch>)dis
     { "INDEX_", NULL, 0x1a, "Ljava.util.concurrent.atomic.AtomicInteger;", &ImActorModelJvmActorsJavaThreadsDispatcher_INDEX_,  },
     { "threads_", NULL, 0x2, "[Ljava.lang.Thread;", NULL,  },
     { "count_", NULL, 0x12, "I", NULL,  },
-    { "priority_", NULL, 0x12, "Lcom.droidkit.actors.ThreadPriority;", NULL,  },
+    { "priority_", NULL, 0x12, "Lim.actor.model.droidkit.actors.ThreadPriority;", NULL,  },
     { "isClosed_", NULL, 0x2, "Z", NULL,  },
     { "id__", "id", 0x12, "I", NULL,  },
     { "name_", NULL, 0x12, "Ljava.lang.String;", NULL,  },
@@ -173,12 +173,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmActorsJavaThreadsDispatcher)
 
 - (void)run {
   while (!this$0_->isClosed_) {
-    jlong time = DAActorTime_currentTime();
+    jlong time = ImActorModelDroidkitActorsActorTime_currentTime();
     @synchronized(this$0_->threads_) {
       isChanged__ = NO;
     }
-    ComDroidkitActorsDispatchDispatchResult *action = [((ComDroidkitActorsDispatchAbstractDispatchQueue *) nil_chk([this$0_ getQueue])) dispatchWithLong:time];
-    if (![((ComDroidkitActorsDispatchDispatchResult *) nil_chk(action)) isResult]) {
+    ImActorModelDroidkitActorsDispatchDispatchResult *action = [((ImActorModelDroidkitActorsDispatchAbstractDispatchQueue *) nil_chk([this$0_ getQueue])) dispatchWithLong:time];
+    if (![((ImActorModelDroidkitActorsDispatchDispatchResult *) nil_chk(action)) isResult]) {
       if (isChanged__) {
         continue;
       }

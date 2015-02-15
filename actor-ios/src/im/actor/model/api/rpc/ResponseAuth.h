@@ -6,11 +6,11 @@
 #ifndef _ImActorModelApiRpcResponseAuth_H_
 #define _ImActorModelApiRpcResponseAuth_H_
 
-@class ComDroidkitBserBserValues;
-@class ComDroidkitBserBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiConfig;
 @class ImActorModelApiUser;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -38,9 +38,9 @@
 
 - (ImActorModelApiConfig *)getConfig;
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values;
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer;
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
 
 - (jint)getHeaderKey;
 

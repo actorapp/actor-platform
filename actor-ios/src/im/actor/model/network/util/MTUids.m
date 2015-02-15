@@ -5,8 +5,9 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/actors/conf/EnvConfig.h"
+#include "im/actor/model/droidkit/actors/utils/AtomicLongCompat.h"
 #include "im/actor/model/network/util/MTUids.h"
-#include "java/util/concurrent/atomic/AtomicLong.h"
 
 @interface ImActorModelNetworkUtilMTUids () {
 }
@@ -16,7 +17,7 @@ BOOL ImActorModelNetworkUtilMTUids_initialized = NO;
 
 @implementation ImActorModelNetworkUtilMTUids
 
-JavaUtilConcurrentAtomicAtomicLong * ImActorModelNetworkUtilMTUids_NEXT_ID_;
+ImActorModelDroidkitActorsUtilsAtomicLongCompat * ImActorModelNetworkUtilMTUids_NEXT_ID_;
 
 + (jlong)nextId {
   return ImActorModelNetworkUtilMTUids_nextId();
@@ -28,7 +29,7 @@ JavaUtilConcurrentAtomicAtomicLong * ImActorModelNetworkUtilMTUids_NEXT_ID_;
 
 + (void)initialize {
   if (self == [ImActorModelNetworkUtilMTUids class]) {
-    JreStrongAssignAndConsume(&ImActorModelNetworkUtilMTUids_NEXT_ID_, nil, [[JavaUtilConcurrentAtomicAtomicLong alloc] initWithLong:1]);
+    JreStrongAssign(&ImActorModelNetworkUtilMTUids_NEXT_ID_, nil, ImActorModelDroidkitActorsConfEnvConfig_createAtomicLongWithLong_(1));
     J2OBJC_SET_INITIALIZED(ImActorModelNetworkUtilMTUids)
   }
 }
@@ -39,7 +40,7 @@ JavaUtilConcurrentAtomicAtomicLong * ImActorModelNetworkUtilMTUids_NEXT_ID_;
     { "init", NULL, NULL, 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "NEXT_ID_", NULL, 0x1a, "Ljava.util.concurrent.atomic.AtomicLong;", &ImActorModelNetworkUtilMTUids_NEXT_ID_,  },
+    { "NEXT_ID_", NULL, 0x1a, "Lim.actor.model.droidkit.actors.utils.AtomicLongCompat;", &ImActorModelNetworkUtilMTUids_NEXT_ID_,  },
   };
   static const J2ObjcClassInfo _ImActorModelNetworkUtilMTUids = { 1, "MTUids", "im.actor.model.network.util", NULL, 0x1, 2, methods, 1, fields, 0, NULL};
   return &_ImActorModelNetworkUtilMTUids;
@@ -49,7 +50,7 @@ JavaUtilConcurrentAtomicAtomicLong * ImActorModelNetworkUtilMTUids_NEXT_ID_;
 
 jlong ImActorModelNetworkUtilMTUids_nextId() {
   ImActorModelNetworkUtilMTUids_init();
-  return [((JavaUtilConcurrentAtomicAtomicLong *) nil_chk(ImActorModelNetworkUtilMTUids_NEXT_ID_)) getAndIncrement];
+  return [((ImActorModelDroidkitActorsUtilsAtomicLongCompat *) nil_chk(ImActorModelNetworkUtilMTUids_NEXT_ID_)) getAndIncrement];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkUtilMTUids)

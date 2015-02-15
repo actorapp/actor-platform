@@ -6,15 +6,16 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/Dialog.h"
 #include "im/actor/model/api/Group.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/rpc/ResponseLoadDialogs.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 @interface ImActorModelApiRpcResponseLoadDialogs () {
@@ -62,14 +63,26 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
   return self->dialogs_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiRpcResponseLoadDialogs_set_groups_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getRepeatedObjWithInt:1 withIOSClass:ImActorModelApiGroup_class_()]);
-  ImActorModelApiRpcResponseLoadDialogs_set_users_(self, [values getRepeatedObjWithInt:2 withIOSClass:ImActorModelApiUser_class_()]);
-  ImActorModelApiRpcResponseLoadDialogs_set_dialogs_(self, [values getRepeatedObjWithInt:3 withIOSClass:ImActorModelApiDialog_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  id<JavaUtilList> _groups = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
+    [_groups addWithId:[[[ImActorModelApiGroup alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcResponseLoadDialogs_set_groups_(self, [values getRepeatedObjWithInt:1 withJavaUtilList:_groups]);
+  id<JavaUtilList> _users = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:2]; i++) {
+    [_users addWithId:[[[ImActorModelApiUser alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcResponseLoadDialogs_set_users_(self, [values getRepeatedObjWithInt:2 withJavaUtilList:_users]);
+  id<JavaUtilList> _dialogs = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:3]; i++) {
+    [_dialogs addWithId:[[[ImActorModelApiDialog alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcResponseLoadDialogs_set_dialogs_(self, [values getRepeatedObjWithInt:3 withJavaUtilList:_dialogs]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->groups_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->groups_];
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->users_];
   [writer writeRepeatedObjWithInt:3 withJavaUtilList:self->dialogs_];
 }
@@ -100,8 +113,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
     { "getGroups", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getDialogs", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -118,7 +131,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
 
 ImActorModelApiRpcResponseLoadDialogs *ImActorModelApiRpcResponseLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseLoadDialogs_init();
-  return ((ImActorModelApiRpcResponseLoadDialogs *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcResponseLoadDialogs_class_(), data));
+  return ((ImActorModelApiRpcResponseLoadDialogs *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseLoadDialogs alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseLoadDialogs)

@@ -7,7 +7,7 @@
 #define _MTMTProto_H_
 
 @class AMEndpoints;
-@class DAActorRef;
+@class ImActorModelDroidkitActorsActorRef;
 @class MTProtoStruct;
 @protocol MTMTProtoCallback;
 

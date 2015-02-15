@@ -7,11 +7,11 @@
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/actors/Actor.h"
-#include "com/droidkit/actors/ActorRef.h"
-#include "com/droidkit/actors/ActorSelection.h"
-#include "com/droidkit/actors/ActorSystem.h"
-#include "com/droidkit/actors/Props.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/actors/ActorSelection.h"
+#include "im/actor/model/droidkit/actors/ActorSystem.h"
+#include "im/actor/model/droidkit/actors/Props.h"
 #include "im/actor/model/network/mtp/MTProto.h"
 #include "im/actor/model/network/mtp/actors/ManagerActor.h"
 #include "im/actor/model/network/mtp/actors/SenderActor.h"
@@ -34,7 +34,7 @@ __attribute__((unused)) static void MTSenderActor_performSendWithMTProtoMessage_
 @interface MTSenderActor () {
  @public
   MTMTProto *proto_;
-  DAActorRef *manager_;
+  ImActorModelDroidkitActorsActorRef *manager_;
   JavaUtilHashMap *unsentPackages_;
   JavaUtilHashSet *confirm_;
 }
@@ -49,7 +49,7 @@ __attribute__((unused)) static void MTSenderActor_performSendWithMTProtoMessage_
 @end
 
 J2OBJC_FIELD_SETTER(MTSenderActor, proto_, MTMTProto *)
-J2OBJC_FIELD_SETTER(MTSenderActor, manager_, DAActorRef *)
+J2OBJC_FIELD_SETTER(MTSenderActor, manager_, ImActorModelDroidkitActorsActorRef *)
 J2OBJC_FIELD_SETTER(MTSenderActor, unsentPackages_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(MTSenderActor, confirm_, JavaUtilHashSet *)
 
@@ -86,7 +86,7 @@ J2OBJC_FIELD_SETTER(MTSenderActor_$1, val$proto_, MTMTProto *)
 
 NSString * MTSenderActor_TAG_ = @"ProtoSender";
 
-+ (DAActorRef *)senderActorWithMTMTProto:(MTMTProto *)proto {
++ (ImActorModelDroidkitActorsActorRef *)senderActorWithMTMTProto:(MTMTProto *)proto {
   return MTSenderActor_senderActorWithMTMTProto_(proto);
 }
 
@@ -123,10 +123,10 @@ NSString * MTSenderActor_TAG_ = @"ProtoSender";
   else if ([message isKindOfClass:[MTSenderActor_ConfirmMessage class]]) {
     [((JavaUtilHashSet *) nil_chk(confirm_)) addWithId:JavaLangLong_valueOfWithLong_(((MTSenderActor_ConfirmMessage *) nil_chk(((MTSenderActor_ConfirmMessage *) check_class_cast(message, [MTSenderActor_ConfirmMessage class]))))->mid_)];
     if ([confirm_ size] >= MTSenderActor_ACK_THRESHOLD) {
-      [((DAActorRef *) nil_chk([self self__])) sendOnceWithId:[[[MTSenderActor_ForceAck alloc] init] autorelease]];
+      [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[[MTSenderActor_ForceAck alloc] init] autorelease]];
     }
     else if ([confirm_ size] == 1) {
-      [((DAActorRef *) nil_chk([self self__])) sendOnceWithId:[[[MTSenderActor_ForceAck alloc] init] autorelease] withLong:MTSenderActor_ACK_DELAY];
+      [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[[MTSenderActor_ForceAck alloc] init] autorelease] withLong:MTSenderActor_ACK_DELAY];
     }
   }
   else if ([message isKindOfClass:[MTSenderActor_ForceAck class]]) {
@@ -180,7 +180,7 @@ NSString * MTSenderActor_TAG_ = @"ProtoSender";
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "senderActorWithMTMTProto:", "senderActor", "Lcom.droidkit.actors.ActorRef;", 0x9, NULL },
+    { "senderActorWithMTMTProto:", "senderActor", "Lim.actor.model.droidkit.actors.ActorRef;", 0x9, NULL },
     { "initWithMTMTProto:", "SenderActor", NULL, 0x1, NULL },
     { "preStart", NULL, "V", 0x1, NULL },
     { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
@@ -195,7 +195,7 @@ NSString * MTSenderActor_TAG_ = @"ProtoSender";
     { "ACK_DELAY_", NULL, 0x1a, "I", NULL, .constantValue.asInt = MTSenderActor_ACK_DELAY },
     { "MAX_WORKLOAD_SIZE_", NULL, 0x1a, "I", NULL, .constantValue.asInt = MTSenderActor_MAX_WORKLOAD_SIZE },
     { "proto_", NULL, 0x2, "Lim.actor.model.network.mtp.MTProto;", NULL,  },
-    { "manager_", NULL, 0x2, "Lcom.droidkit.actors.ActorRef;", NULL,  },
+    { "manager_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
     { "unsentPackages_", NULL, 0x2, "Ljava.util.HashMap;", NULL,  },
     { "confirm_", NULL, 0x2, "Ljava.util.HashSet;", NULL,  },
   };
@@ -205,9 +205,9 @@ NSString * MTSenderActor_TAG_ = @"ProtoSender";
 
 @end
 
-DAActorRef *MTSenderActor_senderActorWithMTMTProto_(MTMTProto *proto) {
+ImActorModelDroidkitActorsActorRef *MTSenderActor_senderActorWithMTMTProto_(MTMTProto *proto) {
   MTSenderActor_init();
-  return [((DAActorSystem *) nil_chk(DAActorSystem_system())) actorOfWithDAActorSelection:[[[DAActorSelection alloc] initWithDAProps:DAProps_createWithIOSClass_withDAActorCreator_(MTSenderActor_class_(), [[[MTSenderActor_$1 alloc] initWithMTMTProto:proto] autorelease]) withNSString:JreStrcat("$$", [((MTMTProto *) nil_chk(proto)) getActorPath], @"/sender")] autorelease]];
+  return [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsActorSelection:[[[ImActorModelDroidkitActorsActorSelection alloc] initWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(MTSenderActor_class_(), [[[MTSenderActor_$1 alloc] initWithMTMTProto:proto] autorelease]) withNSString:JreStrcat("$$", [((MTMTProto *) nil_chk(proto)) getActorPath], @"/sender")] autorelease]];
 }
 
 MTMessageAck *MTSenderActor_buildAck(MTSenderActor *self) {
@@ -263,7 +263,7 @@ void MTSenderActor_doSendWithMTProtoMessage_(MTSenderActor *self, MTProtoMessage
 
 void MTSenderActor_performSendWithMTProtoMessage_(MTSenderActor *self, MTProtoMessage *message) {
   IOSByteArray *data = [((MTProtoMessage *) nil_chk(message)) toByteArray];
-  [((DAActorRef *) nil_chk(self->manager_)) sendWithId:[[[MTManagerActor_OutMessage alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->manager_)) sendWithId:[[[MTManagerActor_OutMessage alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_] autorelease]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor)

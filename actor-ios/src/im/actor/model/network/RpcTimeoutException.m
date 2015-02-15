@@ -9,7 +9,7 @@
 @implementation AMRpcTimeoutException
 
 - (instancetype)init {
-  return [super initWithNSString:@"TIMEOUT" withInt:500 withNSString:@"Request timeout" withByteArray:nil];
+  return [super initWithNSString:@"TIMEOUT" withInt:500 withNSString:@"Request timeout" withBoolean:YES withByteArray:nil];
 }
 
 + (const J2ObjcClassInfo *)__metadata {

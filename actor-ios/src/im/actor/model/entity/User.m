@@ -3,11 +3,19 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/User.java
 //
 
+#include "IOSClass.h"
+#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/PeerType.h"
+#include "im/actor/model/entity/Sex.h"
 #include "im/actor/model/entity/User.h"
+#include "java/io/IOException.h"
 
 @interface ImActorModelEntityUser () {
  @public
@@ -16,28 +24,41 @@
   NSString *name_;
   NSString *localName_;
   ImActorModelEntityAvatar *avatar_;
+  ImActorModelEntitySexEnum *sex_;
 }
+- (instancetype)init;
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelEntityUser, name_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelEntityUser, localName_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelEntityUser, avatar_, ImActorModelEntityAvatar *)
+J2OBJC_FIELD_SETTER(ImActorModelEntityUser, sex_, ImActorModelEntitySexEnum *)
 
 @implementation ImActorModelEntityUser
+
++ (ImActorModelEntityUser *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return ImActorModelEntityUser_fromBytesWithByteArray_(data);
+}
 
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash
                withNSString:(NSString *)name
                withNSString:(NSString *)localName
-withImActorModelEntityAvatar:(ImActorModelEntityAvatar *)avatar {
+withImActorModelEntityAvatar:(ImActorModelEntityAvatar *)avatar
+withImActorModelEntitySexEnum:(ImActorModelEntitySexEnum *)sex {
   if (self = [super init]) {
     self->uid_ = uid;
     self->accessHash_ = accessHash;
     ImActorModelEntityUser_set_name_(self, name);
     ImActorModelEntityUser_set_localName_(self, localName);
     ImActorModelEntityUser_set_avatar_(self, avatar);
+    ImActorModelEntityUser_set_sex_(self, sex);
   }
   return self;
+}
+
+- (instancetype)init {
+  return [super init];
 }
 
 - (ImActorModelEntityPeer *)peer {
@@ -73,26 +94,56 @@ withImActorModelEntityAvatar:(ImActorModelEntityAvatar *)avatar {
   return avatar_;
 }
 
+- (ImActorModelEntitySexEnum *)getSex {
+  return sex_;
+}
+
 - (ImActorModelEntityUser *)editNameWithNSString:(NSString *)name {
-  return [[[ImActorModelEntityUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name withNSString:localName_ withImActorModelEntityAvatar:avatar_] autorelease];
+  return [[[ImActorModelEntityUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name withNSString:localName_ withImActorModelEntityAvatar:avatar_ withImActorModelEntitySexEnum:sex_] autorelease];
 }
 
 - (ImActorModelEntityUser *)editLocalNameWithNSString:(NSString *)localName {
-  return [[[ImActorModelEntityUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name_ withNSString:localName withImActorModelEntityAvatar:avatar_] autorelease];
+  return [[[ImActorModelEntityUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name_ withNSString:localName withImActorModelEntityAvatar:avatar_ withImActorModelEntitySexEnum:sex_] autorelease];
 }
 
 - (ImActorModelEntityUser *)editAvatarWithImActorModelEntityAvatar:(ImActorModelEntityAvatar *)avatar {
-  return [[[ImActorModelEntityUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name_ withNSString:localName_ withImActorModelEntityAvatar:avatar] autorelease];
+  return [[[ImActorModelEntityUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name_ withNSString:localName_ withImActorModelEntityAvatar:avatar withImActorModelEntitySexEnum:sex_] autorelease];
 }
 
 - (jlong)getEngineId {
   return [self getUid];
 }
 
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  uid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+  accessHash_ = [values getLongWithInt:2];
+  ImActorModelEntityUser_set_name_(self, [values getStringWithInt:3]);
+  ImActorModelEntityUser_set_localName_(self, [values optStringWithInt:4]);
+  IOSByteArray *a = [values optBytesWithInt:5];
+  if (a != nil) {
+    ImActorModelEntityUser_set_avatar_(self, ImActorModelEntityAvatar_fromBytesWithByteArray_(a));
+  }
+  ImActorModelEntityUser_set_sex_(self, ImActorModelEntitySexEnum_fromValueWithInt_([values getIntWithInt:6]));
+}
+
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:uid_];
+  [writer writeLongWithInt:2 withLong:accessHash_];
+  [writer writeStringWithInt:3 withNSString:name_];
+  if (localName_ != nil) {
+    [writer writeStringWithInt:4 withNSString:localName_];
+  }
+  if (avatar_ != nil) {
+    [writer writeObjectWithInt:5 withImActorModelDroidkitBserBserObject:avatar_];
+  }
+  [writer writeIntWithInt:6 withInt:[((ImActorModelEntitySexEnum *) nil_chk(sex_)) getValue]];
+}
+
 - (void)dealloc {
   RELEASE_(name_);
   RELEASE_(localName_);
   RELEASE_(avatar_);
+  RELEASE_(sex_);
   [super dealloc];
 }
 
@@ -103,11 +154,14 @@ withImActorModelEntityAvatar:(ImActorModelEntityAvatar *)avatar {
   ImActorModelEntityUser_set_name_(other, name_);
   ImActorModelEntityUser_set_localName_(other, localName_);
   ImActorModelEntityUser_set_avatar_(other, avatar_);
+  ImActorModelEntityUser_set_sex_(other, sex_);
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withLong:withNSString:withNSString:withImActorModelEntityAvatar:", "User", NULL, 0x1, NULL },
+    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.User;", 0x9, "Ljava.io.IOException;" },
+    { "initWithInt:withLong:withNSString:withNSString:withImActorModelEntityAvatar:withImActorModelEntitySexEnum:", "User", NULL, 0x1, NULL },
+    { "init", "User", NULL, 0x2, NULL },
     { "peer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
     { "getUid", NULL, "I", 0x1, NULL },
     { "getAccessHash", NULL, "J", 0x1, NULL },
@@ -115,22 +169,31 @@ withImActorModelEntityAvatar:(ImActorModelEntityAvatar *)avatar {
     { "getLocalName", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getAvatar", NULL, "Lim.actor.model.entity.Avatar;", 0x1, NULL },
+    { "getSex", NULL, "Lim.actor.model.entity.Sex;", 0x1, NULL },
     { "editNameWithNSString:", "editName", "Lim.actor.model.entity.User;", 0x1, NULL },
     { "editLocalNameWithNSString:", "editLocalName", "Lim.actor.model.entity.User;", 0x1, NULL },
     { "editAvatarWithImActorModelEntityAvatar:", "editAvatar", "Lim.actor.model.entity.User;", 0x1, NULL },
     { "getEngineId", NULL, "J", 0x1, NULL },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "uid_", NULL, 0x12, "I", NULL,  },
-    { "accessHash_", NULL, 0x12, "J", NULL,  },
-    { "name_", NULL, 0x12, "Ljava.lang.String;", NULL,  },
-    { "localName_", NULL, 0x12, "Ljava.lang.String;", NULL,  },
-    { "avatar_", NULL, 0x12, "Lim.actor.model.entity.Avatar;", NULL,  },
+    { "uid_", NULL, 0x2, "I", NULL,  },
+    { "accessHash_", NULL, 0x2, "J", NULL,  },
+    { "name_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
+    { "localName_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
+    { "avatar_", NULL, 0x2, "Lim.actor.model.entity.Avatar;", NULL,  },
+    { "sex_", NULL, 0x2, "Lim.actor.model.entity.Sex;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityUser = { 1, "User", "im.actor.model.entity", NULL, 0x1, 12, methods, 5, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelEntityUser = { 1, "User", "im.actor.model.entity", NULL, 0x1, 17, methods, 6, fields, 0, NULL};
   return &_ImActorModelEntityUser;
 }
 
 @end
+
+ImActorModelEntityUser *ImActorModelEntityUser_fromBytesWithByteArray_(IOSByteArray *data) {
+  ImActorModelEntityUser_init();
+  return ((ImActorModelEntityUser *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityUser alloc] init] autorelease], data));
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityUser)

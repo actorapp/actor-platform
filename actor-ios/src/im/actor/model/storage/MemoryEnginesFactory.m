@@ -3,36 +3,29 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/storage/MemoryEnginesFactory.java
 //
 
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/Peer.h"
-#include "im/actor/model/entity/User.h"
 #include "im/actor/model/mvvm/KeyValueEngine.h"
 #include "im/actor/model/mvvm/ListEngine.h"
 #include "im/actor/model/storage/MemoryEnginesFactory.h"
-#include "java/lang/Integer.h"
-#include "java/util/HashMap.h"
-#include "java/util/List.h"
-
-@interface ImActorModelStorageMemoryEnginesFactory_$1 () {
- @public
-  JavaUtilHashMap *users_;
-}
-@end
-
-J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryEnginesFactory_$1, users_, JavaUtilHashMap *)
+#include "im/actor/model/storage/MemoryKeyValueEngine.h"
+#include "im/actor/model/storage/MemoryListEngine.h"
 
 @implementation ImActorModelStorageMemoryEnginesFactory
 
 - (id<ImActorModelMvvmKeyValueEngine>)createUsersEngine {
-  return [[[ImActorModelStorageMemoryEnginesFactory_$1 alloc] init] autorelease];
+  return [[[ImActorModelStorageMemoryKeyValueEngine alloc] init] autorelease];
 }
 
 - (id<ImActorModelMvvmListEngine>)createDialogsEngine {
-  return nil;
+  return [[[ImActorModelStorageMemoryListEngine alloc] init] autorelease];
 }
 
 - (id<ImActorModelMvvmListEngine>)createMessagesEngineWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
+  return [[[ImActorModelStorageMemoryListEngine alloc] init] autorelease];
+}
+
+- (id<ImActorModelMvvmKeyValueEngine>)pendingMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
   return nil;
 }
 
@@ -45,98 +38,13 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryEnginesFactory_$1, users_, JavaUtil
     { "createUsersEngine", NULL, "Lim.actor.model.mvvm.KeyValueEngine;", 0x1, NULL },
     { "createDialogsEngine", NULL, "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
     { "createMessagesEngineWithImActorModelEntityPeer:", "createMessagesEngine", "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
+    { "pendingMessagesWithImActorModelEntityPeer:", "pendingMessages", "Lim.actor.model.mvvm.KeyValueEngine;", 0x1, NULL },
     { "init", NULL, NULL, 0x1, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelStorageMemoryEnginesFactory = { 1, "MemoryEnginesFactory", "im.actor.model.storage", NULL, 0x1, 4, methods, 0, NULL, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelStorageMemoryEnginesFactory = { 1, "MemoryEnginesFactory", "im.actor.model.storage", NULL, 0x1, 5, methods, 0, NULL, 0, NULL};
   return &_ImActorModelStorageMemoryEnginesFactory;
 }
 
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelStorageMemoryEnginesFactory)
-
-@implementation ImActorModelStorageMemoryEnginesFactory_$1
-
-- (void)addOrUpdateItemWithImActorModelMvvmKeyValueItem:(ImActorModelEntityUser *)item {
-  @synchronized(self) {
-    [((JavaUtilHashMap *) nil_chk(users_)) putWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelEntityUser *) nil_chk(item)) getUid]) withId:item];
-  }
-}
-
-- (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values {
-  @synchronized(self) {
-    for (ImActorModelEntityUser * __strong u in nil_chk(values)) {
-      [((JavaUtilHashMap *) nil_chk(users_)) putWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelEntityUser *) nil_chk(u)) getUid]) withId:u];
-    }
-  }
-}
-
-- (void)removeItemWithLong:(jlong)id_ {
-  @synchronized(self) {
-    [((JavaUtilHashMap *) nil_chk(users_)) removeWithId:JavaLangInteger_valueOfWithInt_((jint) id_)];
-  }
-}
-
-- (void)removeItemsWithLongArray:(IOSLongArray *)ids {
-  @synchronized(self) {
-    {
-      IOSLongArray *a__ = ids;
-      jlong const *b__ = ((IOSLongArray *) nil_chk(a__))->buffer_;
-      jlong const *e__ = b__ + a__->size_;
-      while (b__ < e__) {
-        jlong id_ = *b__++;
-        [((JavaUtilHashMap *) nil_chk(users_)) removeWithId:JavaLangInteger_valueOfWithInt_((jint) id_)];
-      }
-    }
-  }
-}
-
-- (void)clear {
-  @synchronized(self) {
-    [((JavaUtilHashMap *) nil_chk(users_)) clear];
-  }
-}
-
-- (ImActorModelEntityUser *)getValueWithLong:(jlong)id_ {
-  @synchronized(self) {
-    return [((JavaUtilHashMap *) nil_chk(users_)) getWithId:JavaLangInteger_valueOfWithInt_((jint) id_)];
-  }
-}
-
-- (instancetype)init {
-  if (self = [super init]) {
-    ImActorModelStorageMemoryEnginesFactory_$1_setAndConsume_users_(self, [[JavaUtilHashMap alloc] init]);
-  }
-  return self;
-}
-
-- (void)dealloc {
-  RELEASE_(users_);
-  [super dealloc];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelStorageMemoryEnginesFactory_$1 *)other {
-  [super copyAllFieldsTo:other];
-  ImActorModelStorageMemoryEnginesFactory_$1_set_users_(other, users_);
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "addOrUpdateItemWithImActorModelEntityUser:", "addOrUpdateItem", "V", 0x21, NULL },
-    { "addOrUpdateItemsWithJavaUtilList:", "addOrUpdateItems", "V", 0x21, NULL },
-    { "removeItemWithLong:", "removeItem", "V", 0x21, NULL },
-    { "removeItemsWithLongArray:", "removeItems", "V", 0x21, NULL },
-    { "clear", NULL, "V", 0x21, NULL },
-    { "getValueWithLong:", "getValue", "Lim.actor.model.entity.User;", 0x21, NULL },
-    { "init", NULL, NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "users_", NULL, 0x2, "Ljava.util.HashMap;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelStorageMemoryEnginesFactory_$1 = { 1, "$1", "im.actor.model.storage", "MemoryEnginesFactory", 0x8000, 7, methods, 1, fields, 0, NULL};
-  return &_ImActorModelStorageMemoryEnginesFactory_$1;
-}
-
-@end
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelStorageMemoryEnginesFactory_$1)

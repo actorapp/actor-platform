@@ -7,16 +7,15 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/mtp/entity/ProtoObject.h"
-#include "java/io/ByteArrayOutputStream.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/OutputStream.h"
 
 @implementation MTProtoObject
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)stream {
+- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
   if (self = [super init]) {
-    [self readObjectWithJavaIoInputStream:stream];
+    [self readObjectWithAMDataInput:stream];
   }
   return self;
 }
@@ -25,21 +24,21 @@
   return [super init];
 }
 
-- (void)writeObjectWithJavaIoOutputStream:(JavaIoOutputStream *)bs {
+- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs {
   // can't call an abstract method
   [self doesNotRecognizeSelector:_cmd];
 }
 
-- (MTProtoObject *)readObjectWithJavaIoInputStream:(JavaIoInputStream *)bs {
+- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs {
   // can't call an abstract method
   [self doesNotRecognizeSelector:_cmd];
   return 0;
 }
 
 - (IOSByteArray *)toByteArray {
-  JavaIoByteArrayOutputStream *outputStream = [[[JavaIoByteArrayOutputStream alloc] init] autorelease];
+  AMDataOutput *outputStream = [[[AMDataOutput alloc] init] autorelease];
   @try {
-    [self writeObjectWithJavaIoOutputStream:outputStream];
+    [self writeObjectWithAMDataOutput:outputStream];
   }
   @catch (JavaIoIOException *e) {
     [((JavaIoIOException *) nil_chk(e)) printStackTrace];
@@ -47,22 +46,15 @@
   return [outputStream toByteArray];
 }
 
-- (jint)getLength {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-  return 0;
-}
-
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaIoInputStream:", "ProtoObject", NULL, 0x4, "Ljava.io.IOException;" },
+    { "initWithAMDataInput:", "ProtoObject", NULL, 0x4, "Ljava.io.IOException;" },
     { "init", "ProtoObject", NULL, 0x4, NULL },
-    { "writeObjectWithJavaIoOutputStream:", "writeObject", "V", 0x401, "Ljava.io.IOException;" },
-    { "readObjectWithJavaIoInputStream:", "readObject", "Lim.actor.model.network.mtp.entity.ProtoObject;", 0x401, "Ljava.io.IOException;" },
+    { "writeObjectWithAMDataOutput:", "writeObject", "V", 0x401, "Ljava.io.IOException;" },
+    { "readObjectWithAMDataInput:", "readObject", "Lim.actor.model.network.mtp.entity.ProtoObject;", 0x401, "Ljava.io.IOException;" },
     { "toByteArray", NULL, "[B", 0x1, NULL },
-    { "getLength", NULL, "I", 0x401, NULL },
   };
-  static const J2ObjcClassInfo _MTProtoObject = { 1, "ProtoObject", "im.actor.model.network.mtp.entity", NULL, 0x401, 6, methods, 0, NULL, 0, NULL};
+  static const J2ObjcClassInfo _MTProtoObject = { 1, "ProtoObject", "im.actor.model.network.mtp.entity", NULL, 0x401, 5, methods, 0, NULL, 0, NULL};
   return &_MTProtoObject;
 }
 

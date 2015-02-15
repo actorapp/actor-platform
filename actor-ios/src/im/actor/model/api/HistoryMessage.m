@@ -5,11 +5,11 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/HistoryMessage.h"
 #include "im/actor/model/api/MessageContent.h"
 #include "im/actor/model/api/MessageState.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiHistoryMessage () {
@@ -66,22 +66,22 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   return self->state_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->senderUid_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->senderUid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:2];
   self->date_ = [values getLongWithInt:3];
-  ImActorModelApiHistoryMessage_set_message_(self, [values getObjWithInt:5 withIOSClass:ImActorModelApiMessageContent_class_()]);
+  ImActorModelApiHistoryMessage_set_message_(self, [values getObjWithInt:5 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiMessageContent alloc] init] autorelease]]);
   ImActorModelApiHistoryMessage_set_state_(self, ImActorModelApiMessageStateEnum_parseWithInt_([values getIntWithInt:6]));
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->senderUid_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->senderUid_];
   [writer writeLongWithInt:2 withLong:self->rid_];
   [writer writeLongWithInt:3 withLong:self->date_];
   if (self->message_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [writer writeObjectWithInt:5 withComDroidkitBserBserObject:self->message_];
+  [writer writeObjectWithInt:5 withImActorModelDroidkitBserBserObject:self->message_];
   if (self->state_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
@@ -112,8 +112,8 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
     { "getDate", NULL, "J", 0x1, NULL },
     { "getMessage", NULL, "Lim.actor.model.api.MessageContent;", 0x1, NULL },
     { "getState", NULL, "Lim.actor.model.api.MessageState;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "senderUid_", NULL, 0x2, "I", NULL,  },

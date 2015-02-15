@@ -11,9 +11,8 @@
 #include "im/actor/model/network/ConnectionFactory.h"
 #include "im/actor/model/network/Endpoints.h"
 #include "im/actor/model/network/mtp/AuthIdRetriever.h"
-#include "im/actor/model/util/StreamingUtils.h"
-#include "java/io/ByteArrayInputStream.h"
-#include "java/io/ByteArrayOutputStream.h"
+#include "im/actor/model/util/DataInput.h"
+#include "im/actor/model/util/DataOutput.h"
 #include "java/lang/Exception.h"
 #include "java/lang/RuntimeException.h"
 
@@ -105,13 +104,14 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
     return;
   }
   @try {
-    JavaIoByteArrayInputStream *bis = [[[JavaIoByteArrayInputStream alloc] initWithByteArray:data withInt:offset withInt:len] autorelease];
-    jlong reqAuthId = AMStreamingUtils_readLongWithJavaIoInputStream_(bis);
-    jlong sessionId = AMStreamingUtils_readLongWithJavaIoInputStream_(bis);
-    jlong messageId = AMStreamingUtils_readLongWithJavaIoInputStream_(bis);
-    IOSByteArray *content = AMStreamingUtils_readProtoBytesWithJavaIoInputStream_(bis);
-    jint header = IOSByteArray_Get(nil_chk(content), 0) & (jint) 0xFF;
-    jlong authId = AMStreamingUtils_readLongWithByteArray_withInt_(content, 1);
+    AMDataInput *dataInput = [[[AMDataInput alloc] initWithByteArray:data withInt:offset withInt:len] autorelease];
+    jlong pAuthId = [dataInput readLong];
+    jlong pSessionId = [dataInput readLong];
+    jlong messageId = [dataInput readLong];
+    IOSByteArray *payload = [dataInput readProtoBytes];
+    AMDataInput *msg = [[[AMDataInput alloc] initWithByteArray:payload withInt:0 withInt:((IOSByteArray *) nil_chk(payload))->size_] autorelease];
+    jint header = [msg readByte];
+    jlong authId = [msg readLong];
     if (!IOSBooleanArray_Get(val$isFinished_, 0)) {
       *IOSBooleanArray_GetRef(val$isFinished_, 0) = YES;
       [((id<MTAuthIdRetriever_AuthIdCallback>) nil_chk(val$callback_)) onSuccessWithLong:authId];
@@ -179,13 +179,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
   }
   AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_get_TAG_(), @"Connection created");
   @try {
-    JavaIoByteArrayOutputStream *baos = [[[JavaIoByteArrayOutputStream alloc] init] autorelease];
-    AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(0, baos);
-    AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(0, baos);
-    AMStreamingUtils_writeLongWithLong_withJavaIoOutputStream_(0, baos);
-    AMStreamingUtils_writeVarIntWithLong_withJavaIoOutputStream_(1, baos);
-    AMStreamingUtils_writeByteWithInt_withJavaIoOutputStream_((jint) 0xF0, baos);
-    IOSByteArray *data = [baos toByteArray];
+    AMDataOutput *output = [[[AMDataOutput alloc] init] autorelease];
+    [output writeLongWithLong:0];
+    [output writeLongWithLong:0];
+    [output writeLongWithLong:0];
+    [output writeVarIntWithLong:1];
+    [output writeByteWithInt:(jint) 0xF0];
+    IOSByteArray *data = [output toByteArray];
     [((id<AMConnection>) nil_chk(connection)) postWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
   }
   @catch (JavaLangException *e) {

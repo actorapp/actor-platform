@@ -6,13 +6,14 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/UserOutPeer.h"
 #include "im/actor/model/api/rpc/RequestCreateGroup.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 @interface ImActorModelApiRpcRequestCreateGroup () {
@@ -59,14 +60,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
   return self->users_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->rid_ = [((ComDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->rid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
   ImActorModelApiRpcRequestCreateGroup_set_title_(self, [values getStringWithInt:2]);
-  ImActorModelApiRpcRequestCreateGroup_set_users_(self, [values getRepeatedObjWithInt:3 withIOSClass:ImActorModelApiUserOutPeer_class_()]);
+  id<JavaUtilList> _users = [[[JavaUtilArrayList alloc] init] autorelease];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:3]; i++) {
+    [_users addWithId:[[[ImActorModelApiUserOutPeer alloc] init] autorelease]];
+  }
+  ImActorModelApiRpcRequestCreateGroup_set_users_(self, [values getRepeatedObjWithInt:3 withJavaUtilList:_users]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->rid_];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->rid_];
   if (self->title_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
@@ -99,8 +104,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
     { "getRid", NULL, "J", 0x1, NULL },
     { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -118,7 +123,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
 
 ImActorModelApiRpcRequestCreateGroup *ImActorModelApiRpcRequestCreateGroup_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestCreateGroup_init();
-  return ((ImActorModelApiRpcRequestCreateGroup *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcRequestCreateGroup_class_(), data));
+  return ((ImActorModelApiRpcRequestCreateGroup *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestCreateGroup alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestCreateGroup)

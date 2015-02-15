@@ -6,15 +6,15 @@
 #ifndef _ImActorModelApiHistoryMessage_H_
 #define _ImActorModelApiHistoryMessage_H_
 
-@class ComDroidkitBserBserValues;
-@class ComDroidkitBserBserWriter;
 @class ImActorModelApiMessageContent;
 @class ImActorModelApiMessageStateEnum;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiHistoryMessage : ComDroidkitBserBserObject {
+@interface ImActorModelApiHistoryMessage : ImActorModelDroidkitBserBserObject {
 }
 
 - (instancetype)initWithInt:(jint)senderUid
@@ -35,9 +35,9 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state;
 
 - (ImActorModelApiMessageStateEnum *)getState;
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values;
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer;
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
 
 @end
 

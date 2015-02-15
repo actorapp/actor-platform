@@ -6,13 +6,13 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/MessageContent.h"
 #include "im/actor/model/api/OutPeer.h"
 #include "im/actor/model/api/rpc/RequestSendMessage.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestSendMessage () {
@@ -59,22 +59,22 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
   return self->message_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestSendMessage_set_peer_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withIOSClass:ImActorModelApiOutPeer_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiRpcRequestSendMessage_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiOutPeer alloc] init] autorelease]]);
   self->rid_ = [values getLongWithInt:3];
-  ImActorModelApiRpcRequestSendMessage_set_message_(self, [values getObjWithInt:4 withIOSClass:ImActorModelApiMessageContent_class_()]);
+  ImActorModelApiRpcRequestSendMessage_set_message_(self, [values getObjWithInt:4 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiMessageContent alloc] init] autorelease]]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withComDroidkitBserBserObject:self->peer_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeLongWithInt:3 withLong:self->rid_];
   if (self->message_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [writer writeObjectWithInt:4 withComDroidkitBserBserObject:self->message_];
+  [writer writeObjectWithInt:4 withImActorModelDroidkitBserBserObject:self->message_];
 }
 
 - (jint)getHeaderKey {
@@ -102,8 +102,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
     { "getPeer", NULL, "Lim.actor.model.api.OutPeer;", 0x1, NULL },
     { "getRid", NULL, "J", 0x1, NULL },
     { "getMessage", NULL, "Lim.actor.model.api.MessageContent;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -121,7 +121,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
 
 ImActorModelApiRpcRequestSendMessage *ImActorModelApiRpcRequestSendMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSendMessage_init();
-  return ((ImActorModelApiRpcRequestSendMessage *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiRpcRequestSendMessage_class_(), data));
+  return ((ImActorModelApiRpcRequestSendMessage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestSendMessage alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSendMessage)

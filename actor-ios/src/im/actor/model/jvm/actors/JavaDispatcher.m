@@ -4,11 +4,11 @@
 //
 
 #include "J2ObjC_source.h"
-#include "com/droidkit/actors/ActorSystem.h"
-#include "com/droidkit/actors/ThreadPriority.h"
-#include "com/droidkit/actors/mailbox/ActorDispatcher.h"
-#include "com/droidkit/actors/mailbox/Envelope.h"
-#include "com/droidkit/actors/mailbox/MailboxesQueue.h"
+#include "im/actor/model/droidkit/actors/ActorSystem.h"
+#include "im/actor/model/droidkit/actors/ThreadPriority.h"
+#include "im/actor/model/droidkit/actors/mailbox/ActorDispatcher.h"
+#include "im/actor/model/droidkit/actors/mailbox/Envelope.h"
+#include "im/actor/model/droidkit/actors/mailbox/MailboxesQueue.h"
 #include "im/actor/model/jvm/actors/JavaDispatcher.h"
 #include "im/actor/model/jvm/actors/JavaThreadsDispatcher.h"
 
@@ -23,18 +23,18 @@ J2OBJC_FIELD_SETTER(ImActorModelJvmActorsJavaDispatcher_$1, this$0_, ImActorMode
 @implementation ImActorModelJvmActorsJavaDispatcher
 
 - (instancetype)initWithNSString:(NSString *)name
-               withDAActorSystem:(DAActorSystem *)actorSystem
+withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem *)actorSystem
                          withInt:(jint)threadsCount
-        withDAThreadPriorityEnum:(DAThreadPriorityEnum *)priority {
-  if (self = [super initWithNSString:name withDAActorSystem:actorSystem]) {
-    [self initDispatcherWithComDroidkitActorsDispatchAbstractDispatcher:[[[ImActorModelJvmActorsJavaThreadsDispatcher alloc] initWithNSString:[self getName] withInt:threadsCount withDAThreadPriorityEnum:priority withComDroidkitActorsDispatchAbstractDispatchQueue:[[[ComDroidkitActorsMailboxMailboxesQueue alloc] init] autorelease] withComDroidkitActorsDispatchDispatch:[[[ImActorModelJvmActorsJavaDispatcher_$1 alloc] initWithImActorModelJvmActorsJavaDispatcher:self] autorelease] withBoolean:YES] autorelease]];
+withImActorModelDroidkitActorsThreadPriorityEnum:(ImActorModelDroidkitActorsThreadPriorityEnum *)priority {
+  if (self = [super initWithNSString:name withImActorModelDroidkitActorsActorSystem:actorSystem]) {
+    [self initDispatcherWithImActorModelDroidkitActorsDispatchAbstractDispatcher:[[[ImActorModelJvmActorsJavaThreadsDispatcher alloc] initWithNSString:[self getName] withInt:threadsCount withImActorModelDroidkitActorsThreadPriorityEnum:priority withImActorModelDroidkitActorsDispatchAbstractDispatchQueue:[[[ImActorModelDroidkitActorsMailboxMailboxesQueue alloc] init] autorelease] withImActorModelDroidkitActorsDispatchDispatch:[[[ImActorModelJvmActorsJavaDispatcher_$1 alloc] initWithImActorModelJvmActorsJavaDispatcher:self] autorelease] withBoolean:YES] autorelease]];
   }
   return self;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withDAActorSystem:withInt:withDAThreadPriorityEnum:", "JavaDispatcher", NULL, 0x1, NULL },
+    { "initWithNSString:withImActorModelDroidkitActorsActorSystem:withInt:withImActorModelDroidkitActorsThreadPriorityEnum:", "JavaDispatcher", NULL, 0x1, NULL },
   };
   static const J2ObjcClassInfo _ImActorModelJvmActorsJavaDispatcher = { 1, "JavaDispatcher", "im.actor.model.jvm.actors", NULL, 0x1, 1, methods, 0, NULL, 0, NULL};
   return &_ImActorModelJvmActorsJavaDispatcher;
@@ -46,8 +46,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmActorsJavaDispatcher)
 
 @implementation ImActorModelJvmActorsJavaDispatcher_$1
 
-- (void)dispatchMessageWithId:(ComDroidkitActorsMailboxEnvelope *)message {
-  [this$0_ processEnvelopeWithComDroidkitActorsMailboxEnvelope:message];
+- (void)dispatchMessageWithId:(ImActorModelDroidkitActorsMailboxEnvelope *)message {
+  [this$0_ processEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:message];
 }
 
 - (instancetype)initWithImActorModelJvmActorsJavaDispatcher:(ImActorModelJvmActorsJavaDispatcher *)outer$ {
@@ -67,7 +67,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmActorsJavaDispatcher)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "dispatchMessageWithComDroidkitActorsMailboxEnvelope:", "dispatchMessage", "V", 0x1, NULL },
+    { "dispatchMessageWithImActorModelDroidkitActorsMailboxEnvelope:", "dispatchMessage", "V", 0x1, NULL },
     { "initWithImActorModelJvmActorsJavaDispatcher:", "init", NULL, 0x0, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {

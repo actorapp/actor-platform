@@ -5,10 +5,10 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/ContactRecord.h"
 #include "im/actor/model/api/RecordType.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiContactRecord () {
@@ -66,16 +66,16 @@ withImActorModelApiRecordTypeEnum:(ImActorModelApiRecordTypeEnum *)recordType
   return self->title_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  self->id__ = [((ComDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  self->id__ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
   ImActorModelApiContactRecord_set_recordType_(self, ImActorModelApiRecordTypeEnum_parseWithInt_([values getIntWithInt:3]));
   ImActorModelApiContactRecord_set_record_(self, [values getStringWithInt:4]);
   ImActorModelApiContactRecord_set_title_(self, [values getStringWithInt:5]);
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   if (self->recordType_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
@@ -116,8 +116,8 @@ withImActorModelApiRecordTypeEnum:(ImActorModelApiRecordTypeEnum *)recordType
     { "getRecordType", NULL, "Lim.actor.model.api.RecordType;", 0x1, NULL },
     { "getRecord", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "id__", "id", 0x2, "I", NULL,  },

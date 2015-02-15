@@ -6,14 +6,14 @@
 #ifndef _ImActorModelApiDifferenceUpdate_H_
 #define _ImActorModelApiDifferenceUpdate_H_
 
-@class ComDroidkitBserBserValues;
-@class ComDroidkitBserBserWriter;
 @class IOSByteArray;
+@class ImActorModelDroidkitBserBserValues;
+@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
-#include "com/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiDifferenceUpdate : ComDroidkitBserBserObject {
+@interface ImActorModelApiDifferenceUpdate : ImActorModelDroidkitBserBserObject {
 }
 
 - (instancetype)initWithInt:(jint)updateHeader
@@ -25,9 +25,9 @@
 
 - (IOSByteArray *)getUpdate;
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values;
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer;
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
 
 @end
 

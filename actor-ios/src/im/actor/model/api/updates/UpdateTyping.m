@@ -6,12 +6,12 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "com/droidkit/bser/Bser.h"
-#include "com/droidkit/bser/BserObject.h"
-#include "com/droidkit/bser/BserValues.h"
-#include "com/droidkit/bser/BserWriter.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/updates/UpdateTyping.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateTyping () {
@@ -57,17 +57,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, peer_, ImActorModelApiPe
   return self->typingType_;
 }
 
-- (void)parseWithComDroidkitBserBserValues:(ComDroidkitBserBserValues *)values {
-  ImActorModelApiUpdatesUpdateTyping_set_peer_(self, [((ComDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withIOSClass:ImActorModelApiPeer_class_()]);
+- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  ImActorModelApiUpdatesUpdateTyping_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiPeer alloc] init] autorelease]]);
   self->uid_ = [values getIntWithInt:2];
   self->typingType_ = [values getIntWithInt:3];
 }
 
-- (void)serializeWithComDroidkitBserBserWriter:(ComDroidkitBserBserWriter *)writer {
+- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[[JavaIoIOException alloc] init] autorelease];
   }
-  [((ComDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withComDroidkitBserBserObject:self->peer_];
+  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeIntWithInt:2 withInt:self->uid_];
   [writer writeIntWithInt:3 withInt:self->typingType_];
 }
@@ -96,8 +96,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, peer_, ImActorModelApiPe
     { "getPeer", NULL, "Lim.actor.model.api.Peer;", 0x1, NULL },
     { "getUid", NULL, "I", 0x1, NULL },
     { "getTypingType", NULL, "I", 0x1, NULL },
-    { "parseWithComDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithComDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -114,7 +114,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, peer_, ImActorModelApiPe
 
 ImActorModelApiUpdatesUpdateTyping *ImActorModelApiUpdatesUpdateTyping_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateTyping_init();
-  return ((ImActorModelApiUpdatesUpdateTyping *) ComDroidkitBserBser_parseWithIOSClass_withByteArray_(ImActorModelApiUpdatesUpdateTyping_class_(), data));
+  return ((ImActorModelApiUpdatesUpdateTyping *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateTyping alloc] init] autorelease], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateTyping)
