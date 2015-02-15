@@ -37,12 +37,14 @@ import im.actor.messenger.app.view.TypingDrawable;
 import im.actor.messenger.core.AppContext;
 import im.actor.messenger.model.*;
 import im.actor.messenger.settings.ChatSettings;
-import im.actor.messenger.settings.NotificationSettings;
 import im.actor.messenger.storage.scheme.groups.GroupState;
 import im.actor.messenger.util.*;
 import im.actor.messenger.util.io.IOUtils;
+import im.actor.model.Messenger;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
+import im.actor.model.entity.content.TextContent;
+import im.actor.model.modules.Messages;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +53,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import static im.actor.messenger.app.view.ViewUtils.*;
+import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.storage.KeyValueEngines.users;
 
 public class ChatActivity extends BaseBarActivity implements Listener<GroupState> {
@@ -63,30 +66,25 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 
     private Peer peer;
 
+    private Messenger messenger;
+    private Messages messages;
+
     private EditText messageBody;
     private TintImageView sendButton;
     private ImageButton attachButton;
+    private View kicked;
 
-    private View customView;
-
-    private AvatarView avatar;
-    private TextView title;
-    private View subtitleContainer;
-    private TextView subtitle;
-    private View typingContainer;
-    private ImageView typingIcon;
-    private TextView typing;
-
-    private View recordingPanel;
-    private ImageView audioMessage;
+    // Action bar
+    private View barView;
+    private AvatarView barAvatar;
+    private TextView barTitle;
+    private View barSubtitleContainer;
+    private TextView barSubtitle;
+    private View barTypingContainer;
+    private ImageView barTypingIcon;
+    private TextView barTyping;
 
     private String fileName;
-
-    private View cancelView;
-
-    private TextView recordTimer;
-
-    private View kicked;
 
     private KeyboardHelper keyboardUtils;
 
@@ -102,11 +100,10 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 
         peer = Peer.fromUid(getIntent().getExtras().getLong(Intents.EXTRA_CHAT_PEER));
 
-        if (saveInstance != null) {
-            isCompose = false;
-        } else {
-            isCompose = getIntent().getExtras().getBoolean(Intents.EXTRA_CHAT_COMPOSE, false);
-        }
+        isCompose = saveInstance == null && getIntent().getExtras().getBoolean(Intents.EXTRA_CHAT_COMPOSE, false);
+
+        messenger = messenger();
+        messages = messenger.getMessagesModule();
 
         // Init action bar
 
@@ -116,19 +113,21 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayUseLogoEnabled(false);
 
-        customView = LayoutInflater.from(this).inflate(R.layout.bar_conversation, null);
-        title = (TextView) customView.findViewById(R.id.title);
-        subtitleContainer = customView.findViewById(R.id.subtitleContainer);
-        typingIcon = (ImageView) customView.findViewById(R.id.typingImage);
-        typingIcon.setImageDrawable(new TypingDrawable());
-        typing = (TextView) customView.findViewById(R.id.typing);
-        subtitle = (TextView) customView.findViewById(R.id.subtitle);
-        typingContainer = customView.findViewById(R.id.typingContainer);
-        typingContainer.setVisibility(View.INVISIBLE);
-        avatar = (AvatarView) customView.findViewById(R.id.avatarPreview);
+        // Action bar header
+
+        barView = LayoutInflater.from(this).inflate(R.layout.bar_conversation, null);
+        barTitle = (TextView) barView.findViewById(R.id.title);
+        barSubtitleContainer = barView.findViewById(R.id.subtitleContainer);
+        barTypingIcon = (ImageView) barView.findViewById(R.id.typingImage);
+        barTypingIcon.setImageDrawable(new TypingDrawable());
+        barTyping = (TextView) barView.findViewById(R.id.typing);
+        barSubtitle = (TextView) barView.findViewById(R.id.subtitle);
+        barTypingContainer = barView.findViewById(R.id.typingContainer);
+        barTypingContainer.setVisibility(View.INVISIBLE);
+        barAvatar = (AvatarView) barView.findViewById(R.id.avatarPreview);
         ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
-        getSupportActionBar().setCustomView(customView, layout);
-        customView.findViewById(R.id.titleContainer).setOnClickListener(new View.OnClickListener() {
+        getSupportActionBar().setCustomView(barView, layout);
+        barView.findViewById(R.id.titleContainer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (peer.getPeerType() == PeerType.PRIVATE) {
@@ -138,12 +137,6 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                 }
             }
         });
-//        customView.findViewById(R.id.backContainer).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                finish();
-//            }
-//        });
 
         // Init view
 
@@ -171,22 +164,12 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (BuildConfig.ENABLE_VOICE) {
-                    if (s.length() > 0) {
-                        sendButton.setVisibility(View.VISIBLE);
-                        audioMessage.setVisibility(View.GONE);
-                    } else {
-                        sendButton.setVisibility(View.GONE);
-                        audioMessage.setVisibility(View.VISIBLE);
-                    }
+                if (s.length() > 0) {
+                    sendButton.setTint(getResources().getColor(R.color.conv_send_enabled));
+                    sendButton.setEnabled(true);
                 } else {
-                    if (s.length() > 0) {
-                        sendButton.setTint(getResources().getColor(R.color.conv_send_enabled));
-                        sendButton.setEnabled(true);
-                    } else {
-                        sendButton.setTint(getResources().getColor(R.color.conv_send_disabled));
-                        sendButton.setEnabled(false);
-                    }
+                    sendButton.setTint(getResources().getColor(R.color.conv_send_disabled));
+                    sendButton.setEnabled(false);
                 }
             }
         });
@@ -225,35 +208,6 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 
         kicked = findViewById(R.id.kickedFromChat);
         kicked.setVisibility(View.GONE);
-
-        findViewById(R.id.kickedButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(ChatActivity.this)
-                        .setMessage(R.string.alert_delete_group_title)
-                        .setPositiveButton(R.string.alert_delete_group_yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // groupUpdates().deleteChat(chatId);
-                            }
-                        })
-                        .setNegativeButton(R.string.dialog_cancel, null)
-                        .show()
-                        .setCanceledOnTouchOutside(false);
-            }
-        });
-
-        recordingPanel = findViewById(R.id.recordingPanel);
-        recordingPanel.setVisibility(View.GONE);
-
-        audioMessage = (ImageView) findViewById(R.id.audioMessage);
-        cancelView = findViewById(R.id.cancelSlide);
-        recordTimer = (TextView) findViewById(R.id.recordTimer);
-
-        if (!BuildConfig.ENABLE_VOICE) {
-            audioMessage.setVisibility(View.GONE);
-            audioMessage.setEnabled(false);
-        }
 
         sendButton = (TintImageView) findViewById(R.id.ib_send);
         sendButton.setResource(R.drawable.conv_send);
@@ -348,23 +302,9 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
         });
     }
 
-    private void updateImeConfig() {
-//        if (ChatSettings.getInstance().isSendByEnter()) {
-//            messageBody.setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES | EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT | EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE);
-//            messageBody.setImeOptions(EditorInfo.IME_ACTION_SEND);
-//        } else {
-//            messageBody.setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES | EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT | EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE);
-//            messageBody.setImeOptions(EditorInfo.IME_ACTION_SEND);
-//        }
-        messageBody.setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES | EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT | EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE);
-        messageBody.setImeOptions(EditorInfo.IME_ACTION_SEND);
-    }
-
     @Override
     public void onResume() {
         super.onResume();
-
-        updateImeConfig();
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
             final UserModel user = users().get(peer.getPeerId());
@@ -374,19 +314,19 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                 return;
             }
 
-            avatar.setEmptyDrawable(AvatarDrawable.create(user, 18, this));
+            barAvatar.setEmptyDrawable(AvatarDrawable.create(user, 18, this));
 //            getBinder().bind(user.getAvatar(), new Listener<Avatar>() {
 //                @Override
 //                public void onUpdated(Avatar a) {
 //                    if (a != null) {
-//                        avatar.bindFastAvatar(38, a);
+//                        barAvatar.bindFastAvatar(38, a);
 //                    } else {
-//                        avatar.unbind();
+//                        barAvatar.unbind();
 //                    }
 //                }
 //            });
 
-            getBinder().bindText(title, user.getNameModel());
+            getBinder().bindText(barTitle, user.getNameModel());
 
             getBinder().bind(user.getPresence(), new Listener<UserPresence>() {
                 @Override
@@ -409,21 +349,21 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 //            }
 //
 //
-//            avatar.setEmptyDrawable(AvatarDrawable.create(groupInfo, 18, this));
+//            barAvatar.setEmptyDrawable(AvatarDrawable.create(groupInfo, 18, this));
 //            getBinder().bind(groupInfo.getAvatarModel(), new Listener<Avatar>() {
 //                @Override
 //                public void onUpdated(Avatar a) {
 //                    if (a != null) {
-//                        avatar.bindFastAvatar(38, a);
+//                        barAvatar.bindFastAvatar(38, a);
 //                    } else {
-//                        avatar.unbind();
+//                        barAvatar.unbind();
 //                    }
 //                }
 //            });
 //
-//            getBinder().bindText(title, groupInfo.getTitleModel());
+//            getBinder().bindText(barTitle, groupInfo.getTitleModel());
 //
-//            subtitle.setVisibility(View.VISIBLE);
+//            barSubtitle.setVisibility(View.VISIBLE);
 //
 //            getBinder().bind(groupInfo.getStateModel(), this);
 //
@@ -440,22 +380,6 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 //                }
 //            });
         }
-//        } else if (chatType == DialogType.TYPE_NOTIFICATIONS) {
-//            title.setText("Notifications");
-//        }
-
-        int left = 0;
-        int right = 0;
-
-//        if (chatType == DialogType.TYPE_USER) {
-//            left = R.drawable.conv_secure_name;
-//        }
-
-//        if (!NotificationSettings.getInstance().convValue(DialogUids.getDialogUid(chatType, chatId)).getValue()) {
-//            right = R.drawable.conv_mute;
-//        }
-
-        title.setCompoundDrawablesWithIntrinsicBounds(left, 0, right, 0);
 
         if (isCompose) {
             messageBody.requestFocus();
@@ -463,67 +387,56 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
         }
         isCompose = false;
 
-//        stateBroker().onConversationOpen(chatType, chatId);
-//
-//        isTypingDisabled = true;
-//        String text = DialogStorage.draftStorage().get(DialogUids.getDialogUid(chatType, chatId));
-//        if (text != null) {
-//            messageBody.setText(text);
-//        } else {
-//            messageBody.setText("");
-//        }
-//        isTypingDisabled = false;
+        messenger().onConversationOpen(peer);
 
-//        messageBody.requestFocus();
-//        messageBody.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                messageBody.requestFocus();
-//                if (messageBody.getText().length() > 0) {
-//                    messageBody.setSelection(0, messageBody.getText().length());
-//                }
-//            }
-//        });
+        isTypingDisabled = true;
+        String text = messages.loadDraft(peer);
+        if (text != null) {
+            messageBody.setText(text);
+        } else {
+            messageBody.setText("");
+        }
+        isTypingDisabled = false;
     }
 
     private void updateUserStatus(UserPresence presence, boolean isTyping) {
         String s = Formatter.formatPresence(presence, users().get(peer.getPeerId()).getSex());
         if (s == null) {
-            subtitleContainer.setVisibility(View.GONE);
+            barSubtitleContainer.setVisibility(View.GONE);
         } else {
-            subtitleContainer.setVisibility(View.VISIBLE);
-            subtitle.setText(s);
+            barSubtitleContainer.setVisibility(View.VISIBLE);
+            barSubtitle.setText(s);
         }
 
         if (isTyping) {
-            typing.setText(R.string.typing_private);
-            showView(typingContainer);
-            hideView(subtitle);
+            barTyping.setText(R.string.typing_private);
+            showView(barTypingContainer);
+            hideView(barSubtitle);
         } else {
-            hideView(typingContainer);
-            showView(subtitle);
+            hideView(barTypingContainer);
+            showView(barSubtitle);
         }
     }
 
     private void updateGroupStatus(int[] onlines, int[] typings) {
         if (typings.length > 0) {
-            typing.setText(Formatter.formatTyping(typings));
-            showView(typingContainer);
-            hideView(subtitle);
+            barTyping.setText(Formatter.formatTyping(typings));
+            showView(barTypingContainer);
+            hideView(barSubtitle);
         } else {
             if (onlines.length == 1) {
                 SpannableStringBuilder builder = new SpannableStringBuilder(
                         getString(R.string.chat_group_members).replace("{0}", onlines[0] + ""));
                 builder.setSpan(new ForegroundColorSpan(0xB7ffffff), 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                subtitle.setText(builder);
+                barSubtitle.setText(builder);
             } else {
                 SpannableStringBuilder builder = new SpannableStringBuilder(getString(R.string.chat_group_members).replace("{0}", onlines[0] + "") + ", ");
                 builder.setSpan(new ForegroundColorSpan(0xB7ffffff), 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 builder.append(getString(R.string.chat_group_members_online).replace("{0}", onlines[1] + ""));
-                subtitle.setText(builder);
+                barSubtitle.setText(builder);
             }
-            hideView(typingContainer);
-            showView(subtitle);
+            hideView(barTypingContainer);
+            showView(barSubtitle);
         }
     }
 
@@ -534,12 +447,13 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             return;
         }
 
+        // Hack for full screen mode
         if (getResources().getDisplayMetrics().heightPixels <=
                 getResources().getDisplayMetrics().widthPixels) {
             keyboardUtils.setImeVisibility(messageBody, false);
         }
 
-        // MessageDeliveryActor.messageSender().sendText(chatType, chatId, text);
+        messages.sendMessage(peer, new TextContent(text));
     }
 
     @Override
@@ -637,6 +551,17 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
     }
 
     @Override
+    public void onUpdated(GroupState groupState) {
+        if (groupState == GroupState.JOINED) {
+            goneView(kicked, false);
+        } else if (groupState == GroupState.KICKED) {
+            showView(kicked, false);
+        } else {
+            finish();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.chat_menu, menu);
 
@@ -713,24 +638,8 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
     @Override
     public void onPause() {
         super.onPause();
-//        String text = messageBody.getText().toString().trim();
-//        if (text.length() > 0) {
-//            DialogStorage.draftStorage().put(DialogUids.getDialogUid(chatType, chatId), text);
-//        } else {
-//            DialogStorage.draftStorage().remove(DialogUids.getDialogUid(chatType, chatId));
-//        }
-        // stateBroker().onConversationClose(chatType, chatId);
-        keyboardUtils.setImeVisibility(messageBody, false);
-    }
 
-    @Override
-    public void onUpdated(GroupState groupState) {
-        if (groupState == GroupState.JOINED) {
-            goneView(kicked, false);
-        } else if (groupState == GroupState.KICKED) {
-            showView(kicked, false);
-        } else {
-            finish();
-        }
+        messages.saveDraft(peer, messageBody.getText().toString());
+        messenger.onConversationClosed(peer);
     }
 }

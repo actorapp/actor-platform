@@ -7,8 +7,8 @@
 #define _ImActorModelModulesMessages_H_
 
 @class AMMessenger;
-@class ImActorModelApiMessageContent;
 @class ImActorModelDroidkitActorsActorRef;
+@class ImActorModelEntityContentAbsContent;
 @class ImActorModelEntityPeer;
 @class ImActorModelModulesMessagesConversationActor;
 @class ImActorModelModulesMessagesDialogsActor;
@@ -36,8 +36,13 @@
 
 - (id<ImActorModelMvvmListEngine>)getDialogsEngine;
 
-- (void)sendMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-             withImActorModelApiMessageContent:(ImActorModelApiMessageContent *)message;
+- (void)sendMessageWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
+      withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)message;
+
+- (void)saveDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
+                               withNSString:(NSString *)draft;
+
+- (NSString *)loadDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
 
 @end
 

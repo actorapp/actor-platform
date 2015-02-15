@@ -8,6 +8,7 @@ import im.actor.model.api.MessageContent;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.AbsContent;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
@@ -85,7 +86,20 @@ public class Messages {
         return dialogs;
     }
 
-    public void sendMessages(final Peer peer, final MessageContent message) {
+    public void sendMessage(final Peer peer, final AbsContent message) {
 
+    }
+
+    public void saveDraft(Peer peer, String draft) {
+        messenger.getConfiguration().getPreferencesStorage().putString("draft_" + peer.getUid(), draft.trim());
+    }
+
+    public String loadDraft(Peer peer) {
+        String res = messenger.getConfiguration().getPreferencesStorage().getString("draft_" + peer.getUid());
+        if (res == null) {
+            return "";
+        } else {
+            return null;
+        }
     }
 }
