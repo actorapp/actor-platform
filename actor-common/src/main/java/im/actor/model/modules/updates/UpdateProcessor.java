@@ -7,6 +7,7 @@ import im.actor.model.api.PeerType;
 import im.actor.model.api.User;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.api.updates.*;
+import im.actor.model.log.Log;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.network.parser.Update;
@@ -19,16 +20,20 @@ import java.util.List;
  */
 public class UpdateProcessor {
 
+    private static final String TAG = "Updates";
+
     private Messenger messenger;
     private UsersProcessor usersProcessor;
     private MessagesProcessor messagesProcessor;
     private GroupsProcessor groupsProcessor;
+    private PresenceProcessor presenceProcessor;
 
     public UpdateProcessor(Messenger messenger) {
         this.messenger = messenger;
         this.usersProcessor = new UsersProcessor(messenger);
         this.messagesProcessor = new MessagesProcessor(messenger);
         this.groupsProcessor = new GroupsProcessor();
+        this.presenceProcessor = new PresenceProcessor(messenger);
     }
 
     public void applyRelated(List<User> users,
@@ -48,6 +53,7 @@ public class UpdateProcessor {
     }
 
     public void processUpdate(Update update) {
+        Log.d(TAG, update + "");
         if (update instanceof UpdateUserContactAdded) {
             // TODO: Implement
         } else if (update instanceof UpdateUserContactRemoved) {
@@ -110,6 +116,18 @@ public class UpdateProcessor {
             if (!registered.isSilent()) {
                 messagesProcessor.onUserRegistered(registered.getUid(), registered.getDate());
             }
+        } else if (update instanceof UpdateUserOnline) {
+            UpdateUserOnline userOnline = (UpdateUserOnline) update;
+            presenceProcessor.onUserOnline(userOnline.getUid());
+        } else if (update instanceof UpdateUserOffline) {
+            UpdateUserOffline offline = (UpdateUserOffline) update;
+            presenceProcessor.onUserOffline(offline.getUid());
+        } else if (update instanceof UpdateUserLastSeen) {
+            UpdateUserLastSeen lastSeen = (UpdateUserLastSeen) update;
+            presenceProcessor.onUserLastSeen(lastSeen.getUid(), lastSeen.getDate());
+        } else if (update instanceof UpdateGroupOnline) {
+            UpdateGroupOnline groupOnline = (UpdateGroupOnline) update;
+            presenceProcessor.onGroupOnline(groupOnline.getGroupId(), groupOnline.getCount());
         }
     }
 

@@ -17,9 +17,11 @@ import com.droidkit.images.cache.BitmapClasificator;
 import com.droidkit.images.loading.ImageLoader;
 
 import im.actor.messenger.core.images.*;
+import im.actor.messenger.model.UserPresence;
 import im.actor.messenger.storage.provider.AppEngineFactory;
 import im.actor.messenger.storage.provider.PropertiesProvider;
 import im.actor.model.Messenger;
+import im.actor.model.OnlineCallback;
 import im.actor.model.concurrency.MainThread;
 import im.actor.model.droidkit.actors.conf.EnvConfig;
 import im.actor.model.jvm.JavaInit;
@@ -27,6 +29,7 @@ import im.actor.model.network.ConnectionEndpoint;
 import im.actor.model.network.Endpoints;
 
 import static com.droidkit.actors.ActorSystem.system;
+import static im.actor.messenger.storage.KeyValueEngines.users;
 
 /**
  * Created by ex3ndr on 30.08.14.
@@ -136,6 +139,27 @@ public class Core {
             }
         });
         PropertiesProvider propertiesProvider = new PropertiesProvider();
+        configuration.setOnlineCallback(new OnlineCallback() {
+            @Override
+            public void onUserOnline(int uid) {
+                users().get(uid).getPresence().change(new UserPresence(UserPresence.State.ONLINE, 0));
+            }
+
+            @Override
+            public void onUserOffline(int uid) {
+                users().get(uid).getPresence().change(new UserPresence(UserPresence.State.OFFLINE, 0));
+            }
+
+            @Override
+            public void onUserLastSeen(int uid, long lastSeen) {
+                users().get(uid).getPresence().change(new UserPresence(UserPresence.State.OFFLINE, lastSeen));
+            }
+
+            @Override
+            public void onGroupOnline(int gid, int count) {
+
+            }
+        });
         configuration.setEnginesFactory(new AppEngineFactory());
         configuration.setPreferencesStorage(propertiesProvider);
         configuration.setEndpoints(new Endpoints(new ConnectionEndpoint[]{

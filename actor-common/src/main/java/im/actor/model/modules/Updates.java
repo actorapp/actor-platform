@@ -34,7 +34,7 @@ public class Updates {
         return messenger;
     }
 
-    public void onSessionCreated() {
+    public void onNewSessionCreated() {
         updateActor.send(new SequenceActor.Invalidate());
     }
 

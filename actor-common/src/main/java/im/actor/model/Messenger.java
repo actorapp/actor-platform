@@ -41,7 +41,10 @@ public class Messenger {
                     @Override
                     public void onNewSessionCreated() {
                         if (updates != null) {
-                            updates.onSessionCreated();
+                            updates.onNewSessionCreated();
+                        }
+                        if (presence != null) {
+                            presence.onNewSessionCreated();
                         }
                     }
 

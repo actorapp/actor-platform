@@ -1,4 +1,4 @@
-package im.actor.model.modules.persistence;
+package im.actor.model.modules.presence;
 
 import im.actor.model.Messenger;
 import im.actor.model.api.rpc.RequestSetOnline;

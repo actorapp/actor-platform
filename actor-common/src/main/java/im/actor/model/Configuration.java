@@ -19,6 +19,7 @@ public class Configuration {
     private Endpoints endpoints;
     private PreferencesStorage preferencesStorage = new MemoryPreferences();
     private EnginesFactory enginesFactory = new MemoryEnginesFactory();
+    private OnlineCallback onlineCallback;
 
     public boolean isPersistMessages() {
         return persistMessages;
@@ -58,5 +59,13 @@ public class Configuration {
 
     public void setMainThread(MainThread mainThread) {
         this.mainThread = mainThread;
+    }
+
+    public OnlineCallback getOnlineCallback() {
+        return onlineCallback;
+    }
+
+    public void setOnlineCallback(OnlineCallback onlineCallback) {
+        this.onlineCallback = onlineCallback;
     }
 }
