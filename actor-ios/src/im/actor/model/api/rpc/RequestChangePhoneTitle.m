@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
                withNSString:(NSString *)title {
   if (self = [super init]) {
     self->phoneId_ = phoneId;
-    ImActorModelApiRpcRequestChangePhoneTitle_set_title_(self, title);
+    self->title_ = title;
   }
   return self;
 }
@@ -51,13 +51,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->phoneId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
-  ImActorModelApiRpcRequestChangePhoneTitle_set_title_(self, [values getStringWithInt:2]);
+  self->title_ = [values getStringWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->phoneId_];
   if (self->title_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:2 withNSString:self->title_];
 }
@@ -66,15 +66,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
   return ImActorModelApiRpcRequestChangePhoneTitle_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(title_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestChangePhoneTitle *)other {
   [super copyAllFieldsTo:other];
   other->phoneId_ = phoneId_;
-  ImActorModelApiRpcRequestChangePhoneTitle_set_title_(other, title_);
+  other->title_ = title_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -102,7 +97,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
 
 ImActorModelApiRpcRequestChangePhoneTitle *ImActorModelApiRpcRequestChangePhoneTitle_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestChangePhoneTitle_init();
-  return ((ImActorModelApiRpcRequestChangePhoneTitle *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestChangePhoneTitle alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestChangePhoneTitle *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestChangePhoneTitle alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestChangePhoneTitle)

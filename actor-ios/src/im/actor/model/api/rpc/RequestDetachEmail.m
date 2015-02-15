@@ -92,7 +92,7 @@
 
 ImActorModelApiRpcRequestDetachEmail *ImActorModelApiRpcRequestDetachEmail_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestDetachEmail_init();
-  return ((ImActorModelApiRpcRequestDetachEmail *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestDetachEmail alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestDetachEmail *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestDetachEmail alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestDetachEmail)

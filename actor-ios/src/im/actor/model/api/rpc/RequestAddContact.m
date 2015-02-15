@@ -92,7 +92,7 @@
 
 ImActorModelApiRpcRequestAddContact *ImActorModelApiRpcRequestAddContact_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestAddContact_init();
-  return ((ImActorModelApiRpcRequestAddContact *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestAddContact alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestAddContact *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestAddContact alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestAddContact)

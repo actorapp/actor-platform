@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/bser/util/ContainerHelpers.java
 //
 
-#include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -36,10 +35,10 @@ IOSObjectArray * ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_OBJECTS_;
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitBserUtilContainerHelpers class]) {
-    JreStrongAssignAndConsume(&ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_BOOLEANS_, nil, [IOSBooleanArray newArrayWithLength:0]);
-    JreStrongAssignAndConsume(&ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_INTS_, nil, [IOSIntArray newArrayWithLength:0]);
-    JreStrongAssignAndConsume(&ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_LONGS_, nil, [IOSLongArray newArrayWithLength:0]);
-    JreStrongAssignAndConsume(&ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_OBJECTS_, nil, [IOSObjectArray newArrayWithLength:0 type:NSObject_class_()]);
+    ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_BOOLEANS_ = [IOSBooleanArray newArrayWithLength:0];
+    ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_INTS_ = [IOSIntArray newArrayWithLength:0];
+    ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_LONGS_ = [IOSLongArray newArrayWithLength:0];
+    ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_OBJECTS_ = [IOSObjectArray newArrayWithLength:0 type:NSObject_class_()];
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitBserUtilContainerHelpers)
   }
 }

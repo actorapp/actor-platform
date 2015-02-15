@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/bser/util/ArrayUtils.java
 //
 
-#include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -101,8 +100,8 @@ IOSObjectArray * ImActorModelDroidkitBserUtilArrayUtils_sCache_;
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitBserUtilArrayUtils class]) {
-    JreStrongAssignAndConsume(&ImActorModelDroidkitBserUtilArrayUtils_EMPTY_, nil, [IOSObjectArray newArrayWithLength:0 type:NSObject_class_()]);
-    JreStrongAssignAndConsume(&ImActorModelDroidkitBserUtilArrayUtils_sCache_, nil, [IOSObjectArray newArrayWithLength:ImActorModelDroidkitBserUtilArrayUtils_CACHE_SIZE type:NSObject_class_()]);
+    ImActorModelDroidkitBserUtilArrayUtils_EMPTY_ = [IOSObjectArray newArrayWithLength:0 type:NSObject_class_()];
+    ImActorModelDroidkitBserUtilArrayUtils_sCache_ = [IOSObjectArray newArrayWithLength:ImActorModelDroidkitBserUtilArrayUtils_CACHE_SIZE type:NSObject_class_()];
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitBserUtilArrayUtils)
   }
 }
@@ -182,7 +181,7 @@ jint ImActorModelDroidkitBserUtilArrayUtils_idealLongArraySizeWithInt_(jint need
 jboolean ImActorModelDroidkitBserUtilArrayUtils_equalsWithByteArray_withByteArray_withInt_(IOSByteArray *array1, IOSByteArray *array2, jint length) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
   if (length < 0) {
-    @throw [[[JavaLangIllegalArgumentException alloc] init] autorelease];
+    @throw [[JavaLangIllegalArgumentException alloc] init];
   }
   if (array1 == array2) {
     return YES;
@@ -266,7 +265,7 @@ jlong ImActorModelDroidkitBserUtilArrayUtils_totalWithLongArray_(IOSLongArray *a
 IOSIntArray *ImActorModelDroidkitBserUtilArrayUtils_appendIntWithIntArray_withInt_(IOSIntArray *cur, jint val) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
   if (cur == nil) {
-    return [IOSIntArray arrayWithInts:(jint[]){ val } count:1];
+    return [IOSIntArray newArrayWithInts:(jint[]){ val } count:1];
   }
   jint N = ((IOSIntArray *) nil_chk(cur))->size_;
   for (jint i = 0; i < N; i++) {
@@ -274,7 +273,7 @@ IOSIntArray *ImActorModelDroidkitBserUtilArrayUtils_appendIntWithIntArray_withIn
       return cur;
     }
   }
-  IOSIntArray *ret = [IOSIntArray arrayWithLength:N + 1];
+  IOSIntArray *ret = [IOSIntArray newArrayWithLength:N + 1];
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(cur, 0, ret, 0, N);
   *IOSIntArray_GetRef(ret, N) = val;
   return ret;
@@ -288,7 +287,7 @@ IOSIntArray *ImActorModelDroidkitBserUtilArrayUtils_removeIntWithIntArray_withIn
   jint N = ((IOSIntArray *) nil_chk(cur))->size_;
   for (jint i = 0; i < N; i++) {
     if (IOSIntArray_Get(cur, i) == val) {
-      IOSIntArray *ret = [IOSIntArray arrayWithLength:N - 1];
+      IOSIntArray *ret = [IOSIntArray newArrayWithLength:N - 1];
       if (i > 0) {
         JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(cur, 0, ret, 0, i);
       }

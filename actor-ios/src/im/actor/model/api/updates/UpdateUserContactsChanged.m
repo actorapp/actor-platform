@@ -33,7 +33,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, contacts_, 
            withJavaUtilList:(id<JavaUtilList>)contacts {
   if (self = [super init]) {
     self->uid_ = uid;
-    ImActorModelApiUpdatesUpdateUserContactsChanged_set_contacts_(self, contacts);
+    self->contacts_ = contacts;
   }
   return self;
 }
@@ -52,7 +52,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, contacts_, 
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->uid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
-  ImActorModelApiUpdatesUpdateUserContactsChanged_set_contacts_(self, [values getRepeatedIntWithInt:2]);
+  self->contacts_ = [values getRepeatedIntWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -64,15 +64,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, contacts_, 
   return ImActorModelApiUpdatesUpdateUserContactsChanged_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(contacts_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateUserContactsChanged *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;
-  ImActorModelApiUpdatesUpdateUserContactsChanged_set_contacts_(other, contacts_);
+  other->contacts_ = contacts_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -99,7 +94,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, contacts_, 
 
 ImActorModelApiUpdatesUpdateUserContactsChanged *ImActorModelApiUpdatesUpdateUserContactsChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserContactsChanged_init();
-  return ((ImActorModelApiUpdatesUpdateUserContactsChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateUserContactsChanged alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateUserContactsChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserContactsChanged alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserContactsChanged)

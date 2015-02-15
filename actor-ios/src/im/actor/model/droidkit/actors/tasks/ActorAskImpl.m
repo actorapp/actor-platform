@@ -71,16 +71,16 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFu
 
 - (instancetype)initWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)self_ {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsTasksActorAskImpl_setAndConsume_asks_(self, [[JavaUtilHashMap alloc] init]);
+    asks_ = [[JavaUtilHashMap alloc] init];
     nextReqId_ = 1;
-    ImActorModelDroidkitActorsTasksActorAskImpl_set_self__(self, self_);
+    self->self__ = self_;
   }
   return self;
 }
 
 - (ImActorModelDroidkitActorsTasksAskFuture *)combineWithImActorModelDroidkitActorsTasksAskFutureArray:(IOSObjectArray *)futures {
-  ImActorModelDroidkitActorsTasksAskFuture *resultFuture = [[[ImActorModelDroidkitActorsTasksAskFuture alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withInt:0] autorelease];
-  ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer *container = [[[ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withInt:((IOSObjectArray *) nil_chk(futures))->size_] autorelease];
+  ImActorModelDroidkitActorsTasksAskFuture *resultFuture = [[ImActorModelDroidkitActorsTasksAskFuture alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withInt:0];
+  ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer *container = [[ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withInt:((IOSObjectArray *) nil_chk(futures))->size_];
   for (jint i = 0; i < futures->size_; i++) {
     jint index = i;
     IOSObjectArray_Set(nil_chk(container->futures_), index, IOSObjectArray_Get(futures, index));
@@ -94,15 +94,15 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFu
                                                                                withLong:(jlong)timeout
                                          withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
   jint reqId = nextReqId_++;
-  ImActorModelDroidkitActorsTasksAskFuture *future = [[[ImActorModelDroidkitActorsTasksAskFuture alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withInt:reqId] autorelease];
+  ImActorModelDroidkitActorsTasksAskFuture *future = [[ImActorModelDroidkitActorsTasksAskFuture alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withInt:reqId];
   if (callback != nil) {
     [future addListenerWithImActorModelDroidkitActorsTasksAskCallback:callback];
   }
-  ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [[[ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withImActorModelDroidkitActorsTasksAskFuture:future withImActorModelDroidkitActorsActorRef:ref withInt:reqId] autorelease];
-  [((JavaUtilHashMap *) nil_chk(asks_)) putWithId:JavaLangInteger_valueOfWithInt_(reqId) withId:container];
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ref)) sendWithId:[[[ImActorModelDroidkitActorsTasksMessagesTaskRequest alloc] initWithInt:reqId] autorelease] withImActorModelDroidkitActorsActorRef:self__];
+  ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [[ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withImActorModelDroidkitActorsTasksAskFuture:future withImActorModelDroidkitActorsActorRef:ref withInt:reqId];
+  (void) [((JavaUtilHashMap *) nil_chk(asks_)) putWithId:JavaLangInteger_valueOfWithInt_(reqId) withId:container];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ref)) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskRequest alloc] initWithInt:reqId] withImActorModelDroidkitActorsActorRef:self__];
   if (timeout > 0) {
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk(self__)) sendWithId:[[[ImActorModelDroidkitActorsTasksMessagesTaskTimeout alloc] initWithInt:reqId] autorelease] withLong:timeout];
+    [((ImActorModelDroidkitActorsActorRef *) nil_chk(self__)) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskTimeout alloc] initWithInt:reqId] withLong:timeout];
   }
   return future;
 }
@@ -141,7 +141,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFu
 
 - (void)postStop {
   {
-    IOSObjectArray *a__ = [((id<JavaUtilCollection>) nil_chk([((JavaUtilHashMap *) nil_chk(asks_)) values])) toArrayWithNSObjectArray:[IOSObjectArray arrayWithLength:0 type:ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer_class_()]];
+    IOSObjectArray *a__ = [((id<JavaUtilCollection>) nil_chk([((JavaUtilHashMap *) nil_chk(asks_)) values])) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer_class_()]];
     ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
@@ -170,7 +170,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFu
 - (jboolean)onTaskCancelledWithInt:(jint)reqId {
   ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [((JavaUtilHashMap *) nil_chk(asks_)) removeWithId:JavaLangInteger_valueOfWithInt_(reqId)];
   if (container != nil) {
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk(container->ref_)) sendWithId:[[[ImActorModelDroidkitActorsTasksMessagesTaskCancel alloc] initWithInt:reqId] autorelease] withImActorModelDroidkitActorsActorRef:self__];
+    [((ImActorModelDroidkitActorsActorRef *) nil_chk(container->ref_)) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskCancel alloc] initWithInt:reqId] withImActorModelDroidkitActorsActorRef:self__];
     return YES;
   }
   return NO;
@@ -180,17 +180,11 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFu
   return ImActorModelDroidkitActorsTasksActorAskImpl_onDeadLetterWithImActorModelDroidkitActorsMessagesDeadLetter_(self, letter);
 }
 
-- (void)dealloc {
-  RELEASE_(asks_);
-  RELEASE_(self__);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksActorAskImpl *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsTasksActorAskImpl_set_asks_(other, asks_);
+  other->asks_ = asks_;
   other->nextReqId_ = nextReqId_;
-  ImActorModelDroidkitActorsTasksActorAskImpl_set_self__(other, self__);
+  other->self__ = self__;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -276,23 +270,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl)
                              withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref
                                                             withInt:(jint)requestId {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer_set_future_(self, future);
-    ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer_set_ref_(self, ref);
+    self->future_ = future;
+    self->ref_ = ref;
     self->requestId_ = requestId;
   }
   return self;
 }
 
-- (void)dealloc {
-  RELEASE_(future_);
-  RELEASE_(ref_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer_set_future_(other, future_);
-  ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer_set_ref_(other, ref_);
+  other->future_ = future_;
+  other->ref_ = ref_;
   other->requestId_ = requestId_;
 }
 
@@ -319,29 +307,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl_Ask
                                                             withInt:(jint)count {
   if (self = [super init]) {
     isCompleted_ = NO;
-    ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer_setAndConsume_results_(self, [IOSObjectArray newArrayWithLength:count type:NSObject_class_()]);
-    ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer_setAndConsume_completed_(self, [IOSBooleanArray newArrayWithLength:count]);
-    ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer_setAndConsume_callbacks_(self, [IOSObjectArray newArrayWithLength:count type:ImActorModelDroidkitActorsTasksAskCallback_class_()]);
-    ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer_setAndConsume_futures_(self, [IOSObjectArray newArrayWithLength:count type:ImActorModelDroidkitActorsTasksAskFuture_class_()]);
+    results_ = [IOSObjectArray newArrayWithLength:count type:NSObject_class_()];
+    completed_ = [IOSBooleanArray newArrayWithLength:count];
+    callbacks_ = [IOSObjectArray newArrayWithLength:count type:ImActorModelDroidkitActorsTasksAskCallback_class_()];
+    futures_ = [IOSObjectArray newArrayWithLength:count type:ImActorModelDroidkitActorsTasksAskFuture_class_()];
   }
   return self;
-}
-
-- (void)dealloc {
-  RELEASE_(results_);
-  RELEASE_(completed_);
-  RELEASE_(futures_);
-  RELEASE_(callbacks_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer *)other {
   [super copyAllFieldsTo:other];
   other->isCompleted_ = isCompleted_;
-  ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer_set_results_(other, results_);
-  ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer_set_completed_(other, completed_);
-  ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer_set_futures_(other, futures_);
-  ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer_set_callbacks_(other, callbacks_);
+  other->results_ = results_;
+  other->completed_ = completed_;
+  other->futures_ = futures_;
+  other->callbacks_ = callbacks_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -404,23 +384,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl_Com
 - (instancetype)initWithImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer:(ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer *)capture$0
                                                                              withInt:(jint)capture$1
                                         withImActorModelDroidkitActorsTasksAskFuture:(ImActorModelDroidkitActorsTasksAskFuture *)capture$2 {
-  ImActorModelDroidkitActorsTasksActorAskImpl_$1_set_val$container_(self, capture$0);
+  val$container_ = capture$0;
   val$index_ = capture$1;
-  ImActorModelDroidkitActorsTasksActorAskImpl_$1_set_val$resultFuture_(self, capture$2);
+  val$resultFuture_ = capture$2;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(val$container_);
-  RELEASE_(val$resultFuture_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksActorAskImpl_$1 *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsTasksActorAskImpl_$1_set_val$container_(other, val$container_);
+  other->val$container_ = val$container_;
   other->val$index_ = val$index_;
-  ImActorModelDroidkitActorsTasksActorAskImpl_$1_set_val$resultFuture_(other, val$resultFuture_);
+  other->val$resultFuture_ = val$resultFuture_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

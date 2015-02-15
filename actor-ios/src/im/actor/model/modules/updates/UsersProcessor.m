@@ -34,15 +34,15 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUsersProcessor, users_, id<ImActor
 
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger {
   if (self = [super init]) {
-    ImActorModelModulesUpdatesUsersProcessor_set_messenger_(self, messenger);
-    ImActorModelModulesUpdatesUsersProcessor_set_users_(self, [((AMMessenger *) nil_chk(messenger)) getUsers]);
+    self->messenger_ = messenger;
+    self->users_ = [((AMMessenger *) nil_chk(messenger)) getUsers];
   }
   return self;
 }
 
 - (void)applyUsersWithJavaUtilCollection:(id<JavaUtilCollection>)updated
                              withBoolean:(jboolean)forced {
-  JavaUtilArrayList *batch = [[[JavaUtilArrayList alloc] init] autorelease];
+  JavaUtilArrayList *batch = [[JavaUtilArrayList alloc] init];
   for (ImActorModelApiUser * __strong u in nil_chk(updated)) {
     ImActorModelEntityUser *saved = [((id<ImActorModelMvvmKeyValueEngine>) nil_chk(users_)) getValueWithLong:[((ImActorModelApiUser *) nil_chk(u)) getId]];
     if (saved == nil) {
@@ -52,7 +52,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUsersProcessor, users_, id<ImActor
       ImActorModelEntityUser *upd = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiUser_(u);
       [batch addWithId:upd];
       if (![((NSString *) nil_chk([((ImActorModelEntityUser *) nil_chk(upd)) getName])) isEqual:[saved getName]] || !AMJavaUtil_equalsEWithId_withId_([upd getAvatar], [saved getAvatar])) {
-        [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((AMMessenger *) nil_chk(messenger_)) getMessagesModule])) getDialogsActor])) sendWithId:[[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithImActorModelEntityUser:upd] autorelease]];
+        [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((AMMessenger *) nil_chk(messenger_)) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithImActorModelEntityUser:upd]];
       }
     }
   }
@@ -71,7 +71,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUsersProcessor, users_, id<ImActor
     u = [u editNameWithNSString:name];
     [users_ addOrUpdateItemWithImActorModelMvvmKeyValueItem:[((ImActorModelEntityUser *) nil_chk(u)) editNameWithNSString:name]];
     if ([u getLocalName] == nil) {
-      [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((AMMessenger *) nil_chk(messenger_)) getMessagesModule])) getDialogsActor])) sendWithId:[[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithImActorModelEntityUser:u] autorelease]];
+      [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((AMMessenger *) nil_chk(messenger_)) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithImActorModelEntityUser:u]];
     }
   }
 }
@@ -88,7 +88,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUsersProcessor, users_, id<ImActor
     }
     u = [u editLocalNameWithNSString:name];
     [users_ addOrUpdateItemWithImActorModelMvvmKeyValueItem:u];
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((AMMessenger *) nil_chk(messenger_)) getMessagesModule])) getDialogsActor])) sendWithId:[[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithImActorModelEntityUser:u] autorelease]];
+    [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((AMMessenger *) nil_chk(messenger_)) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithImActorModelEntityUser:u]];
   }
 }
 
@@ -105,7 +105,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUsersProcessor, users_, id<ImActor
     }
     u = [u editAvatarWithImActorModelEntityAvatar:avatar];
     [users_ addOrUpdateItemWithImActorModelMvvmKeyValueItem:u];
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((AMMessenger *) nil_chk(messenger_)) getMessagesModule])) getDialogsActor])) sendWithId:[[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithImActorModelEntityUser:u] autorelease]];
+    [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((AMMessenger *) nil_chk(messenger_)) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithImActorModelEntityUser:u]];
   }
 }
 
@@ -118,16 +118,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUsersProcessor, users_, id<ImActor
   return YES;
 }
 
-- (void)dealloc {
-  RELEASE_(messenger_);
-  RELEASE_(users_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesUsersProcessor *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUpdatesUsersProcessor_set_messenger_(other, messenger_);
-  ImActorModelModulesUpdatesUsersProcessor_set_users_(other, users_);
+  other->messenger_ = messenger_;
+  other->users_ = users_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

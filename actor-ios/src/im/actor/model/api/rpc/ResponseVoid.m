@@ -52,7 +52,7 @@
 
 ImActorModelApiRpcResponseVoid *ImActorModelApiRpcResponseVoid_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseVoid_init();
-  return ((ImActorModelApiRpcResponseVoid *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseVoid alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcResponseVoid *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseVoid alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseVoid)

@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangeEmailTitle, title_, NSString 
                withNSString:(NSString *)title {
   if (self = [super init]) {
     self->emailId_ = emailId;
-    ImActorModelApiRpcRequestChangeEmailTitle_set_title_(self, title);
+    self->title_ = title;
   }
   return self;
 }
@@ -51,13 +51,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangeEmailTitle, title_, NSString 
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->emailId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
-  ImActorModelApiRpcRequestChangeEmailTitle_set_title_(self, [values getStringWithInt:2]);
+  self->title_ = [values getStringWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->emailId_];
   if (self->title_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:2 withNSString:self->title_];
 }
@@ -66,15 +66,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangeEmailTitle, title_, NSString 
   return ImActorModelApiRpcRequestChangeEmailTitle_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(title_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestChangeEmailTitle *)other {
   [super copyAllFieldsTo:other];
   other->emailId_ = emailId_;
-  ImActorModelApiRpcRequestChangeEmailTitle_set_title_(other, title_);
+  other->title_ = title_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -102,7 +97,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangeEmailTitle, title_, NSString 
 
 ImActorModelApiRpcRequestChangeEmailTitle *ImActorModelApiRpcRequestChangeEmailTitle_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestChangeEmailTitle_init();
-  return ((ImActorModelApiRpcRequestChangeEmailTitle *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestChangeEmailTitle alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestChangeEmailTitle *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestChangeEmailTitle alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestChangeEmailTitle)

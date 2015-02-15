@@ -30,7 +30,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaU
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)uids {
   if (self = [super init]) {
-    ImActorModelApiUpdatesUpdateContactsRemoved_set_uids_(self, uids);
+    self->uids_ = uids;
   }
   return self;
 }
@@ -44,7 +44,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaU
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiUpdatesUpdateContactsRemoved_set_uids_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedIntWithInt:1]);
+  self->uids_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedIntWithInt:1];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -55,14 +55,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaU
   return ImActorModelApiUpdatesUpdateContactsRemoved_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(uids_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateContactsRemoved *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiUpdatesUpdateContactsRemoved_set_uids_(other, uids_);
+  other->uids_ = uids_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -87,7 +82,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaU
 
 ImActorModelApiUpdatesUpdateContactsRemoved *ImActorModelApiUpdatesUpdateContactsRemoved_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateContactsRemoved_init();
-  return ((ImActorModelApiUpdatesUpdateContactsRemoved *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateContactsRemoved alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateContactsRemoved *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateContactsRemoved alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateContactsRemoved)

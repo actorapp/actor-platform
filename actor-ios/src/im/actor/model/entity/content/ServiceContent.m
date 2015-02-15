@@ -30,7 +30,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceContent, compatText_, NSStri
 
 - (instancetype)initWithNSString:(NSString *)compatText {
   if (self = [super init]) {
-    ImActorModelEntityContentServiceContent_set_compatText_(self, compatText);
+    self->compatText_ = compatText;
   }
   return self;
 }
@@ -48,21 +48,16 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceContent, compatText_, NSStri
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelEntityContentServiceContent_set_compatText_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:2]);
+  compatText_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:compatText_];
 }
 
-- (void)dealloc {
-  RELEASE_(compatText_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelEntityContentServiceContent *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelEntityContentServiceContent_set_compatText_(other, compatText_);
+  other->compatText_ = compatText_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -86,7 +81,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceContent, compatText_, NSStri
 
 ImActorModelEntityContentServiceContent *ImActorModelEntityContentServiceContent_serviceFromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentServiceContent_init();
-  return ((ImActorModelEntityContentServiceContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityContentServiceContent alloc] init] autorelease], data));
+  return ((ImActorModelEntityContentServiceContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentServiceContent alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceContent)

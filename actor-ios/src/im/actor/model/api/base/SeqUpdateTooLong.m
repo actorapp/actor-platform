@@ -52,7 +52,7 @@
 
 ImActorModelApiBaseSeqUpdateTooLong *ImActorModelApiBaseSeqUpdateTooLong_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseSeqUpdateTooLong_init();
-  return ((ImActorModelApiBaseSeqUpdateTooLong *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiBaseSeqUpdateTooLong alloc] init] autorelease], data));
+  return ((ImActorModelApiBaseSeqUpdateTooLong *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiBaseSeqUpdateTooLong alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiBaseSeqUpdateTooLong)

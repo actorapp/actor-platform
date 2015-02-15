@@ -91,7 +91,7 @@
 
 ImActorModelApiUpdatesUpdateUserContactAdded *ImActorModelApiUpdatesUpdateUserContactAdded_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserContactAdded_init();
-  return ((ImActorModelApiUpdatesUpdateUserContactAdded *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateUserContactAdded alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateUserContactAdded *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserContactAdded alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserContactAdded)

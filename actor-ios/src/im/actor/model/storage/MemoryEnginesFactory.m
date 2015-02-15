@@ -14,15 +14,15 @@
 @implementation ImActorModelStorageMemoryEnginesFactory
 
 - (id<ImActorModelMvvmKeyValueEngine>)createUsersEngine {
-  return [[[ImActorModelStorageMemoryKeyValueEngine alloc] init] autorelease];
+  return [[ImActorModelStorageMemoryKeyValueEngine alloc] init];
 }
 
 - (id<ImActorModelMvvmListEngine>)createDialogsEngine {
-  return [[[ImActorModelStorageMemoryListEngine alloc] init] autorelease];
+  return [[ImActorModelStorageMemoryListEngine alloc] init];
 }
 
 - (id<ImActorModelMvvmListEngine>)createMessagesEngineWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  return [[[ImActorModelStorageMemoryListEngine alloc] init] autorelease];
+  return [[ImActorModelStorageMemoryListEngine alloc] init];
 }
 
 - (id<ImActorModelMvvmKeyValueEngine>)pendingMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {

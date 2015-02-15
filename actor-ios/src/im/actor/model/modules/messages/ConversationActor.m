@@ -107,16 +107,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor_MessageDeleted,
 - (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
                                withAMMessenger:(AMMessenger *)messenger {
   if (self = [super init]) {
-    ImActorModelModulesMessagesConversationActor_set_peer_(self, peer);
-    ImActorModelModulesMessagesConversationActor_set_messenger_(self, messenger);
+    self->peer_ = peer;
+    self->messenger_ = messenger;
   }
   return self;
 }
 
 - (void)preStart {
-  ImActorModelModulesMessagesConversationActor_set_messages_(self, [((AMMessenger *) nil_chk(messenger_)) getMessagesWithImActorModelEntityPeer:peer_]);
-  ImActorModelModulesMessagesConversationActor_set_pendingMessages_(self, [((id<ImActorModelStorageEnginesFactory>) nil_chk([((AMConfiguration *) nil_chk([messenger_ getConfiguration])) getEnginesFactory])) pendingMessagesWithImActorModelEntityPeer:peer_]);
-  ImActorModelModulesMessagesConversationActor_set_dialogsActor_(self, [((ImActorModelModulesMessages *) nil_chk([messenger_ getMessagesModule])) getDialogsActor]);
+  messages_ = [((AMMessenger *) nil_chk(messenger_)) getMessagesWithImActorModelEntityPeer:peer_];
+  pendingMessages_ = [((id<ImActorModelStorageEnginesFactory>) nil_chk([((AMConfiguration *) nil_chk([messenger_ getConfiguration])) getEnginesFactory])) pendingMessagesWithImActorModelEntityPeer:peer_];
+  dialogsActor_ = [((ImActorModelModulesMessages *) nil_chk([messenger_ getMessagesModule])) getDialogsActor];
 }
 
 - (void)onHistoryLoadedWithJavaUtilList:(id<JavaUtilList>)history {
@@ -167,22 +167,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor_MessageDeleted,
   }
 }
 
-- (void)dealloc {
-  RELEASE_(messenger_);
-  RELEASE_(peer_);
-  RELEASE_(messages_);
-  RELEASE_(pendingMessages_);
-  RELEASE_(dialogsActor_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesMessagesConversationActor_set_messenger_(other, messenger_);
-  ImActorModelModulesMessagesConversationActor_set_peer_(other, peer_);
-  ImActorModelModulesMessagesConversationActor_set_messages_(other, messages_);
-  ImActorModelModulesMessagesConversationActor_set_pendingMessages_(other, pendingMessages_);
-  ImActorModelModulesMessagesConversationActor_set_dialogsActor_(other, dialogsActor_);
+  other->messenger_ = messenger_;
+  other->peer_ = peer_;
+  other->messages_ = messages_;
+  other->pendingMessages_ = pendingMessages_;
+  other->dialogsActor_ = dialogsActor_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -218,9 +209,9 @@ void ImActorModelModulesMessagesConversationActor_onInMessageWithImActorModelEnt
     return;
   }
   [self->messages_ addOrUpdateItemWithImActorModelMvvmListEngineItem:message];
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[[ImActorModelModulesMessagesDialogsActor_InMessage alloc] initWithImActorModelEntityPeer:self->peer_ withImActorModelEntityMessage:message] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[ImActorModelModulesMessagesDialogsActor_InMessage alloc] initWithImActorModelEntityPeer:self->peer_ withImActorModelEntityMessage:message]];
   if ([message getSenderId] == [((AMMessenger *) nil_chk(self->messenger_)) myUid]) {
-    [((id<ImActorModelMvvmKeyValueEngine>) nil_chk(self->pendingMessages_)) addOrUpdateItemWithImActorModelMvvmKeyValueItem:[[[ImActorModelEntityPendingMessage alloc] initWithLong:[message getRid] withLong:[message getDate]] autorelease]];
+    [((id<ImActorModelMvvmKeyValueEngine>) nil_chk(self->pendingMessages_)) addOrUpdateItemWithImActorModelMvvmKeyValueItem:[[ImActorModelEntityPendingMessage alloc] initWithLong:[message getRid] withLong:[message getDate]]];
   }
 }
 
@@ -230,7 +221,7 @@ void ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(Im
       ImActorModelEntityMessage *msg = [((id<ImActorModelMvvmListEngine>) nil_chk(self->messages_)) getValueWithLong:[p getRid]];
       if (msg != nil && ([msg getMessageState] == ImActorModelEntityMessageStateEnum_get_SENT() || [msg getMessageState] == ImActorModelEntityMessageStateEnum_get_RECEIVED())) {
         [self->messages_ addOrUpdateItemWithImActorModelMvvmListEngineItem:[msg changeStateWithImActorModelEntityMessageStateEnum:ImActorModelEntityMessageStateEnum_get_READ()]];
-        [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[[ImActorModelModulesMessagesDialogsActor_MessageStateChanged alloc] initWithImActorModelEntityPeer:self->peer_ withLong:[p getRid] withImActorModelEntityMessageStateEnum:ImActorModelEntityMessageStateEnum_get_READ()] autorelease]];
+        [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[ImActorModelModulesMessagesDialogsActor_MessageStateChanged alloc] initWithImActorModelEntityPeer:self->peer_ withLong:[p getRid] withImActorModelEntityMessageStateEnum:ImActorModelEntityMessageStateEnum_get_READ()]];
       }
       [self->pendingMessages_ removeItemWithLong:[p getRid]];
     }
@@ -243,7 +234,7 @@ void ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong
       ImActorModelEntityMessage *msg = [((id<ImActorModelMvvmListEngine>) nil_chk(self->messages_)) getValueWithLong:[p getRid]];
       if (msg != nil && [msg getMessageState] == ImActorModelEntityMessageStateEnum_get_SENT()) {
         [self->messages_ addOrUpdateItemWithImActorModelMvvmListEngineItem:[msg changeStateWithImActorModelEntityMessageStateEnum:ImActorModelEntityMessageStateEnum_get_RECEIVED()]];
-        [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[[ImActorModelModulesMessagesDialogsActor_MessageStateChanged alloc] initWithImActorModelEntityPeer:self->peer_ withLong:[p getRid] withImActorModelEntityMessageStateEnum:ImActorModelEntityMessageStateEnum_get_RECEIVED()] autorelease]];
+        [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[ImActorModelModulesMessagesDialogsActor_MessageStateChanged alloc] initWithImActorModelEntityPeer:self->peer_ withLong:[p getRid] withImActorModelEntityMessageStateEnum:ImActorModelEntityMessageStateEnum_get_RECEIVED()]];
       }
     }
   }
@@ -261,7 +252,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor)
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)messages {
   if (self = [super init]) {
-    ImActorModelModulesMessagesConversationActor_HistoryLoaded_set_messages_(self, messages);
+    self->messages_ = messages;
   }
   return self;
 }
@@ -270,14 +261,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor)
   return messages_;
 }
 
-- (void)dealloc {
-  RELEASE_(messages_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor_HistoryLoaded *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesMessagesConversationActor_HistoryLoaded_set_messages_(other, messages_);
+  other->messages_ = messages_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -479,7 +465,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_Me
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)rids {
   if (self = [super init]) {
-    ImActorModelModulesMessagesConversationActor_MessageDeleted_set_rids_(self, rids);
+    self->rids_ = rids;
   }
   return self;
 }
@@ -488,14 +474,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_Me
   return rids_;
 }
 
-- (void)dealloc {
-  RELEASE_(rids_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor_MessageDeleted *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesMessagesConversationActor_MessageDeleted_set_rids_(other, rids_);
+  other->rids_ = rids_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

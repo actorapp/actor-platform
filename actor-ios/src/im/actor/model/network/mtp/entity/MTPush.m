@@ -38,21 +38,16 @@ J2OBJC_FIELD_SETTER(MTMTPush, payload_, IOSByteArray *)
 }
 
 - (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  MTMTPush_set_payload_(self, [((AMDataInput *) nil_chk(bs)) readProtoBytes]);
+  payload_ = [((AMDataInput *) nil_chk(bs)) readProtoBytes];
 }
 
 - (NSString *)description {
   return @"UpdateBox";
 }
 
-- (void)dealloc {
-  RELEASE_(payload_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(MTMTPush *)other {
   [super copyAllFieldsTo:other];
-  MTMTPush_set_payload_(other, payload_);
+  other->payload_ = payload_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

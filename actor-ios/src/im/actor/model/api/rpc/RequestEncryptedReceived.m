@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEncryptedReceived, peer_, ImActorMo
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                                       withLong:(jlong)rid {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestEncryptedReceived_set_peer_(self, peer);
+    self->peer_ = peer;
     self->rid_ = rid;
   }
   return self;
@@ -51,13 +51,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEncryptedReceived, peer_, ImActorMo
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestEncryptedReceived_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiOutPeer alloc] init] autorelease]]);
+  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiOutPeer alloc] init]];
   self->rid_ = [values getLongWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeLongWithInt:3 withLong:self->rid_];
@@ -67,14 +67,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEncryptedReceived, peer_, ImActorMo
   return ImActorModelApiRpcRequestEncryptedReceived_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(peer_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestEncryptedReceived *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestEncryptedReceived_set_peer_(other, peer_);
+  other->peer_ = peer_;
   other->rid_ = rid_;
 }
 
@@ -103,7 +98,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEncryptedReceived, peer_, ImActorMo
 
 ImActorModelApiRpcRequestEncryptedReceived *ImActorModelApiRpcRequestEncryptedReceived_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEncryptedReceived_init();
-  return ((ImActorModelApiRpcRequestEncryptedReceived *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestEncryptedReceived alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestEncryptedReceived *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestEncryptedReceived alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEncryptedReceived)

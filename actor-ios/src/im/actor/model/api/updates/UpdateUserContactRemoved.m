@@ -91,7 +91,7 @@
 
 ImActorModelApiUpdatesUpdateUserContactRemoved *ImActorModelApiUpdatesUpdateUserContactRemoved_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserContactRemoved_init();
-  return ((ImActorModelApiUpdatesUpdateUserContactRemoved *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateUserContactRemoved alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateUserContactRemoved *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserContactRemoved alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserContactRemoved)

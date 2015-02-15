@@ -24,10 +24,10 @@
               withByteArray:(IOSByteArray *)relatedData {
   if (self = [super init]) {
     self->errorCode_ = errorCode;
-    MTRpcError_set_errorTag_(self, errorTag);
-    MTRpcError_set_userMessage_(self, userMessage);
+    self->errorTag_ = errorTag;
+    self->userMessage_ = userMessage;
     self->canTryAgain_ = canTryAgain;
-    MTRpcError_set_relatedData_(self, relatedData);
+    self->relatedData_ = relatedData;
   }
   return self;
 }
@@ -46,30 +46,23 @@
 
 - (void)readBodyWithAMDataInput:(AMDataInput *)bs {
   errorCode_ = [((AMDataInput *) nil_chk(bs)) readInt];
-  MTRpcError_set_errorTag_(self, [bs readProtoString]);
-  MTRpcError_set_userMessage_(self, [bs readProtoString]);
+  errorTag_ = [bs readProtoString];
+  userMessage_ = [bs readProtoString];
   canTryAgain_ = [bs readProtoBool];
-  MTRpcError_set_relatedData_(self, [bs readProtoBytes]);
+  relatedData_ = [bs readProtoBytes];
 }
 
 - (NSString *)description {
   return JreStrcat("$IC$C", @"RpcError [#", errorCode_, ' ', errorTag_, ']');
 }
 
-- (void)dealloc {
-  RELEASE_(errorTag_);
-  RELEASE_(userMessage_);
-  RELEASE_(relatedData_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(MTRpcError *)other {
   [super copyAllFieldsTo:other];
   other->errorCode_ = errorCode_;
-  MTRpcError_set_errorTag_(other, errorTag_);
-  MTRpcError_set_userMessage_(other, userMessage_);
+  other->errorTag_ = errorTag_;
+  other->userMessage_ = userMessage_;
   other->canTryAgain_ = canTryAgain_;
-  MTRpcError_set_relatedData_(other, relatedData_);
+  other->relatedData_ = relatedData_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

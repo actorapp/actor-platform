@@ -19,7 +19,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalDialogHistoryLoaded, dialo
 
 - (instancetype)initWithImActorModelApiRpcResponseLoadDialogs:(ImActorModelApiRpcResponseLoadDialogs *)dialogs {
   if (self = [super init]) {
-    ImActorModelModulesUpdatesInternalDialogHistoryLoaded_set_dialogs_(self, dialogs);
+    self->dialogs_ = dialogs;
   }
   return self;
 }
@@ -28,14 +28,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalDialogHistoryLoaded, dialo
   return dialogs_;
 }
 
-- (void)dealloc {
-  RELEASE_(dialogs_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesInternalDialogHistoryLoaded *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUpdatesInternalDialogHistoryLoaded_set_dialogs_(other, dialogs_);
+  other->dialogs_ = dialogs_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

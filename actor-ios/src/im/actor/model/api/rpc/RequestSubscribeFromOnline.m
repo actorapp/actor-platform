@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromOnline, users_, id<Jav
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestSubscribeFromOnline_set_users_(self, users);
+    self->users_ = users;
   }
   return self;
 }
@@ -46,11 +46,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromOnline, users_, id<Jav
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  id<JavaUtilList> _users = [[[JavaUtilArrayList alloc] init] autorelease];
+  id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_users addWithId:[[[ImActorModelApiUserOutPeer alloc] init] autorelease]];
+    [_users addWithId:[[ImActorModelApiUserOutPeer alloc] init]];
   }
-  ImActorModelApiRpcRequestSubscribeFromOnline_set_users_(self, [values getRepeatedObjWithInt:1 withJavaUtilList:_users]);
+  self->users_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_users];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -61,14 +61,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromOnline, users_, id<Jav
   return ImActorModelApiRpcRequestSubscribeFromOnline_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(users_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestSubscribeFromOnline *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestSubscribeFromOnline_set_users_(other, users_);
+  other->users_ = users_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -94,7 +89,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromOnline, users_, id<Jav
 
 ImActorModelApiRpcRequestSubscribeFromOnline *ImActorModelApiRpcRequestSubscribeFromOnline_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSubscribeFromOnline_init();
-  return ((ImActorModelApiRpcRequestSubscribeFromOnline *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestSubscribeFromOnline alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestSubscribeFromOnline *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestSubscribeFromOnline alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSubscribeFromOnline)

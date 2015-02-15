@@ -18,7 +18,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMessagesDeadLetter, message_, id)
 
 - (instancetype)initWithId:(id)message {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsMessagesDeadLetter_set_message_(self, message);
+    self->message_ = message;
   }
   return self;
 }
@@ -31,14 +31,9 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMessagesDeadLetter, message_, id)
   return JreStrcat("$@C", @"DeadLetter(", message_, ')');
 }
 
-- (void)dealloc {
-  RELEASE_(message_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMessagesDeadLetter *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsMessagesDeadLetter_set_message_(other, message_);
+  other->message_ = message_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

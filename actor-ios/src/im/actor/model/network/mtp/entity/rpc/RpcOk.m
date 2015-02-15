@@ -21,7 +21,7 @@
               withByteArray:(IOSByteArray *)payload {
   if (self = [super init]) {
     self->responseType_ = responseType;
-    MTRpcOk_set_payload_(self, payload);
+    self->payload_ = payload;
   }
   return self;
 }
@@ -45,22 +45,17 @@
 
 - (void)readBodyWithAMDataInput:(AMDataInput *)bs {
   responseType_ = [((AMDataInput *) nil_chk(bs)) readInt];
-  MTRpcOk_set_payload_(self, [bs readProtoBytes]);
+  payload_ = [bs readProtoBytes];
 }
 
 - (NSString *)description {
   return JreStrcat("$IC", @"RpcOk{", responseType_, ']');
 }
 
-- (void)dealloc {
-  RELEASE_(payload_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(MTRpcOk *)other {
   [super copyAllFieldsTo:other];
   other->responseType_ = responseType_;
-  MTRpcOk_set_payload_(other, payload_);
+  other->payload_ = payload_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

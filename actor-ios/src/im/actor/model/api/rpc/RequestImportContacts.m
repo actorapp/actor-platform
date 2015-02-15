@@ -36,8 +36,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)phones
                     withJavaUtilList:(id<JavaUtilList>)emails {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestImportContacts_set_phones_(self, phones);
-    ImActorModelApiRpcRequestImportContacts_set_emails_(self, emails);
+    self->phones_ = phones;
+    self->emails_ = emails;
   }
   return self;
 }
@@ -55,16 +55,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  id<JavaUtilList> _phones = [[[JavaUtilArrayList alloc] init] autorelease];
+  id<JavaUtilList> _phones = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_phones addWithId:[[[ImActorModelApiPhoneToImport alloc] init] autorelease]];
+    [_phones addWithId:[[ImActorModelApiPhoneToImport alloc] init]];
   }
-  ImActorModelApiRpcRequestImportContacts_set_phones_(self, [values getRepeatedObjWithInt:1 withJavaUtilList:_phones]);
-  id<JavaUtilList> _emails = [[[JavaUtilArrayList alloc] init] autorelease];
+  self->phones_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_phones];
+  id<JavaUtilList> _emails = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:2]; i++) {
-    [_emails addWithId:[[[ImActorModelApiEmailToImport alloc] init] autorelease]];
+    [_emails addWithId:[[ImActorModelApiEmailToImport alloc] init]];
   }
-  ImActorModelApiRpcRequestImportContacts_set_emails_(self, [values getRepeatedObjWithInt:2 withJavaUtilList:_emails]);
+  self->emails_ = [values getRepeatedObjWithInt:2 withJavaUtilList:_emails];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -76,16 +76,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
   return ImActorModelApiRpcRequestImportContacts_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(phones_);
-  RELEASE_(emails_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestImportContacts *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestImportContacts_set_phones_(other, phones_);
-  ImActorModelApiRpcRequestImportContacts_set_emails_(other, emails_);
+  other->phones_ = phones_;
+  other->emails_ = emails_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -113,7 +107,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
 
 ImActorModelApiRpcRequestImportContacts *ImActorModelApiRpcRequestImportContacts_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestImportContacts_init();
-  return ((ImActorModelApiRpcRequestImportContacts *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestImportContacts alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestImportContacts *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestImportContacts alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestImportContacts)

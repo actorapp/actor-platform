@@ -15,7 +15,7 @@
 
 - (instancetype)initWithAMDataInput:(AMDataInput *)stream {
   if (self = [super init]) {
-    [self readObjectWithAMDataInput:stream];
+    (void) [self readObjectWithAMDataInput:stream];
   }
   return self;
 }
@@ -36,7 +36,7 @@
 }
 
 - (IOSByteArray *)toByteArray {
-  AMDataOutput *outputStream = [[[AMDataOutput alloc] init] autorelease];
+  AMDataOutput *outputStream = [[AMDataOutput alloc] init];
   @try {
     [self writeObjectWithAMDataOutput:outputStream];
   }

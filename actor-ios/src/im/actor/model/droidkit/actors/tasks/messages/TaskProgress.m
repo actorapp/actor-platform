@@ -21,7 +21,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksMessagesTaskProgress, progres
                      withId:(id)progress {
   if (self = [super init]) {
     self->requestId_ = requestId;
-    ImActorModelDroidkitActorsTasksMessagesTaskProgress_set_progress_(self, progress);
+    self->progress_ = progress;
   }
   return self;
 }
@@ -38,15 +38,10 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksMessagesTaskProgress, progres
   return JreStrcat("$IC", @"TaskProgress{requestId=", requestId_, '}');
 }
 
-- (void)dealloc {
-  RELEASE_(progress_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksMessagesTaskProgress *)other {
   [super copyAllFieldsTo:other];
   other->requestId_ = requestId_;
-  ImActorModelDroidkitActorsTasksMessagesTaskProgress_set_progress_(other, progress_);
+  other->progress_ = progress_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

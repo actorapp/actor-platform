@@ -26,7 +26,7 @@ J2OBJC_FIELD_SETTER(AMDataOutput, data_, IOSByteArray *)
 
 - (instancetype)init {
   if (self = [super init]) {
-    AMDataOutput_setAndConsume_data_(self, [IOSByteArray newArrayWithLength:16]);
+    data_ = [IOSByteArray newArrayWithLength:16];
   }
   return self;
 }
@@ -115,21 +115,16 @@ J2OBJC_FIELD_SETTER(AMDataOutput, data_, IOSByteArray *)
 }
 
 - (IOSByteArray *)toByteArray {
-  IOSByteArray *res = [IOSByteArray arrayWithLength:offset_];
+  IOSByteArray *res = [IOSByteArray newArrayWithLength:offset_];
   for (jint i = 0; i < offset_; i++) {
     *IOSByteArray_GetRef(res, i) = IOSByteArray_Get(nil_chk(data_), i);
   }
   return res;
 }
 
-- (void)dealloc {
-  RELEASE_(data_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(AMDataOutput *)other {
   [super copyAllFieldsTo:other];
-  AMDataOutput_set_data_(other, data_);
+  other->data_ = data_;
   other->offset_ = offset_;
 }
 
@@ -159,11 +154,11 @@ J2OBJC_FIELD_SETTER(AMDataOutput, data_, IOSByteArray *)
 @end
 
 void AMDataOutput_expandWithInt_(AMDataOutput *self, jint size) {
-  IOSByteArray *nData = [IOSByteArray arrayWithLength:size];
+  IOSByteArray *nData = [IOSByteArray newArrayWithLength:size];
   for (jint i = 0; i < self->offset_; i++) {
     *IOSByteArray_GetRef(nData, i) = IOSByteArray_Get(nil_chk(self->data_), i);
   }
-  AMDataOutput_set_data_(self, nData);
+  self->data_ = nData;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDataOutput)

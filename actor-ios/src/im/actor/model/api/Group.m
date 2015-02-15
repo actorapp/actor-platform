@@ -44,11 +44,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   if (self = [super init]) {
     self->id__ = id_;
     self->accessHash_ = accessHash;
-    ImActorModelApiGroup_set_title_(self, title);
-    ImActorModelApiGroup_set_avatar_(self, avatar);
+    self->title_ = title;
+    self->avatar_ = avatar;
     self->isMember__ = isMember;
     self->adminUid_ = adminUid;
-    ImActorModelApiGroup_set_members_(self, members);
+    self->members_ = members;
     self->createDate_ = createDate;
   }
   return self;
@@ -93,15 +93,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->id__ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
-  ImActorModelApiGroup_set_title_(self, [values getStringWithInt:3]);
-  ImActorModelApiGroup_set_avatar_(self, [values optObjWithInt:4 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiAvatar alloc] init] autorelease]]);
+  self->title_ = [values getStringWithInt:3];
+  self->avatar_ = [values optObjWithInt:4 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatar alloc] init]];
   self->isMember__ = [values getBoolWithInt:6];
   self->adminUid_ = [values getIntWithInt:8];
-  id<JavaUtilList> _members = [[[JavaUtilArrayList alloc] init] autorelease];
+  id<JavaUtilList> _members = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:9]; i++) {
-    [_members addWithId:[[[ImActorModelApiMember alloc] init] autorelease]];
+    [_members addWithId:[[ImActorModelApiMember alloc] init]];
   }
-  ImActorModelApiGroup_set_members_(self, [values getRepeatedObjWithInt:9 withJavaUtilList:_members]);
+  self->members_ = [values getRepeatedObjWithInt:9 withJavaUtilList:_members];
   self->createDate_ = [values getLongWithInt:10];
 }
 
@@ -109,7 +109,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   if (self->title_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:3 withNSString:self->title_];
   if (self->avatar_ != nil) {
@@ -121,22 +121,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   [writer writeLongWithInt:10 withLong:self->createDate_];
 }
 
-- (void)dealloc {
-  RELEASE_(title_);
-  RELEASE_(avatar_);
-  RELEASE_(members_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiGroup *)other {
   [super copyAllFieldsTo:other];
   other->id__ = id__;
   other->accessHash_ = accessHash_;
-  ImActorModelApiGroup_set_title_(other, title_);
-  ImActorModelApiGroup_set_avatar_(other, avatar_);
+  other->title_ = title_;
+  other->avatar_ = avatar_;
   other->isMember__ = isMember__;
   other->adminUid_ = adminUid_;
-  ImActorModelApiGroup_set_members_(other, members_);
+  other->members_ = members_;
   other->createDate_ = createDate_;
 }
 

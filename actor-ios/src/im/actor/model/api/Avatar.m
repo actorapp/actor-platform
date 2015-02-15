@@ -29,9 +29,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
                     withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)largeImage
                     withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)fullImage {
   if (self = [super init]) {
-    ImActorModelApiAvatar_set_smallImage_(self, smallImage);
-    ImActorModelApiAvatar_set_largeImage_(self, largeImage);
-    ImActorModelApiAvatar_set_fullImage_(self, fullImage);
+    self->smallImage_ = smallImage;
+    self->largeImage_ = largeImage;
+    self->fullImage_ = fullImage;
   }
   return self;
 }
@@ -53,9 +53,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiAvatar_set_smallImage_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) optObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiAvatarImage alloc] init] autorelease]]);
-  ImActorModelApiAvatar_set_largeImage_(self, [values optObjWithInt:2 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiAvatarImage alloc] init] autorelease]]);
-  ImActorModelApiAvatar_set_fullImage_(self, [values optObjWithInt:3 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiAvatarImage alloc] init] autorelease]]);
+  self->smallImage_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) optObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatarImage alloc] init]];
+  self->largeImage_ = [values optObjWithInt:2 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatarImage alloc] init]];
+  self->fullImage_ = [values optObjWithInt:3 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatarImage alloc] init]];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -70,18 +70,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
   }
 }
 
-- (void)dealloc {
-  RELEASE_(smallImage_);
-  RELEASE_(largeImage_);
-  RELEASE_(fullImage_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiAvatar *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiAvatar_set_smallImage_(other, smallImage_);
-  ImActorModelApiAvatar_set_largeImage_(other, largeImage_);
-  ImActorModelApiAvatar_set_fullImage_(other, fullImage_);
+  other->smallImage_ = smallImage_;
+  other->largeImage_ = largeImage_;
+  other->fullImage_ = fullImage_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

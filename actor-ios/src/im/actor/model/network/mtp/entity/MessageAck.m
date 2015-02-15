@@ -22,7 +22,7 @@
 
 - (instancetype)initWithJavaLangLongArray:(IOSObjectArray *)_messagesIds {
   if (self = [super init]) {
-    MTMessageAck_setAndConsume_messagesIds_(self, [IOSLongArray newArrayWithLength:((IOSObjectArray *) nil_chk(_messagesIds))->size_]);
+    self->messagesIds_ = [IOSLongArray newArrayWithLength:((IOSObjectArray *) nil_chk(_messagesIds))->size_];
     for (jint i = 0; i < _messagesIds->size_; ++i) {
       *IOSLongArray_GetRef(self->messagesIds_, i) = [((JavaLangLong *) nil_chk(IOSObjectArray_Get(_messagesIds, i))) longLongValue];
     }
@@ -32,7 +32,7 @@
 
 - (instancetype)initWithLongArray:(IOSLongArray *)messagesIds {
   if (self = [super init]) {
-    MTMessageAck_set_messagesIds_(self, messagesIds);
+    self->messagesIds_ = messagesIds;
   }
   return self;
 }
@@ -46,21 +46,16 @@
 }
 
 - (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  MTMessageAck_set_messagesIds_(self, [((AMDataInput *) nil_chk(bs)) readProtoLongs]);
+  messagesIds_ = [((AMDataInput *) nil_chk(bs)) readProtoLongs];
 }
 
 - (NSString *)description {
   return JreStrcat("$$", @"Ack ", JavaUtilArrays_toStringWithLongArray_(messagesIds_));
 }
 
-- (void)dealloc {
-  RELEASE_(messagesIds_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(MTMessageAck *)other {
   [super copyAllFieldsTo:other];
-  MTMessageAck_set_messagesIds_(other, messagesIds_);
+  other->messagesIds_ = messagesIds_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

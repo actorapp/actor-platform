@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/util/RandomUtils.java
 //
 
-#include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/util/RandomUtils.h"
@@ -29,7 +28,7 @@ JavaUtilRandom * AMRandomUtils_random_;
 
 + (void)initialize {
   if (self == [AMRandomUtils class]) {
-    JreStrongAssignAndConsume(&AMRandomUtils_random_, nil, [[JavaUtilRandom alloc] init]);
+    AMRandomUtils_random_ = [[JavaUtilRandom alloc] init];
     J2OBJC_SET_INITIALIZED(AMRandomUtils)
   }
 }
@@ -51,7 +50,7 @@ JavaUtilRandom * AMRandomUtils_random_;
 IOSByteArray *AMRandomUtils_seedWithInt_(jint size) {
   AMRandomUtils_init();
   @synchronized(AMRandomUtils_class_()) {
-    IOSByteArray *res = [IOSByteArray arrayWithLength:size];
+    IOSByteArray *res = [IOSByteArray newArrayWithLength:size];
     [((JavaUtilRandom *) nil_chk(AMRandomUtils_random_)) nextBytesWithByteArray:res];
     return res;
   }

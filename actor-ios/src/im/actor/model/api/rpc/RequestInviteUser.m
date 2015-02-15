@@ -36,9 +36,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
                                            withLong:(jlong)rid
                      withImActorModelApiUserOutPeer:(ImActorModelApiUserOutPeer *)user {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestInviteUser_set_groupPeer_(self, groupPeer);
+    self->groupPeer_ = groupPeer;
     self->rid_ = rid;
-    ImActorModelApiRpcRequestInviteUser_set_user_(self, user);
+    self->user_ = user;
   }
   return self;
 }
@@ -60,19 +60,19 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestInviteUser_set_groupPeer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiGroupOutPeer alloc] init] autorelease]]);
+  self->groupPeer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
   self->rid_ = [values getLongWithInt:4];
-  ImActorModelApiRpcRequestInviteUser_set_user_(self, [values getObjWithInt:3 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiUserOutPeer alloc] init] autorelease]]);
+  self->user_ = [values getObjWithInt:3 withImActorModelDroidkitBserBserObject:[[ImActorModelApiUserOutPeer alloc] init]];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->groupPeer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->groupPeer_];
   [writer writeLongWithInt:4 withLong:self->rid_];
   if (self->user_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeObjectWithInt:3 withImActorModelDroidkitBserBserObject:self->user_];
 }
@@ -81,17 +81,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
   return ImActorModelApiRpcRequestInviteUser_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(groupPeer_);
-  RELEASE_(user_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestInviteUser *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestInviteUser_set_groupPeer_(other, groupPeer_);
+  other->groupPeer_ = groupPeer_;
   other->rid_ = rid_;
-  ImActorModelApiRpcRequestInviteUser_set_user_(other, user_);
+  other->user_ = user_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -121,7 +115,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
 
 ImActorModelApiRpcRequestInviteUser *ImActorModelApiRpcRequestInviteUser_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestInviteUser_init();
-  return ((ImActorModelApiRpcRequestInviteUser *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestInviteUser alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestInviteUser *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestInviteUser alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestInviteUser)

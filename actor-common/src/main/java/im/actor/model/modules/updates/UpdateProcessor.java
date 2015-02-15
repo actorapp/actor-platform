@@ -106,7 +106,10 @@ public class UpdateProcessor {
             UpdateChatDelete chatDelete = (UpdateChatDelete) update;
             messagesProcessor.onChatDelete(chatDelete.getPeer());
         } else if (update instanceof UpdateContactRegistered) {
-            messagesProcessor.onUserRegistered(((UpdateContactRegistered) update).getUid());
+            UpdateContactRegistered registered = (UpdateContactRegistered) update;
+            if (!registered.isSilent()) {
+                messagesProcessor.onUserRegistered(registered.getUid(), registered.getDate());
+            }
         }
     }
 

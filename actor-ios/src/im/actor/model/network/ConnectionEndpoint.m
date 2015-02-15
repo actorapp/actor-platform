@@ -25,9 +25,9 @@ J2OBJC_FIELD_SETTER(AMConnectionEndpoint, type_, AMConnectionEndpoint_TypeEnum *
                          withInt:(jint)port
 withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type {
   if (self = [super init]) {
-    AMConnectionEndpoint_set_host_(self, host);
+    self->host_ = host;
     self->port_ = port;
-    AMConnectionEndpoint_set_type_(self, type);
+    self->type_ = type;
   }
   return self;
 }
@@ -44,17 +44,11 @@ withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type {
   return port_;
 }
 
-- (void)dealloc {
-  RELEASE_(host_);
-  RELEASE_(type_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(AMConnectionEndpoint *)other {
   [super copyAllFieldsTo:other];
-  AMConnectionEndpoint_set_host_(other, host_);
+  other->host_ = host_;
   other->port_ = port_;
-  AMConnectionEndpoint_set_type_(other, type_);
+  other->type_ = type_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -108,12 +102,12 @@ AMConnectionEndpoint_TypeEnum *AMConnectionEndpoint_TypeEnum_valueOfWithNSString
       return e;
     }
   }
-  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name] autorelease];
+  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];
   return nil;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  return [self retain];
+  return self;
 }
 
 + (void)initialize {

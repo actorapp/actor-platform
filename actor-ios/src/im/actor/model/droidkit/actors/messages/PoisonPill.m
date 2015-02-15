@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/messages/PoisonPill.java
 //
 
-#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/messages/PoisonPill.h"
 
@@ -27,7 +26,7 @@ ImActorModelDroidkitActorsMessagesPoisonPill * ImActorModelDroidkitActorsMessage
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsMessagesPoisonPill class]) {
-    JreStrongAssignAndConsume(&ImActorModelDroidkitActorsMessagesPoisonPill_INSTANCE_, nil, [[ImActorModelDroidkitActorsMessagesPoisonPill alloc] init]);
+    ImActorModelDroidkitActorsMessagesPoisonPill_INSTANCE_ = [[ImActorModelDroidkitActorsMessagesPoisonPill alloc] init];
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsMessagesPoisonPill)
   }
 }

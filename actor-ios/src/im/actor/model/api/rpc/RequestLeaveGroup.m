@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLeaveGroup, groupPeer_, ImActorMode
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestLeaveGroup_set_groupPeer_(self, groupPeer);
+    self->groupPeer_ = groupPeer;
     self->rid_ = rid;
   }
   return self;
@@ -51,13 +51,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLeaveGroup, groupPeer_, ImActorMode
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestLeaveGroup_set_groupPeer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiGroupOutPeer alloc] init] autorelease]]);
+  self->groupPeer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
   self->rid_ = [values getLongWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->groupPeer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->groupPeer_];
   [writer writeLongWithInt:2 withLong:self->rid_];
@@ -67,14 +67,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLeaveGroup, groupPeer_, ImActorMode
   return ImActorModelApiRpcRequestLeaveGroup_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(groupPeer_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestLeaveGroup *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestLeaveGroup_set_groupPeer_(other, groupPeer_);
+  other->groupPeer_ = groupPeer_;
   other->rid_ = rid_;
 }
 
@@ -103,7 +98,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLeaveGroup, groupPeer_, ImActorMode
 
 ImActorModelApiRpcRequestLeaveGroup *ImActorModelApiRpcRequestLeaveGroup_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestLeaveGroup_init();
-  return ((ImActorModelApiRpcRequestLeaveGroup *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestLeaveGroup alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestLeaveGroup *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestLeaveGroup alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestLeaveGroup)

@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReceived, peer_, ImActorM
                                    withLong:(jlong)startDate
                                    withLong:(jlong)receivedDate {
   if (self = [super init]) {
-    ImActorModelApiUpdatesUpdateMessageReceived_set_peer_(self, peer);
+    self->peer_ = peer;
     self->startDate_ = startDate;
     self->receivedDate_ = receivedDate;
   }
@@ -58,14 +58,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReceived, peer_, ImActorM
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiUpdatesUpdateMessageReceived_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiPeer alloc] init] autorelease]]);
+  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiPeer alloc] init]];
   self->startDate_ = [values getLongWithInt:2];
   self->receivedDate_ = [values getLongWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeLongWithInt:2 withLong:self->startDate_];
@@ -76,14 +76,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReceived, peer_, ImActorM
   return ImActorModelApiUpdatesUpdateMessageReceived_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(peer_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateMessageReceived *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiUpdatesUpdateMessageReceived_set_peer_(other, peer_);
+  other->peer_ = peer_;
   other->startDate_ = startDate_;
   other->receivedDate_ = receivedDate_;
 }
@@ -114,7 +109,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReceived, peer_, ImActorM
 
 ImActorModelApiUpdatesUpdateMessageReceived *ImActorModelApiUpdatesUpdateMessageReceived_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateMessageReceived_init();
-  return ((ImActorModelApiUpdatesUpdateMessageReceived *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateMessageReceived alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateMessageReceived *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateMessageReceived alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateMessageReceived)

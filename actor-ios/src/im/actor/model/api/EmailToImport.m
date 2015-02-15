@@ -25,8 +25,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
 - (instancetype)initWithNSString:(NSString *)email
                     withNSString:(NSString *)name {
   if (self = [super init]) {
-    ImActorModelApiEmailToImport_set_email_(self, email);
-    ImActorModelApiEmailToImport_set_name_(self, name);
+    self->email_ = email;
+    self->name_ = name;
   }
   return self;
 }
@@ -44,13 +44,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiEmailToImport_set_email_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1]);
-  ImActorModelApiEmailToImport_set_name_(self, [values optStringWithInt:2]);
+  self->email_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1];
+  self->name_ = [values optStringWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->email_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->email_];
   if (self->name_ != nil) {
@@ -58,16 +58,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
   }
 }
 
-- (void)dealloc {
-  RELEASE_(email_);
-  RELEASE_(name_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiEmailToImport *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiEmailToImport_set_email_(other, email_);
-  ImActorModelApiEmailToImport_set_name_(other, name_);
+  other->email_ = email_;
+  other->name_ = name_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

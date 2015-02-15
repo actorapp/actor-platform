@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/conf/EnvConfig.java
 //
 
-#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/ThreadPriority.h"
@@ -94,7 +93,7 @@ id<ImActorModelDroidkitActorsConfJavaFactory> ImActorModelDroidkitActorsConfEnvC
 
 void ImActorModelDroidkitActorsConfEnvConfig_setJavaFactoryWithImActorModelDroidkitActorsConfJavaFactory_(id<ImActorModelDroidkitActorsConfJavaFactory> javaFactory) {
   ImActorModelDroidkitActorsConfEnvConfig_init();
-  JreStrongAssign(&ImActorModelDroidkitActorsConfEnvConfig_javaFactory_, nil, javaFactory);
+  ImActorModelDroidkitActorsConfEnvConfig_javaFactory_ = javaFactory;
 }
 
 id<ImActorModelDroidkitActorsConfDispatcherFactory> ImActorModelDroidkitActorsConfEnvConfig_getDispatcherFactory() {
@@ -104,13 +103,13 @@ id<ImActorModelDroidkitActorsConfDispatcherFactory> ImActorModelDroidkitActorsCo
 
 void ImActorModelDroidkitActorsConfEnvConfig_setDispatcherFactoryWithImActorModelDroidkitActorsConfDispatcherFactory_(id<ImActorModelDroidkitActorsConfDispatcherFactory> dispatcherFactory) {
   ImActorModelDroidkitActorsConfEnvConfig_init();
-  JreStrongAssign(&ImActorModelDroidkitActorsConfEnvConfig_dispatcherFactory_, nil, dispatcherFactory);
+  ImActorModelDroidkitActorsConfEnvConfig_dispatcherFactory_ = dispatcherFactory;
 }
 
 ImActorModelDroidkitActorsMailboxActorDispatcher *ImActorModelDroidkitActorsConfEnvConfig_createDispatcherWithNSString_withInt_withImActorModelDroidkitActorsThreadPriorityEnum_withImActorModelDroidkitActorsActorSystem_(NSString *name, jint threadsCount, ImActorModelDroidkitActorsThreadPriorityEnum *priority, ImActorModelDroidkitActorsActorSystem *actorSystem) {
   ImActorModelDroidkitActorsConfEnvConfig_init();
   if (ImActorModelDroidkitActorsConfEnvConfig_dispatcherFactory_ == nil) {
-    @throw [[[JavaLangRuntimeException alloc] initWithNSString:@"EnvConfig not inited!"] autorelease];
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"EnvConfig not inited!"];
   }
   return [((id<ImActorModelDroidkitActorsConfDispatcherFactory>) nil_chk(ImActorModelDroidkitActorsConfEnvConfig_dispatcherFactory_)) createDispatcherWithNSString:name withInt:threadsCount withImActorModelDroidkitActorsThreadPriorityEnum:priority withImActorModelDroidkitActorsActorSystem:actorSystem];
 }
@@ -118,7 +117,7 @@ ImActorModelDroidkitActorsMailboxActorDispatcher *ImActorModelDroidkitActorsConf
 ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *ImActorModelDroidkitActorsConfEnvConfig_createAtomicIntWithInt_(jint init_) {
   ImActorModelDroidkitActorsConfEnvConfig_init();
   if (ImActorModelDroidkitActorsConfEnvConfig_javaFactory_ == nil) {
-    @throw [[[JavaLangRuntimeException alloc] initWithNSString:@"EnvConfig not inited!"] autorelease];
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"EnvConfig not inited!"];
   }
   return [((id<ImActorModelDroidkitActorsConfJavaFactory>) nil_chk(ImActorModelDroidkitActorsConfEnvConfig_javaFactory_)) createAtomicIntWithInt:init_];
 }
@@ -126,7 +125,7 @@ ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *ImActorModelDroidkitActorsCo
 ImActorModelDroidkitActorsUtilsAtomicLongCompat *ImActorModelDroidkitActorsConfEnvConfig_createAtomicLongWithLong_(jlong init_) {
   ImActorModelDroidkitActorsConfEnvConfig_init();
   if (ImActorModelDroidkitActorsConfEnvConfig_javaFactory_ == nil) {
-    @throw [[[JavaLangRuntimeException alloc] initWithNSString:@"EnvConfig not inited!"] autorelease];
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"EnvConfig not inited!"];
   }
   return [((id<ImActorModelDroidkitActorsConfJavaFactory>) nil_chk(ImActorModelDroidkitActorsConfEnvConfig_javaFactory_)) createAtomicLongWithLong:init_];
 }
@@ -134,7 +133,7 @@ ImActorModelDroidkitActorsUtilsAtomicLongCompat *ImActorModelDroidkitActorsConfE
 ImActorModelDroidkitActorsUtilsThreadLocalCompat *ImActorModelDroidkitActorsConfEnvConfig_createThreadLocal() {
   ImActorModelDroidkitActorsConfEnvConfig_init();
   if (ImActorModelDroidkitActorsConfEnvConfig_javaFactory_ == nil) {
-    @throw [[[JavaLangRuntimeException alloc] initWithNSString:@"EnvConfig not inited!"] autorelease];
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"EnvConfig not inited!"];
   }
   return [((id<ImActorModelDroidkitActorsConfJavaFactory>) nil_chk(ImActorModelDroidkitActorsConfEnvConfig_javaFactory_)) createThreadLocal];
 }

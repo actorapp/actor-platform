@@ -36,9 +36,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
                                            withLong:(jlong)rid
                     withImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestEditGroupAvatar_set_groupPeer_(self, groupPeer);
+    self->groupPeer_ = groupPeer;
     self->rid_ = rid;
-    ImActorModelApiRpcRequestEditGroupAvatar_set_fileLocation_(self, fileLocation);
+    self->fileLocation_ = fileLocation;
   }
   return self;
 }
@@ -60,19 +60,19 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestEditGroupAvatar_set_groupPeer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiGroupOutPeer alloc] init] autorelease]]);
+  self->groupPeer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
   self->rid_ = [values getLongWithInt:4];
-  ImActorModelApiRpcRequestEditGroupAvatar_set_fileLocation_(self, [values getObjWithInt:3 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiFileLocation alloc] init] autorelease]]);
+  self->fileLocation_ = [values getObjWithInt:3 withImActorModelDroidkitBserBserObject:[[ImActorModelApiFileLocation alloc] init]];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->groupPeer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->groupPeer_];
   [writer writeLongWithInt:4 withLong:self->rid_];
   if (self->fileLocation_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeObjectWithInt:3 withImActorModelDroidkitBserBserObject:self->fileLocation_];
 }
@@ -81,17 +81,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
   return ImActorModelApiRpcRequestEditGroupAvatar_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(groupPeer_);
-  RELEASE_(fileLocation_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestEditGroupAvatar *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestEditGroupAvatar_set_groupPeer_(other, groupPeer_);
+  other->groupPeer_ = groupPeer_;
   other->rid_ = rid_;
-  ImActorModelApiRpcRequestEditGroupAvatar_set_fileLocation_(other, fileLocation_);
+  other->fileLocation_ = fileLocation_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -121,7 +115,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
 
 ImActorModelApiRpcRequestEditGroupAvatar *ImActorModelApiRpcRequestEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditGroupAvatar_init();
-  return ((ImActorModelApiRpcRequestEditGroupAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestEditGroupAvatar alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestEditGroupAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestEditGroupAvatar alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEditGroupAvatar)

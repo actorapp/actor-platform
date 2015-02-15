@@ -89,7 +89,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
 }
 
 - (void)preStart {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelDroidkitActorsTasksMessagesTaskStart alloc] init] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskStart alloc] init]];
 }
 
 - (void)onReceiveWithId:(id)message {
@@ -108,7 +108,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
       }
     }
     else {
-      ImActorModelDroidkitActorsTasksTaskActor_TaskListener *listener = [[[ImActorModelDroidkitActorsTasksTaskActor_TaskListener alloc] initWithInt:[((ImActorModelDroidkitActorsTasksMessagesTaskRequest *) nil_chk(request)) getRequestId] withImActorModelDroidkitActorsActorRef:[self sender]] autorelease];
+      ImActorModelDroidkitActorsTasksTaskActor_TaskListener *listener = [[ImActorModelDroidkitActorsTasksTaskActor_TaskListener alloc] initWithInt:[((ImActorModelDroidkitActorsTasksMessagesTaskRequest *) nil_chk(request)) getRequestId] withImActorModelDroidkitActorsActorRef:[self sender]];
       [((JavaUtilHashSet *) nil_chk(requests_)) addWithId:listener];
     }
   }
@@ -117,17 +117,17 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
     if (isCompleted__) {
       return;
     }
-    ImActorModelDroidkitActorsTasksTaskActor_TaskListener *listener = [[[ImActorModelDroidkitActorsTasksTaskActor_TaskListener alloc] initWithInt:[((ImActorModelDroidkitActorsTasksMessagesTaskCancel *) nil_chk(cancel)) getRequestId] withImActorModelDroidkitActorsActorRef:[self sender]] autorelease];
+    ImActorModelDroidkitActorsTasksTaskActor_TaskListener *listener = [[ImActorModelDroidkitActorsTasksTaskActor_TaskListener alloc] initWithInt:[((ImActorModelDroidkitActorsTasksMessagesTaskCancel *) nil_chk(cancel)) getRequestId] withImActorModelDroidkitActorsActorRef:[self sender]];
     [((JavaUtilHashSet *) nil_chk(requests_)) removeWithId:listener];
     if ([requests_ size] == 0) {
-      [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[[ImActorModelDroidkitActorsTasksTaskActor_Obsolete alloc] init] autorelease] withLong:dieTimeout_];
+      [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelDroidkitActorsTasksTaskActor_Obsolete alloc] init] withLong:dieTimeout_];
     }
   }
   else if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksTaskActor_Progress class]]) {
     ImActorModelDroidkitActorsTasksTaskActor_Progress *progress = (ImActorModelDroidkitActorsTasksTaskActor_Progress *) check_class_cast(message, [ImActorModelDroidkitActorsTasksTaskActor_Progress class]);
     if (!isCompleted__) {
       for (ImActorModelDroidkitActorsTasksTaskActor_TaskListener * __strong request in nil_chk(requests_)) {
-        [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(request)) getSender])) sendWithId:[[[ImActorModelDroidkitActorsTasksMessagesTaskProgress alloc] initWithInt:[request getRequestId] withId:((ImActorModelDroidkitActorsTasksTaskActor_Progress *) nil_chk(progress))->progress_] autorelease]];
+        [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(request)) getSender])) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskProgress alloc] initWithInt:[request getRequestId] withId:((ImActorModelDroidkitActorsTasksTaskActor_Progress *) nil_chk(progress))->progress_]];
       }
     }
   }
@@ -136,9 +136,9 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
       ImActorModelDroidkitActorsTasksTaskActor_Result *res = (ImActorModelDroidkitActorsTasksTaskActor_Result *) check_class_cast(message, [ImActorModelDroidkitActorsTasksTaskActor_Result class]);
       isCompleted__ = YES;
       isCompletedSuccess__ = YES;
-      ImActorModelDroidkitActorsTasksTaskActor_set_result_(self, (id) [((ImActorModelDroidkitActorsTasksTaskActor_Result *) nil_chk(res)) getRes]);
+      result_ = (id) [((ImActorModelDroidkitActorsTasksTaskActor_Result *) nil_chk(res)) getRes];
       for (ImActorModelDroidkitActorsTasksTaskActor_TaskListener * __strong request in nil_chk(requests_)) {
-        [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(request)) getSender])) sendWithId:[[[ImActorModelDroidkitActorsTasksMessagesTaskResult alloc] initWithInt:[request getRequestId] withId:result_] autorelease]];
+        [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(request)) getSender])) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskResult alloc] initWithInt:[request getRequestId] withId:result_]];
       }
       [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_() withLong:dieTimeout_];
     }
@@ -148,7 +148,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
       isCompleted__ = YES;
       ImActorModelDroidkitActorsTasksTaskActor_Error *error = (ImActorModelDroidkitActorsTasksTaskActor_Error *) check_class_cast(message, [ImActorModelDroidkitActorsTasksTaskActor_Error class]);
       for (ImActorModelDroidkitActorsTasksTaskActor_TaskListener * __strong request in nil_chk(requests_)) {
-        [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(request)) getSender])) sendWithId:[[[ImActorModelDroidkitActorsTasksMessagesTaskError alloc] initWithInt:[request getRequestId] withJavaLangThrowable:[((ImActorModelDroidkitActorsTasksTaskActor_Error *) nil_chk(error)) getError]] autorelease]];
+        [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(request)) getSender])) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskError alloc] initWithInt:[request getRequestId] withJavaLangThrowable:[((ImActorModelDroidkitActorsTasksTaskActor_Error *) nil_chk(error)) getError]]];
       }
       [((ImActorModelDroidkitActorsActorContext *) nil_chk([self context])) stopSelf];
     }
@@ -167,35 +167,29 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
 }
 
 - (void)completeWithId:(id)res {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelDroidkitActorsTasksTaskActor_Result alloc] initWithId:res] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelDroidkitActorsTasksTaskActor_Result alloc] initWithId:res]];
 }
 
 - (void)errorWithJavaLangThrowable:(JavaLangThrowable *)t {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelDroidkitActorsTasksTaskActor_Error alloc] initWithJavaLangThrowable:t] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelDroidkitActorsTasksTaskActor_Error alloc] initWithJavaLangThrowable:t]];
 }
 
 - (void)progressWithId:(id)progress {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[[ImActorModelDroidkitActorsTasksTaskActor_Progress alloc] initWithId:progress] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelDroidkitActorsTasksTaskActor_Progress alloc] initWithId:progress]];
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsTasksTaskActor_setAndConsume_requests_(self, [[JavaUtilHashSet alloc] init]);
+    requests_ = [[JavaUtilHashSet alloc] init];
     dieTimeout_ = 300;
   }
   return self;
 }
 
-- (void)dealloc {
-  RELEASE_(requests_);
-  RELEASE_(result_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksTaskActor *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsTasksTaskActor_set_requests_(other, requests_);
-  ImActorModelDroidkitActorsTasksTaskActor_set_result_(other, result_);
+  other->requests_ = requests_;
+  other->result_ = result_;
   other->isCompleted__ = isCompleted__;
   other->isCompletedSuccess__ = isCompletedSuccess__;
   other->dieTimeout_ = dieTimeout_;
@@ -235,7 +229,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor)
 
 - (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)error {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsTasksTaskActor_Error_set_error_(self, error);
+    self->error_ = error;
   }
   return self;
 }
@@ -244,14 +238,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor)
   return error_;
 }
 
-- (void)dealloc {
-  RELEASE_(error_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksTaskActor_Error *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsTasksTaskActor_Error_set_error_(other, error_);
+  other->error_ = error_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -274,7 +263,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor_Error)
 
 - (instancetype)initWithId:(id)res {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsTasksTaskActor_Result_set_res_(self, res);
+    self->res_ = res;
   }
   return self;
 }
@@ -283,14 +272,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor_Error)
   return res_;
 }
 
-- (void)dealloc {
-  RELEASE_(res_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksTaskActor_Result *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsTasksTaskActor_Result_set_res_(other, res_);
+  other->res_ = res_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -313,7 +297,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor_Result
 
 - (instancetype)initWithId:(id)progress {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsTasksTaskActor_Progress_set_progress_(self, progress);
+    self->progress_ = progress;
   }
   return self;
 }
@@ -322,14 +306,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor_Result
   return progress_;
 }
 
-- (void)dealloc {
-  RELEASE_(progress_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksTaskActor_Progress *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsTasksTaskActor_Progress_set_progress_(other, progress_);
+  other->progress_ = progress_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -372,7 +351,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor_Obsole
 withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender {
   if (self = [super init]) {
     self->requestId_ = requestId;
-    ImActorModelDroidkitActorsTasksTaskActor_TaskListener_set_sender_(self, sender);
+    self->sender_ = sender;
   }
   return self;
 }
@@ -400,15 +379,10 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
   return result;
 }
 
-- (void)dealloc {
-  RELEASE_(sender_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksTaskActor_TaskListener *)other {
   [super copyAllFieldsTo:other];
   other->requestId_ = requestId_;
-  ImActorModelDroidkitActorsTasksTaskActor_TaskListener_set_sender_(other, sender_);
+  other->sender_ = sender_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

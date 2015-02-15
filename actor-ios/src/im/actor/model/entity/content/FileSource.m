@@ -33,7 +33,7 @@
     [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:2];
   }
   else {
-    @throw [[[JavaIoIOException alloc] initWithNSString:@"Invalid source type"] autorelease];
+    @throw [[JavaIoIOException alloc] initWithNSString:@"Invalid source type"];
   }
 }
 
@@ -56,7 +56,7 @@
 
 ImActorModelEntityContentFileSource *ImActorModelEntityContentFileSource_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentFileSource_init();
-  ImActorModelDroidkitBserBserValues *reader = [[[ImActorModelDroidkitBserBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:ImActorModelDroidkitBserBserParser_deserializeWithAMDataInput_([[[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_] autorelease])] autorelease];
+  ImActorModelDroidkitBserBserValues *reader = [[ImActorModelDroidkitBserBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:ImActorModelDroidkitBserBserParser_deserializeWithAMDataInput_([[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_])];
   jint type = [reader getIntWithInt:1];
   switch (type) {
     case 1:
@@ -64,7 +64,7 @@ ImActorModelEntityContentFileSource *ImActorModelEntityContentFileSource_fromByt
     case 2:
     return ImActorModelEntityContentFileRemoteSource_fromValuesWithImActorModelDroidkitBserBserValues_(reader);
     default:
-    @throw [[[JavaIoIOException alloc] initWithNSString:@"Invalid source type"] autorelease];
+    @throw [[JavaIoIOException alloc] initWithNSString:@"Invalid source type"];
   }
 }
 

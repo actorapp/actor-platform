@@ -37,7 +37,7 @@ withImActorModelEntityFileLocation:(ImActorModelEntityFileLocation *)fileLocatio
   if (self = [super init]) {
     self->width_ = width;
     self->height_ = height;
-    ImActorModelEntityAvatarImage_set_fileLocation_(self, fileLocation);
+    self->fileLocation_ = fileLocation;
   }
   return self;
 }
@@ -78,7 +78,7 @@ withImActorModelEntityFileLocation:(ImActorModelEntityFileLocation *)fileLocatio
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   width_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   height_ = [values getIntWithInt:2];
-  ImActorModelEntityAvatarImage_set_fileLocation_(self, ImActorModelEntityFileLocation_fromBytesWithByteArray_([values getBytesWithInt:3]));
+  fileLocation_ = ImActorModelEntityFileLocation_fromBytesWithByteArray_([values getBytesWithInt:3]);
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -87,16 +87,11 @@ withImActorModelEntityFileLocation:(ImActorModelEntityFileLocation *)fileLocatio
   [writer writeObjectWithInt:3 withImActorModelDroidkitBserBserObject:fileLocation_];
 }
 
-- (void)dealloc {
-  RELEASE_(fileLocation_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelEntityAvatarImage *)other {
   [super copyAllFieldsTo:other];
   other->width_ = width_;
   other->height_ = height_;
-  ImActorModelEntityAvatarImage_set_fileLocation_(other, fileLocation_);
+  other->fileLocation_ = fileLocation_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -125,7 +120,7 @@ withImActorModelEntityFileLocation:(ImActorModelEntityFileLocation *)fileLocatio
 
 ImActorModelEntityAvatarImage *ImActorModelEntityAvatarImage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityAvatarImage_init();
-  return ((ImActorModelEntityAvatarImage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityAvatarImage alloc] init] autorelease], data));
+  return ((ImActorModelEntityAvatarImage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityAvatarImage alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityAvatarImage)

@@ -53,7 +53,7 @@
 
 ImActorModelApiRpcRequestGetState *ImActorModelApiRpcRequestGetState_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestGetState_init();
-  return ((ImActorModelApiRpcRequestGetState *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestGetState alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestGetState *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestGetState alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetState)

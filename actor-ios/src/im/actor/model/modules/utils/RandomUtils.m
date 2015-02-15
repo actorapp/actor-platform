@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/modules/utils/RandomUtils.java
 //
 
-#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/modules/utils/RandomUtils.h"
 #include "java/util/Random.h"
@@ -28,7 +27,7 @@ JavaUtilRandom * ImActorModelModulesUtilsRandomUtils_RANDOM_;
 
 + (void)initialize {
   if (self == [ImActorModelModulesUtilsRandomUtils class]) {
-    JreStrongAssignAndConsume(&ImActorModelModulesUtilsRandomUtils_RANDOM_, nil, [[JavaUtilRandom alloc] init]);
+    ImActorModelModulesUtilsRandomUtils_RANDOM_ = [[JavaUtilRandom alloc] init];
     J2OBJC_SET_INITIALIZED(ImActorModelModulesUtilsRandomUtils)
   }
 }

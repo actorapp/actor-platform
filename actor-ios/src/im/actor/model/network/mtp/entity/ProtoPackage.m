@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
   if (self = [super init]) {
     self->authId_ = authId;
     self->sessionId_ = sessionId;
-    MTProtoPackage_set_payload_(self, payload);
+    self->payload_ = payload;
   }
   return self;
 }
@@ -60,7 +60,7 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 - (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs {
   authId_ = [((AMDataInput *) nil_chk(bs)) readLong];
   sessionId_ = [bs readLong];
-  MTProtoPackage_setAndConsume_payload_(self, [[MTProtoMessage alloc] initWithAMDataInput:bs]);
+  payload_ = [[MTProtoMessage alloc] initWithAMDataInput:bs];
   return self;
 }
 
@@ -68,16 +68,11 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
   return JreStrcat("$JCJC", @"ProtoPackage[", authId_, '|', sessionId_, ']');
 }
 
-- (void)dealloc {
-  RELEASE_(payload_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(MTProtoPackage *)other {
   [super copyAllFieldsTo:other];
   other->authId_ = authId_;
   other->sessionId_ = sessionId_;
-  MTProtoPackage_set_payload_(other, payload_);
+  other->payload_ = payload_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -27,7 +27,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileLocalSource, fileName_, NSStrin
 
 - (instancetype)initWithNSString:(NSString *)fileName {
   if (self = [super init]) {
-    ImActorModelEntityContentFileLocalSource_set_fileName_(self, fileName);
+    self->fileName_ = fileName;
   }
   return self;
 }
@@ -42,7 +42,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileLocalSource, fileName_, NSStrin
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   [super parseWithImActorModelDroidkitBserBserValues:values];
-  ImActorModelEntityContentFileLocalSource_set_fileName_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:2]);
+  fileName_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -50,14 +50,9 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileLocalSource, fileName_, NSStrin
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:fileName_];
 }
 
-- (void)dealloc {
-  RELEASE_(fileName_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelEntityContentFileLocalSource *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelEntityContentFileLocalSource_set_fileName_(other, fileName_);
+  other->fileName_ = fileName_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -80,7 +75,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileLocalSource, fileName_, NSStrin
 
 ImActorModelEntityContentFileLocalSource *ImActorModelEntityContentFileLocalSource_fromValuesWithImActorModelDroidkitBserBserValues_(ImActorModelDroidkitBserBserValues *reader) {
   ImActorModelEntityContentFileLocalSource_init();
-  ImActorModelEntityContentFileLocalSource *fileLocalSource = [[[ImActorModelEntityContentFileLocalSource alloc] init] autorelease];
+  ImActorModelEntityContentFileLocalSource *fileLocalSource = [[ImActorModelEntityContentFileLocalSource alloc] init];
   [fileLocalSource parseWithImActorModelDroidkitBserBserValues:reader];
   return fileLocalSource;
 }

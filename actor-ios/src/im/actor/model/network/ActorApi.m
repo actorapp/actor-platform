@@ -27,24 +27,19 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, ImActorModelDroidkitActorsActorRef *
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback {
   if (self = [super init]) {
-    AMActorApi_set_apiBroker_(self, ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_(endpoints, keyStorage, callback));
+    apiBroker_ = ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_(endpoints, keyStorage, callback);
   }
   return self;
 }
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(apiBroker_)) sendWithId:[[[ImActorModelNetworkApiApiBroker_PerformRequest alloc] initWithImActorModelNetworkParserRequest:request withAMRpcCallback:callback] autorelease]];
-}
-
-- (void)dealloc {
-  RELEASE_(apiBroker_);
-  [super dealloc];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk(apiBroker_)) sendWithId:[[ImActorModelNetworkApiApiBroker_PerformRequest alloc] initWithImActorModelNetworkParserRequest:request withAMRpcCallback:callback]];
 }
 
 - (void)copyAllFieldsTo:(AMActorApi *)other {
   [super copyAllFieldsTo:other];
-  AMActorApi_set_apiBroker_(other, apiBroker_);
+  other->apiBroker_ = apiBroker_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

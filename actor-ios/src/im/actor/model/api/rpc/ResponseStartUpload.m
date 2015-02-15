@@ -30,7 +30,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseStartUpload, config_, ImActorModel
 
 - (instancetype)initWithImActorModelApiUploadConfig:(ImActorModelApiUploadConfig *)config {
   if (self = [super init]) {
-    ImActorModelApiRpcResponseStartUpload_set_config_(self, config);
+    self->config_ = config;
   }
   return self;
 }
@@ -44,12 +44,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseStartUpload, config_, ImActorModel
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcResponseStartUpload_set_config_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiUploadConfig alloc] init] autorelease]]);
+  self->config_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiUploadConfig alloc] init]];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->config_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->config_];
 }
@@ -58,14 +58,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseStartUpload, config_, ImActorModel
   return ImActorModelApiRpcResponseStartUpload_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(config_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcResponseStartUpload *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcResponseStartUpload_set_config_(other, config_);
+  other->config_ = config_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -90,7 +85,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseStartUpload, config_, ImActorModel
 
 ImActorModelApiRpcResponseStartUpload *ImActorModelApiRpcResponseStartUpload_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseStartUpload_init();
-  return ((ImActorModelApiRpcResponseStartUpload *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseStartUpload alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcResponseStartUpload *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseStartUpload alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseStartUpload)

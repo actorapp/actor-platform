@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSearchContacts, users_, id<JavaUti
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users {
   if (self = [super init]) {
-    ImActorModelApiRpcResponseSearchContacts_set_users_(self, users);
+    self->users_ = users;
   }
   return self;
 }
@@ -46,11 +46,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSearchContacts, users_, id<JavaUti
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  id<JavaUtilList> _users = [[[JavaUtilArrayList alloc] init] autorelease];
+  id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_users addWithId:[[[ImActorModelApiUser alloc] init] autorelease]];
+    [_users addWithId:[[ImActorModelApiUser alloc] init]];
   }
-  ImActorModelApiRpcResponseSearchContacts_set_users_(self, [values getRepeatedObjWithInt:1 withJavaUtilList:_users]);
+  self->users_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_users];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -61,14 +61,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSearchContacts, users_, id<JavaUti
   return ImActorModelApiRpcResponseSearchContacts_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(users_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcResponseSearchContacts *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcResponseSearchContacts_set_users_(other, users_);
+  other->users_ = users_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -93,7 +88,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSearchContacts, users_, id<JavaUti
 
 ImActorModelApiRpcResponseSearchContacts *ImActorModelApiRpcResponseSearchContacts_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseSearchContacts_init();
-  return ((ImActorModelApiRpcResponseSearchContacts *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseSearchContacts alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcResponseSearchContacts *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseSearchContacts alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseSearchContacts)

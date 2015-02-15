@@ -37,9 +37,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
                                 withByteArray:(IOSByteArray *)state
                                      withLong:(jlong)date {
   if (self = [super init]) {
-    ImActorModelApiRpcResponseEditGroupAvatar_set_avatar_(self, avatar);
+    self->avatar_ = avatar;
     self->seq_ = seq;
-    ImActorModelApiRpcResponseEditGroupAvatar_set_state_(self, state);
+    self->state_ = state;
     self->date_ = date;
   }
   return self;
@@ -66,20 +66,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcResponseEditGroupAvatar_set_avatar_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiAvatar alloc] init] autorelease]]);
+  self->avatar_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatar alloc] init]];
   self->seq_ = [values getIntWithInt:2];
-  ImActorModelApiRpcResponseEditGroupAvatar_set_state_(self, [values getBytesWithInt:3]);
+  self->state_ = [values getBytesWithInt:3];
   self->date_ = [values getLongWithInt:4];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->avatar_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->avatar_];
   [writer writeIntWithInt:2 withInt:self->seq_];
   if (self->state_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:3 withByteArray:self->state_];
   [writer writeLongWithInt:4 withLong:self->date_];
@@ -89,17 +89,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
   return ImActorModelApiRpcResponseEditGroupAvatar_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(avatar_);
-  RELEASE_(state_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcResponseEditGroupAvatar *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcResponseEditGroupAvatar_set_avatar_(other, avatar_);
+  other->avatar_ = avatar_;
   other->seq_ = seq_;
-  ImActorModelApiRpcResponseEditGroupAvatar_set_state_(other, state_);
+  other->state_ = state_;
   other->date_ = date_;
 }
 
@@ -131,7 +125,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
 
 ImActorModelApiRpcResponseEditGroupAvatar *ImActorModelApiRpcResponseEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseEditGroupAvatar_init();
-  return ((ImActorModelApiRpcResponseEditGroupAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseEditGroupAvatar alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcResponseEditGroupAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseEditGroupAvatar alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseEditGroupAvatar)

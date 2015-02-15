@@ -32,10 +32,10 @@ withImActorModelDroidkitActorsActorScope:(ImActorModelDroidkitActorsActorScope *
 withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox
 withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsMailboxEnvelope_set_scope_(self, scope);
-    ImActorModelDroidkitActorsMailboxEnvelope_set_message_(self, message);
-    ImActorModelDroidkitActorsMailboxEnvelope_set_sender_(self, sender);
-    ImActorModelDroidkitActorsMailboxEnvelope_set_mailbox_(self, mailbox);
+    self->scope_ = scope;
+    self->message_ = message;
+    self->sender_ = sender;
+    self->mailbox_ = mailbox;
     self->sendTime_ = ImActorModelDroidkitActorsActorTime_currentTime();
   }
   return self;
@@ -65,20 +65,12 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
   return JreStrcat("C@$$C", '{', message_, @" -> ", [((ImActorModelDroidkitActorsActorScope *) nil_chk(scope_)) getPath], '}');
 }
 
-- (void)dealloc {
-  RELEASE_(message_);
-  RELEASE_(sender_);
-  RELEASE_(mailbox_);
-  RELEASE_(scope_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxEnvelope *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsMailboxEnvelope_set_message_(other, message_);
-  ImActorModelDroidkitActorsMailboxEnvelope_set_sender_(other, sender_);
-  ImActorModelDroidkitActorsMailboxEnvelope_set_mailbox_(other, mailbox_);
-  ImActorModelDroidkitActorsMailboxEnvelope_set_scope_(other, scope_);
+  other->message_ = message_;
+  other->sender_ = sender_;
+  other->mailbox_ = mailbox_;
+  other->scope_ = scope_;
   other->sendTime_ = sendTime_;
 }
 

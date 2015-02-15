@@ -40,9 +40,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
                     withJavaUtilList:(id<JavaUtilList>)users
                     withJavaUtilList:(id<JavaUtilList>)dialogs {
   if (self = [super init]) {
-    ImActorModelApiRpcResponseLoadDialogs_set_groups_(self, groups);
-    ImActorModelApiRpcResponseLoadDialogs_set_users_(self, users);
-    ImActorModelApiRpcResponseLoadDialogs_set_dialogs_(self, dialogs);
+    self->groups_ = groups;
+    self->users_ = users;
+    self->dialogs_ = dialogs;
   }
   return self;
 }
@@ -64,21 +64,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  id<JavaUtilList> _groups = [[[JavaUtilArrayList alloc] init] autorelease];
+  id<JavaUtilList> _groups = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_groups addWithId:[[[ImActorModelApiGroup alloc] init] autorelease]];
+    [_groups addWithId:[[ImActorModelApiGroup alloc] init]];
   }
-  ImActorModelApiRpcResponseLoadDialogs_set_groups_(self, [values getRepeatedObjWithInt:1 withJavaUtilList:_groups]);
-  id<JavaUtilList> _users = [[[JavaUtilArrayList alloc] init] autorelease];
+  self->groups_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_groups];
+  id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:2]; i++) {
-    [_users addWithId:[[[ImActorModelApiUser alloc] init] autorelease]];
+    [_users addWithId:[[ImActorModelApiUser alloc] init]];
   }
-  ImActorModelApiRpcResponseLoadDialogs_set_users_(self, [values getRepeatedObjWithInt:2 withJavaUtilList:_users]);
-  id<JavaUtilList> _dialogs = [[[JavaUtilArrayList alloc] init] autorelease];
+  self->users_ = [values getRepeatedObjWithInt:2 withJavaUtilList:_users];
+  id<JavaUtilList> _dialogs = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:3]; i++) {
-    [_dialogs addWithId:[[[ImActorModelApiDialog alloc] init] autorelease]];
+    [_dialogs addWithId:[[ImActorModelApiDialog alloc] init]];
   }
-  ImActorModelApiRpcResponseLoadDialogs_set_dialogs_(self, [values getRepeatedObjWithInt:3 withJavaUtilList:_dialogs]);
+  self->dialogs_ = [values getRepeatedObjWithInt:3 withJavaUtilList:_dialogs];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -91,18 +91,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
   return ImActorModelApiRpcResponseLoadDialogs_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(groups_);
-  RELEASE_(users_);
-  RELEASE_(dialogs_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcResponseLoadDialogs *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcResponseLoadDialogs_set_groups_(other, groups_);
-  ImActorModelApiRpcResponseLoadDialogs_set_users_(other, users_);
-  ImActorModelApiRpcResponseLoadDialogs_set_dialogs_(other, dialogs_);
+  other->groups_ = groups_;
+  other->users_ = users_;
+  other->dialogs_ = dialogs_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -131,7 +124,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
 
 ImActorModelApiRpcResponseLoadDialogs *ImActorModelApiRpcResponseLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseLoadDialogs_init();
-  return ((ImActorModelApiRpcResponseLoadDialogs *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseLoadDialogs alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcResponseLoadDialogs *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseLoadDialogs alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseLoadDialogs)

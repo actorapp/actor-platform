@@ -45,7 +45,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityPeer, peerType_, ImActorModelEntityPeerTyp
 - (instancetype)initWithImActorModelEntityPeerTypeEnum:(ImActorModelEntityPeerTypeEnum *)peerType
                                                withInt:(jint)peerId {
   if (self = [super init]) {
-    ImActorModelEntityPeer_set_peerType_(self, peerType);
+    self->peerType_ = peerType;
     self->peerId_ = peerId;
   }
   return self;
@@ -100,13 +100,13 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityPeer, peerType_, ImActorModelEntityPeerTyp
   switch ([values getIntWithInt:2]) {
     default:
     case 1:
-    ImActorModelEntityPeer_set_peerType_(self, ImActorModelEntityPeerTypeEnum_get_PRIVATE());
+    peerType_ = ImActorModelEntityPeerTypeEnum_get_PRIVATE();
     break;
     case 2:
-    ImActorModelEntityPeer_set_peerType_(self, ImActorModelEntityPeerTypeEnum_get_EMAIL());
+    peerType_ = ImActorModelEntityPeerTypeEnum_get_EMAIL();
     break;
     case 3:
-    ImActorModelEntityPeer_set_peerType_(self, ImActorModelEntityPeerTypeEnum_get_GROUP());
+    peerType_ = ImActorModelEntityPeerTypeEnum_get_GROUP();
     break;
   }
 }
@@ -127,14 +127,9 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityPeer, peerType_, ImActorModelEntityPeerTyp
   }
 }
 
-- (void)dealloc {
-  RELEASE_(peerType_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelEntityPeer *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelEntityPeer_set_peerType_(other, peerType_);
+  other->peerType_ = peerType_;
   other->peerId_ = peerId_;
 }
 
@@ -166,7 +161,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityPeer, peerType_, ImActorModelEntityPeerTyp
 
 ImActorModelEntityPeer *ImActorModelEntityPeer_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityPeer_init();
-  return ((ImActorModelEntityPeer *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityPeer alloc] init] autorelease], data));
+  return ((ImActorModelEntityPeer *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityPeer alloc] init], data));
 }
 
 ImActorModelEntityPeer *ImActorModelEntityPeer_fromUidWithLong_(jlong uid) {
@@ -176,22 +171,22 @@ ImActorModelEntityPeer *ImActorModelEntityPeer_fromUidWithLong_(jlong uid) {
   switch (type) {
     default:
     case 0:
-    return [[[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_PRIVATE() withInt:id_] autorelease];
+    return [[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_PRIVATE() withInt:id_];
     case 1:
-    return [[[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_GROUP() withInt:id_] autorelease];
+    return [[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_GROUP() withInt:id_];
     case 2:
-    return [[[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_EMAIL() withInt:id_] autorelease];
+    return [[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_EMAIL() withInt:id_];
   }
 }
 
 ImActorModelEntityPeer *ImActorModelEntityPeer_userWithInt_(jint uid) {
   ImActorModelEntityPeer_init();
-  return [[[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_PRIVATE() withInt:uid] autorelease];
+  return [[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_PRIVATE() withInt:uid];
 }
 
 ImActorModelEntityPeer *ImActorModelEntityPeer_groupWithInt_(jint gid) {
   ImActorModelEntityPeer_init();
-  return [[[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_GROUP() withInt:gid] autorelease];
+  return [[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_GROUP() withInt:gid];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityPeer)

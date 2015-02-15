@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/ActorSystem.java
 //
 
-#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSelection.h"
@@ -44,7 +43,7 @@ NSString * ImActorModelDroidkitActorsActorSystem_DEFAULT_DISPATCHER_ = @"default
 
 - (instancetype)initImActorModelDroidkitActorsActorSystemWithBoolean:(jboolean)addDefaultDispatcher {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsActorSystem_setAndConsume_dispatchers_(self, [[JavaUtilHashMap alloc] init]);
+    dispatchers_ = [[JavaUtilHashMap alloc] init];
     if (addDefaultDispatcher) {
       [self addDispatcherWithNSString:ImActorModelDroidkitActorsActorSystem_DEFAULT_DISPATCHER_];
     }
@@ -63,7 +62,7 @@ NSString * ImActorModelDroidkitActorsActorSystem_DEFAULT_DISPATCHER_ = @"default
       return;
     }
     ImActorModelDroidkitActorsMailboxActorDispatcher *dispatcher = ImActorModelDroidkitActorsConfEnvConfig_createDispatcherWithNSString_withInt_withImActorModelDroidkitActorsThreadPriorityEnum_withImActorModelDroidkitActorsActorSystem_(dispatcherId, threadsCount, ImActorModelDroidkitActorsThreadPriorityEnum_get_LOW(), self);
-    [dispatchers_ putWithId:dispatcherId withId:dispatcher];
+    (void) [dispatchers_ putWithId:dispatcherId withId:dispatcher];
   }
 }
 
@@ -83,7 +82,7 @@ withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActors
     if ([((JavaUtilHashMap *) nil_chk(dispatchers_)) containsKeyWithId:dispatcherId]) {
       return;
     }
-    [dispatchers_ putWithId:dispatcherId withId:dispatcher];
+    (void) [dispatchers_ putWithId:dispatcherId withId:dispatcher];
   }
 }
 
@@ -97,7 +96,7 @@ withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActors
   ImActorModelDroidkitActorsMailboxActorDispatcher *mailboxesDispatcher;
   @synchronized(dispatchers_) {
     if (![((JavaUtilHashMap *) nil_chk(dispatchers_)) containsKeyWithId:dispatcherId]) {
-      @throw [[[JavaLangRuntimeException alloc] initWithNSString:JreStrcat("$$C", @"Unknown dispatcherId '", dispatcherId, '\'')] autorelease];
+      @throw [[JavaLangRuntimeException alloc] initWithNSString:JreStrcat("$$C", @"Unknown dispatcherId '", dispatcherId, '\'')];
     }
     mailboxesDispatcher = [dispatchers_ getWithId:dispatcherId];
   }
@@ -109,24 +108,18 @@ withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActors
 }
 
 - (void)setTraceInterfaceWithImActorModelDroidkitActorsDebugTraceInterface:(id<ImActorModelDroidkitActorsDebugTraceInterface>)traceInterface {
-  ImActorModelDroidkitActorsActorSystem_set_traceInterface_(self, traceInterface);
-}
-
-- (void)dealloc {
-  RELEASE_(dispatchers_);
-  RELEASE_(traceInterface_);
-  [super dealloc];
+  self->traceInterface_ = traceInterface;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsActorSystem *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsActorSystem_set_dispatchers_(other, dispatchers_);
-  ImActorModelDroidkitActorsActorSystem_set_traceInterface_(other, traceInterface_);
+  other->dispatchers_ = dispatchers_;
+  other->traceInterface_ = traceInterface_;
 }
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsActorSystem class]) {
-    JreStrongAssignAndConsume(&ImActorModelDroidkitActorsActorSystem_mainSystem_, nil, [[ImActorModelDroidkitActorsActorSystem alloc] init]);
+    ImActorModelDroidkitActorsActorSystem_mainSystem_ = [[ImActorModelDroidkitActorsActorSystem alloc] init];
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsActorSystem)
   }
 }

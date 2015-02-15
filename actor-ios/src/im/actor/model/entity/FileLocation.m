@@ -112,7 +112,7 @@
 
 ImActorModelEntityFileLocation *ImActorModelEntityFileLocation_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityFileLocation_init();
-  return ((ImActorModelEntityFileLocation *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityFileLocation alloc] init] autorelease], data));
+  return ((ImActorModelEntityFileLocation *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityFileLocation alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityFileLocation)

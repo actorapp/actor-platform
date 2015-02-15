@@ -22,7 +22,7 @@ J2OBJC_FIELD_SETTER(AMEndpoints, endpoints_, IOSObjectArray *)
 - (instancetype)initWithAMConnectionEndpointArray:(IOSObjectArray *)endpoints {
   if (self = [super init]) {
     roundRobin_ = 0;
-    AMEndpoints_set_endpoints_(self, endpoints);
+    self->endpoints_ = endpoints;
   }
   return self;
 }
@@ -32,15 +32,10 @@ J2OBJC_FIELD_SETTER(AMEndpoints, endpoints_, IOSObjectArray *)
   return IOSObjectArray_Get(endpoints_, roundRobin_);
 }
 
-- (void)dealloc {
-  RELEASE_(endpoints_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(AMEndpoints *)other {
   [super copyAllFieldsTo:other];
   other->roundRobin_ = roundRobin_;
-  AMEndpoints_set_endpoints_(other, endpoints_);
+  other->endpoints_ = endpoints_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

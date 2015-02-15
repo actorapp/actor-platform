@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCompleteUpload, config_, ImActorMod
                                             withInt:(jint)blocksCount
                                            withLong:(jlong)crc32 {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestCompleteUpload_set_config_(self, config);
+    self->config_ = config;
     self->blocksCount_ = blocksCount;
     self->crc32_ = crc32;
   }
@@ -58,14 +58,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCompleteUpload, config_, ImActorMod
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestCompleteUpload_set_config_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiUploadConfig alloc] init] autorelease]]);
+  self->config_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiUploadConfig alloc] init]];
   self->blocksCount_ = [values getIntWithInt:2];
   self->crc32_ = [values getLongWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->config_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->config_];
   [writer writeIntWithInt:2 withInt:self->blocksCount_];
@@ -76,14 +76,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCompleteUpload, config_, ImActorMod
   return ImActorModelApiRpcRequestCompleteUpload_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(config_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestCompleteUpload *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestCompleteUpload_set_config_(other, config_);
+  other->config_ = config_;
   other->blocksCount_ = blocksCount_;
   other->crc32_ = crc32_;
 }
@@ -115,7 +110,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCompleteUpload, config_, ImActorMod
 
 ImActorModelApiRpcRequestCompleteUpload *ImActorModelApiRpcRequestCompleteUpload_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestCompleteUpload_init();
-  return ((ImActorModelApiRpcRequestCompleteUpload *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestCompleteUpload alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestCompleteUpload *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestCompleteUpload alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestCompleteUpload)

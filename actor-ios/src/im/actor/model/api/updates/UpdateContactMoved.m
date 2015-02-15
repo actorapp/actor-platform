@@ -103,7 +103,7 @@
 
 ImActorModelApiUpdatesUpdateContactMoved *ImActorModelApiUpdatesUpdateContactMoved_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateContactMoved_init();
-  return ((ImActorModelApiUpdatesUpdateContactMoved *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateContactMoved alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateContactMoved *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateContactMoved alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateContactMoved)

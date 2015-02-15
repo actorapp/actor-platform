@@ -46,9 +46,9 @@ ImActorModelDroidkitActorsUtilsAtomicIntegerCompat * ImActorModelDroidkitActorsM
 
 - (instancetype)initWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot:(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *)root {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_setAndConsume_envelopes_(self, [[JavaUtilPriorityQueue alloc] initWithInt:ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_DEFAULT_QUEUE_SIZE withJavaUtilComparator:[[[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_ScheduledEnvelopesComparator alloc] initWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:self] autorelease]]);
+    envelopes_ = [[JavaUtilPriorityQueue alloc] initWithInt:ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_DEFAULT_QUEUE_SIZE withJavaUtilComparator:[[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_ScheduledEnvelopesComparator alloc] initWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:self]];
     self->id__ = [((ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *) nil_chk(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_NEXT_ID_)) getAndIncrement];
-    ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_set_root_(self, root);
+    self->root_ = root;
     [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *) nil_chk(self->root_)) attachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:self];
   }
   return self;
@@ -68,7 +68,7 @@ ImActorModelDroidkitActorsUtilsAtomicIntegerCompat * ImActorModelDroidkitActorsM
   jlong oldKey;
   @synchronized(envelopes_) {
     oldKey = [self getTopKey];
-    [((JavaUtilPriorityQueue *) nil_chk(envelopes_)) offerWithId:[[[ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope alloc] initWithLong:key withLong:time withImActorModelDroidkitActorsMailboxEnvelope:envelope] autorelease]];
+    [((JavaUtilPriorityQueue *) nil_chk(envelopes_)) offerWithId:[[ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope alloc] initWithLong:key withLong:time withImActorModelDroidkitActorsMailboxEnvelope:envelope]];
   }
   if (oldKey != [self getTopKey]) {
     [root_ changedTopKeyWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:self];
@@ -106,7 +106,7 @@ withImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeCompa
         [iterator remove];
       }
     }
-    [envelopes_ offerWithId:[[[ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope alloc] initWithLong:key withLong:time withImActorModelDroidkitActorsMailboxEnvelope:envelope] autorelease]];
+    [envelopes_ offerWithId:[[ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope alloc] initWithLong:key withLong:time withImActorModelDroidkitActorsMailboxEnvelope:envelope]];
   }
   if (oldKey != [self getTopKey]) {
     [root_ changedTopKeyWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:self];
@@ -124,7 +124,7 @@ withImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeCompa
     }
     ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *envelope = [envelopes_ peek];
     if ([((ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *) nil_chk(envelope)) getTime] <= time) {
-      [envelopes_ poll];
+      (void) [envelopes_ poll];
       result = ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult_envelopeWithImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_(envelope);
     }
     else {
@@ -152,8 +152,8 @@ withImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeCompa
 
 - (IOSObjectArray *)allEnvelopes {
   @synchronized(envelopes_) {
-    IOSObjectArray *scheduledEnvelopes = [envelopes_ toArrayWithNSObjectArray:[IOSObjectArray arrayWithLength:[((JavaUtilPriorityQueue *) nil_chk(envelopes_)) size] type:ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_class_()]];
-    IOSObjectArray *res = [IOSObjectArray arrayWithLength:((IOSObjectArray *) nil_chk(scheduledEnvelopes))->size_ type:ImActorModelDroidkitActorsMailboxEnvelope_class_()];
+    IOSObjectArray *scheduledEnvelopes = [envelopes_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilPriorityQueue *) nil_chk(envelopes_)) size] type:ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_class_()]];
+    IOSObjectArray *res = [IOSObjectArray newArrayWithLength:((IOSObjectArray *) nil_chk(scheduledEnvelopes))->size_ type:ImActorModelDroidkitActorsMailboxEnvelope_class_()];
     for (jint i = 0; i < res->size_; i++) {
       IOSObjectArray_Set(res, i, [((ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *) nil_chk(IOSObjectArray_Get(scheduledEnvelopes, i))) getEnvelope]);
     }
@@ -161,22 +161,16 @@ withImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeCompa
   }
 }
 
-- (void)dealloc {
-  RELEASE_(envelopes_);
-  RELEASE_(root_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_set_envelopes_(other, envelopes_);
-  ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_set_root_(other, root_);
+  other->envelopes_ = envelopes_;
+  other->root_ = root_;
   other->id__ = id__;
 }
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection class]) {
-    JreStrongAssign(&ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_NEXT_ID_, nil, ImActorModelDroidkitActorsConfEnvConfig_createAtomicIntWithInt_(1));
+    ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_NEXT_ID_ = ImActorModelDroidkitActorsConfEnvConfig_createAtomicIntWithInt_(1);
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection)
   }
 }
@@ -242,7 +236,7 @@ ImActorModelDroidkitActorsUtilsThreadLocalCompat * ImActorModelDroidkitActorsMai
 
 - (instancetype)initWithImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope:(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *)envelope {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult_set_envelope__(self, envelope);
+    self->envelope__ = envelope;
   }
   return self;
 }
@@ -264,7 +258,7 @@ ImActorModelDroidkitActorsUtilsThreadLocalCompat * ImActorModelDroidkitActorsMai
 
 - (void)updateWithImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope:(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *)envelope
                                                                        withLong:(jlong)delay {
-  ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult_set_envelope__(self, envelope);
+  self->envelope__ = envelope;
   self->delay__ = delay;
 }
 
@@ -272,20 +266,15 @@ ImActorModelDroidkitActorsUtilsThreadLocalCompat * ImActorModelDroidkitActorsMai
   [((ImActorModelDroidkitActorsUtilsThreadLocalCompat *) nil_chk(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult_RESULT_CACHE_)) setWithId:self];
 }
 
-- (void)dealloc {
-  RELEASE_(envelope__);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult_set_envelope__(other, envelope__);
+  other->envelope__ = envelope__;
   other->delay__ = delay__;
 }
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult class]) {
-    JreStrongAssign(&ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult_RESULT_CACHE_, nil, ImActorModelDroidkitActorsConfEnvConfig_createThreadLocal());
+    ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult_RESULT_CACHE_ = ImActorModelDroidkitActorsConfEnvConfig_createThreadLocal();
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult)
   }
 }
@@ -320,7 +309,7 @@ ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult *ImAc
     [res updateWithImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope:envelope withLong:0];
   }
   else {
-    res = [[[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult alloc] initWithImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope:envelope] autorelease];
+    res = [[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult alloc] initWithImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope:envelope];
   }
   return res;
 }
@@ -333,7 +322,7 @@ ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult *ImAc
     [res updateWithImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope:nil withLong:delay];
   }
   else {
-    res = [[[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult alloc] initWithLong:delay] autorelease];
+    res = [[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult alloc] initWithLong:delay];
   }
   return res;
 }

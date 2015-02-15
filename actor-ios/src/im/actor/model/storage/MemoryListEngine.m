@@ -34,9 +34,9 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArr
 
 - (instancetype)init {
   if (self = [super init]) {
-    ImActorModelStorageMemoryListEngine_setAndConsume_items_(self, [[JavaUtilHashMap alloc] init]);
-    ImActorModelStorageMemoryListEngine_setAndConsume_sortList_(self, [[JavaUtilArrayList alloc] init]);
-    ImActorModelStorageMemoryListEngine_setAndConsume_listeners_(self, [[JavaUtilArrayList alloc] init]);
+    items_ = [[JavaUtilHashMap alloc] init];
+    sortList_ = [[JavaUtilArrayList alloc] init];
+    listeners_ = [[JavaUtilArrayList alloc] init];
   }
   return self;
 }
@@ -58,7 +58,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArr
 }
 
 - (void)addOrUpdateItemWithImActorModelMvvmListEngineItem:(id<ImActorModelMvvmListEngineItem>)item {
-  [((JavaUtilHashMap *) nil_chk(items_)) putWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelMvvmListEngineItem>) nil_chk(item)) getListId]) withId:item];
+  (void) [((JavaUtilHashMap *) nil_chk(items_)) putWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelMvvmListEngineItem>) nil_chk(item)) getListId]) withId:item];
   ImActorModelStorageMemoryListEngine_updateSort(self);
 }
 
@@ -74,7 +74,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArr
 }
 
 - (void)removeItemWithLong:(jlong)id_ {
-  [((JavaUtilHashMap *) nil_chk(items_)) removeWithId:JavaLangLong_valueOfWithLong_(id_)];
+  (void) [((JavaUtilHashMap *) nil_chk(items_)) removeWithId:JavaLangLong_valueOfWithLong_(id_)];
   ImActorModelStorageMemoryListEngine_updateSort(self);
 }
 
@@ -85,7 +85,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArr
     jlong const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       jlong l = *b__++;
-      [((JavaUtilHashMap *) nil_chk(items_)) removeWithId:JavaLangLong_valueOfWithLong_(l)];
+      (void) [((JavaUtilHashMap *) nil_chk(items_)) removeWithId:JavaLangLong_valueOfWithLong_(l)];
     }
   }
   ImActorModelStorageMemoryListEngine_updateSort(self);
@@ -108,18 +108,11 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArr
   return [((JavaUtilHashMap *) nil_chk(items_)) size];
 }
 
-- (void)dealloc {
-  RELEASE_(items_);
-  RELEASE_(sortList_);
-  RELEASE_(listeners_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelStorageMemoryListEngine *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelStorageMemoryListEngine_set_items_(other, items_);
-  ImActorModelStorageMemoryListEngine_set_sortList_(other, sortList_);
-  ImActorModelStorageMemoryListEngine_set_listeners_(other, listeners_);
+  other->items_ = items_;
+  other->sortList_ = sortList_;
+  other->listeners_ = listeners_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -153,7 +146,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArr
 void ImActorModelStorageMemoryListEngine_updateSort(ImActorModelStorageMemoryListEngine *self) {
   [((JavaUtilArrayList *) nil_chk(self->sortList_)) clear];
   [self->sortList_ addAllWithJavaUtilCollection:[((JavaUtilHashMap *) nil_chk(self->items_)) values]];
-  JavaUtilCollections_sortWithJavaUtilList_withJavaUtilComparator_(self->sortList_, [[[ImActorModelStorageMemoryListEngine_$1 alloc] init] autorelease]);
+  JavaUtilCollections_sortWithJavaUtilList_withJavaUtilComparator_(self->sortList_, [[ImActorModelStorageMemoryListEngine_$1 alloc] init]);
   for (id<ImActorModelStorageMemoryListEngine_EngineListener> __strong l in nil_chk(self->listeners_)) {
     [((id<ImActorModelStorageMemoryListEngine_EngineListener>) nil_chk(l)) onItemsChanged];
   }

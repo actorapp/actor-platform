@@ -37,9 +37,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
                 withNSString:(NSString *)apiKey {
   if (self = [super init]) {
     self->phoneNumber_ = phoneNumber;
-    ImActorModelApiRpcRequestSendAuthCall_set_smsHash_(self, smsHash);
+    self->smsHash_ = smsHash;
     self->appId_ = appId;
-    ImActorModelApiRpcRequestSendAuthCall_set_apiKey_(self, apiKey);
+    self->apiKey_ = apiKey;
   }
   return self;
 }
@@ -66,20 +66,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->phoneNumber_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
-  ImActorModelApiRpcRequestSendAuthCall_set_smsHash_(self, [values getStringWithInt:2]);
+  self->smsHash_ = [values getStringWithInt:2];
   self->appId_ = [values getIntWithInt:3];
-  ImActorModelApiRpcRequestSendAuthCall_set_apiKey_(self, [values getStringWithInt:4]);
+  self->apiKey_ = [values getStringWithInt:4];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->phoneNumber_];
   if (self->smsHash_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:2 withNSString:self->smsHash_];
   [writer writeIntWithInt:3 withInt:self->appId_];
   if (self->apiKey_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:4 withNSString:self->apiKey_];
 }
@@ -88,18 +88,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
   return ImActorModelApiRpcRequestSendAuthCall_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(smsHash_);
-  RELEASE_(apiKey_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestSendAuthCall *)other {
   [super copyAllFieldsTo:other];
   other->phoneNumber_ = phoneNumber_;
-  ImActorModelApiRpcRequestSendAuthCall_set_smsHash_(other, smsHash_);
+  other->smsHash_ = smsHash_;
   other->appId_ = appId_;
-  ImActorModelApiRpcRequestSendAuthCall_set_apiKey_(other, apiKey_);
+  other->apiKey_ = apiKey_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -131,7 +125,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
 
 ImActorModelApiRpcRequestSendAuthCall *ImActorModelApiRpcRequestSendAuthCall_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSendAuthCall_init();
-  return ((ImActorModelApiRpcRequestSendAuthCall *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestSendAuthCall alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestSendAuthCall *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestSendAuthCall alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSendAuthCall)

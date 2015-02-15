@@ -29,7 +29,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
   if (self = [super init]) {
     self->w_ = w;
     self->h_ = h;
-    ImActorModelApiFastThumb_set_thumb_(self, thumb);
+    self->thumb_ = thumb;
   }
   return self;
 }
@@ -53,28 +53,23 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->w_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   self->h_ = [values getIntWithInt:2];
-  ImActorModelApiFastThumb_set_thumb_(self, [values getBytesWithInt:3]);
+  self->thumb_ = [values getBytesWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->w_];
   [writer writeIntWithInt:2 withInt:self->h_];
   if (self->thumb_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:3 withByteArray:self->thumb_];
-}
-
-- (void)dealloc {
-  RELEASE_(thumb_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiFastThumb *)other {
   [super copyAllFieldsTo:other];
   other->w_ = w_;
   other->h_ = h_;
-  ImActorModelApiFastThumb_set_thumb_(other, thumb_);
+  other->thumb_ = thumb_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

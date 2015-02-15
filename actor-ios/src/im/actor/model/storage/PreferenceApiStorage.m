@@ -19,7 +19,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStoragePreferenceApiStorage, preferencesStorage_
 
 - (instancetype)initWithImActorModelStoragePreferencesStorage:(id<ImActorModelStoragePreferencesStorage>)preferencesStorage {
   if (self = [super init]) {
-    ImActorModelStoragePreferenceApiStorage_set_preferencesStorage_(self, preferencesStorage);
+    self->preferencesStorage_ = preferencesStorage;
   }
   return self;
 }
@@ -32,14 +32,9 @@ J2OBJC_FIELD_SETTER(ImActorModelStoragePreferenceApiStorage, preferencesStorage_
   [((id<ImActorModelStoragePreferencesStorage>) nil_chk(preferencesStorage_)) putLongWithNSString:@"auth_id" withLong:key];
 }
 
-- (void)dealloc {
-  RELEASE_(preferencesStorage_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelStoragePreferenceApiStorage *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelStoragePreferenceApiStorage_set_preferencesStorage_(other, preferencesStorage_);
+  other->preferencesStorage_ = preferencesStorage_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

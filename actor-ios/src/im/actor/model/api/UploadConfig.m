@@ -23,7 +23,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUploadConfig, serverData_, IOSByteArray *)
 
 - (instancetype)initWithByteArray:(IOSByteArray *)serverData {
   if (self = [super init]) {
-    ImActorModelApiUploadConfig_set_serverData_(self, serverData);
+    self->serverData_ = serverData;
   }
   return self;
 }
@@ -37,24 +37,19 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUploadConfig, serverData_, IOSByteArray *)
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiUploadConfig_set_serverData_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:1]);
+  self->serverData_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:1];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->serverData_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeBytesWithInt:1 withByteArray:self->serverData_];
 }
 
-- (void)dealloc {
-  RELEASE_(serverData_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUploadConfig *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiUploadConfig_set_serverData_(other, serverData_);
+  other->serverData_ = serverData_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

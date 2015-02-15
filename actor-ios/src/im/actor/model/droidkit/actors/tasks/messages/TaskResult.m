@@ -21,7 +21,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksMessagesTaskResult, res_, id)
                      withId:(id)res {
   if (self = [super init]) {
     self->requestId_ = requestId;
-    ImActorModelDroidkitActorsTasksMessagesTaskResult_set_res_(self, res);
+    self->res_ = res;
   }
   return self;
 }
@@ -38,15 +38,10 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksMessagesTaskResult, res_, id)
   return JreStrcat("$IC", @"TaskResult{requestId=", requestId_, '}');
 }
 
-- (void)dealloc {
-  RELEASE_(res_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksMessagesTaskResult *)other {
   [super copyAllFieldsTo:other];
   other->requestId_ = requestId_;
-  ImActorModelDroidkitActorsTasksMessagesTaskResult_set_res_(other, res_);
+  other->res_ = res_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -29,7 +29,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFile, payload_, IOSByteArray *)
 
 - (instancetype)initWithByteArray:(IOSByteArray *)payload {
   if (self = [super init]) {
-    ImActorModelApiRpcResponseGetFile_set_payload_(self, payload);
+    self->payload_ = payload;
   }
   return self;
 }
@@ -43,12 +43,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFile, payload_, IOSByteArray *)
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcResponseGetFile_set_payload_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:1]);
+  self->payload_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:1];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->payload_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeBytesWithInt:1 withByteArray:self->payload_];
 }
@@ -57,14 +57,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFile, payload_, IOSByteArray *)
   return ImActorModelApiRpcResponseGetFile_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(payload_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcResponseGetFile *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcResponseGetFile_set_payload_(other, payload_);
+  other->payload_ = payload_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -89,7 +84,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFile, payload_, IOSByteArray *)
 
 ImActorModelApiRpcResponseGetFile *ImActorModelApiRpcResponseGetFile_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetFile_init();
-  return ((ImActorModelApiRpcResponseGetFile *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseGetFile alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcResponseGetFile *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseGetFile alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetFile)

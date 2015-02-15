@@ -28,9 +28,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiTextMessage, ext_, IOSByteArray *)
                          withInt:(jint)extType
                    withByteArray:(IOSByteArray *)ext {
   if (self = [super init]) {
-    ImActorModelApiTextMessage_set_text_(self, text);
+    self->text_ = text;
     self->extType_ = extType;
-    ImActorModelApiTextMessage_set_ext_(self, ext);
+    self->ext_ = ext;
   }
   return self;
 }
@@ -52,14 +52,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiTextMessage, ext_, IOSByteArray *)
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiTextMessage_set_text_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1]);
+  self->text_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1];
   self->extType_ = [values getIntWithInt:2];
-  ImActorModelApiTextMessage_set_ext_(self, [values optBytesWithInt:3]);
+  self->ext_ = [values optBytesWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->text_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->text_];
   [writer writeIntWithInt:2 withInt:self->extType_];
@@ -68,17 +68,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiTextMessage, ext_, IOSByteArray *)
   }
 }
 
-- (void)dealloc {
-  RELEASE_(text_);
-  RELEASE_(ext_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiTextMessage *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiTextMessage_set_text_(other, text_);
+  other->text_ = text_;
   other->extType_ = extType_;
-  ImActorModelApiTextMessage_set_ext_(other, ext_);
+  other->ext_ = ext_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

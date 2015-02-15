@@ -38,7 +38,7 @@ ImActorModelDroidkitActorsUtilsThreadLocalCompat * ImActorModelDroidkitActorsDis
                        withLong:(jlong)delay {
   if (self = [super init]) {
     self->isResult__ = isResult;
-    ImActorModelDroidkitActorsDispatchDispatchResult_set_res_(self, res);
+    self->res_ = res;
     self->delay__ = delay;
   }
   return self;
@@ -48,7 +48,7 @@ ImActorModelDroidkitActorsUtilsThreadLocalCompat * ImActorModelDroidkitActorsDis
                    withId:(id)res
                  withLong:(jlong)delay {
   self->isResult__ = isResult;
-  ImActorModelDroidkitActorsDispatchDispatchResult_set_res_(self, res);
+  self->res_ = res;
   self->delay__ = delay;
 }
 
@@ -68,21 +68,16 @@ ImActorModelDroidkitActorsUtilsThreadLocalCompat * ImActorModelDroidkitActorsDis
   [((ImActorModelDroidkitActorsUtilsThreadLocalCompat *) nil_chk(ImActorModelDroidkitActorsDispatchDispatchResult_FREE_RESULTS_)) setWithId:self];
 }
 
-- (void)dealloc {
-  RELEASE_(res_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsDispatchDispatchResult *)other {
   [super copyAllFieldsTo:other];
   other->isResult__ = isResult__;
-  ImActorModelDroidkitActorsDispatchDispatchResult_set_res_(other, res_);
+  other->res_ = res_;
   other->delay__ = delay__;
 }
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsDispatchDispatchResult class]) {
-    JreStrongAssign(&ImActorModelDroidkitActorsDispatchDispatchResult_FREE_RESULTS_, nil, ImActorModelDroidkitActorsConfEnvConfig_createThreadLocal());
+    ImActorModelDroidkitActorsDispatchDispatchResult_FREE_RESULTS_ = ImActorModelDroidkitActorsConfEnvConfig_createThreadLocal();
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsDispatchDispatchResult)
   }
 }
@@ -118,7 +113,7 @@ ImActorModelDroidkitActorsDispatchDispatchResult *ImActorModelDroidkitActorsDisp
     [result updateWithBoolean:YES withId:res withLong:0];
   }
   else {
-    result = [[[ImActorModelDroidkitActorsDispatchDispatchResult alloc] initWithBoolean:YES withId:res withLong:0] autorelease];
+    result = [[ImActorModelDroidkitActorsDispatchDispatchResult alloc] initWithBoolean:YES withId:res withLong:0];
   }
   return result;
 }
@@ -131,7 +126,7 @@ ImActorModelDroidkitActorsDispatchDispatchResult *ImActorModelDroidkitActorsDisp
     [result updateWithBoolean:NO withId:nil withLong:delay];
   }
   else {
-    result = [[[ImActorModelDroidkitActorsDispatchDispatchResult alloc] initWithBoolean:NO withId:nil withLong:delay] autorelease];
+    result = [[ImActorModelDroidkitActorsDispatchDispatchResult alloc] initWithBoolean:NO withId:nil withLong:delay];
   }
   return result;
 }

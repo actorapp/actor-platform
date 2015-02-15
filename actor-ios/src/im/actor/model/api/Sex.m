@@ -58,12 +58,12 @@ ImActorModelApiSexEnum *ImActorModelApiSexEnum_valueOfWithNSString_(NSString *na
       return e;
     }
   }
-  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name] autorelease];
+  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];
   return nil;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  return [self retain];
+  return self;
 }
 
 + (void)initialize {
@@ -104,7 +104,7 @@ ImActorModelApiSexEnum *ImActorModelApiSexEnum_parseWithInt_(jint value) {
     case 3:
     return ImActorModelApiSexEnum_FEMALE;
   }
-  @throw [[[JavaIoIOException alloc] init] autorelease];
+  @throw [[JavaIoIOException alloc] init];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiSexEnum)

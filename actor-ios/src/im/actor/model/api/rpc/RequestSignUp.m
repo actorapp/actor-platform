@@ -54,14 +54,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
                  withBoolean:(jboolean)isSilent {
   if (self = [super init]) {
     self->phoneNumber_ = phoneNumber;
-    ImActorModelApiRpcRequestSignUp_set_smsHash_(self, smsHash);
-    ImActorModelApiRpcRequestSignUp_set_smsCode_(self, smsCode);
-    ImActorModelApiRpcRequestSignUp_set_name_(self, name);
-    ImActorModelApiRpcRequestSignUp_set_publicKey_(self, publicKey);
-    ImActorModelApiRpcRequestSignUp_set_deviceHash_(self, deviceHash);
-    ImActorModelApiRpcRequestSignUp_set_deviceTitle_(self, deviceTitle);
+    self->smsHash_ = smsHash;
+    self->smsCode_ = smsCode;
+    self->name_ = name;
+    self->publicKey_ = publicKey;
+    self->deviceHash_ = deviceHash;
+    self->deviceTitle_ = deviceTitle;
     self->appId_ = appId;
-    ImActorModelApiRpcRequestSignUp_set_appKey_(self, appKey);
+    self->appKey_ = appKey;
     self->isSilent__ = isSilent;
   }
   return self;
@@ -113,46 +113,46 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->phoneNumber_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
-  ImActorModelApiRpcRequestSignUp_set_smsHash_(self, [values getStringWithInt:2]);
-  ImActorModelApiRpcRequestSignUp_set_smsCode_(self, [values getStringWithInt:3]);
-  ImActorModelApiRpcRequestSignUp_set_name_(self, [values getStringWithInt:4]);
-  ImActorModelApiRpcRequestSignUp_set_publicKey_(self, [values getBytesWithInt:6]);
-  ImActorModelApiRpcRequestSignUp_set_deviceHash_(self, [values getBytesWithInt:7]);
-  ImActorModelApiRpcRequestSignUp_set_deviceTitle_(self, [values getStringWithInt:8]);
+  self->smsHash_ = [values getStringWithInt:2];
+  self->smsCode_ = [values getStringWithInt:3];
+  self->name_ = [values getStringWithInt:4];
+  self->publicKey_ = [values getBytesWithInt:6];
+  self->deviceHash_ = [values getBytesWithInt:7];
+  self->deviceTitle_ = [values getStringWithInt:8];
   self->appId_ = [values getIntWithInt:9];
-  ImActorModelApiRpcRequestSignUp_set_appKey_(self, [values getStringWithInt:10]);
+  self->appKey_ = [values getStringWithInt:10];
   self->isSilent__ = [values getBoolWithInt:11];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->phoneNumber_];
   if (self->smsHash_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:2 withNSString:self->smsHash_];
   if (self->smsCode_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:3 withNSString:self->smsCode_];
   if (self->name_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:4 withNSString:self->name_];
   if (self->publicKey_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:6 withByteArray:self->publicKey_];
   if (self->deviceHash_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:7 withByteArray:self->deviceHash_];
   if (self->deviceTitle_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:8 withNSString:self->deviceTitle_];
   [writer writeIntWithInt:9 withInt:self->appId_];
   if (self->appKey_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:10 withNSString:self->appKey_];
   [writer writeBoolWithInt:11 withBoolean:self->isSilent__];
@@ -162,28 +162,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
   return ImActorModelApiRpcRequestSignUp_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(smsHash_);
-  RELEASE_(smsCode_);
-  RELEASE_(name_);
-  RELEASE_(publicKey_);
-  RELEASE_(deviceHash_);
-  RELEASE_(deviceTitle_);
-  RELEASE_(appKey_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestSignUp *)other {
   [super copyAllFieldsTo:other];
   other->phoneNumber_ = phoneNumber_;
-  ImActorModelApiRpcRequestSignUp_set_smsHash_(other, smsHash_);
-  ImActorModelApiRpcRequestSignUp_set_smsCode_(other, smsCode_);
-  ImActorModelApiRpcRequestSignUp_set_name_(other, name_);
-  ImActorModelApiRpcRequestSignUp_set_publicKey_(other, publicKey_);
-  ImActorModelApiRpcRequestSignUp_set_deviceHash_(other, deviceHash_);
-  ImActorModelApiRpcRequestSignUp_set_deviceTitle_(other, deviceTitle_);
+  other->smsHash_ = smsHash_;
+  other->smsCode_ = smsCode_;
+  other->name_ = name_;
+  other->publicKey_ = publicKey_;
+  other->deviceHash_ = deviceHash_;
+  other->deviceTitle_ = deviceTitle_;
   other->appId_ = appId_;
-  ImActorModelApiRpcRequestSignUp_set_appKey_(other, appKey_);
+  other->appKey_ = appKey_;
   other->isSilent__ = isSilent__;
 }
 
@@ -228,7 +217,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
 
 ImActorModelApiRpcRequestSignUp *ImActorModelApiRpcRequestSignUp_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSignUp_init();
-  return ((ImActorModelApiRpcRequestSignUp *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestSignUp alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestSignUp *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestSignUp alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSignUp)

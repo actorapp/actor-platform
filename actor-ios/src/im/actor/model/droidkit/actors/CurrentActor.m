@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/CurrentActor.java
 //
 
-#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/CurrentActor.h"
@@ -33,7 +32,7 @@ JavaLangThreadLocal * ImActorModelDroidkitActorsCurrentActor_currentActor_;
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsCurrentActor class]) {
-    JreStrongAssignAndConsume(&ImActorModelDroidkitActorsCurrentActor_currentActor_, nil, [[JavaLangThreadLocal alloc] init]);
+    ImActorModelDroidkitActorsCurrentActor_currentActor_ = [[JavaLangThreadLocal alloc] init];
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsCurrentActor)
   }
 }

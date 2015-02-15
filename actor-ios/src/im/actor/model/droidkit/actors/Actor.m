@@ -44,7 +44,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActor, extensions_, JavaUtilArrayL
 
 - (instancetype)init {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsActor_setAndConsume_extensions_(self, [[JavaUtilArrayList alloc] init]);
+    extensions_ = [[JavaUtilArrayList alloc] init];
   }
   return self;
 }
@@ -52,12 +52,12 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActor, extensions_, JavaUtilArrayL
 - (void)initActorWithNSString:(NSString *)path
 withImActorModelDroidkitActorsActorContext:(ImActorModelDroidkitActorsActorContext *)context
 withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox {
-  ImActorModelDroidkitActorsActor_set_path_(self, path);
-  ImActorModelDroidkitActorsActor_set_context__(self, context);
-  ImActorModelDroidkitActorsActor_set_mailbox_(self, mailbox);
-  ImActorModelDroidkitActorsActor_setAndConsume_askPattern_(self, [[ImActorModelDroidkitActorsTasksActorAskImpl alloc] initWithImActorModelDroidkitActorsActorRef:ImActorModelDroidkitActorsActor_self__(self)]);
+  self->path_ = path;
+  self->context__ = context;
+  self->mailbox_ = mailbox;
+  self->askPattern_ = [[ImActorModelDroidkitActorsTasksActorAskImpl alloc] initWithImActorModelDroidkitActorsActorRef:ImActorModelDroidkitActorsActor_self__(self)];
   [((JavaUtilArrayList *) nil_chk(self->extensions_)) addWithId:askPattern_];
-  [self->extensions_ addWithId:[[[ImActorModelDroidkitActorsExtensionsRunnableExtension alloc] init] autorelease]];
+  [self->extensions_ addWithId:[[ImActorModelDroidkitActorsExtensionsRunnableExtension alloc] init]];
 }
 
 - (JavaUtilArrayList *)getExtensions {
@@ -111,7 +111,7 @@ withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxM
   if ([((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActor_system(self))) getTraceInterface] != nil) {
     [((id<ImActorModelDroidkitActorsDebugTraceInterface>) nil_chk([((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActor_system(self))) getTraceInterface])) onDropWithImActorModelDroidkitActorsActorRef:ImActorModelDroidkitActorsActor_sender(self) withId:message withImActorModelDroidkitActorsActor:self];
   }
-  [self replyWithId:[[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:message] autorelease]];
+  [self replyWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:message]];
 }
 
 - (ImActorModelDroidkitActorsTasksAskFuture *)combineWithImActorModelDroidkitActorsTasksAskFutureArray:(IOSObjectArray *)futures {
@@ -165,22 +165,13 @@ withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxM
   return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithImActorModelDroidkitActorsActorRef:ref withLong:timeout withImActorModelDroidkitActorsTasksAskCallback:callback];
 }
 
-- (void)dealloc {
-  RELEASE_(path_);
-  RELEASE_(context__);
-  RELEASE_(mailbox_);
-  RELEASE_(askPattern_);
-  RELEASE_(extensions_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsActor *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsActor_set_path_(other, path_);
-  ImActorModelDroidkitActorsActor_set_context__(other, context__);
-  ImActorModelDroidkitActorsActor_set_mailbox_(other, mailbox_);
-  ImActorModelDroidkitActorsActor_set_askPattern_(other, askPattern_);
-  ImActorModelDroidkitActorsActor_set_extensions_(other, extensions_);
+  other->path_ = path_;
+  other->context__ = context__;
+  other->mailbox_ = mailbox_;
+  other->askPattern_ = askPattern_;
+  other->extensions_ = extensions_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

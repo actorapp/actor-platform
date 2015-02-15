@@ -55,7 +55,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$1_$2, val$e_, AMRpcExce
 
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger {
   if (self = [super init]) {
-    ImActorModelModulesUtilsModuleActor_set_messenger_(self, messenger);
+    self->messenger_ = messenger;
   }
   return self;
 }
@@ -66,17 +66,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$1_$2, val$e_, AMRpcExce
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
-  [((AMActorApi *) nil_chk([((AMMessenger *) nil_chk(messenger_)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:[[[ImActorModelModulesUtilsModuleActor_$1 alloc] initWithImActorModelModulesUtilsModuleActor:self withAMRpcCallback:callback] autorelease]];
-}
-
-- (void)dealloc {
-  RELEASE_(messenger_);
-  [super dealloc];
+  [((AMActorApi *) nil_chk([((AMMessenger *) nil_chk(messenger_)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:[[ImActorModelModulesUtilsModuleActor_$1 alloc] initWithImActorModelModulesUtilsModuleActor:self withAMRpcCallback:callback]];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUtilsModuleActor *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUtilsModuleActor_set_messenger_(other, messenger_);
+  other->messenger_ = messenger_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -99,30 +94,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor)
 @implementation ImActorModelModulesUtilsModuleActor_$1
 
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelModulesUtilsModuleActor_$1_$1 alloc] initWithImActorModelModulesUtilsModuleActor_$1:self withImActorModelNetworkParserResponse:response] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[ImActorModelModulesUtilsModuleActor_$1_$1 alloc] initWithImActorModelModulesUtilsModuleActor_$1:self withImActorModelNetworkParserResponse:response]];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[[ImActorModelModulesUtilsModuleActor_$1_$2 alloc] initWithImActorModelModulesUtilsModuleActor_$1:self withAMRpcException:e] autorelease]];
+  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[ImActorModelModulesUtilsModuleActor_$1_$2 alloc] initWithImActorModelModulesUtilsModuleActor_$1:self withAMRpcException:e]];
 }
 
 - (instancetype)initWithImActorModelModulesUtilsModuleActor:(ImActorModelModulesUtilsModuleActor *)outer$
                                           withAMRpcCallback:(id<AMRpcCallback>)capture$0 {
-  ImActorModelModulesUtilsModuleActor_$1_set_this$0_(self, outer$);
-  ImActorModelModulesUtilsModuleActor_$1_set_val$callback_(self, capture$0);
+  this$0_ = outer$;
+  val$callback_ = capture$0;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(this$0_);
-  RELEASE_(val$callback_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUtilsModuleActor_$1 *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUtilsModuleActor_$1_set_this$0_(other, this$0_);
-  ImActorModelModulesUtilsModuleActor_$1_set_val$callback_(other, val$callback_);
+  other->this$0_ = this$0_;
+  other->val$callback_ = val$callback_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -151,21 +140,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor_$1)
 
 - (instancetype)initWithImActorModelModulesUtilsModuleActor_$1:(ImActorModelModulesUtilsModuleActor_$1 *)outer$
                          withImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)capture$0 {
-  ImActorModelModulesUtilsModuleActor_$1_$1_set_this$0_(self, outer$);
-  ImActorModelModulesUtilsModuleActor_$1_$1_set_val$response_(self, capture$0);
+  this$0_ = outer$;
+  val$response_ = capture$0;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(this$0_);
-  RELEASE_(val$response_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUtilsModuleActor_$1_$1 *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUtilsModuleActor_$1_$1_set_this$0_(other, this$0_);
-  ImActorModelModulesUtilsModuleActor_$1_$1_set_val$response_(other, val$response_);
+  other->this$0_ = this$0_;
+  other->val$response_ = val$response_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -193,21 +176,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor_$1_$1)
 
 - (instancetype)initWithImActorModelModulesUtilsModuleActor_$1:(ImActorModelModulesUtilsModuleActor_$1 *)outer$
                                             withAMRpcException:(AMRpcException *)capture$0 {
-  ImActorModelModulesUtilsModuleActor_$1_$2_set_this$0_(self, outer$);
-  ImActorModelModulesUtilsModuleActor_$1_$2_set_val$e_(self, capture$0);
+  this$0_ = outer$;
+  val$e_ = capture$0;
   return [super init];
-}
-
-- (void)dealloc {
-  RELEASE_(this$0_);
-  RELEASE_(val$e_);
-  [super dealloc];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUtilsModuleActor_$1_$2 *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUtilsModuleActor_$1_$2_set_this$0_(other, this$0_);
-  ImActorModelModulesUtilsModuleActor_$1_$2_set_val$e_(other, val$e_);
+  other->this$0_ = this$0_;
+  other->val$e_ = val$e_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

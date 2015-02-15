@@ -37,9 +37,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseSeqUpdate, update_, IOSByteArray *)
               withByteArray:(IOSByteArray *)update {
   if (self = [super init]) {
     self->seq_ = seq;
-    ImActorModelApiBaseSeqUpdate_set_state_(self, state);
+    self->state_ = state;
     self->updateHeader_ = updateHeader;
-    ImActorModelApiBaseSeqUpdate_set_update_(self, update);
+    self->update_ = update;
   }
   return self;
 }
@@ -66,20 +66,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseSeqUpdate, update_, IOSByteArray *)
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->seq_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
-  ImActorModelApiBaseSeqUpdate_set_state_(self, [values getBytesWithInt:2]);
+  self->state_ = [values getBytesWithInt:2];
   self->updateHeader_ = [values getIntWithInt:3];
-  ImActorModelApiBaseSeqUpdate_set_update_(self, [values getBytesWithInt:4]);
+  self->update_ = [values getBytesWithInt:4];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:2 withByteArray:self->state_];
   [writer writeIntWithInt:3 withInt:self->updateHeader_];
   if (self->update_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:4 withByteArray:self->update_];
 }
@@ -88,18 +88,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseSeqUpdate, update_, IOSByteArray *)
   return ImActorModelApiBaseSeqUpdate_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(state_);
-  RELEASE_(update_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiBaseSeqUpdate *)other {
   [super copyAllFieldsTo:other];
   other->seq_ = seq_;
-  ImActorModelApiBaseSeqUpdate_set_state_(other, state_);
+  other->state_ = state_;
   other->updateHeader_ = updateHeader_;
-  ImActorModelApiBaseSeqUpdate_set_update_(other, update_);
+  other->update_ = update_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -130,7 +124,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseSeqUpdate, update_, IOSByteArray *)
 
 ImActorModelApiBaseSeqUpdate *ImActorModelApiBaseSeqUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseSeqUpdate_init();
-  return ((ImActorModelApiBaseSeqUpdate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiBaseSeqUpdate alloc] init] autorelease], data));
+  return ((ImActorModelApiBaseSeqUpdate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiBaseSeqUpdate alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiBaseSeqUpdate)

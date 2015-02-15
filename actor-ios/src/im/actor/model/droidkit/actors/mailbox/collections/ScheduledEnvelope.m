@@ -25,7 +25,7 @@ withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailbox
   if (self = [super init]) {
     self->key_ = key;
     self->time_ = time;
-    ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_set_envelope_(self, envelope);
+    self->envelope_ = envelope;
   }
   return self;
 }
@@ -46,16 +46,11 @@ withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailbox
   return JreStrcat("C@C", '<', [((ImActorModelDroidkitActorsMailboxEnvelope *) nil_chk(envelope_)) getMessage], '>');
 }
 
-- (void)dealloc {
-  RELEASE_(envelope_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *)other {
   [super copyAllFieldsTo:other];
   other->key_ = key_;
   other->time_ = time_;
-  ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_set_envelope_(other, envelope_);
+  other->envelope_ = envelope_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

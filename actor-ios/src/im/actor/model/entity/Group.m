@@ -38,11 +38,11 @@ withImActorModelEntityGroupStateEnum:(ImActorModelEntityGroupStateEnum *)groupSt
   if (self = [super init]) {
     self->groupId_ = groupId;
     self->accessHash_ = accessHash;
-    ImActorModelEntityGroup_set_title_(self, title);
-    ImActorModelEntityGroup_set_avatar_(self, avatar);
-    ImActorModelEntityGroup_set_members_(self, members);
+    self->title_ = title;
+    self->avatar_ = avatar;
+    self->members_ = members;
     self->adminId_ = adminId;
-    ImActorModelEntityGroup_set_groupState_(self, groupState);
+    self->groupState_ = groupState;
   }
   return self;
 }
@@ -75,23 +75,15 @@ withImActorModelEntityGroupStateEnum:(ImActorModelEntityGroupStateEnum *)groupSt
   return groupState_;
 }
 
-- (void)dealloc {
-  RELEASE_(title_);
-  RELEASE_(avatar_);
-  RELEASE_(members_);
-  RELEASE_(groupState_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelEntityGroup *)other {
   [super copyAllFieldsTo:other];
   other->groupId_ = groupId_;
   other->accessHash_ = accessHash_;
-  ImActorModelEntityGroup_set_title_(other, title_);
-  ImActorModelEntityGroup_set_avatar_(other, avatar_);
-  ImActorModelEntityGroup_set_members_(other, members_);
+  other->title_ = title_;
+  other->avatar_ = avatar_;
+  other->members_ = members_;
   other->adminId_ = adminId_;
-  ImActorModelEntityGroup_set_groupState_(other, groupState_);
+  other->groupState_ = groupState_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

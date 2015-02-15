@@ -29,11 +29,11 @@ J2OBJC_FIELD_SETTER(AMRpcException, relatedData_, IOSByteArray *)
                      withBoolean:(jboolean)canTryAgain
                    withByteArray:(IOSByteArray *)relatedData {
   if (self = [super init]) {
-    AMRpcException_set_tag_(self, tag);
+    self->tag_ = tag;
     self->code_ = code;
-    AMRpcException_set_message_(self, message);
+    self->message_ = message;
     self->canTryAgain_ = canTryAgain;
-    AMRpcException_set_relatedData_(self, relatedData);
+    self->relatedData_ = relatedData;
   }
   return self;
 }
@@ -58,20 +58,13 @@ J2OBJC_FIELD_SETTER(AMRpcException, relatedData_, IOSByteArray *)
   return message_;
 }
 
-- (void)dealloc {
-  RELEASE_(tag_);
-  RELEASE_(message_);
-  RELEASE_(relatedData_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(AMRpcException *)other {
   [super copyAllFieldsTo:other];
-  AMRpcException_set_tag_(other, tag_);
+  other->tag_ = tag_;
   other->code_ = code_;
-  AMRpcException_set_message_(other, message_);
+  other->message_ = message_;
   other->canTryAgain_ = canTryAgain_;
-  AMRpcException_set_relatedData_(other, relatedData_);
+  other->relatedData_ = relatedData_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

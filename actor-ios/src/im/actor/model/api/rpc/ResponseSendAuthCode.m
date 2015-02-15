@@ -31,7 +31,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *
 - (instancetype)initWithNSString:(NSString *)smsHash
                      withBoolean:(jboolean)isRegistered {
   if (self = [super init]) {
-    ImActorModelApiRpcResponseSendAuthCode_set_smsHash_(self, smsHash);
+    self->smsHash_ = smsHash;
     self->isRegistered__ = isRegistered;
   }
   return self;
@@ -50,13 +50,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcResponseSendAuthCode_set_smsHash_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1]);
+  self->smsHash_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1];
   self->isRegistered__ = [values getBoolWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->smsHash_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->smsHash_];
   [writer writeBoolWithInt:2 withBoolean:self->isRegistered__];
@@ -66,14 +66,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *
   return ImActorModelApiRpcResponseSendAuthCode_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(smsHash_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcResponseSendAuthCode *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcResponseSendAuthCode_set_smsHash_(other, smsHash_);
+  other->smsHash_ = smsHash_;
   other->isRegistered__ = isRegistered__;
 }
 
@@ -101,7 +96,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *
 
 ImActorModelApiRpcResponseSendAuthCode *ImActorModelApiRpcResponseSendAuthCode_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseSendAuthCode_init();
-  return ((ImActorModelApiRpcResponseSendAuthCode *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseSendAuthCode alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcResponseSendAuthCode *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseSendAuthCode alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseSendAuthCode)

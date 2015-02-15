@@ -53,7 +53,7 @@
 
 ImActorModelApiRpcRequestSignOut *ImActorModelApiRpcRequestSignOut_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSignOut_init();
-  return ((ImActorModelApiRpcRequestSignOut *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestSignOut alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestSignOut *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestSignOut alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSignOut)

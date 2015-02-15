@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/network/ConnectionFactory.java
 //
 
-#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/Connection.h"
 #include "im/actor/model/network/ConnectionCallback.h"
@@ -56,7 +55,7 @@ withAMConnectionFactory_CreateConnectionCallback:(id<AMConnectionFactory_CreateC
 
 void AMConnectionFactory_setFactoryWithAMConnectionFactory_Factory_(id<AMConnectionFactory_Factory> factory) {
   AMConnectionFactory_init();
-  JreStrongAssign(&AMConnectionFactory_factory_, nil, factory);
+  AMConnectionFactory_factory_ = factory;
 }
 
 id<AMConnectionFactory_Factory> AMConnectionFactory_getFactory() {
@@ -67,7 +66,7 @@ id<AMConnectionFactory_Factory> AMConnectionFactory_getFactory() {
 void AMConnectionFactory_createConnectionWithInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMConnectionFactory_CreateConnectionCallback_(jint connectionId, AMConnectionEndpoint *endpoint, id<AMConnectionCallback> callback, id<AMConnectionFactory_CreateConnectionCallback> createCallback) {
   AMConnectionFactory_init();
   if (AMConnectionFactory_factory_ == nil) {
-    @throw [[[JavaLangRuntimeException alloc] initWithNSString:@"Connection factory not inited"] autorelease];
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Connection factory not inited"];
   }
   [((id<AMConnectionFactory_Factory>) nil_chk(AMConnectionFactory_factory_)) createConnectionWithInt:connectionId withAMConnectionEndpoint:endpoint withAMConnectionCallback:callback withAMConnectionFactory_CreateConnectionCallback:createCallback];
 }

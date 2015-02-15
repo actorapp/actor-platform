@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/tasks/AskFuture.java
 //
 
-#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/tasks/ActorAskImpl.h"
 #include "im/actor/model/droidkit/actors/tasks/AskCallback.h"
@@ -36,13 +35,13 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksAskFuture, error__, JavaLangT
 - (instancetype)initWithImActorModelDroidkitActorsTasksActorAskImpl:(ImActorModelDroidkitActorsTasksActorAskImpl *)askImpl
                                                             withInt:(jint)reqId {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsTasksAskFuture_setAndConsume_callbacks_(self, [[JavaUtilLinkedList alloc] init]);
+    callbacks_ = [[JavaUtilLinkedList alloc] init];
     isCompleted__ = NO;
     isCanceled__ = NO;
     isError__ = NO;
-    ImActorModelDroidkitActorsTasksAskFuture_set_result__(self, nil);
-    ImActorModelDroidkitActorsTasksAskFuture_set_error__(self, nil);
-    ImActorModelDroidkitActorsTasksAskFuture_set_askImpl_(self, askImpl);
+    result__ = nil;
+    error__ = nil;
+    self->askImpl_ = askImpl;
     self->reqId_ = reqId;
   }
   return self;
@@ -93,8 +92,8 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksAskFuture, error__, JavaLangT
   isCompleted__ = YES;
   isCanceled__ = NO;
   isError__ = YES;
-  ImActorModelDroidkitActorsTasksAskFuture_set_error__(self, throwable);
-  ImActorModelDroidkitActorsTasksAskFuture_set_result__(self, nil);
+  error__ = throwable;
+  result__ = nil;
   for (id<ImActorModelDroidkitActorsTasksAskCallback> __strong callback in nil_chk(callbacks_)) {
     [((id<ImActorModelDroidkitActorsTasksAskCallback>) nil_chk(callback)) onErrorWithJavaLangThrowable:throwable];
   }
@@ -107,8 +106,8 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksAskFuture, error__, JavaLangT
   isCompleted__ = YES;
   isCanceled__ = NO;
   isError__ = NO;
-  ImActorModelDroidkitActorsTasksAskFuture_set_error__(self, nil);
-  ImActorModelDroidkitActorsTasksAskFuture_set_result__(self, res);
+  error__ = nil;
+  result__ = res;
   for (id<ImActorModelDroidkitActorsTasksAskCallback> __strong callback in nil_chk(callbacks_)) {
     [((id<ImActorModelDroidkitActorsTasksAskCallback>) nil_chk(callback)) onResultWithId:res];
   }
@@ -126,27 +125,19 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksAskFuture, error__, JavaLangT
 }
 
 - (void)onTimeout {
-  [self onErrorWithJavaLangThrowable:[[[ImActorModelDroidkitActorsTasksAskTimeoutException alloc] init] autorelease]];
-}
-
-- (void)dealloc {
-  RELEASE_(callbacks_);
-  RELEASE_(askImpl_);
-  RELEASE_(result__);
-  RELEASE_(error__);
-  [super dealloc];
+  [self onErrorWithJavaLangThrowable:[[ImActorModelDroidkitActorsTasksAskTimeoutException alloc] init]];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksAskFuture *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsTasksAskFuture_set_callbacks_(other, callbacks_);
-  ImActorModelDroidkitActorsTasksAskFuture_set_askImpl_(other, askImpl_);
+  other->callbacks_ = callbacks_;
+  other->askImpl_ = askImpl_;
   other->reqId_ = reqId_;
   other->isCompleted__ = isCompleted__;
   other->isCanceled__ = isCanceled__;
   other->isError__ = isError__;
-  ImActorModelDroidkitActorsTasksAskFuture_set_result__(other, result__);
-  ImActorModelDroidkitActorsTasksAskFuture_set_error__(other, error__);
+  other->result__ = result__;
+  other->error__ = error__;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

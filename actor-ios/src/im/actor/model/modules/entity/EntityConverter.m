@@ -3,24 +3,59 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/modules/entity/EntityConverter.java
 //
 
+#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/AvatarImage.h"
+#include "im/actor/model/api/FastThumb.h"
+#include "im/actor/model/api/FileExPhoto.h"
+#include "im/actor/model/api/FileExVideo.h"
 #include "im/actor/model/api/FileLocation.h"
+#include "im/actor/model/api/FileMessage.h"
+#include "im/actor/model/api/MessageContent.h"
+#include "im/actor/model/api/MessageState.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/PeerType.h"
+#include "im/actor/model/api/ServiceExChangedAvatar.h"
+#include "im/actor/model/api/ServiceExChangedTitle.h"
+#include "im/actor/model/api/ServiceExUserAdded.h"
+#include "im/actor/model/api/ServiceExUserKicked.h"
+#include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/api/Sex.h"
+#include "im/actor/model/api/TextMessage.h"
 #include "im/actor/model/api/User.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/AvatarImage.h"
 #include "im/actor/model/entity/FileLocation.h"
+#include "im/actor/model/entity/MessageState.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/PeerType.h"
 #include "im/actor/model/entity/Sex.h"
 #include "im/actor/model/entity/User.h"
+#include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/entity/content/DocumentContent.h"
+#include "im/actor/model/entity/content/FastThumb.h"
+#include "im/actor/model/entity/content/FileRemoteSource.h"
+#include "im/actor/model/entity/content/PhotoContent.h"
+#include "im/actor/model/entity/content/ServiceContent.h"
+#include "im/actor/model/entity/content/ServiceGroupAvatarChanged.h"
+#include "im/actor/model/entity/content/ServiceGroupCreated.h"
+#include "im/actor/model/entity/content/ServiceGroupTitleChanged.h"
+#include "im/actor/model/entity/content/ServiceGroupUserAdded.h"
+#include "im/actor/model/entity/content/ServiceGroupUserKicked.h"
+#include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
+#include "im/actor/model/entity/content/TextContent.h"
+#include "im/actor/model/entity/content/VideoContent.h"
 #include "im/actor/model/modules/entity/EntityConverter.h"
+#include "java/io/IOException.h"
 
 @implementation ImActorModelModulesEntityEntityConverter
+
++ (ImActorModelEntityMessageStateEnum *)convertWithImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
+  return ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_(state);
+}
 
 + (ImActorModelEntityAvatar *)convertWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar {
   return ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatar_(avatar);
@@ -51,12 +86,21 @@
   return ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(peer);
 }
 
++ (ImActorModelEntityContentAbsContent *)convertWithImActorModelApiMessageContent:(ImActorModelApiMessageContent *)content {
+  return ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageContent_(content);
+}
+
++ (ImActorModelEntityContentFastThumb *)convertWithImActorModelApiFastThumb:(ImActorModelApiFastThumb *)fastThumb {
+  return ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiFastThumb_(fastThumb);
+}
+
 - (instancetype)init {
   return [super init];
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
+    { "convertWithImActorModelApiMessageStateEnum:", "convert", "Lim.actor.model.entity.MessageState;", 0x9, NULL },
     { "convertWithImActorModelApiAvatar:", "convert", "Lim.actor.model.entity.Avatar;", 0x9, NULL },
     { "convertWithImActorModelApiAvatarImage:", "convert", "Lim.actor.model.entity.AvatarImage;", 0x9, NULL },
     { "convertWithImActorModelApiFileLocation:withInt:", "convert", "Lim.actor.model.entity.FileLocation;", 0x9, NULL },
@@ -64,20 +108,39 @@
     { "convertWithImActorModelApiUser:", "convert", "Lim.actor.model.entity.User;", 0x9, NULL },
     { "convertWithImActorModelApiPeerTypeEnum:", "convert", "Lim.actor.model.entity.PeerType;", 0x9, NULL },
     { "convertWithImActorModelApiPeer:", "convert", "Lim.actor.model.entity.Peer;", 0x9, NULL },
+    { "convertWithImActorModelApiMessageContent:", "convert", "Lim.actor.model.entity.content.AbsContent;", 0x9, NULL },
+    { "convertWithImActorModelApiFastThumb:", "convert", "Lim.actor.model.entity.content.FastThumb;", 0x9, NULL },
     { "init", NULL, NULL, 0x1, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelModulesEntityEntityConverter = { 1, "EntityConverter", "im.actor.model.modules.entity", NULL, 0x1, 8, methods, 0, NULL, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelModulesEntityEntityConverter = { 1, "EntityConverter", "im.actor.model.modules.entity", NULL, 0x1, 11, methods, 0, NULL, 0, NULL};
   return &_ImActorModelModulesEntityEntityConverter;
 }
 
 @end
+
+ImActorModelEntityMessageStateEnum *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_(ImActorModelApiMessageStateEnum *state) {
+  ImActorModelModulesEntityEntityConverter_init();
+  if (state == nil) {
+    return ImActorModelEntityMessageStateEnum_get_UNKNOWN();
+  }
+  switch ([state ordinal]) {
+    case ImActorModelApiMessageState_READ:
+    return ImActorModelEntityMessageStateEnum_get_READ();
+    case ImActorModelApiMessageState_RECEIVED:
+    return ImActorModelEntityMessageStateEnum_get_RECEIVED();
+    case ImActorModelApiMessageState_SENT:
+    return ImActorModelEntityMessageStateEnum_get_SENT();
+    default:
+    return ImActorModelEntityMessageStateEnum_get_UNKNOWN();
+  }
+}
 
 ImActorModelEntityAvatar *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatar_(ImActorModelApiAvatar *avatar) {
   ImActorModelModulesEntityEntityConverter_init();
   if (avatar == nil) {
     return nil;
   }
-  return [[[ImActorModelEntityAvatar alloc] initWithImActorModelEntityAvatarImage:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatarImage_([((ImActorModelApiAvatar *) nil_chk(avatar)) getSmallImage]) withImActorModelEntityAvatarImage:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatarImage_([avatar getLargeImage]) withImActorModelEntityAvatarImage:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatarImage_([avatar getFullImage])] autorelease];
+  return [[ImActorModelEntityAvatar alloc] initWithImActorModelEntityAvatarImage:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatarImage_([((ImActorModelApiAvatar *) nil_chk(avatar)) getSmallImage]) withImActorModelEntityAvatarImage:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatarImage_([avatar getLargeImage]) withImActorModelEntityAvatarImage:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatarImage_([avatar getFullImage])];
 }
 
 ImActorModelEntityAvatarImage *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *avatarImage) {
@@ -85,12 +148,12 @@ ImActorModelEntityAvatarImage *ImActorModelModulesEntityEntityConverter_convertW
   if (avatarImage == nil) {
     return nil;
   }
-  return [[[ImActorModelEntityAvatarImage alloc] initWithInt:[((ImActorModelApiAvatarImage *) nil_chk(avatarImage)) getWidth] withInt:[avatarImage getHeight] withImActorModelEntityFileLocation:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiFileLocation_withInt_([avatarImage getFileLocation], [avatarImage getFileSize])] autorelease];
+  return [[ImActorModelEntityAvatarImage alloc] initWithInt:[((ImActorModelApiAvatarImage *) nil_chk(avatarImage)) getWidth] withInt:[avatarImage getHeight] withImActorModelEntityFileLocation:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiFileLocation_withInt_([avatarImage getFileLocation], [avatarImage getFileSize])];
 }
 
 ImActorModelEntityFileLocation *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiFileLocation_withInt_(ImActorModelApiFileLocation *location, jint size) {
   ImActorModelModulesEntityEntityConverter_init();
-  return [[[ImActorModelEntityFileLocation alloc] initWithLong:[((ImActorModelApiFileLocation *) nil_chk(location)) getFileId] withLong:[location getAccessHash] withInt:size] autorelease];
+  return [[ImActorModelEntityFileLocation alloc] initWithLong:[((ImActorModelApiFileLocation *) nil_chk(location)) getFileId] withLong:[location getAccessHash] withInt:size];
 }
 
 ImActorModelEntitySexEnum *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiSexEnum_(ImActorModelApiSexEnum *sex) {
@@ -111,7 +174,7 @@ ImActorModelEntitySexEnum *ImActorModelModulesEntityEntityConverter_convertWithI
 
 ImActorModelEntityUser *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiUser_(ImActorModelApiUser *user) {
   ImActorModelModulesEntityEntityConverter_init();
-  return [[[ImActorModelEntityUser alloc] initWithInt:[((ImActorModelApiUser *) nil_chk(user)) getId] withLong:[user getAccessHash] withNSString:[user getName] withNSString:[user getLocalName] withImActorModelEntityAvatar:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatar_([user getAvatar]) withImActorModelEntitySexEnum:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiSexEnum_([user getSex])] autorelease];
+  return [[ImActorModelEntityUser alloc] initWithInt:[((ImActorModelApiUser *) nil_chk(user)) getId] withLong:[user getAccessHash] withNSString:[user getName] withNSString:[user getLocalName] withImActorModelEntityAvatar:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatar_([user getAvatar]) withImActorModelEntitySexEnum:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiSexEnum_([user getSex])];
 }
 
 ImActorModelEntityPeerTypeEnum *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeerTypeEnum_(ImActorModelApiPeerTypeEnum *peerType) {
@@ -129,7 +192,84 @@ ImActorModelEntityPeerTypeEnum *ImActorModelModulesEntityEntityConverter_convert
 
 ImActorModelEntityPeer *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(ImActorModelApiPeer *peer) {
   ImActorModelModulesEntityEntityConverter_init();
-  return [[[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeerTypeEnum_([((ImActorModelApiPeer *) nil_chk(peer)) getType]) withInt:[peer getId]] autorelease];
+  return [[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeerTypeEnum_([((ImActorModelApiPeer *) nil_chk(peer)) getType]) withInt:[peer getId]];
+}
+
+ImActorModelEntityContentAbsContent *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageContent_(ImActorModelApiMessageContent *content) {
+  ImActorModelModulesEntityEntityConverter_init();
+  @try {
+    if ([((ImActorModelApiMessageContent *) nil_chk(content)) getType] == (jint) 0x01) {
+      ImActorModelApiTextMessage *textMessage = ((ImActorModelApiTextMessage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiTextMessage alloc] init], [content getContent]));
+      return [[ImActorModelEntityContentTextContent alloc] initWithNSString:[((ImActorModelApiTextMessage *) nil_chk(textMessage)) getText]];
+    }
+    else if ([content getType] == (jint) 0x02) {
+      ImActorModelApiServiceMessage *serviceMessage = ((ImActorModelApiServiceMessage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiServiceMessage alloc] init], [content getContent]));
+      if ([((ImActorModelApiServiceMessage *) nil_chk(serviceMessage)) getExtType] == (jint) 0x04) {
+        return [[ImActorModelEntityContentServiceGroupCreated alloc] initWithNSString:@"???"];
+      }
+      else if ([serviceMessage getExtType] == (jint) 0x05) {
+        ImActorModelApiServiceExChangedTitle *title = ((ImActorModelApiServiceExChangedTitle *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiServiceExChangedTitle alloc] init], [serviceMessage getExt]));
+        return [[ImActorModelEntityContentServiceGroupTitleChanged alloc] initWithNSString:[((ImActorModelApiServiceExChangedTitle *) nil_chk(title)) getTitle]];
+      }
+      else if ([serviceMessage getExtType] == (jint) 0x06) {
+        ImActorModelApiServiceExChangedAvatar *title = ((ImActorModelApiServiceExChangedAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiServiceExChangedAvatar alloc] init], [serviceMessage getExt]));
+        return [[ImActorModelEntityContentServiceGroupAvatarChanged alloc] initWithImActorModelEntityAvatar:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatar_([((ImActorModelApiServiceExChangedAvatar *) nil_chk(title)) getAvatar])];
+      }
+      else if ([serviceMessage getExtType] == (jint) 0x01) {
+        ImActorModelApiServiceExUserAdded *added = ((ImActorModelApiServiceExUserAdded *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiServiceExUserAdded alloc] init], [serviceMessage getExt]));
+        return [[ImActorModelEntityContentServiceGroupUserAdded alloc] initWithInt:[((ImActorModelApiServiceExUserAdded *) nil_chk(added)) getAddedUid]];
+      }
+      else if ([serviceMessage getExtType] == (jint) 0x02) {
+        ImActorModelApiServiceExUserKicked *added = ((ImActorModelApiServiceExUserKicked *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiServiceExUserKicked alloc] init], [serviceMessage getExt]));
+        return [[ImActorModelEntityContentServiceGroupUserKicked alloc] initWithInt:[((ImActorModelApiServiceExUserKicked *) nil_chk(added)) getKickedUid]];
+      }
+      else if ([serviceMessage getExtType] == (jint) 0x03) {
+        return [[ImActorModelEntityContentServiceGroupUserLeave alloc] init];
+      }
+      else {
+        return [[ImActorModelEntityContentServiceContent alloc] initWithNSString:[serviceMessage getText]];
+      }
+    }
+    else if ([content getType] == (jint) 0x03) {
+      ImActorModelApiFileMessage *fileMessage = ((ImActorModelApiFileMessage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiFileMessage alloc] init], [content getContent]));
+      NSString *mimeType = [((ImActorModelApiFileMessage *) nil_chk(fileMessage)) getMimeType];
+      NSString *name = [fileMessage getName];
+      ImActorModelEntityContentFastThumb *fastThumb = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiFastThumb_([fileMessage getThumb]);
+      ImActorModelEntityFileLocation *fileLocation = [[ImActorModelEntityFileLocation alloc] initWithLong:[fileMessage getFileId] withLong:[fileMessage getAccessHash] withInt:[fileMessage getFileSize]];
+      ImActorModelEntityContentFileRemoteSource *source = [[ImActorModelEntityContentFileRemoteSource alloc] initWithImActorModelEntityFileLocation:fileLocation];
+      if ([fileMessage getExtType] == (jint) 0x01) {
+        @try {
+          ImActorModelApiFileExPhoto *photo = ((ImActorModelApiFileExPhoto *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiFileExPhoto alloc] init], [fileMessage getExt]));
+          return [[ImActorModelEntityContentPhotoContent alloc] initWithImActorModelEntityContentFileSource:source withNSString:mimeType withNSString:name withImActorModelEntityContentFastThumb:fastThumb withInt:[((ImActorModelApiFileExPhoto *) nil_chk(photo)) getW] withInt:[photo getH]];
+        }
+        @catch (JavaIoIOException *e) {
+          [((JavaIoIOException *) nil_chk(e)) printStackTrace];
+        }
+      }
+      else if ([fileMessage getExtType] == (jint) 0x02) {
+        @try {
+          ImActorModelApiFileExVideo *video = ((ImActorModelApiFileExVideo *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiFileExVideo alloc] init], [fileMessage getExt]));
+          return [[ImActorModelEntityContentVideoContent alloc] initWithImActorModelEntityContentFileSource:source withNSString:mimeType withNSString:name withImActorModelEntityContentFastThumb:fastThumb withInt:[((ImActorModelApiFileExVideo *) nil_chk(video)) getDuration] withInt:[video getW] withInt:[video getH]];
+        }
+        @catch (JavaIoIOException *e) {
+          [((JavaIoIOException *) nil_chk(e)) printStackTrace];
+        }
+      }
+      return [[ImActorModelEntityContentDocumentContent alloc] initWithImActorModelEntityContentFileSource:source withNSString:mimeType withNSString:name withImActorModelEntityContentFastThumb:fastThumb];
+    }
+  }
+  @catch (JavaIoIOException *e) {
+    [((JavaIoIOException *) nil_chk(e)) printStackTrace];
+  }
+  return nil;
+}
+
+ImActorModelEntityContentFastThumb *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiFastThumb_(ImActorModelApiFastThumb *fastThumb) {
+  ImActorModelModulesEntityEntityConverter_init();
+  if (fastThumb == nil) {
+    return nil;
+  }
+  return [[ImActorModelEntityContentFastThumb alloc] initWithInt:[((ImActorModelApiFastThumb *) nil_chk(fastThumb)) getW] withInt:[fastThumb getH] withByteArray:[fastThumb getThumb]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesEntityEntityConverter)

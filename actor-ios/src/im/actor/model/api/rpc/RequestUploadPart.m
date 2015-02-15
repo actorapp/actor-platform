@@ -35,9 +35,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestUploadPart, payload_, IOSByteArray 
                                             withInt:(jint)blockIndex
                                       withByteArray:(IOSByteArray *)payload {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestUploadPart_set_config_(self, config);
+    self->config_ = config;
     self->blockIndex_ = blockIndex;
-    ImActorModelApiRpcRequestUploadPart_set_payload_(self, payload);
+    self->payload_ = payload;
   }
   return self;
 }
@@ -59,19 +59,19 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestUploadPart, payload_, IOSByteArray 
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestUploadPart_set_config_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiUploadConfig alloc] init] autorelease]]);
+  self->config_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiUploadConfig alloc] init]];
   self->blockIndex_ = [values getIntWithInt:2];
-  ImActorModelApiRpcRequestUploadPart_set_payload_(self, [values getBytesWithInt:3]);
+  self->payload_ = [values getBytesWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->config_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->config_];
   [writer writeIntWithInt:2 withInt:self->blockIndex_];
   if (self->payload_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:3 withByteArray:self->payload_];
 }
@@ -80,17 +80,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestUploadPart, payload_, IOSByteArray 
   return ImActorModelApiRpcRequestUploadPart_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(config_);
-  RELEASE_(payload_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestUploadPart *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestUploadPart_set_config_(other, config_);
+  other->config_ = config_;
   other->blockIndex_ = blockIndex_;
-  ImActorModelApiRpcRequestUploadPart_set_payload_(other, payload_);
+  other->payload_ = payload_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -120,7 +114,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestUploadPart, payload_, IOSByteArray 
 
 ImActorModelApiRpcRequestUploadPart *ImActorModelApiRpcRequestUploadPart_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestUploadPart_init();
-  return ((ImActorModelApiRpcRequestUploadPart *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestUploadPart alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestUploadPart *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestUploadPart alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestUploadPart)

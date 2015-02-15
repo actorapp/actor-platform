@@ -36,7 +36,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFastThumb, image_, IOSByteArray *)
   if (self = [super init]) {
     self->w_ = w;
     self->h_ = h;
-    ImActorModelEntityContentFastThumb_set_image_(self, image);
+    self->image_ = image;
   }
   return self;
 }
@@ -60,7 +60,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFastThumb, image_, IOSByteArray *)
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   w_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
   h_ = [values getIntWithInt:2];
-  ImActorModelEntityContentFastThumb_set_image_(self, [values getBytesWithInt:3]);
+  image_ = [values getBytesWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -69,16 +69,11 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFastThumb, image_, IOSByteArray *)
   [writer writeBytesWithInt:3 withByteArray:image_];
 }
 
-- (void)dealloc {
-  RELEASE_(image_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelEntityContentFastThumb *)other {
   [super copyAllFieldsTo:other];
   other->w_ = w_;
   other->h_ = h_;
-  ImActorModelEntityContentFastThumb_set_image_(other, image_);
+  other->image_ = image_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -105,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFastThumb, image_, IOSByteArray *)
 
 ImActorModelEntityContentFastThumb *ImActorModelEntityContentFastThumb_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentFastThumb_init();
-  return ((ImActorModelEntityContentFastThumb *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityContentFastThumb alloc] init] autorelease], data));
+  return ((ImActorModelEntityContentFastThumb *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentFastThumb alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentFastThumb)

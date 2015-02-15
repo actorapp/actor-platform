@@ -33,7 +33,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserStateChanged, state_, ImActo
 withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)state {
   if (self = [super init]) {
     self->uid_ = uid;
-    ImActorModelApiUpdatesUpdateUserStateChanged_set_state_(self, state);
+    self->state_ = state;
   }
   return self;
 }
@@ -52,13 +52,13 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)state {
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->uid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
-  ImActorModelApiUpdatesUpdateUserStateChanged_set_state_(self, ImActorModelApiUserStateEnum_parseWithInt_([values getIntWithInt:2]));
+  self->state_ = ImActorModelApiUserStateEnum_parseWithInt_([values getIntWithInt:2]);
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   if (self->state_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeIntWithInt:2 withInt:[((ImActorModelApiUserStateEnum *) nil_chk(self->state_)) getValue]];
 }
@@ -67,15 +67,10 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)state {
   return ImActorModelApiUpdatesUpdateUserStateChanged_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(state_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateUserStateChanged *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;
-  ImActorModelApiUpdatesUpdateUserStateChanged_set_state_(other, state_);
+  other->state_ = state_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -102,7 +97,7 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)state {
 
 ImActorModelApiUpdatesUpdateUserStateChanged *ImActorModelApiUpdatesUpdateUserStateChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserStateChanged_init();
-  return ((ImActorModelApiUpdatesUpdateUserStateChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateUserStateChanged alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateUserStateChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserStateChanged alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserStateChanged)

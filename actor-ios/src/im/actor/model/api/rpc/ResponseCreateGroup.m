@@ -41,10 +41,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
                                    withJavaUtilList:(id<JavaUtilList>)users
                                            withLong:(jlong)date {
   if (self = [super init]) {
-    ImActorModelApiRpcResponseCreateGroup_set_groupPeer_(self, groupPeer);
+    self->groupPeer_ = groupPeer;
     self->seq_ = seq;
-    ImActorModelApiRpcResponseCreateGroup_set_state_(self, state);
-    ImActorModelApiRpcResponseCreateGroup_set_users_(self, users);
+    self->state_ = state;
+    self->users_ = users;
     self->date_ = date;
   }
   return self;
@@ -75,21 +75,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcResponseCreateGroup_set_groupPeer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiGroupOutPeer alloc] init] autorelease]]);
+  self->groupPeer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
   self->seq_ = [values getIntWithInt:3];
-  ImActorModelApiRpcResponseCreateGroup_set_state_(self, [values getBytesWithInt:4]);
-  ImActorModelApiRpcResponseCreateGroup_set_users_(self, [values getRepeatedIntWithInt:5]);
+  self->state_ = [values getBytesWithInt:4];
+  self->users_ = [values getRepeatedIntWithInt:5];
   self->date_ = [values getLongWithInt:6];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->groupPeer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->groupPeer_];
   [writer writeIntWithInt:3 withInt:self->seq_];
   if (self->state_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:4 withByteArray:self->state_];
   [writer writeRepeatedIntWithInt:5 withJavaUtilList:self->users_];
@@ -100,19 +100,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
   return ImActorModelApiRpcResponseCreateGroup_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(groupPeer_);
-  RELEASE_(state_);
-  RELEASE_(users_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcResponseCreateGroup *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcResponseCreateGroup_set_groupPeer_(other, groupPeer_);
+  other->groupPeer_ = groupPeer_;
   other->seq_ = seq_;
-  ImActorModelApiRpcResponseCreateGroup_set_state_(other, state_);
-  ImActorModelApiRpcResponseCreateGroup_set_users_(other, users_);
+  other->state_ = state_;
+  other->users_ = users_;
   other->date_ = date_;
 }
 
@@ -146,7 +139,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
 
 ImActorModelApiRpcResponseCreateGroup *ImActorModelApiRpcResponseCreateGroup_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseCreateGroup_init();
-  return ((ImActorModelApiRpcResponseCreateGroup *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseCreateGroup alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcResponseCreateGroup *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseCreateGroup alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseCreateGroup)

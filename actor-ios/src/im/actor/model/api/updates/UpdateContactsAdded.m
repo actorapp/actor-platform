@@ -30,7 +30,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsAdded, uids_, id<JavaUti
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)uids {
   if (self = [super init]) {
-    ImActorModelApiUpdatesUpdateContactsAdded_set_uids_(self, uids);
+    self->uids_ = uids;
   }
   return self;
 }
@@ -44,7 +44,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsAdded, uids_, id<JavaUti
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiUpdatesUpdateContactsAdded_set_uids_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedIntWithInt:1]);
+  self->uids_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedIntWithInt:1];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
@@ -55,14 +55,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsAdded, uids_, id<JavaUti
   return ImActorModelApiUpdatesUpdateContactsAdded_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(uids_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateContactsAdded *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiUpdatesUpdateContactsAdded_set_uids_(other, uids_);
+  other->uids_ = uids_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -87,7 +82,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsAdded, uids_, id<JavaUti
 
 ImActorModelApiUpdatesUpdateContactsAdded *ImActorModelApiUpdatesUpdateContactsAdded_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateContactsAdded_init();
-  return ((ImActorModelApiUpdatesUpdateContactsAdded *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateContactsAdded alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateContactsAdded *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateContactsAdded alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateContactsAdded)

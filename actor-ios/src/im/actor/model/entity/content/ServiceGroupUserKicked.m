@@ -82,7 +82,7 @@
 
 ImActorModelEntityContentServiceGroupUserKicked *ImActorModelEntityContentServiceGroupUserKicked_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentServiceGroupUserKicked_init();
-  return ((ImActorModelEntityContentServiceGroupUserKicked *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityContentServiceGroupUserKicked alloc] init] autorelease], data));
+  return ((ImActorModelEntityContentServiceGroupUserKicked *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupUserKicked alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupUserKicked)

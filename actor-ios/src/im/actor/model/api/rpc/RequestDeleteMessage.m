@@ -34,8 +34,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                               withJavaUtilList:(id<JavaUtilList>)rids {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestDeleteMessage_set_peer_(self, peer);
-    ImActorModelApiRpcRequestDeleteMessage_set_rids_(self, rids);
+    self->peer_ = peer;
+    self->rids_ = rids;
   }
   return self;
 }
@@ -53,13 +53,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestDeleteMessage_set_peer_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[[ImActorModelApiOutPeer alloc] init] autorelease]]);
-  ImActorModelApiRpcRequestDeleteMessage_set_rids_(self, [values getRepeatedLongWithInt:3]);
+  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiOutPeer alloc] init]];
+  self->rids_ = [values getRepeatedLongWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->peer_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
   [writer writeRepeatedLongWithInt:3 withJavaUtilList:self->rids_];
@@ -69,16 +69,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
   return ImActorModelApiRpcRequestDeleteMessage_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(peer_);
-  RELEASE_(rids_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestDeleteMessage *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestDeleteMessage_set_peer_(other, peer_);
-  ImActorModelApiRpcRequestDeleteMessage_set_rids_(other, rids_);
+  other->peer_ = peer_;
+  other->rids_ = rids_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -106,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
 
 ImActorModelApiRpcRequestDeleteMessage *ImActorModelApiRpcRequestDeleteMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestDeleteMessage_init();
-  return ((ImActorModelApiRpcRequestDeleteMessage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestDeleteMessage alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestDeleteMessage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestDeleteMessage alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestDeleteMessage)

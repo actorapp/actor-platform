@@ -44,14 +44,14 @@
 
 id ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_(ImActorModelDroidkitBserBserObject *res, AMDataInput *inputStream) {
   ImActorModelDroidkitBserBser_init();
-  ImActorModelDroidkitBserBserValues *reader = [[[ImActorModelDroidkitBserBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:ImActorModelDroidkitBserBserParser_deserializeWithAMDataInput_(inputStream)] autorelease];
+  ImActorModelDroidkitBserBserValues *reader = [[ImActorModelDroidkitBserBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:ImActorModelDroidkitBserBserParser_deserializeWithAMDataInput_(inputStream)];
   [((ImActorModelDroidkitBserBserObject *) nil_chk(res)) parseWithImActorModelDroidkitBserBserValues:reader];
   return res;
 }
 
 id ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_(ImActorModelDroidkitBserBserObject *res, IOSByteArray *data) {
   ImActorModelDroidkitBserBser_init();
-  return ((ImActorModelDroidkitBserBserObject *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_(res, [[[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_] autorelease]));
+  return ((ImActorModelDroidkitBserBserObject *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_(res, [[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_]));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitBserBser)

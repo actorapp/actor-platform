@@ -40,10 +40,10 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorRef, endpoint_, ImActorModelD
                   withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActorsMailboxActorDispatcher *)dispatcher
                                                           withNSString:(NSString *)path {
   if (self = [super init]) {
-    ImActorModelDroidkitActorsActorRef_set_endpoint_(self, endpoint);
-    ImActorModelDroidkitActorsActorRef_set_system__(self, system);
-    ImActorModelDroidkitActorsActorRef_set_dispatcher_(self, dispatcher);
-    ImActorModelDroidkitActorsActorRef_set_path_(self, path);
+    self->endpoint_ = endpoint;
+    self->system__ = system;
+    self->dispatcher_ = dispatcher;
+    self->path_ = path;
   }
   return self;
 }
@@ -88,20 +88,12 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
   [((ImActorModelDroidkitActorsMailboxActorDispatcher *) nil_chk(dispatcher_)) sendMessageOnceWithImActorModelDroidkitActorsMailboxActorEndpoint:endpoint_ withId:message withLong:ImActorModelDroidkitActorsActorTime_currentTime() + delay withImActorModelDroidkitActorsActorRef:sender];
 }
 
-- (void)dealloc {
-  RELEASE_(system__);
-  RELEASE_(dispatcher_);
-  RELEASE_(path_);
-  RELEASE_(endpoint_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsActorRef *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitActorsActorRef_set_system__(other, system__);
-  ImActorModelDroidkitActorsActorRef_set_dispatcher_(other, dispatcher_);
-  ImActorModelDroidkitActorsActorRef_set_path_(other, path_);
-  ImActorModelDroidkitActorsActorRef_set_endpoint_(other, endpoint_);
+  other->system__ = system__;
+  other->dispatcher_ = dispatcher_;
+  other->path_ = path_;
+  other->endpoint_ = endpoint_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

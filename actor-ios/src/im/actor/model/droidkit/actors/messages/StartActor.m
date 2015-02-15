@@ -3,7 +3,6 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/messages/StartActor.java
 //
 
-#include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/messages/StartActor.h"
 
@@ -27,7 +26,7 @@ ImActorModelDroidkitActorsMessagesStartActor * ImActorModelDroidkitActorsMessage
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsMessagesStartActor class]) {
-    JreStrongAssignAndConsume(&ImActorModelDroidkitActorsMessagesStartActor_INSTANCE_, nil, [[ImActorModelDroidkitActorsMessagesStartActor alloc] init]);
+    ImActorModelDroidkitActorsMessagesStartActor_INSTANCE_ = [[ImActorModelDroidkitActorsMessagesStartActor alloc] init];
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsMessagesStartActor)
   }
 }

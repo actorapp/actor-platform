@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
                 withNSString:(NSString *)token {
   if (self = [super init]) {
     self->projectId_ = projectId;
-    ImActorModelApiRpcRequestRegisterGooglePush_set_token_(self, token);
+    self->token_ = token;
   }
   return self;
 }
@@ -51,13 +51,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->projectId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
-  ImActorModelApiRpcRequestRegisterGooglePush_set_token_(self, [values getStringWithInt:2]);
+  self->token_ = [values getStringWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->projectId_];
   if (self->token_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:2 withNSString:self->token_];
 }
@@ -66,15 +66,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
   return ImActorModelApiRpcRequestRegisterGooglePush_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(token_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestRegisterGooglePush *)other {
   [super copyAllFieldsTo:other];
   other->projectId_ = projectId_;
-  ImActorModelApiRpcRequestRegisterGooglePush_set_token_(other, token_);
+  other->token_ = token_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -102,7 +97,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
 
 ImActorModelApiRpcRequestRegisterGooglePush *ImActorModelApiRpcRequestRegisterGooglePush_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestRegisterGooglePush_init();
-  return ((ImActorModelApiRpcRequestRegisterGooglePush *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestRegisterGooglePush alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestRegisterGooglePush *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestRegisterGooglePush alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestRegisterGooglePush)

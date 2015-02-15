@@ -82,7 +82,7 @@
 
 ImActorModelEntityContentServiceGroupUserAdded *ImActorModelEntityContentServiceGroupUserAdded_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentServiceGroupUserAdded_init();
-  return ((ImActorModelEntityContentServiceGroupUserAdded *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityContentServiceGroupUserAdded alloc] init] autorelease], data));
+  return ((ImActorModelEntityContentServiceGroupUserAdded *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupUserAdded alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupUserAdded)

@@ -28,7 +28,7 @@ J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
 
 - (instancetype)initWithMTProtoMessageArray:(IOSObjectArray *)messages {
   if (self = [super init]) {
-    MTContainer_set_messages_(self, messages);
+    self->messages_ = messages;
   }
   return self;
 }
@@ -61,7 +61,7 @@ J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
 
 - (void)readBodyWithAMDataInput:(AMDataInput *)bs {
   jint size = (jint) [((AMDataInput *) nil_chk(bs)) readVarInt];
-  MTContainer_setAndConsume_messages_(self, [IOSObjectArray newArrayWithLength:size type:MTProtoMessage_class_()]);
+  messages_ = [IOSObjectArray newArrayWithLength:size type:MTProtoMessage_class_()];
   for (jint i = 0; i < size; ++i) {
     IOSObjectArray_SetAndConsume(messages_, i, [[MTProtoMessage alloc] initWithAMDataInput:bs]);
   }
@@ -71,14 +71,9 @@ J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
   return JreStrcat("$I$", @"Conatiner[", ((IOSObjectArray *) nil_chk(messages_))->size_, @" items]");
 }
 
-- (void)dealloc {
-  RELEASE_(messages_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(MTContainer *)other {
   [super copyAllFieldsTo:other];
-  MTContainer_set_messages_(other, messages_);
+  other->messages_ = messages_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

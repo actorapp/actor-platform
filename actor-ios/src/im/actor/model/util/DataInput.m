@@ -25,7 +25,7 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
                           withInt:(jint)offset
                           withInt:(jint)len {
   if (self = [super init]) {
-    AMDataInput_set_data_(self, data);
+    self->data_ = data;
     self->offset_ = offset;
     self->maxOffset_ = offset + len;
   }
@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
 
 - (jint)readByte {
   if (offset_ == maxOffset_) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   return IOSByteArray_Get(nil_chk(data_), offset_++) & (jint) 0xFF;
 }
@@ -48,7 +48,7 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
 
 - (jint)readInt {
   if (offset_ + 4 > maxOffset_) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   jint res = IOSByteArray_Get(nil_chk(data_), offset_ + 3) + (LShift32(IOSByteArray_Get(data_, offset_ + 2), 8)) + (LShift32(IOSByteArray_Get(data_, offset_ + 1), 16)) + (LShift32(IOSByteArray_Get(data_, offset_), 24));
   offset_ += 4;
@@ -57,7 +57,7 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
 
 - (jlong)readLong {
   if (offset_ + 8 > maxOffset_) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   jlong a1 = IOSByteArray_Get(nil_chk(data_), offset_ + 3) & (jint) 0xFF;
   jlong a2 = IOSByteArray_Get(data_, offset_ + 2) & (jint) 0xFF;
@@ -76,7 +76,7 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
 
 - (jlong)readUInt {
   if (offset_ + 8 > maxOffset_) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   jlong a1 = IOSByteArray_Get(nil_chk(data_), offset_ + 3) & (jint) 0xFF;
   jlong a2 = IOSByteArray_Get(data_, offset_ + 2) & (jint) 0xFF;
@@ -88,9 +88,9 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
 
 - (IOSByteArray *)readBytesWithInt:(jint)count {
   if (offset_ + count > maxOffset_) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
-  IOSByteArray *res = [IOSByteArray arrayWithLength:count];
+  IOSByteArray *res = [IOSByteArray newArrayWithLength:count];
   for (jint i = 0; i < count; i++) {
     *IOSByteArray_GetRef(res, i) = IOSByteArray_Get(nil_chk(data_), offset_++);
   }
@@ -103,14 +103,14 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
   jlong b;
   do {
     if (offset_ == maxOffset_) {
-      @throw [[[JavaIoIOException alloc] init] autorelease];
+      @throw [[JavaIoIOException alloc] init];
     }
     b = IOSByteArray_Get(nil_chk(data_), offset_++);
     if ((b & (jint) 0x80) != 0) {
       value |= LShift64((b & (jint) 0x7F), i);
       i += 7;
       if (i > 70) {
-        @throw [[[JavaIoIOException alloc] init] autorelease];
+        @throw [[JavaIoIOException alloc] init];
       }
     }
     else {
@@ -128,7 +128,7 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
 
 - (IOSLongArray *)readProtoLongs {
   jint len = (jint) [self readVarInt];
-  IOSLongArray *res = [IOSLongArray arrayWithLength:len];
+  IOSLongArray *res = [IOSLongArray newArrayWithLength:len];
   for (jint i = 0; i < res->size_; i++) {
     *IOSLongArray_GetRef(res, i) = [self readLong];
   }
@@ -144,14 +144,9 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
   return [self readByte] != 0;
 }
 
-- (void)dealloc {
-  RELEASE_(data_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(AMDataInput *)other {
   [super copyAllFieldsTo:other];
-  AMDataInput_set_data_(other, data_);
+  other->data_ = data_;
   other->offset_ = offset_;
   other->maxOffset_ = maxOffset_;
 }

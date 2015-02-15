@@ -25,21 +25,21 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryKeyValueEngine, users_, JavaUtilHas
 
 - (void)addOrUpdateItemWithImActorModelMvvmKeyValueItem:(id<ImActorModelMvvmKeyValueItem>)item {
   @synchronized(self) {
-    [((JavaUtilHashMap *) nil_chk(users_)) putWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelMvvmKeyValueItem>) nil_chk(item)) getEngineId]) withId:item];
+    (void) [((JavaUtilHashMap *) nil_chk(users_)) putWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelMvvmKeyValueItem>) nil_chk(item)) getEngineId]) withId:item];
   }
 }
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values {
   @synchronized(self) {
     for (id<ImActorModelMvvmKeyValueItem> __strong u in nil_chk(values)) {
-      [((JavaUtilHashMap *) nil_chk(users_)) putWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelMvvmKeyValueItem>) nil_chk(u)) getEngineId]) withId:u];
+      (void) [((JavaUtilHashMap *) nil_chk(users_)) putWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelMvvmKeyValueItem>) nil_chk(u)) getEngineId]) withId:u];
     }
   }
 }
 
 - (void)removeItemWithLong:(jlong)id_ {
   @synchronized(self) {
-    [((JavaUtilHashMap *) nil_chk(users_)) removeWithId:JavaLangLong_valueOfWithLong_((jlong) id_)];
+    (void) [((JavaUtilHashMap *) nil_chk(users_)) removeWithId:JavaLangLong_valueOfWithLong_((jlong) id_)];
   }
 }
 
@@ -51,7 +51,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryKeyValueEngine, users_, JavaUtilHas
       jlong const *e__ = b__ + a__->size_;
       while (b__ < e__) {
         jlong id_ = *b__++;
-        [((JavaUtilHashMap *) nil_chk(users_)) removeWithId:JavaLangLong_valueOfWithLong_((jlong) id_)];
+        (void) [((JavaUtilHashMap *) nil_chk(users_)) removeWithId:JavaLangLong_valueOfWithLong_((jlong) id_)];
       }
     }
   }
@@ -65,7 +65,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryKeyValueEngine, users_, JavaUtilHas
 
 - (id<JavaUtilList>)getAll {
   @synchronized(self) {
-    return [[[JavaUtilArrayList alloc] initWithJavaUtilCollection:[((JavaUtilHashMap *) nil_chk(users_)) values]] autorelease];
+    return [[JavaUtilArrayList alloc] initWithJavaUtilCollection:[((JavaUtilHashMap *) nil_chk(users_)) values]];
   }
 }
 
@@ -77,19 +77,14 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryKeyValueEngine, users_, JavaUtilHas
 
 - (instancetype)init {
   if (self = [super init]) {
-    ImActorModelStorageMemoryKeyValueEngine_setAndConsume_users_(self, [[JavaUtilHashMap alloc] init]);
+    users_ = [[JavaUtilHashMap alloc] init];
   }
   return self;
 }
 
-- (void)dealloc {
-  RELEASE_(users_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelStorageMemoryKeyValueEngine *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelStorageMemoryKeyValueEngine_set_users_(other, users_);
+  other->users_ = users_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
                    withLong:(jlong)date {
   if (self = [super init]) {
     self->seq_ = seq;
-    ImActorModelApiRpcResponseSeqDate_set_state_(self, state);
+    self->state_ = state;
     self->date_ = date;
   }
   return self;
@@ -58,14 +58,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->seq_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
-  ImActorModelApiRpcResponseSeqDate_set_state_(self, [values getBytesWithInt:2]);
+  self->state_ = [values getBytesWithInt:2];
   self->date_ = [values getLongWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:2 withByteArray:self->state_];
   [writer writeLongWithInt:3 withLong:self->date_];
@@ -75,15 +75,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
   return ImActorModelApiRpcResponseSeqDate_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(state_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcResponseSeqDate *)other {
   [super copyAllFieldsTo:other];
   other->seq_ = seq_;
-  ImActorModelApiRpcResponseSeqDate_set_state_(other, state_);
+  other->state_ = state_;
   other->date_ = date_;
 }
 
@@ -113,7 +108,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 
 ImActorModelApiRpcResponseSeqDate *ImActorModelApiRpcResponseSeqDate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseSeqDate_init();
-  return ((ImActorModelApiRpcResponseSeqDate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcResponseSeqDate alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcResponseSeqDate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseSeqDate alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseSeqDate)

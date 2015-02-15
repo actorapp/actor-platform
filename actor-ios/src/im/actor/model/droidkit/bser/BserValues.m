@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserValues, fields_, ImActorModelDro
 
 - (instancetype)initWithImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseArray *)fields {
   if (self = [super init]) {
-    ImActorModelDroidkitBserBserValues_set_fields_(self, fields);
+    self->fields_ = fields;
   }
   return self;
 }
@@ -45,7 +45,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserValues, fields_, ImActorModelDro
 
 - (jint)getIntWithInt:(jint)id_ {
   if (![((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
-    @throw [[[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)] autorelease];
+    @throw [[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)];
   }
   return [self getIntWithInt:id_ withInt:0];
 }
@@ -72,7 +72,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserValues, fields_, ImActorModelDro
         [((JavaLangNumberFormatException *) nil_chk(e)) printStackTrace];
       }
     }
-    @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: int, got ", [[nil_chk(obj) getClass] getSimpleName])] autorelease];
+    @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: int, got ", [[nil_chk(obj) getClass] getSimpleName])];
   }
   return defValue;
 }
@@ -83,7 +83,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserValues, fields_, ImActorModelDro
 
 - (jlong)getLongWithInt:(jint)id_ {
   if (![((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
-    @throw [[[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)] autorelease];
+    @throw [[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)];
   }
   return [self getLongWithInt:id_ withLong:0];
 }
@@ -110,7 +110,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserValues, fields_, ImActorModelDro
         [((JavaLangNumberFormatException *) nil_chk(e)) printStackTrace];
       }
     }
-    @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: long, got ", [[nil_chk(obj) getClass] getSimpleName])] autorelease];
+    @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: long, got ", [[nil_chk(obj) getClass] getSimpleName])];
   }
   return defValue;
 }
@@ -121,7 +121,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserValues, fields_, ImActorModelDro
 
 - (NSString *)getStringWithInt:(jint)id_ {
   if (![((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
-    @throw [[[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)] autorelease];
+    @throw [[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)];
   }
   return [self getStringWithInt:id_ withNSString:nil];
 }
@@ -144,7 +144,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserValues, fields_, ImActorModelDro
 
 - (IOSByteArray *)getBytesWithInt:(jint)id_ {
   if (![((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
-    @throw [[[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)] autorelease];
+    @throw [[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)];
   }
   return [self getBytesWithInt:id_ withByteArray:nil];
 }
@@ -156,7 +156,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserValues, fields_, ImActorModelDro
     if ([obj isKindOfClass:[IOSByteArray class]]) {
       return (IOSByteArray *) check_class_cast(obj, [IOSByteArray class]);
     }
-    @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(obj) getClass] getSimpleName])] autorelease];
+    @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(obj) getClass] getSimpleName])];
   }
   return defValue;
 }
@@ -167,7 +167,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserValues, fields_, ImActorModelDro
 
 - (jdouble)getDoubleWithInt:(jint)id_ {
   if (![((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
-    @throw [[[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)] autorelease];
+    @throw [[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)];
   }
   return [self getDoubleWithInt:id_ withDouble:0];
 }
@@ -184,7 +184,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserValues, fields_, ImActorModelDro
 
 - (jboolean)getBoolWithInt:(jint)id_ {
   if (![((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
-    @throw [[[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)] autorelease];
+    @throw [[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)];
   }
   return [self getBoolWithInt:id_ withBoolean:NO];
 }
@@ -199,9 +199,9 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserValues, fields_, ImActorModelDro
 withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)obj {
   IOSByteArray *data = [self getBytesWithInt:id_];
   if (data == nil) {
-    @throw [[[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)] autorelease];
+    @throw [[ImActorModelDroidkitBserUnknownFieldException alloc] initWithNSString:JreStrcat("$I", @"Unable to find field #", id_)];
   }
-  return ((ImActorModelDroidkitBserBserObject *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_(obj, [[[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_] autorelease]));
+  return ((ImActorModelDroidkitBserBserObject *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_(obj, [[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_]));
 }
 
 - (id)optObjWithInt:(jint)id_
@@ -210,11 +210,11 @@ withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)obj
   if (data == nil) {
     return nil;
   }
-  return ((ImActorModelDroidkitBserBserObject *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_(obj, [[[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_] autorelease]));
+  return ((ImActorModelDroidkitBserBserObject *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_(obj, [[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_]));
 }
 
 - (id<JavaUtilList>)getRepeatedIntWithInt:(jint)id_ {
-  JavaUtilArrayList *res = [[[JavaUtilArrayList alloc] init] autorelease];
+  JavaUtilArrayList *res = [[JavaUtilArrayList alloc] init];
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
     id val = [fields_ getWithInt:id_];
     if ([val isKindOfClass:[JavaLangLong class]]) {
@@ -233,19 +233,19 @@ withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)obj
           [res addWithId:(JavaLangInteger *) check_class_cast(val2, [JavaLangInteger class])];
         }
         else {
-          @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: int, got ", [[nil_chk(val2) getClass] getSimpleName])] autorelease];
+          @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: int, got ", [[nil_chk(val2) getClass] getSimpleName])];
         }
       }
     }
     else {
-      @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: int, got ", [[nil_chk(val) getClass] getSimpleName])] autorelease];
+      @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: int, got ", [[nil_chk(val) getClass] getSimpleName])];
     }
   }
   return res;
 }
 
 - (id<JavaUtilList>)getRepeatedLongWithInt:(jint)id_ {
-  JavaUtilArrayList *res = [[[JavaUtilArrayList alloc] init] autorelease];
+  JavaUtilArrayList *res = [[JavaUtilArrayList alloc] init];
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
     id val = [fields_ getWithInt:id_];
     if ([val isKindOfClass:[JavaLangLong class]]) {
@@ -264,19 +264,19 @@ withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)obj
           [res addWithId:JavaLangLong_valueOfWithLong_((jlong) [((JavaLangInteger *) nil_chk((JavaLangInteger *) check_class_cast(val2, [JavaLangInteger class]))) intValue])];
         }
         else {
-          @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: long, got ", [[nil_chk(val2) getClass] getSimpleName])] autorelease];
+          @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: long, got ", [[nil_chk(val2) getClass] getSimpleName])];
         }
       }
     }
     else {
-      @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: long, got ", [[nil_chk(val) getClass] getSimpleName])] autorelease];
+      @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: long, got ", [[nil_chk(val) getClass] getSimpleName])];
     }
   }
   return res;
 }
 
 - (id<JavaUtilList>)getRepeatedStringWithInt:(jint)id_ {
-  JavaUtilArrayList *res = [[[JavaUtilArrayList alloc] init] autorelease];
+  JavaUtilArrayList *res = [[JavaUtilArrayList alloc] init];
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
     id val = [fields_ getWithInt:id_];
     if ([val isKindOfClass:[JavaLangLong class]]) {
@@ -301,19 +301,19 @@ withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)obj
           [res addWithId:[NSString stringWithBytes:(IOSByteArray *) check_class_cast(val2, [IOSByteArray class])]];
         }
         else {
-          @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val2) getClass] getSimpleName])] autorelease];
+          @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val2) getClass] getSimpleName])];
         }
       }
     }
     else {
-      @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val) getClass] getSimpleName])] autorelease];
+      @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val) getClass] getSimpleName])];
     }
   }
   return res;
 }
 
 - (id<JavaUtilList>)getRepeatedBytesWithInt:(jint)id_ {
-  JavaUtilArrayList *res = [[[JavaUtilArrayList alloc] init] autorelease];
+  JavaUtilArrayList *res = [[JavaUtilArrayList alloc] init];
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
     id val = [fields_ getWithInt:id_];
     if ([val isKindOfClass:[IOSByteArray class]]) {
@@ -326,12 +326,12 @@ withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)obj
           [res addWithId:(IOSByteArray *) check_class_cast(val2, [IOSByteArray class])];
         }
         else {
-          @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val2) getClass] getSimpleName])] autorelease];
+          @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val2) getClass] getSimpleName])];
         }
       }
     }
     else {
-      @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val) getClass] getSimpleName])] autorelease];
+      @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val) getClass] getSimpleName])];
     }
   }
   return res;
@@ -352,40 +352,35 @@ withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)obj
 
 - (id<JavaUtilList>)getRepeatedObjWithInt:(jint)id_
                          withJavaUtilList:(id<JavaUtilList>)objs {
-  JavaUtilArrayList *res = [[[JavaUtilArrayList alloc] init] autorelease];
+  JavaUtilArrayList *res = [[JavaUtilArrayList alloc] init];
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
     id val = [fields_ getWithInt:id_];
     if ([val isKindOfClass:[IOSByteArray class]]) {
       IOSByteArray *b = (IOSByteArray *) check_class_cast(val, [IOSByteArray class]);
-      [res addWithId:ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_([((id<JavaUtilList>) nil_chk(objs)) removeWithInt:0], [[[AMDataInput alloc] initWithByteArray:b withInt:0 withInt:((IOSByteArray *) nil_chk(b))->size_] autorelease])];
+      [res addWithId:ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_([((id<JavaUtilList>) nil_chk(objs)) removeWithInt:0], [[AMDataInput alloc] initWithByteArray:b withInt:0 withInt:((IOSByteArray *) nil_chk(b))->size_])];
     }
     else if ([JavaUtilList_class_() isInstance:val]) {
       id<JavaUtilList> rep = (id<JavaUtilList>) check_protocol_cast(val, @protocol(JavaUtilList));
       for (id __strong val2 in nil_chk(rep)) {
         if ([val2 isKindOfClass:[IOSByteArray class]]) {
           IOSByteArray *b = (IOSByteArray *) check_class_cast(val2, [IOSByteArray class]);
-          [res addWithId:ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_([((id<JavaUtilList>) nil_chk(objs)) removeWithInt:0], [[[AMDataInput alloc] initWithByteArray:b withInt:0 withInt:((IOSByteArray *) nil_chk(b))->size_] autorelease])];
+          [res addWithId:ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_([((id<JavaUtilList>) nil_chk(objs)) removeWithInt:0], [[AMDataInput alloc] initWithByteArray:b withInt:0 withInt:((IOSByteArray *) nil_chk(b))->size_])];
         }
         else {
-          @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val2) getClass] getSimpleName])] autorelease];
+          @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val2) getClass] getSimpleName])];
         }
       }
     }
     else {
-      @throw [[[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val) getClass] getSimpleName])] autorelease];
+      @throw [[ImActorModelDroidkitBserIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val) getClass] getSimpleName])];
     }
   }
   return res;
 }
 
-- (void)dealloc {
-  RELEASE_(fields_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelDroidkitBserBserValues *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelDroidkitBserBserValues_set_fields_(other, fields_);
+  other->fields_ = fields_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {

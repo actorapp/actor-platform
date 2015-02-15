@@ -37,9 +37,9 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityAvatar, fullImage_, ImActorModelEntityAvat
                     withImActorModelEntityAvatarImage:(ImActorModelEntityAvatarImage *)largeImage
                     withImActorModelEntityAvatarImage:(ImActorModelEntityAvatarImage *)fullImage {
   if (self = [super init]) {
-    ImActorModelEntityAvatar_set_smallImage_(self, smallImage);
-    ImActorModelEntityAvatar_set_largeImage_(self, largeImage);
-    ImActorModelEntityAvatar_set_fullImage_(self, fullImage);
+    self->smallImage_ = smallImage;
+    self->largeImage_ = largeImage;
+    self->fullImage_ = fullImage;
   }
   return self;
 }
@@ -80,15 +80,15 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityAvatar, fullImage_, ImActorModelEntityAvat
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   IOSByteArray *small = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) optBytesWithInt:1];
   if (small != nil) {
-    ImActorModelEntityAvatar_set_smallImage_(self, ImActorModelEntityAvatarImage_fromBytesWithByteArray_(small));
+    smallImage_ = ImActorModelEntityAvatarImage_fromBytesWithByteArray_(small);
   }
   IOSByteArray *large = [values optBytesWithInt:2];
   if (large != nil) {
-    ImActorModelEntityAvatar_set_largeImage_(self, ImActorModelEntityAvatarImage_fromBytesWithByteArray_(large));
+    largeImage_ = ImActorModelEntityAvatarImage_fromBytesWithByteArray_(large);
   }
   IOSByteArray *full = [values optBytesWithInt:3];
   if (full != nil) {
-    ImActorModelEntityAvatar_set_fullImage_(self, ImActorModelEntityAvatarImage_fromBytesWithByteArray_(full));
+    fullImage_ = ImActorModelEntityAvatarImage_fromBytesWithByteArray_(full);
   }
 }
 
@@ -104,18 +104,11 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityAvatar, fullImage_, ImActorModelEntityAvat
   }
 }
 
-- (void)dealloc {
-  RELEASE_(smallImage_);
-  RELEASE_(largeImage_);
-  RELEASE_(fullImage_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelEntityAvatar *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelEntityAvatar_set_smallImage_(other, smallImage_);
-  ImActorModelEntityAvatar_set_largeImage_(other, largeImage_);
-  ImActorModelEntityAvatar_set_fullImage_(other, fullImage_);
+  other->smallImage_ = smallImage_;
+  other->largeImage_ = largeImage_;
+  other->fullImage_ = fullImage_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -144,7 +137,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityAvatar, fullImage_, ImActorModelEntityAvat
 
 ImActorModelEntityAvatar *ImActorModelEntityAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityAvatar_init();
-  return ((ImActorModelEntityAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelEntityAvatar alloc] init] autorelease], data));
+  return ((ImActorModelEntityAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityAvatar alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityAvatar)

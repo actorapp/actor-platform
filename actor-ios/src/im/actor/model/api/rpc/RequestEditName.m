@@ -29,7 +29,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
 
 - (instancetype)initWithNSString:(NSString *)name {
   if (self = [super init]) {
-    ImActorModelApiRpcRequestEditName_set_name_(self, name);
+    self->name_ = name;
   }
   return self;
 }
@@ -43,12 +43,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiRpcRequestEditName_set_name_(self, [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1]);
+  self->name_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->name_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->name_];
 }
@@ -57,14 +57,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
   return ImActorModelApiRpcRequestEditName_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(name_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestEditName *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiRpcRequestEditName_set_name_(other, name_);
+  other->name_ = name_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -90,7 +85,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
 
 ImActorModelApiRpcRequestEditName *ImActorModelApiRpcRequestEditName_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditName_init();
-  return ((ImActorModelApiRpcRequestEditName *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiRpcRequestEditName alloc] init] autorelease], data));
+  return ((ImActorModelApiRpcRequestEditName *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestEditName alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEditName)

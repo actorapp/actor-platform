@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserNameChanged, name_, NSString
                withNSString:(NSString *)name {
   if (self = [super init]) {
     self->uid_ = uid;
-    ImActorModelApiUpdatesUpdateUserNameChanged_set_name_(self, name);
+    self->name_ = name;
   }
   return self;
 }
@@ -51,13 +51,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserNameChanged, name_, NSString
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->uid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
-  ImActorModelApiUpdatesUpdateUserNameChanged_set_name_(self, [values getStringWithInt:2]);
+  self->name_ = [values getStringWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   if (self->name_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:2 withNSString:self->name_];
 }
@@ -66,15 +66,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserNameChanged, name_, NSString
   return ImActorModelApiUpdatesUpdateUserNameChanged_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(name_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateUserNameChanged *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;
-  ImActorModelApiUpdatesUpdateUserNameChanged_set_name_(other, name_);
+  other->name_ = name_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -101,7 +96,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserNameChanged, name_, NSString
 
 ImActorModelApiUpdatesUpdateUserNameChanged *ImActorModelApiUpdatesUpdateUserNameChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserNameChanged_init();
-  return ((ImActorModelApiUpdatesUpdateUserNameChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiUpdatesUpdateUserNameChanged alloc] init] autorelease], data));
+  return ((ImActorModelApiUpdatesUpdateUserNameChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserNameChanged alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserNameChanged)

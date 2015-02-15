@@ -35,7 +35,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
   if (self = [super init]) {
     self->date_ = date;
     self->updateHeader_ = updateHeader;
-    ImActorModelApiBaseWeakUpdate_set_update_(self, update);
+    self->update_ = update;
   }
   return self;
 }
@@ -59,14 +59,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
   self->date_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
   self->updateHeader_ = [values getIntWithInt:2];
-  ImActorModelApiBaseWeakUpdate_set_update_(self, [values getBytesWithInt:3]);
+  self->update_ = [values getBytesWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->date_];
   [writer writeIntWithInt:2 withInt:self->updateHeader_];
   if (self->update_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:3 withByteArray:self->update_];
 }
@@ -75,16 +75,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
   return ImActorModelApiBaseWeakUpdate_HEADER;
 }
 
-- (void)dealloc {
-  RELEASE_(update_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiBaseWeakUpdate *)other {
   [super copyAllFieldsTo:other];
   other->date_ = date_;
   other->updateHeader_ = updateHeader_;
-  ImActorModelApiBaseWeakUpdate_set_update_(other, update_);
+  other->update_ = update_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -113,7 +108,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 
 ImActorModelApiBaseWeakUpdate *ImActorModelApiBaseWeakUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseWeakUpdate_init();
-  return ((ImActorModelApiBaseWeakUpdate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[[ImActorModelApiBaseWeakUpdate alloc] init] autorelease], data));
+  return ((ImActorModelApiBaseWeakUpdate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiBaseWeakUpdate alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiBaseWeakUpdate)

@@ -27,7 +27,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *
                                             withInt:(jint)id_
                                            withLong:(jlong)accessHash {
   if (self = [super init]) {
-    ImActorModelApiOutPeer_set_type_(self, type);
+    self->type_ = type;
     self->id__ = id_;
     self->accessHash_ = accessHash;
   }
@@ -51,28 +51,23 @@ J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  ImActorModelApiOutPeer_set_type_(self, ImActorModelApiPeerTypeEnum_parseWithInt_([((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1]));
+  self->type_ = ImActorModelApiPeerTypeEnum_parseWithInt_([((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1]);
   self->id__ = [values getIntWithInt:2];
   self->accessHash_ = [values getLongWithInt:3];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
   if (self->type_ == nil) {
-    @throw [[[JavaIoIOException alloc] init] autorelease];
+    @throw [[JavaIoIOException alloc] init];
   }
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((ImActorModelApiPeerTypeEnum *) nil_chk(self->type_)) getValue]];
   [writer writeIntWithInt:2 withInt:self->id__];
   [writer writeLongWithInt:3 withLong:self->accessHash_];
 }
 
-- (void)dealloc {
-  RELEASE_(type_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelApiOutPeer *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelApiOutPeer_set_type_(other, type_);
+  other->type_ = type_;
   other->id__ = id__;
   other->accessHash_ = accessHash_;
 }

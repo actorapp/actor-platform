@@ -68,10 +68,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
 
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger {
   if (self = [super init]) {
-    ImActorModelModulesUpdatesUpdateProcessor_set_messenger_(self, messenger);
-    ImActorModelModulesUpdatesUpdateProcessor_setAndConsume_usersProcessor_(self, [[ImActorModelModulesUpdatesUsersProcessor alloc] initWithAMMessenger:messenger]);
-    ImActorModelModulesUpdatesUpdateProcessor_setAndConsume_messagesProcessor_(self, [[ImActorModelModulesUpdatesMessagesProcessor alloc] initWithAMMessenger:messenger]);
-    ImActorModelModulesUpdatesUpdateProcessor_setAndConsume_groupsProcessor_(self, [[ImActorModelModulesUpdatesGroupsProcessor alloc] init]);
+    self->messenger_ = messenger;
+    self->usersProcessor_ = [[ImActorModelModulesUpdatesUsersProcessor alloc] initWithAMMessenger:messenger];
+    self->messagesProcessor_ = [[ImActorModelModulesUpdatesMessagesProcessor alloc] initWithAMMessenger:messenger];
+    self->groupsProcessor_ = [[ImActorModelModulesUpdatesGroupsProcessor alloc] init];
   }
   return self;
 }
@@ -163,14 +163,17 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onChatDeleteWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateChatDelete *) nil_chk(chatDelete)) getPeer]];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactRegistered class]]) {
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onUserRegisteredWithInt:[((ImActorModelApiUpdatesUpdateContactRegistered *) nil_chk(((ImActorModelApiUpdatesUpdateContactRegistered *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactRegistered class])))) getUid]];
+    ImActorModelApiUpdatesUpdateContactRegistered *registered = (ImActorModelApiUpdatesUpdateContactRegistered *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactRegistered class]);
+    if (![((ImActorModelApiUpdatesUpdateContactRegistered *) nil_chk(registered)) isSilent]) {
+      [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onUserRegisteredWithInt:[registered getUid] withLong:[registered getDate]];
+    }
   }
 }
 
 - (jboolean)isCausesInvalidationWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update {
-  JavaUtilHashSet *users = [[[JavaUtilHashSet alloc] init] autorelease];
-  JavaUtilHashSet *groups = [[[JavaUtilHashSet alloc] init] autorelease];
-  JavaUtilHashSet *contacts = [[[JavaUtilHashSet alloc] init] autorelease];
+  JavaUtilHashSet *users = [[JavaUtilHashSet alloc] init];
+  JavaUtilHashSet *groups = [[JavaUtilHashSet alloc] init];
+  JavaUtilHashSet *contacts = [[JavaUtilHashSet alloc] init];
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessage class]]) {
     ImActorModelApiUpdatesUpdateMessage *updateMessage = (ImActorModelApiUpdatesUpdateMessage *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessage class]);
     [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateMessage *) nil_chk(updateMessage)) getSenderUid])];
@@ -243,20 +246,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
   return NO;
 }
 
-- (void)dealloc {
-  RELEASE_(messenger_);
-  RELEASE_(usersProcessor_);
-  RELEASE_(messagesProcessor_);
-  RELEASE_(groupsProcessor_);
-  [super dealloc];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesUpdateProcessor *)other {
   [super copyAllFieldsTo:other];
-  ImActorModelModulesUpdatesUpdateProcessor_set_messenger_(other, messenger_);
-  ImActorModelModulesUpdatesUpdateProcessor_set_usersProcessor_(other, usersProcessor_);
-  ImActorModelModulesUpdatesUpdateProcessor_set_messagesProcessor_(other, messagesProcessor_);
-  ImActorModelModulesUpdatesUpdateProcessor_set_groupsProcessor_(other, groupsProcessor_);
+  other->messenger_ = messenger_;
+  other->usersProcessor_ = usersProcessor_;
+  other->messagesProcessor_ = messagesProcessor_;
+  other->groupsProcessor_ = groupsProcessor_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
