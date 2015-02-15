@@ -99,7 +99,7 @@ public class Messages {
         if (res == null) {
             return "";
         } else {
-            return null;
+            return res;
         }
     }
 }

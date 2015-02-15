@@ -36,11 +36,13 @@ public class TextContent extends AbsContent {
 
     @Override
     public void parse(BserValues values) throws IOException {
+        super.parse(values);
         text = values.getString(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
+        super.serialize(writer);
         writer.writeString(2, text);
     }
 }

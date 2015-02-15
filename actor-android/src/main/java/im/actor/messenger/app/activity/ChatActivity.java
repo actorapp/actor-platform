@@ -153,7 +153,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if (after > count && !isTypingDisabled) {
-                    // MyTypingActor.myTyping().onType(chatType, chatId);
+                    messenger.onTyping(peer);
                 }
             }
 

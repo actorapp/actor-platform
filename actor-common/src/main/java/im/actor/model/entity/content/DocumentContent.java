@@ -50,6 +50,7 @@ public class DocumentContent extends AbsContent {
 
     @Override
     public void parse(BserValues values) throws IOException {
+        super.parse(values);
         source = FileSource.fromBytes(values.getBytes(2));
         mimetype = values.getString(3);
         name = values.getString(4);
@@ -61,6 +62,7 @@ public class DocumentContent extends AbsContent {
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
+        super.serialize(writer);
         writer.writeBytes(2, source.toByteArray());
         writer.writeString(3, mimetype);
         writer.writeString(4, name);
