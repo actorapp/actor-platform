@@ -14,7 +14,7 @@ package object transport {
   val HandshakeCodec = (byte :: byte :: byte :: bytes).as[Handshake]
 
   object TransportPackageCodec extends Codec[TransportPackage] {
-    private val codec = (int32 ~ MTProtoCodec).pxmap[TransportPackage](TransportPackage.apply, TransportPackage.unapply)
+    private val codec = (int32 :: MTProtoCodec).as[TransportPackage]
 
     def encode(p: TransportPackage) = {
       for {
@@ -39,7 +39,7 @@ package object transport {
 
   val PongCodec = bytes.pxmap[Pong](Pong.apply, Pong.unapply)
 
-  val DropCodec = (byte ~ string).pxmap[Drop](Drop.apply, Drop.unapply)
+  val DropCodec = (int64 :: byte :: string).as[Drop]
 
   val RedirectCodec = (string :: int32 :: int32).as[Redirect]
 
