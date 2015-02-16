@@ -12,7 +12,7 @@ class SourceWatchActor[T](actorRef: ActorRef) extends Actor with ActorLogging wi
   def receive = {
     case Request(_) =>
     case Terminated(`actorRef`)  =>
-      println(s"Terminated($actorRef)")
+      log.error(s"Terminated: {}", actorRef)
       onError(new Throwable("actor terminated"))
   }
 }
