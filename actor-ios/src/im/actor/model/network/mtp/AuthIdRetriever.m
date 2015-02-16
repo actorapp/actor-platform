@@ -98,9 +98,7 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
 
 @implementation MTAuthIdRetriever_$1
 
-- (void)onMessageWithByteArray:(IOSByteArray *)data
-                       withInt:(jint)offset
-                       withInt:(jint)len {
+- (void)onMessage:(IOSByteArray *)data withOffset:(jint)offset withLen:(jint)len {
   if (IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     return;
   }
@@ -150,7 +148,7 @@ withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)captu
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "onMessageWithByteArray:withInt:withInt:", "onMessage", "V", 0x1, NULL },
+    { "onMessage:withOffset:withLen:", "onMessage", "V", 0x1, NULL },
     { "onConnectionDie", NULL, "V", 0x1, NULL },
     { "initWithBooleanArray:withMTAuthIdRetriever_AuthIdCallback:", "init", NULL, 0x0, NULL },
   };
@@ -168,7 +166,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
 
 @implementation MTAuthIdRetriever_$2
 
-- (void)onConnectionCreatedWithAMConnection:(id<AMConnection>)connection {
+- (void)onConnectionCreated:(id<AMConnection>)connection {
   if (IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     return;
   }
@@ -216,7 +214,7 @@ withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)captu
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "onConnectionCreatedWithAMConnection:", "onConnectionCreated", "V", 0x1, NULL },
+    { "onConnectionCreated:", "onConnectionCreated", "V", 0x1, NULL },
     { "onConnectionCreateError", NULL, "V", 0x1, NULL },
     { "initWithBooleanArray:withMTAuthIdRetriever_AuthIdCallback:", "init", NULL, 0x0, NULL },
   };
