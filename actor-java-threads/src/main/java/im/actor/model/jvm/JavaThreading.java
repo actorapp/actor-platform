@@ -37,13 +37,13 @@ public class JavaThreading implements Threading {
     }
 
     @Override
-    public AtomicIntegerCompat createAtomicInt(int init) {
-        return new JavaAtomicInteger(init);
+    public AtomicIntegerCompat createAtomicInt(int value) {
+        return new JavaAtomicInteger(value);
     }
 
     @Override
-    public AtomicLongCompat createAtomicLong(long init) {
-        return new JavaAtomicLong(init);
+    public AtomicLongCompat createAtomicLong(long value) {
+        return new JavaAtomicLong(value);
     }
 
     @Override
