@@ -3,13 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/PendingMessage.java
 //
 
-#ifndef _ImActorModelEntityPendingMessage_H_
-#define _ImActorModelEntityPendingMessage_H_
+#ifndef _AMPendingMessage_H_
+#define _AMPendingMessage_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/mvvm/KeyValueItem.h"
 
-@interface ImActorModelEntityPendingMessage : NSObject < ImActorModelMvvmKeyValueItem > {
+@interface AMPendingMessage : NSObject < AMKeyValueItem > {
 }
 
 - (instancetype)initWithLong:(jlong)rid
@@ -23,11 +23,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityPendingMessage)
+J2OBJC_EMPTY_STATIC_INIT(AMPendingMessage)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityPendingMessage)
+typedef AMPendingMessage ImActorModelEntityPendingMessage;
 
-#endif // _ImActorModelEntityPendingMessage_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMPendingMessage)
+
+#endif // _AMPendingMessage_H_

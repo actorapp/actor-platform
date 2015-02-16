@@ -6,20 +6,20 @@
 #ifndef _ImActorModelApiServiceExUserLeft_H_
 #define _ImActorModelApiServiceExUserLeft_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
+@class BSBserValues;
+@class BSBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiServiceExUserLeft : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiServiceExUserLeft : BSBserObject {
 }
 
 - (instancetype)init;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

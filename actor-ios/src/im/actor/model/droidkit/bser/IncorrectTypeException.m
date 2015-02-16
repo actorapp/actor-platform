@@ -7,7 +7,7 @@
 #include "im/actor/model/droidkit/bser/IncorrectTypeException.h"
 #include "java/lang/Throwable.h"
 
-@implementation ImActorModelDroidkitBserIncorrectTypeException
+@implementation BSIncorrectTypeException
 
 - (instancetype)init {
   return [super init];
@@ -33,10 +33,10 @@
     { "initWithNSString:withJavaLangThrowable:", "IncorrectTypeException", NULL, 0x1, NULL },
     { "initWithJavaLangThrowable:", "IncorrectTypeException", NULL, 0x1, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitBserIncorrectTypeException = { 1, "IncorrectTypeException", "im.actor.model.droidkit.bser", NULL, 0x1, 4, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitBserIncorrectTypeException;
+  static const J2ObjcClassInfo _BSIncorrectTypeException = { 1, "IncorrectTypeException", "im.actor.model.droidkit.bser", NULL, 0x1, 4, methods, 0, NULL, 0, NULL};
+  return &_BSIncorrectTypeException;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitBserIncorrectTypeException)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSIncorrectTypeException)

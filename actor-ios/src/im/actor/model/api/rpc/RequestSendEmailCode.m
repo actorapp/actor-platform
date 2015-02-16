@@ -50,16 +50,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
   return self->description__;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->email_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->email_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   self->description__ = [values optStringWithInt:2];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->email_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->email_];
+  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->email_];
   if (self->description__ != nil) {
     [writer writeStringWithInt:2 withNSString:self->description__];
   }
@@ -82,8 +82,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
     { "init", "RequestSendEmailCode", NULL, 0x1, NULL },
     { "getEmail", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getDescription", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -100,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 
 ImActorModelApiRpcRequestSendEmailCode *ImActorModelApiRpcRequestSendEmailCode_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSendEmailCode_init();
-  return ((ImActorModelApiRpcRequestSendEmailCode *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestSendEmailCode alloc] init], data));
+  return ((ImActorModelApiRpcRequestSendEmailCode *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestSendEmailCode alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSendEmailCode)

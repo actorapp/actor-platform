@@ -52,21 +52,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
   return self->fullImage_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->smallImage_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) optObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatarImage alloc] init]];
-  self->largeImage_ = [values optObjWithInt:2 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatarImage alloc] init]];
-  self->fullImage_ = [values optObjWithInt:3 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatarImage alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->smallImage_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:[[ImActorModelApiAvatarImage alloc] init]];
+  self->largeImage_ = [values optObjWithInt:2 withBSBserObject:[[ImActorModelApiAvatarImage alloc] init]];
+  self->fullImage_ = [values optObjWithInt:3 withBSBserObject:[[ImActorModelApiAvatarImage alloc] init]];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->smallImage_ != nil) {
-    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->smallImage_];
+    [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->smallImage_];
   }
   if (self->largeImage_ != nil) {
-    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withImActorModelDroidkitBserBserObject:self->largeImage_];
+    [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withBSBserObject:self->largeImage_];
   }
   if (self->fullImage_ != nil) {
-    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:3 withImActorModelDroidkitBserBserObject:self->fullImage_];
+    [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:3 withBSBserObject:self->fullImage_];
   }
 }
 
@@ -84,8 +84,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
     { "getSmallImage", NULL, "Lim.actor.model.api.AvatarImage;", 0x1, NULL },
     { "getLargeImage", NULL, "Lim.actor.model.api.AvatarImage;", 0x1, NULL },
     { "getFullImage", NULL, "Lim.actor.model.api.AvatarImage;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "smallImage_", NULL, 0x2, "Lim.actor.model.api.AvatarImage;", NULL,  },

@@ -2,12 +2,11 @@ package im.actor.desktop;
 
 import im.actor.desktop.engines.SwingListEngine;
 import im.actor.model.AuthState;
-import im.actor.model.Configuration;
+import im.actor.model.ConfigurationBuilder;
 import im.actor.model.MessengerCallback;
 import im.actor.model.jvm.JavaLog;
 import im.actor.model.jvm.JavaNetworking;
 import im.actor.model.jvm.JavaThreading;
-import im.actor.model.storage.MemoryEnginesFactory;
 import im.actor.model.storage.MemoryKeyValueEngine;
 import im.actor.model.Messenger;
 import im.actor.model.concurrency.Command;
@@ -16,8 +15,6 @@ import im.actor.model.entity.*;
 import im.actor.model.entity.Dialog;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
-import im.actor.model.network.ConnectionEndpoint;
-import im.actor.model.network.Endpoints;
 import im.actor.model.Storage;
 import im.actor.model.storage.MemoryPreferences;
 import im.actor.model.storage.PreferencesStorage;
@@ -50,7 +47,7 @@ public class Main {
             e.printStackTrace();
         }
         
-        Configuration.Builder builder = new Configuration.Builder();
+        ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setThreading(new JavaThreading());
         builder.setNetworking(new JavaNetworking());
         builder.setLog(new JavaLog());

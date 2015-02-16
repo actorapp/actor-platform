@@ -3,21 +3,23 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/concurrency/Command.java
 //
 
-#ifndef _ImActorModelConcurrencyCommand_H_
-#define _ImActorModelConcurrencyCommand_H_
+#ifndef _AMCommand_H_
+#define _AMCommand_H_
 
-@protocol ImActorModelConcurrencyCommandCallback;
+@protocol AMCommandCallback;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelConcurrencyCommand < NSObject, JavaObject >
+@protocol AMCommand < NSObject, JavaObject >
 
-- (void)startWithImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)callback;
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelConcurrencyCommand)
+J2OBJC_EMPTY_STATIC_INIT(AMCommand)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelConcurrencyCommand)
+#define ImActorModelConcurrencyCommand AMCommand
 
-#endif // _ImActorModelConcurrencyCommand_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMCommand)
+
+#endif // _AMCommand_H_

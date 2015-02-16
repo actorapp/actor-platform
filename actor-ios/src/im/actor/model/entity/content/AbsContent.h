@@ -6,23 +6,23 @@
 #ifndef _ImActorModelEntityContentAbsContent_H_
 #define _ImActorModelEntityContentAbsContent_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 @class ImActorModelEntityContentAbsContent_ContentTypeEnum;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "java/lang/Enum.h"
 
-@interface ImActorModelEntityContentAbsContent : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelEntityContentAbsContent : BSBserObject {
 }
 
 + (ImActorModelEntityContentAbsContent *)contentFromBytesWithByteArray:(IOSByteArray *)data;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 + (ImActorModelEntityContentAbsContent_ContentTypeEnum *)typeFromValueWithInt:(jint)val;
 

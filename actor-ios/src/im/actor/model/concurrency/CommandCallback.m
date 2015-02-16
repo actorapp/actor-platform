@@ -7,20 +7,20 @@
 #include "im/actor/model/concurrency/CommandCallback.h"
 #include "java/lang/Exception.h"
 
-@interface ImActorModelConcurrencyCommandCallback : NSObject
+@interface AMCommandCallback : NSObject
 @end
 
-@implementation ImActorModelConcurrencyCommandCallback
+@implementation AMCommandCallback
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "onResultWithId:", "onResult", "V", 0x401, NULL },
     { "onErrorWithJavaLangException:", "onError", "V", 0x401, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelConcurrencyCommandCallback = { 1, "CommandCallback", "im.actor.model.concurrency", NULL, 0x201, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelConcurrencyCommandCallback;
+  static const J2ObjcClassInfo _AMCommandCallback = { 1, "CommandCallback", "im.actor.model.concurrency", NULL, 0x201, 2, methods, 0, NULL, 0, NULL};
+  return &_AMCommandCallback;
 }
 
 @end
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelConcurrencyCommandCallback)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMCommandCallback)

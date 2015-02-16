@@ -6,15 +6,15 @@
 #ifndef _ImActorModelModulesMessages_H_
 #define _ImActorModelModulesMessages_H_
 
-@class ImActorModelDroidkitActorsActorRef;
+@class AMPeer;
+@class DKActorRef;
 @class ImActorModelEntityContentAbsContent;
-@class ImActorModelEntityPeer;
 @class ImActorModelModulesMessagesConversationActor;
 @class ImActorModelModulesMessagesDialogsActor;
 @class ImActorModelModulesMessagesDialogsHistoryActor;
 @class ImActorModelModulesModules;
 @class JavaUtilHashMap;
-@protocol ImActorModelMvvmListEngine;
+@protocol AMListEngine;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
@@ -27,29 +27,29 @@
 
 - (void)run;
 
-- (ImActorModelDroidkitActorsActorRef *)getConversationActorWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (DKActorRef *)getConversationActorWithAMPeer:(AMPeer *)peer;
 
-- (id<ImActorModelMvvmListEngine>)getConversationEngineWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (id<AMListEngine>)getConversationEngineWithAMPeer:(AMPeer *)peer;
 
-- (ImActorModelDroidkitActorsActorRef *)getDialogsActor;
+- (DKActorRef *)getDialogsActor;
 
-- (ImActorModelDroidkitActorsActorRef *)getDialogsHistoryActor;
+- (DKActorRef *)getDialogsHistoryActor;
 
-- (id<ImActorModelMvvmListEngine>)getDialogsEngine;
+- (id<AMListEngine>)getDialogsEngine;
 
-- (void)sendMessageWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-      withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)message;
+- (void)sendMessageWithAMPeer:(AMPeer *)peer
+withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)message;
 
-- (void)onInboundMessageShownWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                                               withLong:(jlong)rid
-                                               withLong:(jlong)sortDate
-                                               withLong:(jlong)date
-                                            withBoolean:(jboolean)isEncrypted;
+- (void)onInboundMessageShownWithAMPeer:(AMPeer *)peer
+                               withLong:(jlong)rid
+                               withLong:(jlong)sortDate
+                               withLong:(jlong)date
+                            withBoolean:(jboolean)isEncrypted;
 
-- (void)saveDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                               withNSString:(NSString *)draft;
+- (void)saveDraftWithAMPeer:(AMPeer *)peer
+               withNSString:(NSString *)draft;
 
-- (NSString *)loadDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (NSString *)loadDraftWithAMPeer:(AMPeer *)peer;
 
 @end
 
@@ -60,7 +60,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages)
 
-@interface ImActorModelModulesMessages_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
+@interface ImActorModelModulesMessages_$1 : NSObject < DKActorCreator > {
 }
 
 - (ImActorModelModulesMessagesDialogsActor *)create;
@@ -76,7 +76,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$1)
 
-@interface ImActorModelModulesMessages_$2 : NSObject < ImActorModelDroidkitActorsActorCreator > {
+@interface ImActorModelModulesMessages_$2 : NSObject < DKActorCreator > {
 }
 
 - (ImActorModelModulesMessagesDialogsHistoryActor *)create;
@@ -92,13 +92,13 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$2)
 
-@interface ImActorModelModulesMessages_$3 : NSObject < ImActorModelDroidkitActorsActorCreator > {
+@interface ImActorModelModulesMessages_$3 : NSObject < DKActorCreator > {
 }
 
 - (ImActorModelModulesMessagesConversationActor *)create;
 
 - (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$
-                         withImActorModelEntityPeer:(ImActorModelEntityPeer *)capture$0;
+                                         withAMPeer:(AMPeer *)capture$0;
 
 @end
 

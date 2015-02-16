@@ -57,17 +57,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedReceived, peer_, ImActo
   return self->receivedDate_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiPeer alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
   self->rid_ = [values getLongWithInt:2];
   self->receivedDate_ = [values getLongWithInt:3];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
   [writer writeLongWithInt:2 withLong:self->rid_];
   [writer writeLongWithInt:3 withLong:self->receivedDate_];
 }
@@ -91,8 +91,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedReceived, peer_, ImActo
     { "getPeer", NULL, "Lim.actor.model.api.Peer;", 0x1, NULL },
     { "getRid", NULL, "J", 0x1, NULL },
     { "getReceivedDate", NULL, "J", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -109,7 +109,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedReceived, peer_, ImActo
 
 ImActorModelApiUpdatesUpdateEncryptedReceived *ImActorModelApiUpdatesUpdateEncryptedReceived_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateEncryptedReceived_init();
-  return ((ImActorModelApiUpdatesUpdateEncryptedReceived *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateEncryptedReceived alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateEncryptedReceived *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateEncryptedReceived alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateEncryptedReceived)

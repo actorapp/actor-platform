@@ -50,16 +50,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReadByMe, peer_, ImActorM
   return self->startDate_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiPeer alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
   self->startDate_ = [values getLongWithInt:2];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
   [writer writeLongWithInt:2 withLong:self->startDate_];
 }
 
@@ -80,8 +80,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReadByMe, peer_, ImActorM
     { "init", "UpdateMessageReadByMe", NULL, 0x1, NULL },
     { "getPeer", NULL, "Lim.actor.model.api.Peer;", 0x1, NULL },
     { "getStartDate", NULL, "J", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -97,7 +97,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReadByMe, peer_, ImActorM
 
 ImActorModelApiUpdatesUpdateMessageReadByMe *ImActorModelApiUpdatesUpdateMessageReadByMe_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateMessageReadByMe_init();
-  return ((ImActorModelApiUpdatesUpdateMessageReadByMe *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateMessageReadByMe alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateMessageReadByMe *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateMessageReadByMe alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateMessageReadByMe)

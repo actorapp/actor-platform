@@ -90,11 +90,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   return self->createDate_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->id__ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
   self->title_ = [values getStringWithInt:3];
-  self->avatar_ = [values optObjWithInt:4 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatar alloc] init]];
+  self->avatar_ = [values optObjWithInt:4 withBSBserObject:[[ImActorModelApiAvatar alloc] init]];
   self->isMember__ = [values getBoolWithInt:6];
   self->adminUid_ = [values getIntWithInt:8];
   id<JavaUtilList> _members = [[JavaUtilArrayList alloc] init];
@@ -105,15 +105,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   self->createDate_ = [values getLongWithInt:10];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   if (self->title_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:3 withNSString:self->title_];
   if (self->avatar_ != nil) {
-    [writer writeObjectWithInt:4 withImActorModelDroidkitBserBserObject:self->avatar_];
+    [writer writeObjectWithInt:4 withBSBserObject:self->avatar_];
   }
   [writer writeBoolWithInt:6 withBoolean:self->isMember__];
   [writer writeIntWithInt:8 withInt:self->adminUid_];
@@ -145,8 +145,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
     { "getAdminUid", NULL, "I", 0x1, NULL },
     { "getMembers", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getCreateDate", NULL, "J", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "id__", "id", 0x2, "I", NULL,  },

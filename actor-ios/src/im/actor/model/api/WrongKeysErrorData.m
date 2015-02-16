@@ -54,9 +54,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiWrongKeysErrorData, invalidKeys_, id<JavaUtil
   return self->invalidKeys_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+- (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _newKeys = [[JavaUtilArrayList alloc] init];
-  for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
+  for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
     [_newKeys addWithId:[[ImActorModelApiUserKey alloc] init]];
   }
   self->newKeys_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_newKeys];
@@ -72,8 +72,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiWrongKeysErrorData, invalidKeys_, id<JavaUtil
   self->invalidKeys_ = [values getRepeatedObjWithInt:3 withJavaUtilList:_invalidKeys];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->newKeys_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->newKeys_];
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->removedKeys_];
   [writer writeRepeatedObjWithInt:3 withJavaUtilList:self->invalidKeys_];
 }
@@ -92,8 +92,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiWrongKeysErrorData, invalidKeys_, id<JavaUtil
     { "getNewKeys", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getRemovedKeys", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getInvalidKeys", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "newKeys_", NULL, 0x2, "Ljava.util.List;", NULL,  },

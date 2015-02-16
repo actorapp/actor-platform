@@ -3,19 +3,19 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/dispatch/DispatchResult.java
 //
 
-#ifndef _ImActorModelDroidkitActorsDispatchDispatchResult_H_
-#define _ImActorModelDroidkitActorsDispatchDispatchResult_H_
+#ifndef _DKDispatchResult_H_
+#define _DKDispatchResult_H_
 
-@class ImActorModelDroidkitActorsUtilsThreadLocalCompat;
+@class AMThreadLocalCompat;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsDispatchDispatchResult : NSObject {
+@interface DKDispatchResult : NSObject {
 }
 
-+ (ImActorModelDroidkitActorsDispatchDispatchResult *)resultWithId:(id)res;
++ (DKDispatchResult *)resultWithId:(id)res;
 
-+ (ImActorModelDroidkitActorsDispatchDispatchResult *)delayWithLong:(jlong)delay;
++ (DKDispatchResult *)delayWithLong:(jlong)delay;
 
 - (instancetype)initWithBoolean:(jboolean)isResult
                          withId:(id)res
@@ -35,20 +35,22 @@
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelDroidkitActorsDispatchDispatchResult_initialized;
-J2OBJC_STATIC_INIT(ImActorModelDroidkitActorsDispatchDispatchResult)
+FOUNDATION_EXPORT BOOL DKDispatchResult_initialized;
+J2OBJC_STATIC_INIT(DKDispatchResult)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsDispatchDispatchResult *ImActorModelDroidkitActorsDispatchDispatchResult_resultWithId_(id res);
+FOUNDATION_EXPORT DKDispatchResult *DKDispatchResult_resultWithId_(id res);
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsDispatchDispatchResult *ImActorModelDroidkitActorsDispatchDispatchResult_delayWithLong_(jlong delay);
+FOUNDATION_EXPORT DKDispatchResult *DKDispatchResult_delayWithLong_(jlong delay);
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsUtilsThreadLocalCompat *ImActorModelDroidkitActorsDispatchDispatchResult_FREE_RESULTS_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsDispatchDispatchResult, FREE_RESULTS_, ImActorModelDroidkitActorsUtilsThreadLocalCompat *)
-J2OBJC_STATIC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchDispatchResult, FREE_RESULTS_, ImActorModelDroidkitActorsUtilsThreadLocalCompat *)
+FOUNDATION_EXPORT AMThreadLocalCompat *DKDispatchResult_FREE_RESULTS_;
+J2OBJC_STATIC_FIELD_GETTER(DKDispatchResult, FREE_RESULTS_, AMThreadLocalCompat *)
+J2OBJC_STATIC_FIELD_SETTER(DKDispatchResult, FREE_RESULTS_, AMThreadLocalCompat *)
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsDispatchDispatchResult)
+typedef DKDispatchResult ImActorModelDroidkitActorsDispatchDispatchResult;
 
-#endif // _ImActorModelDroidkitActorsDispatchDispatchResult_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKDispatchResult)
+
+#endif // _DKDispatchResult_H_

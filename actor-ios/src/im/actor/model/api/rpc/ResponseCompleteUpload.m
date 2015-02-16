@@ -43,15 +43,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCompleteUpload, location_, ImActor
   return self->location_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->location_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiFileLocation alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->location_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiFileLocation alloc] init]];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->location_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->location_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->location_];
 }
 
 - (jint)getHeaderKey {
@@ -69,8 +69,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCompleteUpload, location_, ImActor
     { "initWithImActorModelApiFileLocation:", "ResponseCompleteUpload", NULL, 0x1, NULL },
     { "init", "ResponseCompleteUpload", NULL, 0x1, NULL },
     { "getLocation", NULL, "Lim.actor.model.api.FileLocation;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -85,7 +85,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCompleteUpload, location_, ImActor
 
 ImActorModelApiRpcResponseCompleteUpload *ImActorModelApiRpcResponseCompleteUpload_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseCompleteUpload_init();
-  return ((ImActorModelApiRpcResponseCompleteUpload *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseCompleteUpload alloc] init], data));
+  return ((ImActorModelApiRpcResponseCompleteUpload *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseCompleteUpload alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseCompleteUpload)

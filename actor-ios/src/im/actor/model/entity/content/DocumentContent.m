@@ -55,9 +55,9 @@
   return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_DOCUMENT();
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  [super parseWithImActorModelDroidkitBserBserValues:values];
-  source_ = ImActorModelEntityContentFileSource_fromBytesWithByteArray_([((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:2]);
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  [super parseWithBSBserValues:values];
+  source_ = ImActorModelEntityContentFileSource_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
   mimetype_ = [values getStringWithInt:3];
   name_ = [values getStringWithInt:4];
   IOSByteArray *ft = [values getBytesWithInt:5];
@@ -66,13 +66,13 @@
   }
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [super serializeWithImActorModelDroidkitBserBserWriter:writer];
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeBytesWithInt:2 withByteArray:[((ImActorModelEntityContentFileSource *) nil_chk(source_)) toByteArray]];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [super serializeWithBSBserWriter:writer];
+  [((BSBserWriter *) nil_chk(writer)) writeBytesWithInt:2 withByteArray:[((ImActorModelEntityContentFileSource *) nil_chk(source_)) toByteArray]];
   [writer writeStringWithInt:3 withNSString:mimetype_];
   [writer writeStringWithInt:4 withNSString:name_];
   if (fastThumb_ != nil) {
-    [writer writeObjectWithInt:5 withImActorModelDroidkitBserBserObject:fastThumb_];
+    [writer writeObjectWithInt:5 withBSBserObject:fastThumb_];
   }
 }
 
@@ -93,8 +93,8 @@
     { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getFastThumb", NULL, "Lim.actor.model.entity.content.FastThumb;", 0x1, NULL },
     { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "source_", NULL, 0x4, "Lim.actor.model.entity.content.FileSource;", NULL,  },
@@ -110,7 +110,7 @@
 
 ImActorModelEntityContentDocumentContent *ImActorModelEntityContentDocumentContent_docFromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentDocumentContent_init();
-  return ((ImActorModelEntityContentDocumentContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentDocumentContent alloc] init], data));
+  return ((ImActorModelEntityContentDocumentContent *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentDocumentContent alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentDocumentContent)

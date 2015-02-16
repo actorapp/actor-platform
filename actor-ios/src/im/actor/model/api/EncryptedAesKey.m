@@ -43,13 +43,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedAesKey, aesEncryptedKey_, IOSByteArr
   return self->aesEncryptedKey_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->keyHash_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->keyHash_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->aesEncryptedKey_ = [values getBytesWithInt:2];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->keyHash_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->keyHash_];
   if (self->aesEncryptedKey_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -68,8 +68,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedAesKey, aesEncryptedKey_, IOSByteArr
     { "init", "EncryptedAesKey", NULL, 0x1, NULL },
     { "getKeyHash", NULL, "J", 0x1, NULL },
     { "getAesEncryptedKey", NULL, "[B", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "keyHash_", NULL, 0x2, "J", NULL,  },

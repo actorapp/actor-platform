@@ -2,8 +2,8 @@ package im.actor.model.droidkit.actors.mailbox.collections;
 
 import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
-import im.actor.model.droidkit.actors.utils.AtomicIntegerCompat;
-import im.actor.model.droidkit.actors.utils.ThreadLocalCompat;
+import im.actor.model.util.AtomicIntegerCompat;
+import im.actor.model.util.ThreadLocalCompat;
 
 import java.util.Iterator;
 import java.util.Map;

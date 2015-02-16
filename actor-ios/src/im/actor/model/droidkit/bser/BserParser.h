@@ -3,15 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/bser/BserParser.java
 //
 
-#ifndef _ImActorModelDroidkitBserBserParser_H_
-#define _ImActorModelDroidkitBserBserParser_H_
+#ifndef _BSBserParser_H_
+#define _BSBserParser_H_
 
 @class AMDataInput;
 @class ImActorModelDroidkitBserUtilSparseArray;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitBserBserParser : NSObject {
+@interface BSBserParser : NSObject {
 }
 
 + (ImActorModelDroidkitBserUtilSparseArray *)deserializeWithAMDataInput:(AMDataInput *)is;
@@ -20,13 +20,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitBserBserParser)
+J2OBJC_EMPTY_STATIC_INIT(BSBserParser)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelDroidkitBserUtilSparseArray *ImActorModelDroidkitBserBserParser_deserializeWithAMDataInput_(AMDataInput *is);
+FOUNDATION_EXPORT ImActorModelDroidkitBserUtilSparseArray *BSBserParser_deserializeWithAMDataInput_(AMDataInput *is);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitBserBserParser)
+typedef BSBserParser ImActorModelDroidkitBserBserParser;
 
-#endif // _ImActorModelDroidkitBserBserParser_H_
+J2OBJC_TYPE_LITERAL_HEADER(BSBserParser)
+
+#endif // _BSBserParser_H_

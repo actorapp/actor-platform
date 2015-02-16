@@ -6,10 +6,10 @@
 #ifndef _ImActorModelApiUpdatesUpdateMessageDelete_H_
 #define _ImActorModelApiUpdatesUpdateMessageDelete_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiPeer;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -31,9 +31,9 @@
 
 - (id<JavaUtilList>)getRids;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 - (jint)getHeaderKey;
 

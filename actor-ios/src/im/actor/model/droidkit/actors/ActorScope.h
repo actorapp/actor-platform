@@ -3,60 +3,62 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/ActorScope.java
 //
 
-#ifndef _ImActorModelDroidkitActorsActorScope_H_
-#define _ImActorModelDroidkitActorsActorScope_H_
+#ifndef _DKActorScope_H_
+#define _DKActorScope_H_
 
-@class ImActorModelDroidkitActorsActor;
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelDroidkitActorsActorSystem;
-@class ImActorModelDroidkitActorsMailboxActorDispatcher;
-@class ImActorModelDroidkitActorsMailboxActorEndpoint;
-@class ImActorModelDroidkitActorsMailboxMailbox;
-@class ImActorModelDroidkitActorsProps;
+@class DKActor;
+@class DKActorDispatcher;
+@class DKActorEndpoint;
+@class DKActorRef;
+@class DKActorSystem;
+@class DKMailbox;
+@class DKProps;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsActorScope : NSObject {
+@interface DKActorScope : NSObject {
 }
 
-- (instancetype)initWithImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem *)actorSystem
-                 withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox
-         withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActorsMailboxActorDispatcher *)dispatcher
-                                                 withNSString:(NSString *)path
-                          withImActorModelDroidkitActorsProps:(ImActorModelDroidkitActorsProps *)props
-           withImActorModelDroidkitActorsMailboxActorEndpoint:(ImActorModelDroidkitActorsMailboxActorEndpoint *)endpoint;
+- (instancetype)initWithDKActorSystem:(DKActorSystem *)actorSystem
+                        withDKMailbox:(DKMailbox *)mailbox
+                withDKActorDispatcher:(DKActorDispatcher *)dispatcher
+                         withNSString:(NSString *)path
+                          withDKProps:(DKProps *)props
+                  withDKActorEndpoint:(DKActorEndpoint *)endpoint;
 
-- (ImActorModelDroidkitActorsMailboxActorEndpoint *)getEndpoint;
+- (DKActorEndpoint *)getEndpoint;
 
-- (ImActorModelDroidkitActorsMailboxActorDispatcher *)getDispatcher;
+- (DKActorDispatcher *)getDispatcher;
 
 - (NSString *)getPath;
 
-- (ImActorModelDroidkitActorsProps *)getProps;
+- (DKProps *)getProps;
 
-- (ImActorModelDroidkitActorsActorRef *)getActorRef;
+- (DKActorRef *)getActorRef;
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)getMailbox;
+- (DKMailbox *)getMailbox;
 
-- (ImActorModelDroidkitActorsActor *)getActor;
+- (DKActor *)getActor;
 
-- (ImActorModelDroidkitActorsActorSystem *)getActorSystem;
+- (DKActorSystem *)getActorSystem;
 
-- (ImActorModelDroidkitActorsActorRef *)getSender;
+- (DKActorRef *)getSender;
 
-- (void)setSenderWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender;
+- (void)setSenderWithDKActorRef:(DKActorRef *)sender;
 
-- (void)onActorCreatedWithImActorModelDroidkitActorsActor:(ImActorModelDroidkitActorsActor *)actor;
+- (void)onActorCreatedWithDKActor:(DKActor *)actor;
 
 - (void)onActorDie;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsActorScope)
+J2OBJC_EMPTY_STATIC_INIT(DKActorScope)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsActorScope)
+typedef DKActorScope ImActorModelDroidkitActorsActorScope;
 
-#endif // _ImActorModelDroidkitActorsActorScope_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKActorScope)
+
+#endif // _DKActorScope_H_

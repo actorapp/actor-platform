@@ -66,16 +66,16 @@ withImActorModelApiRecordTypeEnum:(ImActorModelApiRecordTypeEnum *)recordType
   return self->title_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->id__ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
   self->recordType_ = ImActorModelApiRecordTypeEnum_parseWithInt_([values getIntWithInt:3]);
   self->record_ = [values getStringWithInt:4];
   self->title_ = [values getStringWithInt:5];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   if (self->recordType_ == nil) {
     @throw [[JavaIoIOException alloc] init];
@@ -109,8 +109,8 @@ withImActorModelApiRecordTypeEnum:(ImActorModelApiRecordTypeEnum *)recordType
     { "getRecordType", NULL, "Lim.actor.model.api.RecordType;", 0x1, NULL },
     { "getRecord", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "id__", "id", 0x2, "I", NULL,  },

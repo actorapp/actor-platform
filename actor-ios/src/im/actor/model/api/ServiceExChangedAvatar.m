@@ -36,13 +36,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
   return self->avatar_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->avatar_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) optObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatar alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->avatar_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:[[ImActorModelApiAvatar alloc] init]];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->avatar_ != nil) {
-    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->avatar_];
+    [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->avatar_];
   }
 }
 
@@ -56,8 +56,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
     { "initWithImActorModelApiAvatar:", "ServiceExChangedAvatar", NULL, 0x1, NULL },
     { "init", "ServiceExChangedAvatar", NULL, 0x1, NULL },
     { "getAvatar", NULL, "Lim.actor.model.api.Avatar;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "avatar_", NULL, 0x2, "Lim.actor.model.api.Avatar;", NULL,  },

@@ -91,18 +91,18 @@ __attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_
 
 void ImActorModelModulesPresenceOwnPresenceActor_onAppVisible(ImActorModelModulesPresenceOwnPresenceActor *self) {
   self->isVisible_ = YES;
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc] init]];
+  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc] init]];
 }
 
 void ImActorModelModulesPresenceOwnPresenceActor_onAppHidden(ImActorModelModulesPresenceOwnPresenceActor *self) {
   self->isVisible_ = NO;
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc] init]];
+  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc] init]];
 }
 
 void ImActorModelModulesPresenceOwnPresenceActor_performOnline(ImActorModelModulesPresenceOwnPresenceActor *self) {
   [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSetOnline alloc] initWithBoolean:self->isVisible_ withLong:ImActorModelModulesPresenceOwnPresenceActor_TIMEOUT] withAMRpcCallback:[[ImActorModelModulesPresenceOwnPresenceActor_$1 alloc] init]];
   if (self->isVisible_) {
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc] init] withLong:ImActorModelModulesPresenceOwnPresenceActor_RESEND_TIMEOUT];
+    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc] init] withLong:ImActorModelModulesPresenceOwnPresenceActor_RESEND_TIMEOUT];
   }
 }
 

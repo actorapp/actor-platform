@@ -6,10 +6,10 @@
 #ifndef _ImActorModelApiRpcRequestMessageReceived_H_
 #define _ImActorModelApiRpcRequestMessageReceived_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiOutPeer;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -30,9 +30,9 @@
 
 - (jlong)getDate;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 - (jint)getHeaderKey;
 

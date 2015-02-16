@@ -6,13 +6,13 @@
 #ifndef _ImActorModelApiEmailToImport_H_
 #define _ImActorModelApiEmailToImport_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
+@class BSBserValues;
+@class BSBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiEmailToImport : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiEmailToImport : BSBserObject {
 }
 
 - (instancetype)initWithNSString:(NSString *)email
@@ -24,9 +24,9 @@
 
 - (NSString *)getName;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

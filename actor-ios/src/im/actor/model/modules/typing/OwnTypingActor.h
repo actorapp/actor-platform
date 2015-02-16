@@ -6,7 +6,7 @@
 #ifndef _ImActorModelModulesTypingOwnTypingActor_H_
 #define _ImActorModelModulesTypingOwnTypingActor_H_
 
-@class ImActorModelEntityPeer;
+@class AMPeer;
 @class ImActorModelModulesModules;
 
 #include "J2ObjC_header.h"
@@ -35,9 +35,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingOwnTypingActor)
 @interface ImActorModelModulesTypingOwnTypingActor_Typing : NSObject {
 }
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (instancetype)initWithAMPeer:(AMPeer *)peer;
 
-- (ImActorModelEntityPeer *)getPeer;
+- (AMPeer *)getPeer;
 
 @end
 

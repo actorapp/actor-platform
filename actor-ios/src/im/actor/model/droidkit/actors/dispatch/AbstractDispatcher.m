@@ -8,30 +8,30 @@
 #include "im/actor/model/droidkit/actors/dispatch/AbstractDispatcher.h"
 #include "im/actor/model/droidkit/actors/dispatch/Dispatch.h"
 
-@interface ImActorModelDroidkitActorsDispatchAbstractDispatcher () {
+@interface DKAbstractDispatcher () {
  @public
-  ImActorModelDroidkitActorsDispatchAbstractDispatchQueue *queue_;
+  DKAbstractDispatchQueue *queue_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchAbstractDispatcher, queue_, id)
+J2OBJC_FIELD_SETTER(DKAbstractDispatcher, queue_, id)
 
-@interface ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1 () {
+@interface DKAbstractDispatcher_$1 () {
  @public
-  ImActorModelDroidkitActorsDispatchAbstractDispatcher *this$0_;
+  DKAbstractDispatcher *this$0_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1, this$0_, ImActorModelDroidkitActorsDispatchAbstractDispatcher *)
+J2OBJC_FIELD_SETTER(DKAbstractDispatcher_$1, this$0_, DKAbstractDispatcher *)
 
-@implementation ImActorModelDroidkitActorsDispatchAbstractDispatcher
+@implementation DKAbstractDispatcher
 
-- (instancetype)initWithImActorModelDroidkitActorsDispatchAbstractDispatchQueue:(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue *)queue
-                                 withImActorModelDroidkitActorsDispatchDispatch:(id<ImActorModelDroidkitActorsDispatchDispatch>)dispatch {
+- (instancetype)initWithDKAbstractDispatchQueue:(DKAbstractDispatchQueue *)queue
+                                 withDKDispatch:(id<DKDispatch>)dispatch {
   if (self = [super init]) {
     self->queue_ = queue;
     self->dispatch_ = dispatch;
-    [((ImActorModelDroidkitActorsDispatchAbstractDispatchQueue *) nil_chk(self->queue_)) setListenerWithImActorModelDroidkitActorsDispatchQueueListener:[[ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1 alloc] initWithImActorModelDroidkitActorsDispatchAbstractDispatcher:self]];
+    [((DKAbstractDispatchQueue *) nil_chk(self->queue_)) setListenerWithDKQueueListener:[[DKAbstractDispatcher_$1 alloc] initWithDKAbstractDispatcher:self]];
   }
   return self;
 }
@@ -49,7 +49,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1, thi
 - (void)notifyDispatcher {
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsDispatchAbstractDispatcher *)other {
+- (void)copyAllFieldsTo:(DKAbstractDispatcher *)other {
   [super copyAllFieldsTo:other];
   other->queue_ = queue_;
   other->dispatch_ = dispatch_;
@@ -57,7 +57,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1, thi
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelDroidkitActorsDispatchAbstractDispatchQueue:withImActorModelDroidkitActorsDispatchDispatch:", "AbstractDispatcher", NULL, 0x4, NULL },
+    { "initWithDKAbstractDispatchQueue:withDKDispatch:", "AbstractDispatcher", NULL, 0x4, NULL },
     { "getQueue", NULL, "TQ;", 0x1, NULL },
     { "dispatchMessageWithId:", "dispatchMessage", "V", 0x4, NULL },
     { "notifyDispatcher", NULL, "V", 0x4, NULL },
@@ -66,26 +66,26 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1, thi
     { "queue_", NULL, 0x12, "TQ;", NULL,  },
     { "dispatch_", NULL, 0x10, "Lim.actor.model.droidkit.actors.dispatch.Dispatch;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsDispatchAbstractDispatcher = { 1, "AbstractDispatcher", "im.actor.model.droidkit.actors.dispatch", NULL, 0x401, 4, methods, 2, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsDispatchAbstractDispatcher;
+  static const J2ObjcClassInfo _DKAbstractDispatcher = { 1, "AbstractDispatcher", "im.actor.model.droidkit.actors.dispatch", NULL, 0x401, 4, methods, 2, fields, 0, NULL};
+  return &_DKAbstractDispatcher;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsDispatchAbstractDispatcher)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAbstractDispatcher)
 
-@implementation ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1
+@implementation DKAbstractDispatcher_$1
 
 - (void)onQueueChanged {
   [this$0_ notifyDispatcher];
 }
 
-- (instancetype)initWithImActorModelDroidkitActorsDispatchAbstractDispatcher:(ImActorModelDroidkitActorsDispatchAbstractDispatcher *)outer$ {
+- (instancetype)initWithDKAbstractDispatcher:(DKAbstractDispatcher *)outer$ {
   this$0_ = outer$;
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1 *)other {
+- (void)copyAllFieldsTo:(DKAbstractDispatcher_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
 }
@@ -93,15 +93,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsDispatchAbstractDispa
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "onQueueChanged", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelDroidkitActorsDispatchAbstractDispatcher:", "init", NULL, 0x0, NULL },
+    { "initWithDKAbstractDispatcher:", "init", NULL, 0x0, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "this$0_", NULL, 0x1012, "Lim.actor.model.droidkit.actors.dispatch.AbstractDispatcher;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1 = { 1, "$1", "im.actor.model.droidkit.actors.dispatch", "AbstractDispatcher", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1;
+  static const J2ObjcClassInfo _DKAbstractDispatcher_$1 = { 1, "$1", "im.actor.model.droidkit.actors.dispatch", "AbstractDispatcher", 0x8000, 2, methods, 1, fields, 0, NULL};
+  return &_DKAbstractDispatcher_$1;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAbstractDispatcher_$1)

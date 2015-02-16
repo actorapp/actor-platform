@@ -6,17 +6,17 @@
 #ifndef _ImActorModelApiUser_H_
 #define _ImActorModelApiUser_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class ImActorModelApiAvatar;
 @class ImActorModelApiSexEnum;
 @class ImActorModelApiUserStateEnum;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiUser : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiUser : BSBserObject {
 }
 
 - (instancetype)initWithInt:(jint)id_
@@ -52,9 +52,9 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState;
 
 - (ImActorModelApiUserStateEnum *)getUserState;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

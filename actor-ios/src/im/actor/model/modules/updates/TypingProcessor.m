@@ -13,11 +13,11 @@
 
 @interface ImActorModelModulesUpdatesTypingProcessor () {
  @public
-  ImActorModelDroidkitActorsActorRef *typingActor_;
+  DKActorRef *typingActor_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesTypingProcessor, typingActor_, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesTypingProcessor, typingActor_, DKActorRef *)
 
 @implementation ImActorModelModulesUpdatesTypingProcessor
 
@@ -32,10 +32,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesTypingProcessor, typingActor_, ImA
                                 withInt:(jint)uid
                                 withInt:(jint)type {
   if ([((ImActorModelApiPeer *) nil_chk(peer)) getType] == ImActorModelApiPeerTypeEnum_get_PRIVATE()) {
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_PrivateTyping alloc] initWithInt:uid withInt:type]];
+    [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_PrivateTyping alloc] initWithInt:uid withInt:type]];
   }
   else if ([peer getType] == ImActorModelApiPeerTypeEnum_get_GROUP()) {
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_GroupTyping alloc] initWithInt:[peer getId] withInt:uid withInt:type]];
+    [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_GroupTyping alloc] initWithInt:[peer getId] withInt:uid withInt:type]];
   }
   else {
   }
@@ -44,10 +44,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesTypingProcessor, typingActor_, ImA
 - (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                  withInt:(jint)uid {
   if ([((ImActorModelApiPeer *) nil_chk(peer)) getType] == ImActorModelApiPeerTypeEnum_get_PRIVATE()) {
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopTyping alloc] initWithInt:uid]];
+    [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopTyping alloc] initWithInt:uid]];
   }
   else if ([peer getType] == ImActorModelApiPeerTypeEnum_get_GROUP()) {
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopGroupTyping alloc] initWithInt:[peer getId] withInt:uid]];
+    [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopGroupTyping alloc] initWithInt:[peer getId] withInt:uid]];
   }
   else {
   }

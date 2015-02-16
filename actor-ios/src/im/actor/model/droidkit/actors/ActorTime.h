@@ -3,12 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/ActorTime.java
 //
 
-#ifndef _ImActorModelDroidkitActorsActorTime_H_
-#define _ImActorModelDroidkitActorsActorTime_H_
+#ifndef _DKActorTime_H_
+#define _DKActorTime_H_
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsActorTime : NSObject {
+@interface DKActorTime : NSObject {
 }
 
 + (jlong)currentTime;
@@ -17,13 +17,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsActorTime)
+J2OBJC_EMPTY_STATIC_INIT(DKActorTime)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT jlong ImActorModelDroidkitActorsActorTime_currentTime();
+FOUNDATION_EXPORT jlong DKActorTime_currentTime();
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsActorTime)
+typedef DKActorTime ImActorModelDroidkitActorsActorTime;
 
-#endif // _ImActorModelDroidkitActorsActorTime_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKActorTime)
+
+#endif // _DKActorTime_H_

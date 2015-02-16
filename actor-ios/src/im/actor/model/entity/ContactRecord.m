@@ -6,7 +6,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/ContactRecord.h"
 
-@interface ImActorModelEntityContactRecord () {
+@interface AMContactRecord () {
  @public
   jint id__;
   jlong accessHash_;
@@ -16,10 +16,10 @@
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityContactRecord, title_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityContactRecord, value_, NSString *)
+J2OBJC_FIELD_SETTER(AMContactRecord, title_, NSString *)
+J2OBJC_FIELD_SETTER(AMContactRecord, value_, NSString *)
 
-@implementation ImActorModelEntityContactRecord
+@implementation AMContactRecord
 
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
@@ -56,7 +56,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContactRecord, value_, NSString *)
   return value_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContactRecord *)other {
+- (void)copyAllFieldsTo:(AMContactRecord *)other {
   [super copyAllFieldsTo:other];
   other->id__ = id__;
   other->accessHash_ = accessHash_;
@@ -81,10 +81,10 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContactRecord, value_, NSString *)
     { "title_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
     { "value_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityContactRecord = { 1, "ContactRecord", "im.actor.model.entity", NULL, 0x1, 6, methods, 5, fields, 0, NULL};
-  return &_ImActorModelEntityContactRecord;
+  static const J2ObjcClassInfo _AMContactRecord = { 1, "ContactRecord", "im.actor.model.entity", NULL, 0x1, 6, methods, 5, fields, 0, NULL};
+  return &_AMContactRecord;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContactRecord)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMContactRecord)

@@ -57,18 +57,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
   return self->fileSize_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->fileLocation_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiFileLocation alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->fileLocation_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiFileLocation alloc] init]];
   self->width_ = [values getIntWithInt:2];
   self->height_ = [values getIntWithInt:3];
   self->fileSize_ = [values getIntWithInt:4];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->fileLocation_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->fileLocation_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->fileLocation_];
   [writer writeIntWithInt:2 withInt:self->width_];
   [writer writeIntWithInt:3 withInt:self->height_];
   [writer writeIntWithInt:4 withInt:self->fileSize_];
@@ -90,8 +90,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
     { "getWidth", NULL, "I", 0x1, NULL },
     { "getHeight", NULL, "I", 0x1, NULL },
     { "getFileSize", NULL, "I", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "fileLocation_", NULL, 0x2, "Lim.actor.model.api.FileLocation;", NULL,  },

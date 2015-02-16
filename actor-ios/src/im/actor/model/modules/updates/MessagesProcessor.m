@@ -30,17 +30,17 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-__attribute__((unused)) static ImActorModelDroidkitActorsActorRef *ImActorModelModulesUpdatesMessagesProcessor_dialogsActor(ImActorModelModulesUpdatesMessagesProcessor *self);
-__attribute__((unused)) static ImActorModelDroidkitActorsActorRef *ImActorModelModulesUpdatesMessagesProcessor_dialogsHistoryActor(ImActorModelModulesUpdatesMessagesProcessor *self);
-__attribute__((unused)) static ImActorModelDroidkitActorsActorRef *ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithImActorModelEntityPeer_(ImActorModelModulesUpdatesMessagesProcessor *self, ImActorModelEntityPeer *peer);
+__attribute__((unused)) static DKActorRef *ImActorModelModulesUpdatesMessagesProcessor_dialogsActor(ImActorModelModulesUpdatesMessagesProcessor *self);
+__attribute__((unused)) static DKActorRef *ImActorModelModulesUpdatesMessagesProcessor_dialogsHistoryActor(ImActorModelModulesUpdatesMessagesProcessor *self);
+__attribute__((unused)) static DKActorRef *ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithAMPeer_(ImActorModelModulesUpdatesMessagesProcessor *self, AMPeer *peer);
 
 @interface ImActorModelModulesUpdatesMessagesProcessor ()
 
-- (ImActorModelDroidkitActorsActorRef *)dialogsActor;
+- (DKActorRef *)dialogsActor;
 
-- (ImActorModelDroidkitActorsActorRef *)dialogsHistoryActor;
+- (DKActorRef *)dialogsHistoryActor;
 
-- (ImActorModelDroidkitActorsActorRef *)conversationActorWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (DKActorRef *)conversationActorWithAMPeer:(AMPeer *)peer;
 
 - (jlong)buildSortKey;
 @end
@@ -51,16 +51,16 @@ __attribute__((unused)) static ImActorModelDroidkitActorsActorRef *ImActorModelM
   return [super initWithImActorModelModulesModules:messenger];
 }
 
-- (ImActorModelDroidkitActorsActorRef *)dialogsActor {
+- (DKActorRef *)dialogsActor {
   return ImActorModelModulesUpdatesMessagesProcessor_dialogsActor(self);
 }
 
-- (ImActorModelDroidkitActorsActorRef *)dialogsHistoryActor {
+- (DKActorRef *)dialogsHistoryActor {
   return ImActorModelModulesUpdatesMessagesProcessor_dialogsHistoryActor(self);
 }
 
-- (ImActorModelDroidkitActorsActorRef *)conversationActorWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  return ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithImActorModelEntityPeer_(self, peer);
+- (DKActorRef *)conversationActorWithAMPeer:(AMPeer *)peer {
+  return ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithAMPeer_(self, peer);
 }
 
 - (jlong)buildSortKey {
@@ -72,15 +72,15 @@ __attribute__((unused)) static ImActorModelDroidkitActorsActorRef *ImActorModelM
   jlong maxLoadedDate = 0;
   for (ImActorModelApiDialog * __strong dialog in nil_chk([((ImActorModelApiRpcResponseLoadDialogs *) nil_chk(dialogsResponse)) getDialogs])) {
     maxLoadedDate = JavaLangMath_maxWithLong_withLong_([((ImActorModelApiDialog *) nil_chk(dialog)) getSortDate], maxLoadedDate);
-    ImActorModelEntityPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_([dialog getPeer]);
+    AMPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_([dialog getPeer]);
     ImActorModelEntityContentAbsContent *msgContent = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageContent_([dialog getMessage]);
     if (msgContent == nil) {
       continue;
     }
-    [dialogs addWithId:[[ImActorModelModulesEntityDialogHistory alloc] initWithImActorModelEntityPeer:peer withInt:[dialog getUnreadCount] withLong:[dialog getSortDate] withLong:[dialog getRid] withLong:[dialog getDate] withInt:[dialog getSenderUid] withImActorModelEntityContentAbsContent:msgContent withImActorModelEntityMessageStateEnum:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_([dialog getState])]];
+    [dialogs addWithId:[[ImActorModelModulesEntityDialogHistory alloc] initWithAMPeer:peer withInt:[dialog getUnreadCount] withLong:[dialog getSortDate] withLong:[dialog getRid] withLong:[dialog getDate] withInt:[dialog getSenderUid] withImActorModelEntityContentAbsContent:msgContent withAMMessageStateEnum:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_([dialog getState])]];
   }
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_dialogsActor(self))) sendWithId:[[ImActorModelModulesMessagesDialogsActor_HistoryLoaded alloc] initWithJavaUtilList:dialogs]];
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_dialogsHistoryActor(self))) sendWithId:[[ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore alloc] initWithBoolean:maxLoadedDate == 0 withLong:maxLoadedDate]];
+  [((DKActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_dialogsActor(self))) sendWithId:[[ImActorModelModulesMessagesDialogsActor_HistoryLoaded alloc] initWithJavaUtilList:dialogs]];
+  [((DKActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_dialogsHistoryActor(self))) sendWithId:[[ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore alloc] initWithBoolean:maxLoadedDate == 0 withLong:maxLoadedDate]];
 }
 
 - (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
@@ -88,78 +88,78 @@ __attribute__((unused)) static ImActorModelDroidkitActorsActorRef *ImActorModelM
                                 withLong:(jlong)date
                                 withLong:(jlong)rid
        withImActorModelApiMessageContent:(ImActorModelApiMessageContent *)content {
-  ImActorModelEntityPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+  AMPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
   ImActorModelEntityContentAbsContent *msgContent = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageContent_(content);
   if (msgContent == nil) {
     return;
   }
-  ImActorModelEntityMessage *message = [[ImActorModelEntityMessage alloc] initWithLong:rid withLong:date withLong:date withInt:senderUid withImActorModelEntityMessageStateEnum:[self myUid] == senderUid ? ImActorModelEntityMessageStateEnum_get_SENT() : ImActorModelEntityMessageStateEnum_get_UNKNOWN() withImActorModelEntityContentAbsContent:msgContent];
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithImActorModelEntityPeer_(self, peer))) sendWithId:message];
+  AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:senderUid withAMMessageStateEnum:[self myUid] == senderUid ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withImActorModelEntityContentAbsContent:msgContent];
+  [((DKActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithAMPeer_(self, peer))) sendWithId:message];
 }
 
 - (void)onMessageReadWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                                     withLong:(jlong)startDate
                                     withLong:(jlong)readDate {
-  ImActorModelEntityPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithImActorModelEntityPeer_(self, peer))) sendWithId:[[ImActorModelModulesMessagesConversationActor_MessageRead alloc] initWithLong:startDate]];
+  AMPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+  [((DKActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithAMPeer_(self, peer))) sendWithId:[[ImActorModelModulesMessagesConversationActor_MessageRead alloc] initWithLong:startDate]];
 }
 
 - (void)onMessageEncryptedReadWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                                              withLong:(jlong)rid
                                              withLong:(jlong)readDate {
-  ImActorModelEntityPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+  AMPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
 }
 
 - (void)onMessageReceivedWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                                         withLong:(jlong)startDate
                                         withLong:(jlong)receivedDate {
-  ImActorModelEntityPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithImActorModelEntityPeer_(self, peer))) sendWithId:[[ImActorModelModulesMessagesConversationActor_MessageReceived alloc] initWithLong:startDate]];
+  AMPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+  [((DKActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithAMPeer_(self, peer))) sendWithId:[[ImActorModelModulesMessagesConversationActor_MessageReceived alloc] initWithLong:startDate]];
 }
 
 - (void)onMessageEncryptedReceivedWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                                                  withLong:(jlong)rid
                                                  withLong:(jlong)receivedDate {
-  ImActorModelEntityPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+  AMPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
 }
 
 - (void)onMessageReadByMeWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                                         withLong:(jlong)startDate {
-  ImActorModelEntityPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+  AMPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
 }
 
 - (void)onMessageEncryptedReadByMeWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                                                  withLong:(jlong)rid {
-  ImActorModelEntityPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+  AMPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
 }
 
 - (void)onMessageDeleteWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                               withJavaUtilList:(id<JavaUtilList>)rids {
-  ImActorModelEntityPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithImActorModelEntityPeer_(self, peer))) sendWithId:[[ImActorModelModulesMessagesConversationActor_MessageDeleted alloc] initWithJavaUtilList:rids]];
+  AMPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+  [((DKActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithAMPeer_(self, peer))) sendWithId:[[ImActorModelModulesMessagesConversationActor_MessageDeleted alloc] initWithJavaUtilList:rids]];
 }
 
 - (void)onMessageSentWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                                     withLong:(jlong)rid
                                     withLong:(jlong)date {
-  ImActorModelEntityPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithImActorModelEntityPeer_(self, peer))) sendWithId:[[ImActorModelModulesMessagesConversationActor_MessageSent alloc] initWithLong:rid withLong:date]];
+  AMPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+  [((DKActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithAMPeer_(self, peer))) sendWithId:[[ImActorModelModulesMessagesConversationActor_MessageSent alloc] initWithLong:rid withLong:date]];
 }
 
 - (void)onChatClearWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer {
-  ImActorModelEntityPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_dialogsActor(self))) sendWithId:[[ImActorModelModulesMessagesDialogsActor_ChatClear alloc] initWithImActorModelEntityPeer:peer]];
+  AMPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+  [((DKActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_dialogsActor(self))) sendWithId:[[ImActorModelModulesMessagesDialogsActor_ChatClear alloc] initWithAMPeer:peer]];
 }
 
 - (void)onChatDeleteWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer {
-  ImActorModelEntityPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_dialogsActor(self))) sendWithId:[[ImActorModelModulesMessagesDialogsActor_ChatDelete alloc] initWithImActorModelEntityPeer:peer]];
+  AMPeer *peer = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+  [((DKActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_dialogsActor(self))) sendWithId:[[ImActorModelModulesMessagesDialogsActor_ChatDelete alloc] initWithAMPeer:peer]];
 }
 
 - (void)onUserRegisteredWithInt:(jint)uid
                        withLong:(jlong)date {
-  ImActorModelEntityMessage *message = [[ImActorModelEntityMessage alloc] initWithLong:ImActorModelModulesUtilsRandomUtils_nextRid() withLong:date withLong:date withInt:uid withImActorModelEntityMessageStateEnum:ImActorModelEntityMessageStateEnum_get_UNKNOWN() withImActorModelEntityContentAbsContent:[[ImActorModelEntityContentServiceUserRegistered alloc] init]];
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithImActorModelEntityPeer_(self, ImActorModelEntityPeer_userWithInt_(uid)))) sendWithId:message];
+  AMMessage *message = [[AMMessage alloc] initWithLong:ImActorModelModulesUtilsRandomUtils_nextRid() withLong:date withLong:date withInt:uid withAMMessageStateEnum:AMMessageStateEnum_get_UNKNOWN() withImActorModelEntityContentAbsContent:[[ImActorModelEntityContentServiceUserRegistered alloc] init]];
+  [((DKActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithAMPeer_(self, AMPeer_userWithInt_(uid)))) sendWithId:message];
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -167,7 +167,7 @@ __attribute__((unused)) static ImActorModelDroidkitActorsActorRef *ImActorModelM
     { "initWithImActorModelModulesModules:", "MessagesProcessor", NULL, 0x1, NULL },
     { "dialogsActor", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x2, NULL },
     { "dialogsHistoryActor", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x2, NULL },
-    { "conversationActorWithImActorModelEntityPeer:", "conversationActor", "Lim.actor.model.droidkit.actors.ActorRef;", 0x2, NULL },
+    { "conversationActorWithAMPeer:", "conversationActor", "Lim.actor.model.droidkit.actors.ActorRef;", 0x2, NULL },
     { "buildSortKey", NULL, "J", 0x2, NULL },
     { "onDialogsLoadedWithImActorModelApiRpcResponseLoadDialogs:", "onDialogsLoaded", "V", 0x1, NULL },
     { "onMessageWithImActorModelApiPeer:withInt:withLong:withLong:withImActorModelApiMessageContent:", "onMessage", "V", 0x1, NULL },
@@ -189,16 +189,16 @@ __attribute__((unused)) static ImActorModelDroidkitActorsActorRef *ImActorModelM
 
 @end
 
-ImActorModelDroidkitActorsActorRef *ImActorModelModulesUpdatesMessagesProcessor_dialogsActor(ImActorModelModulesUpdatesMessagesProcessor *self) {
+DKActorRef *ImActorModelModulesUpdatesMessagesProcessor_dialogsActor(ImActorModelModulesUpdatesMessagesProcessor *self) {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor];
 }
 
-ImActorModelDroidkitActorsActorRef *ImActorModelModulesUpdatesMessagesProcessor_dialogsHistoryActor(ImActorModelModulesUpdatesMessagesProcessor *self) {
+DKActorRef *ImActorModelModulesUpdatesMessagesProcessor_dialogsHistoryActor(ImActorModelModulesUpdatesMessagesProcessor *self) {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsHistoryActor];
 }
 
-ImActorModelDroidkitActorsActorRef *ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithImActorModelEntityPeer_(ImActorModelModulesUpdatesMessagesProcessor *self, ImActorModelEntityPeer *peer) {
-  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationActorWithImActorModelEntityPeer:peer];
+DKActorRef *ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithAMPeer_(ImActorModelModulesUpdatesMessagesProcessor *self, AMPeer *peer) {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationActorWithAMPeer:peer];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesMessagesProcessor)

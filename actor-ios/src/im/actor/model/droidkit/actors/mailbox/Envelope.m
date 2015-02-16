@@ -10,38 +10,38 @@
 #include "im/actor/model/droidkit/actors/mailbox/Envelope.h"
 #include "im/actor/model/droidkit/actors/mailbox/Mailbox.h"
 
-@interface ImActorModelDroidkitActorsMailboxEnvelope () {
+@interface DKEnvelope () {
  @public
   id message_;
-  ImActorModelDroidkitActorsActorRef *sender_;
-  ImActorModelDroidkitActorsMailboxMailbox *mailbox_;
-  ImActorModelDroidkitActorsActorScope *scope_;
+  DKActorRef *sender_;
+  DKMailbox *mailbox_;
+  DKActorScope *scope_;
   jlong sendTime_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxEnvelope, message_, id)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxEnvelope, sender_, ImActorModelDroidkitActorsActorRef *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxEnvelope, mailbox_, ImActorModelDroidkitActorsMailboxMailbox *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxEnvelope, scope_, ImActorModelDroidkitActorsActorScope *)
+J2OBJC_FIELD_SETTER(DKEnvelope, message_, id)
+J2OBJC_FIELD_SETTER(DKEnvelope, sender_, DKActorRef *)
+J2OBJC_FIELD_SETTER(DKEnvelope, mailbox_, DKMailbox *)
+J2OBJC_FIELD_SETTER(DKEnvelope, scope_, DKActorScope *)
 
-@implementation ImActorModelDroidkitActorsMailboxEnvelope
+@implementation DKEnvelope
 
 - (instancetype)initWithId:(id)message
-withImActorModelDroidkitActorsActorScope:(ImActorModelDroidkitActorsActorScope *)scope
-withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox
-withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender {
+          withDKActorScope:(DKActorScope *)scope
+             withDKMailbox:(DKMailbox *)mailbox
+            withDKActorRef:(DKActorRef *)sender {
   if (self = [super init]) {
     self->scope_ = scope;
     self->message_ = message;
     self->sender_ = sender;
     self->mailbox_ = mailbox;
-    self->sendTime_ = ImActorModelDroidkitActorsActorTime_currentTime();
+    self->sendTime_ = DKActorTime_currentTime();
   }
   return self;
 }
 
-- (ImActorModelDroidkitActorsActorScope *)getScope {
+- (DKActorScope *)getScope {
   return scope_;
 }
 
@@ -49,11 +49,11 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
   return message_;
 }
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)getMailbox {
+- (DKMailbox *)getMailbox {
   return mailbox_;
 }
 
-- (ImActorModelDroidkitActorsActorRef *)getSender {
+- (DKActorRef *)getSender {
   return sender_;
 }
 
@@ -62,10 +62,10 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
 }
 
 - (NSString *)description {
-  return JreStrcat("C@$$C", '{', message_, @" -> ", [((ImActorModelDroidkitActorsActorScope *) nil_chk(scope_)) getPath], '}');
+  return JreStrcat("C@$$C", '{', message_, @" -> ", [((DKActorScope *) nil_chk(scope_)) getPath], '}');
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxEnvelope *)other {
+- (void)copyAllFieldsTo:(DKEnvelope *)other {
   [super copyAllFieldsTo:other];
   other->message_ = message_;
   other->sender_ = sender_;
@@ -76,7 +76,7 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithId:withImActorModelDroidkitActorsActorScope:withImActorModelDroidkitActorsMailboxMailbox:withImActorModelDroidkitActorsActorRef:", "Envelope", NULL, 0x1, NULL },
+    { "initWithId:withDKActorScope:withDKMailbox:withDKActorRef:", "Envelope", NULL, 0x1, NULL },
     { "getScope", NULL, "Lim.actor.model.droidkit.actors.ActorScope;", 0x1, NULL },
     { "getMessage", NULL, "Ljava.lang.Object;", 0x1, NULL },
     { "getMailbox", NULL, "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x1, NULL },
@@ -91,10 +91,10 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
     { "scope_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorScope;", NULL,  },
     { "sendTime_", NULL, 0x2, "J", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsMailboxEnvelope = { 1, "Envelope", "im.actor.model.droidkit.actors.mailbox", NULL, 0x1, 7, methods, 5, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsMailboxEnvelope;
+  static const J2ObjcClassInfo _DKEnvelope = { 1, "Envelope", "im.actor.model.droidkit.actors.mailbox", NULL, 0x1, 7, methods, 5, fields, 0, NULL};
+  return &_DKEnvelope;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMailboxEnvelope)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKEnvelope)

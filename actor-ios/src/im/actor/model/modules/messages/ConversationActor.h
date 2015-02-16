@@ -6,12 +6,12 @@
 #ifndef _ImActorModelModulesMessagesConversationActor_H_
 #define _ImActorModelModulesMessagesConversationActor_H_
 
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelEntityMessage;
-@class ImActorModelEntityPeer;
+@class AMMessage;
+@class AMPeer;
+@class DKActorRef;
 @class ImActorModelModulesModules;
-@protocol ImActorModelMvvmKeyValueEngine;
-@protocol ImActorModelMvvmListEngine;
+@protocol AMKeyValueEngine;
+@protocol AMListEngine;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -20,8 +20,8 @@
 @interface ImActorModelModulesMessagesConversationActor : ImActorModelModulesUtilsModuleActor {
 }
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                withImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+withImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)preStart;
 

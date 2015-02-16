@@ -7,8 +7,9 @@
 #define _MTMTProto_H_
 
 @class AMEndpoints;
-@class ImActorModelDroidkitActorsActorRef;
+@class DKActorRef;
 @class MTProtoStruct;
+@protocol AMNetworking;
 @protocol MTMTProtoCallback;
 
 #include "J2ObjC_header.h"
@@ -19,7 +20,10 @@
 - (instancetype)initWithLong:(jlong)authId
                     withLong:(jlong)sessionId
              withAMEndpoints:(AMEndpoints *)endpoints
-       withMTMTProtoCallback:(id<MTMTProtoCallback>)callback;
+       withMTMTProtoCallback:(id<MTMTProtoCallback>)callback
+            withAMNetworking:(id<AMNetworking>)networking;
+
+- (id<AMNetworking>)getNetworking;
 
 - (id<MTMTProtoCallback>)getCallback;
 

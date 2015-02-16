@@ -3,19 +3,21 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/dispatch/QueueListener.java
 //
 
-#ifndef _ImActorModelDroidkitActorsDispatchQueueListener_H_
-#define _ImActorModelDroidkitActorsDispatchQueueListener_H_
+#ifndef _DKQueueListener_H_
+#define _DKQueueListener_H_
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitActorsDispatchQueueListener < NSObject, JavaObject >
+@protocol DKQueueListener < NSObject, JavaObject >
 
 - (void)onQueueChanged;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsDispatchQueueListener)
+J2OBJC_EMPTY_STATIC_INIT(DKQueueListener)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsDispatchQueueListener)
+#define ImActorModelDroidkitActorsDispatchQueueListener DKQueueListener
 
-#endif // _ImActorModelDroidkitActorsDispatchQueueListener_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKQueueListener)
+
+#endif // _DKQueueListener_H_

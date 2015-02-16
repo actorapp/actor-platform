@@ -45,16 +45,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToOnline, users_, id<JavaU
   return self->users_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+- (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
-  for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
+  for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
     [_users addWithId:[[ImActorModelApiUserOutPeer alloc] init]];
   }
   self->users_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_users];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
 }
 
 - (jint)getHeaderKey {
@@ -72,8 +72,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToOnline, users_, id<JavaU
     { "initWithJavaUtilList:", "RequestSubscribeToOnline", NULL, 0x1, NULL },
     { "init", "RequestSubscribeToOnline", NULL, 0x1, NULL },
     { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -89,7 +89,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToOnline, users_, id<JavaU
 
 ImActorModelApiRpcRequestSubscribeToOnline *ImActorModelApiRpcRequestSubscribeToOnline_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSubscribeToOnline_init();
-  return ((ImActorModelApiRpcRequestSubscribeToOnline *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestSubscribeToOnline alloc] init], data));
+  return ((ImActorModelApiRpcRequestSubscribeToOnline *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestSubscribeToOnline alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSubscribeToOnline)

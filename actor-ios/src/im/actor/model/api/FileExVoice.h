@@ -6,13 +6,13 @@
 #ifndef _ImActorModelApiFileExVoice_H_
 #define _ImActorModelApiFileExVoice_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
+@class BSBserValues;
+@class BSBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiFileExVoice : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiFileExVoice : BSBserObject {
 }
 
 - (instancetype)initWithInt:(jint)duration;
@@ -21,9 +21,9 @@
 
 - (jint)getDuration;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

@@ -93,8 +93,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
   return self->contacts_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->seq_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
   self->updateHeader_ = [values getIntWithInt:3];
   self->update_ = [values getBytesWithInt:4];
@@ -115,8 +115,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
   self->contacts_ = [values getRepeatedObjWithInt:7 withJavaUtilList:_contacts];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -158,8 +158,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
     { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getGroups", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getContacts", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -180,7 +180,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
 
 ImActorModelApiBaseFatSeqUpdate *ImActorModelApiBaseFatSeqUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseFatSeqUpdate_init();
-  return ((ImActorModelApiBaseFatSeqUpdate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiBaseFatSeqUpdate alloc] init], data));
+  return ((ImActorModelApiBaseFatSeqUpdate *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiBaseFatSeqUpdate alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiBaseFatSeqUpdate)

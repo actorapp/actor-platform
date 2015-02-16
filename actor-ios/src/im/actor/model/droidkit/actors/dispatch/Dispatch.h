@@ -3,19 +3,21 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/dispatch/Dispatch.java
 //
 
-#ifndef _ImActorModelDroidkitActorsDispatchDispatch_H_
-#define _ImActorModelDroidkitActorsDispatchDispatch_H_
+#ifndef _DKDispatch_H_
+#define _DKDispatch_H_
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitActorsDispatchDispatch < NSObject, JavaObject >
+@protocol DKDispatch < NSObject, JavaObject >
 
 - (void)dispatchMessageWithId:(id)message;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsDispatchDispatch)
+J2OBJC_EMPTY_STATIC_INIT(DKDispatch)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsDispatchDispatch)
+#define ImActorModelDroidkitActorsDispatchDispatch DKDispatch
 
-#endif // _ImActorModelDroidkitActorsDispatchDispatch_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKDispatch)
+
+#endif // _DKDispatch_H_

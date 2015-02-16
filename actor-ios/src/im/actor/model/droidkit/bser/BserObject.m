@@ -13,7 +13,7 @@
 #include "java/io/IOException.h"
 #include "java/lang/RuntimeException.h"
 
-@implementation ImActorModelDroidkitBserBserObject
+@implementation BSBserObject
 
 - (instancetype)init {
   return [super init];
@@ -21,9 +21,9 @@
 
 - (IOSByteArray *)toByteArray {
   AMDataOutput *outputStream = [[AMDataOutput alloc] init];
-  ImActorModelDroidkitBserBserWriter *writer = [[ImActorModelDroidkitBserBserWriter alloc] initWithAMDataOutput:outputStream];
+  BSBserWriter *writer = [[BSBserWriter alloc] initWithAMDataOutput:outputStream];
   @try {
-    [self serializeWithImActorModelDroidkitBserBserWriter:writer];
+    [self serializeWithBSBserWriter:writer];
   }
   @catch (JavaIoIOException *e) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Unexpected IO exception"];
@@ -31,12 +31,12 @@
   return [outputStream toByteArray];
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+- (void)parseWithBSBserValues:(BSBserValues *)values {
   // can't call an abstract method
   [self doesNotRecognizeSelector:_cmd];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   // can't call an abstract method
   [self doesNotRecognizeSelector:_cmd];
 }
@@ -45,13 +45,13 @@
   static const J2ObjcMethodInfo methods[] = {
     { "init", "BserObject", NULL, 0x1, NULL },
     { "toByteArray", NULL, "[B", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x401, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x401, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x401, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x401, "Ljava.io.IOException;" },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitBserBserObject = { 1, "BserObject", "im.actor.model.droidkit.bser", NULL, 0x401, 4, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitBserBserObject;
+  static const J2ObjcClassInfo _BSBserObject = { 1, "BserObject", "im.actor.model.droidkit.bser", NULL, 0x401, 4, methods, 0, NULL, 0, NULL};
+  return &_BSBserObject;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitBserBserObject)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSBserObject)

@@ -6,25 +6,25 @@
 #ifndef _ImActorModelModulesEntityDialogHistory_H_
 #define _ImActorModelModulesEntityDialogHistory_H_
 
+@class AMMessageStateEnum;
+@class AMPeer;
 @class ImActorModelEntityContentAbsContent;
-@class ImActorModelEntityMessageStateEnum;
-@class ImActorModelEntityPeer;
 
 #include "J2ObjC_header.h"
 
 @interface ImActorModelModulesEntityDialogHistory : NSObject {
 }
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                                       withInt:(jint)unreadCount
-                                      withLong:(jlong)sortDate
-                                      withLong:(jlong)rid
-                                      withLong:(jlong)date
-                                       withInt:(jint)senderId
-       withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content
-        withImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)status;
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                       withInt:(jint)unreadCount
+                      withLong:(jlong)sortDate
+                      withLong:(jlong)rid
+                      withLong:(jlong)date
+                       withInt:(jint)senderId
+withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content
+        withAMMessageStateEnum:(AMMessageStateEnum *)status;
 
-- (ImActorModelEntityPeer *)getPeer;
+- (AMPeer *)getPeer;
 
 - (jint)getUnreadCount;
 
@@ -38,7 +38,7 @@
 
 - (ImActorModelEntityContentAbsContent *)getContent;
 
-- (ImActorModelEntityMessageStateEnum *)getStatus;
+- (AMMessageStateEnum *)getStatus;
 
 @end
 

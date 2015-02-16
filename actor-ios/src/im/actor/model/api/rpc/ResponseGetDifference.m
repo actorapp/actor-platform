@@ -93,8 +93,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   return self->needMore__;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->seq_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
   id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:3]; i++) {
@@ -115,8 +115,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   self->needMore__ = [values getBoolWithInt:5];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -155,8 +155,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
     { "getContacts", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getUpdates", NULL, "Ljava.util.List;", 0x1, NULL },
     { "needMore", NULL, "Z", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -177,7 +177,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
 
 ImActorModelApiRpcResponseGetDifference *ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetDifference_init();
-  return ((ImActorModelApiRpcResponseGetDifference *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseGetDifference alloc] init], data));
+  return ((ImActorModelApiRpcResponseGetDifference *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseGetDifference alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetDifference)

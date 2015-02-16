@@ -33,12 +33,12 @@
   return self->addedUid_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->addedUid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->addedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->addedUid_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->addedUid_];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiServiceExUserAdded *)other {
@@ -51,8 +51,8 @@
     { "initWithInt:", "ServiceExUserAdded", NULL, 0x1, NULL },
     { "init", "ServiceExUserAdded", NULL, 0x1, NULL },
     { "getAddedUid", NULL, "I", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "addedUid_", NULL, 0x2, "I", NULL,  },

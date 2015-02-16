@@ -68,16 +68,16 @@
   return self->date_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->groupId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:5];
   self->uid_ = [values getIntWithInt:2];
   self->kickerUid_ = [values getIntWithInt:3];
   self->date_ = [values getLongWithInt:4];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:5 withLong:self->rid_];
   [writer writeIntWithInt:2 withInt:self->uid_];
   [writer writeIntWithInt:3 withInt:self->kickerUid_];
@@ -107,8 +107,8 @@
     { "getUid", NULL, "I", 0x1, NULL },
     { "getKickerUid", NULL, "I", 0x1, NULL },
     { "getDate", NULL, "J", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -127,7 +127,7 @@
 
 ImActorModelApiUpdatesUpdateGroupUserKick *ImActorModelApiUpdatesUpdateGroupUserKick_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupUserKick_init();
-  return ((ImActorModelApiUpdatesUpdateGroupUserKick *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupUserKick alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateGroupUserKick *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupUserKick alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupUserKick)

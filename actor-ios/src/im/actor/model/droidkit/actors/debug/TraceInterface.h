@@ -6,29 +6,29 @@
 #ifndef _ImActorModelDroidkitActorsDebugTraceInterface_H_
 #define _ImActorModelDroidkitActorsDebugTraceInterface_H_
 
-@class ImActorModelDroidkitActorsActor;
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelDroidkitActorsMailboxEnvelope;
+@class DKActor;
+@class DKActorRef;
+@class DKEnvelope;
 @class JavaLangException;
 
 #include "J2ObjC_header.h"
 
 @protocol ImActorModelDroidkitActorsDebugTraceInterface < NSObject, JavaObject >
 
-- (void)onEnvelopeDeliveredWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope;
+- (void)onEnvelopeDeliveredWithDKEnvelope:(DKEnvelope *)envelope;
 
-- (void)onEnvelopeProcessedWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope
-                                                                withLong:(jlong)duration;
+- (void)onEnvelopeProcessedWithDKEnvelope:(DKEnvelope *)envelope
+                                 withLong:(jlong)duration;
 
-- (void)onDropWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender
-                                              withId:(id)message
-                 withImActorModelDroidkitActorsActor:(ImActorModelDroidkitActorsActor *)actor;
+- (void)onDropWithDKActorRef:(DKActorRef *)sender
+                      withId:(id)message
+                 withDKActor:(DKActor *)actor;
 
-- (void)onDeadLetterWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)receiver
-                                                    withId:(id)message;
+- (void)onDeadLetterWithDKActorRef:(DKActorRef *)receiver
+                            withId:(id)message;
 
-- (void)onActorDieWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref
-                                   withJavaLangException:(JavaLangException *)e;
+- (void)onActorDieWithDKActorRef:(DKActorRef *)ref
+           withJavaLangException:(JavaLangException *)e;
 
 @end
 

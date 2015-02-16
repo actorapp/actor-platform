@@ -2,7 +2,7 @@ package im.actor.model.jvm.threads;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import im.actor.model.droidkit.actors.utils.AtomicIntegerCompat;
+import im.actor.model.util.AtomicIntegerCompat;
 
 /**
  * Created by ex3ndr on 16.02.15.

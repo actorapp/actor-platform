@@ -6,13 +6,13 @@
 #ifndef _ImActorModelApiPhoneToImport_H_
 #define _ImActorModelApiPhoneToImport_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
+@class BSBserValues;
+@class BSBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiPhoneToImport : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiPhoneToImport : BSBserObject {
 }
 
 - (instancetype)initWithLong:(jlong)phoneNumber
@@ -24,9 +24,9 @@
 
 - (NSString *)getName;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

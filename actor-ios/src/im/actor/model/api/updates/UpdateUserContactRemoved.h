@@ -6,9 +6,9 @@
 #ifndef _ImActorModelApiUpdatesUpdateUserContactRemoved_H_
 #define _ImActorModelApiUpdatesUpdateUserContactRemoved_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -29,9 +29,9 @@
 
 - (jint)getContactId;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 - (jint)getHeaderKey;
 

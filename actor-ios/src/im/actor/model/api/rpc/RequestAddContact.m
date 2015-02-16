@@ -47,13 +47,13 @@
   return self->accessHash_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->uid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
 
@@ -74,8 +74,8 @@
     { "init", "RequestAddContact", NULL, 0x1, NULL },
     { "getUid", NULL, "I", 0x1, NULL },
     { "getAccessHash", NULL, "J", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -92,7 +92,7 @@
 
 ImActorModelApiRpcRequestAddContact *ImActorModelApiRpcRequestAddContact_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestAddContact_init();
-  return ((ImActorModelApiRpcRequestAddContact *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestAddContact alloc] init], data));
+  return ((ImActorModelApiRpcRequestAddContact *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestAddContact alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestAddContact)

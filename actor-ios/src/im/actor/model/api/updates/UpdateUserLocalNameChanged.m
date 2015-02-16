@@ -49,13 +49,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
   return self->localName_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->uid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->localName_ = [values optStringWithInt:2];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   if (self->localName_ != nil) {
     [writer writeStringWithInt:2 withNSString:self->localName_];
   }
@@ -78,8 +78,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
     { "init", "UpdateUserLocalNameChanged", NULL, 0x1, NULL },
     { "getUid", NULL, "I", 0x1, NULL },
     { "getLocalName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -95,7 +95,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
 
 ImActorModelApiUpdatesUpdateUserLocalNameChanged *ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserLocalNameChanged_init();
-  return ((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserLocalNameChanged alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserLocalNameChanged alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserLocalNameChanged)

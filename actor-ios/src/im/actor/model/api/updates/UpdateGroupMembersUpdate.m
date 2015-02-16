@@ -52,8 +52,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
   return self->members_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->groupId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   id<JavaUtilList> _members = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:2]; i++) {
     [_members addWithId:[[ImActorModelApiMember alloc] init]];
@@ -61,8 +61,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
   self->members_ = [values getRepeatedObjWithInt:2 withJavaUtilList:_members];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->members_];
 }
 
@@ -83,8 +83,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
     { "init", "UpdateGroupMembersUpdate", NULL, 0x1, NULL },
     { "getGroupId", NULL, "I", 0x1, NULL },
     { "getMembers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -100,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
 
 ImActorModelApiUpdatesUpdateGroupMembersUpdate *ImActorModelApiUpdatesUpdateGroupMembersUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupMembersUpdate_init();
-  return ((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupMembersUpdate alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupMembersUpdate alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupMembersUpdate)

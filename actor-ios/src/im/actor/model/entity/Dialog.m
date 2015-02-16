@@ -17,49 +17,49 @@
 #include "java/io/IOException.h"
 #include "java/lang/IllegalArgumentException.h"
 
-@interface ImActorModelEntityDialog () {
+@interface AMDialog () {
  @public
-  ImActorModelEntityPeer *peer_;
+  AMPeer *peer_;
   NSString *dialogTitle_;
   jint unreadCount_;
   jlong rid_;
   jlong sortDate_;
   jint senderId_;
   jlong date_;
-  ImActorModelEntityDialog_ContentTypeEnum *messageType_;
+  AMDialog_ContentTypeEnum *messageType_;
   NSString *text_;
-  ImActorModelEntityMessageStateEnum *status_;
-  ImActorModelEntityAvatar *dialogAvatar_;
+  AMMessageStateEnum *status_;
+  AMAvatar *dialogAvatar_;
   jint relatedUid_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, peer_, ImActorModelEntityPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogTitle_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, messageType_, ImActorModelEntityDialog_ContentTypeEnum *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, text_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, status_, ImActorModelEntityMessageStateEnum *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogAvatar_, ImActorModelEntityAvatar *)
+J2OBJC_FIELD_SETTER(AMDialog, peer_, AMPeer *)
+J2OBJC_FIELD_SETTER(AMDialog, dialogTitle_, NSString *)
+J2OBJC_FIELD_SETTER(AMDialog, messageType_, AMDialog_ContentTypeEnum *)
+J2OBJC_FIELD_SETTER(AMDialog, text_, NSString *)
+J2OBJC_FIELD_SETTER(AMDialog, status_, AMMessageStateEnum *)
+J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
 
-@implementation ImActorModelEntityDialog
+@implementation AMDialog
 
-+ (ImActorModelEntityDialog *)fromBytesWithByteArray:(IOSByteArray *)date {
-  return ImActorModelEntityDialog_fromBytesWithByteArray_(date);
++ (AMDialog *)fromBytesWithByteArray:(IOSByteArray *)date {
+  return AMDialog_fromBytesWithByteArray_(date);
 }
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                                      withLong:(jlong)sortKey
-                                  withNSString:(NSString *)dialogTitle
-                  withImActorModelEntityAvatar:(ImActorModelEntityAvatar *)dialogAvatar
-                                       withInt:(jint)unreadCount
-                                      withLong:(jlong)rid
-  withImActorModelEntityDialog_ContentTypeEnum:(ImActorModelEntityDialog_ContentTypeEnum *)messageType
-                                  withNSString:(NSString *)text
-        withImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)status
-                                       withInt:(jint)senderId
-                                      withLong:(jlong)date
-                                       withInt:(jint)relatedUid {
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                      withLong:(jlong)sortKey
+                  withNSString:(NSString *)dialogTitle
+                  withAMAvatar:(AMAvatar *)dialogAvatar
+                       withInt:(jint)unreadCount
+                      withLong:(jlong)rid
+  withAMDialog_ContentTypeEnum:(AMDialog_ContentTypeEnum *)messageType
+                  withNSString:(NSString *)text
+        withAMMessageStateEnum:(AMMessageStateEnum *)status
+                       withInt:(jint)senderId
+                      withLong:(jlong)date
+                       withInt:(jint)relatedUid {
   if (self = [super init]) {
     self->peer_ = peer;
     self->dialogTitle_ = dialogTitle;
@@ -81,12 +81,12 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogAvatar_, ImActorModelEntityA
   return [super init];
 }
 
-- (ImActorModelEntityPeer *)getPeer {
+- (AMPeer *)getPeer {
   return peer_;
 }
 
 - (jlong)getListId {
-  return [((ImActorModelEntityPeer *) nil_chk(peer_)) getUid];
+  return [((AMPeer *) nil_chk(peer_)) getUid];
 }
 
 - (jlong)getListSortKey {
@@ -117,7 +117,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogAvatar_, ImActorModelEntityA
   return date_;
 }
 
-- (ImActorModelEntityDialog_ContentTypeEnum *)getMessageType {
+- (AMDialog_ContentTypeEnum *)getMessageType {
   return messageType_;
 }
 
@@ -125,7 +125,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogAvatar_, ImActorModelEntityA
   return text_;
 }
 
-- (ImActorModelEntityMessageStateEnum *)getStatus {
+- (AMMessageStateEnum *)getStatus {
   return status_;
 }
 
@@ -133,51 +133,51 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogAvatar_, ImActorModelEntityA
   return relatedUid_;
 }
 
-- (ImActorModelEntityAvatar *)getDialogAvatar {
+- (AMAvatar *)getDialogAvatar {
   return dialogAvatar_;
 }
 
-- (ImActorModelEntityDialog *)editPeerInfoWithNSString:(NSString *)title
-                          withImActorModelEntityAvatar:(ImActorModelEntityAvatar *)dialogAvatar {
-  return [[ImActorModelEntityDialog alloc] initWithImActorModelEntityPeer:peer_ withLong:sortDate_ withNSString:title withImActorModelEntityAvatar:dialogAvatar withInt:unreadCount_ withLong:rid_ withImActorModelEntityDialog_ContentTypeEnum:messageType_ withNSString:text_ withImActorModelEntityMessageStateEnum:status_ withInt:senderId_ withLong:date_ withInt:relatedUid_];
+- (AMDialog *)editPeerInfoWithNSString:(NSString *)title
+                          withAMAvatar:(AMAvatar *)dialogAvatar {
+  return [[AMDialog alloc] initWithAMPeer:peer_ withLong:sortDate_ withNSString:title withAMAvatar:dialogAvatar withInt:unreadCount_ withLong:rid_ withAMDialog_ContentTypeEnum:messageType_ withNSString:text_ withAMMessageStateEnum:status_ withInt:senderId_ withLong:date_ withInt:relatedUid_];
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  peer_ = ImActorModelEntityPeer_fromBytesWithByteArray_([((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:1]);
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  peer_ = AMPeer_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:1]);
   dialogTitle_ = [values getStringWithInt:2];
   IOSByteArray *av = [values optBytesWithInt:3];
   if (av != nil) {
-    dialogAvatar_ = ImActorModelEntityAvatar_fromBytesWithByteArray_(av);
+    dialogAvatar_ = AMAvatar_fromBytesWithByteArray_(av);
   }
   unreadCount_ = [values getIntWithInt:4];
   sortDate_ = [values getLongWithInt:5];
   rid_ = [values getLongWithInt:6];
   senderId_ = [values getIntWithInt:7];
   date_ = [values getLongWithInt:8];
-  messageType_ = ImActorModelEntityDialog_ContentTypeEnum_fromValueWithInt_([values getIntWithInt:9]);
+  messageType_ = AMDialog_ContentTypeEnum_fromValueWithInt_([values getIntWithInt:9]);
   text_ = [values getStringWithInt:10];
-  status_ = ImActorModelEntityMessageStateEnum_fromValueWithInt_([values getIntWithInt:11]);
+  status_ = AMMessageStateEnum_fromValueWithInt_([values getIntWithInt:11]);
   relatedUid_ = [values getIntWithInt:12];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:peer_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:peer_];
   [writer writeStringWithInt:2 withNSString:dialogTitle_];
   if (dialogAvatar_ != nil) {
-    [writer writeObjectWithInt:3 withImActorModelDroidkitBserBserObject:dialogAvatar_];
+    [writer writeObjectWithInt:3 withBSBserObject:dialogAvatar_];
   }
   [writer writeIntWithInt:4 withInt:unreadCount_];
   [writer writeLongWithInt:5 withLong:sortDate_];
   [writer writeLongWithInt:6 withLong:rid_];
   [writer writeIntWithInt:7 withInt:senderId_];
   [writer writeLongWithInt:8 withLong:date_];
-  [writer writeIntWithInt:9 withInt:[((ImActorModelEntityDialog_ContentTypeEnum *) nil_chk(messageType_)) getValue]];
+  [writer writeIntWithInt:9 withInt:[((AMDialog_ContentTypeEnum *) nil_chk(messageType_)) getValue]];
   [writer writeStringWithInt:10 withNSString:text_];
-  [writer writeIntWithInt:11 withInt:[((ImActorModelEntityMessageStateEnum *) nil_chk(status_)) getValue]];
+  [writer writeIntWithInt:11 withInt:[((AMMessageStateEnum *) nil_chk(status_)) getValue]];
   [writer writeIntWithInt:12 withInt:relatedUid_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityDialog *)other {
+- (void)copyAllFieldsTo:(AMDialog *)other {
   [super copyAllFieldsTo:other];
   other->peer_ = peer_;
   other->dialogTitle_ = dialogTitle_;
@@ -196,7 +196,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogAvatar_, ImActorModelEntityA
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.Dialog;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelEntityPeer:withLong:withNSString:withImActorModelEntityAvatar:withInt:withLong:withImActorModelEntityDialog_ContentTypeEnum:withNSString:withImActorModelEntityMessageStateEnum:withInt:withLong:withInt:", "Dialog", NULL, 0x1, NULL },
+    { "initWithAMPeer:withLong:withNSString:withAMAvatar:withInt:withLong:withAMDialog_ContentTypeEnum:withNSString:withAMMessageStateEnum:withInt:withLong:withInt:", "Dialog", NULL, 0x1, NULL },
     { "init", "Dialog", NULL, 0x2, NULL },
     { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
     { "getListId", NULL, "J", 0x1, NULL },
@@ -212,9 +212,9 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogAvatar_, ImActorModelEntityA
     { "getStatus", NULL, "Lim.actor.model.entity.MessageState;", 0x1, NULL },
     { "getRelatedUid", NULL, "I", 0x1, NULL },
     { "getDialogAvatar", NULL, "Lim.actor.model.entity.Avatar;", 0x1, NULL },
-    { "editPeerInfoWithNSString:withImActorModelEntityAvatar:", "editPeerInfo", "Lim.actor.model.entity.Dialog;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "editPeerInfoWithNSString:withAMAvatar:", "editPeerInfo", "Lim.actor.model.entity.Dialog;", 0x1, NULL },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
@@ -230,24 +230,24 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialog, dialogAvatar_, ImActorModelEntityA
     { "dialogAvatar_", NULL, 0x2, "Lim.actor.model.entity.Avatar;", NULL,  },
     { "relatedUid_", NULL, 0x2, "I", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityDialog = { 1, "Dialog", "im.actor.model.entity", NULL, 0x1, 20, methods, 12, fields, 0, NULL};
-  return &_ImActorModelEntityDialog;
+  static const J2ObjcClassInfo _AMDialog = { 1, "Dialog", "im.actor.model.entity", NULL, 0x1, 20, methods, 12, fields, 0, NULL};
+  return &_AMDialog;
 }
 
 @end
 
-ImActorModelEntityDialog *ImActorModelEntityDialog_fromBytesWithByteArray_(IOSByteArray *date) {
-  ImActorModelEntityDialog_init();
-  return ((ImActorModelEntityDialog *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityDialog alloc] init], date));
+AMDialog *AMDialog_fromBytesWithByteArray_(IOSByteArray *date) {
+  AMDialog_init();
+  return ((AMDialog *) BSBser_parseWithBSBserObject_withByteArray_([[AMDialog alloc] init], date));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityDialog)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDialog)
 
-BOOL ImActorModelEntityDialog_ContentTypeEnum_initialized = NO;
+BOOL AMDialog_ContentTypeEnum_initialized = NO;
 
-ImActorModelEntityDialog_ContentTypeEnum *ImActorModelEntityDialog_ContentTypeEnum_values_[14];
+AMDialog_ContentTypeEnum *AMDialog_ContentTypeEnum_values_[14];
 
-@implementation ImActorModelEntityDialog_ContentTypeEnum
+@implementation AMDialog_ContentTypeEnum
 
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
@@ -262,26 +262,26 @@ ImActorModelEntityDialog_ContentTypeEnum *ImActorModelEntityDialog_ContentTypeEn
   return value_;
 }
 
-+ (ImActorModelEntityDialog_ContentTypeEnum *)fromValueWithInt:(jint)value {
-  return ImActorModelEntityDialog_ContentTypeEnum_fromValueWithInt_(value);
++ (AMDialog_ContentTypeEnum *)fromValueWithInt:(jint)value {
+  return AMDialog_ContentTypeEnum_fromValueWithInt_(value);
 }
 
-IOSObjectArray *ImActorModelEntityDialog_ContentTypeEnum_values() {
-  ImActorModelEntityDialog_ContentTypeEnum_init();
-  return [IOSObjectArray arrayWithObjects:ImActorModelEntityDialog_ContentTypeEnum_values_ count:14 type:ImActorModelEntityDialog_ContentTypeEnum_class_()];
+IOSObjectArray *AMDialog_ContentTypeEnum_values() {
+  AMDialog_ContentTypeEnum_init();
+  return [IOSObjectArray arrayWithObjects:AMDialog_ContentTypeEnum_values_ count:14 type:AMDialog_ContentTypeEnum_class_()];
 }
 + (IOSObjectArray *)values {
-  return ImActorModelEntityDialog_ContentTypeEnum_values();
+  return AMDialog_ContentTypeEnum_values();
 }
 
-+ (ImActorModelEntityDialog_ContentTypeEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelEntityDialog_ContentTypeEnum_valueOfWithNSString_(name);
++ (AMDialog_ContentTypeEnum *)valueOfWithNSString:(NSString *)name {
+  return AMDialog_ContentTypeEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelEntityDialog_ContentTypeEnum *ImActorModelEntityDialog_ContentTypeEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelEntityDialog_ContentTypeEnum_init();
+AMDialog_ContentTypeEnum *AMDialog_ContentTypeEnum_valueOfWithNSString_(NSString *name) {
+  AMDialog_ContentTypeEnum_init();
   for (int i = 0; i < 14; i++) {
-    ImActorModelEntityDialog_ContentTypeEnum *e = ImActorModelEntityDialog_ContentTypeEnum_values_[i];
+    AMDialog_ContentTypeEnum *e = AMDialog_ContentTypeEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -295,22 +295,22 @@ ImActorModelEntityDialog_ContentTypeEnum *ImActorModelEntityDialog_ContentTypeEn
 }
 
 + (void)initialize {
-  if (self == [ImActorModelEntityDialog_ContentTypeEnum class]) {
-    ImActorModelEntityDialog_ContentTypeEnum_TEXT = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:2 withNSString:@"TEXT" withInt:0];
-    ImActorModelEntityDialog_ContentTypeEnum_EMPTY = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:1 withNSString:@"EMPTY" withInt:1];
-    ImActorModelEntityDialog_ContentTypeEnum_DOCUMENT = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:3 withNSString:@"DOCUMENT" withInt:2];
-    ImActorModelEntityDialog_ContentTypeEnum_DOCUMENT_PHOTO = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:4 withNSString:@"DOCUMENT_PHOTO" withInt:3];
-    ImActorModelEntityDialog_ContentTypeEnum_DOCUMENT_VIDEO = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:5 withNSString:@"DOCUMENT_VIDEO" withInt:4];
-    ImActorModelEntityDialog_ContentTypeEnum_SERVICE = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:6 withNSString:@"SERVICE" withInt:5];
-    ImActorModelEntityDialog_ContentTypeEnum_SERVICE_ADD = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:7 withNSString:@"SERVICE_ADD" withInt:6];
-    ImActorModelEntityDialog_ContentTypeEnum_SERVICE_KICK = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:8 withNSString:@"SERVICE_KICK" withInt:7];
-    ImActorModelEntityDialog_ContentTypeEnum_SERVICE_LEAVE = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:9 withNSString:@"SERVICE_LEAVE" withInt:8];
-    ImActorModelEntityDialog_ContentTypeEnum_SERVICE_REGISTERED = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:10 withNSString:@"SERVICE_REGISTERED" withInt:9];
-    ImActorModelEntityDialog_ContentTypeEnum_SERVICE_CREATED = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:11 withNSString:@"SERVICE_CREATED" withInt:10];
-    ImActorModelEntityDialog_ContentTypeEnum_SERVICE_TITLE = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:12 withNSString:@"SERVICE_TITLE" withInt:11];
-    ImActorModelEntityDialog_ContentTypeEnum_SERVICE_AVATAR = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:13 withNSString:@"SERVICE_AVATAR" withInt:12];
-    ImActorModelEntityDialog_ContentTypeEnum_SERVICE_AVATAR_REMOVED = [[ImActorModelEntityDialog_ContentTypeEnum alloc] initWithInt:14 withNSString:@"SERVICE_AVATAR_REMOVED" withInt:13];
-    J2OBJC_SET_INITIALIZED(ImActorModelEntityDialog_ContentTypeEnum)
+  if (self == [AMDialog_ContentTypeEnum class]) {
+    AMDialog_ContentTypeEnum_TEXT = [[AMDialog_ContentTypeEnum alloc] initWithInt:2 withNSString:@"TEXT" withInt:0];
+    AMDialog_ContentTypeEnum_EMPTY = [[AMDialog_ContentTypeEnum alloc] initWithInt:1 withNSString:@"EMPTY" withInt:1];
+    AMDialog_ContentTypeEnum_DOCUMENT = [[AMDialog_ContentTypeEnum alloc] initWithInt:3 withNSString:@"DOCUMENT" withInt:2];
+    AMDialog_ContentTypeEnum_DOCUMENT_PHOTO = [[AMDialog_ContentTypeEnum alloc] initWithInt:4 withNSString:@"DOCUMENT_PHOTO" withInt:3];
+    AMDialog_ContentTypeEnum_DOCUMENT_VIDEO = [[AMDialog_ContentTypeEnum alloc] initWithInt:5 withNSString:@"DOCUMENT_VIDEO" withInt:4];
+    AMDialog_ContentTypeEnum_SERVICE = [[AMDialog_ContentTypeEnum alloc] initWithInt:6 withNSString:@"SERVICE" withInt:5];
+    AMDialog_ContentTypeEnum_SERVICE_ADD = [[AMDialog_ContentTypeEnum alloc] initWithInt:7 withNSString:@"SERVICE_ADD" withInt:6];
+    AMDialog_ContentTypeEnum_SERVICE_KICK = [[AMDialog_ContentTypeEnum alloc] initWithInt:8 withNSString:@"SERVICE_KICK" withInt:7];
+    AMDialog_ContentTypeEnum_SERVICE_LEAVE = [[AMDialog_ContentTypeEnum alloc] initWithInt:9 withNSString:@"SERVICE_LEAVE" withInt:8];
+    AMDialog_ContentTypeEnum_SERVICE_REGISTERED = [[AMDialog_ContentTypeEnum alloc] initWithInt:10 withNSString:@"SERVICE_REGISTERED" withInt:9];
+    AMDialog_ContentTypeEnum_SERVICE_CREATED = [[AMDialog_ContentTypeEnum alloc] initWithInt:11 withNSString:@"SERVICE_CREATED" withInt:10];
+    AMDialog_ContentTypeEnum_SERVICE_TITLE = [[AMDialog_ContentTypeEnum alloc] initWithInt:12 withNSString:@"SERVICE_TITLE" withInt:11];
+    AMDialog_ContentTypeEnum_SERVICE_AVATAR = [[AMDialog_ContentTypeEnum alloc] initWithInt:13 withNSString:@"SERVICE_AVATAR" withInt:12];
+    AMDialog_ContentTypeEnum_SERVICE_AVATAR_REMOVED = [[AMDialog_ContentTypeEnum alloc] initWithInt:14 withNSString:@"SERVICE_AVATAR_REMOVED" withInt:13];
+    J2OBJC_SET_INITIALIZED(AMDialog_ContentTypeEnum)
   }
 }
 
@@ -321,62 +321,62 @@ ImActorModelEntityDialog_ContentTypeEnum *ImActorModelEntityDialog_ContentTypeEn
     { "fromValueWithInt:", "fromValue", "Lim.actor.model.entity.Dialog$ContentType;", 0x9, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "TEXT", "TEXT", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_TEXT,  },
-    { "EMPTY", "EMPTY", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_EMPTY,  },
-    { "DOCUMENT", "DOCUMENT", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_DOCUMENT,  },
-    { "DOCUMENT_PHOTO", "DOCUMENT_PHOTO", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_DOCUMENT_PHOTO,  },
-    { "DOCUMENT_VIDEO", "DOCUMENT_VIDEO", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_DOCUMENT_VIDEO,  },
-    { "SERVICE", "SERVICE", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_SERVICE,  },
-    { "SERVICE_ADD", "SERVICE_ADD", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_SERVICE_ADD,  },
-    { "SERVICE_KICK", "SERVICE_KICK", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_SERVICE_KICK,  },
-    { "SERVICE_LEAVE", "SERVICE_LEAVE", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_SERVICE_LEAVE,  },
-    { "SERVICE_REGISTERED", "SERVICE_REGISTERED", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_SERVICE_REGISTERED,  },
-    { "SERVICE_CREATED", "SERVICE_CREATED", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_SERVICE_CREATED,  },
-    { "SERVICE_TITLE", "SERVICE_TITLE", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_SERVICE_TITLE,  },
-    { "SERVICE_AVATAR", "SERVICE_AVATAR", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_SERVICE_AVATAR,  },
-    { "SERVICE_AVATAR_REMOVED", "SERVICE_AVATAR_REMOVED", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &ImActorModelEntityDialog_ContentTypeEnum_SERVICE_AVATAR_REMOVED,  },
+    { "TEXT", "TEXT", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_TEXT,  },
+    { "EMPTY", "EMPTY", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_EMPTY,  },
+    { "DOCUMENT", "DOCUMENT", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_DOCUMENT,  },
+    { "DOCUMENT_PHOTO", "DOCUMENT_PHOTO", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_DOCUMENT_PHOTO,  },
+    { "DOCUMENT_VIDEO", "DOCUMENT_VIDEO", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_DOCUMENT_VIDEO,  },
+    { "SERVICE", "SERVICE", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE,  },
+    { "SERVICE_ADD", "SERVICE_ADD", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_ADD,  },
+    { "SERVICE_KICK", "SERVICE_KICK", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_KICK,  },
+    { "SERVICE_LEAVE", "SERVICE_LEAVE", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_LEAVE,  },
+    { "SERVICE_REGISTERED", "SERVICE_REGISTERED", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_REGISTERED,  },
+    { "SERVICE_CREATED", "SERVICE_CREATED", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_CREATED,  },
+    { "SERVICE_TITLE", "SERVICE_TITLE", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_TITLE,  },
+    { "SERVICE_AVATAR", "SERVICE_AVATAR", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_AVATAR,  },
+    { "SERVICE_AVATAR_REMOVED", "SERVICE_AVATAR_REMOVED", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_AVATAR_REMOVED,  },
     { "value_", NULL, 0x0, "I", NULL,  },
   };
   static const char *superclass_type_args[] = {"Lim.actor.model.entity.Dialog$ContentType;"};
-  static const J2ObjcClassInfo _ImActorModelEntityDialog_ContentTypeEnum = { 1, "ContentType", "im.actor.model.entity", "Dialog", 0x4019, 3, methods, 15, fields, 1, superclass_type_args};
-  return &_ImActorModelEntityDialog_ContentTypeEnum;
+  static const J2ObjcClassInfo _AMDialog_ContentTypeEnum = { 1, "ContentType", "im.actor.model.entity", "Dialog", 0x4019, 3, methods, 15, fields, 1, superclass_type_args};
+  return &_AMDialog_ContentTypeEnum;
 }
 
 @end
 
-ImActorModelEntityDialog_ContentTypeEnum *ImActorModelEntityDialog_ContentTypeEnum_fromValueWithInt_(jint value) {
-  ImActorModelEntityDialog_ContentTypeEnum_init();
+AMDialog_ContentTypeEnum *AMDialog_ContentTypeEnum_fromValueWithInt_(jint value) {
+  AMDialog_ContentTypeEnum_init();
   switch (value) {
     default:
     case 1:
-    return ImActorModelEntityDialog_ContentTypeEnum_EMPTY;
+    return AMDialog_ContentTypeEnum_EMPTY;
     case 2:
-    return ImActorModelEntityDialog_ContentTypeEnum_TEXT;
+    return AMDialog_ContentTypeEnum_TEXT;
     case 3:
-    return ImActorModelEntityDialog_ContentTypeEnum_DOCUMENT;
+    return AMDialog_ContentTypeEnum_DOCUMENT;
     case 4:
-    return ImActorModelEntityDialog_ContentTypeEnum_DOCUMENT_PHOTO;
+    return AMDialog_ContentTypeEnum_DOCUMENT_PHOTO;
     case 5:
-    return ImActorModelEntityDialog_ContentTypeEnum_DOCUMENT_VIDEO;
+    return AMDialog_ContentTypeEnum_DOCUMENT_VIDEO;
     case 6:
-    return ImActorModelEntityDialog_ContentTypeEnum_SERVICE;
+    return AMDialog_ContentTypeEnum_SERVICE;
     case 7:
-    return ImActorModelEntityDialog_ContentTypeEnum_SERVICE_ADD;
+    return AMDialog_ContentTypeEnum_SERVICE_ADD;
     case 8:
-    return ImActorModelEntityDialog_ContentTypeEnum_SERVICE_KICK;
+    return AMDialog_ContentTypeEnum_SERVICE_KICK;
     case 9:
-    return ImActorModelEntityDialog_ContentTypeEnum_SERVICE_LEAVE;
+    return AMDialog_ContentTypeEnum_SERVICE_LEAVE;
     case 10:
-    return ImActorModelEntityDialog_ContentTypeEnum_SERVICE_REGISTERED;
+    return AMDialog_ContentTypeEnum_SERVICE_REGISTERED;
     case 11:
-    return ImActorModelEntityDialog_ContentTypeEnum_SERVICE_CREATED;
+    return AMDialog_ContentTypeEnum_SERVICE_CREATED;
     case 12:
-    return ImActorModelEntityDialog_ContentTypeEnum_SERVICE_TITLE;
+    return AMDialog_ContentTypeEnum_SERVICE_TITLE;
     case 13:
-    return ImActorModelEntityDialog_ContentTypeEnum_SERVICE_AVATAR;
+    return AMDialog_ContentTypeEnum_SERVICE_AVATAR;
     case 14:
-    return ImActorModelEntityDialog_ContentTypeEnum_SERVICE_AVATAR_REMOVED;
+    return AMDialog_ContentTypeEnum_SERVICE_AVATAR_REMOVED;
   }
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityDialog_ContentTypeEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDialog_ContentTypeEnum)

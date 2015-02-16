@@ -33,12 +33,12 @@
   return self->maxGroupSize_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->maxGroupSize_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->maxGroupSize_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->maxGroupSize_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->maxGroupSize_];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiConfig *)other {
@@ -51,8 +51,8 @@
     { "initWithInt:", "Config", NULL, 0x1, NULL },
     { "init", "Config", NULL, 0x1, NULL },
     { "getMaxGroupSize", NULL, "I", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "maxGroupSize_", NULL, 0x2, "I", NULL,  },

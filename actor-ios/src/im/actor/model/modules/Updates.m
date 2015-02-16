@@ -14,11 +14,11 @@
 
 @interface ImActorModelModulesUpdates () {
  @public
-  ImActorModelDroidkitActorsActorRef *updateActor_;
+  DKActorRef *updateActor_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates, updateActor_, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates, updateActor_, DKActorRef *)
 
 @interface ImActorModelModulesUpdates_$1 () {
  @public
@@ -35,19 +35,19 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates_$1, this$0_, ImActorModelModulesU
 }
 
 - (void)run {
-  self->updateActor_ = [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), [[ImActorModelModulesUpdates_$1 alloc] initWithImActorModelModulesUpdates:self]) withNSString:@"actor/updates"];
+  self->updateActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), [[ImActorModelModulesUpdates_$1 alloc] initWithImActorModelModulesUpdates:self]) withNSString:@"actor/updates"];
 }
 
 - (void)onNewSessionCreated {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(updateActor_)) sendWithId:[[ImActorModelModulesUpdatesSequenceActor_Invalidate alloc] init]];
+  [((DKActorRef *) nil_chk(updateActor_)) sendWithId:[[ImActorModelModulesUpdatesSequenceActor_Invalidate alloc] init]];
 }
 
 - (void)onPushReceivedWithInt:(jint)seq {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(updateActor_)) sendWithId:[[ImActorModelModulesUpdatesSequenceActor_PushSeq alloc] initWithInt:seq]];
+  [((DKActorRef *) nil_chk(updateActor_)) sendWithId:[[ImActorModelModulesUpdatesSequenceActor_PushSeq alloc] initWithInt:seq]];
 }
 
 - (void)onUpdateReceivedWithId:(id)update {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(updateActor_)) sendWithId:update];
+  [((DKActorRef *) nil_chk(updateActor_)) sendWithId:update];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdates *)other {

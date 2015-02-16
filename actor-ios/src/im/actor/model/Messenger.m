@@ -4,11 +4,15 @@
 //
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/AuthState.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/LogCallback.h"
 #include "im/actor/model/Messenger.h"
-#include "im/actor/model/State.h"
+#include "im/actor/model/Threading.h"
 #include "im/actor/model/concurrency/Command.h"
+#include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/entity/Peer.h"
+#include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
@@ -30,30 +34,32 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
   if (self = [super init]) {
+    DKEnvironment_setThreadingWithAMThreading_([((AMConfiguration *) nil_chk(configuration)) getThreading]);
+    AMLog_setLogWithAMLogCallback_([configuration getLog]);
     self->modules_ = [[ImActorModelModulesModules alloc] initWithAMConfiguration:configuration];
   }
   return self;
 }
 
-- (AMStateEnum *)getState {
-  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) getState];
+- (AMAuthStateEnum *)getAuthState {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) getAuthState];
 }
 
 - (jboolean)isLoggedIn {
-  return [self getState] == AMStateEnum_get_LOGGED_IN();
+  return [self getAuthState] == AMAuthStateEnum_get_LOGGED_IN();
 }
 
-- (id<ImActorModelConcurrencyCommand>)requestSmsWithLong:(jlong)phone {
+- (id<AMCommand>)requestSmsWithLong:(jlong)phone {
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) requestSmsWithLong:phone];
 }
 
-- (id<ImActorModelConcurrencyCommand>)sendCodeWithInt:(jint)code {
+- (id<AMCommand>)sendCodeWithInt:(jint)code {
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) sendCodeWithInt:code];
 }
 
-- (id<ImActorModelConcurrencyCommand>)signUpWithNSString:(NSString *)firstName
-                                            withNSString:(NSString *)avatarPath
-                                             withBoolean:(jboolean)isSilent {
+- (id<AMCommand>)signUpWithNSString:(NSString *)firstName
+                       withNSString:(NSString *)avatarPath
+                        withBoolean:(jboolean)isSilent {
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) signUpWithNSString:firstName withNSString:avatarPath withBoolean:isSilent];
 }
 
@@ -69,16 +75,16 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) myUid];
 }
 
-- (id<ImActorModelMvvmKeyValueEngine>)getUsers {
+- (id<AMKeyValueEngine>)getUsers {
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) getUsers];
 }
 
-- (id<ImActorModelMvvmListEngine>)getDialogs {
+- (id<AMListEngine>)getDialogs {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getDialogsEngine];
 }
 
-- (id<ImActorModelMvvmListEngine>)getMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getConversationEngineWithImActorModelEntityPeer:peer];
+- (id<AMListEngine>)getMessagesWithAMPeer:(AMPeer *)peer {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getConversationEngineWithAMPeer:peer];
 }
 
 - (void)onAppVisible {
@@ -93,33 +99,33 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
   }
 }
 
-- (void)onConversationOpenWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) onConversationOpenWithImActorModelEntityPeer:peer];
+- (void)onConversationOpenWithAMPeer:(AMPeer *)peer {
+  [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) onConversationOpenWithAMPeer:peer];
 }
 
-- (void)onConversationClosedWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) onConversationClosedWithImActorModelEntityPeer:peer];
+- (void)onConversationClosedWithAMPeer:(AMPeer *)peer {
+  [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) onConversationClosedWithAMPeer:peer];
 }
 
-- (void)onTypingWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) onTypingWithImActorModelEntityPeer:peer];
+- (void)onTypingWithAMPeer:(AMPeer *)peer {
+  [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) onTypingWithAMPeer:peer];
 }
 
-- (void)saveDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                               withNSString:(NSString *)draft {
-  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) saveDraftWithImActorModelEntityPeer:peer withNSString:draft];
+- (void)saveDraftWithAMPeer:(AMPeer *)peer
+               withNSString:(NSString *)draft {
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) saveDraftWithAMPeer:peer withNSString:draft];
 }
 
-- (NSString *)loadDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) loadDraftWithImActorModelEntityPeer:peer];
+- (NSString *)loadDraftWithAMPeer:(AMPeer *)peer {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) loadDraftWithAMPeer:peer];
 }
 
-- (id<ImActorModelConcurrencyCommand>)editMyNameWithNSString:(NSString *)newName {
+- (id<AMCommand>)editMyNameWithNSString:(NSString *)newName {
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) editMyNameWithNSString:newName];
 }
 
-- (id<ImActorModelConcurrencyCommand>)editNameWithInt:(jint)uid
-                                         withNSString:(NSString *)name {
+- (id<AMCommand>)editNameWithInt:(jint)uid
+                    withNSString:(NSString *)name {
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) editNameWithInt:uid withNSString:name];
 }
 
@@ -131,7 +137,7 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "initWithAMConfiguration:", "Messenger", NULL, 0x1, NULL },
-    { "getState", NULL, "Lim.actor.model.State;", 0x1, NULL },
+    { "getAuthState", NULL, "Lim.actor.model.AuthState;", 0x1, NULL },
     { "isLoggedIn", NULL, "Z", 0x1, NULL },
     { "requestSmsWithLong:", "requestSms", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
     { "sendCodeWithInt:", "sendCode", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
@@ -141,14 +147,14 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
     { "myUid", NULL, "I", 0x1, NULL },
     { "getUsers", NULL, "Lim.actor.model.mvvm.KeyValueEngine;", 0x1, NULL },
     { "getDialogs", NULL, "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
-    { "getMessagesWithImActorModelEntityPeer:", "getMessages", "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
+    { "getMessagesWithAMPeer:", "getMessages", "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
     { "onAppVisible", NULL, "V", 0x1, NULL },
     { "onAppHidden", NULL, "V", 0x1, NULL },
-    { "onConversationOpenWithImActorModelEntityPeer:", "onConversationOpen", "V", 0x1, NULL },
-    { "onConversationClosedWithImActorModelEntityPeer:", "onConversationClosed", "V", 0x1, NULL },
-    { "onTypingWithImActorModelEntityPeer:", "onTyping", "V", 0x1, NULL },
-    { "saveDraftWithImActorModelEntityPeer:withNSString:", "saveDraft", "V", 0x1, NULL },
-    { "loadDraftWithImActorModelEntityPeer:", "loadDraft", "Ljava.lang.String;", 0x1, NULL },
+    { "onConversationOpenWithAMPeer:", "onConversationOpen", "V", 0x1, NULL },
+    { "onConversationClosedWithAMPeer:", "onConversationClosed", "V", 0x1, NULL },
+    { "onTypingWithAMPeer:", "onTyping", "V", 0x1, NULL },
+    { "saveDraftWithAMPeer:withNSString:", "saveDraft", "V", 0x1, NULL },
+    { "loadDraftWithAMPeer:", "loadDraft", "Ljava.lang.String;", 0x1, NULL },
     { "editMyNameWithNSString:", "editMyName", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
     { "editNameWithInt:withNSString:", "editName", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
   };

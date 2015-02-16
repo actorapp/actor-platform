@@ -52,17 +52,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetContacts, users_, id<JavaUtilLi
   return self->isNotChanged__;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+- (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
-  for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
+  for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
     [_users addWithId:[[ImActorModelApiUser alloc] init]];
   }
   self->users_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_users];
   self->isNotChanged__ = [values getBoolWithInt:2];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
   [writer writeBoolWithInt:2 withBoolean:self->isNotChanged__];
 }
 
@@ -83,8 +83,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetContacts, users_, id<JavaUtilLi
     { "init", "ResponseGetContacts", NULL, 0x1, NULL },
     { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
     { "isNotChanged", NULL, "Z", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -100,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetContacts, users_, id<JavaUtilLi
 
 ImActorModelApiRpcResponseGetContacts *ImActorModelApiRpcResponseGetContacts_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetContacts_init();
-  return ((ImActorModelApiRpcResponseGetContacts *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseGetContacts alloc] init], data));
+  return ((ImActorModelApiRpcResponseGetContacts *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseGetContacts alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetContacts)

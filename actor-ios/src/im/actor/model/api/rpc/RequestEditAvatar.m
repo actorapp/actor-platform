@@ -43,15 +43,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditAvatar, fileLocation_, ImActorM
   return self->fileLocation_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->fileLocation_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiFileLocation alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->fileLocation_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiFileLocation alloc] init]];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->fileLocation_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->fileLocation_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->fileLocation_];
 }
 
 - (jint)getHeaderKey {
@@ -69,8 +69,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditAvatar, fileLocation_, ImActorM
     { "initWithImActorModelApiFileLocation:", "RequestEditAvatar", NULL, 0x1, NULL },
     { "init", "RequestEditAvatar", NULL, 0x1, NULL },
     { "getFileLocation", NULL, "Lim.actor.model.api.FileLocation;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -86,7 +86,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditAvatar, fileLocation_, ImActorM
 
 ImActorModelApiRpcRequestEditAvatar *ImActorModelApiRpcRequestEditAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditAvatar_init();
-  return ((ImActorModelApiRpcRequestEditAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestEditAvatar alloc] init], data));
+  return ((ImActorModelApiRpcRequestEditAvatar *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestEditAvatar alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEditAvatar)

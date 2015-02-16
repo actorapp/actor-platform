@@ -6,14 +6,14 @@
 #ifndef _ImActorModelApiUploadConfig_H_
 #define _ImActorModelApiUploadConfig_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiUploadConfig : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiUploadConfig : BSBserObject {
 }
 
 - (instancetype)initWithByteArray:(IOSByteArray *)serverData;
@@ -22,9 +22,9 @@
 
 - (IOSByteArray *)getServerData;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

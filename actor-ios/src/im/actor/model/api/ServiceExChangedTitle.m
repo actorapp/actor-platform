@@ -35,15 +35,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
   return self->title_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->title_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->title_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->title_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->title_];
+  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->title_];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiServiceExChangedTitle *)other {
@@ -56,8 +56,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
     { "initWithNSString:", "ServiceExChangedTitle", NULL, 0x1, NULL },
     { "init", "ServiceExChangedTitle", NULL, 0x1, NULL },
     { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "title_", NULL, 0x2, "Ljava.lang.String;", NULL,  },

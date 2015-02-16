@@ -52,16 +52,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
   return self->rids_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiOutPeer alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiOutPeer alloc] init]];
   self->rids_ = [values getRepeatedLongWithInt:3];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
   [writer writeRepeatedLongWithInt:3 withJavaUtilList:self->rids_];
 }
 
@@ -82,8 +82,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
     { "init", "RequestDeleteMessage", NULL, 0x1, NULL },
     { "getPeer", NULL, "Lim.actor.model.api.OutPeer;", 0x1, NULL },
     { "getRids", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -100,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
 
 ImActorModelApiRpcRequestDeleteMessage *ImActorModelApiRpcRequestDeleteMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestDeleteMessage_init();
-  return ((ImActorModelApiRpcRequestDeleteMessage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestDeleteMessage alloc] init], data));
+  return ((ImActorModelApiRpcRequestDeleteMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestDeleteMessage alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestDeleteMessage)

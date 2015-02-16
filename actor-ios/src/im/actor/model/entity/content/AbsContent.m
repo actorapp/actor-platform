@@ -33,11 +33,11 @@
   return ImActorModelEntityContentAbsContent_contentFromBytesWithByteArray_(data);
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+- (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((ImActorModelEntityContentAbsContent_ContentTypeEnum *) nil_chk([self getContentType])) getValue]];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((ImActorModelEntityContentAbsContent_ContentTypeEnum *) nil_chk([self getContentType])) getValue]];
 }
 
 + (ImActorModelEntityContentAbsContent_ContentTypeEnum *)typeFromValueWithInt:(jint)val {
@@ -57,8 +57,8 @@
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "contentFromBytesWithByteArray:", "contentFromBytes", "Lim.actor.model.entity.content.AbsContent;", 0x9, "Ljava.io.IOException;" },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "typeFromValueWithInt:", "typeFromValue", "Lim.actor.model.entity.content.AbsContent$ContentType;", 0xc, NULL },
     { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x404, NULL },
     { "init", NULL, NULL, 0x1, NULL },
@@ -71,7 +71,7 @@
 
 ImActorModelEntityContentAbsContent *ImActorModelEntityContentAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentAbsContent_init();
-  ImActorModelDroidkitBserBserValues *reader = [[ImActorModelDroidkitBserBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:ImActorModelDroidkitBserBserParser_deserializeWithAMDataInput_([[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_])];
+  BSBserValues *reader = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithAMDataInput_([[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_])];
   ImActorModelEntityContentAbsContent_ContentTypeEnum *type = ImActorModelEntityContentAbsContent_typeFromValueWithInt_([reader getIntWithInt:1]);
   switch ([type ordinal]) {
     case ImActorModelEntityContentAbsContent_ContentType_TEXT:

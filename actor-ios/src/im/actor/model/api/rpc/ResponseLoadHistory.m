@@ -54,9 +54,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadHistory, users_, id<JavaUtilLi
   return self->users_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+- (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _history = [[JavaUtilArrayList alloc] init];
-  for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
+  for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
     [_history addWithId:[[ImActorModelApiHistoryMessage alloc] init]];
   }
   self->history_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_history];
@@ -67,8 +67,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadHistory, users_, id<JavaUtilLi
   self->users_ = [values getRepeatedObjWithInt:2 withJavaUtilList:_users];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->history_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->history_];
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->users_];
 }
 
@@ -89,8 +89,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadHistory, users_, id<JavaUtilLi
     { "init", "ResponseLoadHistory", NULL, 0x1, NULL },
     { "getHistory", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -106,7 +106,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadHistory, users_, id<JavaUtilLi
 
 ImActorModelApiRpcResponseLoadHistory *ImActorModelApiRpcResponseLoadHistory_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseLoadHistory_init();
-  return ((ImActorModelApiRpcResponseLoadHistory *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseLoadHistory alloc] init], data));
+  return ((ImActorModelApiRpcResponseLoadHistory *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseLoadHistory alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseLoadHistory)

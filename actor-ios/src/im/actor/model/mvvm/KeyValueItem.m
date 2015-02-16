@@ -6,19 +6,19 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/mvvm/KeyValueItem.h"
 
-@interface ImActorModelMvvmKeyValueItem : NSObject
+@interface AMKeyValueItem : NSObject
 @end
 
-@implementation ImActorModelMvvmKeyValueItem
+@implementation AMKeyValueItem
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "getEngineId", NULL, "J", 0x401, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelMvvmKeyValueItem = { 1, "KeyValueItem", "im.actor.model.mvvm", NULL, 0x201, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelMvvmKeyValueItem;
+  static const J2ObjcClassInfo _AMKeyValueItem = { 1, "KeyValueItem", "im.actor.model.mvvm", NULL, 0x201, 1, methods, 0, NULL, 0, NULL};
+  return &_AMKeyValueItem;
 }
 
 @end
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelMvvmKeyValueItem)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMKeyValueItem)

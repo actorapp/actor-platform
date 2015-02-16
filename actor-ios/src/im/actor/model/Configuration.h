@@ -6,47 +6,40 @@
 #ifndef _AMConfiguration_H_
 #define _AMConfiguration_H_
 
-@class AMEndpoints;
-@protocol AMOnlineCallback;
-@protocol AMTypingCallback;
-@protocol ImActorModelConcurrencyMainThread;
-@protocol ImActorModelStorageEnginesFactory;
-@protocol ImActorModelStoragePreferencesStorage;
+@class IOSObjectArray;
+@protocol AMLogCallback;
+@protocol AMMainThread;
+@protocol AMMessengerCallback;
+@protocol AMNetworking;
+@protocol AMStorage;
+@protocol AMThreading;
 
 #include "J2ObjC_header.h"
 
 @interface AMConfiguration : NSObject {
 }
 
-- (jboolean)isPersistMessages;
+- (instancetype)initWithAMNetworking:(id<AMNetworking>)networking
+       withAMConnectionEndpointArray:(IOSObjectArray *)endpoints
+                     withAMThreading:(id<AMThreading>)threading
+                    withAMMainThread:(id<AMMainThread>)mainThread
+                       withAMStorage:(id<AMStorage>)storage
+             withAMMessengerCallback:(id<AMMessengerCallback>)callback
+                   withAMLogCallback:(id<AMLogCallback>)log;
 
-- (void)setPersistMessagesWithBoolean:(jboolean)persistMessages;
+- (id<AMNetworking>)getNetworking;
 
-- (id<ImActorModelStorageEnginesFactory>)getEnginesFactory;
+- (IOSObjectArray *)getEndpoints;
 
-- (void)setEnginesFactoryWithImActorModelStorageEnginesFactory:(id<ImActorModelStorageEnginesFactory>)enginesFactory;
+- (id<AMThreading>)getThreading;
 
-- (id<ImActorModelStoragePreferencesStorage>)getPreferencesStorage;
+- (id<AMMainThread>)getMainThread;
 
-- (void)setPreferencesStorageWithImActorModelStoragePreferencesStorage:(id<ImActorModelStoragePreferencesStorage>)preferencesStorage;
+- (id<AMStorage>)getStorage;
 
-- (AMEndpoints *)getEndpoints;
+- (id<AMMessengerCallback>)getCallback;
 
-- (void)setEndpointsWithAMEndpoints:(AMEndpoints *)endpoints;
-
-- (id<ImActorModelConcurrencyMainThread>)getMainThread;
-
-- (void)setMainThreadWithImActorModelConcurrencyMainThread:(id<ImActorModelConcurrencyMainThread>)mainThread;
-
-- (id<AMOnlineCallback>)getOnlineCallback;
-
-- (void)setOnlineCallbackWithAMOnlineCallback:(id<AMOnlineCallback>)onlineCallback;
-
-- (id<AMTypingCallback>)getTypingCallback;
-
-- (void)setTypingCallbackWithAMTypingCallback:(id<AMTypingCallback>)typingCallback;
-
-- (instancetype)init;
+- (id<AMLogCallback>)getLog;
 
 @end
 

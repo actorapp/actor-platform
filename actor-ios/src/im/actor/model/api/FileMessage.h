@@ -6,15 +6,15 @@
 #ifndef _ImActorModelApiFileMessage_H_
 #define _ImActorModelApiFileMessage_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiFastThumb;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiFileMessage : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiFileMessage : BSBserObject {
 }
 
 - (instancetype)initWithLong:(jlong)fileId
@@ -44,9 +44,9 @@ withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
 
 - (IOSByteArray *)getExt;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

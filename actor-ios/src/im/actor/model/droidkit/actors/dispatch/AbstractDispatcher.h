@@ -3,22 +3,22 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/dispatch/AbstractDispatcher.java
 //
 
-#ifndef _ImActorModelDroidkitActorsDispatchAbstractDispatcher_H_
-#define _ImActorModelDroidkitActorsDispatchAbstractDispatcher_H_
+#ifndef _DKAbstractDispatcher_H_
+#define _DKAbstractDispatcher_H_
 
-@class ImActorModelDroidkitActorsDispatchAbstractDispatchQueue;
-@protocol ImActorModelDroidkitActorsDispatchDispatch;
+@class DKAbstractDispatchQueue;
+@protocol DKDispatch;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/dispatch/QueueListener.h"
 
-@interface ImActorModelDroidkitActorsDispatchAbstractDispatcher : NSObject {
+@interface DKAbstractDispatcher : NSObject {
  @public
-  id<ImActorModelDroidkitActorsDispatchDispatch> dispatch_;
+  id<DKDispatch> dispatch_;
 }
 
-- (instancetype)initWithImActorModelDroidkitActorsDispatchAbstractDispatchQueue:(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue *)queue
-                                 withImActorModelDroidkitActorsDispatchDispatch:(id<ImActorModelDroidkitActorsDispatchDispatch>)dispatch;
+- (instancetype)initWithDKAbstractDispatchQueue:(DKAbstractDispatchQueue *)queue
+                                 withDKDispatch:(id<DKDispatch>)dispatch;
 
 - (id)getQueue;
 
@@ -28,29 +28,31 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsDispatchAbstractDispatcher)
+J2OBJC_EMPTY_STATIC_INIT(DKAbstractDispatcher)
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchAbstractDispatcher, dispatch_, id<ImActorModelDroidkitActorsDispatchDispatch>)
+J2OBJC_FIELD_SETTER(DKAbstractDispatcher, dispatch_, id<DKDispatch>)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsDispatchAbstractDispatcher)
+typedef DKAbstractDispatcher ImActorModelDroidkitActorsDispatchAbstractDispatcher;
 
-@interface ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1 : NSObject < ImActorModelDroidkitActorsDispatchQueueListener > {
+J2OBJC_TYPE_LITERAL_HEADER(DKAbstractDispatcher)
+
+@interface DKAbstractDispatcher_$1 : NSObject < DKQueueListener > {
 }
 
 - (void)onQueueChanged;
 
-- (instancetype)initWithImActorModelDroidkitActorsDispatchAbstractDispatcher:(ImActorModelDroidkitActorsDispatchAbstractDispatcher *)outer$;
+- (instancetype)initWithDKAbstractDispatcher:(DKAbstractDispatcher *)outer$;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1)
+J2OBJC_EMPTY_STATIC_INIT(DKAbstractDispatcher_$1)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsDispatchAbstractDispatcher_$1)
+J2OBJC_TYPE_LITERAL_HEADER(DKAbstractDispatcher_$1)
 
-#endif // _ImActorModelDroidkitActorsDispatchAbstractDispatcher_H_
+#endif // _DKAbstractDispatcher_H_

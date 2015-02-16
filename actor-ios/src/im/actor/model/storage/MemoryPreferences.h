@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/storage/MemoryPreferences.java
 //
 
-#ifndef _ImActorModelStorageMemoryPreferences_H_
-#define _ImActorModelStorageMemoryPreferences_H_
+#ifndef _AMMemoryPreferences_H_
+#define _AMMemoryPreferences_H_
 
 @class IOSByteArray;
 @class JavaUtilHashMap;
@@ -12,7 +12,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/storage/PreferencesStorage.h"
 
-@interface ImActorModelStorageMemoryPreferences : NSObject < ImActorModelStoragePreferencesStorage > {
+@interface AMMemoryPreferences : NSObject < AMPreferencesStorage > {
 }
 
 - (void)putLongWithNSString:(NSString *)key
@@ -47,11 +47,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelStorageMemoryPreferences)
+J2OBJC_EMPTY_STATIC_INIT(AMMemoryPreferences)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelStorageMemoryPreferences)
+typedef AMMemoryPreferences ImActorModelStorageMemoryPreferences;
 
-#endif // _ImActorModelStorageMemoryPreferences_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMMemoryPreferences)
+
+#endif // _AMMemoryPreferences_H_

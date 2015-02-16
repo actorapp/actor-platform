@@ -56,14 +56,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
   return self->date_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->seq_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
   self->date_ = [values getLongWithInt:3];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -90,8 +90,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
     { "getSeq", NULL, "I", 0x1, NULL },
     { "getState", NULL, "[B", 0x1, NULL },
     { "getDate", NULL, "J", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -108,7 +108,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 
 ImActorModelApiRpcResponseSeqDate *ImActorModelApiRpcResponseSeqDate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseSeqDate_init();
-  return ((ImActorModelApiRpcResponseSeqDate *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseSeqDate alloc] init], data));
+  return ((ImActorModelApiRpcResponseSeqDate *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseSeqDate alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseSeqDate)

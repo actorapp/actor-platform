@@ -64,15 +64,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
   return self->apiKey_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->phoneNumber_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->phoneNumber_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->smsHash_ = [values getStringWithInt:2];
   self->appId_ = [values getIntWithInt:3];
   self->apiKey_ = [values getStringWithInt:4];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->phoneNumber_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->phoneNumber_];
   if (self->smsHash_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -105,8 +105,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
     { "getSmsHash", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getAppId", NULL, "I", 0x1, NULL },
     { "getApiKey", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -125,7 +125,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
 
 ImActorModelApiRpcRequestSendAuthCall *ImActorModelApiRpcRequestSendAuthCall_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSendAuthCall_init();
-  return ((ImActorModelApiRpcRequestSendAuthCall *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestSendAuthCall alloc] init], data));
+  return ((ImActorModelApiRpcRequestSendAuthCall *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestSendAuthCall alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSendAuthCall)

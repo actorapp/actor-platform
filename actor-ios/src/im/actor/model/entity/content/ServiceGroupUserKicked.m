@@ -46,14 +46,14 @@
   return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_KICKED();
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  [super parseWithImActorModelDroidkitBserBserValues:values];
-  kickedUid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:10];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  [super parseWithBSBserValues:values];
+  kickedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [super serializeWithImActorModelDroidkitBserBserWriter:writer];
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:kickedUid_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [super serializeWithBSBserWriter:writer];
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:kickedUid_];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelEntityContentServiceGroupUserKicked *)other {
@@ -68,8 +68,8 @@
     { "init", "ServiceGroupUserKicked", NULL, 0x2, NULL },
     { "getKickedUid", NULL, "I", 0x1, NULL },
     { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "kickedUid_", NULL, 0x2, "I", NULL,  },
@@ -82,7 +82,7 @@
 
 ImActorModelEntityContentServiceGroupUserKicked *ImActorModelEntityContentServiceGroupUserKicked_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentServiceGroupUserKicked_init();
-  return ((ImActorModelEntityContentServiceGroupUserKicked *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupUserKicked alloc] init], data));
+  return ((ImActorModelEntityContentServiceGroupUserKicked *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupUserKicked alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupUserKicked)

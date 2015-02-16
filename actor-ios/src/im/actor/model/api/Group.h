@@ -6,15 +6,15 @@
 #ifndef _ImActorModelApiGroup_H_
 #define _ImActorModelApiGroup_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class ImActorModelApiAvatar;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiGroup : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiGroup : BSBserObject {
 }
 
 - (instancetype)initWithInt:(jint)id_
@@ -44,9 +44,9 @@
 
 - (jlong)getCreateDate;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

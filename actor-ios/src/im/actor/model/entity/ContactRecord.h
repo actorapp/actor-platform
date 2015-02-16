@@ -3,12 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/ContactRecord.java
 //
 
-#ifndef _ImActorModelEntityContactRecord_H_
-#define _ImActorModelEntityContactRecord_H_
+#ifndef _AMContactRecord_H_
+#define _AMContactRecord_H_
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelEntityContactRecord : NSObject {
+@interface AMContactRecord : NSObject {
 }
 
 - (instancetype)initWithInt:(jint)id_
@@ -29,11 +29,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContactRecord)
+J2OBJC_EMPTY_STATIC_INIT(AMContactRecord)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContactRecord)
+typedef AMContactRecord ImActorModelEntityContactRecord;
 
-#endif // _ImActorModelEntityContactRecord_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMContactRecord)
+
+#endif // _AMContactRecord_H_

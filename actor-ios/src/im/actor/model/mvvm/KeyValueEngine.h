@@ -3,18 +3,18 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/mvvm/KeyValueEngine.java
 //
 
-#ifndef _ImActorModelMvvmKeyValueEngine_H_
-#define _ImActorModelMvvmKeyValueEngine_H_
+#ifndef _AMKeyValueEngine_H_
+#define _AMKeyValueEngine_H_
 
 @class IOSLongArray;
-@protocol ImActorModelMvvmKeyValueItem;
+@protocol AMKeyValueItem;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelMvvmKeyValueEngine < NSObject, JavaObject >
+@protocol AMKeyValueEngine < NSObject, JavaObject >
 
-- (void)addOrUpdateItemWithImActorModelMvvmKeyValueItem:(id<ImActorModelMvvmKeyValueItem>)item;
+- (void)addOrUpdateItemWithAMKeyValueItem:(id<AMKeyValueItem>)item;
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
 
@@ -30,8 +30,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelMvvmKeyValueEngine)
+J2OBJC_EMPTY_STATIC_INIT(AMKeyValueEngine)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelMvvmKeyValueEngine)
+#define ImActorModelMvvmKeyValueEngine AMKeyValueEngine
 
-#endif // _ImActorModelMvvmKeyValueEngine_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMKeyValueEngine)
+
+#endif // _AMKeyValueEngine_H_

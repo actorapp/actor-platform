@@ -3,37 +3,39 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/mailbox/ActorEndpoint.java
 //
 
-#ifndef _ImActorModelDroidkitActorsMailboxActorEndpoint_H_
-#define _ImActorModelDroidkitActorsMailboxActorEndpoint_H_
+#ifndef _DKActorEndpoint_H_
+#define _DKActorEndpoint_H_
 
-@class ImActorModelDroidkitActorsActorScope;
-@class ImActorModelDroidkitActorsMailboxMailbox;
+@class DKActorScope;
+@class DKMailbox;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsMailboxActorEndpoint : NSObject {
+@interface DKActorEndpoint : NSObject {
 }
 
 - (instancetype)initWithNSString:(NSString *)path;
 
 - (NSString *)getPath;
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)getMailbox;
+- (DKMailbox *)getMailbox;
 
-- (ImActorModelDroidkitActorsActorScope *)getScope;
+- (DKActorScope *)getScope;
 
 - (jboolean)isDisconnected;
 
-- (void)connectWithImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox
-                   withImActorModelDroidkitActorsActorScope:(ImActorModelDroidkitActorsActorScope *)scope;
+- (void)connectWithDKMailbox:(DKMailbox *)mailbox
+            withDKActorScope:(DKActorScope *)scope;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsMailboxActorEndpoint)
+J2OBJC_EMPTY_STATIC_INIT(DKActorEndpoint)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxActorEndpoint)
+typedef DKActorEndpoint ImActorModelDroidkitActorsMailboxActorEndpoint;
 
-#endif // _ImActorModelDroidkitActorsMailboxActorEndpoint_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKActorEndpoint)
+
+#endif // _DKActorEndpoint_H_

@@ -11,52 +11,52 @@
 #include "im/actor/model/droidkit/actors/mailbox/ActorDispatcher.h"
 #include "java/lang/Exception.h"
 
-@interface ImActorModelDroidkitActorsActorContext () {
+@interface DKActorContext () {
  @public
-  ImActorModelDroidkitActorsActorScope *actorScope_;
+  DKActorScope *actorScope_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorContext, actorScope_, ImActorModelDroidkitActorsActorScope *)
+J2OBJC_FIELD_SETTER(DKActorContext, actorScope_, DKActorScope *)
 
-@implementation ImActorModelDroidkitActorsActorContext
+@implementation DKActorContext
 
-- (instancetype)initWithImActorModelDroidkitActorsActorScope:(ImActorModelDroidkitActorsActorScope *)scope {
+- (instancetype)initWithDKActorScope:(DKActorScope *)scope {
   if (self = [super init]) {
     self->actorScope_ = scope;
   }
   return self;
 }
 
-- (ImActorModelDroidkitActorsActorRef *)getSelf {
-  return [((ImActorModelDroidkitActorsActorScope *) nil_chk(actorScope_)) getActorRef];
+- (DKActorRef *)getSelf {
+  return [((DKActorScope *) nil_chk(actorScope_)) getActorRef];
 }
 
-- (ImActorModelDroidkitActorsActorSystem *)getSystem {
-  return [((ImActorModelDroidkitActorsActorScope *) nil_chk(actorScope_)) getActorSystem];
+- (DKActorSystem *)getSystem {
+  return [((DKActorScope *) nil_chk(actorScope_)) getActorSystem];
 }
 
-- (ImActorModelDroidkitActorsActorRef *)sender {
-  return [((ImActorModelDroidkitActorsActorScope *) nil_chk(actorScope_)) getSender];
+- (DKActorRef *)sender {
+  return [((DKActorScope *) nil_chk(actorScope_)) getSender];
 }
 
 - (void)stopSelf {
   @try {
-    [((ImActorModelDroidkitActorsMailboxActorDispatcher *) nil_chk([((ImActorModelDroidkitActorsActorScope *) nil_chk(actorScope_)) getDispatcher])) killGracefullyWithImActorModelDroidkitActorsActorScope:actorScope_];
+    [((DKActorDispatcher *) nil_chk([((DKActorScope *) nil_chk(actorScope_)) getDispatcher])) killGracefullyWithDKActorScope:actorScope_];
   }
   @catch (JavaLangException *e) {
     [((JavaLangException *) nil_chk(e)) printStackTrace];
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsActorContext *)other {
+- (void)copyAllFieldsTo:(DKActorContext *)other {
   [super copyAllFieldsTo:other];
   other->actorScope_ = actorScope_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelDroidkitActorsActorScope:", "ActorContext", NULL, 0x1, NULL },
+    { "initWithDKActorScope:", "ActorContext", NULL, 0x1, NULL },
     { "getSelf", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
     { "getSystem", NULL, "Lim.actor.model.droidkit.actors.ActorSystem;", 0x1, NULL },
     { "sender", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
@@ -65,10 +65,10 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorContext, actorScope_, ImActor
   static const J2ObjcFieldInfo fields[] = {
     { "actorScope_", NULL, 0x12, "Lim.actor.model.droidkit.actors.ActorScope;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsActorContext = { 1, "ActorContext", "im.actor.model.droidkit.actors", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsActorContext;
+  static const J2ObjcClassInfo _DKActorContext = { 1, "ActorContext", "im.actor.model.droidkit.actors", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
+  return &_DKActorContext;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsActorContext)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorContext)

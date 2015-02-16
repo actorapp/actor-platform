@@ -16,13 +16,13 @@
 
 @interface ImActorModelModulesTyping () {
  @public
-  ImActorModelDroidkitActorsActorRef *ownTypingActor_;
-  ImActorModelDroidkitActorsActorRef *typingActor_;
+  DKActorRef *ownTypingActor_;
+  DKActorRef *typingActor_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesTyping, ownTypingActor_, ImActorModelDroidkitActorsActorRef *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesTyping, typingActor_, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesTyping, ownTypingActor_, DKActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesTyping, typingActor_, DKActorRef *)
 
 @interface ImActorModelModulesTyping_$1 () {
  @public
@@ -36,14 +36,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTyping_$1, val$messenger_, ImActorModelMo
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   if (self = [super initWithImActorModelModulesModules:messenger]) {
-    self->ownTypingActor_ = [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(ImActorModelModulesTypingOwnTypingActor_class_(), [[ImActorModelModulesTyping_$1 alloc] initWithImActorModelModulesModules:messenger]) withNSString:@"actor/typing/own"];
+    self->ownTypingActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesTypingOwnTypingActor_class_(), [[ImActorModelModulesTyping_$1 alloc] initWithImActorModelModulesModules:messenger]) withNSString:@"actor/typing/own"];
     self->typingActor_ = ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(messenger);
   }
   return self;
 }
 
-- (void)onTypingWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ownTypingActor_)) sendWithId:[[ImActorModelModulesTypingOwnTypingActor_Typing alloc] initWithImActorModelEntityPeer:peer]];
+- (void)onTypingWithAMPeer:(AMPeer *)peer {
+  [((DKActorRef *) nil_chk(ownTypingActor_)) sendWithId:[[ImActorModelModulesTypingOwnTypingActor_Typing alloc] initWithAMPeer:peer]];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesTyping *)other {
@@ -55,7 +55,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTyping_$1, val$messenger_, ImActorModelMo
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "initWithImActorModelModulesModules:", "Typing", NULL, 0x1, NULL },
-    { "onTypingWithImActorModelEntityPeer:", "onTyping", "V", 0x1, NULL },
+    { "onTypingWithAMPeer:", "onTyping", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "ownTypingActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },

@@ -6,13 +6,13 @@
 #ifndef _AMMessenger_H_
 #define _AMMessenger_H_
 
+@class AMAuthStateEnum;
 @class AMConfiguration;
-@class AMStateEnum;
-@class ImActorModelEntityPeer;
+@class AMPeer;
 @class ImActorModelModulesModules;
-@protocol ImActorModelConcurrencyCommand;
-@protocol ImActorModelMvvmKeyValueEngine;
-@protocol ImActorModelMvvmListEngine;
+@protocol AMCommand;
+@protocol AMKeyValueEngine;
+@protocol AMListEngine;
 
 #include "J2ObjC_header.h"
 
@@ -21,17 +21,17 @@
 
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration;
 
-- (AMStateEnum *)getState;
+- (AMAuthStateEnum *)getAuthState;
 
 - (jboolean)isLoggedIn;
 
-- (id<ImActorModelConcurrencyCommand>)requestSmsWithLong:(jlong)phone;
+- (id<AMCommand>)requestSmsWithLong:(jlong)phone;
 
-- (id<ImActorModelConcurrencyCommand>)sendCodeWithInt:(jint)code;
+- (id<AMCommand>)sendCodeWithInt:(jint)code;
 
-- (id<ImActorModelConcurrencyCommand>)signUpWithNSString:(NSString *)firstName
-                                            withNSString:(NSString *)avatarPath
-                                             withBoolean:(jboolean)isSilent;
+- (id<AMCommand>)signUpWithNSString:(NSString *)firstName
+                       withNSString:(NSString *)avatarPath
+                        withBoolean:(jboolean)isSilent;
 
 - (jlong)getAuthPhone;
 
@@ -39,31 +39,31 @@
 
 - (jint)myUid;
 
-- (id<ImActorModelMvvmKeyValueEngine>)getUsers;
+- (id<AMKeyValueEngine>)getUsers;
 
-- (id<ImActorModelMvvmListEngine>)getDialogs;
+- (id<AMListEngine>)getDialogs;
 
-- (id<ImActorModelMvvmListEngine>)getMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (id<AMListEngine>)getMessagesWithAMPeer:(AMPeer *)peer;
 
 - (void)onAppVisible;
 
 - (void)onAppHidden;
 
-- (void)onConversationOpenWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (void)onConversationOpenWithAMPeer:(AMPeer *)peer;
 
-- (void)onConversationClosedWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (void)onConversationClosedWithAMPeer:(AMPeer *)peer;
 
-- (void)onTypingWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (void)onTypingWithAMPeer:(AMPeer *)peer;
 
-- (void)saveDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                               withNSString:(NSString *)draft;
+- (void)saveDraftWithAMPeer:(AMPeer *)peer
+               withNSString:(NSString *)draft;
 
-- (NSString *)loadDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (NSString *)loadDraftWithAMPeer:(AMPeer *)peer;
 
-- (id<ImActorModelConcurrencyCommand>)editMyNameWithNSString:(NSString *)newName;
+- (id<AMCommand>)editMyNameWithNSString:(NSString *)newName;
 
-- (id<ImActorModelConcurrencyCommand>)editNameWithInt:(jint)uid
-                                         withNSString:(NSString *)name;
+- (id<AMCommand>)editNameWithInt:(jint)uid
+                    withNSString:(NSString *)name;
 
 @end
 

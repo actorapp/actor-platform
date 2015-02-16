@@ -7,19 +7,19 @@
 #include "im/actor/model/concurrency/Command.h"
 #include "im/actor/model/concurrency/CommandCallback.h"
 
-@interface ImActorModelConcurrencyCommand : NSObject
+@interface AMCommand : NSObject
 @end
 
-@implementation ImActorModelConcurrencyCommand
+@implementation AMCommand
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "startWithImActorModelConcurrencyCommandCallback:", "start", "V", 0x401, NULL },
+    { "startWithAMCommandCallback:", "start", "V", 0x401, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelConcurrencyCommand = { 1, "Command", "im.actor.model.concurrency", NULL, 0x201, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelConcurrencyCommand;
+  static const J2ObjcClassInfo _AMCommand = { 1, "Command", "im.actor.model.concurrency", NULL, 0x201, 1, methods, 0, NULL, 0, NULL};
+  return &_AMCommand;
 }
 
 @end
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelConcurrencyCommand)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMCommand)

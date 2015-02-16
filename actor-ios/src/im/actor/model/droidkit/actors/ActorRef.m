@@ -11,34 +11,34 @@
 #include "im/actor/model/droidkit/actors/mailbox/ActorDispatcher.h"
 #include "im/actor/model/droidkit/actors/mailbox/ActorEndpoint.h"
 
-@interface ImActorModelDroidkitActorsActorRef () {
+@interface DKActorRef () {
  @public
-  ImActorModelDroidkitActorsActorSystem *system__;
-  ImActorModelDroidkitActorsMailboxActorDispatcher *dispatcher_;
+  DKActorSystem *system__;
+  DKActorDispatcher *dispatcher_;
   NSString *path_;
-  ImActorModelDroidkitActorsMailboxActorEndpoint *endpoint_;
+  DKActorEndpoint *endpoint_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorRef, system__, ImActorModelDroidkitActorsActorSystem *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorRef, dispatcher_, ImActorModelDroidkitActorsMailboxActorDispatcher *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorRef, path_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorRef, endpoint_, ImActorModelDroidkitActorsMailboxActorEndpoint *)
+J2OBJC_FIELD_SETTER(DKActorRef, system__, DKActorSystem *)
+J2OBJC_FIELD_SETTER(DKActorRef, dispatcher_, DKActorDispatcher *)
+J2OBJC_FIELD_SETTER(DKActorRef, path_, NSString *)
+J2OBJC_FIELD_SETTER(DKActorRef, endpoint_, DKActorEndpoint *)
 
-@implementation ImActorModelDroidkitActorsActorRef
+@implementation DKActorRef
 
 - (NSString *)getPath {
   return path_;
 }
 
-- (ImActorModelDroidkitActorsActorSystem *)system {
+- (DKActorSystem *)system {
   return system__;
 }
 
-- (instancetype)initWithImActorModelDroidkitActorsMailboxActorEndpoint:(ImActorModelDroidkitActorsMailboxActorEndpoint *)endpoint
-                             withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem *)system
-                  withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActorsMailboxActorDispatcher *)dispatcher
-                                                          withNSString:(NSString *)path {
+- (instancetype)initWithDKActorEndpoint:(DKActorEndpoint *)endpoint
+                      withDKActorSystem:(DKActorSystem *)system
+                  withDKActorDispatcher:(DKActorDispatcher *)dispatcher
+                           withNSString:(NSString *)path {
   if (self = [super init]) {
     self->endpoint_ = endpoint;
     self->system__ = system;
@@ -49,46 +49,46 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorRef, endpoint_, ImActorModelD
 }
 
 - (void)sendWithId:(id)message {
-  [self sendWithId:message withImActorModelDroidkitActorsActorRef:nil];
+  [self sendWithId:message withDKActorRef:nil];
 }
 
 - (void)sendWithId:(id)message
-withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender {
-  [self sendWithId:message withLong:0 withImActorModelDroidkitActorsActorRef:sender];
+    withDKActorRef:(DKActorRef *)sender {
+  [self sendWithId:message withLong:0 withDKActorRef:sender];
 }
 
 - (void)sendWithId:(id)message
           withLong:(jlong)delay {
-  [self sendWithId:message withLong:delay withImActorModelDroidkitActorsActorRef:nil];
+  [self sendWithId:message withLong:delay withDKActorRef:nil];
 }
 
 - (void)sendWithId:(id)message
           withLong:(jlong)delay
-withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender {
-  [((ImActorModelDroidkitActorsMailboxActorDispatcher *) nil_chk(dispatcher_)) sendMessageWithImActorModelDroidkitActorsMailboxActorEndpoint:endpoint_ withId:message withLong:ImActorModelDroidkitActorsActorTime_currentTime() + delay withImActorModelDroidkitActorsActorRef:sender];
+    withDKActorRef:(DKActorRef *)sender {
+  [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageWithDKActorEndpoint:endpoint_ withId:message withLong:DKActorTime_currentTime() + delay withDKActorRef:sender];
 }
 
 - (void)sendOnceWithId:(id)message {
-  [self sendWithId:message withImActorModelDroidkitActorsActorRef:nil];
+  [self sendWithId:message withDKActorRef:nil];
 }
 
 - (void)sendOnceWithId:(id)message
-withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender {
-  [self sendOnceWithId:message withLong:0 withImActorModelDroidkitActorsActorRef:sender];
+        withDKActorRef:(DKActorRef *)sender {
+  [self sendOnceWithId:message withLong:0 withDKActorRef:sender];
 }
 
 - (void)sendOnceWithId:(id)message
               withLong:(jlong)delay {
-  [self sendOnceWithId:message withLong:delay withImActorModelDroidkitActorsActorRef:nil];
+  [self sendOnceWithId:message withLong:delay withDKActorRef:nil];
 }
 
 - (void)sendOnceWithId:(id)message
               withLong:(jlong)delay
-withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender {
-  [((ImActorModelDroidkitActorsMailboxActorDispatcher *) nil_chk(dispatcher_)) sendMessageOnceWithImActorModelDroidkitActorsMailboxActorEndpoint:endpoint_ withId:message withLong:ImActorModelDroidkitActorsActorTime_currentTime() + delay withImActorModelDroidkitActorsActorRef:sender];
+        withDKActorRef:(DKActorRef *)sender {
+  [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageOnceWithDKActorEndpoint:endpoint_ withId:message withLong:DKActorTime_currentTime() + delay withDKActorRef:sender];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsActorRef *)other {
+- (void)copyAllFieldsTo:(DKActorRef *)other {
   [super copyAllFieldsTo:other];
   other->system__ = system__;
   other->dispatcher_ = dispatcher_;
@@ -100,15 +100,15 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
   static const J2ObjcMethodInfo methods[] = {
     { "getPath", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "system", NULL, "Lim.actor.model.droidkit.actors.ActorSystem;", 0x1, NULL },
-    { "initWithImActorModelDroidkitActorsMailboxActorEndpoint:withImActorModelDroidkitActorsActorSystem:withImActorModelDroidkitActorsMailboxActorDispatcher:withNSString:", "ActorRef", NULL, 0x1, NULL },
+    { "initWithDKActorEndpoint:withDKActorSystem:withDKActorDispatcher:withNSString:", "ActorRef", NULL, 0x1, NULL },
     { "sendWithId:", "send", "V", 0x1, NULL },
-    { "sendWithId:withImActorModelDroidkitActorsActorRef:", "send", "V", 0x1, NULL },
+    { "sendWithId:withDKActorRef:", "send", "V", 0x1, NULL },
     { "sendWithId:withLong:", "send", "V", 0x1, NULL },
-    { "sendWithId:withLong:withImActorModelDroidkitActorsActorRef:", "send", "V", 0x1, NULL },
+    { "sendWithId:withLong:withDKActorRef:", "send", "V", 0x1, NULL },
     { "sendOnceWithId:", "sendOnce", "V", 0x1, NULL },
-    { "sendOnceWithId:withImActorModelDroidkitActorsActorRef:", "sendOnce", "V", 0x1, NULL },
+    { "sendOnceWithId:withDKActorRef:", "sendOnce", "V", 0x1, NULL },
     { "sendOnceWithId:withLong:", "sendOnce", "V", 0x1, NULL },
-    { "sendOnceWithId:withLong:withImActorModelDroidkitActorsActorRef:", "sendOnce", "V", 0x1, NULL },
+    { "sendOnceWithId:withLong:withDKActorRef:", "sendOnce", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "system__", "system", 0x2, "Lim.actor.model.droidkit.actors.ActorSystem;", NULL,  },
@@ -116,10 +116,10 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
     { "path_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
     { "endpoint_", NULL, 0x2, "Lim.actor.model.droidkit.actors.mailbox.ActorEndpoint;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsActorRef = { 1, "ActorRef", "im.actor.model.droidkit.actors", NULL, 0x1, 11, methods, 4, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsActorRef;
+  static const J2ObjcClassInfo _DKActorRef = { 1, "ActorRef", "im.actor.model.droidkit.actors", NULL, 0x1, 11, methods, 4, fields, 0, NULL};
+  return &_DKActorRef;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsActorRef)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorRef)

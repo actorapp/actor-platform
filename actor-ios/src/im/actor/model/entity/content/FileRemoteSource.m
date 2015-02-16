@@ -14,20 +14,20 @@
 
 @interface ImActorModelEntityContentFileRemoteSource () {
  @public
-  ImActorModelEntityFileLocation *fileLocation_;
+  AMFileLocation *fileLocation_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileRemoteSource, fileLocation_, ImActorModelEntityFileLocation *)
+J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileRemoteSource, fileLocation_, AMFileLocation *)
 
 @implementation ImActorModelEntityContentFileRemoteSource
 
-+ (ImActorModelEntityContentFileRemoteSource *)fromValuesWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)reader {
-  return ImActorModelEntityContentFileRemoteSource_fromValuesWithImActorModelDroidkitBserBserValues_(reader);
++ (ImActorModelEntityContentFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader {
+  return ImActorModelEntityContentFileRemoteSource_fromValuesWithBSBserValues_(reader);
 }
 
-- (instancetype)initWithImActorModelEntityFileLocation:(ImActorModelEntityFileLocation *)fileLocation {
+- (instancetype)initWithAMFileLocation:(AMFileLocation *)fileLocation {
   if (self = [super init]) {
     self->fileLocation_ = fileLocation;
   }
@@ -38,18 +38,18 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileRemoteSource, fileLocation_, Im
   return [super init];
 }
 
-- (ImActorModelEntityFileLocation *)getFileLocation {
+- (AMFileLocation *)getFileLocation {
   return fileLocation_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  [super parseWithImActorModelDroidkitBserBserValues:values];
-  fileLocation_ = ImActorModelEntityFileLocation_fromBytesWithByteArray_([((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:2]);
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  [super parseWithBSBserValues:values];
+  fileLocation_ = AMFileLocation_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [super serializeWithImActorModelDroidkitBserBserWriter:writer];
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withImActorModelDroidkitBserBserObject:fileLocation_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [super serializeWithBSBserWriter:writer];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withBSBserObject:fileLocation_];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelEntityContentFileRemoteSource *)other {
@@ -59,12 +59,12 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileRemoteSource, fileLocation_, Im
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "fromValuesWithImActorModelDroidkitBserBserValues:", "fromValues", "Lim.actor.model.entity.content.FileRemoteSource;", 0xc, "Ljava.io.IOException;" },
-    { "initWithImActorModelEntityFileLocation:", "FileRemoteSource", NULL, 0x1, NULL },
+    { "fromValuesWithBSBserValues:", "fromValues", "Lim.actor.model.entity.content.FileRemoteSource;", 0xc, "Ljava.io.IOException;" },
+    { "initWithAMFileLocation:", "FileRemoteSource", NULL, 0x1, NULL },
     { "init", "FileRemoteSource", NULL, 0x2, NULL },
     { "getFileLocation", NULL, "Lim.actor.model.entity.FileLocation;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "fileLocation_", NULL, 0x2, "Lim.actor.model.entity.FileLocation;", NULL,  },
@@ -75,10 +75,10 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileRemoteSource, fileLocation_, Im
 
 @end
 
-ImActorModelEntityContentFileRemoteSource *ImActorModelEntityContentFileRemoteSource_fromValuesWithImActorModelDroidkitBserBserValues_(ImActorModelDroidkitBserBserValues *reader) {
+ImActorModelEntityContentFileRemoteSource *ImActorModelEntityContentFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader) {
   ImActorModelEntityContentFileRemoteSource_init();
   ImActorModelEntityContentFileRemoteSource *fileLocalSource = [[ImActorModelEntityContentFileRemoteSource alloc] init];
-  [fileLocalSource parseWithImActorModelDroidkitBserBserValues:reader];
+  [fileLocalSource parseWithBSBserValues:reader];
   return fileLocalSource;
 }
 

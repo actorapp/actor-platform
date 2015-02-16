@@ -9,8 +9,8 @@
 @class AMRpcException;
 @class ImActorModelApiRpcResponseSeq;
 @class ImActorModelModulesModules;
-@protocol ImActorModelConcurrencyCommandCallback;
-@protocol ImActorModelMvvmKeyValueEngine;
+@protocol AMCommandCallback;
+@protocol AMKeyValueEngine;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/concurrency/Command.h"
@@ -23,12 +23,12 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
-- (id<ImActorModelMvvmKeyValueEngine>)getUsers;
+- (id<AMKeyValueEngine>)getUsers;
 
-- (id<ImActorModelConcurrencyCommand>)editMyNameWithNSString:(NSString *)newName;
+- (id<AMCommand>)editMyNameWithNSString:(NSString *)newName;
 
-- (id<ImActorModelConcurrencyCommand>)editNameWithInt:(jint)uid
-                                         withNSString:(NSString *)name;
+- (id<AMCommand>)editNameWithInt:(jint)uid
+                    withNSString:(NSString *)name;
 
 @end
 
@@ -39,10 +39,10 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers)
 
-@interface ImActorModelModulesUsers_$1 : NSObject < ImActorModelConcurrencyCommand > {
+@interface ImActorModelModulesUsers_$1 : NSObject < AMCommand > {
 }
 
-- (void)startWithImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)callback;
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
 
 - (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
                                     withNSString:(NSString *)capture$0;
@@ -64,7 +64,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$1)
 - (void)onErrorWithAMRpcException:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesUsers_$1:(ImActorModelModulesUsers_$1 *)outer$
-         withImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)capture$0;
+                              withAMCommandCallback:(id<AMCommandCallback>)capture$0;
 
 @end
 
@@ -108,10 +108,10 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$1_$1_$2)
 
-@interface ImActorModelModulesUsers_$2 : NSObject < ImActorModelConcurrencyCommand > {
+@interface ImActorModelModulesUsers_$2 : NSObject < AMCommand > {
 }
 
-- (void)startWithImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)callback;
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
 
 - (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
                                          withInt:(jint)capture$0
@@ -131,7 +131,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$2)
 
 - (void)run;
 
-- (instancetype)initWithImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)capture$0;
+- (instancetype)initWithAMCommandCallback:(id<AMCommandCallback>)capture$0;
 
 @end
 
@@ -150,7 +150,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$2_$1)
 - (void)onErrorWithAMRpcException:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesUsers_$2:(ImActorModelModulesUsers_$2 *)outer$
-         withImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)capture$0;
+                              withAMCommandCallback:(id<AMCommandCallback>)capture$0;
 
 @end
 

@@ -3,24 +3,26 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/bser/BserComposite.java
 //
 
-#ifndef _ImActorModelDroidkitBserBserComposite_H_
-#define _ImActorModelDroidkitBserBserComposite_H_
+#ifndef _BSBserComposite_H_
+#define _BSBserComposite_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelDroidkitBserBserComposite : ImActorModelDroidkitBserBserObject {
+@interface BSBserComposite : BSBserObject {
 }
 
 - (instancetype)init;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitBserBserComposite)
+J2OBJC_EMPTY_STATIC_INIT(BSBserComposite)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitBserBserComposite)
+typedef BSBserComposite ImActorModelDroidkitBserBserComposite;
 
-#endif // _ImActorModelDroidkitBserBserComposite_H_
+J2OBJC_TYPE_LITERAL_HEADER(BSBserComposite)
+
+#endif // _BSBserComposite_H_

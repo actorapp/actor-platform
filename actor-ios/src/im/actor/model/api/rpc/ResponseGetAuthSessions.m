@@ -45,16 +45,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
   return self->userAuths_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+- (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _userAuths = [[JavaUtilArrayList alloc] init];
-  for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
+  for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
     [_userAuths addWithId:[[ImActorModelApiAuthSession alloc] init]];
   }
   self->userAuths_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_userAuths];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->userAuths_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->userAuths_];
 }
 
 - (jint)getHeaderKey {
@@ -72,8 +72,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
     { "initWithJavaUtilList:", "ResponseGetAuthSessions", NULL, 0x1, NULL },
     { "init", "ResponseGetAuthSessions", NULL, 0x1, NULL },
     { "getUserAuths", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -88,7 +88,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
 
 ImActorModelApiRpcResponseGetAuthSessions *ImActorModelApiRpcResponseGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetAuthSessions_init();
-  return ((ImActorModelApiRpcResponseGetAuthSessions *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcResponseGetAuthSessions alloc] init], data));
+  return ((ImActorModelApiRpcResponseGetAuthSessions *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseGetAuthSessions alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetAuthSessions)

@@ -6,8 +6,8 @@
 #ifndef _ImActorModelModulesTyping_H_
 #define _ImActorModelModulesTyping_H_
 
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelEntityPeer;
+@class AMPeer;
+@class DKActorRef;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesTypingOwnTypingActor;
 
@@ -20,7 +20,7 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
-- (void)onTypingWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (void)onTypingWithAMPeer:(AMPeer *)peer;
 
 @end
 
@@ -31,7 +31,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTyping)
 
-@interface ImActorModelModulesTyping_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
+@interface ImActorModelModulesTyping_$1 : NSObject < DKActorCreator > {
 }
 
 - (ImActorModelModulesTypingOwnTypingActor *)create;

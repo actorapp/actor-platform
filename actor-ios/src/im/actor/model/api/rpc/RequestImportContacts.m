@@ -54,9 +54,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
   return self->emails_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+- (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _phones = [[JavaUtilArrayList alloc] init];
-  for (jint i = 0; i < [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
+  for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
     [_phones addWithId:[[ImActorModelApiPhoneToImport alloc] init]];
   }
   self->phones_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_phones];
@@ -67,8 +67,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
   self->emails_ = [values getRepeatedObjWithInt:2 withJavaUtilList:_emails];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->phones_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->phones_];
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->emails_];
 }
 
@@ -89,8 +89,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
     { "init", "RequestImportContacts", NULL, 0x1, NULL },
     { "getPhones", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getEmails", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -107,7 +107,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
 
 ImActorModelApiRpcRequestImportContacts *ImActorModelApiRpcRequestImportContacts_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestImportContacts_init();
-  return ((ImActorModelApiRpcRequestImportContacts *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestImportContacts alloc] init], data));
+  return ((ImActorModelApiRpcRequestImportContacts *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestImportContacts alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestImportContacts)

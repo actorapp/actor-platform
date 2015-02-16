@@ -58,15 +58,15 @@
   return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_DOCUMENT_PHOTO();
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  [super parseWithImActorModelDroidkitBserBserValues:values];
-  w_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:10];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  [super parseWithBSBserValues:values];
+  w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
   h_ = [values getIntWithInt:11];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [super serializeWithImActorModelDroidkitBserBserWriter:writer];
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:w_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [super serializeWithBSBserWriter:writer];
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:w_];
   [writer writeIntWithInt:11 withInt:h_];
 }
 
@@ -84,8 +84,8 @@
     { "getW", NULL, "I", 0x1, NULL },
     { "getH", NULL, "I", 0x1, NULL },
     { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "w_", NULL, 0x2, "I", NULL,  },
@@ -99,7 +99,7 @@
 
 ImActorModelEntityContentPhotoContent *ImActorModelEntityContentPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentPhotoContent_init();
-  return ((ImActorModelEntityContentPhotoContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentPhotoContent alloc] init], data));
+  return ((ImActorModelEntityContentPhotoContent *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentPhotoContent alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentPhotoContent)

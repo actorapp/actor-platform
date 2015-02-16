@@ -34,7 +34,7 @@
 
 ImActorModelEntityContentServiceUserRegistered *ImActorModelEntityContentServiceUserRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentServiceUserRegistered_init();
-  return ((ImActorModelEntityContentServiceUserRegistered *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentServiceUserRegistered alloc] init], data));
+  return ((ImActorModelEntityContentServiceUserRegistered *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceUserRegistered alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceUserRegistered)

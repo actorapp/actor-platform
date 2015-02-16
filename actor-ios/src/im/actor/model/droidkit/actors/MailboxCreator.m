@@ -8,19 +8,19 @@
 #include "im/actor/model/droidkit/actors/mailbox/Mailbox.h"
 #include "im/actor/model/droidkit/actors/mailbox/MailboxesQueue.h"
 
-@interface ImActorModelDroidkitActorsMailboxCreator : NSObject
+@interface DKMailboxCreator : NSObject
 @end
 
-@implementation ImActorModelDroidkitActorsMailboxCreator
+@implementation DKMailboxCreator
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "createMailboxWithImActorModelDroidkitActorsMailboxMailboxesQueue:", "createMailbox", "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x401, NULL },
+    { "createMailboxWithDKMailboxesQueue:", "createMailbox", "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x401, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsMailboxCreator = { 1, "MailboxCreator", "im.actor.model.droidkit.actors", NULL, 0x201, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitActorsMailboxCreator;
+  static const J2ObjcClassInfo _DKMailboxCreator = { 1, "MailboxCreator", "im.actor.model.droidkit.actors", NULL, 0x201, 1, methods, 0, NULL, 0, NULL};
+  return &_DKMailboxCreator;
 }
 
 @end
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMailboxCreator)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(DKMailboxCreator)

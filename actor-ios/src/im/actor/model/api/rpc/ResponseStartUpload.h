@@ -6,10 +6,10 @@
 #ifndef _ImActorModelApiRpcResponseStartUpload_H_
 #define _ImActorModelApiRpcResponseStartUpload_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiUploadConfig;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -27,9 +27,9 @@
 
 - (ImActorModelApiUploadConfig *)getConfig;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 - (jint)getHeaderKey;
 

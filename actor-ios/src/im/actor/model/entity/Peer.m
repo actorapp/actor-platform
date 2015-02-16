@@ -14,36 +14,36 @@
 #include "im/actor/model/entity/PeerType.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityPeer () {
+@interface AMPeer () {
  @public
-  ImActorModelEntityPeerTypeEnum *peerType_;
+  AMPeerTypeEnum *peerType_;
   jint peerId_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityPeer, peerType_, ImActorModelEntityPeerTypeEnum *)
+J2OBJC_FIELD_SETTER(AMPeer, peerType_, AMPeerTypeEnum *)
 
-@implementation ImActorModelEntityPeer
+@implementation AMPeer
 
-+ (ImActorModelEntityPeer *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityPeer_fromBytesWithByteArray_(data);
++ (AMPeer *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMPeer_fromBytesWithByteArray_(data);
 }
 
-+ (ImActorModelEntityPeer *)fromUidWithLong:(jlong)uid {
-  return ImActorModelEntityPeer_fromUidWithLong_(uid);
++ (AMPeer *)fromUidWithLong:(jlong)uid {
+  return AMPeer_fromUidWithLong_(uid);
 }
 
-+ (ImActorModelEntityPeer *)userWithInt:(jint)uid {
-  return ImActorModelEntityPeer_userWithInt_(uid);
++ (AMPeer *)userWithInt:(jint)uid {
+  return AMPeer_userWithInt_(uid);
 }
 
-+ (ImActorModelEntityPeer *)groupWithInt:(jint)gid {
-  return ImActorModelEntityPeer_groupWithInt_(gid);
++ (AMPeer *)groupWithInt:(jint)gid {
+  return AMPeer_groupWithInt_(gid);
 }
 
-- (instancetype)initWithImActorModelEntityPeerTypeEnum:(ImActorModelEntityPeerTypeEnum *)peerType
-                                               withInt:(jint)peerId {
+- (instancetype)initWithAMPeerTypeEnum:(AMPeerTypeEnum *)peerType
+                               withInt:(jint)peerId {
   if (self = [super init]) {
     self->peerType_ = peerType;
     self->peerId_ = peerId;
@@ -59,20 +59,20 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityPeer, peerType_, ImActorModelEntityPeerTyp
   jint type;
   switch ([peerType_ ordinal]) {
     default:
-    case ImActorModelEntityPeerType_PRIVATE:
+    case AMPeerType_PRIVATE:
     type = 0;
     break;
-    case ImActorModelEntityPeerType_GROUP:
+    case AMPeerType_GROUP:
     type = 1;
     break;
-    case ImActorModelEntityPeerType_EMAIL:
+    case AMPeerType_EMAIL:
     type = 2;
     break;
   }
   return peerId_ + (LShift64((jlong) type, 32));
 }
 
-- (ImActorModelEntityPeerTypeEnum *)getPeerType {
+- (AMPeerTypeEnum *)getPeerType {
   return peerType_;
 }
 
@@ -83,51 +83,51 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityPeer, peerType_, ImActorModelEntityPeerTyp
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
-  ImActorModelEntityPeer *peer = (ImActorModelEntityPeer *) check_class_cast(o, [ImActorModelEntityPeer class]);
-  if (peerId_ != ((ImActorModelEntityPeer *) nil_chk(peer))->peerId_) return NO;
+  AMPeer *peer = (AMPeer *) check_class_cast(o, [AMPeer class]);
+  if (peerId_ != ((AMPeer *) nil_chk(peer))->peerId_) return NO;
   if (peerType_ != peer->peerType_) return NO;
   return YES;
 }
 
 - (NSUInteger)hash {
-  jint result = ((jint) [((ImActorModelEntityPeerTypeEnum *) nil_chk(peerType_)) hash]);
+  jint result = ((jint) [((AMPeerTypeEnum *) nil_chk(peerType_)) hash]);
   result = 31 * result + peerId_;
   return result;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  peerId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  peerId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   switch ([values getIntWithInt:2]) {
     default:
     case 1:
-    peerType_ = ImActorModelEntityPeerTypeEnum_get_PRIVATE();
+    peerType_ = AMPeerTypeEnum_get_PRIVATE();
     break;
     case 2:
-    peerType_ = ImActorModelEntityPeerTypeEnum_get_EMAIL();
+    peerType_ = AMPeerTypeEnum_get_EMAIL();
     break;
     case 3:
-    peerType_ = ImActorModelEntityPeerTypeEnum_get_GROUP();
+    peerType_ = AMPeerTypeEnum_get_GROUP();
     break;
   }
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:peerId_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:peerId_];
   switch ([peerType_ ordinal]) {
     default:
-    case ImActorModelEntityPeerType_PRIVATE:
+    case AMPeerType_PRIVATE:
     [writer writeIntWithInt:2 withInt:1];
     break;
-    case ImActorModelEntityPeerType_EMAIL:
+    case AMPeerType_EMAIL:
     [writer writeIntWithInt:2 withInt:2];
     break;
-    case ImActorModelEntityPeerType_GROUP:
+    case AMPeerType_GROUP:
     [writer writeIntWithInt:2 withInt:3];
     break;
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityPeer *)other {
+- (void)copyAllFieldsTo:(AMPeer *)other {
   [super copyAllFieldsTo:other];
   other->peerType_ = peerType_;
   other->peerId_ = peerId_;
@@ -139,54 +139,54 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityPeer, peerType_, ImActorModelEntityPeerTyp
     { "fromUidWithLong:", "fromUid", "Lim.actor.model.entity.Peer;", 0x9, NULL },
     { "userWithInt:", "user", "Lim.actor.model.entity.Peer;", 0x9, NULL },
     { "groupWithInt:", "group", "Lim.actor.model.entity.Peer;", 0x9, NULL },
-    { "initWithImActorModelEntityPeerTypeEnum:withInt:", "Peer", NULL, 0x1, NULL },
+    { "initWithAMPeerTypeEnum:withInt:", "Peer", NULL, 0x1, NULL },
     { "init", "Peer", NULL, 0x2, NULL },
     { "getUid", NULL, "J", 0x1, NULL },
     { "getPeerType", NULL, "Lim.actor.model.entity.PeerType;", 0x1, NULL },
     { "getPeerId", NULL, "I", 0x1, NULL },
     { "isEqual:", "equals", "Z", 0x1, NULL },
     { "hash", "hashCode", "I", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "peerType_", NULL, 0x2, "Lim.actor.model.entity.PeerType;", NULL,  },
     { "peerId_", NULL, 0x2, "I", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityPeer = { 1, "Peer", "im.actor.model.entity", NULL, 0x1, 13, methods, 2, fields, 0, NULL};
-  return &_ImActorModelEntityPeer;
+  static const J2ObjcClassInfo _AMPeer = { 1, "Peer", "im.actor.model.entity", NULL, 0x1, 13, methods, 2, fields, 0, NULL};
+  return &_AMPeer;
 }
 
 @end
 
-ImActorModelEntityPeer *ImActorModelEntityPeer_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityPeer_init();
-  return ((ImActorModelEntityPeer *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityPeer alloc] init], data));
+AMPeer *AMPeer_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMPeer_init();
+  return ((AMPeer *) BSBser_parseWithBSBserObject_withByteArray_([[AMPeer alloc] init], data));
 }
 
-ImActorModelEntityPeer *ImActorModelEntityPeer_fromUidWithLong_(jlong uid) {
-  ImActorModelEntityPeer_init();
+AMPeer *AMPeer_fromUidWithLong_(jlong uid) {
+  AMPeer_init();
   jint id_ = (jint) (uid & (jlong) 0xFFFFFFFFLL);
   jint type = (jint) ((RShift64(uid, 32)) & (jlong) 0xFFFFFFFFLL);
   switch (type) {
     default:
     case 0:
-    return [[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_PRIVATE() withInt:id_];
+    return [[AMPeer alloc] initWithAMPeerTypeEnum:AMPeerTypeEnum_get_PRIVATE() withInt:id_];
     case 1:
-    return [[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_GROUP() withInt:id_];
+    return [[AMPeer alloc] initWithAMPeerTypeEnum:AMPeerTypeEnum_get_GROUP() withInt:id_];
     case 2:
-    return [[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_EMAIL() withInt:id_];
+    return [[AMPeer alloc] initWithAMPeerTypeEnum:AMPeerTypeEnum_get_EMAIL() withInt:id_];
   }
 }
 
-ImActorModelEntityPeer *ImActorModelEntityPeer_userWithInt_(jint uid) {
-  ImActorModelEntityPeer_init();
-  return [[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_PRIVATE() withInt:uid];
+AMPeer *AMPeer_userWithInt_(jint uid) {
+  AMPeer_init();
+  return [[AMPeer alloc] initWithAMPeerTypeEnum:AMPeerTypeEnum_get_PRIVATE() withInt:uid];
 }
 
-ImActorModelEntityPeer *ImActorModelEntityPeer_groupWithInt_(jint gid) {
-  ImActorModelEntityPeer_init();
-  return [[ImActorModelEntityPeer alloc] initWithImActorModelEntityPeerTypeEnum:ImActorModelEntityPeerTypeEnum_get_GROUP() withInt:gid];
+AMPeer *AMPeer_groupWithInt_(jint gid) {
+  AMPeer_init();
+  return [[AMPeer alloc] initWithAMPeerTypeEnum:AMPeerTypeEnum_get_GROUP() withInt:gid];
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityPeer)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMPeer)

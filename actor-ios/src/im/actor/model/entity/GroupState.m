@@ -8,33 +8,33 @@
 #include "im/actor/model/entity/GroupState.h"
 #include "java/lang/IllegalArgumentException.h"
 
-BOOL ImActorModelEntityGroupStateEnum_initialized = NO;
+BOOL AMGroupStateEnum_initialized = NO;
 
-ImActorModelEntityGroupStateEnum *ImActorModelEntityGroupStateEnum_values_[4];
+AMGroupStateEnum *AMGroupStateEnum_values_[4];
 
-@implementation ImActorModelEntityGroupStateEnum
+@implementation AMGroupStateEnum
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal {
   return [super initWithNSString:__name withInt:__ordinal];
 }
 
-IOSObjectArray *ImActorModelEntityGroupStateEnum_values() {
-  ImActorModelEntityGroupStateEnum_init();
-  return [IOSObjectArray arrayWithObjects:ImActorModelEntityGroupStateEnum_values_ count:4 type:ImActorModelEntityGroupStateEnum_class_()];
+IOSObjectArray *AMGroupStateEnum_values() {
+  AMGroupStateEnum_init();
+  return [IOSObjectArray arrayWithObjects:AMGroupStateEnum_values_ count:4 type:AMGroupStateEnum_class_()];
 }
 + (IOSObjectArray *)values {
-  return ImActorModelEntityGroupStateEnum_values();
+  return AMGroupStateEnum_values();
 }
 
-+ (ImActorModelEntityGroupStateEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelEntityGroupStateEnum_valueOfWithNSString_(name);
++ (AMGroupStateEnum *)valueOfWithNSString:(NSString *)name {
+  return AMGroupStateEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelEntityGroupStateEnum *ImActorModelEntityGroupStateEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelEntityGroupStateEnum_init();
+AMGroupStateEnum *AMGroupStateEnum_valueOfWithNSString_(NSString *name) {
+  AMGroupStateEnum_init();
   for (int i = 0; i < 4; i++) {
-    ImActorModelEntityGroupStateEnum *e = ImActorModelEntityGroupStateEnum_values_[i];
+    AMGroupStateEnum *e = AMGroupStateEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -48,12 +48,12 @@ ImActorModelEntityGroupStateEnum *ImActorModelEntityGroupStateEnum_valueOfWithNS
 }
 
 + (void)initialize {
-  if (self == [ImActorModelEntityGroupStateEnum class]) {
-    ImActorModelEntityGroupStateEnum_JOINED = [[ImActorModelEntityGroupStateEnum alloc] initWithNSString:@"JOINED" withInt:0];
-    ImActorModelEntityGroupStateEnum_KICKED = [[ImActorModelEntityGroupStateEnum alloc] initWithNSString:@"KICKED" withInt:1];
-    ImActorModelEntityGroupStateEnum_DELETED_PENDING = [[ImActorModelEntityGroupStateEnum alloc] initWithNSString:@"DELETED_PENDING" withInt:2];
-    ImActorModelEntityGroupStateEnum_DELETED = [[ImActorModelEntityGroupStateEnum alloc] initWithNSString:@"DELETED" withInt:3];
-    J2OBJC_SET_INITIALIZED(ImActorModelEntityGroupStateEnum)
+  if (self == [AMGroupStateEnum class]) {
+    AMGroupStateEnum_JOINED = [[AMGroupStateEnum alloc] initWithNSString:@"JOINED" withInt:0];
+    AMGroupStateEnum_KICKED = [[AMGroupStateEnum alloc] initWithNSString:@"KICKED" withInt:1];
+    AMGroupStateEnum_DELETED_PENDING = [[AMGroupStateEnum alloc] initWithNSString:@"DELETED_PENDING" withInt:2];
+    AMGroupStateEnum_DELETED = [[AMGroupStateEnum alloc] initWithNSString:@"DELETED" withInt:3];
+    J2OBJC_SET_INITIALIZED(AMGroupStateEnum)
   }
 }
 
@@ -62,16 +62,16 @@ ImActorModelEntityGroupStateEnum *ImActorModelEntityGroupStateEnum_valueOfWithNS
     { "initWithNSString:withInt:", "init", NULL, 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "JOINED", "JOINED", 0x4019, "Lim.actor.model.entity.GroupState;", &ImActorModelEntityGroupStateEnum_JOINED,  },
-    { "KICKED", "KICKED", 0x4019, "Lim.actor.model.entity.GroupState;", &ImActorModelEntityGroupStateEnum_KICKED,  },
-    { "DELETED_PENDING", "DELETED_PENDING", 0x4019, "Lim.actor.model.entity.GroupState;", &ImActorModelEntityGroupStateEnum_DELETED_PENDING,  },
-    { "DELETED", "DELETED", 0x4019, "Lim.actor.model.entity.GroupState;", &ImActorModelEntityGroupStateEnum_DELETED,  },
+    { "JOINED", "JOINED", 0x4019, "Lim.actor.model.entity.GroupState;", &AMGroupStateEnum_JOINED,  },
+    { "KICKED", "KICKED", 0x4019, "Lim.actor.model.entity.GroupState;", &AMGroupStateEnum_KICKED,  },
+    { "DELETED_PENDING", "DELETED_PENDING", 0x4019, "Lim.actor.model.entity.GroupState;", &AMGroupStateEnum_DELETED_PENDING,  },
+    { "DELETED", "DELETED", 0x4019, "Lim.actor.model.entity.GroupState;", &AMGroupStateEnum_DELETED,  },
   };
   static const char *superclass_type_args[] = {"Lim.actor.model.entity.GroupState;"};
-  static const J2ObjcClassInfo _ImActorModelEntityGroupStateEnum = { 1, "GroupState", "im.actor.model.entity", NULL, 0x4011, 1, methods, 4, fields, 1, superclass_type_args};
-  return &_ImActorModelEntityGroupStateEnum;
+  static const J2ObjcClassInfo _AMGroupStateEnum = { 1, "GroupState", "im.actor.model.entity", NULL, 0x4011, 1, methods, 4, fields, 1, superclass_type_args};
+  return &_AMGroupStateEnum;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityGroupStateEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupStateEnum)

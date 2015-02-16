@@ -5,11 +5,11 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/actors/conf/EnvConfig.h"
+#include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/droidkit/actors/dispatch/DispatchResult.h"
-#include "im/actor/model/droidkit/actors/utils/ThreadLocalCompat.h"
+#include "im/actor/model/util/ThreadLocalCompat.h"
 
-@interface ImActorModelDroidkitActorsDispatchDispatchResult () {
+@interface DKDispatchResult () {
  @public
   jboolean isResult__;
   id res_;
@@ -17,20 +17,20 @@
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchDispatchResult, res_, id)
+J2OBJC_FIELD_SETTER(DKDispatchResult, res_, id)
 
-BOOL ImActorModelDroidkitActorsDispatchDispatchResult_initialized = NO;
+BOOL DKDispatchResult_initialized = NO;
 
-@implementation ImActorModelDroidkitActorsDispatchDispatchResult
+@implementation DKDispatchResult
 
-ImActorModelDroidkitActorsUtilsThreadLocalCompat * ImActorModelDroidkitActorsDispatchDispatchResult_FREE_RESULTS_;
+AMThreadLocalCompat * DKDispatchResult_FREE_RESULTS_;
 
-+ (ImActorModelDroidkitActorsDispatchDispatchResult *)resultWithId:(id)res {
-  return ImActorModelDroidkitActorsDispatchDispatchResult_resultWithId_(res);
++ (DKDispatchResult *)resultWithId:(id)res {
+  return DKDispatchResult_resultWithId_(res);
 }
 
-+ (ImActorModelDroidkitActorsDispatchDispatchResult *)delayWithLong:(jlong)delay {
-  return ImActorModelDroidkitActorsDispatchDispatchResult_delayWithLong_(delay);
++ (DKDispatchResult *)delayWithLong:(jlong)delay {
+  return DKDispatchResult_delayWithLong_(delay);
 }
 
 - (instancetype)initWithBoolean:(jboolean)isResult
@@ -65,10 +65,10 @@ ImActorModelDroidkitActorsUtilsThreadLocalCompat * ImActorModelDroidkitActorsDis
 }
 
 - (void)recycle {
-  [((ImActorModelDroidkitActorsUtilsThreadLocalCompat *) nil_chk(ImActorModelDroidkitActorsDispatchDispatchResult_FREE_RESULTS_)) setWithId:self];
+  [((AMThreadLocalCompat *) nil_chk(DKDispatchResult_FREE_RESULTS_)) setWithId:self];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsDispatchDispatchResult *)other {
+- (void)copyAllFieldsTo:(DKDispatchResult *)other {
   [super copyAllFieldsTo:other];
   other->isResult__ = isResult__;
   other->res_ = res_;
@@ -76,9 +76,9 @@ ImActorModelDroidkitActorsUtilsThreadLocalCompat * ImActorModelDroidkitActorsDis
 }
 
 + (void)initialize {
-  if (self == [ImActorModelDroidkitActorsDispatchDispatchResult class]) {
-    ImActorModelDroidkitActorsDispatchDispatchResult_FREE_RESULTS_ = ImActorModelDroidkitActorsConfEnvConfig_createThreadLocal();
-    J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsDispatchDispatchResult)
+  if (self == [DKDispatchResult class]) {
+    DKDispatchResult_FREE_RESULTS_ = DKEnvironment_createThreadLocal();
+    J2OBJC_SET_INITIALIZED(DKDispatchResult)
   }
 }
 
@@ -94,41 +94,41 @@ ImActorModelDroidkitActorsUtilsThreadLocalCompat * ImActorModelDroidkitActorsDis
     { "recycle", NULL, "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "FREE_RESULTS_", NULL, 0xa, "Lim.actor.model.droidkit.actors.utils.ThreadLocalCompat;", &ImActorModelDroidkitActorsDispatchDispatchResult_FREE_RESULTS_,  },
+    { "FREE_RESULTS_", NULL, 0xa, "Lim.actor.model.util.ThreadLocalCompat;", &DKDispatchResult_FREE_RESULTS_,  },
     { "isResult__", "isResult", 0x2, "Z", NULL,  },
     { "res_", NULL, 0x2, "Ljava.lang.Object;", NULL,  },
     { "delay__", "delay", 0x2, "J", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsDispatchDispatchResult = { 1, "DispatchResult", "im.actor.model.droidkit.actors.dispatch", NULL, 0x1, 8, methods, 4, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsDispatchDispatchResult;
+  static const J2ObjcClassInfo _DKDispatchResult = { 1, "DispatchResult", "im.actor.model.droidkit.actors.dispatch", NULL, 0x1, 8, methods, 4, fields, 0, NULL};
+  return &_DKDispatchResult;
 }
 
 @end
 
-ImActorModelDroidkitActorsDispatchDispatchResult *ImActorModelDroidkitActorsDispatchDispatchResult_resultWithId_(id res) {
-  ImActorModelDroidkitActorsDispatchDispatchResult_init();
-  ImActorModelDroidkitActorsDispatchDispatchResult *result = [((ImActorModelDroidkitActorsUtilsThreadLocalCompat *) nil_chk(ImActorModelDroidkitActorsDispatchDispatchResult_FREE_RESULTS_)) get];
+DKDispatchResult *DKDispatchResult_resultWithId_(id res) {
+  DKDispatchResult_init();
+  DKDispatchResult *result = [((AMThreadLocalCompat *) nil_chk(DKDispatchResult_FREE_RESULTS_)) get];
   if (result != nil) {
-    [ImActorModelDroidkitActorsDispatchDispatchResult_FREE_RESULTS_ remove];
+    [DKDispatchResult_FREE_RESULTS_ remove];
     [result updateWithBoolean:YES withId:res withLong:0];
   }
   else {
-    result = [[ImActorModelDroidkitActorsDispatchDispatchResult alloc] initWithBoolean:YES withId:res withLong:0];
+    result = [[DKDispatchResult alloc] initWithBoolean:YES withId:res withLong:0];
   }
   return result;
 }
 
-ImActorModelDroidkitActorsDispatchDispatchResult *ImActorModelDroidkitActorsDispatchDispatchResult_delayWithLong_(jlong delay) {
-  ImActorModelDroidkitActorsDispatchDispatchResult_init();
-  ImActorModelDroidkitActorsDispatchDispatchResult *result = [((ImActorModelDroidkitActorsUtilsThreadLocalCompat *) nil_chk(ImActorModelDroidkitActorsDispatchDispatchResult_FREE_RESULTS_)) get];
+DKDispatchResult *DKDispatchResult_delayWithLong_(jlong delay) {
+  DKDispatchResult_init();
+  DKDispatchResult *result = [((AMThreadLocalCompat *) nil_chk(DKDispatchResult_FREE_RESULTS_)) get];
   if (result != nil) {
-    [ImActorModelDroidkitActorsDispatchDispatchResult_FREE_RESULTS_ remove];
+    [DKDispatchResult_FREE_RESULTS_ remove];
     [result updateWithBoolean:NO withId:nil withLong:delay];
   }
   else {
-    result = [[ImActorModelDroidkitActorsDispatchDispatchResult alloc] initWithBoolean:NO withId:nil withLong:delay];
+    result = [[DKDispatchResult alloc] initWithBoolean:NO withId:nil withLong:delay];
   }
   return result;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsDispatchDispatchResult)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKDispatchResult)

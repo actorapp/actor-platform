@@ -12,19 +12,19 @@
 #include "im/actor/model/droidkit/actors/mailbox/collections/EnvelopeCollection.h"
 #include "im/actor/model/droidkit/actors/mailbox/collections/EnvelopeRoot.h"
 
-@interface ImActorModelDroidkitActorsMailboxMailboxesQueue () {
+@interface DKMailboxesQueue () {
  @public
   ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *envelopeRoot_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *)
+J2OBJC_FIELD_SETTER(DKMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *)
 
-@implementation ImActorModelDroidkitActorsMailboxMailboxesQueue
+@implementation DKMailboxesQueue
 
 - (instancetype)init {
   if (self = [super init]) {
-    envelopeRoot_ = [[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot alloc] initWithImActorModelDroidkitActorsMailboxMailboxesQueue:self];
+    envelopeRoot_ = [[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot alloc] initWithDKMailboxesQueue:self];
   }
   return self;
 }
@@ -33,36 +33,36 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxMailboxesQueue, envelopeRoo
   return envelopeRoot_;
 }
 
-- (void)unlockMailboxWithImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox {
-  [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *) nil_chk(envelopeRoot_)) attachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:[((ImActorModelDroidkitActorsMailboxMailbox *) nil_chk(mailbox)) getEnvelopes]];
+- (void)unlockMailboxWithDKMailbox:(DKMailbox *)mailbox {
+  [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *) nil_chk(envelopeRoot_)) attachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:[((DKMailbox *) nil_chk(mailbox)) getEnvelopes]];
 }
 
-- (void)disconnectMailboxWithImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox {
-  [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *) nil_chk(envelopeRoot_)) detachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:[((ImActorModelDroidkitActorsMailboxMailbox *) nil_chk(mailbox)) getEnvelopes]];
+- (void)disconnectMailboxWithDKMailbox:(DKMailbox *)mailbox {
+  [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *) nil_chk(envelopeRoot_)) detachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:[((DKMailbox *) nil_chk(mailbox)) getEnvelopes]];
 }
 
 - (void)notifyQueueChanged {
   [super notifyQueueChanged];
 }
 
-- (ImActorModelDroidkitActorsDispatchDispatchResult *)dispatchWithLong:(jlong)time {
+- (DKDispatchResult *)dispatchWithLong:(jlong)time {
   ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *res = [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *) nil_chk(envelopeRoot_)) fetchCollectionWithLong:time];
   if (res == nil) {
-    return [self delayWithLong:ImActorModelDroidkitActorsDispatchAbstractDispatchQueue_FOREVER];
+    return [self delayWithLong:DKAbstractDispatchQueue_FOREVER];
   }
   if ([((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *) nil_chk(res)) getEnvelope] != nil) {
-    ImActorModelDroidkitActorsDispatchDispatchResult *result = [self resultWithId:[res getEnvelope]];
+    DKDispatchResult *result = [self resultWithId:[res getEnvelope]];
     [res recycle];
     return result;
   }
   else {
-    ImActorModelDroidkitActorsDispatchDispatchResult *result = [self delayWithLong:[res getDelay]];
+    DKDispatchResult *result = [self delayWithLong:[res getDelay]];
     [res recycle];
     return result;
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)other {
+- (void)copyAllFieldsTo:(DKMailboxesQueue *)other {
   [super copyAllFieldsTo:other];
   other->envelopeRoot_ = envelopeRoot_;
 }
@@ -71,8 +71,8 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxMailboxesQueue, envelopeRoo
   static const J2ObjcMethodInfo methods[] = {
     { "init", "MailboxesQueue", NULL, 0x1, NULL },
     { "getEnvelopeRoot", NULL, "Lim.actor.model.droidkit.actors.mailbox.collections.EnvelopeRoot;", 0x1, NULL },
-    { "unlockMailboxWithImActorModelDroidkitActorsMailboxMailbox:", "unlockMailbox", "V", 0x1, NULL },
-    { "disconnectMailboxWithImActorModelDroidkitActorsMailboxMailbox:", "disconnectMailbox", "V", 0x1, NULL },
+    { "unlockMailboxWithDKMailbox:", "unlockMailbox", "V", 0x1, NULL },
+    { "disconnectMailboxWithDKMailbox:", "disconnectMailbox", "V", 0x1, NULL },
     { "notifyQueueChanged", NULL, "V", 0x1, NULL },
     { "dispatchWithLong:", "dispatch", "Lim.actor.model.droidkit.actors.dispatch.DispatchResult;", 0x1, NULL },
   };
@@ -80,10 +80,10 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxMailboxesQueue, envelopeRoo
     { "envelopeRoot_", NULL, 0x2, "Lim.actor.model.droidkit.actors.mailbox.collections.EnvelopeRoot;", NULL,  },
   };
   static const char *superclass_type_args[] = {"Lim.actor.model.droidkit.actors.mailbox.Envelope;"};
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsMailboxMailboxesQueue = { 1, "MailboxesQueue", "im.actor.model.droidkit.actors.mailbox", NULL, 0x1, 6, methods, 1, fields, 1, superclass_type_args};
-  return &_ImActorModelDroidkitActorsMailboxMailboxesQueue;
+  static const J2ObjcClassInfo _DKMailboxesQueue = { 1, "MailboxesQueue", "im.actor.model.droidkit.actors.mailbox", NULL, 0x1, 6, methods, 1, fields, 1, superclass_type_args};
+  return &_DKMailboxesQueue;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMailboxMailboxesQueue)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKMailboxesQueue)

@@ -3,29 +3,29 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/Message.java
 //
 
-#ifndef _ImActorModelEntityMessage_H_
-#define _ImActorModelEntityMessage_H_
+#ifndef _AMMessage_H_
+#define _AMMessage_H_
 
+@class AMMessageStateEnum;
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 @class ImActorModelEntityContentAbsContent;
-@class ImActorModelEntityMessageStateEnum;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/mvvm/ListEngineItem.h"
 
-@interface ImActorModelEntityMessage : ImActorModelDroidkitBserBserObject < ImActorModelMvvmListEngineItem > {
+@interface AMMessage : BSBserObject < AMListEngineItem > {
 }
 
-+ (ImActorModelEntityMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithLong:(jlong)rid
                     withLong:(jlong)sortDate
                     withLong:(jlong)date
                      withInt:(jint)senderId
-withImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)messageState
+      withAMMessageStateEnum:(AMMessageStateEnum *)messageState
 withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content;
 
 - (jlong)getRid;
@@ -36,31 +36,33 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
 
 - (jint)getSenderId;
 
-- (ImActorModelEntityMessageStateEnum *)getMessageState;
+- (AMMessageStateEnum *)getMessageState;
 
 - (ImActorModelEntityContentAbsContent *)getContent;
 
-- (ImActorModelEntityMessage *)changeStateWithImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)messageState;
+- (AMMessage *)changeStateWithAMMessageStateEnum:(AMMessageStateEnum *)messageState;
 
-- (ImActorModelEntityMessage *)changeDateWithLong:(jlong)date;
+- (AMMessage *)changeDateWithLong:(jlong)date;
 
 - (jlong)getListId;
 
 - (jlong)getListSortKey;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityMessage)
+J2OBJC_EMPTY_STATIC_INIT(AMMessage)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityMessage *ImActorModelEntityMessage_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMMessage *AMMessage_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityMessage)
+typedef AMMessage ImActorModelEntityMessage;
 
-#endif // _ImActorModelEntityMessage_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMMessage)
+
+#endif // _AMMessage_H_

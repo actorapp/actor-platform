@@ -6,13 +6,13 @@
 #ifndef _ImActorModelModulesPresencePresenceActor_H_
 #define _ImActorModelModulesPresencePresenceActor_H_
 
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelDroidkitActorsMailboxEnvelope;
-@class ImActorModelDroidkitActorsMailboxMailboxesQueue;
-@class ImActorModelEntityPeer;
+@class AMPeer;
+@class DKActorRef;
+@class DKEnvelope;
+@class DKMailboxesQueue;
 @class ImActorModelModulesModules;
 @class JavaUtilHashSet;
-@protocol AMOnlineCallback;
+@protocol AMMessengerCallback;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
@@ -25,7 +25,7 @@
 @interface ImActorModelModulesPresencePresenceActor : ImActorModelModulesUtilsModuleActor {
 }
 
-+ (ImActorModelDroidkitActorsActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
++ (DKActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
@@ -37,7 +37,7 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsActorRef *ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger);
+FOUNDATION_EXPORT DKActorRef *ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger);
 
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesPresencePresenceActor, ONLINE_TIMEOUT, jint)
 CF_EXTERN_C_END
@@ -133,9 +133,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_GroupOnline)
 @interface ImActorModelModulesPresencePresenceActor_Subscribe : NSObject {
 }
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (instancetype)initWithAMPeer:(AMPeer *)peer;
 
-- (ImActorModelEntityPeer *)getPeer;
+- (AMPeer *)getPeer;
 
 @end
 
@@ -160,7 +160,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_SessionCreated)
 
-@interface ImActorModelModulesPresencePresenceActor_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
+@interface ImActorModelModulesPresencePresenceActor_$1 : NSObject < DKActorCreator > {
 }
 
 - (ImActorModelModulesPresencePresenceActor *)create;
@@ -176,10 +176,10 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_$1)
 
-@interface ImActorModelModulesPresencePresenceActor_$2 : NSObject < ImActorModelDroidkitActorsMailboxCreator > {
+@interface ImActorModelModulesPresencePresenceActor_$2 : NSObject < DKMailboxCreator > {
 }
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)createMailboxWithImActorModelDroidkitActorsMailboxMailboxesQueue:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)queue;
+- (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue;
 
 - (instancetype)init;
 
@@ -192,13 +192,13 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_$2)
 
-@interface ImActorModelModulesPresencePresenceActor_$2_$1 : ImActorModelDroidkitActorsMailboxMailbox {
+@interface ImActorModelModulesPresencePresenceActor_$2_$1 : DKMailbox {
 }
 
-- (jboolean)isEqualEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)a
-                           withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)b;
+- (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
+                           withDKEnvelope:(DKEnvelope *)b;
 
-- (instancetype)initWithImActorModelDroidkitActorsMailboxMailboxesQueue:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)arg$0;
+- (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)arg$0;
 
 @end
 

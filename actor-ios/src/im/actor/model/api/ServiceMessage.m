@@ -51,17 +51,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, IOSByteArray *)
   return self->ext_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->text_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   self->extType_ = [values getIntWithInt:2];
   self->ext_ = [values optBytesWithInt:3];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->text_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->text_];
+  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->text_];
   [writer writeIntWithInt:2 withInt:self->extType_];
   if (self->ext_ != nil) {
     [writer writeBytesWithInt:3 withByteArray:self->ext_];
@@ -82,8 +82,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, IOSByteArray *)
     { "getText", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getExtType", NULL, "I", 0x1, NULL },
     { "getExt", NULL, "[B", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "text_", NULL, 0x2, "Ljava.lang.String;", NULL,  },

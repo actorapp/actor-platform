@@ -6,6 +6,7 @@
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/Storage.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
@@ -19,23 +20,22 @@
 #include "im/actor/model/modules/messages/DialogsActor.h"
 #include "im/actor/model/modules/messages/DialogsHistoryActor.h"
 #include "im/actor/model/mvvm/ListEngine.h"
-#include "im/actor/model/storage/EnginesFactory.h"
 #include "im/actor/model/storage/PreferencesStorage.h"
 #include "java/util/HashMap.h"
 
 @interface ImActorModelModulesMessages () {
  @public
-  id<ImActorModelMvvmListEngine> dialogs_;
-  ImActorModelDroidkitActorsActorRef *dialogsActor_;
-  ImActorModelDroidkitActorsActorRef *dialogsHistoryActor_;
+  id<AMListEngine> dialogs_;
+  DKActorRef *dialogsActor_;
+  DKActorRef *dialogsHistoryActor_;
   JavaUtilHashMap *conversationEngines_;
   JavaUtilHashMap *conversationActors_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogs_, id<ImActorModelMvvmListEngine>)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogsActor_, ImActorModelDroidkitActorsActorRef *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogsHistoryActor_, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogs_, id<AMListEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogsActor_, DKActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogsHistoryActor_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationEngines_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationActors_, JavaUtilHashMap *)
 
@@ -58,12 +58,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$2, this$0_, ImActorModelModules
 @interface ImActorModelModulesMessages_$3 () {
  @public
   ImActorModelModulesMessages *this$0_;
-  ImActorModelEntityPeer *val$peer_;
+  AMPeer *val$peer_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$3, this$0_, ImActorModelModulesMessages *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$3, val$peer_, ImActorModelEntityPeer *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$3, val$peer_, AMPeer *)
 
 @implementation ImActorModelModulesMessages
 
@@ -71,64 +71,64 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$3, val$peer_, ImActorModelEntit
   if (self = [super initWithImActorModelModulesModules:messenger]) {
     conversationEngines_ = [[JavaUtilHashMap alloc] init];
     conversationActors_ = [[JavaUtilHashMap alloc] init];
-    self->dialogs_ = [((id<ImActorModelStorageEnginesFactory>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getEnginesFactory])) createDialogsEngine];
+    self->dialogs_ = [((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getStorage])) createDialogsEngine];
   }
   return self;
 }
 
 - (void)run {
-  self->dialogsActor_ = [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(ImActorModelModulesMessagesDialogsActor_class_(), [[ImActorModelModulesMessages_$1 alloc] initWithImActorModelModulesMessages:self]) withNSString:@"actor/dialogs"];
-  self->dialogsHistoryActor_ = [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(ImActorModelModulesMessagesDialogsHistoryActor_class_(), [[ImActorModelModulesMessages_$2 alloc] initWithImActorModelModulesMessages:self]) withNSString:@"actor/dialogs/history"];
+  self->dialogsActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesMessagesDialogsActor_class_(), [[ImActorModelModulesMessages_$1 alloc] initWithImActorModelModulesMessages:self]) withNSString:@"actor/dialogs"];
+  self->dialogsHistoryActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesMessagesDialogsHistoryActor_class_(), [[ImActorModelModulesMessages_$2 alloc] initWithImActorModelModulesMessages:self]) withNSString:@"actor/dialogs/history"];
 }
 
-- (ImActorModelDroidkitActorsActorRef *)getConversationActorWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
+- (DKActorRef *)getConversationActorWithAMPeer:(AMPeer *)peer {
   @synchronized(conversationActors_) {
     if (![((JavaUtilHashMap *) nil_chk(conversationActors_)) containsKeyWithId:peer]) {
-      (void) [conversationActors_ putWithId:peer withId:[((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(ImActorModelModulesMessagesConversationActor_class_(), [[ImActorModelModulesMessages_$3 alloc] initWithImActorModelModulesMessages:self withImActorModelEntityPeer:peer]) withNSString:JreStrcat("$@CI", @"actor/conv_", [((ImActorModelEntityPeer *) nil_chk(peer)) getPeerType], '_', [peer getPeerId])]];
+      (void) [conversationActors_ putWithId:peer withId:[((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesMessagesConversationActor_class_(), [[ImActorModelModulesMessages_$3 alloc] initWithImActorModelModulesMessages:self withAMPeer:peer]) withNSString:JreStrcat("$@CI", @"actor/conv_", [((AMPeer *) nil_chk(peer)) getPeerType], '_', [peer getPeerId])]];
     }
     return [conversationActors_ getWithId:peer];
   }
 }
 
-- (id<ImActorModelMvvmListEngine>)getConversationEngineWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
+- (id<AMListEngine>)getConversationEngineWithAMPeer:(AMPeer *)peer {
   @synchronized(conversationEngines_) {
     if (![((JavaUtilHashMap *) nil_chk(conversationEngines_)) containsKeyWithId:peer]) {
-      (void) [conversationEngines_ putWithId:peer withId:[((id<ImActorModelStorageEnginesFactory>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getEnginesFactory])) createMessagesEngineWithImActorModelEntityPeer:peer]];
+      (void) [conversationEngines_ putWithId:peer withId:[((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getStorage])) createMessagesEngineWithAMPeer:peer]];
     }
     return [conversationEngines_ getWithId:peer];
   }
 }
 
-- (ImActorModelDroidkitActorsActorRef *)getDialogsActor {
+- (DKActorRef *)getDialogsActor {
   return dialogsActor_;
 }
 
-- (ImActorModelDroidkitActorsActorRef *)getDialogsHistoryActor {
+- (DKActorRef *)getDialogsHistoryActor {
   return dialogsHistoryActor_;
 }
 
-- (id<ImActorModelMvvmListEngine>)getDialogsEngine {
+- (id<AMListEngine>)getDialogsEngine {
   return dialogs_;
 }
 
-- (void)sendMessageWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-      withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)message {
+- (void)sendMessageWithAMPeer:(AMPeer *)peer
+withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)message {
 }
 
-- (void)onInboundMessageShownWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                                               withLong:(jlong)rid
-                                               withLong:(jlong)sortDate
-                                               withLong:(jlong)date
-                                            withBoolean:(jboolean)isEncrypted {
+- (void)onInboundMessageShownWithAMPeer:(AMPeer *)peer
+                               withLong:(jlong)rid
+                               withLong:(jlong)sortDate
+                               withLong:(jlong)date
+                            withBoolean:(jboolean)isEncrypted {
 }
 
-- (void)saveDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                               withNSString:(NSString *)draft {
-  [((id<ImActorModelStoragePreferencesStorage>) nil_chk([self preferences])) putStringWithNSString:JreStrcat("$J", @"draft_", [((ImActorModelEntityPeer *) nil_chk(peer)) getUid]) withNSString:[((NSString *) nil_chk(draft)) trim]];
+- (void)saveDraftWithAMPeer:(AMPeer *)peer
+               withNSString:(NSString *)draft {
+  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putStringWithNSString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUid]) withNSString:[((NSString *) nil_chk(draft)) trim]];
 }
 
-- (NSString *)loadDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  NSString *res = [((id<ImActorModelStoragePreferencesStorage>) nil_chk([self preferences])) getStringWithNSString:JreStrcat("$J", @"draft_", [((ImActorModelEntityPeer *) nil_chk(peer)) getUid])];
+- (NSString *)loadDraftWithAMPeer:(AMPeer *)peer {
+  NSString *res = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getStringWithNSString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUid])];
   if (res == nil) {
     return @"";
   }
@@ -150,15 +150,15 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$3, val$peer_, ImActorModelEntit
   static const J2ObjcMethodInfo methods[] = {
     { "initWithImActorModelModulesModules:", "Messages", NULL, 0x1, NULL },
     { "run", NULL, "V", 0x1, NULL },
-    { "getConversationActorWithImActorModelEntityPeer:", "getConversationActor", "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "getConversationEngineWithImActorModelEntityPeer:", "getConversationEngine", "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
+    { "getConversationActorWithAMPeer:", "getConversationActor", "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
+    { "getConversationEngineWithAMPeer:", "getConversationEngine", "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
     { "getDialogsActor", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
     { "getDialogsHistoryActor", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
     { "getDialogsEngine", NULL, "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
-    { "sendMessageWithImActorModelEntityPeer:withImActorModelEntityContentAbsContent:", "sendMessage", "V", 0x1, NULL },
-    { "onInboundMessageShownWithImActorModelEntityPeer:withLong:withLong:withLong:withBoolean:", "onInboundMessageShown", "V", 0x1, NULL },
-    { "saveDraftWithImActorModelEntityPeer:withNSString:", "saveDraft", "V", 0x1, NULL },
-    { "loadDraftWithImActorModelEntityPeer:", "loadDraft", "Ljava.lang.String;", 0x1, NULL },
+    { "sendMessageWithAMPeer:withImActorModelEntityContentAbsContent:", "sendMessage", "V", 0x1, NULL },
+    { "onInboundMessageShownWithAMPeer:withLong:withLong:withLong:withBoolean:", "onInboundMessageShown", "V", 0x1, NULL },
+    { "saveDraftWithAMPeer:withNSString:", "saveDraft", "V", 0x1, NULL },
+    { "loadDraftWithAMPeer:", "loadDraft", "Ljava.lang.String;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "dialogs_", NULL, 0x2, "Lim.actor.model.mvvm.ListEngine;", NULL,  },
@@ -242,11 +242,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$2)
 @implementation ImActorModelModulesMessages_$3
 
 - (ImActorModelModulesMessagesConversationActor *)create {
-  return [[ImActorModelModulesMessagesConversationActor alloc] initWithImActorModelEntityPeer:val$peer_ withImActorModelModulesModules:[this$0_ modules]];
+  return [[ImActorModelModulesMessagesConversationActor alloc] initWithAMPeer:val$peer_ withImActorModelModulesModules:[this$0_ modules]];
 }
 
 - (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$
-                         withImActorModelEntityPeer:(ImActorModelEntityPeer *)capture$0 {
+                                         withAMPeer:(AMPeer *)capture$0 {
   this$0_ = outer$;
   val$peer_ = capture$0;
   return [super init];
@@ -261,7 +261,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$2)
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "create", NULL, "Lim.actor.model.modules.messages.ConversationActor;", 0x1, NULL },
-    { "initWithImActorModelModulesMessages:withImActorModelEntityPeer:", "init", NULL, 0x0, NULL },
+    { "initWithImActorModelModulesMessages:withAMPeer:", "init", NULL, 0x0, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Messages;", NULL,  },

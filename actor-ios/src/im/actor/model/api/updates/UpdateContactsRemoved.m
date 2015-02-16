@@ -43,12 +43,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaU
   return self->uids_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->uids_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getRepeatedIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->uids_ = [((BSBserValues *) nil_chk(values)) getRepeatedIntWithInt:1];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeRepeatedIntWithInt:1 withJavaUtilList:self->uids_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeRepeatedIntWithInt:1 withJavaUtilList:self->uids_];
 }
 
 - (jint)getHeaderKey {
@@ -66,8 +66,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaU
     { "initWithJavaUtilList:", "UpdateContactsRemoved", NULL, 0x1, NULL },
     { "init", "UpdateContactsRemoved", NULL, 0x1, NULL },
     { "getUids", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -82,7 +82,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaU
 
 ImActorModelApiUpdatesUpdateContactsRemoved *ImActorModelApiUpdatesUpdateContactsRemoved_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateContactsRemoved_init();
-  return ((ImActorModelApiUpdatesUpdateContactsRemoved *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateContactsRemoved alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateContactsRemoved *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateContactsRemoved alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateContactsRemoved)

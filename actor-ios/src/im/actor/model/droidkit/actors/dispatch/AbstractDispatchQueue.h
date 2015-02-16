@@ -3,42 +3,44 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/dispatch/AbstractDispatchQueue.java
 //
 
-#ifndef _ImActorModelDroidkitActorsDispatchAbstractDispatchQueue_H_
-#define _ImActorModelDroidkitActorsDispatchAbstractDispatchQueue_H_
+#ifndef _DKAbstractDispatchQueue_H_
+#define _DKAbstractDispatchQueue_H_
 
-@class ImActorModelDroidkitActorsDispatchDispatchResult;
-@protocol ImActorModelDroidkitActorsDispatchQueueListener;
+@class DKDispatchResult;
+@protocol DKQueueListener;
 
 #include "J2ObjC_header.h"
 
-#define ImActorModelDroidkitActorsDispatchAbstractDispatchQueue_FOREVER 300000LL
+#define DKAbstractDispatchQueue_FOREVER 300000LL
 
-@interface ImActorModelDroidkitActorsDispatchAbstractDispatchQueue : NSObject {
+@interface DKAbstractDispatchQueue : NSObject {
 }
 
-- (ImActorModelDroidkitActorsDispatchDispatchResult *)dispatchWithLong:(jlong)time;
+- (DKDispatchResult *)dispatchWithLong:(jlong)time;
 
 - (void)notifyQueueChanged;
 
-- (ImActorModelDroidkitActorsDispatchDispatchResult *)resultWithId:(id)obj;
+- (DKDispatchResult *)resultWithId:(id)obj;
 
-- (ImActorModelDroidkitActorsDispatchDispatchResult *)delayWithLong:(jlong)delay;
+- (DKDispatchResult *)delayWithLong:(jlong)delay;
 
-- (id<ImActorModelDroidkitActorsDispatchQueueListener>)getListener;
+- (id<DKQueueListener>)getListener;
 
-- (void)setListenerWithImActorModelDroidkitActorsDispatchQueueListener:(id<ImActorModelDroidkitActorsDispatchQueueListener>)listener;
+- (void)setListenerWithDKQueueListener:(id<DKQueueListener>)listener;
 
 - (instancetype)init;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue)
+J2OBJC_EMPTY_STATIC_INIT(DKAbstractDispatchQueue)
 
 CF_EXTERN_C_BEGIN
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue, FOREVER, jlong)
+J2OBJC_STATIC_FIELD_GETTER(DKAbstractDispatchQueue, FOREVER, jlong)
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue)
+typedef DKAbstractDispatchQueue ImActorModelDroidkitActorsDispatchAbstractDispatchQueue;
 
-#endif // _ImActorModelDroidkitActorsDispatchAbstractDispatchQueue_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKAbstractDispatchQueue)
+
+#endif // _DKAbstractDispatchQueue_H_

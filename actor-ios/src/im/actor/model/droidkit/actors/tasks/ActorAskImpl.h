@@ -6,9 +6,9 @@
 #ifndef _ImActorModelDroidkitActorsTasksActorAskImpl_H_
 #define _ImActorModelDroidkitActorsTasksActorAskImpl_H_
 
+@class DKActorRef;
 @class IOSBooleanArray;
 @class IOSObjectArray;
-@class ImActorModelDroidkitActorsActorRef;
 @class ImActorModelDroidkitActorsMessagesDeadLetter;
 @class ImActorModelDroidkitActorsTasksAskFuture;
 @class ImActorModelDroidkitActorsTasksMessagesTaskError;
@@ -25,13 +25,13 @@
 @interface ImActorModelDroidkitActorsTasksActorAskImpl : NSObject < ImActorModelDroidkitActorsExtensionsActorExtension > {
 }
 
-- (instancetype)initWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)self_;
+- (instancetype)initWithDKActorRef:(DKActorRef *)self_;
 
 - (ImActorModelDroidkitActorsTasksAskFuture *)combineWithImActorModelDroidkitActorsTasksAskFutureArray:(IOSObjectArray *)futures;
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref
-                                                                               withLong:(jlong)timeout
-                                         withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref
+                                                       withLong:(jlong)timeout
+                 withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
 
 - (void)preStart;
 
@@ -53,7 +53,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsTasksActorAskImpl)
 @interface ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer : NSObject {
  @public
   ImActorModelDroidkitActorsTasksAskFuture *future_;
-  ImActorModelDroidkitActorsActorRef *ref_;
+  DKActorRef *ref_;
   jint requestId_;
 }
 
@@ -62,7 +62,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsTasksActorAskImpl)
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer)
 
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer, future_, ImActorModelDroidkitActorsTasksAskFuture *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer, ref_, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer, ref_, DKActorRef *)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END

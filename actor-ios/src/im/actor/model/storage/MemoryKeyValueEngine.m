@@ -13,26 +13,26 @@
 #include "java/util/HashMap.h"
 #include "java/util/List.h"
 
-@interface ImActorModelStorageMemoryKeyValueEngine () {
+@interface AMMemoryKeyValueEngine () {
  @public
   JavaUtilHashMap *users_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryKeyValueEngine, users_, JavaUtilHashMap *)
+J2OBJC_FIELD_SETTER(AMMemoryKeyValueEngine, users_, JavaUtilHashMap *)
 
-@implementation ImActorModelStorageMemoryKeyValueEngine
+@implementation AMMemoryKeyValueEngine
 
-- (void)addOrUpdateItemWithImActorModelMvvmKeyValueItem:(id<ImActorModelMvvmKeyValueItem>)item {
+- (void)addOrUpdateItemWithAMKeyValueItem:(id<AMKeyValueItem>)item {
   @synchronized(self) {
-    (void) [((JavaUtilHashMap *) nil_chk(users_)) putWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelMvvmKeyValueItem>) nil_chk(item)) getEngineId]) withId:item];
+    (void) [((JavaUtilHashMap *) nil_chk(users_)) putWithId:JavaLangLong_valueOfWithLong_([((id<AMKeyValueItem>) nil_chk(item)) getEngineId]) withId:item];
   }
 }
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values {
   @synchronized(self) {
-    for (id<ImActorModelMvvmKeyValueItem> __strong u in nil_chk(values)) {
-      (void) [((JavaUtilHashMap *) nil_chk(users_)) putWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelMvvmKeyValueItem>) nil_chk(u)) getEngineId]) withId:u];
+    for (id<AMKeyValueItem> __strong u in nil_chk(values)) {
+      (void) [((JavaUtilHashMap *) nil_chk(users_)) putWithId:JavaLangLong_valueOfWithLong_([((id<AMKeyValueItem>) nil_chk(u)) getEngineId]) withId:u];
     }
   }
 }
@@ -82,14 +82,14 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryKeyValueEngine, users_, JavaUtilHas
   return self;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelStorageMemoryKeyValueEngine *)other {
+- (void)copyAllFieldsTo:(AMMemoryKeyValueEngine *)other {
   [super copyAllFieldsTo:other];
   other->users_ = users_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "addOrUpdateItemWithImActorModelMvvmKeyValueItem:", "addOrUpdateItem", "V", 0x21, NULL },
+    { "addOrUpdateItemWithAMKeyValueItem:", "addOrUpdateItem", "V", 0x21, NULL },
     { "addOrUpdateItemsWithJavaUtilList:", "addOrUpdateItems", "V", 0x21, NULL },
     { "removeItemWithLong:", "removeItem", "V", 0x21, NULL },
     { "removeItemsWithLongArray:", "removeItems", "V", 0x21, NULL },
@@ -101,10 +101,10 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryKeyValueEngine, users_, JavaUtilHas
   static const J2ObjcFieldInfo fields[] = {
     { "users_", NULL, 0x2, "Ljava.util.HashMap;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelStorageMemoryKeyValueEngine = { 1, "MemoryKeyValueEngine", "im.actor.model.storage", NULL, 0x1, 8, methods, 1, fields, 0, NULL};
-  return &_ImActorModelStorageMemoryKeyValueEngine;
+  static const J2ObjcClassInfo _AMMemoryKeyValueEngine = { 1, "MemoryKeyValueEngine", "im.actor.model.storage", NULL, 0x1, 8, methods, 1, fields, 0, NULL};
+  return &_AMMemoryKeyValueEngine;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelStorageMemoryKeyValueEngine)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMemoryKeyValueEngine)

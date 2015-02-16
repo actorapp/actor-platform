@@ -6,9 +6,9 @@
 #ifndef _ImActorModelEntityContentServiceContent_H_
 #define _ImActorModelEntityContentServiceContent_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 @class ImActorModelEntityContentAbsContent_ContentTypeEnum;
 
 #include "J2ObjC_header.h"
@@ -27,9 +27,9 @@
 
 - (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

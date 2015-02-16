@@ -66,13 +66,13 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_Progress, progress_
 @interface ImActorModelDroidkitActorsTasksTaskActor_TaskListener () {
  @public
   jint requestId_;
-  ImActorModelDroidkitActorsActorRef *sender_;
+  DKActorRef *sender_;
 }
 - (instancetype)initWithInt:(jint)requestId
-withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender;
+             withDKActorRef:(DKActorRef *)sender;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sender_, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sender_, DKActorRef *)
 
 @implementation ImActorModelDroidkitActorsTasksTaskActor
 
@@ -89,7 +89,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
 }
 
 - (void)preStart {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskStart alloc] init]];
+  [((DKActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskStart alloc] init]];
 }
 
 - (void)onReceiveWithId:(id)message {
@@ -98,7 +98,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
   }
   else if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksTaskActor_Obsolete class]]) {
     [self onTaskObsolete];
-    [((ImActorModelDroidkitActorsActorContext *) nil_chk([self context])) stopSelf];
+    [((DKActorContext *) nil_chk([self context])) stopSelf];
   }
   else if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksMessagesTaskRequest class]]) {
     ImActorModelDroidkitActorsTasksMessagesTaskRequest *request = (ImActorModelDroidkitActorsTasksMessagesTaskRequest *) check_class_cast(message, [ImActorModelDroidkitActorsTasksMessagesTaskRequest class]);
@@ -108,7 +108,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
       }
     }
     else {
-      ImActorModelDroidkitActorsTasksTaskActor_TaskListener *listener = [[ImActorModelDroidkitActorsTasksTaskActor_TaskListener alloc] initWithInt:[((ImActorModelDroidkitActorsTasksMessagesTaskRequest *) nil_chk(request)) getRequestId] withImActorModelDroidkitActorsActorRef:[self sender]];
+      ImActorModelDroidkitActorsTasksTaskActor_TaskListener *listener = [[ImActorModelDroidkitActorsTasksTaskActor_TaskListener alloc] initWithInt:[((ImActorModelDroidkitActorsTasksMessagesTaskRequest *) nil_chk(request)) getRequestId] withDKActorRef:[self sender]];
       [((JavaUtilHashSet *) nil_chk(requests_)) addWithId:listener];
     }
   }
@@ -117,17 +117,17 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
     if (isCompleted__) {
       return;
     }
-    ImActorModelDroidkitActorsTasksTaskActor_TaskListener *listener = [[ImActorModelDroidkitActorsTasksTaskActor_TaskListener alloc] initWithInt:[((ImActorModelDroidkitActorsTasksMessagesTaskCancel *) nil_chk(cancel)) getRequestId] withImActorModelDroidkitActorsActorRef:[self sender]];
+    ImActorModelDroidkitActorsTasksTaskActor_TaskListener *listener = [[ImActorModelDroidkitActorsTasksTaskActor_TaskListener alloc] initWithInt:[((ImActorModelDroidkitActorsTasksMessagesTaskCancel *) nil_chk(cancel)) getRequestId] withDKActorRef:[self sender]];
     [((JavaUtilHashSet *) nil_chk(requests_)) removeWithId:listener];
     if ([requests_ size] == 0) {
-      [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelDroidkitActorsTasksTaskActor_Obsolete alloc] init] withLong:dieTimeout_];
+      [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelDroidkitActorsTasksTaskActor_Obsolete alloc] init] withLong:dieTimeout_];
     }
   }
   else if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksTaskActor_Progress class]]) {
     ImActorModelDroidkitActorsTasksTaskActor_Progress *progress = (ImActorModelDroidkitActorsTasksTaskActor_Progress *) check_class_cast(message, [ImActorModelDroidkitActorsTasksTaskActor_Progress class]);
     if (!isCompleted__) {
       for (ImActorModelDroidkitActorsTasksTaskActor_TaskListener * __strong request in nil_chk(requests_)) {
-        [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(request)) getSender])) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskProgress alloc] initWithInt:[request getRequestId] withId:((ImActorModelDroidkitActorsTasksTaskActor_Progress *) nil_chk(progress))->progress_]];
+        [((DKActorRef *) nil_chk([((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(request)) getSender])) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskProgress alloc] initWithInt:[request getRequestId] withId:((ImActorModelDroidkitActorsTasksTaskActor_Progress *) nil_chk(progress))->progress_]];
       }
     }
   }
@@ -138,9 +138,9 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
       isCompletedSuccess__ = YES;
       result_ = (id) [((ImActorModelDroidkitActorsTasksTaskActor_Result *) nil_chk(res)) getRes];
       for (ImActorModelDroidkitActorsTasksTaskActor_TaskListener * __strong request in nil_chk(requests_)) {
-        [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(request)) getSender])) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskResult alloc] initWithInt:[request getRequestId] withId:result_]];
+        [((DKActorRef *) nil_chk([((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(request)) getSender])) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskResult alloc] initWithInt:[request getRequestId] withId:result_]];
       }
-      [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_() withLong:dieTimeout_];
+      [((DKActorRef *) nil_chk([self self__])) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_() withLong:dieTimeout_];
     }
   }
   else if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksTaskActor_Error class]]) {
@@ -148,9 +148,9 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
       isCompleted__ = YES;
       ImActorModelDroidkitActorsTasksTaskActor_Error *error = (ImActorModelDroidkitActorsTasksTaskActor_Error *) check_class_cast(message, [ImActorModelDroidkitActorsTasksTaskActor_Error class]);
       for (ImActorModelDroidkitActorsTasksTaskActor_TaskListener * __strong request in nil_chk(requests_)) {
-        [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(request)) getSender])) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskError alloc] initWithInt:[request getRequestId] withJavaLangThrowable:[((ImActorModelDroidkitActorsTasksTaskActor_Error *) nil_chk(error)) getError]]];
+        [((DKActorRef *) nil_chk([((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(request)) getSender])) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskError alloc] initWithInt:[request getRequestId] withJavaLangThrowable:[((ImActorModelDroidkitActorsTasksTaskActor_Error *) nil_chk(error)) getError]]];
       }
-      [((ImActorModelDroidkitActorsActorContext *) nil_chk([self context])) stopSelf];
+      [((DKActorContext *) nil_chk([self context])) stopSelf];
     }
   }
 }
@@ -167,15 +167,15 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
 }
 
 - (void)completeWithId:(id)res {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelDroidkitActorsTasksTaskActor_Result alloc] initWithId:res]];
+  [((DKActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelDroidkitActorsTasksTaskActor_Result alloc] initWithId:res]];
 }
 
 - (void)errorWithJavaLangThrowable:(JavaLangThrowable *)t {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelDroidkitActorsTasksTaskActor_Error alloc] initWithJavaLangThrowable:t]];
+  [((DKActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelDroidkitActorsTasksTaskActor_Error alloc] initWithJavaLangThrowable:t]];
 }
 
 - (void)progressWithId:(id)progress {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelDroidkitActorsTasksTaskActor_Progress alloc] initWithId:progress]];
+  [((DKActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelDroidkitActorsTasksTaskActor_Progress alloc] initWithId:progress]];
 }
 
 - (instancetype)init {
@@ -348,7 +348,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor_Obsole
 @implementation ImActorModelDroidkitActorsTasksTaskActor_TaskListener
 
 - (instancetype)initWithInt:(jint)requestId
-withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender {
+             withDKActorRef:(DKActorRef *)sender {
   if (self = [super init]) {
     self->requestId_ = requestId;
     self->sender_ = sender;
@@ -360,7 +360,7 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
   return requestId_;
 }
 
-- (ImActorModelDroidkitActorsActorRef *)getSender {
+- (DKActorRef *)getSender {
   return sender_;
 }
 
@@ -369,13 +369,13 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
   if (o == nil || [self getClass] != [o getClass]) return NO;
   ImActorModelDroidkitActorsTasksTaskActor_TaskListener *that = (ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) check_class_cast(o, [ImActorModelDroidkitActorsTasksTaskActor_TaskListener class]);
   if (requestId_ != ((ImActorModelDroidkitActorsTasksTaskActor_TaskListener *) nil_chk(that))->requestId_) return NO;
-  if (![((ImActorModelDroidkitActorsActorRef *) nil_chk(sender_)) isEqual:that->sender_]) return NO;
+  if (![((DKActorRef *) nil_chk(sender_)) isEqual:that->sender_]) return NO;
   return YES;
 }
 
 - (NSUInteger)hash {
   jint result = requestId_;
-  result = 31 * result + ((jint) [((ImActorModelDroidkitActorsActorRef *) nil_chk(sender_)) hash]);
+  result = 31 * result + ((jint) [((DKActorRef *) nil_chk(sender_)) hash]);
   return result;
 }
 
@@ -387,7 +387,7 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withImActorModelDroidkitActorsActorRef:", "TaskListener", NULL, 0x2, NULL },
+    { "initWithInt:withDKActorRef:", "TaskListener", NULL, 0x2, NULL },
     { "getRequestId", NULL, "I", 0x1, NULL },
     { "getSender", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
     { "isEqual:", "equals", "Z", 0x1, NULL },

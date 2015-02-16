@@ -5,13 +5,12 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorTime.h"
-#include "im/actor/model/droidkit/actors/conf/EnvConfig.h"
-#include "im/actor/model/droidkit/actors/conf/JavaFactory.h"
+#include "im/actor/model/droidkit/actors/Environment.h"
 
-@implementation ImActorModelDroidkitActorsActorTime
+@implementation DKActorTime
 
 + (jlong)currentTime {
-  return ImActorModelDroidkitActorsActorTime_currentTime();
+  return DKActorTime_currentTime();
 }
 
 - (instancetype)init {
@@ -23,15 +22,15 @@
     { "currentTime", NULL, "J", 0x9, NULL },
     { "init", NULL, NULL, 0x1, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsActorTime = { 1, "ActorTime", "im.actor.model.droidkit.actors", NULL, 0x1, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitActorsActorTime;
+  static const J2ObjcClassInfo _DKActorTime = { 1, "ActorTime", "im.actor.model.droidkit.actors", NULL, 0x1, 2, methods, 0, NULL, 0, NULL};
+  return &_DKActorTime;
 }
 
 @end
 
-jlong ImActorModelDroidkitActorsActorTime_currentTime() {
-  ImActorModelDroidkitActorsActorTime_init();
-  return [((id<ImActorModelDroidkitActorsConfJavaFactory>) nil_chk(ImActorModelDroidkitActorsConfEnvConfig_getJavaFactory())) getCurrentTime];
+jlong DKActorTime_currentTime() {
+  DKActorTime_init();
+  return DKEnvironment_getActorTime();
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsActorTime)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorTime)

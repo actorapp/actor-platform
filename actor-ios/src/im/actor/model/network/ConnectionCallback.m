@@ -14,7 +14,7 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "onMessageWithByteArray:withInt:withInt:", "onMessage", "V", 0x401, NULL },
+    { "onMessage:withOffset:withLen:", "onMessage", "V", 0x401, NULL },
     { "onConnectionDie", NULL, "V", 0x401, NULL },
   };
   static const J2ObjcClassInfo _AMConnectionCallback = { 1, "ConnectionCallback", "im.actor.model.network", NULL, 0x201, 2, methods, 0, NULL, 0, NULL};

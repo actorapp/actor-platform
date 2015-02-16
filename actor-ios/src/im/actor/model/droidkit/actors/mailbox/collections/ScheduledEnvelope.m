@@ -11,17 +11,17 @@
  @public
   jlong key_;
   jlong time_;
-  ImActorModelDroidkitActorsMailboxEnvelope *envelope_;
+  DKEnvelope *envelope_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope, envelope_, ImActorModelDroidkitActorsMailboxEnvelope *)
+J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope, envelope_, DKEnvelope *)
 
 @implementation ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope
 
 - (instancetype)initWithLong:(jlong)key
                     withLong:(jlong)time
-withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope {
+              withDKEnvelope:(DKEnvelope *)envelope {
   if (self = [super init]) {
     self->key_ = key;
     self->time_ = time;
@@ -38,12 +38,12 @@ withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailbox
   return time_;
 }
 
-- (ImActorModelDroidkitActorsMailboxEnvelope *)getEnvelope {
+- (DKEnvelope *)getEnvelope {
   return envelope_;
 }
 
 - (NSString *)description {
-  return JreStrcat("C@C", '<', [((ImActorModelDroidkitActorsMailboxEnvelope *) nil_chk(envelope_)) getMessage], '>');
+  return JreStrcat("C@C", '<', [((DKEnvelope *) nil_chk(envelope_)) getMessage], '>');
 }
 
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *)other {
@@ -55,7 +55,7 @@ withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailbox
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withLong:withImActorModelDroidkitActorsMailboxEnvelope:", "ScheduledEnvelope", NULL, 0x1, NULL },
+    { "initWithLong:withLong:withDKEnvelope:", "ScheduledEnvelope", NULL, 0x1, NULL },
     { "getKey", NULL, "J", 0x1, NULL },
     { "getTime", NULL, "J", 0x1, NULL },
     { "getEnvelope", NULL, "Lim.actor.model.droidkit.actors.mailbox.Envelope;", 0x1, NULL },

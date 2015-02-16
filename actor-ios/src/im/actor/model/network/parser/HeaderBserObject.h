@@ -9,7 +9,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelNetworkParserHeaderBserObject : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelNetworkParserHeaderBserObject : BSBserObject {
 }
 
 - (jint)getHeaderKey;

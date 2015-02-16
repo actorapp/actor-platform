@@ -48,14 +48,14 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupCreated, groupTitle_, N
   return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_CREATED();
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  [super parseWithImActorModelDroidkitBserBserValues:values];
-  groupTitle_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:10];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  [super parseWithBSBserValues:values];
+  groupTitle_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:10];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [super serializeWithImActorModelDroidkitBserBserWriter:writer];
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:groupTitle_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [super serializeWithBSBserWriter:writer];
+  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:groupTitle_];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelEntityContentServiceGroupCreated *)other {
@@ -70,8 +70,8 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupCreated, groupTitle_, N
     { "init", "ServiceGroupCreated", NULL, 0x2, NULL },
     { "getGroupTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "groupTitle_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
@@ -84,7 +84,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupCreated, groupTitle_, N
 
 ImActorModelEntityContentServiceGroupCreated *ImActorModelEntityContentServiceGroupCreated_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentServiceGroupCreated_init();
-  return ((ImActorModelEntityContentServiceGroupCreated *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupCreated alloc] init], data));
+  return ((ImActorModelEntityContentServiceGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupCreated alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupCreated)

@@ -7,10 +7,11 @@
 #define _AMActorApi_H_
 
 @class AMEndpoints;
-@class ImActorModelDroidkitActorsActorRef;
+@class DKActorRef;
 @class ImActorModelNetworkParserRequest;
 @protocol AMActorApiCallback;
 @protocol AMAuthKeyStorage;
+@protocol AMNetworking;
 @protocol AMRpcCallback;
 
 #include "J2ObjC_header.h"
@@ -20,7 +21,8 @@
 
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
-             withAMActorApiCallback:(id<AMActorApiCallback>)callback;
+             withAMActorApiCallback:(id<AMActorApiCallback>)callback
+                   withAMNetworking:(id<AMNetworking>)networking;
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback;

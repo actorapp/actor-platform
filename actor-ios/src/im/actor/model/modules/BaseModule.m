@@ -5,7 +5,7 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
-#include "im/actor/model/concurrency/MainThread.h"
+#include "im/actor/model/MainThread.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Modules.h"
@@ -46,11 +46,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModule
 }
 
 - (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
-  [((id<ImActorModelConcurrencyMainThread>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThread])) runOnUiThreadWithJavaLangRunnable:runnable];
+  [((id<AMMainThread>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThread])) runOnUiThread:runnable];
 }
 
-- (id<ImActorModelStoragePreferencesStorage>)preferences {
-  return [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getPreferencesStorage];
+- (id<AMPreferencesStorage>)preferences {
+  return [((ImActorModelModulesModules *) nil_chk(modules__)) getPreferences];
 }
 
 - (jint)myUid {
@@ -66,7 +66,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModule
   [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:[[ImActorModelModulesBaseModule_$1 alloc] init]];
 }
 
-- (id<ImActorModelMvvmKeyValueEngine>)users {
+- (id<AMKeyValueEngine>)users {
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsers];
 }
 

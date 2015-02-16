@@ -6,7 +6,7 @@
 #ifndef _ImActorModelModulesUpdatesPresenceProcessor_H_
 #define _ImActorModelModulesUpdatesPresenceProcessor_H_
 
-@class ImActorModelDroidkitActorsActorRef;
+@class DKActorRef;
 @class ImActorModelModulesModules;
 
 #include "J2ObjC_header.h"

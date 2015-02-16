@@ -17,11 +17,11 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "onEnvelopeDeliveredWithImActorModelDroidkitActorsMailboxEnvelope:", "onEnvelopeDelivered", "V", 0x401, NULL },
-    { "onEnvelopeProcessedWithImActorModelDroidkitActorsMailboxEnvelope:withLong:", "onEnvelopeProcessed", "V", 0x401, NULL },
-    { "onDropWithImActorModelDroidkitActorsActorRef:withId:withImActorModelDroidkitActorsActor:", "onDrop", "V", 0x401, NULL },
-    { "onDeadLetterWithImActorModelDroidkitActorsActorRef:withId:", "onDeadLetter", "V", 0x401, NULL },
-    { "onActorDieWithImActorModelDroidkitActorsActorRef:withJavaLangException:", "onActorDie", "V", 0x401, NULL },
+    { "onEnvelopeDeliveredWithDKEnvelope:", "onEnvelopeDelivered", "V", 0x401, NULL },
+    { "onEnvelopeProcessedWithDKEnvelope:withLong:", "onEnvelopeProcessed", "V", 0x401, NULL },
+    { "onDropWithDKActorRef:withId:withDKActor:", "onDrop", "V", 0x401, NULL },
+    { "onDeadLetterWithDKActorRef:withId:", "onDeadLetter", "V", 0x401, NULL },
+    { "onActorDieWithDKActorRef:withJavaLangException:", "onActorDie", "V", 0x401, NULL },
   };
   static const J2ObjcClassInfo _ImActorModelDroidkitActorsDebugTraceInterface = { 1, "TraceInterface", "im.actor.model.droidkit.actors.debug", NULL, 0x201, 5, methods, 0, NULL, 0, NULL};
   return &_ImActorModelDroidkitActorsDebugTraceInterface;

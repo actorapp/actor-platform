@@ -59,22 +59,22 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUse
   return self->user_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->groupPeer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
   self->rid_ = [values getLongWithInt:4];
-  self->user_ = [values getObjWithInt:3 withImActorModelDroidkitBserBserObject:[[ImActorModelApiUserOutPeer alloc] init]];
+  self->user_ = [values getObjWithInt:3 withBSBserObject:[[ImActorModelApiUserOutPeer alloc] init]];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->groupPeer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->groupPeer_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->groupPeer_];
   [writer writeLongWithInt:4 withLong:self->rid_];
   if (self->user_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [writer writeObjectWithInt:3 withImActorModelDroidkitBserBserObject:self->user_];
+  [writer writeObjectWithInt:3 withBSBserObject:self->user_];
 }
 
 - (jint)getHeaderKey {
@@ -96,8 +96,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUse
     { "getGroupPeer", NULL, "Lim.actor.model.api.GroupOutPeer;", 0x1, NULL },
     { "getRid", NULL, "J", 0x1, NULL },
     { "getUser", NULL, "Lim.actor.model.api.UserOutPeer;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -115,7 +115,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUse
 
 ImActorModelApiRpcRequestKickUser *ImActorModelApiRpcRequestKickUser_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestKickUser_init();
-  return ((ImActorModelApiRpcRequestKickUser *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestKickUser alloc] init], data));
+  return ((ImActorModelApiRpcRequestKickUser *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestKickUser alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestKickUser)

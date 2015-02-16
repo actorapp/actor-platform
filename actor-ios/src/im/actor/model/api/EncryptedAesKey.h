@@ -6,14 +6,14 @@
 #ifndef _ImActorModelApiEncryptedAesKey_H_
 #define _ImActorModelApiEncryptedAesKey_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiEncryptedAesKey : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiEncryptedAesKey : BSBserObject {
 }
 
 - (instancetype)initWithLong:(jlong)keyHash
@@ -25,9 +25,9 @@
 
 - (IOSByteArray *)getAesEncryptedKey;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

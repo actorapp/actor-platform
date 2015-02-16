@@ -6,14 +6,14 @@
 #ifndef _ImActorModelApiWrongKeysErrorData_H_
 #define _ImActorModelApiWrongKeysErrorData_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
+@class BSBserValues;
+@class BSBserWriter;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiWrongKeysErrorData : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiWrongKeysErrorData : BSBserObject {
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)newKeys
@@ -28,9 +28,9 @@
 
 - (id<JavaUtilList>)getInvalidKeys;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

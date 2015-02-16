@@ -6,36 +6,36 @@
 #ifndef _ImActorModelModulesUtilsModuleActor_H_
 #define _ImActorModelModulesUtilsModuleActor_H_
 
+@class AMPeer;
 @class AMRpcException;
-@class ImActorModelEntityPeer;
-@class ImActorModelEntityUser;
+@class AMUser;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdates;
 @class ImActorModelNetworkParserRequest;
 @class ImActorModelNetworkParserResponse;
-@protocol ImActorModelMvvmKeyValueEngine;
-@protocol ImActorModelMvvmListEngine;
-@protocol ImActorModelStoragePreferencesStorage;
+@protocol AMKeyValueEngine;
+@protocol AMListEngine;
+@protocol AMPreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/network/RpcCallback.h"
 #include "java/lang/Runnable.h"
 
-@interface ImActorModelModulesUtilsModuleActor : ImActorModelDroidkitActorsActor {
+@interface ImActorModelModulesUtilsModuleActor : DKActor {
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
-- (id<ImActorModelMvvmKeyValueEngine>)users;
+- (id<AMKeyValueEngine>)users;
 
-- (ImActorModelEntityUser *)getUserWithInt:(jint)uid;
+- (AMUser *)getUserWithInt:(jint)uid;
 
-- (id<ImActorModelStoragePreferencesStorage>)preferences;
+- (id<AMPreferencesStorage>)preferences;
 
 - (ImActorModelModulesUpdates *)updates;
 
-- (id<ImActorModelMvvmListEngine>)messagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (id<AMListEngine>)messagesWithAMPeer:(AMPeer *)peer;
 
 - (jint)myUid;
 

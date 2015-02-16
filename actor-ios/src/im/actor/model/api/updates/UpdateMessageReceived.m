@@ -57,17 +57,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReceived, peer_, ImActorM
   return self->receivedDate_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiPeer alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
   self->startDate_ = [values getLongWithInt:2];
   self->receivedDate_ = [values getLongWithInt:3];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
   [writer writeLongWithInt:2 withLong:self->startDate_];
   [writer writeLongWithInt:3 withLong:self->receivedDate_];
 }
@@ -91,8 +91,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReceived, peer_, ImActorM
     { "getPeer", NULL, "Lim.actor.model.api.Peer;", 0x1, NULL },
     { "getStartDate", NULL, "J", 0x1, NULL },
     { "getReceivedDate", NULL, "J", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -109,7 +109,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReceived, peer_, ImActorM
 
 ImActorModelApiUpdatesUpdateMessageReceived *ImActorModelApiUpdatesUpdateMessageReceived_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateMessageReceived_init();
-  return ((ImActorModelApiUpdatesUpdateMessageReceived *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateMessageReceived alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateMessageReceived *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateMessageReceived alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateMessageReceived)

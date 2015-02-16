@@ -6,13 +6,13 @@
 #ifndef _ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_H_
 #define _ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_H_
 
+@class AMAtomicIntegerCompat;
+@class AMThreadLocalCompat;
+@class DKEnvelope;
 @class IOSObjectArray;
 @class ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult;
 @class ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot;
 @class ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope;
-@class ImActorModelDroidkitActorsMailboxEnvelope;
-@class ImActorModelDroidkitActorsUtilsAtomicIntegerCompat;
-@class ImActorModelDroidkitActorsUtilsThreadLocalCompat;
 @class JavaUtilTreeMap;
 @protocol ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator;
 
@@ -27,14 +27,14 @@
 
 - (jlong)getTopKey;
 
-- (jlong)putEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope
-                                                         withLong:(jlong)time;
+- (jlong)putEnvelopeWithDKEnvelope:(DKEnvelope *)envelope
+                          withLong:(jlong)time;
 
-- (void)removeEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope
+- (void)removeEnvelopeWithDKEnvelope:(DKEnvelope *)envelope
 withImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator:(id<ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator>)comparator;
 
-- (jlong)putEnvelopeOnceWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope
-                                                             withLong:(jlong)time
+- (jlong)putEnvelopeOnceWithDKEnvelope:(DKEnvelope *)envelope
+                              withLong:(jlong)time
 withImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator:(id<ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator>)comparator;
 
 - (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult *)fetchEnvelopeWithLong:(jlong)time;
@@ -52,16 +52,16 @@ J2OBJC_STATIC_INIT(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollectio
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_NEXT_ID_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection, NEXT_ID_, ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *)
+FOUNDATION_EXPORT AMAtomicIntegerCompat *ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_NEXT_ID_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection, NEXT_ID_, AMAtomicIntegerCompat *)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection)
 
 @protocol ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator < NSObject, JavaObject >
 
-- (jboolean)equalsWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)a
-                  withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)b;
+- (jboolean)equalsWithDKEnvelope:(DKEnvelope *)a
+                  withDKEnvelope:(DKEnvelope *)b;
 
 @end
 
@@ -96,9 +96,9 @@ FOUNDATION_EXPORT ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection
 
 FOUNDATION_EXPORT ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult *ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult_delayWithLong_(jlong delay);
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsUtilsThreadLocalCompat *ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult_RESULT_CACHE_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult, RESULT_CACHE_, ImActorModelDroidkitActorsUtilsThreadLocalCompat *)
-J2OBJC_STATIC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult, RESULT_CACHE_, ImActorModelDroidkitActorsUtilsThreadLocalCompat *)
+FOUNDATION_EXPORT AMThreadLocalCompat *ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult_RESULT_CACHE_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult, RESULT_CACHE_, AMThreadLocalCompat *)
+J2OBJC_STATIC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult, RESULT_CACHE_, AMThreadLocalCompat *)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult)

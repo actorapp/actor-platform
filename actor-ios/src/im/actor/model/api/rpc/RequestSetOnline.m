@@ -47,13 +47,13 @@
   return self->timeout_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->isOnline__ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBoolWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->isOnline__ = [((BSBserValues *) nil_chk(values)) getBoolWithInt:1];
   self->timeout_ = [values getLongWithInt:2];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeBoolWithInt:1 withBoolean:self->isOnline__];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeBoolWithInt:1 withBoolean:self->isOnline__];
   [writer writeLongWithInt:2 withLong:self->timeout_];
 }
 
@@ -74,8 +74,8 @@
     { "init", "RequestSetOnline", NULL, 0x1, NULL },
     { "isOnline", NULL, "Z", 0x1, NULL },
     { "getTimeout", NULL, "J", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -92,7 +92,7 @@
 
 ImActorModelApiRpcRequestSetOnline *ImActorModelApiRpcRequestSetOnline_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSetOnline_init();
-  return ((ImActorModelApiRpcRequestSetOnline *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestSetOnline alloc] init], data));
+  return ((ImActorModelApiRpcRequestSetOnline *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestSetOnline alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSetOnline)

@@ -43,15 +43,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteChat, peer_, ImActorModelApiO
   return self->peer_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiOutPeer alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiOutPeer alloc] init]];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
 }
 
 - (jint)getHeaderKey {
@@ -69,8 +69,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteChat, peer_, ImActorModelApiO
     { "initWithImActorModelApiOutPeer:", "RequestDeleteChat", NULL, 0x1, NULL },
     { "init", "RequestDeleteChat", NULL, 0x1, NULL },
     { "getPeer", NULL, "Lim.actor.model.api.OutPeer;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -86,7 +86,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteChat, peer_, ImActorModelApiO
 
 ImActorModelApiRpcRequestDeleteChat *ImActorModelApiRpcRequestDeleteChat_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestDeleteChat_init();
-  return ((ImActorModelApiRpcRequestDeleteChat *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestDeleteChat alloc] init], data));
+  return ((ImActorModelApiRpcRequestDeleteChat *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestDeleteChat alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestDeleteChat)

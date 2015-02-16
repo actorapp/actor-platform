@@ -13,42 +13,42 @@
 #include "im/actor/model/droidkit/actors/mailbox/ActorEndpoint.h"
 #include "im/actor/model/droidkit/actors/mailbox/Mailbox.h"
 
-@interface ImActorModelDroidkitActorsActorScope () {
+@interface DKActorScope () {
  @public
   NSString *path_;
-  ImActorModelDroidkitActorsProps *props_;
-  ImActorModelDroidkitActorsActorRef *actorRef_;
-  ImActorModelDroidkitActorsMailboxMailbox *mailbox_;
-  ImActorModelDroidkitActorsMailboxActorDispatcher *dispatcher_;
-  ImActorModelDroidkitActorsActorSystem *actorSystem_;
-  ImActorModelDroidkitActorsActor *actor_;
-  ImActorModelDroidkitActorsActorRef *sender_;
-  ImActorModelDroidkitActorsMailboxActorEndpoint *endpoint_;
+  DKProps *props_;
+  DKActorRef *actorRef_;
+  DKMailbox *mailbox_;
+  DKActorDispatcher *dispatcher_;
+  DKActorSystem *actorSystem_;
+  DKActor *actor_;
+  DKActorRef *sender_;
+  DKActorEndpoint *endpoint_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, path_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, props_, ImActorModelDroidkitActorsProps *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, actorRef_, ImActorModelDroidkitActorsActorRef *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, mailbox_, ImActorModelDroidkitActorsMailboxMailbox *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, dispatcher_, ImActorModelDroidkitActorsMailboxActorDispatcher *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, actorSystem_, ImActorModelDroidkitActorsActorSystem *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, actor_, ImActorModelDroidkitActorsActor *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, sender_, ImActorModelDroidkitActorsActorRef *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, endpoint_, ImActorModelDroidkitActorsMailboxActorEndpoint *)
+J2OBJC_FIELD_SETTER(DKActorScope, path_, NSString *)
+J2OBJC_FIELD_SETTER(DKActorScope, props_, DKProps *)
+J2OBJC_FIELD_SETTER(DKActorScope, actorRef_, DKActorRef *)
+J2OBJC_FIELD_SETTER(DKActorScope, mailbox_, DKMailbox *)
+J2OBJC_FIELD_SETTER(DKActorScope, dispatcher_, DKActorDispatcher *)
+J2OBJC_FIELD_SETTER(DKActorScope, actorSystem_, DKActorSystem *)
+J2OBJC_FIELD_SETTER(DKActorScope, actor_, DKActor *)
+J2OBJC_FIELD_SETTER(DKActorScope, sender_, DKActorRef *)
+J2OBJC_FIELD_SETTER(DKActorScope, endpoint_, DKActorEndpoint *)
 
-@implementation ImActorModelDroidkitActorsActorScope
+@implementation DKActorScope
 
-- (instancetype)initWithImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem *)actorSystem
-                 withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox
-         withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActorsMailboxActorDispatcher *)dispatcher
-                                                 withNSString:(NSString *)path
-                          withImActorModelDroidkitActorsProps:(ImActorModelDroidkitActorsProps *)props
-           withImActorModelDroidkitActorsMailboxActorEndpoint:(ImActorModelDroidkitActorsMailboxActorEndpoint *)endpoint {
+- (instancetype)initWithDKActorSystem:(DKActorSystem *)actorSystem
+                        withDKMailbox:(DKMailbox *)mailbox
+                withDKActorDispatcher:(DKActorDispatcher *)dispatcher
+                         withNSString:(NSString *)path
+                          withDKProps:(DKProps *)props
+                  withDKActorEndpoint:(DKActorEndpoint *)endpoint {
   if (self = [super init]) {
     self->actorSystem_ = actorSystem;
     self->mailbox_ = mailbox;
-    self->actorRef_ = [[ImActorModelDroidkitActorsActorRef alloc] initWithImActorModelDroidkitActorsMailboxActorEndpoint:endpoint withImActorModelDroidkitActorsActorSystem:actorSystem withImActorModelDroidkitActorsMailboxActorDispatcher:dispatcher withNSString:path];
+    self->actorRef_ = [[DKActorRef alloc] initWithDKActorEndpoint:endpoint withDKActorSystem:actorSystem withDKActorDispatcher:dispatcher withNSString:path];
     self->dispatcher_ = dispatcher;
     self->path_ = path;
     self->props_ = props;
@@ -57,11 +57,11 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, endpoint_, ImActorMode
   return self;
 }
 
-- (ImActorModelDroidkitActorsMailboxActorEndpoint *)getEndpoint {
+- (DKActorEndpoint *)getEndpoint {
   return endpoint_;
 }
 
-- (ImActorModelDroidkitActorsMailboxActorDispatcher *)getDispatcher {
+- (DKActorDispatcher *)getDispatcher {
   return dispatcher_;
 }
 
@@ -69,35 +69,35 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, endpoint_, ImActorMode
   return path_;
 }
 
-- (ImActorModelDroidkitActorsProps *)getProps {
+- (DKProps *)getProps {
   return props_;
 }
 
-- (ImActorModelDroidkitActorsActorRef *)getActorRef {
+- (DKActorRef *)getActorRef {
   return actorRef_;
 }
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)getMailbox {
+- (DKMailbox *)getMailbox {
   return mailbox_;
 }
 
-- (ImActorModelDroidkitActorsActor *)getActor {
+- (DKActor *)getActor {
   return actor_;
 }
 
-- (ImActorModelDroidkitActorsActorSystem *)getActorSystem {
+- (DKActorSystem *)getActorSystem {
   return actorSystem_;
 }
 
-- (ImActorModelDroidkitActorsActorRef *)getSender {
+- (DKActorRef *)getSender {
   return sender_;
 }
 
-- (void)setSenderWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender {
+- (void)setSenderWithDKActorRef:(DKActorRef *)sender {
   self->sender_ = sender;
 }
 
-- (void)onActorCreatedWithImActorModelDroidkitActorsActor:(ImActorModelDroidkitActorsActor *)actor {
+- (void)onActorCreatedWithDKActor:(DKActor *)actor {
   self->actor_ = actor;
 }
 
@@ -105,7 +105,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, endpoint_, ImActorMode
   self->actor_ = nil;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsActorScope *)other {
+- (void)copyAllFieldsTo:(DKActorScope *)other {
   [super copyAllFieldsTo:other];
   other->path_ = path_;
   other->props_ = props_;
@@ -120,7 +120,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, endpoint_, ImActorMode
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelDroidkitActorsActorSystem:withImActorModelDroidkitActorsMailboxMailbox:withImActorModelDroidkitActorsMailboxActorDispatcher:withNSString:withImActorModelDroidkitActorsProps:withImActorModelDroidkitActorsMailboxActorEndpoint:", "ActorScope", NULL, 0x1, NULL },
+    { "initWithDKActorSystem:withDKMailbox:withDKActorDispatcher:withNSString:withDKProps:withDKActorEndpoint:", "ActorScope", NULL, 0x1, NULL },
     { "getEndpoint", NULL, "Lim.actor.model.droidkit.actors.mailbox.ActorEndpoint;", 0x1, NULL },
     { "getDispatcher", NULL, "Lim.actor.model.droidkit.actors.mailbox.ActorDispatcher;", 0x1, NULL },
     { "getPath", NULL, "Ljava.lang.String;", 0x1, NULL },
@@ -130,8 +130,8 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, endpoint_, ImActorMode
     { "getActor", NULL, "Lim.actor.model.droidkit.actors.Actor;", 0x1, NULL },
     { "getActorSystem", NULL, "Lim.actor.model.droidkit.actors.ActorSystem;", 0x1, NULL },
     { "getSender", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "setSenderWithImActorModelDroidkitActorsActorRef:", "setSender", "V", 0x1, NULL },
-    { "onActorCreatedWithImActorModelDroidkitActorsActor:", "onActorCreated", "V", 0x1, NULL },
+    { "setSenderWithDKActorRef:", "setSender", "V", 0x1, NULL },
+    { "onActorCreatedWithDKActor:", "onActorCreated", "V", 0x1, NULL },
     { "onActorDie", NULL, "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -145,10 +145,10 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorScope, endpoint_, ImActorMode
     { "sender_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
     { "endpoint_", NULL, 0x2, "Lim.actor.model.droidkit.actors.mailbox.ActorEndpoint;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsActorScope = { 1, "ActorScope", "im.actor.model.droidkit.actors", NULL, 0x1, 13, methods, 9, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsActorScope;
+  static const J2ObjcClassInfo _DKActorScope = { 1, "ActorScope", "im.actor.model.droidkit.actors", NULL, 0x1, 13, methods, 9, fields, 0, NULL};
+  return &_DKActorScope;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsActorScope)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorScope)

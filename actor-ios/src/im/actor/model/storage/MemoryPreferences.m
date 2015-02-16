@@ -11,15 +11,15 @@
 #include "java/lang/Long.h"
 #include "java/util/HashMap.h"
 
-@interface ImActorModelStorageMemoryPreferences () {
+@interface AMMemoryPreferences () {
  @public
   JavaUtilHashMap *items_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryPreferences, items_, JavaUtilHashMap *)
+J2OBJC_FIELD_SETTER(AMMemoryPreferences, items_, JavaUtilHashMap *)
 
-@implementation ImActorModelStorageMemoryPreferences
+@implementation AMMemoryPreferences
 
 - (void)putLongWithNSString:(NSString *)key
                    withLong:(jlong)v {
@@ -95,7 +95,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryPreferences, items_, JavaUtilHashMa
   return self;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelStorageMemoryPreferences *)other {
+- (void)copyAllFieldsTo:(AMMemoryPreferences *)other {
   [super copyAllFieldsTo:other];
   other->items_ = items_;
 }
@@ -117,10 +117,10 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryPreferences, items_, JavaUtilHashMa
   static const J2ObjcFieldInfo fields[] = {
     { "items_", NULL, 0x2, "Ljava.util.HashMap;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelStorageMemoryPreferences = { 1, "MemoryPreferences", "im.actor.model.storage", NULL, 0x1, 11, methods, 1, fields, 0, NULL};
-  return &_ImActorModelStorageMemoryPreferences;
+  static const J2ObjcClassInfo _AMMemoryPreferences = { 1, "MemoryPreferences", "im.actor.model.storage", NULL, 0x1, 11, methods, 1, fields, 0, NULL};
+  return &_AMMemoryPreferences;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelStorageMemoryPreferences)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMemoryPreferences)

@@ -6,10 +6,10 @@
 #ifndef _ImActorModelApiRpcResponseCreateGroup_H_
 #define _ImActorModelApiRpcResponseCreateGroup_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiGroupOutPeer;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -40,9 +40,9 @@
 
 - (jlong)getDate;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 - (jint)getHeaderKey;
 

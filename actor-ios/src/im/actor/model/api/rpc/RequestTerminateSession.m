@@ -40,12 +40,12 @@
   return self->id__;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->id__ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
 }
 
 - (jint)getHeaderKey {
@@ -63,8 +63,8 @@
     { "initWithInt:", "RequestTerminateSession", NULL, 0x1, NULL },
     { "init", "RequestTerminateSession", NULL, 0x1, NULL },
     { "getId", NULL, "I", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -80,7 +80,7 @@
 
 ImActorModelApiRpcRequestTerminateSession *ImActorModelApiRpcRequestTerminateSession_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestTerminateSession_init();
-  return ((ImActorModelApiRpcRequestTerminateSession *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestTerminateSession alloc] init], data));
+  return ((ImActorModelApiRpcRequestTerminateSession *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestTerminateSession alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestTerminateSession)

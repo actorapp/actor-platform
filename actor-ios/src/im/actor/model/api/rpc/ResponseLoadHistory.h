@@ -6,9 +6,9 @@
 #ifndef _ImActorModelApiRpcResponseLoadHistory_H_
 #define _ImActorModelApiRpcResponseLoadHistory_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -30,9 +30,9 @@
 
 - (id<JavaUtilList>)getUsers;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 - (jint)getHeaderKey;
 

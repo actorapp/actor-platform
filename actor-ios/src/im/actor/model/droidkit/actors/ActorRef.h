@@ -3,58 +3,60 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/ActorRef.java
 //
 
-#ifndef _ImActorModelDroidkitActorsActorRef_H_
-#define _ImActorModelDroidkitActorsActorRef_H_
+#ifndef _DKActorRef_H_
+#define _DKActorRef_H_
 
-@class ImActorModelDroidkitActorsActorSystem;
-@class ImActorModelDroidkitActorsMailboxActorDispatcher;
-@class ImActorModelDroidkitActorsMailboxActorEndpoint;
+@class DKActorDispatcher;
+@class DKActorEndpoint;
+@class DKActorSystem;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsActorRef : NSObject {
+@interface DKActorRef : NSObject {
 }
 
 - (NSString *)getPath;
 
-- (ImActorModelDroidkitActorsActorSystem *)system;
+- (DKActorSystem *)system;
 
-- (instancetype)initWithImActorModelDroidkitActorsMailboxActorEndpoint:(ImActorModelDroidkitActorsMailboxActorEndpoint *)endpoint
-                             withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem *)system
-                  withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActorsMailboxActorDispatcher *)dispatcher
-                                                          withNSString:(NSString *)path;
+- (instancetype)initWithDKActorEndpoint:(DKActorEndpoint *)endpoint
+                      withDKActorSystem:(DKActorSystem *)system
+                  withDKActorDispatcher:(DKActorDispatcher *)dispatcher
+                           withNSString:(NSString *)path;
 
 - (void)sendWithId:(id)message;
 
 - (void)sendWithId:(id)message
-withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender;
+    withDKActorRef:(DKActorRef *)sender;
 
 - (void)sendWithId:(id)message
           withLong:(jlong)delay;
 
 - (void)sendWithId:(id)message
           withLong:(jlong)delay
-withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender;
+    withDKActorRef:(DKActorRef *)sender;
 
 - (void)sendOnceWithId:(id)message;
 
 - (void)sendOnceWithId:(id)message
-withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender;
+        withDKActorRef:(DKActorRef *)sender;
 
 - (void)sendOnceWithId:(id)message
               withLong:(jlong)delay;
 
 - (void)sendOnceWithId:(id)message
               withLong:(jlong)delay
-withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender;
+        withDKActorRef:(DKActorRef *)sender;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsActorRef)
+J2OBJC_EMPTY_STATIC_INIT(DKActorRef)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsActorRef)
+typedef DKActorRef ImActorModelDroidkitActorsActorRef;
 
-#endif // _ImActorModelDroidkitActorsActorRef_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKActorRef)
+
+#endif // _DKActorRef_H_

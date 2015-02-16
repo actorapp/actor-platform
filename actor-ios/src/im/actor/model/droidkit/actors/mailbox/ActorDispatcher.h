@@ -3,58 +3,60 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/mailbox/ActorDispatcher.java
 //
 
-#ifndef _ImActorModelDroidkitActorsMailboxActorDispatcher_H_
-#define _ImActorModelDroidkitActorsMailboxActorDispatcher_H_
+#ifndef _DKActorDispatcher_H_
+#define _DKActorDispatcher_H_
 
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelDroidkitActorsActorScope;
-@class ImActorModelDroidkitActorsActorSystem;
-@class ImActorModelDroidkitActorsDispatchAbstractDispatcher;
-@class ImActorModelDroidkitActorsMailboxActorEndpoint;
-@class ImActorModelDroidkitActorsMailboxEnvelope;
-@class ImActorModelDroidkitActorsProps;
+@class DKAbstractDispatcher;
+@class DKActorEndpoint;
+@class DKActorRef;
+@class DKActorScope;
+@class DKActorSystem;
+@class DKEnvelope;
+@class DKProps;
 @class JavaUtilHashMap;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsMailboxActorDispatcher : NSObject {
+@interface DKActorDispatcher : NSObject {
 }
 
 - (instancetype)initWithNSString:(NSString *)name
-withImActorModelDroidkitActorsActorSystem:(ImActorModelDroidkitActorsActorSystem *)actorSystem;
+               withDKActorSystem:(DKActorSystem *)actorSystem;
 
-- (void)initDispatcherWithImActorModelDroidkitActorsDispatchAbstractDispatcher:(ImActorModelDroidkitActorsDispatchAbstractDispatcher *)dispatcher OBJC_METHOD_FAMILY_NONE;
+- (void)initDispatcherWithDKAbstractDispatcher:(DKAbstractDispatcher *)dispatcher OBJC_METHOD_FAMILY_NONE;
 
-- (ImActorModelDroidkitActorsActorRef *)referenceActorWithNSString:(NSString *)path
-                               withImActorModelDroidkitActorsProps:(ImActorModelDroidkitActorsProps *)props;
+- (DKActorRef *)referenceActorWithNSString:(NSString *)path
+                               withDKProps:(DKProps *)props;
 
-- (void)killGracefullyWithImActorModelDroidkitActorsActorScope:(ImActorModelDroidkitActorsActorScope *)scope;
+- (void)killGracefullyWithDKActorScope:(DKActorScope *)scope;
 
-- (void)sendMessageWithImActorModelDroidkitActorsMailboxActorEndpoint:(ImActorModelDroidkitActorsMailboxActorEndpoint *)endpoint
-                                                               withId:(id)message
-                                                             withLong:(jlong)time
-                               withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender;
+- (void)sendMessageWithDKActorEndpoint:(DKActorEndpoint *)endpoint
+                                withId:(id)message
+                              withLong:(jlong)time
+                        withDKActorRef:(DKActorRef *)sender;
 
-- (void)sendMessageOnceWithImActorModelDroidkitActorsMailboxActorEndpoint:(ImActorModelDroidkitActorsMailboxActorEndpoint *)endpoint
-                                                                   withId:(id)message
-                                                                 withLong:(jlong)time
-                                   withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender;
+- (void)sendMessageOnceWithDKActorEndpoint:(DKActorEndpoint *)endpoint
+                                    withId:(id)message
+                                  withLong:(jlong)time
+                            withDKActorRef:(DKActorRef *)sender;
 
-- (void)cancelSendWithImActorModelDroidkitActorsMailboxActorEndpoint:(ImActorModelDroidkitActorsMailboxActorEndpoint *)endpoint
-                                                              withId:(id)message
-                              withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender;
+- (void)cancelSendWithDKActorEndpoint:(DKActorEndpoint *)endpoint
+                               withId:(id)message
+                       withDKActorRef:(DKActorRef *)sender;
 
 - (NSString *)getName;
 
-- (void)processEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope;
+- (void)processEnvelopeWithDKEnvelope:(DKEnvelope *)envelope;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsMailboxActorDispatcher)
+J2OBJC_EMPTY_STATIC_INIT(DKActorDispatcher)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxActorDispatcher)
+typedef DKActorDispatcher ImActorModelDroidkitActorsMailboxActorDispatcher;
 
-#endif // _ImActorModelDroidkitActorsMailboxActorDispatcher_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKActorDispatcher)
+
+#endif // _DKActorDispatcher_H_

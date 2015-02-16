@@ -3,38 +3,40 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/mailbox/MailboxesQueue.java
 //
 
-#ifndef _ImActorModelDroidkitActorsMailboxMailboxesQueue_H_
-#define _ImActorModelDroidkitActorsMailboxMailboxesQueue_H_
+#ifndef _DKMailboxesQueue_H_
+#define _DKMailboxesQueue_H_
 
-@class ImActorModelDroidkitActorsDispatchDispatchResult;
+@class DKDispatchResult;
+@class DKMailbox;
 @class ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot;
-@class ImActorModelDroidkitActorsMailboxMailbox;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/dispatch/AbstractDispatchQueue.h"
 
-@interface ImActorModelDroidkitActorsMailboxMailboxesQueue : ImActorModelDroidkitActorsDispatchAbstractDispatchQueue {
+@interface DKMailboxesQueue : DKAbstractDispatchQueue {
 }
 
 - (instancetype)init;
 
 - (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *)getEnvelopeRoot;
 
-- (void)unlockMailboxWithImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox;
+- (void)unlockMailboxWithDKMailbox:(DKMailbox *)mailbox;
 
-- (void)disconnectMailboxWithImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox;
+- (void)disconnectMailboxWithDKMailbox:(DKMailbox *)mailbox;
 
 - (void)notifyQueueChanged;
 
-- (ImActorModelDroidkitActorsDispatchDispatchResult *)dispatchWithLong:(jlong)time;
+- (DKDispatchResult *)dispatchWithLong:(jlong)time;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsMailboxMailboxesQueue)
+J2OBJC_EMPTY_STATIC_INIT(DKMailboxesQueue)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxMailboxesQueue)
+typedef DKMailboxesQueue ImActorModelDroidkitActorsMailboxMailboxesQueue;
 
-#endif // _ImActorModelDroidkitActorsMailboxMailboxesQueue_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKMailboxesQueue)
+
+#endif // _DKMailboxesQueue_H_

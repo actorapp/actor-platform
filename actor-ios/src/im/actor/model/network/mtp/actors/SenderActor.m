@@ -34,7 +34,7 @@ __attribute__((unused)) static void MTSenderActor_performSendWithMTProtoMessage_
 @interface MTSenderActor () {
  @public
   MTMTProto *proto_;
-  ImActorModelDroidkitActorsActorRef *manager_;
+  DKActorRef *manager_;
   JavaUtilHashMap *unsentPackages_;
   JavaUtilHashSet *confirm_;
 }
@@ -49,7 +49,7 @@ __attribute__((unused)) static void MTSenderActor_performSendWithMTProtoMessage_
 @end
 
 J2OBJC_FIELD_SETTER(MTSenderActor, proto_, MTMTProto *)
-J2OBJC_FIELD_SETTER(MTSenderActor, manager_, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(MTSenderActor, manager_, DKActorRef *)
 J2OBJC_FIELD_SETTER(MTSenderActor, unsentPackages_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(MTSenderActor, confirm_, JavaUtilHashSet *)
 
@@ -86,7 +86,7 @@ J2OBJC_FIELD_SETTER(MTSenderActor_$1, val$proto_, MTMTProto *)
 
 NSString * MTSenderActor_TAG_ = @"ProtoSender";
 
-+ (ImActorModelDroidkitActorsActorRef *)senderActorWithMTMTProto:(MTMTProto *)proto {
++ (DKActorRef *)senderActorWithMTMTProto:(MTMTProto *)proto {
   return MTSenderActor_senderActorWithMTMTProto_(proto);
 }
 
@@ -123,10 +123,10 @@ NSString * MTSenderActor_TAG_ = @"ProtoSender";
   else if ([message isKindOfClass:[MTSenderActor_ConfirmMessage class]]) {
     [((JavaUtilHashSet *) nil_chk(confirm_)) addWithId:JavaLangLong_valueOfWithLong_(((MTSenderActor_ConfirmMessage *) nil_chk(((MTSenderActor_ConfirmMessage *) check_class_cast(message, [MTSenderActor_ConfirmMessage class]))))->mid_)];
     if ([confirm_ size] >= MTSenderActor_ACK_THRESHOLD) {
-      [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[MTSenderActor_ForceAck alloc] init]];
+      [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[MTSenderActor_ForceAck alloc] init]];
     }
     else if ([confirm_ size] == 1) {
-      [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[MTSenderActor_ForceAck alloc] init] withLong:MTSenderActor_ACK_DELAY];
+      [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[MTSenderActor_ForceAck alloc] init] withLong:MTSenderActor_ACK_DELAY];
     }
   }
   else if ([message isKindOfClass:[MTSenderActor_ForceAck class]]) {
@@ -197,9 +197,9 @@ NSString * MTSenderActor_TAG_ = @"ProtoSender";
 
 @end
 
-ImActorModelDroidkitActorsActorRef *MTSenderActor_senderActorWithMTMTProto_(MTMTProto *proto) {
+DKActorRef *MTSenderActor_senderActorWithMTMTProto_(MTMTProto *proto) {
   MTSenderActor_init();
-  return [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsActorSelection:[[ImActorModelDroidkitActorsActorSelection alloc] initWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(MTSenderActor_class_(), [[MTSenderActor_$1 alloc] initWithMTMTProto:proto]) withNSString:JreStrcat("$$", [((MTMTProto *) nil_chk(proto)) getActorPath], @"/sender")]];
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKActorSelection:[[DKActorSelection alloc] initWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(MTSenderActor_class_(), [[MTSenderActor_$1 alloc] initWithMTMTProto:proto]) withNSString:JreStrcat("$$", [((MTMTProto *) nil_chk(proto)) getActorPath], @"/sender")]];
 }
 
 MTMessageAck *MTSenderActor_buildAck(MTSenderActor *self) {
@@ -255,7 +255,7 @@ void MTSenderActor_doSendWithMTProtoMessage_(MTSenderActor *self, MTProtoMessage
 
 void MTSenderActor_performSendWithMTProtoMessage_(MTSenderActor *self, MTProtoMessage *message) {
   IOSByteArray *data = [((MTProtoMessage *) nil_chk(message)) toByteArray];
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->manager_)) sendWithId:[[MTManagerActor_OutMessage alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_]];
+  [((DKActorRef *) nil_chk(self->manager_)) sendWithId:[[MTManagerActor_OutMessage alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor)

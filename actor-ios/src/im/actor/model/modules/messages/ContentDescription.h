@@ -6,8 +6,8 @@
 #ifndef _ImActorModelModulesMessagesContentDescription_H_
 #define _ImActorModelModulesMessagesContentDescription_H_
 
+@class AMDialog_ContentTypeEnum;
 @class ImActorModelEntityContentAbsContent;
-@class ImActorModelEntityDialog_ContentTypeEnum;
 
 #include "J2ObjC_header.h"
 
@@ -18,7 +18,7 @@
 
 - (jboolean)isSilent;
 
-- (ImActorModelEntityDialog_ContentTypeEnum *)getContentType;
+- (AMDialog_ContentTypeEnum *)getContentType;
 
 - (NSString *)getText;
 

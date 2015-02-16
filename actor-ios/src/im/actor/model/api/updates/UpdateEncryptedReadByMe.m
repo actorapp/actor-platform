@@ -50,16 +50,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedReadByMe, peer_, ImActo
   return self->rid_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiPeer alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
   self->rid_ = [values getLongWithInt:2];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
   [writer writeLongWithInt:2 withLong:self->rid_];
 }
 
@@ -80,8 +80,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedReadByMe, peer_, ImActo
     { "init", "UpdateEncryptedReadByMe", NULL, 0x1, NULL },
     { "getPeer", NULL, "Lim.actor.model.api.Peer;", 0x1, NULL },
     { "getRid", NULL, "J", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -97,7 +97,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedReadByMe, peer_, ImActo
 
 ImActorModelApiUpdatesUpdateEncryptedReadByMe *ImActorModelApiUpdatesUpdateEncryptedReadByMe_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateEncryptedReadByMe_init();
-  return ((ImActorModelApiUpdatesUpdateEncryptedReadByMe *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateEncryptedReadByMe alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateEncryptedReadByMe *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateEncryptedReadByMe alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateEncryptedReadByMe)

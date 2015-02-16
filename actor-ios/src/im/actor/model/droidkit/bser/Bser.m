@@ -14,16 +14,16 @@
 #include "im/actor/model/util/DataInput.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelDroidkitBserBser
+@implementation BSBser
 
-+ (id)parseWithImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)res
-                                  withAMDataInput:(AMDataInput *)inputStream {
-  return ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_(res, inputStream);
++ (id)parseWithBSBserObject:(BSBserObject *)res
+            withAMDataInput:(AMDataInput *)inputStream {
+  return BSBser_parseWithBSBserObject_withAMDataInput_(res, inputStream);
 }
 
-+ (id)parseWithImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)res
-                                    withByteArray:(IOSByteArray *)data {
-  return ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_(res, data);
++ (id)parseWithBSBserObject:(BSBserObject *)res
+              withByteArray:(IOSByteArray *)data {
+  return BSBser_parseWithBSBserObject_withByteArray_(res, data);
 }
 
 - (instancetype)init {
@@ -32,26 +32,26 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "parseWithImActorModelDroidkitBserBserObject:withAMDataInput:", "parse", "TT;", 0x9, "Ljava.io.IOException;" },
-    { "parseWithImActorModelDroidkitBserBserObject:withByteArray:", "parse", "TT;", 0x9, "Ljava.io.IOException;" },
+    { "parseWithBSBserObject:withAMDataInput:", "parse", "TT;", 0x9, "Ljava.io.IOException;" },
+    { "parseWithBSBserObject:withByteArray:", "parse", "TT;", 0x9, "Ljava.io.IOException;" },
     { "init", NULL, NULL, 0x1, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitBserBser = { 1, "Bser", "im.actor.model.droidkit.bser", NULL, 0x1, 3, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitBserBser;
+  static const J2ObjcClassInfo _BSBser = { 1, "Bser", "im.actor.model.droidkit.bser", NULL, 0x1, 3, methods, 0, NULL, 0, NULL};
+  return &_BSBser;
 }
 
 @end
 
-id ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_(ImActorModelDroidkitBserBserObject *res, AMDataInput *inputStream) {
-  ImActorModelDroidkitBserBser_init();
-  ImActorModelDroidkitBserBserValues *reader = [[ImActorModelDroidkitBserBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:ImActorModelDroidkitBserBserParser_deserializeWithAMDataInput_(inputStream)];
-  [((ImActorModelDroidkitBserBserObject *) nil_chk(res)) parseWithImActorModelDroidkitBserBserValues:reader];
+id BSBser_parseWithBSBserObject_withAMDataInput_(BSBserObject *res, AMDataInput *inputStream) {
+  BSBser_init();
+  BSBserValues *reader = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithAMDataInput_(inputStream)];
+  [((BSBserObject *) nil_chk(res)) parseWithBSBserValues:reader];
   return res;
 }
 
-id ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_(ImActorModelDroidkitBserBserObject *res, IOSByteArray *data) {
-  ImActorModelDroidkitBserBser_init();
-  return ((ImActorModelDroidkitBserBserObject *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_(res, [[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_]));
+id BSBser_parseWithBSBserObject_withByteArray_(BSBserObject *res, IOSByteArray *data) {
+  BSBser_init();
+  return ((BSBserObject *) BSBser_parseWithBSBserObject_withAMDataInput_(res, [[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_]));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitBserBser)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSBser)

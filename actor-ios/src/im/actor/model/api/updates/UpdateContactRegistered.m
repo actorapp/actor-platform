@@ -54,14 +54,14 @@
   return self->date_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->uid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->isSilent__ = [values getBoolWithInt:2];
   self->date_ = [values getLongWithInt:3];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeBoolWithInt:2 withBoolean:self->isSilent__];
   [writer writeLongWithInt:3 withLong:self->date_];
 }
@@ -85,8 +85,8 @@
     { "getUid", NULL, "I", 0x1, NULL },
     { "isSilent", NULL, "Z", 0x1, NULL },
     { "getDate", NULL, "J", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -103,7 +103,7 @@
 
 ImActorModelApiUpdatesUpdateContactRegistered *ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateContactRegistered_init();
-  return ((ImActorModelApiUpdatesUpdateContactRegistered *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateContactRegistered alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateContactRegistered alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateContactRegistered)

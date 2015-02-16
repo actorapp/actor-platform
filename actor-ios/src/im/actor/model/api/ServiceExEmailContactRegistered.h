@@ -6,13 +6,13 @@
 #ifndef _ImActorModelApiServiceExEmailContactRegistered_H_
 #define _ImActorModelApiServiceExEmailContactRegistered_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
+@class BSBserValues;
+@class BSBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiServiceExEmailContactRegistered : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiServiceExEmailContactRegistered : BSBserObject {
 }
 
 - (instancetype)initWithInt:(jint)uid;
@@ -21,9 +21,9 @@
 
 - (jint)getUid;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

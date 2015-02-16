@@ -3,9 +3,9 @@ package im.actor.model;
 import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.ThreadPriority;
 import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
-import im.actor.model.droidkit.actors.utils.AtomicIntegerCompat;
-import im.actor.model.droidkit.actors.utils.AtomicLongCompat;
-import im.actor.model.droidkit.actors.utils.ThreadLocalCompat;
+import im.actor.model.util.AtomicIntegerCompat;
+import im.actor.model.util.AtomicLongCompat;
+import im.actor.model.util.ThreadLocalCompat;
 
 /**
  * Created by ex3ndr on 16.02.15.

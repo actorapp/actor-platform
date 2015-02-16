@@ -3,17 +3,17 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/bser/BserValues.java
 //
 
-#ifndef _ImActorModelDroidkitBserBserValues_H_
-#define _ImActorModelDroidkitBserBserValues_H_
+#ifndef _BSBserValues_H_
+#define _BSBserValues_H_
 
+@class BSBserObject;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserObject;
 @class ImActorModelDroidkitBserUtilSparseArray;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitBserBserValues : NSObject {
+@interface BSBserValues : NSObject {
 }
 
 - (instancetype)initWithImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseArray *)fields;
@@ -61,10 +61,10 @@
                withBoolean:(jboolean)defValue;
 
 - (id)getObjWithInt:(jint)id_
-withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)obj;
+   withBSBserObject:(BSBserObject *)obj;
 
 - (id)optObjWithInt:(jint)id_
-withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)obj;
+   withBSBserObject:(BSBserObject *)obj;
 
 - (id<JavaUtilList>)getRepeatedIntWithInt:(jint)id_;
 
@@ -81,11 +81,13 @@ withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)obj
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitBserBserValues)
+J2OBJC_EMPTY_STATIC_INIT(BSBserValues)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitBserBserValues)
+typedef BSBserValues ImActorModelDroidkitBserBserValues;
 
-#endif // _ImActorModelDroidkitBserBserValues_H_
+J2OBJC_TYPE_LITERAL_HEADER(BSBserValues)
+
+#endif // _BSBserValues_H_

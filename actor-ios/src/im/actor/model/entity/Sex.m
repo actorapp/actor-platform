@@ -8,17 +8,17 @@
 #include "im/actor/model/entity/Sex.h"
 #include "java/lang/IllegalArgumentException.h"
 
-@interface ImActorModelEntitySexEnum () {
+@interface AMSexEnum () {
  @public
   jint value_;
 }
 @end
 
-BOOL ImActorModelEntitySexEnum_initialized = NO;
+BOOL AMSexEnum_initialized = NO;
 
-ImActorModelEntitySexEnum *ImActorModelEntitySexEnum_values_[3];
+AMSexEnum *AMSexEnum_values_[3];
 
-@implementation ImActorModelEntitySexEnum
+@implementation AMSexEnum
 
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
@@ -33,26 +33,26 @@ ImActorModelEntitySexEnum *ImActorModelEntitySexEnum_values_[3];
   return value_;
 }
 
-+ (ImActorModelEntitySexEnum *)fromValueWithInt:(jint)value {
-  return ImActorModelEntitySexEnum_fromValueWithInt_(value);
++ (AMSexEnum *)fromValueWithInt:(jint)value {
+  return AMSexEnum_fromValueWithInt_(value);
 }
 
-IOSObjectArray *ImActorModelEntitySexEnum_values() {
-  ImActorModelEntitySexEnum_init();
-  return [IOSObjectArray arrayWithObjects:ImActorModelEntitySexEnum_values_ count:3 type:ImActorModelEntitySexEnum_class_()];
+IOSObjectArray *AMSexEnum_values() {
+  AMSexEnum_init();
+  return [IOSObjectArray arrayWithObjects:AMSexEnum_values_ count:3 type:AMSexEnum_class_()];
 }
 + (IOSObjectArray *)values {
-  return ImActorModelEntitySexEnum_values();
+  return AMSexEnum_values();
 }
 
-+ (ImActorModelEntitySexEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelEntitySexEnum_valueOfWithNSString_(name);
++ (AMSexEnum *)valueOfWithNSString:(NSString *)name {
+  return AMSexEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelEntitySexEnum *ImActorModelEntitySexEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelEntitySexEnum_init();
+AMSexEnum *AMSexEnum_valueOfWithNSString_(NSString *name) {
+  AMSexEnum_init();
   for (int i = 0; i < 3; i++) {
-    ImActorModelEntitySexEnum *e = ImActorModelEntitySexEnum_values_[i];
+    AMSexEnum *e = AMSexEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -66,11 +66,11 @@ ImActorModelEntitySexEnum *ImActorModelEntitySexEnum_valueOfWithNSString_(NSStri
 }
 
 + (void)initialize {
-  if (self == [ImActorModelEntitySexEnum class]) {
-    ImActorModelEntitySexEnum_UNKNOWN = [[ImActorModelEntitySexEnum alloc] initWithInt:1 withNSString:@"UNKNOWN" withInt:0];
-    ImActorModelEntitySexEnum_MALE = [[ImActorModelEntitySexEnum alloc] initWithInt:2 withNSString:@"MALE" withInt:1];
-    ImActorModelEntitySexEnum_FEMALE = [[ImActorModelEntitySexEnum alloc] initWithInt:3 withNSString:@"FEMALE" withInt:2];
-    J2OBJC_SET_INITIALIZED(ImActorModelEntitySexEnum)
+  if (self == [AMSexEnum class]) {
+    AMSexEnum_UNKNOWN = [[AMSexEnum alloc] initWithInt:1 withNSString:@"UNKNOWN" withInt:0];
+    AMSexEnum_MALE = [[AMSexEnum alloc] initWithInt:2 withNSString:@"MALE" withInt:1];
+    AMSexEnum_FEMALE = [[AMSexEnum alloc] initWithInt:3 withNSString:@"FEMALE" withInt:2];
+    J2OBJC_SET_INITIALIZED(AMSexEnum)
   }
 }
 
@@ -81,29 +81,29 @@ ImActorModelEntitySexEnum *ImActorModelEntitySexEnum_valueOfWithNSString_(NSStri
     { "fromValueWithInt:", "fromValue", "Lim.actor.model.entity.Sex;", 0x9, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "UNKNOWN", "UNKNOWN", 0x4019, "Lim.actor.model.entity.Sex;", &ImActorModelEntitySexEnum_UNKNOWN,  },
-    { "MALE", "MALE", 0x4019, "Lim.actor.model.entity.Sex;", &ImActorModelEntitySexEnum_MALE,  },
-    { "FEMALE", "FEMALE", 0x4019, "Lim.actor.model.entity.Sex;", &ImActorModelEntitySexEnum_FEMALE,  },
+    { "UNKNOWN", "UNKNOWN", 0x4019, "Lim.actor.model.entity.Sex;", &AMSexEnum_UNKNOWN,  },
+    { "MALE", "MALE", 0x4019, "Lim.actor.model.entity.Sex;", &AMSexEnum_MALE,  },
+    { "FEMALE", "FEMALE", 0x4019, "Lim.actor.model.entity.Sex;", &AMSexEnum_FEMALE,  },
     { "value_", NULL, 0x2, "I", NULL,  },
   };
   static const char *superclass_type_args[] = {"Lim.actor.model.entity.Sex;"};
-  static const J2ObjcClassInfo _ImActorModelEntitySexEnum = { 1, "Sex", "im.actor.model.entity", NULL, 0x4011, 3, methods, 4, fields, 1, superclass_type_args};
-  return &_ImActorModelEntitySexEnum;
+  static const J2ObjcClassInfo _AMSexEnum = { 1, "Sex", "im.actor.model.entity", NULL, 0x4011, 3, methods, 4, fields, 1, superclass_type_args};
+  return &_AMSexEnum;
 }
 
 @end
 
-ImActorModelEntitySexEnum *ImActorModelEntitySexEnum_fromValueWithInt_(jint value) {
-  ImActorModelEntitySexEnum_init();
+AMSexEnum *AMSexEnum_fromValueWithInt_(jint value) {
+  AMSexEnum_init();
   switch (value) {
     default:
     case 1:
-    return ImActorModelEntitySexEnum_UNKNOWN;
+    return AMSexEnum_UNKNOWN;
     case 2:
-    return ImActorModelEntitySexEnum_MALE;
+    return AMSexEnum_MALE;
     case 3:
-    return ImActorModelEntitySexEnum_FEMALE;
+    return AMSexEnum_FEMALE;
   }
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntitySexEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMSexEnum)

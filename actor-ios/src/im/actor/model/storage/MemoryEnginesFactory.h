@@ -3,36 +3,41 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/storage/MemoryEnginesFactory.java
 //
 
-#ifndef _ImActorModelStorageMemoryEnginesFactory_H_
-#define _ImActorModelStorageMemoryEnginesFactory_H_
+#ifndef _AMMemoryEnginesFactory_H_
+#define _AMMemoryEnginesFactory_H_
 
-@class ImActorModelEntityPeer;
-@protocol ImActorModelMvvmKeyValueEngine;
-@protocol ImActorModelMvvmListEngine;
+@class AMPeer;
+@protocol AMKeyValueEngine;
+@protocol AMListEngine;
+@protocol AMPreferencesStorage;
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/storage/EnginesFactory.h"
+#include "im/actor/model/Storage.h"
 
-@interface ImActorModelStorageMemoryEnginesFactory : NSObject < ImActorModelStorageEnginesFactory > {
+@interface AMMemoryEnginesFactory : NSObject < AMStorage > {
 }
 
-- (id<ImActorModelMvvmKeyValueEngine>)createUsersEngine;
+- (id<AMPreferencesStorage>)createPreferencesStorage;
 
-- (id<ImActorModelMvvmListEngine>)createDialogsEngine;
+- (id<AMKeyValueEngine>)createUsersEngine;
 
-- (id<ImActorModelMvvmListEngine>)createMessagesEngineWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (id<AMListEngine>)createDialogsEngine;
 
-- (id<ImActorModelMvvmKeyValueEngine>)pendingMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (id<AMListEngine>)createMessagesEngineWithAMPeer:(AMPeer *)peer;
+
+- (id<AMKeyValueEngine>)pendingMessagesWithAMPeer:(AMPeer *)peer;
 
 - (instancetype)init;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelStorageMemoryEnginesFactory)
+J2OBJC_EMPTY_STATIC_INIT(AMMemoryEnginesFactory)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelStorageMemoryEnginesFactory)
+typedef AMMemoryEnginesFactory ImActorModelStorageMemoryEnginesFactory;
 
-#endif // _ImActorModelStorageMemoryEnginesFactory_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMMemoryEnginesFactory)
+
+#endif // _AMMemoryEnginesFactory_H_

@@ -3,35 +3,37 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/ActorContext.java
 //
 
-#ifndef _ImActorModelDroidkitActorsActorContext_H_
-#define _ImActorModelDroidkitActorsActorContext_H_
+#ifndef _DKActorContext_H_
+#define _DKActorContext_H_
 
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelDroidkitActorsActorScope;
-@class ImActorModelDroidkitActorsActorSystem;
+@class DKActorRef;
+@class DKActorScope;
+@class DKActorSystem;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsActorContext : NSObject {
+@interface DKActorContext : NSObject {
 }
 
-- (instancetype)initWithImActorModelDroidkitActorsActorScope:(ImActorModelDroidkitActorsActorScope *)scope;
+- (instancetype)initWithDKActorScope:(DKActorScope *)scope;
 
-- (ImActorModelDroidkitActorsActorRef *)getSelf;
+- (DKActorRef *)getSelf;
 
-- (ImActorModelDroidkitActorsActorSystem *)getSystem;
+- (DKActorSystem *)getSystem;
 
-- (ImActorModelDroidkitActorsActorRef *)sender;
+- (DKActorRef *)sender;
 
 - (void)stopSelf;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsActorContext)
+J2OBJC_EMPTY_STATIC_INIT(DKActorContext)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsActorContext)
+typedef DKActorContext ImActorModelDroidkitActorsActorContext;
 
-#endif // _ImActorModelDroidkitActorsActorContext_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKActorContext)
+
+#endif // _DKActorContext_H_

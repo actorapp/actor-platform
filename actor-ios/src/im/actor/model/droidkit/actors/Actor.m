@@ -20,27 +20,27 @@
 #include "im/actor/model/droidkit/actors/tasks/AskFuture.h"
 #include "java/util/ArrayList.h"
 
-__attribute__((unused)) static ImActorModelDroidkitActorsActorSystem *ImActorModelDroidkitActorsActor_system(ImActorModelDroidkitActorsActor *self);
-__attribute__((unused)) static ImActorModelDroidkitActorsActorRef *ImActorModelDroidkitActorsActor_self__(ImActorModelDroidkitActorsActor *self);
-__attribute__((unused)) static ImActorModelDroidkitActorsActorRef *ImActorModelDroidkitActorsActor_sender(ImActorModelDroidkitActorsActor *self);
+__attribute__((unused)) static DKActorSystem *DKActor_system(DKActor *self);
+__attribute__((unused)) static DKActorRef *DKActor_self__(DKActor *self);
+__attribute__((unused)) static DKActorRef *DKActor_sender(DKActor *self);
 
-@interface ImActorModelDroidkitActorsActor () {
+@interface DKActor () {
  @public
   NSString *path_;
-  ImActorModelDroidkitActorsActorContext *context__;
-  ImActorModelDroidkitActorsMailboxMailbox *mailbox_;
+  DKActorContext *context__;
+  DKMailbox *mailbox_;
   ImActorModelDroidkitActorsTasksActorAskImpl *askPattern_;
   JavaUtilArrayList *extensions_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActor, path_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActor, context__, ImActorModelDroidkitActorsActorContext *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActor, mailbox_, ImActorModelDroidkitActorsMailboxMailbox *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActor, askPattern_, ImActorModelDroidkitActorsTasksActorAskImpl *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActor, extensions_, JavaUtilArrayList *)
+J2OBJC_FIELD_SETTER(DKActor, path_, NSString *)
+J2OBJC_FIELD_SETTER(DKActor, context__, DKActorContext *)
+J2OBJC_FIELD_SETTER(DKActor, mailbox_, DKMailbox *)
+J2OBJC_FIELD_SETTER(DKActor, askPattern_, ImActorModelDroidkitActorsTasksActorAskImpl *)
+J2OBJC_FIELD_SETTER(DKActor, extensions_, JavaUtilArrayList *)
 
-@implementation ImActorModelDroidkitActorsActor
+@implementation DKActor
 
 - (instancetype)init {
   if (self = [super init]) {
@@ -50,12 +50,12 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActor, extensions_, JavaUtilArrayL
 }
 
 - (void)initActorWithNSString:(NSString *)path
-withImActorModelDroidkitActorsActorContext:(ImActorModelDroidkitActorsActorContext *)context
-withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox {
+           withDKActorContext:(DKActorContext *)context
+                withDKMailbox:(DKMailbox *)mailbox {
   self->path_ = path;
   self->context__ = context;
   self->mailbox_ = mailbox;
-  self->askPattern_ = [[ImActorModelDroidkitActorsTasksActorAskImpl alloc] initWithImActorModelDroidkitActorsActorRef:ImActorModelDroidkitActorsActor_self__(self)];
+  self->askPattern_ = [[ImActorModelDroidkitActorsTasksActorAskImpl alloc] initWithDKActorRef:DKActor_self__(self)];
   [((JavaUtilArrayList *) nil_chk(self->extensions_)) addWithId:askPattern_];
   [self->extensions_ addWithId:[[ImActorModelDroidkitActorsExtensionsRunnableExtension alloc] init]];
 }
@@ -64,27 +64,27 @@ withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxM
   return extensions_;
 }
 
-- (ImActorModelDroidkitActorsActorSystem *)system {
-  return ImActorModelDroidkitActorsActor_system(self);
+- (DKActorSystem *)system {
+  return DKActor_system(self);
 }
 
-- (ImActorModelDroidkitActorsActorRef *)self__ {
-  return ImActorModelDroidkitActorsActor_self__(self);
+- (DKActorRef *)self__ {
+  return DKActor_self__(self);
 }
 
-- (ImActorModelDroidkitActorsActorContext *)context {
+- (DKActorContext *)context {
   return context__;
 }
 
-- (ImActorModelDroidkitActorsActorRef *)sender {
-  return ImActorModelDroidkitActorsActor_sender(self);
+- (DKActorRef *)sender {
+  return DKActor_sender(self);
 }
 
 - (NSString *)getPath {
   return path_;
 }
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)getMailbox {
+- (DKMailbox *)getMailbox {
   return mailbox_;
 }
 
@@ -102,14 +102,14 @@ withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxM
 }
 
 - (void)replyWithId:(id)message {
-  if ([((ImActorModelDroidkitActorsActorContext *) nil_chk(context__)) sender] != nil) {
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk([context__ sender])) sendWithId:message withImActorModelDroidkitActorsActorRef:ImActorModelDroidkitActorsActor_self__(self)];
+  if ([((DKActorContext *) nil_chk(context__)) sender] != nil) {
+    [((DKActorRef *) nil_chk([context__ sender])) sendWithId:message withDKActorRef:DKActor_self__(self)];
   }
 }
 
 - (void)dropWithId:(id)message {
-  if ([((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActor_system(self))) getTraceInterface] != nil) {
-    [((id<ImActorModelDroidkitActorsDebugTraceInterface>) nil_chk([((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActor_system(self))) getTraceInterface])) onDropWithImActorModelDroidkitActorsActorRef:ImActorModelDroidkitActorsActor_sender(self) withId:message withImActorModelDroidkitActorsActor:self];
+  if ([((DKActorSystem *) nil_chk(DKActor_system(self))) getTraceInterface] != nil) {
+    [((id<ImActorModelDroidkitActorsDebugTraceInterface>) nil_chk([((DKActorSystem *) nil_chk(DKActor_system(self))) getTraceInterface])) onDropWithDKActorRef:DKActor_sender(self) withId:message withDKActor:self];
   }
   [self replyWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:message]];
 }
@@ -125,47 +125,47 @@ withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxM
   return future;
 }
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorSelection:(ImActorModelDroidkitActorsActorSelection *)selection {
-  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithImActorModelDroidkitActorsActorRef:[((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActor_system(self))) actorOfWithImActorModelDroidkitActorsActorSelection:selection] withLong:0 withImActorModelDroidkitActorsTasksAskCallback:nil];
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorSelection:(DKActorSelection *)selection {
+  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithDKActorRef:[((DKActorSystem *) nil_chk(DKActor_system(self))) actorOfWithDKActorSelection:selection] withLong:0 withImActorModelDroidkitActorsTasksAskCallback:nil];
 }
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorSelection:(ImActorModelDroidkitActorsActorSelection *)selection
-                                                                                     withLong:(jlong)timeout {
-  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithImActorModelDroidkitActorsActorRef:[((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActor_system(self))) actorOfWithImActorModelDroidkitActorsActorSelection:selection] withLong:timeout withImActorModelDroidkitActorsTasksAskCallback:nil];
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorSelection:(DKActorSelection *)selection
+                                                             withLong:(jlong)timeout {
+  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithDKActorRef:[((DKActorSystem *) nil_chk(DKActor_system(self))) actorOfWithDKActorSelection:selection] withLong:timeout withImActorModelDroidkitActorsTasksAskCallback:nil];
 }
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorSelection:(ImActorModelDroidkitActorsActorSelection *)selection
-                                               withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
-  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithImActorModelDroidkitActorsActorRef:[((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActor_system(self))) actorOfWithImActorModelDroidkitActorsActorSelection:selection] withLong:0 withImActorModelDroidkitActorsTasksAskCallback:callback];
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorSelection:(DKActorSelection *)selection
+                       withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
+  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithDKActorRef:[((DKActorSystem *) nil_chk(DKActor_system(self))) actorOfWithDKActorSelection:selection] withLong:0 withImActorModelDroidkitActorsTasksAskCallback:callback];
 }
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorSelection:(ImActorModelDroidkitActorsActorSelection *)selection
-                                                                                     withLong:(jlong)timeout
-                                               withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
-  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithImActorModelDroidkitActorsActorRef:[((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActor_system(self))) actorOfWithImActorModelDroidkitActorsActorSelection:selection] withLong:timeout withImActorModelDroidkitActorsTasksAskCallback:callback];
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorSelection:(DKActorSelection *)selection
+                                                             withLong:(jlong)timeout
+                       withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
+  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithDKActorRef:[((DKActorSystem *) nil_chk(DKActor_system(self))) actorOfWithDKActorSelection:selection] withLong:timeout withImActorModelDroidkitActorsTasksAskCallback:callback];
 }
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref {
-  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithImActorModelDroidkitActorsActorRef:ref withLong:0 withImActorModelDroidkitActorsTasksAskCallback:nil];
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref {
+  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithDKActorRef:ref withLong:0 withImActorModelDroidkitActorsTasksAskCallback:nil];
 }
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref
-                                                                               withLong:(jlong)timeout {
-  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithImActorModelDroidkitActorsActorRef:ref withLong:timeout withImActorModelDroidkitActorsTasksAskCallback:nil];
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref
+                                                       withLong:(jlong)timeout {
+  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithDKActorRef:ref withLong:timeout withImActorModelDroidkitActorsTasksAskCallback:nil];
 }
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref
-                                         withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
-  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithImActorModelDroidkitActorsActorRef:ref withLong:0 withImActorModelDroidkitActorsTasksAskCallback:callback];
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref
+                 withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
+  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithDKActorRef:ref withLong:0 withImActorModelDroidkitActorsTasksAskCallback:callback];
 }
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref
-                                                                               withLong:(jlong)timeout
-                                         withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
-  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithImActorModelDroidkitActorsActorRef:ref withLong:timeout withImActorModelDroidkitActorsTasksAskCallback:callback];
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref
+                                                       withLong:(jlong)timeout
+                 withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
+  return [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askPattern_)) askWithDKActorRef:ref withLong:timeout withImActorModelDroidkitActorsTasksAskCallback:callback];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsActor *)other {
+- (void)copyAllFieldsTo:(DKActor *)other {
   [super copyAllFieldsTo:other];
   other->path_ = path_;
   other->context__ = context__;
@@ -177,7 +177,7 @@ withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxM
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "init", "Actor", NULL, 0x1, NULL },
-    { "initActorWithNSString:withImActorModelDroidkitActorsActorContext:withImActorModelDroidkitActorsMailboxMailbox:", "initActor", "V", 0x11, NULL },
+    { "initActorWithNSString:withDKActorContext:withDKMailbox:", "initActor", "V", 0x11, NULL },
     { "getExtensions", NULL, "Ljava.util.ArrayList;", 0x1, NULL },
     { "system", NULL, "Lim.actor.model.droidkit.actors.ActorSystem;", 0x11, NULL },
     { "self__", "self", "Lim.actor.model.droidkit.actors.ActorRef;", 0x11, NULL },
@@ -193,14 +193,14 @@ withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxM
     { "dropWithId:", "drop", "V", 0x1, NULL },
     { "combineWithImActorModelDroidkitActorsTasksAskFutureArray:", "combine", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x81, NULL },
     { "combineWithImActorModelDroidkitActorsTasksAskCallback:withImActorModelDroidkitActorsTasksAskFutureArray:", "combine", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x81, NULL },
-    { "askWithImActorModelDroidkitActorsActorSelection:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithImActorModelDroidkitActorsActorSelection:withLong:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithImActorModelDroidkitActorsActorSelection:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithImActorModelDroidkitActorsActorSelection:withLong:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithImActorModelDroidkitActorsActorRef:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithImActorModelDroidkitActorsActorRef:withLong:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithImActorModelDroidkitActorsActorRef:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithImActorModelDroidkitActorsActorRef:withLong:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
+    { "askWithDKActorSelection:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
+    { "askWithDKActorSelection:withLong:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
+    { "askWithDKActorSelection:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
+    { "askWithDKActorSelection:withLong:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
+    { "askWithDKActorRef:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
+    { "askWithDKActorRef:withLong:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
+    { "askWithDKActorRef:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
+    { "askWithDKActorRef:withLong:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "path_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
@@ -209,22 +209,22 @@ withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxM
     { "askPattern_", NULL, 0x2, "Lim.actor.model.droidkit.actors.tasks.ActorAskImpl;", NULL,  },
     { "extensions_", NULL, 0x2, "Ljava.util.ArrayList;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsActor = { 1, "Actor", "im.actor.model.droidkit.actors", NULL, 0x1, 25, methods, 5, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsActor;
+  static const J2ObjcClassInfo _DKActor = { 1, "Actor", "im.actor.model.droidkit.actors", NULL, 0x1, 25, methods, 5, fields, 0, NULL};
+  return &_DKActor;
 }
 
 @end
 
-ImActorModelDroidkitActorsActorSystem *ImActorModelDroidkitActorsActor_system(ImActorModelDroidkitActorsActor *self) {
-  return [((ImActorModelDroidkitActorsActorContext *) nil_chk(self->context__)) getSystem];
+DKActorSystem *DKActor_system(DKActor *self) {
+  return [((DKActorContext *) nil_chk(self->context__)) getSystem];
 }
 
-ImActorModelDroidkitActorsActorRef *ImActorModelDroidkitActorsActor_self__(ImActorModelDroidkitActorsActor *self) {
-  return [((ImActorModelDroidkitActorsActorContext *) nil_chk(self->context__)) getSelf];
+DKActorRef *DKActor_self__(DKActor *self) {
+  return [((DKActorContext *) nil_chk(self->context__)) getSelf];
 }
 
-ImActorModelDroidkitActorsActorRef *ImActorModelDroidkitActorsActor_sender(ImActorModelDroidkitActorsActor *self) {
-  return [((ImActorModelDroidkitActorsActorContext *) nil_chk(self->context__)) sender];
+DKActorRef *DKActor_sender(DKActor *self) {
+  return [((DKActorContext *) nil_chk(self->context__)) sender];
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsActor)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActor)

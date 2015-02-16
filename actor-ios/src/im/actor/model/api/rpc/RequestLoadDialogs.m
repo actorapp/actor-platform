@@ -47,13 +47,13 @@
   return self->limit_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->startDate_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->startDate_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->limit_ = [values getIntWithInt:2];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->startDate_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->startDate_];
   [writer writeIntWithInt:2 withInt:self->limit_];
 }
 
@@ -74,8 +74,8 @@
     { "init", "RequestLoadDialogs", NULL, 0x1, NULL },
     { "getStartDate", NULL, "J", 0x1, NULL },
     { "getLimit", NULL, "I", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -92,7 +92,7 @@
 
 ImActorModelApiRpcRequestLoadDialogs *ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestLoadDialogs_init();
-  return ((ImActorModelApiRpcRequestLoadDialogs *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestLoadDialogs alloc] init], data));
+  return ((ImActorModelApiRpcRequestLoadDialogs *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestLoadDialogs alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestLoadDialogs)

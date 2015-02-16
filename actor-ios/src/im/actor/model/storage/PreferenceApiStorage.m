@@ -7,17 +7,17 @@
 #include "im/actor/model/storage/PreferenceApiStorage.h"
 #include "im/actor/model/storage/PreferencesStorage.h"
 
-@interface ImActorModelStoragePreferenceApiStorage () {
+@interface AMPreferenceApiStorage () {
  @public
-  id<ImActorModelStoragePreferencesStorage> preferencesStorage_;
+  id<AMPreferencesStorage> preferencesStorage_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelStoragePreferenceApiStorage, preferencesStorage_, id<ImActorModelStoragePreferencesStorage>)
+J2OBJC_FIELD_SETTER(AMPreferenceApiStorage, preferencesStorage_, id<AMPreferencesStorage>)
 
-@implementation ImActorModelStoragePreferenceApiStorage
+@implementation AMPreferenceApiStorage
 
-- (instancetype)initWithImActorModelStoragePreferencesStorage:(id<ImActorModelStoragePreferencesStorage>)preferencesStorage {
+- (instancetype)initWithAMPreferencesStorage:(id<AMPreferencesStorage>)preferencesStorage {
   if (self = [super init]) {
     self->preferencesStorage_ = preferencesStorage;
   }
@@ -25,31 +25,31 @@ J2OBJC_FIELD_SETTER(ImActorModelStoragePreferenceApiStorage, preferencesStorage_
 }
 
 - (jlong)getAuthKey {
-  return [((id<ImActorModelStoragePreferencesStorage>) nil_chk(preferencesStorage_)) getLongWithNSString:@"auth_id" withLong:0];
+  return [((id<AMPreferencesStorage>) nil_chk(preferencesStorage_)) getLongWithNSString:@"auth_id" withLong:0];
 }
 
 - (void)saveAuthKeyWithLong:(jlong)key {
-  [((id<ImActorModelStoragePreferencesStorage>) nil_chk(preferencesStorage_)) putLongWithNSString:@"auth_id" withLong:key];
+  [((id<AMPreferencesStorage>) nil_chk(preferencesStorage_)) putLongWithNSString:@"auth_id" withLong:key];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelStoragePreferenceApiStorage *)other {
+- (void)copyAllFieldsTo:(AMPreferenceApiStorage *)other {
   [super copyAllFieldsTo:other];
   other->preferencesStorage_ = preferencesStorage_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelStoragePreferencesStorage:", "PreferenceApiStorage", NULL, 0x1, NULL },
+    { "initWithAMPreferencesStorage:", "PreferenceApiStorage", NULL, 0x1, NULL },
     { "getAuthKey", NULL, "J", 0x1, NULL },
     { "saveAuthKeyWithLong:", "saveAuthKey", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "preferencesStorage_", NULL, 0x2, "Lim.actor.model.storage.PreferencesStorage;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelStoragePreferenceApiStorage = { 1, "PreferenceApiStorage", "im.actor.model.storage", NULL, 0x1, 3, methods, 1, fields, 0, NULL};
-  return &_ImActorModelStoragePreferenceApiStorage;
+  static const J2ObjcClassInfo _AMPreferenceApiStorage = { 1, "PreferenceApiStorage", "im.actor.model.storage", NULL, 0x1, 3, methods, 1, fields, 0, NULL};
+  return &_AMPreferenceApiStorage;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelStoragePreferenceApiStorage)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMPreferenceApiStorage)

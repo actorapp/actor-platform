@@ -3,20 +3,20 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/FileLocation.java
 //
 
-#ifndef _ImActorModelEntityFileLocation_H_
-#define _ImActorModelEntityFileLocation_H_
+#ifndef _AMFileLocation_H_
+#define _AMFileLocation_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelEntityFileLocation : ImActorModelDroidkitBserBserObject {
+@interface AMFileLocation : BSBserObject {
 }
 
-+ (ImActorModelEntityFileLocation *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMFileLocation *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
@@ -32,19 +32,21 @@
 
 - (NSUInteger)hash;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityFileLocation)
+J2OBJC_EMPTY_STATIC_INIT(AMFileLocation)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityFileLocation *ImActorModelEntityFileLocation_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMFileLocation *AMFileLocation_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityFileLocation)
+typedef AMFileLocation ImActorModelEntityFileLocation;
 
-#endif // _ImActorModelEntityFileLocation_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMFileLocation)
+
+#endif // _AMFileLocation_H_

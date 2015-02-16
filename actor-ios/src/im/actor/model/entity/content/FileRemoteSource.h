@@ -6,9 +6,9 @@
 #ifndef _ImActorModelEntityContentFileRemoteSource_H_
 #define _ImActorModelEntityContentFileRemoteSource_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
-@class ImActorModelEntityFileLocation;
+@class AMFileLocation;
+@class BSBserValues;
+@class BSBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/FileSource.h"
@@ -16,15 +16,15 @@
 @interface ImActorModelEntityContentFileRemoteSource : ImActorModelEntityContentFileSource {
 }
 
-+ (ImActorModelEntityContentFileRemoteSource *)fromValuesWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)reader;
++ (ImActorModelEntityContentFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader;
 
-- (instancetype)initWithImActorModelEntityFileLocation:(ImActorModelEntityFileLocation *)fileLocation;
+- (instancetype)initWithAMFileLocation:(AMFileLocation *)fileLocation;
 
-- (ImActorModelEntityFileLocation *)getFileLocation;
+- (AMFileLocation *)getFileLocation;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 
@@ -32,7 +32,7 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentFileRemoteSource)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentFileRemoteSource *ImActorModelEntityContentFileRemoteSource_fromValuesWithImActorModelDroidkitBserBserValues_(ImActorModelDroidkitBserBserValues *reader);
+FOUNDATION_EXPORT ImActorModelEntityContentFileRemoteSource *ImActorModelEntityContentFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader);
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentFileRemoteSource)

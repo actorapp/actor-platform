@@ -3,12 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/mvvm/ListEngineItem.java
 //
 
-#ifndef _ImActorModelMvvmListEngineItem_H_
-#define _ImActorModelMvvmListEngineItem_H_
+#ifndef _AMListEngineItem_H_
+#define _AMListEngineItem_H_
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelMvvmListEngineItem < NSObject, JavaObject >
+@protocol AMListEngineItem < NSObject, JavaObject >
 
 - (jlong)getListId;
 
@@ -16,8 +16,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelMvvmListEngineItem)
+J2OBJC_EMPTY_STATIC_INIT(AMListEngineItem)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelMvvmListEngineItem)
+#define ImActorModelMvvmListEngineItem AMListEngineItem
 
-#endif // _ImActorModelMvvmListEngineItem_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMListEngineItem)
+
+#endif // _AMListEngineItem_H_

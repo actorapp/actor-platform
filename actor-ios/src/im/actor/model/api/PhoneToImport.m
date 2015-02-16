@@ -42,13 +42,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
   return self->name_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->phoneNumber_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->phoneNumber_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->name_ = [values optStringWithInt:2];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->phoneNumber_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->phoneNumber_];
   if (self->name_ != nil) {
     [writer writeStringWithInt:2 withNSString:self->name_];
   }
@@ -66,8 +66,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
     { "init", "PhoneToImport", NULL, 0x1, NULL },
     { "getPhoneNumber", NULL, "J", 0x1, NULL },
     { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "phoneNumber_", NULL, 0x2, "J", NULL,  },

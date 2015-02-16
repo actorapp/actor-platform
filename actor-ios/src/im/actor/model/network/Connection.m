@@ -14,7 +14,7 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "postWithByteArray:withInt:withInt:", "post", "V", 0x401, NULL },
+    { "post:withOffset:withLen:", "post", "V", 0x401, NULL },
     { "isClosed", NULL, "Z", 0x401, NULL },
     { "close", NULL, "V", 0x401, NULL },
   };

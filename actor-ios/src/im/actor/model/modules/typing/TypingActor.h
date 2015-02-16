@@ -6,13 +6,13 @@
 #ifndef _ImActorModelModulesTypingTypingActor_H_
 #define _ImActorModelModulesTypingTypingActor_H_
 
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelDroidkitActorsMailboxEnvelope;
-@class ImActorModelDroidkitActorsMailboxMailboxesQueue;
+@class DKActorRef;
+@class DKEnvelope;
+@class DKMailboxesQueue;
 @class ImActorModelModulesModules;
 @class JavaUtilHashMap;
 @class JavaUtilHashSet;
-@protocol AMTypingCallback;
+@protocol AMMessengerCallback;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
@@ -25,7 +25,7 @@
 @interface ImActorModelModulesTypingTypingActor : ImActorModelModulesUtilsModuleActor {
 }
 
-+ (ImActorModelDroidkitActorsActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
++ (DKActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
@@ -37,7 +37,7 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingTypingActor)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsActorRef *ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger);
+FOUNDATION_EXPORT DKActorRef *ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger);
 
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesTypingTypingActor, TYPING_TEXT_TIMEOUT, jint)
 CF_EXTERN_C_END
@@ -136,7 +136,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_GroupTyping)
 
-@interface ImActorModelModulesTypingTypingActor_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
+@interface ImActorModelModulesTypingTypingActor_$1 : NSObject < DKActorCreator > {
 }
 
 - (ImActorModelModulesTypingTypingActor *)create;
@@ -152,10 +152,10 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_$1)
 
-@interface ImActorModelModulesTypingTypingActor_$2 : NSObject < ImActorModelDroidkitActorsMailboxCreator > {
+@interface ImActorModelModulesTypingTypingActor_$2 : NSObject < DKMailboxCreator > {
 }
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)createMailboxWithImActorModelDroidkitActorsMailboxMailboxesQueue:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)queue;
+- (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue;
 
 - (instancetype)init;
 
@@ -168,13 +168,13 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_$2)
 
-@interface ImActorModelModulesTypingTypingActor_$2_$1 : ImActorModelDroidkitActorsMailboxMailbox {
+@interface ImActorModelModulesTypingTypingActor_$2_$1 : DKMailbox {
 }
 
-- (jboolean)isEqualEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)a
-                           withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)b;
+- (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
+                           withDKEnvelope:(DKEnvelope *)b;
 
-- (instancetype)initWithImActorModelDroidkitActorsMailboxMailboxesQueue:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)arg$0;
+- (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)arg$0;
 
 @end
 

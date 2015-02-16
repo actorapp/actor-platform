@@ -10,31 +10,31 @@
 #include "im/actor/model/entity/MessageState.h"
 #include "im/actor/model/entity/Peer.h"
 
-@interface ImActorModelEntityDialogBuilder () {
+@interface AMDialogBuilder () {
  @public
-  ImActorModelEntityPeer *peer_;
+  AMPeer *peer_;
   jlong sortKey_;
   NSString *dialogTitle_;
-  ImActorModelEntityAvatar *dialogAvatar_;
+  AMAvatar *dialogAvatar_;
   jint unreadCount_;
   jlong rid_;
-  ImActorModelEntityDialog_ContentTypeEnum *messageType_;
+  AMDialog_ContentTypeEnum *messageType_;
   NSString *text_;
-  ImActorModelEntityMessageStateEnum *status_;
+  AMMessageStateEnum *status_;
   jint senderId_;
   jlong time_;
   jint relatedUid_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, peer_, ImActorModelEntityPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, dialogTitle_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, dialogAvatar_, ImActorModelEntityAvatar *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, messageType_, ImActorModelEntityDialog_ContentTypeEnum *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, text_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, status_, ImActorModelEntityMessageStateEnum *)
+J2OBJC_FIELD_SETTER(AMDialogBuilder, peer_, AMPeer *)
+J2OBJC_FIELD_SETTER(AMDialogBuilder, dialogTitle_, NSString *)
+J2OBJC_FIELD_SETTER(AMDialogBuilder, dialogAvatar_, AMAvatar *)
+J2OBJC_FIELD_SETTER(AMDialogBuilder, messageType_, AMDialog_ContentTypeEnum *)
+J2OBJC_FIELD_SETTER(AMDialogBuilder, text_, NSString *)
+J2OBJC_FIELD_SETTER(AMDialogBuilder, status_, AMMessageStateEnum *)
 
-@implementation ImActorModelEntityDialogBuilder
+@implementation AMDialogBuilder
 
 - (instancetype)init {
   if (self = [super init]) {
@@ -43,10 +43,10 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, status_, ImActorModelEntity
   return self;
 }
 
-- (instancetype)initWithImActorModelEntityDialog:(ImActorModelEntityDialog *)dialog {
+- (instancetype)initWithAMDialog:(AMDialog *)dialog {
   if (self = [super init]) {
     relatedUid_ = 0;
-    peer_ = [((ImActorModelEntityDialog *) nil_chk(dialog)) getPeer];
+    peer_ = [((AMDialog *) nil_chk(dialog)) getPeer];
     sortKey_ = [dialog getSortDate];
     dialogTitle_ = [dialog getDialogTitle];
     dialogAvatar_ = [dialog getDialogAvatar];
@@ -62,71 +62,71 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, status_, ImActorModelEntity
   return self;
 }
 
-- (ImActorModelEntityDialogBuilder *)setPeerWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
+- (AMDialogBuilder *)setPeerWithAMPeer:(AMPeer *)peer {
   self->peer_ = peer;
   return self;
 }
 
-- (ImActorModelEntityDialogBuilder *)setSortKeyWithLong:(jlong)sortKey {
+- (AMDialogBuilder *)setSortKeyWithLong:(jlong)sortKey {
   self->sortKey_ = sortKey;
   return self;
 }
 
-- (ImActorModelEntityDialogBuilder *)setDialogTitleWithNSString:(NSString *)dialogTitle {
+- (AMDialogBuilder *)setDialogTitleWithNSString:(NSString *)dialogTitle {
   self->dialogTitle_ = dialogTitle;
   return self;
 }
 
-- (ImActorModelEntityDialogBuilder *)setUnreadCountWithInt:(jint)unreadCount {
+- (AMDialogBuilder *)setUnreadCountWithInt:(jint)unreadCount {
   self->unreadCount_ = unreadCount;
   return self;
 }
 
-- (ImActorModelEntityDialogBuilder *)setRidWithLong:(jlong)rid {
+- (AMDialogBuilder *)setRidWithLong:(jlong)rid {
   self->rid_ = rid;
   return self;
 }
 
-- (ImActorModelEntityDialogBuilder *)setMessageTypeWithImActorModelEntityDialog_ContentTypeEnum:(ImActorModelEntityDialog_ContentTypeEnum *)messageType {
+- (AMDialogBuilder *)setMessageTypeWithAMDialog_ContentTypeEnum:(AMDialog_ContentTypeEnum *)messageType {
   self->messageType_ = messageType;
   return self;
 }
 
-- (ImActorModelEntityDialogBuilder *)setTextWithNSString:(NSString *)text {
+- (AMDialogBuilder *)setTextWithNSString:(NSString *)text {
   self->text_ = text;
   return self;
 }
 
-- (ImActorModelEntityDialogBuilder *)setStatusWithImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)status {
+- (AMDialogBuilder *)setStatusWithAMMessageStateEnum:(AMMessageStateEnum *)status {
   self->status_ = status;
   return self;
 }
 
-- (ImActorModelEntityDialogBuilder *)setSenderIdWithInt:(jint)senderId {
+- (AMDialogBuilder *)setSenderIdWithInt:(jint)senderId {
   self->senderId_ = senderId;
   return self;
 }
 
-- (ImActorModelEntityDialogBuilder *)setTimeWithLong:(jlong)time {
+- (AMDialogBuilder *)setTimeWithLong:(jlong)time {
   self->time_ = time;
   return self;
 }
 
-- (ImActorModelEntityDialogBuilder *)setRelatedUidWithInt:(jint)relatedUid {
+- (AMDialogBuilder *)setRelatedUidWithInt:(jint)relatedUid {
   self->relatedUid_ = relatedUid;
   return self;
 }
 
-- (ImActorModelEntityDialogBuilder *)setDialogAvatarWithImActorModelEntityAvatar:(ImActorModelEntityAvatar *)avatar {
+- (AMDialogBuilder *)setDialogAvatarWithAMAvatar:(AMAvatar *)avatar {
   self->dialogAvatar_ = avatar;
   return self;
 }
 
-- (ImActorModelEntityDialog *)createDialog {
-  return [[ImActorModelEntityDialog alloc] initWithImActorModelEntityPeer:peer_ withLong:sortKey_ withNSString:dialogTitle_ withImActorModelEntityAvatar:dialogAvatar_ withInt:unreadCount_ withLong:rid_ withImActorModelEntityDialog_ContentTypeEnum:messageType_ withNSString:text_ withImActorModelEntityMessageStateEnum:status_ withInt:senderId_ withLong:time_ withInt:relatedUid_];
+- (AMDialog *)createDialog {
+  return [[AMDialog alloc] initWithAMPeer:peer_ withLong:sortKey_ withNSString:dialogTitle_ withAMAvatar:dialogAvatar_ withInt:unreadCount_ withLong:rid_ withAMDialog_ContentTypeEnum:messageType_ withNSString:text_ withAMMessageStateEnum:status_ withInt:senderId_ withLong:time_ withInt:relatedUid_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityDialogBuilder *)other {
+- (void)copyAllFieldsTo:(AMDialogBuilder *)other {
   [super copyAllFieldsTo:other];
   other->peer_ = peer_;
   other->sortKey_ = sortKey_;
@@ -145,19 +145,19 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, status_, ImActorModelEntity
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "init", "DialogBuilder", NULL, 0x1, NULL },
-    { "initWithImActorModelEntityDialog:", "DialogBuilder", NULL, 0x1, NULL },
-    { "setPeerWithImActorModelEntityPeer:", "setPeer", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
+    { "initWithAMDialog:", "DialogBuilder", NULL, 0x1, NULL },
+    { "setPeerWithAMPeer:", "setPeer", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
     { "setSortKeyWithLong:", "setSortKey", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
     { "setDialogTitleWithNSString:", "setDialogTitle", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
     { "setUnreadCountWithInt:", "setUnreadCount", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
     { "setRidWithLong:", "setRid", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setMessageTypeWithImActorModelEntityDialog_ContentTypeEnum:", "setMessageType", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
+    { "setMessageTypeWithAMDialog_ContentTypeEnum:", "setMessageType", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
     { "setTextWithNSString:", "setText", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setStatusWithImActorModelEntityMessageStateEnum:", "setStatus", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
+    { "setStatusWithAMMessageStateEnum:", "setStatus", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
     { "setSenderIdWithInt:", "setSenderId", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
     { "setTimeWithLong:", "setTime", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
     { "setRelatedUidWithInt:", "setRelatedUid", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setDialogAvatarWithImActorModelEntityAvatar:", "setDialogAvatar", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
+    { "setDialogAvatarWithAMAvatar:", "setDialogAvatar", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
     { "createDialog", NULL, "Lim.actor.model.entity.Dialog;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -174,10 +174,10 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityDialogBuilder, status_, ImActorModelEntity
     { "time_", NULL, 0x2, "J", NULL,  },
     { "relatedUid_", NULL, 0x2, "I", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityDialogBuilder = { 1, "DialogBuilder", "im.actor.model.entity", NULL, 0x1, 15, methods, 12, fields, 0, NULL};
-  return &_ImActorModelEntityDialogBuilder;
+  static const J2ObjcClassInfo _AMDialogBuilder = { 1, "DialogBuilder", "im.actor.model.entity", NULL, 0x1, 15, methods, 12, fields, 0, NULL};
+  return &_AMDialogBuilder;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityDialogBuilder)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDialogBuilder)
