@@ -30,7 +30,6 @@ public class Auth extends BaseModule {
     private static final String KEY_SMS_CODE = "auth_sms_code";
 
     private AuthState state;
-    private PreferencesStorage preferences;
     private MainThread mainThread;
     private byte[] deviceHash;
     private int myUid;
@@ -40,15 +39,15 @@ public class Auth extends BaseModule {
 
         this.mainThread = modules.getConfiguration().getMainThread();
 
-        this.myUid = preferences.getInt(KEY_AUTH_UID, 0);
+        this.myUid = preferences().getInt(KEY_AUTH_UID, 0);
 
-        deviceHash = preferences.getBytes(KEY_DEVICE_HASH);
+        deviceHash = preferences().getBytes(KEY_DEVICE_HASH);
         if (deviceHash == null) {
             deviceHash = RandomUtils.seed(32);
-            preferences.putBytes(KEY_DEVICE_HASH, deviceHash);
+            preferences().putBytes(KEY_DEVICE_HASH, deviceHash);
         }
 
-        if (preferences.getBool(KEY_AUTH, false)) {
+        if (preferences().getBool(KEY_AUTH, false)) {
             state = AuthState.LOGGED_IN;
             modules.onLoggedIn();
         } else {
@@ -72,8 +71,8 @@ public class Auth extends BaseModule {
                         new RpcCallback<ResponseSendAuthCode>() {
                             @Override
                             public void onResult(final ResponseSendAuthCode response) {
-                                preferences.putLong(KEY_PHONE, phone);
-                                preferences.putString(KEY_SMS_HASH, response.getSmsHash());
+                                preferences().putLong(KEY_PHONE, phone);
+                                preferences().putString(KEY_SMS_HASH, response.getSmsHash());
                                 state = AuthState.CODE_VALIDATION;
 
                                 runOnUiThread(new Runnable() {
@@ -104,8 +103,8 @@ public class Auth extends BaseModule {
             public void start(final CommandCallback<AuthState> callback) {
                 request(
                         new RequestSignIn(
-                                preferences.getLong(KEY_PHONE, 0),
-                                preferences.getString(KEY_SMS_HASH),
+                                preferences().getLong(KEY_PHONE, 0),
+                                preferences().getString(KEY_SMS_HASH),
                                 code + "",
                                 RandomUtils.seed(1024),
                                 deviceHash,
@@ -115,10 +114,10 @@ public class Auth extends BaseModule {
 
                             @Override
                             public void onResult(ResponseAuth response) {
-                                preferences.putBool(KEY_AUTH, true);
+                                preferences().putBool(KEY_AUTH, true);
                                 state = AuthState.LOGGED_IN;
                                 myUid = response.getUser().getId();
-                                preferences.putInt(KEY_AUTH_UID, myUid);
+                                preferences().putInt(KEY_AUTH_UID, myUid);
                                 modules().onLoggedIn();
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -151,9 +150,9 @@ public class Auth extends BaseModule {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                request(new RequestSignUp(preferences.getLong(KEY_PHONE, 0),
-                        preferences.getString(KEY_SMS_HASH),
-                        preferences.getInt(KEY_SMS_CODE, 0) + "",
+                request(new RequestSignUp(preferences().getLong(KEY_PHONE, 0),
+                        preferences().getString(KEY_SMS_HASH),
+                        preferences().getInt(KEY_SMS_CODE, 0) + "",
                         firstName,
                         RandomUtils.seed(1024),
                         deviceHash,
@@ -162,10 +161,10 @@ public class Auth extends BaseModule {
                         isSilent), new RpcCallback<ResponseAuth>() {
                     @Override
                     public void onResult(ResponseAuth response) {
-                        preferences.putBool(KEY_AUTH, true);
+                        preferences().putBool(KEY_AUTH, true);
                         state = AuthState.LOGGED_IN;
                         myUid = response.getUser().getId();
-                        preferences.putInt(KEY_AUTH_UID, myUid);
+                        preferences().putInt(KEY_AUTH_UID, myUid);
                         modules().onLoggedIn();
                         runOnUiThread(new Runnable() {
                             @Override
@@ -198,6 +197,6 @@ public class Auth extends BaseModule {
     }
 
     public long getPhone() {
-        return preferences.getLong(KEY_PHONE, 0);
+        return preferences().getLong(KEY_PHONE, 0);
     }
 }
