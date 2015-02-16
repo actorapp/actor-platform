@@ -19,15 +19,15 @@ object MTProto {
   val apiMajorVersions = Set(1)
 
   def parse(maxBufferSize: Int) = new StatefulStage[ByteString, MTTransport] {
-    sealed trait ParserState
-    case object HandshakeState extends ParserState
-    case object AwaitPackage extends ParserState
-    case class AwaitBytes(length: Int) extends ParserState
-    case class FailedState(msg: String) extends ParserState
+    sealed trait ParserStep
+    case object HandshakeStep extends ParserStep
+    case object AwaitPackage extends ParserStep
+    case class AwaitBytes(length: Int) extends ParserStep
+    case class FailedState(msg: String) extends ParserStep
 
-    type ParserStateT = (ParserState, BitVector)
+    type ParseState = (ParserStep, BitVector)
 
-    private var parserState: ParserStateT = (HandshakeState, BitVector.empty)
+    private var parserState: ParseState = (HandshakeStep, BitVector.empty)
 
     @inline
     private def failedState(msg: String) = ((FailedState(msg), BitVector.empty), Vector.empty)
@@ -38,7 +38,7 @@ object MTProto {
         newState._1 match {
           case FailedState(msg) =>
             // ctx.fail(new IllegalStateException(msg))
-            ctx.pushAndFinish(ProtoPackage(Drop(0, msg)))
+            ctx.pushAndFinish(ProtoPackage(Drop(0, 0, msg)))
           case _ =>
             parserState = newState
             emit(res.iterator, ctx)
@@ -46,11 +46,11 @@ object MTProto {
       }
 
       @tailrec
-      private def doParse(state: ParserState, buf: BitVector)
-                         (pSeq: Vector[MTTransport]): (ParserStateT, Vector[MTTransport]) = {
+      private def doParse(state: ParserStep, buf: BitVector)
+                         (pSeq: Vector[MTTransport]): (ParseState, Vector[MTTransport]) = {
         if (buf.isEmpty) ((state, buf), pSeq)
         else state match {
-          case HandshakeState =>
+          case HandshakeStep =>
             HandshakeCodec.decode(buf) match {
               case \/-((xs, h)) => ((AwaitPackage, xs), Vector(h))
               case -\/(e) => failedState(e.message)
@@ -110,19 +110,18 @@ object MTProto {
 
     req match {
       case ProtoPackage(p) =>
-        val f = p match {
+        p match {
           case m: MTPackage =>
-            actorRef.ask(m).mapTo[MTPackage].recover {
+            actorRef.ask(m).mapTo[MTTransport].recover {
               case e: AskTimeoutException =>
                 val msg = s"handleAsk within $timeout"
                 system.log.error(e, msg)
-                InternalError(0, 0, msg)
+                ProtoPackage(InternalError(0, 0, msg))
             }
-          case Ping(bytes) => Future.successful(Pong(bytes))
-          case Pong(bytes) => Future.successful(Ping(bytes))
-          case m => Future.successful(m)
+          case Ping(bytes) => Future.successful(ProtoPackage(Pong(bytes)))
+          case Pong(bytes) => Future.successful(ProtoPackage(Ping(bytes)))
+          case m => Future.successful(ProtoPackage(m))
         }
-        f.map(ProtoPackage)
       case h: Handshake => Future.successful {
         val sha1Digest = MessageDigest.getInstance("SHA1")
         val clientBytes = BitVector(h.protoVersion, h.apiMajorVersion, h.apiMinorVersion) ++ h.randomBytes

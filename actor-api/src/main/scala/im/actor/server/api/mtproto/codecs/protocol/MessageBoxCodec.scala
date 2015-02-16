@@ -1,0 +1,29 @@
+package im.actor.server.api.mtproto.codecs.protocol
+
+import im.actor.server.api.mtproto.codecs.{ PayloadCodec, DiscriminatedErrorCodec }
+import im.actor.server.api.mtproto.protocol._
+import scodec.bits.BitVector
+import scodec.codecs._
+import scodec.Codec
+
+object MessageBoxCodec extends Codec[MessageBox] {
+  private val protoMessageCodec = discriminated[ProtoMessage].by(uint8)
+    .\(Container.header) { case r: Container => r} (ContainerCodec)
+    .\(MessageAck.header) { case r: MessageAck => r} (MessageAckCodec)
+    .\(NewSession.header) { case r: NewSession => r} (NewSessionCodec)
+    .\(RequestAuthId.header) { case r: RequestAuthId => r} (RequestAuthIdCodec)
+    .\(ResponseAuthId.header) { case r: ResponseAuthId => r} (ResponseAuthIdCodec)
+    .\(RequestResend.header) { case r: RequestResend => r} (RequestResendCodec)
+    .\(RpcRequestBox.header) { case r: RpcRequestBox => r} (RpcRequestBoxCodec)
+    .\(RpcResponseBox.header) { case r: RpcResponseBox => r} (RpcResponseBoxCodec)
+    .\(UnsentMessage.header) { case r: UnsentMessage => r} (UnsentMessageCodec)
+    .\(UnsentResponse.header) { case r: UnsentResponse => r} (UnsentResponseCodec)
+    .\(UpdateBox.header) { case r: UpdateBox => r} (UpdateBoxCodec)
+    .\(0, _ => true) { case a => a } (DiscriminatedErrorCodec("MessageBox"))
+
+  private val codec = (int64 :: PayloadCodec(protoMessageCodec)).as[MessageBox]
+
+  def encode(mb: MessageBox) = codec.encode(mb)
+
+  def decode(buf: BitVector) = codec.decode(buf)
+}
