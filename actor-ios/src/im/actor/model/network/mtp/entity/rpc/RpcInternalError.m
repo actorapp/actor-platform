@@ -60,25 +60,6 @@
   other->tryAgainDelay_ = tryAgainDelay_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataInput:", "RpcInternalError", NULL, 0x1, "Ljava.io.IOException;" },
-    { "initWithBoolean:withInt:", "RpcInternalError", NULL, 0x1, NULL },
-    { "isCanTryAgain", NULL, "Z", 0x1, NULL },
-    { "getTryAgainDelay", NULL, "I", 0x1, NULL },
-    { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTRpcInternalError_HEADER },
-    { "canTryAgain_", NULL, 0x2, "Z", NULL,  },
-    { "tryAgainDelay_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTRpcInternalError = { 1, "RpcInternalError", "im.actor.model.network.mtp.entity.rpc", NULL, 0x1, 7, methods, 3, fields, 0, NULL};
-  return &_MTRpcInternalError;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTRpcInternalError)

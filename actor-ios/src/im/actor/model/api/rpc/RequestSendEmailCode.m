@@ -75,27 +75,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
   other->description__ = description__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestSendEmailCode;", 0x9, "Ljava.io.IOException;" },
-    { "initWithNSString:withNSString:", "RequestSendEmailCode", NULL, 0x1, NULL },
-    { "init", "RequestSendEmailCode", NULL, 0x1, NULL },
-    { "getEmail", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getDescription", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestSendEmailCode_HEADER },
-    { "email_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "description__", "description", 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseVoid;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestSendEmailCode = { 1, "RequestSendEmailCode", "im.actor.model.api.rpc", NULL, 0x1, 8, methods, 3, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestSendEmailCode;
-}
-
 @end
 
 ImActorModelApiRpcRequestSendEmailCode *ImActorModelApiRpcRequestSendEmailCode_fromBytesWithByteArray_(IOSByteArray *data) {

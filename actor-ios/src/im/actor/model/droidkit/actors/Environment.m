@@ -63,25 +63,6 @@ id<AMThreading> DKEnvironment_threading_;
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "setThreadingWithAMThreading:", "setThreading", "V", 0x9, NULL },
-    { "createDefaultDispatcherWithNSString:withDKThreadPriorityEnum:withDKActorSystem:", "createDefaultDispatcher", "Lim.actor.model.droidkit.actors.mailbox.ActorDispatcher;", 0x9, NULL },
-    { "createDispatcherWithNSString:withInt:withDKThreadPriorityEnum:withDKActorSystem:", "createDispatcher", "Lim.actor.model.droidkit.actors.mailbox.ActorDispatcher;", 0x9, NULL },
-    { "getActorTime", NULL, "J", 0x9, NULL },
-    { "getCurrentTime", NULL, "J", 0x9, NULL },
-    { "createAtomicIntWithInt:", "createAtomicInt", "Lim.actor.model.util.AtomicIntegerCompat;", 0x9, NULL },
-    { "createAtomicLongWithLong:", "createAtomicLong", "Lim.actor.model.util.AtomicLongCompat;", 0x9, NULL },
-    { "createThreadLocal", NULL, "Lim.actor.model.util.ThreadLocalCompat;", 0x9, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "threading_", NULL, 0x4a, "Lim.actor.model.Threading;", &DKEnvironment_threading_,  },
-  };
-  static const J2ObjcClassInfo _DKEnvironment = { 1, "Environment", "im.actor.model.droidkit.actors", NULL, 0x1, 9, methods, 1, fields, 0, NULL};
-  return &_DKEnvironment;
-}
-
 @end
 
 void DKEnvironment_setThreadingWithAMThreading_(id<AMThreading> threading) {

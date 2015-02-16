@@ -118,37 +118,6 @@ J2OBJC_FIELD_SETTER(DKActorScope, endpoint_, DKActorEndpoint *)
   other->endpoint_ = endpoint_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithDKActorSystem:withDKMailbox:withDKActorDispatcher:withNSString:withDKProps:withDKActorEndpoint:", "ActorScope", NULL, 0x1, NULL },
-    { "getEndpoint", NULL, "Lim.actor.model.droidkit.actors.mailbox.ActorEndpoint;", 0x1, NULL },
-    { "getDispatcher", NULL, "Lim.actor.model.droidkit.actors.mailbox.ActorDispatcher;", 0x1, NULL },
-    { "getPath", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getProps", NULL, "Lim.actor.model.droidkit.actors.Props;", 0x1, NULL },
-    { "getActorRef", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "getMailbox", NULL, "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x1, NULL },
-    { "getActor", NULL, "Lim.actor.model.droidkit.actors.Actor;", 0x1, NULL },
-    { "getActorSystem", NULL, "Lim.actor.model.droidkit.actors.ActorSystem;", 0x1, NULL },
-    { "getSender", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "setSenderWithDKActorRef:", "setSender", "V", 0x1, NULL },
-    { "onActorCreatedWithDKActor:", "onActorCreated", "V", 0x1, NULL },
-    { "onActorDie", NULL, "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "path_", NULL, 0x12, "Ljava.lang.String;", NULL,  },
-    { "props_", NULL, 0x12, "Lim.actor.model.droidkit.actors.Props;", NULL,  },
-    { "actorRef_", NULL, 0x12, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "mailbox_", NULL, 0x12, "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", NULL,  },
-    { "dispatcher_", NULL, 0x12, "Lim.actor.model.droidkit.actors.mailbox.ActorDispatcher;", NULL,  },
-    { "actorSystem_", NULL, 0x12, "Lim.actor.model.droidkit.actors.ActorSystem;", NULL,  },
-    { "actor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.Actor;", NULL,  },
-    { "sender_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "endpoint_", NULL, 0x2, "Lim.actor.model.droidkit.actors.mailbox.ActorEndpoint;", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKActorScope = { 1, "ActorScope", "im.actor.model.droidkit.actors", NULL, 0x1, 13, methods, 9, fields, 0, NULL};
-  return &_DKActorScope;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorScope)

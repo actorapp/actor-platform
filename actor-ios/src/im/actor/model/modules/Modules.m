@@ -124,35 +124,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   other->typing_ = typing_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMConfiguration:", "Modules", NULL, 0x1, NULL },
-    { "onLoggedIn", NULL, "V", 0x1, NULL },
-    { "getPreferences", NULL, "Lim.actor.model.storage.PreferencesStorage;", 0x1, NULL },
-    { "getConfiguration", NULL, "Lim.actor.model.Configuration;", 0x1, NULL },
-    { "getAuthModule", NULL, "Lim.actor.model.modules.Auth;", 0x1, NULL },
-    { "getUsersModule", NULL, "Lim.actor.model.modules.Users;", 0x1, NULL },
-    { "getMessagesModule", NULL, "Lim.actor.model.modules.Messages;", 0x1, NULL },
-    { "getUpdatesModule", NULL, "Lim.actor.model.modules.Updates;", 0x1, NULL },
-    { "getTypingModule", NULL, "Lim.actor.model.modules.Typing;", 0x1, NULL },
-    { "getPresenceModule", NULL, "Lim.actor.model.modules.Presence;", 0x1, NULL },
-    { "getActorApi", NULL, "Lim.actor.model.network.ActorApi;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "configuration_", NULL, 0x12, "Lim.actor.model.Configuration;", NULL,  },
-    { "actorApi_", NULL, 0x12, "Lim.actor.model.network.ActorApi;", NULL,  },
-    { "auth_", NULL, 0x12, "Lim.actor.model.modules.Auth;", NULL,  },
-    { "preferences_", NULL, 0x42, "Lim.actor.model.storage.PreferencesStorage;", NULL,  },
-    { "users_", NULL, 0x42, "Lim.actor.model.modules.Users;", NULL,  },
-    { "updates_", NULL, 0x42, "Lim.actor.model.modules.Updates;", NULL,  },
-    { "messages_", NULL, 0x42, "Lim.actor.model.modules.Messages;", NULL,  },
-    { "presence_", NULL, 0x42, "Lim.actor.model.modules.Presence;", NULL,  },
-    { "typing_", NULL, 0x42, "Lim.actor.model.modules.Typing;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesModules = { 1, "Modules", "im.actor.model.modules", NULL, 0x1, 11, methods, 9, fields, 0, NULL};
-  return &_ImActorModelModulesModules;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
@@ -185,20 +156,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 - (void)copyAllFieldsTo:(ImActorModelModulesModules_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onAuthIdInvalidatedWithLong:", "onAuthIdInvalidated", "V", 0x1, NULL },
-    { "onNewSessionCreated", NULL, "V", 0x1, NULL },
-    { "onUpdateReceivedWithId:", "onUpdateReceived", "V", 0x1, NULL },
-    { "initWithImActorModelModulesModules:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Modules;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesModules_$1 = { 1, "$1", "im.actor.model.modules", "Modules", 0x8000, 4, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesModules_$1;
 }
 
 @end

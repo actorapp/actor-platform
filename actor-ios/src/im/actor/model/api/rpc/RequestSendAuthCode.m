@@ -82,29 +82,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCode, apiKey_, NSString *)
   other->apiKey_ = apiKey_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestSendAuthCode;", 0x9, "Ljava.io.IOException;" },
-    { "initWithLong:withInt:withNSString:", "RequestSendAuthCode", NULL, 0x1, NULL },
-    { "init", "RequestSendAuthCode", NULL, 0x1, NULL },
-    { "getPhoneNumber", NULL, "J", 0x1, NULL },
-    { "getAppId", NULL, "I", 0x1, NULL },
-    { "getApiKey", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestSendAuthCode_HEADER },
-    { "phoneNumber_", NULL, 0x2, "J", NULL,  },
-    { "appId_", NULL, 0x2, "I", NULL,  },
-    { "apiKey_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseSendAuthCode;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestSendAuthCode = { 1, "RequestSendAuthCode", "im.actor.model.api.rpc", NULL, 0x1, 9, methods, 4, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestSendAuthCode;
-}
-
 @end
 
 ImActorModelApiRpcRequestSendAuthCode *ImActorModelApiRpcRequestSendAuthCode_fromBytesWithByteArray_(IOSByteArray *data) {

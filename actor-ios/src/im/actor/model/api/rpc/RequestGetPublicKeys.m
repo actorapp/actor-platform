@@ -66,25 +66,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetPublicKeys, keys_, id<JavaUtilLi
   other->keys_ = keys_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestGetPublicKeys;", 0x9, "Ljava.io.IOException;" },
-    { "initWithJavaUtilList:", "RequestGetPublicKeys", NULL, 0x1, NULL },
-    { "init", "RequestGetPublicKeys", NULL, 0x1, NULL },
-    { "getKeys", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestGetPublicKeys_HEADER },
-    { "keys_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseGetPublicKeys;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestGetPublicKeys = { 1, "RequestGetPublicKeys", "im.actor.model.api.rpc", NULL, 0x1, 7, methods, 2, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestGetPublicKeys;
-}
-
 @end
 
 ImActorModelApiRpcRequestGetPublicKeys *ImActorModelApiRpcRequestGetPublicKeys_fromBytesWithByteArray_(IOSByteArray *data) {

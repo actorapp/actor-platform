@@ -41,21 +41,6 @@ J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaThreadLocal, tThreadLocal_, JavaLa
   other->tThreadLocal_ = tThreadLocal_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "get", NULL, "TT;", 0x1, NULL },
-    { "setWithId:", "set", "V", 0x1, NULL },
-    { "remove", NULL, "V", 0x1, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "tThreadLocal_", NULL, 0x12, "Ljava.lang.ThreadLocal;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"TT;"};
-  static const J2ObjcClassInfo _ImActorModelJvmThreadsJavaThreadLocal = { 1, "JavaThreadLocal", "im.actor.model.jvm.threads", NULL, 0x1, 4, methods, 1, fields, 1, superclass_type_args};
-  return &_ImActorModelJvmThreadsJavaThreadLocal;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaThreadLocal)

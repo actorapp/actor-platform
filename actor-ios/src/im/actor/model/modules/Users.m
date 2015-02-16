@@ -142,20 +142,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$2_$2, this$0_, ImActorModelModu
   other->users_ = users_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "Users", NULL, 0x1, NULL },
-    { "getUsers", NULL, "Lim.actor.model.mvvm.KeyValueEngine;", 0x1, NULL },
-    { "editMyNameWithNSString:", "editMyName", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
-    { "editNameWithInt:withNSString:", "editName", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "users_", NULL, 0x2, "Lim.actor.model.mvvm.KeyValueEngine;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUsers = { 1, "Users", "im.actor.model.modules", NULL, 0x1, 4, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUsers;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers)
@@ -177,19 +163,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers)
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$newName_ = val$newName_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "startWithAMCommandCallback:", "start", "V", 0x1, NULL },
-    { "initWithImActorModelModulesUsers:withNSString:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Users;", NULL,  },
-    { "val$newName_", NULL, 0x1012, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUsers_$1 = { 1, "$1", "im.actor.model.modules", "Users", 0x8000, 2, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesUsers_$1;
 }
 
 @end
@@ -221,20 +194,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1)
   other->val$callback_ = val$callback_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithImActorModelApiRpcResponseSeq:", "onResult", "V", 0x1, NULL },
-    { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "initWithImActorModelModulesUsers_$1:withAMCommandCallback:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Users$1;", NULL,  },
-    { "val$callback_", NULL, 0x1012, "Lim.actor.model.concurrency.CommandCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUsers_$1_$1 = { 1, "$1", "im.actor.model.modules", "Users$$1", 0x8000, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesUsers_$1_$1;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1)
@@ -253,18 +212,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1)
 - (void)copyAllFieldsTo:(ImActorModelModulesUsers_$1_$1_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "run", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelModulesUsers_$1_$1:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Users$1$1;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUsers_$1_$1_$1 = { 1, "$1", "im.actor.model.modules", "Users$$1$$1", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUsers_$1_$1_$1;
 }
 
 @end
@@ -288,19 +235,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1_$1)
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$e_ = val$e_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "run", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelModulesUsers_$1_$1:withAMRpcException:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Users$1$1;", NULL,  },
-    { "val$e_", NULL, 0x1012, "Lim.actor.model.network.RpcException;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUsers_$1_$1_$2 = { 1, "$2", "im.actor.model.modules", "Users$$1$$1", 0x8000, 2, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesUsers_$1_$1_$2;
 }
 
 @end
@@ -334,20 +268,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1_$2)
   other->val$name_ = val$name_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "startWithAMCommandCallback:", "start", "V", 0x1, NULL },
-    { "initWithImActorModelModulesUsers:withInt:withNSString:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Users;", NULL,  },
-    { "val$uid_", NULL, 0x1012, "I", NULL,  },
-    { "val$name_", NULL, 0x1012, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUsers_$2 = { 1, "$2", "im.actor.model.modules", "Users", 0x8000, 2, methods, 3, fields, 0, NULL};
-  return &_ImActorModelModulesUsers_$2;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2)
@@ -366,18 +286,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2)
 - (void)copyAllFieldsTo:(ImActorModelModulesUsers_$2_$1 *)other {
   [super copyAllFieldsTo:other];
   other->val$callback_ = val$callback_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "run", NULL, "V", 0x1, NULL },
-    { "initWithAMCommandCallback:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "val$callback_", NULL, 0x1012, "Lim.actor.model.concurrency.CommandCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUsers_$2_$1 = { 1, "$1", "im.actor.model.modules", "Users$$2", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUsers_$2_$1;
 }
 
 @end
@@ -409,20 +317,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$1)
   other->val$callback_ = val$callback_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithImActorModelApiRpcResponseSeq:", "onResult", "V", 0x1, NULL },
-    { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "initWithImActorModelModulesUsers_$2:withAMCommandCallback:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Users$2;", NULL,  },
-    { "val$callback_", NULL, 0x1012, "Lim.actor.model.concurrency.CommandCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUsers_$2_$2 = { 1, "$2", "im.actor.model.modules", "Users$$2", 0x8000, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesUsers_$2_$2;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$2)
@@ -443,18 +337,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$2)
   other->this$0_ = this$0_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "run", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelModulesUsers_$2_$2:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Users$2$2;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUsers_$2_$2_$1 = { 1, "$1", "im.actor.model.modules", "Users$$2$$2", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUsers_$2_$2_$1;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$2_$1)
@@ -473,18 +355,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$2_$1)
 - (void)copyAllFieldsTo:(ImActorModelModulesUsers_$2_$2_$2 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "run", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelModulesUsers_$2_$2:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Users$2$2;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUsers_$2_$2_$2 = { 1, "$2", "im.actor.model.modules", "Users$$2$$2", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUsers_$2_$2_$2;
 }
 
 @end

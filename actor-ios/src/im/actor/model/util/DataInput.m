@@ -151,30 +151,6 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
   other->maxOffset_ = maxOffset_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithByteArray:withInt:withInt:", "DataInput", NULL, 0x1, NULL },
-    { "readByte", NULL, "I", 0x1, "Ljava.io.IOException;" },
-    { "readByteSilent", NULL, "I", 0x1, "Ljava.io.IOException;" },
-    { "readInt", NULL, "I", 0x1, "Ljava.io.IOException;" },
-    { "readLong", NULL, "J", 0x1, "Ljava.io.IOException;" },
-    { "readUInt", NULL, "J", 0x1, "Ljava.io.IOException;" },
-    { "readBytesWithInt:", "readBytes", "[B", 0x1, "Ljava.io.IOException;" },
-    { "readVarInt", NULL, "J", 0x1, "Ljava.io.IOException;" },
-    { "readProtoBytes", NULL, "[B", 0x1, "Ljava.io.IOException;" },
-    { "readProtoLongs", NULL, "[J", 0x1, "Ljava.io.IOException;" },
-    { "readProtoString", NULL, "Ljava.lang.String;", 0x1, "Ljava.io.IOException;" },
-    { "readProtoBool", NULL, "Z", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "data_", NULL, 0x2, "[B", NULL,  },
-    { "offset_", NULL, 0x2, "I", NULL,  },
-    { "maxOffset_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMDataInput = { 1, "DataInput", "im.actor.model.util", NULL, 0x1, 12, methods, 3, fields, 0, NULL};
-  return &_AMDataInput;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDataInput)

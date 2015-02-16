@@ -63,25 +63,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditAvatar, fileLocation_, ImActorM
   other->fileLocation_ = fileLocation_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestEditAvatar;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiFileLocation:", "RequestEditAvatar", NULL, 0x1, NULL },
-    { "init", "RequestEditAvatar", NULL, 0x1, NULL },
-    { "getFileLocation", NULL, "Lim.actor.model.api.FileLocation;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestEditAvatar_HEADER },
-    { "fileLocation_", NULL, 0x2, "Lim.actor.model.api.FileLocation;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseEditAvatar;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestEditAvatar = { 1, "RequestEditAvatar", "im.actor.model.api.rpc", NULL, 0x1, 7, methods, 2, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestEditAvatar;
-}
-
 @end
 
 ImActorModelApiRpcRequestEditAvatar *ImActorModelApiRpcRequestEditAvatar_fromBytesWithByteArray_(IOSByteArray *data) {

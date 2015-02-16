@@ -33,21 +33,6 @@
   return ImActorModelApiBaseSeqUpdateTooLong_HEADER;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.base.SeqUpdateTooLong;", 0x9, "Ljava.io.IOException;" },
-    { "init", "SeqUpdateTooLong", NULL, 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiBaseSeqUpdateTooLong_HEADER },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiBaseSeqUpdateTooLong = { 1, "SeqUpdateTooLong", "im.actor.model.api.base", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
-  return &_ImActorModelApiBaseSeqUpdateTooLong;
-}
-
 @end
 
 ImActorModelApiBaseSeqUpdateTooLong *ImActorModelApiBaseSeqUpdateTooLong_fromBytesWithByteArray_(IOSByteArray *data) {

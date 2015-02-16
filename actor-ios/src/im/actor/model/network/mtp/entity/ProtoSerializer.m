@@ -59,20 +59,6 @@
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "readMessagePayloadWithByteArray:", "readMessagePayload", "Lim.actor.model.network.mtp.entity.ProtoStruct;", 0x9, "Ljava.io.IOException;" },
-    { "readMessagePayloadWithAMDataInput:", "readMessagePayload", "Lim.actor.model.network.mtp.entity.ProtoStruct;", 0x9, "Ljava.io.IOException;" },
-    { "readRpcResponsePayloadWithByteArray:", "readRpcResponsePayload", "Lim.actor.model.network.mtp.entity.ProtoStruct;", 0x9, "Ljava.io.IOException;" },
-    { "readRpcRequestPayloadWithAMDataInput:", "readRpcRequestPayload", "Lim.actor.model.network.mtp.entity.ProtoStruct;", 0x9, "Ljava.io.IOException;" },
-    { "readUpdateWithByteArray:", "readUpdate", "Lim.actor.model.network.mtp.entity.rpc.Push;", 0x9, "Ljava.io.IOException;" },
-    { "readUpdateWithAMDataInput:", "readUpdate", "Lim.actor.model.network.mtp.entity.rpc.Push;", 0x9, "Ljava.io.IOException;" },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _MTProtoSerializer = { 1, "ProtoSerializer", "im.actor.model.network.mtp.entity", NULL, 0x1, 7, methods, 0, NULL, 0, NULL};
-  return &_MTProtoSerializer;
-}
-
 @end
 
 MTProtoStruct *MTProtoSerializer_readMessagePayloadWithByteArray_(IOSByteArray *bs) {

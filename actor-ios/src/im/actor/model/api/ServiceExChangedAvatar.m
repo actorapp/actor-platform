@@ -51,21 +51,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
   other->avatar_ = avatar_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelApiAvatar:", "ServiceExChangedAvatar", NULL, 0x1, NULL },
-    { "init", "ServiceExChangedAvatar", NULL, 0x1, NULL },
-    { "getAvatar", NULL, "Lim.actor.model.api.Avatar;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "avatar_", NULL, 0x2, "Lim.actor.model.api.Avatar;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiServiceExChangedAvatar = { 1, "ServiceExChangedAvatar", "im.actor.model.api", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
-  return &_ImActorModelApiServiceExChangedAvatar;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExChangedAvatar)

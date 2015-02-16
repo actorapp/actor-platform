@@ -9,19 +9,4 @@
 #include "im/actor/model/network/ConnectionEndpoint.h"
 #include "im/actor/model/network/CreateConnectionCallback.h"
 
-@interface AMNetworking : NSObject
-@end
-
-@implementation AMNetworking
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "createConnection:withEndpoint:withCallback:withCreateCallback:", "createConnection", "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMNetworking = { 1, "Networking", "im.actor.model", NULL, 0x201, 1, methods, 0, NULL, 0, NULL};
-  return &_AMNetworking;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMNetworking)

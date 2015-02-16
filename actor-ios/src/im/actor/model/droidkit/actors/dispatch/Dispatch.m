@@ -6,19 +6,4 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/dispatch/Dispatch.h"
 
-@interface DKDispatch : NSObject
-@end
-
-@implementation DKDispatch
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "dispatchMessageWithId:", "dispatchMessage", "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _DKDispatch = { 1, "Dispatch", "im.actor.model.droidkit.actors.dispatch", NULL, 0x201, 1, methods, 0, NULL, 0, NULL};
-  return &_DKDispatch;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(DKDispatch)

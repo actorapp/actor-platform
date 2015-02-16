@@ -65,24 +65,6 @@ J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
   other->payload_ = payload_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withByteArray:", "ProtoMessage", NULL, 0x1, NULL },
-    { "getMessageId", NULL, "J", 0x1, NULL },
-    { "getPayload", NULL, "[B", 0x1, NULL },
-    { "initWithAMDataInput:", "ProtoMessage", NULL, 0x1, "Ljava.io.IOException;" },
-    { "writeObjectWithAMDataOutput:", "writeObject", "V", 0x1, "Ljava.io.IOException;" },
-    { "readObjectWithAMDataInput:", "readObject", "Lim.actor.model.network.mtp.entity.ProtoObject;", 0x1, "Ljava.io.IOException;" },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "messageId_", NULL, 0x2, "J", NULL,  },
-    { "payload_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTProtoMessage = { 1, "ProtoMessage", "im.actor.model.network.mtp.entity", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
-  return &_MTProtoMessage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTProtoMessage)

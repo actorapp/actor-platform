@@ -98,24 +98,6 @@
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "convertWithImActorModelApiMessageStateEnum:", "convert", "Lim.actor.model.entity.MessageState;", 0x9, NULL },
-    { "convertWithImActorModelApiAvatar:", "convert", "Lim.actor.model.entity.Avatar;", 0x9, NULL },
-    { "convertWithImActorModelApiAvatarImage:", "convert", "Lim.actor.model.entity.AvatarImage;", 0x9, NULL },
-    { "convertWithImActorModelApiFileLocation:withInt:", "convert", "Lim.actor.model.entity.FileLocation;", 0x9, NULL },
-    { "convertWithImActorModelApiSexEnum:", "convert", "Lim.actor.model.entity.Sex;", 0x9, NULL },
-    { "convertWithImActorModelApiUser:", "convert", "Lim.actor.model.entity.User;", 0x9, NULL },
-    { "convertWithImActorModelApiPeerTypeEnum:", "convert", "Lim.actor.model.entity.PeerType;", 0x9, NULL },
-    { "convertWithImActorModelApiPeer:", "convert", "Lim.actor.model.entity.Peer;", 0x9, NULL },
-    { "convertWithImActorModelApiMessageContent:", "convert", "Lim.actor.model.entity.content.AbsContent;", 0x9, NULL },
-    { "convertWithImActorModelApiFastThumb:", "convert", "Lim.actor.model.entity.content.FastThumb;", 0x9, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesEntityEntityConverter = { 1, "EntityConverter", "im.actor.model.modules.entity", NULL, 0x1, 11, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesEntityEntityConverter;
-}
-
 @end
 
 AMMessageStateEnum *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_(ImActorModelApiMessageStateEnum *state) {

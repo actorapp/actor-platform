@@ -58,26 +58,6 @@
   other->payload_ = payload_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataInput:", "RpcOk", NULL, 0x1, "Ljava.io.IOException;" },
-    { "initWithInt:withByteArray:", "RpcOk", NULL, 0x1, NULL },
-    { "getResponseType", NULL, "I", 0x1, NULL },
-    { "getPayload", NULL, "[B", 0x1, NULL },
-    { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTRpcOk_HEADER },
-    { "responseType_", NULL, 0x1, "I", NULL,  },
-    { "payload_", NULL, 0x1, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTRpcOk = { 1, "RpcOk", "im.actor.model.network.mtp.entity.rpc", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
-  return &_MTRpcOk;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTRpcOk)

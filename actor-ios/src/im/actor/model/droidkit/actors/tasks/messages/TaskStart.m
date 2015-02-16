@@ -12,14 +12,6 @@
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksMessagesTaskStart = { 1, "TaskStart", "im.actor.model.droidkit.actors.tasks.messages", NULL, 0x1, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksMessagesTaskStart;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksMessagesTaskStart)

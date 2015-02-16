@@ -85,25 +85,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiWrongKeysErrorData, invalidKeys_, id<JavaUtil
   other->invalidKeys_ = invalidKeys_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaUtilList:withJavaUtilList:withJavaUtilList:", "WrongKeysErrorData", NULL, 0x1, NULL },
-    { "init", "WrongKeysErrorData", NULL, 0x1, NULL },
-    { "getNewKeys", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getRemovedKeys", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getInvalidKeys", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "newKeys_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "removedKeys_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "invalidKeys_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiWrongKeysErrorData = { 1, "WrongKeysErrorData", "im.actor.model.api", NULL, 0x1, 7, methods, 3, fields, 0, NULL};
-  return &_ImActorModelApiWrongKeysErrorData;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiWrongKeysErrorData)

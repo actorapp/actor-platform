@@ -51,21 +51,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
   other->title_ = title_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:", "ServiceExChangedTitle", NULL, 0x1, NULL },
-    { "init", "ServiceExChangedTitle", NULL, 0x1, NULL },
-    { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "title_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiServiceExChangedTitle = { 1, "ServiceExChangedTitle", "im.actor.model.api", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
-  return &_ImActorModelApiServiceExChangedTitle;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExChangedTitle)

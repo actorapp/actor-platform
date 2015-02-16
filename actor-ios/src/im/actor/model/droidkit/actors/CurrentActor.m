@@ -37,19 +37,6 @@ JavaLangThreadLocal * DKCurrentActor_currentActor_;
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "setCurrentActorWithDKActor:", "setCurrentActor", "V", 0x9, NULL },
-    { "getCurrentActor", NULL, "Lim.actor.model.droidkit.actors.Actor;", 0x9, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "currentActor_", NULL, 0xa, "Ljava.lang.ThreadLocal;", &DKCurrentActor_currentActor_,  },
-  };
-  static const J2ObjcClassInfo _DKCurrentActor = { 1, "CurrentActor", "im.actor.model.droidkit.actors", NULL, 0x1, 3, methods, 1, fields, 0, NULL};
-  return &_DKCurrentActor;
-}
-
 @end
 
 void DKCurrentActor_setCurrentActorWithDKActor_(DKActor *actor) {

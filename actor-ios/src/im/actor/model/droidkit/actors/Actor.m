@@ -174,45 +174,6 @@ J2OBJC_FIELD_SETTER(DKActor, extensions_, JavaUtilArrayList *)
   other->extensions_ = extensions_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "Actor", NULL, 0x1, NULL },
-    { "initActorWithNSString:withDKActorContext:withDKMailbox:", "initActor", "V", 0x11, NULL },
-    { "getExtensions", NULL, "Ljava.util.ArrayList;", 0x1, NULL },
-    { "system", NULL, "Lim.actor.model.droidkit.actors.ActorSystem;", 0x11, NULL },
-    { "self__", "self", "Lim.actor.model.droidkit.actors.ActorRef;", 0x11, NULL },
-    { "context", NULL, "Lim.actor.model.droidkit.actors.ActorContext;", 0x14, NULL },
-    { "sender", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x11, NULL },
-    { "getPath", NULL, "Ljava.lang.String;", 0x14, NULL },
-    { "getMailbox", NULL, "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x11, NULL },
-    { "preStart", NULL, "V", 0x1, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-    { "postStop", NULL, "V", 0x1, NULL },
-    { "finallyStop", NULL, "V", 0x1, NULL },
-    { "replyWithId:", "reply", "V", 0x1, NULL },
-    { "dropWithId:", "drop", "V", 0x1, NULL },
-    { "combineWithImActorModelDroidkitActorsTasksAskFutureArray:", "combine", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x81, NULL },
-    { "combineWithImActorModelDroidkitActorsTasksAskCallback:withImActorModelDroidkitActorsTasksAskFutureArray:", "combine", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x81, NULL },
-    { "askWithDKActorSelection:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithDKActorSelection:withLong:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithDKActorSelection:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithDKActorSelection:withLong:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithDKActorRef:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithDKActorRef:withLong:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithDKActorRef:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "askWithDKActorRef:withLong:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "path_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "context__", "context", 0x2, "Lim.actor.model.droidkit.actors.ActorContext;", NULL,  },
-    { "mailbox_", NULL, 0x2, "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", NULL,  },
-    { "askPattern_", NULL, 0x2, "Lim.actor.model.droidkit.actors.tasks.ActorAskImpl;", NULL,  },
-    { "extensions_", NULL, 0x2, "Ljava.util.ArrayList;", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKActor = { 1, "Actor", "im.actor.model.droidkit.actors", NULL, 0x1, 25, methods, 5, fields, 0, NULL};
-  return &_DKActor;
-}
-
 @end
 
 DKActorSystem *DKActor_system(DKActor *self) {

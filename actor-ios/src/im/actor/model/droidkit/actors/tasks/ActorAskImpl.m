@@ -187,30 +187,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFu
   other->self__ = self__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithDKActorRef:", "ActorAskImpl", NULL, 0x1, NULL },
-    { "combineWithImActorModelDroidkitActorsTasksAskFutureArray:", "combine", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x81, NULL },
-    { "askWithDKActorRef:withLong:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
-    { "preStart", NULL, "V", 0x1, NULL },
-    { "onReceiveWithId:", "onReceive", "Z", 0x1, NULL },
-    { "postStop", NULL, "V", 0x1, NULL },
-    { "onTaskResultWithImActorModelDroidkitActorsTasksMessagesTaskResult:", "onTaskResult", "Z", 0x2, NULL },
-    { "onTaskProgressWithImActorModelDroidkitActorsTasksMessagesTaskProgress:", "onTaskProgress", "Z", 0x2, NULL },
-    { "onTaskErrorWithImActorModelDroidkitActorsTasksMessagesTaskError:", "onTaskError", "Z", 0x2, NULL },
-    { "onTaskTimeoutWithImActorModelDroidkitActorsTasksMessagesTaskTimeout:", "onTaskTimeout", "Z", 0x2, NULL },
-    { "onTaskCancelledWithInt:", "onTaskCancelled", "Z", 0x1, NULL },
-    { "onDeadLetterWithImActorModelDroidkitActorsMessagesDeadLetter:", "onDeadLetter", "Z", 0x2, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "asks_", NULL, 0x2, "Ljava.util.HashMap;", NULL,  },
-    { "nextReqId_", NULL, 0x2, "I", NULL,  },
-    { "self__", "self", 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksActorAskImpl = { 1, "ActorAskImpl", "im.actor.model.droidkit.actors.tasks", NULL, 0x1, 12, methods, 3, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksActorAskImpl;
-}
-
 @end
 
 jboolean ImActorModelDroidkitActorsTasksActorAskImpl_onTaskResultWithImActorModelDroidkitActorsTasksMessagesTaskResult_(ImActorModelDroidkitActorsTasksActorAskImpl *self, ImActorModelDroidkitActorsTasksMessagesTaskResult *result) {
@@ -284,19 +260,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl)
   other->requestId_ = requestId_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelDroidkitActorsTasksActorAskImpl:withImActorModelDroidkitActorsTasksAskFuture:withDKActorRef:withInt:", "AskContainer", NULL, 0x2, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "future_", NULL, 0x11, "Lim.actor.model.droidkit.actors.tasks.AskFuture;", NULL,  },
-    { "ref_", NULL, 0x11, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "requestId_", NULL, 0x11, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer = { 1, "AskContainer", "im.actor.model.droidkit.actors.tasks", "ActorAskImpl", 0x2, 1, methods, 3, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer)
@@ -322,21 +285,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl_Ask
   other->completed_ = completed_;
   other->futures_ = futures_;
   other->callbacks_ = callbacks_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelDroidkitActorsTasksActorAskImpl:withInt:", "CombineContainer", NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "isCompleted_", NULL, 0x1, "Z", NULL,  },
-    { "results_", NULL, 0x1, "[Ljava.lang.Object;", NULL,  },
-    { "completed_", NULL, 0x1, "[Z", NULL,  },
-    { "futures_", NULL, 0x1, "[Lim.actor.model.droidkit.actors.tasks.AskFuture;", NULL,  },
-    { "callbacks_", NULL, 0x1, "[Lim.actor.model.droidkit.actors.tasks.AskCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer = { 1, "CombineContainer", "im.actor.model.droidkit.actors.tasks", "ActorAskImpl", 0x2, 1, methods, 5, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer;
 }
 
 @end
@@ -395,21 +343,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl_Com
   other->val$container_ = val$container_;
   other->val$index_ = val$index_;
   other->val$resultFuture_ = val$resultFuture_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithId:", "onResult", "V", 0x1, NULL },
-    { "onErrorWithJavaLangThrowable:", "onError", "V", 0x1, NULL },
-    { "initWithImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer:withInt:withImActorModelDroidkitActorsTasksAskFuture:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "val$container_", NULL, 0x1012, "Lim.actor.model.droidkit.actors.tasks.ActorAskImpl$CombineContainer;", NULL,  },
-    { "val$index_", NULL, 0x1012, "I", NULL,  },
-    { "val$resultFuture_", NULL, 0x1012, "Lim.actor.model.droidkit.actors.tasks.AskFuture;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksActorAskImpl_$1 = { 1, "$1", "im.actor.model.droidkit.actors.tasks", "ActorAskImpl", 0x8000, 3, methods, 3, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksActorAskImpl_$1;
 }
 
 @end

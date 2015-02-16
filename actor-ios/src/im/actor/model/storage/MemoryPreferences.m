@@ -100,27 +100,6 @@ J2OBJC_FIELD_SETTER(AMMemoryPreferences, items_, JavaUtilHashMap *)
   other->items_ = items_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "putLongWithNSString:withLong:", "putLong", "V", 0x21, NULL },
-    { "getLongWithNSString:withLong:", "getLong", "J", 0x21, NULL },
-    { "putIntWithNSString:withInt:", "putInt", "V", 0x1, NULL },
-    { "getIntWithNSString:withInt:", "getInt", "I", 0x1, NULL },
-    { "putBoolWithNSString:withBoolean:", "putBool", "V", 0x1, NULL },
-    { "getBoolWithNSString:withBoolean:", "getBool", "Z", 0x1, NULL },
-    { "putBytesWithNSString:withByteArray:", "putBytes", "V", 0x1, NULL },
-    { "getBytesWithNSString:", "getBytes", "[B", 0x1, NULL },
-    { "putStringWithNSString:withNSString:", "putString", "V", 0x1, NULL },
-    { "getStringWithNSString:", "getString", "Ljava.lang.String;", 0x1, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "items_", NULL, 0x2, "Ljava.util.HashMap;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMMemoryPreferences = { 1, "MemoryPreferences", "im.actor.model.storage", NULL, 0x1, 11, methods, 1, fields, 0, NULL};
-  return &_AMMemoryPreferences;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMemoryPreferences)

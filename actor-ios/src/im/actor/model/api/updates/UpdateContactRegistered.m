@@ -77,28 +77,6 @@
   other->date_ = date_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.updates.UpdateContactRegistered;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withBoolean:withLong:", "UpdateContactRegistered", NULL, 0x1, NULL },
-    { "init", "UpdateContactRegistered", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "isSilent", NULL, "Z", 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiUpdatesUpdateContactRegistered_HEADER },
-    { "uid_", NULL, 0x2, "I", NULL,  },
-    { "isSilent__", "isSilent", 0x2, "Z", NULL,  },
-    { "date_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiUpdatesUpdateContactRegistered = { 1, "UpdateContactRegistered", "im.actor.model.api.updates", NULL, 0x1, 9, methods, 4, fields, 0, NULL};
-  return &_ImActorModelApiUpdatesUpdateContactRegistered;
-}
-
 @end
 
 ImActorModelApiUpdatesUpdateContactRegistered *ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(IOSByteArray *data) {

@@ -6,25 +6,13 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/parser/HeaderBserObject.h"
 
-@implementation ImActorModelNetworkParserHeaderBserObject
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-- (jint)getHeaderKey {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-  return 0;
-}
+@implementation ImActorModelNetworkParserHeaderBserObject
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "getHeaderKey", NULL, "I", 0x401, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkParserHeaderBserObject = { 1, "HeaderBserObject", "im.actor.model.network.parser", NULL, 0x401, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelNetworkParserHeaderBserObject;
 }
 
 @end

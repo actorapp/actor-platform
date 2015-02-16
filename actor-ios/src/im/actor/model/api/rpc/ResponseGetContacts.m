@@ -76,26 +76,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetContacts, users_, id<JavaUtilLi
   other->isNotChanged__ = isNotChanged__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.ResponseGetContacts;", 0x9, "Ljava.io.IOException;" },
-    { "initWithJavaUtilList:withBoolean:", "ResponseGetContacts", NULL, 0x1, NULL },
-    { "init", "ResponseGetContacts", NULL, 0x1, NULL },
-    { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "isNotChanged", NULL, "Z", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcResponseGetContacts_HEADER },
-    { "users_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "isNotChanged__", "isNotChanged", 0x2, "Z", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiRpcResponseGetContacts = { 1, "ResponseGetContacts", "im.actor.model.api.rpc", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
-  return &_ImActorModelApiRpcResponseGetContacts;
-}
-
 @end
 
 ImActorModelApiRpcResponseGetContacts *ImActorModelApiRpcResponseGetContacts_fromBytesWithByteArray_(IOSByteArray *data) {

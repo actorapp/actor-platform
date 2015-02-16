@@ -75,23 +75,6 @@ ImActorModelApiSexEnum *ImActorModelApiSexEnum_valueOfWithNSString_(NSString *na
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withNSString:withInt:", "Sex", NULL, 0x2, NULL },
-    { "getValue", NULL, "I", 0x1, NULL },
-    { "parseWithInt:", "parse", "Lim.actor.model.api.Sex;", 0x9, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "UNKNOWN", "UNKNOWN", 0x4019, "Lim.actor.model.api.Sex;", &ImActorModelApiSexEnum_UNKNOWN,  },
-    { "MALE", "MALE", 0x4019, "Lim.actor.model.api.Sex;", &ImActorModelApiSexEnum_MALE,  },
-    { "FEMALE", "FEMALE", 0x4019, "Lim.actor.model.api.Sex;", &ImActorModelApiSexEnum_FEMALE,  },
-    { "value_", NULL, 0x2, "I", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.Sex;"};
-  static const J2ObjcClassInfo _ImActorModelApiSexEnum = { 1, "Sex", "im.actor.model.api", NULL, 0x4011, 3, methods, 4, fields, 1, superclass_type_args};
-  return &_ImActorModelApiSexEnum;
-}
-
 @end
 
 ImActorModelApiSexEnum *ImActorModelApiSexEnum_parseWithInt_(jint value) {

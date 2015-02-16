@@ -10,23 +10,4 @@
 #include "im/actor/model/droidkit/actors/mailbox/Envelope.h"
 #include "java/lang/Exception.h"
 
-@interface ImActorModelDroidkitActorsDebugTraceInterface : NSObject
-@end
-
-@implementation ImActorModelDroidkitActorsDebugTraceInterface
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onEnvelopeDeliveredWithDKEnvelope:", "onEnvelopeDelivered", "V", 0x401, NULL },
-    { "onEnvelopeProcessedWithDKEnvelope:withLong:", "onEnvelopeProcessed", "V", 0x401, NULL },
-    { "onDropWithDKActorRef:withId:withDKActor:", "onDrop", "V", 0x401, NULL },
-    { "onDeadLetterWithDKActorRef:withId:", "onDeadLetter", "V", 0x401, NULL },
-    { "onActorDieWithDKActorRef:withJavaLangException:", "onActorDie", "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsDebugTraceInterface = { 1, "TraceInterface", "im.actor.model.droidkit.actors.debug", NULL, 0x201, 5, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitActorsDebugTraceInterface;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsDebugTraceInterface)

@@ -90,29 +90,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
   other->users_ = users_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestCreateGroup;", 0x9, "Ljava.io.IOException;" },
-    { "initWithLong:withNSString:withJavaUtilList:", "RequestCreateGroup", NULL, 0x1, NULL },
-    { "init", "RequestCreateGroup", NULL, 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestCreateGroup_HEADER },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "title_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "users_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseCreateGroup;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestCreateGroup = { 1, "RequestCreateGroup", "im.actor.model.api.rpc", NULL, 0x1, 9, methods, 4, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestCreateGroup;
-}
-
 @end
 
 ImActorModelApiRpcRequestCreateGroup *ImActorModelApiRpcRequestCreateGroup_fromBytesWithByteArray_(IOSByteArray *data) {

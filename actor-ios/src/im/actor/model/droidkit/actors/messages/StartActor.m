@@ -31,18 +31,6 @@ ImActorModelDroidkitActorsMessagesStartActor * ImActorModelDroidkitActorsMessage
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "StartActor", NULL, 0x2, NULL },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "INSTANCE_", NULL, 0x19, "Lim.actor.model.droidkit.actors.messages.StartActor;", &ImActorModelDroidkitActorsMessagesStartActor_INSTANCE_,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsMessagesStartActor = { 1, "StartActor", "im.actor.model.droidkit.actors.messages", NULL, 0x11, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsMessagesStartActor;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMessagesStartActor)

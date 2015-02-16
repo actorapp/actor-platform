@@ -61,22 +61,6 @@
   return [self createDispatcherWithNSString:name withInt:[self getCoresCount] withDKThreadPriorityEnum:priority withDKActorSystem:actorSystem];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "JavaThreading", NULL, 0x1, NULL },
-    { "getActorTime", NULL, "J", 0x1, NULL },
-    { "getCurrentTime", NULL, "J", 0x1, NULL },
-    { "getCoresCount", NULL, "I", 0x1, NULL },
-    { "createAtomicInt:", "createAtomicInt", "Lim.actor.model.util.AtomicIntegerCompat;", 0x1, NULL },
-    { "createAtomicLong:", "createAtomicLong", "Lim.actor.model.util.AtomicLongCompat;", 0x1, NULL },
-    { "createThreadLocal", NULL, "Lim.actor.model.util.ThreadLocalCompat;", 0x1, NULL },
-    { "createDispatcherWithNSString:withInt:withDKThreadPriorityEnum:withDKActorSystem:", "createDispatcher", "Lim.actor.model.droidkit.actors.mailbox.ActorDispatcher;", 0x1, NULL },
-    { "createDefaultDispatcherWithNSString:withDKThreadPriorityEnum:withDKActorSystem:", "createDefaultDispatcher", "Lim.actor.model.droidkit.actors.mailbox.ActorDispatcher;", 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _AMJavaThreading = { 1, "JavaThreading", "im.actor.model.jvm", NULL, 0x1, 9, methods, 0, NULL, 0, NULL};
-  return &_AMJavaThreading;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreading)

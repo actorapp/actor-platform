@@ -72,27 +72,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangeEmailTitle, title_, NSString 
   other->title_ = title_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestChangeEmailTitle;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withNSString:", "RequestChangeEmailTitle", NULL, 0x1, NULL },
-    { "init", "RequestChangeEmailTitle", NULL, 0x1, NULL },
-    { "getEmailId", NULL, "I", 0x1, NULL },
-    { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestChangeEmailTitle_HEADER },
-    { "emailId_", NULL, 0x2, "I", NULL,  },
-    { "title_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseSeq;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestChangeEmailTitle = { 1, "RequestChangeEmailTitle", "im.actor.model.api.rpc", NULL, 0x1, 8, methods, 3, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestChangeEmailTitle;
-}
-
 @end
 
 ImActorModelApiRpcRequestChangeEmailTitle *ImActorModelApiRpcRequestChangeEmailTitle_fromBytesWithByteArray_(IOSByteArray *data) {

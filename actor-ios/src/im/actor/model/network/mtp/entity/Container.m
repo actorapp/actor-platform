@@ -76,24 +76,6 @@ J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
   other->messages_ = messages_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataInput:", "Container", NULL, 0x1, "Ljava.io.IOException;" },
-    { "initWithMTProtoMessageArray:", "Container", NULL, 0x1, NULL },
-    { "getMessages", NULL, "[Lim.actor.model.network.mtp.entity.ProtoMessage;", 0x1, NULL },
-    { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTContainer_HEADER },
-    { "messages_", NULL, 0x2, "[Lim.actor.model.network.mtp.entity.ProtoMessage;", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTContainer = { 1, "Container", "im.actor.model.network.mtp.entity", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
-  return &_MTContainer;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTContainer)

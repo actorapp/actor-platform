@@ -21,15 +21,6 @@
   return [super initWithNSString:@"User registered"];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.content.ServiceUserRegistered;", 0x9, "Ljava.io.IOException;" },
-    { "init", "ServiceUserRegistered", NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentServiceUserRegistered = { 1, "ServiceUserRegistered", "im.actor.model.entity.content", NULL, 0x1, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelEntityContentServiceUserRegistered;
-}
-
 @end
 
 ImActorModelEntityContentServiceUserRegistered *ImActorModelEntityContentServiceUserRegistered_fromBytesWithByteArray_(IOSByteArray *data) {

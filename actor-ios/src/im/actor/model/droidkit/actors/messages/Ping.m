@@ -31,18 +31,6 @@ ImActorModelDroidkitActorsMessagesPing * ImActorModelDroidkitActorsMessagesPing_
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "Ping", NULL, 0x2, NULL },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "INSTANCE_", NULL, 0x19, "Lim.actor.model.droidkit.actors.messages.Ping;", &ImActorModelDroidkitActorsMessagesPing_INSTANCE_,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsMessagesPing = { 1, "Ping", "im.actor.model.droidkit.actors.messages", NULL, 0x1, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsMessagesPing;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMessagesPing)

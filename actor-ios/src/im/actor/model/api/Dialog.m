@@ -133,35 +133,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   other->state_ = state_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelApiPeer:withInt:withLong:withInt:withLong:withLong:withImActorModelApiMessageContent:withImActorModelApiMessageStateEnum:", "Dialog", NULL, 0x1, NULL },
-    { "init", "Dialog", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.api.Peer;", 0x1, NULL },
-    { "getUnreadCount", NULL, "I", 0x1, NULL },
-    { "getSortDate", NULL, "J", 0x1, NULL },
-    { "getSenderUid", NULL, "I", 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-    { "getMessage", NULL, "Lim.actor.model.api.MessageContent;", 0x1, NULL },
-    { "getState", NULL, "Lim.actor.model.api.MessageState;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.api.Peer;", NULL,  },
-    { "unreadCount_", NULL, 0x2, "I", NULL,  },
-    { "sortDate_", NULL, 0x2, "J", NULL,  },
-    { "senderUid_", NULL, 0x2, "I", NULL,  },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "date_", NULL, 0x2, "J", NULL,  },
-    { "message_", NULL, 0x2, "Lim.actor.model.api.MessageContent;", NULL,  },
-    { "state_", NULL, 0x2, "Lim.actor.model.api.MessageState;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiDialog = { 1, "Dialog", "im.actor.model.api", NULL, 0x1, 12, methods, 8, fields, 0, NULL};
-  return &_ImActorModelApiDialog;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDialog)

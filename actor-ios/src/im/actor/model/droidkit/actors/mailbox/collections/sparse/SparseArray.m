@@ -284,41 +284,6 @@ id ImActorModelDroidkitActorsMailboxCollectionsSparseSparseArray_DELETED_;
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "SparseArray", NULL, 0x1, NULL },
-    { "initWithInt:", "SparseArray", NULL, 0x1, NULL },
-    { "clone", NULL, "Lim.actor.model.droidkit.actors.mailbox.collections.sparse.SparseArray;", 0x1, NULL },
-    { "getWithInt:", "get", "TE;", 0x1, NULL },
-    { "getWithInt:withId:", "get", "TE;", 0x1, NULL },
-    { "delete__WithInt:", "delete", "V", 0x1, NULL },
-    { "removeWithInt:", "remove", "V", 0x1, NULL },
-    { "removeAtWithInt:", "removeAt", "V", 0x1, NULL },
-    { "removeAtRangeWithInt:withInt:", "removeAtRange", "V", 0x1, NULL },
-    { "gc", NULL, "V", 0x2, NULL },
-    { "putWithInt:withId:", "put", "V", 0x1, NULL },
-    { "size", NULL, "I", 0x1, NULL },
-    { "keyAtWithInt:", "keyAt", "I", 0x1, NULL },
-    { "valueAtWithInt:", "valueAt", "TE;", 0x1, NULL },
-    { "setValueAtWithInt:withId:", "setValueAt", "V", 0x1, NULL },
-    { "indexOfKeyWithInt:", "indexOfKey", "I", 0x1, NULL },
-    { "containsKeyWithInt:", "containsKey", "Z", 0x1, NULL },
-    { "indexOfValueWithId:", "indexOfValue", "I", 0x1, NULL },
-    { "clear", NULL, "V", 0x1, NULL },
-    { "appendWithInt:withId:", "append", "V", 0x1, NULL },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "DELETED_", NULL, 0x1a, "Ljava.lang.Object;", &ImActorModelDroidkitActorsMailboxCollectionsSparseSparseArray_DELETED_,  },
-    { "mGarbage_", NULL, 0x2, "Z", NULL,  },
-    { "mKeys_", NULL, 0x2, "[I", NULL,  },
-    { "mValues_", NULL, 0x2, "[Ljava.lang.Object;", NULL,  },
-    { "mSize_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsMailboxCollectionsSparseSparseArray = { 1, "SparseArray", "im.actor.model.droidkit.actors.mailbox.collections.sparse", NULL, 0x1, 21, methods, 5, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsMailboxCollectionsSparseSparseArray;
-}
-
 @end
 
 void ImActorModelDroidkitActorsMailboxCollectionsSparseSparseArray_gc(ImActorModelDroidkitActorsMailboxCollectionsSparseSparseArray *self) {

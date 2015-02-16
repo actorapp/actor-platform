@@ -7,19 +7,4 @@
 #include "im/actor/model/MainThread.h"
 #include "java/lang/Runnable.h"
 
-@interface AMMainThread : NSObject
-@end
-
-@implementation AMMainThread
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "runOnUiThread:", "runOnUiThread", "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMMainThread = { 1, "MainThread", "im.actor.model", NULL, 0x201, 1, methods, 0, NULL, 0, NULL};
-  return &_AMMainThread;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMMainThread)

@@ -75,25 +75,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiTextMessage, ext_, IOSByteArray *)
   other->ext_ = ext_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withInt:withByteArray:", "TextMessage", NULL, 0x1, NULL },
-    { "init", "TextMessage", NULL, 0x1, NULL },
-    { "getText", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getExtType", NULL, "I", 0x1, NULL },
-    { "getExt", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "text_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "extType_", NULL, 0x2, "I", NULL,  },
-    { "ext_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiTextMessage = { 1, "TextMessage", "im.actor.model.api", NULL, 0x1, 7, methods, 3, fields, 0, NULL};
-  return &_ImActorModelApiTextMessage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiTextMessage)

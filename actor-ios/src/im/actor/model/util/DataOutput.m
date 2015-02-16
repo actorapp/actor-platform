@@ -128,29 +128,6 @@ J2OBJC_FIELD_SETTER(AMDataOutput, data_, IOSByteArray *)
   other->offset_ = offset_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "DataOutput", NULL, 0x1, NULL },
-    { "expandWithInt:", "expand", "V", 0x2, NULL },
-    { "writeLongWithLong:", "writeLong", "V", 0x1, NULL },
-    { "writeIntWithInt:", "writeInt", "V", 0x1, NULL },
-    { "writeByteWithInt:", "writeByte", "V", 0x1, NULL },
-    { "writeVarIntWithLong:", "writeVarInt", "V", 0x1, NULL },
-    { "writeProtoBytesWithByteArray:withInt:withInt:", "writeProtoBytes", "V", 0x1, NULL },
-    { "writeBytesWithByteArray:withInt:withInt:", "writeBytes", "V", 0x1, NULL },
-    { "writeProtoLongsWithLongArray:", "writeProtoLongs", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeProtoStringWithNSString:", "writeProtoString", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeProtoBoolWithBoolean:", "writeProtoBool", "V", 0x1, "Ljava.io.IOException;" },
-    { "toByteArray", NULL, "[B", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "data_", NULL, 0x2, "[B", NULL,  },
-    { "offset_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMDataOutput = { 1, "DataOutput", "im.actor.model.util", NULL, 0x1, 12, methods, 2, fields, 0, NULL};
-  return &_AMDataOutput;
-}
-
 @end
 
 void AMDataOutput_expandWithInt_(AMDataOutput *self, jint size) {

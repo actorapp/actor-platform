@@ -72,27 +72,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetDifference, state_, IOSByteArray
   other->state_ = state_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestGetDifference;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withByteArray:", "RequestGetDifference", NULL, 0x1, NULL },
-    { "init", "RequestGetDifference", NULL, 0x1, NULL },
-    { "getSeq", NULL, "I", 0x1, NULL },
-    { "getState", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestGetDifference_HEADER },
-    { "seq_", NULL, 0x2, "I", NULL,  },
-    { "state_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseGetDifference;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestGetDifference = { 1, "RequestGetDifference", "im.actor.model.api.rpc", NULL, 0x1, 8, methods, 3, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestGetDifference;
-}
-
 @end
 
 ImActorModelApiRpcRequestGetDifference *ImActorModelApiRpcRequestGetDifference_fromBytesWithByteArray_(IOSByteArray *data) {

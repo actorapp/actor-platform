@@ -76,26 +76,6 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFastThumb, image_, IOSByteArray *)
   other->image_ = image_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.content.FastThumb;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withInt:withByteArray:", "FastThumb", NULL, 0x1, NULL },
-    { "init", "FastThumb", NULL, 0x2, NULL },
-    { "getW", NULL, "I", 0x1, NULL },
-    { "getH", NULL, "I", 0x1, NULL },
-    { "getImage", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "w_", NULL, 0x2, "I", NULL,  },
-    { "h_", NULL, 0x2, "I", NULL,  },
-    { "image_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentFastThumb = { 1, "FastThumb", "im.actor.model.entity.content", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
-  return &_ImActorModelEntityContentFastThumb;
-}
-
 @end
 
 ImActorModelEntityContentFastThumb *ImActorModelEntityContentFastThumb_fromBytesWithByteArray_(IOSByteArray *data) {

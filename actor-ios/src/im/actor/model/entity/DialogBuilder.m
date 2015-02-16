@@ -142,42 +142,6 @@ J2OBJC_FIELD_SETTER(AMDialogBuilder, status_, AMMessageStateEnum *)
   other->relatedUid_ = relatedUid_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "DialogBuilder", NULL, 0x1, NULL },
-    { "initWithAMDialog:", "DialogBuilder", NULL, 0x1, NULL },
-    { "setPeerWithAMPeer:", "setPeer", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setSortKeyWithLong:", "setSortKey", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setDialogTitleWithNSString:", "setDialogTitle", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setUnreadCountWithInt:", "setUnreadCount", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setRidWithLong:", "setRid", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setMessageTypeWithAMDialog_ContentTypeEnum:", "setMessageType", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setTextWithNSString:", "setText", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setStatusWithAMMessageStateEnum:", "setStatus", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setSenderIdWithInt:", "setSenderId", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setTimeWithLong:", "setTime", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setRelatedUidWithInt:", "setRelatedUid", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "setDialogAvatarWithAMAvatar:", "setDialogAvatar", "Lim.actor.model.entity.DialogBuilder;", 0x1, NULL },
-    { "createDialog", NULL, "Lim.actor.model.entity.Dialog;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
-    { "sortKey_", NULL, 0x2, "J", NULL,  },
-    { "dialogTitle_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "dialogAvatar_", NULL, 0x2, "Lim.actor.model.entity.Avatar;", NULL,  },
-    { "unreadCount_", NULL, 0x2, "I", NULL,  },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "messageType_", NULL, 0x2, "Lim.actor.model.entity.Dialog$ContentType;", NULL,  },
-    { "text_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "status_", NULL, 0x2, "Lim.actor.model.entity.MessageState;", NULL,  },
-    { "senderId_", NULL, 0x2, "I", NULL,  },
-    { "time_", NULL, 0x2, "J", NULL,  },
-    { "relatedUid_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMDialogBuilder = { 1, "DialogBuilder", "im.actor.model.entity", NULL, 0x1, 15, methods, 12, fields, 0, NULL};
-  return &_AMDialogBuilder;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDialogBuilder)

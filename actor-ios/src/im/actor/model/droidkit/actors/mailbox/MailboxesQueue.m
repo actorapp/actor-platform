@@ -67,23 +67,6 @@ J2OBJC_FIELD_SETTER(DKMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsM
   other->envelopeRoot_ = envelopeRoot_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "MailboxesQueue", NULL, 0x1, NULL },
-    { "getEnvelopeRoot", NULL, "Lim.actor.model.droidkit.actors.mailbox.collections.EnvelopeRoot;", 0x1, NULL },
-    { "unlockMailboxWithDKMailbox:", "unlockMailbox", "V", 0x1, NULL },
-    { "disconnectMailboxWithDKMailbox:", "disconnectMailbox", "V", 0x1, NULL },
-    { "notifyQueueChanged", NULL, "V", 0x1, NULL },
-    { "dispatchWithLong:", "dispatch", "Lim.actor.model.droidkit.actors.dispatch.DispatchResult;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "envelopeRoot_", NULL, 0x2, "Lim.actor.model.droidkit.actors.mailbox.collections.EnvelopeRoot;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.droidkit.actors.mailbox.Envelope;"};
-  static const J2ObjcClassInfo _DKMailboxesQueue = { 1, "MailboxesQueue", "im.actor.model.droidkit.actors.mailbox", NULL, 0x1, 6, methods, 1, fields, 1, superclass_type_args};
-  return &_DKMailboxesQueue;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKMailboxesQueue)

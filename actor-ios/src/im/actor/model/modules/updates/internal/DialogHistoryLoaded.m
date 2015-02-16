@@ -33,18 +33,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalDialogHistoryLoaded, dialo
   other->dialogs_ = dialogs_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelApiRpcResponseLoadDialogs:", "DialogHistoryLoaded", NULL, 0x1, NULL },
-    { "getDialogs", NULL, "Lim.actor.model.api.rpc.ResponseLoadDialogs;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "dialogs_", NULL, 0x2, "Lim.actor.model.api.rpc.ResponseLoadDialogs;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesInternalDialogHistoryLoaded = { 1, "DialogHistoryLoaded", "im.actor.model.modules.updates.internal", NULL, 0x1, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUpdatesInternalDialogHistoryLoaded;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesInternalDialogHistoryLoaded)

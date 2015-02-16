@@ -56,23 +56,6 @@
   other->accessHash_ = accessHash_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withLong:", "UserOutPeer", NULL, 0x1, NULL },
-    { "init", "UserOutPeer", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "getAccessHash", NULL, "J", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "uid_", NULL, 0x2, "I", NULL,  },
-    { "accessHash_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiUserOutPeer = { 1, "UserOutPeer", "im.actor.model.api", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiUserOutPeer;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUserOutPeer)

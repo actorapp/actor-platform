@@ -32,18 +32,6 @@ JavaUtilRandom * ImActorModelModulesUtilsRandomUtils_RANDOM_;
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "nextRid", NULL, "J", 0x29, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "RANDOM_", NULL, 0x1a, "Ljava.util.Random;", &ImActorModelModulesUtilsRandomUtils_RANDOM_,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUtilsRandomUtils = { 1, "RandomUtils", "im.actor.model.modules.utils", NULL, 0x1, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUtilsRandomUtils;
-}
-
 @end
 
 jlong ImActorModelModulesUtilsRandomUtils_nextRid() {

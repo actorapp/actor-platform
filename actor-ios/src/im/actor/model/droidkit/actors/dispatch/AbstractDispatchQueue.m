@@ -8,6 +8,9 @@
 #include "im/actor/model/droidkit/actors/dispatch/DispatchResult.h"
 #include "im/actor/model/droidkit/actors/dispatch/QueueListener.h"
 
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
 @interface DKAbstractDispatchQueue () {
  @public
   id<DKQueueListener> listener_;
@@ -17,12 +20,6 @@
 J2OBJC_FIELD_SETTER(DKAbstractDispatchQueue, listener_, id<DKQueueListener>)
 
 @implementation DKAbstractDispatchQueue
-
-- (DKDispatchResult *)dispatchWithLong:(jlong)time {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-  return 0;
-}
 
 - (void)notifyQueueChanged {
   id<DKQueueListener> lListener = listener_;
@@ -54,24 +51,6 @@ J2OBJC_FIELD_SETTER(DKAbstractDispatchQueue, listener_, id<DKQueueListener>)
 - (void)copyAllFieldsTo:(DKAbstractDispatchQueue *)other {
   [super copyAllFieldsTo:other];
   other->listener_ = listener_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "dispatchWithLong:", "dispatch", "Lim.actor.model.droidkit.actors.dispatch.DispatchResult;", 0x401, NULL },
-    { "notifyQueueChanged", NULL, "V", 0x4, NULL },
-    { "resultWithId:", "result", "Lim.actor.model.droidkit.actors.dispatch.DispatchResult;", 0x4, NULL },
-    { "delayWithLong:", "delay", "Lim.actor.model.droidkit.actors.dispatch.DispatchResult;", 0x4, NULL },
-    { "getListener", NULL, "Lim.actor.model.droidkit.actors.dispatch.QueueListener;", 0x1, NULL },
-    { "setListenerWithDKQueueListener:", "setListener", "V", 0x1, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "FOREVER_", NULL, 0x1c, "J", NULL, .constantValue.asLong = DKAbstractDispatchQueue_FOREVER },
-    { "listener_", NULL, 0x2, "Lim.actor.model.droidkit.actors.dispatch.QueueListener;", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKAbstractDispatchQueue = { 1, "AbstractDispatchQueue", "im.actor.model.droidkit.actors.dispatch", NULL, 0x401, 7, methods, 2, fields, 0, NULL};
-  return &_DKAbstractDispatchQueue;
 }
 
 @end

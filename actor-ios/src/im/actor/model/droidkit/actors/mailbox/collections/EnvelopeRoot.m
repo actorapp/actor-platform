@@ -168,27 +168,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_Fet
   other->queue_ = queue_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithDKMailboxesQueue:", "EnvelopeRoot", NULL, 0x1, NULL },
-    { "attachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:", "attachCollection", "V", 0x21, NULL },
-    { "detachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:", "detachCollection", "V", 0x21, NULL },
-    { "fetchCollectionWithLong:", "fetchCollection", "Lim.actor.model.droidkit.actors.mailbox.collections.EnvelopeRoot$FetchResult;", 0x21, NULL },
-    { "changedTopKeyWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:", "changedTopKey", "V", 0x20, NULL },
-    { "buildKeyWithLong:", "buildKey", "J", 0x20, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "MULTIPLE_", NULL, 0x1a, "J", NULL, .constantValue.asLong = ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_MULTIPLE },
-    { "usedSlot_", NULL, 0x12, "Ljava.util.HashSet;", NULL,  },
-    { "collections_", NULL, 0x12, "Ljava.util.HashMap;", NULL,  },
-    { "lastTopKey_", NULL, 0x12, "Ljava.util.HashMap;", NULL,  },
-    { "sortedCollection_", NULL, 0x12, "Ljava.util.TreeMap;", NULL,  },
-    { "queue_", NULL, 0x2, "Lim.actor.model.droidkit.actors.mailbox.MailboxesQueue;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot = { 1, "EnvelopeRoot", "im.actor.model.droidkit.actors.mailbox.collections", NULL, 0x1, 6, methods, 6, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot)
@@ -250,26 +229,6 @@ AMThreadLocalCompat * ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_F
     ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_RESULT_CACHE_ = DKEnvironment_createThreadLocal();
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult)
   }
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "envelopeWithDKEnvelope:", "envelope", "Lim.actor.model.droidkit.actors.mailbox.collections.EnvelopeRoot$FetchResult;", 0x9, NULL },
-    { "delayWithLong:", "delay", "Lim.actor.model.droidkit.actors.mailbox.collections.EnvelopeRoot$FetchResult;", 0x9, NULL },
-    { "initWithDKEnvelope:", "FetchResult", NULL, 0x2, NULL },
-    { "initWithLong:", "FetchResult", NULL, 0x2, NULL },
-    { "getEnvelope", NULL, "Lim.actor.model.droidkit.actors.mailbox.Envelope;", 0x1, NULL },
-    { "getDelay", NULL, "J", 0x1, NULL },
-    { "updateWithDKEnvelope:withLong:", "update", "V", 0x1, NULL },
-    { "recycle", NULL, "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "RESULT_CACHE_", NULL, 0xa, "Lim.actor.model.util.ThreadLocalCompat;", &ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_RESULT_CACHE_,  },
-    { "envelope__", "envelope", 0x2, "Lim.actor.model.droidkit.actors.mailbox.Envelope;", NULL,  },
-    { "delay__", "delay", 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult = { 1, "FetchResult", "im.actor.model.droidkit.actors.mailbox.collections", "EnvelopeRoot", 0x9, 8, methods, 3, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult;
 }
 
 @end

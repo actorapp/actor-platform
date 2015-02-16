@@ -145,33 +145,6 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, endpoints_, JavaUtilArrayList *)
   other->isMessagesPersisting_ = isMessagesPersisting_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "setLog:", "setLog", "Lim.actor.model.ConfigurationBuilder;", 0x1, NULL },
-    { "setNetworking:", "setNetworking", "Lim.actor.model.ConfigurationBuilder;", 0x1, NULL },
-    { "setThreading:", "setThreading", "Lim.actor.model.ConfigurationBuilder;", 0x1, NULL },
-    { "setStorage:", "setStorage", "Lim.actor.model.ConfigurationBuilder;", 0x1, NULL },
-    { "setCallback:", "setCallback", "Lim.actor.model.ConfigurationBuilder;", 0x1, NULL },
-    { "addEndpoint:", "addEndpoint", "Lim.actor.model.ConfigurationBuilder;", 0x1, NULL },
-    { "setMessagesPersisting:", "setMessagesPersisting", "Lim.actor.model.ConfigurationBuilder;", 0x1, NULL },
-    { "setMainThread:", "setMainThread", "Lim.actor.model.ConfigurationBuilder;", 0x1, NULL },
-    { "build", NULL, "Lim.actor.model.Configuration;", 0x1, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "log_", NULL, 0x2, "Lim.actor.model.LogCallback;", NULL,  },
-    { "networking_", NULL, 0x2, "Lim.actor.model.Networking;", NULL,  },
-    { "threading_", NULL, 0x2, "Lim.actor.model.Threading;", NULL,  },
-    { "mainThread_", NULL, 0x2, "Lim.actor.model.MainThread;", NULL,  },
-    { "enginesFactory_", NULL, 0x2, "Lim.actor.model.Storage;", NULL,  },
-    { "callback_", NULL, 0x2, "Lim.actor.model.MessengerCallback;", NULL,  },
-    { "endpoints_", NULL, 0x2, "Ljava.util.ArrayList;", NULL,  },
-    { "isMessagesPersisting_", NULL, 0x2, "Z", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMConfigurationBuilder = { 1, "ConfigurationBuilder", "im.actor.model", NULL, 0x1, 10, methods, 8, fields, 0, NULL};
-  return &_AMConfigurationBuilder;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConfigurationBuilder)

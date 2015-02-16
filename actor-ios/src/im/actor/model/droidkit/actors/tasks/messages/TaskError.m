@@ -45,21 +45,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksMessagesTaskError, throwable_
   other->throwable_ = throwable_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withJavaLangThrowable:", "TaskError", NULL, 0x1, NULL },
-    { "getRequestId", NULL, "I", 0x1, NULL },
-    { "getThrowable", NULL, "Ljava.lang.Throwable;", 0x1, NULL },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "requestId_", NULL, 0x12, "I", NULL,  },
-    { "throwable_", NULL, 0x12, "Ljava.lang.Throwable;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksMessagesTaskError = { 1, "TaskError", "im.actor.model.droidkit.actors.tasks.messages", NULL, 0x1, 4, methods, 2, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksMessagesTaskError;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksMessagesTaskError)

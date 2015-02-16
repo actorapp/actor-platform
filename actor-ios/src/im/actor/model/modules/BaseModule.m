@@ -75,25 +75,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModule
   other->modules__ = modules__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "BaseModule", NULL, 0x1, NULL },
-    { "modules", NULL, "Lim.actor.model.modules.Modules;", 0x1, NULL },
-    { "updates", NULL, "Lim.actor.model.modules.Updates;", 0x1, NULL },
-    { "runOnUiThreadWithJavaLangRunnable:", "runOnUiThread", "V", 0x1, NULL },
-    { "preferences", NULL, "Lim.actor.model.storage.PreferencesStorage;", 0x1, NULL },
-    { "myUid", NULL, "I", 0x1, NULL },
-    { "requestWithImActorModelNetworkParserRequest:withAMRpcCallback:", "request", "V", 0x1, NULL },
-    { "requestWithImActorModelNetworkParserRequest:", "request", "V", 0x1, NULL },
-    { "users", NULL, "Lim.actor.model.mvvm.KeyValueEngine;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "modules__", "modules", 0x2, "Lim.actor.model.modules.Modules;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesBaseModule = { 1, "BaseModule", "im.actor.model.modules", NULL, 0x1, 9, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesBaseModule;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesBaseModule)
@@ -108,16 +89,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesBaseModule)
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithImActorModelNetworkParserResponse:", "onResult", "V", 0x1, NULL },
-    { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "init", NULL, NULL, 0x0, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesBaseModule_$1 = { 1, "$1", "im.actor.model.modules", "BaseModule", 0x8000, 3, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesBaseModule_$1;
 }
 
 @end

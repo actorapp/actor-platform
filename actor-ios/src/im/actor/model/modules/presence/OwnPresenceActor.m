@@ -70,23 +70,6 @@ __attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_
   other->isVisible_ = isVisible_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "OwnPresenceActor", NULL, 0x1, NULL },
-    { "onAppVisible", NULL, "V", 0x2, NULL },
-    { "onAppHidden", NULL, "V", 0x2, NULL },
-    { "performOnline", NULL, "V", 0x2, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "RESEND_TIMEOUT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelModulesPresenceOwnPresenceActor_RESEND_TIMEOUT },
-    { "TIMEOUT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelModulesPresenceOwnPresenceActor_TIMEOUT },
-    { "isVisible_", NULL, 0x2, "Z", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresenceOwnPresenceActor = { 1, "OwnPresenceActor", "im.actor.model.modules.presence", NULL, 0x1, 5, methods, 3, fields, 0, NULL};
-  return &_ImActorModelModulesPresenceOwnPresenceActor;
-}
-
 @end
 
 void ImActorModelModulesPresenceOwnPresenceActor_onAppVisible(ImActorModelModulesPresenceOwnPresenceActor *self) {
@@ -114,14 +97,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor)
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible = { 1, "OnAppVisible", "im.actor.model.modules.presence", "OwnPresenceActor", 0x9, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible)
@@ -132,14 +107,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_OnA
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden = { 1, "OnAppHidden", "im.actor.model.modules.presence", "OwnPresenceActor", 0x9, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden)
@@ -148,14 +115,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_OnA
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresenceOwnPresenceActor_PerformOnline = { 1, "PerformOnline", "im.actor.model.modules.presence", "OwnPresenceActor", 0x9, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesPresenceOwnPresenceActor_PerformOnline;
 }
 
 @end
@@ -172,16 +131,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_Per
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithImActorModelApiRpcResponseVoid:", "onResult", "V", 0x1, NULL },
-    { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "init", NULL, NULL, 0x0, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresenceOwnPresenceActor_$1 = { 1, "$1", "im.actor.model.modules.presence", "OwnPresenceActor", 0x8000, 3, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesPresenceOwnPresenceActor_$1;
 }
 
 @end

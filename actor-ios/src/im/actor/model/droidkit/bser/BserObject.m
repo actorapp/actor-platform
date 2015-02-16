@@ -13,6 +13,9 @@
 #include "java/io/IOException.h"
 #include "java/lang/RuntimeException.h"
 
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
 @implementation BSBserObject
 
 - (instancetype)init {
@@ -29,27 +32,6 @@
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Unexpected IO exception"];
   }
   return [outputStream toByteArray];
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "BserObject", NULL, 0x1, NULL },
-    { "toByteArray", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x401, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x401, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcClassInfo _BSBserObject = { 1, "BserObject", "im.actor.model.droidkit.bser", NULL, 0x401, 4, methods, 0, NULL, 0, NULL};
-  return &_BSBserObject;
 }
 
 @end

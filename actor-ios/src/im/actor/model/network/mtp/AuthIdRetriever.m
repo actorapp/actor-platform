@@ -54,18 +54,6 @@ withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callb
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "requestAuthIdWithAMEndpoints:withAMNetworking:withMTAuthIdRetriever_AuthIdCallback:", "requestAuthId", "V", 0x9, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &MTAuthIdRetriever_TAG_,  },
-  };
-  static const J2ObjcClassInfo _MTAuthIdRetriever = { 1, "AuthIdRetriever", "im.actor.model.network.mtp", NULL, 0x1, 2, methods, 1, fields, 0, NULL};
-  return &_MTAuthIdRetriever;
-}
-
 @end
 
 void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworking_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<AMNetworking> networking, id<MTAuthIdRetriever_AuthIdCallback> callback) {
@@ -77,22 +65,6 @@ void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworking_withMTAuthI
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever)
-
-@interface MTAuthIdRetriever_AuthIdCallback : NSObject
-@end
-
-@implementation MTAuthIdRetriever_AuthIdCallback
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onSuccessWithLong:", "onSuccess", "V", 0x401, NULL },
-    { "onFailure", NULL, "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _MTAuthIdRetriever_AuthIdCallback = { 1, "AuthIdCallback", "im.actor.model.network.mtp", "AuthIdRetriever", 0x209, 2, methods, 0, NULL, 0, NULL};
-  return &_MTAuthIdRetriever_AuthIdCallback;
-}
-
-@end
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
 
@@ -146,20 +118,6 @@ withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)captu
   other->val$callback_ = val$callback_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onMessage:withOffset:withLen:", "onMessage", "V", 0x1, NULL },
-    { "onConnectionDie", NULL, "V", 0x1, NULL },
-    { "initWithBooleanArray:withMTAuthIdRetriever_AuthIdCallback:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "val$isFinished_", NULL, 0x1012, "[Z", NULL,  },
-    { "val$callback_", NULL, 0x1012, "Lim.actor.model.network.mtp.AuthIdRetriever$AuthIdCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTAuthIdRetriever_$1 = { 1, "$1", "im.actor.model.network.mtp", "AuthIdRetriever", 0x8000, 3, methods, 2, fields, 0, NULL};
-  return &_MTAuthIdRetriever_$1;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
@@ -210,20 +168,6 @@ withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)captu
   [super copyAllFieldsTo:other];
   other->val$isFinished_ = val$isFinished_;
   other->val$callback_ = val$callback_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onConnectionCreated:", "onConnectionCreated", "V", 0x1, NULL },
-    { "onConnectionCreateError", NULL, "V", 0x1, NULL },
-    { "initWithBooleanArray:withMTAuthIdRetriever_AuthIdCallback:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "val$isFinished_", NULL, 0x1012, "[Z", NULL,  },
-    { "val$callback_", NULL, 0x1012, "Lim.actor.model.network.mtp.AuthIdRetriever$AuthIdCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTAuthIdRetriever_$2 = { 1, "$2", "im.actor.model.network.mtp", "AuthIdRetriever", 0x8000, 3, methods, 2, fields, 0, NULL};
-  return &_MTAuthIdRetriever_$2;
 }
 
 @end

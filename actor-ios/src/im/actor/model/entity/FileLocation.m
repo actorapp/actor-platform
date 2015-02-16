@@ -86,28 +86,6 @@
   other->fileSize_ = fileSize_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.FileLocation;", 0x9, "Ljava.io.IOException;" },
-    { "initWithLong:withLong:withInt:", "FileLocation", NULL, 0x1, NULL },
-    { "init", "FileLocation", NULL, 0x2, NULL },
-    { "getFileSize", NULL, "I", 0x1, NULL },
-    { "getFileId", NULL, "J", 0x1, NULL },
-    { "getAccessHash", NULL, "J", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "fileId_", NULL, 0x2, "J", NULL,  },
-    { "accessHash_", NULL, 0x2, "J", NULL,  },
-    { "fileSize_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMFileLocation = { 1, "FileLocation", "im.actor.model.entity", NULL, 0x1, 10, methods, 3, fields, 0, NULL};
-  return &_AMFileLocation;
-}
-
 @end
 
 AMFileLocation *AMFileLocation_fromBytesWithByteArray_(IOSByteArray *data) {

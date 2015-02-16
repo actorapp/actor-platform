@@ -7,20 +7,4 @@
 #include "im/actor/model/droidkit/actors/concurrency/FutureCallback.h"
 #include "java/lang/Throwable.h"
 
-@interface ImActorModelDroidkitActorsConcurrencyFutureCallback : NSObject
-@end
-
-@implementation ImActorModelDroidkitActorsConcurrencyFutureCallback
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithId:", "onResult", "V", 0x401, NULL },
-    { "onErrorWithJavaLangThrowable:", "onError", "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsConcurrencyFutureCallback = { 1, "FutureCallback", "im.actor.model.droidkit.actors.concurrency", NULL, 0x201, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitActorsConcurrencyFutureCallback;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsConcurrencyFutureCallback)

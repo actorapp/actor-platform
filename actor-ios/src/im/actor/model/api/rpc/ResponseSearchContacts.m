@@ -66,24 +66,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSearchContacts, users_, id<JavaUti
   other->users_ = users_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.ResponseSearchContacts;", 0x9, "Ljava.io.IOException;" },
-    { "initWithJavaUtilList:", "ResponseSearchContacts", NULL, 0x1, NULL },
-    { "init", "ResponseSearchContacts", NULL, 0x1, NULL },
-    { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcResponseSearchContacts_HEADER },
-    { "users_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiRpcResponseSearchContacts = { 1, "ResponseSearchContacts", "im.actor.model.api.rpc", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiRpcResponseSearchContacts;
-}
-
 @end
 
 ImActorModelApiRpcResponseSearchContacts *ImActorModelApiRpcResponseSearchContacts_fromBytesWithByteArray_(IOSByteArray *data) {

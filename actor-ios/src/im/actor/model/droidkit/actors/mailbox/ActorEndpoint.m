@@ -62,25 +62,6 @@ J2OBJC_FIELD_SETTER(DKActorEndpoint, scope_, DKActorScope *)
   other->isDisconnected__ = isDisconnected__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:", "ActorEndpoint", NULL, 0x1, NULL },
-    { "getPath", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getMailbox", NULL, "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x1, NULL },
-    { "getScope", NULL, "Lim.actor.model.droidkit.actors.ActorScope;", 0x1, NULL },
-    { "isDisconnected", NULL, "Z", 0x1, NULL },
-    { "connectWithDKMailbox:withDKActorScope:", "connect", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "path_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "mailbox_", NULL, 0x2, "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", NULL,  },
-    { "scope_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorScope;", NULL,  },
-    { "isDisconnected__", "isDisconnected", 0x2, "Z", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKActorEndpoint = { 1, "ActorEndpoint", "im.actor.model.droidkit.actors.mailbox", NULL, 0x1, 6, methods, 4, fields, 0, NULL};
-  return &_DKActorEndpoint;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorEndpoint)

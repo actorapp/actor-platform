@@ -97,30 +97,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
   other->date_ = date_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.ResponseEditGroupAvatar;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiAvatar:withInt:withByteArray:withLong:", "ResponseEditGroupAvatar", NULL, 0x1, NULL },
-    { "init", "ResponseEditGroupAvatar", NULL, 0x1, NULL },
-    { "getAvatar", NULL, "Lim.actor.model.api.Avatar;", 0x1, NULL },
-    { "getSeq", NULL, "I", 0x1, NULL },
-    { "getState", NULL, "[B", 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcResponseEditGroupAvatar_HEADER },
-    { "avatar_", NULL, 0x2, "Lim.actor.model.api.Avatar;", NULL,  },
-    { "seq_", NULL, 0x2, "I", NULL,  },
-    { "state_", NULL, 0x2, "[B", NULL,  },
-    { "date_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiRpcResponseEditGroupAvatar = { 1, "ResponseEditGroupAvatar", "im.actor.model.api.rpc", NULL, 0x1, 10, methods, 5, fields, 0, NULL};
-  return &_ImActorModelApiRpcResponseEditGroupAvatar;
-}
-
 @end
 
 ImActorModelApiRpcResponseEditGroupAvatar *ImActorModelApiRpcResponseEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {

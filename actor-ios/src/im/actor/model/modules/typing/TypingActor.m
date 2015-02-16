@@ -153,26 +153,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_$1, val$messenger_, ImA
   other->callback_ = callback_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "getWithImActorModelModulesModules:", "get", "Lim.actor.model.droidkit.actors.ActorRef;", 0x9, NULL },
-    { "initWithImActorModelModulesModules:", "TypingActor", NULL, 0x1, NULL },
-    { "privateTypingWithInt:withInt:", "privateTyping", "V", 0x2, NULL },
-    { "stopPrivateTypingWithInt:", "stopPrivateTyping", "V", 0x2, NULL },
-    { "groupTypingWithInt:withInt:withInt:", "groupTyping", "V", 0x2, NULL },
-    { "stopGroupTypingWithInt:withInt:", "stopGroupTyping", "V", 0x2, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TYPING_TEXT_TIMEOUT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT },
-    { "typings_", NULL, 0x2, "Ljava.util.HashSet;", NULL,  },
-    { "groupTypings_", NULL, 0x2, "Ljava.util.HashMap;", NULL,  },
-    { "callback_", NULL, 0x2, "Lim.actor.model.MessengerCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesTypingTypingActor = { 1, "TypingActor", "im.actor.model.modules.typing", NULL, 0x1, 7, methods, 4, fields, 0, NULL};
-  return &_ImActorModelModulesTypingTypingActor;
-}
-
 @end
 
 DKActorRef *ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
@@ -287,20 +267,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor)
   other->uid_ = uid_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:", "StopTyping", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "uid_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesTypingTypingActor_StopTyping = { 1, "StopTyping", "im.actor.model.modules.typing", "TypingActor", 0x9, 4, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesTypingTypingActor_StopTyping;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_StopTyping)
@@ -345,22 +311,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_StopTyping
   other->uid_ = uid_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withInt:", "StopGroupTyping", NULL, 0x1, NULL },
-    { "getGid", NULL, "I", 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "gid_", NULL, 0x2, "I", NULL,  },
-    { "uid_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesTypingTypingActor_StopGroupTyping = { 1, "StopGroupTyping", "im.actor.model.modules.typing", "TypingActor", 0x9, 5, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesTypingTypingActor_StopGroupTyping;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_StopGroupTyping)
@@ -403,22 +353,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_StopGroupT
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;
   other->type_ = type_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withInt:", "PrivateTyping", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "getType", NULL, "I", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "uid_", NULL, 0x2, "I", NULL,  },
-    { "type_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesTypingTypingActor_PrivateTyping = { 1, "PrivateTyping", "im.actor.model.modules.typing", "TypingActor", 0x9, 5, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesTypingTypingActor_PrivateTyping;
 }
 
 @end
@@ -474,24 +408,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_PrivateTyp
   other->type_ = type_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withInt:withInt:", "GroupTyping", NULL, 0x1, NULL },
-    { "getGid", NULL, "I", 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "getType", NULL, "I", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "gid_", NULL, 0x2, "I", NULL,  },
-    { "uid_", NULL, 0x2, "I", NULL,  },
-    { "type_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesTypingTypingActor_GroupTyping = { 1, "GroupTyping", "im.actor.model.modules.typing", "TypingActor", 0x9, 6, methods, 3, fields, 0, NULL};
-  return &_ImActorModelModulesTypingTypingActor_GroupTyping;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_GroupTyping)
@@ -512,18 +428,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_GroupTypin
   other->val$messenger_ = val$messenger_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "Lim.actor.model.modules.typing.TypingActor;", 0x1, NULL },
-    { "initWithImActorModelModulesModules:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "val$messenger_", NULL, 0x1012, "Lim.actor.model.modules.Modules;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesTypingTypingActor_$1 = { 1, "$1", "im.actor.model.modules.typing", "TypingActor", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesTypingTypingActor_$1;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_$1)
@@ -536,15 +440,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_$1)
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "createMailboxWithDKMailboxesQueue:", "createMailbox", "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x1, NULL },
-    { "init", NULL, NULL, 0x0, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesTypingTypingActor_$2 = { 1, "$2", "im.actor.model.modules.typing", "TypingActor", 0x8000, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesTypingTypingActor_$2;
 }
 
 @end
@@ -563,15 +458,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_$2)
 
 - (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)arg$0 {
   return [super initWithDKMailboxesQueue:arg$0];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "isEqualEnvelopeWithDKEnvelope:withDKEnvelope:", "isEqualEnvelope", "Z", 0x4, NULL },
-    { "initWithDKMailboxesQueue:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesTypingTypingActor_$2_$1 = { 1, "$1", "im.actor.model.modules.typing", "TypingActor$$2", 0x8000, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesTypingTypingActor_$2_$1;
 }
 
 @end

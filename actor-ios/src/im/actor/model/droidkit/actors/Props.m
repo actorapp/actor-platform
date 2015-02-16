@@ -98,30 +98,6 @@ J2OBJC_FIELD_SETTER(DKProps, dispatcher_, NSString *)
   other->dispatcher_ = dispatcher_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithIOSClass:withNSObjectArray:withInt:withNSString:withDKActorCreator:withDKMailboxCreator:", "Props", NULL, 0x2, NULL },
-    { "create", NULL, "TT;", 0x1, "Ljava.lang.Exception;" },
-    { "createMailboxWithDKMailboxesQueue:", "createMailbox", "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x1, NULL },
-    { "getDispatcher", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "changeDispatcherWithNSString:", "changeDispatcher", "Lim.actor.model.droidkit.actors.Props;", 0x1, NULL },
-    { "createWithIOSClass:withDKActorCreator:", "create", "Lim.actor.model.droidkit.actors.Props;", 0x9, NULL },
-    { "createWithIOSClass:withDKActorCreator:withDKMailboxCreator:", "create", "Lim.actor.model.droidkit.actors.Props;", 0x9, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TYPE_DEFAULT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = DKProps_TYPE_DEFAULT },
-    { "TYPE_CREATOR_", NULL, 0x1a, "I", NULL, .constantValue.asInt = DKProps_TYPE_CREATOR },
-    { "aClass_", NULL, 0x12, "Ljava.lang.Class;", NULL,  },
-    { "args_", NULL, 0x12, "[Ljava.lang.Object;", NULL,  },
-    { "type_", NULL, 0x12, "I", NULL,  },
-    { "creator_", NULL, 0x12, "Lim.actor.model.droidkit.actors.ActorCreator;", NULL,  },
-    { "mailboxCreator_", NULL, 0x12, "Lim.actor.model.droidkit.actors.MailboxCreator;", NULL,  },
-    { "dispatcher_", NULL, 0x12, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKProps = { 1, "Props", "im.actor.model.droidkit.actors", NULL, 0x11, 7, methods, 8, fields, 0, NULL};
-  return &_DKProps;
-}
-
 @end
 
 DKProps *DKProps_createWithIOSClass_withDKActorCreator_(IOSClass *clazz, id<DKActorCreator> creator) {

@@ -74,28 +74,6 @@
   other->len_ = len_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withLong:withInt:", "UnsentResponse", NULL, 0x1, NULL },
-    { "getMessageId", NULL, "J", 0x1, NULL },
-    { "getResponseMessageId", NULL, "J", 0x1, NULL },
-    { "getLen", NULL, "I", 0x1, NULL },
-    { "initWithAMDataInput:", "UnsentResponse", NULL, 0x1, "Ljava.io.IOException;" },
-    { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTUnsentResponse_HEADER },
-    { "messageId_", NULL, 0x2, "J", NULL,  },
-    { "responseMessageId_", NULL, 0x2, "J", NULL,  },
-    { "len_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTUnsentResponse = { 1, "UnsentResponse", "im.actor.model.network.mtp.entity", NULL, 0x1, 9, methods, 4, fields, 0, NULL};
-  return &_MTUnsentResponse;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTUnsentResponse)

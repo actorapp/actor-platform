@@ -11,6 +11,9 @@
 #include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
 @implementation MTProtoObject
 
 - (instancetype)initWithAMDataInput:(AMDataInput *)stream {
@@ -24,17 +27,6 @@
   return [super init];
 }
 
-- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-}
-
-- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-  return 0;
-}
-
 - (IOSByteArray *)toByteArray {
   AMDataOutput *outputStream = [[AMDataOutput alloc] init];
   @try {
@@ -44,18 +36,6 @@
     [((JavaIoIOException *) nil_chk(e)) printStackTrace];
   }
   return [outputStream toByteArray];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataInput:", "ProtoObject", NULL, 0x4, "Ljava.io.IOException;" },
-    { "init", "ProtoObject", NULL, 0x4, NULL },
-    { "writeObjectWithAMDataOutput:", "writeObject", "V", 0x401, "Ljava.io.IOException;" },
-    { "readObjectWithAMDataInput:", "readObject", "Lim.actor.model.network.mtp.entity.ProtoObject;", 0x401, "Ljava.io.IOException;" },
-    { "toByteArray", NULL, "[B", 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _MTProtoObject = { 1, "ProtoObject", "im.actor.model.network.mtp.entity", NULL, 0x401, 5, methods, 0, NULL, 0, NULL};
-  return &_MTProtoObject;
 }
 
 @end

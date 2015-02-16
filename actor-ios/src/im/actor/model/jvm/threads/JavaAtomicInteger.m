@@ -50,22 +50,6 @@ J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaAtomicInteger, atomicInteger_, Jav
   other->atomicInteger_ = atomicInteger_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:", "JavaAtomicInteger", NULL, 0x1, NULL },
-    { "get", NULL, "I", 0x1, NULL },
-    { "incrementAndGet", NULL, "I", 0x1, NULL },
-    { "getAndIncrement", NULL, "I", 0x1, NULL },
-    { "compareAndSetWithInt:withInt:", "compareAndSet", "V", 0x1, NULL },
-    { "setWithInt:", "set", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "atomicInteger_", NULL, 0x12, "Ljava.util.concurrent.atomic.AtomicInteger;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelJvmThreadsJavaAtomicInteger = { 1, "JavaAtomicInteger", "im.actor.model.jvm.threads", NULL, 0x1, 6, methods, 1, fields, 0, NULL};
-  return &_ImActorModelJvmThreadsJavaAtomicInteger;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaAtomicInteger)

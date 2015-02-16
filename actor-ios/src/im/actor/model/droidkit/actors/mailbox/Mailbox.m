@@ -84,25 +84,6 @@ J2OBJC_FIELD_SETTER(DKMailbox_$1, this$0_, DKMailbox *)
   other->comparator_ = comparator_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithDKMailboxesQueue:", "Mailbox", NULL, 0x1, NULL },
-    { "scheduleWithDKEnvelope:withLong:", "schedule", "V", 0x1, NULL },
-    { "scheduleOnceWithDKEnvelope:withLong:", "scheduleOnce", "V", 0x1, NULL },
-    { "unscheduleWithDKEnvelope:", "unschedule", "V", 0x1, NULL },
-    { "allEnvelopes", NULL, "[Lim.actor.model.droidkit.actors.mailbox.Envelope;", 0x1, NULL },
-    { "clear", NULL, "V", 0x1, NULL },
-    { "isEqualEnvelopeWithDKEnvelope:withDKEnvelope:", "isEqualEnvelope", "Z", 0x4, NULL },
-    { "getEnvelopes", NULL, "Lim.actor.model.droidkit.actors.mailbox.collections.EnvelopeCollection;", 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "envelopes_", NULL, 0x2, "Lim.actor.model.droidkit.actors.mailbox.collections.EnvelopeCollection;", NULL,  },
-    { "comparator_", NULL, 0x12, "Lim.actor.model.droidkit.actors.mailbox.collections.EnvelopeCollection$EnvelopeComparator;", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKMailbox = { 1, "Mailbox", "im.actor.model.droidkit.actors.mailbox", NULL, 0x1, 8, methods, 2, fields, 0, NULL};
-  return &_DKMailbox;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKMailbox)
@@ -122,18 +103,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKMailbox)
 - (void)copyAllFieldsTo:(DKMailbox_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "equalsWithDKEnvelope:withDKEnvelope:", "equals", "Z", 0x1, NULL },
-    { "initWithDKMailbox:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKMailbox_$1 = { 1, "$1", "im.actor.model.droidkit.actors.mailbox", "Mailbox", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_DKMailbox_$1;
 }
 
 @end

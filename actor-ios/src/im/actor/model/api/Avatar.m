@@ -77,25 +77,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
   other->fullImage_ = fullImage_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelApiAvatarImage:withImActorModelApiAvatarImage:withImActorModelApiAvatarImage:", "Avatar", NULL, 0x1, NULL },
-    { "init", "Avatar", NULL, 0x1, NULL },
-    { "getSmallImage", NULL, "Lim.actor.model.api.AvatarImage;", 0x1, NULL },
-    { "getLargeImage", NULL, "Lim.actor.model.api.AvatarImage;", 0x1, NULL },
-    { "getFullImage", NULL, "Lim.actor.model.api.AvatarImage;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "smallImage_", NULL, 0x2, "Lim.actor.model.api.AvatarImage;", NULL,  },
-    { "largeImage_", NULL, 0x2, "Lim.actor.model.api.AvatarImage;", NULL,  },
-    { "fullImage_", NULL, 0x2, "Lim.actor.model.api.AvatarImage;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiAvatar = { 1, "Avatar", "im.actor.model.api", NULL, 0x1, 7, methods, 3, fields, 0, NULL};
-  return &_ImActorModelApiAvatar;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiAvatar)

@@ -176,43 +176,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
   other->isSilent__ = isSilent__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestSignUp;", 0x9, "Ljava.io.IOException;" },
-    { "initWithLong:withNSString:withNSString:withNSString:withByteArray:withByteArray:withNSString:withInt:withNSString:withBoolean:", "RequestSignUp", NULL, 0x1, NULL },
-    { "init", "RequestSignUp", NULL, 0x1, NULL },
-    { "getPhoneNumber", NULL, "J", 0x1, NULL },
-    { "getSmsHash", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getSmsCode", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getPublicKey", NULL, "[B", 0x1, NULL },
-    { "getDeviceHash", NULL, "[B", 0x1, NULL },
-    { "getDeviceTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getAppId", NULL, "I", 0x1, NULL },
-    { "getAppKey", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "isSilent", NULL, "Z", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestSignUp_HEADER },
-    { "phoneNumber_", NULL, 0x2, "J", NULL,  },
-    { "smsHash_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "smsCode_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "name_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "publicKey_", NULL, 0x2, "[B", NULL,  },
-    { "deviceHash_", NULL, 0x2, "[B", NULL,  },
-    { "deviceTitle_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "appId_", NULL, 0x2, "I", NULL,  },
-    { "appKey_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "isSilent__", "isSilent", 0x2, "Z", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseAuth;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestSignUp = { 1, "RequestSignUp", "im.actor.model.api.rpc", NULL, 0x1, 16, methods, 11, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestSignUp;
-}
-
 @end
 
 ImActorModelApiRpcRequestSignUp *ImActorModelApiRpcRequestSignUp_fromBytesWithByteArray_(IOSByteArray *data) {

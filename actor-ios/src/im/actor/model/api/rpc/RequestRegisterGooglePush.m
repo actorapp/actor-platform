@@ -72,27 +72,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
   other->token_ = token_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestRegisterGooglePush;", 0x9, "Ljava.io.IOException;" },
-    { "initWithLong:withNSString:", "RequestRegisterGooglePush", NULL, 0x1, NULL },
-    { "init", "RequestRegisterGooglePush", NULL, 0x1, NULL },
-    { "getProjectId", NULL, "J", 0x1, NULL },
-    { "getToken", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestRegisterGooglePush_HEADER },
-    { "projectId_", NULL, 0x2, "J", NULL,  },
-    { "token_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseVoid;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestRegisterGooglePush = { 1, "RequestRegisterGooglePush", "im.actor.model.api.rpc", NULL, 0x1, 8, methods, 3, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestRegisterGooglePush;
-}
-
 @end
 
 ImActorModelApiRpcRequestRegisterGooglePush *ImActorModelApiRpcRequestRegisterGooglePush_fromBytesWithByteArray_(IOSByteArray *data) {

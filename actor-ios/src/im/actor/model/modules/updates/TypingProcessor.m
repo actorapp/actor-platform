@@ -58,19 +58,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesTypingProcessor, typingActor_, DKA
   other->typingActor_ = typingActor_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "TypingProcessor", NULL, 0x1, NULL },
-    { "onTypingWithImActorModelApiPeer:withInt:withInt:", "onTyping", "V", 0x1, NULL },
-    { "onMessageWithImActorModelApiPeer:withInt:", "onMessage", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "typingActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesTypingProcessor = { 1, "TypingProcessor", "im.actor.model.modules.updates", NULL, 0x1, 3, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUpdatesTypingProcessor;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesTypingProcessor)

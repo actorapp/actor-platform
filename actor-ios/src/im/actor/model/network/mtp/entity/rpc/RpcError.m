@@ -65,27 +65,6 @@
   other->relatedData_ = relatedData_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataInput:", "RpcError", NULL, 0x1, "Ljava.io.IOException;" },
-    { "initWithInt:withNSString:withNSString:withBoolean:withByteArray:", "RpcError", NULL, 0x1, NULL },
-    { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTRpcError_HEADER },
-    { "errorCode_", NULL, 0x1, "I", NULL,  },
-    { "errorTag_", NULL, 0x1, "Ljava.lang.String;", NULL,  },
-    { "userMessage_", NULL, 0x1, "Ljava.lang.String;", NULL,  },
-    { "canTryAgain_", NULL, 0x1, "Z", NULL,  },
-    { "relatedData_", NULL, 0x1, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTRpcError = { 1, "RpcError", "im.actor.model.network.mtp.entity.rpc", NULL, 0x1, 6, methods, 6, fields, 0, NULL};
-  return &_MTRpcError;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTRpcError)

@@ -36,19 +36,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMessagesDeadLetter, message_, id)
   other->message_ = message_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithId:", "DeadLetter", NULL, 0x1, NULL },
-    { "getMessage", NULL, "Ljava.lang.Object;", 0x1, NULL },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "message_", NULL, 0x2, "Ljava.lang.Object;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsMessagesDeadLetter = { 1, "DeadLetter", "im.actor.model.droidkit.actors.messages", NULL, 0x1, 3, methods, 1, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsMessagesDeadLetter;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMessagesDeadLetter)

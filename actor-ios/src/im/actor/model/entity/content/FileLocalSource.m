@@ -55,22 +55,6 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileLocalSource, fileName_, NSStrin
   other->fileName_ = fileName_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromValuesWithBSBserValues:", "fromValues", "Lim.actor.model.entity.content.FileLocalSource;", 0xc, "Ljava.io.IOException;" },
-    { "initWithNSString:", "FileLocalSource", NULL, 0x1, NULL },
-    { "init", "FileLocalSource", NULL, 0x2, NULL },
-    { "getFileName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "fileName_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentFileLocalSource = { 1, "FileLocalSource", "im.actor.model.entity.content", NULL, 0x1, 6, methods, 1, fields, 0, NULL};
-  return &_ImActorModelEntityContentFileLocalSource;
-}
-
 @end
 
 ImActorModelEntityContentFileLocalSource *ImActorModelEntityContentFileLocalSource_fromValuesWithBSBserValues_(BSBserValues *reader) {

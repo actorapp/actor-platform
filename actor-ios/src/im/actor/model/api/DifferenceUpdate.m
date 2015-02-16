@@ -62,23 +62,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDifferenceUpdate, update_, IOSByteArray *)
   other->update_ = update_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withByteArray:", "DifferenceUpdate", NULL, 0x1, NULL },
-    { "init", "DifferenceUpdate", NULL, 0x1, NULL },
-    { "getUpdateHeader", NULL, "I", 0x1, NULL },
-    { "getUpdate", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "updateHeader_", NULL, 0x2, "I", NULL,  },
-    { "update_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiDifferenceUpdate = { 1, "DifferenceUpdate", "im.actor.model.api", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiDifferenceUpdate;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDifferenceUpdate)

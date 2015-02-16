@@ -50,23 +50,6 @@
   other->messageId_ = messageId_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:", "RequestResend", NULL, 0x1, NULL },
-    { "initWithAMDataInput:", "RequestResend", NULL, 0x1, "Ljava.io.IOException;" },
-    { "getMessageId", NULL, "J", 0x1, NULL },
-    { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTRequestResend_HEADER },
-    { "messageId_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTRequestResend = { 1, "RequestResend", "im.actor.model.network.mtp.entity", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
-  return &_MTRequestResend;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTRequestResend)

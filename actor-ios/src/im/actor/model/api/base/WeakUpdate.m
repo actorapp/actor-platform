@@ -82,28 +82,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
   other->update_ = update_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.base.WeakUpdate;", 0x9, "Ljava.io.IOException;" },
-    { "initWithLong:withInt:withByteArray:", "WeakUpdate", NULL, 0x1, NULL },
-    { "init", "WeakUpdate", NULL, 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-    { "getUpdateHeader", NULL, "I", 0x1, NULL },
-    { "getUpdate", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiBaseWeakUpdate_HEADER },
-    { "date_", NULL, 0x2, "J", NULL,  },
-    { "updateHeader_", NULL, 0x2, "I", NULL,  },
-    { "update_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiBaseWeakUpdate = { 1, "WeakUpdate", "im.actor.model.api.base", NULL, 0x1, 9, methods, 4, fields, 0, NULL};
-  return &_ImActorModelApiBaseWeakUpdate;
-}
-
 @end
 
 ImActorModelApiBaseWeakUpdate *ImActorModelApiBaseWeakUpdate_fromBytesWithByteArray_(IOSByteArray *data) {

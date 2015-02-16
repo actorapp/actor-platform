@@ -9,27 +9,4 @@
 #include "im/actor/model/mvvm/ListEngineItem.h"
 #include "java/util/List.h"
 
-@interface AMListEngine : NSObject
-@end
-
-@implementation AMListEngine
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "addOrUpdateItemWithAMListEngineItem:", "addOrUpdateItem", "V", 0x401, NULL },
-    { "addOrUpdateItemsWithJavaUtilList:", "addOrUpdateItems", "V", 0x401, NULL },
-    { "replaceItemsWithJavaUtilList:", "replaceItems", "V", 0x401, NULL },
-    { "removeItemWithLong:", "removeItem", "V", 0x401, NULL },
-    { "removeItemsWithLongArray:", "removeItems", "V", 0x401, NULL },
-    { "clear", NULL, "V", 0x401, NULL },
-    { "getValueWithLong:", "getValue", "TV;", 0x401, NULL },
-    { "getHeadValue", NULL, "TV;", 0x401, NULL },
-    { "getCount", NULL, "I", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMListEngine = { 1, "ListEngine", "im.actor.model.mvvm", NULL, 0x201, 9, methods, 0, NULL, 0, NULL};
-  return &_AMListEngine;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMListEngine)

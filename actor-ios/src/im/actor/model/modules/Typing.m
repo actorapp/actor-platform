@@ -52,19 +52,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTyping_$1, val$messenger_, ImActorModelMo
   other->typingActor_ = typingActor_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "Typing", NULL, 0x1, NULL },
-    { "onTypingWithAMPeer:", "onTyping", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "ownTypingActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "typingActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesTyping = { 1, "Typing", "im.actor.model.modules", NULL, 0x1, 2, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesTyping;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTyping)
@@ -83,18 +70,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTyping)
 - (void)copyAllFieldsTo:(ImActorModelModulesTyping_$1 *)other {
   [super copyAllFieldsTo:other];
   other->val$messenger_ = val$messenger_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "Lim.actor.model.modules.typing.OwnTypingActor;", 0x1, NULL },
-    { "initWithImActorModelModulesModules:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "val$messenger_", NULL, 0x1012, "Lim.actor.model.modules.Modules;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesTyping_$1 = { 1, "$1", "im.actor.model.modules", "Typing", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesTyping_$1;
 }
 
 @end

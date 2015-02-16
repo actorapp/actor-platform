@@ -65,26 +65,6 @@ J2OBJC_FIELD_SETTER(AMContactRecord, value_, NSString *)
   other->value_ = value_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withLong:withInt:withNSString:withNSString:", "ContactRecord", NULL, 0x1, NULL },
-    { "getId", NULL, "I", 0x1, NULL },
-    { "getAccessHash", NULL, "J", 0x1, NULL },
-    { "getType", NULL, "I", 0x1, NULL },
-    { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getValue", NULL, "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "id__", "id", 0x2, "I", NULL,  },
-    { "accessHash_", NULL, 0x2, "J", NULL,  },
-    { "type_", NULL, 0x2, "I", NULL,  },
-    { "title_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "value_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMContactRecord = { 1, "ContactRecord", "im.actor.model.entity", NULL, 0x1, 6, methods, 5, fields, 0, NULL};
-  return &_AMContactRecord;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMContactRecord)
