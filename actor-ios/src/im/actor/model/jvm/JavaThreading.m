@@ -36,12 +36,12 @@
   return [((JavaLangRuntime *) nil_chk(JavaLangRuntime_getRuntime())) availableProcessors];
 }
 
-- (AMAtomicIntegerCompat *)createAtomicInt:(jint)init {
-  return [[ImActorModelJvmThreadsJavaAtomicInteger alloc] initWithInt:init_];
+- (AMAtomicIntegerCompat *)createAtomicInt:(jint)value {
+  return [[ImActorModelJvmThreadsJavaAtomicInteger alloc] initWithInt:value];
 }
 
-- (AMAtomicLongCompat *)createAtomicLong:(jlong)init {
-  return [[ImActorModelJvmThreadsJavaAtomicLong alloc] initWithLong:init_];
+- (AMAtomicLongCompat *)createAtomicLong:(jlong)value {
+  return [[ImActorModelJvmThreadsJavaAtomicLong alloc] initWithLong:value];
 }
 
 - (AMThreadLocalCompat *)createThreadLocal {
