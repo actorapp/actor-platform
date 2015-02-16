@@ -57,24 +57,6 @@
   other->uid_ = uid_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.updates.UpdateUserOnline;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:", "UpdateUserOnline", NULL, 0x1, NULL },
-    { "init", "UpdateUserOnline", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiUpdatesUpdateUserOnline_HEADER },
-    { "uid_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiUpdatesUpdateUserOnline = { 1, "UpdateUserOnline", "im.actor.model.api.updates", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiUpdatesUpdateUserOnline;
-}
-
 @end
 
 ImActorModelApiUpdatesUpdateUserOnline *ImActorModelApiUpdatesUpdateUserOnline_fromBytesWithByteArray_(IOSByteArray *data) {

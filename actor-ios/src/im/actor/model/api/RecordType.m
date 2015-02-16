@@ -74,22 +74,6 @@ ImActorModelApiRecordTypeEnum *ImActorModelApiRecordTypeEnum_valueOfWithNSString
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withNSString:withInt:", "RecordType", NULL, 0x2, NULL },
-    { "getValue", NULL, "I", 0x1, NULL },
-    { "parseWithInt:", "parse", "Lim.actor.model.api.RecordType;", 0x9, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "PHONE", "PHONE", 0x4019, "Lim.actor.model.api.RecordType;", &ImActorModelApiRecordTypeEnum_PHONE,  },
-    { "EMAIL", "EMAIL", 0x4019, "Lim.actor.model.api.RecordType;", &ImActorModelApiRecordTypeEnum_EMAIL,  },
-    { "value_", NULL, 0x2, "I", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.RecordType;"};
-  static const J2ObjcClassInfo _ImActorModelApiRecordTypeEnum = { 1, "RecordType", "im.actor.model.api", NULL, 0x4011, 3, methods, 3, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRecordTypeEnum;
-}
-
 @end
 
 ImActorModelApiRecordTypeEnum *ImActorModelApiRecordTypeEnum_parseWithInt_(jint value) {

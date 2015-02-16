@@ -50,23 +50,6 @@
   other->body_ = body_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataInput:", "Push", NULL, 0x1, "Ljava.io.IOException;" },
-    { "initWithInt:withByteArray:", "Push", NULL, 0x1, NULL },
-    { "getHeader", NULL, "B", 0x1, NULL },
-    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "updateType_", NULL, 0x1, "I", NULL,  },
-    { "body_", NULL, 0x1, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTPush = { 1, "Push", "im.actor.model.network.mtp.entity.rpc", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
-  return &_MTPush;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTPush)

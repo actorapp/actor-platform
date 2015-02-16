@@ -66,25 +66,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromOnline, users_, id<Jav
   other->users_ = users_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestSubscribeFromOnline;", 0x9, "Ljava.io.IOException;" },
-    { "initWithJavaUtilList:", "RequestSubscribeFromOnline", NULL, 0x1, NULL },
-    { "init", "RequestSubscribeFromOnline", NULL, 0x1, NULL },
-    { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestSubscribeFromOnline_HEADER },
-    { "users_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseVoid;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestSubscribeFromOnline = { 1, "RequestSubscribeFromOnline", "im.actor.model.api.rpc", NULL, 0x1, 7, methods, 2, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestSubscribeFromOnline;
-}
-
 @end
 
 ImActorModelApiRpcRequestSubscribeFromOnline *ImActorModelApiRpcRequestSubscribeFromOnline_fromBytesWithByteArray_(IOSByteArray *data) {

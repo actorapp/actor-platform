@@ -56,20 +56,6 @@ AMPeerTypeEnum *AMPeerTypeEnum_valueOfWithNSString_(NSString *name) {
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withInt:", "init", NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "PRIVATE", "PRIVATE", 0x4019, "Lim.actor.model.entity.PeerType;", &AMPeerTypeEnum_PRIVATE,  },
-    { "GROUP", "GROUP", 0x4019, "Lim.actor.model.entity.PeerType;", &AMPeerTypeEnum_GROUP,  },
-    { "EMAIL", "EMAIL", 0x4019, "Lim.actor.model.entity.PeerType;", &AMPeerTypeEnum_EMAIL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.entity.PeerType;"};
-  static const J2ObjcClassInfo _AMPeerTypeEnum = { 1, "PeerType", "im.actor.model.entity", NULL, 0x4011, 1, methods, 3, fields, 1, superclass_type_args};
-  return &_AMPeerTypeEnum;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMPeerTypeEnum)

@@ -87,24 +87,6 @@ J2OBJC_FIELD_SETTER(AMMemoryKeyValueEngine, users_, JavaUtilHashMap *)
   other->users_ = users_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "addOrUpdateItemWithAMKeyValueItem:", "addOrUpdateItem", "V", 0x21, NULL },
-    { "addOrUpdateItemsWithJavaUtilList:", "addOrUpdateItems", "V", 0x21, NULL },
-    { "removeItemWithLong:", "removeItem", "V", 0x21, NULL },
-    { "removeItemsWithLongArray:", "removeItems", "V", 0x21, NULL },
-    { "clear", NULL, "V", 0x21, NULL },
-    { "getAll", NULL, "Ljava.util.List;", 0x21, NULL },
-    { "getValueWithLong:", "getValue", "TT;", 0x21, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "users_", NULL, 0x2, "Ljava.util.HashMap;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMMemoryKeyValueEngine = { 1, "MemoryKeyValueEngine", "im.actor.model.storage", NULL, 0x1, 8, methods, 1, fields, 0, NULL};
-  return &_AMMemoryKeyValueEngine;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMemoryKeyValueEngine)

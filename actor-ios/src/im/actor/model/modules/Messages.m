@@ -146,31 +146,6 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)m
   other->conversationActors_ = conversationActors_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "Messages", NULL, 0x1, NULL },
-    { "run", NULL, "V", 0x1, NULL },
-    { "getConversationActorWithAMPeer:", "getConversationActor", "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "getConversationEngineWithAMPeer:", "getConversationEngine", "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
-    { "getDialogsActor", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "getDialogsHistoryActor", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "getDialogsEngine", NULL, "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
-    { "sendMessageWithAMPeer:withImActorModelEntityContentAbsContent:", "sendMessage", "V", 0x1, NULL },
-    { "onInboundMessageShownWithAMPeer:withLong:withLong:withLong:withBoolean:", "onInboundMessageShown", "V", 0x1, NULL },
-    { "saveDraftWithAMPeer:withNSString:", "saveDraft", "V", 0x1, NULL },
-    { "loadDraftWithAMPeer:", "loadDraft", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "dialogs_", NULL, 0x2, "Lim.actor.model.mvvm.ListEngine;", NULL,  },
-    { "dialogsActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "dialogsHistoryActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "conversationEngines_", NULL, 0x12, "Ljava.util.HashMap;", NULL,  },
-    { "conversationActors_", NULL, 0x12, "Ljava.util.HashMap;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessages = { 1, "Messages", "im.actor.model.modules", NULL, 0x1, 11, methods, 5, fields, 0, NULL};
-  return &_ImActorModelModulesMessages;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages)
@@ -191,18 +166,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages)
   other->this$0_ = this$0_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "Lim.actor.model.modules.messages.DialogsActor;", 0x1, NULL },
-    { "initWithImActorModelModulesMessages:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Messages;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessages_$1 = { 1, "$1", "im.actor.model.modules", "Messages", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessages_$1;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$1)
@@ -221,18 +184,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$1)
 - (void)copyAllFieldsTo:(ImActorModelModulesMessages_$2 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "Lim.actor.model.modules.messages.DialogsHistoryActor;", 0x1, NULL },
-    { "initWithImActorModelModulesMessages:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Messages;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessages_$2 = { 1, "$2", "im.actor.model.modules", "Messages", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessages_$2;
 }
 
 @end
@@ -256,19 +207,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$2)
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$peer_ = val$peer_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "Lim.actor.model.modules.messages.ConversationActor;", 0x1, NULL },
-    { "initWithImActorModelModulesMessages:withAMPeer:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Messages;", NULL,  },
-    { "val$peer_", NULL, 0x1012, "Lim.actor.model.entity.Peer;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessages_$3 = { 1, "$3", "im.actor.model.modules", "Messages", 0x8000, 2, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesMessages_$3;
 }
 
 @end

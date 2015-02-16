@@ -62,23 +62,6 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceContent, compatText_, NSStri
   other->compatText_ = compatText_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "serviceFromBytesWithByteArray:", "serviceFromBytes", "Lim.actor.model.entity.content.ServiceContent;", 0x9, "Ljava.io.IOException;" },
-    { "initWithNSString:", "ServiceContent", NULL, 0x1, NULL },
-    { "init", "ServiceContent", NULL, 0x4, NULL },
-    { "getCompatText", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "compatText_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentServiceContent = { 1, "ServiceContent", "im.actor.model.entity.content", NULL, 0x1, 7, methods, 1, fields, 0, NULL};
-  return &_ImActorModelEntityContentServiceContent;
-}
-
 @end
 
 ImActorModelEntityContentServiceContent *ImActorModelEntityContentServiceContent_serviceFromBytesWithByteArray_(IOSByteArray *data) {

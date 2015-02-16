@@ -41,17 +41,6 @@
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.content.FileSource;", 0x9, "Ljava.io.IOException;" },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentFileSource = { 1, "FileSource", "im.actor.model.entity.content", NULL, 0x401, 4, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelEntityContentFileSource;
-}
-
 @end
 
 ImActorModelEntityContentFileSource *ImActorModelEntityContentFileSource_fromBytesWithByteArray_(IOSByteArray *data) {

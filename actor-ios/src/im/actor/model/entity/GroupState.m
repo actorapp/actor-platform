@@ -57,21 +57,6 @@ AMGroupStateEnum *AMGroupStateEnum_valueOfWithNSString_(NSString *name) {
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withInt:", "init", NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "JOINED", "JOINED", 0x4019, "Lim.actor.model.entity.GroupState;", &AMGroupStateEnum_JOINED,  },
-    { "KICKED", "KICKED", 0x4019, "Lim.actor.model.entity.GroupState;", &AMGroupStateEnum_KICKED,  },
-    { "DELETED_PENDING", "DELETED_PENDING", 0x4019, "Lim.actor.model.entity.GroupState;", &AMGroupStateEnum_DELETED_PENDING,  },
-    { "DELETED", "DELETED", 0x4019, "Lim.actor.model.entity.GroupState;", &AMGroupStateEnum_DELETED,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.entity.GroupState;"};
-  static const J2ObjcClassInfo _AMGroupStateEnum = { 1, "GroupState", "im.actor.model.entity", NULL, 0x4011, 1, methods, 4, fields, 1, superclass_type_args};
-  return &_AMGroupStateEnum;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupStateEnum)

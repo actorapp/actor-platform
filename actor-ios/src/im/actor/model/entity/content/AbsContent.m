@@ -27,6 +27,9 @@
 #include "java/io/IOException.h"
 #include "java/lang/IllegalArgumentException.h"
 
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
 @implementation ImActorModelEntityContentAbsContent
 
 + (ImActorModelEntityContentAbsContent *)contentFromBytesWithByteArray:(IOSByteArray *)data {
@@ -44,27 +47,8 @@
   return ImActorModelEntityContentAbsContent_typeFromValueWithInt_(val);
 }
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-  return 0;
-}
-
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "contentFromBytesWithByteArray:", "contentFromBytes", "Lim.actor.model.entity.content.AbsContent;", 0x9, "Ljava.io.IOException;" },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "typeFromValueWithInt:", "typeFromValue", "Lim.actor.model.entity.content.AbsContent$ContentType;", 0xc, NULL },
-    { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x404, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentAbsContent = { 1, "AbsContent", "im.actor.model.entity.content", NULL, 0x401, 6, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelEntityContentAbsContent;
 }
 
 @end
@@ -199,31 +183,6 @@ ImActorModelEntityContentAbsContent_ContentTypeEnum *ImActorModelEntityContentAb
     ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_REGISTERED = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:12 withNSString:@"SERVICE_REGISTERED" withInt:11];
     J2OBJC_SET_INITIALIZED(ImActorModelEntityContentAbsContent_ContentTypeEnum)
   }
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withNSString:withInt:", "ContentType", NULL, 0x2, NULL },
-    { "getValue", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TEXT", "TEXT", 0x4019, "Lim.actor.model.entity.content.AbsContent$ContentType;", &ImActorModelEntityContentAbsContent_ContentTypeEnum_TEXT,  },
-    { "DOCUMENT", "DOCUMENT", 0x4019, "Lim.actor.model.entity.content.AbsContent$ContentType;", &ImActorModelEntityContentAbsContent_ContentTypeEnum_DOCUMENT,  },
-    { "DOCUMENT_PHOTO", "DOCUMENT_PHOTO", 0x4019, "Lim.actor.model.entity.content.AbsContent$ContentType;", &ImActorModelEntityContentAbsContent_ContentTypeEnum_DOCUMENT_PHOTO,  },
-    { "DOCUMENT_VIDEO", "DOCUMENT_VIDEO", 0x4019, "Lim.actor.model.entity.content.AbsContent$ContentType;", &ImActorModelEntityContentAbsContent_ContentTypeEnum_DOCUMENT_VIDEO,  },
-    { "SERVICE", "SERVICE", 0x4019, "Lim.actor.model.entity.content.AbsContent$ContentType;", &ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE,  },
-    { "SERVICE_CREATED", "SERVICE_CREATED", 0x4019, "Lim.actor.model.entity.content.AbsContent$ContentType;", &ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_CREATED,  },
-    { "SERVICE_AVATAR", "SERVICE_AVATAR", 0x4019, "Lim.actor.model.entity.content.AbsContent$ContentType;", &ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_AVATAR,  },
-    { "SERVICE_TITLE", "SERVICE_TITLE", 0x4019, "Lim.actor.model.entity.content.AbsContent$ContentType;", &ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_TITLE,  },
-    { "SERVICE_ADDED", "SERVICE_ADDED", 0x4019, "Lim.actor.model.entity.content.AbsContent$ContentType;", &ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_ADDED,  },
-    { "SERVICE_KICKED", "SERVICE_KICKED", 0x4019, "Lim.actor.model.entity.content.AbsContent$ContentType;", &ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_KICKED,  },
-    { "SERVICE_LEAVE", "SERVICE_LEAVE", 0x4019, "Lim.actor.model.entity.content.AbsContent$ContentType;", &ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_LEAVE,  },
-    { "SERVICE_REGISTERED", "SERVICE_REGISTERED", 0x4019, "Lim.actor.model.entity.content.AbsContent$ContentType;", &ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_REGISTERED,  },
-    { "value_", NULL, 0x0, "I", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.entity.content.AbsContent$ContentType;"};
-  static const J2ObjcClassInfo _ImActorModelEntityContentAbsContent_ContentTypeEnum = { 1, "ContentType", "im.actor.model.entity.content", "AbsContent", 0x401c, 2, methods, 13, fields, 1, superclass_type_args};
-  return &_ImActorModelEntityContentAbsContent_ContentTypeEnum;
 }
 
 @end

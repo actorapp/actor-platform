@@ -67,27 +67,6 @@
   other->limit_ = limit_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestLoadDialogs;", 0x9, "Ljava.io.IOException;" },
-    { "initWithLong:withInt:", "RequestLoadDialogs", NULL, 0x1, NULL },
-    { "init", "RequestLoadDialogs", NULL, 0x1, NULL },
-    { "getStartDate", NULL, "J", 0x1, NULL },
-    { "getLimit", NULL, "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestLoadDialogs_HEADER },
-    { "startDate_", NULL, 0x2, "J", NULL,  },
-    { "limit_", NULL, 0x2, "I", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseLoadDialogs;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestLoadDialogs = { 1, "RequestLoadDialogs", "im.actor.model.api.rpc", NULL, 0x1, 8, methods, 3, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestLoadDialogs;
-}
-
 @end
 
 ImActorModelApiRpcRequestLoadDialogs *ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {

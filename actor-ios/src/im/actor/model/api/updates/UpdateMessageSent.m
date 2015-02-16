@@ -83,28 +83,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageSent, peer_, ImActorModel
   other->date_ = date_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.updates.UpdateMessageSent;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiPeer:withLong:withLong:", "UpdateMessageSent", NULL, 0x1, NULL },
-    { "init", "UpdateMessageSent", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.api.Peer;", 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiUpdatesUpdateMessageSent_HEADER },
-    { "peer_", NULL, 0x2, "Lim.actor.model.api.Peer;", NULL,  },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "date_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiUpdatesUpdateMessageSent = { 1, "UpdateMessageSent", "im.actor.model.api.updates", NULL, 0x1, 9, methods, 4, fields, 0, NULL};
-  return &_ImActorModelApiUpdatesUpdateMessageSent;
-}
-
 @end
 
 ImActorModelApiUpdatesUpdateMessageSent *ImActorModelApiUpdatesUpdateMessageSent_fromBytesWithByteArray_(IOSByteArray *data) {

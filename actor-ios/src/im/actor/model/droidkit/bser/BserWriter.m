@@ -191,43 +191,6 @@ J2OBJC_FIELD_SETTER(BSBserWriter, stream_, AMDataOutput *)
   other->stream_ = stream_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataOutput:", "BserWriter", NULL, 0x1, NULL },
-    { "writeBytesWithInt:withByteArray:", "writeBytes", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeStringWithInt:withNSString:", "writeString", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeBoolWithInt:withBoolean:", "writeBool", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeIntWithInt:withInt:", "writeInt", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeIntFixedWithInt:withInt:", "writeIntFixed", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeDoubleWithInt:withDouble:", "writeDouble", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeLongFixedWithInt:withLong:", "writeLongFixed", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeLongWithInt:withLong:", "writeLong", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeRepeatedLongWithInt:withJavaUtilList:", "writeRepeatedLong", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeRepeatedIntWithInt:withJavaUtilList:", "writeRepeatedInt", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeRepeatedBoolWithInt:withJavaUtilList:", "writeRepeatedBool", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeRepeatedObjWithInt:withJavaUtilList:", "writeRepeatedObj", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeObjectWithInt:withBSBserObject:", "writeObject", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeTagWithInt:withInt:", "writeTag", "V", 0x2, "Ljava.io.IOException;" },
-    { "writeVarIntFieldWithInt:withLong:", "writeVarIntField", "V", 0x2, "Ljava.io.IOException;" },
-    { "writeBytesFieldWithInt:withByteArray:", "writeBytesField", "V", 0x2, "Ljava.io.IOException;" },
-    { "writeVar64FieldWithInt:withLong:", "writeVar64Field", "V", 0x2, "Ljava.io.IOException;" },
-    { "writeVar32FieldWithInt:withLong:", "writeVar32Field", "V", 0x2, "Ljava.io.IOException;" },
-    { "writeVarIntWithLong:", "writeVarInt", "V", 0x2, "Ljava.io.IOException;" },
-    { "writeLongWithLong:", "writeLong", "V", 0x2, "Ljava.io.IOException;" },
-    { "writeIntWithLong:", "writeInt", "V", 0x2, "Ljava.io.IOException;" },
-    { "writeBytesWithByteArray:", "writeBytes", "V", 0x2, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TYPE_VARINT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = BSBserWriter_TYPE_VARINT },
-    { "TYPE_32BIT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = BSBserWriter_TYPE_32BIT },
-    { "TYPE_64BIT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = BSBserWriter_TYPE_64BIT },
-    { "TYPE_LENGTH_DELIMITED_", NULL, 0x1a, "I", NULL, .constantValue.asInt = BSBserWriter_TYPE_LENGTH_DELIMITED },
-    { "stream_", NULL, 0x2, "Lim.actor.model.util.DataOutput;", NULL,  },
-  };
-  static const J2ObjcClassInfo _BSBserWriter = { 1, "BserWriter", "im.actor.model.droidkit.bser", NULL, 0x1, 23, methods, 5, fields, 0, NULL};
-  return &_BSBserWriter;
-}
-
 @end
 
 void BSBserWriter_writeTagWithInt_withInt_(BSBserWriter *self, jint fieldNumber, jint wireType) {

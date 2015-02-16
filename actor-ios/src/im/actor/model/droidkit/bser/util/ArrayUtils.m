@@ -106,35 +106,6 @@ IOSObjectArray * ImActorModelDroidkitBserUtilArrayUtils_sCache_;
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "ArrayUtils", NULL, 0x2, NULL },
-    { "idealByteArraySizeWithInt:", "idealByteArraySize", "I", 0x9, NULL },
-    { "idealBooleanArraySizeWithInt:", "idealBooleanArraySize", "I", 0x9, NULL },
-    { "idealShortArraySizeWithInt:", "idealShortArraySize", "I", 0x9, NULL },
-    { "idealCharArraySizeWithInt:", "idealCharArraySize", "I", 0x9, NULL },
-    { "idealIntArraySizeWithInt:", "idealIntArraySize", "I", 0x9, NULL },
-    { "idealFloatArraySizeWithInt:", "idealFloatArraySize", "I", 0x9, NULL },
-    { "idealObjectArraySizeWithInt:", "idealObjectArraySize", "I", 0x9, NULL },
-    { "idealLongArraySizeWithInt:", "idealLongArraySize", "I", 0x9, NULL },
-    { "equalsWithByteArray:withByteArray:withInt:", "equals", "Z", 0x9, NULL },
-    { "containsWithNSObjectArray:withId:", "contains", "Z", 0x9, NULL },
-    { "indexOfWithNSObjectArray:withId:", "indexOf", "I", 0x9, NULL },
-    { "containsAllWithNSObjectArray:withNSObjectArray:", "containsAll", "Z", 0x9, NULL },
-    { "containsWithIntArray:withInt:", "contains", "Z", 0x9, NULL },
-    { "totalWithLongArray:", "total", "J", 0x9, NULL },
-    { "appendIntWithIntArray:withInt:", "appendInt", "[I", 0x9, NULL },
-    { "removeIntWithIntArray:withInt:", "removeInt", "[I", 0x9, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "EMPTY_", NULL, 0xa, "[Ljava.lang.Object;", &ImActorModelDroidkitBserUtilArrayUtils_EMPTY_,  },
-    { "CACHE_SIZE_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelDroidkitBserUtilArrayUtils_CACHE_SIZE },
-    { "sCache_", NULL, 0xa, "[Ljava.lang.Object;", &ImActorModelDroidkitBserUtilArrayUtils_sCache_,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitBserUtilArrayUtils = { 1, "ArrayUtils", "im.actor.model.droidkit.bser.util", NULL, 0x1, 17, methods, 3, fields, 0, NULL};
-  return &_ImActorModelDroidkitBserUtilArrayUtils;
-}
-
 @end
 
 jint ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(jint need) {

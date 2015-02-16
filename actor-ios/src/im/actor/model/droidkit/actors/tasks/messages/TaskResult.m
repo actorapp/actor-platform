@@ -44,21 +44,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksMessagesTaskResult, res_, id)
   other->res_ = res_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withId:", "TaskResult", NULL, 0x1, NULL },
-    { "getRes", NULL, "TT;", 0x1, NULL },
-    { "getRequestId", NULL, "I", 0x1, NULL },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "requestId_", NULL, 0x12, "I", NULL,  },
-    { "res_", NULL, 0x12, "TT;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksMessagesTaskResult = { 1, "TaskResult", "im.actor.model.droidkit.actors.tasks.messages", NULL, 0x1, 4, methods, 2, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksMessagesTaskResult;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksMessagesTaskResult)

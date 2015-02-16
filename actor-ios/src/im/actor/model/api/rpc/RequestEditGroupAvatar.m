@@ -88,29 +88,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
   other->fileLocation_ = fileLocation_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestEditGroupAvatar;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiGroupOutPeer:withLong:withImActorModelApiFileLocation:", "RequestEditGroupAvatar", NULL, 0x1, NULL },
-    { "init", "RequestEditGroupAvatar", NULL, 0x1, NULL },
-    { "getGroupPeer", NULL, "Lim.actor.model.api.GroupOutPeer;", 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getFileLocation", NULL, "Lim.actor.model.api.FileLocation;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestEditGroupAvatar_HEADER },
-    { "groupPeer_", NULL, 0x2, "Lim.actor.model.api.GroupOutPeer;", NULL,  },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "fileLocation_", NULL, 0x2, "Lim.actor.model.api.FileLocation;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseEditGroupAvatar;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestEditGroupAvatar = { 1, "RequestEditGroupAvatar", "im.actor.model.api.rpc", NULL, 0x1, 9, methods, 4, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestEditGroupAvatar;
-}
-
 @end
 
 ImActorModelApiRpcRequestEditGroupAvatar *ImActorModelApiRpcRequestEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {

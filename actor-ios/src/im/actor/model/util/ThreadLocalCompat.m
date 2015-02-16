@@ -6,37 +6,13 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/util/ThreadLocalCompat.h"
 
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
 @implementation AMThreadLocalCompat
-
-- (id)get {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-  return 0;
-}
-
-- (void)setWithId:(id)v {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-}
-
-- (void)remove {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-}
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "get", NULL, "TT;", 0x401, NULL },
-    { "setWithId:", "set", "V", 0x401, NULL },
-    { "remove", NULL, "V", 0x401, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _AMThreadLocalCompat = { 1, "ThreadLocalCompat", "im.actor.model.util", NULL, 0x401, 4, methods, 0, NULL, 0, NULL};
-  return &_AMThreadLocalCompat;
 }
 
 @end

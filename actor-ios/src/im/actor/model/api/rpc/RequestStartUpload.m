@@ -33,22 +33,6 @@
   return ImActorModelApiRpcRequestStartUpload_HEADER;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestStartUpload;", 0x9, "Ljava.io.IOException;" },
-    { "init", "RequestStartUpload", NULL, 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestStartUpload_HEADER },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseStartUpload;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestStartUpload = { 1, "RequestStartUpload", "im.actor.model.api.rpc", NULL, 0x1, 5, methods, 1, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestStartUpload;
-}
-
 @end
 
 ImActorModelApiRpcRequestStartUpload *ImActorModelApiRpcRequestStartUpload_fromBytesWithByteArray_(IOSByteArray *data) {

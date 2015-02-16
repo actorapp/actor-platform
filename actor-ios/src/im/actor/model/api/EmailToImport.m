@@ -64,23 +64,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
   other->name_ = name_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withNSString:", "EmailToImport", NULL, 0x1, NULL },
-    { "init", "EmailToImport", NULL, 0x1, NULL },
-    { "getEmail", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "email_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "name_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiEmailToImport = { 1, "EmailToImport", "im.actor.model.api", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiEmailToImport;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiEmailToImport)

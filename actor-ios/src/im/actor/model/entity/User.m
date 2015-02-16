@@ -149,38 +149,6 @@ J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
   other->sex_ = sex_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.User;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withLong:withNSString:withNSString:withAMAvatar:withAMSexEnum:", "User", NULL, 0x1, NULL },
-    { "init", "User", NULL, 0x2, NULL },
-    { "peer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "getAccessHash", NULL, "J", 0x1, NULL },
-    { "getServerName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getLocalName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getAvatar", NULL, "Lim.actor.model.entity.Avatar;", 0x1, NULL },
-    { "getSex", NULL, "Lim.actor.model.entity.Sex;", 0x1, NULL },
-    { "editNameWithNSString:", "editName", "Lim.actor.model.entity.User;", 0x1, NULL },
-    { "editLocalNameWithNSString:", "editLocalName", "Lim.actor.model.entity.User;", 0x1, NULL },
-    { "editAvatarWithAMAvatar:", "editAvatar", "Lim.actor.model.entity.User;", 0x1, NULL },
-    { "getEngineId", NULL, "J", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "uid_", NULL, 0x2, "I", NULL,  },
-    { "accessHash_", NULL, 0x2, "J", NULL,  },
-    { "name_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "localName_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "avatar_", NULL, 0x2, "Lim.actor.model.entity.Avatar;", NULL,  },
-    { "sex_", NULL, 0x2, "Lim.actor.model.entity.Sex;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMUser = { 1, "User", "im.actor.model.entity", NULL, 0x1, 17, methods, 6, fields, 0, NULL};
-  return &_AMUser;
-}
-
 @end
 
 AMUser *AMUser_fromBytesWithByteArray_(IOSByteArray *data) {

@@ -133,35 +133,6 @@ withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
   other->ext_ = ext_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withLong:withInt:withNSString:withNSString:withImActorModelApiFastThumb:withInt:withByteArray:", "FileMessage", NULL, 0x1, NULL },
-    { "init", "FileMessage", NULL, 0x1, NULL },
-    { "getFileId", NULL, "J", 0x1, NULL },
-    { "getAccessHash", NULL, "J", 0x1, NULL },
-    { "getFileSize", NULL, "I", 0x1, NULL },
-    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getMimeType", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getThumb", NULL, "Lim.actor.model.api.FastThumb;", 0x1, NULL },
-    { "getExtType", NULL, "I", 0x1, NULL },
-    { "getExt", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "fileId_", NULL, 0x2, "J", NULL,  },
-    { "accessHash_", NULL, 0x2, "J", NULL,  },
-    { "fileSize_", NULL, 0x2, "I", NULL,  },
-    { "name_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "mimeType_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "thumb_", NULL, 0x2, "Lim.actor.model.api.FastThumb;", NULL,  },
-    { "extType_", NULL, 0x2, "I", NULL,  },
-    { "ext_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiFileMessage = { 1, "FileMessage", "im.actor.model.api", NULL, 0x1, 12, methods, 8, fields, 0, NULL};
-  return &_ImActorModelApiFileMessage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiFileMessage)

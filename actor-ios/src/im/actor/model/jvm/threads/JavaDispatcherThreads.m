@@ -128,27 +128,6 @@ JavaUtilConcurrentAtomicAtomicInteger * ImActorModelJvmThreadsJavaDispatcherThre
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withInt:withDKThreadPriorityEnum:withDKAbstractDispatchQueue:withDKDispatch:withBoolean:", "JavaDispatcherThreads", NULL, 0x1, NULL },
-    { "startPool", NULL, "V", 0x1, NULL },
-    { "close", NULL, "V", 0x1, NULL },
-    { "notifyDispatcher", NULL, "V", 0x4, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "INDEX_", NULL, 0x1a, "Ljava.util.concurrent.atomic.AtomicInteger;", &ImActorModelJvmThreadsJavaDispatcherThreads_INDEX_,  },
-    { "threads_", NULL, 0x2, "[Ljava.lang.Thread;", NULL,  },
-    { "count_", NULL, 0x12, "I", NULL,  },
-    { "priority_", NULL, 0x12, "Lim.actor.model.droidkit.actors.ThreadPriority;", NULL,  },
-    { "isClosed_", NULL, 0x2, "Z", NULL,  },
-    { "id__", "id", 0x12, "I", NULL,  },
-    { "name_", NULL, 0x12, "Ljava.lang.String;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"TT;", "TQ;"};
-  static const J2ObjcClassInfo _ImActorModelJvmThreadsJavaDispatcherThreads = { 1, "JavaDispatcherThreads", "im.actor.model.jvm.threads", NULL, 0x1, 4, methods, 7, fields, 2, superclass_type_args};
-  return &_ImActorModelJvmThreadsJavaDispatcherThreads;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaDispatcherThreads)
@@ -212,21 +191,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaDispatcherThreads)
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->isChanged__ = isChanged__;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "isChanged", NULL, "Z", 0x1, NULL },
-    { "setChangedWithBoolean:", "setChanged", "V", 0x1, NULL },
-    { "run", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelJvmThreadsJavaDispatcherThreads:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.jvm.threads.JavaDispatcherThreads;", NULL,  },
-    { "isChanged__", "isChanged", 0x2, "Z", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelJvmThreadsJavaDispatcherThreads_DispatcherThread = { 1, "DispatcherThread", "im.actor.model.jvm.threads", "JavaDispatcherThreads", 0x2, 4, methods, 2, fields, 0, NULL};
-  return &_ImActorModelJvmThreadsJavaDispatcherThreads_DispatcherThread;
 }
 
 @end

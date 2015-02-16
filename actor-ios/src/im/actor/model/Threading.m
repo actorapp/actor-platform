@@ -12,26 +12,4 @@
 #include "im/actor/model/util/AtomicLongCompat.h"
 #include "im/actor/model/util/ThreadLocalCompat.h"
 
-@interface AMThreading : NSObject
-@end
-
-@implementation AMThreading
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "getActorTime", NULL, "J", 0x401, NULL },
-    { "getCurrentTime", NULL, "J", 0x401, NULL },
-    { "getCoresCount", NULL, "I", 0x401, NULL },
-    { "createAtomicInt:", "createAtomicInt", "Lim.actor.model.util.AtomicIntegerCompat;", 0x401, NULL },
-    { "createAtomicLong:", "createAtomicLong", "Lim.actor.model.util.AtomicLongCompat;", 0x401, NULL },
-    { "createThreadLocal", NULL, "Lim.actor.model.util.ThreadLocalCompat;", 0x401, NULL },
-    { "createDispatcherWithNSString:withInt:withDKThreadPriorityEnum:withDKActorSystem:", "createDispatcher", "Lim.actor.model.droidkit.actors.mailbox.ActorDispatcher;", 0x401, NULL },
-    { "createDefaultDispatcherWithNSString:withDKThreadPriorityEnum:withDKActorSystem:", "createDefaultDispatcher", "Lim.actor.model.droidkit.actors.mailbox.ActorDispatcher;", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMThreading = { 1, "Threading", "im.actor.model", NULL, 0x201, 8, methods, 0, NULL, 0, NULL};
-  return &_AMThreading;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMThreading)

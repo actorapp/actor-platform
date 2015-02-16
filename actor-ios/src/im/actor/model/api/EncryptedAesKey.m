@@ -62,23 +62,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedAesKey, aesEncryptedKey_, IOSByteArr
   other->aesEncryptedKey_ = aesEncryptedKey_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withByteArray:", "EncryptedAesKey", NULL, 0x1, NULL },
-    { "init", "EncryptedAesKey", NULL, 0x1, NULL },
-    { "getKeyHash", NULL, "J", 0x1, NULL },
-    { "getAesEncryptedKey", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "keyHash_", NULL, 0x2, "J", NULL,  },
-    { "aesEncryptedKey_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiEncryptedAesKey = { 1, "EncryptedAesKey", "im.actor.model.api", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiEncryptedAesKey;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiEncryptedAesKey)

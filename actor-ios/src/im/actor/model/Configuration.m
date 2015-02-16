@@ -93,30 +93,6 @@ J2OBJC_FIELD_SETTER(AMConfiguration, log_, id<AMLogCallback>)
   other->log_ = log_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMNetworking:withAMConnectionEndpointArray:withAMThreading:withAMMainThread:withAMStorage:withAMMessengerCallback:withAMLogCallback:", "Configuration", NULL, 0x1, NULL },
-    { "getNetworking", NULL, "Lim.actor.model.Networking;", 0x1, NULL },
-    { "getEndpoints", NULL, "[Lim.actor.model.network.ConnectionEndpoint;", 0x1, NULL },
-    { "getThreading", NULL, "Lim.actor.model.Threading;", 0x1, NULL },
-    { "getMainThread", NULL, "Lim.actor.model.MainThread;", 0x1, NULL },
-    { "getStorage", NULL, "Lim.actor.model.Storage;", 0x1, NULL },
-    { "getCallback", NULL, "Lim.actor.model.MessengerCallback;", 0x1, NULL },
-    { "getLog", NULL, "Lim.actor.model.LogCallback;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "networking_", NULL, 0x12, "Lim.actor.model.Networking;", NULL,  },
-    { "endpoints_", NULL, 0x12, "[Lim.actor.model.network.ConnectionEndpoint;", NULL,  },
-    { "threading_", NULL, 0x12, "Lim.actor.model.Threading;", NULL,  },
-    { "mainThread_", NULL, 0x12, "Lim.actor.model.MainThread;", NULL,  },
-    { "storage_", NULL, 0x12, "Lim.actor.model.Storage;", NULL,  },
-    { "callback_", NULL, 0x12, "Lim.actor.model.MessengerCallback;", NULL,  },
-    { "log_", NULL, 0x12, "Lim.actor.model.LogCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMConfiguration = { 1, "Configuration", "im.actor.model", NULL, 0x1, 8, methods, 7, fields, 0, NULL};
-  return &_AMConfiguration;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConfiguration)

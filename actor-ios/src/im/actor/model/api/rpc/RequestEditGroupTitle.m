@@ -87,29 +87,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
   other->title_ = title_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestEditGroupTitle;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiGroupOutPeer:withLong:withNSString:", "RequestEditGroupTitle", NULL, 0x1, NULL },
-    { "init", "RequestEditGroupTitle", NULL, 0x1, NULL },
-    { "getGroupPeer", NULL, "Lim.actor.model.api.GroupOutPeer;", 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestEditGroupTitle_HEADER },
-    { "groupPeer_", NULL, 0x2, "Lim.actor.model.api.GroupOutPeer;", NULL,  },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "title_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseSeqDate;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestEditGroupTitle = { 1, "RequestEditGroupTitle", "im.actor.model.api.rpc", NULL, 0x1, 9, methods, 4, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestEditGroupTitle;
-}
-
 @end
 
 ImActorModelApiRpcRequestEditGroupTitle *ImActorModelApiRpcRequestEditGroupTitle_fromBytesWithByteArray_(IOSByteArray *data) {

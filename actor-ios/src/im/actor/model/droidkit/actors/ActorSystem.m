@@ -123,29 +123,6 @@ NSString * DKActorSystem_DEFAULT_DISPATCHER_ = @"default";
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "system", NULL, "Lim.actor.model.droidkit.actors.ActorSystem;", 0x9, NULL },
-    { "init", "ActorSystem", NULL, 0x1, NULL },
-    { "initWithBoolean:", "ActorSystem", NULL, 0x1, NULL },
-    { "addDispatcherWithNSString:withInt:", "addDispatcher", "V", 0x1, NULL },
-    { "addDispatcherWithNSString:", "addDispatcher", "V", 0x1, NULL },
-    { "addDispatcherWithNSString:withDKActorDispatcher:", "addDispatcher", "V", 0x1, NULL },
-    { "actorOfWithDKActorSelection:", "actorOf", "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "actorOfWithDKProps:withNSString:", "actorOf", "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "getTraceInterface", NULL, "Lim.actor.model.droidkit.actors.debug.TraceInterface;", 0x1, NULL },
-    { "setTraceInterfaceWithImActorModelDroidkitActorsDebugTraceInterface:", "setTraceInterface", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "mainSystem_", NULL, 0x1a, "Lim.actor.model.droidkit.actors.ActorSystem;", &DKActorSystem_mainSystem_,  },
-    { "DEFAULT_DISPATCHER_", NULL, 0x1a, "Ljava.lang.String;", &DKActorSystem_DEFAULT_DISPATCHER_,  },
-    { "dispatchers_", NULL, 0x12, "Ljava.util.HashMap;", NULL,  },
-    { "traceInterface_", NULL, 0x2, "Lim.actor.model.droidkit.actors.debug.TraceInterface;", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKActorSystem = { 1, "ActorSystem", "im.actor.model.droidkit.actors", NULL, 0x1, 10, methods, 4, fields, 0, NULL};
-  return &_DKActorSystem;
-}
-
 @end
 
 DKActorSystem *DKActorSystem_system() {

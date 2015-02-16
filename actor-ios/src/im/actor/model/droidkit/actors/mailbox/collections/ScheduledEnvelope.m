@@ -53,23 +53,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelop
   other->envelope_ = envelope_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withLong:withDKEnvelope:", "ScheduledEnvelope", NULL, 0x1, NULL },
-    { "getKey", NULL, "J", 0x1, NULL },
-    { "getTime", NULL, "J", 0x1, NULL },
-    { "getEnvelope", NULL, "Lim.actor.model.droidkit.actors.mailbox.Envelope;", 0x1, NULL },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "key_", NULL, 0x2, "J", NULL,  },
-    { "time_", NULL, 0x2, "J", NULL,  },
-    { "envelope_", NULL, 0x2, "Lim.actor.model.droidkit.actors.mailbox.Envelope;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope = { 1, "ScheduledEnvelope", "im.actor.model.droidkit.actors.mailbox.collections", NULL, 0x1, 5, methods, 3, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope)

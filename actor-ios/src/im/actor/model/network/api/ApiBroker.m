@@ -288,35 +288,6 @@ withImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)message
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "getWithAMEndpoints:withAMAuthKeyStorage:withAMActorApiCallback:withAMNetworking:", "get", "Lim.actor.model.droidkit.actors.ActorRef;", 0x9, NULL },
-    { "initWithAMEndpoints:withAMAuthKeyStorage:withAMActorApiCallback:withAMNetworking:", "ApiBroker", NULL, 0x1, NULL },
-    { "preStart", NULL, "V", 0x1, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-    { "requestAuthId", NULL, "V", 0x2, NULL },
-    { "createMtProtoWithLong:", "createMtProto", "V", 0x2, NULL },
-    { "performRequestWithLong:withImActorModelNetworkParserRequest:withAMRpcCallback:", "performRequest", "V", 0x2, NULL },
-    { "processResponseWithLong:withByteArray:", "processResponse", "V", 0x2, NULL },
-    { "forceResendWithLong:", "forceResend", "V", 0x2, NULL },
-    { "cancelRequestWithLong:", "cancelRequest", "V", 0x2, NULL },
-    { "processUpdateWithByteArray:", "processUpdate", "V", 0x2, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelNetworkApiApiBroker_TAG_,  },
-    { "NEXT_RPC_ID_", NULL, 0x1a, "Lim.actor.model.util.AtomicLongCompat;", &ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_,  },
-    { "endpoints_", NULL, 0x12, "Lim.actor.model.network.Endpoints;", NULL,  },
-    { "keyStorage_", NULL, 0x12, "Lim.actor.model.network.AuthKeyStorage;", NULL,  },
-    { "callback_", NULL, 0x12, "Lim.actor.model.network.ActorApiCallback;", NULL,  },
-    { "requests_", NULL, 0x12, "Ljava.util.HashMap;", NULL,  },
-    { "idMap_", NULL, 0x12, "Ljava.util.HashMap;", NULL,  },
-    { "proto_", NULL, 0x2, "Lim.actor.model.network.mtp.MTProto;", NULL,  },
-    { "networking_", NULL, 0x2, "Lim.actor.model.Networking;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkApiApiBroker = { 1, "ApiBroker", "im.actor.model.network.api", NULL, 0x1, 11, methods, 9, fields, 0, NULL};
-  return &_ImActorModelNetworkApiApiBroker;
-}
-
 @end
 
 DKActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworking_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworking> networking) {
@@ -497,20 +468,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker)
   other->callback_ = callback_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelNetworkParserRequest:withAMRpcCallback:", "PerformRequest", NULL, 0x1, NULL },
-    { "getMessage", NULL, "Lim.actor.model.network.parser.Request;", 0x1, NULL },
-    { "getCallback", NULL, "Lim.actor.model.network.RpcCallback;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "message_", NULL, 0x2, "Lim.actor.model.network.parser.Request;", NULL,  },
-    { "callback_", NULL, 0x2, "Lim.actor.model.network.RpcCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkApiApiBroker_PerformRequest = { 1, "PerformRequest", "im.actor.model.network.api", "ApiBroker", 0x9, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelNetworkApiApiBroker_PerformRequest;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_PerformRequest)
@@ -533,18 +490,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_PerformRequest)
   other->randomId_ = randomId_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:", "CancelRequest", NULL, 0x1, NULL },
-    { "getRandomId", NULL, "J", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "randomId_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkApiApiBroker_CancelRequest = { 1, "CancelRequest", "im.actor.model.network.api", "ApiBroker", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelNetworkApiApiBroker_CancelRequest;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_CancelRequest)
@@ -553,14 +498,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_CancelRequest)
 
 - (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$ {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelNetworkApiApiBroker:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkApiApiBroker_RequestAuthId = { 1, "RequestAuthId", "im.actor.model.network.api", "ApiBroker", 0x2, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelNetworkApiApiBroker_RequestAuthId;
 }
 
 @end
@@ -584,18 +521,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_RequestAuthId)
 - (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_InitMTProto *)other {
   [super copyAllFieldsTo:other];
   other->authId_ = authId_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelNetworkApiApiBroker:withLong:", "InitMTProto", NULL, 0x1, NULL },
-    { "getAuthId", NULL, "J", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "authId_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkApiApiBroker_InitMTProto = { 1, "InitMTProto", "im.actor.model.network.api", "ApiBroker", 0x2, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelNetworkApiApiBroker_InitMTProto;
 }
 
 @end
@@ -628,20 +553,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_InitMTProto)
   other->data_ = data_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelNetworkApiApiBroker:withLong:withByteArray:", "ProtoResponse", NULL, 0x1, NULL },
-    { "getResponseId", NULL, "J", 0x1, NULL },
-    { "getData", NULL, "[B", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "responseId_", NULL, 0x2, "J", NULL,  },
-    { "data_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkApiApiBroker_ProtoResponse = { 1, "ProtoResponse", "im.actor.model.network.api", "ApiBroker", 0x2, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelNetworkApiApiBroker_ProtoResponse;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_ProtoResponse)
@@ -665,18 +576,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_ProtoResponse)
   other->data_ = data_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelNetworkApiApiBroker:withByteArray:", "ProtoUpdate", NULL, 0x1, NULL },
-    { "getData", NULL, "[B", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "data_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkApiApiBroker_ProtoUpdate = { 1, "ProtoUpdate", "im.actor.model.network.api", "ApiBroker", 0x2, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelNetworkApiApiBroker_ProtoUpdate;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_ProtoUpdate)
@@ -698,18 +597,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_ProtoUpdate)
 - (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_ForceResend *)other {
   [super copyAllFieldsTo:other];
   other->id__ = id__;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelNetworkApiApiBroker:withLong:", "ForceResend", NULL, 0x1, NULL },
-    { "getId", NULL, "J", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "id__", "id", 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkApiApiBroker_ForceResend = { 1, "ForceResend", "im.actor.model.network.api", "ApiBroker", 0x2, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelNetworkApiApiBroker_ForceResend;
 }
 
 @end
@@ -736,20 +623,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_ForceResend)
   other->publicId_ = publicId_;
   other->callback_ = callback_;
   other->protoId_ = protoId_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelNetworkApiApiBroker:withLong:withMTRpcRequest:withAMRpcCallback:", "RequestHolder", NULL, 0x2, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "message_", NULL, 0x12, "Lim.actor.model.network.mtp.entity.rpc.RpcRequest;", NULL,  },
-    { "publicId_", NULL, 0x12, "J", NULL,  },
-    { "callback_", NULL, 0x12, "Lim.actor.model.network.RpcCallback;", NULL,  },
-    { "protoId_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkApiApiBroker_RequestHolder = { 1, "RequestHolder", "im.actor.model.network.api", "ApiBroker", 0x2, 1, methods, 4, fields, 0, NULL};
-  return &_ImActorModelNetworkApiApiBroker_RequestHolder;
 }
 
 @end
@@ -781,21 +654,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_RequestHolder)
   other->val$networking_ = val$networking_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "Lim.actor.model.network.api.ApiBroker;", 0x1, NULL },
-    { "initWithAMEndpoints:withAMAuthKeyStorage:withAMActorApiCallback:withAMNetworking:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "val$endpoints_", NULL, 0x1012, "Lim.actor.model.network.Endpoints;", NULL,  },
-    { "val$keyStorage_", NULL, 0x1012, "Lim.actor.model.network.AuthKeyStorage;", NULL,  },
-    { "val$callback_", NULL, 0x1012, "Lim.actor.model.network.ActorApiCallback;", NULL,  },
-    { "val$networking_", NULL, 0x1012, "Lim.actor.model.Networking;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkApiApiBroker_$1 = { 1, "$1", "im.actor.model.network.api", "ApiBroker", 0x8000, 2, methods, 4, fields, 0, NULL};
-  return &_ImActorModelNetworkApiApiBroker_$1;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_$1)
@@ -820,19 +678,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_$1)
 - (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_$2 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onSuccessWithLong:", "onSuccess", "V", 0x1, NULL },
-    { "onFailure", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelNetworkApiApiBroker:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.network.api.ApiBroker;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkApiApiBroker_$2 = { 1, "$2", "im.actor.model.network.api", "ApiBroker", 0x8000, 3, methods, 1, fields, 0, NULL};
-  return &_ImActorModelNetworkApiApiBroker_$2;
 }
 
 @end
@@ -866,21 +711,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_$2)
 - (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_$3 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onRpcResponseWithLong:withByteArray:", "onRpcResponse", "V", 0x1, NULL },
-    { "onUpdateWithByteArray:", "onUpdate", "V", 0x1, NULL },
-    { "onAuthKeyInvalidatedWithLong:", "onAuthKeyInvalidated", "V", 0x1, NULL },
-    { "onSessionCreated", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelNetworkApiApiBroker:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.network.api.ApiBroker;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkApiApiBroker_$3 = { 1, "$3", "im.actor.model.network.api", "ApiBroker", 0x8000, 5, methods, 1, fields, 0, NULL};
-  return &_ImActorModelNetworkApiApiBroker_$3;
 }
 
 @end

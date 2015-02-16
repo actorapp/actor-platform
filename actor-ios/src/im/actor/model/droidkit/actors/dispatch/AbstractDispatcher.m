@@ -55,21 +55,6 @@ J2OBJC_FIELD_SETTER(DKAbstractDispatcher_$1, this$0_, DKAbstractDispatcher *)
   other->dispatch_ = dispatch_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithDKAbstractDispatchQueue:withDKDispatch:", "AbstractDispatcher", NULL, 0x4, NULL },
-    { "getQueue", NULL, "TQ;", 0x1, NULL },
-    { "dispatchMessageWithId:", "dispatchMessage", "V", 0x4, NULL },
-    { "notifyDispatcher", NULL, "V", 0x4, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "queue_", NULL, 0x12, "TQ;", NULL,  },
-    { "dispatch_", NULL, 0x10, "Lim.actor.model.droidkit.actors.dispatch.Dispatch;", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKAbstractDispatcher = { 1, "AbstractDispatcher", "im.actor.model.droidkit.actors.dispatch", NULL, 0x401, 4, methods, 2, fields, 0, NULL};
-  return &_DKAbstractDispatcher;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAbstractDispatcher)
@@ -88,18 +73,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAbstractDispatcher)
 - (void)copyAllFieldsTo:(DKAbstractDispatcher_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onQueueChanged", NULL, "V", 0x1, NULL },
-    { "initWithDKAbstractDispatcher:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.droidkit.actors.dispatch.AbstractDispatcher;", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKAbstractDispatcher_$1 = { 1, "$1", "im.actor.model.droidkit.actors.dispatch", "AbstractDispatcher", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_DKAbstractDispatcher_$1;
 }
 
 @end

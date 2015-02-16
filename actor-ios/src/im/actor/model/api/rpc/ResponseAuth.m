@@ -106,30 +106,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
   other->config_ = config_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.ResponseAuth;", 0x9, "Ljava.io.IOException;" },
-    { "initWithLong:withImActorModelApiUser:withJavaUtilList:withImActorModelApiConfig:", "ResponseAuth", NULL, 0x1, NULL },
-    { "init", "ResponseAuth", NULL, 0x1, NULL },
-    { "getPublicKeyHash", NULL, "J", 0x1, NULL },
-    { "getUser", NULL, "Lim.actor.model.api.User;", 0x1, NULL },
-    { "getContacts", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getConfig", NULL, "Lim.actor.model.api.Config;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcResponseAuth_HEADER },
-    { "publicKeyHash_", NULL, 0x2, "J", NULL,  },
-    { "user_", NULL, 0x2, "Lim.actor.model.api.User;", NULL,  },
-    { "contacts_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "config_", NULL, 0x2, "Lim.actor.model.api.Config;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiRpcResponseAuth = { 1, "ResponseAuth", "im.actor.model.api.rpc", NULL, 0x1, 10, methods, 5, fields, 0, NULL};
-  return &_ImActorModelApiRpcResponseAuth;
-}
-
 @end
 
 ImActorModelApiRpcResponseAuth *ImActorModelApiRpcResponseAuth_fromBytesWithByteArray_(IOSByteArray *data) {

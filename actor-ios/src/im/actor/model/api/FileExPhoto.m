@@ -56,23 +56,6 @@
   other->h_ = h_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withInt:", "FileExPhoto", NULL, 0x1, NULL },
-    { "init", "FileExPhoto", NULL, 0x1, NULL },
-    { "getW", NULL, "I", 0x1, NULL },
-    { "getH", NULL, "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "w_", NULL, 0x2, "I", NULL,  },
-    { "h_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiFileExPhoto = { 1, "FileExPhoto", "im.actor.model.api", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiFileExPhoto;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiFileExPhoto)

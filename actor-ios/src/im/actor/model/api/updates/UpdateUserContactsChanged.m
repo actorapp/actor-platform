@@ -70,26 +70,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, contacts_, 
   other->contacts_ = contacts_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.updates.UpdateUserContactsChanged;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withJavaUtilList:", "UpdateUserContactsChanged", NULL, 0x1, NULL },
-    { "init", "UpdateUserContactsChanged", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "getContacts", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiUpdatesUpdateUserContactsChanged_HEADER },
-    { "uid_", NULL, 0x2, "I", NULL,  },
-    { "contacts_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiUpdatesUpdateUserContactsChanged = { 1, "UpdateUserContactsChanged", "im.actor.model.api.updates", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
-  return &_ImActorModelApiUpdatesUpdateUserContactsChanged;
-}
-
 @end
 
 ImActorModelApiUpdatesUpdateUserContactsChanged *ImActorModelApiUpdatesUpdateUserContactsChanged_fromBytesWithByteArray_(IOSByteArray *data) {

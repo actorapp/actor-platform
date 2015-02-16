@@ -38,19 +38,6 @@ J2OBJC_FIELD_SETTER(AMEndpoints, endpoints_, IOSObjectArray *)
   other->endpoints_ = endpoints_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMConnectionEndpointArray:", "Endpoints", NULL, 0x1, NULL },
-    { "fetchEndpoint", NULL, "Lim.actor.model.network.ConnectionEndpoint;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "roundRobin_", NULL, 0x2, "I", NULL,  },
-    { "endpoints_", NULL, 0x2, "[Lim.actor.model.network.ConnectionEndpoint;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMEndpoints = { 1, "Endpoints", "im.actor.model.network", NULL, 0x1, 2, methods, 2, fields, 0, NULL};
-  return &_AMEndpoints;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMEndpoints)

@@ -76,26 +76,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
   other->members_ = members_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.updates.UpdateGroupMembersUpdate;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withJavaUtilList:", "UpdateGroupMembersUpdate", NULL, 0x1, NULL },
-    { "init", "UpdateGroupMembersUpdate", NULL, 0x1, NULL },
-    { "getGroupId", NULL, "I", 0x1, NULL },
-    { "getMembers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiUpdatesUpdateGroupMembersUpdate_HEADER },
-    { "groupId_", NULL, 0x2, "I", NULL,  },
-    { "members_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiUpdatesUpdateGroupMembersUpdate = { 1, "UpdateGroupMembersUpdate", "im.actor.model.api.updates", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
-  return &_ImActorModelApiUpdatesUpdateGroupMembersUpdate;
-}
-
 @end
 
 ImActorModelApiUpdatesUpdateGroupMembersUpdate *ImActorModelApiUpdatesUpdateGroupMembersUpdate_fromBytesWithByteArray_(IOSByteArray *data) {

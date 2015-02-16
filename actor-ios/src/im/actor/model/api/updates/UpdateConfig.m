@@ -63,24 +63,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
   other->config_ = config_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.updates.UpdateConfig;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiConfig:", "UpdateConfig", NULL, 0x1, NULL },
-    { "init", "UpdateConfig", NULL, 0x1, NULL },
-    { "getConfig", NULL, "Lim.actor.model.api.Config;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiUpdatesUpdateConfig_HEADER },
-    { "config_", NULL, 0x2, "Lim.actor.model.api.Config;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiUpdatesUpdateConfig = { 1, "UpdateConfig", "im.actor.model.api.updates", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiUpdatesUpdateConfig;
-}
-
 @end
 
 ImActorModelApiUpdatesUpdateConfig *ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(IOSByteArray *data) {

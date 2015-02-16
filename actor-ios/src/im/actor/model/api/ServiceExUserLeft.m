@@ -22,16 +22,6 @@
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "ServiceExUserLeft", NULL, 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiServiceExUserLeft = { 1, "ServiceExUserLeft", "im.actor.model.api", NULL, 0x1, 3, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelApiServiceExUserLeft;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExUserLeft)

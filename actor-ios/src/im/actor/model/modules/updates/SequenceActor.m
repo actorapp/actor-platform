@@ -148,32 +148,6 @@ NSString * ImActorModelModulesUpdatesSequenceActor_KEY_STATE_ = @"updates_state"
   other->parser_ = parser_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "SequenceActor", NULL, 0x1, NULL },
-    { "preStart", NULL, "V", 0x1, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-    { "onUpdateReceivedWithId:", "onUpdateReceived", "V", 0x2, NULL },
-    { "isValidSeqWithInt:", "isValidSeq", "Z", 0x2, NULL },
-    { "invalidate", NULL, "V", 0x2, NULL },
-    { "checkFuture", NULL, "V", 0x2, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelModulesUpdatesSequenceActor_TAG_,  },
-    { "INVALIDATE_GAP_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelModulesUpdatesSequenceActor_INVALIDATE_GAP },
-    { "KEY_SEQ_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelModulesUpdatesSequenceActor_KEY_SEQ_,  },
-    { "KEY_STATE_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelModulesUpdatesSequenceActor_KEY_STATE_,  },
-    { "further_", NULL, 0x2, "Ljava.util.HashMap;", NULL,  },
-    { "isValidated_", NULL, 0x2, "Z", NULL,  },
-    { "seq_", NULL, 0x2, "I", NULL,  },
-    { "state_", NULL, 0x2, "[B", NULL,  },
-    { "processor_", NULL, 0x2, "Lim.actor.model.modules.updates.UpdateProcessor;", NULL,  },
-    { "parser_", NULL, 0x2, "Lim.actor.model.api.parser.UpdatesParser;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesSequenceActor = { 1, "SequenceActor", "im.actor.model.modules.updates", NULL, 0x1, 7, methods, 10, fields, 0, NULL};
-  return &_ImActorModelModulesUpdatesSequenceActor;
-}
-
 @end
 
 void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorModelModulesUpdatesSequenceActor *self, id u) {
@@ -300,14 +274,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor)
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesSequenceActor_ForceInvalidate = { 1, "ForceInvalidate", "im.actor.model.modules.updates", "SequenceActor", 0x9, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesUpdatesSequenceActor_ForceInvalidate;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_ForceInvalidate)
@@ -316,14 +282,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_ForceIn
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesSequenceActor_Invalidate = { 1, "Invalidate", "im.actor.model.modules.updates", "SequenceActor", 0x9, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesUpdatesSequenceActor_Invalidate;
 }
 
 @end
@@ -342,17 +300,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_Invalid
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesSequenceActor_PushSeq *)other {
   [super copyAllFieldsTo:other];
   other->seq_ = seq_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:", "PushSeq", NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "seq_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesSequenceActor_PushSeq = { 1, "PushSeq", "im.actor.model.modules.updates", "SequenceActor", 0x9, 1, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUpdatesSequenceActor_PushSeq;
 }
 
 @end
@@ -391,19 +338,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_PushSeq
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesSequenceActor_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithImActorModelApiRpcResponseSeq:", "onResult", "V", 0x1, NULL },
-    { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "initWithImActorModelModulesUpdatesSequenceActor:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.updates.SequenceActor;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesSequenceActor_$1 = { 1, "$1", "im.actor.model.modules.updates", "SequenceActor", 0x8000, 3, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUpdatesSequenceActor_$1;
 }
 
 @end
@@ -457,19 +391,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_$1)
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesSequenceActor_$2 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithImActorModelApiRpcResponseGetDifference:", "onResult", "V", 0x1, NULL },
-    { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "initWithImActorModelModulesUpdatesSequenceActor:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.updates.SequenceActor;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesSequenceActor_$2 = { 1, "$2", "im.actor.model.modules.updates", "SequenceActor", 0x8000, 3, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUpdatesSequenceActor_$2;
 }
 
 @end

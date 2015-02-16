@@ -10,23 +10,4 @@
 #include "im/actor/model/mvvm/ListEngine.h"
 #include "im/actor/model/storage/PreferencesStorage.h"
 
-@interface AMStorage : NSObject
-@end
-
-@implementation AMStorage
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "createPreferencesStorage", NULL, "Lim.actor.model.storage.PreferencesStorage;", 0x401, NULL },
-    { "createUsersEngine", NULL, "Lim.actor.model.mvvm.KeyValueEngine;", 0x401, NULL },
-    { "createDialogsEngine", NULL, "Lim.actor.model.mvvm.ListEngine;", 0x401, NULL },
-    { "createMessagesEngineWithAMPeer:", "createMessagesEngine", "Lim.actor.model.mvvm.ListEngine;", 0x401, NULL },
-    { "pendingMessagesWithAMPeer:", "pendingMessages", "Lim.actor.model.mvvm.KeyValueEngine;", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMStorage = { 1, "Storage", "im.actor.model", NULL, 0x201, 5, methods, 0, NULL, 0, NULL};
-  return &_AMStorage;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMStorage)

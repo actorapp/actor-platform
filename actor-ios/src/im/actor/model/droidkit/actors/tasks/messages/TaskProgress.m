@@ -44,21 +44,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksMessagesTaskProgress, progres
   other->progress_ = progress_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withId:", "TaskProgress", NULL, 0x1, NULL },
-    { "getRequestId", NULL, "I", 0x1, NULL },
-    { "getProgress", NULL, "Ljava.lang.Object;", 0x1, NULL },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "requestId_", NULL, 0x12, "I", NULL,  },
-    { "progress_", NULL, 0x12, "Ljava.lang.Object;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksMessagesTaskProgress = { 1, "TaskProgress", "im.actor.model.droidkit.actors.tasks.messages", NULL, 0x1, 4, methods, 2, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksMessagesTaskProgress;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksMessagesTaskProgress)

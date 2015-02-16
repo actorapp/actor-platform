@@ -84,28 +84,6 @@
   other->fastThumb_ = fastThumb_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "docFromBytesWithByteArray:", "docFromBytes", "Lim.actor.model.entity.content.DocumentContent;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelEntityContentFileSource:withNSString:withNSString:withImActorModelEntityContentFastThumb:", "DocumentContent", NULL, 0x1, NULL },
-    { "init", "DocumentContent", NULL, 0x4, NULL },
-    { "getSource", NULL, "Lim.actor.model.entity.content.FileSource;", 0x1, NULL },
-    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getFastThumb", NULL, "Lim.actor.model.entity.content.FastThumb;", 0x1, NULL },
-    { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "source_", NULL, 0x4, "Lim.actor.model.entity.content.FileSource;", NULL,  },
-    { "mimetype_", NULL, 0x4, "Ljava.lang.String;", NULL,  },
-    { "name_", NULL, 0x4, "Ljava.lang.String;", NULL,  },
-    { "fastThumb_", NULL, 0x4, "Lim.actor.model.entity.content.FastThumb;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentDocumentContent = { 1, "DocumentContent", "im.actor.model.entity.content", NULL, 0x1, 9, methods, 4, fields, 0, NULL};
-  return &_ImActorModelEntityContentDocumentContent;
-}
-
 @end
 
 ImActorModelEntityContentDocumentContent *ImActorModelEntityContentDocumentContent_docFromBytesWithByteArray_(IOSByteArray *data) {

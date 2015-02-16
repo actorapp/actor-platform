@@ -42,20 +42,6 @@ J2OBJC_FIELD_SETTER(DKActorSelection, path_, NSString *)
   other->path_ = path_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithDKProps:withNSString:", "ActorSelection", NULL, 0x1, NULL },
-    { "getProps", NULL, "Lim.actor.model.droidkit.actors.Props;", 0x1, NULL },
-    { "getPath", NULL, "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "props_", NULL, 0x12, "Lim.actor.model.droidkit.actors.Props;", NULL,  },
-    { "path_", NULL, 0x12, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKActorSelection = { 1, "ActorSelection", "im.actor.model.droidkit.actors", NULL, 0x1, 3, methods, 2, fields, 0, NULL};
-  return &_DKActorSelection;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorSelection)

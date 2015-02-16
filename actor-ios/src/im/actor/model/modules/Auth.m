@@ -217,35 +217,6 @@ NSString * ImActorModelModulesAuth_KEY_SMS_CODE_ = @"auth_sms_code";
   other->myUid__ = myUid__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "Auth", NULL, 0x1, NULL },
-    { "myUid", NULL, "I", 0x1, NULL },
-    { "getAuthState", NULL, "Lim.actor.model.AuthState;", 0x1, NULL },
-    { "requestSmsWithLong:", "requestSms", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
-    { "sendCodeWithInt:", "sendCode", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
-    { "signUpWithNSString:withNSString:withBoolean:", "signUp", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
-    { "resetAuth", NULL, "V", 0x1, NULL },
-    { "getPhone", NULL, "J", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "APP_ID_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelModulesAuth_APP_ID },
-    { "APP_KEY_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelModulesAuth_APP_KEY_,  },
-    { "KEY_DEVICE_HASH_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelModulesAuth_KEY_DEVICE_HASH_,  },
-    { "KEY_AUTH_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelModulesAuth_KEY_AUTH_,  },
-    { "KEY_AUTH_UID_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelModulesAuth_KEY_AUTH_UID_,  },
-    { "KEY_PHONE_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelModulesAuth_KEY_PHONE_,  },
-    { "KEY_SMS_HASH_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelModulesAuth_KEY_SMS_HASH_,  },
-    { "KEY_SMS_CODE_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelModulesAuth_KEY_SMS_CODE_,  },
-    { "state_", NULL, 0x2, "Lim.actor.model.AuthState;", NULL,  },
-    { "mainThread_", NULL, 0x2, "Lim.actor.model.MainThread;", NULL,  },
-    { "deviceHash_", NULL, 0x2, "[B", NULL,  },
-    { "myUid__", "myUid", 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth = { 1, "Auth", "im.actor.model.modules", NULL, 0x1, 8, methods, 12, fields, 0, NULL};
-  return &_ImActorModelModulesAuth;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth)
@@ -267,19 +238,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth)
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$phone_ = val$phone_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "startWithAMCommandCallback:", "start", "V", 0x1, NULL },
-    { "initWithImActorModelModulesAuth:withLong:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Auth;", NULL,  },
-    { "val$phone_", NULL, 0x1012, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth_$1 = { 1, "$1", "im.actor.model.modules", "Auth", 0x8000, 2, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesAuth_$1;
 }
 
 @end
@@ -312,20 +270,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$1)
   other->val$callback_ = val$callback_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithImActorModelApiRpcResponseSendAuthCode:", "onResult", "V", 0x1, NULL },
-    { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "initWithImActorModelModulesAuth_$1:withAMCommandCallback:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Auth$1;", NULL,  },
-    { "val$callback_", NULL, 0x1012, "Lim.actor.model.concurrency.CommandCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth_$1_$1 = { 1, "$1", "im.actor.model.modules", "Auth$$1", 0x8000, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesAuth_$1_$1;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$1_$1)
@@ -344,18 +288,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$1_$1)
 - (void)copyAllFieldsTo:(ImActorModelModulesAuth_$1_$1_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "run", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelModulesAuth_$1_$1:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Auth$1$1;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth_$1_$1_$1 = { 1, "$1", "im.actor.model.modules", "Auth$$1$$1", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesAuth_$1_$1_$1;
 }
 
 @end
@@ -381,19 +313,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$1_$1_$1)
   other->val$e_ = val$e_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "run", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelModulesAuth_$1_$1:withAMRpcException:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Auth$1$1;", NULL,  },
-    { "val$e_", NULL, 0x1012, "Lim.actor.model.network.RpcException;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth_$1_$1_$2 = { 1, "$2", "im.actor.model.modules", "Auth$$1$$1", 0x8000, 2, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesAuth_$1_$1_$2;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$1_$1_$2)
@@ -415,19 +334,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$1_$1_$2)
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$code_ = val$code_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "startWithAMCommandCallback:", "start", "V", 0x1, NULL },
-    { "initWithImActorModelModulesAuth:withInt:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Auth;", NULL,  },
-    { "val$code_", NULL, 0x1012, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth_$2 = { 1, "$2", "im.actor.model.modules", "Auth", 0x8000, 2, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesAuth_$2;
 }
 
 @end
@@ -465,20 +371,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2)
   other->val$callback_ = val$callback_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithImActorModelApiRpcResponseAuth:", "onResult", "V", 0x1, NULL },
-    { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "initWithImActorModelModulesAuth_$2:withAMCommandCallback:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Auth$2;", NULL,  },
-    { "val$callback_", NULL, 0x1012, "Lim.actor.model.concurrency.CommandCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth_$2_$1 = { 1, "$1", "im.actor.model.modules", "Auth$$2", 0x8000, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesAuth_$2_$1;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2_$1)
@@ -498,18 +390,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2_$1)
 - (void)copyAllFieldsTo:(ImActorModelModulesAuth_$2_$1_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "run", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelModulesAuth_$2_$1:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Auth$2$1;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth_$2_$1_$1 = { 1, "$1", "im.actor.model.modules", "Auth$$2$$1", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesAuth_$2_$1_$1;
 }
 
 @end
@@ -533,19 +413,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2_$1_$1)
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$e_ = val$e_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "run", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelModulesAuth_$2_$1:withAMRpcException:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Auth$2$1;", NULL,  },
-    { "val$e_", NULL, 0x1012, "Lim.actor.model.network.RpcException;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth_$2_$1_$2 = { 1, "$2", "im.actor.model.modules", "Auth$$2$$1", 0x8000, 2, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesAuth_$2_$1_$2;
 }
 
 @end
@@ -572,20 +439,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2_$1_$2)
   other->this$0_ = this$0_;
   other->val$firstName_ = val$firstName_;
   other->val$isSilent_ = val$isSilent_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "startWithAMCommandCallback:", "start", "V", 0x1, NULL },
-    { "initWithImActorModelModulesAuth:withNSString:withBoolean:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Auth;", NULL,  },
-    { "val$firstName_", NULL, 0x1012, "Ljava.lang.String;", NULL,  },
-    { "val$isSilent_", NULL, 0x1012, "Z", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth_$3 = { 1, "$3", "im.actor.model.modules", "Auth", 0x8000, 2, methods, 3, fields, 0, NULL};
-  return &_ImActorModelModulesAuth_$3;
 }
 
 @end
@@ -623,20 +476,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$3)
   other->val$callback_ = val$callback_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithImActorModelApiRpcResponseAuth:", "onResult", "V", 0x1, NULL },
-    { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "initWithImActorModelModulesAuth_$3:withAMCommandCallback:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Auth$3;", NULL,  },
-    { "val$callback_", NULL, 0x1012, "Lim.actor.model.concurrency.CommandCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth_$3_$1 = { 1, "$1", "im.actor.model.modules", "Auth$$3", 0x8000, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesAuth_$3_$1;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$3_$1)
@@ -656,18 +495,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$3_$1)
 - (void)copyAllFieldsTo:(ImActorModelModulesAuth_$3_$1_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "run", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelModulesAuth_$3_$1:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Auth$3$1;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth_$3_$1_$1 = { 1, "$1", "im.actor.model.modules", "Auth$$3$$1", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesAuth_$3_$1_$1;
 }
 
 @end
@@ -691,19 +518,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$3_$1_$1)
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$e_ = val$e_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "run", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelModulesAuth_$3_$1:withAMRpcException:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Auth$3$1;", NULL,  },
-    { "val$e_", NULL, 0x1012, "Lim.actor.model.network.RpcException;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesAuth_$3_$1_$2 = { 1, "$2", "im.actor.model.modules", "Auth$$3$$1", 0x8000, 2, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesAuth_$3_$1_$2;
 }
 
 @end

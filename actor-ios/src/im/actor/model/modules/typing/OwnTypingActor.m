@@ -61,20 +61,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingOwnTypingActor_Typing, peer_, AMPee
   other->lastTypingTime_ = lastTypingTime_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "OwnTypingActor", NULL, 0x1, NULL },
-    { "onTypingWithAMPeer:", "onTyping", "V", 0x2, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TYPING_DELAY_", NULL, 0x1a, "J", NULL, .constantValue.asLong = ImActorModelModulesTypingOwnTypingActor_TYPING_DELAY },
-    { "lastTypingTime_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesTypingOwnTypingActor = { 1, "OwnTypingActor", "im.actor.model.modules.typing", NULL, 0x1, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesTypingOwnTypingActor;
-}
-
 @end
 
 void ImActorModelModulesTypingOwnTypingActor_onTypingWithAMPeer_(ImActorModelModulesTypingOwnTypingActor *self, AMPeer *peer) {
@@ -117,18 +103,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingOwnTypingActor)
 - (void)copyAllFieldsTo:(ImActorModelModulesTypingOwnTypingActor_Typing *)other {
   [super copyAllFieldsTo:other];
   other->peer_ = peer_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMPeer:", "Typing", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesTypingOwnTypingActor_Typing = { 1, "Typing", "im.actor.model.modules.typing", "OwnTypingActor", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesTypingOwnTypingActor_Typing;
 }
 
 @end

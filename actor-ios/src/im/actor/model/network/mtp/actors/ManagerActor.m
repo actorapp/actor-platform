@@ -270,40 +270,6 @@ AMAtomicIntegerCompat * MTManagerActor_NEXT_CONNECTION_;
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "managerWithMTMTProto:", "manager", "Lim.actor.model.droidkit.actors.ActorRef;", 0x9, NULL },
-    { "initWithMTMTProto:", "ManagerActor", NULL, 0x1, NULL },
-    { "preStart", NULL, "V", 0x1, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-    { "onConnectionCreatedWithInt:withAMConnection:", "onConnectionCreated", "V", 0x2, NULL },
-    { "onConnectionCreateFailure", NULL, "V", 0x2, NULL },
-    { "onConnectionDieWithInt:", "onConnectionDie", "V", 0x2, NULL },
-    { "onNetworkChanged", NULL, "V", 0x2, NULL },
-    { "requestCheckConnection", NULL, "V", 0x2, NULL },
-    { "requestCheckConnectionWithLong:", "requestCheckConnection", "V", 0x2, NULL },
-    { "checkConnection", NULL, "V", 0x2, NULL },
-    { "onInMessageWithByteArray:withInt:withInt:", "onInMessage", "V", 0x2, NULL },
-    { "onOutMessageWithByteArray:withInt:withInt:", "onOutMessage", "V", 0x2, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &MTManagerActor_TAG_,  },
-    { "NEXT_CONNECTION_", NULL, 0x1a, "Lim.actor.model.util.AtomicIntegerCompat;", &MTManagerActor_NEXT_CONNECTION_,  },
-    { "mtProto_", NULL, 0x12, "Lim.actor.model.network.mtp.MTProto;", NULL,  },
-    { "endpoints_", NULL, 0x12, "Lim.actor.model.network.Endpoints;", NULL,  },
-    { "authId_", NULL, 0x12, "J", NULL,  },
-    { "sessionId_", NULL, 0x12, "J", NULL,  },
-    { "currentConnectionId_", NULL, 0x2, "I", NULL,  },
-    { "currentConnection_", NULL, 0x2, "Lim.actor.model.network.Connection;", NULL,  },
-    { "isCheckingConnections_", NULL, 0x2, "Z", NULL,  },
-    { "backoff_", NULL, 0x12, "Lim.actor.model.util.ExponentialBackoff;", NULL,  },
-    { "receiver_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "sender_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTManagerActor = { 1, "ManagerActor", "im.actor.model.network.mtp.actors", NULL, 0x1, 13, methods, 12, fields, 0, NULL};
-  return &_MTManagerActor;
-}
-
 @end
 
 DKActorRef *MTManagerActor_managerWithMTMTProto_(MTMTProto *mtProto) {
@@ -462,22 +428,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor)
   other->len_ = len_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithByteArray:withInt:withInt:", "OutMessage", NULL, 0x1, NULL },
-    { "getOffset", NULL, "I", 0x1, NULL },
-    { "getLen", NULL, "I", 0x1, NULL },
-    { "getMessage", NULL, "[B", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "message_", NULL, 0x2, "[B", NULL,  },
-    { "offset_", NULL, 0x2, "I", NULL,  },
-    { "len_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTManagerActor_OutMessage = { 1, "OutMessage", "im.actor.model.network.mtp.actors", "ManagerActor", 0x9, 4, methods, 3, fields, 0, NULL};
-  return &_MTManagerActor_OutMessage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_OutMessage)
@@ -514,22 +464,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_OutMessage)
   other->len_ = len_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithByteArray:withInt:withInt:", "InMessage", NULL, 0x1, NULL },
-    { "getData", NULL, "[B", 0x1, NULL },
-    { "getOffset", NULL, "I", 0x1, NULL },
-    { "getLen", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "data_", NULL, 0x2, "[B", NULL,  },
-    { "offset_", NULL, 0x2, "I", NULL,  },
-    { "len_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTManagerActor_InMessage = { 1, "InMessage", "im.actor.model.network.mtp.actors", "ManagerActor", 0x9, 4, methods, 3, fields, 0, NULL};
-  return &_MTManagerActor_InMessage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_InMessage)
@@ -540,14 +474,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_InMessage)
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _MTManagerActor_NetworkChanged = { 1, "NetworkChanged", "im.actor.model.network.mtp.actors", "ManagerActor", 0x9, 1, methods, 0, NULL, 0, NULL};
-  return &_MTManagerActor_NetworkChanged;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_NetworkChanged)
@@ -556,14 +482,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_NetworkChanged)
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x2, NULL },
-  };
-  static const J2ObjcClassInfo _MTManagerActor_PerformConnectionCheck = { 1, "PerformConnectionCheck", "im.actor.model.network.mtp.actors", "ManagerActor", 0xa, 1, methods, 0, NULL, 0, NULL};
-  return &_MTManagerActor_PerformConnectionCheck;
 }
 
 @end
@@ -588,18 +506,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_PerformConnectionCheck)
   other->connectionId_ = connectionId_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:", "ConnectionDie", NULL, 0x1, NULL },
-    { "getConnectionId", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "connectionId_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTManagerActor_ConnectionDie = { 1, "ConnectionDie", "im.actor.model.network.mtp.actors", "ManagerActor", 0xa, 2, methods, 1, fields, 0, NULL};
-  return &_MTManagerActor_ConnectionDie;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_ConnectionDie)
@@ -608,14 +514,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_ConnectionDie)
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x2, NULL },
-  };
-  static const J2ObjcClassInfo _MTManagerActor_ConnectionCreateFailure = { 1, "ConnectionCreateFailure", "im.actor.model.network.mtp.actors", "ManagerActor", 0xa, 1, methods, 0, NULL, 0, NULL};
-  return &_MTManagerActor_ConnectionCreateFailure;
 }
 
 @end
@@ -647,20 +545,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_ConnectionCreateFailure)
   other->connection_ = connection_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withAMConnection:", "ConnectionCreated", NULL, 0x1, NULL },
-    { "getConnectionId", NULL, "I", 0x1, NULL },
-    { "getConnection", NULL, "Lim.actor.model.network.Connection;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "connectionId_", NULL, 0x2, "I", NULL,  },
-    { "connection_", NULL, 0x2, "Lim.actor.model.network.Connection;", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTManagerActor_ConnectionCreated = { 1, "ConnectionCreated", "im.actor.model.network.mtp.actors", "ManagerActor", 0xa, 3, methods, 2, fields, 0, NULL};
-  return &_MTManagerActor_ConnectionCreated;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_ConnectionCreated)
@@ -679,18 +563,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_ConnectionCreated)
 - (void)copyAllFieldsTo:(MTManagerActor_$1 *)other {
   [super copyAllFieldsTo:other];
   other->val$mtProto_ = val$mtProto_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "Lim.actor.model.network.mtp.actors.ManagerActor;", 0x1, NULL },
-    { "initWithMTMTProto:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "val$mtProto_", NULL, 0x1012, "Lim.actor.model.network.mtp.MTProto;", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTManagerActor_$1 = { 1, "$1", "im.actor.model.network.mtp.actors", "ManagerActor", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_MTManagerActor_$1;
 }
 
 @end
@@ -720,20 +592,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$1)
   other->val$id_ = val$id_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onMessage:withOffset:withLen:", "onMessage", "V", 0x1, NULL },
-    { "onConnectionDie", NULL, "V", 0x1, NULL },
-    { "initWithMTManagerActor:withInt:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.network.mtp.actors.ManagerActor;", NULL,  },
-    { "val$id_", NULL, 0x1012, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTManagerActor_$2 = { 1, "$2", "im.actor.model.network.mtp.actors", "ManagerActor", 0x8000, 3, methods, 2, fields, 0, NULL};
-  return &_MTManagerActor_$2;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$2)
@@ -759,20 +617,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$2)
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$id_ = val$id_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onConnectionCreated:", "onConnectionCreated", "V", 0x1, NULL },
-    { "onConnectionCreateError", NULL, "V", 0x1, NULL },
-    { "initWithMTManagerActor:withInt:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.network.mtp.actors.ManagerActor;", NULL,  },
-    { "val$id_", NULL, 0x1012, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTManagerActor_$3 = { 1, "$3", "im.actor.model.network.mtp.actors", "ManagerActor", 0x8000, 3, methods, 2, fields, 0, NULL};
-  return &_MTManagerActor_$3;
 }
 
 @end

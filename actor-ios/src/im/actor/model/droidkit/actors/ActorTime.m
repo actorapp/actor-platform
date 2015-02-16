@@ -17,15 +17,6 @@
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "currentTime", NULL, "J", 0x9, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _DKActorTime = { 1, "ActorTime", "im.actor.model.droidkit.actors", NULL, 0x1, 2, methods, 0, NULL, 0, NULL};
-  return &_DKActorTime;
-}
-
 @end
 
 jlong DKActorTime_currentTime() {

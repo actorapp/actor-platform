@@ -19,6 +19,9 @@
 #include "java/lang/Throwable.h"
 #include "java/util/HashSet.h"
 
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
 @interface ImActorModelDroidkitActorsTasksTaskActor () {
  @public
   JavaUtilHashSet *requests_;
@@ -158,11 +161,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
 - (void)postStop {
 }
 
-- (void)startTask {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-}
-
 - (void)onTaskObsolete {
 }
 
@@ -195,32 +193,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksTaskActor_TaskListener, sende
   other->dieTimeout_ = dieTimeout_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "setTimeOutWithLong:", "setTimeOut", "V", 0x1, NULL },
-    { "isCompleted", NULL, "Z", 0x1, NULL },
-    { "isCompletedSuccess", NULL, "Z", 0x1, NULL },
-    { "preStart", NULL, "V", 0x1, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-    { "postStop", NULL, "V", 0x1, NULL },
-    { "startTask", NULL, "V", 0x401, NULL },
-    { "onTaskObsolete", NULL, "V", 0x1, NULL },
-    { "completeWithId:", "complete", "V", 0x1, NULL },
-    { "errorWithJavaLangThrowable:", "error", "V", 0x1, NULL },
-    { "progressWithId:", "progress", "V", 0x1, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "requests_", NULL, 0x12, "Ljava.util.HashSet;", NULL,  },
-    { "result_", NULL, 0x2, "TT;", NULL,  },
-    { "isCompleted__", "isCompleted", 0x2, "Z", NULL,  },
-    { "isCompletedSuccess__", "isCompletedSuccess", 0x2, "Z", NULL,  },
-    { "dieTimeout_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksTaskActor = { 1, "TaskActor", "im.actor.model.droidkit.actors.tasks", NULL, 0x401, 12, methods, 5, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksTaskActor;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor)
@@ -241,18 +213,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor)
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksTaskActor_Error *)other {
   [super copyAllFieldsTo:other];
   other->error_ = error_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaLangThrowable:", "Error", NULL, 0x2, NULL },
-    { "getError", NULL, "Ljava.lang.Throwable;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "error_", NULL, 0x2, "Ljava.lang.Throwable;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksTaskActor_Error = { 1, "Error", "im.actor.model.droidkit.actors.tasks", "TaskActor", 0xa, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksTaskActor_Error;
 }
 
 @end
@@ -277,18 +237,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor_Error)
   other->res_ = res_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithId:", "Result", NULL, 0x2, NULL },
-    { "getRes", NULL, "Ljava.lang.Object;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "res_", NULL, 0x2, "Ljava.lang.Object;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksTaskActor_Result = { 1, "Result", "im.actor.model.droidkit.actors.tasks", "TaskActor", 0xa, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksTaskActor_Result;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor_Result)
@@ -311,18 +259,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor_Result
   other->progress_ = progress_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithId:", "Progress", NULL, 0x2, NULL },
-    { "getProgress", NULL, "Ljava.lang.Object;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "progress_", NULL, 0x2, "Ljava.lang.Object;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksTaskActor_Progress = { 1, "Progress", "im.actor.model.droidkit.actors.tasks", "TaskActor", 0xa, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksTaskActor_Progress;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor_Progress)
@@ -331,14 +267,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor_Progre
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x2, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksTaskActor_Obsolete = { 1, "Obsolete", "im.actor.model.droidkit.actors.tasks", "TaskActor", 0xa, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksTaskActor_Obsolete;
 }
 
 @end
@@ -383,22 +311,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksTaskActor_Obsole
   [super copyAllFieldsTo:other];
   other->requestId_ = requestId_;
   other->sender_ = sender_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withDKActorRef:", "TaskListener", NULL, 0x2, NULL },
-    { "getRequestId", NULL, "I", 0x1, NULL },
-    { "getSender", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "requestId_", NULL, 0x2, "I", NULL,  },
-    { "sender_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksTaskActor_TaskListener = { 1, "TaskListener", "im.actor.model.droidkit.actors.tasks", "TaskActor", 0xa, 5, methods, 2, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksTaskActor_TaskListener;
 }
 
 @end

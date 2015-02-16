@@ -43,22 +43,6 @@ IOSObjectArray * ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_OBJECTS_;
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "binarySearchWithIntArray:withInt:withInt:", "binarySearch", "I", 0x8, NULL },
-    { "binarySearchWithLongArray:withInt:withLong:", "binarySearch", "I", 0x8, NULL },
-    { "init", NULL, NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "EMPTY_BOOLEANS_", NULL, 0x18, "[Z", &ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_BOOLEANS_,  },
-    { "EMPTY_INTS_", NULL, 0x18, "[I", &ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_INTS_,  },
-    { "EMPTY_LONGS_", NULL, 0x18, "[J", &ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_LONGS_,  },
-    { "EMPTY_OBJECTS_", NULL, 0x18, "[Ljava.lang.Object;", &ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_OBJECTS_,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitBserUtilContainerHelpers = { 1, "ContainerHelpers", "im.actor.model.droidkit.bser.util", NULL, 0x0, 3, methods, 4, fields, 0, NULL};
-  return &_ImActorModelDroidkitBserUtilContainerHelpers;
-}
-
 @end
 
 jint ImActorModelDroidkitBserUtilContainerHelpers_binarySearchWithIntArray_withInt_withInt_(IOSIntArray *array, jint size, jint value) {

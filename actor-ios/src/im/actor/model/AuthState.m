@@ -57,21 +57,6 @@ AMAuthStateEnum *AMAuthStateEnum_valueOfWithNSString_(NSString *name) {
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withInt:", "init", NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "AUTH_START", "AUTH_START", 0x4019, "Lim.actor.model.AuthState;", &AMAuthStateEnum_AUTH_START,  },
-    { "CODE_VALIDATION", "CODE_VALIDATION", 0x4019, "Lim.actor.model.AuthState;", &AMAuthStateEnum_CODE_VALIDATION,  },
-    { "SIGN_UP", "SIGN_UP", 0x4019, "Lim.actor.model.AuthState;", &AMAuthStateEnum_SIGN_UP,  },
-    { "LOGGED_IN", "LOGGED_IN", 0x4019, "Lim.actor.model.AuthState;", &AMAuthStateEnum_LOGGED_IN,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.AuthState;"};
-  static const J2ObjcClassInfo _AMAuthStateEnum = { 1, "AuthState", "im.actor.model", NULL, 0x4011, 1, methods, 4, fields, 1, superclass_type_args};
-  return &_AMAuthStateEnum;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAuthStateEnum)

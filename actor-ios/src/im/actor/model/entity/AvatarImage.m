@@ -94,28 +94,6 @@ J2OBJC_FIELD_SETTER(AMAvatarImage, fileLocation_, AMFileLocation *)
   other->fileLocation_ = fileLocation_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.AvatarImage;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withInt:withAMFileLocation:", "AvatarImage", NULL, 0x1, NULL },
-    { "init", "AvatarImage", NULL, 0x2, NULL },
-    { "getWidth", NULL, "I", 0x1, NULL },
-    { "getHeight", NULL, "I", 0x1, NULL },
-    { "getFileLocation", NULL, "Lim.actor.model.entity.FileLocation;", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "width_", NULL, 0x2, "I", NULL,  },
-    { "height_", NULL, 0x2, "I", NULL,  },
-    { "fileLocation_", NULL, 0x2, "Lim.actor.model.entity.FileLocation;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMAvatarImage = { 1, "AvatarImage", "im.actor.model.entity", NULL, 0x1, 10, methods, 3, fields, 0, NULL};
-  return &_AMAvatarImage;
-}
-
 @end
 
 AMAvatarImage *AMAvatarImage_fromBytesWithByteArray_(IOSByteArray *data) {

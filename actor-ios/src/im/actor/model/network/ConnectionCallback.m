@@ -7,20 +7,4 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/ConnectionCallback.h"
 
-@interface AMConnectionCallback : NSObject
-@end
-
-@implementation AMConnectionCallback
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onMessage:withOffset:withLen:", "onMessage", "V", 0x401, NULL },
-    { "onConnectionDie", NULL, "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMConnectionCallback = { 1, "ConnectionCallback", "im.actor.model.network", NULL, 0x201, 2, methods, 0, NULL, 0, NULL};
-  return &_AMConnectionCallback;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMConnectionCallback)

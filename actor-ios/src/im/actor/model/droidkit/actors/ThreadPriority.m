@@ -56,20 +56,6 @@ DKThreadPriorityEnum *DKThreadPriorityEnum_valueOfWithNSString_(NSString *name) 
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withInt:", "init", NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HIGH", "HIGH", 0x4019, "Lim.actor.model.droidkit.actors.ThreadPriority;", &DKThreadPriorityEnum_HIGH,  },
-    { "NORMAL", "NORMAL", 0x4019, "Lim.actor.model.droidkit.actors.ThreadPriority;", &DKThreadPriorityEnum_NORMAL,  },
-    { "LOW", "LOW", 0x4019, "Lim.actor.model.droidkit.actors.ThreadPriority;", &DKThreadPriorityEnum_LOW,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.droidkit.actors.ThreadPriority;"};
-  static const J2ObjcClassInfo _DKThreadPriorityEnum = { 1, "ThreadPriority", "im.actor.model.droidkit.actors", NULL, 0x4011, 1, methods, 3, fields, 1, superclass_type_args};
-  return &_DKThreadPriorityEnum;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKThreadPriorityEnum)

@@ -57,26 +57,6 @@
   other->messageId_ = messageId_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataInput:", "NewSessionCreated", NULL, 0x1, "Ljava.io.IOException;" },
-    { "initWithLong:withLong:", "NewSessionCreated", NULL, 0x1, NULL },
-    { "getSessionId", NULL, "J", 0x1, NULL },
-    { "getMessageId", NULL, "J", 0x1, NULL },
-    { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTNewSessionCreated_HEADER },
-    { "sessionId_", NULL, 0x1, "J", NULL,  },
-    { "messageId_", NULL, 0x1, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTNewSessionCreated = { 1, "NewSessionCreated", "im.actor.model.network.mtp.entity", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
-  return &_MTNewSessionCreated;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTNewSessionCreated)

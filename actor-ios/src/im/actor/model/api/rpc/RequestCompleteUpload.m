@@ -83,29 +83,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCompleteUpload, config_, ImActorMod
   other->crc32_ = crc32_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestCompleteUpload;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiUploadConfig:withInt:withLong:", "RequestCompleteUpload", NULL, 0x1, NULL },
-    { "init", "RequestCompleteUpload", NULL, 0x1, NULL },
-    { "getConfig", NULL, "Lim.actor.model.api.UploadConfig;", 0x1, NULL },
-    { "getBlocksCount", NULL, "I", 0x1, NULL },
-    { "getCrc32", NULL, "J", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestCompleteUpload_HEADER },
-    { "config_", NULL, 0x2, "Lim.actor.model.api.UploadConfig;", NULL,  },
-    { "blocksCount_", NULL, 0x2, "I", NULL,  },
-    { "crc32_", NULL, 0x2, "J", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseCompleteUpload;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestCompleteUpload = { 1, "RequestCompleteUpload", "im.actor.model.api.rpc", NULL, 0x1, 9, methods, 4, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestCompleteUpload;
-}
-
 @end
 
 ImActorModelApiRpcRequestCompleteUpload *ImActorModelApiRpcRequestCompleteUpload_fromBytesWithByteArray_(IOSByteArray *data) {

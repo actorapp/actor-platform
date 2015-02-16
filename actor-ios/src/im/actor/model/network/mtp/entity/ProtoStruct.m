@@ -11,6 +11,9 @@
 #include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
 @implementation MTProtoStruct
 
 - (instancetype)initWithAMDataInput:(AMDataInput *)stream {
@@ -19,12 +22,6 @@
 
 - (instancetype)init {
   return [super init];
-}
-
-- (jbyte)getHeader {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-  return 0;
 }
 
 - (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs {
@@ -38,30 +35,6 @@
 - (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs {
   [self readBodyWithAMDataInput:bs];
   return self;
-}
-
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-}
-
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataInput:", "ProtoStruct", NULL, 0x4, "Ljava.io.IOException;" },
-    { "init", "ProtoStruct", NULL, 0x4, NULL },
-    { "getHeader", NULL, "B", 0x404, NULL },
-    { "writeObjectWithAMDataOutput:", "writeObject", "V", 0x11, "Ljava.io.IOException;" },
-    { "readObjectWithAMDataInput:", "readObject", "Lim.actor.model.network.mtp.entity.ProtoObject;", 0x11, "Ljava.io.IOException;" },
-    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x404, "Ljava.io.IOException;" },
-    { "readBodyWithAMDataInput:", "readBody", "V", 0x404, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcClassInfo _MTProtoStruct = { 1, "ProtoStruct", "im.actor.model.network.mtp.entity", NULL, 0x401, 7, methods, 0, NULL, 0, NULL};
-  return &_MTProtoStruct;
 }
 
 @end

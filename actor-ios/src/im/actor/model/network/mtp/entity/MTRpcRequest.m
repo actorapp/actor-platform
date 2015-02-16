@@ -49,24 +49,6 @@
   other->payload_ = payload_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataInput:", "MTRpcRequest", NULL, 0x1, "Ljava.io.IOException;" },
-    { "initWithByteArray:", "MTRpcRequest", NULL, 0x1, NULL },
-    { "getPayload", NULL, "[B", 0x1, NULL },
-    { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTMTRpcRequest_HEADER },
-    { "payload_", NULL, 0x1, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTMTRpcRequest = { 1, "MTRpcRequest", "im.actor.model.network.mtp.entity", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
-  return &_MTMTRpcRequest;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTMTRpcRequest)

@@ -71,26 +71,6 @@ AMMessageStateEnum *AMMessageStateEnum_valueOfWithNSString_(NSString *name) {
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withNSString:withInt:", "MessageState", NULL, 0x2, NULL },
-    { "getValue", NULL, "I", 0x1, NULL },
-    { "fromValueWithInt:", "fromValue", "Lim.actor.model.entity.MessageState;", 0x9, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "PENDING", "PENDING", 0x4019, "Lim.actor.model.entity.MessageState;", &AMMessageStateEnum_PENDING,  },
-    { "SENT", "SENT", 0x4019, "Lim.actor.model.entity.MessageState;", &AMMessageStateEnum_SENT,  },
-    { "RECEIVED", "RECEIVED", 0x4019, "Lim.actor.model.entity.MessageState;", &AMMessageStateEnum_RECEIVED,  },
-    { "READ", "READ", 0x4019, "Lim.actor.model.entity.MessageState;", &AMMessageStateEnum_READ,  },
-    { "ERROR", "ERROR", 0x4019, "Lim.actor.model.entity.MessageState;", &AMMessageStateEnum_ERROR,  },
-    { "UNKNOWN", "UNKNOWN", 0x4019, "Lim.actor.model.entity.MessageState;", &AMMessageStateEnum_UNKNOWN,  },
-    { "value_", NULL, 0x0, "I", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.entity.MessageState;"};
-  static const J2ObjcClassInfo _AMMessageStateEnum = { 1, "MessageState", "im.actor.model.entity", NULL, 0x4011, 3, methods, 7, fields, 1, superclass_type_args};
-  return &_AMMessageStateEnum;
-}
-
 @end
 
 AMMessageStateEnum *AMMessageStateEnum_fromValueWithInt_(jint value) {

@@ -62,24 +62,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFile, payload_, IOSByteArray *)
   other->payload_ = payload_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.ResponseGetFile;", 0x9, "Ljava.io.IOException;" },
-    { "initWithByteArray:", "ResponseGetFile", NULL, 0x1, NULL },
-    { "init", "ResponseGetFile", NULL, 0x1, NULL },
-    { "getPayload", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcResponseGetFile_HEADER },
-    { "payload_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiRpcResponseGetFile = { 1, "ResponseGetFile", "im.actor.model.api.rpc", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiRpcResponseGetFile;
-}
-
 @end
 
 ImActorModelApiRpcResponseGetFile *ImActorModelApiRpcResponseGetFile_fromBytesWithByteArray_(IOSByteArray *data) {

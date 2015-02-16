@@ -87,27 +87,6 @@
   other->h_ = h_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "videoFromBytesWithByteArray:", "videoFromBytes", "Lim.actor.model.entity.content.VideoContent;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelEntityContentFileSource:withNSString:withNSString:withImActorModelEntityContentFastThumb:withInt:withInt:withInt:", "VideoContent", NULL, 0x1, NULL },
-    { "init", "VideoContent", NULL, 0x2, NULL },
-    { "getDuration", NULL, "I", 0x1, NULL },
-    { "getW", NULL, "I", 0x1, NULL },
-    { "getH", NULL, "I", 0x1, NULL },
-    { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "duration_", NULL, 0x2, "I", NULL,  },
-    { "w_", NULL, 0x2, "I", NULL,  },
-    { "h_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentVideoContent = { 1, "VideoContent", "im.actor.model.entity.content", NULL, 0x1, 9, methods, 3, fields, 0, NULL};
-  return &_ImActorModelEntityContentVideoContent;
-}
-
 @end
 
 ImActorModelEntityContentVideoContent *ImActorModelEntityContentVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data) {

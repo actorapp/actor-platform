@@ -105,19 +105,6 @@
   return YES;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "UsersProcessor", NULL, 0x1, NULL },
-    { "applyUsersWithJavaUtilCollection:withBoolean:", "applyUsers", "V", 0x1, NULL },
-    { "onUserNameChangedWithInt:withNSString:", "onUserNameChanged", "V", 0x1, NULL },
-    { "onUserLocalNameChangedWithInt:withNSString:", "onUserLocalNameChanged", "V", 0x1, NULL },
-    { "onUserAvatarChangedWithInt:withImActorModelApiAvatar:", "onUserAvatarChanged", "V", 0x1, NULL },
-    { "hasUsersWithJavaUtilCollection:", "hasUsers", "Z", 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesUsersProcessor = { 1, "UsersProcessor", "im.actor.model.modules.updates", NULL, 0x1, 6, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesUpdatesUsersProcessor;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesUsersProcessor)

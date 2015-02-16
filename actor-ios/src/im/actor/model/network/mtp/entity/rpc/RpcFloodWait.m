@@ -50,23 +50,6 @@
   other->delay_ = delay_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataInput:", "RpcFloodWait", NULL, 0x1, "Ljava.io.IOException;" },
-    { "initWithInt:", "RpcFloodWait", NULL, 0x1, NULL },
-    { "getDelay", NULL, "I", 0x1, NULL },
-    { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTRpcFloodWait_HEADER },
-    { "delay_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTRpcFloodWait = { 1, "RpcFloodWait", "im.actor.model.network.mtp.entity.rpc", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
-  return &_MTRpcFloodWait;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTRpcFloodWait)

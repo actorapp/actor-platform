@@ -1,5 +1,7 @@
 package im.actor.model.jvm;
 
+import java.util.List;
+
 import im.actor.model.LogCallback;
 
 /**

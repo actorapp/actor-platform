@@ -21,15 +21,6 @@
   return [super initWithNSString:@"User leave"];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.content.ServiceGroupUserLeave;", 0x9, "Ljava.io.IOException;" },
-    { "init", "ServiceGroupUserLeave", NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentServiceGroupUserLeave = { 1, "ServiceGroupUserLeave", "im.actor.model.entity.content", NULL, 0x1, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelEntityContentServiceGroupUserLeave;
-}
-
 @end
 
 ImActorModelEntityContentServiceGroupUserLeave *ImActorModelEntityContentServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {

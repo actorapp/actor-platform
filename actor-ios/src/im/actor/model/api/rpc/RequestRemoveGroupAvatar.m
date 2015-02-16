@@ -73,27 +73,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
   other->rid_ = rid_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestRemoveGroupAvatar;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiGroupOutPeer:withLong:", "RequestRemoveGroupAvatar", NULL, 0x1, NULL },
-    { "init", "RequestRemoveGroupAvatar", NULL, 0x1, NULL },
-    { "getGroupPeer", NULL, "Lim.actor.model.api.GroupOutPeer;", 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestRemoveGroupAvatar_HEADER },
-    { "groupPeer_", NULL, 0x2, "Lim.actor.model.api.GroupOutPeer;", NULL,  },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseSeqDate;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestRemoveGroupAvatar = { 1, "RequestRemoveGroupAvatar", "im.actor.model.api.rpc", NULL, 0x1, 8, methods, 3, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestRemoveGroupAvatar;
-}
-
 @end
 
 ImActorModelApiRpcRequestRemoveGroupAvatar *ImActorModelApiRpcRequestRemoveGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {

@@ -170,31 +170,6 @@ NSString * MTSenderActor_TAG_ = @"ProtoSender";
   other->confirm_ = confirm_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "senderActorWithMTMTProto:", "senderActor", "Lim.actor.model.droidkit.actors.ActorRef;", 0x9, NULL },
-    { "initWithMTMTProto:", "SenderActor", NULL, 0x1, NULL },
-    { "preStart", NULL, "V", 0x1, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-    { "buildAck", NULL, "Lim.actor.model.network.mtp.entity.MessageAck;", 0x2, NULL },
-    { "doSendWithJavaUtilList:", "doSend", "V", 0x2, NULL },
-    { "doSendWithMTProtoMessage:", "doSend", "V", 0x2, NULL },
-    { "performSendWithMTProtoMessage:", "performSend", "V", 0x2, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &MTSenderActor_TAG_,  },
-    { "ACK_THRESHOLD_", NULL, 0x1a, "I", NULL, .constantValue.asInt = MTSenderActor_ACK_THRESHOLD },
-    { "ACK_DELAY_", NULL, 0x1a, "I", NULL, .constantValue.asInt = MTSenderActor_ACK_DELAY },
-    { "MAX_WORKLOAD_SIZE_", NULL, 0x1a, "I", NULL, .constantValue.asInt = MTSenderActor_MAX_WORKLOAD_SIZE },
-    { "proto_", NULL, 0x2, "Lim.actor.model.network.mtp.MTProto;", NULL,  },
-    { "manager_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "unsentPackages_", NULL, 0x2, "Ljava.util.HashMap;", NULL,  },
-    { "confirm_", NULL, 0x2, "Ljava.util.HashSet;", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTSenderActor = { 1, "SenderActor", "im.actor.model.network.mtp.actors", NULL, 0x1, 8, methods, 8, fields, 0, NULL};
-  return &_MTSenderActor;
-}
-
 @end
 
 DKActorRef *MTSenderActor_senderActorWithMTMTProto_(MTMTProto *proto) {
@@ -277,18 +252,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor)
   other->message_ = message_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withByteArray:", "SendMessage", NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "mid_", NULL, 0x2, "J", NULL,  },
-    { "message_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTSenderActor_SendMessage = { 1, "SendMessage", "im.actor.model.network.mtp.actors", "SenderActor", 0x9, 1, methods, 2, fields, 0, NULL};
-  return &_MTSenderActor_SendMessage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_SendMessage)
@@ -305,17 +268,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_SendMessage)
 - (void)copyAllFieldsTo:(MTSenderActor_ForgetMessage *)other {
   [super copyAllFieldsTo:other];
   other->mid_ = mid_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:", "ForgetMessage", NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "mid_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTSenderActor_ForgetMessage = { 1, "ForgetMessage", "im.actor.model.network.mtp.actors", "SenderActor", 0x9, 1, methods, 1, fields, 0, NULL};
-  return &_MTSenderActor_ForgetMessage;
 }
 
 @end
@@ -336,17 +288,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ForgetMessage)
   other->mid_ = mid_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:", "ConfirmMessage", NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "mid_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTSenderActor_ConfirmMessage = { 1, "ConfirmMessage", "im.actor.model.network.mtp.actors", "SenderActor", 0x9, 1, methods, 1, fields, 0, NULL};
-  return &_MTSenderActor_ConfirmMessage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ConfirmMessage)
@@ -355,14 +296,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ConfirmMessage)
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _MTSenderActor_ConnectionCreated = { 1, "ConnectionCreated", "im.actor.model.network.mtp.actors", "SenderActor", 0x9, 1, methods, 0, NULL, 0, NULL};
-  return &_MTSenderActor_ConnectionCreated;
 }
 
 @end
@@ -375,14 +308,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ConnectionCreated)
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _MTSenderActor_NewSession = { 1, "NewSession", "im.actor.model.network.mtp.actors", "SenderActor", 0x9, 1, methods, 0, NULL, 0, NULL};
-  return &_MTSenderActor_NewSession;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_NewSession)
@@ -391,14 +316,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_NewSession)
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _MTSenderActor_ForceAck = { 1, "ForceAck", "im.actor.model.network.mtp.actors", "SenderActor", 0x9, 1, methods, 0, NULL, 0, NULL};
-  return &_MTSenderActor_ForceAck;
 }
 
 @end
@@ -419,18 +336,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ForceAck)
 - (void)copyAllFieldsTo:(MTSenderActor_$1 *)other {
   [super copyAllFieldsTo:other];
   other->val$proto_ = val$proto_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "Lim.actor.model.network.mtp.actors.SenderActor;", 0x1, NULL },
-    { "initWithMTMTProto:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "val$proto_", NULL, 0x1012, "Lim.actor.model.network.mtp.MTProto;", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTSenderActor_$1 = { 1, "$1", "im.actor.model.network.mtp.actors", "SenderActor", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_MTSenderActor_$1;
 }
 
 @end

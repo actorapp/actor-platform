@@ -115,32 +115,6 @@ J2OBJC_FIELD_SETTER(AMMemoryListEngine, listeners_, JavaUtilArrayList *)
   other->listeners_ = listeners_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "MemoryListEngine", NULL, 0x1, NULL },
-    { "addListenerWithAMMemoryListEngine_EngineListener:", "addListener", "V", 0x1, NULL },
-    { "removeListenerWithAMMemoryListEngine_EngineListener:", "removeListener", "V", 0x1, NULL },
-    { "updateSort", NULL, "V", 0x2, NULL },
-    { "getList", NULL, "Ljava.util.ArrayList;", 0x1, NULL },
-    { "addOrUpdateItemWithAMListEngineItem:", "addOrUpdateItem", "V", 0x1, NULL },
-    { "addOrUpdateItemsWithJavaUtilList:", "addOrUpdateItems", "V", 0x1, NULL },
-    { "replaceItemsWithJavaUtilList:", "replaceItems", "V", 0x1, NULL },
-    { "removeItemWithLong:", "removeItem", "V", 0x1, NULL },
-    { "removeItemsWithLongArray:", "removeItems", "V", 0x1, NULL },
-    { "clear", NULL, "V", 0x1, NULL },
-    { "getValueWithLong:", "getValue", "TV;", 0x1, NULL },
-    { "getHeadValue", NULL, "TV;", 0x1, NULL },
-    { "getCount", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "items_", NULL, 0x2, "Ljava.util.HashMap;", NULL,  },
-    { "sortList_", NULL, 0x2, "Ljava.util.ArrayList;", NULL,  },
-    { "listeners_", NULL, 0x2, "Ljava.util.ArrayList;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMMemoryListEngine = { 1, "MemoryListEngine", "im.actor.model.storage", NULL, 0x1, 14, methods, 3, fields, 0, NULL};
-  return &_AMMemoryListEngine;
-}
-
 @end
 
 void AMMemoryListEngine_updateSort(AMMemoryListEngine *self) {
@@ -153,21 +127,6 @@ void AMMemoryListEngine_updateSort(AMMemoryListEngine *self) {
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMemoryListEngine)
-
-@interface AMMemoryListEngine_EngineListener : NSObject
-@end
-
-@implementation AMMemoryListEngine_EngineListener
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onItemsChanged", NULL, "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMMemoryListEngine_EngineListener = { 1, "EngineListener", "im.actor.model.storage", "MemoryListEngine", 0x201, 1, methods, 0, NULL, 0, NULL};
-  return &_AMMemoryListEngine_EngineListener;
-}
-
-@end
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMMemoryListEngine_EngineListener)
 
@@ -185,16 +144,6 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMMemoryListEngine_EngineListener)
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "compareWithAMListEngineItem:withAMListEngineItem:", "compare", "I", 0x1, NULL },
-    { "compareWithLong:withLong:", "compare", "I", 0x1, NULL },
-    { "init", NULL, NULL, 0x0, NULL },
-  };
-  static const J2ObjcClassInfo _AMMemoryListEngine_$1 = { 1, "$1", "im.actor.model.storage", "MemoryListEngine", 0x8000, 3, methods, 0, NULL, 0, NULL};
-  return &_AMMemoryListEngine_$1;
 }
 
 @end

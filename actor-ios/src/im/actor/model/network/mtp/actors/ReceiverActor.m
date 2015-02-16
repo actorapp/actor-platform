@@ -98,25 +98,6 @@ NSString * MTReceiverActor_TAG_ = @"ProtoReceiver";
   other->receivedMessages_ = receivedMessages_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "receiverWithMTMTProto:", "receiver", "Lim.actor.model.droidkit.actors.ActorRef;", 0x9, NULL },
-    { "initWithMTMTProto:", "ReceiverActor", NULL, 0x1, NULL },
-    { "preStart", NULL, "V", 0x1, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-    { "onReceiveWithMTProtoMessage:", "onReceive", "V", 0x2, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &MTReceiverActor_TAG_,  },
-    { "MAX_RECEIVED_BUFFER_", NULL, 0x1a, "I", NULL, .constantValue.asInt = MTReceiverActor_MAX_RECEIVED_BUFFER },
-    { "sender_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "proto_", NULL, 0x2, "Lim.actor.model.network.mtp.MTProto;", NULL,  },
-    { "receivedMessages_", NULL, 0x2, "Ljava.util.ArrayList;", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTReceiverActor = { 1, "ReceiverActor", "im.actor.model.network.mtp.actors", NULL, 0x1, 5, methods, 5, fields, 0, NULL};
-  return &_MTReceiverActor;
-}
-
 @end
 
 DKActorRef *MTReceiverActor_receiverWithMTMTProto_(MTMTProto *proto) {
@@ -225,18 +206,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTReceiverActor)
 - (void)copyAllFieldsTo:(MTReceiverActor_$1 *)other {
   [super copyAllFieldsTo:other];
   other->val$proto_ = val$proto_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "Lim.actor.model.network.mtp.actors.ReceiverActor;", 0x1, NULL },
-    { "initWithMTMTProto:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "val$proto_", NULL, 0x1012, "Lim.actor.model.network.mtp.MTProto;", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTReceiverActor_$1 = { 1, "$1", "im.actor.model.network.mtp.actors", "ReceiverActor", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_MTReceiverActor_$1;
 }
 
 @end

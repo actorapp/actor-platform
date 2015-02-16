@@ -107,33 +107,6 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
   other->actorPath_ = actorPath_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withLong:withAMEndpoints:withMTMTProtoCallback:withAMNetworking:", "MTProto", NULL, 0x1, NULL },
-    { "getNetworking", NULL, "Lim.actor.model.Networking;", 0x1, NULL },
-    { "getCallback", NULL, "Lim.actor.model.network.mtp.MTProtoCallback;", 0x1, NULL },
-    { "getEndpoints", NULL, "Lim.actor.model.network.Endpoints;", 0x1, NULL },
-    { "getAuthId", NULL, "J", 0x1, NULL },
-    { "getSessionId", NULL, "J", 0x1, NULL },
-    { "getActorPath", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "sendRpcMessageWithMTProtoStruct:", "sendRpcMessage", "J", 0x1, NULL },
-    { "cancelRpcWithLong:", "cancelRpc", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "authId_", NULL, 0x12, "J", NULL,  },
-    { "sessionId_", NULL, 0x12, "J", NULL,  },
-    { "endpoints_", NULL, 0x12, "Lim.actor.model.network.Endpoints;", NULL,  },
-    { "callback_", NULL, 0x12, "Lim.actor.model.network.mtp.MTProtoCallback;", NULL,  },
-    { "networking_", NULL, 0x12, "Lim.actor.model.Networking;", NULL,  },
-    { "receiver_", NULL, 0x12, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "manager_", NULL, 0x12, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "sender_", NULL, 0x12, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "actorPath_", NULL, 0x12, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTMTProto = { 1, "MTProto", "im.actor.model.network.mtp", NULL, 0x1, 9, methods, 9, fields, 0, NULL};
-  return &_MTMTProto;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTMTProto)

@@ -88,29 +88,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
   other->message_ = message_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestSendMessage;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiOutPeer:withLong:withImActorModelApiMessageContent:", "RequestSendMessage", NULL, 0x1, NULL },
-    { "init", "RequestSendMessage", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.api.OutPeer;", 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getMessage", NULL, "Lim.actor.model.api.MessageContent;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestSendMessage_HEADER },
-    { "peer_", NULL, 0x2, "Lim.actor.model.api.OutPeer;", NULL,  },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "message_", NULL, 0x2, "Lim.actor.model.api.MessageContent;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseSeqDate;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestSendMessage = { 1, "RequestSendMessage", "im.actor.model.api.rpc", NULL, 0x1, 9, methods, 4, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestSendMessage;
-}
-
 @end
 
 ImActorModelApiRpcRequestSendMessage *ImActorModelApiRpcRequestSendMessage_fromBytesWithByteArray_(IOSByteArray *data) {

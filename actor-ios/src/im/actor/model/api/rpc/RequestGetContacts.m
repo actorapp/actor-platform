@@ -62,25 +62,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetContacts, contactsHash_, NSStrin
   other->contactsHash_ = contactsHash_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestGetContacts;", 0x9, "Ljava.io.IOException;" },
-    { "initWithNSString:", "RequestGetContacts", NULL, 0x1, NULL },
-    { "init", "RequestGetContacts", NULL, 0x1, NULL },
-    { "getContactsHash", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestGetContacts_HEADER },
-    { "contactsHash_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseGetContacts;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestGetContacts = { 1, "RequestGetContacts", "im.actor.model.api.rpc", NULL, 0x1, 7, methods, 2, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestGetContacts;
-}
-
 @end
 
 ImActorModelApiRpcRequestGetContacts *ImActorModelApiRpcRequestGetContacts_fromBytesWithByteArray_(IOSByteArray *data) {

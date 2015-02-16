@@ -292,26 +292,6 @@ NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
   other->typingProcessor_ = typingProcessor_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "UpdateProcessor", NULL, 0x1, NULL },
-    { "applyRelatedWithJavaUtilList:withJavaUtilList:withJavaUtilList:withBoolean:", "applyRelated", "V", 0x1, NULL },
-    { "processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:", "processInternalUpdate", "V", 0x1, NULL },
-    { "processUpdateWithImActorModelNetworkParserUpdate:", "processUpdate", "V", 0x1, NULL },
-    { "isCausesInvalidationWithImActorModelNetworkParserUpdate:", "isCausesInvalidation", "Z", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelModulesUpdatesUpdateProcessor_TAG_,  },
-    { "usersProcessor_", NULL, 0x2, "Lim.actor.model.modules.updates.UsersProcessor;", NULL,  },
-    { "messagesProcessor_", NULL, 0x2, "Lim.actor.model.modules.updates.MessagesProcessor;", NULL,  },
-    { "groupsProcessor_", NULL, 0x2, "Lim.actor.model.modules.updates.GroupsProcessor;", NULL,  },
-    { "presenceProcessor_", NULL, 0x2, "Lim.actor.model.modules.updates.PresenceProcessor;", NULL,  },
-    { "typingProcessor_", NULL, 0x2, "Lim.actor.model.modules.updates.TypingProcessor;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesUpdateProcessor = { 1, "UpdateProcessor", "im.actor.model.modules.updates", NULL, 0x1, 5, methods, 6, fields, 0, NULL};
-  return &_ImActorModelModulesUpdatesUpdateProcessor;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesUpdateProcessor)

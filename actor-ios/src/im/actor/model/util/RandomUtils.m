@@ -33,18 +33,6 @@ JavaUtilRandom * AMRandomUtils_random_;
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "seedWithInt:", "seed", "[B", 0x29, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "random_", NULL, 0xa, "Ljava.util.Random;", &AMRandomUtils_random_,  },
-  };
-  static const J2ObjcClassInfo _AMRandomUtils = { 1, "RandomUtils", "im.actor.model.util", NULL, 0x1, 2, methods, 1, fields, 0, NULL};
-  return &_AMRandomUtils;
-}
-
 @end
 
 IOSByteArray *AMRandomUtils_seedWithInt_(jint size) {

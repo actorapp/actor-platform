@@ -143,36 +143,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   other->needMore__ = needMore__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.ResponseGetDifference;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withByteArray:withJavaUtilList:withJavaUtilList:withJavaUtilList:withJavaUtilList:withBoolean:", "ResponseGetDifference", NULL, 0x1, NULL },
-    { "init", "ResponseGetDifference", NULL, 0x1, NULL },
-    { "getSeq", NULL, "I", 0x1, NULL },
-    { "getState", NULL, "[B", 0x1, NULL },
-    { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getGroups", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getContacts", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getUpdates", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "needMore", NULL, "Z", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcResponseGetDifference_HEADER },
-    { "seq_", NULL, 0x2, "I", NULL,  },
-    { "state_", NULL, 0x2, "[B", NULL,  },
-    { "users_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "groups_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "contacts_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "updates_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "needMore__", "needMore", 0x2, "Z", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiRpcResponseGetDifference = { 1, "ResponseGetDifference", "im.actor.model.api.rpc", NULL, 0x1, 13, methods, 8, fields, 0, NULL};
-  return &_ImActorModelApiRpcResponseGetDifference;
-}
-
 @end
 
 ImActorModelApiRpcResponseGetDifference *ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(IOSByteArray *data) {

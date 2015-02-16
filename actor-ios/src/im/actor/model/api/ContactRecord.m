@@ -100,29 +100,6 @@ withImActorModelApiRecordTypeEnum:(ImActorModelApiRecordTypeEnum *)recordType
   other->title_ = title_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withLong:withImActorModelApiRecordTypeEnum:withNSString:withNSString:", "ContactRecord", NULL, 0x1, NULL },
-    { "init", "ContactRecord", NULL, 0x1, NULL },
-    { "getId", NULL, "I", 0x1, NULL },
-    { "getAccessHash", NULL, "J", 0x1, NULL },
-    { "getRecordType", NULL, "Lim.actor.model.api.RecordType;", 0x1, NULL },
-    { "getRecord", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "id__", "id", 0x2, "I", NULL,  },
-    { "accessHash_", NULL, 0x2, "J", NULL,  },
-    { "recordType_", NULL, 0x2, "Lim.actor.model.api.RecordType;", NULL,  },
-    { "record_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "title_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiContactRecord = { 1, "ContactRecord", "im.actor.model.api", NULL, 0x1, 9, methods, 5, fields, 0, NULL};
-  return &_ImActorModelApiContactRecord;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiContactRecord)

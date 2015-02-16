@@ -72,25 +72,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPublicKey, key_, IOSByteArray *)
   other->key_ = key_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withLong:withByteArray:", "PublicKey", NULL, 0x1, NULL },
-    { "init", "PublicKey", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "getKeyHash", NULL, "J", 0x1, NULL },
-    { "getKey", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "uid_", NULL, 0x2, "I", NULL,  },
-    { "keyHash_", NULL, 0x2, "J", NULL,  },
-    { "key_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiPublicKey = { 1, "PublicKey", "im.actor.model.api", NULL, 0x1, 7, methods, 3, fields, 0, NULL};
-  return &_ImActorModelApiPublicKey;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiPublicKey)

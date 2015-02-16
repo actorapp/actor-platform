@@ -109,32 +109,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
   other->date_ = date_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.ResponseCreateGroup;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiGroupOutPeer:withInt:withByteArray:withJavaUtilList:withLong:", "ResponseCreateGroup", NULL, 0x1, NULL },
-    { "init", "ResponseCreateGroup", NULL, 0x1, NULL },
-    { "getGroupPeer", NULL, "Lim.actor.model.api.GroupOutPeer;", 0x1, NULL },
-    { "getSeq", NULL, "I", 0x1, NULL },
-    { "getState", NULL, "[B", 0x1, NULL },
-    { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcResponseCreateGroup_HEADER },
-    { "groupPeer_", NULL, 0x2, "Lim.actor.model.api.GroupOutPeer;", NULL,  },
-    { "seq_", NULL, 0x2, "I", NULL,  },
-    { "state_", NULL, 0x2, "[B", NULL,  },
-    { "users_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "date_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiRpcResponseCreateGroup = { 1, "ResponseCreateGroup", "im.actor.model.api.rpc", NULL, 0x1, 11, methods, 6, fields, 0, NULL};
-  return &_ImActorModelApiRpcResponseCreateGroup;
-}
-
 @end
 
 ImActorModelApiRpcResponseCreateGroup *ImActorModelApiRpcResponseCreateGroup_fromBytesWithByteArray_(IOSByteArray *data) {

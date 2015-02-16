@@ -140,36 +140,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksAskFuture, error__, JavaLangT
   other->error__ = error__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelDroidkitActorsTasksActorAskImpl:withInt:", "AskFuture", NULL, 0x0, NULL },
-    { "addListenerWithImActorModelDroidkitActorsTasksAskCallback:", "addListener", "V", 0x1, NULL },
-    { "removeListenerWithImActorModelDroidkitActorsTasksAskCallback:", "removeListener", "V", 0x1, NULL },
-    { "isCompleted", NULL, "Z", 0x1, NULL },
-    { "isError", NULL, "Z", 0x1, NULL },
-    { "isCanceled", NULL, "Z", 0x1, NULL },
-    { "error", NULL, "Ljava.lang.Throwable;", 0x1, NULL },
-    { "result", NULL, "TT;", 0x1, NULL },
-    { "cancel", NULL, "V", 0x1, NULL },
-    { "onErrorWithJavaLangThrowable:", "onError", "V", 0x0, NULL },
-    { "onResultWithId:", "onResult", "V", 0x0, NULL },
-    { "onProgressWithId:", "onProgress", "V", 0x0, NULL },
-    { "onTimeout", NULL, "V", 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "callbacks_", NULL, 0x2, "Ljava.util.LinkedList;", NULL,  },
-    { "askImpl_", NULL, 0x2, "Lim.actor.model.droidkit.actors.tasks.ActorAskImpl;", NULL,  },
-    { "reqId_", NULL, 0x2, "I", NULL,  },
-    { "isCompleted__", "isCompleted", 0x2, "Z", NULL,  },
-    { "isCanceled__", "isCanceled", 0x2, "Z", NULL,  },
-    { "isError__", "isError", 0x2, "Z", NULL,  },
-    { "result__", "result", 0x2, "TT;", NULL,  },
-    { "error__", "error", 0x2, "Ljava.lang.Throwable;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksAskFuture = { 1, "AskFuture", "im.actor.model.droidkit.actors.tasks", NULL, 0x1, 13, methods, 8, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksAskFuture;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksAskFuture)

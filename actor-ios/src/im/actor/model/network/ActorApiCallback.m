@@ -6,21 +6,4 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/ActorApiCallback.h"
 
-@interface AMActorApiCallback : NSObject
-@end
-
-@implementation AMActorApiCallback
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onAuthIdInvalidatedWithLong:", "onAuthIdInvalidated", "V", 0x401, NULL },
-    { "onNewSessionCreated", NULL, "V", 0x401, NULL },
-    { "onUpdateReceivedWithId:", "onUpdateReceived", "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMActorApiCallback = { 1, "ActorApiCallback", "im.actor.model.network", NULL, 0x201, 3, methods, 0, NULL, 0, NULL};
-  return &_AMActorApiCallback;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMActorApiCallback)

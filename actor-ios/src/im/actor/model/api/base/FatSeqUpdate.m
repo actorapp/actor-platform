@@ -146,36 +146,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
   other->contacts_ = contacts_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.base.FatSeqUpdate;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withByteArray:withInt:withByteArray:withJavaUtilList:withJavaUtilList:withJavaUtilList:", "FatSeqUpdate", NULL, 0x1, NULL },
-    { "init", "FatSeqUpdate", NULL, 0x1, NULL },
-    { "getSeq", NULL, "I", 0x1, NULL },
-    { "getState", NULL, "[B", 0x1, NULL },
-    { "getUpdateHeader", NULL, "I", 0x1, NULL },
-    { "getUpdate", NULL, "[B", 0x1, NULL },
-    { "getUsers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getGroups", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getContacts", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiBaseFatSeqUpdate_HEADER },
-    { "seq_", NULL, 0x2, "I", NULL,  },
-    { "state_", NULL, 0x2, "[B", NULL,  },
-    { "updateHeader_", NULL, 0x2, "I", NULL,  },
-    { "update_", NULL, 0x2, "[B", NULL,  },
-    { "users_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "groups_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "contacts_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiBaseFatSeqUpdate = { 1, "FatSeqUpdate", "im.actor.model.api.base", NULL, 0x1, 13, methods, 8, fields, 0, NULL};
-  return &_ImActorModelApiBaseFatSeqUpdate;
-}
-
 @end
 
 ImActorModelApiBaseFatSeqUpdate *ImActorModelApiBaseFatSeqUpdate_fromBytesWithByteArray_(IOSByteArray *data) {

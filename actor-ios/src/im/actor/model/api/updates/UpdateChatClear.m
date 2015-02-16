@@ -63,24 +63,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
   other->peer_ = peer_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.updates.UpdateChatClear;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiPeer:", "UpdateChatClear", NULL, 0x1, NULL },
-    { "init", "UpdateChatClear", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.api.Peer;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiUpdatesUpdateChatClear_HEADER },
-    { "peer_", NULL, 0x2, "Lim.actor.model.api.Peer;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiUpdatesUpdateChatClear = { 1, "UpdateChatClear", "im.actor.model.api.updates", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiUpdatesUpdateChatClear;
-}
-
 @end
 
 ImActorModelApiUpdatesUpdateChatClear *ImActorModelApiUpdatesUpdateChatClear_fromBytesWithByteArray_(IOSByteArray *data) {

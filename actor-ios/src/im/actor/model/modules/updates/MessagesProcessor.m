@@ -162,31 +162,6 @@ __attribute__((unused)) static DKActorRef *ImActorModelModulesUpdatesMessagesPro
   [((DKActorRef *) nil_chk(ImActorModelModulesUpdatesMessagesProcessor_conversationActorWithAMPeer_(self, AMPeer_userWithInt_(uid)))) sendWithId:message];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "MessagesProcessor", NULL, 0x1, NULL },
-    { "dialogsActor", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x2, NULL },
-    { "dialogsHistoryActor", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x2, NULL },
-    { "conversationActorWithAMPeer:", "conversationActor", "Lim.actor.model.droidkit.actors.ActorRef;", 0x2, NULL },
-    { "buildSortKey", NULL, "J", 0x2, NULL },
-    { "onDialogsLoadedWithImActorModelApiRpcResponseLoadDialogs:", "onDialogsLoaded", "V", 0x1, NULL },
-    { "onMessageWithImActorModelApiPeer:withInt:withLong:withLong:withImActorModelApiMessageContent:", "onMessage", "V", 0x1, NULL },
-    { "onMessageReadWithImActorModelApiPeer:withLong:withLong:", "onMessageRead", "V", 0x1, NULL },
-    { "onMessageEncryptedReadWithImActorModelApiPeer:withLong:withLong:", "onMessageEncryptedRead", "V", 0x1, NULL },
-    { "onMessageReceivedWithImActorModelApiPeer:withLong:withLong:", "onMessageReceived", "V", 0x1, NULL },
-    { "onMessageEncryptedReceivedWithImActorModelApiPeer:withLong:withLong:", "onMessageEncryptedReceived", "V", 0x1, NULL },
-    { "onMessageReadByMeWithImActorModelApiPeer:withLong:", "onMessageReadByMe", "V", 0x1, NULL },
-    { "onMessageEncryptedReadByMeWithImActorModelApiPeer:withLong:", "onMessageEncryptedReadByMe", "V", 0x1, NULL },
-    { "onMessageDeleteWithImActorModelApiPeer:withJavaUtilList:", "onMessageDelete", "V", 0x1, NULL },
-    { "onMessageSentWithImActorModelApiPeer:withLong:withLong:", "onMessageSent", "V", 0x1, NULL },
-    { "onChatClearWithImActorModelApiPeer:", "onChatClear", "V", 0x1, NULL },
-    { "onChatDeleteWithImActorModelApiPeer:", "onChatDelete", "V", 0x1, NULL },
-    { "onUserRegisteredWithInt:withLong:", "onUserRegistered", "V", 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesMessagesProcessor = { 1, "MessagesProcessor", "im.actor.model.modules.updates", NULL, 0x1, 18, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesUpdatesMessagesProcessor;
-}
-
 @end
 
 DKActorRef *ImActorModelModulesUpdatesMessagesProcessor_dialogsActor(ImActorModelModulesUpdatesMessagesProcessor *self) {

@@ -71,26 +71,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
   other->localName_ = localName_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.updates.UpdateUserLocalNameChanged;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withNSString:", "UpdateUserLocalNameChanged", NULL, 0x1, NULL },
-    { "init", "UpdateUserLocalNameChanged", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "getLocalName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiUpdatesUpdateUserLocalNameChanged_HEADER },
-    { "uid_", NULL, 0x2, "I", NULL,  },
-    { "localName_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiUpdatesUpdateUserLocalNameChanged = { 1, "UpdateUserLocalNameChanged", "im.actor.model.api.updates", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
-  return &_ImActorModelApiUpdatesUpdateUserLocalNameChanged;
-}
-
 @end
 
 ImActorModelApiUpdatesUpdateUserLocalNameChanged *ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(IOSByteArray *data) {

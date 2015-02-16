@@ -37,21 +37,6 @@
   other->atomicLong_ = atomicLong_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:", "JavaAtomicLong", NULL, 0x1, NULL },
-    { "get", NULL, "J", 0x1, NULL },
-    { "incrementAndGet", NULL, "J", 0x1, NULL },
-    { "getAndIncrement", NULL, "J", 0x1, NULL },
-    { "setWithLong:", "set", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "atomicLong_", NULL, 0x10, "Ljava.util.concurrent.atomic.AtomicLong;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelJvmThreadsJavaAtomicLong = { 1, "JavaAtomicLong", "im.actor.model.jvm.threads", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
-  return &_ImActorModelJvmThreadsJavaAtomicLong;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaAtomicLong)

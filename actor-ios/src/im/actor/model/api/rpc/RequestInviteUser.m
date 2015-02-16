@@ -88,29 +88,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
   other->user_ = user_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestInviteUser;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiGroupOutPeer:withLong:withImActorModelApiUserOutPeer:", "RequestInviteUser", NULL, 0x1, NULL },
-    { "init", "RequestInviteUser", NULL, 0x1, NULL },
-    { "getGroupPeer", NULL, "Lim.actor.model.api.GroupOutPeer;", 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getUser", NULL, "Lim.actor.model.api.UserOutPeer;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestInviteUser_HEADER },
-    { "groupPeer_", NULL, 0x2, "Lim.actor.model.api.GroupOutPeer;", NULL,  },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "user_", NULL, 0x2, "Lim.actor.model.api.UserOutPeer;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseSeqDate;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestInviteUser = { 1, "RequestInviteUser", "im.actor.model.api.rpc", NULL, 0x1, 9, methods, 4, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestInviteUser;
-}
-
 @end
 
 ImActorModelApiRpcRequestInviteUser *ImActorModelApiRpcRequestInviteUser_fromBytesWithByteArray_(IOSByteArray *data) {

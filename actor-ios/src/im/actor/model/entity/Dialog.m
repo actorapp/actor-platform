@@ -193,47 +193,6 @@ J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
   other->relatedUid_ = relatedUid_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.Dialog;", 0x9, "Ljava.io.IOException;" },
-    { "initWithAMPeer:withLong:withNSString:withAMAvatar:withInt:withLong:withAMDialog_ContentTypeEnum:withNSString:withAMMessageStateEnum:withInt:withLong:withInt:", "Dialog", NULL, 0x1, NULL },
-    { "init", "Dialog", NULL, 0x2, NULL },
-    { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
-    { "getListId", NULL, "J", 0x1, NULL },
-    { "getListSortKey", NULL, "J", 0x1, NULL },
-    { "getDialogTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getUnreadCount", NULL, "I", 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getSortDate", NULL, "J", 0x1, NULL },
-    { "getSenderId", NULL, "I", 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-    { "getMessageType", NULL, "Lim.actor.model.entity.Dialog$ContentType;", 0x1, NULL },
-    { "getText", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getStatus", NULL, "Lim.actor.model.entity.MessageState;", 0x1, NULL },
-    { "getRelatedUid", NULL, "I", 0x1, NULL },
-    { "getDialogAvatar", NULL, "Lim.actor.model.entity.Avatar;", 0x1, NULL },
-    { "editPeerInfoWithNSString:withAMAvatar:", "editPeerInfo", "Lim.actor.model.entity.Dialog;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
-    { "dialogTitle_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "unreadCount_", NULL, 0x2, "I", NULL,  },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "sortDate_", NULL, 0x2, "J", NULL,  },
-    { "senderId_", NULL, 0x2, "I", NULL,  },
-    { "date_", NULL, 0x2, "J", NULL,  },
-    { "messageType_", NULL, 0x2, "Lim.actor.model.entity.Dialog$ContentType;", NULL,  },
-    { "text_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "status_", NULL, 0x2, "Lim.actor.model.entity.MessageState;", NULL,  },
-    { "dialogAvatar_", NULL, 0x2, "Lim.actor.model.entity.Avatar;", NULL,  },
-    { "relatedUid_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMDialog = { 1, "Dialog", "im.actor.model.entity", NULL, 0x1, 20, methods, 12, fields, 0, NULL};
-  return &_AMDialog;
-}
-
 @end
 
 AMDialog *AMDialog_fromBytesWithByteArray_(IOSByteArray *date) {
@@ -312,34 +271,6 @@ AMDialog_ContentTypeEnum *AMDialog_ContentTypeEnum_valueOfWithNSString_(NSString
     AMDialog_ContentTypeEnum_SERVICE_AVATAR_REMOVED = [[AMDialog_ContentTypeEnum alloc] initWithInt:14 withNSString:@"SERVICE_AVATAR_REMOVED" withInt:13];
     J2OBJC_SET_INITIALIZED(AMDialog_ContentTypeEnum)
   }
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withNSString:withInt:", "ContentType", NULL, 0x2, NULL },
-    { "getValue", NULL, "I", 0x1, NULL },
-    { "fromValueWithInt:", "fromValue", "Lim.actor.model.entity.Dialog$ContentType;", 0x9, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TEXT", "TEXT", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_TEXT,  },
-    { "EMPTY", "EMPTY", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_EMPTY,  },
-    { "DOCUMENT", "DOCUMENT", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_DOCUMENT,  },
-    { "DOCUMENT_PHOTO", "DOCUMENT_PHOTO", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_DOCUMENT_PHOTO,  },
-    { "DOCUMENT_VIDEO", "DOCUMENT_VIDEO", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_DOCUMENT_VIDEO,  },
-    { "SERVICE", "SERVICE", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE,  },
-    { "SERVICE_ADD", "SERVICE_ADD", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_ADD,  },
-    { "SERVICE_KICK", "SERVICE_KICK", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_KICK,  },
-    { "SERVICE_LEAVE", "SERVICE_LEAVE", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_LEAVE,  },
-    { "SERVICE_REGISTERED", "SERVICE_REGISTERED", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_REGISTERED,  },
-    { "SERVICE_CREATED", "SERVICE_CREATED", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_CREATED,  },
-    { "SERVICE_TITLE", "SERVICE_TITLE", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_TITLE,  },
-    { "SERVICE_AVATAR", "SERVICE_AVATAR", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_AVATAR,  },
-    { "SERVICE_AVATAR_REMOVED", "SERVICE_AVATAR_REMOVED", 0x4019, "Lim.actor.model.entity.Dialog$ContentType;", &AMDialog_ContentTypeEnum_SERVICE_AVATAR_REMOVED,  },
-    { "value_", NULL, 0x0, "I", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.entity.Dialog$ContentType;"};
-  static const J2ObjcClassInfo _AMDialog_ContentTypeEnum = { 1, "ContentType", "im.actor.model.entity", "Dialog", 0x4019, 3, methods, 15, fields, 1, superclass_type_args};
-  return &_AMDialog_ContentTypeEnum;
 }
 
 @end

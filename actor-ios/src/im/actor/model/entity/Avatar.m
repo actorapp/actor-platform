@@ -111,28 +111,6 @@ J2OBJC_FIELD_SETTER(AMAvatar, fullImage_, AMAvatarImage *)
   other->fullImage_ = fullImage_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.Avatar;", 0x9, "Ljava.io.IOException;" },
-    { "initWithAMAvatarImage:withAMAvatarImage:withAMAvatarImage:", "Avatar", NULL, 0x1, NULL },
-    { "init", "Avatar", NULL, 0x2, NULL },
-    { "getSmallImage", NULL, "Lim.actor.model.entity.AvatarImage;", 0x1, NULL },
-    { "getLargeImage", NULL, "Lim.actor.model.entity.AvatarImage;", 0x1, NULL },
-    { "getFullImage", NULL, "Lim.actor.model.entity.AvatarImage;", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "smallImage_", NULL, 0x2, "Lim.actor.model.entity.AvatarImage;", NULL,  },
-    { "largeImage_", NULL, 0x2, "Lim.actor.model.entity.AvatarImage;", NULL,  },
-    { "fullImage_", NULL, 0x2, "Lim.actor.model.entity.AvatarImage;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMAvatar = { 1, "Avatar", "im.actor.model.entity", NULL, 0x1, 10, methods, 3, fields, 0, NULL};
-  return &_AMAvatar;
-}
-
 @end
 
 AMAvatar *AMAvatar_fromBytesWithByteArray_(IOSByteArray *data) {

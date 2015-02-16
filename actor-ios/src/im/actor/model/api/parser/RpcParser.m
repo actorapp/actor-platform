@@ -257,16 +257,6 @@
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "readWithInt:withByteArray:", "read", "Lim.actor.model.network.parser.RpcScope;", 0x1, "Ljava.io.IOException;" },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.network.parser.RpcScope;"};
-  static const J2ObjcClassInfo _ImActorModelApiParserRpcParser = { 1, "RpcParser", "im.actor.model.api.parser", NULL, 0x1, 2, methods, 0, NULL, 1, superclass_type_args};
-  return &_ImActorModelApiParserRpcParser;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiParserRpcParser)

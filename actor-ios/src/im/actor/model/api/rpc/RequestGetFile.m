@@ -83,29 +83,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFile, fileLocation_, ImActorMode
   other->limit_ = limit_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestGetFile;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiFileLocation:withInt:withInt:", "RequestGetFile", NULL, 0x1, NULL },
-    { "init", "RequestGetFile", NULL, 0x1, NULL },
-    { "getFileLocation", NULL, "Lim.actor.model.api.FileLocation;", 0x1, NULL },
-    { "getOffset", NULL, "I", 0x1, NULL },
-    { "getLimit", NULL, "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestGetFile_HEADER },
-    { "fileLocation_", NULL, 0x2, "Lim.actor.model.api.FileLocation;", NULL,  },
-    { "offset_", NULL, 0x2, "I", NULL,  },
-    { "limit_", NULL, 0x2, "I", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseGetFile;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestGetFile = { 1, "RequestGetFile", "im.actor.model.api.rpc", NULL, 0x1, 9, methods, 4, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestGetFile;
-}
-
 @end
 
 ImActorModelApiRpcRequestGetFile *ImActorModelApiRpcRequestGetFile_fromBytesWithByteArray_(IOSByteArray *data) {

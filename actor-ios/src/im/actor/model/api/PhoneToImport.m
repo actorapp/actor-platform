@@ -60,23 +60,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
   other->name_ = name_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withNSString:", "PhoneToImport", NULL, 0x1, NULL },
-    { "init", "PhoneToImport", NULL, 0x1, NULL },
-    { "getPhoneNumber", NULL, "J", 0x1, NULL },
-    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "phoneNumber_", NULL, 0x2, "J", NULL,  },
-    { "name_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiPhoneToImport = { 1, "PhoneToImport", "im.actor.model.api", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiPhoneToImport;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiPhoneToImport)

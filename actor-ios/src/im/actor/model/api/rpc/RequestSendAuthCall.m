@@ -96,31 +96,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
   other->apiKey_ = apiKey_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestSendAuthCall;", 0x9, "Ljava.io.IOException;" },
-    { "initWithLong:withNSString:withInt:withNSString:", "RequestSendAuthCall", NULL, 0x1, NULL },
-    { "init", "RequestSendAuthCall", NULL, 0x1, NULL },
-    { "getPhoneNumber", NULL, "J", 0x1, NULL },
-    { "getSmsHash", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getAppId", NULL, "I", 0x1, NULL },
-    { "getApiKey", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestSendAuthCall_HEADER },
-    { "phoneNumber_", NULL, 0x2, "J", NULL,  },
-    { "smsHash_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "appId_", NULL, 0x2, "I", NULL,  },
-    { "apiKey_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseVoid;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestSendAuthCall = { 1, "RequestSendAuthCall", "im.actor.model.api.rpc", NULL, 0x1, 10, methods, 5, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestSendAuthCall;
-}
-
 @end
 
 ImActorModelApiRpcRequestSendAuthCall *ImActorModelApiRpcRequestSendAuthCall_fromBytesWithByteArray_(IOSByteArray *data) {

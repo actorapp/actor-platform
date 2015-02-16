@@ -56,23 +56,6 @@
   other->accessHash_ = accessHash_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withLong:", "FileLocation", NULL, 0x1, NULL },
-    { "init", "FileLocation", NULL, 0x1, NULL },
-    { "getFileId", NULL, "J", 0x1, NULL },
-    { "getAccessHash", NULL, "J", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "fileId_", NULL, 0x2, "J", NULL,  },
-    { "accessHash_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiFileLocation = { 1, "FileLocation", "im.actor.model.api", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiFileLocation;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiFileLocation)
