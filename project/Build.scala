@@ -63,7 +63,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.root
     )
-  )
+  ).dependsOn(actorPersist)
 
   lazy val actorTests = Project(
     id = "actor-tests",
@@ -72,4 +72,18 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.tests
     )
   ).dependsOn(actorApi)
+
+  lazy val actorModels = Project(
+    id = "actor-models",
+    base = file("actor-models"),
+    settings = defaultSettings
+  )
+
+  lazy val actorPersist = Project(
+    id = "actor-persist",
+    base = file("actor-persist"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.persist
+    )
+  ).dependsOn(actorModels)
 }

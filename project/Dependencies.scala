@@ -16,6 +16,9 @@ object Dependencies {
     val akkaHttpSpray   = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
     val akkaSlf4j       = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
+    val postgresJdbc    = "org.postgresql"                %  "postgresql"                    % "9.3-1102-jdbc41"
+    val slick           = "com.typesafe.slick"            %% "slick"                         % "3.0.0-M1"
+
     val scodecBits      = "org.typelevel"                 %% "scodec-bits"                   % "1.0.4"
     val scodecCore      = "org.typelevel"                 %% "scodec-core"                   % "1.6.0"
 
@@ -37,6 +40,8 @@ object Dependencies {
   val common = Seq(logbackClassic, scalaLogging)
 
   val tests = Seq(akkaTestkit, scalacheck, specs2)
+
+  val persist = Seq(postgresJdbc, slick)
 
   val root = common ++ Seq(akkaSlf4j, akkaActor, akkaKernel, akkaStream, scodecBits, scodecCore, scalazCore, scalazConcurrent)
 }
