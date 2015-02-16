@@ -1,10 +1,11 @@
 package im.actor.model.network.mtp;
 
-import im.actor.model.network.ConnectionFactory;
 import im.actor.model.log.Log;
 import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
+import im.actor.model.network.CreateConnectionCallback;
 import im.actor.model.network.Endpoints;
+import im.actor.model.Networking;
 import im.actor.model.util.DataInput;
 import im.actor.model.util.DataOutput;
 
@@ -15,13 +16,13 @@ public class AuthIdRetriever {
 
     private static final String TAG = "AuthId";
 
-    public static void requestAuthId(Endpoints endpoints, final AuthIdCallback callback) {
+    public static void requestAuthId(Endpoints endpoints, Networking networking, final AuthIdCallback callback) {
         Log.d(TAG, "Requesting AuthId");
 
         final boolean[] isFinished = new boolean[1];
         isFinished[0] = false;
 
-        ConnectionFactory.createConnection(0, endpoints.fetchEndpoint(), new ConnectionCallback() {
+        networking.createConnection(0, endpoints.fetchEndpoint(), new ConnectionCallback() {
             @Override
             public void onMessage(byte[] data, int offset, int len) {
                 if (isFinished[0]) {
@@ -65,7 +66,7 @@ public class AuthIdRetriever {
                     Log.d(TAG, "Connection dies");
                 }
             }
-        }, new ConnectionFactory.CreateConnectionCallback() {
+        }, new CreateConnectionCallback() {
             @Override
             public void onConnectionCreated(Connection connection) {
                 if (isFinished[0]) {

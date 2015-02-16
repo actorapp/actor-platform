@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import im.actor.model.Messenger;
-import im.actor.model.OnlineCallback;
+import im.actor.model.MessengerCallback;
 import im.actor.model.api.UserOutPeer;
 import im.actor.model.api.rpc.RequestSubscribeToOnline;
 import im.actor.model.droidkit.actors.ActorCreator;
@@ -52,12 +51,12 @@ public class PresenceActor extends ModuleActor {
     private static final int ONLINE_TIMEOUT = 5 * 60 * 1000;
 
     private HashSet<Integer> uids = new HashSet<Integer>();
-    private OnlineCallback onlineCallback;
+    private MessengerCallback onlineCallback;
 
     public PresenceActor(Modules messenger) {
         super(messenger);
 
-        onlineCallback = messenger.getConfiguration().getOnlineCallback();
+        onlineCallback = messenger.getConfiguration().getCallback();
     }
 
     private void onUserOnline(int uid) {

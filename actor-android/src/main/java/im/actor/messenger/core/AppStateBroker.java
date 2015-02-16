@@ -3,7 +3,7 @@ package im.actor.messenger.core;
 import com.droidkit.actors.typed.TypedActor;
 
 import im.actor.messenger.util.Logger;
-import im.actor.model.State;
+import im.actor.model.AuthState;
 
 /**
  * Created by ex3ndr on 06.09.14.
@@ -63,14 +63,14 @@ public class AppStateBroker extends TypedActor<AppStateInterface> implements App
 
     private void onAppOpened() {
         Logger.d(TAG, "App open");
-        if (Core.messenger().getState() == State.LOGGED_IN) {
+        if (Core.messenger().getAuthState() == AuthState.LOGGED_IN) {
             Core.messenger().onAppVisible();
         }
     }
 
     private void onAppClosed() {
         Logger.d(TAG, "App closed");
-        if (Core.messenger().getState() == State.LOGGED_IN) {
+        if (Core.messenger().getAuthState() == AuthState.LOGGED_IN) {
             Core.messenger().onAppHidden();
         }
     }

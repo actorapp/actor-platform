@@ -3,17 +3,13 @@ package im.actor.messenger.app.providers;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.core.Core;
-import im.actor.messenger.storage.scheme.media.Downloaded;
-import im.actor.model.State;
 
 /**
  * Created by ex3ndr on 22.01.14.

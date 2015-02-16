@@ -1,5 +1,6 @@
 package im.actor.model.storage;
 
+import im.actor.model.Storage;
 import im.actor.model.entity.*;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
@@ -7,7 +8,12 @@ import im.actor.model.mvvm.ListEngine;
 /**
  * Created by ex3ndr on 08.02.15.
  */
-public class MemoryEnginesFactory implements EnginesFactory {
+public class MemoryEnginesFactory implements Storage {
+
+    @Override
+    public PreferencesStorage createPreferencesStorage() {
+        return new MemoryPreferences();
+    }
 
     @Override
     public KeyValueEngine<User> createUsersEngine() {

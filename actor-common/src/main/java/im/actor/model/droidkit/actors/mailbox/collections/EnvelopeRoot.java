@@ -1,7 +1,7 @@
 package im.actor.model.droidkit.actors.mailbox.collections;
 
 import im.actor.model.droidkit.actors.ActorTime;
-import im.actor.model.droidkit.actors.conf.EnvConfig;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
 import im.actor.model.droidkit.actors.utils.ThreadLocalCompat;
@@ -127,7 +127,7 @@ public class EnvelopeRoot {
 
     public static class FetchResult {
 
-        private static ThreadLocalCompat<FetchResult> RESULT_CACHE = EnvConfig.createThreadLocal();
+        private static ThreadLocalCompat<FetchResult> RESULT_CACHE = Environment.createThreadLocal();
 
         public static FetchResult envelope(Envelope envelope) {
             FetchResult res = RESULT_CACHE.get();

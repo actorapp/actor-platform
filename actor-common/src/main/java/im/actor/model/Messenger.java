@@ -1,9 +1,11 @@
 package im.actor.model;
 
 import im.actor.model.concurrency.Command;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
@@ -15,28 +17,34 @@ public class Messenger {
     private Modules modules;
 
     public Messenger(Configuration configuration) {
+        // Init internal actor system
+        Environment.setThreading(configuration.getThreading());
+
+        // Init Log
+        Log.setLog(configuration.getLog());
+
         this.modules = new Modules(configuration);
     }
 
     // Auth
 
-    public State getState() {
-        return modules.getAuthModule().getState();
+    public AuthState getAuthState() {
+        return modules.getAuthModule().getAuthState();
     }
 
     public boolean isLoggedIn() {
-        return getState() == State.LOGGED_IN;
+        return getAuthState() == AuthState.LOGGED_IN;
     }
 
-    public Command<State> requestSms(final long phone) {
+    public Command<AuthState> requestSms(final long phone) {
         return modules.getAuthModule().requestSms(phone);
     }
 
-    public Command<State> sendCode(final int code) {
+    public Command<AuthState> sendCode(final int code) {
         return modules.getAuthModule().sendCode(code);
     }
 
-    public Command<State> signUp(final String firstName, String avatarPath, final boolean isSilent) {
+    public Command<AuthState> signUp(final String firstName, String avatarPath, final boolean isSilent) {
         return modules.getAuthModule().signUp(firstName, avatarPath, isSilent);
     }
 

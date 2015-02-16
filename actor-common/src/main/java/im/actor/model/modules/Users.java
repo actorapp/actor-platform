@@ -1,6 +1,5 @@
 package im.actor.model.modules;
 
-import im.actor.model.Messenger;
 import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestEditName;
 import im.actor.model.api.rpc.RequestEditUserLocalName;
@@ -9,13 +8,11 @@ import im.actor.model.api.updates.UpdateUserLocalNameChanged;
 import im.actor.model.api.updates.UpdateUserNameChanged;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.concurrency.MainThread;
 import im.actor.model.entity.User;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
-import im.actor.model.storage.EnginesFactory;
 
 /**
  * Created by ex3ndr on 08.02.15.
@@ -25,7 +22,7 @@ public class Users extends BaseModule {
 
     public Users(Modules messenger) {
         super(messenger);
-        this.users = messenger.getConfiguration().getEnginesFactory().createUsersEngine();
+        this.users = messenger.getConfiguration().getStorage().createUsersEngine();
     }
 
     public KeyValueEngine<User> getUsers() {

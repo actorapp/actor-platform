@@ -2,10 +2,9 @@ package im.actor.model.jvm;
 
 import im.actor.model.api.rpc.RequestSendAuthCode;
 import im.actor.model.api.rpc.ResponseSendAuthCode;
-import im.actor.model.jvm.network.MemoryAuthIdStorage;
 import im.actor.model.log.Log;
 import im.actor.model.network.*;
-import im.actor.model.network.mtp.entity.Ping;
+
 import org.junit.Test;
 
 import java.util.Random;

@@ -15,7 +15,6 @@ import java.io.FileNotFoundException;
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.core.Core;
 import im.actor.messenger.core.images.FileKeys;
-import im.actor.model.State;
 
 /**
  * Created by ex3ndr on 22.01.14.

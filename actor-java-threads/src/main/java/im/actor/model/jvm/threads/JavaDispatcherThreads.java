@@ -1,4 +1,4 @@
-package im.actor.model.jvm.actors;
+package im.actor.model.jvm.threads;
 
 import im.actor.model.droidkit.actors.ThreadPriority;
 import im.actor.model.droidkit.actors.dispatch.AbstractDispatchQueue;
@@ -16,7 +16,7 @@ import static im.actor.model.droidkit.actors.ActorTime.currentTime;
  *
  * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
-public class JavaThreadsDispatcher<T, Q extends AbstractDispatchQueue<T>> extends AbstractDispatcher<T, Q> {
+public class JavaDispatcherThreads<T, Q extends AbstractDispatchQueue<T>> extends AbstractDispatcher<T, Q> {
 
     private static final AtomicInteger INDEX = new AtomicInteger(1);
 
@@ -40,7 +40,7 @@ public class JavaThreadsDispatcher<T, Q extends AbstractDispatchQueue<T>> extend
      *                 (see {@link im.actor.model.droidkit.actors.dispatch.AbstractDispatchQueue} for more information)
      * @param dispatch Dispatch for message processing
      */
-    public JavaThreadsDispatcher(String name, int count, ThreadPriority priority, final Q queue, Dispatch<T> dispatch, boolean createThreads) {
+    public JavaDispatcherThreads(String name, int count, ThreadPriority priority, final Q queue, Dispatch<T> dispatch, boolean createThreads) {
         super(queue, dispatch);
 
         this.id = INDEX.getAndIncrement();

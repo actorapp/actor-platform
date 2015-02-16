@@ -1,12 +1,11 @@
 package im.actor.model.network.mtp.actors;
 
 import im.actor.model.droidkit.actors.*;
-import im.actor.model.droidkit.actors.conf.EnvConfig;
 import im.actor.model.droidkit.actors.utils.AtomicIntegerCompat;
-import im.actor.model.network.ConnectionFactory;
 import im.actor.model.log.Log;
 import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
+import im.actor.model.network.CreateConnectionCallback;
 import im.actor.model.network.Endpoints;
 import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.ProtoMessage;
@@ -33,7 +32,7 @@ public class ManagerActor extends Actor {
                 }), mtProto.getActorPath() + "/manager"));
     }
 
-    private static final AtomicIntegerCompat NEXT_CONNECTION = EnvConfig.createAtomicInt(1);
+    private static final AtomicIntegerCompat NEXT_CONNECTION = Environment.createAtomicInt(1);
 
     private final MTProto mtProto;
     private final Endpoints endpoints;
@@ -175,7 +174,8 @@ public class ManagerActor extends Actor {
             isCheckingConnections = true;
 
             final int id = NEXT_CONNECTION.getAndIncrement();
-            ConnectionFactory.createConnection(id, endpoints.fetchEndpoint(), new ConnectionCallback() {
+
+            mtProto.getNetworking().createConnection(id, endpoints.fetchEndpoint(), new ConnectionCallback() {
                 @Override
                 public void onMessage(byte[] data, int offset, int len) {
                     self().send(new InMessage(data, offset, len));
@@ -185,7 +185,7 @@ public class ManagerActor extends Actor {
                 public void onConnectionDie() {
                     self().send(new ConnectionDie(id));
                 }
-            }, new ConnectionFactory.CreateConnectionCallback() {
+            }, new CreateConnectionCallback() {
                 @Override
                 public void onConnectionCreated(Connection connection) {
                     self().send(new ConnectionCreated(id, connection));

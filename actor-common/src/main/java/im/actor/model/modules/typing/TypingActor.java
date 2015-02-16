@@ -3,9 +3,7 @@ package im.actor.model.modules.typing;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import im.actor.model.Messenger;
-import im.actor.model.TypingCallback;
-import im.actor.model.droidkit.actors.Actor;
+import im.actor.model.MessengerCallback;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.ActorSystem;
@@ -49,11 +47,11 @@ public class TypingActor extends ModuleActor {
     private HashSet<Integer> typings = new HashSet<Integer>();
     private HashMap<Integer, HashSet<Integer>> groupTypings = new HashMap<Integer, HashSet<Integer>>();
 
-    private TypingCallback callback;
+    private MessengerCallback callback;
 
     public TypingActor(Modules messenger) {
         super(messenger);
-        this.callback = messenger.getConfiguration().getTypingCallback();
+        this.callback = messenger.getConfiguration().getCallback();
     }
 
     private void privateTyping(int uid, int type) {

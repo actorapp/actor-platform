@@ -1,20 +1,26 @@
 package im.actor.desktop;
 
 import im.actor.desktop.engines.SwingListEngine;
+import im.actor.model.AuthState;
 import im.actor.model.Configuration;
+import im.actor.model.MessengerCallback;
+import im.actor.model.jvm.JavaLog;
+import im.actor.model.jvm.JavaNetworking;
+import im.actor.model.jvm.JavaThreading;
+import im.actor.model.storage.MemoryEnginesFactory;
 import im.actor.model.storage.MemoryKeyValueEngine;
 import im.actor.model.Messenger;
-import im.actor.model.State;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.*;
 import im.actor.model.entity.Dialog;
-import im.actor.model.jvm.JavaInit;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
 import im.actor.model.network.ConnectionEndpoint;
 import im.actor.model.network.Endpoints;
-import im.actor.model.storage.EnginesFactory;
+import im.actor.model.Storage;
+import im.actor.model.storage.MemoryPreferences;
+import im.actor.model.storage.PreferencesStorage;
 
 import javax.swing.*;
 
@@ -43,12 +49,17 @@ public class Main {
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        JavaInit.init();
-        Configuration configuration = new Configuration();
-        configuration.setEndpoints(new Endpoints(new ConnectionEndpoint[]{
-                new ConnectionEndpoint("mtproto-api.actor.im", 8080, ConnectionEndpoint.Type.TCP)
-        }));
-        configuration.setEnginesFactory(new EnginesFactory() {
+        
+        Configuration.Builder builder = new Configuration.Builder();
+        builder.setThreading(new JavaThreading());
+        builder.setNetworking(new JavaNetworking());
+        builder.setLog(new JavaLog());
+        builder.setStorage(new Storage() {
+            @Override
+            public PreferencesStorage createPreferencesStorage() {
+                return new MemoryPreferences();
+            }
+
             @Override
             public KeyValueEngine<User> createUsersEngine() {
                 return new MemoryKeyValueEngine<User>();
@@ -69,7 +80,45 @@ public class Main {
                 return new MemoryKeyValueEngine<PendingMessage>();
             }
         });
-        messenger = new Messenger(configuration);
+        builder.setCallback(new MessengerCallback() {
+            @Override
+            public void onUserOnline(int uid) {
+
+            }
+
+            @Override
+            public void onUserOffline(int uid) {
+
+            }
+
+            @Override
+            public void onUserLastSeen(int uid, long lastSeen) {
+
+            }
+
+            @Override
+            public void onGroupOnline(int gid, int count) {
+
+            }
+
+            @Override
+            public void onTypingStart(int uid) {
+
+            }
+
+            @Override
+            public void onTypingEnd(int uid) {
+
+            }
+
+            @Override
+            public void onGroupTyping(int gid, int[] uids) {
+
+            }
+        });
+        builder.addEndpoint("tcp://mtproto-api.actor.im:8080");
+
+        messenger = new Messenger(builder.build());
 
         JFrame frame = new JFrame("Actor Messenger");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -81,7 +130,7 @@ public class Main {
     }
 
     private static void init(final Container container) {
-        if (messenger.getState() == State.AUTH_START) {
+        if (messenger.getAuthState() == AuthState.AUTH_START) {
             JPanel authPanel = linearLayout();
             authPanel.setPreferredSize(new Dimension(480, 300));
 
@@ -98,9 +147,9 @@ public class Main {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    execute(messenger.requestSms(Long.parseLong(textField.getText())), new CommandCallback<State>() {
+                    execute(messenger.requestSms(Long.parseLong(textField.getText())), new CommandCallback<AuthState>() {
                         @Override
-                        public void onResult(State res) {
+                        public void onResult(AuthState res) {
                             init(container);
                         }
 
@@ -111,7 +160,7 @@ public class Main {
                     });
                 }
             });
-        } else if (messenger.getState() == State.CODE_VALIDATION) {
+        } else if (messenger.getAuthState() == AuthState.CODE_VALIDATION) {
             JPanel authPanel = linearLayout();
             authPanel.setPreferredSize(new Dimension(480, 300));
 
@@ -128,9 +177,9 @@ public class Main {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    execute(messenger.sendCode(Integer.parseInt(textField.getText())), new CommandCallback<State>() {
+                    execute(messenger.sendCode(Integer.parseInt(textField.getText())), new CommandCallback<AuthState>() {
                         @Override
-                        public void onResult(State res) {
+                        public void onResult(AuthState res) {
                             init(container);
                         }
 
@@ -141,9 +190,9 @@ public class Main {
                     });
                 }
             });
-        } else if (messenger.getState() == State.SIGN_UP) {
+        } else if (messenger.getAuthState() == AuthState.SIGN_UP) {
             // TODO: Implement
-        } else if (messenger.getState() == State.LOGGED_IN) {
+        } else if (messenger.getAuthState() == AuthState.LOGGED_IN) {
             new MainPanel(container, messenger);
             // ChatForm form = new ChatForm();
             // container.add(new ChatForm());

@@ -24,8 +24,6 @@ import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.util.country.Country;
 import im.actor.messenger.util.country.CountryDb;
 import im.actor.messenger.util.country.CountryUtil;
-import im.actor.model.State;
-import im.actor.model.concurrency.CommandCallback;
 
 import static im.actor.messenger.core.Core.messenger;
 

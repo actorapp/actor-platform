@@ -32,7 +32,7 @@ public class Messages extends BaseModule {
 
     public Messages(final Modules messenger) {
         super(messenger);
-        this.dialogs = messenger.getConfiguration().getEnginesFactory().createDialogsEngine();
+        this.dialogs = messenger.getConfiguration().getStorage().createDialogsEngine();
     }
 
     public void run() {
@@ -68,7 +68,7 @@ public class Messages extends BaseModule {
     public ListEngine<Message> getConversationEngine(Peer peer) {
         synchronized (conversationEngines) {
             if (!conversationEngines.containsKey(peer)) {
-                conversationEngines.put(peer, modules().getConfiguration().getEnginesFactory().createMessagesEngine(peer));
+                conversationEngines.put(peer, modules().getConfiguration().getStorage().createMessagesEngine(peer));
             }
             return conversationEngines.get(peer);
         }

@@ -11,7 +11,7 @@ import im.actor.messenger.app.base.BaseBarFragmentActivity;
 import im.actor.messenger.app.fragment.auth.SignInFragment;
 import im.actor.messenger.app.fragment.auth.SignPhoneFragment;
 import im.actor.messenger.app.fragment.auth.SignUpFragment;
-import im.actor.model.State;
+import im.actor.model.AuthState;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.network.RpcException;
@@ -24,7 +24,7 @@ public class AuthActivity extends BaseBarFragmentActivity {
 
     private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
-    private State state;
+    private AuthState state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +37,16 @@ public class AuthActivity extends BaseBarFragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (messenger().getState() == State.LOGGED_IN) {
+        if (messenger().getAuthState() == AuthState.LOGGED_IN) {
             finish();
         }
     }
 
     public void updateState() {
-        updateState(messenger().getState());
+        updateState(messenger().getAuthState());
     }
 
-    private void updateState(State state) {
+    private void updateState(AuthState state) {
         if (this.state != null && this.state == state) {
             return;
         }
@@ -69,16 +69,16 @@ public class AuthActivity extends BaseBarFragmentActivity {
         }
     }
 
-    public void execute(final Command<State> command) {
+    public void execute(final Command<AuthState> command) {
         dismissProgress();
         progressDialog = new ProgressDialog(this);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Loading...");
         progressDialog.show();
-        command.start(new CommandCallback<State>() {
+        command.start(new CommandCallback<AuthState>() {
             @Override
-            public void onResult(final State res) {
+            public void onResult(final AuthState res) {
                 dismissProgress();
                 updateState(res);
             }
@@ -124,7 +124,7 @@ public class AuthActivity extends BaseBarFragmentActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dismissAlert();
-                                    updateState(messenger().getState());
+                                    updateState(messenger().getAuthState());
                                 }
                             }).setCancelable(false)
                             .show()
@@ -136,7 +136,7 @@ public class AuthActivity extends BaseBarFragmentActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dismissAlert();
-                                    updateState(messenger().getState());
+                                    updateState(messenger().getAuthState());
                                 }
                             })
                             .setCancelable(false)

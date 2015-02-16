@@ -1,14 +1,12 @@
 package im.actor.model.droidkit.actors.mailbox.collections;
 
-import im.actor.model.droidkit.actors.conf.EnvConfig;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.droidkit.actors.utils.AtomicIntegerCompat;
 import im.actor.model.droidkit.actors.utils.ThreadLocalCompat;
 
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.TreeMap;
 
 /**
@@ -16,7 +14,7 @@ import java.util.TreeMap;
  */
 public class EnvelopeCollection {
 
-    private static final AtomicIntegerCompat NEXT_ID = EnvConfig.createAtomicInt(1);
+    private static final AtomicIntegerCompat NEXT_ID = Environment.createAtomicInt(1);
 
     private final TreeMap<Long, ScheduledEnvelope> envelopes = new TreeMap<Long, ScheduledEnvelope>();
 
@@ -176,7 +174,7 @@ public class EnvelopeCollection {
 
     public static class FetchResult {
 
-        private static ThreadLocalCompat<FetchResult> RESULT_CACHE = EnvConfig.createThreadLocal();
+        private static ThreadLocalCompat<FetchResult> RESULT_CACHE = Environment.createThreadLocal();
 
         public static FetchResult envelope(ScheduledEnvelope envelope) {
             FetchResult res = RESULT_CACHE.get();

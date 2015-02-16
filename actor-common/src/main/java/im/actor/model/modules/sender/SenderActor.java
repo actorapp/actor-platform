@@ -1,11 +1,9 @@
 package im.actor.model.modules.sender;
 
-import im.actor.model.droidkit.actors.conf.EnvConfig;
-import im.actor.model.Messenger;
 import im.actor.model.api.*;
 import im.actor.model.api.rpc.RequestSendMessage;
 import im.actor.model.api.rpc.ResponseSeqDate;
-import im.actor.model.api.updates.UpdateMessageSent;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.entity.*;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
@@ -40,7 +38,7 @@ public class SenderActor extends ModuleActor {
         if (message instanceof SendMessage) {
             SendMessage sendMessage = (SendMessage) message;
             sendMessage(sendMessage.peer, RandomUtils.nextRid(),
-                    EnvConfig.getJavaFactory().getCurrentTime(),
+                    Environment.getCurrentTime(),
                     sendMessage.content);
         } else if (message instanceof MessageSent) {
             // TODO: Implement

@@ -267,7 +267,7 @@ public class DocHolder extends BubbleHolder {
     @Override
     public void onClicked() {
 //        if (documentMessage.getUploadPath() != null) {
-//            switch (UploadModel.uploadState(message.getRid()).getValue().getState()) {
+//            switch (UploadModel.uploadState(message.getRid()).getValue().getAuthState()) {
 //                default:
 //                case NONE:
 //                    MessageDeliveryActor.messageSender().mediaTryAgain(type, id, message.getRid());
@@ -286,7 +286,7 @@ public class DocHolder extends BubbleHolder {
 //                }
 //                context.startActivity(Intents.openDoc(d));
 //            } else {
-//                switch (DownloadModel.downloadState(documentMessage.getLocation().getFileId()).getValue().getState()) {
+//                switch (DownloadModel.downloadState(documentMessage.getLocation().getFileId()).getValue().getAuthState()) {
 //                    case NONE:
 //                        DownloadManager.downloader().request(type, id, message.getRid(), documentMessage, false);
 //                        break;
