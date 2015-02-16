@@ -3,19 +3,19 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/Sex.java
 //
 
-#ifndef _ImActorModelEntitySex_H_
-#define _ImActorModelEntitySex_H_
+#ifndef _AMSex_H_
+#define _AMSex_H_
 
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-typedef NS_ENUM(NSUInteger, ImActorModelEntitySex) {
-  ImActorModelEntitySex_UNKNOWN = 0,
-  ImActorModelEntitySex_MALE = 1,
-  ImActorModelEntitySex_FEMALE = 2,
+typedef NS_ENUM(NSUInteger, AMSex) {
+  AMSex_UNKNOWN = 0,
+  AMSex_MALE = 1,
+  AMSex_FEMALE = 2,
 };
 
-@interface ImActorModelEntitySexEnum : JavaLangEnum < NSCopying > {
+@interface AMSexEnum : JavaLangEnum < NSCopying > {
 }
 
 - (instancetype)initWithInt:(jint)value
@@ -24,34 +24,36 @@ typedef NS_ENUM(NSUInteger, ImActorModelEntitySex) {
 
 - (jint)getValue;
 
-+ (ImActorModelEntitySexEnum *)fromValueWithInt:(jint)value;
++ (AMSexEnum *)fromValueWithInt:(jint)value;
 
 + (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelEntitySexEnum_values();
+FOUNDATION_EXPORT IOSObjectArray *AMSexEnum_values();
 
-+ (ImActorModelEntitySexEnum *)valueOfWithNSString:(NSString *)name;
++ (AMSexEnum *)valueOfWithNSString:(NSString *)name;
 
-FOUNDATION_EXPORT ImActorModelEntitySexEnum *ImActorModelEntitySexEnum_valueOfWithNSString_(NSString *name);
+FOUNDATION_EXPORT AMSexEnum *AMSexEnum_valueOfWithNSString_(NSString *name);
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelEntitySexEnum_initialized;
-J2OBJC_STATIC_INIT(ImActorModelEntitySexEnum)
+FOUNDATION_EXPORT BOOL AMSexEnum_initialized;
+J2OBJC_STATIC_INIT(AMSexEnum)
 
-FOUNDATION_EXPORT ImActorModelEntitySexEnum *ImActorModelEntitySexEnum_fromValueWithInt_(jint value);
+FOUNDATION_EXPORT AMSexEnum *AMSexEnum_fromValueWithInt_(jint value);
 
-FOUNDATION_EXPORT ImActorModelEntitySexEnum *ImActorModelEntitySexEnum_values_[];
+FOUNDATION_EXPORT AMSexEnum *AMSexEnum_values_[];
 
-#define ImActorModelEntitySexEnum_UNKNOWN ImActorModelEntitySexEnum_values_[ImActorModelEntitySex_UNKNOWN]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntitySexEnum, UNKNOWN)
+#define AMSexEnum_UNKNOWN AMSexEnum_values_[AMSex_UNKNOWN]
+J2OBJC_ENUM_CONSTANT_GETTER(AMSexEnum, UNKNOWN)
 
-#define ImActorModelEntitySexEnum_MALE ImActorModelEntitySexEnum_values_[ImActorModelEntitySex_MALE]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntitySexEnum, MALE)
+#define AMSexEnum_MALE AMSexEnum_values_[AMSex_MALE]
+J2OBJC_ENUM_CONSTANT_GETTER(AMSexEnum, MALE)
 
-#define ImActorModelEntitySexEnum_FEMALE ImActorModelEntitySexEnum_values_[ImActorModelEntitySex_FEMALE]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntitySexEnum, FEMALE)
+#define AMSexEnum_FEMALE AMSexEnum_values_[AMSex_FEMALE]
+J2OBJC_ENUM_CONSTANT_GETTER(AMSexEnum, FEMALE)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntitySexEnum)
+typedef AMSexEnum ImActorModelEntitySexEnum;
 
-#endif // _ImActorModelEntitySex_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMSexEnum)
+
+#endif // _AMSex_H_

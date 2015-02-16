@@ -3,30 +3,30 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/mailbox/Envelope.java
 //
 
-#ifndef _ImActorModelDroidkitActorsMailboxEnvelope_H_
-#define _ImActorModelDroidkitActorsMailboxEnvelope_H_
+#ifndef _DKEnvelope_H_
+#define _DKEnvelope_H_
 
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelDroidkitActorsActorScope;
-@class ImActorModelDroidkitActorsMailboxMailbox;
+@class DKActorRef;
+@class DKActorScope;
+@class DKMailbox;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsMailboxEnvelope : NSObject {
+@interface DKEnvelope : NSObject {
 }
 
 - (instancetype)initWithId:(id)message
-withImActorModelDroidkitActorsActorScope:(ImActorModelDroidkitActorsActorScope *)scope
-withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox
-withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sender;
+          withDKActorScope:(DKActorScope *)scope
+             withDKMailbox:(DKMailbox *)mailbox
+            withDKActorRef:(DKActorRef *)sender;
 
-- (ImActorModelDroidkitActorsActorScope *)getScope;
+- (DKActorScope *)getScope;
 
 - (id)getMessage;
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)getMailbox;
+- (DKMailbox *)getMailbox;
 
-- (ImActorModelDroidkitActorsActorRef *)getSender;
+- (DKActorRef *)getSender;
 
 - (jlong)getSendTime;
 
@@ -34,11 +34,13 @@ withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)sen
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsMailboxEnvelope)
+J2OBJC_EMPTY_STATIC_INIT(DKEnvelope)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxEnvelope)
+typedef DKEnvelope ImActorModelDroidkitActorsMailboxEnvelope;
 
-#endif // _ImActorModelDroidkitActorsMailboxEnvelope_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKEnvelope)
+
+#endif // _DKEnvelope_H_

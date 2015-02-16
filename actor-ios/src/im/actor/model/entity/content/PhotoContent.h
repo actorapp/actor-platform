@@ -6,9 +6,9 @@
 #ifndef _ImActorModelEntityContentPhotoContent_H_
 #define _ImActorModelEntityContentPhotoContent_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 @class ImActorModelEntityContentAbsContent_ContentTypeEnum;
 @class ImActorModelEntityContentFastThumb;
 @class ImActorModelEntityContentFileSource;
@@ -36,9 +36,9 @@
 
 - (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

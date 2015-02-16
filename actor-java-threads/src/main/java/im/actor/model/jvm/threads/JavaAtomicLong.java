@@ -2,7 +2,7 @@ package im.actor.model.jvm.threads;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import im.actor.model.droidkit.actors.utils.AtomicLongCompat;
+import im.actor.model.util.AtomicLongCompat;
 
 /**
  * Created by ex3ndr on 16.02.15.

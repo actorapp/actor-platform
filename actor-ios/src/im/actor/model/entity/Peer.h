@@ -3,34 +3,34 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/Peer.java
 //
 
-#ifndef _ImActorModelEntityPeer_H_
-#define _ImActorModelEntityPeer_H_
+#ifndef _AMPeer_H_
+#define _AMPeer_H_
 
+@class AMPeerTypeEnum;
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
-@class ImActorModelEntityPeerTypeEnum;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelEntityPeer : ImActorModelDroidkitBserBserObject {
+@interface AMPeer : BSBserObject {
 }
 
-+ (ImActorModelEntityPeer *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMPeer *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-+ (ImActorModelEntityPeer *)fromUidWithLong:(jlong)uid;
++ (AMPeer *)fromUidWithLong:(jlong)uid;
 
-+ (ImActorModelEntityPeer *)userWithInt:(jint)uid;
++ (AMPeer *)userWithInt:(jint)uid;
 
-+ (ImActorModelEntityPeer *)groupWithInt:(jint)gid;
++ (AMPeer *)groupWithInt:(jint)gid;
 
-- (instancetype)initWithImActorModelEntityPeerTypeEnum:(ImActorModelEntityPeerTypeEnum *)peerType
-                                               withInt:(jint)peerId;
+- (instancetype)initWithAMPeerTypeEnum:(AMPeerTypeEnum *)peerType
+                               withInt:(jint)peerId;
 
 - (jlong)getUid;
 
-- (ImActorModelEntityPeerTypeEnum *)getPeerType;
+- (AMPeerTypeEnum *)getPeerType;
 
 - (jint)getPeerId;
 
@@ -38,25 +38,27 @@
 
 - (NSUInteger)hash;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityPeer)
+J2OBJC_EMPTY_STATIC_INIT(AMPeer)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityPeer *ImActorModelEntityPeer_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMPeer *AMPeer_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT ImActorModelEntityPeer *ImActorModelEntityPeer_fromUidWithLong_(jlong uid);
+FOUNDATION_EXPORT AMPeer *AMPeer_fromUidWithLong_(jlong uid);
 
-FOUNDATION_EXPORT ImActorModelEntityPeer *ImActorModelEntityPeer_userWithInt_(jint uid);
+FOUNDATION_EXPORT AMPeer *AMPeer_userWithInt_(jint uid);
 
-FOUNDATION_EXPORT ImActorModelEntityPeer *ImActorModelEntityPeer_groupWithInt_(jint gid);
+FOUNDATION_EXPORT AMPeer *AMPeer_groupWithInt_(jint gid);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityPeer)
+typedef AMPeer ImActorModelEntityPeer;
 
-#endif // _ImActorModelEntityPeer_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMPeer)
+
+#endif // _AMPeer_H_

@@ -108,8 +108,8 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
   return self->userState_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->id__ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
   self->name_ = [values getStringWithInt:3];
   self->localName_ = [values optStringWithInt:4];
@@ -119,13 +119,13 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
   }
   self->keyHashes_ = [values getRepeatedLongWithInt:6];
   self->phone_ = [values getLongWithInt:7];
-  self->avatar_ = [values optObjWithInt:8 withImActorModelDroidkitBserBserObject:[[ImActorModelApiAvatar alloc] init]];
+  self->avatar_ = [values optObjWithInt:8 withBSBserObject:[[ImActorModelApiAvatar alloc] init]];
   self->contacts_ = [values getRepeatedIntWithInt:9];
   self->userState_ = ImActorModelApiUserStateEnum_parseWithInt_([values getIntWithInt:11]);
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   if (self->name_ == nil) {
     @throw [[JavaIoIOException alloc] init];
@@ -140,7 +140,7 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
   [writer writeRepeatedLongWithInt:6 withJavaUtilList:self->keyHashes_];
   [writer writeLongWithInt:7 withLong:self->phone_];
   if (self->avatar_ != nil) {
-    [writer writeObjectWithInt:8 withImActorModelDroidkitBserBserObject:self->avatar_];
+    [writer writeObjectWithInt:8 withBSBserObject:self->avatar_];
   }
   [writer writeRepeatedIntWithInt:9 withJavaUtilList:self->contacts_];
   if (self->userState_ == nil) {
@@ -177,8 +177,8 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
     { "getAvatar", NULL, "Lim.actor.model.api.Avatar;", 0x1, NULL },
     { "getContacts", NULL, "Ljava.util.List;", 0x1, NULL },
     { "getUserState", NULL, "Lim.actor.model.api.UserState;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "id__", "id", 0x2, "I", NULL,  },

@@ -6,6 +6,14 @@
 #ifndef _ImActorModelModulesEntityEntityConverter_H_
 #define _ImActorModelModulesEntityEntityConverter_H_
 
+@class AMAvatar;
+@class AMAvatarImage;
+@class AMFileLocation;
+@class AMMessageStateEnum;
+@class AMPeer;
+@class AMPeerTypeEnum;
+@class AMSexEnum;
+@class AMUser;
 @class ImActorModelApiAvatar;
 @class ImActorModelApiAvatarImage;
 @class ImActorModelApiFastThumb;
@@ -16,38 +24,30 @@
 @class ImActorModelApiPeerTypeEnum;
 @class ImActorModelApiSexEnum;
 @class ImActorModelApiUser;
-@class ImActorModelEntityAvatar;
-@class ImActorModelEntityAvatarImage;
 @class ImActorModelEntityContentAbsContent;
 @class ImActorModelEntityContentFastThumb;
-@class ImActorModelEntityFileLocation;
-@class ImActorModelEntityMessageStateEnum;
-@class ImActorModelEntityPeer;
-@class ImActorModelEntityPeerTypeEnum;
-@class ImActorModelEntitySexEnum;
-@class ImActorModelEntityUser;
 
 #include "J2ObjC_header.h"
 
 @interface ImActorModelModulesEntityEntityConverter : NSObject {
 }
 
-+ (ImActorModelEntityMessageStateEnum *)convertWithImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state;
++ (AMMessageStateEnum *)convertWithImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state;
 
-+ (ImActorModelEntityAvatar *)convertWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
++ (AMAvatar *)convertWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
 
-+ (ImActorModelEntityAvatarImage *)convertWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)avatarImage;
++ (AMAvatarImage *)convertWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)avatarImage;
 
-+ (ImActorModelEntityFileLocation *)convertWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)location
-                                                                   withInt:(jint)size;
++ (AMFileLocation *)convertWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)location
+                                                   withInt:(jint)size;
 
-+ (ImActorModelEntitySexEnum *)convertWithImActorModelApiSexEnum:(ImActorModelApiSexEnum *)sex;
++ (AMSexEnum *)convertWithImActorModelApiSexEnum:(ImActorModelApiSexEnum *)sex;
 
-+ (ImActorModelEntityUser *)convertWithImActorModelApiUser:(ImActorModelApiUser *)user;
++ (AMUser *)convertWithImActorModelApiUser:(ImActorModelApiUser *)user;
 
-+ (ImActorModelEntityPeerTypeEnum *)convertWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)peerType;
++ (AMPeerTypeEnum *)convertWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)peerType;
 
-+ (ImActorModelEntityPeer *)convertWithImActorModelApiPeer:(ImActorModelApiPeer *)peer;
++ (AMPeer *)convertWithImActorModelApiPeer:(ImActorModelApiPeer *)peer;
 
 + (ImActorModelEntityContentAbsContent *)convertWithImActorModelApiMessageContent:(ImActorModelApiMessageContent *)content;
 
@@ -61,21 +61,21 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesEntityEntityConverter)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityMessageStateEnum *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_(ImActorModelApiMessageStateEnum *state);
+FOUNDATION_EXPORT AMMessageStateEnum *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_(ImActorModelApiMessageStateEnum *state);
 
-FOUNDATION_EXPORT ImActorModelEntityAvatar *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatar_(ImActorModelApiAvatar *avatar);
+FOUNDATION_EXPORT AMAvatar *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatar_(ImActorModelApiAvatar *avatar);
 
-FOUNDATION_EXPORT ImActorModelEntityAvatarImage *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *avatarImage);
+FOUNDATION_EXPORT AMAvatarImage *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *avatarImage);
 
-FOUNDATION_EXPORT ImActorModelEntityFileLocation *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiFileLocation_withInt_(ImActorModelApiFileLocation *location, jint size);
+FOUNDATION_EXPORT AMFileLocation *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiFileLocation_withInt_(ImActorModelApiFileLocation *location, jint size);
 
-FOUNDATION_EXPORT ImActorModelEntitySexEnum *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiSexEnum_(ImActorModelApiSexEnum *sex);
+FOUNDATION_EXPORT AMSexEnum *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiSexEnum_(ImActorModelApiSexEnum *sex);
 
-FOUNDATION_EXPORT ImActorModelEntityUser *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiUser_(ImActorModelApiUser *user);
+FOUNDATION_EXPORT AMUser *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiUser_(ImActorModelApiUser *user);
 
-FOUNDATION_EXPORT ImActorModelEntityPeerTypeEnum *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeerTypeEnum_(ImActorModelApiPeerTypeEnum *peerType);
+FOUNDATION_EXPORT AMPeerTypeEnum *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeerTypeEnum_(ImActorModelApiPeerTypeEnum *peerType);
 
-FOUNDATION_EXPORT ImActorModelEntityPeer *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(ImActorModelApiPeer *peer);
+FOUNDATION_EXPORT AMPeer *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiPeer_(ImActorModelApiPeer *peer);
 
 FOUNDATION_EXPORT ImActorModelEntityContentAbsContent *ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiMessageContent_(ImActorModelApiMessageContent *content);
 

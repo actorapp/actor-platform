@@ -6,21 +6,21 @@
 #ifndef _ImActorModelEntityContentFileSource_H_
 #define _ImActorModelEntityContentFileSource_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelEntityContentFileSource : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelEntityContentFileSource : BSBserObject {
 }
 
 + (ImActorModelEntityContentFileSource *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 - (instancetype)init;
 

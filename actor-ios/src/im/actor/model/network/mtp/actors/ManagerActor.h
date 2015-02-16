@@ -6,11 +6,11 @@
 #ifndef _MTManagerActor_H_
 #define _MTManagerActor_H_
 
+@class AMAtomicIntegerCompat;
 @class AMEndpoints;
 @class AMExponentialBackoff;
+@class DKActorRef;
 @class IOSByteArray;
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelDroidkitActorsUtilsAtomicIntegerCompat;
 @class MTMTProto;
 @protocol AMConnection;
 
@@ -18,12 +18,12 @@
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/network/ConnectionCallback.h"
-#include "im/actor/model/network/ConnectionFactory.h"
+#include "im/actor/model/network/CreateConnectionCallback.h"
 
-@interface MTManagerActor : ImActorModelDroidkitActorsActor {
+@interface MTManagerActor : DKActor {
 }
 
-+ (ImActorModelDroidkitActorsActorRef *)managerWithMTMTProto:(MTMTProto *)mtProto;
++ (DKActorRef *)managerWithMTMTProto:(MTMTProto *)mtProto;
 
 - (instancetype)initWithMTMTProto:(MTMTProto *)mtProto;
 
@@ -38,13 +38,13 @@ J2OBJC_STATIC_INIT(MTManagerActor)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsActorRef *MTManagerActor_managerWithMTMTProto_(MTMTProto *mtProto);
+FOUNDATION_EXPORT DKActorRef *MTManagerActor_managerWithMTMTProto_(MTMTProto *mtProto);
 
 FOUNDATION_EXPORT NSString *MTManagerActor_TAG_;
 J2OBJC_STATIC_FIELD_GETTER(MTManagerActor, TAG_, NSString *)
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *MTManagerActor_NEXT_CONNECTION_;
-J2OBJC_STATIC_FIELD_GETTER(MTManagerActor, NEXT_CONNECTION_, ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *)
+FOUNDATION_EXPORT AMAtomicIntegerCompat *MTManagerActor_NEXT_CONNECTION_;
+J2OBJC_STATIC_FIELD_GETTER(MTManagerActor, NEXT_CONNECTION_, AMAtomicIntegerCompat *)
 CF_EXTERN_C_END
 
 typedef MTManagerActor ImActorModelNetworkMtpActorsManagerActor;
@@ -168,7 +168,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_ConnectionCreated)
 
-@interface MTManagerActor_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
+@interface MTManagerActor_$1 : NSObject < DKActorCreator > {
 }
 
 - (MTManagerActor *)create;
@@ -205,7 +205,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_$2)
 
-@interface MTManagerActor_$3 : NSObject < AMConnectionFactory_CreateConnectionCallback > {
+@interface MTManagerActor_$3 : NSObject < AMCreateConnectionCallback > {
 }
 
 - (void)onConnectionCreatedWithAMConnection:(id<AMConnection>)connection;

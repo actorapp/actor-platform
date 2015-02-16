@@ -3,21 +3,21 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/storage/MemoryKeyValueEngine.java
 //
 
-#ifndef _ImActorModelStorageMemoryKeyValueEngine_H_
-#define _ImActorModelStorageMemoryKeyValueEngine_H_
+#ifndef _AMMemoryKeyValueEngine_H_
+#define _AMMemoryKeyValueEngine_H_
 
 @class IOSLongArray;
 @class JavaUtilHashMap;
-@protocol ImActorModelMvvmKeyValueItem;
+@protocol AMKeyValueItem;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/mvvm/KeyValueEngine.h"
 
-@interface ImActorModelStorageMemoryKeyValueEngine : NSObject < ImActorModelMvvmKeyValueEngine > {
+@interface AMMemoryKeyValueEngine : NSObject < AMKeyValueEngine > {
 }
 
-- (void)addOrUpdateItemWithImActorModelMvvmKeyValueItem:(id<ImActorModelMvvmKeyValueItem>)item;
+- (void)addOrUpdateItemWithAMKeyValueItem:(id<AMKeyValueItem>)item;
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
 
@@ -35,11 +35,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelStorageMemoryKeyValueEngine)
+J2OBJC_EMPTY_STATIC_INIT(AMMemoryKeyValueEngine)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelStorageMemoryKeyValueEngine)
+typedef AMMemoryKeyValueEngine ImActorModelStorageMemoryKeyValueEngine;
 
-#endif // _ImActorModelStorageMemoryKeyValueEngine_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMMemoryKeyValueEngine)
+
+#endif // _AMMemoryKeyValueEngine_H_

@@ -10,16 +10,18 @@
 @class IOSBooleanArray;
 @class IOSByteArray;
 @protocol AMConnection;
+@protocol AMNetworking;
 @protocol MTAuthIdRetriever_AuthIdCallback;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/ConnectionCallback.h"
-#include "im/actor/model/network/ConnectionFactory.h"
+#include "im/actor/model/network/CreateConnectionCallback.h"
 
 @interface MTAuthIdRetriever : NSObject {
 }
 
 + (void)requestAuthIdWithAMEndpoints:(AMEndpoints *)endpoints
+                    withAMNetworking:(id<AMNetworking>)networking
 withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callback;
 
 - (instancetype)init;
@@ -30,7 +32,7 @@ J2OBJC_EMPTY_STATIC_INIT(MTAuthIdRetriever)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<MTAuthIdRetriever_AuthIdCallback> callback);
+FOUNDATION_EXPORT void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworking_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<AMNetworking> networking, id<MTAuthIdRetriever_AuthIdCallback> callback);
 
 FOUNDATION_EXPORT NSString *MTAuthIdRetriever_TAG_;
 J2OBJC_STATIC_FIELD_GETTER(MTAuthIdRetriever, TAG_, NSString *)
@@ -73,7 +75,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(MTAuthIdRetriever_$1)
 
-@interface MTAuthIdRetriever_$2 : NSObject < AMConnectionFactory_CreateConnectionCallback > {
+@interface MTAuthIdRetriever_$2 : NSObject < AMCreateConnectionCallback > {
 }
 
 - (void)onConnectionCreatedWithAMConnection:(id<AMConnection>)connection;

@@ -3,12 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/GroupMember.java
 //
 
-#ifndef _ImActorModelEntityGroupMember_H_
-#define _ImActorModelEntityGroupMember_H_
+#ifndef _AMGroupMember_H_
+#define _AMGroupMember_H_
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelEntityGroupMember : NSObject {
+@interface AMGroupMember : NSObject {
 }
 
 - (instancetype)initWithInt:(jint)uid
@@ -23,11 +23,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityGroupMember)
+J2OBJC_EMPTY_STATIC_INIT(AMGroupMember)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityGroupMember)
+typedef AMGroupMember ImActorModelEntityGroupMember;
 
-#endif // _ImActorModelEntityGroupMember_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMGroupMember)
+
+#endif // _AMGroupMember_H_

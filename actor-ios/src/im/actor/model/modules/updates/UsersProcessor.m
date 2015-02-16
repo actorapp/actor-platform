@@ -31,41 +31,41 @@
                              withBoolean:(jboolean)forced {
   JavaUtilArrayList *batch = [[JavaUtilArrayList alloc] init];
   for (ImActorModelApiUser * __strong u in nil_chk(updated)) {
-    ImActorModelEntityUser *saved = [((id<ImActorModelMvvmKeyValueEngine>) nil_chk([self users])) getValueWithLong:[((ImActorModelApiUser *) nil_chk(u)) getId]];
+    AMUser *saved = [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:[((ImActorModelApiUser *) nil_chk(u)) getId]];
     if (saved == nil) {
       [batch addWithId:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiUser_(u)];
     }
     else if (forced) {
-      ImActorModelEntityUser *upd = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiUser_(u);
+      AMUser *upd = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiUser_(u);
       [batch addWithId:upd];
-      if (![((NSString *) nil_chk([((ImActorModelEntityUser *) nil_chk(upd)) getName])) isEqual:[saved getName]] || !AMJavaUtil_equalsEWithId_withId_([upd getAvatar], [saved getAvatar])) {
-        [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithImActorModelEntityUser:upd]];
+      if (![((NSString *) nil_chk([((AMUser *) nil_chk(upd)) getName])) isEqual:[saved getName]] || !AMJavaUtil_equalsEWithId_withId_([upd getAvatar], [saved getAvatar])) {
+        [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithAMUser:upd]];
       }
     }
   }
   if ([batch size] > 0) {
-    [((id<ImActorModelMvvmKeyValueEngine>) nil_chk([self users])) addOrUpdateItemsWithJavaUtilList:batch];
+    [((id<AMKeyValueEngine>) nil_chk([self users])) addOrUpdateItemsWithJavaUtilList:batch];
   }
 }
 
 - (void)onUserNameChangedWithInt:(jint)uid
                     withNSString:(NSString *)name {
-  ImActorModelEntityUser *u = [((id<ImActorModelMvvmKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
+  AMUser *u = [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
   if (u != nil) {
     if ([((NSString *) nil_chk([u getServerName])) isEqual:name]) {
       return;
     }
     u = [u editNameWithNSString:name];
-    [((id<ImActorModelMvvmKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithImActorModelMvvmKeyValueItem:u];
-    if ([((ImActorModelEntityUser *) nil_chk(u)) getLocalName] == nil) {
-      [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithImActorModelEntityUser:u]];
+    [((id<AMKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithAMKeyValueItem:u];
+    if ([((AMUser *) nil_chk(u)) getLocalName] == nil) {
+      [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithAMUser:u]];
     }
   }
 }
 
 - (void)onUserLocalNameChangedWithInt:(jint)uid
                          withNSString:(NSString *)name {
-  ImActorModelEntityUser *u = [((id<ImActorModelMvvmKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
+  AMUser *u = [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
   if (u != nil) {
     if ([u getLocalName] == nil && name == nil) {
       return;
@@ -74,31 +74,31 @@
       return;
     }
     u = [u editLocalNameWithNSString:name];
-    [((id<ImActorModelMvvmKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithImActorModelMvvmKeyValueItem:u];
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithImActorModelEntityUser:u]];
+    [((id<AMKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithAMKeyValueItem:u];
+    [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithAMUser:u]];
   }
 }
 
 - (void)onUserAvatarChangedWithInt:(jint)uid
          withImActorModelApiAvatar:(ImActorModelApiAvatar *)_avatar {
-  ImActorModelEntityAvatar *avatar = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatar_(_avatar);
-  ImActorModelEntityUser *u = [((id<ImActorModelMvvmKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
+  AMAvatar *avatar = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatar_(_avatar);
+  AMUser *u = [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
   if (u != nil) {
     if ([u getAvatar] == nil && avatar == nil) {
       return;
     }
-    if ([u getAvatar] != nil && [((ImActorModelEntityAvatar *) nil_chk([u getAvatar])) isEqual:avatar]) {
+    if ([u getAvatar] != nil && [((AMAvatar *) nil_chk([u getAvatar])) isEqual:avatar]) {
       return;
     }
-    u = [u editAvatarWithImActorModelEntityAvatar:avatar];
-    [((id<ImActorModelMvvmKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithImActorModelMvvmKeyValueItem:u];
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithImActorModelEntityUser:u]];
+    u = [u editAvatarWithAMAvatar:avatar];
+    [((id<AMKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithAMKeyValueItem:u];
+    [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithAMUser:u]];
   }
 }
 
 - (jboolean)hasUsersWithJavaUtilCollection:(id<JavaUtilCollection>)uids {
   for (JavaLangInteger * __strong uid in nil_chk(uids)) {
-    if ([((id<ImActorModelMvvmKeyValueEngine>) nil_chk([self users])) getValueWithLong:[((JavaLangInteger *) nil_chk(uid)) intValue]] == nil) {
+    if ([((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:[((JavaLangInteger *) nil_chk(uid)) intValue]] == nil) {
       return NO;
     }
   }

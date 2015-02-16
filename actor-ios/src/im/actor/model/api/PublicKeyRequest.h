@@ -6,13 +6,13 @@
 #ifndef _ImActorModelApiPublicKeyRequest_H_
 #define _ImActorModelApiPublicKeyRequest_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
+@class BSBserValues;
+@class BSBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiPublicKeyRequest : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiPublicKeyRequest : BSBserObject {
 }
 
 - (instancetype)initWithInt:(jint)uid
@@ -27,9 +27,9 @@
 
 - (jlong)getKeyHash;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

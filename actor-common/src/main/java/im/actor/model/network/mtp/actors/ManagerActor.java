@@ -1,7 +1,7 @@
 package im.actor.model.network.mtp.actors;
 
 import im.actor.model.droidkit.actors.*;
-import im.actor.model.droidkit.actors.utils.AtomicIntegerCompat;
+import im.actor.model.util.AtomicIntegerCompat;
 import im.actor.model.log.Log;
 import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;

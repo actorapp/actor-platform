@@ -6,10 +6,10 @@
 #ifndef _ImActorModelEntityContentServiceGroupAvatarChanged_H_
 #define _ImActorModelEntityContentServiceGroupAvatarChanged_H_
 
+@class AMAvatar;
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
-@class ImActorModelEntityAvatar;
 @class ImActorModelEntityContentAbsContent_ContentTypeEnum;
 
 #include "J2ObjC_header.h"
@@ -20,15 +20,15 @@
 
 + (ImActorModelEntityContentServiceGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)initWithImActorModelEntityAvatar:(ImActorModelEntityAvatar *)newAvatar;
+- (instancetype)initWithAMAvatar:(AMAvatar *)newAvatar;
 
-- (ImActorModelEntityAvatar *)getNewAvatar;
+- (AMAvatar *)getNewAvatar;
 
 - (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

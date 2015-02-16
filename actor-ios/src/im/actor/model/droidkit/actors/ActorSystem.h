@@ -3,22 +3,22 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/ActorSystem.java
 //
 
-#ifndef _ImActorModelDroidkitActorsActorSystem_H_
-#define _ImActorModelDroidkitActorsActorSystem_H_
+#ifndef _DKActorSystem_H_
+#define _DKActorSystem_H_
 
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelDroidkitActorsActorSelection;
-@class ImActorModelDroidkitActorsMailboxActorDispatcher;
-@class ImActorModelDroidkitActorsProps;
+@class DKActorDispatcher;
+@class DKActorRef;
+@class DKActorSelection;
+@class DKProps;
 @class JavaUtilHashMap;
 @protocol ImActorModelDroidkitActorsDebugTraceInterface;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsActorSystem : NSObject {
+@interface DKActorSystem : NSObject {
 }
 
-+ (ImActorModelDroidkitActorsActorSystem *)system;
++ (DKActorSystem *)system;
 
 - (instancetype)init;
 
@@ -30,12 +30,12 @@
 - (void)addDispatcherWithNSString:(NSString *)dispatcherId;
 
 - (void)addDispatcherWithNSString:(NSString *)dispatcherId
-withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActorsMailboxActorDispatcher *)dispatcher;
+            withDKActorDispatcher:(DKActorDispatcher *)dispatcher;
 
-- (ImActorModelDroidkitActorsActorRef *)actorOfWithImActorModelDroidkitActorsActorSelection:(ImActorModelDroidkitActorsActorSelection *)selection;
+- (DKActorRef *)actorOfWithDKActorSelection:(DKActorSelection *)selection;
 
-- (ImActorModelDroidkitActorsActorRef *)actorOfWithImActorModelDroidkitActorsProps:(ImActorModelDroidkitActorsProps *)props
-                                                                      withNSString:(NSString *)path;
+- (DKActorRef *)actorOfWithDKProps:(DKProps *)props
+                      withNSString:(NSString *)path;
 
 - (id<ImActorModelDroidkitActorsDebugTraceInterface>)getTraceInterface;
 
@@ -43,20 +43,22 @@ withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActors
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelDroidkitActorsActorSystem_initialized;
-J2OBJC_STATIC_INIT(ImActorModelDroidkitActorsActorSystem)
+FOUNDATION_EXPORT BOOL DKActorSystem_initialized;
+J2OBJC_STATIC_INIT(DKActorSystem)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsActorSystem *ImActorModelDroidkitActorsActorSystem_system();
+FOUNDATION_EXPORT DKActorSystem *DKActorSystem_system();
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsActorSystem *ImActorModelDroidkitActorsActorSystem_mainSystem_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsActorSystem, mainSystem_, ImActorModelDroidkitActorsActorSystem *)
+FOUNDATION_EXPORT DKActorSystem *DKActorSystem_mainSystem_;
+J2OBJC_STATIC_FIELD_GETTER(DKActorSystem, mainSystem_, DKActorSystem *)
 
-FOUNDATION_EXPORT NSString *ImActorModelDroidkitActorsActorSystem_DEFAULT_DISPATCHER_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsActorSystem, DEFAULT_DISPATCHER_, NSString *)
+FOUNDATION_EXPORT NSString *DKActorSystem_DEFAULT_DISPATCHER_;
+J2OBJC_STATIC_FIELD_GETTER(DKActorSystem, DEFAULT_DISPATCHER_, NSString *)
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsActorSystem)
+typedef DKActorSystem ImActorModelDroidkitActorsActorSystem;
 
-#endif // _ImActorModelDroidkitActorsActorSystem_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKActorSystem)
+
+#endif // _DKActorSystem_H_

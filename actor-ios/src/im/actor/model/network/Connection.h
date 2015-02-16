@@ -12,9 +12,7 @@
 
 @protocol AMConnection < NSObject, JavaObject >
 
-- (void)postWithByteArray:(IOSByteArray *)data
-                  withInt:(jint)offset
-                  withInt:(jint)len;
+- (void)post:(IOSByteArray *)data withOffset:(jint)offset withLen:(jint)len;
 
 - (jboolean)isClosed;
 

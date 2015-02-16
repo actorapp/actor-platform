@@ -48,14 +48,14 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupTitleChanged, newTitle_
   return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_TITLE();
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  [super parseWithImActorModelDroidkitBserBserValues:values];
-  newTitle_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:10];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  [super parseWithBSBserValues:values];
+  newTitle_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:10];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [super serializeWithImActorModelDroidkitBserBserWriter:writer];
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:newTitle_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [super serializeWithBSBserWriter:writer];
+  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:newTitle_];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelEntityContentServiceGroupTitleChanged *)other {
@@ -70,8 +70,8 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupTitleChanged, newTitle_
     { "init", "ServiceGroupTitleChanged", NULL, 0x2, NULL },
     { "getNewTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "newTitle_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
@@ -84,7 +84,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupTitleChanged, newTitle_
 
 ImActorModelEntityContentServiceGroupTitleChanged *ImActorModelEntityContentServiceGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentServiceGroupTitleChanged_init();
-  return ((ImActorModelEntityContentServiceGroupTitleChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupTitleChanged alloc] init], data));
+  return ((ImActorModelEntityContentServiceGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupTitleChanged alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupTitleChanged)

@@ -8,20 +8,20 @@
 #include "im/actor/model/droidkit/actors/mailbox/ActorEndpoint.h"
 #include "im/actor/model/droidkit/actors/mailbox/Mailbox.h"
 
-@interface ImActorModelDroidkitActorsMailboxActorEndpoint () {
+@interface DKActorEndpoint () {
  @public
   NSString *path_;
-  ImActorModelDroidkitActorsMailboxMailbox *mailbox_;
-  ImActorModelDroidkitActorsActorScope *scope_;
+  DKMailbox *mailbox_;
+  DKActorScope *scope_;
   jboolean isDisconnected__;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxActorEndpoint, path_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxActorEndpoint, mailbox_, ImActorModelDroidkitActorsMailboxMailbox *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxActorEndpoint, scope_, ImActorModelDroidkitActorsActorScope *)
+J2OBJC_FIELD_SETTER(DKActorEndpoint, path_, NSString *)
+J2OBJC_FIELD_SETTER(DKActorEndpoint, mailbox_, DKMailbox *)
+J2OBJC_FIELD_SETTER(DKActorEndpoint, scope_, DKActorScope *)
 
-@implementation ImActorModelDroidkitActorsMailboxActorEndpoint
+@implementation DKActorEndpoint
 
 - (instancetype)initWithNSString:(NSString *)path {
   if (self = [super init]) {
@@ -35,11 +35,11 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxActorEndpoint, scope_, ImAc
   return path_;
 }
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)getMailbox {
+- (DKMailbox *)getMailbox {
   return mailbox_;
 }
 
-- (ImActorModelDroidkitActorsActorScope *)getScope {
+- (DKActorScope *)getScope {
   return scope_;
 }
 
@@ -47,14 +47,14 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxActorEndpoint, scope_, ImAc
   return isDisconnected__;
 }
 
-- (void)connectWithImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox
-                   withImActorModelDroidkitActorsActorScope:(ImActorModelDroidkitActorsActorScope *)scope {
+- (void)connectWithDKMailbox:(DKMailbox *)mailbox
+            withDKActorScope:(DKActorScope *)scope {
   isDisconnected__ = NO;
   self->mailbox_ = mailbox;
   self->scope_ = scope;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMailboxActorEndpoint *)other {
+- (void)copyAllFieldsTo:(DKActorEndpoint *)other {
   [super copyAllFieldsTo:other];
   other->path_ = path_;
   other->mailbox_ = mailbox_;
@@ -69,7 +69,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxActorEndpoint, scope_, ImAc
     { "getMailbox", NULL, "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x1, NULL },
     { "getScope", NULL, "Lim.actor.model.droidkit.actors.ActorScope;", 0x1, NULL },
     { "isDisconnected", NULL, "Z", 0x1, NULL },
-    { "connectWithImActorModelDroidkitActorsMailboxMailbox:withImActorModelDroidkitActorsActorScope:", "connect", "V", 0x1, NULL },
+    { "connectWithDKMailbox:withDKActorScope:", "connect", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "path_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
@@ -77,10 +77,10 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxActorEndpoint, scope_, ImAc
     { "scope_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorScope;", NULL,  },
     { "isDisconnected__", "isDisconnected", 0x2, "Z", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsMailboxActorEndpoint = { 1, "ActorEndpoint", "im.actor.model.droidkit.actors.mailbox", NULL, 0x1, 6, methods, 4, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsMailboxActorEndpoint;
+  static const J2ObjcClassInfo _DKActorEndpoint = { 1, "ActorEndpoint", "im.actor.model.droidkit.actors.mailbox", NULL, 0x1, 6, methods, 4, fields, 0, NULL};
+  return &_DKActorEndpoint;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMailboxActorEndpoint)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorEndpoint)

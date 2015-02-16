@@ -14,28 +14,28 @@
 #include "im/actor/model/entity/AvatarImage.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityAvatar () {
+@interface AMAvatar () {
  @public
-  ImActorModelEntityAvatarImage *smallImage_;
-  ImActorModelEntityAvatarImage *largeImage_;
-  ImActorModelEntityAvatarImage *fullImage_;
+  AMAvatarImage *smallImage_;
+  AMAvatarImage *largeImage_;
+  AMAvatarImage *fullImage_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityAvatar, smallImage_, ImActorModelEntityAvatarImage *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityAvatar, largeImage_, ImActorModelEntityAvatarImage *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityAvatar, fullImage_, ImActorModelEntityAvatarImage *)
+J2OBJC_FIELD_SETTER(AMAvatar, smallImage_, AMAvatarImage *)
+J2OBJC_FIELD_SETTER(AMAvatar, largeImage_, AMAvatarImage *)
+J2OBJC_FIELD_SETTER(AMAvatar, fullImage_, AMAvatarImage *)
 
-@implementation ImActorModelEntityAvatar
+@implementation AMAvatar
 
-+ (ImActorModelEntityAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityAvatar_fromBytesWithByteArray_(data);
++ (AMAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMAvatar_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelEntityAvatarImage:(ImActorModelEntityAvatarImage *)smallImage
-                    withImActorModelEntityAvatarImage:(ImActorModelEntityAvatarImage *)largeImage
-                    withImActorModelEntityAvatarImage:(ImActorModelEntityAvatarImage *)fullImage {
+- (instancetype)initWithAMAvatarImage:(AMAvatarImage *)smallImage
+                    withAMAvatarImage:(AMAvatarImage *)largeImage
+                    withAMAvatarImage:(AMAvatarImage *)fullImage {
   if (self = [super init]) {
     self->smallImage_ = smallImage;
     self->largeImage_ = largeImage;
@@ -48,25 +48,25 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityAvatar, fullImage_, ImActorModelEntityAvat
   return [super init];
 }
 
-- (ImActorModelEntityAvatarImage *)getSmallImage {
+- (AMAvatarImage *)getSmallImage {
   return smallImage_;
 }
 
-- (ImActorModelEntityAvatarImage *)getLargeImage {
+- (AMAvatarImage *)getLargeImage {
   return largeImage_;
 }
 
-- (ImActorModelEntityAvatarImage *)getFullImage {
+- (AMAvatarImage *)getFullImage {
   return fullImage_;
 }
 
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
-  ImActorModelEntityAvatar *avatar = (ImActorModelEntityAvatar *) check_class_cast(o, [ImActorModelEntityAvatar class]);
-  if (fullImage_ != nil ? ![fullImage_ isEqual:((ImActorModelEntityAvatar *) nil_chk(avatar))->fullImage_] : ((ImActorModelEntityAvatar *) nil_chk(avatar))->fullImage_ != nil) return NO;
-  if (largeImage_ != nil ? ![largeImage_ isEqual:((ImActorModelEntityAvatar *) nil_chk(avatar))->largeImage_] : ((ImActorModelEntityAvatar *) nil_chk(avatar))->largeImage_ != nil) return NO;
-  if (smallImage_ != nil ? ![smallImage_ isEqual:((ImActorModelEntityAvatar *) nil_chk(avatar))->smallImage_] : ((ImActorModelEntityAvatar *) nil_chk(avatar))->smallImage_ != nil) return NO;
+  AMAvatar *avatar = (AMAvatar *) check_class_cast(o, [AMAvatar class]);
+  if (fullImage_ != nil ? ![fullImage_ isEqual:((AMAvatar *) nil_chk(avatar))->fullImage_] : ((AMAvatar *) nil_chk(avatar))->fullImage_ != nil) return NO;
+  if (largeImage_ != nil ? ![largeImage_ isEqual:((AMAvatar *) nil_chk(avatar))->largeImage_] : ((AMAvatar *) nil_chk(avatar))->largeImage_ != nil) return NO;
+  if (smallImage_ != nil ? ![smallImage_ isEqual:((AMAvatar *) nil_chk(avatar))->smallImage_] : ((AMAvatar *) nil_chk(avatar))->smallImage_ != nil) return NO;
   return YES;
 }
 
@@ -77,34 +77,34 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityAvatar, fullImage_, ImActorModelEntityAvat
   return result;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  IOSByteArray *small = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) optBytesWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  IOSByteArray *small = [((BSBserValues *) nil_chk(values)) optBytesWithInt:1];
   if (small != nil) {
-    smallImage_ = ImActorModelEntityAvatarImage_fromBytesWithByteArray_(small);
+    smallImage_ = AMAvatarImage_fromBytesWithByteArray_(small);
   }
   IOSByteArray *large = [values optBytesWithInt:2];
   if (large != nil) {
-    largeImage_ = ImActorModelEntityAvatarImage_fromBytesWithByteArray_(large);
+    largeImage_ = AMAvatarImage_fromBytesWithByteArray_(large);
   }
   IOSByteArray *full = [values optBytesWithInt:3];
   if (full != nil) {
-    fullImage_ = ImActorModelEntityAvatarImage_fromBytesWithByteArray_(full);
+    fullImage_ = AMAvatarImage_fromBytesWithByteArray_(full);
   }
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (smallImage_ != nil) {
-    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:smallImage_];
+    [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:smallImage_];
   }
   if (largeImage_ != nil) {
-    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withImActorModelDroidkitBserBserObject:smallImage_];
+    [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withBSBserObject:smallImage_];
   }
   if (fullImage_ != nil) {
-    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:3 withImActorModelDroidkitBserBserObject:fullImage_];
+    [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:3 withBSBserObject:fullImage_];
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityAvatar *)other {
+- (void)copyAllFieldsTo:(AMAvatar *)other {
   [super copyAllFieldsTo:other];
   other->smallImage_ = smallImage_;
   other->largeImage_ = largeImage_;
@@ -114,30 +114,30 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityAvatar, fullImage_, ImActorModelEntityAvat
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.Avatar;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelEntityAvatarImage:withImActorModelEntityAvatarImage:withImActorModelEntityAvatarImage:", "Avatar", NULL, 0x1, NULL },
+    { "initWithAMAvatarImage:withAMAvatarImage:withAMAvatarImage:", "Avatar", NULL, 0x1, NULL },
     { "init", "Avatar", NULL, 0x2, NULL },
     { "getSmallImage", NULL, "Lim.actor.model.entity.AvatarImage;", 0x1, NULL },
     { "getLargeImage", NULL, "Lim.actor.model.entity.AvatarImage;", 0x1, NULL },
     { "getFullImage", NULL, "Lim.actor.model.entity.AvatarImage;", 0x1, NULL },
     { "isEqual:", "equals", "Z", 0x1, NULL },
     { "hash", "hashCode", "I", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "smallImage_", NULL, 0x2, "Lim.actor.model.entity.AvatarImage;", NULL,  },
     { "largeImage_", NULL, 0x2, "Lim.actor.model.entity.AvatarImage;", NULL,  },
     { "fullImage_", NULL, 0x2, "Lim.actor.model.entity.AvatarImage;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityAvatar = { 1, "Avatar", "im.actor.model.entity", NULL, 0x1, 10, methods, 3, fields, 0, NULL};
-  return &_ImActorModelEntityAvatar;
+  static const J2ObjcClassInfo _AMAvatar = { 1, "Avatar", "im.actor.model.entity", NULL, 0x1, 10, methods, 3, fields, 0, NULL};
+  return &_AMAvatar;
 }
 
 @end
 
-ImActorModelEntityAvatar *ImActorModelEntityAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityAvatar_init();
-  return ((ImActorModelEntityAvatar *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityAvatar alloc] init], data));
+AMAvatar *AMAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMAvatar_init();
+  return ((AMAvatar *) BSBser_parseWithBSBserObject_withByteArray_([[AMAvatar alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityAvatar)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAvatar)

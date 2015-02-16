@@ -6,39 +6,40 @@
 #ifndef _ImActorModelModulesAuth_H_
 #define _ImActorModelModulesAuth_H_
 
+@class AMAuthStateEnum;
 @class AMRpcException;
-@class AMStateEnum;
 @class IOSByteArray;
 @class ImActorModelApiRpcResponseAuth;
 @class ImActorModelApiRpcResponseSendAuthCode;
 @class ImActorModelModulesModules;
-@protocol ImActorModelConcurrencyCommandCallback;
-@protocol ImActorModelConcurrencyMainThread;
-@protocol ImActorModelStoragePreferencesStorage;
+@protocol AMCommandCallback;
+@protocol AMMainThread;
+@protocol AMPreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/concurrency/Command.h"
+#include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/network/RpcCallback.h"
 #include "java/lang/Runnable.h"
 
 #define ImActorModelModulesAuth_APP_ID 1
 
-@interface ImActorModelModulesAuth : NSObject {
+@interface ImActorModelModulesAuth : ImActorModelModulesBaseModule {
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (jint)myUid;
 
-- (AMStateEnum *)getState;
+- (AMAuthStateEnum *)getAuthState;
 
-- (id<ImActorModelConcurrencyCommand>)requestSmsWithLong:(jlong)phone;
+- (id<AMCommand>)requestSmsWithLong:(jlong)phone;
 
-- (id<ImActorModelConcurrencyCommand>)sendCodeWithInt:(jint)code;
+- (id<AMCommand>)sendCodeWithInt:(jint)code;
 
-- (id<ImActorModelConcurrencyCommand>)signUpWithNSString:(NSString *)firstName
-                                            withNSString:(NSString *)avatarPath
-                                             withBoolean:(jboolean)isSilent;
+- (id<AMCommand>)signUpWithNSString:(NSString *)firstName
+                       withNSString:(NSString *)avatarPath
+                        withBoolean:(jboolean)isSilent;
 
 - (void)resetAuth;
 
@@ -76,10 +77,10 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth)
 
-@interface ImActorModelModulesAuth_$1 : NSObject < ImActorModelConcurrencyCommand > {
+@interface ImActorModelModulesAuth_$1 : NSObject < AMCommand > {
 }
 
-- (void)startWithImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)callback;
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
 
 - (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
                                        withLong:(jlong)capture$0;
@@ -101,7 +102,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$1)
 - (void)onErrorWithAMRpcException:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesAuth_$1:(ImActorModelModulesAuth_$1 *)outer$
-        withImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)capture$0;
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0;
 
 @end
 
@@ -145,10 +146,10 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$1_$1_$2)
 
-@interface ImActorModelModulesAuth_$2 : NSObject < ImActorModelConcurrencyCommand > {
+@interface ImActorModelModulesAuth_$2 : NSObject < AMCommand > {
 }
 
-- (void)startWithImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)callback;
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
 
 - (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
                                         withInt:(jint)capture$0;
@@ -170,7 +171,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$2)
 - (void)onErrorWithAMRpcException:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesAuth_$2:(ImActorModelModulesAuth_$2 *)outer$
-        withImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)capture$0;
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0;
 
 @end
 
@@ -214,10 +215,10 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$2_$1_$2)
 
-@interface ImActorModelModulesAuth_$3 : NSObject < ImActorModelConcurrencyCommand > {
+@interface ImActorModelModulesAuth_$3 : NSObject < AMCommand > {
 }
 
-- (void)startWithImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)callback;
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
 
 - (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
                                    withNSString:(NSString *)capture$0
@@ -240,7 +241,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$3)
 - (void)onErrorWithAMRpcException:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesAuth_$3:(ImActorModelModulesAuth_$3 *)outer$
-        withImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)capture$0;
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0;
 
 @end
 

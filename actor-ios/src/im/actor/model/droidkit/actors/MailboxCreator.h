@@ -3,22 +3,24 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/MailboxCreator.java
 //
 
-#ifndef _ImActorModelDroidkitActorsMailboxCreator_H_
-#define _ImActorModelDroidkitActorsMailboxCreator_H_
+#ifndef _DKMailboxCreator_H_
+#define _DKMailboxCreator_H_
 
-@class ImActorModelDroidkitActorsMailboxMailbox;
-@class ImActorModelDroidkitActorsMailboxMailboxesQueue;
+@class DKMailbox;
+@class DKMailboxesQueue;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitActorsMailboxCreator < NSObject, JavaObject >
+@protocol DKMailboxCreator < NSObject, JavaObject >
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)createMailboxWithImActorModelDroidkitActorsMailboxMailboxesQueue:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)queue;
+- (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsMailboxCreator)
+J2OBJC_EMPTY_STATIC_INIT(DKMailboxCreator)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxCreator)
+#define ImActorModelDroidkitActorsMailboxCreator DKMailboxCreator
 
-#endif // _ImActorModelDroidkitActorsMailboxCreator_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKMailboxCreator)
+
+#endif // _DKMailboxCreator_H_

@@ -57,17 +57,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFile, fileLocation_, ImActorMode
   return self->limit_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->fileLocation_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiFileLocation alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->fileLocation_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiFileLocation alloc] init]];
   self->offset_ = [values getIntWithInt:2];
   self->limit_ = [values getIntWithInt:3];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->fileLocation_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->fileLocation_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->fileLocation_];
   [writer writeIntWithInt:2 withInt:self->offset_];
   [writer writeIntWithInt:3 withInt:self->limit_];
 }
@@ -91,8 +91,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFile, fileLocation_, ImActorMode
     { "getFileLocation", NULL, "Lim.actor.model.api.FileLocation;", 0x1, NULL },
     { "getOffset", NULL, "I", 0x1, NULL },
     { "getLimit", NULL, "I", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "getHeaderKey", NULL, "I", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -110,7 +110,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFile, fileLocation_, ImActorMode
 
 ImActorModelApiRpcRequestGetFile *ImActorModelApiRpcRequestGetFile_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestGetFile_init();
-  return ((ImActorModelApiRpcRequestGetFile *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelApiRpcRequestGetFile alloc] init], data));
+  return ((ImActorModelApiRpcRequestGetFile *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestGetFile alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetFile)

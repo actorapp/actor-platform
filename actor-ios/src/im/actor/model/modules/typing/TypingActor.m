@@ -8,7 +8,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
-#include "im/actor/model/TypingCallback.h"
+#include "im/actor/model/MessengerCallback.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
@@ -33,7 +33,7 @@ __attribute__((unused)) static void ImActorModelModulesTypingTypingActor_stopGro
  @public
   JavaUtilHashSet *typings_;
   JavaUtilHashMap *groupTypings_;
-  id<AMTypingCallback> callback_;
+  id<AMMessengerCallback> callback_;
 }
 
 - (void)privateTypingWithInt:(jint)uid
@@ -51,7 +51,7 @@ __attribute__((unused)) static void ImActorModelModulesTypingTypingActor_stopGro
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor, typings_, JavaUtilHashSet *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor, groupTypings_, JavaUtilHashMap *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor, callback_, id<AMTypingCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor, callback_, id<AMMessengerCallback>)
 
 @interface ImActorModelModulesTypingTypingActor_StopTyping () {
  @public
@@ -91,7 +91,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_$1, val$messenger_, ImA
 
 @implementation ImActorModelModulesTypingTypingActor
 
-+ (ImActorModelDroidkitActorsActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
++ (DKActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   return ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(messenger);
 }
 
@@ -99,7 +99,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_$1, val$messenger_, ImA
   if (self = [super initWithImActorModelModulesModules:messenger]) {
     typings_ = [[JavaUtilHashSet alloc] init];
     groupTypings_ = [[JavaUtilHashMap alloc] init];
-    self->callback_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getTypingCallback];
+    self->callback_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getCallback];
   }
   return self;
 }
@@ -167,7 +167,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_$1, val$messenger_, ImA
     { "TYPING_TEXT_TIMEOUT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT },
     { "typings_", NULL, 0x2, "Ljava.util.HashSet;", NULL,  },
     { "groupTypings_", NULL, 0x2, "Ljava.util.HashMap;", NULL,  },
-    { "callback_", NULL, 0x2, "Lim.actor.model.TypingCallback;", NULL,  },
+    { "callback_", NULL, 0x2, "Lim.actor.model.MessengerCallback;", NULL,  },
   };
   static const J2ObjcClassInfo _ImActorModelModulesTypingTypingActor = { 1, "TypingActor", "im.actor.model.modules.typing", NULL, 0x1, 7, methods, 4, fields, 0, NULL};
   return &_ImActorModelModulesTypingTypingActor;
@@ -175,9 +175,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_$1, val$messenger_, ImA
 
 @end
 
-ImActorModelDroidkitActorsActorRef *ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
+DKActorRef *ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
   ImActorModelModulesTypingTypingActor_init();
-  return [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_withImActorModelDroidkitActorsMailboxCreator_(ImActorModelModulesTypingTypingActor_class_(), [[ImActorModelModulesTypingTypingActor_$1 alloc] initWithImActorModelModulesModules:messenger], [[ImActorModelModulesTypingTypingActor_$2 alloc] init]) withNSString:@"actor/typing"];
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_withDKMailboxCreator_(ImActorModelModulesTypingTypingActor_class_(), [[ImActorModelModulesTypingTypingActor_$1 alloc] initWithImActorModelModulesModules:messenger], [[ImActorModelModulesTypingTypingActor_$2 alloc] init]) withNSString:@"actor/typing"];
 }
 
 void ImActorModelModulesTypingTypingActor_privateTypingWithInt_withInt_(ImActorModelModulesTypingTypingActor *self, jint uid, jint type) {
@@ -190,17 +190,17 @@ void ImActorModelModulesTypingTypingActor_privateTypingWithInt_withInt_(ImActorM
   if (![((JavaUtilHashSet *) nil_chk(self->typings_)) containsWithId:JavaLangInteger_valueOfWithInt_(uid)]) {
     [self->typings_ addWithId:JavaLangInteger_valueOfWithInt_(uid)];
     if (self->callback_ != nil) {
-      [self->callback_ onTypingStartWithInt:uid];
+      [self->callback_ onTypingStart:uid];
     }
   }
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopTyping alloc] initWithInt:uid] withLong:ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT];
+  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopTyping alloc] initWithInt:uid] withLong:ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT];
 }
 
 void ImActorModelModulesTypingTypingActor_stopPrivateTypingWithInt_(ImActorModelModulesTypingTypingActor *self, jint uid) {
   if ([((JavaUtilHashSet *) nil_chk(self->typings_)) containsWithId:JavaLangInteger_valueOfWithInt_(uid)]) {
     [self->typings_ removeWithId:JavaLangInteger_valueOfWithInt_(uid)];
     if (self->callback_ != nil) {
-      [self->callback_ onTypingEndWithInt:uid];
+      [self->callback_ onTypingEnd:uid];
     }
   }
 }
@@ -217,7 +217,7 @@ void ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withInt_(Im
     [set addWithId:JavaLangInteger_valueOfWithInt_(uid)];
     (void) [self->groupTypings_ putWithId:JavaLangInteger_valueOfWithInt_(gid) withId:set];
     if (self->callback_ != nil) {
-      [self->callback_ onGroupTypingWithInt:gid withIntArray:[IOSIntArray newArrayWithInts:(jint[]){ uid } count:1]];
+      [self->callback_ onGroupTyping:gid withUsers:[IOSIntArray newArrayWithInts:(jint[]){ uid } count:1]];
     }
   }
   else {
@@ -230,11 +230,11 @@ void ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withInt_(Im
         *IOSIntArray_GetRef(ids2, i) = [((JavaLangInteger *) nil_chk(IOSObjectArray_Get(ids, i))) intValue];
       }
       if (self->callback_ != nil) {
-        [self->callback_ onGroupTypingWithInt:gid withIntArray:ids2];
+        [self->callback_ onGroupTyping:gid withUsers:ids2];
       }
     }
   }
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopGroupTyping alloc] initWithInt:gid withInt:uid] withLong:ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT];
+  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopGroupTyping alloc] initWithInt:gid withInt:uid] withLong:ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT];
 }
 
 void ImActorModelModulesTypingTypingActor_stopGroupTypingWithInt_withInt_(ImActorModelModulesTypingTypingActor *self, jint gid, jint uid) {
@@ -250,7 +250,7 @@ void ImActorModelModulesTypingTypingActor_stopGroupTypingWithInt_withInt_(ImActo
       *IOSIntArray_GetRef(ids2, i) = [((JavaLangInteger *) nil_chk(IOSObjectArray_Get(ids, i))) intValue];
     }
     if (self->callback_ != nil) {
-      [self->callback_ onGroupTypingWithInt:gid withIntArray:ids2];
+      [self->callback_ onGroupTyping:gid withUsers:ids2];
     }
   }
 }
@@ -530,8 +530,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_$1)
 
 @implementation ImActorModelModulesTypingTypingActor_$2
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)createMailboxWithImActorModelDroidkitActorsMailboxMailboxesQueue:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)queue {
-  return [[ImActorModelModulesTypingTypingActor_$2_$1 alloc] initWithImActorModelDroidkitActorsMailboxMailboxesQueue:queue];
+- (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue {
+  return [[ImActorModelModulesTypingTypingActor_$2_$1 alloc] initWithDKMailboxesQueue:queue];
 }
 
 - (instancetype)init {
@@ -540,7 +540,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_$1)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "createMailboxWithImActorModelDroidkitActorsMailboxMailboxesQueue:", "createMailbox", "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x1, NULL },
+    { "createMailboxWithDKMailboxesQueue:", "createMailbox", "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x1, NULL },
     { "init", NULL, NULL, 0x0, NULL },
   };
   static const J2ObjcClassInfo _ImActorModelModulesTypingTypingActor_$2 = { 1, "$2", "im.actor.model.modules.typing", "TypingActor", 0x8000, 2, methods, 0, NULL, 0, NULL};
@@ -553,22 +553,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_$2)
 
 @implementation ImActorModelModulesTypingTypingActor_$2_$1
 
-- (jboolean)isEqualEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)a
-                           withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)b {
-  if ([nil_chk([((ImActorModelDroidkitActorsMailboxEnvelope *) nil_chk(a)) getMessage]) isEqual:[((ImActorModelDroidkitActorsMailboxEnvelope *) nil_chk(b)) getMessage]]) {
+- (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
+                           withDKEnvelope:(DKEnvelope *)b {
+  if ([nil_chk([((DKEnvelope *) nil_chk(a)) getMessage]) isEqual:[((DKEnvelope *) nil_chk(b)) getMessage]]) {
     return YES;
   }
-  return [super isEqualEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:a withImActorModelDroidkitActorsMailboxEnvelope:b];
+  return [super isEqualEnvelopeWithDKEnvelope:a withDKEnvelope:b];
 }
 
-- (instancetype)initWithImActorModelDroidkitActorsMailboxMailboxesQueue:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)arg$0 {
-  return [super initWithImActorModelDroidkitActorsMailboxMailboxesQueue:arg$0];
+- (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)arg$0 {
+  return [super initWithDKMailboxesQueue:arg$0];
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "isEqualEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:withImActorModelDroidkitActorsMailboxEnvelope:", "isEqualEnvelope", "Z", 0x4, NULL },
-    { "initWithImActorModelDroidkitActorsMailboxMailboxesQueue:", "init", NULL, 0x0, NULL },
+    { "isEqualEnvelopeWithDKEnvelope:withDKEnvelope:", "isEqualEnvelope", "Z", 0x4, NULL },
+    { "initWithDKMailboxesQueue:", "init", NULL, 0x0, NULL },
   };
   static const J2ObjcClassInfo _ImActorModelModulesTypingTypingActor_$2_$1 = { 1, "$1", "im.actor.model.modules.typing", "TypingActor$$2", 0x8000, 2, methods, 0, NULL, 0, NULL};
   return &_ImActorModelModulesTypingTypingActor_$2_$1;

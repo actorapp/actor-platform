@@ -4,6 +4,7 @@
 //
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/Networking.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/network/ActorApi.h"
 #include "im/actor/model/network/ActorApiCallback.h"
@@ -15,26 +16,27 @@
 
 @interface AMActorApi () {
  @public
-  ImActorModelDroidkitActorsActorRef *apiBroker_;
+  DKActorRef *apiBroker_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
 
 @implementation AMActorApi
 
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
-             withAMActorApiCallback:(id<AMActorApiCallback>)callback {
+             withAMActorApiCallback:(id<AMActorApiCallback>)callback
+                   withAMNetworking:(id<AMNetworking>)networking {
   if (self = [super init]) {
-    apiBroker_ = ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_(endpoints, keyStorage, callback);
+    self->apiBroker_ = ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworking_(endpoints, keyStorage, callback, networking);
   }
   return self;
 }
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(apiBroker_)) sendWithId:[[ImActorModelNetworkApiApiBroker_PerformRequest alloc] initWithImActorModelNetworkParserRequest:request withAMRpcCallback:callback]];
+  [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:[[ImActorModelNetworkApiApiBroker_PerformRequest alloc] initWithImActorModelNetworkParserRequest:request withAMRpcCallback:callback]];
 }
 
 - (void)copyAllFieldsTo:(AMActorApi *)other {
@@ -44,7 +46,7 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, ImActorModelDroidkitActorsActorRef *
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMEndpoints:withAMAuthKeyStorage:withAMActorApiCallback:", "ActorApi", NULL, 0x1, NULL },
+    { "initWithAMEndpoints:withAMAuthKeyStorage:withAMActorApiCallback:withAMNetworking:", "ActorApi", NULL, 0x1, NULL },
     { "requestWithImActorModelNetworkParserRequest:withAMRpcCallback:", "request", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {

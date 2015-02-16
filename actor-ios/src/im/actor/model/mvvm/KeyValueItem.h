@@ -3,19 +3,21 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/mvvm/KeyValueItem.java
 //
 
-#ifndef _ImActorModelMvvmKeyValueItem_H_
-#define _ImActorModelMvvmKeyValueItem_H_
+#ifndef _AMKeyValueItem_H_
+#define _AMKeyValueItem_H_
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelMvvmKeyValueItem < NSObject, JavaObject >
+@protocol AMKeyValueItem < NSObject, JavaObject >
 
 - (jlong)getEngineId;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelMvvmKeyValueItem)
+J2OBJC_EMPTY_STATIC_INIT(AMKeyValueItem)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelMvvmKeyValueItem)
+#define ImActorModelMvvmKeyValueItem AMKeyValueItem
 
-#endif // _ImActorModelMvvmKeyValueItem_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMKeyValueItem)
+
+#endif // _AMKeyValueItem_H_

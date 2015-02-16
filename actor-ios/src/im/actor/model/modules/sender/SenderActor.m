@@ -13,8 +13,7 @@
 #include "im/actor/model/api/rpc/RequestSendMessage.h"
 #include "im/actor/model/api/rpc/ResponseSeqDate.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
-#include "im/actor/model/droidkit/actors/conf/EnvConfig.h"
-#include "im/actor/model/droidkit/actors/conf/JavaFactory.h"
+#include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/entity/Message.h"
 #include "im/actor/model/entity/MessageState.h"
 #include "im/actor/model/entity/Peer.h"
@@ -29,24 +28,24 @@
 #include "im/actor/model/modules/utils/RandomUtils.h"
 #include "im/actor/model/network/RpcException.h"
 
-__attribute__((unused)) static void ImActorModelModulesSenderSenderActor_sendMessageWithImActorModelEntityPeer_withLong_withLong_withImActorModelEntityContentAbsContent_(ImActorModelModulesSenderSenderActor *self, ImActorModelEntityPeer *peer, jlong rid, jlong time, ImActorModelEntityContentAbsContent *content);
+__attribute__((unused)) static void ImActorModelModulesSenderSenderActor_sendMessageWithAMPeer_withLong_withLong_withImActorModelEntityContentAbsContent_(ImActorModelModulesSenderSenderActor *self, AMPeer *peer, jlong rid, jlong time, ImActorModelEntityContentAbsContent *content);
 
 @interface ImActorModelModulesSenderSenderActor ()
 
-- (void)sendMessageWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                                     withLong:(jlong)rid
-                                     withLong:(jlong)time
-      withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content;
+- (void)sendMessageWithAMPeer:(AMPeer *)peer
+                     withLong:(jlong)rid
+                     withLong:(jlong)time
+withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content;
 @end
 
 @interface ImActorModelModulesSenderSenderActor_SendMessage () {
  @public
-  ImActorModelEntityPeer *peer_;
+  AMPeer *peer_;
   ImActorModelEntityContentAbsContent *content_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesSenderSenderActor_SendMessage, peer_, ImActorModelEntityPeer *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSenderSenderActor_SendMessage, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSenderSenderActor_SendMessage, content_, ImActorModelEntityContentAbsContent *)
 
 @interface ImActorModelModulesSenderSenderActor_MessageSent () {
@@ -68,17 +67,17 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSenderSenderActor_SendMessage, content_, 
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesSenderSenderActor_SendMessage class]]) {
     ImActorModelModulesSenderSenderActor_SendMessage *sendMessage = (ImActorModelModulesSenderSenderActor_SendMessage *) check_class_cast(message, [ImActorModelModulesSenderSenderActor_SendMessage class]);
-    ImActorModelModulesSenderSenderActor_sendMessageWithImActorModelEntityPeer_withLong_withLong_withImActorModelEntityContentAbsContent_(self, ((ImActorModelModulesSenderSenderActor_SendMessage *) nil_chk(sendMessage))->peer_, ImActorModelModulesUtilsRandomUtils_nextRid(), [((id<ImActorModelDroidkitActorsConfJavaFactory>) nil_chk(ImActorModelDroidkitActorsConfEnvConfig_getJavaFactory())) getCurrentTime], sendMessage->content_);
+    ImActorModelModulesSenderSenderActor_sendMessageWithAMPeer_withLong_withLong_withImActorModelEntityContentAbsContent_(self, ((ImActorModelModulesSenderSenderActor_SendMessage *) nil_chk(sendMessage))->peer_, ImActorModelModulesUtilsRandomUtils_nextRid(), DKEnvironment_getCurrentTime(), sendMessage->content_);
   }
   else if ([message isKindOfClass:[ImActorModelModulesSenderSenderActor_MessageSent class]]) {
   }
 }
 
-- (void)sendMessageWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                                     withLong:(jlong)rid
-                                     withLong:(jlong)time
-      withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content {
-  ImActorModelModulesSenderSenderActor_sendMessageWithImActorModelEntityPeer_withLong_withLong_withImActorModelEntityContentAbsContent_(self, peer, rid, time, content);
+- (void)sendMessageWithAMPeer:(AMPeer *)peer
+                     withLong:(jlong)rid
+                     withLong:(jlong)time
+withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content {
+  ImActorModelModulesSenderSenderActor_sendMessageWithAMPeer_withLong_withLong_withImActorModelEntityContentAbsContent_(self, peer, rid, time, content);
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -86,7 +85,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSenderSenderActor_SendMessage, content_, 
     { "initWithImActorModelModulesModules:", "SenderActor", NULL, 0x1, NULL },
     { "preStart", NULL, "V", 0x1, NULL },
     { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-    { "sendMessageWithImActorModelEntityPeer:withLong:withLong:withImActorModelEntityContentAbsContent:", "sendMessage", "V", 0x2, NULL },
+    { "sendMessageWithAMPeer:withLong:withLong:withImActorModelEntityContentAbsContent:", "sendMessage", "V", 0x2, NULL },
   };
   static const J2ObjcClassInfo _ImActorModelModulesSenderSenderActor = { 1, "SenderActor", "im.actor.model.modules.sender", NULL, 0x1, 4, methods, 0, NULL, 0, NULL};
   return &_ImActorModelModulesSenderSenderActor;
@@ -94,15 +93,15 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSenderSenderActor_SendMessage, content_, 
 
 @end
 
-void ImActorModelModulesSenderSenderActor_sendMessageWithImActorModelEntityPeer_withLong_withLong_withImActorModelEntityContentAbsContent_(ImActorModelModulesSenderSenderActor *self, ImActorModelEntityPeer *peer, jlong rid, jlong time, ImActorModelEntityContentAbsContent *content) {
+void ImActorModelModulesSenderSenderActor_sendMessageWithAMPeer_withLong_withLong_withImActorModelEntityContentAbsContent_(ImActorModelModulesSenderSenderActor *self, AMPeer *peer, jlong rid, jlong time, ImActorModelEntityContentAbsContent *content) {
   ImActorModelApiOutPeer *outPeer;
   ImActorModelApiPeer *apiPeer;
-  if ([((ImActorModelEntityPeer *) nil_chk(peer)) getPeerType] == ImActorModelEntityPeerTypeEnum_get_PRIVATE()) {
-    ImActorModelEntityUser *user = [self getUserWithInt:[peer getPeerId]];
+  if ([((AMPeer *) nil_chk(peer)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
+    AMUser *user = [self getUserWithInt:[peer getPeerId]];
     if (user == nil) {
       return;
     }
-    outPeer = [[ImActorModelApiOutPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[peer getPeerId] withLong:[((ImActorModelEntityUser *) nil_chk(user)) getAccessHash]];
+    outPeer = [[ImActorModelApiOutPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[peer getPeerId] withLong:[((AMUser *) nil_chk(user)) getAccessHash]];
     apiPeer = [[ImActorModelApiPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[peer getPeerId]];
   }
   else {
@@ -115,7 +114,7 @@ void ImActorModelModulesSenderSenderActor_sendMessageWithImActorModelEntityPeer_
   else {
     return;
   }
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationActorWithImActorModelEntityPeer:peer])) sendWithId:[[ImActorModelEntityMessage alloc] initWithLong:rid withLong:time withLong:time withInt:[self myUid] withImActorModelEntityMessageStateEnum:ImActorModelEntityMessageStateEnum_get_PENDING() withImActorModelEntityContentAbsContent:content]];
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationActorWithAMPeer:peer])) sendWithId:[[AMMessage alloc] initWithLong:rid withLong:time withLong:time withInt:[self myUid] withAMMessageStateEnum:AMMessageStateEnum_get_PENDING() withImActorModelEntityContentAbsContent:content]];
   [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSendMessage alloc] initWithImActorModelApiOutPeer:outPeer withLong:rid withImActorModelApiMessageContent:outContent] withAMRpcCallback:[[ImActorModelModulesSenderSenderActor_$1 alloc] init]];
 }
 
@@ -123,8 +122,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSenderSenderActor)
 
 @implementation ImActorModelModulesSenderSenderActor_SendMessage
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-       withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content {
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content {
   if (self = [super init]) {
     self->peer_ = peer;
     self->content_ = content;
@@ -132,7 +131,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSenderSenderActor)
   return self;
 }
 
-- (ImActorModelEntityPeer *)getPeer {
+- (AMPeer *)getPeer {
   return peer_;
 }
 
@@ -148,7 +147,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSenderSenderActor)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelEntityPeer:withImActorModelEntityContentAbsContent:", "SendMessage", NULL, 0x1, NULL },
+    { "initWithAMPeer:withImActorModelEntityContentAbsContent:", "SendMessage", NULL, 0x1, NULL },
     { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
     { "getContent", NULL, "Lim.actor.model.entity.content.AbsContent;", 0x1, NULL },
   };

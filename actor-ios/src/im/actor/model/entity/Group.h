@@ -3,25 +3,25 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/Group.java
 //
 
-#ifndef _ImActorModelEntityGroup_H_
-#define _ImActorModelEntityGroup_H_
+#ifndef _AMGroup_H_
+#define _AMGroup_H_
 
-@class ImActorModelEntityAvatar;
-@class ImActorModelEntityGroupStateEnum;
+@class AMAvatar;
+@class AMGroupStateEnum;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelEntityGroup : NSObject {
+@interface AMGroup : NSObject {
 }
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)accessHash
                withNSString:(NSString *)title
-withImActorModelEntityAvatar:(ImActorModelEntityAvatar *)avatar
+               withAMAvatar:(AMAvatar *)avatar
            withJavaUtilList:(id<JavaUtilList>)members
                     withInt:(jint)adminId
-withImActorModelEntityGroupStateEnum:(ImActorModelEntityGroupStateEnum *)groupState;
+       withAMGroupStateEnum:(AMGroupStateEnum *)groupState;
 
 - (jint)getGroupId;
 
@@ -29,21 +29,23 @@ withImActorModelEntityGroupStateEnum:(ImActorModelEntityGroupStateEnum *)groupSt
 
 - (NSString *)getTitle;
 
-- (ImActorModelEntityAvatar *)getAvatar;
+- (AMAvatar *)getAvatar;
 
 - (id<JavaUtilList>)getMembers;
 
 - (jint)getAdminId;
 
-- (ImActorModelEntityGroupStateEnum *)getGroupState;
+- (AMGroupStateEnum *)getGroupState;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityGroup)
+J2OBJC_EMPTY_STATIC_INIT(AMGroup)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityGroup)
+typedef AMGroup ImActorModelEntityGroup;
 
-#endif // _ImActorModelEntityGroup_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMGroup)
+
+#endif // _AMGroup_H_

@@ -6,14 +6,14 @@
 #ifndef _ImActorModelApiContactRecord_H_
 #define _ImActorModelApiContactRecord_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class ImActorModelApiRecordTypeEnum;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiContactRecord : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiContactRecord : BSBserObject {
 }
 
 - (instancetype)initWithInt:(jint)id_
@@ -34,9 +34,9 @@ withImActorModelApiRecordTypeEnum:(ImActorModelApiRecordTypeEnum *)recordType
 
 - (NSString *)getTitle;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

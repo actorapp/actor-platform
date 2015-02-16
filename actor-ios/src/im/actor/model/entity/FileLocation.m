@@ -13,7 +13,7 @@
 #include "im/actor/model/entity/FileLocation.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityFileLocation () {
+@interface AMFileLocation () {
  @public
   jlong fileId_;
   jlong accessHash_;
@@ -22,10 +22,10 @@
 - (instancetype)init;
 @end
 
-@implementation ImActorModelEntityFileLocation
+@implementation AMFileLocation
 
-+ (ImActorModelEntityFileLocation *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityFileLocation_fromBytesWithByteArray_(data);
++ (AMFileLocation *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMFileLocation_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithLong:(jlong)fileId
@@ -58,8 +58,8 @@
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
-  ImActorModelEntityFileLocation *that = (ImActorModelEntityFileLocation *) check_class_cast(o, [ImActorModelEntityFileLocation class]);
-  if (fileId_ != ((ImActorModelEntityFileLocation *) nil_chk(that))->fileId_) return NO;
+  AMFileLocation *that = (AMFileLocation *) check_class_cast(o, [AMFileLocation class]);
+  if (fileId_ != ((AMFileLocation *) nil_chk(that))->fileId_) return NO;
   return YES;
 }
 
@@ -67,19 +67,19 @@
   return (jint) (fileId_ ^ (URShift64(fileId_, 32)));
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  fileId_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  fileId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   accessHash_ = [values getLongWithInt:2];
   fileSize_ = [values getIntWithInt:3];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:fileId_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:fileId_];
   [writer writeLongWithInt:2 withLong:accessHash_];
   [writer writeIntWithInt:3 withInt:fileSize_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityFileLocation *)other {
+- (void)copyAllFieldsTo:(AMFileLocation *)other {
   [super copyAllFieldsTo:other];
   other->fileId_ = fileId_;
   other->accessHash_ = accessHash_;
@@ -96,23 +96,23 @@
     { "getAccessHash", NULL, "J", 0x1, NULL },
     { "isEqual:", "equals", "Z", 0x1, NULL },
     { "hash", "hashCode", "I", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "fileId_", NULL, 0x2, "J", NULL,  },
     { "accessHash_", NULL, 0x2, "J", NULL,  },
     { "fileSize_", NULL, 0x2, "I", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityFileLocation = { 1, "FileLocation", "im.actor.model.entity", NULL, 0x1, 10, methods, 3, fields, 0, NULL};
-  return &_ImActorModelEntityFileLocation;
+  static const J2ObjcClassInfo _AMFileLocation = { 1, "FileLocation", "im.actor.model.entity", NULL, 0x1, 10, methods, 3, fields, 0, NULL};
+  return &_AMFileLocation;
 }
 
 @end
 
-ImActorModelEntityFileLocation *ImActorModelEntityFileLocation_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityFileLocation_init();
-  return ((ImActorModelEntityFileLocation *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityFileLocation alloc] init], data));
+AMFileLocation *AMFileLocation_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMFileLocation_init();
+  return ((AMFileLocation *) BSBser_parseWithBSBserObject_withByteArray_([[AMFileLocation alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityFileLocation)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileLocation)

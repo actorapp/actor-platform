@@ -22,15 +22,15 @@
   return ImActorModelEntityContentFileSource_fromBytesWithByteArray_(data);
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+- (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if ([self isKindOfClass:[ImActorModelEntityContentFileLocalSource class]]) {
-    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:1];
+    [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:1];
   }
   else if ([self isKindOfClass:[ImActorModelEntityContentFileRemoteSource class]]) {
-    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:2];
+    [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:2];
   }
   else {
     @throw [[JavaIoIOException alloc] initWithNSString:@"Invalid source type"];
@@ -44,8 +44,8 @@
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.content.FileSource;", 0x9, "Ljava.io.IOException;" },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
     { "init", NULL, NULL, 0x1, NULL },
   };
   static const J2ObjcClassInfo _ImActorModelEntityContentFileSource = { 1, "FileSource", "im.actor.model.entity.content", NULL, 0x401, 4, methods, 0, NULL, 0, NULL};
@@ -56,13 +56,13 @@
 
 ImActorModelEntityContentFileSource *ImActorModelEntityContentFileSource_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentFileSource_init();
-  ImActorModelDroidkitBserBserValues *reader = [[ImActorModelDroidkitBserBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:ImActorModelDroidkitBserBserParser_deserializeWithAMDataInput_([[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_])];
+  BSBserValues *reader = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithAMDataInput_([[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_])];
   jint type = [reader getIntWithInt:1];
   switch (type) {
     case 1:
-    return ImActorModelEntityContentFileLocalSource_fromValuesWithImActorModelDroidkitBserBserValues_(reader);
+    return ImActorModelEntityContentFileLocalSource_fromValuesWithBSBserValues_(reader);
     case 2:
-    return ImActorModelEntityContentFileRemoteSource_fromValuesWithImActorModelDroidkitBserBserValues_(reader);
+    return ImActorModelEntityContentFileRemoteSource_fromValuesWithBSBserValues_(reader);
     default:
     @throw [[JavaIoIOException alloc] initWithNSString:@"Invalid source type"];
   }

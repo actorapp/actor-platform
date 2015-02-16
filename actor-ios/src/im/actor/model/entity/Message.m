@@ -15,32 +15,32 @@
 #include "im/actor/model/entity/content/AbsContent.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityMessage () {
+@interface AMMessage () {
  @public
   jlong rid_;
   jlong sortDate_;
   jlong date_;
   jint senderId_;
-  ImActorModelEntityMessageStateEnum *messageState_;
+  AMMessageStateEnum *messageState_;
   ImActorModelEntityContentAbsContent *content_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityMessage, messageState_, ImActorModelEntityMessageStateEnum *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityMessage, content_, ImActorModelEntityContentAbsContent *)
+J2OBJC_FIELD_SETTER(AMMessage, messageState_, AMMessageStateEnum *)
+J2OBJC_FIELD_SETTER(AMMessage, content_, ImActorModelEntityContentAbsContent *)
 
-@implementation ImActorModelEntityMessage
+@implementation AMMessage
 
-+ (ImActorModelEntityMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityMessage_fromBytesWithByteArray_(data);
++ (AMMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMMessage_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithLong:(jlong)rid
                     withLong:(jlong)sortDate
                     withLong:(jlong)date
                      withInt:(jint)senderId
-withImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)messageState
+      withAMMessageStateEnum:(AMMessageStateEnum *)messageState
 withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content {
   if (self = [super init]) {
     self->rid_ = rid;
@@ -73,7 +73,7 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
   return senderId_;
 }
 
-- (ImActorModelEntityMessageStateEnum *)getMessageState {
+- (AMMessageStateEnum *)getMessageState {
   return messageState_;
 }
 
@@ -81,12 +81,12 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
   return content_;
 }
 
-- (ImActorModelEntityMessage *)changeStateWithImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)messageState {
-  return [[ImActorModelEntityMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date_ withInt:senderId_ withImActorModelEntityMessageStateEnum:messageState withImActorModelEntityContentAbsContent:content_];
+- (AMMessage *)changeStateWithAMMessageStateEnum:(AMMessageStateEnum *)messageState {
+  return [[AMMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date_ withInt:senderId_ withAMMessageStateEnum:messageState withImActorModelEntityContentAbsContent:content_];
 }
 
-- (ImActorModelEntityMessage *)changeDateWithLong:(jlong)date {
-  return [[ImActorModelEntityMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date withInt:senderId_ withImActorModelEntityMessageStateEnum:messageState_ withImActorModelEntityContentAbsContent:content_];
+- (AMMessage *)changeDateWithLong:(jlong)date {
+  return [[AMMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date withInt:senderId_ withAMMessageStateEnum:messageState_ withImActorModelEntityContentAbsContent:content_];
 }
 
 - (jlong)getListId {
@@ -97,25 +97,25 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
   return sortDate_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  rid_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getLongWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  rid_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   sortDate_ = [values getLongWithInt:2];
   date_ = [values getLongWithInt:3];
   senderId_ = [values getIntWithInt:4];
-  messageState_ = ImActorModelEntityMessageStateEnum_fromValueWithInt_([values getIntWithInt:5]);
+  messageState_ = AMMessageStateEnum_fromValueWithInt_([values getIntWithInt:5]);
   content_ = ImActorModelEntityContentAbsContent_contentFromBytesWithByteArray_([values getBytesWithInt:6]);
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:rid_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:rid_];
   [writer writeLongWithInt:2 withLong:sortDate_];
   [writer writeLongWithInt:3 withLong:date_];
   [writer writeIntWithInt:4 withInt:senderId_];
-  [writer writeIntWithInt:5 withInt:[((ImActorModelEntityMessageStateEnum *) nil_chk(messageState_)) getValue]];
-  [writer writeObjectWithInt:6 withImActorModelDroidkitBserBserObject:content_];
+  [writer writeIntWithInt:5 withInt:[((AMMessageStateEnum *) nil_chk(messageState_)) getValue]];
+  [writer writeObjectWithInt:6 withBSBserObject:content_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityMessage *)other {
+- (void)copyAllFieldsTo:(AMMessage *)other {
   [super copyAllFieldsTo:other];
   other->rid_ = rid_;
   other->sortDate_ = sortDate_;
@@ -128,7 +128,7 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.Message;", 0x9, "Ljava.io.IOException;" },
-    { "initWithLong:withLong:withLong:withInt:withImActorModelEntityMessageStateEnum:withImActorModelEntityContentAbsContent:", "Message", NULL, 0x1, NULL },
+    { "initWithLong:withLong:withLong:withInt:withAMMessageStateEnum:withImActorModelEntityContentAbsContent:", "Message", NULL, 0x1, NULL },
     { "init", "Message", NULL, 0x2, NULL },
     { "getRid", NULL, "J", 0x1, NULL },
     { "getSortDate", NULL, "J", 0x1, NULL },
@@ -136,12 +136,12 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
     { "getSenderId", NULL, "I", 0x1, NULL },
     { "getMessageState", NULL, "Lim.actor.model.entity.MessageState;", 0x1, NULL },
     { "getContent", NULL, "Lim.actor.model.entity.content.AbsContent;", 0x1, NULL },
-    { "changeStateWithImActorModelEntityMessageStateEnum:", "changeState", "Lim.actor.model.entity.Message;", 0x1, NULL },
+    { "changeStateWithAMMessageStateEnum:", "changeState", "Lim.actor.model.entity.Message;", 0x1, NULL },
     { "changeDateWithLong:", "changeDate", "Lim.actor.model.entity.Message;", 0x1, NULL },
     { "getListId", NULL, "J", 0x1, NULL },
     { "getListSortKey", NULL, "J", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "rid_", NULL, 0x2, "J", NULL,  },
@@ -151,15 +151,15 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
     { "messageState_", NULL, 0x2, "Lim.actor.model.entity.MessageState;", NULL,  },
     { "content_", NULL, 0x2, "Lim.actor.model.entity.content.AbsContent;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityMessage = { 1, "Message", "im.actor.model.entity", NULL, 0x1, 15, methods, 6, fields, 0, NULL};
-  return &_ImActorModelEntityMessage;
+  static const J2ObjcClassInfo _AMMessage = { 1, "Message", "im.actor.model.entity", NULL, 0x1, 15, methods, 6, fields, 0, NULL};
+  return &_AMMessage;
 }
 
 @end
 
-ImActorModelEntityMessage *ImActorModelEntityMessage_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityMessage_init();
-  return ((ImActorModelEntityMessage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityMessage alloc] init], data));
+AMMessage *AMMessage_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMMessage_init();
+  return ((AMMessage *) BSBser_parseWithBSBserObject_withByteArray_([[AMMessage alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityMessage)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessage)

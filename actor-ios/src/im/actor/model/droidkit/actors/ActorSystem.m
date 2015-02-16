@@ -7,52 +7,51 @@
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSelection.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
+#include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/droidkit/actors/Props.h"
 #include "im/actor/model/droidkit/actors/ThreadPriority.h"
-#include "im/actor/model/droidkit/actors/conf/EnvConfig.h"
-#include "im/actor/model/droidkit/actors/conf/JavaFactory.h"
 #include "im/actor/model/droidkit/actors/debug/TraceInterface.h"
 #include "im/actor/model/droidkit/actors/mailbox/ActorDispatcher.h"
 #include "java/lang/RuntimeException.h"
 #include "java/util/HashMap.h"
 
-@interface ImActorModelDroidkitActorsActorSystem () {
+@interface DKActorSystem () {
  @public
   JavaUtilHashMap *dispatchers_;
   id<ImActorModelDroidkitActorsDebugTraceInterface> traceInterface_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorSystem, dispatchers_, JavaUtilHashMap *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsActorSystem, traceInterface_, id<ImActorModelDroidkitActorsDebugTraceInterface>)
+J2OBJC_FIELD_SETTER(DKActorSystem, dispatchers_, JavaUtilHashMap *)
+J2OBJC_FIELD_SETTER(DKActorSystem, traceInterface_, id<ImActorModelDroidkitActorsDebugTraceInterface>)
 
-BOOL ImActorModelDroidkitActorsActorSystem_initialized = NO;
+BOOL DKActorSystem_initialized = NO;
 
-@implementation ImActorModelDroidkitActorsActorSystem
+@implementation DKActorSystem
 
-ImActorModelDroidkitActorsActorSystem * ImActorModelDroidkitActorsActorSystem_mainSystem_;
-NSString * ImActorModelDroidkitActorsActorSystem_DEFAULT_DISPATCHER_ = @"default";
+DKActorSystem * DKActorSystem_mainSystem_;
+NSString * DKActorSystem_DEFAULT_DISPATCHER_ = @"default";
 
-+ (ImActorModelDroidkitActorsActorSystem *)system {
-  return ImActorModelDroidkitActorsActorSystem_system();
++ (DKActorSystem *)system {
+  return DKActorSystem_system();
 }
 
 - (instancetype)init {
-  return [self initImActorModelDroidkitActorsActorSystemWithBoolean:YES];
+  return [self initDKActorSystemWithBoolean:YES];
 }
 
-- (instancetype)initImActorModelDroidkitActorsActorSystemWithBoolean:(jboolean)addDefaultDispatcher {
+- (instancetype)initDKActorSystemWithBoolean:(jboolean)addDefaultDispatcher {
   if (self = [super init]) {
     dispatchers_ = [[JavaUtilHashMap alloc] init];
     if (addDefaultDispatcher) {
-      [self addDispatcherWithNSString:ImActorModelDroidkitActorsActorSystem_DEFAULT_DISPATCHER_];
+      [self addDispatcherWithNSString:DKActorSystem_DEFAULT_DISPATCHER_];
     }
   }
   return self;
 }
 
 - (instancetype)initWithBoolean:(jboolean)addDefaultDispatcher {
-  return [self initImActorModelDroidkitActorsActorSystemWithBoolean:addDefaultDispatcher];
+  return [self initDKActorSystemWithBoolean:addDefaultDispatcher];
 }
 
 - (void)addDispatcherWithNSString:(NSString *)dispatcherId
@@ -61,7 +60,7 @@ NSString * ImActorModelDroidkitActorsActorSystem_DEFAULT_DISPATCHER_ = @"default
     if ([((JavaUtilHashMap *) nil_chk(dispatchers_)) containsKeyWithId:dispatcherId]) {
       return;
     }
-    ImActorModelDroidkitActorsMailboxActorDispatcher *dispatcher = ImActorModelDroidkitActorsConfEnvConfig_createDispatcherWithNSString_withInt_withImActorModelDroidkitActorsThreadPriorityEnum_withImActorModelDroidkitActorsActorSystem_(dispatcherId, threadsCount, ImActorModelDroidkitActorsThreadPriorityEnum_get_LOW(), self);
+    DKActorDispatcher *dispatcher = DKEnvironment_createDispatcherWithNSString_withInt_withDKThreadPriorityEnum_withDKActorSystem_(dispatcherId, threadsCount, DKThreadPriorityEnum_get_LOW(), self);
     (void) [dispatchers_ putWithId:dispatcherId withId:dispatcher];
   }
 }
@@ -71,13 +70,13 @@ NSString * ImActorModelDroidkitActorsActorSystem_DEFAULT_DISPATCHER_ = @"default
     if ([((JavaUtilHashMap *) nil_chk(dispatchers_)) containsKeyWithId:dispatcherId]) {
       return;
     }
-    ImActorModelDroidkitActorsMailboxActorDispatcher *dispatcher = ImActorModelDroidkitActorsConfEnvConfig_createDispatcherWithNSString_withInt_withImActorModelDroidkitActorsThreadPriorityEnum_withImActorModelDroidkitActorsActorSystem_(dispatcherId, [((id<ImActorModelDroidkitActorsConfJavaFactory>) nil_chk(ImActorModelDroidkitActorsConfEnvConfig_getJavaFactory())) getCoresCount], ImActorModelDroidkitActorsThreadPriorityEnum_get_LOW(), self);
-    [self addDispatcherWithNSString:dispatcherId withImActorModelDroidkitActorsMailboxActorDispatcher:dispatcher];
+    DKActorDispatcher *dispatcher = DKEnvironment_createDefaultDispatcherWithNSString_withDKThreadPriorityEnum_withDKActorSystem_(dispatcherId, DKThreadPriorityEnum_get_LOW(), self);
+    [self addDispatcherWithNSString:dispatcherId withDKActorDispatcher:dispatcher];
   }
 }
 
 - (void)addDispatcherWithNSString:(NSString *)dispatcherId
-withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActorsMailboxActorDispatcher *)dispatcher {
+            withDKActorDispatcher:(DKActorDispatcher *)dispatcher {
   @synchronized(dispatchers_) {
     if ([((JavaUtilHashMap *) nil_chk(dispatchers_)) containsKeyWithId:dispatcherId]) {
       return;
@@ -86,21 +85,21 @@ withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActors
   }
 }
 
-- (ImActorModelDroidkitActorsActorRef *)actorOfWithImActorModelDroidkitActorsActorSelection:(ImActorModelDroidkitActorsActorSelection *)selection {
-  return [self actorOfWithImActorModelDroidkitActorsProps:[((ImActorModelDroidkitActorsActorSelection *) nil_chk(selection)) getProps] withNSString:[selection getPath]];
+- (DKActorRef *)actorOfWithDKActorSelection:(DKActorSelection *)selection {
+  return [self actorOfWithDKProps:[((DKActorSelection *) nil_chk(selection)) getProps] withNSString:[selection getPath]];
 }
 
-- (ImActorModelDroidkitActorsActorRef *)actorOfWithImActorModelDroidkitActorsProps:(ImActorModelDroidkitActorsProps *)props
-                                                                      withNSString:(NSString *)path {
-  NSString *dispatcherId = [((ImActorModelDroidkitActorsProps *) nil_chk(props)) getDispatcher] == nil ? ImActorModelDroidkitActorsActorSystem_DEFAULT_DISPATCHER_ : [props getDispatcher];
-  ImActorModelDroidkitActorsMailboxActorDispatcher *mailboxesDispatcher;
+- (DKActorRef *)actorOfWithDKProps:(DKProps *)props
+                      withNSString:(NSString *)path {
+  NSString *dispatcherId = [((DKProps *) nil_chk(props)) getDispatcher] == nil ? DKActorSystem_DEFAULT_DISPATCHER_ : [props getDispatcher];
+  DKActorDispatcher *mailboxesDispatcher;
   @synchronized(dispatchers_) {
     if (![((JavaUtilHashMap *) nil_chk(dispatchers_)) containsKeyWithId:dispatcherId]) {
       @throw [[JavaLangRuntimeException alloc] initWithNSString:JreStrcat("$$C", @"Unknown dispatcherId '", dispatcherId, '\'')];
     }
     mailboxesDispatcher = [dispatchers_ getWithId:dispatcherId];
   }
-  return [((ImActorModelDroidkitActorsMailboxActorDispatcher *) nil_chk(mailboxesDispatcher)) referenceActorWithNSString:path withImActorModelDroidkitActorsProps:props];
+  return [((DKActorDispatcher *) nil_chk(mailboxesDispatcher)) referenceActorWithNSString:path withDKProps:props];
 }
 
 - (id<ImActorModelDroidkitActorsDebugTraceInterface>)getTraceInterface {
@@ -111,16 +110,16 @@ withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActors
   self->traceInterface_ = traceInterface;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsActorSystem *)other {
+- (void)copyAllFieldsTo:(DKActorSystem *)other {
   [super copyAllFieldsTo:other];
   other->dispatchers_ = dispatchers_;
   other->traceInterface_ = traceInterface_;
 }
 
 + (void)initialize {
-  if (self == [ImActorModelDroidkitActorsActorSystem class]) {
-    ImActorModelDroidkitActorsActorSystem_mainSystem_ = [[ImActorModelDroidkitActorsActorSystem alloc] init];
-    J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsActorSystem)
+  if (self == [DKActorSystem class]) {
+    DKActorSystem_mainSystem_ = [[DKActorSystem alloc] init];
+    J2OBJC_SET_INITIALIZED(DKActorSystem)
   }
 }
 
@@ -131,27 +130,27 @@ withImActorModelDroidkitActorsMailboxActorDispatcher:(ImActorModelDroidkitActors
     { "initWithBoolean:", "ActorSystem", NULL, 0x1, NULL },
     { "addDispatcherWithNSString:withInt:", "addDispatcher", "V", 0x1, NULL },
     { "addDispatcherWithNSString:", "addDispatcher", "V", 0x1, NULL },
-    { "addDispatcherWithNSString:withImActorModelDroidkitActorsMailboxActorDispatcher:", "addDispatcher", "V", 0x1, NULL },
-    { "actorOfWithImActorModelDroidkitActorsActorSelection:", "actorOf", "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "actorOfWithImActorModelDroidkitActorsProps:withNSString:", "actorOf", "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
+    { "addDispatcherWithNSString:withDKActorDispatcher:", "addDispatcher", "V", 0x1, NULL },
+    { "actorOfWithDKActorSelection:", "actorOf", "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
+    { "actorOfWithDKProps:withNSString:", "actorOf", "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
     { "getTraceInterface", NULL, "Lim.actor.model.droidkit.actors.debug.TraceInterface;", 0x1, NULL },
     { "setTraceInterfaceWithImActorModelDroidkitActorsDebugTraceInterface:", "setTraceInterface", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "mainSystem_", NULL, 0x1a, "Lim.actor.model.droidkit.actors.ActorSystem;", &ImActorModelDroidkitActorsActorSystem_mainSystem_,  },
-    { "DEFAULT_DISPATCHER_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelDroidkitActorsActorSystem_DEFAULT_DISPATCHER_,  },
+    { "mainSystem_", NULL, 0x1a, "Lim.actor.model.droidkit.actors.ActorSystem;", &DKActorSystem_mainSystem_,  },
+    { "DEFAULT_DISPATCHER_", NULL, 0x1a, "Ljava.lang.String;", &DKActorSystem_DEFAULT_DISPATCHER_,  },
     { "dispatchers_", NULL, 0x12, "Ljava.util.HashMap;", NULL,  },
     { "traceInterface_", NULL, 0x2, "Lim.actor.model.droidkit.actors.debug.TraceInterface;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsActorSystem = { 1, "ActorSystem", "im.actor.model.droidkit.actors", NULL, 0x1, 10, methods, 4, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsActorSystem;
+  static const J2ObjcClassInfo _DKActorSystem = { 1, "ActorSystem", "im.actor.model.droidkit.actors", NULL, 0x1, 10, methods, 4, fields, 0, NULL};
+  return &_DKActorSystem;
 }
 
 @end
 
-ImActorModelDroidkitActorsActorSystem *ImActorModelDroidkitActorsActorSystem_system() {
-  ImActorModelDroidkitActorsActorSystem_init();
-  return ImActorModelDroidkitActorsActorSystem_mainSystem_;
+DKActorSystem *DKActorSystem_system() {
+  DKActorSystem_init();
+  return DKActorSystem_mainSystem_;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsActorSystem)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorSystem)

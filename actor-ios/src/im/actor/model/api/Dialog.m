@@ -89,24 +89,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   return self->state_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->peer_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getObjWithInt:1 withImActorModelDroidkitBserBserObject:[[ImActorModelApiPeer alloc] init]];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
   self->unreadCount_ = [values getIntWithInt:3];
   self->sortDate_ = [values getLongWithInt:4];
   self->senderUid_ = [values getIntWithInt:5];
   self->rid_ = [values getLongWithInt:6];
   self->date_ = [values getLongWithInt:7];
-  self->message_ = [values getObjWithInt:8 withImActorModelDroidkitBserBserObject:[[ImActorModelApiMessageContent alloc] init]];
+  self->message_ = [values getObjWithInt:8 withBSBserObject:[[ImActorModelApiMessageContent alloc] init]];
   if ([values optIntWithInt:9] != 0) {
     self->state_ = ImActorModelApiMessageStateEnum_parseWithInt_([values optIntWithInt:9]);
   }
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withImActorModelDroidkitBserBserObject:self->peer_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
   [writer writeIntWithInt:3 withInt:self->unreadCount_];
   [writer writeLongWithInt:4 withLong:self->sortDate_];
   [writer writeIntWithInt:5 withInt:self->senderUid_];
@@ -115,7 +115,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   if (self->message_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [writer writeObjectWithInt:8 withImActorModelDroidkitBserBserObject:self->message_];
+  [writer writeObjectWithInt:8 withBSBserObject:self->message_];
   if (self->state_ != nil) {
     [writer writeIntWithInt:9 withInt:[self->state_ getValue]];
   }
@@ -145,8 +145,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
     { "getDate", NULL, "J", 0x1, NULL },
     { "getMessage", NULL, "Lim.actor.model.api.MessageContent;", 0x1, NULL },
     { "getState", NULL, "Lim.actor.model.api.MessageState;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "peer_", NULL, 0x2, "Lim.actor.model.api.Peer;", NULL,  },

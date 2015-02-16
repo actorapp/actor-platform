@@ -6,6 +6,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/Storage.h"
 #include "im/actor/model/api/base/SeqUpdate.h"
 #include "im/actor/model/api/rpc/RequestEditName.h"
 #include "im/actor/model/api/rpc/RequestEditUserLocalName.h"
@@ -21,16 +22,15 @@
 #include "im/actor/model/mvvm/KeyValueEngine.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/RpcInternalException.h"
-#include "im/actor/model/storage/EnginesFactory.h"
 #include "java/lang/Boolean.h"
 
 @interface ImActorModelModulesUsers () {
  @public
-  id<ImActorModelMvvmKeyValueEngine> users_;
+  id<AMKeyValueEngine> users_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers, users_, id<ImActorModelMvvmKeyValueEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers, users_, id<AMKeyValueEngine>)
 
 @interface ImActorModelModulesUsers_$1 () {
  @public
@@ -45,12 +45,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1, val$newName_, NSString *)
 @interface ImActorModelModulesUsers_$1_$1 () {
  @public
   ImActorModelModulesUsers_$1 *this$0_;
-  id<ImActorModelConcurrencyCommandCallback> val$callback_;
+  id<AMCommandCallback> val$callback_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1_$1, this$0_, ImActorModelModulesUsers_$1 *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1_$1, val$callback_, id<ImActorModelConcurrencyCommandCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1_$1, val$callback_, id<AMCommandCallback>)
 
 @interface ImActorModelModulesUsers_$1_$1_$1 () {
  @public
@@ -83,21 +83,21 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2, val$name_, NSString *)
 
 @interface ImActorModelModulesUsers_$2_$1 () {
  @public
-  id<ImActorModelConcurrencyCommandCallback> val$callback_;
+  id<AMCommandCallback> val$callback_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$1, val$callback_, id<ImActorModelConcurrencyCommandCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$1, val$callback_, id<AMCommandCallback>)
 
 @interface ImActorModelModulesUsers_$2_$2 () {
  @public
   ImActorModelModulesUsers_$2 *this$0_;
-  id<ImActorModelConcurrencyCommandCallback> val$callback_;
+  id<AMCommandCallback> val$callback_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$2, this$0_, ImActorModelModulesUsers_$2 *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$2, val$callback_, id<ImActorModelConcurrencyCommandCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$2, val$callback_, id<AMCommandCallback>)
 
 @interface ImActorModelModulesUsers_$2_$2_$1 () {
  @public
@@ -119,21 +119,21 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$2_$2, this$0_, ImActorModelModu
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   if (self = [super initWithImActorModelModulesModules:messenger]) {
-    self->users_ = [((id<ImActorModelStorageEnginesFactory>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getEnginesFactory])) createUsersEngine];
+    self->users_ = [((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getStorage])) createUsersEngine];
   }
   return self;
 }
 
-- (id<ImActorModelMvvmKeyValueEngine>)getUsers {
+- (id<AMKeyValueEngine>)getUsers {
   return users_;
 }
 
-- (id<ImActorModelConcurrencyCommand>)editMyNameWithNSString:(NSString *)newName {
+- (id<AMCommand>)editMyNameWithNSString:(NSString *)newName {
   return [[ImActorModelModulesUsers_$1 alloc] initWithImActorModelModulesUsers:self withNSString:newName];
 }
 
-- (id<ImActorModelConcurrencyCommand>)editNameWithInt:(jint)uid
-                                         withNSString:(NSString *)name {
+- (id<AMCommand>)editNameWithInt:(jint)uid
+                    withNSString:(NSString *)name {
   return [[ImActorModelModulesUsers_$2 alloc] initWithImActorModelModulesUsers:self withInt:uid withNSString:name];
 }
 
@@ -162,8 +162,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers)
 
 @implementation ImActorModelModulesUsers_$1
 
-- (void)startWithImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)callback {
-  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestEditName alloc] initWithNSString:val$newName_] withAMRpcCallback:[[ImActorModelModulesUsers_$1_$1 alloc] initWithImActorModelModulesUsers_$1:self withImActorModelConcurrencyCommandCallback:callback]];
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
+  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestEditName alloc] initWithNSString:val$newName_] withAMRpcCallback:[[ImActorModelModulesUsers_$1_$1 alloc] initWithImActorModelModulesUsers_$1:self withAMCommandCallback:callback]];
 }
 
 - (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
@@ -181,7 +181,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "startWithImActorModelConcurrencyCommandCallback:", "start", "V", 0x1, NULL },
+    { "startWithAMCommandCallback:", "start", "V", 0x1, NULL },
     { "initWithImActorModelModulesUsers:withNSString:", "init", NULL, 0x0, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -209,7 +209,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1)
 }
 
 - (instancetype)initWithImActorModelModulesUsers_$1:(ImActorModelModulesUsers_$1 *)outer$
-         withImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)capture$0 {
+                              withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
   this$0_ = outer$;
   val$callback_ = capture$0;
   return [super init];
@@ -225,7 +225,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1)
   static const J2ObjcMethodInfo methods[] = {
     { "onResultWithImActorModelApiRpcResponseSeq:", "onResult", "V", 0x1, NULL },
     { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "initWithImActorModelModulesUsers_$1:withImActorModelConcurrencyCommandCallback:", "init", NULL, 0x0, NULL },
+    { "initWithImActorModelModulesUsers_$1:withAMCommandCallback:", "init", NULL, 0x0, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Users$1;", NULL,  },
@@ -242,7 +242,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1)
 @implementation ImActorModelModulesUsers_$1_$1_$1
 
 - (void)run {
-  [((id<ImActorModelConcurrencyCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
 
 - (instancetype)initWithImActorModelModulesUsers_$1_$1:(ImActorModelModulesUsers_$1_$1 *)outer$ {
@@ -274,7 +274,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1_$1)
 @implementation ImActorModelModulesUsers_$1_$1_$2
 
 - (void)run {
-  [((id<ImActorModelConcurrencyCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
 }
 
 - (instancetype)initWithImActorModelModulesUsers_$1_$1:(ImActorModelModulesUsers_$1_$1 *)outer$
@@ -309,13 +309,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1_$2)
 
 @implementation ImActorModelModulesUsers_$2
 
-- (void)startWithImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)callback {
-  ImActorModelEntityUser *user = [((id<ImActorModelMvvmKeyValueEngine>) nil_chk([this$0_ getUsers])) getValueWithLong:val$uid_];
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
+  AMUser *user = [((id<AMKeyValueEngine>) nil_chk([this$0_ getUsers])) getValueWithLong:val$uid_];
   if (user == nil) {
-    [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$2_$1 alloc] initWithImActorModelConcurrencyCommandCallback:callback]];
+    [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$2_$1 alloc] initWithAMCommandCallback:callback]];
     return;
   }
-  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestEditUserLocalName alloc] initWithInt:[((ImActorModelEntityUser *) nil_chk(user)) getUid] withLong:[user getAccessHash] withNSString:val$name_] withAMRpcCallback:[[ImActorModelModulesUsers_$2_$2 alloc] initWithImActorModelModulesUsers_$2:self withImActorModelConcurrencyCommandCallback:callback]];
+  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestEditUserLocalName alloc] initWithInt:[((AMUser *) nil_chk(user)) getUid] withLong:[user getAccessHash] withNSString:val$name_] withAMRpcCallback:[[ImActorModelModulesUsers_$2_$2 alloc] initWithImActorModelModulesUsers_$2:self withAMCommandCallback:callback]];
 }
 
 - (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
@@ -336,7 +336,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1_$2)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "startWithImActorModelConcurrencyCommandCallback:", "start", "V", 0x1, NULL },
+    { "startWithAMCommandCallback:", "start", "V", 0x1, NULL },
     { "initWithImActorModelModulesUsers:withInt:withNSString:", "init", NULL, 0x0, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -355,10 +355,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2)
 @implementation ImActorModelModulesUsers_$2_$1
 
 - (void)run {
-  [((id<ImActorModelConcurrencyCommandCallback>) nil_chk(val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
+  [((id<AMCommandCallback>) nil_chk(val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
-- (instancetype)initWithImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)capture$0 {
+- (instancetype)initWithAMCommandCallback:(id<AMCommandCallback>)capture$0 {
   val$callback_ = capture$0;
   return [super init];
 }
@@ -371,7 +371,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2)
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "run", NULL, "V", 0x1, NULL },
-    { "initWithImActorModelConcurrencyCommandCallback:", "init", NULL, 0x0, NULL },
+    { "initWithAMCommandCallback:", "init", NULL, 0x0, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "val$callback_", NULL, 0x1012, "Lim.actor.model.concurrency.CommandCallback;", NULL,  },
@@ -397,7 +397,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$1)
 }
 
 - (instancetype)initWithImActorModelModulesUsers_$2:(ImActorModelModulesUsers_$2 *)outer$
-         withImActorModelConcurrencyCommandCallback:(id<ImActorModelConcurrencyCommandCallback>)capture$0 {
+                              withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
   this$0_ = outer$;
   val$callback_ = capture$0;
   return [super init];
@@ -413,7 +413,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$1)
   static const J2ObjcMethodInfo methods[] = {
     { "onResultWithImActorModelApiRpcResponseSeq:", "onResult", "V", 0x1, NULL },
     { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "initWithImActorModelModulesUsers_$2:withImActorModelConcurrencyCommandCallback:", "init", NULL, 0x0, NULL },
+    { "initWithImActorModelModulesUsers_$2:withAMCommandCallback:", "init", NULL, 0x0, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Users$2;", NULL,  },
@@ -430,7 +430,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$2)
 @implementation ImActorModelModulesUsers_$2_$2_$1
 
 - (void)run {
-  [((id<ImActorModelConcurrencyCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
 
 - (instancetype)initWithImActorModelModulesUsers_$2_$2:(ImActorModelModulesUsers_$2_$2 *)outer$ {
@@ -462,7 +462,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$2_$1)
 @implementation ImActorModelModulesUsers_$2_$2_$2
 
 - (void)run {
-  [((id<ImActorModelConcurrencyCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
 - (instancetype)initWithImActorModelModulesUsers_$2_$2:(ImActorModelModulesUsers_$2_$2 *)outer$ {

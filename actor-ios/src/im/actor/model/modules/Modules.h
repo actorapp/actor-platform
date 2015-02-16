@@ -14,6 +14,7 @@
 @class ImActorModelModulesTyping;
 @class ImActorModelModulesUpdates;
 @class ImActorModelModulesUsers;
+@protocol AMPreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/ActorApiCallback.h"
@@ -24,6 +25,8 @@
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration;
 
 - (void)onLoggedIn;
+
+- (id<AMPreferencesStorage>)getPreferences;
 
 - (AMConfiguration *)getConfiguration;
 

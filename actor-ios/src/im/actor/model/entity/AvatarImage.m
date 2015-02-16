@@ -14,26 +14,26 @@
 #include "im/actor/model/entity/FileLocation.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityAvatarImage () {
+@interface AMAvatarImage () {
  @public
   jint width_;
   jint height_;
-  ImActorModelEntityFileLocation *fileLocation_;
+  AMFileLocation *fileLocation_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityAvatarImage, fileLocation_, ImActorModelEntityFileLocation *)
+J2OBJC_FIELD_SETTER(AMAvatarImage, fileLocation_, AMFileLocation *)
 
-@implementation ImActorModelEntityAvatarImage
+@implementation AMAvatarImage
 
-+ (ImActorModelEntityAvatarImage *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityAvatarImage_fromBytesWithByteArray_(data);
++ (AMAvatarImage *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMAvatarImage_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)width
                     withInt:(jint)height
-withImActorModelEntityFileLocation:(ImActorModelEntityFileLocation *)fileLocation {
+         withAMFileLocation:(AMFileLocation *)fileLocation {
   if (self = [super init]) {
     self->width_ = width;
     self->height_ = height;
@@ -54,40 +54,40 @@ withImActorModelEntityFileLocation:(ImActorModelEntityFileLocation *)fileLocatio
   return height_;
 }
 
-- (ImActorModelEntityFileLocation *)getFileLocation {
+- (AMFileLocation *)getFileLocation {
   return fileLocation_;
 }
 
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
-  ImActorModelEntityAvatarImage *that = (ImActorModelEntityAvatarImage *) check_class_cast(o, [ImActorModelEntityAvatarImage class]);
-  if (height_ != ((ImActorModelEntityAvatarImage *) nil_chk(that))->height_) return NO;
+  AMAvatarImage *that = (AMAvatarImage *) check_class_cast(o, [AMAvatarImage class]);
+  if (height_ != ((AMAvatarImage *) nil_chk(that))->height_) return NO;
   if (width_ != that->width_) return NO;
-  if (![((ImActorModelEntityFileLocation *) nil_chk(fileLocation_)) isEqual:that->fileLocation_]) return NO;
+  if (![((AMFileLocation *) nil_chk(fileLocation_)) isEqual:that->fileLocation_]) return NO;
   return YES;
 }
 
 - (NSUInteger)hash {
   jint result = width_;
   result = 31 * result + height_;
-  result = 31 * result + ((jint) [((ImActorModelEntityFileLocation *) nil_chk(fileLocation_)) hash]);
+  result = 31 * result + ((jint) [((AMFileLocation *) nil_chk(fileLocation_)) hash]);
   return result;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  width_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  width_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   height_ = [values getIntWithInt:2];
-  fileLocation_ = ImActorModelEntityFileLocation_fromBytesWithByteArray_([values getBytesWithInt:3]);
+  fileLocation_ = AMFileLocation_fromBytesWithByteArray_([values getBytesWithInt:3]);
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:width_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:width_];
   [writer writeIntWithInt:2 withInt:height_];
-  [writer writeObjectWithInt:3 withImActorModelDroidkitBserBserObject:fileLocation_];
+  [writer writeObjectWithInt:3 withBSBserObject:fileLocation_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityAvatarImage *)other {
+- (void)copyAllFieldsTo:(AMAvatarImage *)other {
   [super copyAllFieldsTo:other];
   other->width_ = width_;
   other->height_ = height_;
@@ -97,30 +97,30 @@ withImActorModelEntityFileLocation:(ImActorModelEntityFileLocation *)fileLocatio
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.AvatarImage;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withInt:withImActorModelEntityFileLocation:", "AvatarImage", NULL, 0x1, NULL },
+    { "initWithInt:withInt:withAMFileLocation:", "AvatarImage", NULL, 0x1, NULL },
     { "init", "AvatarImage", NULL, 0x2, NULL },
     { "getWidth", NULL, "I", 0x1, NULL },
     { "getHeight", NULL, "I", 0x1, NULL },
     { "getFileLocation", NULL, "Lim.actor.model.entity.FileLocation;", 0x1, NULL },
     { "isEqual:", "equals", "Z", 0x1, NULL },
     { "hash", "hashCode", "I", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "width_", NULL, 0x2, "I", NULL,  },
     { "height_", NULL, 0x2, "I", NULL,  },
     { "fileLocation_", NULL, 0x2, "Lim.actor.model.entity.FileLocation;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityAvatarImage = { 1, "AvatarImage", "im.actor.model.entity", NULL, 0x1, 10, methods, 3, fields, 0, NULL};
-  return &_ImActorModelEntityAvatarImage;
+  static const J2ObjcClassInfo _AMAvatarImage = { 1, "AvatarImage", "im.actor.model.entity", NULL, 0x1, 10, methods, 3, fields, 0, NULL};
+  return &_AMAvatarImage;
 }
 
 @end
 
-ImActorModelEntityAvatarImage *ImActorModelEntityAvatarImage_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityAvatarImage_init();
-  return ((ImActorModelEntityAvatarImage *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityAvatarImage alloc] init], data));
+AMAvatarImage *AMAvatarImage_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMAvatarImage_init();
+  return ((AMAvatarImage *) BSBser_parseWithBSBserObject_withByteArray_([[AMAvatarImage alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityAvatarImage)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAvatarImage)

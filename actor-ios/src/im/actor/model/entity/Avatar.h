@@ -3,49 +3,51 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/Avatar.java
 //
 
-#ifndef _ImActorModelEntityAvatar_H_
-#define _ImActorModelEntityAvatar_H_
+#ifndef _AMAvatar_H_
+#define _AMAvatar_H_
 
+@class AMAvatarImage;
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
-@class ImActorModelEntityAvatarImage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelEntityAvatar : ImActorModelDroidkitBserBserObject {
+@interface AMAvatar : BSBserObject {
 }
 
-+ (ImActorModelEntityAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)initWithImActorModelEntityAvatarImage:(ImActorModelEntityAvatarImage *)smallImage
-                    withImActorModelEntityAvatarImage:(ImActorModelEntityAvatarImage *)largeImage
-                    withImActorModelEntityAvatarImage:(ImActorModelEntityAvatarImage *)fullImage;
+- (instancetype)initWithAMAvatarImage:(AMAvatarImage *)smallImage
+                    withAMAvatarImage:(AMAvatarImage *)largeImage
+                    withAMAvatarImage:(AMAvatarImage *)fullImage;
 
-- (ImActorModelEntityAvatarImage *)getSmallImage;
+- (AMAvatarImage *)getSmallImage;
 
-- (ImActorModelEntityAvatarImage *)getLargeImage;
+- (AMAvatarImage *)getLargeImage;
 
-- (ImActorModelEntityAvatarImage *)getFullImage;
+- (AMAvatarImage *)getFullImage;
 
 - (jboolean)isEqual:(id)o;
 
 - (NSUInteger)hash;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityAvatar)
+J2OBJC_EMPTY_STATIC_INIT(AMAvatar)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityAvatar *ImActorModelEntityAvatar_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMAvatar *AMAvatar_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityAvatar)
+typedef AMAvatar ImActorModelEntityAvatar;
 
-#endif // _ImActorModelEntityAvatar_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMAvatar)
+
+#endif // _AMAvatar_H_

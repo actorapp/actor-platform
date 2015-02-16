@@ -3,15 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/bser/UnknownFieldException.java
 //
 
-#ifndef _ImActorModelDroidkitBserUnknownFieldException_H_
-#define _ImActorModelDroidkitBserUnknownFieldException_H_
+#ifndef _BSUnknownFieldException_H_
+#define _BSUnknownFieldException_H_
 
 @class JavaLangThrowable;
 
 #include "J2ObjC_header.h"
 #include "java/lang/RuntimeException.h"
 
-@interface ImActorModelDroidkitBserUnknownFieldException : JavaLangRuntimeException {
+@interface BSUnknownFieldException : JavaLangRuntimeException {
 }
 
 - (instancetype)init;
@@ -25,11 +25,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitBserUnknownFieldException)
+J2OBJC_EMPTY_STATIC_INIT(BSUnknownFieldException)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitBserUnknownFieldException)
+typedef BSUnknownFieldException ImActorModelDroidkitBserUnknownFieldException;
 
-#endif // _ImActorModelDroidkitBserUnknownFieldException_H_
+J2OBJC_TYPE_LITERAL_HEADER(BSUnknownFieldException)
+
+#endif // _BSUnknownFieldException_H_

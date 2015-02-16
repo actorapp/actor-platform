@@ -3,55 +3,57 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/Props.java
 //
 
-#ifndef _ImActorModelDroidkitActorsProps_H_
-#define _ImActorModelDroidkitActorsProps_H_
+#ifndef _DKProps_H_
+#define _DKProps_H_
 
+@class DKActor;
+@class DKMailbox;
+@class DKMailboxesQueue;
 @class IOSClass;
 @class IOSObjectArray;
-@class ImActorModelDroidkitActorsActor;
-@class ImActorModelDroidkitActorsMailboxMailbox;
-@class ImActorModelDroidkitActorsMailboxMailboxesQueue;
-@protocol ImActorModelDroidkitActorsActorCreator;
-@protocol ImActorModelDroidkitActorsMailboxCreator;
+@protocol DKActorCreator;
+@protocol DKMailboxCreator;
 
 #include "J2ObjC_header.h"
 
-#define ImActorModelDroidkitActorsProps_TYPE_CREATOR 2
-#define ImActorModelDroidkitActorsProps_TYPE_DEFAULT 1
+#define DKProps_TYPE_CREATOR 2
+#define DKProps_TYPE_DEFAULT 1
 
-@interface ImActorModelDroidkitActorsProps : NSObject {
+@interface DKProps : NSObject {
 }
 
 - (id)create;
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)createMailboxWithImActorModelDroidkitActorsMailboxMailboxesQueue:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)queue;
+- (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue;
 
 - (NSString *)getDispatcher;
 
-- (ImActorModelDroidkitActorsProps *)changeDispatcherWithNSString:(NSString *)dispatcher;
+- (DKProps *)changeDispatcherWithNSString:(NSString *)dispatcher;
 
-+ (ImActorModelDroidkitActorsProps *)createWithIOSClass:(IOSClass *)clazz
-             withImActorModelDroidkitActorsActorCreator:(id<ImActorModelDroidkitActorsActorCreator>)creator;
++ (DKProps *)createWithIOSClass:(IOSClass *)clazz
+             withDKActorCreator:(id<DKActorCreator>)creator;
 
-+ (ImActorModelDroidkitActorsProps *)createWithIOSClass:(IOSClass *)clazz
-             withImActorModelDroidkitActorsActorCreator:(id<ImActorModelDroidkitActorsActorCreator>)creator
-           withImActorModelDroidkitActorsMailboxCreator:(id<ImActorModelDroidkitActorsMailboxCreator>)mailboxCreator;
++ (DKProps *)createWithIOSClass:(IOSClass *)clazz
+             withDKActorCreator:(id<DKActorCreator>)creator
+           withDKMailboxCreator:(id<DKMailboxCreator>)mailboxCreator;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsProps)
+J2OBJC_EMPTY_STATIC_INIT(DKProps)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsProps *ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(IOSClass *clazz, id<ImActorModelDroidkitActorsActorCreator> creator);
+FOUNDATION_EXPORT DKProps *DKProps_createWithIOSClass_withDKActorCreator_(IOSClass *clazz, id<DKActorCreator> creator);
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsProps *ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_withImActorModelDroidkitActorsMailboxCreator_(IOSClass *clazz, id<ImActorModelDroidkitActorsActorCreator> creator, id<ImActorModelDroidkitActorsMailboxCreator> mailboxCreator);
+FOUNDATION_EXPORT DKProps *DKProps_createWithIOSClass_withDKActorCreator_withDKMailboxCreator_(IOSClass *clazz, id<DKActorCreator> creator, id<DKMailboxCreator> mailboxCreator);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsProps, TYPE_DEFAULT, jint)
+J2OBJC_STATIC_FIELD_GETTER(DKProps, TYPE_DEFAULT, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsProps, TYPE_CREATOR, jint)
+J2OBJC_STATIC_FIELD_GETTER(DKProps, TYPE_CREATOR, jint)
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsProps)
+typedef DKProps ImActorModelDroidkitActorsProps;
 
-#endif // _ImActorModelDroidkitActorsProps_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKProps)
+
+#endif // _DKProps_H_

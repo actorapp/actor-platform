@@ -3,21 +3,23 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/ActorCreator.java
 //
 
-#ifndef _ImActorModelDroidkitActorsActorCreator_H_
-#define _ImActorModelDroidkitActorsActorCreator_H_
+#ifndef _DKActorCreator_H_
+#define _DKActorCreator_H_
 
-@class ImActorModelDroidkitActorsActor;
+@class DKActor;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitActorsActorCreator < NSObject, JavaObject >
+@protocol DKActorCreator < NSObject, JavaObject >
 
 - (id)create;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsActorCreator)
+J2OBJC_EMPTY_STATIC_INIT(DKActorCreator)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsActorCreator)
+#define ImActorModelDroidkitActorsActorCreator DKActorCreator
 
-#endif // _ImActorModelDroidkitActorsActorCreator_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKActorCreator)
+
+#endif // _DKActorCreator_H_

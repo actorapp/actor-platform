@@ -3,48 +3,50 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/PeerType.java
 //
 
-#ifndef _ImActorModelEntityPeerType_H_
-#define _ImActorModelEntityPeerType_H_
+#ifndef _AMPeerType_H_
+#define _AMPeerType_H_
 
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-typedef NS_ENUM(NSUInteger, ImActorModelEntityPeerType) {
-  ImActorModelEntityPeerType_PRIVATE = 0,
-  ImActorModelEntityPeerType_GROUP = 1,
-  ImActorModelEntityPeerType_EMAIL = 2,
+typedef NS_ENUM(NSUInteger, AMPeerType) {
+  AMPeerType_PRIVATE = 0,
+  AMPeerType_GROUP = 1,
+  AMPeerType_EMAIL = 2,
 };
 
-@interface ImActorModelEntityPeerTypeEnum : JavaLangEnum < NSCopying > {
+@interface AMPeerTypeEnum : JavaLangEnum < NSCopying > {
 }
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal;
 
 + (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelEntityPeerTypeEnum_values();
+FOUNDATION_EXPORT IOSObjectArray *AMPeerTypeEnum_values();
 
-+ (ImActorModelEntityPeerTypeEnum *)valueOfWithNSString:(NSString *)name;
++ (AMPeerTypeEnum *)valueOfWithNSString:(NSString *)name;
 
-FOUNDATION_EXPORT ImActorModelEntityPeerTypeEnum *ImActorModelEntityPeerTypeEnum_valueOfWithNSString_(NSString *name);
+FOUNDATION_EXPORT AMPeerTypeEnum *AMPeerTypeEnum_valueOfWithNSString_(NSString *name);
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelEntityPeerTypeEnum_initialized;
-J2OBJC_STATIC_INIT(ImActorModelEntityPeerTypeEnum)
+FOUNDATION_EXPORT BOOL AMPeerTypeEnum_initialized;
+J2OBJC_STATIC_INIT(AMPeerTypeEnum)
 
-FOUNDATION_EXPORT ImActorModelEntityPeerTypeEnum *ImActorModelEntityPeerTypeEnum_values_[];
+FOUNDATION_EXPORT AMPeerTypeEnum *AMPeerTypeEnum_values_[];
 
-#define ImActorModelEntityPeerTypeEnum_PRIVATE ImActorModelEntityPeerTypeEnum_values_[ImActorModelEntityPeerType_PRIVATE]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityPeerTypeEnum, PRIVATE)
+#define AMPeerTypeEnum_PRIVATE AMPeerTypeEnum_values_[AMPeerType_PRIVATE]
+J2OBJC_ENUM_CONSTANT_GETTER(AMPeerTypeEnum, PRIVATE)
 
-#define ImActorModelEntityPeerTypeEnum_GROUP ImActorModelEntityPeerTypeEnum_values_[ImActorModelEntityPeerType_GROUP]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityPeerTypeEnum, GROUP)
+#define AMPeerTypeEnum_GROUP AMPeerTypeEnum_values_[AMPeerType_GROUP]
+J2OBJC_ENUM_CONSTANT_GETTER(AMPeerTypeEnum, GROUP)
 
-#define ImActorModelEntityPeerTypeEnum_EMAIL ImActorModelEntityPeerTypeEnum_values_[ImActorModelEntityPeerType_EMAIL]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityPeerTypeEnum, EMAIL)
+#define AMPeerTypeEnum_EMAIL AMPeerTypeEnum_values_[AMPeerType_EMAIL]
+J2OBJC_ENUM_CONSTANT_GETTER(AMPeerTypeEnum, EMAIL)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityPeerTypeEnum)
+typedef AMPeerTypeEnum ImActorModelEntityPeerTypeEnum;
 
-#endif // _ImActorModelEntityPeerType_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMPeerTypeEnum)
+
+#endif // _AMPeerType_H_

@@ -1,6 +1,6 @@
 package im.actor.model.jvm.threads;
 
-import im.actor.model.droidkit.actors.utils.ThreadLocalCompat;
+import im.actor.model.util.ThreadLocalCompat;
 
 /**
  * Created by ex3ndr on 16.02.15.

@@ -3,52 +3,54 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/GroupState.java
 //
 
-#ifndef _ImActorModelEntityGroupState_H_
-#define _ImActorModelEntityGroupState_H_
+#ifndef _AMGroupState_H_
+#define _AMGroupState_H_
 
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-typedef NS_ENUM(NSUInteger, ImActorModelEntityGroupState) {
-  ImActorModelEntityGroupState_JOINED = 0,
-  ImActorModelEntityGroupState_KICKED = 1,
-  ImActorModelEntityGroupState_DELETED_PENDING = 2,
-  ImActorModelEntityGroupState_DELETED = 3,
+typedef NS_ENUM(NSUInteger, AMGroupState) {
+  AMGroupState_JOINED = 0,
+  AMGroupState_KICKED = 1,
+  AMGroupState_DELETED_PENDING = 2,
+  AMGroupState_DELETED = 3,
 };
 
-@interface ImActorModelEntityGroupStateEnum : JavaLangEnum < NSCopying > {
+@interface AMGroupStateEnum : JavaLangEnum < NSCopying > {
 }
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal;
 
 + (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelEntityGroupStateEnum_values();
+FOUNDATION_EXPORT IOSObjectArray *AMGroupStateEnum_values();
 
-+ (ImActorModelEntityGroupStateEnum *)valueOfWithNSString:(NSString *)name;
++ (AMGroupStateEnum *)valueOfWithNSString:(NSString *)name;
 
-FOUNDATION_EXPORT ImActorModelEntityGroupStateEnum *ImActorModelEntityGroupStateEnum_valueOfWithNSString_(NSString *name);
+FOUNDATION_EXPORT AMGroupStateEnum *AMGroupStateEnum_valueOfWithNSString_(NSString *name);
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelEntityGroupStateEnum_initialized;
-J2OBJC_STATIC_INIT(ImActorModelEntityGroupStateEnum)
+FOUNDATION_EXPORT BOOL AMGroupStateEnum_initialized;
+J2OBJC_STATIC_INIT(AMGroupStateEnum)
 
-FOUNDATION_EXPORT ImActorModelEntityGroupStateEnum *ImActorModelEntityGroupStateEnum_values_[];
+FOUNDATION_EXPORT AMGroupStateEnum *AMGroupStateEnum_values_[];
 
-#define ImActorModelEntityGroupStateEnum_JOINED ImActorModelEntityGroupStateEnum_values_[ImActorModelEntityGroupState_JOINED]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityGroupStateEnum, JOINED)
+#define AMGroupStateEnum_JOINED AMGroupStateEnum_values_[AMGroupState_JOINED]
+J2OBJC_ENUM_CONSTANT_GETTER(AMGroupStateEnum, JOINED)
 
-#define ImActorModelEntityGroupStateEnum_KICKED ImActorModelEntityGroupStateEnum_values_[ImActorModelEntityGroupState_KICKED]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityGroupStateEnum, KICKED)
+#define AMGroupStateEnum_KICKED AMGroupStateEnum_values_[AMGroupState_KICKED]
+J2OBJC_ENUM_CONSTANT_GETTER(AMGroupStateEnum, KICKED)
 
-#define ImActorModelEntityGroupStateEnum_DELETED_PENDING ImActorModelEntityGroupStateEnum_values_[ImActorModelEntityGroupState_DELETED_PENDING]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityGroupStateEnum, DELETED_PENDING)
+#define AMGroupStateEnum_DELETED_PENDING AMGroupStateEnum_values_[AMGroupState_DELETED_PENDING]
+J2OBJC_ENUM_CONSTANT_GETTER(AMGroupStateEnum, DELETED_PENDING)
 
-#define ImActorModelEntityGroupStateEnum_DELETED ImActorModelEntityGroupStateEnum_values_[ImActorModelEntityGroupState_DELETED]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelEntityGroupStateEnum, DELETED)
+#define AMGroupStateEnum_DELETED AMGroupStateEnum_values_[AMGroupState_DELETED]
+J2OBJC_ENUM_CONSTANT_GETTER(AMGroupStateEnum, DELETED)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityGroupStateEnum)
+typedef AMGroupStateEnum ImActorModelEntityGroupStateEnum;
 
-#endif // _ImActorModelEntityGroupState_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMGroupStateEnum)
+
+#endif // _AMGroupState_H_

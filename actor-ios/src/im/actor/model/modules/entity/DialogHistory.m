@@ -11,31 +11,31 @@
 
 @interface ImActorModelModulesEntityDialogHistory () {
  @public
-  ImActorModelEntityPeer *peer_;
+  AMPeer *peer_;
   jint unreadCount_;
   jlong sortDate_;
   jlong rid_;
   jlong date_;
   jint senderId_;
   ImActorModelEntityContentAbsContent *content_;
-  ImActorModelEntityMessageStateEnum *status_;
+  AMMessageStateEnum *status_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesEntityDialogHistory, peer_, ImActorModelEntityPeer *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesEntityDialogHistory, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesEntityDialogHistory, content_, ImActorModelEntityContentAbsContent *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesEntityDialogHistory, status_, ImActorModelEntityMessageStateEnum *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesEntityDialogHistory, status_, AMMessageStateEnum *)
 
 @implementation ImActorModelModulesEntityDialogHistory
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                                       withInt:(jint)unreadCount
-                                      withLong:(jlong)sortDate
-                                      withLong:(jlong)rid
-                                      withLong:(jlong)date
-                                       withInt:(jint)senderId
-       withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content
-        withImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)status {
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                       withInt:(jint)unreadCount
+                      withLong:(jlong)sortDate
+                      withLong:(jlong)rid
+                      withLong:(jlong)date
+                       withInt:(jint)senderId
+withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content
+        withAMMessageStateEnum:(AMMessageStateEnum *)status {
   if (self = [super init]) {
     self->peer_ = peer;
     self->unreadCount_ = unreadCount;
@@ -49,7 +49,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesEntityDialogHistory, status_, ImActorMode
   return self;
 }
 
-- (ImActorModelEntityPeer *)getPeer {
+- (AMPeer *)getPeer {
   return peer_;
 }
 
@@ -77,7 +77,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesEntityDialogHistory, status_, ImActorMode
   return content_;
 }
 
-- (ImActorModelEntityMessageStateEnum *)getStatus {
+- (AMMessageStateEnum *)getStatus {
   return status_;
 }
 
@@ -95,7 +95,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesEntityDialogHistory, status_, ImActorMode
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelEntityPeer:withInt:withLong:withLong:withLong:withInt:withImActorModelEntityContentAbsContent:withImActorModelEntityMessageStateEnum:", "DialogHistory", NULL, 0x1, NULL },
+    { "initWithAMPeer:withInt:withLong:withLong:withLong:withInt:withImActorModelEntityContentAbsContent:withAMMessageStateEnum:", "DialogHistory", NULL, 0x1, NULL },
     { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
     { "getUnreadCount", NULL, "I", 0x1, NULL },
     { "getSortDate", NULL, "J", 0x1, NULL },

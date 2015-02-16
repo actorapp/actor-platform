@@ -3,39 +3,41 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/CurrentActor.java
 //
 
-#ifndef _ImActorModelDroidkitActorsCurrentActor_H_
-#define _ImActorModelDroidkitActorsCurrentActor_H_
+#ifndef _DKCurrentActor_H_
+#define _DKCurrentActor_H_
 
-@class ImActorModelDroidkitActorsActor;
+@class DKActor;
 @class JavaLangThreadLocal;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsCurrentActor : NSObject {
+@interface DKCurrentActor : NSObject {
 }
 
-+ (void)setCurrentActorWithImActorModelDroidkitActorsActor:(ImActorModelDroidkitActorsActor *)actor;
++ (void)setCurrentActorWithDKActor:(DKActor *)actor;
 
-+ (ImActorModelDroidkitActorsActor *)getCurrentActor;
++ (DKActor *)getCurrentActor;
 
 - (instancetype)init;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelDroidkitActorsCurrentActor_initialized;
-J2OBJC_STATIC_INIT(ImActorModelDroidkitActorsCurrentActor)
+FOUNDATION_EXPORT BOOL DKCurrentActor_initialized;
+J2OBJC_STATIC_INIT(DKCurrentActor)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT void ImActorModelDroidkitActorsCurrentActor_setCurrentActorWithImActorModelDroidkitActorsActor_(ImActorModelDroidkitActorsActor *actor);
+FOUNDATION_EXPORT void DKCurrentActor_setCurrentActorWithDKActor_(DKActor *actor);
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsActor *ImActorModelDroidkitActorsCurrentActor_getCurrentActor();
+FOUNDATION_EXPORT DKActor *DKCurrentActor_getCurrentActor();
 
-FOUNDATION_EXPORT JavaLangThreadLocal *ImActorModelDroidkitActorsCurrentActor_currentActor_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsCurrentActor, currentActor_, JavaLangThreadLocal *)
-J2OBJC_STATIC_FIELD_SETTER(ImActorModelDroidkitActorsCurrentActor, currentActor_, JavaLangThreadLocal *)
+FOUNDATION_EXPORT JavaLangThreadLocal *DKCurrentActor_currentActor_;
+J2OBJC_STATIC_FIELD_GETTER(DKCurrentActor, currentActor_, JavaLangThreadLocal *)
+J2OBJC_STATIC_FIELD_SETTER(DKCurrentActor, currentActor_, JavaLangThreadLocal *)
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsCurrentActor)
+typedef DKCurrentActor ImActorModelDroidkitActorsCurrentActor;
 
-#endif // _ImActorModelDroidkitActorsCurrentActor_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKCurrentActor)
+
+#endif // _DKCurrentActor_H_

@@ -8,33 +8,33 @@
 #include "im/actor/model/droidkit/actors/ThreadPriority.h"
 #include "java/lang/IllegalArgumentException.h"
 
-BOOL ImActorModelDroidkitActorsThreadPriorityEnum_initialized = NO;
+BOOL DKThreadPriorityEnum_initialized = NO;
 
-ImActorModelDroidkitActorsThreadPriorityEnum *ImActorModelDroidkitActorsThreadPriorityEnum_values_[3];
+DKThreadPriorityEnum *DKThreadPriorityEnum_values_[3];
 
-@implementation ImActorModelDroidkitActorsThreadPriorityEnum
+@implementation DKThreadPriorityEnum
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal {
   return [super initWithNSString:__name withInt:__ordinal];
 }
 
-IOSObjectArray *ImActorModelDroidkitActorsThreadPriorityEnum_values() {
-  ImActorModelDroidkitActorsThreadPriorityEnum_init();
-  return [IOSObjectArray arrayWithObjects:ImActorModelDroidkitActorsThreadPriorityEnum_values_ count:3 type:ImActorModelDroidkitActorsThreadPriorityEnum_class_()];
+IOSObjectArray *DKThreadPriorityEnum_values() {
+  DKThreadPriorityEnum_init();
+  return [IOSObjectArray arrayWithObjects:DKThreadPriorityEnum_values_ count:3 type:DKThreadPriorityEnum_class_()];
 }
 + (IOSObjectArray *)values {
-  return ImActorModelDroidkitActorsThreadPriorityEnum_values();
+  return DKThreadPriorityEnum_values();
 }
 
-+ (ImActorModelDroidkitActorsThreadPriorityEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelDroidkitActorsThreadPriorityEnum_valueOfWithNSString_(name);
++ (DKThreadPriorityEnum *)valueOfWithNSString:(NSString *)name {
+  return DKThreadPriorityEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelDroidkitActorsThreadPriorityEnum *ImActorModelDroidkitActorsThreadPriorityEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelDroidkitActorsThreadPriorityEnum_init();
+DKThreadPriorityEnum *DKThreadPriorityEnum_valueOfWithNSString_(NSString *name) {
+  DKThreadPriorityEnum_init();
   for (int i = 0; i < 3; i++) {
-    ImActorModelDroidkitActorsThreadPriorityEnum *e = ImActorModelDroidkitActorsThreadPriorityEnum_values_[i];
+    DKThreadPriorityEnum *e = DKThreadPriorityEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -48,11 +48,11 @@ ImActorModelDroidkitActorsThreadPriorityEnum *ImActorModelDroidkitActorsThreadPr
 }
 
 + (void)initialize {
-  if (self == [ImActorModelDroidkitActorsThreadPriorityEnum class]) {
-    ImActorModelDroidkitActorsThreadPriorityEnum_HIGH = [[ImActorModelDroidkitActorsThreadPriorityEnum alloc] initWithNSString:@"HIGH" withInt:0];
-    ImActorModelDroidkitActorsThreadPriorityEnum_NORMAL = [[ImActorModelDroidkitActorsThreadPriorityEnum alloc] initWithNSString:@"NORMAL" withInt:1];
-    ImActorModelDroidkitActorsThreadPriorityEnum_LOW = [[ImActorModelDroidkitActorsThreadPriorityEnum alloc] initWithNSString:@"LOW" withInt:2];
-    J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsThreadPriorityEnum)
+  if (self == [DKThreadPriorityEnum class]) {
+    DKThreadPriorityEnum_HIGH = [[DKThreadPriorityEnum alloc] initWithNSString:@"HIGH" withInt:0];
+    DKThreadPriorityEnum_NORMAL = [[DKThreadPriorityEnum alloc] initWithNSString:@"NORMAL" withInt:1];
+    DKThreadPriorityEnum_LOW = [[DKThreadPriorityEnum alloc] initWithNSString:@"LOW" withInt:2];
+    J2OBJC_SET_INITIALIZED(DKThreadPriorityEnum)
   }
 }
 
@@ -61,15 +61,15 @@ ImActorModelDroidkitActorsThreadPriorityEnum *ImActorModelDroidkitActorsThreadPr
     { "initWithNSString:withInt:", "init", NULL, 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "HIGH", "HIGH", 0x4019, "Lim.actor.model.droidkit.actors.ThreadPriority;", &ImActorModelDroidkitActorsThreadPriorityEnum_HIGH,  },
-    { "NORMAL", "NORMAL", 0x4019, "Lim.actor.model.droidkit.actors.ThreadPriority;", &ImActorModelDroidkitActorsThreadPriorityEnum_NORMAL,  },
-    { "LOW", "LOW", 0x4019, "Lim.actor.model.droidkit.actors.ThreadPriority;", &ImActorModelDroidkitActorsThreadPriorityEnum_LOW,  },
+    { "HIGH", "HIGH", 0x4019, "Lim.actor.model.droidkit.actors.ThreadPriority;", &DKThreadPriorityEnum_HIGH,  },
+    { "NORMAL", "NORMAL", 0x4019, "Lim.actor.model.droidkit.actors.ThreadPriority;", &DKThreadPriorityEnum_NORMAL,  },
+    { "LOW", "LOW", 0x4019, "Lim.actor.model.droidkit.actors.ThreadPriority;", &DKThreadPriorityEnum_LOW,  },
   };
   static const char *superclass_type_args[] = {"Lim.actor.model.droidkit.actors.ThreadPriority;"};
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsThreadPriorityEnum = { 1, "ThreadPriority", "im.actor.model.droidkit.actors", NULL, 0x4011, 1, methods, 3, fields, 1, superclass_type_args};
-  return &_ImActorModelDroidkitActorsThreadPriorityEnum;
+  static const J2ObjcClassInfo _DKThreadPriorityEnum = { 1, "ThreadPriority", "im.actor.model.droidkit.actors", NULL, 0x4011, 1, methods, 3, fields, 1, superclass_type_args};
+  return &_DKThreadPriorityEnum;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsThreadPriorityEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKThreadPriorityEnum)

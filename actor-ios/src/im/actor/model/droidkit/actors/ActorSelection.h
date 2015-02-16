@@ -3,30 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/ActorSelection.java
 //
 
-#ifndef _ImActorModelDroidkitActorsActorSelection_H_
-#define _ImActorModelDroidkitActorsActorSelection_H_
+#ifndef _DKActorSelection_H_
+#define _DKActorSelection_H_
 
-@class ImActorModelDroidkitActorsProps;
+@class DKProps;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsActorSelection : NSObject {
+@interface DKActorSelection : NSObject {
 }
 
-- (instancetype)initWithImActorModelDroidkitActorsProps:(ImActorModelDroidkitActorsProps *)props
-                                           withNSString:(NSString *)path;
+- (instancetype)initWithDKProps:(DKProps *)props
+                   withNSString:(NSString *)path;
 
-- (ImActorModelDroidkitActorsProps *)getProps;
+- (DKProps *)getProps;
 
 - (NSString *)getPath;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsActorSelection)
+J2OBJC_EMPTY_STATIC_INIT(DKActorSelection)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsActorSelection)
+typedef DKActorSelection ImActorModelDroidkitActorsActorSelection;
 
-#endif // _ImActorModelDroidkitActorsActorSelection_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKActorSelection)
+
+#endif // _DKActorSelection_H_

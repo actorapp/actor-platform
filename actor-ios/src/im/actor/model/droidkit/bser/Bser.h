@@ -3,37 +3,39 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/bser/Bser.java
 //
 
-#ifndef _ImActorModelDroidkitBserBser_H_
-#define _ImActorModelDroidkitBserBser_H_
+#ifndef _BSBser_H_
+#define _BSBser_H_
 
 @class AMDataInput;
+@class BSBserObject;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserObject;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitBserBser : NSObject {
+@interface BSBser : NSObject {
 }
 
-+ (id)parseWithImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)res
-                                  withAMDataInput:(AMDataInput *)inputStream;
++ (id)parseWithBSBserObject:(BSBserObject *)res
+            withAMDataInput:(AMDataInput *)inputStream;
 
-+ (id)parseWithImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)res
-                                    withByteArray:(IOSByteArray *)data;
++ (id)parseWithBSBserObject:(BSBserObject *)res
+              withByteArray:(IOSByteArray *)data;
 
 - (instancetype)init;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitBserBser)
+J2OBJC_EMPTY_STATIC_INIT(BSBser)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT id ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withAMDataInput_(ImActorModelDroidkitBserBserObject *res, AMDataInput *inputStream);
+FOUNDATION_EXPORT id BSBser_parseWithBSBserObject_withAMDataInput_(BSBserObject *res, AMDataInput *inputStream);
 
-FOUNDATION_EXPORT id ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_(ImActorModelDroidkitBserBserObject *res, IOSByteArray *data);
+FOUNDATION_EXPORT id BSBser_parseWithBSBserObject_withByteArray_(BSBserObject *res, IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitBserBser)
+typedef BSBser ImActorModelDroidkitBserBser;
 
-#endif // _ImActorModelDroidkitBserBser_H_
+J2OBJC_TYPE_LITERAL_HEADER(BSBser)
+
+#endif // _BSBser_H_

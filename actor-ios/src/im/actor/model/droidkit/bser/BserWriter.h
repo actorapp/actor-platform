@@ -3,22 +3,22 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/bser/BserWriter.java
 //
 
-#ifndef _ImActorModelDroidkitBserBserWriter_H_
-#define _ImActorModelDroidkitBserBserWriter_H_
+#ifndef _BSBserWriter_H_
+#define _BSBserWriter_H_
 
 @class AMDataOutput;
+@class BSBserObject;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserObject;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 
-#define ImActorModelDroidkitBserBserWriter_TYPE_32BIT 5
-#define ImActorModelDroidkitBserBserWriter_TYPE_64BIT 1
-#define ImActorModelDroidkitBserBserWriter_TYPE_LENGTH_DELIMITED 2
-#define ImActorModelDroidkitBserBserWriter_TYPE_VARINT 0
+#define BSBserWriter_TYPE_32BIT 5
+#define BSBserWriter_TYPE_64BIT 1
+#define BSBserWriter_TYPE_LENGTH_DELIMITED 2
+#define BSBserWriter_TYPE_VARINT 0
 
-@interface ImActorModelDroidkitBserBserWriter : NSObject {
+@interface BSBserWriter : NSObject {
 }
 
 - (instancetype)initWithAMDataOutput:(AMDataOutput *)stream;
@@ -60,23 +60,25 @@
                withJavaUtilList:(id<JavaUtilList>)values;
 
 - (void)writeObjectWithInt:(jint)fieldNumber
-withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)value;
+          withBSBserObject:(BSBserObject *)value;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitBserBserWriter)
+J2OBJC_EMPTY_STATIC_INIT(BSBserWriter)
 
 CF_EXTERN_C_BEGIN
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserBserWriter, TYPE_VARINT, jint)
+J2OBJC_STATIC_FIELD_GETTER(BSBserWriter, TYPE_VARINT, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserBserWriter, TYPE_32BIT, jint)
+J2OBJC_STATIC_FIELD_GETTER(BSBserWriter, TYPE_32BIT, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserBserWriter, TYPE_64BIT, jint)
+J2OBJC_STATIC_FIELD_GETTER(BSBserWriter, TYPE_64BIT, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserBserWriter, TYPE_LENGTH_DELIMITED, jint)
+J2OBJC_STATIC_FIELD_GETTER(BSBserWriter, TYPE_LENGTH_DELIMITED, jint)
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitBserBserWriter)
+typedef BSBserWriter ImActorModelDroidkitBserBserWriter;
 
-#endif // _ImActorModelDroidkitBserBserWriter_H_
+J2OBJC_TYPE_LITERAL_HEADER(BSBserWriter)
+
+#endif // _BSBserWriter_H_

@@ -6,14 +6,14 @@
 #ifndef _ImActorModelApiOutPeer_H_
 #define _ImActorModelApiOutPeer_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class ImActorModelApiPeerTypeEnum;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiOutPeer : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiOutPeer : BSBserObject {
 }
 
 - (instancetype)initWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)type
@@ -28,9 +28,9 @@
 
 - (jlong)getAccessHash;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

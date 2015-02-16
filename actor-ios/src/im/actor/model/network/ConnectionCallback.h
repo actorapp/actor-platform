@@ -12,9 +12,7 @@
 
 @protocol AMConnectionCallback < NSObject, JavaObject >
 
-- (void)onMessageWithByteArray:(IOSByteArray *)data
-                       withInt:(jint)offset
-                       withInt:(jint)len;
+- (void)onMessage:(IOSByteArray *)data withOffset:(jint)offset withLen:(jint)len;
 
 - (void)onConnectionDie;
 

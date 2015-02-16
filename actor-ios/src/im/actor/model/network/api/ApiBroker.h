@@ -6,16 +6,17 @@
 #ifndef _ImActorModelNetworkApiApiBroker_H_
 #define _ImActorModelNetworkApiApiBroker_H_
 
+@class AMAtomicLongCompat;
 @class AMEndpoints;
+@class DKActorRef;
 @class IOSByteArray;
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelDroidkitActorsUtilsAtomicLongCompat;
 @class ImActorModelNetworkParserRequest;
 @class JavaUtilHashMap;
 @class MTMTProto;
 @class MTRpcRequest;
 @protocol AMActorApiCallback;
 @protocol AMAuthKeyStorage;
+@protocol AMNetworking;
 @protocol AMRpcCallback;
 
 #include "J2ObjC_header.h"
@@ -24,16 +25,18 @@
 #include "im/actor/model/network/mtp/AuthIdRetriever.h"
 #include "im/actor/model/network/mtp/MTProtoCallback.h"
 
-@interface ImActorModelNetworkApiApiBroker : ImActorModelDroidkitActorsActor {
+@interface ImActorModelNetworkApiApiBroker : DKActor {
 }
 
-+ (ImActorModelDroidkitActorsActorRef *)getWithAMEndpoints:(AMEndpoints *)endpoints
-                                      withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
-                                    withAMActorApiCallback:(id<AMActorApiCallback>)callback;
++ (DKActorRef *)getWithAMEndpoints:(AMEndpoints *)endpoints
+              withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
+            withAMActorApiCallback:(id<AMActorApiCallback>)callback
+                  withAMNetworking:(id<AMNetworking>)networking;
 
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
-             withAMActorApiCallback:(id<AMActorApiCallback>)callback;
+             withAMActorApiCallback:(id<AMActorApiCallback>)callback
+                   withAMNetworking:(id<AMNetworking>)networking;
 
 - (void)preStart;
 
@@ -46,13 +49,13 @@ J2OBJC_STATIC_INIT(ImActorModelNetworkApiApiBroker)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback);
+FOUNDATION_EXPORT DKActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworking_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworking> networking);
 
 FOUNDATION_EXPORT NSString *ImActorModelNetworkApiApiBroker_TAG_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkApiApiBroker, TAG_, NSString *)
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsUtilsAtomicLongCompat *ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkApiApiBroker, NEXT_RPC_ID_, ImActorModelDroidkitActorsUtilsAtomicLongCompat *)
+FOUNDATION_EXPORT AMAtomicLongCompat *ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkApiApiBroker, NEXT_RPC_ID_, AMAtomicLongCompat *)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker)
@@ -189,14 +192,15 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_RequestHolder)
 
-@interface ImActorModelNetworkApiApiBroker_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
+@interface ImActorModelNetworkApiApiBroker_$1 : NSObject < DKActorCreator > {
 }
 
 - (ImActorModelNetworkApiApiBroker *)create;
 
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)capture$0
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)capture$1
-             withAMActorApiCallback:(id<AMActorApiCallback>)capture$2;
+             withAMActorApiCallback:(id<AMActorApiCallback>)capture$2
+                   withAMNetworking:(id<AMNetworking>)capture$3;
 
 @end
 

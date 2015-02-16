@@ -6,10 +6,10 @@
 #ifndef _ImActorModelModulesSenderSenderActor_H_
 #define _ImActorModelModulesSenderSenderActor_H_
 
+@class AMPeer;
 @class AMRpcException;
 @class ImActorModelApiRpcResponseSeqDate;
 @class ImActorModelEntityContentAbsContent;
-@class ImActorModelEntityPeer;
 @class ImActorModelModulesModules;
 
 #include "J2ObjC_header.h"
@@ -37,10 +37,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSenderSenderActor)
 @interface ImActorModelModulesSenderSenderActor_SendMessage : NSObject {
 }
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-       withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content;
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content;
 
-- (ImActorModelEntityPeer *)getPeer;
+- (AMPeer *)getPeer;
 
 - (ImActorModelEntityContentAbsContent *)getContent;
 

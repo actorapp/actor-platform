@@ -3,144 +3,117 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/Configuration.java
 //
 
+#include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
-#include "im/actor/model/OnlineCallback.h"
-#include "im/actor/model/TypingCallback.h"
-#include "im/actor/model/concurrency/MainThread.h"
-#include "im/actor/model/concurrency/NoMainThread.h"
-#include "im/actor/model/network/Endpoints.h"
-#include "im/actor/model/storage/EnginesFactory.h"
-#include "im/actor/model/storage/MemoryEnginesFactory.h"
-#include "im/actor/model/storage/MemoryPreferences.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
+#include "im/actor/model/LogCallback.h"
+#include "im/actor/model/MainThread.h"
+#include "im/actor/model/MessengerCallback.h"
+#include "im/actor/model/Networking.h"
+#include "im/actor/model/Storage.h"
+#include "im/actor/model/Threading.h"
 
 @interface AMConfiguration () {
  @public
-  jboolean persistMessages_;
-  id<ImActorModelConcurrencyMainThread> mainThread_;
-  AMEndpoints *endpoints_;
-  id<ImActorModelStoragePreferencesStorage> preferencesStorage_;
-  id<ImActorModelStorageEnginesFactory> enginesFactory_;
-  id<AMOnlineCallback> onlineCallback_;
-  id<AMTypingCallback> typingCallback_;
+  id<AMNetworking> networking_;
+  IOSObjectArray *endpoints_;
+  id<AMThreading> threading_;
+  id<AMMainThread> mainThread_;
+  id<AMStorage> storage_;
+  id<AMMessengerCallback> callback_;
+  id<AMLogCallback> log_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(AMConfiguration, mainThread_, id<ImActorModelConcurrencyMainThread>)
-J2OBJC_FIELD_SETTER(AMConfiguration, endpoints_, AMEndpoints *)
-J2OBJC_FIELD_SETTER(AMConfiguration, preferencesStorage_, id<ImActorModelStoragePreferencesStorage>)
-J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEnginesFactory>)
-J2OBJC_FIELD_SETTER(AMConfiguration, onlineCallback_, id<AMOnlineCallback>)
-J2OBJC_FIELD_SETTER(AMConfiguration, typingCallback_, id<AMTypingCallback>)
+J2OBJC_FIELD_SETTER(AMConfiguration, networking_, id<AMNetworking>)
+J2OBJC_FIELD_SETTER(AMConfiguration, endpoints_, IOSObjectArray *)
+J2OBJC_FIELD_SETTER(AMConfiguration, threading_, id<AMThreading>)
+J2OBJC_FIELD_SETTER(AMConfiguration, mainThread_, id<AMMainThread>)
+J2OBJC_FIELD_SETTER(AMConfiguration, storage_, id<AMStorage>)
+J2OBJC_FIELD_SETTER(AMConfiguration, callback_, id<AMMessengerCallback>)
+J2OBJC_FIELD_SETTER(AMConfiguration, log_, id<AMLogCallback>)
 
 @implementation AMConfiguration
 
-- (jboolean)isPersistMessages {
-  return persistMessages_;
-}
-
-- (void)setPersistMessagesWithBoolean:(jboolean)persistMessages {
-  self->persistMessages_ = persistMessages;
-}
-
-- (id<ImActorModelStorageEnginesFactory>)getEnginesFactory {
-  return enginesFactory_;
-}
-
-- (void)setEnginesFactoryWithImActorModelStorageEnginesFactory:(id<ImActorModelStorageEnginesFactory>)enginesFactory {
-  self->enginesFactory_ = enginesFactory;
-}
-
-- (id<ImActorModelStoragePreferencesStorage>)getPreferencesStorage {
-  return preferencesStorage_;
-}
-
-- (void)setPreferencesStorageWithImActorModelStoragePreferencesStorage:(id<ImActorModelStoragePreferencesStorage>)preferencesStorage {
-  self->preferencesStorage_ = preferencesStorage;
-}
-
-- (AMEndpoints *)getEndpoints {
-  return endpoints_;
-}
-
-- (void)setEndpointsWithAMEndpoints:(AMEndpoints *)endpoints {
-  self->endpoints_ = endpoints;
-}
-
-- (id<ImActorModelConcurrencyMainThread>)getMainThread {
-  return mainThread_;
-}
-
-- (void)setMainThreadWithImActorModelConcurrencyMainThread:(id<ImActorModelConcurrencyMainThread>)mainThread {
-  self->mainThread_ = mainThread;
-}
-
-- (id<AMOnlineCallback>)getOnlineCallback {
-  return onlineCallback_;
-}
-
-- (void)setOnlineCallbackWithAMOnlineCallback:(id<AMOnlineCallback>)onlineCallback {
-  self->onlineCallback_ = onlineCallback;
-}
-
-- (id<AMTypingCallback>)getTypingCallback {
-  return typingCallback_;
-}
-
-- (void)setTypingCallbackWithAMTypingCallback:(id<AMTypingCallback>)typingCallback {
-  self->typingCallback_ = typingCallback;
-}
-
-- (instancetype)init {
+- (instancetype)initWithAMNetworking:(id<AMNetworking>)networking
+       withAMConnectionEndpointArray:(IOSObjectArray *)endpoints
+                     withAMThreading:(id<AMThreading>)threading
+                    withAMMainThread:(id<AMMainThread>)mainThread
+                       withAMStorage:(id<AMStorage>)storage
+             withAMMessengerCallback:(id<AMMessengerCallback>)callback
+                   withAMLogCallback:(id<AMLogCallback>)log {
   if (self = [super init]) {
-    persistMessages_ = NO;
-    mainThread_ = [[ImActorModelConcurrencyNoMainThread alloc] init];
-    preferencesStorage_ = [[ImActorModelStorageMemoryPreferences alloc] init];
-    enginesFactory_ = [[ImActorModelStorageMemoryEnginesFactory alloc] init];
+    self->networking_ = networking;
+    self->endpoints_ = endpoints;
+    self->threading_ = threading;
+    self->mainThread_ = mainThread;
+    self->storage_ = storage;
+    self->callback_ = callback;
+    self->log_ = log;
   }
   return self;
 }
 
+- (id<AMNetworking>)getNetworking {
+  return networking_;
+}
+
+- (IOSObjectArray *)getEndpoints {
+  return endpoints_;
+}
+
+- (id<AMThreading>)getThreading {
+  return threading_;
+}
+
+- (id<AMMainThread>)getMainThread {
+  return mainThread_;
+}
+
+- (id<AMStorage>)getStorage {
+  return storage_;
+}
+
+- (id<AMMessengerCallback>)getCallback {
+  return callback_;
+}
+
+- (id<AMLogCallback>)getLog {
+  return log_;
+}
+
 - (void)copyAllFieldsTo:(AMConfiguration *)other {
   [super copyAllFieldsTo:other];
-  other->persistMessages_ = persistMessages_;
-  other->mainThread_ = mainThread_;
+  other->networking_ = networking_;
   other->endpoints_ = endpoints_;
-  other->preferencesStorage_ = preferencesStorage_;
-  other->enginesFactory_ = enginesFactory_;
-  other->onlineCallback_ = onlineCallback_;
-  other->typingCallback_ = typingCallback_;
+  other->threading_ = threading_;
+  other->mainThread_ = mainThread_;
+  other->storage_ = storage_;
+  other->callback_ = callback_;
+  other->log_ = log_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "isPersistMessages", NULL, "Z", 0x1, NULL },
-    { "setPersistMessagesWithBoolean:", "setPersistMessages", "V", 0x1, NULL },
-    { "getEnginesFactory", NULL, "Lim.actor.model.storage.EnginesFactory;", 0x1, NULL },
-    { "setEnginesFactoryWithImActorModelStorageEnginesFactory:", "setEnginesFactory", "V", 0x1, NULL },
-    { "getPreferencesStorage", NULL, "Lim.actor.model.storage.PreferencesStorage;", 0x1, NULL },
-    { "setPreferencesStorageWithImActorModelStoragePreferencesStorage:", "setPreferencesStorage", "V", 0x1, NULL },
-    { "getEndpoints", NULL, "Lim.actor.model.network.Endpoints;", 0x1, NULL },
-    { "setEndpointsWithAMEndpoints:", "setEndpoints", "V", 0x1, NULL },
-    { "getMainThread", NULL, "Lim.actor.model.concurrency.MainThread;", 0x1, NULL },
-    { "setMainThreadWithImActorModelConcurrencyMainThread:", "setMainThread", "V", 0x1, NULL },
-    { "getOnlineCallback", NULL, "Lim.actor.model.OnlineCallback;", 0x1, NULL },
-    { "setOnlineCallbackWithAMOnlineCallback:", "setOnlineCallback", "V", 0x1, NULL },
-    { "getTypingCallback", NULL, "Lim.actor.model.TypingCallback;", 0x1, NULL },
-    { "setTypingCallbackWithAMTypingCallback:", "setTypingCallback", "V", 0x1, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
+    { "initWithAMNetworking:withAMConnectionEndpointArray:withAMThreading:withAMMainThread:withAMStorage:withAMMessengerCallback:withAMLogCallback:", "Configuration", NULL, 0x1, NULL },
+    { "getNetworking", NULL, "Lim.actor.model.Networking;", 0x1, NULL },
+    { "getEndpoints", NULL, "[Lim.actor.model.network.ConnectionEndpoint;", 0x1, NULL },
+    { "getThreading", NULL, "Lim.actor.model.Threading;", 0x1, NULL },
+    { "getMainThread", NULL, "Lim.actor.model.MainThread;", 0x1, NULL },
+    { "getStorage", NULL, "Lim.actor.model.Storage;", 0x1, NULL },
+    { "getCallback", NULL, "Lim.actor.model.MessengerCallback;", 0x1, NULL },
+    { "getLog", NULL, "Lim.actor.model.LogCallback;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "persistMessages_", NULL, 0x2, "Z", NULL,  },
-    { "mainThread_", NULL, 0x2, "Lim.actor.model.concurrency.MainThread;", NULL,  },
-    { "endpoints_", NULL, 0x2, "Lim.actor.model.network.Endpoints;", NULL,  },
-    { "preferencesStorage_", NULL, 0x2, "Lim.actor.model.storage.PreferencesStorage;", NULL,  },
-    { "enginesFactory_", NULL, 0x2, "Lim.actor.model.storage.EnginesFactory;", NULL,  },
-    { "onlineCallback_", NULL, 0x2, "Lim.actor.model.OnlineCallback;", NULL,  },
-    { "typingCallback_", NULL, 0x2, "Lim.actor.model.TypingCallback;", NULL,  },
+    { "networking_", NULL, 0x12, "Lim.actor.model.Networking;", NULL,  },
+    { "endpoints_", NULL, 0x12, "[Lim.actor.model.network.ConnectionEndpoint;", NULL,  },
+    { "threading_", NULL, 0x12, "Lim.actor.model.Threading;", NULL,  },
+    { "mainThread_", NULL, 0x12, "Lim.actor.model.MainThread;", NULL,  },
+    { "storage_", NULL, 0x12, "Lim.actor.model.Storage;", NULL,  },
+    { "callback_", NULL, 0x12, "Lim.actor.model.MessengerCallback;", NULL,  },
+    { "log_", NULL, 0x12, "Lim.actor.model.LogCallback;", NULL,  },
   };
-  static const J2ObjcClassInfo _AMConfiguration = { 1, "Configuration", "im.actor.model", NULL, 0x1, 15, methods, 7, fields, 0, NULL};
+  static const J2ObjcClassInfo _AMConfiguration = { 1, "Configuration", "im.actor.model", NULL, 0x1, 8, methods, 7, fields, 0, NULL};
   return &_AMConfiguration;
 }
 

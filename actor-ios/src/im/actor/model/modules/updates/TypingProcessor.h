@@ -6,8 +6,8 @@
 #ifndef _ImActorModelModulesUpdatesTypingProcessor_H_
 #define _ImActorModelModulesUpdatesTypingProcessor_H_
 
+@class DKActorRef;
 @class ImActorModelApiPeer;
-@class ImActorModelDroidkitActorsActorRef;
 @class ImActorModelModulesModules;
 
 #include "J2ObjC_header.h"

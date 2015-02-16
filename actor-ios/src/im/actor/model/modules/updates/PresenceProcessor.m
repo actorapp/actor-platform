@@ -11,11 +11,11 @@
 
 @interface ImActorModelModulesUpdatesPresenceProcessor () {
  @public
-  ImActorModelDroidkitActorsActorRef *presenceActor_;
+  DKActorRef *presenceActor_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesPresenceProcessor, presenceActor_, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesPresenceProcessor, presenceActor_, DKActorRef *)
 
 @implementation ImActorModelModulesUpdatesPresenceProcessor
 
@@ -27,21 +27,21 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesPresenceProcessor, presenceActor_,
 }
 
 - (void)onUserOnlineWithInt:(jint)uid {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(presenceActor_)) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_UserOnline alloc] initWithInt:uid]];
+  [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_UserOnline alloc] initWithInt:uid]];
 }
 
 - (void)onUserOfflineWithInt:(jint)uid {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(presenceActor_)) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_UserOffline alloc] initWithInt:uid]];
+  [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_UserOffline alloc] initWithInt:uid]];
 }
 
 - (void)onUserLastSeenWithInt:(jint)uid
                      withLong:(jlong)date {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(presenceActor_)) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_UserLastSeen alloc] initWithInt:uid withLong:date]];
+  [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_UserLastSeen alloc] initWithInt:uid withLong:date]];
 }
 
 - (void)onGroupOnlineWithInt:(jint)gid
                      withInt:(jint)count {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(presenceActor_)) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_GroupOnline alloc] initWithInt:gid withInt:count]];
+  [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_GroupOnline alloc] initWithInt:gid withInt:count]];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesPresenceProcessor *)other {

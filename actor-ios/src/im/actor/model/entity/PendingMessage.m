@@ -6,14 +6,14 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/PendingMessage.h"
 
-@interface ImActorModelEntityPendingMessage () {
+@interface AMPendingMessage () {
  @public
   jlong rid_;
   jlong date_;
 }
 @end
 
-@implementation ImActorModelEntityPendingMessage
+@implementation AMPendingMessage
 
 - (instancetype)initWithLong:(jlong)rid
                     withLong:(jlong)date {
@@ -36,7 +36,7 @@
   return rid_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityPendingMessage *)other {
+- (void)copyAllFieldsTo:(AMPendingMessage *)other {
   [super copyAllFieldsTo:other];
   other->rid_ = rid_;
   other->date_ = date_;
@@ -53,10 +53,10 @@
     { "rid_", NULL, 0x2, "J", NULL,  },
     { "date_", NULL, 0x2, "J", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityPendingMessage = { 1, "PendingMessage", "im.actor.model.entity", NULL, 0x1, 4, methods, 2, fields, 0, NULL};
-  return &_ImActorModelEntityPendingMessage;
+  static const J2ObjcClassInfo _AMPendingMessage = { 1, "PendingMessage", "im.actor.model.entity", NULL, 0x1, 4, methods, 2, fields, 0, NULL};
+  return &_AMPendingMessage;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityPendingMessage)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMPendingMessage)

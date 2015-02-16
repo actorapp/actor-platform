@@ -6,23 +6,23 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/Networking.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSelection.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
+#include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/droidkit/actors/Props.h"
-#include "im/actor/model/droidkit/actors/conf/EnvConfig.h"
-#include "im/actor/model/droidkit/actors/utils/AtomicIntegerCompat.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/network/Connection.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
-#include "im/actor/model/network/ConnectionFactory.h"
 #include "im/actor/model/network/Endpoints.h"
 #include "im/actor/model/network/mtp/MTProto.h"
 #include "im/actor/model/network/mtp/actors/ManagerActor.h"
 #include "im/actor/model/network/mtp/actors/ReceiverActor.h"
 #include "im/actor/model/network/mtp/actors/SenderActor.h"
 #include "im/actor/model/network/mtp/entity/ProtoMessage.h"
+#include "im/actor/model/util/AtomicIntegerCompat.h"
 #include "im/actor/model/util/DataInput.h"
 #include "im/actor/model/util/DataOutput.h"
 #include "im/actor/model/util/ExponentialBackoff.h"
@@ -48,8 +48,8 @@ __attribute__((unused)) static void MTManagerActor_onOutMessageWithByteArray_wit
   id<AMConnection> currentConnection_;
   jboolean isCheckingConnections_;
   AMExponentialBackoff *backoff_;
-  ImActorModelDroidkitActorsActorRef *receiver_;
-  ImActorModelDroidkitActorsActorRef *sender_;
+  DKActorRef *receiver_;
+  DKActorRef *sender_;
 }
 
 - (void)onConnectionCreatedWithInt:(jint)id_
@@ -80,8 +80,8 @@ J2OBJC_FIELD_SETTER(MTManagerActor, mtProto_, MTMTProto *)
 J2OBJC_FIELD_SETTER(MTManagerActor, endpoints_, AMEndpoints *)
 J2OBJC_FIELD_SETTER(MTManagerActor, currentConnection_, id<AMConnection>)
 J2OBJC_FIELD_SETTER(MTManagerActor, backoff_, AMExponentialBackoff *)
-J2OBJC_FIELD_SETTER(MTManagerActor, receiver_, ImActorModelDroidkitActorsActorRef *)
-J2OBJC_FIELD_SETTER(MTManagerActor, sender_, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(MTManagerActor, receiver_, DKActorRef *)
+J2OBJC_FIELD_SETTER(MTManagerActor, sender_, DKActorRef *)
 
 @interface MTManagerActor_OutMessage () {
  @public
@@ -157,9 +157,9 @@ BOOL MTManagerActor_initialized = NO;
 @implementation MTManagerActor
 
 NSString * MTManagerActor_TAG_ = @"Manager";
-ImActorModelDroidkitActorsUtilsAtomicIntegerCompat * MTManagerActor_NEXT_CONNECTION_;
+AMAtomicIntegerCompat * MTManagerActor_NEXT_CONNECTION_;
 
-+ (ImActorModelDroidkitActorsActorRef *)managerWithMTMTProto:(MTMTProto *)mtProto {
++ (DKActorRef *)managerWithMTMTProto:(MTMTProto *)mtProto {
   return MTManagerActor_managerWithMTMTProto_(mtProto);
 }
 
@@ -265,7 +265,7 @@ ImActorModelDroidkitActorsUtilsAtomicIntegerCompat * MTManagerActor_NEXT_CONNECT
 
 + (void)initialize {
   if (self == [MTManagerActor class]) {
-    MTManagerActor_NEXT_CONNECTION_ = ImActorModelDroidkitActorsConfEnvConfig_createAtomicIntWithInt_(1);
+    MTManagerActor_NEXT_CONNECTION_ = DKEnvironment_createAtomicIntWithInt_(1);
     J2OBJC_SET_INITIALIZED(MTManagerActor)
   }
 }
@@ -288,7 +288,7 @@ ImActorModelDroidkitActorsUtilsAtomicIntegerCompat * MTManagerActor_NEXT_CONNECT
   };
   static const J2ObjcFieldInfo fields[] = {
     { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &MTManagerActor_TAG_,  },
-    { "NEXT_CONNECTION_", NULL, 0x1a, "Lim.actor.model.droidkit.actors.utils.AtomicIntegerCompat;", &MTManagerActor_NEXT_CONNECTION_,  },
+    { "NEXT_CONNECTION_", NULL, 0x1a, "Lim.actor.model.util.AtomicIntegerCompat;", &MTManagerActor_NEXT_CONNECTION_,  },
     { "mtProto_", NULL, 0x12, "Lim.actor.model.network.mtp.MTProto;", NULL,  },
     { "endpoints_", NULL, 0x12, "Lim.actor.model.network.Endpoints;", NULL,  },
     { "authId_", NULL, 0x12, "J", NULL,  },
@@ -306,9 +306,9 @@ ImActorModelDroidkitActorsUtilsAtomicIntegerCompat * MTManagerActor_NEXT_CONNECT
 
 @end
 
-ImActorModelDroidkitActorsActorRef *MTManagerActor_managerWithMTMTProto_(MTMTProto *mtProto) {
+DKActorRef *MTManagerActor_managerWithMTMTProto_(MTMTProto *mtProto) {
   MTManagerActor_init();
-  return [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsActorSelection:[[ImActorModelDroidkitActorsActorSelection alloc] initWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(MTManagerActor_class_(), [[MTManagerActor_$1 alloc] initWithMTMTProto:mtProto]) withNSString:JreStrcat("$$", [((MTMTProto *) nil_chk(mtProto)) getActorPath], @"/manager")]];
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKActorSelection:[[DKActorSelection alloc] initWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(MTManagerActor_class_(), [[MTManagerActor_$1 alloc] initWithMTMTProto:mtProto]) withNSString:JreStrcat("$$", [((MTMTProto *) nil_chk(mtProto)) getActorPath], @"/manager")]];
 }
 
 void MTManagerActor_onConnectionCreatedWithInt_withAMConnection_(MTManagerActor *self, jint id_, id<AMConnection> connection) {
@@ -330,7 +330,7 @@ void MTManagerActor_onConnectionCreatedWithInt_withAMConnection_(MTManagerActor 
   [((AMExponentialBackoff *) nil_chk(self->backoff_)) onSuccess];
   self->isCheckingConnections_ = NO;
   MTManagerActor_requestCheckConnection(self);
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->sender_)) sendWithId:[[MTSenderActor_ConnectionCreated alloc] init]];
+  [((DKActorRef *) nil_chk(self->sender_)) sendWithId:[[MTSenderActor_ConnectionCreated alloc] init]];
 }
 
 void MTManagerActor_onConnectionCreateFailure(MTManagerActor *self) {
@@ -372,7 +372,7 @@ void MTManagerActor_requestCheckConnectionWithLong_(MTManagerActor *self, jlong 
         AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$J$", @"Requesting connection creating in ", wait, @" ms"));
       }
     }
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[MTManagerActor_PerformConnectionCheck alloc] init] withLong:wait];
+    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[MTManagerActor_PerformConnectionCheck alloc] init] withLong:wait];
   }
 }
 
@@ -383,8 +383,8 @@ void MTManagerActor_checkConnection(MTManagerActor *self) {
   if (self->currentConnection_ == nil) {
     AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Trying to create connection...");
     self->isCheckingConnections_ = YES;
-    jint id_ = [((ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *) nil_chk(MTManagerActor_NEXT_CONNECTION_)) getAndIncrement];
-    AMConnectionFactory_createConnectionWithInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMConnectionFactory_CreateConnectionCallback_(id_, [((AMEndpoints *) nil_chk(self->endpoints_)) fetchEndpoint], [[MTManagerActor_$2 alloc] initWithMTManagerActor:self withInt:id_], [[MTManagerActor_$3 alloc] initWithMTManagerActor:self withInt:id_]);
+    jint id_ = [((AMAtomicIntegerCompat *) nil_chk(MTManagerActor_NEXT_CONNECTION_)) getAndIncrement];
+    [((id<AMNetworking>) nil_chk([((MTMTProto *) nil_chk(self->mtProto_)) getNetworking])) createConnection:id_ withEndpoint:[((AMEndpoints *) nil_chk(self->endpoints_)) fetchEndpoint] withCallback:[[MTManagerActor_$2 alloc] initWithMTManagerActor:self withInt:id_] withCreateCallback:[[MTManagerActor_$3 alloc] initWithMTManagerActor:self withInt:id_]];
   }
 }
 
@@ -398,7 +398,7 @@ void MTManagerActor_onInMessageWithByteArray_withInt_withInt_(MTManagerActor *se
     }
     jlong messageId = [bis readLong];
     IOSByteArray *payload = [bis readProtoBytes];
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->receiver_)) sendWithId:[[MTProtoMessage alloc] initWithLong:messageId withByteArray:payload]];
+    [((DKActorRef *) nil_chk(self->receiver_)) sendWithId:[[MTProtoMessage alloc] initWithLong:messageId withByteArray:payload]];
   }
   @catch (JavaIoIOException *e) {
     AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, @"Closing connection: incorrect package");
@@ -422,7 +422,7 @@ void MTManagerActor_onOutMessageWithByteArray_withInt_withInt_(MTManagerActor *s
     [bos writeLongWithLong:self->sessionId_];
     [bos writeBytesWithByteArray:data withInt:offset withInt:len];
     IOSByteArray *pkg = [bos toByteArray];
-    [self->currentConnection_ postWithByteArray:pkg withInt:0 withInt:((IOSByteArray *) nil_chk(pkg))->size_];
+    [self->currentConnection_ post:pkg withOffset:0 withLen:((IOSByteArray *) nil_chk(pkg))->size_];
   }
   else {
   }
@@ -702,11 +702,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$1)
 - (void)onMessageWithByteArray:(IOSByteArray *)data
                        withInt:(jint)offset
                        withInt:(jint)len {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[MTManagerActor_InMessage alloc] initWithByteArray:data withInt:offset withInt:len]];
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[MTManagerActor_InMessage alloc] initWithByteArray:data withInt:offset withInt:len]];
 }
 
 - (void)onConnectionDie {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[MTManagerActor_ConnectionDie alloc] initWithInt:val$id_]];
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[MTManagerActor_ConnectionDie alloc] initWithInt:val$id_]];
 }
 
 - (instancetype)initWithMTManagerActor:(MTManagerActor *)outer$
@@ -743,11 +743,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$2)
 @implementation MTManagerActor_$3
 
 - (void)onConnectionCreatedWithAMConnection:(id<AMConnection>)connection {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[MTManagerActor_ConnectionCreated alloc] initWithInt:val$id_ withAMConnection:connection]];
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[MTManagerActor_ConnectionCreated alloc] initWithInt:val$id_ withAMConnection:connection]];
 }
 
 - (void)onConnectionCreateError {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[MTManagerActor_ConnectionCreateFailure alloc] init]];
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[MTManagerActor_ConnectionCreateFailure alloc] init]];
 }
 
 - (instancetype)initWithMTManagerActor:(MTManagerActor *)outer$

@@ -6,7 +6,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/WireTypes.h"
 
-@implementation ImActorModelDroidkitBserWireTypes
+@implementation BSWireTypes
 
 - (instancetype)init {
   return [super init];
@@ -17,15 +17,15 @@
     { "init", NULL, NULL, 0x0, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "TYPE_VARINT_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelDroidkitBserWireTypes_TYPE_VARINT },
-    { "TYPE_32BIT_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelDroidkitBserWireTypes_TYPE_32BIT },
-    { "TYPE_64BIT_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelDroidkitBserWireTypes_TYPE_64BIT },
-    { "TYPE_LENGTH_DELIMITED_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelDroidkitBserWireTypes_TYPE_LENGTH_DELIMITED },
+    { "TYPE_VARINT_", NULL, 0x19, "I", NULL, .constantValue.asInt = BSWireTypes_TYPE_VARINT },
+    { "TYPE_32BIT_", NULL, 0x19, "I", NULL, .constantValue.asInt = BSWireTypes_TYPE_32BIT },
+    { "TYPE_64BIT_", NULL, 0x19, "I", NULL, .constantValue.asInt = BSWireTypes_TYPE_64BIT },
+    { "TYPE_LENGTH_DELIMITED_", NULL, 0x19, "I", NULL, .constantValue.asInt = BSWireTypes_TYPE_LENGTH_DELIMITED },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitBserWireTypes = { 1, "WireTypes", "im.actor.model.droidkit.bser", NULL, 0x0, 1, methods, 4, fields, 0, NULL};
-  return &_ImActorModelDroidkitBserWireTypes;
+  static const J2ObjcClassInfo _BSWireTypes = { 1, "WireTypes", "im.actor.model.droidkit.bser", NULL, 0x0, 1, methods, 4, fields, 0, NULL};
+  return &_BSWireTypes;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitBserWireTypes)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSWireTypes)

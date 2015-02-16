@@ -3,63 +3,65 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/mailbox/Mailbox.java
 //
 
-#ifndef _ImActorModelDroidkitActorsMailboxMailbox_H_
-#define _ImActorModelDroidkitActorsMailboxMailbox_H_
+#ifndef _DKMailbox_H_
+#define _DKMailbox_H_
 
+@class DKEnvelope;
+@class DKMailboxesQueue;
 @class IOSObjectArray;
 @class ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection;
-@class ImActorModelDroidkitActorsMailboxEnvelope;
-@class ImActorModelDroidkitActorsMailboxMailboxesQueue;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/mailbox/collections/EnvelopeCollection.h"
 
-@interface ImActorModelDroidkitActorsMailboxMailbox : NSObject {
+@interface DKMailbox : NSObject {
 }
 
-- (instancetype)initWithImActorModelDroidkitActorsMailboxMailboxesQueue:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)queue;
+- (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)queue;
 
-- (void)scheduleWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope
-                                                     withLong:(jlong)time;
+- (void)scheduleWithDKEnvelope:(DKEnvelope *)envelope
+                      withLong:(jlong)time;
 
-- (void)scheduleOnceWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope
-                                                         withLong:(jlong)time;
+- (void)scheduleOnceWithDKEnvelope:(DKEnvelope *)envelope
+                          withLong:(jlong)time;
 
-- (void)unscheduleWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope;
+- (void)unscheduleWithDKEnvelope:(DKEnvelope *)envelope;
 
 - (IOSObjectArray *)allEnvelopes;
 
 - (void)clear;
 
-- (jboolean)isEqualEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)a
-                           withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)b;
+- (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
+                           withDKEnvelope:(DKEnvelope *)b;
 
 - (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)getEnvelopes;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsMailboxMailbox)
+J2OBJC_EMPTY_STATIC_INIT(DKMailbox)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxMailbox)
+typedef DKMailbox ImActorModelDroidkitActorsMailboxMailbox;
 
-@interface ImActorModelDroidkitActorsMailboxMailbox_$1 : NSObject < ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator > {
+J2OBJC_TYPE_LITERAL_HEADER(DKMailbox)
+
+@interface DKMailbox_$1 : NSObject < ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator > {
 }
 
-- (jboolean)equalsWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)a
-                  withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)b;
+- (jboolean)equalsWithDKEnvelope:(DKEnvelope *)a
+                  withDKEnvelope:(DKEnvelope *)b;
 
-- (instancetype)initWithImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)outer$;
+- (instancetype)initWithDKMailbox:(DKMailbox *)outer$;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsMailboxMailbox_$1)
+J2OBJC_EMPTY_STATIC_INIT(DKMailbox_$1)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxMailbox_$1)
+J2OBJC_TYPE_LITERAL_HEADER(DKMailbox_$1)
 
-#endif // _ImActorModelDroidkitActorsMailboxMailbox_H_
+#endif // _DKMailbox_H_

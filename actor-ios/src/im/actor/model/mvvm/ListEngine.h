@@ -3,18 +3,18 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/mvvm/ListEngine.java
 //
 
-#ifndef _ImActorModelMvvmListEngine_H_
-#define _ImActorModelMvvmListEngine_H_
+#ifndef _AMListEngine_H_
+#define _AMListEngine_H_
 
 @class IOSLongArray;
-@protocol ImActorModelMvvmListEngineItem;
+@protocol AMListEngineItem;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelMvvmListEngine < NSObject, JavaObject >
+@protocol AMListEngine < NSObject, JavaObject >
 
-- (void)addOrUpdateItemWithImActorModelMvvmListEngineItem:(id<ImActorModelMvvmListEngineItem>)item;
+- (void)addOrUpdateItemWithAMListEngineItem:(id<AMListEngineItem>)item;
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
 
@@ -34,8 +34,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelMvvmListEngine)
+J2OBJC_EMPTY_STATIC_INIT(AMListEngine)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelMvvmListEngine)
+#define ImActorModelMvvmListEngine AMListEngine
 
-#endif // _ImActorModelMvvmListEngine_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMListEngine)
+
+#endif // _AMListEngine_H_

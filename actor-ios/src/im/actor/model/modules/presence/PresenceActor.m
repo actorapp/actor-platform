@@ -6,7 +6,7 @@
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
-#include "im/actor/model/OnlineCallback.h"
+#include "im/actor/model/MessengerCallback.h"
 #include "im/actor/model/api/UserOutPeer.h"
 #include "im/actor/model/api/rpc/RequestSubscribeToOnline.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
@@ -31,13 +31,13 @@ __attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onU
 __attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onUserOfflineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid);
 __attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onUserLastSeenWithInt_withLong_(ImActorModelModulesPresencePresenceActor *self, jint uid, jlong date);
 __attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onGroupOnlineWithInt_withInt_(ImActorModelModulesPresencePresenceActor *self, jint gid, jint count);
-__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_subscribeWithImActorModelEntityPeer_(ImActorModelModulesPresencePresenceActor *self, ImActorModelEntityPeer *peer);
+__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(ImActorModelModulesPresencePresenceActor *self, AMPeer *peer);
 __attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onNewSessionCreated(ImActorModelModulesPresencePresenceActor *self);
 
 @interface ImActorModelModulesPresencePresenceActor () {
  @public
   JavaUtilHashSet *uids_;
-  id<AMOnlineCallback> onlineCallback_;
+  id<AMMessengerCallback> onlineCallback_;
 }
 
 - (void)onUserOnlineWithInt:(jint)uid;
@@ -50,13 +50,13 @@ __attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onN
 - (void)onGroupOnlineWithInt:(jint)gid
                      withInt:(jint)count;
 
-- (void)subscribeWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (void)subscribeWithAMPeer:(AMPeer *)peer;
 
 - (void)onNewSessionCreated;
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor, uids_, JavaUtilHashSet *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor, onlineCallback_, id<AMOnlineCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor, onlineCallback_, id<AMMessengerCallback>)
 
 @interface ImActorModelModulesPresencePresenceActor_UserOnline () {
  @public
@@ -86,11 +86,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor, onlineCallback_, i
 
 @interface ImActorModelModulesPresencePresenceActor_Subscribe () {
  @public
-  ImActorModelEntityPeer *peer_;
+  AMPeer *peer_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_Subscribe, peer_, ImActorModelEntityPeer *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_Subscribe, peer_, AMPeer *)
 
 @interface ImActorModelModulesPresencePresenceActor_$1 () {
  @public
@@ -102,14 +102,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_$1, val$messenger_,
 
 @implementation ImActorModelModulesPresencePresenceActor
 
-+ (ImActorModelDroidkitActorsActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
++ (DKActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   return ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(messenger);
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   if (self = [super initWithImActorModelModulesModules:messenger]) {
     uids_ = [[JavaUtilHashSet alloc] init];
-    onlineCallback_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getOnlineCallback];
+    onlineCallback_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getCallback];
   }
   return self;
 }
@@ -132,8 +132,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_$1, val$messenger_,
   ImActorModelModulesPresencePresenceActor_onGroupOnlineWithInt_withInt_(self, gid, count);
 }
 
-- (void)subscribeWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  ImActorModelModulesPresencePresenceActor_subscribeWithImActorModelEntityPeer_(self, peer);
+- (void)subscribeWithAMPeer:(AMPeer *)peer {
+  ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(self, peer);
 }
 
 - (void)onNewSessionCreated {
@@ -158,7 +158,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_$1, val$messenger_,
     ImActorModelModulesPresencePresenceActor_onGroupOnlineWithInt_withInt_(self, [((ImActorModelModulesPresencePresenceActor_GroupOnline *) nil_chk(groupOnline)) getGid], [groupOnline getCount]);
   }
   else if ([message isKindOfClass:[ImActorModelModulesPresencePresenceActor_Subscribe class]]) {
-    ImActorModelModulesPresencePresenceActor_subscribeWithImActorModelEntityPeer_(self, [((ImActorModelModulesPresencePresenceActor_Subscribe *) nil_chk(((ImActorModelModulesPresencePresenceActor_Subscribe *) check_class_cast(message, [ImActorModelModulesPresencePresenceActor_Subscribe class])))) getPeer]);
+    ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(self, [((ImActorModelModulesPresencePresenceActor_Subscribe *) nil_chk(((ImActorModelModulesPresencePresenceActor_Subscribe *) check_class_cast(message, [ImActorModelModulesPresencePresenceActor_Subscribe class])))) getPeer]);
   }
   else if ([message isKindOfClass:[ImActorModelModulesPresencePresenceActor_SessionCreated class]]) {
     ImActorModelModulesPresencePresenceActor_onNewSessionCreated(self);
@@ -182,14 +182,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_$1, val$messenger_,
     { "onUserOfflineWithInt:", "onUserOffline", "V", 0x2, NULL },
     { "onUserLastSeenWithInt:withLong:", "onUserLastSeen", "V", 0x2, NULL },
     { "onGroupOnlineWithInt:withInt:", "onGroupOnline", "V", 0x2, NULL },
-    { "subscribeWithImActorModelEntityPeer:", "subscribe", "V", 0x2, NULL },
+    { "subscribeWithAMPeer:", "subscribe", "V", 0x2, NULL },
     { "onNewSessionCreated", NULL, "V", 0x2, NULL },
     { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "ONLINE_TIMEOUT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelModulesPresencePresenceActor_ONLINE_TIMEOUT },
     { "uids_", NULL, 0x2, "Ljava.util.HashSet;", NULL,  },
-    { "onlineCallback_", NULL, 0x2, "Lim.actor.model.OnlineCallback;", NULL,  },
+    { "onlineCallback_", NULL, 0x2, "Lim.actor.model.MessengerCallback;", NULL,  },
   };
   static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor = { 1, "PresenceActor", "im.actor.model.modules.presence", NULL, 0x1, 9, methods, 3, fields, 0, NULL};
   return &_ImActorModelModulesPresencePresenceActor;
@@ -197,51 +197,51 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_$1, val$messenger_,
 
 @end
 
-ImActorModelDroidkitActorsActorRef *ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
+DKActorRef *ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
   ImActorModelModulesPresencePresenceActor_init();
-  return [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_withImActorModelDroidkitActorsMailboxCreator_(ImActorModelModulesPresencePresenceActor_class_(), [[ImActorModelModulesPresencePresenceActor_$1 alloc] initWithImActorModelModulesModules:messenger], [[ImActorModelModulesPresencePresenceActor_$2 alloc] init]) withNSString:@"actor/presence/users"];
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_withDKMailboxCreator_(ImActorModelModulesPresencePresenceActor_class_(), [[ImActorModelModulesPresencePresenceActor_$1 alloc] initWithImActorModelModulesModules:messenger], [[ImActorModelModulesPresencePresenceActor_$2 alloc] init]) withNSString:@"actor/presence/users"];
 }
 
 void ImActorModelModulesPresencePresenceActor_onUserOnlineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid) {
   if (self->onlineCallback_ != nil) {
-    [self->onlineCallback_ onUserOnlineWithInt:uid];
+    [self->onlineCallback_ onUserOnline:uid];
   }
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_UserOffline alloc] initWithInt:uid] withLong:ImActorModelModulesPresencePresenceActor_ONLINE_TIMEOUT];
+  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_UserOffline alloc] initWithInt:uid] withLong:ImActorModelModulesPresencePresenceActor_ONLINE_TIMEOUT];
 }
 
 void ImActorModelModulesPresencePresenceActor_onUserOfflineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid) {
   if (self->onlineCallback_ != nil) {
-    [self->onlineCallback_ onUserOfflineWithInt:uid];
+    [self->onlineCallback_ onUserOffline:uid];
   }
 }
 
 void ImActorModelModulesPresencePresenceActor_onUserLastSeenWithInt_withLong_(ImActorModelModulesPresencePresenceActor *self, jint uid, jlong date) {
   if (self->onlineCallback_ != nil) {
-    [self->onlineCallback_ onUserLastSeenWithInt:uid withLong:date];
+    [self->onlineCallback_ onUserLastSeen:uid withLastSeen:date];
   }
 }
 
 void ImActorModelModulesPresencePresenceActor_onGroupOnlineWithInt_withInt_(ImActorModelModulesPresencePresenceActor *self, jint gid, jint count) {
   if (self->onlineCallback_ != nil) {
-    [self->onlineCallback_ onGroupOnlineWithInt:gid withInt:count];
+    [self->onlineCallback_ onGroupOnline:gid withUserCount:count];
   }
 }
 
-void ImActorModelModulesPresencePresenceActor_subscribeWithImActorModelEntityPeer_(ImActorModelModulesPresencePresenceActor *self, ImActorModelEntityPeer *peer) {
-  if ([((ImActorModelEntityPeer *) nil_chk(peer)) getPeerType] == ImActorModelEntityPeerTypeEnum_get_PRIVATE()) {
+void ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(ImActorModelModulesPresencePresenceActor *self, AMPeer *peer) {
+  if ([((AMPeer *) nil_chk(peer)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
     if ([((JavaUtilHashSet *) nil_chk(self->uids_)) containsWithId:JavaLangInteger_valueOfWithInt_([peer getPeerId])]) {
       return;
     }
-    ImActorModelEntityUser *user = [self getUserWithInt:[peer getPeerId]];
+    AMUser *user = [self getUserWithInt:[peer getPeerId]];
     if (user == nil) {
       return;
     }
-    [self->uids_ addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelEntityUser *) nil_chk(user)) getUid])];
+    [self->uids_ addWithId:JavaLangInteger_valueOfWithInt_([((AMUser *) nil_chk(user)) getUid])];
     id<JavaUtilList> peers = [[JavaUtilArrayList alloc] init];
     [peers addWithId:[[ImActorModelApiUserOutPeer alloc] initWithInt:[user getUid] withLong:[user getAccessHash]]];
     [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSubscribeToOnline alloc] initWithJavaUtilList:peers]];
   }
-  else if ([peer getPeerType] == ImActorModelEntityPeerTypeEnum_get_GROUP()) {
+  else if ([peer getPeerType] == AMPeerTypeEnum_get_GROUP()) {
   }
 }
 
@@ -249,11 +249,11 @@ void ImActorModelModulesPresencePresenceActor_onNewSessionCreated(ImActorModelMo
   id<JavaUtilList> userPeers = [[JavaUtilArrayList alloc] init];
   for (JavaLangInteger *boxed__ in nil_chk(self->uids_)) {
     jint uid = [((JavaLangInteger *) nil_chk(boxed__)) intValue];
-    ImActorModelEntityUser *user = [self getUserWithInt:uid];
+    AMUser *user = [self getUserWithInt:uid];
     if (user == nil) {
       continue;
     }
-    [userPeers addWithId:[[ImActorModelApiUserOutPeer alloc] initWithInt:uid withLong:[((ImActorModelEntityUser *) nil_chk(user)) getAccessHash]]];
+    [userPeers addWithId:[[ImActorModelApiUserOutPeer alloc] initWithInt:uid withLong:[((AMUser *) nil_chk(user)) getAccessHash]]];
   }
   if ([userPeers size] > 0) {
     [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSubscribeToOnline alloc] initWithJavaUtilList:userPeers]];
@@ -480,14 +480,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_GroupO
 
 @implementation ImActorModelModulesPresencePresenceActor_Subscribe
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
+- (instancetype)initWithAMPeer:(AMPeer *)peer {
   if (self = [super init]) {
     self->peer_ = peer;
   }
   return self;
 }
 
-- (ImActorModelEntityPeer *)getPeer {
+- (AMPeer *)getPeer {
   return peer_;
 }
 
@@ -498,7 +498,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_GroupO
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelEntityPeer:", "Subscribe", NULL, 0x1, NULL },
+    { "initWithAMPeer:", "Subscribe", NULL, 0x1, NULL },
     { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -564,8 +564,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_$1)
 
 @implementation ImActorModelModulesPresencePresenceActor_$2
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)createMailboxWithImActorModelDroidkitActorsMailboxMailboxesQueue:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)queue {
-  return [[ImActorModelModulesPresencePresenceActor_$2_$1 alloc] initWithImActorModelDroidkitActorsMailboxMailboxesQueue:queue];
+- (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue {
+  return [[ImActorModelModulesPresencePresenceActor_$2_$1 alloc] initWithDKMailboxesQueue:queue];
 }
 
 - (instancetype)init {
@@ -574,7 +574,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_$1)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "createMailboxWithImActorModelDroidkitActorsMailboxMailboxesQueue:", "createMailbox", "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x1, NULL },
+    { "createMailboxWithDKMailboxesQueue:", "createMailbox", "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x1, NULL },
     { "init", NULL, NULL, 0x0, NULL },
   };
   static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor_$2 = { 1, "$2", "im.actor.model.modules.presence", "PresenceActor", 0x8000, 2, methods, 0, NULL, 0, NULL};
@@ -587,22 +587,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_$2)
 
 @implementation ImActorModelModulesPresencePresenceActor_$2_$1
 
-- (jboolean)isEqualEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)a
-                           withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)b {
-  if ([nil_chk([((ImActorModelDroidkitActorsMailboxEnvelope *) nil_chk(a)) getMessage]) isEqual:[((ImActorModelDroidkitActorsMailboxEnvelope *) nil_chk(b)) getMessage]]) {
+- (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
+                           withDKEnvelope:(DKEnvelope *)b {
+  if ([nil_chk([((DKEnvelope *) nil_chk(a)) getMessage]) isEqual:[((DKEnvelope *) nil_chk(b)) getMessage]]) {
     return YES;
   }
-  return [super isEqualEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:a withImActorModelDroidkitActorsMailboxEnvelope:b];
+  return [super isEqualEnvelopeWithDKEnvelope:a withDKEnvelope:b];
 }
 
-- (instancetype)initWithImActorModelDroidkitActorsMailboxMailboxesQueue:(ImActorModelDroidkitActorsMailboxMailboxesQueue *)arg$0 {
-  return [super initWithImActorModelDroidkitActorsMailboxMailboxesQueue:arg$0];
+- (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)arg$0 {
+  return [super initWithDKMailboxesQueue:arg$0];
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "isEqualEnvelopeWithImActorModelDroidkitActorsMailboxEnvelope:withImActorModelDroidkitActorsMailboxEnvelope:", "isEqualEnvelope", "Z", 0x4, NULL },
-    { "initWithImActorModelDroidkitActorsMailboxMailboxesQueue:", "init", NULL, 0x0, NULL },
+    { "isEqualEnvelopeWithDKEnvelope:withDKEnvelope:", "isEqualEnvelope", "Z", 0x4, NULL },
+    { "initWithDKMailboxesQueue:", "init", NULL, 0x0, NULL },
   };
   static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor_$2_$1 = { 1, "$1", "im.actor.model.modules.presence", "PresenceActor$$2", 0x8000, 2, methods, 0, NULL, 0, NULL};
   return &_ImActorModelModulesPresencePresenceActor_$2_$1;

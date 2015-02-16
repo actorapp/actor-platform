@@ -11,8 +11,8 @@
 @class ImActorModelModulesUpdates;
 @class ImActorModelNetworkParserRequest;
 @class ImActorModelNetworkParserResponse;
-@protocol ImActorModelMvvmKeyValueEngine;
-@protocol ImActorModelStoragePreferencesStorage;
+@protocol AMKeyValueEngine;
+@protocol AMPreferencesStorage;
 @protocol JavaLangRunnable;
 
 #include "J2ObjC_header.h"
@@ -29,7 +29,7 @@
 
 - (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable;
 
-- (id<ImActorModelStoragePreferencesStorage>)preferences;
+- (id<AMPreferencesStorage>)preferences;
 
 - (jint)myUid;
 
@@ -38,7 +38,7 @@
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request;
 
-- (id<ImActorModelMvvmKeyValueEngine>)users;
+- (id<AMKeyValueEngine>)users;
 
 @end
 

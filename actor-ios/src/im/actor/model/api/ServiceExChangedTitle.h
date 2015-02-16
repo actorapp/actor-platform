@@ -6,13 +6,13 @@
 #ifndef _ImActorModelApiServiceExChangedTitle_H_
 #define _ImActorModelApiServiceExChangedTitle_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
+@class BSBserValues;
+@class BSBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiServiceExChangedTitle : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiServiceExChangedTitle : BSBserObject {
 }
 
 - (instancetype)initWithNSString:(NSString *)title;
@@ -21,9 +21,9 @@
 
 - (NSString *)getTitle;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

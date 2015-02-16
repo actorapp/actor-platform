@@ -21,8 +21,8 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileLocalSource, fileName_, NSStrin
 
 @implementation ImActorModelEntityContentFileLocalSource
 
-+ (ImActorModelEntityContentFileLocalSource *)fromValuesWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)reader {
-  return ImActorModelEntityContentFileLocalSource_fromValuesWithImActorModelDroidkitBserBserValues_(reader);
++ (ImActorModelEntityContentFileLocalSource *)fromValuesWithBSBserValues:(BSBserValues *)reader {
+  return ImActorModelEntityContentFileLocalSource_fromValuesWithBSBserValues_(reader);
 }
 
 - (instancetype)initWithNSString:(NSString *)fileName {
@@ -40,14 +40,14 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileLocalSource, fileName_, NSStrin
   return fileName_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  [super parseWithImActorModelDroidkitBserBserValues:values];
-  fileName_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:2];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  [super parseWithBSBserValues:values];
+  fileName_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:2];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [super serializeWithImActorModelDroidkitBserBserWriter:writer];
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:fileName_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [super serializeWithBSBserWriter:writer];
+  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:fileName_];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelEntityContentFileLocalSource *)other {
@@ -57,12 +57,12 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileLocalSource, fileName_, NSStrin
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "fromValuesWithImActorModelDroidkitBserBserValues:", "fromValues", "Lim.actor.model.entity.content.FileLocalSource;", 0xc, "Ljava.io.IOException;" },
+    { "fromValuesWithBSBserValues:", "fromValues", "Lim.actor.model.entity.content.FileLocalSource;", 0xc, "Ljava.io.IOException;" },
     { "initWithNSString:", "FileLocalSource", NULL, 0x1, NULL },
     { "init", "FileLocalSource", NULL, 0x2, NULL },
     { "getFileName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "fileName_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
@@ -73,10 +73,10 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileLocalSource, fileName_, NSStrin
 
 @end
 
-ImActorModelEntityContentFileLocalSource *ImActorModelEntityContentFileLocalSource_fromValuesWithImActorModelDroidkitBserBserValues_(ImActorModelDroidkitBserBserValues *reader) {
+ImActorModelEntityContentFileLocalSource *ImActorModelEntityContentFileLocalSource_fromValuesWithBSBserValues_(BSBserValues *reader) {
   ImActorModelEntityContentFileLocalSource_init();
   ImActorModelEntityContentFileLocalSource *fileLocalSource = [[ImActorModelEntityContentFileLocalSource alloc] init];
-  [fileLocalSource parseWithImActorModelDroidkitBserBserValues:reader];
+  [fileLocalSource parseWithBSBserValues:reader];
   return fileLocalSource;
 }
 

@@ -3,15 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/Actor.java
 //
 
-#ifndef _ImActorModelDroidkitActorsActor_H_
-#define _ImActorModelDroidkitActorsActor_H_
+#ifndef _DKActor_H_
+#define _DKActor_H_
 
+@class DKActorContext;
+@class DKActorRef;
+@class DKActorSelection;
+@class DKActorSystem;
+@class DKMailbox;
 @class IOSObjectArray;
-@class ImActorModelDroidkitActorsActorContext;
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelDroidkitActorsActorSelection;
-@class ImActorModelDroidkitActorsActorSystem;
-@class ImActorModelDroidkitActorsMailboxMailbox;
 @class ImActorModelDroidkitActorsTasksActorAskImpl;
 @class ImActorModelDroidkitActorsTasksAskFuture;
 @class JavaUtilArrayList;
@@ -19,28 +19,28 @@
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsActor : NSObject {
+@interface DKActor : NSObject {
 }
 
 - (instancetype)init;
 
 - (void)initActorWithNSString:(NSString *)path
-withImActorModelDroidkitActorsActorContext:(ImActorModelDroidkitActorsActorContext *)context
-withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxMailbox *)mailbox OBJC_METHOD_FAMILY_NONE;
+           withDKActorContext:(DKActorContext *)context
+                withDKMailbox:(DKMailbox *)mailbox OBJC_METHOD_FAMILY_NONE;
 
 - (JavaUtilArrayList *)getExtensions;
 
-- (ImActorModelDroidkitActorsActorSystem *)system;
+- (DKActorSystem *)system;
 
-- (ImActorModelDroidkitActorsActorRef *)self__;
+- (DKActorRef *)self__;
 
-- (ImActorModelDroidkitActorsActorContext *)context;
+- (DKActorContext *)context;
 
-- (ImActorModelDroidkitActorsActorRef *)sender;
+- (DKActorRef *)sender;
 
 - (NSString *)getPath;
 
-- (ImActorModelDroidkitActorsMailboxMailbox *)getMailbox;
+- (DKMailbox *)getMailbox;
 
 - (void)preStart;
 
@@ -59,37 +59,39 @@ withImActorModelDroidkitActorsMailboxMailbox:(ImActorModelDroidkitActorsMailboxM
 - (ImActorModelDroidkitActorsTasksAskFuture *)combineWithImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback
                                                   withImActorModelDroidkitActorsTasksAskFutureArray:(IOSObjectArray *)futures;
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorSelection:(ImActorModelDroidkitActorsActorSelection *)selection;
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorSelection:(DKActorSelection *)selection;
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorSelection:(ImActorModelDroidkitActorsActorSelection *)selection
-                                                                                     withLong:(jlong)timeout;
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorSelection:(DKActorSelection *)selection
+                                                             withLong:(jlong)timeout;
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorSelection:(ImActorModelDroidkitActorsActorSelection *)selection
-                                               withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorSelection:(DKActorSelection *)selection
+                       withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorSelection:(ImActorModelDroidkitActorsActorSelection *)selection
-                                                                                     withLong:(jlong)timeout
-                                               withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorSelection:(DKActorSelection *)selection
+                                                             withLong:(jlong)timeout
+                       withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref;
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref;
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref
-                                                                               withLong:(jlong)timeout;
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref
+                                                       withLong:(jlong)timeout;
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref
-                                         withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref
+                 withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref
-                                                                               withLong:(jlong)timeout
-                                         withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref
+                                                       withLong:(jlong)timeout
+                 withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsActor)
+J2OBJC_EMPTY_STATIC_INIT(DKActor)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsActor)
+typedef DKActor ImActorModelDroidkitActorsActor;
 
-#endif // _ImActorModelDroidkitActorsActor_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKActor)
+
+#endif // _DKActor_H_

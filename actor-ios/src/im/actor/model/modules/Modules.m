@@ -3,8 +3,11 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/modules/Modules.java
 //
 
+#include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/Networking.h"
+#include "im/actor/model/Storage.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
@@ -22,6 +25,7 @@
   AMConfiguration *configuration_;
   AMActorApi *actorApi_;
   ImActorModelModulesAuth *auth_;
+  id<AMPreferencesStorage> preferences_;
   ImActorModelModulesUsers *users_;
   ImActorModelModulesUpdates *updates_;
   ImActorModelModulesMessages *messages_;
@@ -33,6 +37,7 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, configuration_, AMConfiguration *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, actorApi_, AMActorApi *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, auth_, ImActorModelModulesAuth *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesModules, preferences_, id<AMPreferencesStorage>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, users_, ImActorModelModulesUsers *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, updates_, ImActorModelModulesUpdates *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, messages_, ImActorModelModulesMessages *)
@@ -52,7 +57,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
   if (self = [super init]) {
     self->configuration_ = configuration;
-    self->actorApi_ = [[AMActorApi alloc] initWithAMEndpoints:[((AMConfiguration *) nil_chk(configuration)) getEndpoints] withAMAuthKeyStorage:[[ImActorModelStoragePreferenceApiStorage alloc] initWithImActorModelStoragePreferencesStorage:[configuration getPreferencesStorage]] withAMActorApiCallback:[[ImActorModelModulesModules_$1 alloc] initWithImActorModelModulesModules:self]];
+    self->preferences_ = [((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk(configuration)) getStorage])) createPreferencesStorage];
+    self->actorApi_ = [[AMActorApi alloc] initWithAMEndpoints:[[AMEndpoints alloc] initWithAMConnectionEndpointArray:[configuration getEndpoints]] withAMAuthKeyStorage:[[AMPreferenceApiStorage alloc] initWithAMPreferencesStorage:preferences_] withAMActorApiCallback:[[ImActorModelModulesModules_$1 alloc] initWithImActorModelModulesModules:self] withAMNetworking:[configuration getNetworking]];
     self->auth_ = [[ImActorModelModulesAuth alloc] initWithImActorModelModulesModules:self];
   }
   return self;
@@ -67,6 +73,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   [messages_ run];
   [updates_ run];
   [presence_ run];
+}
+
+- (id<AMPreferencesStorage>)getPreferences {
+  return preferences_;
 }
 
 - (AMConfiguration *)getConfiguration {
@@ -106,6 +116,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   other->configuration_ = configuration_;
   other->actorApi_ = actorApi_;
   other->auth_ = auth_;
+  other->preferences_ = preferences_;
   other->users_ = users_;
   other->updates_ = updates_;
   other->messages_ = messages_;
@@ -117,6 +128,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   static const J2ObjcMethodInfo methods[] = {
     { "initWithAMConfiguration:", "Modules", NULL, 0x1, NULL },
     { "onLoggedIn", NULL, "V", 0x1, NULL },
+    { "getPreferences", NULL, "Lim.actor.model.storage.PreferencesStorage;", 0x1, NULL },
     { "getConfiguration", NULL, "Lim.actor.model.Configuration;", 0x1, NULL },
     { "getAuthModule", NULL, "Lim.actor.model.modules.Auth;", 0x1, NULL },
     { "getUsersModule", NULL, "Lim.actor.model.modules.Users;", 0x1, NULL },
@@ -130,13 +142,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
     { "configuration_", NULL, 0x12, "Lim.actor.model.Configuration;", NULL,  },
     { "actorApi_", NULL, 0x12, "Lim.actor.model.network.ActorApi;", NULL,  },
     { "auth_", NULL, 0x12, "Lim.actor.model.modules.Auth;", NULL,  },
+    { "preferences_", NULL, 0x42, "Lim.actor.model.storage.PreferencesStorage;", NULL,  },
     { "users_", NULL, 0x42, "Lim.actor.model.modules.Users;", NULL,  },
     { "updates_", NULL, 0x42, "Lim.actor.model.modules.Updates;", NULL,  },
     { "messages_", NULL, 0x42, "Lim.actor.model.modules.Messages;", NULL,  },
     { "presence_", NULL, 0x42, "Lim.actor.model.modules.Presence;", NULL,  },
     { "typing_", NULL, 0x42, "Lim.actor.model.modules.Typing;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelModulesModules = { 1, "Modules", "im.actor.model.modules", NULL, 0x1, 10, methods, 8, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelModulesModules = { 1, "Modules", "im.actor.model.modules", NULL, 0x1, 11, methods, 9, fields, 0, NULL};
   return &_ImActorModelModulesModules;
 }
 

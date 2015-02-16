@@ -3,18 +3,18 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/storage/PreferenceApiStorage.java
 //
 
-#ifndef _ImActorModelStoragePreferenceApiStorage_H_
-#define _ImActorModelStoragePreferenceApiStorage_H_
+#ifndef _AMPreferenceApiStorage_H_
+#define _AMPreferenceApiStorage_H_
 
-@protocol ImActorModelStoragePreferencesStorage;
+@protocol AMPreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/AuthKeyStorage.h"
 
-@interface ImActorModelStoragePreferenceApiStorage : NSObject < AMAuthKeyStorage > {
+@interface AMPreferenceApiStorage : NSObject < AMAuthKeyStorage > {
 }
 
-- (instancetype)initWithImActorModelStoragePreferencesStorage:(id<ImActorModelStoragePreferencesStorage>)preferencesStorage;
+- (instancetype)initWithAMPreferencesStorage:(id<AMPreferencesStorage>)preferencesStorage;
 
 - (jlong)getAuthKey;
 
@@ -22,11 +22,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelStoragePreferenceApiStorage)
+J2OBJC_EMPTY_STATIC_INIT(AMPreferenceApiStorage)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelStoragePreferenceApiStorage)
+typedef AMPreferenceApiStorage ImActorModelStoragePreferenceApiStorage;
 
-#endif // _ImActorModelStoragePreferenceApiStorage_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMPreferenceApiStorage)
+
+#endif // _AMPreferenceApiStorage_H_

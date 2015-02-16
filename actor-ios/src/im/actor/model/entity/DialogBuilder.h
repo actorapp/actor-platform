@@ -3,57 +3,59 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/DialogBuilder.java
 //
 
-#ifndef _ImActorModelEntityDialogBuilder_H_
-#define _ImActorModelEntityDialogBuilder_H_
+#ifndef _AMDialogBuilder_H_
+#define _AMDialogBuilder_H_
 
-@class ImActorModelEntityAvatar;
-@class ImActorModelEntityDialog;
-@class ImActorModelEntityDialog_ContentTypeEnum;
-@class ImActorModelEntityMessageStateEnum;
-@class ImActorModelEntityPeer;
+@class AMAvatar;
+@class AMDialog;
+@class AMDialog_ContentTypeEnum;
+@class AMMessageStateEnum;
+@class AMPeer;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelEntityDialogBuilder : NSObject {
+@interface AMDialogBuilder : NSObject {
 }
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelEntityDialog:(ImActorModelEntityDialog *)dialog;
+- (instancetype)initWithAMDialog:(AMDialog *)dialog;
 
-- (ImActorModelEntityDialogBuilder *)setPeerWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (AMDialogBuilder *)setPeerWithAMPeer:(AMPeer *)peer;
 
-- (ImActorModelEntityDialogBuilder *)setSortKeyWithLong:(jlong)sortKey;
+- (AMDialogBuilder *)setSortKeyWithLong:(jlong)sortKey;
 
-- (ImActorModelEntityDialogBuilder *)setDialogTitleWithNSString:(NSString *)dialogTitle;
+- (AMDialogBuilder *)setDialogTitleWithNSString:(NSString *)dialogTitle;
 
-- (ImActorModelEntityDialogBuilder *)setUnreadCountWithInt:(jint)unreadCount;
+- (AMDialogBuilder *)setUnreadCountWithInt:(jint)unreadCount;
 
-- (ImActorModelEntityDialogBuilder *)setRidWithLong:(jlong)rid;
+- (AMDialogBuilder *)setRidWithLong:(jlong)rid;
 
-- (ImActorModelEntityDialogBuilder *)setMessageTypeWithImActorModelEntityDialog_ContentTypeEnum:(ImActorModelEntityDialog_ContentTypeEnum *)messageType;
+- (AMDialogBuilder *)setMessageTypeWithAMDialog_ContentTypeEnum:(AMDialog_ContentTypeEnum *)messageType;
 
-- (ImActorModelEntityDialogBuilder *)setTextWithNSString:(NSString *)text;
+- (AMDialogBuilder *)setTextWithNSString:(NSString *)text;
 
-- (ImActorModelEntityDialogBuilder *)setStatusWithImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)status;
+- (AMDialogBuilder *)setStatusWithAMMessageStateEnum:(AMMessageStateEnum *)status;
 
-- (ImActorModelEntityDialogBuilder *)setSenderIdWithInt:(jint)senderId;
+- (AMDialogBuilder *)setSenderIdWithInt:(jint)senderId;
 
-- (ImActorModelEntityDialogBuilder *)setTimeWithLong:(jlong)time;
+- (AMDialogBuilder *)setTimeWithLong:(jlong)time;
 
-- (ImActorModelEntityDialogBuilder *)setRelatedUidWithInt:(jint)relatedUid;
+- (AMDialogBuilder *)setRelatedUidWithInt:(jint)relatedUid;
 
-- (ImActorModelEntityDialogBuilder *)setDialogAvatarWithImActorModelEntityAvatar:(ImActorModelEntityAvatar *)avatar;
+- (AMDialogBuilder *)setDialogAvatarWithAMAvatar:(AMAvatar *)avatar;
 
-- (ImActorModelEntityDialog *)createDialog;
+- (AMDialog *)createDialog;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityDialogBuilder)
+J2OBJC_EMPTY_STATIC_INIT(AMDialogBuilder)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityDialogBuilder)
+typedef AMDialogBuilder ImActorModelEntityDialogBuilder;
 
-#endif // _ImActorModelEntityDialogBuilder_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMDialogBuilder)
+
+#endif // _AMDialogBuilder_H_

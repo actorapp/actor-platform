@@ -3,15 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/bser/IncorrectTypeException.java
 //
 
-#ifndef _ImActorModelDroidkitBserIncorrectTypeException_H_
-#define _ImActorModelDroidkitBserIncorrectTypeException_H_
+#ifndef _BSIncorrectTypeException_H_
+#define _BSIncorrectTypeException_H_
 
 @class JavaLangThrowable;
 
 #include "J2ObjC_header.h"
 #include "java/lang/RuntimeException.h"
 
-@interface ImActorModelDroidkitBserIncorrectTypeException : JavaLangRuntimeException {
+@interface BSIncorrectTypeException : JavaLangRuntimeException {
 }
 
 - (instancetype)init;
@@ -25,11 +25,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitBserIncorrectTypeException)
+J2OBJC_EMPTY_STATIC_INIT(BSIncorrectTypeException)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitBserIncorrectTypeException)
+typedef BSIncorrectTypeException ImActorModelDroidkitBserIncorrectTypeException;
 
-#endif // _ImActorModelDroidkitBserIncorrectTypeException_H_
+J2OBJC_TYPE_LITERAL_HEADER(BSIncorrectTypeException)
+
+#endif // _BSIncorrectTypeException_H_

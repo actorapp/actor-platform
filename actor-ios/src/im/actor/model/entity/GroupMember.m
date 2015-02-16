@@ -6,7 +6,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/GroupMember.h"
 
-@interface ImActorModelEntityGroupMember () {
+@interface AMGroupMember () {
  @public
   jint uid_;
   jint inviterUid_;
@@ -14,7 +14,7 @@
 }
 @end
 
-@implementation ImActorModelEntityGroupMember
+@implementation AMGroupMember
 
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
@@ -39,7 +39,7 @@
   return inviteDate_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityGroupMember *)other {
+- (void)copyAllFieldsTo:(AMGroupMember *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;
   other->inviterUid_ = inviterUid_;
@@ -58,10 +58,10 @@
     { "inviterUid_", NULL, 0x12, "I", NULL,  },
     { "inviteDate_", NULL, 0x12, "J", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityGroupMember = { 1, "GroupMember", "im.actor.model.entity", NULL, 0x1, 4, methods, 3, fields, 0, NULL};
-  return &_ImActorModelEntityGroupMember;
+  static const J2ObjcClassInfo _AMGroupMember = { 1, "GroupMember", "im.actor.model.entity", NULL, 0x1, 4, methods, 3, fields, 0, NULL};
+  return &_AMGroupMember;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityGroupMember)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupMember)

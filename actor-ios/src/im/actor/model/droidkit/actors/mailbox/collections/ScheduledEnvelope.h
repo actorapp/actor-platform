@@ -6,7 +6,7 @@
 #ifndef _ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_H_
 #define _ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_H_
 
-@class ImActorModelDroidkitActorsMailboxEnvelope;
+@class DKEnvelope;
 
 #include "J2ObjC_header.h"
 
@@ -15,13 +15,13 @@
 
 - (instancetype)initWithLong:(jlong)key
                     withLong:(jlong)time
-withImActorModelDroidkitActorsMailboxEnvelope:(ImActorModelDroidkitActorsMailboxEnvelope *)envelope;
+              withDKEnvelope:(DKEnvelope *)envelope;
 
 - (jlong)getKey;
 
 - (jlong)getTime;
 
-- (ImActorModelDroidkitActorsMailboxEnvelope *)getEnvelope;
+- (DKEnvelope *)getEnvelope;
 
 - (NSString *)description;
 

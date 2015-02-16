@@ -17,12 +17,12 @@
 
 @interface ImActorModelEntityContentServiceGroupAvatarChanged () {
  @public
-  ImActorModelEntityAvatar *newAvatar_;
+  AMAvatar *newAvatar_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupAvatarChanged, newAvatar_, ImActorModelEntityAvatar *)
+J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupAvatarChanged, newAvatar_, AMAvatar *)
 
 @implementation ImActorModelEntityContentServiceGroupAvatarChanged
 
@@ -30,7 +30,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupAvatarChanged, newAvata
   return ImActorModelEntityContentServiceGroupAvatarChanged_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelEntityAvatar:(ImActorModelEntityAvatar *)newAvatar {
+- (instancetype)initWithAMAvatar:(AMAvatar *)newAvatar {
   if (self = [super initWithNSString:@"Group avatar changed"]) {
     self->newAvatar_ = newAvatar;
   }
@@ -41,7 +41,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupAvatarChanged, newAvata
   return [super init];
 }
 
-- (ImActorModelEntityAvatar *)getNewAvatar {
+- (AMAvatar *)getNewAvatar {
   return newAvatar_;
 }
 
@@ -49,18 +49,18 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupAvatarChanged, newAvata
   return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_AVATAR();
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  [super parseWithImActorModelDroidkitBserBserValues:values];
-  IOSByteArray *data = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) optBytesWithInt:10];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  [super parseWithBSBserValues:values];
+  IOSByteArray *data = [((BSBserValues *) nil_chk(values)) optBytesWithInt:10];
   if (data != nil) {
-    newAvatar_ = ImActorModelEntityAvatar_fromBytesWithByteArray_(data);
+    newAvatar_ = AMAvatar_fromBytesWithByteArray_(data);
   }
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [super serializeWithImActorModelDroidkitBserBserWriter:writer];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [super serializeWithBSBserWriter:writer];
   if (newAvatar_ != nil) {
-    [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeObjectWithInt:10 withImActorModelDroidkitBserBserObject:newAvatar_];
+    [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:10 withBSBserObject:newAvatar_];
   }
 }
 
@@ -72,12 +72,12 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupAvatarChanged, newAvata
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.content.ServiceGroupAvatarChanged;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelEntityAvatar:", "ServiceGroupAvatarChanged", NULL, 0x1, NULL },
+    { "initWithAMAvatar:", "ServiceGroupAvatarChanged", NULL, 0x1, NULL },
     { "init", "ServiceGroupAvatarChanged", NULL, 0x2, NULL },
     { "getNewAvatar", NULL, "Lim.actor.model.entity.Avatar;", 0x1, NULL },
     { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "newAvatar_", NULL, 0x2, "Lim.actor.model.entity.Avatar;", NULL,  },
@@ -90,7 +90,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupAvatarChanged, newAvata
 
 ImActorModelEntityContentServiceGroupAvatarChanged *ImActorModelEntityContentServiceGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentServiceGroupAvatarChanged_init();
-  return ((ImActorModelEntityContentServiceGroupAvatarChanged *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupAvatarChanged alloc] init], data));
+  return ((ImActorModelEntityContentServiceGroupAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupAvatarChanged alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupAvatarChanged)

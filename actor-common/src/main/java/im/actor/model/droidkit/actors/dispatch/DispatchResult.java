@@ -1,7 +1,7 @@
 package im.actor.model.droidkit.actors.dispatch;
 
 import im.actor.model.droidkit.actors.Environment;
-import im.actor.model.droidkit.actors.utils.ThreadLocalCompat;
+import im.actor.model.util.ThreadLocalCompat;
 
 /**
  * Created by ex3ndr on 29.10.14.

@@ -6,13 +6,13 @@
 #ifndef _ImActorModelApiUserKey_H_
 #define _ImActorModelApiUserKey_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
+@class BSBserValues;
+@class BSBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiUserKey : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiUserKey : BSBserObject {
 }
 
 - (instancetype)initWithInt:(jint)uid
@@ -24,9 +24,9 @@
 
 - (jlong)getKeyHash;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

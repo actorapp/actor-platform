@@ -6,7 +6,7 @@
 #ifndef _ImActorModelModulesUpdates_H_
 #define _ImActorModelModulesUpdates_H_
 
-@class ImActorModelDroidkitActorsActorRef;
+@class DKActorRef;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdatesSequenceActor;
 
@@ -36,7 +36,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdates)
 
-@interface ImActorModelModulesUpdates_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
+@interface ImActorModelModulesUpdates_$1 : NSObject < DKActorCreator > {
 }
 
 - (ImActorModelModulesUpdatesSequenceActor *)create;

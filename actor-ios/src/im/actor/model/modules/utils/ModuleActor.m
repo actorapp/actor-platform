@@ -4,7 +4,6 @@
 //
 
 #include "J2ObjC_source.h"
-#include "im/actor/model/Configuration.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/User.h"
@@ -70,24 +69,24 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
   return self;
 }
 
-- (id<ImActorModelMvvmKeyValueEngine>)users {
+- (id<AMKeyValueEngine>)users {
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getUsersModule])) getUsers];
 }
 
-- (ImActorModelEntityUser *)getUserWithInt:(jint)uid {
-  return [((id<ImActorModelMvvmKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
+- (AMUser *)getUserWithInt:(jint)uid {
+  return [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
 }
 
-- (id<ImActorModelStoragePreferencesStorage>)preferences {
-  return [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getConfiguration])) getPreferencesStorage];
+- (id<AMPreferencesStorage>)preferences {
+  return [((ImActorModelModulesModules *) nil_chk(messenger_)) getPreferences];
 }
 
 - (ImActorModelModulesUpdates *)updates {
   return [((ImActorModelModulesModules *) nil_chk(messenger_)) getUpdatesModule];
 }
 
-- (id<ImActorModelMvvmListEngine>)messagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getMessagesModule])) getConversationEngineWithImActorModelEntityPeer:peer];
+- (id<AMListEngine>)messagesWithAMPeer:(AMPeer *)peer {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getMessagesModule])) getConversationEngineWithAMPeer:peer];
 }
 
 - (jint)myUid {
@@ -119,7 +118,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
     { "getUserWithInt:", "getUser", "Lim.actor.model.entity.User;", 0x1, NULL },
     { "preferences", NULL, "Lim.actor.model.storage.PreferencesStorage;", 0x1, NULL },
     { "updates", NULL, "Lim.actor.model.modules.Updates;", 0x1, NULL },
-    { "messagesWithImActorModelEntityPeer:", "messages", "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
+    { "messagesWithAMPeer:", "messages", "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
     { "myUid", NULL, "I", 0x1, NULL },
     { "modules", NULL, "Lim.actor.model.modules.Modules;", 0x1, NULL },
     { "requestWithImActorModelNetworkParserRequest:", "request", "V", 0x1, NULL },
@@ -165,11 +164,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor_$1)
 @implementation ImActorModelModulesUtilsModuleActor_$2
 
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[ImActorModelModulesUtilsModuleActor_$2_$1 alloc] initWithImActorModelModulesUtilsModuleActor_$2:self withImActorModelNetworkParserResponse:response]];
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[ImActorModelModulesUtilsModuleActor_$2_$1 alloc] initWithImActorModelModulesUtilsModuleActor_$2:self withImActorModelNetworkParserResponse:response]];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk([this$0_ self__])) sendWithId:[[ImActorModelModulesUtilsModuleActor_$2_$2 alloc] initWithImActorModelModulesUtilsModuleActor_$2:self withAMRpcException:e]];
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[ImActorModelModulesUtilsModuleActor_$2_$2 alloc] initWithImActorModelModulesUtilsModuleActor_$2:self withAMRpcException:e]];
 }
 
 - (instancetype)initWithImActorModelModulesUtilsModuleActor:(ImActorModelModulesUtilsModuleActor *)outer$

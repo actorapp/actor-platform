@@ -9,32 +9,32 @@
 #include "im/actor/model/entity/GroupState.h"
 #include "java/util/List.h"
 
-@interface ImActorModelEntityGroup () {
+@interface AMGroup () {
  @public
   jint groupId_;
   jlong accessHash_;
   NSString *title_;
-  ImActorModelEntityAvatar *avatar_;
+  AMAvatar *avatar_;
   id<JavaUtilList> members_;
   jint adminId_;
-  ImActorModelEntityGroupStateEnum *groupState_;
+  AMGroupStateEnum *groupState_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityGroup, title_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityGroup, avatar_, ImActorModelEntityAvatar *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityGroup, members_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelEntityGroup, groupState_, ImActorModelEntityGroupStateEnum *)
+J2OBJC_FIELD_SETTER(AMGroup, title_, NSString *)
+J2OBJC_FIELD_SETTER(AMGroup, avatar_, AMAvatar *)
+J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(AMGroup, groupState_, AMGroupStateEnum *)
 
-@implementation ImActorModelEntityGroup
+@implementation AMGroup
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)accessHash
                withNSString:(NSString *)title
-withImActorModelEntityAvatar:(ImActorModelEntityAvatar *)avatar
+               withAMAvatar:(AMAvatar *)avatar
            withJavaUtilList:(id<JavaUtilList>)members
                     withInt:(jint)adminId
-withImActorModelEntityGroupStateEnum:(ImActorModelEntityGroupStateEnum *)groupState {
+       withAMGroupStateEnum:(AMGroupStateEnum *)groupState {
   if (self = [super init]) {
     self->groupId_ = groupId;
     self->accessHash_ = accessHash;
@@ -59,7 +59,7 @@ withImActorModelEntityGroupStateEnum:(ImActorModelEntityGroupStateEnum *)groupSt
   return title_;
 }
 
-- (ImActorModelEntityAvatar *)getAvatar {
+- (AMAvatar *)getAvatar {
   return avatar_;
 }
 
@@ -71,11 +71,11 @@ withImActorModelEntityGroupStateEnum:(ImActorModelEntityGroupStateEnum *)groupSt
   return adminId_;
 }
 
-- (ImActorModelEntityGroupStateEnum *)getGroupState {
+- (AMGroupStateEnum *)getGroupState {
   return groupState_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityGroup *)other {
+- (void)copyAllFieldsTo:(AMGroup *)other {
   [super copyAllFieldsTo:other];
   other->groupId_ = groupId_;
   other->accessHash_ = accessHash_;
@@ -88,7 +88,7 @@ withImActorModelEntityGroupStateEnum:(ImActorModelEntityGroupStateEnum *)groupSt
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withLong:withNSString:withImActorModelEntityAvatar:withJavaUtilList:withInt:withImActorModelEntityGroupStateEnum:", "Group", NULL, 0x1, NULL },
+    { "initWithInt:withLong:withNSString:withAMAvatar:withJavaUtilList:withInt:withAMGroupStateEnum:", "Group", NULL, 0x1, NULL },
     { "getGroupId", NULL, "I", 0x1, NULL },
     { "getAccessHash", NULL, "J", 0x1, NULL },
     { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
@@ -106,10 +106,10 @@ withImActorModelEntityGroupStateEnum:(ImActorModelEntityGroupStateEnum *)groupSt
     { "adminId_", NULL, 0x12, "I", NULL,  },
     { "groupState_", NULL, 0x12, "Lim.actor.model.entity.GroupState;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelEntityGroup = { 1, "Group", "im.actor.model.entity", NULL, 0x1, 8, methods, 7, fields, 0, NULL};
-  return &_ImActorModelEntityGroup;
+  static const J2ObjcClassInfo _AMGroup = { 1, "Group", "im.actor.model.entity", NULL, 0x1, 8, methods, 7, fields, 0, NULL};
+  return &_AMGroup;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityGroup)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroup)

@@ -16,13 +16,13 @@
 
 @interface ImActorModelModulesPresence () {
  @public
-  ImActorModelDroidkitActorsActorRef *myPresence_;
-  ImActorModelDroidkitActorsActorRef *presence_;
+  DKActorRef *myPresence_;
+  DKActorRef *presence_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesPresence, myPresence_, ImActorModelDroidkitActorsActorRef *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesPresence, presence_, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesPresence, myPresence_, DKActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesPresence, presence_, DKActorRef *)
 
 @interface ImActorModelModulesPresence_$1 () {
  @public
@@ -36,33 +36,33 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresence_$1, val$modules_, ImActorModelMo
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super initWithImActorModelModulesModules:modules]) {
-    self->myPresence_ = [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(ImActorModelModulesPresenceOwnPresenceActor_class_(), [[ImActorModelModulesPresence_$1 alloc] initWithImActorModelModulesModules:modules]) withNSString:@"actor/presence/own"];
+    self->myPresence_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesPresenceOwnPresenceActor_class_(), [[ImActorModelModulesPresence_$1 alloc] initWithImActorModelModulesModules:modules]) withNSString:@"actor/presence/own"];
     presence_ = ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(modules);
   }
   return self;
 }
 
 - (void)run {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(myPresence_)) sendWithId:[[ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible alloc] init]];
+  [((DKActorRef *) nil_chk(myPresence_)) sendWithId:[[ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible alloc] init]];
 }
 
 - (void)onAppVisible {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(myPresence_)) sendWithId:[[ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible alloc] init]];
+  [((DKActorRef *) nil_chk(myPresence_)) sendWithId:[[ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible alloc] init]];
 }
 
 - (void)onAppHidden {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(myPresence_)) sendWithId:[[ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden alloc] init]];
+  [((DKActorRef *) nil_chk(myPresence_)) sendWithId:[[ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden alloc] init]];
 }
 
-- (void)onConversationOpenWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(presence_)) sendWithId:[[ImActorModelModulesPresencePresenceActor_Subscribe alloc] initWithImActorModelEntityPeer:peer]];
+- (void)onConversationOpenWithAMPeer:(AMPeer *)peer {
+  [((DKActorRef *) nil_chk(presence_)) sendWithId:[[ImActorModelModulesPresencePresenceActor_Subscribe alloc] initWithAMPeer:peer]];
 }
 
-- (void)onConversationClosedWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
+- (void)onConversationClosedWithAMPeer:(AMPeer *)peer {
 }
 
 - (void)onNewSessionCreated {
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(presence_)) sendWithId:[[ImActorModelModulesPresencePresenceActor_SessionCreated alloc] init]];
+  [((DKActorRef *) nil_chk(presence_)) sendWithId:[[ImActorModelModulesPresencePresenceActor_SessionCreated alloc] init]];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesPresence *)other {
@@ -77,8 +77,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresence_$1, val$modules_, ImActorModelMo
     { "run", NULL, "V", 0x1, NULL },
     { "onAppVisible", NULL, "V", 0x1, NULL },
     { "onAppHidden", NULL, "V", 0x1, NULL },
-    { "onConversationOpenWithImActorModelEntityPeer:", "onConversationOpen", "V", 0x1, NULL },
-    { "onConversationClosedWithImActorModelEntityPeer:", "onConversationClosed", "V", 0x1, NULL },
+    { "onConversationOpenWithAMPeer:", "onConversationOpen", "V", 0x1, NULL },
+    { "onConversationClosedWithAMPeer:", "onConversationClosed", "V", 0x1, NULL },
     { "onNewSessionCreated", NULL, "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {

@@ -6,14 +6,14 @@
 #ifndef _ImActorModelApiFastThumb_H_
 #define _ImActorModelApiFastThumb_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiFastThumb : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiFastThumb : BSBserObject {
 }
 
 - (instancetype)initWithInt:(jint)w
@@ -28,9 +28,9 @@
 
 - (IOSByteArray *)getThumb;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

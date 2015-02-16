@@ -6,13 +6,13 @@
 #ifndef _ImActorModelApiFileLocation_H_
 #define _ImActorModelApiFileLocation_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
+@class BSBserValues;
+@class BSBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiFileLocation : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiFileLocation : BSBserObject {
 }
 
 - (instancetype)initWithLong:(jlong)fileId
@@ -24,9 +24,9 @@
 
 - (jlong)getAccessHash;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

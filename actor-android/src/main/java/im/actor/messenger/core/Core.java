@@ -15,7 +15,7 @@ import im.actor.messenger.core.images.*;
 import im.actor.messenger.model.TypingModel;
 import im.actor.messenger.model.UserPresence;
 import im.actor.messenger.storage.provider.AppEngineFactory;
-import im.actor.model.Configuration;
+import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
 import im.actor.model.MessengerCallback;
 import im.actor.model.android.AndroidLog;
@@ -108,7 +108,7 @@ public class Core {
         this.imageLoader.getTaskResolver().register(AvatarTask.class, AvatarActor.class);
         this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
 
-        Configuration.Builder builder = new Configuration.Builder();
+        ConfigurationBuilder builder = new ConfigurationBuilder();
 
         builder.setThreading(new JavaThreading());
         builder.setNetworking(new JavaNetworking());

@@ -14,9 +14,9 @@
 #include "java/util/HashMap.h"
 #include "java/util/List.h"
 
-__attribute__((unused)) static void ImActorModelStorageMemoryListEngine_updateSort(ImActorModelStorageMemoryListEngine *self);
+__attribute__((unused)) static void AMMemoryListEngine_updateSort(AMMemoryListEngine *self);
 
-@interface ImActorModelStorageMemoryListEngine () {
+@interface AMMemoryListEngine () {
  @public
   JavaUtilHashMap *items_;
   JavaUtilArrayList *sortList_;
@@ -26,11 +26,11 @@ __attribute__((unused)) static void ImActorModelStorageMemoryListEngine_updateSo
 - (void)updateSort;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, items_, JavaUtilHashMap *)
-J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, sortList_, JavaUtilArrayList *)
-J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArrayList *)
+J2OBJC_FIELD_SETTER(AMMemoryListEngine, items_, JavaUtilHashMap *)
+J2OBJC_FIELD_SETTER(AMMemoryListEngine, sortList_, JavaUtilArrayList *)
+J2OBJC_FIELD_SETTER(AMMemoryListEngine, listeners_, JavaUtilArrayList *)
 
-@implementation ImActorModelStorageMemoryListEngine
+@implementation AMMemoryListEngine
 
 - (instancetype)init {
   if (self = [super init]) {
@@ -41,30 +41,30 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArr
   return self;
 }
 
-- (void)addListenerWithImActorModelStorageMemoryListEngine_EngineListener:(id<ImActorModelStorageMemoryListEngine_EngineListener>)l {
+- (void)addListenerWithAMMemoryListEngine_EngineListener:(id<AMMemoryListEngine_EngineListener>)l {
   [((JavaUtilArrayList *) nil_chk(listeners_)) addWithId:l];
 }
 
-- (void)removeListenerWithImActorModelStorageMemoryListEngine_EngineListener:(id<ImActorModelStorageMemoryListEngine_EngineListener>)l {
+- (void)removeListenerWithAMMemoryListEngine_EngineListener:(id<AMMemoryListEngine_EngineListener>)l {
   [((JavaUtilArrayList *) nil_chk(listeners_)) removeWithId:l];
 }
 
 - (void)updateSort {
-  ImActorModelStorageMemoryListEngine_updateSort(self);
+  AMMemoryListEngine_updateSort(self);
 }
 
 - (JavaUtilArrayList *)getList {
   return (JavaUtilArrayList *) check_class_cast([((JavaUtilArrayList *) nil_chk(sortList_)) clone], [JavaUtilArrayList class]);
 }
 
-- (void)addOrUpdateItemWithImActorModelMvvmListEngineItem:(id<ImActorModelMvvmListEngineItem>)item {
-  (void) [((JavaUtilHashMap *) nil_chk(items_)) putWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelMvvmListEngineItem>) nil_chk(item)) getListId]) withId:item];
-  ImActorModelStorageMemoryListEngine_updateSort(self);
+- (void)addOrUpdateItemWithAMListEngineItem:(id<AMListEngineItem>)item {
+  (void) [((JavaUtilHashMap *) nil_chk(items_)) putWithId:JavaLangLong_valueOfWithLong_([((id<AMListEngineItem>) nil_chk(item)) getListId]) withId:item];
+  AMMemoryListEngine_updateSort(self);
 }
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values {
-  for (id<ImActorModelMvvmListEngineItem> __strong v in nil_chk(values)) {
-    [self addOrUpdateItemWithImActorModelMvvmListEngineItem:v];
+  for (id<AMListEngineItem> __strong v in nil_chk(values)) {
+    [self addOrUpdateItemWithAMListEngineItem:v];
   }
 }
 
@@ -75,7 +75,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArr
 
 - (void)removeItemWithLong:(jlong)id_ {
   (void) [((JavaUtilHashMap *) nil_chk(items_)) removeWithId:JavaLangLong_valueOfWithLong_(id_)];
-  ImActorModelStorageMemoryListEngine_updateSort(self);
+  AMMemoryListEngine_updateSort(self);
 }
 
 - (void)removeItemsWithLongArray:(IOSLongArray *)ids {
@@ -88,12 +88,12 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArr
       (void) [((JavaUtilHashMap *) nil_chk(items_)) removeWithId:JavaLangLong_valueOfWithLong_(l)];
     }
   }
-  ImActorModelStorageMemoryListEngine_updateSort(self);
+  AMMemoryListEngine_updateSort(self);
 }
 
 - (void)clear {
   [((JavaUtilHashMap *) nil_chk(items_)) clear];
-  ImActorModelStorageMemoryListEngine_updateSort(self);
+  AMMemoryListEngine_updateSort(self);
 }
 
 - (id)getValueWithLong:(jlong)id_ {
@@ -108,7 +108,7 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArr
   return [((JavaUtilHashMap *) nil_chk(items_)) size];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelStorageMemoryListEngine *)other {
+- (void)copyAllFieldsTo:(AMMemoryListEngine *)other {
   [super copyAllFieldsTo:other];
   other->items_ = items_;
   other->sortList_ = sortList_;
@@ -118,11 +118,11 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArr
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "init", "MemoryListEngine", NULL, 0x1, NULL },
-    { "addListenerWithImActorModelStorageMemoryListEngine_EngineListener:", "addListener", "V", 0x1, NULL },
-    { "removeListenerWithImActorModelStorageMemoryListEngine_EngineListener:", "removeListener", "V", 0x1, NULL },
+    { "addListenerWithAMMemoryListEngine_EngineListener:", "addListener", "V", 0x1, NULL },
+    { "removeListenerWithAMMemoryListEngine_EngineListener:", "removeListener", "V", 0x1, NULL },
     { "updateSort", NULL, "V", 0x2, NULL },
     { "getList", NULL, "Ljava.util.ArrayList;", 0x1, NULL },
-    { "addOrUpdateItemWithImActorModelMvvmListEngineItem:", "addOrUpdateItem", "V", 0x1, NULL },
+    { "addOrUpdateItemWithAMListEngineItem:", "addOrUpdateItem", "V", 0x1, NULL },
     { "addOrUpdateItemsWithJavaUtilList:", "addOrUpdateItems", "V", 0x1, NULL },
     { "replaceItemsWithJavaUtilList:", "replaceItems", "V", 0x1, NULL },
     { "removeItemWithLong:", "removeItem", "V", 0x1, NULL },
@@ -137,45 +137,45 @@ J2OBJC_FIELD_SETTER(ImActorModelStorageMemoryListEngine, listeners_, JavaUtilArr
     { "sortList_", NULL, 0x2, "Ljava.util.ArrayList;", NULL,  },
     { "listeners_", NULL, 0x2, "Ljava.util.ArrayList;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelStorageMemoryListEngine = { 1, "MemoryListEngine", "im.actor.model.storage", NULL, 0x1, 14, methods, 3, fields, 0, NULL};
-  return &_ImActorModelStorageMemoryListEngine;
+  static const J2ObjcClassInfo _AMMemoryListEngine = { 1, "MemoryListEngine", "im.actor.model.storage", NULL, 0x1, 14, methods, 3, fields, 0, NULL};
+  return &_AMMemoryListEngine;
 }
 
 @end
 
-void ImActorModelStorageMemoryListEngine_updateSort(ImActorModelStorageMemoryListEngine *self) {
+void AMMemoryListEngine_updateSort(AMMemoryListEngine *self) {
   [((JavaUtilArrayList *) nil_chk(self->sortList_)) clear];
   [self->sortList_ addAllWithJavaUtilCollection:[((JavaUtilHashMap *) nil_chk(self->items_)) values]];
-  JavaUtilCollections_sortWithJavaUtilList_withJavaUtilComparator_(self->sortList_, [[ImActorModelStorageMemoryListEngine_$1 alloc] init]);
-  for (id<ImActorModelStorageMemoryListEngine_EngineListener> __strong l in nil_chk(self->listeners_)) {
-    [((id<ImActorModelStorageMemoryListEngine_EngineListener>) nil_chk(l)) onItemsChanged];
+  JavaUtilCollections_sortWithJavaUtilList_withJavaUtilComparator_(self->sortList_, [[AMMemoryListEngine_$1 alloc] init]);
+  for (id<AMMemoryListEngine_EngineListener> __strong l in nil_chk(self->listeners_)) {
+    [((id<AMMemoryListEngine_EngineListener>) nil_chk(l)) onItemsChanged];
   }
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelStorageMemoryListEngine)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMemoryListEngine)
 
-@interface ImActorModelStorageMemoryListEngine_EngineListener : NSObject
+@interface AMMemoryListEngine_EngineListener : NSObject
 @end
 
-@implementation ImActorModelStorageMemoryListEngine_EngineListener
+@implementation AMMemoryListEngine_EngineListener
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "onItemsChanged", NULL, "V", 0x401, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelStorageMemoryListEngine_EngineListener = { 1, "EngineListener", "im.actor.model.storage", "MemoryListEngine", 0x201, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelStorageMemoryListEngine_EngineListener;
+  static const J2ObjcClassInfo _AMMemoryListEngine_EngineListener = { 1, "EngineListener", "im.actor.model.storage", "MemoryListEngine", 0x201, 1, methods, 0, NULL, 0, NULL};
+  return &_AMMemoryListEngine_EngineListener;
 }
 
 @end
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelStorageMemoryListEngine_EngineListener)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMMemoryListEngine_EngineListener)
 
-@implementation ImActorModelStorageMemoryListEngine_$1
+@implementation AMMemoryListEngine_$1
 
-- (jint)compareWithId:(id<ImActorModelMvvmListEngineItem>)o1
-               withId:(id<ImActorModelMvvmListEngineItem>)o2 {
-  return [self compareWithLong:[((id<ImActorModelMvvmListEngineItem>) nil_chk(o2)) getListSortKey] withLong:[((id<ImActorModelMvvmListEngineItem>) nil_chk(o1)) getListSortKey]];
+- (jint)compareWithId:(id<AMListEngineItem>)o1
+               withId:(id<AMListEngineItem>)o2 {
+  return [self compareWithLong:[((id<AMListEngineItem>) nil_chk(o2)) getListSortKey] withLong:[((id<AMListEngineItem>) nil_chk(o1)) getListSortKey]];
 }
 
 - (jint)compareWithLong:(jlong)x
@@ -189,14 +189,14 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelStorageMemoryListEngine_EngineL
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "compareWithImActorModelMvvmListEngineItem:withImActorModelMvvmListEngineItem:", "compare", "I", 0x1, NULL },
+    { "compareWithAMListEngineItem:withAMListEngineItem:", "compare", "I", 0x1, NULL },
     { "compareWithLong:withLong:", "compare", "I", 0x1, NULL },
     { "init", NULL, NULL, 0x0, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelStorageMemoryListEngine_$1 = { 1, "$1", "im.actor.model.storage", "MemoryListEngine", 0x8000, 3, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelStorageMemoryListEngine_$1;
+  static const J2ObjcClassInfo _AMMemoryListEngine_$1 = { 1, "$1", "im.actor.model.storage", "MemoryListEngine", 0x8000, 3, methods, 0, NULL, 0, NULL};
+  return &_AMMemoryListEngine_$1;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelStorageMemoryListEngine_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMemoryListEngine_$1)

@@ -3,32 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/storage/MemoryListEngine.java
 //
 
-#ifndef _ImActorModelStorageMemoryListEngine_H_
-#define _ImActorModelStorageMemoryListEngine_H_
+#ifndef _AMMemoryListEngine_H_
+#define _AMMemoryListEngine_H_
 
 @class IOSLongArray;
 @class JavaUtilArrayList;
 @class JavaUtilHashMap;
-@protocol ImActorModelMvvmListEngineItem;
-@protocol ImActorModelStorageMemoryListEngine_EngineListener;
+@protocol AMListEngineItem;
+@protocol AMMemoryListEngine_EngineListener;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/mvvm/ListEngine.h"
 #include "java/util/Comparator.h"
 
-@interface ImActorModelStorageMemoryListEngine : NSObject < ImActorModelMvvmListEngine > {
+@interface AMMemoryListEngine : NSObject < AMListEngine > {
 }
 
 - (instancetype)init;
 
-- (void)addListenerWithImActorModelStorageMemoryListEngine_EngineListener:(id<ImActorModelStorageMemoryListEngine_EngineListener>)l;
+- (void)addListenerWithAMMemoryListEngine_EngineListener:(id<AMMemoryListEngine_EngineListener>)l;
 
-- (void)removeListenerWithImActorModelStorageMemoryListEngine_EngineListener:(id<ImActorModelStorageMemoryListEngine_EngineListener>)l;
+- (void)removeListenerWithAMMemoryListEngine_EngineListener:(id<AMMemoryListEngine_EngineListener>)l;
 
 - (JavaUtilArrayList *)getList;
 
-- (void)addOrUpdateItemWithImActorModelMvvmListEngineItem:(id<ImActorModelMvvmListEngineItem>)item;
+- (void)addOrUpdateItemWithAMListEngineItem:(id<AMListEngineItem>)item;
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
 
@@ -48,28 +48,30 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelStorageMemoryListEngine)
+J2OBJC_EMPTY_STATIC_INIT(AMMemoryListEngine)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelStorageMemoryListEngine)
+typedef AMMemoryListEngine ImActorModelStorageMemoryListEngine;
 
-@protocol ImActorModelStorageMemoryListEngine_EngineListener < NSObject, JavaObject >
+J2OBJC_TYPE_LITERAL_HEADER(AMMemoryListEngine)
+
+@protocol AMMemoryListEngine_EngineListener < NSObject, JavaObject >
 
 - (void)onItemsChanged;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelStorageMemoryListEngine_EngineListener)
+J2OBJC_EMPTY_STATIC_INIT(AMMemoryListEngine_EngineListener)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelStorageMemoryListEngine_EngineListener)
+J2OBJC_TYPE_LITERAL_HEADER(AMMemoryListEngine_EngineListener)
 
-@interface ImActorModelStorageMemoryListEngine_$1 : NSObject < JavaUtilComparator > {
+@interface AMMemoryListEngine_$1 : NSObject < JavaUtilComparator > {
 }
 
-- (jint)compareWithId:(id<ImActorModelMvvmListEngineItem>)o1
-               withId:(id<ImActorModelMvvmListEngineItem>)o2;
+- (jint)compareWithId:(id<AMListEngineItem>)o1
+               withId:(id<AMListEngineItem>)o2;
 
 - (jint)compareWithLong:(jlong)x
                withLong:(jlong)y;
@@ -78,11 +80,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelStorageMemoryListEngine_EngineListener)
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelStorageMemoryListEngine_$1)
+J2OBJC_EMPTY_STATIC_INIT(AMMemoryListEngine_$1)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelStorageMemoryListEngine_$1)
+J2OBJC_TYPE_LITERAL_HEADER(AMMemoryListEngine_$1)
 
-#endif // _ImActorModelStorageMemoryListEngine_H_
+#endif // _AMMemoryListEngine_H_

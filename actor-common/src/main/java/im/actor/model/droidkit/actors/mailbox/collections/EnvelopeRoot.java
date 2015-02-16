@@ -4,7 +4,7 @@ import im.actor.model.droidkit.actors.ActorTime;
 import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
-import im.actor.model.droidkit.actors.utils.ThreadLocalCompat;
+import im.actor.model.util.ThreadLocalCompat;
 
 import java.util.*;
 

@@ -8,33 +8,33 @@
 #include "im/actor/model/entity/PeerType.h"
 #include "java/lang/IllegalArgumentException.h"
 
-BOOL ImActorModelEntityPeerTypeEnum_initialized = NO;
+BOOL AMPeerTypeEnum_initialized = NO;
 
-ImActorModelEntityPeerTypeEnum *ImActorModelEntityPeerTypeEnum_values_[3];
+AMPeerTypeEnum *AMPeerTypeEnum_values_[3];
 
-@implementation ImActorModelEntityPeerTypeEnum
+@implementation AMPeerTypeEnum
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal {
   return [super initWithNSString:__name withInt:__ordinal];
 }
 
-IOSObjectArray *ImActorModelEntityPeerTypeEnum_values() {
-  ImActorModelEntityPeerTypeEnum_init();
-  return [IOSObjectArray arrayWithObjects:ImActorModelEntityPeerTypeEnum_values_ count:3 type:ImActorModelEntityPeerTypeEnum_class_()];
+IOSObjectArray *AMPeerTypeEnum_values() {
+  AMPeerTypeEnum_init();
+  return [IOSObjectArray arrayWithObjects:AMPeerTypeEnum_values_ count:3 type:AMPeerTypeEnum_class_()];
 }
 + (IOSObjectArray *)values {
-  return ImActorModelEntityPeerTypeEnum_values();
+  return AMPeerTypeEnum_values();
 }
 
-+ (ImActorModelEntityPeerTypeEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelEntityPeerTypeEnum_valueOfWithNSString_(name);
++ (AMPeerTypeEnum *)valueOfWithNSString:(NSString *)name {
+  return AMPeerTypeEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelEntityPeerTypeEnum *ImActorModelEntityPeerTypeEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelEntityPeerTypeEnum_init();
+AMPeerTypeEnum *AMPeerTypeEnum_valueOfWithNSString_(NSString *name) {
+  AMPeerTypeEnum_init();
   for (int i = 0; i < 3; i++) {
-    ImActorModelEntityPeerTypeEnum *e = ImActorModelEntityPeerTypeEnum_values_[i];
+    AMPeerTypeEnum *e = AMPeerTypeEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -48,11 +48,11 @@ ImActorModelEntityPeerTypeEnum *ImActorModelEntityPeerTypeEnum_valueOfWithNSStri
 }
 
 + (void)initialize {
-  if (self == [ImActorModelEntityPeerTypeEnum class]) {
-    ImActorModelEntityPeerTypeEnum_PRIVATE = [[ImActorModelEntityPeerTypeEnum alloc] initWithNSString:@"PRIVATE" withInt:0];
-    ImActorModelEntityPeerTypeEnum_GROUP = [[ImActorModelEntityPeerTypeEnum alloc] initWithNSString:@"GROUP" withInt:1];
-    ImActorModelEntityPeerTypeEnum_EMAIL = [[ImActorModelEntityPeerTypeEnum alloc] initWithNSString:@"EMAIL" withInt:2];
-    J2OBJC_SET_INITIALIZED(ImActorModelEntityPeerTypeEnum)
+  if (self == [AMPeerTypeEnum class]) {
+    AMPeerTypeEnum_PRIVATE = [[AMPeerTypeEnum alloc] initWithNSString:@"PRIVATE" withInt:0];
+    AMPeerTypeEnum_GROUP = [[AMPeerTypeEnum alloc] initWithNSString:@"GROUP" withInt:1];
+    AMPeerTypeEnum_EMAIL = [[AMPeerTypeEnum alloc] initWithNSString:@"EMAIL" withInt:2];
+    J2OBJC_SET_INITIALIZED(AMPeerTypeEnum)
   }
 }
 
@@ -61,15 +61,15 @@ ImActorModelEntityPeerTypeEnum *ImActorModelEntityPeerTypeEnum_valueOfWithNSStri
     { "initWithNSString:withInt:", "init", NULL, 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "PRIVATE", "PRIVATE", 0x4019, "Lim.actor.model.entity.PeerType;", &ImActorModelEntityPeerTypeEnum_PRIVATE,  },
-    { "GROUP", "GROUP", 0x4019, "Lim.actor.model.entity.PeerType;", &ImActorModelEntityPeerTypeEnum_GROUP,  },
-    { "EMAIL", "EMAIL", 0x4019, "Lim.actor.model.entity.PeerType;", &ImActorModelEntityPeerTypeEnum_EMAIL,  },
+    { "PRIVATE", "PRIVATE", 0x4019, "Lim.actor.model.entity.PeerType;", &AMPeerTypeEnum_PRIVATE,  },
+    { "GROUP", "GROUP", 0x4019, "Lim.actor.model.entity.PeerType;", &AMPeerTypeEnum_GROUP,  },
+    { "EMAIL", "EMAIL", 0x4019, "Lim.actor.model.entity.PeerType;", &AMPeerTypeEnum_EMAIL,  },
   };
   static const char *superclass_type_args[] = {"Lim.actor.model.entity.PeerType;"};
-  static const J2ObjcClassInfo _ImActorModelEntityPeerTypeEnum = { 1, "PeerType", "im.actor.model.entity", NULL, 0x4011, 1, methods, 3, fields, 1, superclass_type_args};
-  return &_ImActorModelEntityPeerTypeEnum;
+  static const J2ObjcClassInfo _AMPeerTypeEnum = { 1, "PeerType", "im.actor.model.entity", NULL, 0x4011, 1, methods, 3, fields, 1, superclass_type_args};
+  return &_AMPeerTypeEnum;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityPeerTypeEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMPeerTypeEnum)

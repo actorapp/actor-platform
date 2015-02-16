@@ -6,13 +6,13 @@
 #ifndef _ImActorModelApiGroupOutPeer_H_
 #define _ImActorModelApiGroupOutPeer_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
+@class BSBserValues;
+@class BSBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiGroupOutPeer : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiGroupOutPeer : BSBserObject {
 }
 
 - (instancetype)initWithInt:(jint)groupId
@@ -24,9 +24,9 @@
 
 - (jlong)getAccessHash;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

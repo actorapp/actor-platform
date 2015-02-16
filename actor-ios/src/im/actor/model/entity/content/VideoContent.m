@@ -66,16 +66,16 @@
   return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_DOCUMENT_VIDEO();
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  [super parseWithImActorModelDroidkitBserBserValues:values];
-  duration_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getIntWithInt:10];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  [super parseWithBSBserValues:values];
+  duration_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
   w_ = [values getIntWithInt:11];
   h_ = [values getIntWithInt:12];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [super serializeWithImActorModelDroidkitBserBserWriter:writer];
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:duration_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [super serializeWithBSBserWriter:writer];
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:duration_];
   [writer writeIntWithInt:11 withInt:w_];
   [writer writeIntWithInt:12 withInt:h_];
 }
@@ -96,8 +96,8 @@
     { "getW", NULL, "I", 0x1, NULL },
     { "getH", NULL, "I", 0x1, NULL },
     { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "duration_", NULL, 0x2, "I", NULL,  },
@@ -112,7 +112,7 @@
 
 ImActorModelEntityContentVideoContent *ImActorModelEntityContentVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentVideoContent_init();
-  return ((ImActorModelEntityContentVideoContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentVideoContent alloc] init], data));
+  return ((ImActorModelEntityContentVideoContent *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentVideoContent alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentVideoContent)

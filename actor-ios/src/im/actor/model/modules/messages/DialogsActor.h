@@ -6,14 +6,14 @@
 #ifndef _ImActorModelModulesMessagesDialogsActor_H_
 #define _ImActorModelModulesMessagesDialogsActor_H_
 
-@class ImActorModelEntityAvatar;
-@class ImActorModelEntityMessage;
-@class ImActorModelEntityMessageStateEnum;
-@class ImActorModelEntityPeer;
-@class ImActorModelEntityUser;
+@class AMAvatar;
+@class AMMessage;
+@class AMMessageStateEnum;
+@class AMPeer;
+@class AMUser;
 @class ImActorModelModulesMessagesDialogsActor_PeerDesc;
 @class ImActorModelModulesModules;
-@protocol ImActorModelMvvmListEngine;
+@protocol AMListEngine;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -40,7 +40,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor)
 
 - (NSString *)getTitle;
 
-- (ImActorModelEntityAvatar *)getAvatar;
+- (AMAvatar *)getAvatar;
 
 @end
 
@@ -54,9 +54,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_PeerDesc)
 @interface ImActorModelModulesMessagesDialogsActor_ChatClear : NSObject {
 }
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (instancetype)initWithAMPeer:(AMPeer *)peer;
 
-- (ImActorModelEntityPeer *)getPeer;
+- (AMPeer *)getPeer;
 
 @end
 
@@ -70,9 +70,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_ChatClear)
 @interface ImActorModelModulesMessagesDialogsActor_ChatDelete : NSObject {
 }
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (instancetype)initWithAMPeer:(AMPeer *)peer;
 
-- (ImActorModelEntityPeer *)getPeer;
+- (AMPeer *)getPeer;
 
 @end
 
@@ -86,12 +86,12 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_ChatDelete)
 @interface ImActorModelModulesMessagesDialogsActor_InMessage : NSObject {
 }
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                 withImActorModelEntityMessage:(ImActorModelEntityMessage *)message;
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                 withAMMessage:(AMMessage *)message;
 
-- (ImActorModelEntityPeer *)getPeer;
+- (AMPeer *)getPeer;
 
-- (ImActorModelEntityMessage *)getMessage;
+- (AMMessage *)getMessage;
 
 @end
 
@@ -105,9 +105,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_InMessage)
 @interface ImActorModelModulesMessagesDialogsActor_UserChanged : NSObject {
 }
 
-- (instancetype)initWithImActorModelEntityUser:(ImActorModelEntityUser *)user;
+- (instancetype)initWithAMUser:(AMUser *)user;
 
-- (ImActorModelEntityUser *)getUser;
+- (AMUser *)getUser;
 
 @end
 
@@ -121,15 +121,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_UserChanged)
 @interface ImActorModelModulesMessagesDialogsActor_MessageStateChanged : NSObject {
 }
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                                      withLong:(jlong)rid
-        withImActorModelEntityMessageStateEnum:(ImActorModelEntityMessageStateEnum *)state;
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                      withLong:(jlong)rid
+        withAMMessageStateEnum:(AMMessageStateEnum *)state;
 
-- (ImActorModelEntityPeer *)getPeer;
+- (AMPeer *)getPeer;
 
 - (jlong)getRid;
 
-- (ImActorModelEntityMessageStateEnum *)getState;
+- (AMMessageStateEnum *)getState;
 
 @end
 
@@ -143,10 +143,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_MessageStateC
 @interface ImActorModelModulesMessagesDialogsActor_CounterChanged : NSObject {
 }
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                                       withInt:(jint)count;
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                       withInt:(jint)count;
 
-- (ImActorModelEntityPeer *)getPeer;
+- (AMPeer *)getPeer;
 
 - (jint)getCount;
 
@@ -162,12 +162,12 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_CounterChange
 @interface ImActorModelModulesMessagesDialogsActor_Deleted : NSObject {
 }
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                 withImActorModelEntityMessage:(ImActorModelEntityMessage *)message;
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                 withAMMessage:(AMMessage *)message;
 
-- (ImActorModelEntityPeer *)getPeer;
+- (AMPeer *)getPeer;
 
-- (ImActorModelEntityMessage *)getMessage;
+- (AMMessage *)getMessage;
 
 @end
 

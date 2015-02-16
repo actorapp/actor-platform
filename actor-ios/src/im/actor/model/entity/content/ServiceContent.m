@@ -47,14 +47,14 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceContent, compatText_, NSStri
   return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE();
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  [super parseWithImActorModelDroidkitBserBserValues:values];
-  compatText_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:2];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  [super parseWithBSBserValues:values];
+  compatText_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:2];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
-  [super serializeWithImActorModelDroidkitBserBserWriter:writer];
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:compatText_];
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [super serializeWithBSBserWriter:writer];
+  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:compatText_];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelEntityContentServiceContent *)other {
@@ -69,8 +69,8 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceContent, compatText_, NSStri
     { "init", "ServiceContent", NULL, 0x4, NULL },
     { "getCompatText", NULL, "Ljava.lang.String;", 0x1, NULL },
     { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "compatText_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
@@ -83,7 +83,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceContent, compatText_, NSStri
 
 ImActorModelEntityContentServiceContent *ImActorModelEntityContentServiceContent_serviceFromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelEntityContentServiceContent_init();
-  return ((ImActorModelEntityContentServiceContent *) ImActorModelDroidkitBserBser_parseWithImActorModelDroidkitBserBserObject_withByteArray_([[ImActorModelEntityContentServiceContent alloc] init], data));
+  return ((ImActorModelEntityContentServiceContent *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceContent alloc] init], data));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceContent)

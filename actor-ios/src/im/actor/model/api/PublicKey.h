@@ -6,14 +6,14 @@
 #ifndef _ImActorModelApiPublicKey_H_
 #define _ImActorModelApiPublicKey_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiPublicKey : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiPublicKey : BSBserObject {
 }
 
 - (instancetype)initWithInt:(jint)uid
@@ -28,9 +28,9 @@
 
 - (IOSByteArray *)getKey;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

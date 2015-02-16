@@ -4,32 +4,32 @@
 //
 
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/actors/conf/EnvConfig.h"
-#include "im/actor/model/droidkit/actors/utils/AtomicIntegerCompat.h"
+#include "im/actor/model/droidkit/actors/Environment.h"
+#include "im/actor/model/util/AtomicIntegerCompat.h"
 #include "im/actor/model/util/ExponentialBackoff.h"
 #include "java/util/Random.h"
 
 @interface AMExponentialBackoff () {
  @public
-  ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *currentFailureCount_;
+  AMAtomicIntegerCompat *currentFailureCount_;
   JavaUtilRandom *random_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(AMExponentialBackoff, currentFailureCount_, ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *)
+J2OBJC_FIELD_SETTER(AMExponentialBackoff, currentFailureCount_, AMAtomicIntegerCompat *)
 J2OBJC_FIELD_SETTER(AMExponentialBackoff, random_, JavaUtilRandom *)
 
 @implementation AMExponentialBackoff
 
 - (jlong)exponentialWait {
-  jlong maxDelay = AMExponentialBackoff_MIN_DELAY + ((AMExponentialBackoff_MAX_DELAY - AMExponentialBackoff_MIN_DELAY) / AMExponentialBackoff_MAX_FAILURE_COUNT) * [((ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *) nil_chk(currentFailureCount_)) get];
+  jlong maxDelay = AMExponentialBackoff_MIN_DELAY + ((AMExponentialBackoff_MAX_DELAY - AMExponentialBackoff_MIN_DELAY) / AMExponentialBackoff_MAX_FAILURE_COUNT) * [((AMAtomicIntegerCompat *) nil_chk(currentFailureCount_)) get];
   @synchronized(random_) {
     return J2ObjCFpToLong(([((JavaUtilRandom *) nil_chk(random_)) nextFloat] * maxDelay));
   }
 }
 
 - (void)onFailure {
-  jint val = [((ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *) nil_chk(currentFailureCount_)) incrementAndGet];
+  jint val = [((AMAtomicIntegerCompat *) nil_chk(currentFailureCount_)) incrementAndGet];
   if (val > 50) {
     [currentFailureCount_ compareAndSetWithInt:val withInt:AMExponentialBackoff_MAX_FAILURE_COUNT];
   }
@@ -40,12 +40,12 @@ J2OBJC_FIELD_SETTER(AMExponentialBackoff, random_, JavaUtilRandom *)
 }
 
 - (void)reset {
-  [((ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *) nil_chk(currentFailureCount_)) setWithInt:0];
+  [((AMAtomicIntegerCompat *) nil_chk(currentFailureCount_)) setWithInt:0];
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    currentFailureCount_ = ImActorModelDroidkitActorsConfEnvConfig_createAtomicIntWithInt_(1);
+    currentFailureCount_ = DKEnvironment_createAtomicIntWithInt_(1);
     random_ = [[JavaUtilRandom alloc] init];
   }
   return self;
@@ -69,7 +69,7 @@ J2OBJC_FIELD_SETTER(AMExponentialBackoff, random_, JavaUtilRandom *)
     { "MIN_DELAY_", NULL, 0x1a, "I", NULL, .constantValue.asInt = AMExponentialBackoff_MIN_DELAY },
     { "MAX_DELAY_", NULL, 0x1a, "I", NULL, .constantValue.asInt = AMExponentialBackoff_MAX_DELAY },
     { "MAX_FAILURE_COUNT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = AMExponentialBackoff_MAX_FAILURE_COUNT },
-    { "currentFailureCount_", NULL, 0x12, "Lim.actor.model.droidkit.actors.utils.AtomicIntegerCompat;", NULL,  },
+    { "currentFailureCount_", NULL, 0x12, "Lim.actor.model.util.AtomicIntegerCompat;", NULL,  },
     { "random_", NULL, 0x12, "Ljava.util.Random;", NULL,  },
   };
   static const J2ObjcClassInfo _AMExponentialBackoff = { 1, "ExponentialBackoff", "im.actor.model.util", NULL, 0x1, 5, methods, 5, fields, 0, NULL};

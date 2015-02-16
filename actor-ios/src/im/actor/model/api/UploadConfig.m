@@ -36,15 +36,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUploadConfig, serverData_, IOSByteArray *)
   return self->serverData_;
 }
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
-  self->serverData_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:1];
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->serverData_ = [((BSBserValues *) nil_chk(values)) getBytesWithInt:1];
 }
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->serverData_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeBytesWithInt:1 withByteArray:self->serverData_];
+  [((BSBserWriter *) nil_chk(writer)) writeBytesWithInt:1 withByteArray:self->serverData_];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiUploadConfig *)other {
@@ -57,8 +57,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUploadConfig, serverData_, IOSByteArray *)
     { "initWithByteArray:", "UploadConfig", NULL, 0x1, NULL },
     { "init", "UploadConfig", NULL, 0x1, NULL },
     { "getServerData", NULL, "[B", 0x1, NULL },
-    { "parseWithImActorModelDroidkitBserBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithImActorModelDroidkitBserBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
+    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
+    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "serverData_", NULL, 0x2, "[B", NULL,  },

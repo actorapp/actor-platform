@@ -6,14 +6,14 @@
 #ifndef _ImActorModelApiAvatarImage_H_
 #define _ImActorModelApiAvatarImage_H_
 
+@class BSBserValues;
+@class BSBserWriter;
 @class ImActorModelApiFileLocation;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiAvatarImage : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiAvatarImage : BSBserObject {
 }
 
 - (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation
@@ -31,9 +31,9 @@
 
 - (jint)getFileSize;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

@@ -8,11 +8,11 @@
 #include "im/actor/model/entity/MessageState.h"
 #include "java/lang/IllegalArgumentException.h"
 
-BOOL ImActorModelEntityMessageStateEnum_initialized = NO;
+BOOL AMMessageStateEnum_initialized = NO;
 
-ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageStateEnum_values_[6];
+AMMessageStateEnum *AMMessageStateEnum_values_[6];
 
-@implementation ImActorModelEntityMessageStateEnum
+@implementation AMMessageStateEnum
 
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
@@ -27,26 +27,26 @@ ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageStateEnum_values_[6
   return value_;
 }
 
-+ (ImActorModelEntityMessageStateEnum *)fromValueWithInt:(jint)value {
-  return ImActorModelEntityMessageStateEnum_fromValueWithInt_(value);
++ (AMMessageStateEnum *)fromValueWithInt:(jint)value {
+  return AMMessageStateEnum_fromValueWithInt_(value);
 }
 
-IOSObjectArray *ImActorModelEntityMessageStateEnum_values() {
-  ImActorModelEntityMessageStateEnum_init();
-  return [IOSObjectArray arrayWithObjects:ImActorModelEntityMessageStateEnum_values_ count:6 type:ImActorModelEntityMessageStateEnum_class_()];
+IOSObjectArray *AMMessageStateEnum_values() {
+  AMMessageStateEnum_init();
+  return [IOSObjectArray arrayWithObjects:AMMessageStateEnum_values_ count:6 type:AMMessageStateEnum_class_()];
 }
 + (IOSObjectArray *)values {
-  return ImActorModelEntityMessageStateEnum_values();
+  return AMMessageStateEnum_values();
 }
 
-+ (ImActorModelEntityMessageStateEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelEntityMessageStateEnum_valueOfWithNSString_(name);
++ (AMMessageStateEnum *)valueOfWithNSString:(NSString *)name {
+  return AMMessageStateEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageStateEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelEntityMessageStateEnum_init();
+AMMessageStateEnum *AMMessageStateEnum_valueOfWithNSString_(NSString *name) {
+  AMMessageStateEnum_init();
   for (int i = 0; i < 6; i++) {
-    ImActorModelEntityMessageStateEnum *e = ImActorModelEntityMessageStateEnum_values_[i];
+    AMMessageStateEnum *e = AMMessageStateEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -60,14 +60,14 @@ ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageStateEnum_valueOfWi
 }
 
 + (void)initialize {
-  if (self == [ImActorModelEntityMessageStateEnum class]) {
-    ImActorModelEntityMessageStateEnum_PENDING = [[ImActorModelEntityMessageStateEnum alloc] initWithInt:1 withNSString:@"PENDING" withInt:0];
-    ImActorModelEntityMessageStateEnum_SENT = [[ImActorModelEntityMessageStateEnum alloc] initWithInt:2 withNSString:@"SENT" withInt:1];
-    ImActorModelEntityMessageStateEnum_RECEIVED = [[ImActorModelEntityMessageStateEnum alloc] initWithInt:3 withNSString:@"RECEIVED" withInt:2];
-    ImActorModelEntityMessageStateEnum_READ = [[ImActorModelEntityMessageStateEnum alloc] initWithInt:4 withNSString:@"READ" withInt:3];
-    ImActorModelEntityMessageStateEnum_ERROR = [[ImActorModelEntityMessageStateEnum alloc] initWithInt:5 withNSString:@"ERROR" withInt:4];
-    ImActorModelEntityMessageStateEnum_UNKNOWN = [[ImActorModelEntityMessageStateEnum alloc] initWithInt:6 withNSString:@"UNKNOWN" withInt:5];
-    J2OBJC_SET_INITIALIZED(ImActorModelEntityMessageStateEnum)
+  if (self == [AMMessageStateEnum class]) {
+    AMMessageStateEnum_PENDING = [[AMMessageStateEnum alloc] initWithInt:1 withNSString:@"PENDING" withInt:0];
+    AMMessageStateEnum_SENT = [[AMMessageStateEnum alloc] initWithInt:2 withNSString:@"SENT" withInt:1];
+    AMMessageStateEnum_RECEIVED = [[AMMessageStateEnum alloc] initWithInt:3 withNSString:@"RECEIVED" withInt:2];
+    AMMessageStateEnum_READ = [[AMMessageStateEnum alloc] initWithInt:4 withNSString:@"READ" withInt:3];
+    AMMessageStateEnum_ERROR = [[AMMessageStateEnum alloc] initWithInt:5 withNSString:@"ERROR" withInt:4];
+    AMMessageStateEnum_UNKNOWN = [[AMMessageStateEnum alloc] initWithInt:6 withNSString:@"UNKNOWN" withInt:5];
+    J2OBJC_SET_INITIALIZED(AMMessageStateEnum)
   }
 }
 
@@ -78,38 +78,38 @@ ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageStateEnum_valueOfWi
     { "fromValueWithInt:", "fromValue", "Lim.actor.model.entity.MessageState;", 0x9, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "PENDING", "PENDING", 0x4019, "Lim.actor.model.entity.MessageState;", &ImActorModelEntityMessageStateEnum_PENDING,  },
-    { "SENT", "SENT", 0x4019, "Lim.actor.model.entity.MessageState;", &ImActorModelEntityMessageStateEnum_SENT,  },
-    { "RECEIVED", "RECEIVED", 0x4019, "Lim.actor.model.entity.MessageState;", &ImActorModelEntityMessageStateEnum_RECEIVED,  },
-    { "READ", "READ", 0x4019, "Lim.actor.model.entity.MessageState;", &ImActorModelEntityMessageStateEnum_READ,  },
-    { "ERROR", "ERROR", 0x4019, "Lim.actor.model.entity.MessageState;", &ImActorModelEntityMessageStateEnum_ERROR,  },
-    { "UNKNOWN", "UNKNOWN", 0x4019, "Lim.actor.model.entity.MessageState;", &ImActorModelEntityMessageStateEnum_UNKNOWN,  },
+    { "PENDING", "PENDING", 0x4019, "Lim.actor.model.entity.MessageState;", &AMMessageStateEnum_PENDING,  },
+    { "SENT", "SENT", 0x4019, "Lim.actor.model.entity.MessageState;", &AMMessageStateEnum_SENT,  },
+    { "RECEIVED", "RECEIVED", 0x4019, "Lim.actor.model.entity.MessageState;", &AMMessageStateEnum_RECEIVED,  },
+    { "READ", "READ", 0x4019, "Lim.actor.model.entity.MessageState;", &AMMessageStateEnum_READ,  },
+    { "ERROR", "ERROR", 0x4019, "Lim.actor.model.entity.MessageState;", &AMMessageStateEnum_ERROR,  },
+    { "UNKNOWN", "UNKNOWN", 0x4019, "Lim.actor.model.entity.MessageState;", &AMMessageStateEnum_UNKNOWN,  },
     { "value_", NULL, 0x0, "I", NULL,  },
   };
   static const char *superclass_type_args[] = {"Lim.actor.model.entity.MessageState;"};
-  static const J2ObjcClassInfo _ImActorModelEntityMessageStateEnum = { 1, "MessageState", "im.actor.model.entity", NULL, 0x4011, 3, methods, 7, fields, 1, superclass_type_args};
-  return &_ImActorModelEntityMessageStateEnum;
+  static const J2ObjcClassInfo _AMMessageStateEnum = { 1, "MessageState", "im.actor.model.entity", NULL, 0x4011, 3, methods, 7, fields, 1, superclass_type_args};
+  return &_AMMessageStateEnum;
 }
 
 @end
 
-ImActorModelEntityMessageStateEnum *ImActorModelEntityMessageStateEnum_fromValueWithInt_(jint value) {
-  ImActorModelEntityMessageStateEnum_init();
+AMMessageStateEnum *AMMessageStateEnum_fromValueWithInt_(jint value) {
+  AMMessageStateEnum_init();
   switch (value) {
     case 1:
-    return ImActorModelEntityMessageStateEnum_PENDING;
+    return AMMessageStateEnum_PENDING;
     case 2:
-    return ImActorModelEntityMessageStateEnum_SENT;
+    return AMMessageStateEnum_SENT;
     case 3:
-    return ImActorModelEntityMessageStateEnum_RECEIVED;
+    return AMMessageStateEnum_RECEIVED;
     case 4:
-    return ImActorModelEntityMessageStateEnum_READ;
+    return AMMessageStateEnum_READ;
     case 5:
-    return ImActorModelEntityMessageStateEnum_ERROR;
+    return AMMessageStateEnum_ERROR;
     default:
     case 6:
-    return ImActorModelEntityMessageStateEnum_UNKNOWN;
+    return AMMessageStateEnum_UNKNOWN;
   }
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityMessageStateEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessageStateEnum)

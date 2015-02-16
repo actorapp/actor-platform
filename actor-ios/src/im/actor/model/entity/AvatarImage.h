@@ -3,49 +3,51 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/AvatarImage.java
 //
 
-#ifndef _ImActorModelEntityAvatarImage_H_
-#define _ImActorModelEntityAvatarImage_H_
+#ifndef _AMAvatarImage_H_
+#define _AMAvatarImage_H_
 
+@class AMFileLocation;
+@class BSBserValues;
+@class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
-@class ImActorModelEntityFileLocation;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelEntityAvatarImage : ImActorModelDroidkitBserBserObject {
+@interface AMAvatarImage : BSBserObject {
 }
 
-+ (ImActorModelEntityAvatarImage *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMAvatarImage *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithInt:(jint)width
                     withInt:(jint)height
-withImActorModelEntityFileLocation:(ImActorModelEntityFileLocation *)fileLocation;
+         withAMFileLocation:(AMFileLocation *)fileLocation;
 
 - (jint)getWidth;
 
 - (jint)getHeight;
 
-- (ImActorModelEntityFileLocation *)getFileLocation;
+- (AMFileLocation *)getFileLocation;
 
 - (jboolean)isEqual:(id)o;
 
 - (NSUInteger)hash;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityAvatarImage)
+J2OBJC_EMPTY_STATIC_INIT(AMAvatarImage)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityAvatarImage *ImActorModelEntityAvatarImage_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMAvatarImage *AMAvatarImage_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityAvatarImage)
+typedef AMAvatarImage ImActorModelEntityAvatarImage;
 
-#endif // _ImActorModelEntityAvatarImage_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMAvatarImage)
+
+#endif // _AMAvatarImage_H_

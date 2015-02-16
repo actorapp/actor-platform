@@ -32,7 +32,7 @@ __attribute__((unused)) static jboolean ImActorModelDroidkitActorsTasksActorAskI
  @public
   JavaUtilHashMap *asks_;
   jint nextReqId_;
-  ImActorModelDroidkitActorsActorRef *self__;
+  DKActorRef *self__;
 }
 
 - (jboolean)onTaskResultWithImActorModelDroidkitActorsTasksMessagesTaskResult:(ImActorModelDroidkitActorsTasksMessagesTaskResult *)result;
@@ -47,12 +47,12 @@ __attribute__((unused)) static jboolean ImActorModelDroidkitActorsTasksActorAskI
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl, asks_, JavaUtilHashMap *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl, self__, ImActorModelDroidkitActorsActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl, self__, DKActorRef *)
 
 @interface ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer ()
 - (instancetype)initWithImActorModelDroidkitActorsTasksActorAskImpl:(ImActorModelDroidkitActorsTasksActorAskImpl *)outer$
                        withImActorModelDroidkitActorsTasksAskFuture:(ImActorModelDroidkitActorsTasksAskFuture *)future
-                             withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref
+                                                     withDKActorRef:(DKActorRef *)ref
                                                             withInt:(jint)requestId;
 @end
 
@@ -69,7 +69,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFu
 
 @implementation ImActorModelDroidkitActorsTasksActorAskImpl
 
-- (instancetype)initWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)self_ {
+- (instancetype)initWithDKActorRef:(DKActorRef *)self_ {
   if (self = [super init]) {
     asks_ = [[JavaUtilHashMap alloc] init];
     nextReqId_ = 1;
@@ -90,19 +90,19 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFu
   return resultFuture;
 }
 
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref
-                                                                               withLong:(jlong)timeout
-                                         withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
+- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref
+                                                       withLong:(jlong)timeout
+                 withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
   jint reqId = nextReqId_++;
   ImActorModelDroidkitActorsTasksAskFuture *future = [[ImActorModelDroidkitActorsTasksAskFuture alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withInt:reqId];
   if (callback != nil) {
     [future addListenerWithImActorModelDroidkitActorsTasksAskCallback:callback];
   }
-  ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [[ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withImActorModelDroidkitActorsTasksAskFuture:future withImActorModelDroidkitActorsActorRef:ref withInt:reqId];
+  ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [[ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withImActorModelDroidkitActorsTasksAskFuture:future withDKActorRef:ref withInt:reqId];
   (void) [((JavaUtilHashMap *) nil_chk(asks_)) putWithId:JavaLangInteger_valueOfWithInt_(reqId) withId:container];
-  [((ImActorModelDroidkitActorsActorRef *) nil_chk(ref)) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskRequest alloc] initWithInt:reqId] withImActorModelDroidkitActorsActorRef:self__];
+  [((DKActorRef *) nil_chk(ref)) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskRequest alloc] initWithInt:reqId] withDKActorRef:self__];
   if (timeout > 0) {
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk(self__)) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskTimeout alloc] initWithInt:reqId] withLong:timeout];
+    [((DKActorRef *) nil_chk(self__)) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskTimeout alloc] initWithInt:reqId] withLong:timeout];
   }
   return future;
 }
@@ -170,7 +170,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFu
 - (jboolean)onTaskCancelledWithInt:(jint)reqId {
   ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [((JavaUtilHashMap *) nil_chk(asks_)) removeWithId:JavaLangInteger_valueOfWithInt_(reqId)];
   if (container != nil) {
-    [((ImActorModelDroidkitActorsActorRef *) nil_chk(container->ref_)) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskCancel alloc] initWithInt:reqId] withImActorModelDroidkitActorsActorRef:self__];
+    [((DKActorRef *) nil_chk(container->ref_)) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskCancel alloc] initWithInt:reqId] withDKActorRef:self__];
     return YES;
   }
   return NO;
@@ -189,9 +189,9 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFu
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelDroidkitActorsActorRef:", "ActorAskImpl", NULL, 0x1, NULL },
+    { "initWithDKActorRef:", "ActorAskImpl", NULL, 0x1, NULL },
     { "combineWithImActorModelDroidkitActorsTasksAskFutureArray:", "combine", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x81, NULL },
-    { "askWithImActorModelDroidkitActorsActorRef:withLong:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
+    { "askWithDKActorRef:withLong:withImActorModelDroidkitActorsTasksAskCallback:", "ask", "Lim.actor.model.droidkit.actors.tasks.AskFuture;", 0x1, NULL },
     { "preStart", NULL, "V", 0x1, NULL },
     { "onReceiveWithId:", "onReceive", "Z", 0x1, NULL },
     { "postStop", NULL, "V", 0x1, NULL },
@@ -254,7 +254,7 @@ jboolean ImActorModelDroidkitActorsTasksActorAskImpl_onDeadLetterWithImActorMode
     ImActorModelDroidkitActorsTasksMessagesTaskRequest *request = (ImActorModelDroidkitActorsTasksMessagesTaskRequest *) check_class_cast([letter getMessage], [ImActorModelDroidkitActorsTasksMessagesTaskRequest class]);
     ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [((JavaUtilHashMap *) nil_chk(self->asks_)) getWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelDroidkitActorsTasksMessagesTaskRequest *) nil_chk(request)) getRequestId])];
     if (container != nil) {
-      [((ImActorModelDroidkitActorsActorRef *) nil_chk(container->ref_)) sendWithId:request withImActorModelDroidkitActorsActorRef:self->self__];
+      [((DKActorRef *) nil_chk(container->ref_)) sendWithId:request withDKActorRef:self->self__];
       return YES;
     }
   }
@@ -267,7 +267,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl)
 
 - (instancetype)initWithImActorModelDroidkitActorsTasksActorAskImpl:(ImActorModelDroidkitActorsTasksActorAskImpl *)outer$
                        withImActorModelDroidkitActorsTasksAskFuture:(ImActorModelDroidkitActorsTasksAskFuture *)future
-                             withImActorModelDroidkitActorsActorRef:(ImActorModelDroidkitActorsActorRef *)ref
+                                                     withDKActorRef:(DKActorRef *)ref
                                                             withInt:(jint)requestId {
   if (self = [super init]) {
     self->future_ = future;
@@ -286,7 +286,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelDroidkitActorsTasksActorAskImpl:withImActorModelDroidkitActorsTasksAskFuture:withImActorModelDroidkitActorsActorRef:withInt:", "AskContainer", NULL, 0x2, NULL },
+    { "initWithImActorModelDroidkitActorsTasksActorAskImpl:withImActorModelDroidkitActorsTasksAskFuture:withDKActorRef:withInt:", "AskContainer", NULL, 0x2, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "future_", NULL, 0x11, "Lim.actor.model.droidkit.actors.tasks.AskFuture;", NULL,  },

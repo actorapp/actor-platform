@@ -3,48 +3,50 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/actors/ThreadPriority.java
 //
 
-#ifndef _ImActorModelDroidkitActorsThreadPriority_H_
-#define _ImActorModelDroidkitActorsThreadPriority_H_
+#ifndef _DKThreadPriority_H_
+#define _DKThreadPriority_H_
 
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-typedef NS_ENUM(NSUInteger, ImActorModelDroidkitActorsThreadPriority) {
-  ImActorModelDroidkitActorsThreadPriority_HIGH = 0,
-  ImActorModelDroidkitActorsThreadPriority_NORMAL = 1,
-  ImActorModelDroidkitActorsThreadPriority_LOW = 2,
+typedef NS_ENUM(NSUInteger, DKThreadPriority) {
+  DKThreadPriority_HIGH = 0,
+  DKThreadPriority_NORMAL = 1,
+  DKThreadPriority_LOW = 2,
 };
 
-@interface ImActorModelDroidkitActorsThreadPriorityEnum : JavaLangEnum < NSCopying > {
+@interface DKThreadPriorityEnum : JavaLangEnum < NSCopying > {
 }
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal;
 
 + (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelDroidkitActorsThreadPriorityEnum_values();
+FOUNDATION_EXPORT IOSObjectArray *DKThreadPriorityEnum_values();
 
-+ (ImActorModelDroidkitActorsThreadPriorityEnum *)valueOfWithNSString:(NSString *)name;
++ (DKThreadPriorityEnum *)valueOfWithNSString:(NSString *)name;
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsThreadPriorityEnum *ImActorModelDroidkitActorsThreadPriorityEnum_valueOfWithNSString_(NSString *name);
+FOUNDATION_EXPORT DKThreadPriorityEnum *DKThreadPriorityEnum_valueOfWithNSString_(NSString *name);
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelDroidkitActorsThreadPriorityEnum_initialized;
-J2OBJC_STATIC_INIT(ImActorModelDroidkitActorsThreadPriorityEnum)
+FOUNDATION_EXPORT BOOL DKThreadPriorityEnum_initialized;
+J2OBJC_STATIC_INIT(DKThreadPriorityEnum)
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsThreadPriorityEnum *ImActorModelDroidkitActorsThreadPriorityEnum_values_[];
+FOUNDATION_EXPORT DKThreadPriorityEnum *DKThreadPriorityEnum_values_[];
 
-#define ImActorModelDroidkitActorsThreadPriorityEnum_HIGH ImActorModelDroidkitActorsThreadPriorityEnum_values_[ImActorModelDroidkitActorsThreadPriority_HIGH]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelDroidkitActorsThreadPriorityEnum, HIGH)
+#define DKThreadPriorityEnum_HIGH DKThreadPriorityEnum_values_[DKThreadPriority_HIGH]
+J2OBJC_ENUM_CONSTANT_GETTER(DKThreadPriorityEnum, HIGH)
 
-#define ImActorModelDroidkitActorsThreadPriorityEnum_NORMAL ImActorModelDroidkitActorsThreadPriorityEnum_values_[ImActorModelDroidkitActorsThreadPriority_NORMAL]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelDroidkitActorsThreadPriorityEnum, NORMAL)
+#define DKThreadPriorityEnum_NORMAL DKThreadPriorityEnum_values_[DKThreadPriority_NORMAL]
+J2OBJC_ENUM_CONSTANT_GETTER(DKThreadPriorityEnum, NORMAL)
 
-#define ImActorModelDroidkitActorsThreadPriorityEnum_LOW ImActorModelDroidkitActorsThreadPriorityEnum_values_[ImActorModelDroidkitActorsThreadPriority_LOW]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelDroidkitActorsThreadPriorityEnum, LOW)
+#define DKThreadPriorityEnum_LOW DKThreadPriorityEnum_values_[DKThreadPriority_LOW]
+J2OBJC_ENUM_CONSTANT_GETTER(DKThreadPriorityEnum, LOW)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsThreadPriorityEnum)
+typedef DKThreadPriorityEnum ImActorModelDroidkitActorsThreadPriorityEnum;
 
-#endif // _ImActorModelDroidkitActorsThreadPriority_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKThreadPriorityEnum)
+
+#endif // _DKThreadPriority_H_

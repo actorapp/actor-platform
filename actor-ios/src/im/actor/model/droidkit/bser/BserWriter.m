@@ -16,17 +16,17 @@
 #include "java/lang/Long.h"
 #include "java/util/List.h"
 
-__attribute__((unused)) static void ImActorModelDroidkitBserBserWriter_writeTagWithInt_withInt_(ImActorModelDroidkitBserBserWriter *self, jint fieldNumber, jint wireType);
-__attribute__((unused)) static void ImActorModelDroidkitBserBserWriter_writeVarIntFieldWithInt_withLong_(ImActorModelDroidkitBserBserWriter *self, jint fieldNumber, jlong value);
-__attribute__((unused)) static void ImActorModelDroidkitBserBserWriter_writeBytesFieldWithInt_withByteArray_(ImActorModelDroidkitBserBserWriter *self, jint fieldNumber, IOSByteArray *value);
-__attribute__((unused)) static void ImActorModelDroidkitBserBserWriter_writeVar64FieldWithInt_withLong_(ImActorModelDroidkitBserBserWriter *self, jint fieldNumber, jlong value);
-__attribute__((unused)) static void ImActorModelDroidkitBserBserWriter_writeVar32FieldWithInt_withLong_(ImActorModelDroidkitBserBserWriter *self, jint fieldNumber, jlong value);
-__attribute__((unused)) static void ImActorModelDroidkitBserBserWriter_writeVarIntWithLong_(ImActorModelDroidkitBserBserWriter *self, jlong value);
-__attribute__((unused)) static void ImActorModelDroidkitBserBserWriter_writeLongWithLong_(ImActorModelDroidkitBserBserWriter *self, jlong v);
-__attribute__((unused)) static void ImActorModelDroidkitBserBserWriter_writeIntWithLong_(ImActorModelDroidkitBserBserWriter *self, jlong v);
-__attribute__((unused)) static void ImActorModelDroidkitBserBserWriter_writeBytesWithByteArray_(ImActorModelDroidkitBserBserWriter *self, IOSByteArray *data);
+__attribute__((unused)) static void BSBserWriter_writeTagWithInt_withInt_(BSBserWriter *self, jint fieldNumber, jint wireType);
+__attribute__((unused)) static void BSBserWriter_writeVarIntFieldWithInt_withLong_(BSBserWriter *self, jint fieldNumber, jlong value);
+__attribute__((unused)) static void BSBserWriter_writeBytesFieldWithInt_withByteArray_(BSBserWriter *self, jint fieldNumber, IOSByteArray *value);
+__attribute__((unused)) static void BSBserWriter_writeVar64FieldWithInt_withLong_(BSBserWriter *self, jint fieldNumber, jlong value);
+__attribute__((unused)) static void BSBserWriter_writeVar32FieldWithInt_withLong_(BSBserWriter *self, jint fieldNumber, jlong value);
+__attribute__((unused)) static void BSBserWriter_writeVarIntWithLong_(BSBserWriter *self, jlong value);
+__attribute__((unused)) static void BSBserWriter_writeLongWithLong_(BSBserWriter *self, jlong v);
+__attribute__((unused)) static void BSBserWriter_writeIntWithLong_(BSBserWriter *self, jlong v);
+__attribute__((unused)) static void BSBserWriter_writeBytesWithByteArray_(BSBserWriter *self, IOSByteArray *data);
 
-@interface ImActorModelDroidkitBserBserWriter () {
+@interface BSBserWriter () {
  @public
   AMDataOutput *stream_;
 }
@@ -55,9 +55,9 @@ __attribute__((unused)) static void ImActorModelDroidkitBserBserWriter_writeByte
 - (void)writeBytesWithByteArray:(IOSByteArray *)data;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserWriter, stream_, AMDataOutput *)
+J2OBJC_FIELD_SETTER(BSBserWriter, stream_, AMDataOutput *)
 
-@implementation ImActorModelDroidkitBserBserWriter
+@implementation BSBserWriter
 
 - (instancetype)initWithAMDataOutput:(AMDataOutput *)stream {
   if (self = [super init]) {
@@ -68,49 +68,49 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserWriter, stream_, AMDataOutput *)
 
 - (void)writeBytesWithInt:(jint)fieldNumber
             withByteArray:(IOSByteArray *)value {
-  ImActorModelDroidkitBserBserWriter_writeBytesFieldWithInt_withByteArray_(self, fieldNumber, value);
+  BSBserWriter_writeBytesFieldWithInt_withByteArray_(self, fieldNumber, value);
 }
 
 - (void)writeStringWithInt:(jint)fieldNumber
               withNSString:(NSString *)value {
-  ImActorModelDroidkitBserBserWriter_writeBytesFieldWithInt_withByteArray_(self, fieldNumber, [((NSString *) nil_chk(value)) getBytes]);
+  BSBserWriter_writeBytesFieldWithInt_withByteArray_(self, fieldNumber, [((NSString *) nil_chk(value)) getBytes]);
 }
 
 - (void)writeBoolWithInt:(jint)fieldNumber
              withBoolean:(jboolean)value {
-  ImActorModelDroidkitBserBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value ? 1 : 0);
+  BSBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value ? 1 : 0);
 }
 
 - (void)writeIntWithInt:(jint)fieldNumber
                 withInt:(jint)value {
-  ImActorModelDroidkitBserBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value);
+  BSBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value);
 }
 
 - (void)writeIntFixedWithInt:(jint)fieldNumber
                      withInt:(jint)value {
-  ImActorModelDroidkitBserBserWriter_writeVar32FieldWithInt_withLong_(self, fieldNumber, value);
+  BSBserWriter_writeVar32FieldWithInt_withLong_(self, fieldNumber, value);
 }
 
 - (void)writeDoubleWithInt:(jint)fieldNumber
                 withDouble:(jdouble)value {
-  ImActorModelDroidkitBserBserWriter_writeVar64FieldWithInt_withLong_(self, fieldNumber, JavaLangDouble_doubleToLongBitsWithDouble_(value));
+  BSBserWriter_writeVar64FieldWithInt_withLong_(self, fieldNumber, JavaLangDouble_doubleToLongBitsWithDouble_(value));
 }
 
 - (void)writeLongFixedWithInt:(jint)fieldNumber
                      withLong:(jlong)value {
-  ImActorModelDroidkitBserBserWriter_writeVar64FieldWithInt_withLong_(self, fieldNumber, JavaLangDouble_doubleToLongBitsWithDouble_(value));
+  BSBserWriter_writeVar64FieldWithInt_withLong_(self, fieldNumber, JavaLangDouble_doubleToLongBitsWithDouble_(value));
 }
 
 - (void)writeLongWithInt:(jint)fieldNumber
                 withLong:(jlong)value {
-  ImActorModelDroidkitBserBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value);
+  BSBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value);
 }
 
 - (void)writeRepeatedLongWithInt:(jint)fieldNumber
                 withJavaUtilList:(id<JavaUtilList>)values {
   for (JavaLangLong *boxed__ in nil_chk(values)) {
     jlong l = [((JavaLangLong *) nil_chk(boxed__)) longLongValue];
-    ImActorModelDroidkitBserBserWriter_writeVar64FieldWithInt_withLong_(self, fieldNumber, l);
+    BSBserWriter_writeVar64FieldWithInt_withLong_(self, fieldNumber, l);
   }
 }
 
@@ -118,7 +118,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserWriter, stream_, AMDataOutput *)
                withJavaUtilList:(id<JavaUtilList>)values {
   for (JavaLangInteger *boxed__ in nil_chk(values)) {
     jlong l = [((JavaLangInteger *) nil_chk(boxed__)) intValue];
-    ImActorModelDroidkitBserBserWriter_writeVar32FieldWithInt_withLong_(self, fieldNumber, l);
+    BSBserWriter_writeVar32FieldWithInt_withLong_(self, fieldNumber, l);
   }
 }
 
@@ -131,62 +131,62 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserBserWriter, stream_, AMDataOutput *)
 
 - (void)writeRepeatedObjWithInt:(jint)fieldNumber
                withJavaUtilList:(id<JavaUtilList>)values {
-  for (ImActorModelDroidkitBserBserObject * __strong l in nil_chk(values)) {
-    [self writeObjectWithInt:fieldNumber withImActorModelDroidkitBserBserObject:l];
+  for (BSBserObject * __strong l in nil_chk(values)) {
+    [self writeObjectWithInt:fieldNumber withBSBserObject:l];
   }
 }
 
 - (void)writeObjectWithInt:(jint)fieldNumber
-withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)value {
-  ImActorModelDroidkitBserBserWriter_writeTagWithInt_withInt_(self, fieldNumber, ImActorModelDroidkitBserBserWriter_TYPE_LENGTH_DELIMITED);
+          withBSBserObject:(BSBserObject *)value {
+  BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSBserWriter_TYPE_LENGTH_DELIMITED);
   AMDataOutput *outputStream = [[AMDataOutput alloc] init];
-  ImActorModelDroidkitBserBserWriter *writer = [[ImActorModelDroidkitBserBserWriter alloc] initWithAMDataOutput:outputStream];
-  [((ImActorModelDroidkitBserBserObject *) nil_chk(value)) serializeWithImActorModelDroidkitBserBserWriter:writer];
-  ImActorModelDroidkitBserBserWriter_writeBytesWithByteArray_(self, [outputStream toByteArray]);
+  BSBserWriter *writer = [[BSBserWriter alloc] initWithAMDataOutput:outputStream];
+  [((BSBserObject *) nil_chk(value)) serializeWithBSBserWriter:writer];
+  BSBserWriter_writeBytesWithByteArray_(self, [outputStream toByteArray]);
 }
 
 - (void)writeTagWithInt:(jint)fieldNumber
                 withInt:(jint)wireType {
-  ImActorModelDroidkitBserBserWriter_writeTagWithInt_withInt_(self, fieldNumber, wireType);
+  BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, wireType);
 }
 
 - (void)writeVarIntFieldWithInt:(jint)fieldNumber
                        withLong:(jlong)value {
-  ImActorModelDroidkitBserBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value);
+  BSBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value);
 }
 
 - (void)writeBytesFieldWithInt:(jint)fieldNumber
                  withByteArray:(IOSByteArray *)value {
-  ImActorModelDroidkitBserBserWriter_writeBytesFieldWithInt_withByteArray_(self, fieldNumber, value);
+  BSBserWriter_writeBytesFieldWithInt_withByteArray_(self, fieldNumber, value);
 }
 
 - (void)writeVar64FieldWithInt:(jint)fieldNumber
                       withLong:(jlong)value {
-  ImActorModelDroidkitBserBserWriter_writeVar64FieldWithInt_withLong_(self, fieldNumber, value);
+  BSBserWriter_writeVar64FieldWithInt_withLong_(self, fieldNumber, value);
 }
 
 - (void)writeVar32FieldWithInt:(jint)fieldNumber
                       withLong:(jlong)value {
-  ImActorModelDroidkitBserBserWriter_writeVar32FieldWithInt_withLong_(self, fieldNumber, value);
+  BSBserWriter_writeVar32FieldWithInt_withLong_(self, fieldNumber, value);
 }
 
 - (void)writeVarIntWithLong:(jlong)value {
-  ImActorModelDroidkitBserBserWriter_writeVarIntWithLong_(self, value);
+  BSBserWriter_writeVarIntWithLong_(self, value);
 }
 
 - (void)writeLongWithLong:(jlong)v {
-  ImActorModelDroidkitBserBserWriter_writeLongWithLong_(self, v);
+  BSBserWriter_writeLongWithLong_(self, v);
 }
 
 - (void)writeIntWithLong:(jlong)v {
-  ImActorModelDroidkitBserBserWriter_writeIntWithLong_(self, v);
+  BSBserWriter_writeIntWithLong_(self, v);
 }
 
 - (void)writeBytesWithByteArray:(IOSByteArray *)data {
-  ImActorModelDroidkitBserBserWriter_writeBytesWithByteArray_(self, data);
+  BSBserWriter_writeBytesWithByteArray_(self, data);
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitBserBserWriter *)other {
+- (void)copyAllFieldsTo:(BSBserWriter *)other {
   [super copyAllFieldsTo:other];
   other->stream_ = stream_;
 }
@@ -206,7 +206,7 @@ withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)val
     { "writeRepeatedIntWithInt:withJavaUtilList:", "writeRepeatedInt", "V", 0x1, "Ljava.io.IOException;" },
     { "writeRepeatedBoolWithInt:withJavaUtilList:", "writeRepeatedBool", "V", 0x1, "Ljava.io.IOException;" },
     { "writeRepeatedObjWithInt:withJavaUtilList:", "writeRepeatedObj", "V", 0x1, "Ljava.io.IOException;" },
-    { "writeObjectWithInt:withImActorModelDroidkitBserBserObject:", "writeObject", "V", 0x1, "Ljava.io.IOException;" },
+    { "writeObjectWithInt:withBSBserObject:", "writeObject", "V", 0x1, "Ljava.io.IOException;" },
     { "writeTagWithInt:withInt:", "writeTag", "V", 0x2, "Ljava.io.IOException;" },
     { "writeVarIntFieldWithInt:withLong:", "writeVarIntField", "V", 0x2, "Ljava.io.IOException;" },
     { "writeBytesFieldWithInt:withByteArray:", "writeBytesField", "V", 0x2, "Ljava.io.IOException;" },
@@ -218,44 +218,44 @@ withImActorModelDroidkitBserBserObject:(ImActorModelDroidkitBserBserObject *)val
     { "writeBytesWithByteArray:", "writeBytes", "V", 0x2, "Ljava.io.IOException;" },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "TYPE_VARINT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelDroidkitBserBserWriter_TYPE_VARINT },
-    { "TYPE_32BIT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelDroidkitBserBserWriter_TYPE_32BIT },
-    { "TYPE_64BIT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelDroidkitBserBserWriter_TYPE_64BIT },
-    { "TYPE_LENGTH_DELIMITED_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelDroidkitBserBserWriter_TYPE_LENGTH_DELIMITED },
+    { "TYPE_VARINT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = BSBserWriter_TYPE_VARINT },
+    { "TYPE_32BIT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = BSBserWriter_TYPE_32BIT },
+    { "TYPE_64BIT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = BSBserWriter_TYPE_64BIT },
+    { "TYPE_LENGTH_DELIMITED_", NULL, 0x1a, "I", NULL, .constantValue.asInt = BSBserWriter_TYPE_LENGTH_DELIMITED },
     { "stream_", NULL, 0x2, "Lim.actor.model.util.DataOutput;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitBserBserWriter = { 1, "BserWriter", "im.actor.model.droidkit.bser", NULL, 0x1, 23, methods, 5, fields, 0, NULL};
-  return &_ImActorModelDroidkitBserBserWriter;
+  static const J2ObjcClassInfo _BSBserWriter = { 1, "BserWriter", "im.actor.model.droidkit.bser", NULL, 0x1, 23, methods, 5, fields, 0, NULL};
+  return &_BSBserWriter;
 }
 
 @end
 
-void ImActorModelDroidkitBserBserWriter_writeTagWithInt_withInt_(ImActorModelDroidkitBserBserWriter *self, jint fieldNumber, jint wireType) {
+void BSBserWriter_writeTagWithInt_withInt_(BSBserWriter *self, jint fieldNumber, jint wireType) {
   jbyte tag = (jbyte) ((LShift32(fieldNumber, 3)) | wireType);
   [((AMDataOutput *) nil_chk(self->stream_)) writeByteWithInt:tag];
 }
 
-void ImActorModelDroidkitBserBserWriter_writeVarIntFieldWithInt_withLong_(ImActorModelDroidkitBserBserWriter *self, jint fieldNumber, jlong value) {
-  ImActorModelDroidkitBserBserWriter_writeTagWithInt_withInt_(self, fieldNumber, ImActorModelDroidkitBserBserWriter_TYPE_VARINT);
-  ImActorModelDroidkitBserBserWriter_writeVarIntWithLong_(self, value);
+void BSBserWriter_writeVarIntFieldWithInt_withLong_(BSBserWriter *self, jint fieldNumber, jlong value) {
+  BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSBserWriter_TYPE_VARINT);
+  BSBserWriter_writeVarIntWithLong_(self, value);
 }
 
-void ImActorModelDroidkitBserBserWriter_writeBytesFieldWithInt_withByteArray_(ImActorModelDroidkitBserBserWriter *self, jint fieldNumber, IOSByteArray *value) {
-  ImActorModelDroidkitBserBserWriter_writeTagWithInt_withInt_(self, fieldNumber, ImActorModelDroidkitBserBserWriter_TYPE_LENGTH_DELIMITED);
-  ImActorModelDroidkitBserBserWriter_writeBytesWithByteArray_(self, value);
+void BSBserWriter_writeBytesFieldWithInt_withByteArray_(BSBserWriter *self, jint fieldNumber, IOSByteArray *value) {
+  BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSBserWriter_TYPE_LENGTH_DELIMITED);
+  BSBserWriter_writeBytesWithByteArray_(self, value);
 }
 
-void ImActorModelDroidkitBserBserWriter_writeVar64FieldWithInt_withLong_(ImActorModelDroidkitBserBserWriter *self, jint fieldNumber, jlong value) {
-  ImActorModelDroidkitBserBserWriter_writeTagWithInt_withInt_(self, fieldNumber, ImActorModelDroidkitBserBserWriter_TYPE_64BIT);
-  ImActorModelDroidkitBserBserWriter_writeLongWithLong_(self, value);
+void BSBserWriter_writeVar64FieldWithInt_withLong_(BSBserWriter *self, jint fieldNumber, jlong value) {
+  BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSBserWriter_TYPE_64BIT);
+  BSBserWriter_writeLongWithLong_(self, value);
 }
 
-void ImActorModelDroidkitBserBserWriter_writeVar32FieldWithInt_withLong_(ImActorModelDroidkitBserBserWriter *self, jint fieldNumber, jlong value) {
-  ImActorModelDroidkitBserBserWriter_writeTagWithInt_withInt_(self, fieldNumber, ImActorModelDroidkitBserBserWriter_TYPE_32BIT);
-  ImActorModelDroidkitBserBserWriter_writeIntWithLong_(self, value);
+void BSBserWriter_writeVar32FieldWithInt_withLong_(BSBserWriter *self, jint fieldNumber, jlong value) {
+  BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSBserWriter_TYPE_32BIT);
+  BSBserWriter_writeIntWithLong_(self, value);
 }
 
-void ImActorModelDroidkitBserBserWriter_writeVarIntWithLong_(ImActorModelDroidkitBserBserWriter *self, jlong value) {
+void BSBserWriter_writeVarIntWithLong_(BSBserWriter *self, jlong value) {
   while ((value & (jlong) 0xffffffffffffff80l) != 0l) {
     [((AMDataOutput *) nil_chk(self->stream_)) writeByteWithInt:(jbyte) ((value & (jint) 0x7f) | (jint) 0x80)];
     URShiftAssignLong(&value, 7);
@@ -263,7 +263,7 @@ void ImActorModelDroidkitBserBserWriter_writeVarIntWithLong_(ImActorModelDroidki
   [((AMDataOutput *) nil_chk(self->stream_)) writeByteWithInt:(jbyte) (value & (jint) 0x7f)];
 }
 
-void ImActorModelDroidkitBserBserWriter_writeLongWithLong_(ImActorModelDroidkitBserBserWriter *self, jlong v) {
+void BSBserWriter_writeLongWithLong_(BSBserWriter *self, jlong v) {
   [((AMDataOutput *) nil_chk(self->stream_)) writeByteWithInt:(jbyte) (v & (jint) 0xFF)];
   [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 8)) & (jint) 0xFF)];
   [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 16)) & (jint) 0xFF)];
@@ -274,16 +274,16 @@ void ImActorModelDroidkitBserBserWriter_writeLongWithLong_(ImActorModelDroidkitB
   [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 56)) & (jint) 0xFF)];
 }
 
-void ImActorModelDroidkitBserBserWriter_writeIntWithLong_(ImActorModelDroidkitBserBserWriter *self, jlong v) {
+void BSBserWriter_writeIntWithLong_(BSBserWriter *self, jlong v) {
   [((AMDataOutput *) nil_chk(self->stream_)) writeByteWithInt:(jbyte) (v & (jint) 0xFF)];
   [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 8)) & (jint) 0xFF)];
   [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 16)) & (jint) 0xFF)];
   [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 24)) & (jint) 0xFF)];
 }
 
-void ImActorModelDroidkitBserBserWriter_writeBytesWithByteArray_(ImActorModelDroidkitBserBserWriter *self, IOSByteArray *data) {
-  ImActorModelDroidkitBserBserWriter_writeVarIntWithLong_(self, ((IOSByteArray *) nil_chk(data))->size_);
+void BSBserWriter_writeBytesWithByteArray_(BSBserWriter *self, IOSByteArray *data) {
+  BSBserWriter_writeVarIntWithLong_(self, ((IOSByteArray *) nil_chk(data))->size_);
   [((AMDataOutput *) nil_chk(self->stream_)) writeBytesWithByteArray:data withInt:0 withInt:data->size_];
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitBserBserWriter)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSBserWriter)

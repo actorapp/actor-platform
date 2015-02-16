@@ -6,7 +6,7 @@
 #ifndef _ImActorModelNetworkUtilMTUids_H_
 #define _ImActorModelNetworkUtilMTUids_H_
 
-@class ImActorModelDroidkitActorsUtilsAtomicLongCompat;
+@class AMAtomicLongCompat;
 
 #include "J2ObjC_header.h"
 
@@ -26,8 +26,8 @@ CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT jlong ImActorModelNetworkUtilMTUids_nextId();
 
-FOUNDATION_EXPORT ImActorModelDroidkitActorsUtilsAtomicLongCompat *ImActorModelNetworkUtilMTUids_NEXT_ID_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkUtilMTUids, NEXT_ID_, ImActorModelDroidkitActorsUtilsAtomicLongCompat *)
+FOUNDATION_EXPORT AMAtomicLongCompat *ImActorModelNetworkUtilMTUids_NEXT_ID_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkUtilMTUids, NEXT_ID_, AMAtomicLongCompat *)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkUtilMTUids)

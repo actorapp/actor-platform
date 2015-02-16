@@ -6,14 +6,14 @@
 #ifndef _ImActorModelDroidkitActorsTasksTaskActor_H_
 #define _ImActorModelDroidkitActorsTasksTaskActor_H_
 
-@class ImActorModelDroidkitActorsActorRef;
+@class DKActorRef;
 @class JavaLangThrowable;
 @class JavaUtilHashSet;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 
-@interface ImActorModelDroidkitActorsTasksTaskActor : ImActorModelDroidkitActorsActor {
+@interface ImActorModelDroidkitActorsTasksTaskActor : DKActor {
 }
 
 - (void)setTimeOutWithLong:(jlong)timeOut;
@@ -108,7 +108,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsTasksTaskActor_Obsolete)
 
 - (jint)getRequestId;
 
-- (ImActorModelDroidkitActorsActorRef *)getSender;
+- (DKActorRef *)getSender;
 
 - (jboolean)isEqual:(id)o;
 

@@ -7,7 +7,7 @@
 #include "im/actor/model/droidkit/bser/UnknownFieldException.h"
 #include "java/lang/Throwable.h"
 
-@implementation ImActorModelDroidkitBserUnknownFieldException
+@implementation BSUnknownFieldException
 
 - (instancetype)init {
   return [super init];
@@ -33,10 +33,10 @@
     { "initWithNSString:withJavaLangThrowable:", "UnknownFieldException", NULL, 0x1, NULL },
     { "initWithJavaLangThrowable:", "UnknownFieldException", NULL, 0x1, NULL },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitBserUnknownFieldException = { 1, "UnknownFieldException", "im.actor.model.droidkit.bser", NULL, 0x1, 4, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitBserUnknownFieldException;
+  static const J2ObjcClassInfo _BSUnknownFieldException = { 1, "UnknownFieldException", "im.actor.model.droidkit.bser", NULL, 0x1, 4, methods, 0, NULL, 0, NULL};
+  return &_BSUnknownFieldException;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitBserUnknownFieldException)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSUnknownFieldException)

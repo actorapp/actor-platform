@@ -16,23 +16,23 @@
 #include "im/actor/model/modules/typing/OwnTypingActor.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
-__attribute__((unused)) static void ImActorModelModulesTypingOwnTypingActor_onTypingWithImActorModelEntityPeer_(ImActorModelModulesTypingOwnTypingActor *self, ImActorModelEntityPeer *peer);
+__attribute__((unused)) static void ImActorModelModulesTypingOwnTypingActor_onTypingWithAMPeer_(ImActorModelModulesTypingOwnTypingActor *self, AMPeer *peer);
 
 @interface ImActorModelModulesTypingOwnTypingActor () {
  @public
   jlong lastTypingTime_;
 }
 
-- (void)onTypingWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (void)onTypingWithAMPeer:(AMPeer *)peer;
 @end
 
 @interface ImActorModelModulesTypingOwnTypingActor_Typing () {
  @public
-  ImActorModelEntityPeer *peer_;
+  AMPeer *peer_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesTypingOwnTypingActor_Typing, peer_, ImActorModelEntityPeer *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesTypingOwnTypingActor_Typing, peer_, AMPeer *)
 
 @implementation ImActorModelModulesTypingOwnTypingActor
 
@@ -43,13 +43,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingOwnTypingActor_Typing, peer_, ImAct
   return self;
 }
 
-- (void)onTypingWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  ImActorModelModulesTypingOwnTypingActor_onTypingWithImActorModelEntityPeer_(self, peer);
+- (void)onTypingWithAMPeer:(AMPeer *)peer {
+  ImActorModelModulesTypingOwnTypingActor_onTypingWithAMPeer_(self, peer);
 }
 
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesTypingOwnTypingActor_Typing class]]) {
-    ImActorModelModulesTypingOwnTypingActor_onTypingWithImActorModelEntityPeer_(self, [((ImActorModelModulesTypingOwnTypingActor_Typing *) nil_chk(((ImActorModelModulesTypingOwnTypingActor_Typing *) check_class_cast(message, [ImActorModelModulesTypingOwnTypingActor_Typing class])))) getPeer]);
+    ImActorModelModulesTypingOwnTypingActor_onTypingWithAMPeer_(self, [((ImActorModelModulesTypingOwnTypingActor_Typing *) nil_chk(((ImActorModelModulesTypingOwnTypingActor_Typing *) check_class_cast(message, [ImActorModelModulesTypingOwnTypingActor_Typing class])))) getPeer]);
   }
   else {
     [self dropWithId:message];
@@ -64,7 +64,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingOwnTypingActor_Typing, peer_, ImAct
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "initWithImActorModelModulesModules:", "OwnTypingActor", NULL, 0x1, NULL },
-    { "onTypingWithImActorModelEntityPeer:", "onTyping", "V", 0x2, NULL },
+    { "onTypingWithAMPeer:", "onTyping", "V", 0x2, NULL },
     { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -77,20 +77,20 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingOwnTypingActor_Typing, peer_, ImAct
 
 @end
 
-void ImActorModelModulesTypingOwnTypingActor_onTypingWithImActorModelEntityPeer_(ImActorModelModulesTypingOwnTypingActor *self, ImActorModelEntityPeer *peer) {
-  if (ImActorModelDroidkitActorsActorTime_currentTime() - self->lastTypingTime_ < ImActorModelModulesTypingOwnTypingActor_TYPING_DELAY) {
+void ImActorModelModulesTypingOwnTypingActor_onTypingWithAMPeer_(ImActorModelModulesTypingOwnTypingActor *self, AMPeer *peer) {
+  if (DKActorTime_currentTime() - self->lastTypingTime_ < ImActorModelModulesTypingOwnTypingActor_TYPING_DELAY) {
     return;
   }
-  self->lastTypingTime_ = ImActorModelDroidkitActorsActorTime_currentTime();
+  self->lastTypingTime_ = DKActorTime_currentTime();
   ImActorModelApiOutPeer *outPeer;
-  if ([((ImActorModelEntityPeer *) nil_chk(peer)) getPeerType] == ImActorModelEntityPeerTypeEnum_get_PRIVATE()) {
-    ImActorModelEntityUser *user = [self getUserWithInt:[peer getPeerId]];
+  if ([((AMPeer *) nil_chk(peer)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
+    AMUser *user = [self getUserWithInt:[peer getPeerId]];
     if (user == nil) {
       return;
     }
-    outPeer = [[ImActorModelApiOutPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[((ImActorModelEntityUser *) nil_chk(user)) getUid] withLong:[user getAccessHash]];
+    outPeer = [[ImActorModelApiOutPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[((AMUser *) nil_chk(user)) getUid] withLong:[user getAccessHash]];
   }
-  else if ([peer getPeerType] == ImActorModelEntityPeerTypeEnum_get_GROUP()) {
+  else if ([peer getPeerType] == AMPeerTypeEnum_get_GROUP()) {
     return;
   }
   else {
@@ -103,14 +103,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingOwnTypingActor)
 
 @implementation ImActorModelModulesTypingOwnTypingActor_Typing
 
-- (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
+- (instancetype)initWithAMPeer:(AMPeer *)peer {
   if (self = [super init]) {
     self->peer_ = peer;
   }
   return self;
 }
 
-- (ImActorModelEntityPeer *)getPeer {
+- (AMPeer *)getPeer {
   return peer_;
 }
 
@@ -121,7 +121,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingOwnTypingActor)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelEntityPeer:", "Typing", NULL, 0x1, NULL },
+    { "initWithAMPeer:", "Typing", NULL, 0x1, NULL },
     { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {

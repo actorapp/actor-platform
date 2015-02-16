@@ -6,8 +6,8 @@
 #ifndef _ImActorModelModulesPresence_H_
 #define _ImActorModelModulesPresence_H_
 
-@class ImActorModelDroidkitActorsActorRef;
-@class ImActorModelEntityPeer;
+@class AMPeer;
+@class DKActorRef;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesPresenceOwnPresenceActor;
 
@@ -26,9 +26,9 @@
 
 - (void)onAppHidden;
 
-- (void)onConversationOpenWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (void)onConversationOpenWithAMPeer:(AMPeer *)peer;
 
-- (void)onConversationClosedWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (void)onConversationClosedWithAMPeer:(AMPeer *)peer;
 
 - (void)onNewSessionCreated;
 
@@ -41,7 +41,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresence)
 
-@interface ImActorModelModulesPresence_$1 : NSObject < ImActorModelDroidkitActorsActorCreator > {
+@interface ImActorModelModulesPresence_$1 : NSObject < DKActorCreator > {
 }
 
 - (ImActorModelModulesPresenceOwnPresenceActor *)create;

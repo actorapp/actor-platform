@@ -6,14 +6,14 @@
 #ifndef _ImActorModelApiAuthSession_H_
 #define _ImActorModelApiAuthSession_H_
 
-@class ImActorModelDroidkitBserBserValues;
-@class ImActorModelDroidkitBserBserWriter;
+@class BSBserValues;
+@class BSBserWriter;
 @class JavaLangDouble;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiAuthSession : ImActorModelDroidkitBserBserObject {
+@interface ImActorModelApiAuthSession : BSBserObject {
 }
 
 - (instancetype)initWithInt:(jint)id_
@@ -46,9 +46,9 @@
 
 - (JavaLangDouble *)getLongitude;
 
-- (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values;
+- (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 

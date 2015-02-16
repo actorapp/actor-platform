@@ -8,42 +8,42 @@
 #include "im/actor/model/droidkit/actors/dispatch/DispatchResult.h"
 #include "im/actor/model/droidkit/actors/dispatch/QueueListener.h"
 
-@interface ImActorModelDroidkitActorsDispatchAbstractDispatchQueue () {
+@interface DKAbstractDispatchQueue () {
  @public
-  id<ImActorModelDroidkitActorsDispatchQueueListener> listener_;
+  id<DKQueueListener> listener_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue, listener_, id<ImActorModelDroidkitActorsDispatchQueueListener>)
+J2OBJC_FIELD_SETTER(DKAbstractDispatchQueue, listener_, id<DKQueueListener>)
 
-@implementation ImActorModelDroidkitActorsDispatchAbstractDispatchQueue
+@implementation DKAbstractDispatchQueue
 
-- (ImActorModelDroidkitActorsDispatchDispatchResult *)dispatchWithLong:(jlong)time {
+- (DKDispatchResult *)dispatchWithLong:(jlong)time {
   // can't call an abstract method
   [self doesNotRecognizeSelector:_cmd];
   return 0;
 }
 
 - (void)notifyQueueChanged {
-  id<ImActorModelDroidkitActorsDispatchQueueListener> lListener = listener_;
+  id<DKQueueListener> lListener = listener_;
   if (lListener != nil) {
     [lListener onQueueChanged];
   }
 }
 
-- (ImActorModelDroidkitActorsDispatchDispatchResult *)resultWithId:(id)obj {
-  return ImActorModelDroidkitActorsDispatchDispatchResult_resultWithId_(obj);
+- (DKDispatchResult *)resultWithId:(id)obj {
+  return DKDispatchResult_resultWithId_(obj);
 }
 
-- (ImActorModelDroidkitActorsDispatchDispatchResult *)delayWithLong:(jlong)delay {
-  return ImActorModelDroidkitActorsDispatchDispatchResult_delayWithLong_(delay);
+- (DKDispatchResult *)delayWithLong:(jlong)delay {
+  return DKDispatchResult_delayWithLong_(delay);
 }
 
-- (id<ImActorModelDroidkitActorsDispatchQueueListener>)getListener {
+- (id<DKQueueListener>)getListener {
   return listener_;
 }
 
-- (void)setListenerWithImActorModelDroidkitActorsDispatchQueueListener:(id<ImActorModelDroidkitActorsDispatchQueueListener>)listener {
+- (void)setListenerWithDKQueueListener:(id<DKQueueListener>)listener {
   self->listener_ = listener;
 }
 
@@ -51,7 +51,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue, lis
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue *)other {
+- (void)copyAllFieldsTo:(DKAbstractDispatchQueue *)other {
   [super copyAllFieldsTo:other];
   other->listener_ = listener_;
 }
@@ -63,17 +63,17 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue, lis
     { "resultWithId:", "result", "Lim.actor.model.droidkit.actors.dispatch.DispatchResult;", 0x4, NULL },
     { "delayWithLong:", "delay", "Lim.actor.model.droidkit.actors.dispatch.DispatchResult;", 0x4, NULL },
     { "getListener", NULL, "Lim.actor.model.droidkit.actors.dispatch.QueueListener;", 0x1, NULL },
-    { "setListenerWithImActorModelDroidkitActorsDispatchQueueListener:", "setListener", "V", 0x1, NULL },
+    { "setListenerWithDKQueueListener:", "setListener", "V", 0x1, NULL },
     { "init", NULL, NULL, 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "FOREVER_", NULL, 0x1c, "J", NULL, .constantValue.asLong = ImActorModelDroidkitActorsDispatchAbstractDispatchQueue_FOREVER },
+    { "FOREVER_", NULL, 0x1c, "J", NULL, .constantValue.asLong = DKAbstractDispatchQueue_FOREVER },
     { "listener_", NULL, 0x2, "Lim.actor.model.droidkit.actors.dispatch.QueueListener;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsDispatchAbstractDispatchQueue = { 1, "AbstractDispatchQueue", "im.actor.model.droidkit.actors.dispatch", NULL, 0x401, 7, methods, 2, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsDispatchAbstractDispatchQueue;
+  static const J2ObjcClassInfo _DKAbstractDispatchQueue = { 1, "AbstractDispatchQueue", "im.actor.model.droidkit.actors.dispatch", NULL, 0x401, 7, methods, 2, fields, 0, NULL};
+  return &_DKAbstractDispatchQueue;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsDispatchAbstractDispatchQueue)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAbstractDispatchQueue)

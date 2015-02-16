@@ -8,22 +8,22 @@
 #include "im/actor/model/droidkit/actors/CurrentActor.h"
 #include "java/lang/ThreadLocal.h"
 
-@interface ImActorModelDroidkitActorsCurrentActor () {
+@interface DKCurrentActor () {
 }
 @end
 
-BOOL ImActorModelDroidkitActorsCurrentActor_initialized = NO;
+BOOL DKCurrentActor_initialized = NO;
 
-@implementation ImActorModelDroidkitActorsCurrentActor
+@implementation DKCurrentActor
 
-JavaLangThreadLocal * ImActorModelDroidkitActorsCurrentActor_currentActor_;
+JavaLangThreadLocal * DKCurrentActor_currentActor_;
 
-+ (void)setCurrentActorWithImActorModelDroidkitActorsActor:(ImActorModelDroidkitActorsActor *)actor {
-  ImActorModelDroidkitActorsCurrentActor_setCurrentActorWithImActorModelDroidkitActorsActor_(actor);
++ (void)setCurrentActorWithDKActor:(DKActor *)actor {
+  DKCurrentActor_setCurrentActorWithDKActor_(actor);
 }
 
-+ (ImActorModelDroidkitActorsActor *)getCurrentActor {
-  return ImActorModelDroidkitActorsCurrentActor_getCurrentActor();
++ (DKActor *)getCurrentActor {
+  return DKCurrentActor_getCurrentActor();
 }
 
 - (instancetype)init {
@@ -31,35 +31,35 @@ JavaLangThreadLocal * ImActorModelDroidkitActorsCurrentActor_currentActor_;
 }
 
 + (void)initialize {
-  if (self == [ImActorModelDroidkitActorsCurrentActor class]) {
-    ImActorModelDroidkitActorsCurrentActor_currentActor_ = [[JavaLangThreadLocal alloc] init];
-    J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsCurrentActor)
+  if (self == [DKCurrentActor class]) {
+    DKCurrentActor_currentActor_ = [[JavaLangThreadLocal alloc] init];
+    J2OBJC_SET_INITIALIZED(DKCurrentActor)
   }
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "setCurrentActorWithImActorModelDroidkitActorsActor:", "setCurrentActor", "V", 0x9, NULL },
+    { "setCurrentActorWithDKActor:", "setCurrentActor", "V", 0x9, NULL },
     { "getCurrentActor", NULL, "Lim.actor.model.droidkit.actors.Actor;", 0x9, NULL },
     { "init", NULL, NULL, 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "currentActor_", NULL, 0xa, "Ljava.lang.ThreadLocal;", &ImActorModelDroidkitActorsCurrentActor_currentActor_,  },
+    { "currentActor_", NULL, 0xa, "Ljava.lang.ThreadLocal;", &DKCurrentActor_currentActor_,  },
   };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsCurrentActor = { 1, "CurrentActor", "im.actor.model.droidkit.actors", NULL, 0x1, 3, methods, 1, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsCurrentActor;
+  static const J2ObjcClassInfo _DKCurrentActor = { 1, "CurrentActor", "im.actor.model.droidkit.actors", NULL, 0x1, 3, methods, 1, fields, 0, NULL};
+  return &_DKCurrentActor;
 }
 
 @end
 
-void ImActorModelDroidkitActorsCurrentActor_setCurrentActorWithImActorModelDroidkitActorsActor_(ImActorModelDroidkitActorsActor *actor) {
-  ImActorModelDroidkitActorsCurrentActor_init();
-  [((JavaLangThreadLocal *) nil_chk(ImActorModelDroidkitActorsCurrentActor_currentActor_)) setWithId:actor];
+void DKCurrentActor_setCurrentActorWithDKActor_(DKActor *actor) {
+  DKCurrentActor_init();
+  [((JavaLangThreadLocal *) nil_chk(DKCurrentActor_currentActor_)) setWithId:actor];
 }
 
-ImActorModelDroidkitActorsActor *ImActorModelDroidkitActorsCurrentActor_getCurrentActor() {
-  ImActorModelDroidkitActorsCurrentActor_init();
-  return [((JavaLangThreadLocal *) nil_chk(ImActorModelDroidkitActorsCurrentActor_currentActor_)) get];
+DKActor *DKCurrentActor_getCurrentActor() {
+  DKCurrentActor_init();
+  return [((JavaLangThreadLocal *) nil_chk(DKCurrentActor_currentActor_)) get];
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsCurrentActor)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKCurrentActor)
