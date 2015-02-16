@@ -18,9 +18,9 @@ public interface Threading {
 
     public int getCoresCount();
 
-    public AtomicIntegerCompat createAtomicInt(int init);
+    public AtomicIntegerCompat createAtomicInt(int value);
 
-    public AtomicLongCompat createAtomicLong(long init);
+    public AtomicLongCompat createAtomicLong(long value);
 
     public <T> ThreadLocalCompat<T> createThreadLocal();
 
