@@ -46,21 +46,6 @@
   other->addedUid_ = addedUid_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:", "ServiceExUserAdded", NULL, 0x1, NULL },
-    { "init", "ServiceExUserAdded", NULL, 0x1, NULL },
-    { "getAddedUid", NULL, "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "addedUid_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiServiceExUserAdded = { 1, "ServiceExUserAdded", "im.actor.model.api", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
-  return &_ImActorModelApiServiceExUserAdded;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExUserAdded)

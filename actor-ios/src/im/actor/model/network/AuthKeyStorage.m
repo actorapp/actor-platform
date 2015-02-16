@@ -6,20 +6,4 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/AuthKeyStorage.h"
 
-@interface AMAuthKeyStorage : NSObject
-@end
-
-@implementation AMAuthKeyStorage
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "getAuthKey", NULL, "J", 0x401, NULL },
-    { "saveAuthKeyWithLong:", "saveAuthKey", "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMAuthKeyStorage = { 1, "AuthKeyStorage", "im.actor.model.network", NULL, 0x201, 2, methods, 0, NULL, 0, NULL};
-  return &_AMAuthKeyStorage;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMAuthKeyStorage)

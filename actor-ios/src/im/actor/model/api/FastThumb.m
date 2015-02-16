@@ -72,25 +72,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
   other->thumb_ = thumb_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withInt:withByteArray:", "FastThumb", NULL, 0x1, NULL },
-    { "init", "FastThumb", NULL, 0x1, NULL },
-    { "getW", NULL, "I", 0x1, NULL },
-    { "getH", NULL, "I", 0x1, NULL },
-    { "getThumb", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "w_", NULL, 0x2, "I", NULL,  },
-    { "h_", NULL, 0x2, "I", NULL,  },
-    { "thumb_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiFastThumb = { 1, "FastThumb", "im.actor.model.api", NULL, 0x1, 7, methods, 3, fields, 0, NULL};
-  return &_ImActorModelApiFastThumb;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiFastThumb)

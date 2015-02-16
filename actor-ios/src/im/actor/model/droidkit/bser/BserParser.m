@@ -40,16 +40,6 @@ withImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseA
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "deserializeWithAMDataInput:", "deserialize", "Lim.actor.model.droidkit.bser.util.SparseArray;", 0x9, "Ljava.io.IOException;" },
-    { "putWithInt:withId:withImActorModelDroidkitBserUtilSparseArray:", "put", "V", 0xa, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _BSBserParser = { 1, "BserParser", "im.actor.model.droidkit.bser", NULL, 0x1, 3, methods, 0, NULL, 0, NULL};
-  return &_BSBserParser;
-}
-
 @end
 
 ImActorModelDroidkitBserUtilSparseArray *BSBserParser_deserializeWithAMDataInput_(AMDataInput *is) {

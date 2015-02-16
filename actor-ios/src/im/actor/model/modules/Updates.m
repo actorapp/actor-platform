@@ -55,21 +55,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates_$1, this$0_, ImActorModelModulesU
   other->updateActor_ = updateActor_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "Updates", NULL, 0x1, NULL },
-    { "run", NULL, "V", 0x1, NULL },
-    { "onNewSessionCreated", NULL, "V", 0x1, NULL },
-    { "onPushReceivedWithInt:", "onPushReceived", "V", 0x1, NULL },
-    { "onUpdateReceivedWithId:", "onUpdateReceived", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "updateActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdates = { 1, "Updates", "im.actor.model.modules", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUpdates;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdates)
@@ -88,18 +73,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdates)
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdates_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "Lim.actor.model.modules.updates.SequenceActor;", 0x1, NULL },
-    { "initWithImActorModelModulesUpdates:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.Updates;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdates_$1 = { 1, "$1", "im.actor.model.modules", "Updates", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUpdates_$1;
 }
 
 @end

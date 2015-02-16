@@ -12,14 +12,6 @@
   return [super initWithNSString:@"TIMEOUT" withInt:500 withNSString:@"Request timeout" withBoolean:YES withByteArray:nil];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "RpcTimeoutException", NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _AMRpcTimeoutException = { 1, "RpcTimeoutException", "im.actor.model.network", NULL, 0x1, 1, methods, 0, NULL, 0, NULL};
-  return &_AMRpcTimeoutException;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMRpcTimeoutException)

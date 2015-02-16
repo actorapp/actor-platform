@@ -54,21 +54,6 @@ J2OBJC_FIELD_SETTER(DKActorContext, actorScope_, DKActorScope *)
   other->actorScope_ = actorScope_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithDKActorScope:", "ActorContext", NULL, 0x1, NULL },
-    { "getSelf", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "getSystem", NULL, "Lim.actor.model.droidkit.actors.ActorSystem;", 0x1, NULL },
-    { "sender", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "stopSelf", NULL, "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "actorScope_", NULL, 0x12, "Lim.actor.model.droidkit.actors.ActorScope;", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKActorContext = { 1, "ActorContext", "im.actor.model.droidkit.actors", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
-  return &_DKActorContext;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorContext)

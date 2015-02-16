@@ -75,23 +75,6 @@ ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_valueOfWithNSString_(
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withNSString:withInt:", "UserState", NULL, 0x2, NULL },
-    { "getValue", NULL, "I", 0x1, NULL },
-    { "parseWithInt:", "parse", "Lim.actor.model.api.UserState;", 0x9, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "REGISTERED", "REGISTERED", 0x4019, "Lim.actor.model.api.UserState;", &ImActorModelApiUserStateEnum_REGISTERED,  },
-    { "EMAIL", "EMAIL", 0x4019, "Lim.actor.model.api.UserState;", &ImActorModelApiUserStateEnum_EMAIL,  },
-    { "DELETED", "DELETED", 0x4019, "Lim.actor.model.api.UserState;", &ImActorModelApiUserStateEnum_DELETED,  },
-    { "value_", NULL, 0x2, "I", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.UserState;"};
-  static const J2ObjcClassInfo _ImActorModelApiUserStateEnum = { 1, "UserState", "im.actor.model.api", NULL, 0x4011, 3, methods, 4, fields, 1, superclass_type_args};
-  return &_ImActorModelApiUserStateEnum;
-}
-
 @end
 
 ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_parseWithInt_(jint value) {

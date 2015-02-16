@@ -8,20 +8,4 @@
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/parser/Response.h"
 
-@interface AMRpcCallback : NSObject
-@end
-
-@implementation AMRpcCallback
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithImActorModelNetworkParserResponse:", "onResult", "V", 0x401, NULL },
-    { "onErrorWithAMRpcException:", "onError", "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMRpcCallback = { 1, "RpcCallback", "im.actor.model.network", NULL, 0x201, 2, methods, 0, NULL, 0, NULL};
-  return &_AMRpcCallback;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMRpcCallback)

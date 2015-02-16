@@ -120,24 +120,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesContentDescription, text_, NSStri
   other->isSilent__ = isSilent__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelEntityContentAbsContent:", "ContentDescription", NULL, 0x1, NULL },
-    { "isSilent", NULL, "Z", 0x1, NULL },
-    { "getContentType", NULL, "Lim.actor.model.entity.Dialog$ContentType;", 0x1, NULL },
-    { "getText", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getRelatedUid", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "contentType_", NULL, 0x2, "Lim.actor.model.entity.Dialog$ContentType;", NULL,  },
-    { "text_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "relatedUid_", NULL, 0x2, "I", NULL,  },
-    { "isSilent__", "isSilent", 0x2, "Z", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesContentDescription = { 1, "ContentDescription", "im.actor.model.modules.messages", NULL, 0x1, 5, methods, 4, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesContentDescription;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesContentDescription)

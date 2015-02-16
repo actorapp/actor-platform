@@ -9,25 +9,4 @@
 #include "im/actor/model/mvvm/KeyValueItem.h"
 #include "java/util/List.h"
 
-@interface AMKeyValueEngine : NSObject
-@end
-
-@implementation AMKeyValueEngine
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "addOrUpdateItemWithAMKeyValueItem:", "addOrUpdateItem", "V", 0x401, NULL },
-    { "addOrUpdateItemsWithJavaUtilList:", "addOrUpdateItems", "V", 0x401, NULL },
-    { "removeItemWithLong:", "removeItem", "V", 0x401, NULL },
-    { "removeItemsWithLongArray:", "removeItems", "V", 0x401, NULL },
-    { "clear", NULL, "V", 0x401, NULL },
-    { "getAll", NULL, "Ljava.util.List;", 0x401, NULL },
-    { "getValueWithLong:", "getValue", "TV;", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMKeyValueEngine = { 1, "KeyValueEngine", "im.actor.model.mvvm", NULL, 0x201, 7, methods, 0, NULL, 0, NULL};
-  return &_AMKeyValueEngine;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMKeyValueEngine)

@@ -57,22 +57,6 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileRemoteSource, fileLocation_, AM
   other->fileLocation_ = fileLocation_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromValuesWithBSBserValues:", "fromValues", "Lim.actor.model.entity.content.FileRemoteSource;", 0xc, "Ljava.io.IOException;" },
-    { "initWithAMFileLocation:", "FileRemoteSource", NULL, 0x1, NULL },
-    { "init", "FileRemoteSource", NULL, 0x2, NULL },
-    { "getFileLocation", NULL, "Lim.actor.model.entity.FileLocation;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "fileLocation_", NULL, 0x2, "Lim.actor.model.entity.FileLocation;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentFileRemoteSource = { 1, "FileRemoteSource", "im.actor.model.entity.content", NULL, 0x1, 6, methods, 1, fields, 0, NULL};
-  return &_ImActorModelEntityContentFileRemoteSource;
-}
-
 @end
 
 ImActorModelEntityContentFileRemoteSource *ImActorModelEntityContentFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader) {

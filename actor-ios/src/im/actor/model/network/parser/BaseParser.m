@@ -9,26 +9,13 @@
 #include "im/actor/model/network/parser/BaseParser.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelNetworkParserBaseParser
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-- (id)readWithInt:(jint)type
-    withByteArray:(IOSByteArray *)payload {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-  return 0;
-}
+@implementation ImActorModelNetworkParserBaseParser
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "readWithInt:withByteArray:", "read", "TT;", 0x401, "Ljava.io.IOException;" },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelNetworkParserBaseParser = { 1, "BaseParser", "im.actor.model.network.parser", NULL, 0x401, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelNetworkParserBaseParser;
 }
 
 @end

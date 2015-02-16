@@ -125,36 +125,6 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
   other->content_ = content_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.Message;", 0x9, "Ljava.io.IOException;" },
-    { "initWithLong:withLong:withLong:withInt:withAMMessageStateEnum:withImActorModelEntityContentAbsContent:", "Message", NULL, 0x1, NULL },
-    { "init", "Message", NULL, 0x2, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getSortDate", NULL, "J", 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-    { "getSenderId", NULL, "I", 0x1, NULL },
-    { "getMessageState", NULL, "Lim.actor.model.entity.MessageState;", 0x1, NULL },
-    { "getContent", NULL, "Lim.actor.model.entity.content.AbsContent;", 0x1, NULL },
-    { "changeStateWithAMMessageStateEnum:", "changeState", "Lim.actor.model.entity.Message;", 0x1, NULL },
-    { "changeDateWithLong:", "changeDate", "Lim.actor.model.entity.Message;", 0x1, NULL },
-    { "getListId", NULL, "J", 0x1, NULL },
-    { "getListSortKey", NULL, "J", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "sortDate_", NULL, 0x2, "J", NULL,  },
-    { "date_", NULL, 0x2, "J", NULL,  },
-    { "senderId_", NULL, 0x2, "I", NULL,  },
-    { "messageState_", NULL, 0x2, "Lim.actor.model.entity.MessageState;", NULL,  },
-    { "content_", NULL, 0x2, "Lim.actor.model.entity.content.AbsContent;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMMessage = { 1, "Message", "im.actor.model.entity", NULL, 0x1, 15, methods, 6, fields, 0, NULL};
-  return &_AMMessage;
-}
-
 @end
 
 AMMessage *AMMessage_fromBytesWithByteArray_(IOSByteArray *data) {

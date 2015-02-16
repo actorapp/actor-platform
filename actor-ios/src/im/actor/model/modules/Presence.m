@@ -71,24 +71,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresence_$1, val$modules_, ImActorModelMo
   other->presence_ = presence_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "Presence", NULL, 0x1, NULL },
-    { "run", NULL, "V", 0x1, NULL },
-    { "onAppVisible", NULL, "V", 0x1, NULL },
-    { "onAppHidden", NULL, "V", 0x1, NULL },
-    { "onConversationOpenWithAMPeer:", "onConversationOpen", "V", 0x1, NULL },
-    { "onConversationClosedWithAMPeer:", "onConversationClosed", "V", 0x1, NULL },
-    { "onNewSessionCreated", NULL, "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "myPresence_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "presence_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresence = { 1, "Presence", "im.actor.model.modules", NULL, 0x1, 7, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesPresence;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresence)
@@ -107,18 +89,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresence)
 - (void)copyAllFieldsTo:(ImActorModelModulesPresence_$1 *)other {
   [super copyAllFieldsTo:other];
   other->val$modules_ = val$modules_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "Lim.actor.model.modules.presence.OwnPresenceActor;", 0x1, NULL },
-    { "initWithImActorModelModulesModules:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "val$modules_", NULL, 0x1012, "Lim.actor.model.modules.Modules;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresence_$1 = { 1, "$1", "im.actor.model.modules", "Presence", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesPresence_$1;
 }
 
 @end

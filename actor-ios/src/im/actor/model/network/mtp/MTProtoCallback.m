@@ -7,22 +7,4 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/mtp/MTProtoCallback.h"
 
-@interface MTMTProtoCallback : NSObject
-@end
-
-@implementation MTMTProtoCallback
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onRpcResponseWithLong:withByteArray:", "onRpcResponse", "V", 0x401, NULL },
-    { "onUpdateWithByteArray:", "onUpdate", "V", 0x401, NULL },
-    { "onAuthKeyInvalidatedWithLong:", "onAuthKeyInvalidated", "V", 0x401, NULL },
-    { "onSessionCreated", NULL, "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _MTMTProtoCallback = { 1, "MTProtoCallback", "im.actor.model.network.mtp", NULL, 0x201, 4, methods, 0, NULL, 0, NULL};
-  return &_MTMTProtoCallback;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTMTProtoCallback)

@@ -57,25 +57,6 @@ J2OBJC_FIELD_SETTER(AMExponentialBackoff, random_, JavaUtilRandom *)
   other->random_ = random_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "exponentialWait", NULL, "J", 0x1, NULL },
-    { "onFailure", NULL, "V", 0x1, NULL },
-    { "onSuccess", NULL, "V", 0x1, NULL },
-    { "reset", NULL, "V", 0x1, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "MIN_DELAY_", NULL, 0x1a, "I", NULL, .constantValue.asInt = AMExponentialBackoff_MIN_DELAY },
-    { "MAX_DELAY_", NULL, 0x1a, "I", NULL, .constantValue.asInt = AMExponentialBackoff_MAX_DELAY },
-    { "MAX_FAILURE_COUNT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = AMExponentialBackoff_MAX_FAILURE_COUNT },
-    { "currentFailureCount_", NULL, 0x12, "Lim.actor.model.util.AtomicIntegerCompat;", NULL,  },
-    { "random_", NULL, 0x12, "Ljava.util.Random;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMExponentialBackoff = { 1, "ExponentialBackoff", "im.actor.model.util", NULL, 0x1, 5, methods, 5, fields, 0, NULL};
-  return &_AMExponentialBackoff;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMExponentialBackoff)

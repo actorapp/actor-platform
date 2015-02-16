@@ -17,15 +17,6 @@
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "equalsEWithId:withId:", "equalsE", "Z", 0x9, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _AMJavaUtil = { 1, "JavaUtil", "im.actor.model.util", NULL, 0x1, 2, methods, 0, NULL, 0, NULL};
-  return &_AMJavaUtil;
-}
-
 @end
 
 jboolean AMJavaUtil_equalsEWithId_withId_(id a, id b) {

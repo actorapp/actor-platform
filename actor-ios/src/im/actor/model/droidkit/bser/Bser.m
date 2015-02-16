@@ -30,16 +30,6 @@
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "parseWithBSBserObject:withAMDataInput:", "parse", "TT;", 0x9, "Ljava.io.IOException;" },
-    { "parseWithBSBserObject:withByteArray:", "parse", "TT;", 0x9, "Ljava.io.IOException;" },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _BSBser = { 1, "Bser", "im.actor.model.droidkit.bser", NULL, 0x1, 3, methods, 0, NULL, 0, NULL};
-  return &_BSBser;
-}
-
 @end
 
 id BSBser_parseWithBSBserObject_withAMDataInput_(BSBserObject *res, AMDataInput *inputStream) {

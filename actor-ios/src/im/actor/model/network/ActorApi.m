@@ -44,18 +44,6 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
   other->apiBroker_ = apiBroker_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMEndpoints:withAMAuthKeyStorage:withAMActorApiCallback:withAMNetworking:", "ActorApi", NULL, 0x1, NULL },
-    { "requestWithImActorModelNetworkParserRequest:withAMRpcCallback:", "request", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "apiBroker_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMActorApi = { 1, "ActorApi", "im.actor.model.network", NULL, 0x1, 2, methods, 1, fields, 0, NULL};
-  return &_AMActorApi;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMActorApi)

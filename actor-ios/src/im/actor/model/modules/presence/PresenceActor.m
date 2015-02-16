@@ -174,27 +174,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_$1, val$messenger_,
   other->onlineCallback_ = onlineCallback_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "getWithImActorModelModulesModules:", "get", "Lim.actor.model.droidkit.actors.ActorRef;", 0x9, NULL },
-    { "initWithImActorModelModulesModules:", "PresenceActor", NULL, 0x1, NULL },
-    { "onUserOnlineWithInt:", "onUserOnline", "V", 0x2, NULL },
-    { "onUserOfflineWithInt:", "onUserOffline", "V", 0x2, NULL },
-    { "onUserLastSeenWithInt:withLong:", "onUserLastSeen", "V", 0x2, NULL },
-    { "onGroupOnlineWithInt:withInt:", "onGroupOnline", "V", 0x2, NULL },
-    { "subscribeWithAMPeer:", "subscribe", "V", 0x2, NULL },
-    { "onNewSessionCreated", NULL, "V", 0x2, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "ONLINE_TIMEOUT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelModulesPresencePresenceActor_ONLINE_TIMEOUT },
-    { "uids_", NULL, 0x2, "Ljava.util.HashSet;", NULL,  },
-    { "onlineCallback_", NULL, 0x2, "Lim.actor.model.MessengerCallback;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor = { 1, "PresenceActor", "im.actor.model.modules.presence", NULL, 0x1, 9, methods, 3, fields, 0, NULL};
-  return &_ImActorModelModulesPresencePresenceActor;
-}
-
 @end
 
 DKActorRef *ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
@@ -292,20 +271,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor)
   other->uid_ = uid_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:", "UserOnline", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "uid_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor_UserOnline = { 1, "UserOnline", "im.actor.model.modules.presence", "PresenceActor", 0x9, 4, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesPresencePresenceActor_UserOnline;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserOnline)
@@ -338,20 +303,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserOn
 - (void)copyAllFieldsTo:(ImActorModelModulesPresencePresenceActor_UserOffline *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:", "UserOffline", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "uid_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor_UserOffline = { 1, "UserOffline", "im.actor.model.modules.presence", "PresenceActor", 0x9, 4, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesPresencePresenceActor_UserOffline;
 }
 
 @end
@@ -398,22 +349,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserOf
   other->date_ = date_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withLong:", "UserLastSeen", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "uid_", NULL, 0x2, "I", NULL,  },
-    { "date_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor_UserLastSeen = { 1, "UserLastSeen", "im.actor.model.modules.presence", "PresenceActor", 0x9, 5, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesPresencePresenceActor_UserLastSeen;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserLastSeen)
@@ -458,22 +393,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserLa
   other->count_ = count_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withInt:", "GroupOnline", NULL, 0x1, NULL },
-    { "getGid", NULL, "I", 0x1, NULL },
-    { "getCount", NULL, "I", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "gid_", NULL, 0x2, "I", NULL,  },
-    { "count_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor_GroupOnline = { 1, "GroupOnline", "im.actor.model.modules.presence", "PresenceActor", 0x9, 5, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesPresencePresenceActor_GroupOnline;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_GroupOnline)
@@ -496,18 +415,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_GroupO
   other->peer_ = peer_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMPeer:", "Subscribe", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor_Subscribe = { 1, "Subscribe", "im.actor.model.modules.presence", "PresenceActor", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesPresencePresenceActor_Subscribe;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_Subscribe)
@@ -516,14 +423,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_Subscr
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor_SessionCreated = { 1, "SessionCreated", "im.actor.model.modules.presence", "PresenceActor", 0x9, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesPresencePresenceActor_SessionCreated;
 }
 
 @end
@@ -546,18 +445,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_Sessio
   other->val$messenger_ = val$messenger_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "Lim.actor.model.modules.presence.PresenceActor;", 0x1, NULL },
-    { "initWithImActorModelModulesModules:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "val$messenger_", NULL, 0x1012, "Lim.actor.model.modules.Modules;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor_$1 = { 1, "$1", "im.actor.model.modules.presence", "PresenceActor", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesPresencePresenceActor_$1;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_$1)
@@ -570,15 +457,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_$1)
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "createMailboxWithDKMailboxesQueue:", "createMailbox", "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x1, NULL },
-    { "init", NULL, NULL, 0x0, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor_$2 = { 1, "$2", "im.actor.model.modules.presence", "PresenceActor", 0x8000, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesPresencePresenceActor_$2;
 }
 
 @end
@@ -597,15 +475,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_$2)
 
 - (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)arg$0 {
   return [super initWithDKMailboxesQueue:arg$0];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "isEqualEnvelopeWithDKEnvelope:withDKEnvelope:", "isEqualEnvelope", "Z", 0x4, NULL },
-    { "initWithDKMailboxesQueue:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesPresencePresenceActor_$2_$1 = { 1, "$1", "im.actor.model.modules.presence", "PresenceActor$$2", 0x8000, 2, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesPresencePresenceActor_$2_$1;
 }
 
 @end

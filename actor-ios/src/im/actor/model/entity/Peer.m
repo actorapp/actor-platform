@@ -133,30 +133,6 @@ J2OBJC_FIELD_SETTER(AMPeer, peerType_, AMPeerTypeEnum *)
   other->peerId_ = peerId_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.Peer;", 0x9, "Ljava.io.IOException;" },
-    { "fromUidWithLong:", "fromUid", "Lim.actor.model.entity.Peer;", 0x9, NULL },
-    { "userWithInt:", "user", "Lim.actor.model.entity.Peer;", 0x9, NULL },
-    { "groupWithInt:", "group", "Lim.actor.model.entity.Peer;", 0x9, NULL },
-    { "initWithAMPeerTypeEnum:withInt:", "Peer", NULL, 0x1, NULL },
-    { "init", "Peer", NULL, 0x2, NULL },
-    { "getUid", NULL, "J", 0x1, NULL },
-    { "getPeerType", NULL, "Lim.actor.model.entity.PeerType;", 0x1, NULL },
-    { "getPeerId", NULL, "I", 0x1, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peerType_", NULL, 0x2, "Lim.actor.model.entity.PeerType;", NULL,  },
-    { "peerId_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMPeer = { 1, "Peer", "im.actor.model.entity", NULL, 0x1, 13, methods, 2, fields, 0, NULL};
-  return &_AMPeer;
-}
-
 @end
 
 AMPeer *AMPeer_fromBytesWithByteArray_(IOSByteArray *data) {

@@ -52,21 +52,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUploadConfig, serverData_, IOSByteArray *)
   other->serverData_ = serverData_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithByteArray:", "UploadConfig", NULL, 0x1, NULL },
-    { "init", "UploadConfig", NULL, 0x1, NULL },
-    { "getServerData", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "serverData_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiUploadConfig = { 1, "UploadConfig", "im.actor.model.api", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
-  return &_ImActorModelApiUploadConfig;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUploadConfig)

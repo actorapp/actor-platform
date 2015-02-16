@@ -7,19 +7,4 @@
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
 
-@interface DKActorCreator : NSObject
-@end
-
-@implementation DKActorCreator
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "create", NULL, "TT;", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _DKActorCreator = { 1, "ActorCreator", "im.actor.model.droidkit.actors", NULL, 0x201, 1, methods, 0, NULL, 0, NULL};
-  return &_DKActorCreator;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(DKActorCreator)

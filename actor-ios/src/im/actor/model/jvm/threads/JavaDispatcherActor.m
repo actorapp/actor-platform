@@ -32,14 +32,6 @@ J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaDispatcherActor_$1, this$0_, ImAct
   return self;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withDKActorSystem:withInt:withDKThreadPriorityEnum:", "JavaDispatcherActor", NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelJvmThreadsJavaDispatcherActor = { 1, "JavaDispatcherActor", "im.actor.model.jvm.threads", NULL, 0x1, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelJvmThreadsJavaDispatcherActor;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaDispatcherActor)
@@ -58,18 +50,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaDispatcherActor)
 - (void)copyAllFieldsTo:(ImActorModelJvmThreadsJavaDispatcherActor_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "dispatchMessageWithDKEnvelope:", "dispatchMessage", "V", 0x1, NULL },
-    { "initWithImActorModelJvmThreadsJavaDispatcherActor:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.jvm.threads.JavaDispatcherActor;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelJvmThreadsJavaDispatcherActor_$1 = { 1, "$1", "im.actor.model.jvm.threads", "JavaDispatcherActor", 0x8000, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelJvmThreadsJavaDispatcherActor_$1;
 }
 
 @end

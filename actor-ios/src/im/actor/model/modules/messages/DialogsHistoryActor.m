@@ -91,24 +91,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor_$1, this$0_, 
   other->isLoading_ = isLoading_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "DialogsHistoryActor", NULL, 0x1, NULL },
-    { "preStart", NULL, "V", 0x1, NULL },
-    { "onLoadMore", NULL, "V", 0x2, NULL },
-    { "onLoadedMoreWithBoolean:withLong:", "onLoadedMore", "V", 0x2, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "LIMIT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelModulesMessagesDialogsHistoryActor_LIMIT },
-    { "historyMaxDate_", NULL, 0x2, "J", NULL,  },
-    { "historyLoaded_", NULL, 0x2, "Z", NULL,  },
-    { "isLoading_", NULL, 0x2, "Z", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsHistoryActor = { 1, "DialogsHistoryActor", "im.actor.model.modules.messages", NULL, 0x1, 5, methods, 4, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsHistoryActor;
-}
-
 @end
 
 void ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(ImActorModelModulesMessagesDialogsHistoryActor *self) {
@@ -143,14 +125,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor)
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsHistoryActor_LoadMore = { 1, "LoadMore", "im.actor.model.modules.messages", "DialogsHistoryActor", 0x9, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsHistoryActor_LoadMore;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_LoadMore)
@@ -170,18 +144,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_
   [super copyAllFieldsTo:other];
   other->isFinished_ = isFinished_;
   other->maxLoadedDate_ = maxLoadedDate_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithBoolean:withLong:", "LoadedMore", NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "isFinished_", NULL, 0x2, "Z", NULL,  },
-    { "maxLoadedDate_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore = { 1, "LoadedMore", "im.actor.model.modules.messages", "DialogsHistoryActor", 0x9, 1, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore;
 }
 
 @end
@@ -206,19 +168,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsHistoryActor_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithImActorModelApiRpcResponseLoadDialogs:", "onResult", "V", 0x1, NULL },
-    { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "initWithImActorModelModulesMessagesDialogsHistoryActor:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.modules.messages.DialogsHistoryActor;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsHistoryActor_$1 = { 1, "$1", "im.actor.model.modules.messages", "DialogsHistoryActor", 0x8000, 3, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsHistoryActor_$1;
 }
 
 @end

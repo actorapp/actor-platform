@@ -91,30 +91,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateNewDevice, key_, IOSByteArray *)
   other->date_ = date_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.updates.UpdateNewDevice;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:withLong:withByteArray:withLong:", "UpdateNewDevice", NULL, 0x1, NULL },
-    { "init", "UpdateNewDevice", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "getKeyHash", NULL, "J", 0x1, NULL },
-    { "getKey", NULL, "[B", 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiUpdatesUpdateNewDevice_HEADER },
-    { "uid_", NULL, 0x2, "I", NULL,  },
-    { "keyHash_", NULL, 0x2, "J", NULL,  },
-    { "key_", NULL, 0x2, "[B", NULL,  },
-    { "date_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiUpdatesUpdateNewDevice = { 1, "UpdateNewDevice", "im.actor.model.api.updates", NULL, 0x1, 10, methods, 5, fields, 0, NULL};
-  return &_ImActorModelApiUpdatesUpdateNewDevice;
-}
-
 @end
 
 ImActorModelApiUpdatesUpdateNewDevice *ImActorModelApiUpdatesUpdateNewDevice_fromBytesWithByteArray_(IOSByteArray *data) {

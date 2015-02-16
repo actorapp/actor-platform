@@ -76,25 +76,6 @@
   other->h_ = h_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "photoFromBytesWithByteArray:", "photoFromBytes", "Lim.actor.model.entity.content.PhotoContent;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelEntityContentFileSource:withNSString:withNSString:withImActorModelEntityContentFastThumb:withInt:withInt:", "PhotoContent", NULL, 0x1, NULL },
-    { "init", "PhotoContent", NULL, 0x4, NULL },
-    { "getW", NULL, "I", 0x1, NULL },
-    { "getH", NULL, "I", 0x1, NULL },
-    { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "w_", NULL, 0x2, "I", NULL,  },
-    { "h_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentPhotoContent = { 1, "PhotoContent", "im.actor.model.entity.content", NULL, 0x1, 8, methods, 2, fields, 0, NULL};
-  return &_ImActorModelEntityContentPhotoContent;
-}
-
 @end
 
 ImActorModelEntityContentPhotoContent *ImActorModelEntityContentPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data) {

@@ -58,25 +58,6 @@ J2OBJC_FIELD_SETTER(MTMTRpcResponse, payload_, IOSByteArray *)
   other->payload_ = payload_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataInput:", "MTRpcResponse", NULL, 0x1, "Ljava.io.IOException;" },
-    { "getMessageId", NULL, "J", 0x1, NULL },
-    { "getPayload", NULL, "[B", 0x1, NULL },
-    { "getHeader", NULL, "B", 0x4, NULL },
-    { "writeBodyWithAMDataOutput:", "writeBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "readBodyWithAMDataInput:", "readBody", "V", 0x4, "Ljava.io.IOException;" },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "B", NULL, .constantValue.asChar = MTMTRpcResponse_HEADER },
-    { "messageId_", NULL, 0x2, "J", NULL,  },
-    { "payload_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTMTRpcResponse = { 1, "MTRpcResponse", "im.actor.model.network.mtp.entity", NULL, 0x1, 7, methods, 3, fields, 0, NULL};
-  return &_MTMTRpcResponse;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTMTRpcResponse)

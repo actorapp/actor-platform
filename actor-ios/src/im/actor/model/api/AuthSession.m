@@ -146,37 +146,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, longitude_, JavaLangDouble *)
   other->longitude_ = longitude_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withInt:withInt:withNSString:withNSString:withInt:withNSString:withJavaLangDouble:withJavaLangDouble:", "AuthSession", NULL, 0x1, NULL },
-    { "init", "AuthSession", NULL, 0x1, NULL },
-    { "getId", NULL, "I", 0x1, NULL },
-    { "getAuthHolder", NULL, "I", 0x1, NULL },
-    { "getAppId", NULL, "I", 0x1, NULL },
-    { "getAppTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getDeviceTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getAuthTime", NULL, "I", 0x1, NULL },
-    { "getAuthLocation", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getLatitude", NULL, "Ljava.lang.Double;", 0x1, NULL },
-    { "getLongitude", NULL, "Ljava.lang.Double;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "id__", "id", 0x2, "I", NULL,  },
-    { "authHolder_", NULL, 0x2, "I", NULL,  },
-    { "appId_", NULL, 0x2, "I", NULL,  },
-    { "appTitle_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "deviceTitle_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "authTime_", NULL, 0x2, "I", NULL,  },
-    { "authLocation_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "latitude_", NULL, 0x2, "Ljava.lang.Double;", NULL,  },
-    { "longitude_", NULL, 0x2, "Ljava.lang.Double;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiAuthSession = { 1, "AuthSession", "im.actor.model.api", NULL, 0x1, 13, methods, 9, fields, 0, NULL};
-  return &_ImActorModelApiAuthSession;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiAuthSession)

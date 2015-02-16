@@ -75,26 +75,6 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
   other->payload_ = payload_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMDataInput:", "ProtoPackage", NULL, 0x1, "Ljava.io.IOException;" },
-    { "initWithLong:withLong:withMTProtoMessage:", "ProtoPackage", NULL, 0x1, NULL },
-    { "getAuthId", NULL, "J", 0x1, NULL },
-    { "getSessionId", NULL, "J", 0x1, NULL },
-    { "getPayload", NULL, "Lim.actor.model.network.mtp.entity.ProtoMessage;", 0x1, NULL },
-    { "writeObjectWithAMDataOutput:", "writeObject", "V", 0x1, "Ljava.io.IOException;" },
-    { "readObjectWithAMDataInput:", "readObject", "Lim.actor.model.network.mtp.entity.ProtoObject;", 0x1, "Ljava.io.IOException;" },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "authId_", NULL, 0x2, "J", NULL,  },
-    { "sessionId_", NULL, 0x2, "J", NULL,  },
-    { "payload_", NULL, 0x2, "Lim.actor.model.network.mtp.entity.ProtoMessage;", NULL,  },
-  };
-  static const J2ObjcClassInfo _MTProtoPackage = { 1, "ProtoPackage", "im.actor.model.network.mtp.entity", NULL, 0x1, 8, methods, 3, fields, 0, NULL};
-  return &_MTProtoPackage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTProtoPackage)

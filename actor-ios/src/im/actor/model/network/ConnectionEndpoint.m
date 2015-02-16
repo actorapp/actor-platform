@@ -51,22 +51,6 @@ withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type {
   other->type_ = type_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withInt:withAMConnectionEndpoint_TypeEnum:", "ConnectionEndpoint", NULL, 0x1, NULL },
-    { "getType", NULL, "Lim.actor.model.network.ConnectionEndpoint$Type;", 0x1, NULL },
-    { "getHost", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getPort", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "host_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "port_", NULL, 0x2, "I", NULL,  },
-    { "type_", NULL, 0x2, "Lim.actor.model.network.ConnectionEndpoint$Type;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMConnectionEndpoint = { 1, "ConnectionEndpoint", "im.actor.model.network", NULL, 0x1, 4, methods, 3, fields, 0, NULL};
-  return &_AMConnectionEndpoint;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConnectionEndpoint)
@@ -118,21 +102,6 @@ AMConnectionEndpoint_TypeEnum *AMConnectionEndpoint_TypeEnum_valueOfWithNSString
     AMConnectionEndpoint_TypeEnum_WS_TLS = [[AMConnectionEndpoint_TypeEnum alloc] initWithNSString:@"WS_TLS" withInt:3];
     J2OBJC_SET_INITIALIZED(AMConnectionEndpoint_TypeEnum)
   }
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withInt:", "init", NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "TCP", "TCP", 0x4019, "Lim.actor.model.network.ConnectionEndpoint$Type;", &AMConnectionEndpoint_TypeEnum_TCP,  },
-    { "TCP_TLS", "TCP_TLS", 0x4019, "Lim.actor.model.network.ConnectionEndpoint$Type;", &AMConnectionEndpoint_TypeEnum_TCP_TLS,  },
-    { "WS", "WS", 0x4019, "Lim.actor.model.network.ConnectionEndpoint$Type;", &AMConnectionEndpoint_TypeEnum_WS,  },
-    { "WS_TLS", "WS_TLS", 0x4019, "Lim.actor.model.network.ConnectionEndpoint$Type;", &AMConnectionEndpoint_TypeEnum_WS_TLS,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.network.ConnectionEndpoint$Type;"};
-  static const J2ObjcClassInfo _AMConnectionEndpoint_TypeEnum = { 1, "Type", "im.actor.model.network", "ConnectionEndpoint", 0x4019, 1, methods, 4, fields, 1, superclass_type_args};
-  return &_AMConnectionEndpoint_TypeEnum;
 }
 
 @end

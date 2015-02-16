@@ -74,23 +74,6 @@ AMSexEnum *AMSexEnum_valueOfWithNSString_(NSString *name) {
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withNSString:withInt:", "Sex", NULL, 0x2, NULL },
-    { "getValue", NULL, "I", 0x1, NULL },
-    { "fromValueWithInt:", "fromValue", "Lim.actor.model.entity.Sex;", 0x9, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "UNKNOWN", "UNKNOWN", 0x4019, "Lim.actor.model.entity.Sex;", &AMSexEnum_UNKNOWN,  },
-    { "MALE", "MALE", 0x4019, "Lim.actor.model.entity.Sex;", &AMSexEnum_MALE,  },
-    { "FEMALE", "FEMALE", 0x4019, "Lim.actor.model.entity.Sex;", &AMSexEnum_FEMALE,  },
-    { "value_", NULL, 0x2, "I", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.entity.Sex;"};
-  static const J2ObjcClassInfo _AMSexEnum = { 1, "Sex", "im.actor.model.entity", NULL, 0x4011, 3, methods, 4, fields, 1, superclass_type_args};
-  return &_AMSexEnum;
-}
-
 @end
 
 AMSexEnum *AMSexEnum_fromValueWithInt_(jint value) {

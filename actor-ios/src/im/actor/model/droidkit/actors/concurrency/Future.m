@@ -152,33 +152,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsConcurrencyFuture, error__, JavaLa
   other->error__ = error__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "isCompleted", NULL, "Z", 0x21, NULL },
-    { "isError", NULL, "Z", 0x21, NULL },
-    { "isCanceled", NULL, "Z", 0x21, NULL },
-    { "error", NULL, "Ljava.lang.Throwable;", 0x21, NULL },
-    { "get", NULL, "TT;", 0x21, NULL },
-    { "addListenerWithImActorModelDroidkitActorsConcurrencyFutureCallback:", "addListener", "Z", 0x21, NULL },
-    { "removeListenerWithImActorModelDroidkitActorsConcurrencyFutureCallback:", "removeListener", "V", 0x21, NULL },
-    { "onCancel", NULL, "V", 0x24, NULL },
-    { "onCompletedWithId:", "onCompleted", "V", 0x24, NULL },
-    { "onErrorWithJavaLangThrowable:", "onError", "V", 0x24, NULL },
-    { "onTimeout", NULL, "V", 0x24, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "callbacks_", NULL, 0x2, "Ljava.util.LinkedList;", NULL,  },
-    { "isCompleted__", "isCompleted", 0x2, "Z", NULL,  },
-    { "isCanceled__", "isCanceled", 0x2, "Z", NULL,  },
-    { "isError__", "isError", 0x2, "Z", NULL,  },
-    { "result_", NULL, 0x2, "TT;", NULL,  },
-    { "error__", "error", 0x2, "Ljava.lang.Throwable;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsConcurrencyFuture = { 1, "Future", "im.actor.model.droidkit.actors.concurrency", NULL, 0x401, 12, methods, 6, fields, 0, NULL};
-  return &_ImActorModelDroidkitActorsConcurrencyFuture;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsConcurrencyFuture)

@@ -82,27 +82,6 @@ AMThreadLocalCompat * DKDispatchResult_FREE_RESULTS_;
   }
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "resultWithId:", "result", "Lim.actor.model.droidkit.actors.dispatch.DispatchResult;", 0x9, NULL },
-    { "delayWithLong:", "delay", "Lim.actor.model.droidkit.actors.dispatch.DispatchResult;", 0x9, NULL },
-    { "initWithBoolean:withId:withLong:", "DispatchResult", NULL, 0x0, NULL },
-    { "updateWithBoolean:withId:withLong:", "update", "V", 0x0, NULL },
-    { "isResult", NULL, "Z", 0x1, NULL },
-    { "getRes", NULL, "Ljava.lang.Object;", 0x1, NULL },
-    { "getDelay", NULL, "J", 0x1, NULL },
-    { "recycle", NULL, "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "FREE_RESULTS_", NULL, 0xa, "Lim.actor.model.util.ThreadLocalCompat;", &DKDispatchResult_FREE_RESULTS_,  },
-    { "isResult__", "isResult", 0x2, "Z", NULL,  },
-    { "res_", NULL, 0x2, "Ljava.lang.Object;", NULL,  },
-    { "delay__", "delay", 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKDispatchResult = { 1, "DispatchResult", "im.actor.model.droidkit.actors.dispatch", NULL, 0x1, 8, methods, 4, fields, 0, NULL};
-  return &_DKDispatchResult;
-}
-
 @end
 
 DKDispatchResult *DKDispatchResult_resultWithId_(id res) {

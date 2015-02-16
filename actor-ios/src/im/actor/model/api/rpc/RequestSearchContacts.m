@@ -62,25 +62,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSearchContacts, request_, NSString 
   other->request_ = request_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestSearchContacts;", 0x9, "Ljava.io.IOException;" },
-    { "initWithNSString:", "RequestSearchContacts", NULL, 0x1, NULL },
-    { "init", "RequestSearchContacts", NULL, 0x1, NULL },
-    { "getRequest", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestSearchContacts_HEADER },
-    { "request_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseSearchContacts;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestSearchContacts = { 1, "RequestSearchContacts", "im.actor.model.api.rpc", NULL, 0x1, 7, methods, 2, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestSearchContacts;
-}
-
 @end
 
 ImActorModelApiRpcRequestSearchContacts *ImActorModelApiRpcRequestSearchContacts_fromBytesWithByteArray_(IOSByteArray *data) {

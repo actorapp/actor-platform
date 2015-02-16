@@ -133,35 +133,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   other->createDate_ = createDate_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withLong:withNSString:withImActorModelApiAvatar:withBoolean:withInt:withJavaUtilList:withLong:", "Group", NULL, 0x1, NULL },
-    { "init", "Group", NULL, 0x1, NULL },
-    { "getId", NULL, "I", 0x1, NULL },
-    { "getAccessHash", NULL, "J", 0x1, NULL },
-    { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getAvatar", NULL, "Lim.actor.model.api.Avatar;", 0x1, NULL },
-    { "isMember", NULL, "Z", 0x1, NULL },
-    { "getAdminUid", NULL, "I", 0x1, NULL },
-    { "getMembers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getCreateDate", NULL, "J", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "id__", "id", 0x2, "I", NULL,  },
-    { "accessHash_", NULL, 0x2, "J", NULL,  },
-    { "title_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "avatar_", NULL, 0x2, "Lim.actor.model.api.Avatar;", NULL,  },
-    { "isMember__", "isMember", 0x2, "Z", NULL,  },
-    { "adminUid_", NULL, 0x2, "I", NULL,  },
-    { "members_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "createDate_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiGroup = { 1, "Group", "im.actor.model.api", NULL, 0x1, 12, methods, 8, fields, 0, NULL};
-  return &_ImActorModelApiGroup;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiGroup)

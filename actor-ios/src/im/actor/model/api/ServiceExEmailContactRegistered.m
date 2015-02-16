@@ -46,21 +46,6 @@
   other->uid_ = uid_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:", "ServiceExEmailContactRegistered", NULL, 0x1, NULL },
-    { "init", "ServiceExEmailContactRegistered", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "uid_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiServiceExEmailContactRegistered = { 1, "ServiceExEmailContactRegistered", "im.actor.model.api", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
-  return &_ImActorModelApiServiceExEmailContactRegistered;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExEmailContactRegistered)

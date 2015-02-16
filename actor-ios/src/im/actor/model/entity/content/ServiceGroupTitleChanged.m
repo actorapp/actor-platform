@@ -63,23 +63,6 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupTitleChanged, newTitle_
   other->newTitle_ = newTitle_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.entity.content.ServiceGroupTitleChanged;", 0x9, "Ljava.io.IOException;" },
-    { "initWithNSString:", "ServiceGroupTitleChanged", NULL, 0x1, NULL },
-    { "init", "ServiceGroupTitleChanged", NULL, 0x2, NULL },
-    { "getNewTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "newTitle_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentServiceGroupTitleChanged = { 1, "ServiceGroupTitleChanged", "im.actor.model.entity.content", NULL, 0x1, 7, methods, 1, fields, 0, NULL};
-  return &_ImActorModelEntityContentServiceGroupTitleChanged;
-}
-
 @end
 
 ImActorModelEntityContentServiceGroupTitleChanged *ImActorModelEntityContentServiceGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {

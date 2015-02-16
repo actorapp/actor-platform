@@ -6,21 +6,4 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/extensions/ActorExtension.h"
 
-@interface ImActorModelDroidkitActorsExtensionsActorExtension : NSObject
-@end
-
-@implementation ImActorModelDroidkitActorsExtensionsActorExtension
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "preStart", NULL, "V", 0x401, NULL },
-    { "onReceiveWithId:", "onReceive", "Z", 0x401, NULL },
-    { "postStop", NULL, "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsExtensionsActorExtension = { 1, "ActorExtension", "im.actor.model.droidkit.actors.extensions", NULL, 0x201, 3, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitActorsExtensionsActorExtension;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsExtensionsActorExtension)

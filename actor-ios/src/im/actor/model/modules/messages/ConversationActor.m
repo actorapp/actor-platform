@@ -173,28 +173,6 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   other->dialogsActor_ = dialogsActor_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMPeer:withImActorModelModulesModules:", "ConversationActor", NULL, 0x1, NULL },
-    { "preStart", NULL, "V", 0x1, NULL },
-    { "onHistoryLoadedWithJavaUtilList:", "onHistoryLoaded", "V", 0x2, NULL },
-    { "onInMessageWithAMMessage:", "onInMessage", "V", 0x2, NULL },
-    { "onMessagePlainReadWithLong:", "onMessagePlainRead", "V", 0x2, NULL },
-    { "onMessagePlainReceivedWithLong:", "onMessagePlainReceived", "V", 0x2, NULL },
-    { "onMessageEncryptedReceivedWithLong:", "onMessageEncryptedReceived", "V", 0x2, NULL },
-    { "onMessageEncryptedReadWithLong:", "onMessageEncryptedRead", "V", 0x2, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
-    { "messages_", NULL, 0x2, "Lim.actor.model.mvvm.ListEngine;", NULL,  },
-    { "pendingMessages_", NULL, 0x2, "Lim.actor.model.mvvm.KeyValueEngine;", NULL,  },
-    { "dialogsActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor = { 1, "ConversationActor", "im.actor.model.modules.messages", NULL, 0x1, 9, methods, 4, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesConversationActor;
-}
-
 @end
 
 void ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilList_(ImActorModelModulesMessagesConversationActor *self, id<JavaUtilList> history) {
@@ -262,18 +240,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor)
   other->messages_ = messages_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaUtilList:", "HistoryLoaded", NULL, 0x1, NULL },
-    { "getMessages", NULL, "Ljava.util.List;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "messages_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_HistoryLoaded = { 1, "HistoryLoaded", "im.actor.model.modules.messages", "ConversationActor", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesConversationActor_HistoryLoaded;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_HistoryLoaded)
@@ -294,18 +260,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_Hi
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor_MessageReceived *)other {
   [super copyAllFieldsTo:other];
   other->date_ = date_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:", "MessageReceived", NULL, 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "date_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_MessageReceived = { 1, "MessageReceived", "im.actor.model.modules.messages", "ConversationActor", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesConversationActor_MessageReceived;
 }
 
 @end
@@ -330,18 +284,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_Me
   other->rid_ = rid_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:", "MessageEncryptedReceived", NULL, 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "rid_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived = { 1, "MessageEncryptedReceived", "im.actor.model.modules.messages", "ConversationActor", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived)
@@ -364,18 +306,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_Me
   other->date_ = date_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:", "MessageRead", NULL, 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "date_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_MessageRead = { 1, "MessageRead", "im.actor.model.modules.messages", "ConversationActor", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesConversationActor_MessageRead;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageRead)
@@ -396,18 +326,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_Me
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *)other {
   [super copyAllFieldsTo:other];
   other->rid_ = rid_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:", "MessageEncryptedRead", NULL, 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "rid_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_MessageEncryptedRead = { 1, "MessageEncryptedRead", "im.actor.model.modules.messages", "ConversationActor", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesConversationActor_MessageEncryptedRead;
 }
 
 @end
@@ -439,20 +357,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_Me
   other->date_ = date_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withLong:", "MessageSent", NULL, 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "date_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_MessageSent = { 1, "MessageSent", "im.actor.model.modules.messages", "ConversationActor", 0x9, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesConversationActor_MessageSent;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageSent)
@@ -473,18 +377,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_Me
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor_MessageDeleted *)other {
   [super copyAllFieldsTo:other];
   other->rids_ = rids_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaUtilList:", "MessageDeleted", NULL, 0x1, NULL },
-    { "getRids", NULL, "Ljava.util.List;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "rids_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor_MessageDeleted = { 1, "MessageDeleted", "im.actor.model.modules.messages", "ConversationActor", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesConversationActor_MessageDeleted;
 }
 
 @end

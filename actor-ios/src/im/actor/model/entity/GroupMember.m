@@ -46,22 +46,6 @@
   other->inviteDate_ = inviteDate_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withInt:withLong:", "GroupMember", NULL, 0x1, NULL },
-    { "getUid", NULL, "I", 0x1, NULL },
-    { "getInviterUid", NULL, "I", 0x1, NULL },
-    { "getInviteDate", NULL, "J", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "uid_", NULL, 0x12, "I", NULL,  },
-    { "inviterUid_", NULL, 0x12, "I", NULL,  },
-    { "inviteDate_", NULL, 0x12, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMGroupMember = { 1, "GroupMember", "im.actor.model.entity", NULL, 0x1, 4, methods, 3, fields, 0, NULL};
-  return &_AMGroupMember;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupMember)

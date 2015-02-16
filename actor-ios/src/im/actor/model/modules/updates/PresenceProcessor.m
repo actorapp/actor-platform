@@ -49,21 +49,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesPresenceProcessor, presenceActor_,
   other->presenceActor_ = presenceActor_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "PresenceProcessor", NULL, 0x1, NULL },
-    { "onUserOnlineWithInt:", "onUserOnline", "V", 0x1, NULL },
-    { "onUserOfflineWithInt:", "onUserOffline", "V", 0x1, NULL },
-    { "onUserLastSeenWithInt:withLong:", "onUserLastSeen", "V", 0x1, NULL },
-    { "onGroupOnlineWithInt:withInt:", "onGroupOnline", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "presenceActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesPresenceProcessor = { 1, "PresenceProcessor", "im.actor.model.modules.updates", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesUpdatesPresenceProcessor;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesPresenceProcessor)

@@ -62,23 +62,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPeer, type_, ImActorModelApiPeerTypeEnum *)
   other->id__ = id__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelApiPeerTypeEnum:withInt:", "Peer", NULL, 0x1, NULL },
-    { "init", "Peer", NULL, 0x1, NULL },
-    { "getType", NULL, "Lim.actor.model.api.PeerType;", 0x1, NULL },
-    { "getId", NULL, "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "type_", NULL, 0x2, "Lim.actor.model.api.PeerType;", NULL,  },
-    { "id__", "id", 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiPeer = { 1, "Peer", "im.actor.model.api", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiPeer;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiPeer)

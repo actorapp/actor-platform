@@ -59,23 +59,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiMessageContent, content_, IOSByteArray *)
   other->content_ = content_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withByteArray:", "MessageContent", NULL, 0x1, NULL },
-    { "init", "MessageContent", NULL, 0x1, NULL },
-    { "getType", NULL, "I", 0x1, NULL },
-    { "getContent", NULL, "[B", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "type_", NULL, 0x2, "I", NULL,  },
-    { "content_", NULL, 0x2, "[B", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiMessageContent = { 1, "MessageContent", "im.actor.model.api", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
-  return &_ImActorModelApiMessageContent;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiMessageContent)

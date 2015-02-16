@@ -134,37 +134,6 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
   other->modules_ = modules_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMConfiguration:", "Messenger", NULL, 0x1, NULL },
-    { "getAuthState", NULL, "Lim.actor.model.AuthState;", 0x1, NULL },
-    { "isLoggedIn", NULL, "Z", 0x1, NULL },
-    { "requestSmsWithLong:", "requestSms", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
-    { "sendCodeWithInt:", "sendCode", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
-    { "signUpWithNSString:withNSString:withBoolean:", "signUp", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
-    { "getAuthPhone", NULL, "J", 0x1, NULL },
-    { "resetAuth", NULL, "V", 0x1, NULL },
-    { "myUid", NULL, "I", 0x1, NULL },
-    { "getUsers", NULL, "Lim.actor.model.mvvm.KeyValueEngine;", 0x1, NULL },
-    { "getDialogs", NULL, "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
-    { "getMessagesWithAMPeer:", "getMessages", "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
-    { "onAppVisible", NULL, "V", 0x1, NULL },
-    { "onAppHidden", NULL, "V", 0x1, NULL },
-    { "onConversationOpenWithAMPeer:", "onConversationOpen", "V", 0x1, NULL },
-    { "onConversationClosedWithAMPeer:", "onConversationClosed", "V", 0x1, NULL },
-    { "onTypingWithAMPeer:", "onTyping", "V", 0x1, NULL },
-    { "saveDraftWithAMPeer:withNSString:", "saveDraft", "V", 0x1, NULL },
-    { "loadDraftWithAMPeer:", "loadDraft", "Ljava.lang.String;", 0x1, NULL },
-    { "editMyNameWithNSString:", "editMyName", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
-    { "editNameWithInt:withNSString:", "editName", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "modules_", NULL, 0x2, "Lim.actor.model.modules.Modules;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMMessenger = { 1, "Messenger", "im.actor.model", NULL, 0x1, 21, methods, 1, fields, 0, NULL};
-  return &_AMMessenger;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessenger)

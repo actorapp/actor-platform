@@ -26,17 +26,6 @@
   return [super initWithJavaLangThrowable:throwable];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", "IncorrectTypeException", NULL, 0x1, NULL },
-    { "initWithNSString:", "IncorrectTypeException", NULL, 0x1, NULL },
-    { "initWithNSString:withJavaLangThrowable:", "IncorrectTypeException", NULL, 0x1, NULL },
-    { "initWithJavaLangThrowable:", "IncorrectTypeException", NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _BSIncorrectTypeException = { 1, "IncorrectTypeException", "im.actor.model.droidkit.bser", NULL, 0x1, 4, methods, 0, NULL, 0, NULL};
-  return &_BSIncorrectTypeException;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSIncorrectTypeException)

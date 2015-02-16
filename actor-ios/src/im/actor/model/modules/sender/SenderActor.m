@@ -80,17 +80,6 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
   ImActorModelModulesSenderSenderActor_sendMessageWithAMPeer_withLong_withLong_withImActorModelEntityContentAbsContent_(self, peer, rid, time, content);
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "SenderActor", NULL, 0x1, NULL },
-    { "preStart", NULL, "V", 0x1, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-    { "sendMessageWithAMPeer:withLong:withLong:withImActorModelEntityContentAbsContent:", "sendMessage", "V", 0x2, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesSenderSenderActor = { 1, "SenderActor", "im.actor.model.modules.sender", NULL, 0x1, 4, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesSenderSenderActor;
-}
-
 @end
 
 void ImActorModelModulesSenderSenderActor_sendMessageWithAMPeer_withLong_withLong_withImActorModelEntityContentAbsContent_(ImActorModelModulesSenderSenderActor *self, AMPeer *peer, jlong rid, jlong time, ImActorModelEntityContentAbsContent *content) {
@@ -145,20 +134,6 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
   other->content_ = content_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMPeer:withImActorModelEntityContentAbsContent:", "SendMessage", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
-    { "getContent", NULL, "Lim.actor.model.entity.content.AbsContent;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
-    { "content_", NULL, 0x2, "Lim.actor.model.entity.content.AbsContent;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesSenderSenderActor_SendMessage = { 1, "SendMessage", "im.actor.model.modules.sender", "SenderActor", 0x9, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesSenderSenderActor_SendMessage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSenderSenderActor_SendMessage)
@@ -188,20 +163,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSenderSenderActor_SendMessag
   other->date_ = date_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithLong:withLong:", "MessageSent", NULL, 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "date_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesSenderSenderActor_MessageSent = { 1, "MessageSent", "im.actor.model.modules.sender", "SenderActor", 0x9, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesSenderSenderActor_MessageSent;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSenderSenderActor_MessageSent)
@@ -216,16 +177,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSenderSenderActor_MessageSen
 
 - (instancetype)init {
   return [super init];
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onResultWithImActorModelApiRpcResponseSeqDate:", "onResult", "V", 0x1, NULL },
-    { "onErrorWithAMRpcException:", "onError", "V", 0x1, NULL },
-    { "init", NULL, NULL, 0x0, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesSenderSenderActor_$1 = { 1, "$1", "im.actor.model.modules.sender", "SenderActor", 0x8000, 3, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelModulesSenderSenderActor_$1;
 }
 
 @end

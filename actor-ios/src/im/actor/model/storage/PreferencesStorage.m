@@ -7,28 +7,4 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/storage/PreferencesStorage.h"
 
-@interface AMPreferencesStorage : NSObject
-@end
-
-@implementation AMPreferencesStorage
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "putLongWithNSString:withLong:", "putLong", "V", 0x401, NULL },
-    { "getLongWithNSString:withLong:", "getLong", "J", 0x401, NULL },
-    { "putIntWithNSString:withInt:", "putInt", "V", 0x401, NULL },
-    { "getIntWithNSString:withInt:", "getInt", "I", 0x401, NULL },
-    { "putBoolWithNSString:withBoolean:", "putBool", "V", 0x401, NULL },
-    { "getBoolWithNSString:withBoolean:", "getBool", "Z", 0x401, NULL },
-    { "putBytesWithNSString:withByteArray:", "putBytes", "V", 0x401, NULL },
-    { "getBytesWithNSString:", "getBytes", "[B", 0x401, NULL },
-    { "putStringWithNSString:withNSString:", "putString", "V", 0x401, NULL },
-    { "getStringWithNSString:", "getString", "Ljava.lang.String;", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMPreferencesStorage = { 1, "PreferencesStorage", "im.actor.model.storage", NULL, 0x201, 10, methods, 0, NULL, 0, NULL};
-  return &_AMPreferencesStorage;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMPreferencesStorage)

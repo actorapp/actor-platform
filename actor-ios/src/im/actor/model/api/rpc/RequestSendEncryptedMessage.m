@@ -120,33 +120,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEncryptedMessage, ownKeys_, id<
   other->ownKeys_ = ownKeys_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestSendEncryptedMessage;", 0x9, "Ljava.io.IOException;" },
-    { "initWithImActorModelApiOutPeer:withLong:withByteArray:withJavaUtilList:withJavaUtilList:", "RequestSendEncryptedMessage", NULL, 0x1, NULL },
-    { "init", "RequestSendEncryptedMessage", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.api.OutPeer;", 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getEncryptedMessage", NULL, "[B", 0x1, NULL },
-    { "getKeys", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getOwnKeys", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestSendEncryptedMessage_HEADER },
-    { "peer_", NULL, 0x2, "Lim.actor.model.api.OutPeer;", NULL,  },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "encryptedMessage_", NULL, 0x2, "[B", NULL,  },
-    { "keys_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "ownKeys_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseSeqDate;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestSendEncryptedMessage = { 1, "RequestSendEncryptedMessage", "im.actor.model.api.rpc", NULL, 0x1, 11, methods, 6, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestSendEncryptedMessage;
-}
-
 @end
 
 ImActorModelApiRpcRequestSendEncryptedMessage *ImActorModelApiRpcRequestSendEncryptedMessage_fromBytesWithByteArray_(IOSByteArray *data) {

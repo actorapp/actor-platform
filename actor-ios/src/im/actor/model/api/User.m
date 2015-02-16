@@ -163,39 +163,6 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
   other->userState_ = userState_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withLong:withNSString:withNSString:withImActorModelApiSexEnum:withJavaUtilList:withLong:withImActorModelApiAvatar:withJavaUtilList:withImActorModelApiUserStateEnum:", "User", NULL, 0x1, NULL },
-    { "init", "User", NULL, 0x1, NULL },
-    { "getId", NULL, "I", 0x1, NULL },
-    { "getAccessHash", NULL, "J", 0x1, NULL },
-    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getLocalName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getSex", NULL, "Lim.actor.model.api.Sex;", 0x1, NULL },
-    { "getKeyHashes", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getPhone", NULL, "J", 0x1, NULL },
-    { "getAvatar", NULL, "Lim.actor.model.api.Avatar;", 0x1, NULL },
-    { "getContacts", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getUserState", NULL, "Lim.actor.model.api.UserState;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "id__", "id", 0x2, "I", NULL,  },
-    { "accessHash_", NULL, 0x2, "J", NULL,  },
-    { "name_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "localName_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "sex_", NULL, 0x2, "Lim.actor.model.api.Sex;", NULL,  },
-    { "keyHashes_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "phone_", NULL, 0x2, "J", NULL,  },
-    { "avatar_", NULL, 0x2, "Lim.actor.model.api.Avatar;", NULL,  },
-    { "contacts_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-    { "userState_", NULL, 0x2, "Lim.actor.model.api.UserState;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiUser = { 1, "User", "im.actor.model.api", NULL, 0x1, 14, methods, 10, fields, 0, NULL};
-  return &_ImActorModelApiUser;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUser)

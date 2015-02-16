@@ -37,19 +37,6 @@ J2OBJC_FIELD_SETTER(AMPreferenceApiStorage, preferencesStorage_, id<AMPreference
   other->preferencesStorage_ = preferencesStorage_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMPreferencesStorage:", "PreferenceApiStorage", NULL, 0x1, NULL },
-    { "getAuthKey", NULL, "J", 0x1, NULL },
-    { "saveAuthKeyWithLong:", "saveAuthKey", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "preferencesStorage_", NULL, 0x2, "Lim.actor.model.storage.PreferencesStorage;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMPreferenceApiStorage = { 1, "PreferenceApiStorage", "im.actor.model.storage", NULL, 0x1, 3, methods, 1, fields, 0, NULL};
-  return &_AMPreferenceApiStorage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMPreferenceApiStorage)

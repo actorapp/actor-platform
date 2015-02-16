@@ -66,25 +66,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToGroupOnline, groups_, id
   other->groups_ = groups_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestSubscribeToGroupOnline;", 0x9, "Ljava.io.IOException;" },
-    { "initWithJavaUtilList:", "RequestSubscribeToGroupOnline", NULL, 0x1, NULL },
-    { "init", "RequestSubscribeToGroupOnline", NULL, 0x1, NULL },
-    { "getGroups", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestSubscribeToGroupOnline_HEADER },
-    { "groups_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseVoid;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestSubscribeToGroupOnline = { 1, "RequestSubscribeToGroupOnline", "im.actor.model.api.rpc", NULL, 0x1, 7, methods, 2, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestSubscribeToGroupOnline;
-}
-
 @end
 
 ImActorModelApiRpcRequestSubscribeToGroupOnline *ImActorModelApiRpcRequestSubscribeToGroupOnline_fromBytesWithByteArray_(IOSByteArray *data) {

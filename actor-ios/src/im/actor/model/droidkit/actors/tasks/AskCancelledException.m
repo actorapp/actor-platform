@@ -12,14 +12,6 @@
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsTasksAskCancelledException = { 1, "AskCancelledException", "im.actor.model.droidkit.actors.tasks", NULL, 0x1, 1, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitActorsTasksAskCancelledException;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksAskCancelledException)

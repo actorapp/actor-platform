@@ -66,25 +66,6 @@
   other->duration_ = duration_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withInt:withInt:", "FileExVideo", NULL, 0x1, NULL },
-    { "init", "FileExVideo", NULL, 0x1, NULL },
-    { "getW", NULL, "I", 0x1, NULL },
-    { "getH", NULL, "I", 0x1, NULL },
-    { "getDuration", NULL, "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "w_", NULL, 0x2, "I", NULL,  },
-    { "h_", NULL, 0x2, "I", NULL,  },
-    { "duration_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiFileExVideo = { 1, "FileExVideo", "im.actor.model.api", NULL, 0x1, 7, methods, 3, fields, 0, NULL};
-  return &_ImActorModelApiFileExVideo;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiFileExVideo)

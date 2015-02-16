@@ -62,25 +62,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
   other->name_ = name_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestEditName;", 0x9, "Ljava.io.IOException;" },
-    { "initWithNSString:", "RequestEditName", NULL, 0x1, NULL },
-    { "init", "RequestEditName", NULL, 0x1, NULL },
-    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestEditName_HEADER },
-    { "name_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseSeq;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestEditName = { 1, "RequestEditName", "im.actor.model.api.rpc", NULL, 0x1, 7, methods, 2, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestEditName;
-}
-
 @end
 
 ImActorModelApiRpcRequestEditName *ImActorModelApiRpcRequestEditName_fromBytesWithByteArray_(IOSByteArray *data) {

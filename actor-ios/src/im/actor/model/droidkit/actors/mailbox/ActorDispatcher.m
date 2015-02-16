@@ -261,30 +261,6 @@ J2OBJC_FIELD_SETTER(DKActorDispatcher, dispatcher_, DKAbstractDispatcher *)
   other->dispatcher_ = dispatcher_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withDKActorSystem:", "ActorDispatcher", NULL, 0x1, NULL },
-    { "initDispatcherWithDKAbstractDispatcher:", "initDispatcher", "V", 0x4, NULL },
-    { "referenceActorWithNSString:withDKProps:", "referenceActor", "Lim.actor.model.droidkit.actors.ActorRef;", 0x11, NULL },
-    { "killGracefullyWithDKActorScope:", "killGracefully", "V", 0x11, NULL },
-    { "sendMessageWithDKActorEndpoint:withId:withLong:withDKActorRef:", "sendMessage", "V", 0x11, NULL },
-    { "sendMessageOnceWithDKActorEndpoint:withId:withLong:withDKActorRef:", "sendMessageOnce", "V", 0x11, NULL },
-    { "cancelSendWithDKActorEndpoint:withId:withDKActorRef:", "cancelSend", "V", 0x11, NULL },
-    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "processEnvelopeWithDKEnvelope:", "processEnvelope", "V", 0x4, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "LOCK_", NULL, 0x12, "Ljava.lang.Object;", NULL,  },
-    { "endpoints_", NULL, 0x12, "Ljava.util.HashMap;", NULL,  },
-    { "scopes_", NULL, 0x12, "Ljava.util.HashMap;", NULL,  },
-    { "actorSystem_", NULL, 0x12, "Lim.actor.model.droidkit.actors.ActorSystem;", NULL,  },
-    { "name_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "dispatcher_", NULL, 0x2, "Lim.actor.model.droidkit.actors.dispatch.AbstractDispatcher;", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKActorDispatcher = { 1, "ActorDispatcher", "im.actor.model.droidkit.actors.mailbox", NULL, 0x401, 9, methods, 6, fields, 0, NULL};
-  return &_DKActorDispatcher;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorDispatcher)

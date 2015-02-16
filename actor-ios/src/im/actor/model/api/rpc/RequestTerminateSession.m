@@ -57,25 +57,6 @@
   other->id__ = id__;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "fromBytesWithByteArray:", "fromBytes", "Lim.actor.model.api.rpc.RequestTerminateSession;", 0x9, "Ljava.io.IOException;" },
-    { "initWithInt:", "RequestTerminateSession", NULL, 0x1, NULL },
-    { "init", "RequestTerminateSession", NULL, 0x1, NULL },
-    { "getId", NULL, "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-    { "getHeaderKey", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "HEADER_", NULL, 0x19, "I", NULL, .constantValue.asInt = ImActorModelApiRpcRequestTerminateSession_HEADER },
-    { "id__", "id", 0x2, "I", NULL,  },
-  };
-  static const char *superclass_type_args[] = {"Lim.actor.model.api.rpc.ResponseVoid;"};
-  static const J2ObjcClassInfo _ImActorModelApiRpcRequestTerminateSession = { 1, "RequestTerminateSession", "im.actor.model.api.rpc", NULL, 0x1, 7, methods, 2, fields, 1, superclass_type_args};
-  return &_ImActorModelApiRpcRequestTerminateSession;
-}
-
 @end
 
 ImActorModelApiRpcRequestTerminateSession *ImActorModelApiRpcRequestTerminateSession_fromBytesWithByteArray_(IOSByteArray *data) {

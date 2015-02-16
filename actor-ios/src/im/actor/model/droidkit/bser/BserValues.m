@@ -383,43 +383,6 @@ J2OBJC_FIELD_SETTER(BSBserValues, fields_, ImActorModelDroidkitBserUtilSparseArr
   other->fields_ = fields_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelDroidkitBserUtilSparseArray:", "BserValues", NULL, 0x1, NULL },
-    { "optIntWithInt:", "optInt", "I", 0x1, NULL },
-    { "getIntWithInt:", "getInt", "I", 0x1, NULL },
-    { "getIntWithInt:withInt:", "getInt", "I", 0x1, NULL },
-    { "optLongWithInt:", "optLong", "J", 0x1, NULL },
-    { "getLongWithInt:", "getLong", "J", 0x1, NULL },
-    { "getLongWithInt:withLong:", "getLong", "J", 0x1, NULL },
-    { "optStringWithInt:", "optString", "Ljava.lang.String;", 0x1, NULL },
-    { "getStringWithInt:", "getString", "Ljava.lang.String;", 0x1, NULL },
-    { "getStringWithInt:withNSString:", "getString", "Ljava.lang.String;", 0x1, NULL },
-    { "optBytesWithInt:", "optBytes", "[B", 0x1, NULL },
-    { "getBytesWithInt:", "getBytes", "[B", 0x1, NULL },
-    { "getBytesWithInt:withByteArray:", "getBytes", "[B", 0x1, NULL },
-    { "optDoubleWithInt:", "optDouble", "D", 0x1, NULL },
-    { "getDoubleWithInt:", "getDouble", "D", 0x1, NULL },
-    { "getDoubleWithInt:withDouble:", "getDouble", "D", 0x1, NULL },
-    { "optBoolWithInt:", "optBool", "Z", 0x1, NULL },
-    { "getBoolWithInt:", "getBool", "Z", 0x1, NULL },
-    { "getBoolWithInt:withBoolean:", "getBool", "Z", 0x1, NULL },
-    { "getObjWithInt:withBSBserObject:", "getObj", "TT;", 0x1, "Ljava.io.IOException;" },
-    { "optObjWithInt:withBSBserObject:", "optObj", "TT;", 0x1, "Ljava.io.IOException;" },
-    { "getRepeatedIntWithInt:", "getRepeatedInt", "Ljava.util.List;", 0x1, NULL },
-    { "getRepeatedLongWithInt:", "getRepeatedLong", "Ljava.util.List;", 0x1, NULL },
-    { "getRepeatedStringWithInt:", "getRepeatedString", "Ljava.util.List;", 0x1, NULL },
-    { "getRepeatedBytesWithInt:", "getRepeatedBytes", "Ljava.util.List;", 0x1, NULL },
-    { "getRepeatedCountWithInt:", "getRepeatedCount", "I", 0x1, NULL },
-    { "getRepeatedObjWithInt:withJavaUtilList:", "getRepeatedObj", "Ljava.util.List;", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "fields_", NULL, 0x2, "Lim.actor.model.droidkit.bser.util.SparseArray;", NULL,  },
-  };
-  static const J2ObjcClassInfo _BSBserValues = { 1, "BserValues", "im.actor.model.droidkit.bser", NULL, 0x1, 27, methods, 1, fields, 0, NULL};
-  return &_BSBserValues;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSBserValues)

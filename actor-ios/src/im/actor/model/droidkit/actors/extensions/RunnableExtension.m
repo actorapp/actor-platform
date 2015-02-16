@@ -27,17 +27,6 @@
   return [super init];
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "preStart", NULL, "V", 0x1, NULL },
-    { "onReceiveWithId:", "onReceive", "Z", 0x1, NULL },
-    { "postStop", NULL, "V", 0x1, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
-  };
-  static const J2ObjcClassInfo _ImActorModelDroidkitActorsExtensionsRunnableExtension = { 1, "RunnableExtension", "im.actor.model.droidkit.actors.extensions", NULL, 0x1, 4, methods, 0, NULL, 0, NULL};
-  return &_ImActorModelDroidkitActorsExtensionsRunnableExtension;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsExtensionsRunnableExtension)

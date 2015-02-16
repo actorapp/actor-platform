@@ -82,27 +82,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
   other->fileSize_ = fileSize_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelApiFileLocation:withInt:withInt:withInt:", "AvatarImage", NULL, 0x1, NULL },
-    { "init", "AvatarImage", NULL, 0x1, NULL },
-    { "getFileLocation", NULL, "Lim.actor.model.api.FileLocation;", 0x1, NULL },
-    { "getWidth", NULL, "I", 0x1, NULL },
-    { "getHeight", NULL, "I", 0x1, NULL },
-    { "getFileSize", NULL, "I", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "fileLocation_", NULL, 0x2, "Lim.actor.model.api.FileLocation;", NULL,  },
-    { "width_", NULL, 0x2, "I", NULL,  },
-    { "height_", NULL, 0x2, "I", NULL,  },
-    { "fileSize_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiAvatarImage = { 1, "AvatarImage", "im.actor.model.api", NULL, 0x1, 8, methods, 4, fields, 0, NULL};
-  return &_ImActorModelApiAvatarImage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiAvatarImage)

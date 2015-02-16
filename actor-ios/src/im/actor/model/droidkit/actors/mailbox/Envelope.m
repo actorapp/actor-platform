@@ -74,27 +74,6 @@ J2OBJC_FIELD_SETTER(DKEnvelope, scope_, DKActorScope *)
   other->sendTime_ = sendTime_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithId:withDKActorScope:withDKMailbox:withDKActorRef:", "Envelope", NULL, 0x1, NULL },
-    { "getScope", NULL, "Lim.actor.model.droidkit.actors.ActorScope;", 0x1, NULL },
-    { "getMessage", NULL, "Ljava.lang.Object;", 0x1, NULL },
-    { "getMailbox", NULL, "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", 0x1, NULL },
-    { "getSender", NULL, "Lim.actor.model.droidkit.actors.ActorRef;", 0x1, NULL },
-    { "getSendTime", NULL, "J", 0x1, NULL },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "message_", NULL, 0x12, "Ljava.lang.Object;", NULL,  },
-    { "sender_", NULL, 0x12, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
-    { "mailbox_", NULL, 0x12, "Lim.actor.model.droidkit.actors.mailbox.Mailbox;", NULL,  },
-    { "scope_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorScope;", NULL,  },
-    { "sendTime_", NULL, 0x2, "J", NULL,  },
-  };
-  static const J2ObjcClassInfo _DKEnvelope = { 1, "Envelope", "im.actor.model.droidkit.actors.mailbox", NULL, 0x1, 7, methods, 5, fields, 0, NULL};
-  return &_DKEnvelope;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKEnvelope)

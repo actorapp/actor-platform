@@ -97,29 +97,6 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   other->state_ = state_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withLong:withLong:withImActorModelApiMessageContent:withImActorModelApiMessageStateEnum:", "HistoryMessage", NULL, 0x1, NULL },
-    { "init", "HistoryMessage", NULL, 0x1, NULL },
-    { "getSenderUid", NULL, "I", 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getDate", NULL, "J", 0x1, NULL },
-    { "getMessage", NULL, "Lim.actor.model.api.MessageContent;", 0x1, NULL },
-    { "getState", NULL, "Lim.actor.model.api.MessageState;", 0x1, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "senderUid_", NULL, 0x2, "I", NULL,  },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "date_", NULL, 0x2, "J", NULL,  },
-    { "message_", NULL, 0x2, "Lim.actor.model.api.MessageContent;", NULL,  },
-    { "state_", NULL, 0x2, "Lim.actor.model.api.MessageState;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelApiHistoryMessage = { 1, "HistoryMessage", "im.actor.model.api", NULL, 0x1, 9, methods, 5, fields, 0, NULL};
-  return &_ImActorModelApiHistoryMessage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiHistoryMessage)

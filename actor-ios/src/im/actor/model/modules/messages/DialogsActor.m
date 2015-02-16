@@ -232,26 +232,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded, histo
   other->dialogs_ = dialogs_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesModules:", "DialogsActor", NULL, 0x1, NULL },
-    { "onMessageWithAMPeer:withAMMessage:withBoolean:", "onMessage", "V", 0x2, NULL },
-    { "onUserChangedWithAMUser:", "onUserChanged", "V", 0x2, NULL },
-    { "onChatDeletedWithAMPeer:", "onChatDeleted", "V", 0x2, NULL },
-    { "onChatClearWithAMPeer:", "onChatClear", "V", 0x2, NULL },
-    { "onMessageStatusChangedWithAMPeer:withLong:withAMMessageStateEnum:", "onMessageStatusChanged", "V", 0x2, NULL },
-    { "onCounterChangedWithAMPeer:withInt:", "onCounterChanged", "V", 0x2, NULL },
-    { "onHistoryLoadedWithJavaUtilList:", "onHistoryLoaded", "V", 0x2, NULL },
-    { "buildPeerDescWithAMPeer:", "buildPeerDesc", "Lim.actor.model.modules.messages.DialogsActor$PeerDesc;", 0x2, NULL },
-    { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "dialogs_", NULL, 0x2, "Lim.actor.model.mvvm.ListEngine;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsActor = { 1, "DialogsActor", "im.actor.model.modules.messages", NULL, 0x1, 10, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsActor;
-}
-
 @end
 
 void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, AMMessage *message, jboolean isAfterDelete) {
@@ -372,20 +352,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor)
   other->avatar_ = avatar_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelModulesMessagesDialogsActor:withNSString:withAMAvatar:", "PeerDesc", NULL, 0x2, NULL },
-    { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getAvatar", NULL, "Lim.actor.model.entity.Avatar;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "title_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-    { "avatar_", NULL, 0x2, "Lim.actor.model.entity.Avatar;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsActor_PeerDesc = { 1, "PeerDesc", "im.actor.model.modules.messages", "DialogsActor", 0x2, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsActor_PeerDesc;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_PeerDesc)
@@ -408,18 +374,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_PeerDes
   other->peer_ = peer_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMPeer:", "ChatClear", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsActor_ChatClear = { 1, "ChatClear", "im.actor.model.modules.messages", "DialogsActor", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsActor_ChatClear;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_ChatClear)
@@ -440,18 +394,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_ChatCle
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsActor_ChatDelete *)other {
   [super copyAllFieldsTo:other];
   other->peer_ = peer_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMPeer:", "ChatDelete", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsActor_ChatDelete = { 1, "ChatDelete", "im.actor.model.modules.messages", "DialogsActor", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsActor_ChatDelete;
 }
 
 @end
@@ -483,20 +425,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_ChatDel
   other->message_ = message_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMPeer:withAMMessage:", "InMessage", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
-    { "getMessage", NULL, "Lim.actor.model.entity.Message;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
-    { "message_", NULL, 0x2, "Lim.actor.model.entity.Message;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsActor_InMessage = { 1, "InMessage", "im.actor.model.modules.messages", "DialogsActor", 0x9, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsActor_InMessage;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_InMessage)
@@ -517,18 +445,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_InMessa
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsActor_UserChanged *)other {
   [super copyAllFieldsTo:other];
   other->user_ = user_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMUser:", "UserChanged", NULL, 0x1, NULL },
-    { "getUser", NULL, "Lim.actor.model.entity.User;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "user_", NULL, 0x2, "Lim.actor.model.entity.User;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsActor_UserChanged = { 1, "UserChanged", "im.actor.model.modules.messages", "DialogsActor", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsActor_UserChanged;
 }
 
 @end
@@ -567,22 +483,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_UserCha
   other->state_ = state_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMPeer:withLong:withAMMessageStateEnum:", "MessageStateChanged", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
-    { "getRid", NULL, "J", 0x1, NULL },
-    { "getState", NULL, "Lim.actor.model.entity.MessageState;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
-    { "rid_", NULL, 0x2, "J", NULL,  },
-    { "state_", NULL, 0x2, "Lim.actor.model.entity.MessageState;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsActor_MessageStateChanged = { 1, "MessageStateChanged", "im.actor.model.modules.messages", "DialogsActor", 0x9, 4, methods, 3, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsActor_MessageStateChanged;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_MessageStateChanged)
@@ -610,20 +510,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_Message
   [super copyAllFieldsTo:other];
   other->peer_ = peer_;
   other->count_ = count_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMPeer:withInt:", "CounterChanged", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
-    { "getCount", NULL, "I", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
-    { "count_", NULL, 0x2, "I", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsActor_CounterChanged = { 1, "CounterChanged", "im.actor.model.modules.messages", "DialogsActor", 0x9, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsActor_CounterChanged;
 }
 
 @end
@@ -655,20 +541,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_Counter
   other->message_ = message_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMPeer:withAMMessage:", "Deleted", NULL, 0x1, NULL },
-    { "getPeer", NULL, "Lim.actor.model.entity.Peer;", 0x1, NULL },
-    { "getMessage", NULL, "Lim.actor.model.entity.Message;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
-    { "message_", NULL, 0x2, "Lim.actor.model.entity.Message;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsActor_Deleted = { 1, "Deleted", "im.actor.model.modules.messages", "DialogsActor", 0x9, 3, methods, 2, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsActor_Deleted;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_Deleted)
@@ -689,18 +561,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_Deleted
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsActor_HistoryLoaded *)other {
   [super copyAllFieldsTo:other];
   other->history_ = history_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithJavaUtilList:", "HistoryLoaded", NULL, 0x1, NULL },
-    { "getHistory", NULL, "Ljava.util.List;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "history_", NULL, 0x2, "Ljava.util.List;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsActor_HistoryLoaded = { 1, "HistoryLoaded", "im.actor.model.modules.messages", "DialogsActor", 0x9, 2, methods, 1, fields, 0, NULL};
-  return &_ImActorModelModulesMessagesDialogsActor_HistoryLoaded;
 }
 
 @end

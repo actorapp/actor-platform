@@ -63,23 +63,6 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentTextContent, text_, NSString *)
   other->text_ = text_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "textFromBytesWithByteArray:", "textFromBytes", "Lim.actor.model.entity.content.TextContent;", 0x9, "Ljava.io.IOException;" },
-    { "initWithNSString:", "TextContent", NULL, 0x1, NULL },
-    { "init", "TextContent", NULL, 0x2, NULL },
-    { "getText", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getContentType", NULL, "Lim.actor.model.entity.content.AbsContent$ContentType;", 0x4, NULL },
-    { "parseWithBSBserValues:", "parse", "V", 0x1, "Ljava.io.IOException;" },
-    { "serializeWithBSBserWriter:", "serialize", "V", 0x1, "Ljava.io.IOException;" },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "text_", NULL, 0x2, "Ljava.lang.String;", NULL,  },
-  };
-  static const J2ObjcClassInfo _ImActorModelEntityContentTextContent = { 1, "TextContent", "im.actor.model.entity.content", NULL, 0x1, 7, methods, 1, fields, 0, NULL};
-  return &_ImActorModelEntityContentTextContent;
-}
-
 @end
 
 ImActorModelEntityContentTextContent *ImActorModelEntityContentTextContent_textFromBytesWithByteArray_(IOSByteArray *data) {

@@ -86,30 +86,6 @@ J2OBJC_FIELD_SETTER(AMGroup, groupState_, AMGroupStateEnum *)
   other->groupState_ = groupState_;
 }
 
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithInt:withLong:withNSString:withAMAvatar:withJavaUtilList:withInt:withAMGroupStateEnum:", "Group", NULL, 0x1, NULL },
-    { "getGroupId", NULL, "I", 0x1, NULL },
-    { "getAccessHash", NULL, "J", 0x1, NULL },
-    { "getTitle", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getAvatar", NULL, "Lim.actor.model.entity.Avatar;", 0x1, NULL },
-    { "getMembers", NULL, "Ljava.util.List;", 0x1, NULL },
-    { "getAdminId", NULL, "I", 0x1, NULL },
-    { "getGroupState", NULL, "Lim.actor.model.entity.GroupState;", 0x1, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "groupId_", NULL, 0x12, "I", NULL,  },
-    { "accessHash_", NULL, 0x12, "J", NULL,  },
-    { "title_", NULL, 0x12, "Ljava.lang.String;", NULL,  },
-    { "avatar_", NULL, 0x12, "Lim.actor.model.entity.Avatar;", NULL,  },
-    { "members_", NULL, 0x12, "Ljava.util.List;", NULL,  },
-    { "adminId_", NULL, 0x12, "I", NULL,  },
-    { "groupState_", NULL, 0x12, "Lim.actor.model.entity.GroupState;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMGroup = { 1, "Group", "im.actor.model.entity", NULL, 0x1, 8, methods, 7, fields, 0, NULL};
-  return &_AMGroup;
-}
-
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroup)

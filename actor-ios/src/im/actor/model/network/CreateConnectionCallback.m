@@ -7,20 +7,4 @@
 #include "im/actor/model/network/Connection.h"
 #include "im/actor/model/network/CreateConnectionCallback.h"
 
-@interface AMCreateConnectionCallback : NSObject
-@end
-
-@implementation AMCreateConnectionCallback
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onConnectionCreated:", "onConnectionCreated", "V", 0x401, NULL },
-    { "onConnectionCreateError", NULL, "V", 0x401, NULL },
-  };
-  static const J2ObjcClassInfo _AMCreateConnectionCallback = { 1, "CreateConnectionCallback", "im.actor.model.network", NULL, 0x201, 2, methods, 0, NULL, 0, NULL};
-  return &_AMCreateConnectionCallback;
-}
-
-@end
-
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMCreateConnectionCallback)
