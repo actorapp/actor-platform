@@ -1,6 +1,6 @@
 package im.actor.server
 
-import im.actor.server.api.frontend.TCP
+import im.actor.server.api.frontend.{ TCP, WS }
 import akka.actor._
 import akka.stream.ActorFlowMaterializer
 import akka.kernel.Bootable
@@ -16,6 +16,7 @@ class ApiKernel extends Bootable {
 
   def startup() = {
     TCP.start(serverConfig)
+    WS.start(serverConfig)
   }
 
   def shutdown() = {
