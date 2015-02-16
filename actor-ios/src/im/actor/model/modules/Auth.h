@@ -14,7 +14,6 @@
 @class ImActorModelModulesModules;
 @protocol AMCommandCallback;
 @protocol AMMainThread;
-@protocol AMPreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/concurrency/Command.h"

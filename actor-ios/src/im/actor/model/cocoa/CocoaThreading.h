@@ -3,24 +3,26 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/cocoa/CocoaThreading.java
 //
 
-#ifndef _ImActorModelCocoaCocoaThreading_H_
-#define _ImActorModelCocoaCocoaThreading_H_
+#ifndef _AMCocoaThreading_H_
+#define _AMCocoaThreading_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/jvm/JavaThreading.h"
 
-@interface ImActorModelCocoaCocoaThreading : AMJavaThreading {
+@interface AMCocoaThreading : AMJavaThreading {
 }
 
 - (instancetype)init;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelCocoaCocoaThreading)
+J2OBJC_EMPTY_STATIC_INIT(AMCocoaThreading)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelCocoaCocoaThreading)
+typedef AMCocoaThreading ImActorModelCocoaCocoaThreading;
 
-#endif // _ImActorModelCocoaCocoaThreading_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMCocoaThreading)
+
+#endif // _AMCocoaThreading_H_
