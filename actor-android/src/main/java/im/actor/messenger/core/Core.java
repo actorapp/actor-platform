@@ -3,16 +3,11 @@ package im.actor.messenger.core;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-
-import com.droidkit.actors.android.AndroidTrace;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.emoji.EmojiProcessor;
 import im.actor.messenger.app.view.Formatter;
 
-import com.droidkit.actors.android.UiActorDispatcher;
 import com.droidkit.images.cache.BitmapClasificator;
 import com.droidkit.images.loading.ImageLoader;
 
@@ -20,15 +15,13 @@ import im.actor.messenger.core.images.*;
 import im.actor.messenger.model.TypingModel;
 import im.actor.messenger.model.UserPresence;
 import im.actor.messenger.storage.provider.AppEngineFactory;
-import im.actor.messenger.storage.provider.PropertiesProvider;
+import im.actor.model.Configuration;
 import im.actor.model.Messenger;
-import im.actor.model.OnlineCallback;
-import im.actor.model.TypingCallback;
-import im.actor.model.concurrency.MainThread;
-import im.actor.model.droidkit.actors.conf.EnvConfig;
-import im.actor.model.jvm.JavaInit;
-import im.actor.model.network.ConnectionEndpoint;
-import im.actor.model.network.Endpoints;
+import im.actor.model.MessengerCallback;
+import im.actor.model.android.AndroidLog;
+import im.actor.model.android.AndroidMainThread;
+import im.actor.model.jvm.JavaNetworking;
+import im.actor.model.jvm.JavaThreading;
 
 import static com.droidkit.actors.ActorSystem.system;
 import static im.actor.messenger.storage.KeyValueEngines.users;
@@ -37,8 +30,6 @@ import static im.actor.messenger.storage.KeyValueEngines.users;
  * Created by ex3ndr on 30.08.14.
  */
 public class Core {
-
-    public static final int AUTH_STATE = 0x04;
 
     private static volatile Core core;
 
@@ -81,18 +72,7 @@ public class Core {
         Formatter.init(application);
 
         // Init actor system
-
         system().setClassLoader(AppContext.getContext().getClassLoader());
-        AndroidTrace.initTrace(system(), new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, Throwable ex) {
-                if (BuildConfig.REPORT_CRASHES) {
-                    // Mint.logException(ex);
-                }
-            }
-        });
-
-        system().addDispatcher("ui", new UiActorDispatcher("ui", system()));
         system().addDispatcher("db", 1);
         system().addDispatcher("contacts", 1);
         system().addDispatcher("file_encryption", 1);
@@ -128,20 +108,15 @@ public class Core {
         this.imageLoader.getTaskResolver().register(AvatarTask.class, AvatarActor.class);
         this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
 
-        JavaInit.init();
+        Configuration.Builder builder = new Configuration.Builder();
 
-        im.actor.model.Configuration configuration = new im.actor.model.Configuration();
-        configuration.setMainThread(new MainThread() {
+        builder.setThreading(new JavaThreading());
+        builder.setNetworking(new JavaNetworking());
 
-            private Handler handler = new Handler(Looper.getMainLooper());
+        builder.setMainThread(new AndroidMainThread());
+        builder.setLog(new AndroidLog());
 
-            @Override
-            public void runOnUiThread(Runnable runnable) {
-                handler.post(runnable);
-            }
-        });
-        PropertiesProvider propertiesProvider = new PropertiesProvider();
-        configuration.setOnlineCallback(new OnlineCallback() {
+        builder.setCallback(new MessengerCallback() {
             @Override
             public void onUserOnline(int uid) {
                 users().get(uid).getPresence().change(new UserPresence(UserPresence.State.ONLINE, 0));
@@ -159,10 +134,9 @@ public class Core {
 
             @Override
             public void onGroupOnline(int gid, int count) {
-
+                // TODO: Implement
             }
-        });
-        configuration.setTypingCallback(new TypingCallback() {
+
             @Override
             public void onTypingStart(int uid) {
                 TypingModel.privateChatTyping(uid).change(true);
@@ -178,12 +152,14 @@ public class Core {
                 TypingModel.groupChatTyping(gid).change(uids);
             }
         });
-        configuration.setEnginesFactory(new AppEngineFactory());
-        configuration.setPreferencesStorage(propertiesProvider);
-        configuration.setEndpoints(new Endpoints(new ConnectionEndpoint[]{
-                new ConnectionEndpoint(BuildConfig.API_HOST, BuildConfig.API_PORT,
-                        BuildConfig.API_SSL ? ConnectionEndpoint.Type.TCP_TLS : ConnectionEndpoint.Type.TCP)
-        }));
-        this.messenger = new im.actor.model.Messenger(configuration);
+        builder.setStorage(new AppEngineFactory());
+
+        if (BuildConfig.API_SSL) {
+            builder.addEndpoint("tls://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
+        } else {
+            builder.addEndpoint("tcp://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
+        }
+
+        this.messenger = new im.actor.model.Messenger(builder.build());
     }
 }

@@ -3,7 +3,9 @@ package im.actor.model.modules;
 import im.actor.model.Configuration;
 import im.actor.model.network.ActorApi;
 import im.actor.model.network.ActorApiCallback;
+import im.actor.model.network.Endpoints;
 import im.actor.model.storage.PreferenceApiStorage;
+import im.actor.model.storage.PreferencesStorage;
 
 /**
  * Created by ex3ndr on 16.02.15.
@@ -13,6 +15,7 @@ public class Modules {
     private final ActorApi actorApi;
     private final Auth auth;
 
+    private volatile PreferencesStorage preferences;
     private volatile Users users;
     private volatile Updates updates;
     private volatile Messages messages;
@@ -21,8 +24,9 @@ public class Modules {
 
     public Modules(Configuration configuration) {
         this.configuration = configuration;
-        this.actorApi = new ActorApi(configuration.getEndpoints(),
-                new PreferenceApiStorage(configuration.getPreferencesStorage()),
+        this.preferences = configuration.getStorage().createPreferencesStorage();
+        this.actorApi = new ActorApi(new Endpoints(configuration.getEndpoints()),
+                new PreferenceApiStorage(preferences),
                 new ActorApiCallback() {
                     @Override
                     public void onAuthIdInvalidated(long authKey) {
@@ -45,7 +49,7 @@ public class Modules {
                             updates.onUpdateReceived(obj);
                         }
                     }
-                });
+                }, configuration.getNetworking());
         this.auth = new Auth(this);
     }
 
@@ -60,6 +64,9 @@ public class Modules {
         presence.run();
     }
 
+    public PreferencesStorage getPreferences() {
+        return preferences;
+    }
 
     public Configuration getConfiguration() {
         return configuration;

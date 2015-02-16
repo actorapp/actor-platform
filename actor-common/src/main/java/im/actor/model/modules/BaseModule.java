@@ -31,7 +31,7 @@ public class BaseModule {
     }
 
     public PreferencesStorage preferences() {
-        return modules.getConfiguration().getPreferencesStorage();
+        return modules.getPreferences();
     }
 
     public int myUid() {

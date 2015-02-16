@@ -44,7 +44,7 @@ public abstract class BaseContactFragment extends BaseCompatFragment {
 //        getBinder().bind(engineUiList.getListState(), new Listener<ListState>() {
 //            @Override
 //            public void onUpdated(ListState listState) {
-//                switch (listState.getState()) {
+//                switch (listState.getAuthState()) {
 //                    case LOADING_EMPTY:
 //                        break;
 //                    case LOADED_EMPTY:

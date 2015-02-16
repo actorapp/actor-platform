@@ -1,16 +1,12 @@
 package im.actor.messenger.app.fragment.auth;
 
-import android.app.ProgressDialog;
 import android.widget.EditText;
 
 import im.actor.messenger.app.activity.AuthActivity;
 import im.actor.messenger.app.base.BaseBarFragmentActivity;
 import im.actor.messenger.app.base.BaseCompatFragment;
-import im.actor.messenger.core.Core;
-import im.actor.model.State;
+import im.actor.model.AuthState;
 import im.actor.model.concurrency.Command;
-import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.modules.Auth;
 
 /**
  * Created by ex3ndr on 31.08.14.
@@ -29,7 +25,7 @@ public abstract class BaseAuthFragment extends BaseCompatFragment {
         ((BaseBarFragmentActivity) getActivity()).getSupportActionBar().setTitle(title);
     }
 
-    protected void execute(Command<State> command) {
+    protected void execute(Command<AuthState> command) {
         ((AuthActivity) getActivity()).execute(command);
     }
 

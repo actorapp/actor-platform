@@ -1,5 +1,6 @@
 package im.actor.console;
 
+import im.actor.model.AuthState;
 import im.actor.model.droidkit.bser.Bser;
 
 import com.googlecode.lanterna.TerminalFacade;
@@ -19,10 +20,8 @@ import com.googlecode.lanterna.terminal.swing.SwingTerminal;
 import im.actor.console.entity.UserEntity;
 import im.actor.model.Configuration;
 import im.actor.model.Messenger;
-import im.actor.model.State;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.concurrency.MainThread;
 import im.actor.model.entity.*;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.jvm.JavaInit;
@@ -30,7 +29,7 @@ import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
 import im.actor.model.network.ConnectionEndpoint;
 import im.actor.model.network.Endpoints;
-import im.actor.model.storage.EnginesFactory;
+import im.actor.model.Storage;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
@@ -75,7 +74,7 @@ public class Main {
             }
         });
         configuration.setPreferencesStorage(new MapDbPreferences(db));
-        configuration.setEnginesFactory(new EnginesFactory() {
+        configuration.setEnginesFactory(new Storage() {
             @Override
             public KeyValueEngine<User> createUsersEngine() {
                 return new MapDbKeyValueEngine<User>(DBMaker.newFileDB(new File("users.db")).make(),
@@ -119,7 +118,7 @@ public class Main {
     }
 
     public static void updateMainUi() {
-        if (messenger.getState() == State.AUTH_START) {
+        if (messenger.getAuthState() == AuthState.AUTH_START) {
             String res = TextInputDialog.showTextInputBox(gui, "Validate Phone", "Please, set your phone number", "");
 
             long phone;
@@ -131,9 +130,9 @@ public class Main {
                 return;
             }
 
-            executeCommand(messenger.getAuth().requestSms(phone), new CommandCallback<State>() {
+            executeCommand(messenger.getAuth().requestSms(phone), new CommandCallback<AuthState>() {
                 @Override
-                public void onResult(State res) {
+                public void onResult(AuthState res) {
                     updateMainUi();
                 }
 
@@ -143,11 +142,11 @@ public class Main {
                     updateMainUi();
                 }
             });
-        } else if (messenger.getState() == State.CODE_VALIDATION) {
+        } else if (messenger.getAuthState() == AuthState.CODE_VALIDATION) {
             String res = TextInputDialog.showTextInputBox(gui, "Validate Phone", "Please, enter activation code", "");
-            executeCommand(messenger.getAuth().sendCode(Integer.parseInt(res)), new CommandCallback<State>() {
+            executeCommand(messenger.getAuth().sendCode(Integer.parseInt(res)), new CommandCallback<AuthState>() {
                 @Override
-                public void onResult(State res) {
+                public void onResult(AuthState res) {
                     updateMainUi();
                 }
 
@@ -157,9 +156,9 @@ public class Main {
                     updateMainUi();
                 }
             });
-        } else if (messenger.getState() == State.SIGN_UP) {
+        } else if (messenger.getAuthState() == AuthState.SIGN_UP) {
             MessageBox.showMessageBox(gui, "Need signup", "Please, perform signup on phone");
-        } else if (messenger.getState() == State.LOGGED_IN) {
+        } else if (messenger.getAuthState() == AuthState.LOGGED_IN) {
             gui.showWindow(new MainWindow(), GUIScreen.Position.FULL_SCREEN);
         }
     }

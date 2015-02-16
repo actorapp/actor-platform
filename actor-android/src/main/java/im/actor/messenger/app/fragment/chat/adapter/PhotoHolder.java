@@ -313,7 +313,7 @@ class PhotoHolder extends BubbleHolder {
     @Override
     public void onClicked() {
 //        if (fileMessage.getUploadPath() != null) {
-//            switch (UploadModel.uploadState(message.getRid()).getValue().getState()) {
+//            switch (UploadModel.uploadState(message.getRid()).getValue().getAuthState()) {
 //                default:
 //                case NONE:
 //                    MessageDeliveryActor.messageSender().mediaTryAgain(type, id, message.getRid());
@@ -340,7 +340,7 @@ class PhotoHolder extends BubbleHolder {
 //                    context.startActivity(Intents.openVideo(d));
 //                }
 //            } else {
-//                switch (DownloadModel.downloadState(fileMessage.getLocation().getFileId()).getValue().getState()) {
+//                switch (DownloadModel.downloadState(fileMessage.getLocation().getFileId()).getValue().getAuthState()) {
 //                    case NONE:
 //                        DownloadManager.downloader().request(type, id, message.getRid(), fileMessage, false);
 //                        break;

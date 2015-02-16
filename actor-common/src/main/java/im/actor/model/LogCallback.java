@@ -1,9 +1,9 @@
-package im.actor.model.log;
+package im.actor.model;
 
 /**
  * Created by ex3ndr on 07.02.15.
  */
-public interface LogInterface {
+public interface LogCallback {
     public void w(String tag, String message);
 
     public void e(String tag, Throwable throwable);

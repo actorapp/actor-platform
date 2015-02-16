@@ -1,6 +1,6 @@
 package im.actor.model.droidkit.actors.dispatch;
 
-import im.actor.model.droidkit.actors.conf.EnvConfig;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.utils.ThreadLocalCompat;
 
 /**
@@ -8,7 +8,7 @@ import im.actor.model.droidkit.actors.utils.ThreadLocalCompat;
  */
 public class DispatchResult {
 
-    private static ThreadLocalCompat<DispatchResult> FREE_RESULTS = EnvConfig.createThreadLocal();
+    private static ThreadLocalCompat<DispatchResult> FREE_RESULTS = Environment.createThreadLocal();
 
     public static DispatchResult result(Object res) {
         DispatchResult result = FREE_RESULTS.get();

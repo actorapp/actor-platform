@@ -1,6 +1,7 @@
 package im.actor.model.modules;
 
-import im.actor.model.State;
+import im.actor.model.AuthState;
+import im.actor.model.MainThread;
 import im.actor.model.api.rpc.RequestSendAuthCode;
 import im.actor.model.api.rpc.RequestSignIn;
 import im.actor.model.api.rpc.RequestSignUp;
@@ -8,7 +9,6 @@ import im.actor.model.api.rpc.ResponseAuth;
 import im.actor.model.api.rpc.ResponseSendAuthCode;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.concurrency.MainThread;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.storage.PreferencesStorage;
@@ -17,7 +17,7 @@ import im.actor.model.util.RandomUtils;
 /**
  * Created by ex3ndr on 08.02.15.
  */
-public class Auth {
+public class Auth extends BaseModule {
 
     private static final int APP_ID = 1;
     private static final String APP_KEY = "??";
@@ -29,16 +29,15 @@ public class Auth {
     private static final String KEY_SMS_HASH = "auth_sms_hash";
     private static final String KEY_SMS_CODE = "auth_sms_code";
 
-    private State state;
+    private AuthState state;
     private PreferencesStorage preferences;
-    private Modules modules;
     private MainThread mainThread;
     private byte[] deviceHash;
     private int myUid;
 
     public Auth(Modules modules) {
-        this.modules = modules;
-        this.preferences = modules.getConfiguration().getPreferencesStorage();
+        super(modules);
+
         this.mainThread = modules.getConfiguration().getMainThread();
 
         this.myUid = preferences.getInt(KEY_AUTH_UID, 0);
@@ -50,10 +49,10 @@ public class Auth {
         }
 
         if (preferences.getBool(KEY_AUTH, false)) {
-            state = State.LOGGED_IN;
+            state = AuthState.LOGGED_IN;
             modules.onLoggedIn();
         } else {
-            state = State.AUTH_START;
+            state = AuthState.AUTH_START;
         }
     }
 
@@ -61,23 +60,23 @@ public class Auth {
         return myUid;
     }
 
-    public State getState() {
+    public AuthState getAuthState() {
         return state;
     }
 
-    public Command<State> requestSms(final long phone) {
-        return new Command<State>() {
+    public Command<AuthState> requestSms(final long phone) {
+        return new Command<AuthState>() {
             @Override
-            public void start(final CommandCallback<State> callback) {
-                modules.getActorApi().request(new RequestSendAuthCode(phone, APP_ID, APP_KEY),
+            public void start(final CommandCallback<AuthState> callback) {
+                request(new RequestSendAuthCode(phone, APP_ID, APP_KEY),
                         new RpcCallback<ResponseSendAuthCode>() {
                             @Override
                             public void onResult(final ResponseSendAuthCode response) {
                                 preferences.putLong(KEY_PHONE, phone);
                                 preferences.putString(KEY_SMS_HASH, response.getSmsHash());
-                                state = State.CODE_VALIDATION;
+                                state = AuthState.CODE_VALIDATION;
 
-                                mainThread.runOnUiThread(new Runnable() {
+                                runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         callback.onResult(state);
@@ -87,7 +86,7 @@ public class Auth {
 
                             @Override
                             public void onError(final RpcException e) {
-                                mainThread.runOnUiThread(new Runnable() {
+                                runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         callback.onError(e);
@@ -99,11 +98,11 @@ public class Auth {
         };
     }
 
-    public Command<State> sendCode(final int code) {
-        return new Command<State>() {
+    public Command<AuthState> sendCode(final int code) {
+        return new Command<AuthState>() {
             @Override
-            public void start(final CommandCallback<State> callback) {
-                modules.getActorApi().request(
+            public void start(final CommandCallback<AuthState> callback) {
+                request(
                         new RequestSignIn(
                                 preferences.getLong(KEY_PHONE, 0),
                                 preferences.getString(KEY_SMS_HASH),
@@ -117,14 +116,14 @@ public class Auth {
                             @Override
                             public void onResult(ResponseAuth response) {
                                 preferences.putBool(KEY_AUTH, true);
-                                state = State.LOGGED_IN;
+                                state = AuthState.LOGGED_IN;
                                 myUid = response.getUser().getId();
                                 preferences.putInt(KEY_AUTH_UID, myUid);
-                                modules.onLoggedIn();
-                                mainThread.runOnUiThread(new Runnable() {
+                                modules().onLoggedIn();
+                                runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        state = State.LOGGED_IN;
+                                        state = AuthState.LOGGED_IN;
                                         callback.onResult(state);
                                     }
                                 });
@@ -135,7 +134,7 @@ public class Auth {
                                 if ("PHONE_CODE_EXPIRED".equals(e.getTag())) {
                                     resetAuth();
                                 }
-                                mainThread.runOnUiThread(new Runnable() {
+                                runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         callback.onError(e);
@@ -147,12 +146,12 @@ public class Auth {
         };
     }
 
-    public Command<State> signUp(final String firstName, String avatarPath, final boolean isSilent) {
+    public Command<AuthState> signUp(final String firstName, String avatarPath, final boolean isSilent) {
         // TODO: Perform avatar upload
-        return new Command<State>() {
+        return new Command<AuthState>() {
             @Override
-            public void start(final CommandCallback<State> callback) {
-                modules.getActorApi().request(new RequestSignUp(preferences.getLong(KEY_PHONE, 0),
+            public void start(final CommandCallback<AuthState> callback) {
+                request(new RequestSignUp(preferences.getLong(KEY_PHONE, 0),
                         preferences.getString(KEY_SMS_HASH),
                         preferences.getInt(KEY_SMS_CODE, 0) + "",
                         firstName,
@@ -164,14 +163,14 @@ public class Auth {
                     @Override
                     public void onResult(ResponseAuth response) {
                         preferences.putBool(KEY_AUTH, true);
-                        state = State.LOGGED_IN;
+                        state = AuthState.LOGGED_IN;
                         myUid = response.getUser().getId();
                         preferences.putInt(KEY_AUTH_UID, myUid);
-                        modules.onLoggedIn();
-                        mainThread.runOnUiThread(new Runnable() {
+                        modules().onLoggedIn();
+                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                state = State.LOGGED_IN;
+                                state = AuthState.LOGGED_IN;
                                 callback.onResult(state);
                             }
                         });
@@ -182,7 +181,7 @@ public class Auth {
                         if ("PHONE_CODE_EXPIRED".equals(e.getTag())) {
                             resetAuth();
                         }
-                        mainThread.runOnUiThread(new Runnable() {
+                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 callback.onError(e);
@@ -195,7 +194,7 @@ public class Auth {
     }
 
     public void resetAuth() {
-        state = State.AUTH_START;
+        state = AuthState.AUTH_START;
     }
 
     public long getPhone() {

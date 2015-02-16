@@ -1,6 +1,5 @@
 package im.actor.model.droidkit.actors;
 
-import im.actor.model.droidkit.actors.conf.EnvConfig;
 import im.actor.model.droidkit.actors.debug.TraceInterface;
 import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
 
@@ -59,7 +58,7 @@ public class ActorSystem {
                 return;
             }
 
-            ActorDispatcher dispatcher = EnvConfig.createDispatcher(dispatcherId, threadsCount, ThreadPriority.LOW, this);
+            ActorDispatcher dispatcher = Environment.createDispatcher(dispatcherId, threadsCount, ThreadPriority.LOW, this);
             dispatchers.put(dispatcherId, dispatcher);
         }
     }
@@ -75,7 +74,7 @@ public class ActorSystem {
                 return;
             }
 
-            ActorDispatcher dispatcher = EnvConfig.createDispatcher(dispatcherId, EnvConfig.getJavaFactory().getCoresCount(), ThreadPriority.LOW, this);
+            ActorDispatcher dispatcher = Environment.createDefaultDispatcher(dispatcherId, ThreadPriority.LOW, this);
             addDispatcher(dispatcherId, dispatcher);
         }
     }

@@ -1,4 +1,4 @@
-package im.actor.model.jvm.network;
+package im.actor.model.jvm;
 
 import im.actor.model.log.Log;
 import im.actor.model.network.Connection;
@@ -18,7 +18,7 @@ import java.util.zip.CRC32;
 /**
  * Created by ex3ndr on 06.02.15.
  */
-public class TcpConnection implements Connection {
+public class JavaTcpConnection implements Connection {
 
     private static final int CONNECTION_TIMEOUT = 5 * 1000;
     private static final int READ_DIE_TIMEOUT = 15 * 1000; // 5 sec
@@ -39,7 +39,7 @@ public class TcpConnection implements Connection {
 
     private boolean isClosed;
 
-    public TcpConnection(int id, ConnectionEndpoint _endpoint, ConnectionCallback _callback) throws IOException {
+    public JavaTcpConnection(int id, ConnectionEndpoint _endpoint, ConnectionCallback _callback) throws IOException {
         this.TAG = "Connection#" + id;
         this.endpoint = _endpoint;
         this.callback = _callback;

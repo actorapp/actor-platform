@@ -1,6 +1,6 @@
 package im.actor.model.util;
 
-import im.actor.model.droidkit.actors.conf.EnvConfig;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.utils.AtomicIntegerCompat;
 
 import java.util.Random;
@@ -12,7 +12,7 @@ public class ExponentialBackoff {
     private static final int MAX_FAILURE_COUNT = 50;
 
 
-    private final AtomicIntegerCompat currentFailureCount = EnvConfig.createAtomicInt(1);
+    private final AtomicIntegerCompat currentFailureCount = Environment.createAtomicInt(1);
 
     private final Random random = new Random();
 

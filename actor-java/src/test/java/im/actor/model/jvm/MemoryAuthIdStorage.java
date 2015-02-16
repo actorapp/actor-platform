@@ -1,4 +1,4 @@
-package im.actor.model.jvm.network;
+package im.actor.model.jvm;
 
 import im.actor.model.network.AuthKeyStorage;
 

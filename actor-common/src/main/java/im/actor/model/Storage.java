@@ -1,13 +1,17 @@
-package im.actor.model.storage;
+package im.actor.model;
 
 import im.actor.model.entity.*;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
+import im.actor.model.storage.PreferencesStorage;
 
 /**
  * Created by ex3ndr on 08.02.15.
  */
-public interface EnginesFactory {
+public interface Storage {
+
+    public PreferencesStorage createPreferencesStorage();
+
     public KeyValueEngine<User> createUsersEngine();
 
     public ListEngine<Dialog> createDialogsEngine();

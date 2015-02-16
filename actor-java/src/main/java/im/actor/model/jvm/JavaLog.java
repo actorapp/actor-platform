@@ -1,11 +1,11 @@
-package im.actor.model.jvm.utils;
+package im.actor.model.jvm;
 
-import im.actor.model.log.LogInterface;
+import im.actor.model.LogCallback;
 
 /**
  * Created by ex3ndr on 07.02.15.
  */
-public class JavaLog implements LogInterface {
+public class JavaLog implements LogCallback {
     @Override
     public void w(String tag, String message) {
         System.out.println("[W]" + tag + ":" + message);

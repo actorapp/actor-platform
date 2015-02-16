@@ -33,7 +33,7 @@ public class ConversationActor extends ModuleActor {
     public void preStart() {
         messages = messages(peer);
         // TODO: Replace
-        pendingMessages = modules().getConfiguration().getEnginesFactory().pendingMessages(peer);
+        pendingMessages = modules().getConfiguration().getStorage().pendingMessages(peer);
         dialogsActor = modules().getMessagesModule().getDialogsActor();
 
     }

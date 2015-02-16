@@ -34,7 +34,7 @@ public class ModuleActor extends Actor {
     }
 
     public PreferencesStorage preferences() {
-        return messenger.getConfiguration().getPreferencesStorage();
+        return messenger.getPreferences();
     }
 
     public Updates updates() {
