@@ -17,6 +17,7 @@ import im.actor.model.network.Endpoints;
 import im.actor.model.storage.EnginesFactory;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -97,7 +98,7 @@ public class Main {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    execute(messenger.getAuth().requestSms(Long.parseLong(textField.getText())), new CommandCallback<State>() {
+                    execute(messenger.requestSms(Long.parseLong(textField.getText())), new CommandCallback<State>() {
                         @Override
                         public void onResult(State res) {
                             init(container);
@@ -127,7 +128,7 @@ public class Main {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    execute(messenger.getAuth().sendCode(textField.getText()), new CommandCallback<State>() {
+                    execute(messenger.sendCode(Integer.parseInt(textField.getText())), new CommandCallback<State>() {
                         @Override
                         public void onResult(State res) {
                             init(container);

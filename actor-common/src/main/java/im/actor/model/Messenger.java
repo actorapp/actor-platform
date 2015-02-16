@@ -1,139 +1,106 @@
 package im.actor.model;
 
+import im.actor.model.concurrency.Command;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
-import im.actor.model.modules.Auth;
-import im.actor.model.modules.Messages;
-import im.actor.model.modules.Presence;
-import im.actor.model.modules.Typing;
-import im.actor.model.modules.Updates;
-import im.actor.model.modules.Users;
+import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
-import im.actor.model.network.ActorApi;
-import im.actor.model.network.ActorApiCallback;
-import im.actor.model.storage.PreferenceApiStorage;
 
 /**
  * Created by ex3ndr on 08.02.15.
  */
 public class Messenger {
-    private Configuration configuration;
-    private Auth auth;
-    private volatile Users users;
-    private volatile Updates updates;
-    private volatile Messages messages;
-    private volatile Presence presence;
-    private volatile Typing typing;
-    private ActorApi actorApi;
+    private Modules modules;
 
     public Messenger(Configuration configuration) {
-        this.configuration = configuration;
-        this.actorApi = new ActorApi(configuration.getEndpoints(),
-                new PreferenceApiStorage(configuration.getPreferencesStorage()),
-                new ActorApiCallback() {
-                    @Override
-                    public void onAuthIdInvalidated(long authKey) {
-
-                    }
-
-                    @Override
-                    public void onNewSessionCreated() {
-                        if (updates != null) {
-                            updates.onNewSessionCreated();
-                        }
-                        if (presence != null) {
-                            presence.onNewSessionCreated();
-                        }
-                    }
-
-                    @Override
-                    public void onUpdateReceived(Object obj) {
-                        if (updates != null) {
-                            updates.onUpdateReceived(obj);
-                        }
-                    }
-                });
-        this.auth = new Auth(this);
+        this.modules = new Modules(configuration);
     }
 
-    public void onLoggedIn() {
-        users = new Users(this);
-        messages = new Messages(this);
-        updates = new Updates(this);
-        presence = new Presence(this);
-        typing = new Typing(this);
-        messages.run();
-        updates.run();
-        presence.run();
+    // Auth
+
+    public State getState() {
+        return modules.getAuthModule().getState();
+    }
+
+    public boolean isLoggedIn() {
+        return getState() == State.LOGGED_IN;
+    }
+
+    public Command<State> requestSms(final long phone) {
+        return modules.getAuthModule().requestSms(phone);
+    }
+
+    public Command<State> sendCode(final int code) {
+        return modules.getAuthModule().sendCode(code);
+    }
+
+    public Command<State> signUp(final String firstName, String avatarPath, final boolean isSilent) {
+        return modules.getAuthModule().signUp(firstName, avatarPath, isSilent);
+    }
+
+    public long getAuthPhone() {
+        return modules.getAuthModule().getPhone();
+    }
+
+    public void resetAuth() {
+        modules.getAuthModule().resetAuth();
     }
 
     public int myUid() {
-        return auth.myUid();
+        return modules.getAuthModule().myUid();
     }
 
-    public Updates getUpdatesModule() {
-        return updates;
+    public KeyValueEngine<im.actor.model.entity.User> getUsers() {
+        return modules.getUsersModule().getUsers();
     }
 
-    public Messages getMessagesModule() {
-        return messages;
+    public ListEngine<Dialog> getDialogs() {
+        return modules.getMessagesModule().getDialogsEngine();
     }
 
-    public Users getUsersModule() {
-        return users;
+    public ListEngine<Message> getMessages(Peer peer) {
+        return modules.getMessagesModule().getConversationEngine(peer);
     }
 
     public void onAppVisible() {
-        if (presence != null) {
-            presence.onAppVisible();
+        if (modules.getPresenceModule() != null) {
+            modules.getPresenceModule().onAppVisible();
         }
     }
 
     public void onAppHidden() {
-        if (presence != null) {
-            presence.onAppHidden();
+        if (modules.getPresenceModule() != null) {
+            modules.getPresenceModule().onAppHidden();
         }
     }
 
     public void onConversationOpen(Peer peer) {
-        presence.onConversationOpen(peer);
+        modules.getPresenceModule().onConversationOpen(peer);
     }
 
     public void onConversationClosed(Peer peer) {
-        presence.onConversationClosed(peer);
+        modules.getPresenceModule().onConversationClosed(peer);
     }
 
     public void onTyping(Peer peer) {
-        typing.onTyping(peer);
+        modules.getTypingModule().onTyping(peer);
     }
 
-    public ListEngine<Message> getMessages(Peer peer) {
-        return messages.getConversationEngine(peer);
+    public void saveDraft(Peer peer, String draft) {
+        modules.getMessagesModule().saveDraft(peer, draft);
     }
 
-    public ListEngine<Dialog> getDialogs() {
-        return messages.getDialogsEngine();
+    public String loadDraft(Peer peer) {
+        return modules.getMessagesModule().loadDraft(peer);
     }
 
-    public KeyValueEngine<im.actor.model.entity.User> getUsers() {
-        return users.getUsers();
+    public Command<Boolean> editMyName(final String newName) {
+        return modules.getUsersModule().editMyName(newName);
     }
 
-    public Configuration getConfiguration() {
-        return configuration;
-    }
-
-    public ActorApi getActorApi() {
-        return actorApi;
-    }
-
-    public Auth getAuth() {
-        return auth;
-    }
-
-    public State getState() {
-        return auth.getState();
+    public Command<Boolean> editName(final int uid, final String name) {
+        return modules.getUsersModule().editName(uid, name);
     }
 }

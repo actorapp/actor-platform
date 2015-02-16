@@ -13,6 +13,7 @@ import im.actor.model.entity.PeerType;
 import im.actor.model.entity.User;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.TextContent;
+import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.network.RpcCallback;
@@ -23,15 +24,15 @@ import im.actor.model.network.RpcException;
  */
 public class SenderActor extends ModuleActor {
 
-    public SenderActor(Messenger messenger) {
+    public SenderActor(Modules messenger) {
         super(messenger);
     }
 
     @Override
     public void preStart() {
-        if (getMessenger().getConfiguration().isPersistMessages()) {
-            // TODO: Check persistent pending messages
-        }
+//        if (getMessenger().getConfiguration().isPersistMessages()) {
+//            // TODO: Check persistent pending messages
+//        }
     }
 
     @Override
@@ -50,7 +51,7 @@ public class SenderActor extends ModuleActor {
         final OutPeer outPeer;
         final im.actor.model.api.Peer apiPeer;
         if (peer.getPeerType() == PeerType.PRIVATE) {
-            User user = getMessenger().getUsers().getValue(peer.getUid());
+            User user = getUser(peer.getPeerId());
             if (user == null) {
                 return;
             }
@@ -67,15 +68,14 @@ public class SenderActor extends ModuleActor {
             return;
         }
 
-        getMessenger().getMessagesModule().getConversationActor(peer).send(new Message(rid,
-                time, time, getMessenger().myUid(), MessageState.PENDING, content));
+        modules().getMessagesModule().getConversationActor(peer).send(new Message(rid,
+                time, time, myUid(), MessageState.PENDING, content));
 
         request(new RequestSendMessage(outPeer, rid, outContent),
                 new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {
-                        getMessenger().getUpdatesModule()
-                                .onUpdateReceived(new UpdateMessageSent(apiPeer, rid, response.getDate()));
+
                     }
 
                     @Override

@@ -74,7 +74,7 @@ public class EditNameFragment extends BaseCompatFragment {
 
 
                 if (type == EditNameActivity.TYPE_ME) {
-                    execute(messenger().getUsersModule().editMyName(name), R.string.edit_name_process, new CommandCallback<Boolean>() {
+                    execute(messenger().editMyName(name), R.string.edit_name_process, new CommandCallback<Boolean>() {
                         @Override
                         public void onResult(Boolean res) {
                             getActivity().finish();
@@ -86,7 +86,7 @@ public class EditNameFragment extends BaseCompatFragment {
                         }
                     });
                 } else if (type == EditNameActivity.TYPE_USER) {
-                    execute(messenger().getUsersModule().editName(id, name), R.string.edit_name_process, new CommandCallback<Boolean>() {
+                    execute(messenger().editName(id, name), R.string.edit_name_process, new CommandCallback<Boolean>() {
                         @Override
                         public void onResult(Boolean res) {
                             getActivity().finish();

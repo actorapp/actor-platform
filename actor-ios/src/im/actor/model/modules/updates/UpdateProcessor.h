@@ -6,10 +6,12 @@
 #ifndef _ImActorModelModulesUpdatesUpdateProcessor_H_
 #define _ImActorModelModulesUpdatesUpdateProcessor_H_
 
-@class AMMessenger;
+@class ImActorModelModulesModules;
 @class ImActorModelModulesUpdatesGroupsProcessor;
 @class ImActorModelModulesUpdatesInternalInternalUpdate;
 @class ImActorModelModulesUpdatesMessagesProcessor;
+@class ImActorModelModulesUpdatesPresenceProcessor;
+@class ImActorModelModulesUpdatesTypingProcessor;
 @class ImActorModelModulesUpdatesUsersProcessor;
 @class ImActorModelNetworkParserUpdate;
 @protocol JavaUtilList;
@@ -19,7 +21,7 @@
 @interface ImActorModelModulesUpdatesUpdateProcessor : NSObject {
 }
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (void)applyRelatedWithJavaUtilList:(id<JavaUtilList>)users
                     withJavaUtilList:(id<JavaUtilList>)groups
@@ -37,6 +39,9 @@
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesUpdateProcessor)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesUpdatesUpdateProcessor_TAG_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUpdatesUpdateProcessor, TAG_, NSString *)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor)

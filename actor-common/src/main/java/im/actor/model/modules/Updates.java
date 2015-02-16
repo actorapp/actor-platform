@@ -11,27 +11,21 @@ import static im.actor.model.droidkit.actors.ActorSystem.system;
 /**
  * Created by ex3ndr on 08.02.15.
  */
-public class Updates {
+public class Updates extends BaseModule {
 
-    private Messenger messenger;
     private ActorRef updateActor;
 
-    public Updates(Messenger messenger) {
-        this.messenger = messenger;
-        run();
+    public Updates(Modules messenger) {
+        super(messenger);
     }
 
     public void run() {
         this.updateActor = system().actorOf(Props.create(SequenceActor.class, new ActorCreator<SequenceActor>() {
             @Override
             public SequenceActor create() {
-                return new SequenceActor(Updates.this);
+                return new SequenceActor(modules());
             }
         }), "actor/updates");
-    }
-
-    public Messenger getMessenger() {
-        return messenger;
     }
 
     public void onNewSessionCreated() {

@@ -15,6 +15,7 @@ import im.actor.model.api.rpc.RequestGetState;
 import im.actor.model.api.rpc.ResponseGetDifference;
 import im.actor.model.api.rpc.ResponseSeq;
 import im.actor.model.log.Log;
+import im.actor.model.modules.Modules;
 import im.actor.model.modules.Updates;
 import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.modules.utils.ModuleActor;
@@ -39,28 +40,24 @@ public class SequenceActor extends ModuleActor {
     private static final String KEY_STATE = "updates_state";
 
     private HashMap<Integer, Object> further = new HashMap<Integer, Object>();
-    private PreferencesStorage preferencesStorage;
 
     private boolean isValidated = true;
     private int seq;
     private byte[] state;
 
-    private Messenger messenger;
     private UpdateProcessor processor;
     private UpdatesParser parser;
 
-    public SequenceActor(Updates updates) {
-        super(updates.getMessenger());
-        this.messenger = updates.getMessenger();
-        this.preferencesStorage = updates.getMessenger().getConfiguration().getPreferencesStorage();
+    public SequenceActor(Modules modules) {
+        super(modules);
     }
 
     @Override
     public void preStart() {
-        seq = preferencesStorage.getInt(KEY_SEQ, -1);
-        state = preferencesStorage.getBytes(KEY_STATE);
+        seq = preferences().getInt(KEY_SEQ, -1);
+        state = preferences().getBytes(KEY_STATE);
         parser = new UpdatesParser();
-        processor = new UpdateProcessor(messenger);
+        processor = new UpdateProcessor(modules());
 
         self().send(new Invalidate());
     }
@@ -169,8 +166,8 @@ public class SequenceActor extends ModuleActor {
         // Saving state
         this.seq = seq;
         this.state = state;
-        preferencesStorage.putInt(KEY_SEQ, seq);
-        preferencesStorage.putBytes(KEY_STATE, state);
+        preferences().putInt(KEY_SEQ, seq);
+        preferences().putBytes(KEY_STATE, state);
 
         checkFuture();
 
@@ -202,8 +199,8 @@ public class SequenceActor extends ModuleActor {
 
                     isValidated = true;
 
-                    preferencesStorage.putInt(KEY_SEQ, seq);
-                    preferencesStorage.putBytes(KEY_STATE, state);
+                    preferences().putInt(KEY_SEQ, seq);
+                    preferences().putBytes(KEY_STATE, state);
 
                     Log.d(TAG, "State loaded {seq=" + seq + "}");
 
@@ -251,8 +248,8 @@ public class SequenceActor extends ModuleActor {
 
                     isValidated = true;
 
-                    preferencesStorage.putInt(KEY_SEQ, seq);
-                    preferencesStorage.putBytes(KEY_STATE, state);
+                    preferences().putInt(KEY_SEQ, seq);
+                    preferences().putBytes(KEY_STATE, state);
 
                     // Faaaaaar away
                     self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);

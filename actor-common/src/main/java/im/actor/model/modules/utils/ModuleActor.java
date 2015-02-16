@@ -2,22 +2,54 @@ package im.actor.model.modules.utils;
 
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.Messenger;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
+import im.actor.model.entity.User;
+import im.actor.model.modules.Modules;
+import im.actor.model.modules.Updates;
+import im.actor.model.mvvm.KeyValueEngine;
+import im.actor.model.mvvm.ListEngine;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
+import im.actor.model.storage.PreferencesStorage;
 
 /**
  * Created by ex3ndr on 08.02.15.
  */
 public class ModuleActor extends Actor {
-    private Messenger messenger;
+    private Modules messenger;
 
-    public ModuleActor(Messenger messenger) {
+    public ModuleActor(Modules messenger) {
         this.messenger = messenger;
     }
 
-    public Messenger getMessenger() {
+    public KeyValueEngine<User> users() {
+        return messenger.getUsersModule().getUsers();
+    }
+
+    public User getUser(int uid) {
+        return users().getValue(uid);
+    }
+
+    public PreferencesStorage preferences() {
+        return messenger.getConfiguration().getPreferencesStorage();
+    }
+
+    public Updates updates() {
+        return messenger.getUpdatesModule();
+    }
+
+    public ListEngine<Message> messages(Peer peer) {
+        return messenger.getMessagesModule().getConversationEngine(peer);
+    }
+
+    public int myUid() {
+        return messenger.getAuthModule().myUid();
+    }
+
+    public Modules modules() {
         return messenger;
     }
 

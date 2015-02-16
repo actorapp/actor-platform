@@ -6,33 +6,44 @@
 #ifndef _AMMessenger_H_
 #define _AMMessenger_H_
 
-@class AMActorApi;
 @class AMConfiguration;
 @class AMStateEnum;
 @class ImActorModelEntityPeer;
-@class ImActorModelModulesAuth;
-@class ImActorModelModulesMessages;
-@class ImActorModelModulesPresence;
-@class ImActorModelModulesUpdates;
-@class ImActorModelModulesUsers;
+@class ImActorModelModulesModules;
+@protocol ImActorModelConcurrencyCommand;
 @protocol ImActorModelMvvmKeyValueEngine;
 @protocol ImActorModelMvvmListEngine;
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/network/ActorApiCallback.h"
 
 @interface AMMessenger : NSObject {
 }
 
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration;
 
-- (void)onLoggedIn;
+- (AMStateEnum *)getState;
+
+- (jboolean)isLoggedIn;
+
+- (id<ImActorModelConcurrencyCommand>)requestSmsWithLong:(jlong)phone;
+
+- (id<ImActorModelConcurrencyCommand>)sendCodeWithInt:(jint)code;
+
+- (id<ImActorModelConcurrencyCommand>)signUpWithNSString:(NSString *)firstName
+                                            withNSString:(NSString *)avatarPath
+                                             withBoolean:(jboolean)isSilent;
+
+- (jlong)getAuthPhone;
+
+- (void)resetAuth;
 
 - (jint)myUid;
 
-- (ImActorModelModulesUpdates *)getUpdatesModule;
+- (id<ImActorModelMvvmKeyValueEngine>)getUsers;
 
-- (ImActorModelModulesMessages *)getMessagesModule;
+- (id<ImActorModelMvvmListEngine>)getDialogs;
+
+- (id<ImActorModelMvvmListEngine>)getMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
 
 - (void)onAppVisible;
 
@@ -42,19 +53,17 @@
 
 - (void)onConversationClosedWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
 
-- (id<ImActorModelMvvmListEngine>)getMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+- (void)onTypingWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
 
-- (id<ImActorModelMvvmListEngine>)getDialogs;
+- (void)saveDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
+                               withNSString:(NSString *)draft;
 
-- (id<ImActorModelMvvmKeyValueEngine>)getUsers;
+- (NSString *)loadDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
 
-- (AMConfiguration *)getConfiguration;
+- (id<ImActorModelConcurrencyCommand>)editMyNameWithNSString:(NSString *)newName;
 
-- (AMActorApi *)getActorApi;
-
-- (ImActorModelModulesAuth *)getAuth;
-
-- (AMStateEnum *)getState;
+- (id<ImActorModelConcurrencyCommand>)editNameWithInt:(jint)uid
+                                         withNSString:(NSString *)name;
 
 @end
 
@@ -66,25 +75,5 @@ CF_EXTERN_C_END
 typedef AMMessenger ImActorModelMessenger;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMMessenger)
-
-@interface AMMessenger_$1 : NSObject < AMActorApiCallback > {
-}
-
-- (void)onAuthIdInvalidatedWithLong:(jlong)authKey;
-
-- (void)onNewSessionCreated;
-
-- (void)onUpdateReceivedWithId:(id)obj;
-
-- (instancetype)initWithAMMessenger:(AMMessenger *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMMessenger_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMMessenger_$1)
 
 #endif // _AMMessenger_H_

@@ -16,6 +16,8 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
 
+import static im.actor.messenger.core.Core.messenger;
+
 public class SignUpFragment extends BaseAuthFragment {
 
     private static final int REQUEST_AVATAR = 1;
@@ -50,7 +52,7 @@ public class SignUpFragment extends BaseAuthFragment {
         sendConfirmCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                auth().signUp(firstNameEditText.getText().toString().trim(), avatarPath, false);
+                messenger().signUp(firstNameEditText.getText().toString().trim(), avatarPath, false);
             }
         });
 

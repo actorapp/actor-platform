@@ -6,23 +6,24 @@
 #ifndef _ImActorModelModulesMessages_H_
 #define _ImActorModelModulesMessages_H_
 
-@class AMMessenger;
 @class ImActorModelDroidkitActorsActorRef;
 @class ImActorModelEntityContentAbsContent;
 @class ImActorModelEntityPeer;
 @class ImActorModelModulesMessagesConversationActor;
 @class ImActorModelModulesMessagesDialogsActor;
 @class ImActorModelModulesMessagesDialogsHistoryActor;
+@class ImActorModelModulesModules;
 @class JavaUtilHashMap;
 @protocol ImActorModelMvvmListEngine;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
+#include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesMessages : NSObject {
+@interface ImActorModelModulesMessages : ImActorModelModulesBaseModule {
 }
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)run;
 
@@ -38,6 +39,12 @@
 
 - (void)sendMessageWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
       withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)message;
+
+- (void)onInboundMessageShownWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
+                                               withLong:(jlong)rid
+                                               withLong:(jlong)sortDate
+                                               withLong:(jlong)date
+                                            withBoolean:(jboolean)isEncrypted;
 
 - (void)saveDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
                                withNSString:(NSString *)draft;

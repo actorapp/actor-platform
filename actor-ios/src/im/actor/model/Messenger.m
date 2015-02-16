@@ -7,216 +7,158 @@
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/Messenger.h"
 #include "im/actor/model/State.h"
+#include "im/actor/model/concurrency/Command.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/Messages.h"
+#include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Presence.h"
-#include "im/actor/model/modules/Updates.h"
+#include "im/actor/model/modules/Typing.h"
 #include "im/actor/model/modules/Users.h"
 #include "im/actor/model/mvvm/KeyValueEngine.h"
 #include "im/actor/model/mvvm/ListEngine.h"
-#include "im/actor/model/network/ActorApi.h"
-#include "im/actor/model/network/Endpoints.h"
-#include "im/actor/model/storage/PreferenceApiStorage.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
 
 @interface AMMessenger () {
  @public
-  AMConfiguration *configuration_;
-  ImActorModelModulesAuth *auth_;
-  ImActorModelModulesUsers *users_;
-  ImActorModelModulesUpdates *updates_;
-  ImActorModelModulesMessages *messages_;
-  ImActorModelModulesPresence *presence_;
-  AMActorApi *actorApi_;
+  ImActorModelModulesModules *modules_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(AMMessenger, configuration_, AMConfiguration *)
-J2OBJC_FIELD_SETTER(AMMessenger, auth_, ImActorModelModulesAuth *)
-J2OBJC_FIELD_SETTER(AMMessenger, users_, ImActorModelModulesUsers *)
-J2OBJC_FIELD_SETTER(AMMessenger, updates_, ImActorModelModulesUpdates *)
-J2OBJC_FIELD_SETTER(AMMessenger, messages_, ImActorModelModulesMessages *)
-J2OBJC_FIELD_SETTER(AMMessenger, presence_, ImActorModelModulesPresence *)
-J2OBJC_FIELD_SETTER(AMMessenger, actorApi_, AMActorApi *)
-
-@interface AMMessenger_$1 () {
- @public
-  AMMessenger *this$0_;
-}
-@end
-
-J2OBJC_FIELD_SETTER(AMMessenger_$1, this$0_, AMMessenger *)
+J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 
 @implementation AMMessenger
 
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
   if (self = [super init]) {
-    self->configuration_ = configuration;
-    self->actorApi_ = [[AMActorApi alloc] initWithAMEndpoints:[((AMConfiguration *) nil_chk(configuration)) getEndpoints] withAMAuthKeyStorage:[[ImActorModelStoragePreferenceApiStorage alloc] initWithImActorModelStoragePreferencesStorage:[configuration getPreferencesStorage]] withAMActorApiCallback:[[AMMessenger_$1 alloc] initWithAMMessenger:self]];
-    self->auth_ = [[ImActorModelModulesAuth alloc] initWithAMMessenger:self];
+    self->modules_ = [[ImActorModelModulesModules alloc] initWithAMConfiguration:configuration];
   }
   return self;
 }
 
-- (void)onLoggedIn {
-  users_ = [[ImActorModelModulesUsers alloc] initWithAMMessenger:self];
-  messages_ = [[ImActorModelModulesMessages alloc] initWithAMMessenger:self];
-  updates_ = [[ImActorModelModulesUpdates alloc] initWithAMMessenger:self];
-  presence_ = [[ImActorModelModulesPresence alloc] initWithAMMessenger:self];
-  [messages_ run];
-  [updates_ run];
-  [presence_ run];
+- (AMStateEnum *)getState {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) getState];
+}
+
+- (jboolean)isLoggedIn {
+  return [self getState] == AMStateEnum_get_LOGGED_IN();
+}
+
+- (id<ImActorModelConcurrencyCommand>)requestSmsWithLong:(jlong)phone {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) requestSmsWithLong:phone];
+}
+
+- (id<ImActorModelConcurrencyCommand>)sendCodeWithInt:(jint)code {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) sendCodeWithInt:code];
+}
+
+- (id<ImActorModelConcurrencyCommand>)signUpWithNSString:(NSString *)firstName
+                                            withNSString:(NSString *)avatarPath
+                                             withBoolean:(jboolean)isSilent {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) signUpWithNSString:firstName withNSString:avatarPath withBoolean:isSilent];
+}
+
+- (jlong)getAuthPhone {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) getPhone];
+}
+
+- (void)resetAuth {
+  [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) resetAuth];
 }
 
 - (jint)myUid {
-  return [((ImActorModelModulesAuth *) nil_chk(auth_)) myUid];
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) myUid];
 }
 
-- (ImActorModelModulesUpdates *)getUpdatesModule {
-  return updates_;
+- (id<ImActorModelMvvmKeyValueEngine>)getUsers {
+  return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) getUsers];
 }
 
-- (ImActorModelModulesMessages *)getMessagesModule {
-  return messages_;
+- (id<ImActorModelMvvmListEngine>)getDialogs {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getDialogsEngine];
+}
+
+- (id<ImActorModelMvvmListEngine>)getMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getConversationEngineWithImActorModelEntityPeer:peer];
 }
 
 - (void)onAppVisible {
-  if (presence_ != nil) {
-    [presence_ onAppVisible];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule] != nil) {
+    [((ImActorModelModulesPresence *) nil_chk([modules_ getPresenceModule])) onAppVisible];
   }
 }
 
 - (void)onAppHidden {
-  if (presence_ != nil) {
-    [presence_ onAppHidden];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule] != nil) {
+    [((ImActorModelModulesPresence *) nil_chk([modules_ getPresenceModule])) onAppHidden];
   }
 }
 
 - (void)onConversationOpenWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  [((ImActorModelModulesPresence *) nil_chk(presence_)) onConversationOpenWithImActorModelEntityPeer:peer];
+  [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) onConversationOpenWithImActorModelEntityPeer:peer];
 }
 
 - (void)onConversationClosedWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  [((ImActorModelModulesPresence *) nil_chk(presence_)) onConversationClosedWithImActorModelEntityPeer:peer];
+  [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) onConversationClosedWithImActorModelEntityPeer:peer];
 }
 
-- (id<ImActorModelMvvmListEngine>)getMessagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
-  return [((ImActorModelModulesMessages *) nil_chk(messages_)) getConversationEngineWithImActorModelEntityPeer:peer];
+- (void)onTypingWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
+  [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) onTypingWithImActorModelEntityPeer:peer];
 }
 
-- (id<ImActorModelMvvmListEngine>)getDialogs {
-  return [((ImActorModelModulesMessages *) nil_chk(messages_)) getDialogsEngine];
+- (void)saveDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
+                               withNSString:(NSString *)draft {
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) saveDraftWithImActorModelEntityPeer:peer withNSString:draft];
 }
 
-- (id<ImActorModelMvvmKeyValueEngine>)getUsers {
-  return [((ImActorModelModulesUsers *) nil_chk(users_)) getUsers];
+- (NSString *)loadDraftWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) loadDraftWithImActorModelEntityPeer:peer];
 }
 
-- (AMConfiguration *)getConfiguration {
-  return configuration_;
+- (id<ImActorModelConcurrencyCommand>)editMyNameWithNSString:(NSString *)newName {
+  return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) editMyNameWithNSString:newName];
 }
 
-- (AMActorApi *)getActorApi {
-  return actorApi_;
-}
-
-- (ImActorModelModulesAuth *)getAuth {
-  return auth_;
-}
-
-- (AMStateEnum *)getState {
-  return [((ImActorModelModulesAuth *) nil_chk(auth_)) getState];
+- (id<ImActorModelConcurrencyCommand>)editNameWithInt:(jint)uid
+                                         withNSString:(NSString *)name {
+  return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) editNameWithInt:uid withNSString:name];
 }
 
 - (void)copyAllFieldsTo:(AMMessenger *)other {
   [super copyAllFieldsTo:other];
-  other->configuration_ = configuration_;
-  other->auth_ = auth_;
-  other->users_ = users_;
-  other->updates_ = updates_;
-  other->messages_ = messages_;
-  other->presence_ = presence_;
-  other->actorApi_ = actorApi_;
+  other->modules_ = modules_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "initWithAMConfiguration:", "Messenger", NULL, 0x1, NULL },
-    { "onLoggedIn", NULL, "V", 0x1, NULL },
+    { "getState", NULL, "Lim.actor.model.State;", 0x1, NULL },
+    { "isLoggedIn", NULL, "Z", 0x1, NULL },
+    { "requestSmsWithLong:", "requestSms", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
+    { "sendCodeWithInt:", "sendCode", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
+    { "signUpWithNSString:withNSString:withBoolean:", "signUp", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
+    { "getAuthPhone", NULL, "J", 0x1, NULL },
+    { "resetAuth", NULL, "V", 0x1, NULL },
     { "myUid", NULL, "I", 0x1, NULL },
-    { "getUpdatesModule", NULL, "Lim.actor.model.modules.Updates;", 0x1, NULL },
-    { "getMessagesModule", NULL, "Lim.actor.model.modules.Messages;", 0x1, NULL },
+    { "getUsers", NULL, "Lim.actor.model.mvvm.KeyValueEngine;", 0x1, NULL },
+    { "getDialogs", NULL, "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
+    { "getMessagesWithImActorModelEntityPeer:", "getMessages", "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
     { "onAppVisible", NULL, "V", 0x1, NULL },
     { "onAppHidden", NULL, "V", 0x1, NULL },
     { "onConversationOpenWithImActorModelEntityPeer:", "onConversationOpen", "V", 0x1, NULL },
     { "onConversationClosedWithImActorModelEntityPeer:", "onConversationClosed", "V", 0x1, NULL },
-    { "getMessagesWithImActorModelEntityPeer:", "getMessages", "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
-    { "getDialogs", NULL, "Lim.actor.model.mvvm.ListEngine;", 0x1, NULL },
-    { "getUsers", NULL, "Lim.actor.model.mvvm.KeyValueEngine;", 0x1, NULL },
-    { "getConfiguration", NULL, "Lim.actor.model.Configuration;", 0x1, NULL },
-    { "getActorApi", NULL, "Lim.actor.model.network.ActorApi;", 0x1, NULL },
-    { "getAuth", NULL, "Lim.actor.model.modules.Auth;", 0x1, NULL },
-    { "getState", NULL, "Lim.actor.model.State;", 0x1, NULL },
+    { "onTypingWithImActorModelEntityPeer:", "onTyping", "V", 0x1, NULL },
+    { "saveDraftWithImActorModelEntityPeer:withNSString:", "saveDraft", "V", 0x1, NULL },
+    { "loadDraftWithImActorModelEntityPeer:", "loadDraft", "Ljava.lang.String;", 0x1, NULL },
+    { "editMyNameWithNSString:", "editMyName", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
+    { "editNameWithInt:withNSString:", "editName", "Lim.actor.model.concurrency.Command;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "configuration_", NULL, 0x2, "Lim.actor.model.Configuration;", NULL,  },
-    { "auth_", NULL, 0x2, "Lim.actor.model.modules.Auth;", NULL,  },
-    { "users_", NULL, 0x42, "Lim.actor.model.modules.Users;", NULL,  },
-    { "updates_", NULL, 0x42, "Lim.actor.model.modules.Updates;", NULL,  },
-    { "messages_", NULL, 0x42, "Lim.actor.model.modules.Messages;", NULL,  },
-    { "presence_", NULL, 0x42, "Lim.actor.model.modules.Presence;", NULL,  },
-    { "actorApi_", NULL, 0x2, "Lim.actor.model.network.ActorApi;", NULL,  },
+    { "modules_", NULL, 0x2, "Lim.actor.model.modules.Modules;", NULL,  },
   };
-  static const J2ObjcClassInfo _AMMessenger = { 1, "Messenger", "im.actor.model", NULL, 0x1, 16, methods, 7, fields, 0, NULL};
+  static const J2ObjcClassInfo _AMMessenger = { 1, "Messenger", "im.actor.model", NULL, 0x1, 21, methods, 1, fields, 0, NULL};
   return &_AMMessenger;
 }
 
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessenger)
-
-@implementation AMMessenger_$1
-
-- (void)onAuthIdInvalidatedWithLong:(jlong)authKey {
-}
-
-- (void)onNewSessionCreated {
-  if (this$0_->updates_ != nil) {
-    [this$0_->updates_ onSessionCreated];
-  }
-}
-
-- (void)onUpdateReceivedWithId:(id)obj {
-  if (this$0_->updates_ != nil) {
-    [this$0_->updates_ onUpdateReceivedWithId:obj];
-  }
-}
-
-- (instancetype)initWithAMMessenger:(AMMessenger *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMMessenger_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-}
-
-+ (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "onAuthIdInvalidatedWithLong:", "onAuthIdInvalidated", "V", 0x1, NULL },
-    { "onNewSessionCreated", NULL, "V", 0x1, NULL },
-    { "onUpdateReceivedWithId:", "onUpdateReceived", "V", 0x1, NULL },
-    { "initWithAMMessenger:", "init", NULL, 0x0, NULL },
-  };
-  static const J2ObjcFieldInfo fields[] = {
-    { "this$0_", NULL, 0x1012, "Lim.actor.model.Messenger;", NULL,  },
-  };
-  static const J2ObjcClassInfo _AMMessenger_$1 = { 1, "$1", "im.actor.model", "Messenger", 0x8000, 4, methods, 1, fields, 0, NULL};
-  return &_AMMessenger_$1;
-}
-
-@end
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessenger_$1)

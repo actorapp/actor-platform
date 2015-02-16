@@ -7,6 +7,8 @@
 #define _AMConfiguration_H_
 
 @class AMEndpoints;
+@protocol AMOnlineCallback;
+@protocol AMTypingCallback;
 @protocol ImActorModelConcurrencyMainThread;
 @protocol ImActorModelStorageEnginesFactory;
 @protocol ImActorModelStoragePreferencesStorage;
@@ -35,6 +37,14 @@
 - (id<ImActorModelConcurrencyMainThread>)getMainThread;
 
 - (void)setMainThreadWithImActorModelConcurrencyMainThread:(id<ImActorModelConcurrencyMainThread>)mainThread;
+
+- (id<AMOnlineCallback>)getOnlineCallback;
+
+- (void)setOnlineCallbackWithAMOnlineCallback:(id<AMOnlineCallback>)onlineCallback;
+
+- (id<AMTypingCallback>)getTypingCallback;
+
+- (void)setTypingCallbackWithAMTypingCallback:(id<AMTypingCallback>)typingCallback;
 
 - (instancetype)init;
 

@@ -1,12 +1,12 @@
 package im.actor.model.modules.typing;
 
-import im.actor.model.Messenger;
 import im.actor.model.api.OutPeer;
 import im.actor.model.api.rpc.RequestTyping;
 import im.actor.model.droidkit.actors.ActorTime;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.User;
+import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 
 /**
@@ -18,7 +18,7 @@ public class OwnTypingActor extends ModuleActor {
 
     private long lastTypingTime = 0;
 
-    public OwnTypingActor(Messenger messenger) {
+    public OwnTypingActor(Modules messenger) {
         super(messenger);
     }
 
@@ -30,7 +30,7 @@ public class OwnTypingActor extends ModuleActor {
 
         OutPeer outPeer;
         if (peer.getPeerType() == PeerType.PRIVATE) {
-            User user = getMessenger().getUsers().getValue(peer.getUid());
+            User user = getUser(peer.getPeerId());
             if (user == null) {
                 return;
             }

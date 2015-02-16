@@ -5,7 +5,6 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/Messenger.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/MessageContent.h"
 #include "im/actor/model/api/Peer.h"
@@ -23,6 +22,7 @@
 #include "im/actor/model/api/updates/UpdateEncryptedReadByMe.h"
 #include "im/actor/model/api/updates/UpdateEncryptedReceived.h"
 #include "im/actor/model/api/updates/UpdateGroupInvite.h"
+#include "im/actor/model/api/updates/UpdateGroupOnline.h"
 #include "im/actor/model/api/updates/UpdateGroupUserAdded.h"
 #include "im/actor/model/api/updates/UpdateGroupUserKick.h"
 #include "im/actor/model/api/updates/UpdateGroupUserLeave.h"
@@ -32,15 +32,23 @@
 #include "im/actor/model/api/updates/UpdateMessageReadByMe.h"
 #include "im/actor/model/api/updates/UpdateMessageReceived.h"
 #include "im/actor/model/api/updates/UpdateMessageSent.h"
+#include "im/actor/model/api/updates/UpdateTyping.h"
 #include "im/actor/model/api/updates/UpdateUserAvatarChanged.h"
 #include "im/actor/model/api/updates/UpdateUserContactAdded.h"
 #include "im/actor/model/api/updates/UpdateUserContactRemoved.h"
 #include "im/actor/model/api/updates/UpdateUserContactsChanged.h"
+#include "im/actor/model/api/updates/UpdateUserLastSeen.h"
 #include "im/actor/model/api/updates/UpdateUserLocalNameChanged.h"
 #include "im/actor/model/api/updates/UpdateUserNameChanged.h"
+#include "im/actor/model/api/updates/UpdateUserOffline.h"
+#include "im/actor/model/api/updates/UpdateUserOnline.h"
 #include "im/actor/model/api/updates/UpdateUserStateChanged.h"
+#include "im/actor/model/log/Log.h"
+#include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/updates/GroupsProcessor.h"
 #include "im/actor/model/modules/updates/MessagesProcessor.h"
+#include "im/actor/model/modules/updates/PresenceProcessor.h"
+#include "im/actor/model/modules/updates/TypingProcessor.h"
 #include "im/actor/model/modules/updates/UpdateProcessor.h"
 #include "im/actor/model/modules/updates/UsersProcessor.h"
 #include "im/actor/model/modules/updates/internal/DialogHistoryLoaded.h"
@@ -52,26 +60,31 @@
 
 @interface ImActorModelModulesUpdatesUpdateProcessor () {
  @public
-  AMMessenger *messenger_;
   ImActorModelModulesUpdatesUsersProcessor *usersProcessor_;
   ImActorModelModulesUpdatesMessagesProcessor *messagesProcessor_;
   ImActorModelModulesUpdatesGroupsProcessor *groupsProcessor_;
+  ImActorModelModulesUpdatesPresenceProcessor *presenceProcessor_;
+  ImActorModelModulesUpdatesTypingProcessor *typingProcessor_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, messenger_, AMMessenger *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, usersProcessor_, ImActorModelModulesUpdatesUsersProcessor *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, messagesProcessor_, ImActorModelModulesUpdatesMessagesProcessor *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_, ImActorModelModulesUpdatesGroupsProcessor *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, presenceProcessor_, ImActorModelModulesUpdatesPresenceProcessor *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, typingProcessor_, ImActorModelModulesUpdatesTypingProcessor *)
 
 @implementation ImActorModelModulesUpdatesUpdateProcessor
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger {
+NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
+
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super init]) {
-    self->messenger_ = messenger;
-    self->usersProcessor_ = [[ImActorModelModulesUpdatesUsersProcessor alloc] initWithAMMessenger:messenger];
-    self->messagesProcessor_ = [[ImActorModelModulesUpdatesMessagesProcessor alloc] initWithAMMessenger:messenger];
+    self->usersProcessor_ = [[ImActorModelModulesUpdatesUsersProcessor alloc] initWithImActorModelModulesModules:modules];
+    self->messagesProcessor_ = [[ImActorModelModulesUpdatesMessagesProcessor alloc] initWithImActorModelModulesModules:modules];
     self->groupsProcessor_ = [[ImActorModelModulesUpdatesGroupsProcessor alloc] init];
+    self->presenceProcessor_ = [[ImActorModelModulesUpdatesPresenceProcessor alloc] initWithImActorModelModulesModules:modules];
+    self->typingProcessor_ = [[ImActorModelModulesUpdatesTypingProcessor alloc] initWithImActorModelModulesModules:modules];
   }
   return self;
 }
@@ -92,6 +105,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
 }
 
 - (void)processUpdateWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update {
+  AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesUpdateProcessor_TAG_, JreStrcat("@", update));
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserContactAdded class]]) {
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserContactRemoved class]]) {
@@ -119,6 +133,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessage class]]) {
     ImActorModelApiUpdatesUpdateMessage *message = (ImActorModelApiUpdatesUpdateMessage *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessage class]);
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessage *) nil_chk(message)) getPeer] withInt:[message getSenderUid] withLong:[message getDate] withLong:[message getRid] withImActorModelApiMessageContent:[message getMessage]];
+    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onMessageWithImActorModelApiPeer:[message getPeer] withInt:[message getSenderUid]];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessageRead class]]) {
     ImActorModelApiUpdatesUpdateMessageRead *messageRead = (ImActorModelApiUpdatesUpdateMessageRead *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessageRead class]);
@@ -141,6 +156,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageSentWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessageSent *) nil_chk(messageSent)) getPeer] withLong:[messageSent getRid] withLong:[messageSent getDate]];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateEncryptedMessage class]]) {
+    ImActorModelApiUpdatesUpdateEncryptedMessage *encryptedMessage = (ImActorModelApiUpdatesUpdateEncryptedMessage *) check_class_cast(update, [ImActorModelApiUpdatesUpdateEncryptedMessage class]);
+    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onMessageWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateEncryptedMessage *) nil_chk(encryptedMessage)) getPeer] withInt:[encryptedMessage getSenderUid]];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateEncryptedRead class]]) {
     ImActorModelApiUpdatesUpdateEncryptedRead *encryptedRead = (ImActorModelApiUpdatesUpdateEncryptedRead *) check_class_cast(update, [ImActorModelApiUpdatesUpdateEncryptedRead class]);
@@ -167,6 +184,26 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
     if (![((ImActorModelApiUpdatesUpdateContactRegistered *) nil_chk(registered)) isSilent]) {
       [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onUserRegisteredWithInt:[registered getUid] withLong:[registered getDate]];
     }
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserOnline class]]) {
+    ImActorModelApiUpdatesUpdateUserOnline *userOnline = (ImActorModelApiUpdatesUpdateUserOnline *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserOnline class]);
+    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserOnlineWithInt:[((ImActorModelApiUpdatesUpdateUserOnline *) nil_chk(userOnline)) getUid]];
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserOffline class]]) {
+    ImActorModelApiUpdatesUpdateUserOffline *offline = (ImActorModelApiUpdatesUpdateUserOffline *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserOffline class]);
+    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserOfflineWithInt:[((ImActorModelApiUpdatesUpdateUserOffline *) nil_chk(offline)) getUid]];
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserLastSeen class]]) {
+    ImActorModelApiUpdatesUpdateUserLastSeen *lastSeen = (ImActorModelApiUpdatesUpdateUserLastSeen *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserLastSeen class]);
+    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserLastSeenWithInt:[((ImActorModelApiUpdatesUpdateUserLastSeen *) nil_chk(lastSeen)) getUid] withLong:[lastSeen getDate]];
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupOnline class]]) {
+    ImActorModelApiUpdatesUpdateGroupOnline *groupOnline = (ImActorModelApiUpdatesUpdateGroupOnline *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupOnline class]);
+    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onGroupOnlineWithInt:[((ImActorModelApiUpdatesUpdateGroupOnline *) nil_chk(groupOnline)) getGroupId] withInt:[groupOnline getCount]];
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateTyping class]]) {
+    ImActorModelApiUpdatesUpdateTyping *typing = (ImActorModelApiUpdatesUpdateTyping *) check_class_cast(update, [ImActorModelApiUpdatesUpdateTyping class]);
+    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onTypingWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateTyping *) nil_chk(typing)) getPeer] withInt:[typing getUid] withInt:[typing getTypingType]];
   }
 }
 
@@ -248,27 +285,30 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_,
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesUpdateProcessor *)other {
   [super copyAllFieldsTo:other];
-  other->messenger_ = messenger_;
   other->usersProcessor_ = usersProcessor_;
   other->messagesProcessor_ = messagesProcessor_;
   other->groupsProcessor_ = groupsProcessor_;
+  other->presenceProcessor_ = presenceProcessor_;
+  other->typingProcessor_ = typingProcessor_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMMessenger:", "UpdateProcessor", NULL, 0x1, NULL },
+    { "initWithImActorModelModulesModules:", "UpdateProcessor", NULL, 0x1, NULL },
     { "applyRelatedWithJavaUtilList:withJavaUtilList:withJavaUtilList:withBoolean:", "applyRelated", "V", 0x1, NULL },
     { "processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:", "processInternalUpdate", "V", 0x1, NULL },
     { "processUpdateWithImActorModelNetworkParserUpdate:", "processUpdate", "V", 0x1, NULL },
     { "isCausesInvalidationWithImActorModelNetworkParserUpdate:", "isCausesInvalidation", "Z", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "messenger_", NULL, 0x2, "Lim.actor.model.Messenger;", NULL,  },
+    { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &ImActorModelModulesUpdatesUpdateProcessor_TAG_,  },
     { "usersProcessor_", NULL, 0x2, "Lim.actor.model.modules.updates.UsersProcessor;", NULL,  },
     { "messagesProcessor_", NULL, 0x2, "Lim.actor.model.modules.updates.MessagesProcessor;", NULL,  },
     { "groupsProcessor_", NULL, 0x2, "Lim.actor.model.modules.updates.GroupsProcessor;", NULL,  },
+    { "presenceProcessor_", NULL, 0x2, "Lim.actor.model.modules.updates.PresenceProcessor;", NULL,  },
+    { "typingProcessor_", NULL, 0x2, "Lim.actor.model.modules.updates.TypingProcessor;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdatesUpdateProcessor = { 1, "UpdateProcessor", "im.actor.model.modules.updates", NULL, 0x1, 5, methods, 4, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelModulesUpdatesUpdateProcessor = { 1, "UpdateProcessor", "im.actor.model.modules.updates", NULL, 0x1, 5, methods, 6, fields, 0, NULL};
   return &_ImActorModelModulesUpdatesUpdateProcessor;
 }
 

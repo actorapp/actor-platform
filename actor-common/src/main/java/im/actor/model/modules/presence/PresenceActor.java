@@ -19,6 +19,7 @@ import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.User;
+import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 
 /**
@@ -26,7 +27,7 @@ import im.actor.model.modules.utils.ModuleActor;
  */
 public class PresenceActor extends ModuleActor {
 
-    public static ActorRef get(final Messenger messenger) {
+    public static ActorRef get(final Modules messenger) {
         return ActorSystem.system().actorOf(Props.create(PresenceActor.class, new ActorCreator<PresenceActor>() {
             @Override
             public PresenceActor create() {
@@ -53,7 +54,7 @@ public class PresenceActor extends ModuleActor {
     private HashSet<Integer> uids = new HashSet<Integer>();
     private OnlineCallback onlineCallback;
 
-    public PresenceActor(Messenger messenger) {
+    public PresenceActor(Modules messenger) {
         super(messenger);
 
         onlineCallback = messenger.getConfiguration().getOnlineCallback();
@@ -89,7 +90,7 @@ public class PresenceActor extends ModuleActor {
             if (uids.contains(peer.getPeerId())) {
                 return;
             }
-            User user = getMessenger().getUsers().getValue(peer.getPeerId());
+            User user = getUser(peer.getPeerId());
             if (user == null) {
                 return;
             }
@@ -105,7 +106,7 @@ public class PresenceActor extends ModuleActor {
     private void onNewSessionCreated() {
         List<UserOutPeer> userPeers = new ArrayList<UserOutPeer>();
         for (int uid : uids) {
-            User user = getMessenger().getUsers().getValue(uid);
+            User user = getUser(uid);
             if (user == null) {
                 continue;
             }

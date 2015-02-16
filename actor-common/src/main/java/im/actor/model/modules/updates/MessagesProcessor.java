@@ -2,11 +2,14 @@ package im.actor.model.modules.updates;
 
 import im.actor.model.Messenger;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
+import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.*;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.ServiceUserRegistered;
+import im.actor.model.modules.BaseModule;
+import im.actor.model.modules.Modules;
 import im.actor.model.modules.entity.DialogHistory;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.DialogsActor;
@@ -21,13 +24,22 @@ import static im.actor.model.modules.entity.EntityConverter.convert;
 /**
  * Created by ex3ndr on 09.02.15.
  */
-public class MessagesProcessor {
-    private Messenger messenger;
+public class MessagesProcessor extends BaseModule {
+    public MessagesProcessor(Modules messenger) {
+        super(messenger);
 
+    }
 
-    public MessagesProcessor(Messenger messenger) {
-        this.messenger = messenger;
+    private ActorRef dialogsActor() {
+        return modules().getMessagesModule().getDialogsActor();
+    }
 
+    private ActorRef dialogsHistoryActor() {
+        return modules().getMessagesModule().getDialogsHistoryActor();
+    }
+
+    private ActorRef conversationActor(Peer peer) {
+        return modules().getMessagesModule().getConversationActor(peer);
     }
 
     private long buildSortKey() {
@@ -54,8 +66,8 @@ public class MessagesProcessor {
                     dialog.getRid(), dialog.getDate(), dialog.getSenderUid(), msgContent, convert(dialog.getState())));
         }
 
-        messenger.getMessagesModule().getDialogsActor().send(new DialogsActor.HistoryLoaded(dialogs));
-        messenger.getMessagesModule().getDialogsHistoryActor().send(new DialogsHistoryActor.LoadedMore(maxLoadedDate == 0, maxLoadedDate));
+        dialogsActor().send(new DialogsActor.HistoryLoaded(dialogs));
+        dialogsHistoryActor().send(new DialogsHistoryActor.LoadedMore(maxLoadedDate == 0, maxLoadedDate));
     }
 
     public void onMessage(im.actor.model.api.Peer _peer, int senderUid, long date, long rid,
@@ -68,14 +80,13 @@ public class MessagesProcessor {
         }
 
         Message message = new Message(rid, date, date, senderUid,
-                messenger.myUid() == senderUid ? MessageState.SENT : MessageState.UNKNOWN, msgContent);
-        messenger.getMessagesModule().getConversationActor(peer).send(message);
+                myUid() == senderUid ? MessageState.SENT : MessageState.UNKNOWN, msgContent);
+        conversationActor(peer).send(message);
     }
 
     public void onMessageRead(im.actor.model.api.Peer _peer, long startDate, long readDate) {
         Peer peer = convert(_peer);
-        messenger.getMessagesModule().getConversationActor(peer)
-                .send(new ConversationActor.MessageRead(startDate));
+        conversationActor(peer).send(new ConversationActor.MessageRead(startDate));
     }
 
     public void onMessageEncryptedRead(im.actor.model.api.Peer _peer, long rid, long readDate) {
@@ -85,8 +96,7 @@ public class MessagesProcessor {
 
     public void onMessageReceived(im.actor.model.api.Peer _peer, long startDate, long receivedDate) {
         Peer peer = convert(_peer);
-        messenger.getMessagesModule().getConversationActor(peer)
-                .send(new ConversationActor.MessageReceived(startDate));
+        conversationActor(peer).send(new ConversationActor.MessageReceived(startDate));
     }
 
     public void onMessageEncryptedReceived(im.actor.model.api.Peer _peer, long rid, long receivedDate) {
@@ -106,32 +116,30 @@ public class MessagesProcessor {
 
     public void onMessageDelete(im.actor.model.api.Peer _peer, List<Long> rids) {
         Peer peer = convert(_peer);
-        messenger.getMessagesModule().getConversationActor(peer)
-                .send(new ConversationActor.MessageDeleted(rids));
+        conversationActor(peer).send(new ConversationActor.MessageDeleted(rids));
     }
 
     public void onMessageSent(im.actor.model.api.Peer _peer, long rid, long date) {
         Peer peer = convert(_peer);
-        messenger.getMessagesModule().getConversationActor(peer)
-                .send(new ConversationActor.MessageSent(rid, date));
+        conversationActor(peer).send(new ConversationActor.MessageSent(rid, date));
     }
 
     public void onChatClear(im.actor.model.api.Peer _peer) {
         Peer peer = convert(_peer);
         // TODO: Move to conversation
-        messenger.getMessagesModule().getDialogsActor().send(new DialogsActor.ChatClear(peer));
+        dialogsActor().send(new DialogsActor.ChatClear(peer));
     }
 
     public void onChatDelete(im.actor.model.api.Peer _peer) {
         Peer peer = convert(_peer);
         // TODO: Move to conversation
-        messenger.getMessagesModule().getDialogsActor().send(new DialogsActor.ChatDelete(peer));
+        dialogsActor().send(new DialogsActor.ChatDelete(peer));
     }
 
     public void onUserRegistered(int uid, long date) {
         Message message = new Message(RandomUtils.nextRid(), date, date, uid,
                 MessageState.UNKNOWN, new ServiceUserRegistered());
-        messenger.getMessagesModule().getConversationActor(Peer.user(uid)).send(message);
+        conversationActor(Peer.user(uid)).send(message);
     }
 
 }

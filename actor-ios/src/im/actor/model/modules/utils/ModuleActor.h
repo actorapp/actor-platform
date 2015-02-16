@@ -6,10 +6,16 @@
 #ifndef _ImActorModelModulesUtilsModuleActor_H_
 #define _ImActorModelModulesUtilsModuleActor_H_
 
-@class AMMessenger;
 @class AMRpcException;
+@class ImActorModelEntityPeer;
+@class ImActorModelEntityUser;
+@class ImActorModelModulesModules;
+@class ImActorModelModulesUpdates;
 @class ImActorModelNetworkParserRequest;
 @class ImActorModelNetworkParserResponse;
+@protocol ImActorModelMvvmKeyValueEngine;
+@protocol ImActorModelMvvmListEngine;
+@protocol ImActorModelStoragePreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
@@ -19,9 +25,23 @@
 @interface ImActorModelModulesUtilsModuleActor : ImActorModelDroidkitActorsActor {
 }
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
-- (AMMessenger *)getMessenger;
+- (id<ImActorModelMvvmKeyValueEngine>)users;
+
+- (ImActorModelEntityUser *)getUserWithInt:(jint)uid;
+
+- (id<ImActorModelStoragePreferencesStorage>)preferences;
+
+- (ImActorModelModulesUpdates *)updates;
+
+- (id<ImActorModelMvvmListEngine>)messagesWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
+
+- (jint)myUid;
+
+- (ImActorModelModulesModules *)modules;
+
+- (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request;
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback;
@@ -42,8 +62,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor)
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e;
 
-- (instancetype)initWithImActorModelModulesUtilsModuleActor:(ImActorModelModulesUtilsModuleActor *)outer$
-                                          withAMRpcCallback:(id<AMRpcCallback>)capture$0;
+- (instancetype)init;
 
 @end
 
@@ -54,38 +73,57 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$1)
 
-@interface ImActorModelModulesUtilsModuleActor_$1_$1 : NSObject < JavaLangRunnable > {
+@interface ImActorModelModulesUtilsModuleActor_$2 : NSObject < AMRpcCallback > {
+}
+
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response;
+
+- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesUtilsModuleActor:(ImActorModelModulesUtilsModuleActor *)outer$
+                                          withAMRpcCallback:(id<AMRpcCallback>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUtilsModuleActor_$2)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$2)
+
+@interface ImActorModelModulesUtilsModuleActor_$2_$1 : NSObject < JavaLangRunnable > {
 }
 
 - (void)run;
 
-- (instancetype)initWithImActorModelModulesUtilsModuleActor_$1:(ImActorModelModulesUtilsModuleActor_$1 *)outer$
+- (instancetype)initWithImActorModelModulesUtilsModuleActor_$2:(ImActorModelModulesUtilsModuleActor_$2 *)outer$
                          withImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)capture$0;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUtilsModuleActor_$1_$1)
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUtilsModuleActor_$2_$1)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$1_$1)
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$2_$1)
 
-@interface ImActorModelModulesUtilsModuleActor_$1_$2 : NSObject < JavaLangRunnable > {
+@interface ImActorModelModulesUtilsModuleActor_$2_$2 : NSObject < JavaLangRunnable > {
 }
 
 - (void)run;
 
-- (instancetype)initWithImActorModelModulesUtilsModuleActor_$1:(ImActorModelModulesUtilsModuleActor_$1 *)outer$
+- (instancetype)initWithImActorModelModulesUtilsModuleActor_$2:(ImActorModelModulesUtilsModuleActor_$2 *)outer$
                                             withAMRpcException:(AMRpcException *)capture$0;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUtilsModuleActor_$1_$2)
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUtilsModuleActor_$2_$2)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$1_$2)
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$2_$2)
 
 #endif // _ImActorModelModulesUtilsModuleActor_H_

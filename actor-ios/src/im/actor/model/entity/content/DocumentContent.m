@@ -56,6 +56,7 @@
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  [super parseWithImActorModelDroidkitBserBserValues:values];
   source_ = ImActorModelEntityContentFileSource_fromBytesWithByteArray_([((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getBytesWithInt:2]);
   mimetype_ = [values getStringWithInt:3];
   name_ = [values getStringWithInt:4];
@@ -66,6 +67,7 @@
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [super serializeWithImActorModelDroidkitBserBserWriter:writer];
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeBytesWithInt:2 withByteArray:[((ImActorModelEntityContentFileSource *) nil_chk(source_)) toByteArray]];
   [writer writeStringWithInt:3 withNSString:mimetype_];
   [writer writeStringWithInt:4 withNSString:name_];

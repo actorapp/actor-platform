@@ -65,7 +65,7 @@ public class MediaProvider extends ContentProvider {
 
     @Override
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
-        if (Core.messenger().getAuth().getState() != State.LOGGED_IN) {
+        if (!Core.messenger().isLoggedIn()) {
             throw new IllegalArgumentException();
         }
 

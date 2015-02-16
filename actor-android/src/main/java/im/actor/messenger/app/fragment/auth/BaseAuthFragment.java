@@ -16,14 +16,9 @@ import im.actor.model.modules.Auth;
  * Created by ex3ndr on 31.08.14.
  */
 public abstract class BaseAuthFragment extends BaseCompatFragment {
-    private Auth auth;
 
     public BaseAuthFragment() {
-        auth = Core.messenger().getAuth();
-    }
 
-    protected Auth auth() {
-        return auth;
     }
 
     protected void setTitle(int resId) {

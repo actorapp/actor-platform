@@ -6,23 +6,23 @@
 #ifndef _ImActorModelModulesMessagesDialogsActor_H_
 #define _ImActorModelModulesMessagesDialogsActor_H_
 
-@class AMMessenger;
 @class ImActorModelEntityAvatar;
 @class ImActorModelEntityMessage;
 @class ImActorModelEntityMessageStateEnum;
 @class ImActorModelEntityPeer;
 @class ImActorModelEntityUser;
 @class ImActorModelModulesMessagesDialogsActor_PeerDesc;
+@class ImActorModelModulesModules;
 @protocol ImActorModelMvvmListEngine;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/modules/utils/ModuleActor.h"
 
-@interface ImActorModelModulesMessagesDialogsActor : ImActorModelDroidkitActorsActor {
+@interface ImActorModelModulesMessagesDialogsActor : ImActorModelModulesUtilsModuleActor {
 }
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)onReceiveWithId:(id)message;
 

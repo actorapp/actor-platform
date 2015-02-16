@@ -1,6 +1,5 @@
 package im.actor.model.modules;
 
-import im.actor.model.Messenger;
 import im.actor.model.State;
 import im.actor.model.api.rpc.RequestSendAuthCode;
 import im.actor.model.api.rpc.RequestSignIn;
@@ -32,15 +31,15 @@ public class Auth {
 
     private State state;
     private PreferencesStorage preferences;
-    private Messenger messenger;
+    private Modules modules;
     private MainThread mainThread;
     private byte[] deviceHash;
     private int myUid;
 
-    public Auth(Messenger messenger) {
-        this.messenger = messenger;
-        this.preferences = messenger.getConfiguration().getPreferencesStorage();
-        this.mainThread = messenger.getConfiguration().getMainThread();
+    public Auth(Modules modules) {
+        this.modules = modules;
+        this.preferences = modules.getConfiguration().getPreferencesStorage();
+        this.mainThread = modules.getConfiguration().getMainThread();
 
         this.myUid = preferences.getInt(KEY_AUTH_UID, 0);
 
@@ -52,7 +51,7 @@ public class Auth {
 
         if (preferences.getBool(KEY_AUTH, false)) {
             state = State.LOGGED_IN;
-            messenger.onLoggedIn();
+            modules.onLoggedIn();
         } else {
             state = State.AUTH_START;
         }
@@ -70,7 +69,7 @@ public class Auth {
         return new Command<State>() {
             @Override
             public void start(final CommandCallback<State> callback) {
-                messenger.getActorApi().request(new RequestSendAuthCode(phone, APP_ID, APP_KEY),
+                modules.getActorApi().request(new RequestSendAuthCode(phone, APP_ID, APP_KEY),
                         new RpcCallback<ResponseSendAuthCode>() {
                             @Override
                             public void onResult(final ResponseSendAuthCode response) {
@@ -104,7 +103,7 @@ public class Auth {
         return new Command<State>() {
             @Override
             public void start(final CommandCallback<State> callback) {
-                messenger.getActorApi().request(
+                modules.getActorApi().request(
                         new RequestSignIn(
                                 preferences.getLong(KEY_PHONE, 0),
                                 preferences.getString(KEY_SMS_HASH),
@@ -121,7 +120,7 @@ public class Auth {
                                 state = State.LOGGED_IN;
                                 myUid = response.getUser().getId();
                                 preferences.putInt(KEY_AUTH_UID, myUid);
-                                messenger.onLoggedIn();
+                                modules.onLoggedIn();
                                 mainThread.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -153,7 +152,7 @@ public class Auth {
         return new Command<State>() {
             @Override
             public void start(final CommandCallback<State> callback) {
-                messenger.getActorApi().request(new RequestSignUp(preferences.getLong(KEY_PHONE, 0),
+                modules.getActorApi().request(new RequestSignUp(preferences.getLong(KEY_PHONE, 0),
                         preferences.getString(KEY_SMS_HASH),
                         preferences.getInt(KEY_SMS_CODE, 0) + "",
                         firstName,
@@ -168,7 +167,7 @@ public class Auth {
                         state = State.LOGGED_IN;
                         myUid = response.getUser().getId();
                         preferences.putInt(KEY_AUTH_UID, myUid);
-                        messenger.onLoggedIn();
+                        modules.onLoggedIn();
                         mainThread.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

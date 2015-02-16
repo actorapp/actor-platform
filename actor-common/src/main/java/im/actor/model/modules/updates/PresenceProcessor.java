@@ -2,18 +2,19 @@ package im.actor.model.modules.updates;
 
 import im.actor.model.Messenger;
 import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.modules.BaseModule;
+import im.actor.model.modules.Modules;
 import im.actor.model.modules.presence.PresenceActor;
 
 /**
  * Created by ex3ndr on 15.02.15.
  */
-public class PresenceProcessor {
-    public Messenger messenger;
+public class PresenceProcessor extends BaseModule {
     private ActorRef presenceActor;
 
-    public PresenceProcessor(Messenger messenger) {
-        this.messenger = messenger;
-        this.presenceActor = PresenceActor.get(messenger);
+    public PresenceProcessor(Modules modules) {
+        super(modules);
+        this.presenceActor = PresenceActor.get(modules);
     }
 
     public void onUserOnline(int uid) {

@@ -1,6 +1,5 @@
 package im.actor.model.modules;
 
-import im.actor.model.Messenger;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
@@ -13,20 +12,19 @@ import static im.actor.model.droidkit.actors.ActorSystem.system;
 /**
  * Created by ex3ndr on 15.02.15.
  */
-public class Presence {
-    private Messenger messenger;
+public class Presence extends BaseModule {
     private ActorRef myPresence;
     private ActorRef presence;
 
-    public Presence(final Messenger messenger) {
-        this.messenger = messenger;
+    public Presence(final Modules modules) {
+        super(modules);
         this.myPresence = system().actorOf(Props.create(OwnPresenceActor.class, new ActorCreator<OwnPresenceActor>() {
             @Override
             public OwnPresenceActor create() {
-                return new OwnPresenceActor(messenger);
+                return new OwnPresenceActor(modules);
             }
         }), "actor/presence/own");
-        presence = PresenceActor.get(messenger);
+        presence = PresenceActor.get(modules);
     }
 
     public void run() {

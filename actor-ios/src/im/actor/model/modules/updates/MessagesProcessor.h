@@ -6,18 +6,21 @@
 #ifndef _ImActorModelModulesUpdatesMessagesProcessor_H_
 #define _ImActorModelModulesUpdatesMessagesProcessor_H_
 
-@class AMMessenger;
 @class ImActorModelApiMessageContent;
 @class ImActorModelApiPeer;
 @class ImActorModelApiRpcResponseLoadDialogs;
+@class ImActorModelDroidkitActorsActorRef;
+@class ImActorModelEntityPeer;
+@class ImActorModelModulesModules;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesUpdatesMessagesProcessor : NSObject {
+@interface ImActorModelModulesUpdatesMessagesProcessor : ImActorModelModulesBaseModule {
 }
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)onDialogsLoadedWithImActorModelApiRpcResponseLoadDialogs:(ImActorModelApiRpcResponseLoadDialogs *)dialogsResponse;
 

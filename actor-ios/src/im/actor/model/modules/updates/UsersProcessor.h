@@ -6,17 +6,17 @@
 #ifndef _ImActorModelModulesUpdatesUsersProcessor_H_
 #define _ImActorModelModulesUpdatesUsersProcessor_H_
 
-@class AMMessenger;
 @class ImActorModelApiAvatar;
-@protocol ImActorModelMvvmKeyValueEngine;
+@class ImActorModelModulesModules;
 @protocol JavaUtilCollection;
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesUpdatesUsersProcessor : NSObject {
+@interface ImActorModelModulesUpdatesUsersProcessor : ImActorModelModulesBaseModule {
 }
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)applyUsersWithJavaUtilCollection:(id<JavaUtilCollection>)updated
                              withBoolean:(jboolean)forced;

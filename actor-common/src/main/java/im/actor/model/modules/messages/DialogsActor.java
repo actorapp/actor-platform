@@ -3,7 +3,9 @@ package im.actor.model.modules.messages;
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.Messenger;
 import im.actor.model.entity.*;
+import im.actor.model.modules.Modules;
 import im.actor.model.modules.entity.DialogHistory;
+import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.mvvm.ListEngine;
 
 import java.util.ArrayList;
@@ -14,14 +16,13 @@ import static im.actor.model.util.JavaUtil.equalsE;
 /**
  * Created by ex3ndr on 09.02.15.
  */
-public class DialogsActor extends Actor {
+public class DialogsActor extends ModuleActor {
 
-    private Messenger messenger;
     private ListEngine<Dialog> dialogs;
 
-    public DialogsActor(Messenger messenger) {
-        this.messenger = messenger;
-        this.dialogs = messenger.getDialogs();
+    public DialogsActor(Modules messenger) {
+        super(messenger);
+        this.dialogs = messenger.getMessagesModule().getDialogsEngine();
     }
 
     private void onMessage(Peer peer, Message message, boolean isAfterDelete) {
@@ -147,7 +148,7 @@ public class DialogsActor extends Actor {
     private PeerDesc buildPeerDesc(Peer peer) {
         switch (peer.getPeerType()) {
             case PRIVATE:
-                User u = messenger.getUsers().getValue(peer.getPeerId());
+                User u = getUser(peer.getPeerId());
                 return new PeerDesc(u.getName(), u.getAvatar());
             default:
                 return null;

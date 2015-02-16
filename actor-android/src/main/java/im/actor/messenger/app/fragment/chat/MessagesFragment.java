@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.myUid;
 import static im.actor.messenger.storage.KeyValueEngines.users;
 
@@ -462,9 +463,8 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
 
     public void onItemViewed(Message messageModel) {
         if (messageModel.getSenderId() != myUid()) {
-//            OwnReadStateActor.readState().messageRead(chatType, chatId, messageModel.getRid(), messageModel.getSortKey(),
-//                    messageModel.getTime(),
-//                    messageModel.getContent().isEncrypted());
+//            messenger().getMessagesModule().onInboundMessageShown(peer, messageModel.getRid(), messageModel.getSortDate(),
+//                    messageModel.getDate(), false);
         }
     }
 

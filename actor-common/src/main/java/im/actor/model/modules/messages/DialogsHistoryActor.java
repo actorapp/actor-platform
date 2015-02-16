@@ -3,6 +3,7 @@ package im.actor.model.modules.messages;
 import im.actor.model.Messenger;
 import im.actor.model.api.rpc.RequestLoadDialogs;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
+import im.actor.model.modules.Modules;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.network.RpcCallback;
@@ -16,24 +17,19 @@ public class DialogsHistoryActor extends ModuleActor {
 
     private static final int LIMIT = 50;
 
-    private Messenger messenger;
-    private PreferencesStorage preferencesStorage;
-
     private long historyMaxDate;
     private boolean historyLoaded;
 
     private boolean isLoading = false;
 
-    public DialogsHistoryActor(Messenger messenger) {
+    public DialogsHistoryActor(Modules messenger) {
         super(messenger);
-        this.messenger = messenger;
     }
 
     @Override
     public void preStart() {
-        preferencesStorage = messenger.getConfiguration().getPreferencesStorage();
-        historyMaxDate = preferencesStorage.getLong("dialogs_history_date", 0);
-        historyLoaded = preferencesStorage.getBool("dialogs_history_loaded", false);
+        historyMaxDate = preferences().getLong("dialogs_history_date", 0);
+        historyLoaded = preferences().getBool("dialogs_history_loaded", false);
         self().sendOnce(new LoadMore());
     }
 
@@ -51,7 +47,7 @@ public class DialogsHistoryActor extends ModuleActor {
                     @Override
                     public void onResult(ResponseLoadDialogs response) {
                         // Invoke on sequence actor
-                        messenger.getUpdatesModule().onUpdateReceived(new DialogHistoryLoaded(response));
+                        updates().onUpdateReceived(new DialogHistoryLoaded(response));
                     }
 
                     @Override
@@ -71,8 +67,8 @@ public class DialogsHistoryActor extends ModuleActor {
             historyLoaded = false;
             historyMaxDate = maxLoadedDate;
         }
-        preferencesStorage.putBool("dialogs_history_loaded", historyLoaded);
-        preferencesStorage.putLong("dialogs_history_date", 0);
+        preferences().putLong("dialogs_history_date", 0);
+        preferences().putBool("dialogs_history_loaded", historyLoaded);
     }
 
     // Messages
