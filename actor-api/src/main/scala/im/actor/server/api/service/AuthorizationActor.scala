@@ -13,47 +13,47 @@ object AuthorizationActor {
 }
 
 class AuthorizationActor extends Actor with ActorLogging with ActorPublisher[MTTransport] {
-  import context.dispatcher
-  import scala.concurrent.duration._
   import akka.stream.actor.ActorPublisherMessage._
 
-  case object Wow
-
-  context.system.scheduler.schedule(1.second, 1.second, self, Wow)
+  private var authId: Long = 0L
 
   def receive = {
-    case MTPackage(authId, sessionId, m) =>
+    case p: MTPackage =>
       val replyTo = sender()
-      MessageBoxCodec.decode(m) match {
-        case \/-((_, mb)) => handleMessageBox(authId, sessionId, mb, replyTo)
+      MessageBoxCodec.decode(p.messageBytes) match {
+        case \/-((_, mb)) => handleMessageBox(p, mb, replyTo)
         case -\/(e) => replyTo ! ProtoPackage(Drop(0, 0, e.message))
       }
     case _: Request =>
       println("Request !!!!!!!!!!!!!!!!!!!")
-    case Wow =>
-      println(s"totalDemand: $totalDemand")
-      if (totalDemand > 0) onNext(ProtoPackage(Drop(0, 0, s"totalDemand: $totalDemand")))
+//      if (totalDemand > 0) onNext(ProtoPackage(Drop(0, 0, s"totalDemand: $totalDemand")))
   }
 
-  private def handleMessageBox(authId: Long, sessionId: Long, mb: MessageBox, replyTo: ActorRef) = {
+  private def handleMessageBox(p: MTPackage, mb: MessageBox, replyTo: ActorRef) = {
     @inline
     def sendPackage(messageId: Long, message: ProtoMessage) = {
       val mbBytes = MessageBoxCodec.encodeValid(MessageBox(messageId, message))
-      replyTo ! ProtoPackage(MTPackage(authId, sessionId, mbBytes))
+      replyTo ! ProtoPackage(MTPackage(authId, p.sessionId, mbBytes))
     }
 
     @inline
     def sendDrop(msg: String) = replyTo ! ProtoPackage(Drop(mb.messageId, 0, msg))
 
-    if (authId == 0L) {
-      if (sessionId == 0L) sendDrop("sessionId must be equal to zero")
+    if (p.authId == 0L) {
+      if (p.sessionId == 0L) sendDrop("sessionId must be equal to zero")
       else if (!mb.body.isInstanceOf[RequestAuthId]) sendDrop("non RequestAuthId message")
       else {
-        val newAuthId = new Random().nextLong()
-        // TOD: Insert auth id
-        sendPackage(mb.messageId, ResponseAuthId(newAuthId))
+        if (authId == 0L) {
+          authId = new Random().nextLong()
+          // TODO: Insert auth id
+        }
+        sendPackage(mb.messageId, ResponseAuthId(authId))
       }
-    } else println("TODO")
-    log.debug(s"authId: $authId, sessionId: $sessionId, mb: $mb")
+    } else {
+      if (authId == 0L) authId = p.authId
+      if (authId == p.authId) ??? // sessionRegion.tell(SessionProtocol.Envelope(p.authId, p.sessionId, mb)
+      else sendDrop("authId cannot be changed more than once")
+    }
+    log.debug(s"p: $p, mb: $mb")
   }
 }
