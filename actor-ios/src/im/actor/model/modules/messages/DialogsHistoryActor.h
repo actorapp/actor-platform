@@ -6,10 +6,9 @@
 #ifndef _ImActorModelModulesMessagesDialogsHistoryActor_H_
 #define _ImActorModelModulesMessagesDialogsHistoryActor_H_
 
-@class AMMessenger;
 @class AMRpcException;
 @class ImActorModelApiRpcResponseLoadDialogs;
-@protocol ImActorModelStoragePreferencesStorage;
+@class ImActorModelModulesModules;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
@@ -20,7 +19,7 @@
 @interface ImActorModelModulesMessagesDialogsHistoryActor : ImActorModelModulesUtilsModuleActor {
 }
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)preStart;
 

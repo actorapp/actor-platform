@@ -6,23 +6,22 @@
 #ifndef _ImActorModelModulesUpdates_H_
 #define _ImActorModelModulesUpdates_H_
 
-@class AMMessenger;
 @class ImActorModelDroidkitActorsActorRef;
+@class ImActorModelModulesModules;
 @class ImActorModelModulesUpdatesSequenceActor;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
+#include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesUpdates : NSObject {
+@interface ImActorModelModulesUpdates : ImActorModelModulesBaseModule {
 }
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)run;
 
-- (AMMessenger *)getMessenger;
-
-- (void)onSessionCreated;
+- (void)onNewSessionCreated;
 
 - (void)onPushReceivedWithInt:(jint)seq;
 

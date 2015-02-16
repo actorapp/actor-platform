@@ -6,12 +6,11 @@
 #ifndef _ImActorModelModulesSenderSenderActor_H_
 #define _ImActorModelModulesSenderSenderActor_H_
 
-@class AMMessenger;
 @class AMRpcException;
-@class ImActorModelApiPeer;
 @class ImActorModelApiRpcResponseSeqDate;
 @class ImActorModelEntityContentAbsContent;
 @class ImActorModelEntityPeer;
+@class ImActorModelModulesModules;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
@@ -20,7 +19,7 @@
 @interface ImActorModelModulesSenderSenderActor : ImActorModelModulesUtilsModuleActor {
 }
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)preStart;
 
@@ -80,9 +79,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSenderSenderActor_MessageSent)
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e;
 
-- (instancetype)initWithImActorModelModulesSenderSenderActor:(ImActorModelModulesSenderSenderActor *)outer$
-                                     withImActorModelApiPeer:(ImActorModelApiPeer *)capture$0
-                                                    withLong:(jlong)capture$1;
+- (instancetype)init;
 
 @end
 

@@ -5,7 +5,6 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/Messenger.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/Dialog.h"
 #include "im/actor/model/entity/DialogBuilder.h"
@@ -15,10 +14,12 @@
 #include "im/actor/model/entity/PeerType.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/modules/Messages.h"
+#include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/entity/DialogHistory.h"
 #include "im/actor/model/modules/messages/ContentDescription.h"
 #include "im/actor/model/modules/messages/DialogsActor.h"
-#include "im/actor/model/mvvm/KeyValueEngine.h"
+#include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/mvvm/ListEngine.h"
 #include "im/actor/model/util/JavaUtil.h"
 #include "java/util/ArrayList.h"
@@ -35,7 +36,6 @@ __attribute__((unused)) static ImActorModelModulesMessagesDialogsActor_PeerDesc 
 
 @interface ImActorModelModulesMessagesDialogsActor () {
  @public
-  AMMessenger *messenger_;
   id<ImActorModelMvvmListEngine> dialogs_;
 }
 
@@ -61,7 +61,6 @@ __attribute__((unused)) static ImActorModelModulesMessagesDialogsActor_PeerDesc 
 - (ImActorModelModulesMessagesDialogsActor_PeerDesc *)buildPeerDescWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor, messenger_, AMMessenger *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor, dialogs_, id<ImActorModelMvvmListEngine>)
 
 @interface ImActorModelModulesMessagesDialogsActor_PeerDesc () {
@@ -151,10 +150,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded, histo
 
 @implementation ImActorModelModulesMessagesDialogsActor
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger {
-  if (self = [super init]) {
-    self->messenger_ = messenger;
-    self->dialogs_ = [((AMMessenger *) nil_chk(messenger)) getDialogs];
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
+  if (self = [super initWithImActorModelModulesModules:messenger]) {
+    self->dialogs_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getMessagesModule])) getDialogsEngine];
   }
   return self;
 }
@@ -231,13 +229,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded, histo
 
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsActor *)other {
   [super copyAllFieldsTo:other];
-  other->messenger_ = messenger_;
   other->dialogs_ = dialogs_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMMessenger:", "DialogsActor", NULL, 0x1, NULL },
+    { "initWithImActorModelModulesModules:", "DialogsActor", NULL, 0x1, NULL },
     { "onMessageWithImActorModelEntityPeer:withImActorModelEntityMessage:withBoolean:", "onMessage", "V", 0x2, NULL },
     { "onUserChangedWithImActorModelEntityUser:", "onUserChanged", "V", 0x2, NULL },
     { "onChatDeletedWithImActorModelEntityPeer:", "onChatDeleted", "V", 0x2, NULL },
@@ -249,10 +246,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded, histo
     { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "messenger_", NULL, 0x2, "Lim.actor.model.Messenger;", NULL,  },
     { "dialogs_", NULL, 0x2, "Lim.actor.model.mvvm.ListEngine;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsActor = { 1, "DialogsActor", "im.actor.model.modules.messages", NULL, 0x1, 10, methods, 2, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsActor = { 1, "DialogsActor", "im.actor.model.modules.messages", NULL, 0x1, 10, methods, 1, fields, 0, NULL};
   return &_ImActorModelModulesMessagesDialogsActor;
 }
 
@@ -340,7 +336,7 @@ ImActorModelModulesMessagesDialogsActor_PeerDesc *ImActorModelModulesMessagesDia
     ImActorModelEntityUser *u;
     switch ([[((ImActorModelEntityPeer *) nil_chk(peer)) getPeerType] ordinal]) {
       case ImActorModelEntityPeerType_PRIVATE:
-      u = [((id<ImActorModelMvvmKeyValueEngine>) nil_chk([((AMMessenger *) nil_chk(self->messenger_)) getUsers])) getValueWithLong:[peer getPeerId]];
+      u = [self getUserWithInt:[peer getPeerId]];
       return [[ImActorModelModulesMessagesDialogsActor_PeerDesc alloc] initWithImActorModelModulesMessagesDialogsActor:self withNSString:[((ImActorModelEntityUser *) nil_chk(u)) getName] withImActorModelEntityAvatar:[u getAvatar]];
       default:
       return nil;

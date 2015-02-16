@@ -8,6 +8,7 @@ import im.actor.model.api.User;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.api.updates.*;
 import im.actor.model.log.Log;
+import im.actor.model.modules.Modules;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.network.parser.Update;
@@ -22,20 +23,18 @@ public class UpdateProcessor {
 
     private static final String TAG = "Updates";
 
-    private Messenger messenger;
     private UsersProcessor usersProcessor;
     private MessagesProcessor messagesProcessor;
     private GroupsProcessor groupsProcessor;
     private PresenceProcessor presenceProcessor;
     private TypingProcessor typingProcessor;
 
-    public UpdateProcessor(Messenger messenger) {
-        this.messenger = messenger;
-        this.usersProcessor = new UsersProcessor(messenger);
-        this.messagesProcessor = new MessagesProcessor(messenger);
+    public UpdateProcessor(Modules modules) {
+        this.usersProcessor = new UsersProcessor(modules);
+        this.messagesProcessor = new MessagesProcessor(modules);
         this.groupsProcessor = new GroupsProcessor();
-        this.presenceProcessor = new PresenceProcessor(messenger);
-        this.typingProcessor = new TypingProcessor(messenger);
+        this.presenceProcessor = new PresenceProcessor(modules);
+        this.typingProcessor = new TypingProcessor(modules);
     }
 
     public void applyRelated(List<User> users,

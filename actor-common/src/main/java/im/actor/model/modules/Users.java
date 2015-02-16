@@ -20,14 +20,11 @@ import im.actor.model.storage.EnginesFactory;
 /**
  * Created by ex3ndr on 08.02.15.
  */
-public class Users {
-    private Messenger messenger;
+public class Users extends BaseModule {
     private KeyValueEngine<User> users;
-    private MainThread mainThread;
 
-    public Users(Messenger messenger) {
-        this.messenger = messenger;
-        this.mainThread = messenger.getConfiguration().getMainThread();
+    public Users(Modules messenger) {
+        super(messenger);
         this.users = messenger.getConfiguration().getEnginesFactory().createUsersEngine();
     }
 
@@ -39,14 +36,14 @@ public class Users {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                messenger.getActorApi().request(new RequestEditName(newName), new RpcCallback<ResponseSeq>() {
+                request(new RequestEditName(newName), new RpcCallback<ResponseSeq>() {
                     @Override
                     public void onResult(ResponseSeq response) {
                         SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                                UpdateUserNameChanged.HEADER, new UpdateUserNameChanged(messenger.myUid(),
+                                UpdateUserNameChanged.HEADER, new UpdateUserNameChanged(myUid(),
                                 newName).toByteArray());
-                        messenger.getUpdatesModule().onUpdateReceived(update);
-                        mainThread.runOnUiThread(new Runnable() {
+                        updates().onUpdateReceived(update);
+                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 callback.onResult(true);
@@ -56,7 +53,7 @@ public class Users {
 
                     @Override
                     public void onError(final RpcException e) {
-                        mainThread.runOnUiThread(new Runnable() {
+                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 callback.onError(e);
@@ -74,7 +71,7 @@ public class Users {
             public void start(final CommandCallback<Boolean> callback) {
                 User user = getUsers().getValue(uid);
                 if (user == null) {
-                    mainThread.runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             callback.onError(new RpcInternalException());
@@ -82,15 +79,15 @@ public class Users {
                     });
                     return;
                 }
-                messenger.getActorApi().request(new RequestEditUserLocalName(
+                request(new RequestEditUserLocalName(
                         user.getUid(), user.getAccessHash(), name), new RpcCallback<ResponseSeq>() {
                     @Override
                     public void onResult(ResponseSeq response) {
                         SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
                                 UpdateUserLocalNameChanged.HEADER, new UpdateUserLocalNameChanged(uid,
                                 name).toByteArray());
-                        messenger.getUpdatesModule().onUpdateReceived(update);
-                        mainThread.runOnUiThread(new Runnable() {
+                        updates().onUpdateReceived(update);
+                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 callback.onResult(true);
@@ -100,7 +97,7 @@ public class Users {
 
                     @Override
                     public void onError(RpcException e) {
-                        mainThread.runOnUiThread(new Runnable() {
+                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 callback.onError(new RpcInternalException());

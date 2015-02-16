@@ -14,13 +14,15 @@ import im.actor.model.droidkit.actors.Props;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.droidkit.actors.mailbox.Mailbox;
 import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
+import im.actor.model.modules.Modules;
+import im.actor.model.modules.utils.ModuleActor;
 
 /**
  * Created by ex3ndr on 16.02.15.
  */
-public class TypingActor extends Actor {
+public class TypingActor extends ModuleActor {
 
-    public static ActorRef get(final Messenger messenger) {
+    public static ActorRef get(final Modules messenger) {
         return ActorSystem.system().actorOf(Props.create(TypingActor.class, new ActorCreator<TypingActor>() {
             @Override
             public TypingActor create() {
@@ -48,11 +50,10 @@ public class TypingActor extends Actor {
     private HashMap<Integer, HashSet<Integer>> groupTypings = new HashMap<Integer, HashSet<Integer>>();
 
     private TypingCallback callback;
-    private Messenger messenger;
 
-    public TypingActor(Messenger messenger) {
+    public TypingActor(Modules messenger) {
+        super(messenger);
         this.callback = messenger.getConfiguration().getTypingCallback();
-        this.messenger = messenger;
     }
 
     private void privateTyping(int uid, int type) {
@@ -61,7 +62,7 @@ public class TypingActor extends Actor {
             return;
         }
 
-        if (messenger.getUsers().getValue(uid) == null) {
+        if (getUser(uid) == null) {
             return;
         }
 
@@ -91,7 +92,7 @@ public class TypingActor extends Actor {
 
         // TODO: add group check
 
-        if (messenger.getUsers().getValue(uid) == null) {
+        if (getUser(uid) == null) {
             return;
         }
 

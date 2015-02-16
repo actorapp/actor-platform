@@ -67,7 +67,6 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
     private Peer peer;
 
     private Messenger messenger;
-    private Messages messages;
 
     private EditText messageBody;
     private TintImageView sendButton;
@@ -103,7 +102,6 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
         isCompose = saveInstance == null && getIntent().getExtras().getBoolean(Intents.EXTRA_CHAT_COMPOSE, false);
 
         messenger = messenger();
-        messages = messenger.getMessagesModule();
 
         // Init action bar
 
@@ -390,7 +388,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
         messenger().onConversationOpen(peer);
 
         isTypingDisabled = true;
-        String text = messages.loadDraft(peer);
+        String text = messenger().loadDraft(peer);
         if (text != null) {
             messageBody.setText(text);
         } else {
@@ -453,7 +451,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             keyboardUtils.setImeVisibility(messageBody, false);
         }
 
-        messages.sendMessage(peer, new TextContent(text));
+        // messenger().sendMessage(peer, new TextContent(text));
     }
 
     @Override
@@ -639,7 +637,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
     public void onPause() {
         super.onPause();
 
-        messages.saveDraft(peer, messageBody.getText().toString());
+        messenger.saveDraft(peer, messageBody.getText().toString());
         messenger.onConversationClosed(peer);
     }
 }

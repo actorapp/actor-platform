@@ -13,6 +13,7 @@ import im.actor.messenger.core.Core;
 
 import im.actor.model.State;
 import im.actor.model.entity.Dialog;
+
 import net.hockeyapp.android.UpdateManager;
 
 public class MainActivity extends ControllerActivity<MainBaseController> {
@@ -28,7 +29,7 @@ public class MainActivity extends ControllerActivity<MainBaseController> {
 
         checkForUpdates();
 
-        if (Core.messenger().getAuth().getState() != State.LOGGED_IN) {
+        if (Core.messenger().getState() != State.LOGGED_IN) {
             startActivity(new Intent(this, TourActivity.class));
             finish();
             return;

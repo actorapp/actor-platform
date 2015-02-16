@@ -7,6 +7,8 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PendingMessage;
+import im.actor.model.modules.Modules;
+import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
 
@@ -15,25 +17,24 @@ import java.util.List;
 /**
  * Created by ex3ndr on 09.02.15.
  */
-public class ConversationActor extends Actor {
+public class ConversationActor extends ModuleActor {
 
-    private Messenger messenger;
     private Peer peer;
     private ListEngine<Message> messages;
     private KeyValueEngine<PendingMessage> pendingMessages;
     private ActorRef dialogsActor;
 
-    public ConversationActor(Peer peer, Messenger messenger) {
+    public ConversationActor(Peer peer, Modules messenger) {
+        super(messenger);
         this.peer = peer;
-        this.messenger = messenger;
     }
 
     @Override
     public void preStart() {
-        messages = messenger.getMessages(peer);
+        messages = messages(peer);
         // TODO: Replace
-        pendingMessages = messenger.getConfiguration().getEnginesFactory().pendingMessages(peer);
-        dialogsActor = messenger.getMessagesModule().getDialogsActor();
+        pendingMessages = modules().getConfiguration().getEnginesFactory().pendingMessages(peer);
+        dialogsActor = modules().getMessagesModule().getDialogsActor();
 
     }
 
@@ -51,7 +52,7 @@ public class ConversationActor extends Actor {
         // Updating dialogs
         dialogsActor.send(new DialogsActor.InMessage(peer, message));
 
-        if (message.getSenderId() == messenger.myUid()) {
+        if (message.getSenderId() == myUid()) {
             pendingMessages.addOrUpdateItem(new PendingMessage(message.getRid(), message.getDate()));
         }
     }

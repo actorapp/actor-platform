@@ -5,21 +5,19 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/Messenger.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
+#include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/updates/SequenceActor.h"
 
 @interface ImActorModelModulesUpdates () {
  @public
-  AMMessenger *messenger_;
   ImActorModelDroidkitActorsActorRef *updateActor_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates, messenger_, AMMessenger *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates, updateActor_, ImActorModelDroidkitActorsActorRef *)
 
 @interface ImActorModelModulesUpdates_$1 () {
@@ -32,23 +30,15 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates_$1, this$0_, ImActorModelModulesU
 
 @implementation ImActorModelModulesUpdates
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger {
-  if (self = [super init]) {
-    self->messenger_ = messenger;
-    [self run];
-  }
-  return self;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
+  return [super initWithImActorModelModulesModules:messenger];
 }
 
 - (void)run {
   self->updateActor_ = [((ImActorModelDroidkitActorsActorSystem *) nil_chk(ImActorModelDroidkitActorsActorSystem_system())) actorOfWithImActorModelDroidkitActorsProps:ImActorModelDroidkitActorsProps_createWithIOSClass_withImActorModelDroidkitActorsActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), [[ImActorModelModulesUpdates_$1 alloc] initWithImActorModelModulesUpdates:self]) withNSString:@"actor/updates"];
 }
 
-- (AMMessenger *)getMessenger {
-  return messenger_;
-}
-
-- (void)onSessionCreated {
+- (void)onNewSessionCreated {
   [((ImActorModelDroidkitActorsActorRef *) nil_chk(updateActor_)) sendWithId:[[ImActorModelModulesUpdatesSequenceActor_Invalidate alloc] init]];
 }
 
@@ -62,24 +52,21 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates_$1, this$0_, ImActorModelModulesU
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdates *)other {
   [super copyAllFieldsTo:other];
-  other->messenger_ = messenger_;
   other->updateActor_ = updateActor_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMMessenger:", "Updates", NULL, 0x1, NULL },
+    { "initWithImActorModelModulesModules:", "Updates", NULL, 0x1, NULL },
     { "run", NULL, "V", 0x1, NULL },
-    { "getMessenger", NULL, "Lim.actor.model.Messenger;", 0x1, NULL },
-    { "onSessionCreated", NULL, "V", 0x1, NULL },
+    { "onNewSessionCreated", NULL, "V", 0x1, NULL },
     { "onPushReceivedWithInt:", "onPushReceived", "V", 0x1, NULL },
     { "onUpdateReceivedWithId:", "onUpdateReceived", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "messenger_", NULL, 0x2, "Lim.actor.model.Messenger;", NULL,  },
     { "updateActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelModulesUpdates = { 1, "Updates", "im.actor.model.modules", NULL, 0x1, 6, methods, 2, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelModulesUpdates = { 1, "Updates", "im.actor.model.modules", NULL, 0x1, 5, methods, 1, fields, 0, NULL};
   return &_ImActorModelModulesUpdates;
 }
 
@@ -90,7 +77,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdates)
 @implementation ImActorModelModulesUpdates_$1
 
 - (ImActorModelModulesUpdatesSequenceActor *)create {
-  return [[ImActorModelModulesUpdatesSequenceActor alloc] initWithImActorModelModulesUpdates:this$0_];
+  return [[ImActorModelModulesUpdatesSequenceActor alloc] initWithImActorModelModulesModules:[this$0_ modules]];
 }
 
 - (instancetype)initWithImActorModelModulesUpdates:(ImActorModelModulesUpdates *)outer$ {

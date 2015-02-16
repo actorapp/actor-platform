@@ -49,10 +49,12 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentTextContent, text_, NSString *)
 }
 
 - (void)parseWithImActorModelDroidkitBserBserValues:(ImActorModelDroidkitBserBserValues *)values {
+  [super parseWithImActorModelDroidkitBserBserValues:values];
   text_ = [((ImActorModelDroidkitBserBserValues *) nil_chk(values)) getStringWithInt:2];
 }
 
 - (void)serializeWithImActorModelDroidkitBserBserWriter:(ImActorModelDroidkitBserBserWriter *)writer {
+  [super serializeWithImActorModelDroidkitBserBserWriter:writer];
   [((ImActorModelDroidkitBserBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:text_];
 }
 

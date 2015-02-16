@@ -13,11 +13,12 @@ import static im.actor.model.droidkit.actors.ActorSystem.system;
 /**
  * Created by ex3ndr on 15.02.15.
  */
-public class Typing {
+public class Typing extends BaseModule {
     private ActorRef ownTypingActor;
     private ActorRef typingActor;
 
-    public Typing(final Messenger messenger) {
+    public Typing(final Modules messenger) {
+        super(messenger);
         this.ownTypingActor = system().actorOf(Props.create(OwnTypingActor.class, new ActorCreator<OwnTypingActor>() {
             @Override
             public OwnTypingActor create() {

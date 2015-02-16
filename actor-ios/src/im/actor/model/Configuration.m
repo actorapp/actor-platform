@@ -5,6 +5,8 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/OnlineCallback.h"
+#include "im/actor/model/TypingCallback.h"
 #include "im/actor/model/concurrency/MainThread.h"
 #include "im/actor/model/concurrency/NoMainThread.h"
 #include "im/actor/model/network/Endpoints.h"
@@ -20,6 +22,8 @@
   AMEndpoints *endpoints_;
   id<ImActorModelStoragePreferencesStorage> preferencesStorage_;
   id<ImActorModelStorageEnginesFactory> enginesFactory_;
+  id<AMOnlineCallback> onlineCallback_;
+  id<AMTypingCallback> typingCallback_;
 }
 @end
 
@@ -27,6 +31,8 @@ J2OBJC_FIELD_SETTER(AMConfiguration, mainThread_, id<ImActorModelConcurrencyMain
 J2OBJC_FIELD_SETTER(AMConfiguration, endpoints_, AMEndpoints *)
 J2OBJC_FIELD_SETTER(AMConfiguration, preferencesStorage_, id<ImActorModelStoragePreferencesStorage>)
 J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEnginesFactory>)
+J2OBJC_FIELD_SETTER(AMConfiguration, onlineCallback_, id<AMOnlineCallback>)
+J2OBJC_FIELD_SETTER(AMConfiguration, typingCallback_, id<AMTypingCallback>)
 
 @implementation AMConfiguration
 
@@ -70,6 +76,22 @@ J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEngi
   self->mainThread_ = mainThread;
 }
 
+- (id<AMOnlineCallback>)getOnlineCallback {
+  return onlineCallback_;
+}
+
+- (void)setOnlineCallbackWithAMOnlineCallback:(id<AMOnlineCallback>)onlineCallback {
+  self->onlineCallback_ = onlineCallback;
+}
+
+- (id<AMTypingCallback>)getTypingCallback {
+  return typingCallback_;
+}
+
+- (void)setTypingCallbackWithAMTypingCallback:(id<AMTypingCallback>)typingCallback {
+  self->typingCallback_ = typingCallback;
+}
+
 - (instancetype)init {
   if (self = [super init]) {
     persistMessages_ = NO;
@@ -87,6 +109,8 @@ J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEngi
   other->endpoints_ = endpoints_;
   other->preferencesStorage_ = preferencesStorage_;
   other->enginesFactory_ = enginesFactory_;
+  other->onlineCallback_ = onlineCallback_;
+  other->typingCallback_ = typingCallback_;
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -101,6 +125,10 @@ J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEngi
     { "setEndpointsWithAMEndpoints:", "setEndpoints", "V", 0x1, NULL },
     { "getMainThread", NULL, "Lim.actor.model.concurrency.MainThread;", 0x1, NULL },
     { "setMainThreadWithImActorModelConcurrencyMainThread:", "setMainThread", "V", 0x1, NULL },
+    { "getOnlineCallback", NULL, "Lim.actor.model.OnlineCallback;", 0x1, NULL },
+    { "setOnlineCallbackWithAMOnlineCallback:", "setOnlineCallback", "V", 0x1, NULL },
+    { "getTypingCallback", NULL, "Lim.actor.model.TypingCallback;", 0x1, NULL },
+    { "setTypingCallbackWithAMTypingCallback:", "setTypingCallback", "V", 0x1, NULL },
     { "init", NULL, NULL, 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -109,8 +137,10 @@ J2OBJC_FIELD_SETTER(AMConfiguration, enginesFactory_, id<ImActorModelStorageEngi
     { "endpoints_", NULL, 0x2, "Lim.actor.model.network.Endpoints;", NULL,  },
     { "preferencesStorage_", NULL, 0x2, "Lim.actor.model.storage.PreferencesStorage;", NULL,  },
     { "enginesFactory_", NULL, 0x2, "Lim.actor.model.storage.EnginesFactory;", NULL,  },
+    { "onlineCallback_", NULL, 0x2, "Lim.actor.model.OnlineCallback;", NULL,  },
+    { "typingCallback_", NULL, 0x2, "Lim.actor.model.TypingCallback;", NULL,  },
   };
-  static const J2ObjcClassInfo _AMConfiguration = { 1, "Configuration", "im.actor.model", NULL, 0x1, 11, methods, 5, fields, 0, NULL};
+  static const J2ObjcClassInfo _AMConfiguration = { 1, "Configuration", "im.actor.model", NULL, 0x1, 15, methods, 7, fields, 0, NULL};
   return &_AMConfiguration;
 }
 

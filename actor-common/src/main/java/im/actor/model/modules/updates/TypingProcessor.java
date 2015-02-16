@@ -4,18 +4,19 @@ import im.actor.model.Messenger;
 import im.actor.model.api.Peer;
 import im.actor.model.api.PeerType;
 import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.modules.BaseModule;
+import im.actor.model.modules.Modules;
 import im.actor.model.modules.typing.TypingActor;
 
 /**
  * Created by ex3ndr on 16.02.15.
  */
-public class TypingProcessor {
-    private Messenger messenger;
+public class TypingProcessor extends BaseModule {
     private ActorRef typingActor;
 
-    public TypingProcessor(Messenger messenger) {
-        this.messenger = messenger;
-        this.typingActor = TypingActor.get(messenger);
+    public TypingProcessor(Modules modules) {
+        super(modules);
+        this.typingActor = TypingActor.get(modules);
     }
 
     public void onTyping(Peer peer, int uid, int type) {

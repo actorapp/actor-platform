@@ -6,12 +6,12 @@
 #ifndef _ImActorModelModulesAuth_H_
 #define _ImActorModelModulesAuth_H_
 
-@class AMMessenger;
 @class AMRpcException;
 @class AMStateEnum;
 @class IOSByteArray;
 @class ImActorModelApiRpcResponseAuth;
 @class ImActorModelApiRpcResponseSendAuthCode;
+@class ImActorModelModulesModules;
 @protocol ImActorModelConcurrencyCommandCallback;
 @protocol ImActorModelConcurrencyMainThread;
 @protocol ImActorModelStoragePreferencesStorage;
@@ -26,7 +26,7 @@
 @interface ImActorModelModulesAuth : NSObject {
 }
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (jint)myUid;
 

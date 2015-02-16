@@ -21,8 +21,8 @@ import static im.actor.model.droidkit.actors.ActorSystem.system;
 /**
  * Created by ex3ndr on 09.02.15.
  */
-public class Messages {
-    private Messenger messenger;
+public class Messages extends BaseModule {
+
     private ListEngine<Dialog> dialogs;
     private ActorRef dialogsActor;
     private ActorRef dialogsHistoryActor;
@@ -30,8 +30,8 @@ public class Messages {
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<Peer, ListEngine<Message>>();
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
 
-    public Messages(final Messenger messenger) {
-        this.messenger = messenger;
+    public Messages(final Modules messenger) {
+        super(messenger);
         this.dialogs = messenger.getConfiguration().getEnginesFactory().createDialogsEngine();
     }
 
@@ -39,13 +39,13 @@ public class Messages {
         this.dialogsActor = system().actorOf(Props.create(DialogsActor.class, new ActorCreator<DialogsActor>() {
             @Override
             public DialogsActor create() {
-                return new DialogsActor(messenger);
+                return new DialogsActor(modules());
             }
         }), "actor/dialogs");
         this.dialogsHistoryActor = system().actorOf(Props.create(DialogsHistoryActor.class, new ActorCreator<DialogsHistoryActor>() {
             @Override
             public DialogsHistoryActor create() {
-                return new DialogsHistoryActor(messenger);
+                return new DialogsHistoryActor(modules());
             }
         }), "actor/dialogs/history");
     }
@@ -57,7 +57,7 @@ public class Messages {
                         new ActorCreator<ConversationActor>() {
                             @Override
                             public ConversationActor create() {
-                                return new ConversationActor(peer, messenger);
+                                return new ConversationActor(peer, modules());
                             }
                         }), "actor/conv_" + peer.getPeerType() + "_" + peer.getPeerId()));
             }
@@ -68,7 +68,7 @@ public class Messages {
     public ListEngine<Message> getConversationEngine(Peer peer) {
         synchronized (conversationEngines) {
             if (!conversationEngines.containsKey(peer)) {
-                conversationEngines.put(peer, messenger.getConfiguration().getEnginesFactory().createMessagesEngine(peer));
+                conversationEngines.put(peer, modules().getConfiguration().getEnginesFactory().createMessagesEngine(peer));
             }
             return conversationEngines.get(peer);
         }
@@ -90,12 +90,16 @@ public class Messages {
 
     }
 
+    public void onInboundMessageShown(Peer peer, long rid, long sortDate, long date, boolean isEncrypted) {
+
+    }
+
     public void saveDraft(Peer peer, String draft) {
-        messenger.getConfiguration().getPreferencesStorage().putString("draft_" + peer.getUid(), draft.trim());
+        preferences().putString("draft_" + peer.getUid(), draft.trim());
     }
 
     public String loadDraft(Peer peer) {
-        String res = messenger.getConfiguration().getPreferencesStorage().getString("draft_" + peer.getUid());
+        String res = preferences().getString("draft_" + peer.getUid());
         if (res == null) {
             return "";
         } else {

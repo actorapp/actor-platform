@@ -5,7 +5,6 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
-#include "im/actor/model/Messenger.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/entity/Message.h"
@@ -13,8 +12,10 @@
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/PendingMessage.h"
 #include "im/actor/model/modules/Messages.h"
+#include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/messages/ConversationActor.h"
 #include "im/actor/model/modules/messages/DialogsActor.h"
+#include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/mvvm/KeyValueEngine.h"
 #include "im/actor/model/mvvm/ListEngine.h"
 #include "im/actor/model/storage/EnginesFactory.h"
@@ -29,7 +30,6 @@ __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor
 
 @interface ImActorModelModulesMessagesConversationActor () {
  @public
-  AMMessenger *messenger_;
   ImActorModelEntityPeer *peer_;
   id<ImActorModelMvvmListEngine> messages_;
   id<ImActorModelMvvmKeyValueEngine> pendingMessages_;
@@ -49,7 +49,6 @@ __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor
 - (void)onMessageEncryptedReadWithLong:(jlong)rid;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, messenger_, AMMessenger *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, peer_, ImActorModelEntityPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, messages_, id<ImActorModelMvvmListEngine>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, pendingMessages_, id<ImActorModelMvvmKeyValueEngine>)
@@ -105,18 +104,17 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor_MessageDeleted,
 @implementation ImActorModelModulesMessagesConversationActor
 
 - (instancetype)initWithImActorModelEntityPeer:(ImActorModelEntityPeer *)peer
-                               withAMMessenger:(AMMessenger *)messenger {
-  if (self = [super init]) {
+                withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
+  if (self = [super initWithImActorModelModulesModules:messenger]) {
     self->peer_ = peer;
-    self->messenger_ = messenger;
   }
   return self;
 }
 
 - (void)preStart {
-  messages_ = [((AMMessenger *) nil_chk(messenger_)) getMessagesWithImActorModelEntityPeer:peer_];
-  pendingMessages_ = [((id<ImActorModelStorageEnginesFactory>) nil_chk([((AMConfiguration *) nil_chk([messenger_ getConfiguration])) getEnginesFactory])) pendingMessagesWithImActorModelEntityPeer:peer_];
-  dialogsActor_ = [((ImActorModelModulesMessages *) nil_chk([messenger_ getMessagesModule])) getDialogsActor];
+  messages_ = [self messagesWithImActorModelEntityPeer:peer_];
+  pendingMessages_ = [((id<ImActorModelStorageEnginesFactory>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getEnginesFactory])) pendingMessagesWithImActorModelEntityPeer:peer_];
+  dialogsActor_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor];
 }
 
 - (void)onHistoryLoadedWithJavaUtilList:(id<JavaUtilList>)history {
@@ -169,7 +167,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor_MessageDeleted,
 
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationActor *)other {
   [super copyAllFieldsTo:other];
-  other->messenger_ = messenger_;
   other->peer_ = peer_;
   other->messages_ = messages_;
   other->pendingMessages_ = pendingMessages_;
@@ -178,7 +175,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor_MessageDeleted,
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithImActorModelEntityPeer:withAMMessenger:", "ConversationActor", NULL, 0x1, NULL },
+    { "initWithImActorModelEntityPeer:withImActorModelModulesModules:", "ConversationActor", NULL, 0x1, NULL },
     { "preStart", NULL, "V", 0x1, NULL },
     { "onHistoryLoadedWithJavaUtilList:", "onHistoryLoaded", "V", 0x2, NULL },
     { "onInMessageWithImActorModelEntityMessage:", "onInMessage", "V", 0x2, NULL },
@@ -189,13 +186,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor_MessageDeleted,
     { "onReceiveWithId:", "onReceive", "V", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "messenger_", NULL, 0x2, "Lim.actor.model.Messenger;", NULL,  },
     { "peer_", NULL, 0x2, "Lim.actor.model.entity.Peer;", NULL,  },
     { "messages_", NULL, 0x2, "Lim.actor.model.mvvm.ListEngine;", NULL,  },
     { "pendingMessages_", NULL, 0x2, "Lim.actor.model.mvvm.KeyValueEngine;", NULL,  },
     { "dialogsActor_", NULL, 0x2, "Lim.actor.model.droidkit.actors.ActorRef;", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor = { 1, "ConversationActor", "im.actor.model.modules.messages", NULL, 0x1, 9, methods, 5, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelModulesMessagesConversationActor = { 1, "ConversationActor", "im.actor.model.modules.messages", NULL, 0x1, 9, methods, 4, fields, 0, NULL};
   return &_ImActorModelModulesMessagesConversationActor;
 }
 
@@ -210,7 +206,7 @@ void ImActorModelModulesMessagesConversationActor_onInMessageWithImActorModelEnt
   }
   [self->messages_ addOrUpdateItemWithImActorModelMvvmListEngineItem:message];
   [((ImActorModelDroidkitActorsActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[ImActorModelModulesMessagesDialogsActor_InMessage alloc] initWithImActorModelEntityPeer:self->peer_ withImActorModelEntityMessage:message]];
-  if ([message getSenderId] == [((AMMessenger *) nil_chk(self->messenger_)) myUid]) {
+  if ([message getSenderId] == [self myUid]) {
     [((id<ImActorModelMvvmKeyValueEngine>) nil_chk(self->pendingMessages_)) addOrUpdateItemWithImActorModelMvvmKeyValueItem:[[ImActorModelEntityPendingMessage alloc] initWithLong:[message getRid] withLong:[message getDate]]];
   }
 }

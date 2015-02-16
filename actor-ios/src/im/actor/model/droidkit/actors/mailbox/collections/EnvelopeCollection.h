@@ -13,13 +13,10 @@
 @class ImActorModelDroidkitActorsMailboxEnvelope;
 @class ImActorModelDroidkitActorsUtilsAtomicIntegerCompat;
 @class ImActorModelDroidkitActorsUtilsThreadLocalCompat;
-@class JavaUtilPriorityQueue;
+@class JavaUtilTreeMap;
 @protocol ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator;
 
 #include "J2ObjC_header.h"
-#include "java/util/Comparator.h"
-
-#define ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_DEFAULT_QUEUE_SIZE 8
 
 @interface ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection : NSObject {
 }
@@ -57,8 +54,6 @@ CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_NEXT_ID_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection, NEXT_ID_, ImActorModelDroidkitActorsUtilsAtomicIntegerCompat *)
-
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection, DEFAULT_QUEUE_SIZE, jint)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection)
@@ -107,22 +102,5 @@ J2OBJC_STATIC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeC
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult)
-
-@interface ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_ScheduledEnvelopesComparator : NSObject < JavaUtilComparator > {
-}
-
-- (jint)compareWithId:(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *)lop
-               withId:(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *)rop;
-
-- (instancetype)initWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_ScheduledEnvelopesComparator)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_ScheduledEnvelopesComparator)
 
 #endif // _ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_H_

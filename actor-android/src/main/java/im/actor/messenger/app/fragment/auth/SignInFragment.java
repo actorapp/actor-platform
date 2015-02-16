@@ -23,6 +23,8 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
 
+import static im.actor.messenger.core.Core.messenger;
+
 public class SignInFragment extends BaseAuthFragment {
 
     private EditText smsCodeEnterEditText;
@@ -36,7 +38,7 @@ public class SignInFragment extends BaseAuthFragment {
         ((TextView) v.findViewById(R.id.button_confirm_sms_code_text)).setTypeface(Fonts.medium());
         ((TextView) v.findViewById(R.id.button_edit_phone)).setTypeface(Fonts.medium());
 
-        String phoneNumber = "+" + auth().getPhone();
+        String phoneNumber = "+" + messenger().getAuthPhone();
         try {
             Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse(phoneNumber, null);
             phoneNumber = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
@@ -93,7 +95,7 @@ public class SignInFragment extends BaseAuthFragment {
                         .setPositiveButton(R.string.auth_code_change_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                auth().resetAuth();
+                                messenger().resetAuth();
                                 updateState();
                             }
                         })
@@ -117,7 +119,7 @@ public class SignInFragment extends BaseAuthFragment {
                 return;
             }
 
-            execute(auth().sendCode(code));
+            execute(messenger().sendCode(code));
         }
     }
 

@@ -4,12 +4,11 @@
 //
 
 #include "J2ObjC_source.h"
-#include "im/actor/model/Configuration.h"
-#include "im/actor/model/Messenger.h"
 #include "im/actor/model/api/rpc/RequestLoadDialogs.h"
 #include "im/actor/model/api/rpc/ResponseLoadDialogs.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/messages/DialogsHistoryActor.h"
 #include "im/actor/model/modules/updates/internal/DialogHistoryLoaded.h"
@@ -22,8 +21,6 @@ __attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryAct
 
 @interface ImActorModelModulesMessagesDialogsHistoryActor () {
  @public
-  AMMessenger *messenger_DialogsHistoryActor_;
-  id<ImActorModelStoragePreferencesStorage> preferencesStorage_;
   jlong historyMaxDate_;
   jboolean historyLoaded_;
   jboolean isLoading_;
@@ -34,9 +31,6 @@ __attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryAct
 - (void)onLoadedMoreWithBoolean:(jboolean)isFinished
                        withLong:(jlong)maxLoadedDate;
 @end
-
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor, messenger_DialogsHistoryActor_, AMMessenger *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor, preferencesStorage_, id<ImActorModelStoragePreferencesStorage>)
 
 @interface ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore () {
  @public
@@ -55,18 +49,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor_$1, this$0_, 
 
 @implementation ImActorModelModulesMessagesDialogsHistoryActor
 
-- (instancetype)initWithAMMessenger:(AMMessenger *)messenger {
-  if (self = [super initWithAMMessenger:messenger]) {
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
+  if (self = [super initWithImActorModelModulesModules:messenger]) {
     isLoading_ = NO;
-    self->messenger_DialogsHistoryActor_ = messenger;
   }
   return self;
 }
 
 - (void)preStart {
-  preferencesStorage_ = [((AMConfiguration *) nil_chk([((AMMessenger *) nil_chk(messenger_DialogsHistoryActor_)) getConfiguration])) getPreferencesStorage];
-  historyMaxDate_ = [((id<ImActorModelStoragePreferencesStorage>) nil_chk(preferencesStorage_)) getLongWithNSString:@"dialogs_history_date" withLong:0];
-  historyLoaded_ = [preferencesStorage_ getBoolWithNSString:@"dialogs_history_loaded" withBoolean:NO];
+  historyMaxDate_ = [((id<ImActorModelStoragePreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:@"dialogs_history_date" withLong:0];
+  historyLoaded_ = [((id<ImActorModelStoragePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:@"dialogs_history_loaded" withBoolean:NO];
   [((ImActorModelDroidkitActorsActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesMessagesDialogsHistoryActor_LoadMore alloc] init]];
 }
 
@@ -94,8 +86,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor_$1, this$0_, 
 
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsHistoryActor *)other {
   [super copyAllFieldsTo:other];
-  other->messenger_DialogsHistoryActor_ = messenger_DialogsHistoryActor_;
-  other->preferencesStorage_ = preferencesStorage_;
   other->historyMaxDate_ = historyMaxDate_;
   other->historyLoaded_ = historyLoaded_;
   other->isLoading_ = isLoading_;
@@ -103,7 +93,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor_$1, this$0_, 
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "initWithAMMessenger:", "DialogsHistoryActor", NULL, 0x1, NULL },
+    { "initWithImActorModelModulesModules:", "DialogsHistoryActor", NULL, 0x1, NULL },
     { "preStart", NULL, "V", 0x1, NULL },
     { "onLoadMore", NULL, "V", 0x2, NULL },
     { "onLoadedMoreWithBoolean:withLong:", "onLoadedMore", "V", 0x2, NULL },
@@ -111,13 +101,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor_$1, this$0_, 
   };
   static const J2ObjcFieldInfo fields[] = {
     { "LIMIT_", NULL, 0x1a, "I", NULL, .constantValue.asInt = ImActorModelModulesMessagesDialogsHistoryActor_LIMIT },
-    { "messenger_DialogsHistoryActor_", "messenger", 0x2, "Lim.actor.model.Messenger;", NULL,  },
-    { "preferencesStorage_", NULL, 0x2, "Lim.actor.model.storage.PreferencesStorage;", NULL,  },
     { "historyMaxDate_", NULL, 0x2, "J", NULL,  },
     { "historyLoaded_", NULL, 0x2, "Z", NULL,  },
     { "isLoading_", NULL, 0x2, "Z", NULL,  },
   };
-  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsHistoryActor = { 1, "DialogsHistoryActor", "im.actor.model.modules.messages", NULL, 0x1, 5, methods, 6, fields, 0, NULL};
+  static const J2ObjcClassInfo _ImActorModelModulesMessagesDialogsHistoryActor = { 1, "DialogsHistoryActor", "im.actor.model.modules.messages", NULL, 0x1, 5, methods, 4, fields, 0, NULL};
   return &_ImActorModelModulesMessagesDialogsHistoryActor;
 }
 
@@ -143,8 +131,8 @@ void ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithBoolean_with
     self->historyLoaded_ = NO;
     self->historyMaxDate_ = maxLoadedDate;
   }
-  [((id<ImActorModelStoragePreferencesStorage>) nil_chk(self->preferencesStorage_)) putBoolWithNSString:@"dialogs_history_loaded" withBoolean:self->historyLoaded_];
-  [self->preferencesStorage_ putLongWithNSString:@"dialogs_history_date" withLong:0];
+  [((id<ImActorModelStoragePreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:@"dialogs_history_date" withLong:0];
+  [((id<ImActorModelStoragePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:@"dialogs_history_loaded" withBoolean:self->historyLoaded_];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor)
@@ -203,7 +191,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_
 @implementation ImActorModelModulesMessagesDialogsHistoryActor_$1
 
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseLoadDialogs *)response {
-  [((ImActorModelModulesUpdates *) nil_chk([((AMMessenger *) nil_chk(this$0_->messenger_DialogsHistoryActor_)) getUpdatesModule])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalDialogHistoryLoaded alloc] initWithImActorModelApiRpcResponseLoadDialogs:response]];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalDialogHistoryLoaded alloc] initWithImActorModelApiRpcResponseLoadDialogs:response]];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {

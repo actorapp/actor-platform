@@ -6,16 +6,14 @@
 #ifndef _ImActorModelModulesUpdatesSequenceActor_H_
 #define _ImActorModelModulesUpdatesSequenceActor_H_
 
-@class AMMessenger;
 @class AMRpcException;
 @class IOSByteArray;
 @class ImActorModelApiParserUpdatesParser;
 @class ImActorModelApiRpcResponseGetDifference;
 @class ImActorModelApiRpcResponseSeq;
-@class ImActorModelModulesUpdates;
+@class ImActorModelModulesModules;
 @class ImActorModelModulesUpdatesUpdateProcessor;
 @class JavaUtilHashMap;
-@protocol ImActorModelStoragePreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
@@ -26,7 +24,7 @@
 @interface ImActorModelModulesUpdatesSequenceActor : ImActorModelModulesUtilsModuleActor {
 }
 
-- (instancetype)initWithImActorModelModulesUpdates:(ImActorModelModulesUpdates *)updates;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (void)preStart;
 

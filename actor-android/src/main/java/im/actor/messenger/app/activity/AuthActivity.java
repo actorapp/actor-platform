@@ -37,13 +37,13 @@ public class AuthActivity extends BaseBarFragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (messenger().getAuth().getState() == State.LOGGED_IN) {
+        if (messenger().getState() == State.LOGGED_IN) {
             finish();
         }
     }
 
     public void updateState() {
-        updateState(messenger().getAuth().getState());
+        updateState(messenger().getState());
     }
 
     private void updateState(State state) {

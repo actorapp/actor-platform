@@ -1,9 +1,9 @@
 package im.actor.model.modules.presence;
 
-import im.actor.model.Messenger;
 import im.actor.model.api.rpc.RequestSetOnline;
 import im.actor.model.api.rpc.ResponseVoid;
-import im.actor.model.droidkit.actors.Actor;
+import im.actor.model.modules.Modules;
+import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 
@@ -11,17 +11,15 @@ import im.actor.model.network.RpcException;
  * Actor for processing current user's online status.
  * TODO: Implement correct request cancelling and timeout
  */
-public class OwnPresenceActor extends Actor {
+public class OwnPresenceActor extends ModuleActor {
 
     private static final int RESEND_TIMEOUT = 60 * 1000; // 1 min
     private static final int TIMEOUT = 90 * 1000;
 
     private boolean isVisible = false;
 
-    private Messenger messenger;
-
-    public OwnPresenceActor(Messenger messenger) {
-        this.messenger = messenger;
+    public OwnPresenceActor(Modules messenger) {
+        super(messenger);
     }
 
     private void onAppVisible() {
@@ -35,7 +33,7 @@ public class OwnPresenceActor extends Actor {
     }
 
     private void performOnline() {
-        messenger.getActorApi().request(new RequestSetOnline(isVisible, TIMEOUT),
+        request(new RequestSetOnline(isVisible, TIMEOUT),
                 new RpcCallback<ResponseVoid>() {
                     @Override
                     public void onResult(ResponseVoid response) {
