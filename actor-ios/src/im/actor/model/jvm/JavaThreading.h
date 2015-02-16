@@ -27,9 +27,9 @@
 
 - (jint)getCoresCount;
 
-- (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)init_;
+- (AMAtomicIntegerCompat *)createAtomicInt:(jint)init;
 
-- (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)init_;
+- (AMAtomicLongCompat *)createAtomicLong:(jlong)init;
 
 - (AMThreadLocalCompat *)createThreadLocal;
 

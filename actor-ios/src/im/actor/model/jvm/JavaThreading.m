@@ -36,11 +36,11 @@
   return [((JavaLangRuntime *) nil_chk(JavaLangRuntime_getRuntime())) availableProcessors];
 }
 
-- (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)init_ {
+- (AMAtomicIntegerCompat *)createAtomicInt:(jint)init {
   return [[ImActorModelJvmThreadsJavaAtomicInteger alloc] initWithInt:init_];
 }
 
-- (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)init_ {
+- (AMAtomicLongCompat *)createAtomicLong:(jlong)init {
   return [[ImActorModelJvmThreadsJavaAtomicLong alloc] initWithLong:init_];
 }
 
@@ -67,8 +67,8 @@
     { "getActorTime", NULL, "J", 0x1, NULL },
     { "getCurrentTime", NULL, "J", 0x1, NULL },
     { "getCoresCount", NULL, "I", 0x1, NULL },
-    { "createAtomicIntWithInt:", "createAtomicInt", "Lim.actor.model.util.AtomicIntegerCompat;", 0x1, NULL },
-    { "createAtomicLongWithLong:", "createAtomicLong", "Lim.actor.model.util.AtomicLongCompat;", 0x1, NULL },
+    { "createAtomicInt:", "createAtomicInt", "Lim.actor.model.util.AtomicIntegerCompat;", 0x1, NULL },
+    { "createAtomicLong:", "createAtomicLong", "Lim.actor.model.util.AtomicLongCompat;", 0x1, NULL },
     { "createThreadLocal", NULL, "Lim.actor.model.util.ThreadLocalCompat;", 0x1, NULL },
     { "createDispatcherWithNSString:withInt:withDKThreadPriorityEnum:withDKActorSystem:", "createDispatcher", "Lim.actor.model.droidkit.actors.mailbox.ActorDispatcher;", 0x1, NULL },
     { "createDefaultDispatcherWithNSString:withDKThreadPriorityEnum:withDKActorSystem:", "createDefaultDispatcher", "Lim.actor.model.droidkit.actors.mailbox.ActorDispatcher;", 0x1, NULL },

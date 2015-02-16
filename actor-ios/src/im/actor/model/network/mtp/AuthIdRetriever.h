@@ -57,9 +57,7 @@ J2OBJC_TYPE_LITERAL_HEADER(MTAuthIdRetriever_AuthIdCallback)
 @interface MTAuthIdRetriever_$1 : NSObject < AMConnectionCallback > {
 }
 
-- (void)onMessageWithByteArray:(IOSByteArray *)data
-                       withInt:(jint)offset
-                       withInt:(jint)len;
+- (void)onMessage:(IOSByteArray *)data withOffset:(jint)offset withLen:(jint)len;
 
 - (void)onConnectionDie;
 
@@ -78,7 +76,7 @@ J2OBJC_TYPE_LITERAL_HEADER(MTAuthIdRetriever_$1)
 @interface MTAuthIdRetriever_$2 : NSObject < AMCreateConnectionCallback > {
 }
 
-- (void)onConnectionCreatedWithAMConnection:(id<AMConnection>)connection;
+- (void)onConnectionCreated:(id<AMConnection>)connection;
 
 - (void)onConnectionCreateError;
 

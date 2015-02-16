@@ -699,9 +699,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$1)
 
 @implementation MTManagerActor_$2
 
-- (void)onMessageWithByteArray:(IOSByteArray *)data
-                       withInt:(jint)offset
-                       withInt:(jint)len {
+- (void)onMessage:(IOSByteArray *)data withOffset:(jint)offset withLen:(jint)len {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[MTManagerActor_InMessage alloc] initWithByteArray:data withInt:offset withInt:len]];
 }
 
@@ -724,7 +722,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$1)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "onMessageWithByteArray:withInt:withInt:", "onMessage", "V", 0x1, NULL },
+    { "onMessage:withOffset:withLen:", "onMessage", "V", 0x1, NULL },
     { "onConnectionDie", NULL, "V", 0x1, NULL },
     { "initWithMTManagerActor:withInt:", "init", NULL, 0x0, NULL },
   };
@@ -742,7 +740,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$2)
 
 @implementation MTManagerActor_$3
 
-- (void)onConnectionCreatedWithAMConnection:(id<AMConnection>)connection {
+- (void)onConnectionCreated:(id<AMConnection>)connection {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[MTManagerActor_ConnectionCreated alloc] initWithInt:val$id_ withAMConnection:connection]];
 }
 
@@ -765,7 +763,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$2)
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "onConnectionCreatedWithAMConnection:", "onConnectionCreated", "V", 0x1, NULL },
+    { "onConnectionCreated:", "onConnectionCreated", "V", 0x1, NULL },
     { "onConnectionCreateError", NULL, "V", 0x1, NULL },
     { "initWithMTManagerActor:withInt:", "init", NULL, 0x0, NULL },
   };

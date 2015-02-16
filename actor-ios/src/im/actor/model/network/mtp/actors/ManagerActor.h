@@ -187,9 +187,7 @@ J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_$1)
 @interface MTManagerActor_$2 : NSObject < AMConnectionCallback > {
 }
 
-- (void)onMessageWithByteArray:(IOSByteArray *)data
-                       withInt:(jint)offset
-                       withInt:(jint)len;
+- (void)onMessage:(IOSByteArray *)data withOffset:(jint)offset withLen:(jint)len;
 
 - (void)onConnectionDie;
 
@@ -208,7 +206,7 @@ J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_$2)
 @interface MTManagerActor_$3 : NSObject < AMCreateConnectionCallback > {
 }
 
-- (void)onConnectionCreatedWithAMConnection:(id<AMConnection>)connection;
+- (void)onConnectionCreated:(id<AMConnection>)connection;
 
 - (void)onConnectionCreateError;
 
