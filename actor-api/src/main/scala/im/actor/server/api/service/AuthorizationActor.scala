@@ -5,8 +5,10 @@ import akka.stream.actor.ActorPublisher
 import im.actor.server.api.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.api.mtproto.protocol._
 import im.actor.server.api.mtproto.transport._
+import im.actor.server.api.util.rand
 import im.actor.server.persist
-import scala.util.{ Success, Failure, Random }
+import scala.concurrent.Future
+import scala.util.{ Success, Failure }
 import scalaz._
 
 object AuthorizationActor {
@@ -44,16 +46,16 @@ class AuthorizationActor extends Actor with ActorLogging with ActorPublisher[MTT
       if (pSessionId == 0L) sendDrop("sessionId must be equal to zero")
       else if (!mb.body.isInstanceOf[RequestAuthId]) sendDrop("non RequestAuthId message")
       else {
-        @inline
-        def sendResponseAuthId() = sendPackage(mb.messageId, ResponseAuthId(authId))
+        val f =
+          if (authId == 0L) {
+            authId = rand.nextLong()
+            persist.AuthId.create(authId, None)
+          } else Future.successful()
 
-        if (authId == 0L) {
-          authId = new Random().nextLong()
-          persist.AuthId.create(authId, None).onComplete {
-            case Success(_) => sendResponseAuthId()
-            case Failure(e) => sendDrop(e.getMessage)
-          }
-        } else sendResponseAuthId()
+        f.onComplete {
+          case Success(_) => sendPackage(mb.messageId, ResponseAuthId(authId))
+          case Failure(e) => sendDrop(e.getMessage)
+        }
       }
     } else {
       if (authId == 0L) authId = pAuthId
