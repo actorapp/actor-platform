@@ -10,6 +10,7 @@ import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.ReadState;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
@@ -132,6 +133,15 @@ public class Messenger {
 
     public void onTyping(Peer peer) {
         modules.getTypingModule().onTyping(peer);
+    }
+
+    public long loadLastReadSortDate(Peer peer) {
+        ReadState state = modules.getMessagesModule().getReadStates().getValue(peer.getUid());
+        if (state == null) {
+            return 0;
+        } else {
+            return state.getLastReadSortingDate();
+        }
     }
 
     public void saveDraft(Peer peer, String draft) {
