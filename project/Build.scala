@@ -20,7 +20,7 @@ object Build extends sbt.Build {
         organizationHomepage := Some(url("https://actor.im"))
       )
 
-  lazy val compilerWarns = Seq(
+  lazy val compilerWarnings = Seq(
     "-Ywarn-dead-code",
     "-Ywarn-infer-any",
     "-Ywarn-numeric-widen",
@@ -43,7 +43,7 @@ object Build extends sbt.Build {
           "-unchecked",
           "-feature",
           "-language:higherKinds"
-        ) ++ compilerWarns,
+        ) ++ compilerWarnings,
         javaOptions               ++= Seq("-Dfile.encoding=UTF-8"),
         javacOptions              ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
         parallelExecution in Test :=  false,
@@ -69,7 +69,7 @@ object Build extends sbt.Build {
           "-groups",
           "-implicits",
           "-diagrams"
-        ) ++ compilerWarns
+        ) ++ compilerWarnings
       )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
   .dependsOn(actorApi)
