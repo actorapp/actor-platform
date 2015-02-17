@@ -11,15 +11,15 @@ class ApiKernel extends Bootable with FlywayInit {
   val config = ConfigFactory.load()
   val serverConfig = config.getConfig("actor-server")
 
-  val flyway = initFlyway(config.getConfig("jdbc"))
-  flyway.migrate()
-
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
   implicit val executor = system.dispatcher
   implicit val materializer = ActorFlowMaterializer()
 
   def startup() = {
+    val flyway = initFlyway(config.getConfig("jdbc"))
+    flyway.migrate()
     Db.check()
+
     Tcp.start(serverConfig)
     Ws.start(serverConfig)
   }
