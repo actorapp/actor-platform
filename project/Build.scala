@@ -55,7 +55,7 @@ object Build extends sbt.Build {
       )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
   .dependsOn(actorApi)
-  .aggregate(actorTests)
+  .aggregate(actorApi, actorModels, actorPersist, actorTests)
 
   lazy val actorApi = Project(
     id = "actor-api",
