@@ -4,9 +4,9 @@ import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
-import im.actor.model.modules.messages.entity.PendingMessage;
+import im.actor.model.modules.messages.entity.OutUnreadMessage;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.messages.entity.PendingMessagesStorage;
+import im.actor.model.modules.messages.entity.OutUnreadMessagesStorage;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.mvvm.ListEngine;
 
@@ -20,7 +20,7 @@ public class ConversationActor extends ModuleActor {
 
     private Peer peer;
     private ListEngine<Message> messages;
-    private PendingMessagesStorage messagesStorage;
+    private OutUnreadMessagesStorage messagesStorage;
     private ActorRef dialogsActor;
 
     public ConversationActor(Peer peer, Modules messenger) {
@@ -31,11 +31,11 @@ public class ConversationActor extends ModuleActor {
     @Override
     public void preStart() {
         messages = messages(peer);
-        messagesStorage = new PendingMessagesStorage();
+        messagesStorage = new OutUnreadMessagesStorage();
         byte[] data = preferences().getBytes("conv_pending_" + peer.getUid());
         if (data != null) {
             try {
-                messagesStorage = PendingMessagesStorage.fromBytes(data);
+                messagesStorage = OutUnreadMessagesStorage.fromBytes(data);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,14 +59,14 @@ public class ConversationActor extends ModuleActor {
         dialogsActor.send(new DialogsActor.InMessage(peer, message));
 
         if (message.getSenderId() == myUid()) {
-            messagesStorage.getMessages().add(new PendingMessage(message.getRid(), message.getDate()));
+            messagesStorage.getMessages().add(new OutUnreadMessage(message.getRid(), message.getDate()));
             savePending();
         }
     }
 
     private void onMessagePlainRead(long date) {
         boolean removed = false;
-        for (PendingMessage p : messagesStorage.getMessages()) {
+        for (OutUnreadMessage p : messagesStorage.getMessages().toArray(new OutUnreadMessage[0])) {
             if (p.getDate() <= date) {
                 Message msg = messages.getValue(p.getRid());
                 if (msg != null && (msg.getMessageState() == MessageState.SENT ||
@@ -86,7 +86,7 @@ public class ConversationActor extends ModuleActor {
     }
 
     private void onMessagePlainReceived(long date) {
-        for (PendingMessage p : messagesStorage.getMessages()) {
+        for (OutUnreadMessage p : messagesStorage.getMessages()) {
             if (p.getDate() <= date) {
                 Message msg = messages.getValue(p.getRid());
                 if (msg != null && msg.getMessageState() == MessageState.SENT) {
@@ -124,10 +124,42 @@ public class ConversationActor extends ModuleActor {
         }
     }
 
+    private void onMessageSent(long rid, long date) {
+        Message msg = messages.getValue(rid);
+        if (msg != null && (msg.getMessageState() == MessageState.PENDING)) {
+            messages.addOrUpdateItem(msg
+                    .changeDate(date)
+                    .changeState(MessageState.SENT));
+
+            // TODO: Update date in dialogs
+            dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
+                    MessageState.SENT));
+        }
+    }
+
+    private void onMessageError(long rid) {
+        Message msg = messages.getValue(rid);
+        if (msg != null && (msg.getMessageState() == MessageState.PENDING ||
+                msg.getMessageState() == MessageState.SENT)) {
+
+            messages.addOrUpdateItem(msg
+                    .changeState(MessageState.ERROR));
+
+            dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
+                    MessageState.ERROR));
+        }
+    }
+
     @Override
     public void onReceive(Object message) {
         if (message instanceof Message) {
             onInMessage((Message) message);
+        } else if (message instanceof MessageSent) {
+            MessageSent sent = (MessageSent) message;
+            onMessageSent(sent.getRid(), sent.getDate());
+        } else if (message instanceof MessageError) {
+            MessageError messageError = (MessageError) message;
+            onMessageError(messageError.getRid());
         } else if (message instanceof MessageRead) {
             onMessagePlainRead(((MessageRead) message).getDate());
         } else if (message instanceof MessageEncryptedRead) {
@@ -214,6 +246,18 @@ public class ConversationActor extends ModuleActor {
 
         public long getDate() {
             return date;
+        }
+
+        public long getRid() {
+            return rid;
+        }
+    }
+
+    public static class MessageError {
+        private long rid;
+
+        public MessageError(long rid) {
+            this.rid = rid;
         }
 
         public long getRid() {
