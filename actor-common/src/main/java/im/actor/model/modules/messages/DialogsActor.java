@@ -1,10 +1,8 @@
 package im.actor.model.modules.messages;
 
-import im.actor.model.droidkit.actors.Actor;
-import im.actor.model.Messenger;
 import im.actor.model.entity.*;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.entity.DialogHistory;
+import im.actor.model.modules.messages.entity.DialogHistory;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.mvvm.ListEngine;
 

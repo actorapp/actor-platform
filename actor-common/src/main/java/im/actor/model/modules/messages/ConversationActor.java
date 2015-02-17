@@ -1,17 +1,16 @@
 package im.actor.model.modules.messages;
 
-import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorRef;
-import im.actor.model.Messenger;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
-import im.actor.model.entity.PendingMessage;
+import im.actor.model.modules.messages.entity.PendingMessage;
 import im.actor.model.modules.Modules;
+import im.actor.model.modules.messages.entity.PendingMessagesStorage;
 import im.actor.model.modules.utils.ModuleActor;
-import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -21,7 +20,7 @@ public class ConversationActor extends ModuleActor {
 
     private Peer peer;
     private ListEngine<Message> messages;
-    private KeyValueEngine<PendingMessage> pendingMessages;
+    private PendingMessagesStorage messagesStorage;
     private ActorRef dialogsActor;
 
     public ConversationActor(Peer peer, Modules messenger) {
@@ -32,8 +31,15 @@ public class ConversationActor extends ModuleActor {
     @Override
     public void preStart() {
         messages = messages(peer);
-        // TODO: Replace
-        pendingMessages = modules().getConfiguration().getStorage().pendingMessages(peer);
+        messagesStorage = new PendingMessagesStorage();
+        byte[] data = preferences().getBytes("conv_pending_" + peer.getUid());
+        if (data != null) {
+            try {
+                messagesStorage = PendingMessagesStorage.fromBytes(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         dialogsActor = modules().getMessagesModule().getDialogsActor();
 
     }
@@ -53,12 +59,14 @@ public class ConversationActor extends ModuleActor {
         dialogsActor.send(new DialogsActor.InMessage(peer, message));
 
         if (message.getSenderId() == myUid()) {
-            pendingMessages.addOrUpdateItem(new PendingMessage(message.getRid(), message.getDate()));
+            messagesStorage.getMessages().add(new PendingMessage(message.getRid(), message.getDate()));
+            savePending();
         }
     }
 
     private void onMessagePlainRead(long date) {
-        for (PendingMessage p : pendingMessages.getAll()) {
+        boolean removed = false;
+        for (PendingMessage p : messagesStorage.getMessages()) {
             if (p.getDate() <= date) {
                 Message msg = messages.getValue(p.getRid());
                 if (msg != null && (msg.getMessageState() == MessageState.SENT ||
@@ -68,13 +76,17 @@ public class ConversationActor extends ModuleActor {
                     dialogsActor.send(new DialogsActor.MessageStateChanged(peer, p.getRid(),
                             MessageState.READ));
                 }
-                pendingMessages.removeItem(p.getRid());
+                removed = true;
+                messagesStorage.getMessages().remove(p);
             }
+        }
+        if (removed) {
+            savePending();
         }
     }
 
     private void onMessagePlainReceived(long date) {
-        for (PendingMessage p : pendingMessages.getAll()) {
+        for (PendingMessage p : messagesStorage.getMessages()) {
             if (p.getDate() <= date) {
                 Message msg = messages.getValue(p.getRid());
                 if (msg != null && msg.getMessageState() == MessageState.SENT) {
@@ -87,12 +99,29 @@ public class ConversationActor extends ModuleActor {
         }
     }
 
-    private void onMessageEncryptedReceived(long rid) {
+    private void savePending() {
+        preferences().putBytes("conv_pending_" + peer.getUid(), messagesStorage.toByteArray());
+    }
 
+    private void onMessageEncryptedReceived(long rid) {
+        Message msg = messages.getValue(rid);
+        if (msg != null && msg.getMessageState() == MessageState.SENT) {
+            messages.addOrUpdateItem(msg
+                    .changeState(MessageState.RECEIVED));
+            dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
+                    MessageState.RECEIVED));
+        }
     }
 
     private void onMessageEncryptedRead(long rid) {
-
+        Message msg = messages.getValue(rid);
+        if (msg != null && (msg.getMessageState() == MessageState.SENT ||
+                msg.getMessageState() == MessageState.RECEIVED)) {
+            messages.addOrUpdateItem(msg
+                    .changeState(MessageState.READ));
+            dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
+                    MessageState.READ));
+        }
     }
 
     @Override

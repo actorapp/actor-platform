@@ -1,13 +1,11 @@
 package im.actor.model.modules.updates;
 
-import im.actor.model.Messenger;
 import im.actor.model.api.Avatar;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.entity.EntityConverter;
+import im.actor.model.modules.messages.entity.EntityConverter;
 import im.actor.model.entity.User;
 import im.actor.model.modules.messages.DialogsActor;
-import im.actor.model.mvvm.KeyValueEngine;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -6,7 +6,7 @@ import im.actor.messenger.storage.ListEngines;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
-import im.actor.model.entity.PendingMessage;
+import im.actor.model.entity.ReadState;
 import im.actor.model.entity.User;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
@@ -29,6 +29,11 @@ public class AppEngineFactory implements Storage {
     }
 
     @Override
+    public KeyValueEngine<ReadState> createReadStateEngine() {
+        return new MemoryKeyValueEngine<ReadState>();
+    }
+
+    @Override
     public ListEngine<Dialog> createDialogsEngine() {
         return new ListProvider<Dialog>(ListEngines.getChatsListEngine());
     }
@@ -36,10 +41,5 @@ public class AppEngineFactory implements Storage {
     @Override
     public ListEngine<Message> createMessagesEngine(Peer peer) {
         return new ListProvider<Message>(ListEngines.getMessages(peer));
-    }
-
-    @Override
-    public KeyValueEngine<PendingMessage> pendingMessages(Peer peer) {
-        return new MemoryKeyValueEngine<PendingMessage>();
     }
 }

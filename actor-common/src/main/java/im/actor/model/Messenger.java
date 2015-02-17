@@ -92,6 +92,10 @@ public class Messenger {
         modules.getPresenceModule().onConversationClosed(peer);
     }
 
+    public void onInMessageShown(Peer peer, long rid, long sortDate, boolean isEncrypted) {
+        modules.getMessagesModule().onInMessageShown(peer, rid, sortDate, isEncrypted);
+    }
+
     public void onTyping(Peer peer) {
         modules.getTypingModule().onTyping(peer);
     }

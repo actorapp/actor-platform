@@ -463,8 +463,7 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
 
     public void onItemViewed(Message messageModel) {
         if (messageModel.getSenderId() != myUid()) {
-//            messenger().getMessagesModule().onInboundMessageShown(peer, messageModel.getRid(), messageModel.getSortDate(),
-//                    messageModel.getDate(), false);
+            messenger().onInMessageShown(peer, messageModel.getRid(), messageModel.getSortDate(), false);
         }
     }
 

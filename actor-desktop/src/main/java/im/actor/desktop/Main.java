@@ -7,6 +7,7 @@ import im.actor.model.MessengerCallback;
 import im.actor.model.jvm.JavaLog;
 import im.actor.model.jvm.JavaNetworking;
 import im.actor.model.jvm.JavaThreading;
+import im.actor.model.modules.messages.entity.PendingMessage;
 import im.actor.model.storage.MemoryKeyValueEngine;
 import im.actor.model.Messenger;
 import im.actor.model.concurrency.Command;
