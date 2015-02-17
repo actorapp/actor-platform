@@ -25,7 +25,7 @@ import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.*;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.jvm.JavaInit;
-import im.actor.model.modules.messages.entity.PendingMessage;
+import im.actor.model.modules.messages.entity.OutUnreadMessage;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
 import im.actor.model.network.ConnectionEndpoint;
@@ -108,7 +108,7 @@ public class Main {
             }
 
             @Override
-            public KeyValueEngine<PendingMessage> pendingMessages(Peer peer) {
+            public KeyValueEngine<OutUnreadMessage> pendingMessages(Peer peer) {
                 return null;
             }
         });

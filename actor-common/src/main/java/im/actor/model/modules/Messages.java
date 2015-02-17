@@ -3,19 +3,17 @@ package im.actor.model.modules;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
-import im.actor.model.Messenger;
-import im.actor.model.api.MessageContent;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.ReadState;
-import im.actor.model.entity.content.AbsContent;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
 import im.actor.model.modules.messages.OwnReadActor;
 import im.actor.model.modules.messages.PlainReaderActor;
 import im.actor.model.modules.messages.PlainReceiverActor;
+import im.actor.model.modules.messages.SenderActor;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
 
@@ -34,6 +32,7 @@ public class Messages extends BaseModule {
     private ActorRef ownReadActor;
     private ActorRef plainReadActor;
     private ActorRef plainReceiverActor;
+    private ActorRef sendMessageActor;
 
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<Peer, ListEngine<Message>>();
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
@@ -76,6 +75,16 @@ public class Messages extends BaseModule {
                 return new PlainReceiverActor(modules());
             }
         }), "actor/plain/receive");
+        this.sendMessageActor = system().actorOf(Props.create(SenderActor.class, new ActorCreator<SenderActor>() {
+            @Override
+            public SenderActor create() {
+                return new SenderActor(modules());
+            }
+        }), "actor/sender/small");
+    }
+
+    public ActorRef getSendMessageActor() {
+        return sendMessageActor;
     }
 
     public ActorRef getPlainReadActor() {
@@ -130,8 +139,8 @@ public class Messages extends BaseModule {
         return readStates;
     }
 
-    public void sendMessage(final Peer peer, final AbsContent message) {
-
+    public void sendMessage(final Peer peer, final String message) {
+        sendMessageActor.send(new SenderActor.SendText(peer, message));
     }
 
     public void onInMessageShown(Peer peer, long rid, long sortDate, boolean isEncrypted) {

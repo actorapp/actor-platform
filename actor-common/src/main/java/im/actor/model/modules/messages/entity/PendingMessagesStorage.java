@@ -2,7 +2,6 @@ package im.actor.model.modules.messages.entity;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserObject;
@@ -18,25 +17,25 @@ public class PendingMessagesStorage extends BserObject {
         return Bser.parse(new PendingMessagesStorage(), data);
     }
 
-    private ArrayList<PendingMessage> messages = new ArrayList<PendingMessage>();
+    private ArrayList<PendingMessage> pendingMessages = new ArrayList<PendingMessage>();
 
-    public ArrayList<PendingMessage> getMessages() {
-        return messages;
+    public ArrayList<PendingMessage> getPendingMessages() {
+        return pendingMessages;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        messages.clear();
-        int count = values.getRepeatedCount(1);
-        List<PendingMessage> tmp = new ArrayList<PendingMessage>();
-        for (int i = 0; i < count; i++) {
-            tmp.add(new PendingMessage());
+        for (byte[] data : values.getRepeatedBytes(1)) {
+            try {
+                pendingMessages.add(PendingMessage.fromBytes(data));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        messages.addAll(values.getRepeatedObj(1, tmp));
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeRepeatedObj(1, messages);
+        writer.writeRepeatedObj(1, pendingMessages);
     }
 }
