@@ -7,29 +7,45 @@ import im.actor.server.api.mtproto.protocol._
 import im.actor.server.api.mtproto.transport._
 import im.actor.server.api.util.rand
 import im.actor.server.persist
+import scala.annotation.tailrec
 import scala.concurrent.Future
 import scala.util.{ Success, Failure }
 import scalaz._
 
 object AuthorizationActor {
+  @SerialVersionUID(1L)
+  case class FrontendPackage(p: MTPackage)
+
+  @SerialVersionUID(1L)
+  case class SessionPackage(p: MTPackage)
+
   def props() = Props(new AuthorizationActor)
 }
 
 class AuthorizationActor extends Actor with ActorLogging with ActorPublisher[MTTransport] {
   import akka.stream.actor.ActorPublisherMessage._
+  import AuthorizationActor._
   import context.dispatcher
 
   private var authId: Long = 0L
+  private var buf = Vector.empty[MTPackage]
 
   def receive = {
-    case p: MTPackage =>
+    case FrontendPackage(p) =>
       val replyTo = sender()
       MessageBoxCodec.decode(p.messageBytes) match {
         case \/-((_, mb)) => handleMessageBox(p.authId, p.sessionId, mb, replyTo)
         case -\/(e) => replyTo ! ProtoPackage(Drop(0, 0, e.message))
       }
-    case _: Request =>
-//      if (totalDemand > 0) onNext(ProtoPackage(Drop(0, 0, s"totalDemand: $totalDemand")))
+    case SessionPackage(p) =>
+      if (buf.isEmpty && totalDemand > 0)
+        onNext(ProtoPackage(p))
+      else {
+        buf :+= p
+        deliverBuf()
+      }
+    case Request(_) =>
+      deliverBuf()
   }
 
   private def handleMessageBox(pAuthId: Long, pSessionId: Long, mb: MessageBox, replyTo: ActorRef) = {
@@ -63,4 +79,19 @@ class AuthorizationActor extends Actor with ActorLogging with ActorPublisher[MTT
       else sendDrop("authId cannot be changed more than once")
     }
   }
+
+  @tailrec
+  private def deliverBuf(): Unit =
+    if (totalDemand > 0) {
+      if (totalDemand <= Int.MaxValue) {
+        val (use, keep) = buf.splitAt(totalDemand.toInt)
+        buf = keep
+        use.foreach { p => onNext(ProtoPackage(p)) }
+      } else {
+        val (use, keep) = buf.splitAt(Int.MaxValue)
+        buf = keep
+        use.foreach { p => onNext(ProtoPackage(p)) }
+        deliverBuf()
+      }
+    }
 }

@@ -112,7 +112,7 @@ object MTProto {
       case ProtoPackage(p) =>
         p match {
           case m: MTPackage =>
-            actorRef.ask(m).mapTo[MTTransport].recover {
+            actorRef.ask(AuthorizationActor.FrontendPackage(m)).mapTo[MTTransport].recover {
               case e: AskTimeoutException =>
                 val msg = s"handleAsk within $timeout"
                 system.log.error(e, msg)
