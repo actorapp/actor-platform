@@ -23,7 +23,7 @@ public class ConfigurationBuilder {
 
     private ArrayList<ConnectionEndpoint> endpoints = new ArrayList<ConnectionEndpoint>();
 
-    private boolean isMessagesPersisting;
+    private boolean isUploadFilePersist;
 
     public ConfigurationBuilder setLog(LogCallback log) {
         this.log = log;
@@ -74,8 +74,8 @@ public class ConfigurationBuilder {
         return this;
     }
 
-    public ConfigurationBuilder setMessagesPersisting(boolean isMessagesPersisting) {
-        this.isMessagesPersisting = isMessagesPersisting;
+    public ConfigurationBuilder setUploadFilePersist(boolean isUploadFilePersist) {
+        this.isUploadFilePersist = isUploadFilePersist;
         return this;
     }
 
@@ -104,6 +104,6 @@ public class ConfigurationBuilder {
             throw new RuntimeException("Endpoints not set");
         }
         return new Configuration(networking, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
-                threading, mainThread, enginesFactory, callback, log);
+                threading, mainThread, enginesFactory, callback, log, isUploadFilePersist);
     }
 }

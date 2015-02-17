@@ -2,28 +2,42 @@ package im.actor.model.modules.messages.entity;
 
 import java.io.IOException;
 
+import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.AbsContent;
 
 /**
- * Created by ex3ndr on 11.02.15.
+ * Created by ex3ndr on 17.02.15.
  */
 public class PendingMessage extends BserObject {
+
+    public static PendingMessage fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new PendingMessage(), data);
+    }
+
+    private Peer peer;
     private long rid;
-    private long date;
+    private AbsContent content;
 
-    public PendingMessage(long rid, long date) {
+    public PendingMessage(Peer peer, long rid, AbsContent content) {
+        this.peer = peer;
         this.rid = rid;
-        this.date = date;
+        this.content = content;
     }
 
-    public PendingMessage() {
+    private PendingMessage() {
 
     }
 
-    public long getDate() {
-        return date;
+    public Peer getPeer() {
+        return peer;
+    }
+
+    public AbsContent getContent() {
+        return content;
     }
 
     public long getRid() {
@@ -32,13 +46,15 @@ public class PendingMessage extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        rid = values.getLong(1);
-        date = values.getLong(2);
+        peer = Peer.fromUid(values.getLong(1));
+        rid = values.getLong(2);
+        content = AbsContent.contentFromBytes(values.getBytes(3));
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, rid);
-        writer.writeLong(2, date);
+        writer.writeLong(1, peer.getUid());
+        writer.writeLong(2, rid);
+        writer.writeBytes(3, content.toByteArray());
     }
 }

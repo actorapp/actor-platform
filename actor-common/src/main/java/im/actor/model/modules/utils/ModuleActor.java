@@ -2,6 +2,7 @@ package im.actor.model.modules.utils;
 
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.Messenger;
+import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
@@ -51,6 +52,10 @@ public class ModuleActor extends Actor {
 
     public Modules modules() {
         return messenger;
+    }
+
+    public ActorRef getConversationActor(final Peer peer) {
+        return modules().getMessagesModule().getConversationActor(peer);
     }
 
     public <T extends Response> void request(Request<T> request) {

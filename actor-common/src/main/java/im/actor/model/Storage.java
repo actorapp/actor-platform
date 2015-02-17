@@ -1,7 +1,6 @@
 package im.actor.model;
 
 import im.actor.model.entity.*;
-import im.actor.model.modules.messages.entity.PendingMessage;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
 import im.actor.model.storage.PreferencesStorage;

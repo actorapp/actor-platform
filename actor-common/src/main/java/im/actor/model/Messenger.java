@@ -1,10 +1,16 @@
 package im.actor.model;
 
 import im.actor.model.concurrency.Command;
+import im.actor.model.droidkit.actors.Actor;
+import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.Environment;
+import im.actor.model.droidkit.actors.debug.TraceInterface;
+import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.TextContent;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.KeyValueEngine;
@@ -22,6 +28,34 @@ public class Messenger {
 
         // Init Log
         Log.setLog(configuration.getLog());
+
+        ActorSystem.system().setTraceInterface(new TraceInterface() {
+            @Override
+            public void onEnvelopeDelivered(Envelope envelope) {
+
+            }
+
+            @Override
+            public void onEnvelopeProcessed(Envelope envelope, long duration) {
+
+            }
+
+            @Override
+            public void onDrop(ActorRef sender, Object message, Actor actor) {
+                Log.w("ACTOR_SYSTEM", "Drop: " + message);
+            }
+
+            @Override
+            public void onDeadLetter(ActorRef receiver, Object message) {
+                Log.w("ACTOR_SYSTEM", "Dead Letter: " + message);
+            }
+
+            @Override
+            public void onActorDie(ActorRef ref, Exception e) {
+                Log.w("ACTOR_SYSTEM", "Die: " + e);
+                e.printStackTrace();
+            }
+        });
 
         this.modules = new Modules(configuration);
     }
@@ -106,6 +140,10 @@ public class Messenger {
 
     public String loadDraft(Peer peer) {
         return modules.getMessagesModule().loadDraft(peer);
+    }
+
+    public void sendMessage(Peer peer, String text) {
+        modules.getMessagesModule().sendMessage(peer, text);
     }
 
     public Command<Boolean> editMyName(final String newName) {

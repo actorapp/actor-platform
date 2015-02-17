@@ -23,9 +23,11 @@ public class Configuration {
 
     private final LogCallback log;
 
+    private final boolean persistUploadingFiles;
+
     public Configuration(Networking networking, ConnectionEndpoint[] endpoints,
-                          Threading threading, MainThread mainThread, Storage storage,
-                          MessengerCallback callback, LogCallback log) {
+                         Threading threading, MainThread mainThread, Storage storage,
+                         MessengerCallback callback, LogCallback log, boolean persistUploadingFiles) {
         this.networking = networking;
         this.endpoints = endpoints;
         this.threading = threading;
@@ -33,6 +35,7 @@ public class Configuration {
         this.storage = storage;
         this.callback = callback;
         this.log = log;
+        this.persistUploadingFiles = persistUploadingFiles;
     }
 
     public Networking getNetworking() {
@@ -63,4 +66,7 @@ public class Configuration {
         return log;
     }
 
+    public boolean isPersistUploadingFiles() {
+        return persistUploadingFiles;
+    }
 }

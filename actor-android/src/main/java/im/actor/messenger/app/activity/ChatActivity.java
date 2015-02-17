@@ -451,7 +451,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             keyboardUtils.setImeVisibility(messageBody, false);
         }
 
-        // messenger().sendMessage(peer, new TextContent(text));
+        messenger().sendMessage(peer, text);
     }
 
     @Override
