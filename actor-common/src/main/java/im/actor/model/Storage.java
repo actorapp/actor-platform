@@ -1,6 +1,7 @@
 package im.actor.model;
 
 import im.actor.model.entity.*;
+import im.actor.model.modules.messages.entity.PendingMessage;
 import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
 import im.actor.model.storage.PreferencesStorage;
@@ -14,9 +15,9 @@ public interface Storage {
 
     public KeyValueEngine<User> createUsersEngine();
 
+    public KeyValueEngine<ReadState> createReadStateEngine();
+
     public ListEngine<Dialog> createDialogsEngine();
 
     public ListEngine<Message> createMessagesEngine(Peer peer);
-
-    public KeyValueEngine<PendingMessage> pendingMessages(Peer peer);
 }

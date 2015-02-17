@@ -8,10 +8,15 @@ import im.actor.model.api.MessageContent;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.ReadState;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
+import im.actor.model.modules.messages.OwnReadActor;
+import im.actor.model.modules.messages.PlainReaderActor;
+import im.actor.model.modules.messages.PlainReceiverActor;
+import im.actor.model.mvvm.KeyValueEngine;
 import im.actor.model.mvvm.ListEngine;
 
 import java.util.HashMap;
@@ -26,13 +31,18 @@ public class Messages extends BaseModule {
     private ListEngine<Dialog> dialogs;
     private ActorRef dialogsActor;
     private ActorRef dialogsHistoryActor;
+    private ActorRef ownReadActor;
+    private ActorRef plainReadActor;
+    private ActorRef plainReceiverActor;
 
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<Peer, ListEngine<Message>>();
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
+    private KeyValueEngine<ReadState> readStates;
 
     public Messages(final Modules messenger) {
         super(messenger);
         this.dialogs = messenger.getConfiguration().getStorage().createDialogsEngine();
+        this.readStates = messenger.getConfiguration().getStorage().createReadStateEngine();
     }
 
     public void run() {
@@ -48,6 +58,36 @@ public class Messages extends BaseModule {
                 return new DialogsHistoryActor(modules());
             }
         }), "actor/dialogs/history");
+        this.ownReadActor = system().actorOf(Props.create(OwnReadActor.class, new ActorCreator<OwnReadActor>() {
+            @Override
+            public OwnReadActor create() {
+                return new OwnReadActor(modules());
+            }
+        }), "actor/read/own");
+        this.plainReadActor = system().actorOf(Props.create(PlainReaderActor.class, new ActorCreator<PlainReaderActor>() {
+            @Override
+            public PlainReaderActor create() {
+                return new PlainReaderActor(modules());
+            }
+        }), "actor/plain/read");
+        this.plainReceiverActor = system().actorOf(Props.create(PlainReceiverActor.class, new ActorCreator<PlainReceiverActor>() {
+            @Override
+            public PlainReceiverActor create() {
+                return new PlainReceiverActor(modules());
+            }
+        }), "actor/plain/receive");
+    }
+
+    public ActorRef getPlainReadActor() {
+        return plainReadActor;
+    }
+
+    public ActorRef getPlainReceiverActor() {
+        return plainReceiverActor;
+    }
+
+    public ActorRef getOwnReadActor() {
+        return ownReadActor;
     }
 
     public ActorRef getConversationActor(final Peer peer) {
@@ -86,12 +126,16 @@ public class Messages extends BaseModule {
         return dialogs;
     }
 
+    public KeyValueEngine<ReadState> getReadStates() {
+        return readStates;
+    }
+
     public void sendMessage(final Peer peer, final AbsContent message) {
 
     }
 
-    public void onInboundMessageShown(Peer peer, long rid, long sortDate, long date, boolean isEncrypted) {
-
+    public void onInMessageShown(Peer peer, long rid, long sortDate, boolean isEncrypted) {
+        ownReadActor.send(new OwnReadActor.MessageRead(peer, rid, sortDate, isEncrypted));
     }
 
     public void saveDraft(Peer peer, String draft) {
