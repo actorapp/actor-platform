@@ -1,0 +1,27 @@
+jdbc {
+  url = "jdbc:postgresql://localhost:5432/actor"
+  username = "postgres"
+  password = ""
+  connectionPool = "HikariCP"
+  keepAliveConnection = true
+}
+
+actor-server {
+  jdbc = ${jdbc}
+
+  akka {
+    log-dead-letters = 10
+    log-dead-letters-during-shutdown = on
+    loglevel = "DEBUG"
+
+    actor {
+      debug {
+        receive = on
+        autoreceive = on
+        lifecycle = on
+        fsm = on
+        event-stream = on
+      }
+    }
+  }
+}

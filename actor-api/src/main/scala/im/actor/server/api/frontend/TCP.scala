@@ -13,7 +13,7 @@ import com.typesafe.config.Config
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
-object TCP {
+object Tcp {
   def start(appConf: Config)(implicit system: ActorSystem, materializer: FlowMaterializer): Unit = {
     import system.dispatcher
 
