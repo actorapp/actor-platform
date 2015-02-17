@@ -286,36 +286,35 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
 
     private void initUnreadLocation() {
 
-//        if (list.getSize() == 0) {
-//            return;
-//        }
-//
-//        ReadState readState = readStates().get(DialogUids.getDialogUid(chatType, chatId));
-//        if (readState == null || readState.getLastReadSortingKey() == 0) {
-//            listView.setSelectionFromTop(list.getSize() - 1, -10000);
-//            return;
-//        }
-//
-//        long lastRead = readState.getLastReadSortingKey();
-//        int index = -1;
-//
-//        for (int i = list.getSize() - 1; i >= 0; i--) {
-//            Message messageModel = list.getItem(i);
-//            if (messageModel.getSenderId() == myUid()) {
-//                continue;
-//            }
-//            if (messageModel.getSortKey() > lastRead) {
-//                firstUnread = messageModel.getRid();
-//                index = i;
-//                break;
-//            }
-//        }
-//
-//        if (index >= 0) {
-//            listView.setSelectionFromTop(list.getSize() - index, Screen.dp(48));
-//        } else {
-//            listView.setSelectionFromTop(list.getSize(), -10000);
-//        }
+        if (list.getSize() == 0) {
+            return;
+        }
+
+        long lastRead = messenger().loadLastReadSortDate(peer);
+        if (lastRead == 0) {
+            listView.setSelectionFromTop(list.getSize() - 1, -10000);
+            return;
+        }
+
+        int index = -1;
+
+        for (int i = list.getSize() - 1; i >= 0; i--) {
+            Message messageModel = list.getItem(i);
+            if (messageModel.getSenderId() == myUid()) {
+                continue;
+            }
+            if (messageModel.getSortDate() > lastRead) {
+                firstUnread = messageModel.getRid();
+                index = i;
+                break;
+            }
+        }
+
+        if (index >= 0) {
+            listView.setSelectionFromTop(list.getSize() - index, Screen.dp(48));
+        } else {
+            listView.setSelectionFromTop(list.getSize(), -10000);
+        }
     }
 
     public boolean onClick(Message messageModel) {

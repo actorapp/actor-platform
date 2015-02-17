@@ -127,6 +127,16 @@ public class ConversationActor extends ModuleActor {
     private void onMessageSent(long rid, long date) {
         Message msg = messages.getValue(rid);
         if (msg != null && (msg.getMessageState() == MessageState.PENDING)) {
+
+            for (OutUnreadMessage p : messagesStorage.getMessages()) {
+                if (p.getRid() == rid) {
+                    messagesStorage.getMessages().remove(p);
+                    messagesStorage.getMessages().add(new OutUnreadMessage(rid, date));
+                    break;
+                }
+            }
+            savePending();
+
             messages.addOrUpdateItem(msg
                     .changeDate(date)
                     .changeState(MessageState.SENT));
