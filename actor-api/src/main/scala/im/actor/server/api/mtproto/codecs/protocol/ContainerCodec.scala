@@ -20,9 +20,8 @@ object ContainerCodec extends Codec[Container] {
     def f(count: Int, xs: BitVector)(items: Seq[MessageBox]): Err \/ (BitVector, Seq[MessageBox]) = {
       if (count > items.length) {
         MessageBoxCodec.decode(xs) match {
-          case \/-((bs, mb)) =>
-            if (mb.body.isInstanceOf[Container]) Err("Container cannot be nested").left
-            else f(count, bs)(items.:+(mb))
+          case \/-((bs, MessageBox(_, _: Container))) => Err("Container cannot be nested").left
+          case \/-((bs, mb)) => f(count, bs)(items.:+(mb))
           case -\/(e) => e.left
         }
       } else (xs, items).right
