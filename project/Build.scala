@@ -20,16 +20,30 @@ object Build extends sbt.Build {
         organizationHomepage := Some(url("https://actor.im"))
       )
 
+  lazy val compilerWarns = Seq(
+    "-Ywarn-dead-code",
+    "-Ywarn-infer-any",
+    "-Ywarn-numeric-widen",
+    "-Ywarn-unused",
+    "-Ywarn-unused-import"
+  )
+
   lazy val defaultSettings =
     buildSettings ++
       Seq(
         initialize ~= { _ =>
-          sys.props("scalac.patmat.analysisBudget") = "off"
           if (sys.props("java.specification.version") != "1.8")
             sys.error("Java 8 is required for this project.")
         },
         resolvers                 ++= Resolvers.seq,
-        scalacOptions             ++= Seq("-encoding", "UTF-8", "-deprecation", "-unchecked", "-feature", "-language:higherKinds"),
+        scalacOptions             ++= Seq(
+          "-encoding",
+          "UTF-8",
+          "-deprecation",
+          "-unchecked",
+          "-feature",
+          "-language:higherKinds"
+        ) ++ compilerWarns,
         javaOptions               ++= Seq("-Dfile.encoding=UTF-8"),
         javacOptions              ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
         parallelExecution in Test :=  false,
@@ -51,7 +65,11 @@ object Build extends sbt.Build {
         Revolver.reStartArgs                      :=  Seq("im.actor.server.Main"),
         mainClass            in Revolver.reStart  :=  Some("im.actor.server.Main"),
         autoCompilerPlugins                       :=  true,
-        scalacOptions        in (Compile,doc)     :=  Seq("-groups", "-implicits", "-diagrams")
+        scalacOptions        in (Compile,doc)     :=  Seq(
+          "-groups",
+          "-implicits",
+          "-diagrams"
+        )
       )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
   .dependsOn(actorApi)
