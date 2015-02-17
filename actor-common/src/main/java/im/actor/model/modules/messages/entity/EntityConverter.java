@@ -1,10 +1,9 @@
-package im.actor.model.modules.entity;
+package im.actor.model.modules.messages.entity;
 
 import java.io.IOException;
 
 import im.actor.model.api.*;
 import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.entity.*;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.AvatarImage;
 import im.actor.model.entity.FileLocation;

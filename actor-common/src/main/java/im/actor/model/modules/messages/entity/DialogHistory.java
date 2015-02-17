@@ -1,4 +1,4 @@
-package im.actor.model.modules.entity;
+package im.actor.model.modules.messages.entity;
 
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
