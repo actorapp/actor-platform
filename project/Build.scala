@@ -44,7 +44,7 @@ object Build extends sbt.Build {
           "-feature",
           "-language:higherKinds"
         ) ++ compilerWarnings,
-        javaOptions               ++= Seq("-Dfile.encoding=UTF-8, -Dscalac.patmat.analysisBudget=off"),
+        javaOptions               ++= Seq("-Dfile.encoding=UTF-8", "-Dscalac.patmat.analysisBudget=off"),
         javacOptions              ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
         parallelExecution in Test :=  false,
         fork              in Test :=  true
@@ -72,8 +72,8 @@ object Build extends sbt.Build {
         ) ++ compilerWarnings
       )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
-  .dependsOn(actorApi)
-  .aggregate(actorApi, actorModels, actorPersist, actorTests)
+  .dependsOn(actorFrontend)
+  .aggregate(actorApi, actorFrontend, actorModels, actorPersist, actorTests)
 
   lazy val actorApi = Project(
     id = "actor-api",
@@ -82,6 +82,14 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.root
     )
   ).dependsOn(actorPersist)
+
+  lazy val actorFrontend = Project(
+    id = "actor-frontend",
+    base = file("actor-frontend"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.frontend
+    )
+  ).dependsOn(actorApi)
 
   lazy val actorTests = Project(
     id = "actor-tests",
