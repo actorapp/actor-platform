@@ -69,7 +69,7 @@ object Build extends sbt.Build {
           "-groups",
           "-implicits",
           "-diagrams"
-        )
+        ) ++ compilerWarns
       )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
   .dependsOn(actorApi)
