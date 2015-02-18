@@ -13,10 +13,9 @@ object StringCodec extends Codec[String] {
   }
 
   def decode(buf: BitVector) = {
-    for {
-      t <- varint.decode(buf)
-      (b, bitLength) = t
-    } yield {
+    for { t <- varint.decode(buf) }
+    yield {
+      val (b, bitLength) = t
       val length = bitLength * byteSize
       (b.drop(length), new String(b.take(length).toByteArray))
     }
