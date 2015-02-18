@@ -12,6 +12,7 @@ import scala.concurrent.Future
 import java.security.MessageDigest
 import scalaz.{ -\/, \/- }
 import scodec.bits.BitVector
+import org.apache.commons.codec.digest.DigestUtils
 
 object MTProto {
   import akka.pattern.{ ask, AskTimeoutException }
@@ -163,9 +164,8 @@ object MTProto {
           case m => Future.successful(ProtoPackage(m))
         }
       case h: Handshake => Future.successful {
-        val sha1Digest = MessageDigest.getInstance("SHA1")
         val clientBytes = BitVector(h.protoVersion, h.apiMajorVersion, h.apiMinorVersion) ++ h.randomBytes
-        val sha1Sign = BitVector(sha1Digest.digest(clientBytes.toByteArray))
+        val sha1Sign = BitVector(DigestUtils.sha1(clientBytes.toByteArray))
         val protoVersion: Byte = if (protoVersions.contains(h.protoVersion)) h.protoVersion else 0
         val apiMajorVersion: Byte = if (apiMajorVersions.contains(h.apiMajorVersion)) h.apiMajorVersion else 0
         val apiMinorVersion: Byte = if (apiMajorVersion == 0) 0 else h.apiMinorVersion
