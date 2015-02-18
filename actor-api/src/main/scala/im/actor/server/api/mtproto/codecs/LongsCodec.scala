@@ -12,10 +12,9 @@ object LongsCodec extends Codec[Vector[Long]] {
   }
 
   def decode(buf: BitVector) = {
-    for {
-      t <- varint.decode(buf)
-      (b, bitLength) = t
-    } yield {
+    for { t <- varint.decode(buf) }
+    yield {
+      val (b, bitLength) = t
       val length = bitLength * longBits
       (b.drop(length), b.take(length).grouped(longBits).map(_.toLong()).toVector)
     }
