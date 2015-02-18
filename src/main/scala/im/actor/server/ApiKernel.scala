@@ -5,7 +5,7 @@ import akka.actor._
 import akka.stream.ActorFlowMaterializer
 import akka.kernel.Bootable
 import com.typesafe.config.ConfigFactory
-import im.actor.server.persist.db.{ Db, FlywayInit }
+import im.actor.server.db.{ Db, FlywayInit }
 
 class ApiKernel extends Bootable with FlywayInit {
   val config = ConfigFactory.load()
