@@ -2,9 +2,9 @@ package im.actor.server.api.service
 
 import akka.actor._
 import akka.stream.actor.ActorPublisher
-import im.actor.server.api.mtproto.codecs.protocol.MessageBoxCodec
-import im.actor.server.api.mtproto.protocol._
-import im.actor.server.api.mtproto.transport._
+import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
+import im.actor.server.mtproto.protocol._
+import im.actor.server.mtproto.transport._
 import im.actor.server.api.util.rand
 import im.actor.server.persist
 import scala.annotation.tailrec
