@@ -1,4 +1,4 @@
-package im.actor.server.api.mtproto.codecs
+package im.actor.server.mtproto.codecs
 
 import scodec.bits._
 import org.scalacheck._

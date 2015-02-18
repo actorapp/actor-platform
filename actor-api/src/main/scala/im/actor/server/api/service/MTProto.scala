@@ -1,7 +1,7 @@
 package im.actor.server.api.service
 
-import im.actor.server.api.mtproto.codecs.transport._
-import im.actor.server.api.mtproto.transport._
+import im.actor.server.mtproto.codecs.transport._
+import im.actor.server.mtproto.transport._
 import akka.actor._
 import akka.stream.actor.ActorPublisher
 import akka.util.{ ByteString, Timeout }
