@@ -1,13 +1,11 @@
 package im.actor.server.api.frontend
 
 import akka.actor._
-import akka.stream.actor.ActorPublisher
-import akka.util.{ ByteString, Timeout }
+import akka.util.Timeout
 import akka.event.Logging
 import akka.stream.scaladsl._
 import akka.stream.FlowMaterializer
-import im.actor.server.api.mtproto.transport.MTTransport
-import im.actor.server.api.service._
+import im.actor.server.api.service.MTProto
 import scala.util.{ Success, Failure }
 import com.typesafe.config.Config
 import java.net.InetSocketAddress
@@ -28,41 +26,7 @@ object Tcp {
 
     val handler = ForeachSink[StreamTcp.IncomingConnection] { conn =>
       log.info(s"Client connected from: ${conn.remoteAddress}")
-
-      val actor = system.actorOf(AuthorizationActor.props())
-      val (watchActor, watchSource) = SourceWatchActor[MTTransport](actor)
-      val actorSource = Source(ActorPublisher[MTTransport](actor))
-
-      val handleFlow = Flow[ByteString]
-        .transform(() => MTProto.parse(maxBufferSize))
-        .mapAsyncUnordered(MTProto.handlePackage(_, actor))
-      val responseFlow = Flow[MTTransport]
-        .transform(() => MTProto.mapResponse())
-      val completeSink = Sink.onComplete {
-        case _ =>
-          watchActor ! PoisonPill
-          actor ! PoisonPill
-      }
-      val flow = Flow[ByteString, ByteString]() { implicit b =>
-        import FlowGraphImplicits._
-
-        val in = UndefinedSource[ByteString]
-        val out = UndefinedSink[ByteString]
-        val bcast = Broadcast[ByteString]
-        val merge = Merge[MTTransport]
-
-        in ~> handleFlow ~> merge
-        actorSource      ~> merge
-        watchSource      ~> merge
-
-        merge ~> responseFlow ~> bcast
-
-        bcast ~> out
-        bcast ~> completeSink
-
-        (in, out)
-      }
-      conn.handleWith(flow)
+      conn.handleWith(MTProto.flow(maxBufferSize))
     }
 
     val materializedServer = binding.connections.to(handler).run()

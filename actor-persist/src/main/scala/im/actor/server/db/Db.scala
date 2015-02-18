@@ -1,4 +1,4 @@
-package im.actor.server.persist.db
+package im.actor.server.db
 
 import slick.driver.PostgresDriver.api.Database
 import scala.slick.jdbc.StaticQuery.interpolation

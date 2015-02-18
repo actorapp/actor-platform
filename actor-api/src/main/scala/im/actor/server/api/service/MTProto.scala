@@ -1,13 +1,16 @@
 package im.actor.server.api.service
 
-import akka.actor._
-import akka.util.{ ByteString, Timeout }
 import im.actor.server.api.mtproto.codecs.transport._
 import im.actor.server.api.mtproto.transport._
+import akka.actor._
+import akka.stream.actor.ActorPublisher
+import akka.util.{ ByteString, Timeout }
+import akka.stream.scaladsl._
+import akka.stream.FlowMaterializer
 import scala.annotation.tailrec
 import scala.concurrent.Future
 import java.security.MessageDigest
-import scalaz._
+import scalaz.{ -\/, \/- }
 import scodec.bits.BitVector
 
 object MTProto {
@@ -17,6 +20,43 @@ object MTProto {
 
   val protoVersions = Set(1)
   val apiMajorVersions = Set(1)
+
+  def flow(maxBufferSize: Int)
+          (implicit system: ActorSystem, materializer: FlowMaterializer, timeout: Timeout): Flow[ByteString, ByteString] = {
+    val actor = system.actorOf(AuthorizationActor.props())
+    val (watchActor, watchSource) = SourceWatchActor[MTTransport](actor)
+    val actorSource = Source(ActorPublisher[MTTransport](actor))
+
+    val handleFlow = Flow[ByteString]
+      .transform(() => MTProto.parse(maxBufferSize))
+      .mapAsyncUnordered(MTProto.handlePackage(_, actor))
+    val responseFlow = Flow[MTTransport]
+      .transform(() => MTProto.mapResponse())
+    val completeSink = Sink.onComplete {
+      case _ =>
+        watchActor ! PoisonPill
+        actor ! PoisonPill
+    }
+    Flow[ByteString, ByteString]() { implicit b =>
+      import FlowGraphImplicits._
+
+      val in = UndefinedSource[ByteString]
+      val out = UndefinedSink[ByteString]
+      val bcast = Broadcast[ByteString]
+      val merge = Merge[MTTransport]
+
+      in ~> handleFlow ~> merge
+      actorSource      ~> merge
+      watchSource      ~> merge
+
+      merge ~> responseFlow ~> bcast
+
+      bcast ~> out
+      bcast ~> completeSink
+
+      (in, out)
+    }
+  }
 
   def parse(maxBufferSize: Int) = new StatefulStage[ByteString, MTTransport] {
     sealed trait ParserStep
