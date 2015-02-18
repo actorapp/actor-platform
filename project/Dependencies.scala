@@ -16,6 +16,7 @@ object Dependencies {
     val akkaHttpCore    = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
     val akkaHttpSpray   = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
     val akkaSlf4j       = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
+    val akkaStreamWS    = "pt"                            %% "akka-stream-websocket"         % "0.1-SNAPSHOT"
 
     val postgresJdbc    = "org.postgresql"                %  "postgresql"                    % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick           = "com.typesafe.slick"            %% "slick"                         % V.slick
@@ -51,7 +52,9 @@ object Dependencies {
 
   val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP)
 
-  val frontend = common ++ Seq(akkaSlf4j, akkaActor, akkaKernel, akkaStream, scodecBits, scodecCore, scalazCore, scalazConcurrent)
+  val frontend = common ++ Seq(
+    akkaSlf4j, akkaActor, akkaKernel, akkaStream, akkaStreamWS, scodecBits, scodecCore, scalazCore, scalazConcurrent
+  )
 
   val root = common ++ Seq(akkaSlf4j, akkaActor, akkaKernel, akkaStream, scodecBits, scodecCore, scalazCore, scalazConcurrent)
 }

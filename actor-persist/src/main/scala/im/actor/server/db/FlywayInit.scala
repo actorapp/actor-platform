@@ -1,4 +1,4 @@
-package im.actor.server.persist.db
+package im.actor.server.db
 
 import com.typesafe.config._
 import org.flywaydb.core.Flyway
