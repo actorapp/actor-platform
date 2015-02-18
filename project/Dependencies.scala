@@ -35,6 +35,8 @@ object Dependencies {
 
     val jodaTime        = "joda-time"                     %  "joda-time"                     % "2.7"
     val jodaConvert     = "org.joda"                      %  "joda-convert"                  % "1.7"
+
+    val commonsCodec    = "commons-codec"                 % "commons-codec"                  % "1.10"
   }
 
   object Test {
@@ -53,8 +55,15 @@ object Dependencies {
   val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP)
 
   val frontend = common ++ Seq(
-    akkaSlf4j, akkaActor, akkaKernel, akkaStream, akkaStreamWS, scodecBits, scodecCore, scalazCore, scalazConcurrent
+    akkaSlf4j, akkaActor, akkaKernel, akkaStream, akkaStreamWS,
+    scodecBits, scodecCore,
+    scalazCore, scalazConcurrent
   )
 
-  val root = common ++ Seq(akkaSlf4j, akkaActor, akkaKernel, akkaStream, scodecBits, scodecCore, scalazCore, scalazConcurrent)
+  val root = common ++ Seq(
+    akkaSlf4j, akkaActor, akkaKernel, akkaStream,
+    scodecBits, scodecCore,
+    scalazCore, scalazConcurrent,
+    commonsCodec
+  )
 }
