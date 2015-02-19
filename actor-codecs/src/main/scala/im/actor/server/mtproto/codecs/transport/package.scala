@@ -32,9 +32,9 @@ package object transport {
 
   val MTPackageCodec = (int64 :: int64 :: codecs.bits).as[MTPackage]
 
-  val PingCodec = bytes.pxmap[Ping](Ping.apply, Ping.unapply)
+  val PingCodec = bytes.as[Ping]
 
-  val PongCodec = bytes.pxmap[Pong](Pong.apply, Pong.unapply)
+  val PongCodec = bytes.as[Pong]
 
   val DropCodec = (int64 :: byte :: string).as[Drop]
 
