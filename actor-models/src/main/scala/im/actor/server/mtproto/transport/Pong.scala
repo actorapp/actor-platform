@@ -6,5 +6,5 @@ import scodec.bits.BitVector
 case class Pong(randomBytes: BitVector) extends MTProto
 
 object Pong {
-  val header: Byte = 2
+  val header = 0x2
 }

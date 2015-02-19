@@ -33,9 +33,9 @@ class AuthorizationManager extends Actor with ActorLogging with ActorPublisher[M
   def receive = {
     case FrontendPackage(p) =>
       val replyTo = sender()
-      MessageBoxCodec.decode(p.messageBytes) match {
-        case \/-((_, mb)) => handleMessageBox(p.authId, p.sessionId, mb, replyTo)
-        case -\/(e) => replyTo ! ProtoPackage(Drop(0, 0, e.message))
+      MessageBoxCodec.decode(p.messageBytes).toEither match {
+        case Right(res) => handleMessageBox(p.authId, p.sessionId, res.value, replyTo)
+        case Left(e) => replyTo ! ProtoPackage(Drop(0, 0, e.message))
       }
     case SessionPackage(p) =>
       if (buf.isEmpty && totalDemand > 0)
@@ -51,7 +51,7 @@ class AuthorizationManager extends Actor with ActorLogging with ActorPublisher[M
   private def handleMessageBox(pAuthId: Long, pSessionId: Long, mb: MessageBox, replyTo: ActorRef) = {
     @inline
     def sendPackage(messageId: Long, message: ProtoMessage) = {
-      val mbBytes = MessageBoxCodec.encodeValid(MessageBox(messageId, message))
+      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, message)).require
       replyTo ! ProtoPackage(MTPackage(authId, pSessionId, mbBytes))
     }
 

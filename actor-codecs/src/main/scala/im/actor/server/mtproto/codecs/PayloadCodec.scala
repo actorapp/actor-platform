@@ -1,17 +1,18 @@
 package im.actor.server.mtproto.codecs
 
-import scodec.Codec
+import scodec._
 import scodec.bits.BitVector
 
 class PayloadCodec[A](codec: Codec[A]) extends Codec[A] {
+  def sizeBound = SizeBound.unknown
+
   def encode(v: A) = codec.encode(v).flatMap(bytes.encode)
 
   def decode(buf: BitVector) = {
     for {
-      bytesTup <- bytes.decode(buf)
-      (xs, body) = bytesTup
-      res <- codec.decode(body)
-    } yield (xs, res._2)
+      t <- bytes.decode(buf)
+      res <- codec.decode(t.value)
+    } yield DecodeResult(res.value, t.remainder)
   }
 }
 

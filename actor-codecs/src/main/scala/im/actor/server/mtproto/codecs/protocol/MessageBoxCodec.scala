@@ -1,12 +1,14 @@
 package im.actor.server.mtproto.codecs.protocol
 
-import im.actor.server.mtproto.codecs.{ PayloadCodec, DiscriminatedErrorCodec }
+import im.actor.server.mtproto.codecs._
 import im.actor.server.mtproto.protocol._
 import scodec.bits.BitVector
 import scodec.codecs._
-import scodec.Codec
+import scodec._
 
 object MessageBoxCodec extends Codec[MessageBox] {
+  def sizeBound = SizeBound.unknown
+
   private val protoMessageCodec = discriminated[ProtoMessage].by(uint8)
     .\(Container.header) { case r: Container => r} (ContainerCodec)
     .\(MessageAck.header) { case r: MessageAck => r} (MessageAckCodec)

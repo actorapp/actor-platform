@@ -4,5 +4,5 @@ package im.actor.server.mtproto.transport
 case class InternalError(errorCode: Byte, retryTimeout: Int, msg: String) extends MTProto
 
 object InternalError {
-  val header: Byte = 5
+  val header = 0x5
 }
