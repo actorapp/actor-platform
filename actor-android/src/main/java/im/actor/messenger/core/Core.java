@@ -16,7 +16,6 @@ import im.actor.messenger.model.TypingModel;
 import im.actor.messenger.storage.provider.AppEngineFactory;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
-import im.actor.model.MessengerCallback;
 import im.actor.model.android.AndroidLog;
 import im.actor.model.android.AndroidMainThread;
 import im.actor.model.entity.User;
@@ -120,24 +119,6 @@ public class Core {
 
         builder.setMainThread(new AndroidMainThread());
         builder.setLog(new AndroidLog());
-
-        builder.setCallback(new MessengerCallback() {
-
-            @Override
-            public void onTypingStart(int uid) {
-                TypingModel.privateChatTyping(uid).change(true);
-            }
-
-            @Override
-            public void onTypingEnd(int uid) {
-                TypingModel.privateChatTyping(uid).change(false);
-            }
-
-            @Override
-            public void onGroupTyping(int gid, int[] uids) {
-                TypingModel.groupChatTyping(gid).change(uids);
-            }
-        });
         builder.setStorage(new AppEngineFactory());
 
         if (BuildConfig.API_SSL) {

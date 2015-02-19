@@ -3,7 +3,7 @@ package im.actor.messenger.storage.scheme.groups;
 import com.droidkit.bser.BserObject;
 import com.droidkit.bser.BserValues;
 import com.droidkit.bser.BserWriter;
-import com.droidkit.engine.keyvalue.KeyValueIdentity;
+
 import im.actor.model.entity.Avatar;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by ex3ndr on 15.11.14.
  */
-public class GroupInfo extends BserObject implements KeyValueIdentity {
+public class GroupInfo extends BserObject {
     private int groupId;
     private long accessHash;
     private String title;
@@ -129,10 +129,5 @@ public class GroupInfo extends BserObject implements KeyValueIdentity {
                 writer.writeInt(7, 4);
                 break;
         }
-    }
-
-    @Override
-    public long getKeyValueId() {
-        return groupId;
     }
 }
