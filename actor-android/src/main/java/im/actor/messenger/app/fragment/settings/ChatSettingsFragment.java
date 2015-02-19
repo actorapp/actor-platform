@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseCompatFragment;
-import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.settings.ChatSettings;
 
 /**
@@ -22,9 +21,9 @@ public class ChatSettingsFragment extends BaseCompatFragment {
         View res = inflater.inflate(R.layout.fr_settings_chat, container, false);
         chatSettings = ChatSettings.getInstance();
 
-        getBinder().bindChecked((CheckBox) res.findViewById(R.id.sendByEnter), chatSettings.sendByEnterValue());
-        getBinder().bindOnClick(res.findViewById(R.id.sendByEnterCont), chatSettings.sendByEnterValue());
-        getBinder().bindOnClick(res.findViewById(R.id.sendByEnter), chatSettings.sendByEnterValue());
+//        getBinder().bindChecked((CheckBox) res.findViewById(R.id.sendByEnter), chatSettings.sendByEnterValue());
+//        getBinder().bindOnClick(res.findViewById(R.id.sendByEnterCont), chatSettings.sendByEnterValue());
+//        getBinder().bindOnClick(res.findViewById(R.id.sendByEnter), chatSettings.sendByEnterValue());
 
         return res;
     }

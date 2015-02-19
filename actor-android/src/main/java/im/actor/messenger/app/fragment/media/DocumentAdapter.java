@@ -15,11 +15,11 @@ import im.actor.messenger.app.view.EngineHolderAdapter;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.messenger.model.UserModel;
 import im.actor.messenger.storage.scheme.media.Document;
 import im.actor.messenger.util.TextUtils;
+import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.storage.KeyValueEngines.users;
+import static im.actor.messenger.core.Core.users;
 
 /**
  * Created by ex3ndr on 18.10.14.
@@ -78,7 +78,7 @@ public class DocumentAdapter extends EngineHolderAdapter<Document> {
             }
 
             titleView.setText(data.getFileName());
-            UserModel userModel = users().get(data.getSender());
+            UserVM userModel = users().get(data.getSender());
             if (userModel != null) {
                 subtitleView.setText(Formatter.formatFileSize(data.getFileLocation().getFileSize()) + ", " + userModel.getName() + ", " + TextUtils.formatTime(data.getAddedTime()));
             } else {

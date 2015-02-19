@@ -14,21 +14,21 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.messenger.model.UserModel;
 import im.actor.messenger.util.Screen;
+import im.actor.model.viewmodel.UserVM;
 
 /**
  * Created by ex3ndr on 04.11.14.
  */
-public class ContactSearchAdapter extends HolderAdapter<UserModel> {
+public class ContactSearchAdapter extends HolderAdapter<UserVM> {
 
-    private UserModel[] result = new UserModel[0];
+    private UserVM[] result = new UserVM[0];
 
     public ContactSearchAdapter(Context context) {
         super(context);
     }
 
-    public void updateResults(UserModel[] results) {
+    public void updateResults(UserVM[] results) {
         this.result = results;
         notifyDataSetChanged();
     }
@@ -39,7 +39,7 @@ public class ContactSearchAdapter extends HolderAdapter<UserModel> {
     }
 
     @Override
-    public UserModel getItem(int position) {
+    public UserVM getItem(int position) {
         return result[position];
     }
 
@@ -49,17 +49,17 @@ public class ContactSearchAdapter extends HolderAdapter<UserModel> {
     }
 
     @Override
-    protected ViewHolder<UserModel> createHolder(UserModel obj) {
+    protected ViewHolder<UserVM> createHolder(UserVM obj) {
         return new Holder();
     }
 
-    private class Holder extends ViewHolder<UserModel> {
+    private class Holder extends ViewHolder<UserVM> {
 
         private AvatarView avatar;
         private TextView title;
 
         @Override
-        public View init(UserModel data, ViewGroup viewGroup, Context context) {
+        public View init(UserVM data, ViewGroup viewGroup, Context context) {
             FrameLayout fl = new FrameLayout(context);
 
             avatar = new AvatarView(context);
@@ -91,14 +91,14 @@ public class ContactSearchAdapter extends HolderAdapter<UserModel> {
         }
 
         @Override
-        public void bind(UserModel data, int position, Context context) {
+        public void bind(UserVM data, int position, Context context) {
             avatar.setEmptyDrawable(AvatarDrawable.create(data, 24, context));
-            if (data.getAvatar().getValue() != null) {
-                avatar.bindAvatar(24, data.getAvatar().getValue());
+            if (data.getAvatar().get() != null) {
+                avatar.bindAvatar(24, data.getAvatar().get());
             } else {
                 avatar.unbind();
             }
-            title.setText(data.getName());
+            title.setText(data.getName().get());
         }
     }
 }

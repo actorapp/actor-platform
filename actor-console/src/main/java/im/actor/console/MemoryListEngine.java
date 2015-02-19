@@ -1,7 +1,7 @@
 package im.actor.console;
 
-import im.actor.model.mvvm.ListEngine;
-import im.actor.model.mvvm.ListEngineItem;
+import im.actor.model.storage.ListEngine;
+import im.actor.model.storage.ListEngineItem;
 
 import java.util.ArrayList;
 import java.util.Comparator;

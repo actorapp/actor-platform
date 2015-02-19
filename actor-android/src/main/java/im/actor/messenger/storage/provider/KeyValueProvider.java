@@ -2,8 +2,8 @@ package im.actor.messenger.storage.provider;
 
 import java.util.List;
 
-import im.actor.model.mvvm.KeyValueEngine;
-import im.actor.model.mvvm.KeyValueItem;
+import im.actor.model.storage.KeyValueEngine;
+import im.actor.model.storage.KeyValueItem;
 
 /**
  * Created by ex3ndr on 14.02.15.
@@ -41,11 +41,6 @@ public class KeyValueProvider<T extends KeyValueItem> implements KeyValueEngine<
     @Override
     public void clear() {
         srcEngine.clear();
-    }
-
-    @Override
-    public List<T> getAll() {
-        return srcEngine.getAll();
     }
 
     @Override

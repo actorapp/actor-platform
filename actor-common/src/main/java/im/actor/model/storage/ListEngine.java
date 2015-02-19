@@ -1,4 +1,4 @@
-package im.actor.model.mvvm;
+package im.actor.model.storage;
 
 import java.util.List;
 

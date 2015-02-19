@@ -14,8 +14,8 @@ import im.actor.model.modules.messages.OwnReadActor;
 import im.actor.model.modules.messages.PlainReaderActor;
 import im.actor.model.modules.messages.PlainReceiverActor;
 import im.actor.model.modules.messages.SenderActor;
-import im.actor.model.mvvm.KeyValueEngine;
-import im.actor.model.mvvm.ListEngine;
+import im.actor.model.storage.KeyValueEngine;
+import im.actor.model.storage.ListEngine;
 
 import java.util.HashMap;
 

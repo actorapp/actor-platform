@@ -13,18 +13,19 @@ import com.droidkit.images.loading.ImageLoader;
 
 import im.actor.messenger.core.images.*;
 import im.actor.messenger.model.TypingModel;
-import im.actor.messenger.model.UserPresence;
 import im.actor.messenger.storage.provider.AppEngineFactory;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
 import im.actor.model.MessengerCallback;
 import im.actor.model.android.AndroidLog;
 import im.actor.model.android.AndroidMainThread;
+import im.actor.model.entity.User;
 import im.actor.model.jvm.JavaNetworking;
 import im.actor.model.jvm.JavaThreading;
+import im.actor.model.mvvm.MVVMCollection;
+import im.actor.model.viewmodel.UserVM;
 
 import static com.droidkit.actors.ActorSystem.system;
-import static im.actor.messenger.storage.KeyValueEngines.users;
 
 /**
  * Created by ex3ndr on 30.08.14.
@@ -59,6 +60,10 @@ public class Core {
 
     public static Messenger messenger() {
         return core().messenger;
+    }
+
+    public static MVVMCollection<User, UserVM> users() {
+        return core().messenger.getUsers();
     }
 
     private ImageLoader imageLoader;
@@ -119,17 +124,17 @@ public class Core {
         builder.setCallback(new MessengerCallback() {
             @Override
             public void onUserOnline(int uid) {
-                users().get(uid).getPresence().change(new UserPresence(UserPresence.State.ONLINE, 0));
+                // users().get(uid).getPresence().change(new UserPresence(UserPresence.State.ONLINE, 0));
             }
 
             @Override
             public void onUserOffline(int uid) {
-                users().get(uid).getPresence().change(new UserPresence(UserPresence.State.OFFLINE, 0));
+                // users().get(uid).getPresence().change(new UserPresence(UserPresence.State.OFFLINE, 0));
             }
 
             @Override
             public void onUserLastSeen(int uid, long lastSeen) {
-                users().get(uid).getPresence().change(new UserPresence(UserPresence.State.OFFLINE, lastSeen));
+                // users().get(uid).getPresence().change(new UserPresence(UserPresence.State.OFFLINE, lastSeen));
             }
 
             @Override

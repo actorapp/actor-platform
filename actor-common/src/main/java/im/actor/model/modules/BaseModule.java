@@ -1,7 +1,7 @@
 package im.actor.model.modules;
 
 import im.actor.model.entity.User;
-import im.actor.model.mvvm.KeyValueEngine;
+import im.actor.model.storage.KeyValueEngine;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.parser.Request;
