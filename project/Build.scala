@@ -78,7 +78,7 @@ object Build extends sbt.Build {
     id = "actor-api",
     base = file("actor-api"),
     settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Dependencies.root
+      libraryDependencies ++= Dependencies.api
     )
   ).dependsOn(actorPersist, actorCodecs)
 

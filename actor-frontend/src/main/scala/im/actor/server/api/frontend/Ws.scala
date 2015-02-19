@@ -7,7 +7,7 @@ import akka.stream.FlowMaterializer
 import akka.stream.scaladsl._
 import akka.util.{ ByteString, Timeout }
 import com.typesafe.config.Config
-import im.actor.server.api.service.MTProto
+import im.actor.server.service.MTProto
 import spray.can.websocket.frame._
 import streamwebsocket._
 import java.util.concurrent.TimeUnit
