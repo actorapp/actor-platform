@@ -1,14 +1,14 @@
 package im.actor.server.mtproto.codecs
 
-import scodec.{ Codec, Err }
+import scodec._
 import scodec.bits.BitVector
-import scalaz._
-import Scalaz._
 
 class DiscriminatedErrorCodec[T](codecName: String) extends Codec[T] {
-  def encode(a: T) = Err(s"$codecName.header is unknown for ${a.getClass.getCanonicalName}").left
+  def sizeBound = SizeBound.unknown
 
-  def decode(buf: BitVector) = Err(s"$codecName.header is unknown. Body: ${buf.toHex}").left
+  def encode(a: T) = Attempt.failure(Err(s"$codecName.header is unknown for ${a.getClass.getCanonicalName}"))
+
+  def decode(buf: BitVector) = Attempt.failure(Err(s"$codecName.header is unknown. Body: ${buf.toHex}"))
 }
 
 object DiscriminatedErrorCodec {

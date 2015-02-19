@@ -3,35 +3,36 @@ package im.actor.server.mtproto.codecs.protocol
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.codecs._
 import scodec.bits.BitVector
-import scodec.{ Codec, Err }
+import scodec._
 import scala.annotation.tailrec
-import scalaz._
-import Scalaz._
 
 object ContainerCodec extends Codec[Container] {
+  def sizeBound = SizeBound.unknown
+
   def encode(c: Container) = {
-    val body = c.messages.map(MessageBoxCodec.encodeValid).foldLeft(BitVector.empty)(_ ++ _)
-    val count = varint.encodeValid(c.messages.length)
-    (count ++ body).right
+    val body = c.messages.map(MessageBoxCodec.encode).foldLeft(BitVector.empty)(_ ++ _.require)
+    val count = varint.encode(c.messages.length.toLong).require
+    Attempt.successful(count ++ body)
   }
 
   def decode(buf: BitVector) = {
     @inline @tailrec
-    def f(count: Int, xs: BitVector)(items: Seq[MessageBox]): Err \/ (BitVector, Seq[MessageBox]) = {
+    def f(count: Int, xs: BitVector)(items: Seq[MessageBox]): Attempt[DecodeResult[Seq[MessageBox]]] = {
       if (count > items.length) {
         MessageBoxCodec.decode(xs) match {
-          case \/-((bs, MessageBox(_, _: Container))) => Err("Container cannot be nested").left
-          case \/-((bs, mb)) => f(count, bs)(items.:+(mb))
-          case -\/(e) => e.left
+          case Attempt.Successful(DecodeResult(MessageBox(_, _: Container), bs)) =>
+            Attempt.failure(Err("Container cannot be nested"))
+          case Attempt.Successful(DecodeResult(mb, bs)) =>
+            f(count, bs)(items.:+(mb))
+          case Attempt.Failure(e) =>
+            Attempt.failure(e)
         }
-      } else (xs, items).right
+      } else Attempt.successful(DecodeResult(items, xs))
     }
 
     for {
       lenTup <- varint.decode(buf)
-      (bs, count) = lenTup
-      itemsTup <- f(count.toInt, bs)(Seq())
-      (xs, items) = itemsTup
-    } yield (xs, Container(items))
+      itemsTup <- f(lenTup.value.toInt, lenTup.remainder)(Seq.empty)
+    } yield DecodeResult(Container(itemsTup.value), itemsTup.remainder)
   }
 }

@@ -1,18 +1,16 @@
 package im.actor.server.mtproto.codecs
 
-import scodec.{ Codec, Err }
+import scodec._
 import scodec.bits._
-import scalaz._
-import Scalaz._
 
 object BooleanCodec extends Codec[Boolean] {
-  def encode(b: Boolean) = {
-    if (b) BitVector(1).right
-    else BitVector(0).right
-  }
+  def sizeBound = SizeBound.unknown
+
+  def encode(b: Boolean) =
+    Attempt.successful(if (b) BitVector(1) else BitVector(0))
 
   def decode(buf: BitVector) = {
-    if (buf.isEmpty) Err("empty buf").left
-    else (buf.drop(byteSize), buf.getByte(0) != 0).right
+    if (buf.isEmpty) Attempt.failure(Err("empty buf"))
+    else Attempt.successful(DecodeResult(buf.getByte(0) != 0, buf.drop(byteSize)))
   }
 }

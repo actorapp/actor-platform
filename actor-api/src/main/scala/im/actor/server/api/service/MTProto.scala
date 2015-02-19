@@ -7,12 +7,10 @@ import akka.actor._
 import akka.stream.actor.ActorPublisher
 import akka.util.{ ByteString, Timeout }
 import akka.stream.scaladsl._
-import akka.stream.FlowMaterializer
 import scala.annotation.tailrec
 import scala.concurrent.Future
-import java.security.MessageDigest
-import scalaz.{ -\/, \/- }
 import scodec.bits.BitVector
+import scodec.codecs
 import org.apache.commons.codec.digest.DigestUtils
 
 object MTProto {
@@ -25,8 +23,8 @@ object MTProto {
   def flow(maxBufferSize: Int)
           (implicit system: ActorSystem, timeout: Timeout): Flow[ByteString, ByteString] = {
     val authManager = system.actorOf(AuthorizationManager.props())
-    val (watchManager, watch) = SourceWatchManager[MTTransport](authManager)
     val auth = Source(ActorPublisher[MTTransport](authManager))
+    val (watchManager, watch) = SourceWatchManager[MTTransport](authManager)
 
     val mtproto = Flow[ByteString]
       .transform(() => MTProto.parse(maxBufferSize))
@@ -90,31 +88,32 @@ object MTProto {
         if (buf.isEmpty) ((state, buf), pSeq)
         else state match {
           case HandshakeStep =>
-            HandshakeCodec.decode(buf) match {
-              case \/-((xs, h)) => ((AwaitPackage, xs), Vector(h))
-              case -\/(e) => failedState(e.message)
+            HandshakeCodec.decode(buf).toEither match {
+              case Right(res) => ((AwaitPackage, res.remainder), Vector(res.value))
+              case Left(e) => failedState(e.message)
             }
           case AwaitPackage =>
             if (buf.length < int32Bits) ((AwaitPackage, buf), pSeq)
             else {
-              scodec.codecs.int32.decode(buf) match {
-                case \/-((bs, pkgLength)) =>
-                  if (pkgLength < (bs.length / byteSize)) ((AwaitBytes(pkgLength), bs), pSeq)
+              codecs.int32.decode(buf).toEither match {
+                case Right(lenRes) =>
+                  if (lenRes.value < (lenRes.remainder.length / byteSize))
+                    ((AwaitBytes(lenRes.value), lenRes.remainder), pSeq)
                   else {
-                    TransportPackageCodec.decode(bs) match {
-                      case \/-((xs, p)) => doParse(AwaitPackage, xs)(pSeq.:+(ProtoPackage(p.pkg)))
-                      case -\/(e) => failedState(e.message)
+                    TransportPackageCodec.decode(lenRes.remainder).toEither match {
+                      case Right(res) => doParse(AwaitPackage, res.remainder)(pSeq.:+(ProtoPackage(res.value.pkg)))
+                      case Left(e) => failedState(e.message)
                     }
                   }
-                case -\/(e) => failedState(e.message)
+                case Left(e) => failedState(e.message)
               }
             }
           case AwaitBytes(awaitLength) =>
             if (awaitLength > (buf.length / byteSize)) ((AwaitBytes(awaitLength), buf), pSeq)
             else {
-              TransportPackageCodec.decode(buf) match {
-                case \/-((xs, p)) => doParse(AwaitPackage, xs)(pSeq.:+(ProtoPackage(p.pkg)))
-                case -\/(e) => failedState(e.message)
+              TransportPackageCodec.decode(buf).toEither match {
+                case Right(res) => doParse(AwaitPackage, res.remainder)(pSeq.:+(ProtoPackage(res.value.pkg)))
+                case Left(e) => failedState(e.message)
               }
             }
           case _: FailedState => ((state, BitVector.empty), Vector.empty)
@@ -128,13 +127,13 @@ object MTProto {
 
     override def onPush(elem: MTTransport, ctx: Context[ByteString]): Directive = elem match {
       case h @ Handshake(protoVersion, apiMajorVersion, _, _) =>
-        val res = ByteString(HandshakeCodec.encodeValid(h).toByteBuffer)
+        val res = ByteString(HandshakeCodec.encode(h).require.toByteBuffer)
         if (protoVersion == 0 || apiMajorVersion == 0) ctx.pushAndFinish(res)
         ctx.push(res)
       case ProtoPackage(p) =>
         packageIndex += 1
         val pkg = TransportPackage(packageIndex, p)
-        val res = ByteString(TransportPackageCodec.encodeValid(pkg).toByteBuffer)
+        val res = ByteString(TransportPackageCodec.encode(pkg).require.toByteBuffer)
         p match {
           case _: Drop => ctx.pushAndFinish(res)
           case _ => ctx.push(res)
