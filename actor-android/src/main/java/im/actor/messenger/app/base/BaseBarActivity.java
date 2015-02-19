@@ -11,6 +11,7 @@ import im.actor.messenger.app.binding.ActorBinder;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.model.entity.Avatar;
 import im.actor.model.mvvm.ValueModel;
+import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.messenger;
@@ -34,8 +35,13 @@ public class BaseBarActivity extends ActionBarActivity {
     public void bind(final AvatarView avatarView, final ValueModel<Avatar> avatar) {
         BINDER.bind(avatarView, avatar);
     }
+
     public void bind(final TextView textView, final View container, final UserVM user) {
         BINDER.bind(textView, container, user);
+    }
+
+    public void bind(final TextView textView, final View container, final View titleContainer, final UserTypingVM typing) {
+        BINDER.bind(textView, container, titleContainer, typing);
     }
 
     @Override

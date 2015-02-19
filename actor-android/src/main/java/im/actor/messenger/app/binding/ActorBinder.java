@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import im.actor.messenger.R;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Formatter;
@@ -12,6 +13,7 @@ import im.actor.model.entity.Avatar;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.UserPresence;
+import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
 /**
@@ -26,6 +28,23 @@ public class ActorBinder {
             @Override
             public void onChanged(String val, ValueModel<String> valueModel) {
                 textView.setText(val);
+            }
+        });
+    }
+
+    public void bind(final TextView textView, final View container, final View titleContainer,
+                     final UserTypingVM typing) {
+        bind(typing.getTyping(), new ValueChangedListener<Boolean>() {
+            @Override
+            public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                if (val) {
+                    textView.setText(R.string.typing_private);
+                    container.setVisibility(View.VISIBLE);
+                    titleContainer.setVisibility(View.INVISIBLE);
+                } else {
+                    container.setVisibility(View.INVISIBLE);
+                    titleContainer.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
