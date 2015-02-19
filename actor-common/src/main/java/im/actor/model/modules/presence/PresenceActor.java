@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import im.actor.model.MessengerCallback;
 import im.actor.model.api.UserOutPeer;
 import im.actor.model.api.rpc.RequestSubscribeToOnline;
 import im.actor.model.droidkit.actors.ActorCreator;

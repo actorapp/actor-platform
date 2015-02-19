@@ -1,4 +1,4 @@
-package im.actor.android;
+package im.actor.messenger.android;
 
 import android.os.Looper;
 

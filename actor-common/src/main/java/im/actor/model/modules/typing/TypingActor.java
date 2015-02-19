@@ -3,7 +3,6 @@ package im.actor.model.modules.typing;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import im.actor.model.MessengerCallback;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.ActorSystem;

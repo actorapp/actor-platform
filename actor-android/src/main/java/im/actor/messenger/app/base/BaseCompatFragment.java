@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.droidkit.mvvm.ui.BinderCompatFragment;
 
-import im.actor.android.CallBarrier;
+import im.actor.messenger.android.CallBarrier;
 import im.actor.messenger.app.view.ViewUtils;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
