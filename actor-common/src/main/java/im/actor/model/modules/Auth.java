@@ -9,6 +9,7 @@ import im.actor.model.api.rpc.ResponseAuth;
 import im.actor.model.api.rpc.ResponseSendAuthCode;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.modules.updates.internal.LoggedIn;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.storage.PreferencesStorage;
@@ -119,13 +120,13 @@ public class Auth extends BaseModule {
                                 myUid = response.getUser().getId();
                                 preferences().putInt(KEY_AUTH_UID, myUid);
                                 modules().onLoggedIn();
-                                runOnUiThread(new Runnable() {
+                                updates().onUpdateReceived(new LoggedIn(response, new Runnable() {
                                     @Override
                                     public void run() {
                                         state = AuthState.LOGGED_IN;
                                         callback.onResult(state);
                                     }
-                                });
+                                }));
                             }
 
                             @Override
@@ -166,13 +167,13 @@ public class Auth extends BaseModule {
                         myUid = response.getUser().getId();
                         preferences().putInt(KEY_AUTH_UID, myUid);
                         modules().onLoggedIn();
-                        runOnUiThread(new Runnable() {
+                        updates().onUpdateReceived(new LoggedIn(response, new Runnable() {
                             @Override
                             public void run() {
                                 state = AuthState.LOGGED_IN;
                                 callback.onResult(state);
                             }
-                        });
+                        }));
                     }
 
                     @Override

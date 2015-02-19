@@ -11,8 +11,10 @@ import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.updates.internal.InternalUpdate;
+import im.actor.model.modules.updates.internal.LoggedIn;
 import im.actor.model.network.parser.Update;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -23,6 +25,8 @@ public class UpdateProcessor {
 
     private static final String TAG = "Updates";
 
+    private Modules modules;
+
     private UsersProcessor usersProcessor;
     private MessagesProcessor messagesProcessor;
     private GroupsProcessor groupsProcessor;
@@ -30,6 +34,7 @@ public class UpdateProcessor {
     private TypingProcessor typingProcessor;
 
     public UpdateProcessor(Modules modules) {
+        this.modules = modules;
         this.usersProcessor = new UsersProcessor(modules);
         this.messagesProcessor = new MessagesProcessor(modules);
         this.groupsProcessor = new GroupsProcessor();
@@ -50,6 +55,11 @@ public class UpdateProcessor {
             applyRelated(dialogs.getUsers(), dialogs.getGroups(),
                     null, false);
             messagesProcessor.onDialogsLoaded(dialogs);
+        } else if (update instanceof LoggedIn) {
+            ArrayList<User> users = new ArrayList<User>();
+            users.add(((LoggedIn) update).getAuth().getUser());
+            applyRelated(users, new ArrayList<Group>(), ((LoggedIn) update).getAuth().getContacts(), true);
+            modules.getConfiguration().getMainThread().runOnUiThread(((LoggedIn) update).getRunnable());
         }
     }
 
