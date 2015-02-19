@@ -12,19 +12,19 @@ import scala.concurrent.Future
 import scala.util.{ Success, Failure }
 import scalaz._
 
-object AuthorizationActor {
+object AuthorizationManager {
   @SerialVersionUID(1L)
   case class FrontendPackage(p: MTPackage)
 
   @SerialVersionUID(1L)
   case class SessionPackage(p: MTPackage)
 
-  def props() = Props(new AuthorizationActor)
+  def props() = Props(new AuthorizationManager)
 }
 
-class AuthorizationActor extends Actor with ActorLogging with ActorPublisher[MTTransport] {
+class AuthorizationManager extends Actor with ActorLogging with ActorPublisher[MTTransport] {
   import akka.stream.actor.ActorPublisherMessage._
-  import AuthorizationActor._
+  import AuthorizationManager._
   import context.dispatcher
 
   private var authId: Long = 0L
@@ -66,7 +66,7 @@ class AuthorizationActor extends Actor with ActorLogging with ActorPublisher[MTT
             if (authId == 0L) {
               authId = rand.nextLong()
               persist.AuthId.create(authId, None)
-            } else Future.successful()
+            } else Future.successful(())
 
           f.onComplete {
             case Success(_) => sendPackage(mb.messageId, ResponseAuthId(authId))
