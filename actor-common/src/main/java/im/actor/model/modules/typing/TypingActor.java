@@ -47,11 +47,8 @@ public class TypingActor extends ModuleActor {
     private HashSet<Integer> typings = new HashSet<Integer>();
     private HashMap<Integer, HashSet<Integer>> groupTypings = new HashMap<Integer, HashSet<Integer>>();
 
-    private MessengerCallback callback;
-
     public TypingActor(Modules messenger) {
         super(messenger);
-        this.callback = messenger.getConfiguration().getCallback();
     }
 
     private void privateTyping(int uid, int type) {
@@ -66,9 +63,8 @@ public class TypingActor extends ModuleActor {
 
         if (!typings.contains(uid)) {
             typings.add(uid);
-            if (callback != null) {
-                callback.onTypingStart(uid);
-            }
+
+            modules().getTypingModule().getTyping(uid).getTyping().change(true);
         }
         self().sendOnce(new StopTyping(uid), TYPING_TEXT_TIMEOUT);
     }
@@ -76,9 +72,8 @@ public class TypingActor extends ModuleActor {
     private void stopPrivateTyping(int uid) {
         if (typings.contains(uid)) {
             typings.remove(uid);
-            if (callback != null) {
-                callback.onTypingEnd(uid);
-            }
+
+            modules().getTypingModule().getTyping(uid).getTyping().change(false);
         }
     }
 
@@ -98,9 +93,11 @@ public class TypingActor extends ModuleActor {
             HashSet<Integer> set = new HashSet<Integer>();
             set.add(uid);
             groupTypings.put(gid, set);
-            if (callback != null) {
-                callback.onGroupTyping(gid, new int[]{uid});
-            }
+
+            modules().getTypingModule()
+                    .getGroupTyping(gid)
+                    .getActive()
+                    .change(new int[uid]);
         } else {
             HashSet<Integer> src = groupTypings.get(gid);
             if (!src.contains(uid)) {
@@ -110,9 +107,11 @@ public class TypingActor extends ModuleActor {
                 for (int i = 0; i < ids.length; i++) {
                     ids2[i] = ids[i];
                 }
-                if (callback != null) {
-                    callback.onGroupTyping(gid, ids2);
-                }
+
+                modules().getTypingModule()
+                        .getGroupTyping(gid)
+                        .getActive()
+                        .change(ids2);
             }
         }
 
@@ -131,9 +130,11 @@ public class TypingActor extends ModuleActor {
             for (int i = 0; i < ids.length; i++) {
                 ids2[i] = ids[i];
             }
-            if (callback != null) {
-                callback.onGroupTyping(gid, ids2);
-            }
+
+            modules().getTypingModule()
+                    .getGroupTyping(gid)
+                    .getActive()
+                    .change(ids2);
         }
     }
 
