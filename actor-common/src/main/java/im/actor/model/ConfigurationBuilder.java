@@ -19,8 +19,6 @@ public class ConfigurationBuilder {
 
     private Storage enginesFactory;
 
-    private MessengerCallback callback;
-
     private ArrayList<ConnectionEndpoint> endpoints = new ArrayList<ConnectionEndpoint>();
 
     private boolean isUploadFilePersist;
@@ -42,11 +40,6 @@ public class ConfigurationBuilder {
 
     public ConfigurationBuilder setStorage(Storage storage) {
         this.enginesFactory = storage;
-        return this;
-    }
-
-    public ConfigurationBuilder setCallback(MessengerCallback callback) {
-        this.callback = callback;
         return this;
     }
 
@@ -94,9 +87,6 @@ public class ConfigurationBuilder {
         if (mainThread == null) {
             throw new RuntimeException("Main Thread is not set");
         }
-        if (callback == null) {
-            throw new RuntimeException("Callback is not set");
-        }
         if (enginesFactory == null) {
             throw new RuntimeException("Storage not set");
         }
@@ -104,6 +94,6 @@ public class ConfigurationBuilder {
             throw new RuntimeException("Endpoints not set");
         }
         return new Configuration(networking, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
-                threading, mainThread, enginesFactory, callback, log, isUploadFilePersist);
+                threading, mainThread, enginesFactory, log, isUploadFilePersist);
     }
 }
