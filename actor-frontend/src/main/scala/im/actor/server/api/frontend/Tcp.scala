@@ -5,7 +5,7 @@ import akka.util.Timeout
 import akka.event.Logging
 import akka.stream.scaladsl._
 import akka.stream.FlowMaterializer
-import im.actor.server.api.service.MTProto
+import im.actor.server.service.MTProto
 import scala.util.{ Success, Failure }
 import com.typesafe.config.Config
 import java.net.InetSocketAddress

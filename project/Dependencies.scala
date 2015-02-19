@@ -50,7 +50,11 @@ object Dependencies {
 
   val common = Seq(logbackClassic, scalaLogging, jodaTime, jodaConvert)
 
-  val tests = common ++ Seq(akkaTestkit, scalacheck, specs2, slickTestkit)
+  val root = common ++ Seq(
+    akkaSlf4j, akkaActor, akkaKernel, akkaStream
+  )
+
+  val api = common ++ Seq(akkaSlf4j, akkaActor)
 
   val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP)
 
@@ -60,14 +64,10 @@ object Dependencies {
 
   val frontend = common ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream, akkaStreamWS,
+    commonsCodec,
     scodecBits, scodecCore,
     scalazCore, scalazConcurrent
   )
 
-  val root = common ++ Seq(
-    akkaSlf4j, akkaActor, akkaKernel, akkaStream,
-    scodecBits, scodecCore,
-    scalazCore, scalazConcurrent,
-    commonsCodec
-  )
+  val tests = common ++ Seq(akkaTestkit, scalacheck, specs2, slickTestkit)
 }
