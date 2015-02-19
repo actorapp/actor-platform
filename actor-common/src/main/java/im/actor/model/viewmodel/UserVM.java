@@ -15,6 +15,8 @@ public class UserVM extends BaseValueModel<User> {
     private ValueModel<String> name;
     private ValueModel<Avatar> avatar;
     private Sex sex;
+    private ValueModel<Boolean> isContact;
+    private ValueModel<UserPresence> presence;
 
     public UserVM(User user) {
         super(user);
@@ -24,6 +26,8 @@ public class UserVM extends BaseValueModel<User> {
         sex = user.getSex();
         name = new ValueModel<String>("user." + id + ".name", user.getName());
         avatar = new ValueModel<Avatar>("user." + id + ".avatar", user.getAvatar());
+        isContact = new ValueModel<Boolean>("user." + id + ".contact", false);
+        presence = new ValueModel<UserPresence>("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
     }
 
     @Override
@@ -50,5 +54,13 @@ public class UserVM extends BaseValueModel<User> {
 
     public Sex getSex() {
         return sex;
+    }
+
+    public ValueModel<Boolean> isContact() {
+        return isContact;
+    }
+
+    public ValueModel<UserPresence> getPresence() {
+        return presence;
     }
 }

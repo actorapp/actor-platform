@@ -11,6 +11,7 @@ import im.actor.messenger.app.binding.ActorBinder;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.model.entity.Avatar;
+import im.actor.model.viewmodel.UserVM;
 
 /**
  * Created by ex3ndr on 17.09.14.
@@ -29,6 +30,10 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
 
     public void bind(final CoverAvatarView avatarView, final im.actor.model.mvvm.ValueModel<Avatar> avatar) {
         BINDER.bind(avatarView, avatar);
+    }
+
+    public void bind(final TextView textView, final View container, final UserVM user) {
+        BINDER.bind(textView, container, user);
     }
 
     @Override

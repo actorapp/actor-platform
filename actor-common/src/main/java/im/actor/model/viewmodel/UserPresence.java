@@ -1,7 +1,7 @@
-package im.actor.messenger.model;
+package im.actor.model.viewmodel;
 
 /**
- * Created by ex3ndr on 19.09.14.
+ * Created by ex3ndr on 19.02.15.
  */
 public class UserPresence {
     private final State state;

@@ -14,6 +14,7 @@ import im.actor.model.network.RpcException;
 import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
 import im.actor.model.storage.PreferencesStorage;
+import im.actor.model.viewmodel.UserVM;
 
 /**
  * Created by ex3ndr on 08.02.15.
@@ -31,6 +32,10 @@ public class ModuleActor extends Actor {
 
     public User getUser(int uid) {
         return users().getValue(uid);
+    }
+
+    public UserVM getUserVM(int uid) {
+        return messenger.getUsersModule().getUsersCollection().get(uid);
     }
 
     public PreferencesStorage preferences() {

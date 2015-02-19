@@ -43,6 +43,7 @@ import im.actor.messenger.util.io.IOUtils;
 import im.actor.model.Messenger;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
+import im.actor.model.viewmodel.UserPresence;
 import im.actor.model.viewmodel.UserVM;
 
 import java.io.File;
@@ -312,31 +313,11 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             }
 
             barAvatar.setEmptyDrawable(AvatarDrawable.create(user, 18, this));
-//            getBinder().bind(user.getAvatar(), new Listener<Avatar>() {
-//                @Override
-//                public void onUpdated(Avatar a) {
-//                    if (a != null) {
-//                        barAvatar.bindFastAvatar(38, a);
-//                    } else {
-//                        barAvatar.unbind();
-//                    }
-//                }
-//            });
+            bind(barAvatar, user.getAvatar());
+            bind(barTitle, user.getName());
+            bind(barSubtitle, barSubtitleContainer, user);
+            // TODO: Bind typing
 
-//            getBinder().bindText(barTitle, user.getNameModel());
-//
-//            getBinder().bind(user.getPresence(), new Listener<UserPresence>() {
-//                @Override
-//                public void onUpdated(UserPresence presence) {
-//                    updateUserStatus(presence, TypingModel.privateChatTyping(user.getId()).getValue());
-//                }
-//            });
-//            getBinder().bind(TypingModel.privateChatTyping(user.getId()), new Listener<Boolean>() {
-//                @Override
-//                public void onUpdated(Boolean aBoolean) {
-//                    updateUserStatus(user.getPresence().getValue(), aBoolean);
-//                }
-//            });
         } else if (peer.getPeerType() == PeerType.GROUP) {
 //            final GroupModel groupInfo = groups().get(chatId);
 //
@@ -394,25 +375,6 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             messageBody.setText("");
         }
         isTypingDisabled = false;
-    }
-
-    private void updateUserStatus(UserPresence presence, boolean isTyping) {
-        String s = Formatter.formatPresence(presence, users().get(peer.getPeerId()).getSex());
-        if (s == null) {
-            barSubtitleContainer.setVisibility(View.GONE);
-        } else {
-            barSubtitleContainer.setVisibility(View.VISIBLE);
-            barSubtitle.setText(s);
-        }
-
-        if (isTyping) {
-            barTyping.setText(R.string.typing_private);
-            showView(barTypingContainer);
-            hideView(barSubtitle);
-        } else {
-            hideView(barTypingContainer);
-            showView(barSubtitle);
-        }
     }
 
     private void updateGroupStatus(int[] onlines, int[] typings) {
