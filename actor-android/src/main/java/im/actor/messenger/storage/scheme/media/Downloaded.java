@@ -3,14 +3,13 @@ package im.actor.messenger.storage.scheme.media;
 import com.droidkit.bser.BserObject;
 import com.droidkit.bser.BserValues;
 import com.droidkit.bser.BserWriter;
-import com.droidkit.engine.keyvalue.KeyValueIdentity;
 
 import java.io.IOException;
 
 /**
  * Created by ex3ndr on 22.10.14.
  */
-public class Downloaded extends BserObject implements KeyValueIdentity {
+public class Downloaded extends BserObject {
     private long fileId;
     private int fileSize;
     private String name;
@@ -57,10 +56,5 @@ public class Downloaded extends BserObject implements KeyValueIdentity {
         writer.writeInt(2, fileSize);
         writer.writeString(3, downloadedPath);
         writer.writeString(4, name);
-    }
-
-    @Override
-    public long getKeyValueId() {
-        return fileId;
     }
 }
