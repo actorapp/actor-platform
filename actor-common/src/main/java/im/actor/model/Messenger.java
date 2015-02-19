@@ -126,11 +126,19 @@ public class Messenger {
     }
 
     public void onConversationOpen(Peer peer) {
-        modules.getPresenceModule().onConversationOpen(peer);
+        modules.getPresenceModule().subscribe(peer);
     }
 
     public void onConversationClosed(Peer peer) {
-        modules.getPresenceModule().onConversationClosed(peer);
+
+    }
+
+    public void onProfileOpen(int uid) {
+        modules.getPresenceModule().subscribe(Peer.user(uid));
+    }
+
+    public void onProfileClosed(int uid) {
+
     }
 
     public void onInMessageShown(Peer peer, long rid, long sortDate, boolean isEncrypted) {

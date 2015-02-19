@@ -20,6 +20,8 @@ import im.actor.model.entity.PeerType;
 import im.actor.model.entity.User;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
+import im.actor.model.viewmodel.UserPresence;
+import im.actor.model.viewmodel.UserVM;
 
 /**
  * Created by ex3ndr on 15.02.15.
@@ -51,37 +53,35 @@ public class PresenceActor extends ModuleActor {
     private static final int ONLINE_TIMEOUT = 5 * 60 * 1000;
 
     private HashSet<Integer> uids = new HashSet<Integer>();
-    private MessengerCallback onlineCallback;
 
     public PresenceActor(Modules messenger) {
         super(messenger);
-
-        onlineCallback = messenger.getConfiguration().getCallback();
     }
 
     private void onUserOnline(int uid) {
-        if (onlineCallback != null) {
-            onlineCallback.onUserOnline(uid);
+        UserVM vm = getUserVM(uid);
+        if (vm != null) {
+            vm.getPresence().change(new UserPresence(UserPresence.State.ONLINE));
         }
         self().sendOnce(new UserOffline(uid), ONLINE_TIMEOUT);
     }
 
     private void onUserOffline(int uid) {
-        if (onlineCallback != null) {
-            onlineCallback.onUserOffline(uid);
+        UserVM vm = getUserVM(uid);
+        if (vm != null) {
+            vm.getPresence().change(new UserPresence(UserPresence.State.OFFLINE));
         }
     }
 
     private void onUserLastSeen(int uid, long date) {
-        if (onlineCallback != null) {
-            onlineCallback.onUserLastSeen(uid, date);
+        UserVM vm = getUserVM(uid);
+        if (vm != null) {
+            vm.getPresence().change(new UserPresence(UserPresence.State.OFFLINE, date));
         }
     }
 
     private void onGroupOnline(int gid, int count) {
-        if (onlineCallback != null) {
-            onlineCallback.onGroupOnline(gid, count);
-        }
+        // TODO: Implement
     }
 
     private void subscribe(Peer peer) {
