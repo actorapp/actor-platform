@@ -7,8 +7,6 @@ import scalaz._
 import Scalaz._
 
 object VarIntCodec extends Codec[Long] {
-  import im.actor.server.api.util.ByteConstants._
-
   def encode(n: Long) = {
     @inline @tailrec
     def f(bn: Long, buf: BitVector): Err \/ BitVector = {
@@ -20,8 +18,8 @@ object VarIntCodec extends Codec[Long] {
 
   def decode(buf: BitVector) = {
     @inline @tailrec
-    def f(index: Int, res: Long): Err \/ (BitVector, Long) = {
-      if (index > 10) Err("exceeded long size").left
+    def f(index: Long, res: Long): Err \/ (BitVector, Long) = {
+      if (index > 10L) Err("exceeded long size").left
       else {
         val n = res | ((buf.getByte(index) & 0xFFL) & 0x7FL) << index * 7
         if ((buf.length > byteSize * index) && (buf.getByte(index) & 0x80) != 0) f(index + 1, n)
@@ -29,6 +27,6 @@ object VarIntCodec extends Codec[Long] {
       }
     }
     if (buf.isEmpty) Err("empty buf").left
-    else f(0, 0L)
+    else f(0L, 0L)
   }
 }

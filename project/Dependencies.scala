@@ -54,6 +54,10 @@ object Dependencies {
 
   val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP)
 
+  val codecs = common ++ Seq(scodecBits, scodecCore)
+
+  val models = common ++ Seq(scodecBits, scodecCore)
+
   val frontend = common ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream, akkaStreamWS,
     scodecBits, scodecCore,

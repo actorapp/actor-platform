@@ -4,7 +4,7 @@ import akka.actor._
 import akka.stream.actor.ActorPublisher
 import akka.stream.scaladsl.Source
 
-class SourceWatchActor[T](actorRef: ActorRef) extends Actor with ActorLogging with ActorPublisher[T] {
+class SourceWatchManager[T](actorRef: ActorRef) extends Actor with ActorLogging with ActorPublisher[T] {
   import akka.stream.actor.ActorPublisherMessage._
 
   context.watch(actorRef)
@@ -12,14 +12,14 @@ class SourceWatchActor[T](actorRef: ActorRef) extends Actor with ActorLogging wi
   def receive = {
     case Request(_) =>
     case Terminated(`actorRef`)  =>
-      log.error(s"Terminated: {}", actorRef)
+      log.error("Terminated: {}", actorRef)
       onError(new Throwable("actor terminated"))
   }
 }
 
-object SourceWatchActor {
+object SourceWatchManager {
   def apply[T](actorRef: ActorRef)(implicit system: ActorSystem): (ActorRef, Source[T]) = {
-    val actor = system.actorOf(Props(new SourceWatchActor[T](actorRef)))
+    val actor = system.actorOf(Props(new SourceWatchManager[T](actorRef)))
     (actor, Source(ActorPublisher[T](actor)))
   }
 }

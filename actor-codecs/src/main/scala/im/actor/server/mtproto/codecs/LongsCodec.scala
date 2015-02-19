@@ -4,8 +4,6 @@ import scodec.Codec
 import scodec.bits._
 
 object LongsCodec extends Codec[Vector[Long]] {
-  import im.actor.server.api.util.ByteConstants._
-
   def encode(v: Vector[Long]) = {
     for { length <- varint.encode(v.size) }
     yield v.map(BitVector.fromLong(_)).foldLeft(length)(_ ++ _)
