@@ -122,25 +122,6 @@ public class Core {
         builder.setLog(new AndroidLog());
 
         builder.setCallback(new MessengerCallback() {
-            @Override
-            public void onUserOnline(int uid) {
-                // users().get(uid).getPresence().change(new UserPresence(UserPresence.State.ONLINE, 0));
-            }
-
-            @Override
-            public void onUserOffline(int uid) {
-                // users().get(uid).getPresence().change(new UserPresence(UserPresence.State.OFFLINE, 0));
-            }
-
-            @Override
-            public void onUserLastSeen(int uid, long lastSeen) {
-                // users().get(uid).getPresence().change(new UserPresence(UserPresence.State.OFFLINE, lastSeen));
-            }
-
-            @Override
-            public void onGroupOnline(int gid, int count) {
-                // TODO: Implement
-            }
 
             @Override
             public void onTypingStart(int uid) {

@@ -13,6 +13,8 @@ import im.actor.messenger.app.base.BaseBarFragmentActivity;
 import im.actor.messenger.app.fragment.profile.ProfileFragment;
 import im.actor.messenger.app.intents.Intents;
 
+import static im.actor.messenger.core.Core.messenger;
+
 /**
  * Created by ex3ndr on 12.09.14.
  */
@@ -42,6 +44,12 @@ public class ProfileActivity extends BaseBarFragmentActivity {
 //                invalidateOptionsMenu();
 //            }
 //        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        messenger().onProfileOpen(uid);
     }
 
     @Override
@@ -105,5 +113,11 @@ public class ProfileActivity extends BaseBarFragmentActivity {
             startActivity(Intents.editUserName(uid, this));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        messenger().onProfileClosed(uid);
     }
 }

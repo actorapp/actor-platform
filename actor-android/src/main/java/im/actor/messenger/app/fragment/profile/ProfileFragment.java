@@ -12,15 +12,11 @@ import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.droidkit.mvvm.ui.Listener;
-
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseBarActivity;
 import im.actor.messenger.app.base.BaseCompatFragment;
 import im.actor.messenger.app.intents.Intents;
 import im.actor.messenger.app.view.CoverAvatarView;
-import im.actor.messenger.app.view.Formatter;
-import im.actor.messenger.model.UserPresence;
 import im.actor.messenger.util.Screen;
 import im.actor.model.viewmodel.UserVM;
 
@@ -60,18 +56,7 @@ public class ProfileFragment extends BaseCompatFragment {
         bind((TextView) res.findViewById(R.id.name), user.getName());
 
         final TextView lastSeen = (TextView) res.findViewById(R.id.lastSeen);
-//        getBinder().bind(user.getPresence(), new Listener<UserPresence>() {
-//            @Override
-//            public void onUpdated(UserPresence presence) {
-//                String s = Formatter.formatPresence(presence, user.getSex());
-//                if (s != null) {
-//                    lastSeen.setVisibility(View.VISIBLE);
-//                    lastSeen.setText(s);
-//                } else {
-//                    lastSeen.setVisibility(View.GONE);
-//                }
-//            }
-//        });
+        bind(lastSeen, lastSeen, user);
 
         // int docsCount = ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_USER, uid)).getCount();
 
@@ -160,17 +145,7 @@ public class ProfileFragment extends BaseCompatFragment {
 
         avatarView = (CoverAvatarView) res.findViewById(R.id.avatar);
 
-//        getBinder().bind(user.getAvatar(), new Listener<Avatar>() {
-//            @Override
-//            public void onUpdated(Avatar avatar) {
-//                if (avatar != null) {
-//                    avatarView.request(avatar);
-//                } else {
-//                    avatarView.clear();
-//                }
-//            }
-//        });
-
+        bind(avatarView, user.getAvatar());
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,7 +159,6 @@ public class ProfileFragment extends BaseCompatFragment {
 //        getBinder().bindChecked(notificationEnable, NotificationSettings.getInstance().convValue(DialogUids.getDialogUid(0, uid)));
 //        getBinder().bindOnClick(notificationContainter, NotificationSettings.getInstance().convValue(DialogUids.getDialogUid(0, uid)));
 //        getBinder().bindOnClick(notificationEnable, NotificationSettings.getInstance().convValue(DialogUids.getDialogUid(0, uid)));
-
 
         final ScrollView scrollView = ((ScrollView) res.findViewById(R.id.scrollContainer));
 

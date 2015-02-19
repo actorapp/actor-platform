@@ -39,12 +39,8 @@ public class Presence extends BaseModule {
         myPresence.send(new OwnPresenceActor.OnAppHidden());
     }
 
-    public void onConversationOpen(Peer peer) {
+    public void subscribe(Peer peer) {
         presence.send(new PresenceActor.Subscribe(peer));
-    }
-
-    public void onConversationClosed(Peer peer) {
-
     }
 
     public void onNewSessionCreated() {
