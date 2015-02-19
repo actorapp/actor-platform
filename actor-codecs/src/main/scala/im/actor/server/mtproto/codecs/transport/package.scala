@@ -9,8 +9,6 @@ import scalaz._
 import Scalaz._
 
 package object transport {
-  import im.actor.server.api.util.ByteConstants._
-
   val HandshakeCodec = (byte :: byte :: byte :: bytes).as[Handshake]
 
   object TransportPackageCodec extends Codec[TransportPackage] {

@@ -6,8 +6,6 @@ import scalaz._
 import Scalaz._
 
 object BooleanCodec extends Codec[Boolean] {
-  import im.actor.server.api.util.ByteConstants._
-
   def encode(b: Boolean) = {
     if (b) BitVector(1).right
     else BitVector(0).right

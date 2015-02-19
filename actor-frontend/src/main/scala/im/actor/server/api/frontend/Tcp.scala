@@ -35,7 +35,7 @@ object Tcp {
       case Success(address) =>
         log.debug(s"Server started, listening on: $address")
       case Failure(e) =>
-        log.error(e, s"Server could not bind to serverAddress")
+        log.error(e, "Server could not bind to serverAddress")
         system.shutdown()
     }
   }

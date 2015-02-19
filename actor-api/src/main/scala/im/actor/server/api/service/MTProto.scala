@@ -1,5 +1,6 @@
 package im.actor.server.api.service
 
+import im.actor.server.mtproto.codecs._
 import im.actor.server.mtproto.codecs.transport._
 import im.actor.server.mtproto.transport._
 import akka.actor._
@@ -17,23 +18,22 @@ import org.apache.commons.codec.digest.DigestUtils
 object MTProto {
   import akka.pattern.{ ask, AskTimeoutException }
   import akka.stream.stage._
-  import im.actor.server.api.util.ByteConstants._
 
-  val protoVersions = Set(1)
-  val apiMajorVersions = Set(1)
+  val protoVersions: Set[Byte] = Set(1)
+  val apiMajorVersions: Set[Byte] = Set(1)
 
   def flow(maxBufferSize: Int)
-          (implicit system: ActorSystem, materializer: FlowMaterializer, timeout: Timeout): Flow[ByteString, ByteString] = {
+          (implicit system: ActorSystem, timeout: Timeout): Flow[ByteString, ByteString] = {
     val actor = system.actorOf(AuthorizationActor.props())
-    val (watchActor, watchSource) = SourceWatchActor[MTTransport](actor)
+    val (watchActor, watchSource) = SourceWatchManager[MTTransport](actor)
     val actorSource = Source(ActorPublisher[MTTransport](actor))
 
     val handleFlow = Flow[ByteString]
       .transform(() => MTProto.parse(maxBufferSize))
       .mapAsyncUnordered(MTProto.handlePackage(_, actor))
-    val responseFlow = Flow[MTTransport]
+    val mapResp = Flow[MTTransport]
       .transform(() => MTProto.mapResponse())
-    val completeSink = Sink.onComplete {
+    val complete = Sink.onComplete {
       case _ =>
         watchActor ! PoisonPill
         actor ! PoisonPill
@@ -49,11 +49,9 @@ object MTProto {
       in ~> handleFlow ~> merge
       actorSource      ~> merge
       watchSource      ~> merge
-
-      merge ~> responseFlow ~> bcast
-
-      bcast ~> out
-      bcast ~> completeSink
+                          merge ~> mapResp ~> bcast
+                                              bcast ~> out
+                                              bcast ~> complete
 
       (in, out)
     }
@@ -137,8 +135,10 @@ object MTProto {
         packageIndex += 1
         val pkg = TransportPackage(packageIndex, p)
         val res = ByteString(TransportPackageCodec.encodeValid(pkg).toByteBuffer)
-        if (p.isInstanceOf[Drop]) ctx.pushAndFinish(res)
-        else ctx.push(res)
+        p match {
+          case _: Drop => ctx.pushAndFinish(res)
+          case _ => ctx.push(res)
+        }
       case SilentClose => ctx.finish()
     }
 
