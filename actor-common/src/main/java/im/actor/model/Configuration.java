@@ -1,8 +1,5 @@
 package im.actor.model;
 
-import java.net.URI;
-import java.util.ArrayList;
-
 import im.actor.model.network.ConnectionEndpoint;
 
 /**
@@ -19,21 +16,18 @@ public class Configuration {
 
     private final Storage storage;
 
-    private final MessengerCallback callback;
-
     private final LogCallback log;
 
     private final boolean persistUploadingFiles;
 
     public Configuration(Networking networking, ConnectionEndpoint[] endpoints,
                          Threading threading, MainThread mainThread, Storage storage,
-                         MessengerCallback callback, LogCallback log, boolean persistUploadingFiles) {
+                         LogCallback log, boolean persistUploadingFiles) {
         this.networking = networking;
         this.endpoints = endpoints;
         this.threading = threading;
         this.mainThread = mainThread;
         this.storage = storage;
-        this.callback = callback;
         this.log = log;
         this.persistUploadingFiles = persistUploadingFiles;
     }
@@ -56,10 +50,6 @@ public class Configuration {
 
     public Storage getStorage() {
         return storage;
-    }
-
-    public MessengerCallback getCallback() {
-        return callback;
     }
 
     public LogCallback getLog() {
