@@ -39,15 +39,15 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
 import im.actor.messenger.model.ProfileSyncState;
-import im.actor.messenger.model.UserModel;
-import im.actor.messenger.storage.scheme.GlobalSearch;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Dialog;
+import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
+import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.storage.KeyValueEngines.users;
+import static im.actor.messenger.core.Core.users;
 
 /**
  * Created by ex3ndr on 25.10.14.
@@ -275,19 +275,12 @@ public class MainPhoneController extends MainBaseController implements ValueChan
 
         MenuItem menuItem = menu.findItem(R.id.profile);
         final AvatarView avatarView = (AvatarView) menuItem.getActionView().findViewById(R.id.avatarView);
-        UserModel userModel = users().get(myUid());
-        if (userModel != null) {
-            avatarView.setEmptyDrawable(AvatarDrawable.create(userModel, 18, getActivity()));
-//            getActivity().getBinder().bind(userModel.getAvatar(), new Listener<Avatar>() {
-//                @Override
-//                public void onUpdated(Avatar avatar) {
-//                    if (avatar != null) {
-//                        avatarView.bindAvatar(40, avatar);
-//                    } else {
-//                        avatarView.unbind();
-//                    }
-//                }
-//            });
+        if (messenger().isLoggedIn()) {
+            UserVM userModel = users().get(myUid());
+            if (userModel != null) {
+                avatarView.setEmptyDrawable(AvatarDrawable.create(userModel, 18, getActivity()));
+                getActivity().bind(avatarView, userModel.getAvatar());
+            }
         }
         menuItem.getActionView().setOnClickListener(new View.OnClickListener() {
             @Override

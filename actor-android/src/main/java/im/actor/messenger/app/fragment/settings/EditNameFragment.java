@@ -11,12 +11,12 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.activity.EditNameActivity;
 import im.actor.messenger.app.base.BaseCompatFragment;
 import im.actor.messenger.app.view.KeyboardHelper;
-import im.actor.messenger.model.UserModel;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.storage.KeyValueEngines.users;
+import static im.actor.messenger.core.Core.users;
 
 /**
  * Created by ex3ndr on 25.10.14.
@@ -48,11 +48,11 @@ public class EditNameFragment extends BaseCompatFragment {
         View res = inflater.inflate(R.layout.fragment_edit_name, container, false);
         nameEdit = (EditText) res.findViewById(R.id.nameEdit);
         if (type == EditNameActivity.TYPE_ME) {
-            UserModel userModel = users().get(myUid());
-            nameEdit.setText(userModel.getName());
+            UserVM userModel = users().get(myUid());
+            nameEdit.setText(userModel.getName().get());
         } else if (type == EditNameActivity.TYPE_USER) {
-            UserModel userModel = users().get(id);
-            nameEdit.setText(userModel.getName());
+            UserVM userModel = users().get(id);
+            nameEdit.setText(userModel.getName().get());
         } else if (type == EditNameActivity.TYPE_GROUP) {
 //            GroupModel info = groups().get(id);
 //            nameEdit.setText(info.getTitle());

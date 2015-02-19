@@ -1,24 +1,17 @@
 package im.actor.messenger.app.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.droidkit.mvvm.ui.Listener;
-
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseBarFragmentActivity;
 import im.actor.messenger.app.fragment.profile.ProfileFragment;
 import im.actor.messenger.app.intents.Intents;
-import im.actor.messenger.model.UserModel;
-
-import static im.actor.messenger.storage.KeyValueEngines.users;
 
 /**
  * Created by ex3ndr on 12.09.14.
@@ -57,7 +50,7 @@ public class ProfileActivity extends BaseBarFragmentActivity {
 
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         menu.findItem(R.id.call).setVisible(tm.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE);
-        UserModel userModel = users().get(uid);
+//        UserModel userModel = users().get(uid);
 //        menu.findItem(R.id.remove).setVisible(userModel.getContactModel().getValue());
 //        menu.findItem(R.id.add).setVisible(!userModel.getContactModel().getValue());
         return super.onCreateOptionsMenu(menu);

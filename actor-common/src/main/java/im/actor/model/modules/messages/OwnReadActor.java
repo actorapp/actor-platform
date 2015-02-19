@@ -10,7 +10,7 @@ import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.UnreadMessage;
 import im.actor.model.modules.messages.entity.UnreadMessagesStorage;
 import im.actor.model.modules.utils.ModuleActor;
-import im.actor.model.mvvm.KeyValueEngine;
+import im.actor.model.storage.KeyValueEngine;
 
 /**
  * Created by ex3ndr on 17.02.15.

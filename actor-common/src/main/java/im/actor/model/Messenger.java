@@ -11,11 +11,14 @@ import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.ReadState;
-import im.actor.model.entity.content.TextContent;
+import im.actor.model.entity.User;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
-import im.actor.model.mvvm.KeyValueEngine;
-import im.actor.model.mvvm.ListEngine;
+import im.actor.model.mvvm.MVVMCollection;
+import im.actor.model.storage.KeyValueEngine;
+import im.actor.model.storage.ListEngine;
+import im.actor.model.mvvm.MVVMEngine;
+import im.actor.model.viewmodel.UserVM;
 
 /**
  * Created by ex3ndr on 08.02.15.
@@ -26,6 +29,9 @@ public class Messenger {
     public Messenger(Configuration configuration) {
         // Init internal actor system
         Environment.setThreading(configuration.getThreading());
+
+        // Init MVVM
+        MVVMEngine.init(configuration.getMainThread());
 
         // Init Log
         Log.setLog(configuration.getLog());
@@ -95,8 +101,8 @@ public class Messenger {
         return modules.getAuthModule().myUid();
     }
 
-    public KeyValueEngine<im.actor.model.entity.User> getUsers() {
-        return modules.getUsersModule().getUsers();
+    public MVVMCollection<User, UserVM> getUsers() {
+        return modules.getUsersModule().getUsersCollection();
     }
 
     public ListEngine<Dialog> getDialogs() {

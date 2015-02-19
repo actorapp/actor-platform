@@ -6,11 +6,11 @@ import android.text.style.ForegroundColorSpan;
 
 import im.actor.messenger.R;
 import im.actor.messenger.core.AppContext;
-import im.actor.messenger.model.UserModel;
 import im.actor.model.entity.Sex;
+import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.storage.KeyValueEngines.users;
+import static im.actor.messenger.core.Core.users;
 
 /**
  * Created by ex3ndr on 22.12.14.
@@ -209,7 +209,7 @@ public class MessageTextFormatter {
     // Toos methods
 
     private static Sex getUserSex(int uid) {
-        UserModel u = users().get(uid);
+        UserVM u = users().get(uid);
         if (u != null) {
             return u.getSex();
         } else {
@@ -225,9 +225,9 @@ public class MessageTextFormatter {
                 return getString(R.string.service_your);
             }
         }
-        UserModel u = users().get(uid);
+        UserVM u = users().get(uid);
         if (u != null) {
-            return u.getName();
+            return u.getName().get();
         } else {
             return "#" + uid;
         }

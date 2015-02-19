@@ -1,0 +1,64 @@
+package im.actor.model.mvvm;
+
+import java.util.ArrayList;
+
+/**
+ * Created by ex3ndr on 19.02.15.
+ */
+public class ValueModel<T> {
+
+    private ArrayList<ValueChangedListener<T>> listeners = new ArrayList<ValueChangedListener<T>>();
+    private String name;
+    private volatile T value;
+
+    public ValueModel(String name, T defaultValue) {
+        this.name = name;
+        this.value = defaultValue;
+    }
+
+    public T get() {
+        return value;
+    }
+
+    public void change(T value) {
+        if (this.value != null && value != null && value.equals(this.value)) {
+            return;
+        }
+
+        // No need in sync. We are not expected complex sync of value models
+        this.value = value;
+
+        notify(value);
+    }
+
+    // We expect that subscribe will be called only on UI Thread
+    public void subscribe(ValueChangedListener<T> listener) {
+        if (listeners.contains(listener)) {
+            return;
+        }
+        listeners.add(listener);
+        listener.onChanged(value, this);
+    }
+
+    // We expect that subscribe will be called only on UI Thread
+    public void unsubscribe(ValueChangedListener<T> listener) {
+        listeners.remove(listener);
+    }
+
+    private void notify(final T value) {
+        MVVMEngine.getMainThread().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (ValueChangedListener<T> listener :
+                        listeners.toArray(new ValueChangedListener[listeners.size()])) {
+                    listener.onChanged(value, ValueModel.this);
+                }
+            }
+        });
+    }
+
+    @Override
+    public String toString() {
+        return value+"";
+    }
+}

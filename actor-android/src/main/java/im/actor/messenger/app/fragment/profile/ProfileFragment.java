@@ -1,29 +1,18 @@
 package im.actor.messenger.app.fragment.profile;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SwitchCompat;
-import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.CheckBox;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.droidkit.mvvm.ui.Listener;
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseBarActivity;
@@ -32,11 +21,10 @@ import im.actor.messenger.app.intents.Intents;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.model.UserPresence;
-import im.actor.messenger.settings.NotificationSettings;
-import im.actor.messenger.model.UserModel;
 import im.actor.messenger.util.Screen;
+import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.storage.KeyValueEngines.users;
+import static im.actor.messenger.core.Core.users;
 
 /**
  * Created by ex3ndr on 12.09.14.
@@ -63,27 +51,27 @@ public class ProfileFragment extends BaseCompatFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final int uid = getArguments().getInt(EXTRA_UID);
-        final UserModel user = users().get(uid);
+        final UserVM user = users().get(uid);
 
         baseColor = getResources().getColor(R.color.primary);
 
         View res = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        getBinder().bindText((TextView) res.findViewById(R.id.name), user.getNameModel());
+        bind((TextView) res.findViewById(R.id.name), user.getName());
 
         final TextView lastSeen = (TextView) res.findViewById(R.id.lastSeen);
-        getBinder().bind(user.getPresence(), new Listener<UserPresence>() {
-            @Override
-            public void onUpdated(UserPresence presence) {
-                String s = Formatter.formatPresence(presence, user.getSex());
-                if (s != null) {
-                    lastSeen.setVisibility(View.VISIBLE);
-                    lastSeen.setText(s);
-                } else {
-                    lastSeen.setVisibility(View.GONE);
-                }
-            }
-        });
+//        getBinder().bind(user.getPresence(), new Listener<UserPresence>() {
+//            @Override
+//            public void onUpdated(UserPresence presence) {
+//                String s = Formatter.formatPresence(presence, user.getSex());
+//                if (s != null) {
+//                    lastSeen.setVisibility(View.VISIBLE);
+//                    lastSeen.setText(s);
+//                } else {
+//                    lastSeen.setVisibility(View.GONE);
+//                }
+//            }
+//        });
 
         // int docsCount = ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_USER, uid)).getCount();
 

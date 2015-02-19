@@ -78,16 +78,16 @@ public class ContactsFragment extends BaseCompatFragment implements Listener<Lis
 
         listView.addFooterView(footer, null, false);
 
-        getBinder().bind(progress, ContactsSyncState.getSyncState(), new Processor<View, Boolean>() {
-            @Override
-            public void process(View obj, Boolean val) {
-                if (val) {
-                    showView(obj);
-                } else {
-                    hideView(obj);
-                }
-            }
-        });
+//        getBinder().bind(progress, ContactsSyncState.getSyncState(), new Processor<View, Boolean>() {
+//            @Override
+//            public void process(View obj, Boolean val) {
+//                if (val) {
+//                    showView(obj);
+//                } else {
+//                    hideView(obj);
+//                }
+//            }
+//        });
 
 //        adapter = new ContactsAdapter(ListEngines.getContactsList(), getActivity(), false,
 //                new OnItemClickedListener<Contact>() {

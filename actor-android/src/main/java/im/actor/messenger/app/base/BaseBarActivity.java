@@ -2,8 +2,14 @@ package im.actor.messenger.app.base;
 
 import android.app.ProgressDialog;
 import android.support.v7.app.ActionBarActivity;
+import android.widget.TextView;
 
 import com.droidkit.mvvm.ui.Binder;
+
+import im.actor.messenger.app.binding.ActorBinder;
+import im.actor.messenger.app.view.AvatarView;
+import im.actor.model.entity.Avatar;
+import im.actor.model.mvvm.ValueModel;
 
 import static im.actor.messenger.core.Core.messenger;
 
@@ -11,16 +17,20 @@ import static im.actor.messenger.core.Core.messenger;
  * Created by ex3ndr on 29.12.14.
  */
 public class BaseBarActivity extends ActionBarActivity {
-    private final Binder BINDER = new Binder();
-
-    public Binder getBinder() {
-        return BINDER;
-    }
+    private final ActorBinder BINDER = new ActorBinder();
 
     @Override
     protected void onResume() {
         super.onResume();
         messenger().onAppVisible();
+    }
+
+    public void bind(final TextView textView, ValueModel<String> value) {
+        BINDER.bind(textView, value);
+    }
+
+    public void bind(final AvatarView avatarView, final ValueModel<Avatar> avatar) {
+        BINDER.bind(avatarView, avatar);
     }
 
     @Override

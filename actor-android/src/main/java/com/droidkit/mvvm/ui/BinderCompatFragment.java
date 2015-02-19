@@ -3,51 +3,37 @@ package com.droidkit.mvvm.ui;
 import android.app.Fragment;
 import android.view.View;
 import android.widget.Checkable;
+import android.widget.TextView;
 
 import com.droidkit.mvvm.ValueModel;
+
+import im.actor.messenger.app.binding.ActorBinder;
+import im.actor.messenger.app.view.AvatarView;
+import im.actor.messenger.app.view.CoverAvatarView;
+import im.actor.model.entity.Avatar;
 
 /**
  * Created by ex3ndr on 17.09.14.
  */
 public class BinderCompatFragment extends android.support.v4.app.Fragment {
 
-    private Binder binder = new Binder();
+    private final ActorBinder BINDER = new ActorBinder();
 
-    public Binder getBinder() {
-        return binder;
+    public void bind(final TextView textView, im.actor.model.mvvm.ValueModel<String> value) {
+        BINDER.bind(textView, value);
     }
 
-    public <T> void bind(ValueModel<T> value, final Listener<T> p) {
-        binder.bind(value, p);
+    public void bind(final AvatarView avatarView, final im.actor.model.mvvm.ValueModel<Avatar> avatar) {
+        BINDER.bind(avatarView, avatar);
     }
 
-    public <V, T> void bind(final V obj, ValueModel<T> value, final Processor<V, T> p) {
-        binder.bind(obj, value, p);
-    }
-
-    public void bindChecked(final Checkable checkable, ValueModel<Boolean> isChecked) {
-        binder.bindChecked(checkable, isChecked);
-    }
-
-    public void bindNotChecked(final Checkable checkable, ValueModel<Boolean> isChecked) {
-        binder.bindNotChecked(checkable, isChecked);
-    }
-
-    public void bindEnabled(final View view, ValueModel<Boolean> value) {
-        binder.bindEnabled(view, value);
-    }
-
-    public void bindNotEnabled(final View view, ValueModel<Boolean> value) {
-        binder.bindNotEnabled(view, value);
-    }
-
-    public <T> void unbind(ValueModel<T> value) {
-        binder.unbind(value);
+    public void bind(final CoverAvatarView avatarView, final im.actor.model.mvvm.ValueModel<Avatar> avatar) {
+        BINDER.bind(avatarView, avatar);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binder.unbindAll();
+        BINDER.unbindAll();
     }
 }

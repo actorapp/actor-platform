@@ -4,7 +4,7 @@ import im.actor.model.entity.*;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.DialogHistory;
 import im.actor.model.modules.utils.ModuleActor;
-import im.actor.model.mvvm.ListEngine;
+import im.actor.model.storage.ListEngine;
 
 import java.util.ArrayList;
 import java.util.List;

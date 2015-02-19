@@ -18,15 +18,15 @@ import im.actor.messenger.app.fragment.chat.BubbleContainer;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.messenger.model.UserModel;
 import im.actor.messenger.util.TextUtils;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.TextContent;
+import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.storage.KeyValueEngines.users;
+import static im.actor.messenger.core.Core.users;
 
 /**
  * Created by ex3ndr on 10.09.14.
@@ -46,7 +46,7 @@ public class TextHolder extends BubbleHolder {
     private int errorColor;
 
     protected TextHolder(Peer peer, MessagesFragment fragment, UiList<Message> uiList) {
-        super(peer,fragment, uiList);
+        super(peer, fragment, uiList);
     }
 
     @Override
@@ -96,9 +96,9 @@ public class TextHolder extends BubbleHolder {
 
         if (peer.getPeerType() == PeerType.GROUP && data.getSenderId() != myUid()) {
             String name;
-            UserModel userModel = users().get(data.getSenderId());
+            UserVM userModel = users().get(data.getSenderId());
             if (userModel != null) {
-                name = userModel.getName();
+                name = userModel.getName().get();
             } else {
                 name = "???";
             }

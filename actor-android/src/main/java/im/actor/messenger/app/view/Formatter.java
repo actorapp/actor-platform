@@ -4,15 +4,15 @@ import android.content.Context;
 
 import im.actor.messenger.R;
 import im.actor.messenger.core.AppContext;
-import im.actor.messenger.model.UserModel;
 import im.actor.messenger.model.UserPresence;
 import im.actor.messenger.util.TextUtils;
 import im.actor.model.entity.Sex;
+import im.actor.model.viewmodel.UserVM;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static im.actor.messenger.storage.KeyValueEngines.users;
+import static im.actor.messenger.core.Core.users;
 
 /**
  * Created by ex3ndr on 20.10.14.
@@ -177,10 +177,10 @@ public class Formatter {
 
     public static String formatTyping(int[] uids) {
         if (uids.length == 1) {
-            UserModel u = users().get(uids[0]);
+            UserVM u = users().get(uids[0]);
             if (u != null) {
                 return AppContext.getContext().getString(R.string.typing_group)
-                        .replace("{0}", u.getName());
+                        .replace("{0}", u.getName().get());
             } else {
                 return AppContext.getContext().getString(R.string.typing_private);
             }

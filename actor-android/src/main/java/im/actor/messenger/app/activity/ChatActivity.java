@@ -43,8 +43,7 @@ import im.actor.messenger.util.io.IOUtils;
 import im.actor.model.Messenger;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
-import im.actor.model.entity.content.TextContent;
-import im.actor.model.modules.Messages;
+import im.actor.model.viewmodel.UserVM;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +53,7 @@ import java.util.ArrayList;
 
 import static im.actor.messenger.app.view.ViewUtils.*;
 import static im.actor.messenger.core.Core.messenger;
-import static im.actor.messenger.storage.KeyValueEngines.users;
+import static im.actor.messenger.core.Core.users;
 
 public class ChatActivity extends BaseBarActivity implements Listener<GroupState> {
 
@@ -142,7 +141,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 
         getWindow().setBackgroundDrawable(null);
 
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .add(R.id.messagesFragment, MessagesFragment.create(peer))
                 .commit();
 
@@ -305,7 +304,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
         super.onResume();
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
-            final UserModel user = users().get(peer.getPeerId());
+            final UserVM user = users().get(peer.getPeerId());
 
             if (user == null) {
                 finish();
@@ -324,20 +323,20 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 //                }
 //            });
 
-            getBinder().bindText(barTitle, user.getNameModel());
-
-            getBinder().bind(user.getPresence(), new Listener<UserPresence>() {
-                @Override
-                public void onUpdated(UserPresence presence) {
-                    updateUserStatus(presence, TypingModel.privateChatTyping(user.getId()).getValue());
-                }
-            });
-            getBinder().bind(TypingModel.privateChatTyping(user.getId()), new Listener<Boolean>() {
-                @Override
-                public void onUpdated(Boolean aBoolean) {
-                    updateUserStatus(user.getPresence().getValue(), aBoolean);
-                }
-            });
+//            getBinder().bindText(barTitle, user.getNameModel());
+//
+//            getBinder().bind(user.getPresence(), new Listener<UserPresence>() {
+//                @Override
+//                public void onUpdated(UserPresence presence) {
+//                    updateUserStatus(presence, TypingModel.privateChatTyping(user.getId()).getValue());
+//                }
+//            });
+//            getBinder().bind(TypingModel.privateChatTyping(user.getId()), new Listener<Boolean>() {
+//                @Override
+//                public void onUpdated(Boolean aBoolean) {
+//                    updateUserStatus(user.getPresence().getValue(), aBoolean);
+//                }
+//            });
         } else if (peer.getPeerType() == PeerType.GROUP) {
 //            final GroupModel groupInfo = groups().get(chatId);
 //

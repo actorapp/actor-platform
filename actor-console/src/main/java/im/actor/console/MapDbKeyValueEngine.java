@@ -1,7 +1,7 @@
 package im.actor.console;
 
-import im.actor.model.mvvm.KeyValueEngine;
-import im.actor.model.mvvm.KeyValueItem;
+import im.actor.model.storage.KeyValueEngine;
+import im.actor.model.storage.KeyValueItem;
 import org.mapdb.DB;
 
 import java.util.ArrayList;
