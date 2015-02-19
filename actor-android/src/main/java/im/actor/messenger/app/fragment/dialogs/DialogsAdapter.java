@@ -15,7 +15,6 @@ import com.droidkit.mvvm.ValueChangeListener;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.*;
-import im.actor.messenger.model.TypingModel;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
@@ -293,12 +292,12 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
             }
 
             if (privateTypingListener != null) {
-                TypingModel.privateChatTyping(bindedUid).removeUiSubscriber(privateTypingListener);
+                // TypingModel.privateChatTyping(bindedUid).removeUiSubscriber(privateTypingListener);
                 privateTypingListener = null;
             }
 
             if (groupTypingListener != null) {
-                TypingModel.groupChatTyping(bindedGid).removeUiSubscriber(groupTypingListener);
+                // TypingModel.groupChatTyping(bindedGid).removeUiSubscriber(groupTypingListener);
                 groupTypingListener = null;
             }
 
@@ -319,7 +318,7 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
                         }
                     }
                 };
-                TypingModel.privateChatTyping(bindedUid).addUiSubscriber(privateTypingListener);
+                // TypingModel.privateChatTyping(bindedUid).addUiSubscriber(privateTypingListener);
             } else if (data.getPeer().getPeerType() == PeerType.GROUP) {
                 bindedGid = data.getPeer().getPeerId();
                 groupTypingListener = new ValueChangeListener<int[]>() {
@@ -334,7 +333,7 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
                         }
                     }
                 };
-                TypingModel.groupChatTyping(bindedGid).addUiSubscriber(groupTypingListener);
+                // TypingModel.groupChatTyping(bindedGid).addUiSubscriber(groupTypingListener);
             } else {
                 text.setText(bindedText);
                 text.setTextColor(getContext().getResources().getColor(R.color.text_primary));
@@ -381,12 +380,12 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
             this.bindedItem = null;
 
             if (privateTypingListener != null) {
-                TypingModel.privateChatTyping(bindedUid).removeUiSubscriber(privateTypingListener);
+                // TypingModel.privateChatTyping(bindedUid).removeUiSubscriber(privateTypingListener);
                 privateTypingListener = null;
             }
 
             if (groupTypingListener != null) {
-                TypingModel.groupChatTyping(bindedGid).removeUiSubscriber(groupTypingListener);
+                // TypingModel.groupChatTyping(bindedGid).removeUiSubscriber(groupTypingListener);
                 groupTypingListener = null;
             }
 
