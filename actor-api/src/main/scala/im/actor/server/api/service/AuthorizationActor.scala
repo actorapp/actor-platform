@@ -60,18 +60,19 @@ class AuthorizationActor extends Actor with ActorLogging with ActorPublisher[MTT
 
     if (pAuthId == 0L) {
       if (pSessionId == 0L) sendDrop("sessionId must be equal to zero")
-      else if (!mb.body.isInstanceOf[RequestAuthId]) sendDrop("non RequestAuthId message")
-      else {
-        val f =
-          if (authId == 0L) {
-            authId = rand.nextLong()
-            persist.AuthId.create(authId, None)
-          } else Future.successful()
+      else mb.body match {
+        case RequestAuthId() =>
+          val f =
+            if (authId == 0L) {
+              authId = rand.nextLong()
+              persist.AuthId.create(authId, None)
+            } else Future.successful()
 
-        f.onComplete {
-          case Success(_) => sendPackage(mb.messageId, ResponseAuthId(authId))
-          case Failure(e) => sendDrop(e.getMessage)
-        }
+          f.onComplete {
+            case Success(_) => sendPackage(mb.messageId, ResponseAuthId(authId))
+            case Failure(e) => sendDrop(e.getMessage)
+          }
+        case _ => sendDrop("non RequestAuthId message")
       }
     } else {
       if (authId == 0L) authId = pAuthId

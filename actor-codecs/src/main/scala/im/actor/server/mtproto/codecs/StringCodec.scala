@@ -4,8 +4,6 @@ import scodec.Codec
 import scodec.bits._
 
 object StringCodec extends Codec[String] {
-  import im.actor.server.api.util.ByteConstants._
-
   def encode(str: String) = {
     val strBytes = str.getBytes
     for { length <- varint.encode(strBytes.length) }
