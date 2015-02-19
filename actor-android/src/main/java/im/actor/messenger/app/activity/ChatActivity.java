@@ -306,7 +306,6 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
             final UserVM user = users().get(peer.getPeerId());
-
             if (user == null) {
                 finish();
                 return;
@@ -316,8 +315,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             bind(barAvatar, user.getAvatar());
             bind(barTitle, user.getName());
             bind(barSubtitle, barSubtitleContainer, user);
-            // TODO: Bind typing
-
+            bind(barTyping, barTypingContainer, barTitle, messenger().getTyping(user.getId()));
         } else if (peer.getPeerType() == PeerType.GROUP) {
 //            final GroupModel groupInfo = groups().get(chatId);
 //

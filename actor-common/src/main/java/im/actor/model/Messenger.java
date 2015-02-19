@@ -18,6 +18,8 @@ import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.storage.KeyValueEngine;
 import im.actor.model.storage.ListEngine;
 import im.actor.model.mvvm.MVVMEngine;
+import im.actor.model.viewmodel.GroupTypingVM;
+import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
 /**
@@ -111,6 +113,14 @@ public class Messenger {
 
     public ListEngine<Message> getMessages(Peer peer) {
         return modules.getMessagesModule().getConversationEngine(peer);
+    }
+
+    public UserTypingVM getTyping(int uid) {
+        return modules.getTypingModule().getTyping(uid);
+    }
+
+    public GroupTypingVM getGroupTyping(int gid) {
+        return modules.getTypingModule().getGroupTyping(gid);
     }
 
     public void onAppVisible() {
