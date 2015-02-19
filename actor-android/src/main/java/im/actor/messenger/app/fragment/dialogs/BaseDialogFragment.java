@@ -113,25 +113,27 @@ public class BaseDialogFragment extends BaseCompatFragment implements UiListStat
             }
         });
 
-        getBinder().bind(ListEngines.getChatsUiListEngine().getListState(), new Listener<ListState>() {
-            @Override
-            public void onUpdated(ListState listState) {
-                switch (listState.getState()) {
-                    case LOADED:
-                        loadingProgress.setVisibility(View.GONE);
-                        noMessages.setVisibility(View.GONE);
-                        break;
-                    case LOADED_EMPTY:
-                        loadingProgress.setVisibility(View.GONE);
-                        noMessages.setVisibility(View.VISIBLE);
-                        break;
-                    case LOADING_EMPTY:
-                        loadingProgress.setVisibility(View.VISIBLE);
-                        noMessages.setVisibility(View.GONE);
-                        break;
-                }
-            }
-        });
+        loadingProgress.setVisibility(View.GONE);
+        noMessages.setVisibility(View.GONE);
+//        getBinder().bind(ListEngines.getChatsUiListEngine().getListState(), new Listener<ListState>() {
+//            @Override
+//            public void onUpdated(ListState listState) {
+//                switch (listState.getState()) {
+//                    case LOADED:
+//                        loadingProgress.setVisibility(View.GONE);
+//                        noMessages.setVisibility(View.GONE);
+//                        break;
+//                    case LOADED_EMPTY:
+//                        loadingProgress.setVisibility(View.GONE);
+//                        noMessages.setVisibility(View.VISIBLE);
+//                        break;
+//                    case LOADING_EMPTY:
+//                        loadingProgress.setVisibility(View.VISIBLE);
+//                        noMessages.setVisibility(View.GONE);
+//                        break;
+//                }
+//            }
+//        });
 
         return res;
     }

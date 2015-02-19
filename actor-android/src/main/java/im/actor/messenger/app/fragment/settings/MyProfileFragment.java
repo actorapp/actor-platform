@@ -1,12 +1,8 @@
 package im.actor.messenger.app.fragment.settings;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
@@ -18,12 +14,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.droidkit.mvvm.ui.Listener;
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.*;
@@ -31,17 +23,16 @@ import im.actor.messenger.app.base.BaseBarActivity;
 import im.actor.messenger.app.base.BaseCompatFragment;
 import im.actor.messenger.app.intents.Intents;
 import im.actor.messenger.app.view.CoverAvatarView;
-import im.actor.messenger.model.UserModel;
 import im.actor.messenger.util.Screen;
-import im.actor.model.entity.Avatar;
+import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.storage.KeyValueEngines.users;
+import static im.actor.messenger.core.Core.users;
 
 /**
  * Created by ex3ndr on 09.09.14.
  */
-public class MyProfileFragment extends BaseCompatFragment implements Listener<Avatar> {
+public class MyProfileFragment extends BaseCompatFragment {
 
     private int baseColor;
 
@@ -53,11 +44,11 @@ public class MyProfileFragment extends BaseCompatFragment implements Listener<Av
 
         baseColor = getResources().getColor(R.color.primary);
 
-        final UserModel userModel = users().get(myUid());
+        final UserVM userModel = users().get(myUid());
 
         final TextView nameView = (TextView) view.findViewById(R.id.name);
 
-        getBinder().bindText(nameView, userModel.getNameModel());
+        bind(nameView, userModel.getName());
 
         TextView phoneView = (TextView) view.findViewById(R.id.phone);
 //        try {
@@ -212,17 +203,7 @@ public class MyProfileFragment extends BaseCompatFragment implements Listener<Av
     @Override
     public void onResume() {
         super.onResume();
-        bind(users().get(myUid()).getAvatar(), this);
-    }
-
-
-    @Override
-    public void onUpdated(Avatar avatarb) {
-        if (avatarb != null && avatarb.getSmallImage() != null) {
-            avatar.request(avatarb);
-        } else {
-            avatar.clear();
-        }
+        bind(avatar, users().get(myUid()).getAvatar());
     }
 
     @Override
@@ -247,7 +228,6 @@ public class MyProfileFragment extends BaseCompatFragment implements Listener<Av
     @Override
     public void onPause() {
         super.onPause();
-        unbind(users().get(myUid()).getAvatar());
         avatar.clear();
     }
 

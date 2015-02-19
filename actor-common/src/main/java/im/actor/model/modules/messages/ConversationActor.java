@@ -8,7 +8,7 @@ import im.actor.model.modules.messages.entity.OutUnreadMessage;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.OutUnreadMessagesStorage;
 import im.actor.model.modules.utils.ModuleActor;
-import im.actor.model.mvvm.ListEngine;
+import im.actor.model.storage.ListEngine;
 
 import java.io.IOException;
 import java.util.List;

@@ -8,9 +8,9 @@ import android.util.TypedValue;
 
 import im.actor.messenger.R;
 import im.actor.messenger.model.GroupModel;
-import im.actor.messenger.model.UserModel;
 import im.actor.messenger.storage.scheme.GlobalSearch;
 import im.actor.model.entity.Dialog;
+import im.actor.model.viewmodel.UserVM;
 
 /**
  * Created by ex3ndr on 12.09.14.
@@ -25,8 +25,8 @@ public class AvatarDrawable extends Drawable {
         return new AvatarDrawable(dialogItem.getDialogTitle(), dialogItem.getPeer().getPeerId(), fontSize, context);
     }
 
-    public static AvatarDrawable create(UserModel userModel, float fontSize, Context context) {
-        return new AvatarDrawable(userModel.getName(), userModel.getId(), fontSize, context);
+    public static AvatarDrawable create(UserVM userModel, float fontSize, Context context) {
+        return new AvatarDrawable(userModel.getName().get(), userModel.getId(), fontSize, context);
     }
 
 //    public static AvatarDrawable create(Contact contact, float fontSize, Context context) {

@@ -15,13 +15,12 @@ import com.droidkit.engine.uilist.UiListListener;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseCompatFragment;
-// import im.actor.messenger.app.fragment.contacts.ContactsAdapter;
-import im.actor.messenger.model.UserModel;
 import im.actor.messenger.util.Screen;
+import im.actor.model.viewmodel.UserVM;
 
 import java.util.ArrayList;
 
-import static im.actor.messenger.storage.KeyValueEngines.users;
+import static im.actor.messenger.core.Core.users;
 
 /**
  * Created by ex3ndr on 04.10.14.
@@ -235,16 +234,16 @@ public class GroupUsersFragment extends BaseCompatFragment implements UiListList
 
     private class UserSpan extends ReplacementSpan {
 
-        private UserModel user;
+        private UserVM user;
         private int maxW;
         private String userText;
         private TextPaint textPaint;
 
-        private UserModel getUser() {
+        private UserVM getUser() {
             return user;
         }
 
-        public UserSpan(UserModel user, int maxW) {
+        public UserSpan(UserVM user, int maxW) {
             this.user = user;
             this.maxW = maxW;
             if (textPaint == null) {
@@ -255,7 +254,7 @@ public class GroupUsersFragment extends BaseCompatFragment implements UiListList
 
             int padding = Screen.dp(18);
             int maxWidth = maxW - padding;
-            userText = TextUtils.ellipsize(user.getName(), textPaint, maxWidth, TextUtils.TruncateAt.END).toString();
+            userText = TextUtils.ellipsize(user.getName().get(), textPaint, maxWidth, TextUtils.TruncateAt.END).toString();
         }
 
         @Override

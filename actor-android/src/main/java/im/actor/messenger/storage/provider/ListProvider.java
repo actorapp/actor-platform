@@ -2,8 +2,8 @@ package im.actor.messenger.storage.provider;
 
 import java.util.List;
 
-import im.actor.model.mvvm.ListEngine;
-import im.actor.model.mvvm.ListEngineItem;
+import im.actor.model.storage.ListEngine;
+import im.actor.model.storage.ListEngineItem;
 
 /**
  * Created by ex3ndr on 14.02.15.

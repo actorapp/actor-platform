@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.CursorWindow;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+
 import com.droidkit.engine.keyvalue.sqlite.DaoValue;
 
 import java.util.ArrayList;

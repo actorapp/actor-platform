@@ -1,4 +1,4 @@
-package im.actor.model.mvvm;
+package im.actor.model.storage;
 
 import java.util.List;
 
@@ -15,8 +15,6 @@ public interface KeyValueEngine<V extends KeyValueItem> {
     public void removeItems(long[] ids);
 
     public void clear();
-
-    public List<V> getAll();
 
     public V getValue(long id);
 }

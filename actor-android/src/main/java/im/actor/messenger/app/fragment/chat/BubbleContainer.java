@@ -13,11 +13,11 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.model.UserModel;
 import im.actor.messenger.util.Screen;
 import im.actor.messenger.util.TextUtils;
+import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.storage.KeyValueEngines.users;
+import static im.actor.messenger.core.Core.users;
 
 /**
  * Created by ex3ndr on 19.01.15.
@@ -149,8 +149,8 @@ public class BubbleContainer extends ViewGroup {
         this.showAvatar = showAvatar;
         if (showAvatar) {
             avatarView.setVisibility(VISIBLE);
-            UserModel u = users().get(uid);
-            avatarView.setEmptyDrawable(new AvatarDrawable(u.getName(), u.getId(), 12, getContext()));
+            UserVM u = users().get(uid);
+            avatarView.setEmptyDrawable(new AvatarDrawable(u.getName().get(), u.getId(), 12, getContext()));
 //            Avatar avatar = u.getAvatar().getValue();
 //            if (avatar != null) {
 //                avatarView.bindAvatar(0, avatar);

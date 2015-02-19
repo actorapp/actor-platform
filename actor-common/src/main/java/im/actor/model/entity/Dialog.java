@@ -4,7 +4,7 @@ import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
-import im.actor.model.mvvm.ListEngineItem;
+import im.actor.model.storage.ListEngineItem;
 
 import java.io.IOException;
 

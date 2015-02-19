@@ -1,17 +1,16 @@
 package im.actor.messenger.storage.provider;
 
-import im.actor.messenger.model.UserModel;
-import im.actor.messenger.storage.KeyValueEngines;
 import im.actor.messenger.storage.ListEngines;
+import im.actor.messenger.storage.SQLiteProvider;
+import im.actor.messenger.storage.sqlite.SQLiteKeyValue;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.ReadState;
-import im.actor.model.entity.User;
-import im.actor.model.mvvm.KeyValueEngine;
-import im.actor.model.mvvm.ListEngine;
+import im.actor.model.storage.KeyValueEngine;
+import im.actor.model.storage.KeyValueStorage;
+import im.actor.model.storage.ListEngine;
 import im.actor.model.Storage;
-import im.actor.model.storage.MemoryKeyValueEngine;
 import im.actor.model.storage.PreferencesStorage;
 
 /**
@@ -24,13 +23,14 @@ public class AppEngineFactory implements Storage {
     }
 
     @Override
-    public KeyValueEngine<User> createUsersEngine() {
-        return new BoxerProvider<UserModel, User>(KeyValueEngines.users());
+    public KeyValueStorage createUsersEngine() {
+        return new SQLiteKeyValue(SQLiteProvider.db(), "actor_users");
     }
 
     @Override
     public KeyValueEngine<ReadState> createReadStateEngine() {
-        return new MemoryKeyValueEngine<ReadState>();
+        // return new MemoryKeyValueEngine<ReadState>();
+        return null;
     }
 
     @Override

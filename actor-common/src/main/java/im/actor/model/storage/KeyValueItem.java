@@ -1,4 +1,4 @@
-package im.actor.model.mvvm;
+package im.actor.model.storage;
 
 /**
  * Created by ex3ndr on 09.02.15.

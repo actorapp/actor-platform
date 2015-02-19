@@ -1,8 +1,5 @@
 package im.actor.model.storage;
 
-import im.actor.model.mvvm.ListEngine;
-import im.actor.model.mvvm.ListEngineItem;
-
 import java.util.*;
 
 /**

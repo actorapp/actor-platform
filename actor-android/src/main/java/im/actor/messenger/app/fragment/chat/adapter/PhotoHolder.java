@@ -28,7 +28,6 @@ import im.actor.messenger.model.DownloadModel;
 import im.actor.messenger.model.DownloadState;
 import im.actor.messenger.model.UploadModel;
 import im.actor.messenger.model.UploadState;
-import im.actor.messenger.storage.KeyValueEngines;
 import im.actor.messenger.storage.scheme.media.Downloaded;
 import im.actor.messenger.util.Screen;
 import im.actor.messenger.util.TextUtils;
