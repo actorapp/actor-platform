@@ -4,23 +4,14 @@ import im.actor.server.mtproto.protocol._
 import scodec.codecs._
 
 package object protocol {
-  val MessageAckCodec = longs.pxmap[MessageAck](MessageAck.apply, MessageAck.unapply)
-
+  val MessageAckCodec = longs.as[MessageAck]
   val NewSessionCodec = (int64 :: int64).as[NewSession]
-
   val RequestAuthIdCodec = provide(RequestAuthId())
-
-  val RequestResendCodec = int64.pxmap[RequestResend](RequestResend.apply, RequestResend.unapply)
-
-  val ResponseAuthIdCodec = int64.pxmap[ResponseAuthId](ResponseAuthId.apply, ResponseAuthId.unapply)
-
-  val RpcRequestBoxCodec = bytes.pxmap[RpcRequestBox](RpcRequestBox.apply, RpcRequestBox.unapply)
-
+  val RequestResendCodec = int64.as[RequestResend]
+  val ResponseAuthIdCodec = int64.as[ResponseAuthId]
+  val RpcRequestBoxCodec = bytes.as[RpcRequestBox]
   val RpcResponseBoxCodec = (int64 :: bytes).as[RpcResponseBox]
-
   val UnsentMessageCodec = (int64 :: int32).as[UnsentMessage]
-
   val UnsentResponseCodec = (int64 :: int64 :: int32).as[UnsentResponse]
-
-  val UpdateBoxCodec = bytes.pxmap[UpdateBox](UpdateBox.apply, UpdateBox.unapply)
+  val UpdateBoxCodec = bytes.as[UpdateBox]
 }
