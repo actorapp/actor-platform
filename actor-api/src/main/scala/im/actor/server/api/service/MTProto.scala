@@ -24,19 +24,19 @@ object MTProto {
 
   def flow(maxBufferSize: Int)
           (implicit system: ActorSystem, timeout: Timeout): Flow[ByteString, ByteString] = {
-    val actor = system.actorOf(AuthorizationActor.props())
-    val (watchActor, watchSource) = SourceWatchManager[MTTransport](actor)
-    val actorSource = Source(ActorPublisher[MTTransport](actor))
+    val authManager = system.actorOf(AuthorizationManager.props())
+    val (watchManager, watch) = SourceWatchManager[MTTransport](authManager)
+    val auth = Source(ActorPublisher[MTTransport](authManager))
 
-    val handleFlow = Flow[ByteString]
+    val mtproto = Flow[ByteString]
       .transform(() => MTProto.parse(maxBufferSize))
-      .mapAsyncUnordered(MTProto.handlePackage(_, actor))
+      .mapAsyncUnordered(MTProto.handlePackage(_, authManager))
     val mapResp = Flow[MTTransport]
       .transform(() => MTProto.mapResponse())
     val complete = Sink.onComplete {
       case _ =>
-        watchActor ! PoisonPill
-        actor ! PoisonPill
+        watchManager ! PoisonPill
+        authManager ! PoisonPill
     }
     Flow[ByteString, ByteString]() { implicit b =>
       import FlowGraphImplicits._
@@ -46,12 +46,12 @@ object MTProto {
       val bcast = Broadcast[ByteString]
       val merge = Merge[MTTransport]
 
-      in ~> handleFlow ~> merge
-      actorSource      ~> merge
-      watchSource      ~> merge
-                          merge ~> mapResp ~> bcast
-                                              bcast ~> out
-                                              bcast ~> complete
+      in ~> mtproto ~> merge
+      auth          ~> merge
+      watch         ~> merge
+                       merge ~> mapResp ~> bcast
+                                           bcast ~> out
+                                           bcast ~> complete
 
       (in, out)
     }
@@ -153,7 +153,7 @@ object MTProto {
       case ProtoPackage(p) =>
         p match {
           case m: MTPackage =>
-            actorRef.ask(AuthorizationActor.FrontendPackage(m)).mapTo[MTTransport].recover {
+            actorRef.ask(AuthorizationManager.FrontendPackage(m)).mapTo[MTTransport].recover {
               case e: AskTimeoutException =>
                 val msg = s"handleAsk within $timeout"
                 system.log.error(e, msg)
