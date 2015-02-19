@@ -1,4 +1,4 @@
-package im.actor.server.api.service
+package im.actor.server.service
 
 import im.actor.server.mtproto.codecs._
 import im.actor.server.mtproto.codecs.transport._
