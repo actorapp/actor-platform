@@ -24,8 +24,7 @@ object Build extends sbt.Build {
     "-Ywarn-dead-code",
     "-Ywarn-infer-any",
     "-Ywarn-numeric-widen",
-    "-Ywarn-unused",
-    "-Ywarn-unused-import"
+    "-Ywarn-unused"
   )
 
   lazy val defaultSettings =
@@ -36,7 +35,7 @@ object Build extends sbt.Build {
             sys.error("Java 8 is required for this project.")
         },
         resolvers                 ++= Resolvers.seq,
-        scalacOptions             ++= Seq(
+        scalacOptions in Compile  ++= Seq(
           "-encoding",
           "UTF-8",
           "-deprecation",
