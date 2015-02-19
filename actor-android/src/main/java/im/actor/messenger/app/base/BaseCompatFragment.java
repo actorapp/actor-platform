@@ -6,31 +6,16 @@ import android.view.View;
 
 import com.droidkit.mvvm.ui.BinderCompatFragment;
 
-import im.actor.messenger.android.CallBarrier;
 import im.actor.messenger.app.view.ViewUtils;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 
 public class BaseCompatFragment extends BinderCompatFragment {
 
-    private CallBarrier callBarrier = new CallBarrier();
-
     @Override
     public void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
         setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        callBarrier.resume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        callBarrier.pause();
     }
 
     public void goneView(View view) {
