@@ -2,16 +2,15 @@ package im.actor.server.mtproto.codecs
 
 import im.actor.server.mtproto.transport._
 import scodec.bits._
-import scodec.Err
-import scodec.Codec
+import scodec._
 import scodec.codecs._
-import scalaz._
-import Scalaz._
 
 package object transport {
   val HandshakeCodec = (byte :: byte :: byte :: bytes).as[Handshake]
 
   object TransportPackageCodec extends Codec[TransportPackage] {
+    def sizeBound = SizeBound.unknown
+
     private val codec = (int32 :: MTProtoCodec).as[TransportPackage]
 
     def encode(p: TransportPackage) = {
@@ -23,15 +22,15 @@ package object transport {
       yield length ++ pkgBody
     }
 
-    def decode(buf: BitVector): Err \/ (BitVector, TransportPackage) = {
+    def decode(buf: BitVector) = {
       val pkgCrc = buf.takeRight(int32Bits)
       val bsCrc = CodecUtils.crc32(buf.dropRight(int32Bits))
       if (pkgCrc == bsCrc) codec.decode(buf)
-      else Err("invalid crc32").left
+      else Attempt.failure(Err("invalid crc32"))
     }
   }
 
-  val MTPackageCodec = (int64 :: int64 :: bits).as[MTPackage]
+  val MTPackageCodec = (int64 :: int64 :: codecs.bits).as[MTPackage]
 
   val PingCodec = bytes.pxmap[Ping](Ping.apply, Ping.unapply)
 

@@ -24,8 +24,8 @@ object Dependencies {
     val flywayCore      = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
     val hikariCP        = "com.zaxxer"                    %  "HikariCP"                      % "2.3.2"
 
-    val scodecBits      = "org.typelevel"                 %% "scodec-bits"                   % "1.0.4"
-    val scodecCore      = "org.typelevel"                 %% "scodec-core"                   % "1.6.0"
+    val scodecBits      = "org.scodec"                    %% "scodec-bits"                   % "1.0.5"
+    val scodecCore      = "org.scodec"                    %% "scodec-core"                   % "1.7.0"
 
     val scalazCore      = "org.scalaz"                    %% "scalaz-core"                   % V.scalaz
     val scalazConcurrent = "org.scalaz"                   %% "scalaz-concurrent"             % V.scalaz
@@ -54,7 +54,7 @@ object Dependencies {
 
   val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP)
 
-  val codecs = common ++ Seq(scodecBits, scodecCore)
+  val codecs = common ++ Seq(scalazCore, scodecBits, scodecCore)
 
   val models = common ++ Seq(scodecBits, scodecCore)
 

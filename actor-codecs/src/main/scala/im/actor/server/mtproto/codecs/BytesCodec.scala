@@ -1,9 +1,11 @@
 package im.actor.server.mtproto.codecs
 
-import scodec.Codec
+import scodec._
 import scodec.bits._
 
 object BytesCodec extends Codec[BitVector] {
+  def sizeBound = SizeBound.unknown
+
   def encode(b: BitVector) = {
     for { length <- varint.encode(b.length / byteSize) }
     yield length ++ b
@@ -12,9 +14,8 @@ object BytesCodec extends Codec[BitVector] {
   def decode(buf: BitVector) = {
     for { t <- varint.decode(buf) }
     yield {
-      val (b, bitLength) = t
-      val length = bitLength * byteSize
-      (b.drop(length), b.take(length))
+      val length = t.value * byteSize
+      DecodeResult(t.remainder.take(length), t.remainder.drop(length))
     }
   }
 }
