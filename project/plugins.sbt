@@ -1,6 +1,7 @@
 resolvers ++= Seq(
   "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
-  "sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases/",
+  "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases/",
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
   Resolver.url("secret repository", url("http://repos.81port.com/nexus/content/repositories/snapshots"))(Resolver.ivyStylePatterns),
   "Flyway" at "http://flywaydb.org/repo",
   Classpaths.sbtPluginReleases
