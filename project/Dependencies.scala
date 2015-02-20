@@ -24,6 +24,8 @@ object Dependencies {
     val flywayCore      = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
     val hikariCP        = "com.zaxxer"                    %  "HikariCP"                      % "2.3.2"
 
+    val protobuf        = "com.google.protobuf"           %  "protobuf-java"                 % "2.6.1"
+
     val scodecBits      = "org.scodec"                    %% "scodec-bits"                   % "1.0.5"
     val scodecCore      = "org.scodec"                    %% "scodec-core"                   % "1.7.0"
 
@@ -54,7 +56,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
   )
 
-  val api = common ++ Seq(akkaSlf4j, akkaActor)
+  val api = common ++ Seq(akkaSlf4j, akkaActor, protobuf)
 
   val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP)
 

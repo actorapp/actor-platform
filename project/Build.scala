@@ -2,6 +2,7 @@ import sbt._
 import sbt.Keys._
 import akka.sbt.AkkaKernelPlugin
 import akka.sbt.AkkaKernelPlugin.{ Dist, outputDirectory, distJvmOptions, distBootClass }
+import im.actor.SbtActorApi
 import spray.revolver.RevolverPlugin._
 
 object Build extends sbt.Build {
@@ -77,7 +78,7 @@ object Build extends sbt.Build {
   lazy val actorApi = Project(
     id = "actor-api",
     base = file("actor-api"),
-    settings = defaultSettings ++ Seq(
+    settings = defaultSettings ++ SbtActorApi.settings ++ Seq(
       libraryDependencies ++= Dependencies.api
     )
   ).dependsOn(actorPersist, actorCodecs)
