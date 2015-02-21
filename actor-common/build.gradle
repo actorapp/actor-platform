@@ -1,4 +1,15 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+    }
+}
+
 apply plugin: 'java'
+apply plugin: 'gwt-base'
 
 group = 'im.actor'
 version = '1.0'
@@ -19,4 +30,8 @@ repositories {
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
+}
+
+gwt {
+    gwtVersion='2.7.0'
 }

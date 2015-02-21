@@ -1,6 +1,5 @@
 package im.actor.model;
 
-import java.net.URI;
 import java.util.ArrayList;
 
 import im.actor.model.network.ConnectionEndpoint;
@@ -44,25 +43,40 @@ public class ConfigurationBuilder {
     }
 
     public ConfigurationBuilder addEndpoint(String url) {
-        URI uri = URI.create(url);
-        if (uri.getScheme().toLowerCase().equals("ssl") || uri.getScheme().toLowerCase().equals("tls")) {
-            int port = uri.getPort() > 0 ? uri.getPort() : 443;
-            String host = uri.getHost();
+        // Manual baggy parsing for GWT
+        String scheme = url.substring(0, url.indexOf(":")).toLowerCase();
+        String host = url.substring(url.indexOf("://"));
+        if (host.endsWith("/")) {
+            host = host.substring(0, host.length() - 1);
+        }
+        int port = -1;
+        if (host.contains(":")) {
+            String[] parts = host.split(":");
+            host = parts[0];
+            port = Integer.parseInt(parts[1]);
+        }
+        if (scheme.equals("ssl") || scheme.equals("tls")) {
+            if (port <= 0) {
+                port = 443;
+            }
             endpoints.add(new ConnectionEndpoint(host, port, ConnectionEndpoint.Type.TCP_TLS));
-        } else if (uri.getScheme().toLowerCase().equals("tcp")) {
-            int port = uri.getPort() > 0 ? uri.getPort() : 80;
-            String host = uri.getHost();
+        } else if (scheme.equals("tcp")) {
+            if (port <= 0) {
+                port = 80;
+            }
             endpoints.add(new ConnectionEndpoint(host, port, ConnectionEndpoint.Type.TCP));
-        } else if (uri.getScheme().toLowerCase().equals("ws")) {
-            int port = uri.getPort() > 0 ? uri.getPort() : 80;
-            String host = uri.getHost();
+        } else if (scheme.equals("ws")) {
+            if (port <= 0) {
+                port = 80;
+            }
             endpoints.add(new ConnectionEndpoint(host, port, ConnectionEndpoint.Type.WS));
-        } else if (uri.getScheme().toLowerCase().equals("wss")) {
-            int port = uri.getPort() > 0 ? uri.getPort() : 443;
-            String host = uri.getHost();
+        } else if (scheme.equals("wss")) {
+            if (port <= 0) {
+                port = 443;
+            }
             endpoints.add(new ConnectionEndpoint(host, port, ConnectionEndpoint.Type.WS_TLS));
         } else {
-            throw new RuntimeException("Unknown scheme type: " + uri.getScheme());
+            throw new RuntimeException("Unknown scheme type: " + scheme);
         }
         return this;
     }
