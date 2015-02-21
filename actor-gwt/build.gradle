@@ -1,0 +1,54 @@
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+    }
+}
+
+apply plugin: 'war'
+apply plugin: 'gwt'
+
+task cleanGenSources(type: Delete) {
+    delete "${projectDir}/src/gen/java/"
+}
+
+task copyGenSources(type: Copy, dependsOn: ['cleanGenSources']) {
+    from fileTree("${projectDir}/../actor-common/src/main/java/")
+    into "${projectDir}/src/gen/java/"
+}
+
+tasks.compileJava.dependsOn(copyGenSources)
+tasks.clean.dependsOn(cleanGenSources)
+
+dependencies {
+    compile 'com.google.gwt:gwt-user:2.7.0'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', 'src/gen/java']
+        }
+    }
+}
+
+gwt {
+    gwtVersion = '2.7.0'
+    modules 'im.actor.gwt.ActorMessenger'
+
+    compiler {
+        strict = true;
+        enableClosureCompiler = true;
+        disableClassMetadata = true;
+        disableCastChecking = true;
+    }
+
+    // src += files(project.sourceSets.main.allJava.srcDirs)
+}
