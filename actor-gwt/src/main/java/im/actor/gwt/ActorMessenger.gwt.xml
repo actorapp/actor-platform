@@ -1,18 +1,22 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0//EN"
     "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
 <module rename-to="ActorMessenger">
-    <inherits name="com.google.gwt.logging.Logging"/>
+    <inherits name="com.google.gwt.logging.Logging" />
 
-    <inherits name="com.droidkit.DroidKit"/>
-    <inherits name="im.actor.ActorModel"/>
-    <inherits name="com.google.gwt.storage.Storage"/>
+    <inherits name="com.droidkit.DroidKit" />
+    <inherits name="im.actor.ActorModel" />
+    <inherits name="com.google.gwt.storage.Storage" />
 
-    <!--<inherits name='org.timepedia.exporter.Exporter'/>-->
-    <!--<set-property name="export" value="yes"/>-->
+    <inherits name='org.timepedia.exporter.Exporter' />
+    <set-property name="export" value="yes" />
 
-    <set-property name='gwt.logging.enabled' value='TRUE'/>
-    <set-property name='gwt.logging.consoleHandler' value='ENABLED'/>
+    <set-property name='gwt.logging.enabled' value='TRUE' />
+    <set-property name='gwt.logging.consoleHandler' value='ENABLED' />
 
-    <source path='app'/>
-    <entry-point class='im.actor.gwt.app.ActorMessenger'/>
+    <source path='app' />
+    <entry-point class='im.actor.gwt.app.ActorMessenger' />
+
+    <!--Uncomment for building single JS library -->
+    <!--<add-linker name="sso"/>-->
+    <!--<collapse-all-properties />-->
 </module>
