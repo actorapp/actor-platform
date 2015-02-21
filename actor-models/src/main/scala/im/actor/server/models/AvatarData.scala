@@ -2,22 +2,6 @@ package im.actor.server.models
 
 import scala.collection.immutable
 
-object AvatarData {
-  def empty: AvatarData = AvatarData(
-    smallAvatarFileId = None,
-    smallAvatarFileHash = None,
-    smallAvatarFileSize = None,
-    largeAvatarFileId = None,
-    largeAvatarFileHash = None,
-    largeAvatarFileSize = None,
-    fullAvatarFileId = None,
-    fullAvatarFileHash = None,
-    fullAvatarFileSize = None,
-    fullAvatarWidth = None,
-    fullAvatarHeight = None
-  )
-}
-
 case class AvatarData(
   smallAvatarFileId: Option[Long],
   smallAvatarFileHash: Option[Long],
