@@ -55,6 +55,7 @@ public class ConfigurationBuilder {
             host = parts[0];
             port = Integer.parseInt(parts[1]);
         }
+
         if (scheme.equals("ssl") || scheme.equals("tls")) {
             if (port <= 0) {
                 port = 443;
