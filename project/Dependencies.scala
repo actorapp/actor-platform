@@ -49,7 +49,6 @@ object Dependencies {
     val specs2          = "org.specs2"                    %% "specs2-core"                   % "2.4.15" % "test"
     val slickTestkit    = "com.typesafe.slick"            %% "slick-testkit"                 % V.slick % "test"
   }
-
   import Compile._, Test._
 
   val common = Seq(logbackClassic, scalaLogging, jodaTime, jodaConvert)
@@ -58,7 +57,11 @@ object Dependencies {
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
   )
 
-  val api = common ++ Seq(akkaSlf4j, akkaActor, protobuf)
+  val api = common ++ Seq(akkaSlf4j, akkaActor, akkaStream, commonsCodec)
+
+  val rpcApi = common ++ Seq(akkaSlf4j, akkaActor, protobuf)
+
+  val internalServices = common ++ Seq(akkaActor, akkaStream, scodecBits)
 
   val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP)
 
@@ -68,7 +71,6 @@ object Dependencies {
 
   val frontend = common ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream, akkaStreamWS,
-    commonsCodec,
     scodecBits, scodecCore,
     scalazCore, scalazConcurrent
   )

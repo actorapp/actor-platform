@@ -1,4 +1,4 @@
-package im.actor.server.service
+package im.actor.server.util.streams
 
 import akka.actor._
 import akka.stream.actor.ActorPublisher
