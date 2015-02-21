@@ -45,7 +45,7 @@ public class ConfigurationBuilder {
     public ConfigurationBuilder addEndpoint(String url) {
         // Manual baggy parsing for GWT
         String scheme = url.substring(0, url.indexOf(":")).toLowerCase();
-        String host = url.substring(url.indexOf("://"));
+        String host = url.substring(url.indexOf("://") + "://".length());
         if (host.endsWith("/")) {
             host = host.substring(0, host.length() - 1);
         }

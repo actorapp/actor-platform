@@ -1,16 +1,18 @@
 package im.actor.gwt.app;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 
-/**
- * Entry point classes define <code>onModuleLoad()</code>
- */
+import org.timepedia.exporter.client.Exporter;
+
 public class ActorMessenger implements EntryPoint {
 
-    /**
-     * This is the entry point method.
-     */
     public void onModuleLoad() {
-
+        ((Exporter) GWT.create(JsMessenger.class)).export();
+        onAppLoaded();
     }
+
+    public native void onAppLoaded()/*-{
+        if ($wnd.jsAppLoaded) $wnd.jsAppLoaded();
+    }-*/;
 }
