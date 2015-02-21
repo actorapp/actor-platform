@@ -12,7 +12,6 @@ import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.modules.updates.internal.LoggedIn;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
-import im.actor.model.storage.PreferencesStorage;
 import im.actor.model.util.RandomUtils;
 
 /**

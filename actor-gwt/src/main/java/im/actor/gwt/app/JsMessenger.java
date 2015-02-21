@@ -1,9 +1,14 @@
 package im.actor.gwt.app;
 
+import com.google.gwt.storage.client.Storage;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
+import im.actor.gwt.app.helpers.Enums;
+import im.actor.gwt.app.helpers.JsAuthErrorClosure;
+import im.actor.gwt.app.helpers.JsAuthSuccessClosure;
 import im.actor.gwt.app.storage.JsStorage;
 import im.actor.gwt.app.sys.JsLog;
 import im.actor.gwt.app.sys.JsMainThread;
@@ -32,6 +37,7 @@ public class JsMessenger implements Exportable {
 
     @Export
     public JsMessenger() {
+        Storage.getLocalStorageIfSupported().clear();
         jsStorage = new JsStorage();
         mainThread = new JsMainThread();
         Configuration configuration = new ConfigurationBuilder()
@@ -50,37 +56,37 @@ public class JsMessenger implements Exportable {
         return jsStorage.isLocalStorageSupported();
     }
 
-    public JsAuthState getAuthState() {
-        switch (messenger.getAuthState()) {
-            default:
-            case AUTH_START:
-                return JsAuthState.AUTH_START;
-            case CODE_VALIDATION:
-                return JsAuthState.CODE_VALIDATION;
-            case LOGGED_IN:
-                return JsAuthState.LOGGED_IN;
-            case SIGN_UP:
-                return JsAuthState.SIGN_UP;
-        }
+    public boolean isLoggedIn() {
+        return messenger.isLoggedIn();
+    }
+
+    public int getUid() {
+        return messenger.myUid();
+    }
+
+    // Auth
+
+    public String getAuthState() {
+        return Enums.convert(messenger.getAuthState());
     }
 
     public String getAuthPhone() {
         return "" + messenger.getAuthPhone();
     }
 
-    public void requestSms(String phone, final JsAuthCallback callback) {
+    public void requestSms(String phone, final JsAuthSuccessClosure success,
+                           final JsAuthErrorClosure error) {
         try {
             long res = Long.parseLong(phone);
             messenger.requestSms(res).start(new CommandCallback<AuthState>() {
                 @Override
                 public void onResult(AuthState res) {
-                    // TODO: Add conversion
-                    callback.onResult(getAuthState());
+                    success.onResult(Enums.convert(res));
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    callback.onError("INTERNAL_ERROR", "Internal error", false,
+                    error.onError("INTERNAL_ERROR", "Internal error", false,
                             getAuthState());
                 }
             });
@@ -89,7 +95,35 @@ public class JsMessenger implements Exportable {
             mainThread.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    callback.onError("PHONE_NUMBER_INVALID", "Invalid phone number", false,
+                    error.onError("PHONE_NUMBER_INVALID", "Invalid phone number", false,
+                            getAuthState());
+                }
+            });
+        }
+    }
+
+    public void sendCode(String code, final JsAuthSuccessClosure success,
+                         final JsAuthErrorClosure error) {
+        try {
+            int res = Integer.parseInt(code);
+            messenger.sendCode(res).start(new CommandCallback<AuthState>() {
+                @Override
+                public void onResult(AuthState res) {
+                    success.onResult(Enums.convert(res));
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    error.onError("INTERNAL_ERROR", "Internal error", false,
+                            getAuthState());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            mainThread.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    error.onError("PHONE_CODE_INVALID", "Invalid code number", false,
                             getAuthState());
                 }
             });
