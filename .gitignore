@@ -3,3 +3,4 @@ actor-android/build
 build
 src.zip
 actor-gwt/src/gen
+actor-gwt/war

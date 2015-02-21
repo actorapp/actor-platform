@@ -29,6 +29,8 @@ tasks.clean.dependsOn(cleanGenSources)
 
 dependencies {
     compile 'com.google.gwt:gwt-user:2.7.0'
+    compile 'org.timepedia.exporter:gwtexporter:2.4.0'
+    gwt 'org.timepedia.exporter:gwtexporter:2.4.0'
 }
 
 sourceSets {
@@ -49,6 +51,4 @@ gwt {
         disableClassMetadata = true;
         disableCastChecking = true;
     }
-
-    // src += files(project.sourceSets.main.allJava.srcDirs)
 }
