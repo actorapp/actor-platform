@@ -2,3 +2,4 @@ actor-desktop/build
 actor-android/build
 build
 src.zip
+actor-gwt/src/gen
