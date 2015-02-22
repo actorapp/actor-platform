@@ -12,9 +12,6 @@
     <script type="text/javascript" language="javascript"
             src="js/angular.js"></script>
 
-    <!--<script type="text/javascript" language="javascript"-->
-    <!--src="js/angular-route.min.js"></script>-->
-
     <script type="text/javascript" language="javascript"
             src="ActorMessenger/ActorMessenger.nocache.js"></script>
 
@@ -78,14 +75,17 @@
         }
 
         function initMainUi(){
-            mainScope.dialogs = messenger.getDialogs();
-            mainScope.$apply();
+            mainScope.$apply(function($scope) {
+                mainScope.dialogs = messenger.getDialogs();
+            });
         }
 
          angular.module('App', [])
                 .controller('DialogsController', ['$scope', function($scope) {
             mainScope = $scope;
          }]);
+
+
     </script>
 </head>
 
@@ -112,7 +112,7 @@
             <div class="col-md-4">
                 <div ng-controller="DialogsController">
                     <ul class="unstyled">
-                        <li ng-repeat="dialog in dialogs.values()">
+                        <li ng-repeat="dialog in dialogs">
                             {{dialog.title}} : {{dialog.text}}
                         </li>
                     </ul>

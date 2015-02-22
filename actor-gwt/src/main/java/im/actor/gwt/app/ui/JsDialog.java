@@ -9,7 +9,7 @@ import org.timepedia.exporter.client.Exportable;
  */
 public class JsDialog extends JavaScriptObject implements Exportable {
 
-    public static native JsDialog create(int peerId, int peerType,
+    public static native JsDialog create(JsPeer peer,
                                          String title,
                                          String avatar,
                                          String placeholder,
@@ -17,7 +17,7 @@ public class JsDialog extends JavaScriptObject implements Exportable {
                                          String sender, boolean showSender,
                                          String text, boolean isHighlighted,
                                          String state)/*-{
-        return {peerId: peerId, title: title, text: text, date: date, sender: sender, showSender: showSender,
+        return {peer: peer, title: title, text: text, date: date, sender: sender, showSender: showSender,
         isHighlighted: isHighlighted, state:state, avatar: avatar, placeholder:placeholder };
     }-*/;
 
