@@ -1,5 +1,7 @@
 package im.actor.gwt.app;
 
+import com.google.gwt.core.client.JsArray;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
@@ -11,7 +13,9 @@ import im.actor.gwt.app.storage.JsStorage;
 import im.actor.gwt.app.sys.JsLog;
 import im.actor.gwt.app.sys.JsMainThread;
 import im.actor.gwt.app.threading.JsThreading;
+import im.actor.gwt.app.ui.JsDialog;
 import im.actor.gwt.app.ui.JsDialogList;
+import im.actor.gwt.app.ui.JsPeer;
 import im.actor.gwt.app.websocket.JsNetworking;
 import im.actor.model.AuthState;
 import im.actor.model.Configuration;
@@ -131,10 +135,66 @@ public class JsMessenger implements Exportable {
         }
     }
 
-    public JsDialogList getDialogs() {
+    // Models
+
+    public JsArray<JsDialog> getDialogs() {
         if (dialogList == null) {
             dialogList = new JsDialogList((im.actor.gwt.app.storage.JsListEngine<Dialog>) messenger.getDialogs());
         }
-        return dialogList;
+        return dialogList.values();
+    }
+
+    // Actions
+
+    public void sendMessage(JsPeer peer, String text) {
+        messenger.sendMessage(peer.convert(), text);
+    }
+
+    // Helpers
+
+    public long loadLastReadDate(JsPeer peer) {
+        return messenger.loadLastReadSortDate(peer.convert());
+    }
+
+    public void saveDraft(JsPeer peer, String text) {
+        messenger.saveDraft(peer.convert(), text);
+    }
+
+    public String loadDraft(JsPeer peer) {
+        return messenger.loadDraft(peer.convert());
+    }
+
+    // Events
+
+    public void onAppVisible() {
+        messenger.onAppVisible();
+    }
+
+    public void onAppHidden() {
+        messenger.onAppHidden();
+    }
+
+    public void onConversationOpen(JsPeer peer) {
+        messenger.onConversationOpen(peer.convert());
+    }
+
+    public void onConversationClosed(JsPeer peer) {
+        messenger.onConversationClosed(peer.convert());
+    }
+
+    public void onInMessageShown(JsPeer peer, long rid, long date) {
+        messenger.onInMessageShown(peer.convert(), rid, date, false);
+    }
+
+    public void onTyping(JsPeer peer) {
+        messenger.onTyping(peer.convert());
+    }
+
+    public void onProfileOpen(int uid) {
+        messenger.onProfileOpen(uid);
+    }
+
+    public void onProfileClosed(int uid) {
+        messenger.onProfileClosed(uid);
     }
 }
