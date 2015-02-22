@@ -20,9 +20,12 @@ public class Configuration {
 
     private final boolean persistUploadingFiles;
 
+    private LocaleProvider localeProvider;
+
     public Configuration(Networking networking, ConnectionEndpoint[] endpoints,
                          Threading threading, MainThread mainThread, Storage storage,
-                         LogCallback log, boolean persistUploadingFiles) {
+                         LogCallback log, boolean persistUploadingFiles,
+                         LocaleProvider localeProvider) {
         this.networking = networking;
         this.endpoints = endpoints;
         this.threading = threading;
@@ -30,6 +33,7 @@ public class Configuration {
         this.storage = storage;
         this.log = log;
         this.persistUploadingFiles = persistUploadingFiles;
+        this.localeProvider = localeProvider;
     }
 
     public Networking getNetworking() {
@@ -58,5 +62,9 @@ public class Configuration {
 
     public boolean isPersistUploadingFiles() {
         return persistUploadingFiles;
+    }
+
+    public LocaleProvider getLocaleProvider() {
+        return localeProvider;
     }
 }

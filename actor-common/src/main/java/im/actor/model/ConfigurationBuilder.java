@@ -22,6 +22,8 @@ public class ConfigurationBuilder {
 
     private boolean isUploadFilePersist;
 
+    private LocaleProvider localeProvider;
+
     public ConfigurationBuilder setLog(LogCallback log) {
         this.log = log;
         return this;
@@ -39,6 +41,11 @@ public class ConfigurationBuilder {
 
     public ConfigurationBuilder setStorage(Storage storage) {
         this.enginesFactory = storage;
+        return this;
+    }
+
+    public ConfigurationBuilder setLocale(LocaleProvider localeProvider) {
+        this.localeProvider = localeProvider;
         return this;
     }
 
@@ -108,7 +115,10 @@ public class ConfigurationBuilder {
         if (endpoints.size() == 0) {
             throw new RuntimeException("Endpoints not set");
         }
+        if (localeProvider == null) {
+            throw new RuntimeException("Locale Provider not set");
+        }
         return new Configuration(networking, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
-                threading, mainThread, enginesFactory, log, isUploadFilePersist);
+                threading, mainThread, enginesFactory, log, isUploadFilePersist, localeProvider);
     }
 }

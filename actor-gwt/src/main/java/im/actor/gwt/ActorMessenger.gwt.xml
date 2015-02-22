@@ -6,6 +6,8 @@
     <inherits name="com.droidkit.DroidKit" />
     <inherits name="im.actor.ActorModel" />
     <inherits name="com.google.gwt.storage.Storage" />
+    <inherits name="com.google.gwt.resources.Resources" />
+    <set-property name="ClientBundle.enableInlining" value="true" />
 
     <inherits name='org.timepedia.exporter.Exporter' />
     <set-property name="export" value="yes" />

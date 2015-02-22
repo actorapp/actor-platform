@@ -319,7 +319,7 @@ if (project.hasProperty("hockeyKey")) {
 dependencies {
     compile project(':actor-common')
     compile project(':actor-java')
-    compile project(':actor-java-threads')
+    compile project(':actor-java-base')
 
     // DroidKit
     compile 'com.droidkit:actors:0.6.1'

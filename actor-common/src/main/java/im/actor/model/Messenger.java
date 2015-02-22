@@ -11,6 +11,7 @@ import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
+import im.actor.model.i18n.I18nEngine;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.MVVMCollection;
@@ -65,6 +66,7 @@ public class Messenger {
         });
 
         this.modules = new Modules(configuration);
+        this.modules.run();
     }
 
     // Auth
@@ -99,6 +101,10 @@ public class Messenger {
 
     public int myUid() {
         return modules.getAuthModule().myUid();
+    }
+
+    public I18nEngine getFormatter() {
+        return modules.getI18nEngine();
     }
 
     public MVVMCollection<User, UserVM> getUsers() {
