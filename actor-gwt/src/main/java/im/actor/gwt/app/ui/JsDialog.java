@@ -13,7 +13,7 @@ public class JsDialog extends JavaScriptObject implements Exportable {
                                          String title,
                                          String avatar,
                                          String placeholder,
-                                         int date,
+                                         String date,
                                          String sender, boolean showSender,
                                          String text, boolean isHighlighted,
                                          String state)/*-{

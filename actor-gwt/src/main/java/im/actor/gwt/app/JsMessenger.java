@@ -1,7 +1,5 @@
 package im.actor.gwt.app;
 
-import com.google.gwt.core.client.JsArray;
-
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
@@ -9,12 +7,15 @@ import org.timepedia.exporter.client.Exportable;
 import im.actor.gwt.app.helpers.Enums;
 import im.actor.gwt.app.helpers.JsAuthErrorClosure;
 import im.actor.gwt.app.helpers.JsAuthSuccessClosure;
+import im.actor.gwt.app.locale.JsLocaleProvider;
 import im.actor.gwt.app.storage.JsStorage;
 import im.actor.gwt.app.sys.JsLog;
 import im.actor.gwt.app.sys.JsMainThread;
 import im.actor.gwt.app.threading.JsThreading;
 import im.actor.gwt.app.ui.JsDialog;
-import im.actor.gwt.app.ui.JsDialogList;
+import im.actor.gwt.app.ui.JsDialogEntityConverter;
+import im.actor.gwt.app.ui.JsList;
+import im.actor.gwt.app.ui.JsListCallback;
 import im.actor.gwt.app.ui.JsPeer;
 import im.actor.gwt.app.websocket.JsNetworking;
 import im.actor.model.AuthState;
@@ -38,7 +39,7 @@ public class JsMessenger implements Exportable {
     private Messenger messenger;
     private JsStorage jsStorage;
     private JsMainThread mainThread;
-    private JsDialogList dialogList;
+    private JsList<JsDialog,Dialog> dialogList;
 
     @Export
     public JsMessenger() {
@@ -52,7 +53,8 @@ public class JsMessenger implements Exportable {
                 .setThreading(new JsThreading())
                 .setLog(new JsLog())
                 .setMainThread(mainThread)
-                .setUploadFilePersist(false).build();
+                .setUploadFilePersist(false)
+                .setLocale(new JsLocaleProvider()).build();
         messenger = new Messenger(configuration);
         Log.d(TAG, "JsMessenger created");
     }
@@ -137,11 +139,20 @@ public class JsMessenger implements Exportable {
 
     // Models
 
-    public JsArray<JsDialog> getDialogs() {
+    private JsList<JsDialog,Dialog> getDialogList() {
         if (dialogList == null) {
-            dialogList = new JsDialogList((im.actor.gwt.app.storage.JsListEngine<Dialog>) messenger.getDialogs());
+            dialogList = new JsList<JsDialog, Dialog>((im.actor.gwt.app.storage.JsListEngine<Dialog>) messenger.getDialogs(),
+                    new JsDialogEntityConverter(messenger));
         }
-        return dialogList.values();
+        return dialogList;
+    }
+
+    public void bindDialogs(JsListCallback<JsDialog> callback) {
+        getDialogList().subscribe(callback);
+    }
+
+    public void unbindDialogs(JsListCallback<JsDialog> callback) {
+        getDialogList().unsubscribe(callback);
     }
 
     // Actions

@@ -13,30 +13,28 @@ public class JsPeer extends JavaScriptObject {
         switch (peer.getPeerType()) {
             default:
             case PRIVATE:
-                return create(0, peer.getPeerId());
+                return create("user", peer.getPeerId(), "u" + peer.getPeerId());
             case GROUP:
-                return create(1, peer.getPeerId());
+                return create("group", peer.getPeerId(), "g" + peer.getPeerId());
         }
     }
 
-    public static native JsPeer create(int peerType, int peerId)/*-{
-        return {peerType: peerType, peerId: peerId, key:peerType+':'+peerId};
+    public static native JsPeer create(String peerType, int peerId, String peerKey)/*-{
+        return {type: peerType, id: peerId, key:peerKey};
     }-*/;
 
     protected JsPeer() {
     }
 
-    public final native int getPeerType()/*-{ return this.peerType; }-*/;
+    public final native String getPeerType()/*-{ return this.peerType; }-*/;
 
     public final native int getPeerId()/*-{ return this.peerId; }-*/;
 
     public final Peer convert() {
-        switch (getPeerType()) {
-            case 0:
-            default:
-                return Peer.user(getPeerId());
-            case 1:
-                return Peer.group(getPeerId());
+        if (getPeerType().equals("user")) {
+            return Peer.user(getPeerId());
+        } else {
+            return Peer.group(getPeerId());
         }
     }
 }

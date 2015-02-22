@@ -14,6 +14,6 @@ compileJava {
 
 dependencies {
     compile project(':actor-common')
-    compile project(':actor-java-threads')
+    compile project(':actor-java-base')
     testCompile 'junit:junit:4.11'
 }

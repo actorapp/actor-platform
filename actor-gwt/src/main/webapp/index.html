@@ -75,9 +75,12 @@
         }
 
         function initMainUi(){
-            mainScope.$apply(function($scope) {
-                mainScope.dialogs = messenger.getDialogs();
+            messenger.bindDialogs(function(items) {
+                mainScope.$apply(function($scope) {
+                    mainScope.dialogs = items;
+                });
             });
+
         }
 
          angular.module('App', [])
