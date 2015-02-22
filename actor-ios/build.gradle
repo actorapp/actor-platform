@@ -11,7 +11,7 @@ task cleanDestSources(type: Delete) {
 // actor-java-threads
 task copySources(type: Copy, dependsOn: ['cleanBuildSources']) {
     from fileTree("${projectDir}/../actor-common/src/main/java/")
-    from fileTree("${projectDir}/../actor-java-threads/src/main/java/")
+    from fileTree("${projectDir}/../actor-java-base/src/main/java/")
     into "${buildDir}/java/"
 }
 

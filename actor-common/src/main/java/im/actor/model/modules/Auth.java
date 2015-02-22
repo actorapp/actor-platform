@@ -47,9 +47,13 @@ public class Auth extends BaseModule {
             preferences().putBytes(KEY_DEVICE_HASH, deviceHash);
         }
 
+
+    }
+
+    public void run() {
         if (preferences().getBool(KEY_AUTH, false)) {
             state = AuthState.LOGGED_IN;
-            modules.onLoggedIn();
+            modules().onLoggedIn();
         } else {
             state = AuthState.AUTH_START;
         }

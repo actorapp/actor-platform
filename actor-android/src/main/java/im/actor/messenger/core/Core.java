@@ -4,15 +4,22 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 
-import im.actor.messenger.BuildConfig;
-import im.actor.messenger.app.emoji.EmojiProcessor;
-import im.actor.messenger.app.view.Formatter;
-
 import com.droidkit.images.cache.BitmapClasificator;
 import com.droidkit.images.loading.ImageLoader;
 
-import im.actor.messenger.core.images.*;
-import im.actor.messenger.model.TypingModel;
+import im.actor.messenger.BuildConfig;
+import im.actor.messenger.app.emoji.EmojiProcessor;
+import im.actor.messenger.app.view.Formatter;
+import im.actor.messenger.core.images.AvatarActor;
+import im.actor.messenger.core.images.AvatarTask;
+import im.actor.messenger.core.images.FullAvatarActor;
+import im.actor.messenger.core.images.FullAvatarTask;
+import im.actor.messenger.core.images.ImagePreviewActor;
+import im.actor.messenger.core.images.ImagePreviewTask;
+import im.actor.messenger.core.images.VideoActor;
+import im.actor.messenger.core.images.VideoPreviewActor;
+import im.actor.messenger.core.images.VideoPreviewTask;
+import im.actor.messenger.core.images.VideoTask;
 import im.actor.messenger.storage.provider.AppEngineFactory;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
