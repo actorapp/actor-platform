@@ -1,6 +1,7 @@
 package im.actor.gwt.app.helpers;
 
 import im.actor.model.AuthState;
+import im.actor.model.entity.MessageState;
 
 /**
  * Created by ex3ndr on 22.02.15.
@@ -17,6 +18,24 @@ public class Enums {
                 return "signup";
             case LOGGED_IN:
                 return "logged_in";
+        }
+    }
+
+    public static String convert(MessageState state) {
+        switch (state) {
+            default:
+            case UNKNOWN:
+                return "unknown";
+            case PENDING:
+                return "pending";
+            case SENT:
+                return "sent";
+            case ERROR:
+                return "error";
+            case READ:
+                return "read";
+            case RECEIVED:
+                return "received";
         }
     }
 }
