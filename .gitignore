@@ -4,3 +4,4 @@ build
 src.zip
 actor-gwt/src/gen
 actor-gwt/war
+actor-gwt/package

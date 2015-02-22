@@ -16,7 +16,7 @@ import im.actor.model.entity.Dialog;
  */
 @ExportPackage("actor")
 @Export("DialogList")
-public class JsDialogList extends JsSimpleList<JsDialog, Dialog> implements Exportable {
+public class JsDialogList extends JsBaseList<JsDialog, Dialog> implements Exportable {
     public JsDialogList() {
         super(null);
 
@@ -30,7 +30,7 @@ public class JsDialogList extends JsSimpleList<JsDialog, Dialog> implements Expo
     @Override
     protected JsDialog convert(Dialog src) {
         return JsDialog.create(
-                src.getPeer().getPeerId(), src.getPeer().getPeerId(),
+                JsPeer.create(src.getPeer()),
                 src.getDialogTitle(), null, Placeholders.getPlaceholder(src.getPeer().getPeerId()),
                 (int) (src.getDate() / 1000L),
                 "<SENDER>", false,
