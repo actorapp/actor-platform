@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
 <head>
     <title>Actor App</title>
@@ -9,7 +10,10 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <script type="text/javascript" language="javascript"
-            src="js/angular.min.js"></script>
+            src="js/angular.js"></script>
+
+    <!--<script type="text/javascript" language="javascript"-->
+    <!--src="js/angular-route.min.js"></script>-->
 
     <script type="text/javascript" language="javascript"
             src="ActorMessenger/ActorMessenger.nocache.js"></script>
@@ -43,6 +47,7 @@
                 $("#login_phone").addClass('hide');
                 $("#login_code").addClass('hide');
                 $("#main_container").removeClass('hide');
+                initMainUi();
             }
         }
 
@@ -72,10 +77,19 @@
             });
         }
 
+        function initMainUi(){
+            mainScope.dialogs = messenger.getDialogs();
+            mainScope.$apply();
+        }
+
+         angular.module('App', [])
+                .controller('DialogsController', ['$scope', function($scope) {
+            mainScope = $scope;
+         }]);
     </script>
 </head>
 
-<body>
+<body ng-app="App">
 <div class="container">
     <div class="page-header">
         <h1>Actor Demo pages
@@ -94,7 +108,17 @@
     </div>
 
     <div id="main_container" class="hide">
-        Logged in
+        <div class="row">
+            <div class="col-md-4">
+                <div ng-controller="DialogsController">
+                    <ul class="unstyled">
+                        <li ng-repeat="dialog in dialogs.values()">
+                            {{dialog.title}} : {{dialog.text}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -8,10 +8,10 @@ import im.actor.model.storage.PreferencesStorage;
 /**
  * Created by ex3ndr on 10.02.15.
  */
-public class LocalStoragePreferences implements PreferencesStorage {
+public class JsPreferences implements PreferencesStorage {
     private Storage storage;
 
-    public LocalStoragePreferences(Storage storage) {
+    public JsPreferences(Storage storage) {
         this.storage = storage;
     }
 

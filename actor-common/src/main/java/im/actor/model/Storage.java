@@ -1,7 +1,8 @@
 package im.actor.model;
 
-import im.actor.model.entity.*;
-import im.actor.model.storage.KeyValueEngine;
+import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
 import im.actor.model.storage.KeyValueStorage;
 import im.actor.model.storage.ListEngine;
 import im.actor.model.storage.PreferencesStorage;
@@ -14,8 +15,6 @@ public interface Storage {
     public PreferencesStorage createPreferencesStorage();
 
     public KeyValueStorage createUsersEngine();
-
-    public KeyValueEngine<ReadState> createReadStateEngine();
 
     public ListEngine<Dialog> createDialogsEngine();
 
