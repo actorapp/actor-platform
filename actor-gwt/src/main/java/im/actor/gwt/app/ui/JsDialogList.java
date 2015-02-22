@@ -6,6 +6,8 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
+import im.actor.gwt.app.helpers.Enums;
+import im.actor.gwt.app.helpers.Placeholders;
 import im.actor.gwt.app.storage.JsListEngine;
 import im.actor.model.entity.Dialog;
 
@@ -27,8 +29,13 @@ public class JsDialogList extends JsSimpleList<JsDialog, Dialog> implements Expo
 
     @Override
     protected JsDialog convert(Dialog src) {
-        return JsDialog.create(src.getPeer().getPeerId(), src.getPeer().getPeerId(), src.getDialogTitle(),
-                src.getText());
+        return JsDialog.create(
+                src.getPeer().getPeerId(), src.getPeer().getPeerId(),
+                src.getDialogTitle(), null, Placeholders.getPlaceholder(src.getPeer().getPeerId()),
+                (int) (src.getDate() / 1000L),
+                "<SENDER>", false,
+                src.getText(), false,
+                Enums.convert(src.getStatus()));
     }
 
     public JsArray<JsDialog> values() {
