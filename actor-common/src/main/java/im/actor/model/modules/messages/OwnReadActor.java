@@ -5,12 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import im.actor.model.entity.Peer;
-import im.actor.model.entity.ReadState;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.UnreadMessage;
 import im.actor.model.modules.messages.entity.UnreadMessagesStorage;
 import im.actor.model.modules.utils.ModuleActor;
-import im.actor.model.storage.KeyValueEngine;
 
 /**
  * Created by ex3ndr on 17.02.15.
@@ -18,7 +16,6 @@ import im.actor.model.storage.KeyValueEngine;
 public class OwnReadActor extends ModuleActor {
 
     private UnreadMessagesStorage messagesStorage;
-    private KeyValueEngine<ReadState> readStates;
 
     public OwnReadActor(Modules messenger) {
         super(messenger);
@@ -28,7 +25,6 @@ public class OwnReadActor extends ModuleActor {
     public void preStart() {
         super.preStart();
 
-        readStates = modules().getMessagesModule().getReadStates();
         messagesStorage = new UnreadMessagesStorage();
         byte[] st = preferences().getBytes("own_read_storage");
         if (st != null) {
@@ -61,7 +57,7 @@ public class OwnReadActor extends ModuleActor {
         }
 
         // Saving last read message
-        readStates.addOrUpdateItem(new ReadState(peer, sortingDate));
+        modules().getMessagesModule().saveReadState(peer, sortingDate);
 
         // Resetting counter
         modules().getMessagesModule().getDialogsActor()
@@ -70,8 +66,9 @@ public class OwnReadActor extends ModuleActor {
 
     public void onNewInMessage(Peer peer, long rid, long sortingDate, boolean isEncrypted) {
         // Detecting if message already read
-        ReadState state = readStates.getValue(peer.getUid());
-        if (state != null && sortingDate <= state.getLastReadSortingDate()) {
+        long readState = modules().getMessagesModule().loadReadState(peer);
+        if (sortingDate <= readState) {
+            // Already read
             if (isEncrypted) {
                 // TODO: Notify about encrypted message read
             } else {
@@ -91,8 +88,8 @@ public class OwnReadActor extends ModuleActor {
 
     public void onMessageRead(Peer peer, long rid, long sortingDate, boolean isEncrypted) {
         // Detecting if message already read
-        ReadState readState = readStates.getValue(peer.getUid());
-        if (readState != null && sortingDate <= readState.getLastReadSortingDate()) {
+        long readState = modules().getMessagesModule().loadReadState(peer);
+        if (sortingDate <= readState) {
             // Already read
             return;
         }
@@ -134,7 +131,7 @@ public class OwnReadActor extends ModuleActor {
         }
 
         // Saving last read message
-        readStates.addOrUpdateItem(new ReadState(peer, sortingDate));
+        modules().getMessagesModule().saveReadState(peer, sortingDate);
 
         // Updating counter
         modules().getMessagesModule().getDialogsActor()

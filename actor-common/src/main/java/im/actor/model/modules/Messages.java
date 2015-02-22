@@ -1,12 +1,13 @@
 package im.actor.model.modules;
 
+import java.util.HashMap;
+
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
-import im.actor.model.entity.ReadState;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
@@ -14,10 +15,7 @@ import im.actor.model.modules.messages.OwnReadActor;
 import im.actor.model.modules.messages.PlainReaderActor;
 import im.actor.model.modules.messages.PlainReceiverActor;
 import im.actor.model.modules.messages.SenderActor;
-import im.actor.model.storage.KeyValueEngine;
 import im.actor.model.storage.ListEngine;
-
-import java.util.HashMap;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
@@ -36,12 +34,10 @@ public class Messages extends BaseModule {
 
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<Peer, ListEngine<Message>>();
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
-    private KeyValueEngine<ReadState> readStates;
 
     public Messages(final Modules messenger) {
         super(messenger);
         this.dialogs = messenger.getConfiguration().getStorage().createDialogsEngine();
-        this.readStates = messenger.getConfiguration().getStorage().createReadStateEngine();
     }
 
     public void run() {
@@ -135,16 +131,20 @@ public class Messages extends BaseModule {
         return dialogs;
     }
 
-    public KeyValueEngine<ReadState> getReadStates() {
-        return readStates;
-    }
-
     public void sendMessage(final Peer peer, final String message) {
         sendMessageActor.send(new SenderActor.SendText(peer, message));
     }
 
     public void onInMessageShown(Peer peer, long rid, long sortDate, boolean isEncrypted) {
         ownReadActor.send(new OwnReadActor.MessageRead(peer, rid, sortDate, isEncrypted));
+    }
+
+    public void saveReadState(Peer peer, long lastReadDate) {
+        preferences().putLong("read_state_" + peer.getUid(), lastReadDate);
+    }
+
+    public long loadReadState(Peer peer) {
+        return preferences().getLong("read_state_" + peer.getUid(), 0);
     }
 
     public void saveDraft(Peer peer, String draft) {

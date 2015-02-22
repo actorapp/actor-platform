@@ -1,7 +1,5 @@
 package im.actor.gwt.app;
 
-import com.google.gwt.storage.client.Storage;
-
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
@@ -13,12 +11,14 @@ import im.actor.gwt.app.storage.JsStorage;
 import im.actor.gwt.app.sys.JsLog;
 import im.actor.gwt.app.sys.JsMainThread;
 import im.actor.gwt.app.threading.JsThreading;
+import im.actor.gwt.app.ui.JsDialogList;
 import im.actor.gwt.app.websocket.JsNetworking;
 import im.actor.model.AuthState;
 import im.actor.model.Configuration;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.entity.Dialog;
 import im.actor.model.log.Log;
 
 /**
@@ -34,10 +34,11 @@ public class JsMessenger implements Exportable {
     private Messenger messenger;
     private JsStorage jsStorage;
     private JsMainThread mainThread;
+    private JsDialogList dialogList;
 
     @Export
     public JsMessenger() {
-        Storage.getLocalStorageIfSupported().clear();
+        // Storage.getLocalStorageIfSupported().clear();
         jsStorage = new JsStorage();
         mainThread = new JsMainThread();
         Configuration configuration = new ConfigurationBuilder()
@@ -128,5 +129,12 @@ public class JsMessenger implements Exportable {
                 }
             });
         }
+    }
+
+    public JsDialogList getDialogs() {
+        if (dialogList == null) {
+            dialogList = new JsDialogList((im.actor.gwt.app.storage.JsListEngine<Dialog>) messenger.getDialogs());
+        }
+        return dialogList;
     }
 }
