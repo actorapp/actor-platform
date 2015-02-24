@@ -7,6 +7,7 @@
 #define _ImActorModelModulesMessagesDialogsActor_H_
 
 @class AMAvatar;
+@class AMGroup;
 @class AMMessage;
 @class AMMessageStateEnum;
 @class AMPeer;
@@ -117,6 +118,22 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_UserChanged)
+
+@interface ImActorModelModulesMessagesDialogsActor_GroupChanged : NSObject {
+}
+
+- (instancetype)initWithAMGroup:(AMGroup *)group;
+
+- (AMGroup *)getGroup;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_GroupChanged)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_GroupChanged)
 
 @interface ImActorModelModulesMessagesDialogsActor_MessageStateChanged : NSObject {
 }

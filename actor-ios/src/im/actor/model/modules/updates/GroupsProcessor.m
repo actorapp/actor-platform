@@ -4,12 +4,56 @@
 //
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/Group.h"
+#include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/entity/Avatar.h"
+#include "im/actor/model/entity/Group.h"
+#include "im/actor/model/modules/BaseModule.h"
+#include "im/actor/model/modules/Messages.h"
+#include "im/actor/model/modules/Modules.h"
+#include "im/actor/model/modules/messages/DialogsActor.h"
+#include "im/actor/model/modules/messages/entity/EntityConverter.h"
 #include "im/actor/model/modules/updates/GroupsProcessor.h"
+#include "im/actor/model/storage/KeyValueEngine.h"
+#include "im/actor/model/util/JavaUtil.h"
+#include "java/lang/Integer.h"
+#include "java/util/ArrayList.h"
+#include "java/util/Collection.h"
 
 @implementation ImActorModelModulesUpdatesGroupsProcessor
 
-- (instancetype)init {
-  return [super init];
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
+  return [super initWithImActorModelModulesModules:modules];
+}
+
+- (void)applyGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)updated
+                              withBoolean:(jboolean)forced {
+  JavaUtilArrayList *batch = [[JavaUtilArrayList alloc] init];
+  for (ImActorModelApiGroup * __strong group in nil_chk(updated)) {
+    AMGroup *saved = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:[((ImActorModelApiGroup *) nil_chk(group)) getId]];
+    if (saved == nil) {
+      [batch addWithId:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(group)];
+    }
+    else if (forced) {
+      AMGroup *upd = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(group);
+      [batch addWithId:upd];
+      if (!AMJavaUtil_equalsEWithId_withId_([((AMGroup *) nil_chk(upd)) getAvatar], [saved getAvatar]) || ![((NSString *) nil_chk([upd getTitle])) isEqual:[saved getTitle]]) {
+        [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_GroupChanged alloc] initWithAMGroup:upd]];
+      }
+    }
+  }
+  if ([batch size] > 0) {
+    [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemsWithJavaUtilList:batch];
+  }
+}
+
+- (jboolean)hasGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)gids {
+  for (JavaLangInteger * __strong uid in nil_chk(gids)) {
+    if ([((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:[((JavaLangInteger *) nil_chk(uid)) intValue]] == nil) {
+      return NO;
+    }
+  }
+  return YES;
 }
 
 @end

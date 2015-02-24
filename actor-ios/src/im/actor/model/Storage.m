@@ -6,8 +6,8 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/Storage.h"
 #include "im/actor/model/entity/Peer.h"
-#include "im/actor/model/mvvm/KeyValueEngine.h"
-#include "im/actor/model/mvvm/ListEngine.h"
+#include "im/actor/model/storage/KeyValueStorage.h"
+#include "im/actor/model/storage/ListEngine.h"
 #include "im/actor/model/storage/PreferencesStorage.h"
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMStorage)

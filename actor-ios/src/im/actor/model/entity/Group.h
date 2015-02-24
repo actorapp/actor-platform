@@ -7,13 +7,20 @@
 #define _AMGroup_H_
 
 @class AMAvatar;
-@class AMGroupStateEnum;
+@class AMPeer;
+@class BSBserValues;
+@class BSBserWriter;
+@class IOSByteArray;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/storage/KeyValueItem.h"
 
-@interface AMGroup : NSObject {
+@interface AMGroup : BSBserObject < AMKeyValueItem > {
 }
+
++ (AMGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)accessHash
@@ -21,7 +28,9 @@
                withAMAvatar:(AMAvatar *)avatar
            withJavaUtilList:(id<JavaUtilList>)members
                     withInt:(jint)adminId
-       withAMGroupStateEnum:(AMGroupStateEnum *)groupState;
+                withBoolean:(jboolean)isMember;
+
+- (AMPeer *)peer;
 
 - (jint)getGroupId;
 
@@ -35,13 +44,21 @@
 
 - (jint)getAdminId;
 
-- (AMGroupStateEnum *)getGroupState;
+- (jboolean)isMember;
+
+- (void)parseWithBSBserValues:(BSBserValues *)values;
+
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+- (jlong)getEngineId;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMGroup)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT AMGroup *AMGroup_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
 typedef AMGroup ImActorModelEntityGroup;

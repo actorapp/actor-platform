@@ -6,12 +6,21 @@
 #ifndef _ImActorModelModulesUpdatesGroupsProcessor_H_
 #define _ImActorModelModulesUpdatesGroupsProcessor_H_
 
-#include "J2ObjC_header.h"
+@class ImActorModelModulesModules;
+@protocol JavaUtilCollection;
 
-@interface ImActorModelModulesUpdatesGroupsProcessor : NSObject {
+#include "J2ObjC_header.h"
+#include "im/actor/model/modules/BaseModule.h"
+
+@interface ImActorModelModulesUpdatesGroupsProcessor : ImActorModelModulesBaseModule {
 }
 
-- (instancetype)init;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
+
+- (void)applyGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)updated
+                              withBoolean:(jboolean)forced;
+
+- (jboolean)hasGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)gids;
 
 @end
 

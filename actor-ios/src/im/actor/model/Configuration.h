@@ -7,9 +7,9 @@
 #define _AMConfiguration_H_
 
 @class IOSObjectArray;
+@protocol AMLocaleProvider;
 @protocol AMLogCallback;
 @protocol AMMainThread;
-@protocol AMMessengerCallback;
 @protocol AMNetworking;
 @protocol AMStorage;
 @protocol AMThreading;
@@ -24,8 +24,9 @@
                      withAMThreading:(id<AMThreading>)threading
                     withAMMainThread:(id<AMMainThread>)mainThread
                        withAMStorage:(id<AMStorage>)storage
-             withAMMessengerCallback:(id<AMMessengerCallback>)callback
-                   withAMLogCallback:(id<AMLogCallback>)log;
+                   withAMLogCallback:(id<AMLogCallback>)log
+                         withBoolean:(jboolean)persistUploadingFiles
+                withAMLocaleProvider:(id<AMLocaleProvider>)localeProvider;
 
 - (id<AMNetworking>)getNetworking;
 
@@ -37,9 +38,11 @@
 
 - (id<AMStorage>)getStorage;
 
-- (id<AMMessengerCallback>)getCallback;
-
 - (id<AMLogCallback>)getLog;
+
+- (jboolean)isPersistUploadingFiles;
+
+- (id<AMLocaleProvider>)getLocaleProvider;
 
 @end
 

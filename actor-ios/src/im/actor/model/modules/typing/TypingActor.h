@@ -12,7 +12,6 @@
 @class ImActorModelModulesModules;
 @class JavaUtilHashMap;
 @class JavaUtilHashSet;
-@protocol AMMessengerCallback;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"

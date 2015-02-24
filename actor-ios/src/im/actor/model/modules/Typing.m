@@ -13,16 +13,24 @@
 #include "im/actor/model/modules/Typing.h"
 #include "im/actor/model/modules/typing/OwnTypingActor.h"
 #include "im/actor/model/modules/typing/TypingActor.h"
+#include "im/actor/model/viewmodel/GroupTypingVM.h"
+#include "im/actor/model/viewmodel/UserTypingVM.h"
+#include "java/lang/Integer.h"
+#include "java/util/HashMap.h"
 
 @interface ImActorModelModulesTyping () {
  @public
   DKActorRef *ownTypingActor_;
   DKActorRef *typingActor_;
+  JavaUtilHashMap *uids_;
+  JavaUtilHashMap *groups_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesTyping, ownTypingActor_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesTyping, typingActor_, DKActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesTyping, uids_, JavaUtilHashMap *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesTyping, groups_, JavaUtilHashMap *)
 
 @interface ImActorModelModulesTyping_$1 () {
  @public
@@ -36,10 +44,30 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTyping_$1, val$messenger_, ImActorModelMo
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   if (self = [super initWithImActorModelModulesModules:messenger]) {
+    uids_ = [[JavaUtilHashMap alloc] init];
+    groups_ = [[JavaUtilHashMap alloc] init];
     self->ownTypingActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesTypingOwnTypingActor_class_(), [[ImActorModelModulesTyping_$1 alloc] initWithImActorModelModulesModules:messenger]) withNSString:@"actor/typing/own"];
     self->typingActor_ = ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(messenger);
   }
   return self;
+}
+
+- (ImActorModelViewmodelGroupTypingVM *)getGroupTypingWithInt:(jint)gid {
+  @synchronized(groups_) {
+    if (![((JavaUtilHashMap *) nil_chk(groups_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_(gid)]) {
+      (void) [groups_ putWithId:JavaLangInteger_valueOfWithInt_(gid) withId:[[ImActorModelViewmodelGroupTypingVM alloc] initWithInt:gid]];
+    }
+    return [groups_ getWithId:JavaLangInteger_valueOfWithInt_(gid)];
+  }
+}
+
+- (ImActorModelViewmodelUserTypingVM *)getTypingWithInt:(jint)uid {
+  @synchronized(uids_) {
+    if (![((JavaUtilHashMap *) nil_chk(uids_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_(uid)]) {
+      (void) [uids_ putWithId:JavaLangInteger_valueOfWithInt_(uid) withId:[[ImActorModelViewmodelUserTypingVM alloc] initWithInt:uid]];
+    }
+    return [uids_ getWithId:JavaLangInteger_valueOfWithInt_(uid)];
+  }
 }
 
 - (void)onTypingWithAMPeer:(AMPeer *)peer {
@@ -50,6 +78,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTyping_$1, val$messenger_, ImActorModelMo
   [super copyAllFieldsTo:other];
   other->ownTypingActor_ = ownTypingActor_;
   other->typingActor_ = typingActor_;
+  other->uids_ = uids_;
+  other->groups_ = groups_;
 }
 
 @end

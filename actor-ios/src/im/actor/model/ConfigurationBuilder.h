@@ -8,9 +8,9 @@
 
 @class AMConfiguration;
 @class JavaUtilArrayList;
+@protocol AMLocaleProvider;
 @protocol AMLogCallback;
 @protocol AMMainThread;
-@protocol AMMessengerCallback;
 @protocol AMNetworking;
 @protocol AMStorage;
 @protocol AMThreading;
@@ -28,11 +28,11 @@
 
 - (AMConfigurationBuilder *)setStorage:(id<AMStorage>)storage;
 
-- (AMConfigurationBuilder *)setCallback:(id<AMMessengerCallback>)callback;
+- (AMConfigurationBuilder *)setLocaleWithAMLocaleProvider:(id<AMLocaleProvider>)localeProvider;
 
 - (AMConfigurationBuilder *)addEndpoint:(NSString *)url;
 
-- (AMConfigurationBuilder *)setMessagesPersisting:(jboolean)isMessagesPersisting;
+- (AMConfigurationBuilder *)setUploadFilePersistWithBoolean:(jboolean)isUploadFilePersist;
 
 - (AMConfigurationBuilder *)setMainThread:(id<AMMainThread>)mainThread;
 

@@ -7,8 +7,6 @@
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/Configuration.h"
-#include "im/actor/model/MessengerCallback.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
@@ -18,8 +16,13 @@
 #include "im/actor/model/droidkit/actors/mailbox/MailboxesQueue.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/modules/Modules.h"
+#include "im/actor/model/modules/Typing.h"
 #include "im/actor/model/modules/typing/TypingActor.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
+#include "im/actor/model/mvvm/ValueModel.h"
+#include "im/actor/model/viewmodel/GroupTypingVM.h"
+#include "im/actor/model/viewmodel/UserTypingVM.h"
+#include "java/lang/Boolean.h"
 #include "java/lang/Integer.h"
 #include "java/util/HashMap.h"
 #include "java/util/HashSet.h"
@@ -33,7 +36,6 @@ __attribute__((unused)) static void ImActorModelModulesTypingTypingActor_stopGro
  @public
   JavaUtilHashSet *typings_;
   JavaUtilHashMap *groupTypings_;
-  id<AMMessengerCallback> callback_;
 }
 
 - (void)privateTypingWithInt:(jint)uid
@@ -51,7 +53,6 @@ __attribute__((unused)) static void ImActorModelModulesTypingTypingActor_stopGro
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor, typings_, JavaUtilHashSet *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor, groupTypings_, JavaUtilHashMap *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor, callback_, id<AMMessengerCallback>)
 
 @interface ImActorModelModulesTypingTypingActor_StopTyping () {
  @public
@@ -99,7 +100,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_$1, val$messenger_, ImA
   if (self = [super initWithImActorModelModulesModules:messenger]) {
     typings_ = [[JavaUtilHashSet alloc] init];
     groupTypings_ = [[JavaUtilHashMap alloc] init];
-    self->callback_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getCallback];
   }
   return self;
 }
@@ -150,7 +150,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_$1, val$messenger_, ImA
   [super copyAllFieldsTo:other];
   other->typings_ = typings_;
   other->groupTypings_ = groupTypings_;
-  other->callback_ = callback_;
 }
 
 @end
@@ -169,9 +168,7 @@ void ImActorModelModulesTypingTypingActor_privateTypingWithInt_withInt_(ImActorM
   }
   if (![((JavaUtilHashSet *) nil_chk(self->typings_)) containsWithId:JavaLangInteger_valueOfWithInt_(uid)]) {
     [self->typings_ addWithId:JavaLangInteger_valueOfWithInt_(uid)];
-    if (self->callback_ != nil) {
-      [self->callback_ onTypingStart:uid];
-    }
+    [((AMValueModel *) nil_chk([((ImActorModelViewmodelUserTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getTypingWithInt:uid])) getTyping])) changeWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
   }
   [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopTyping alloc] initWithInt:uid] withLong:ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT];
 }
@@ -179,9 +176,7 @@ void ImActorModelModulesTypingTypingActor_privateTypingWithInt_withInt_(ImActorM
 void ImActorModelModulesTypingTypingActor_stopPrivateTypingWithInt_(ImActorModelModulesTypingTypingActor *self, jint uid) {
   if ([((JavaUtilHashSet *) nil_chk(self->typings_)) containsWithId:JavaLangInteger_valueOfWithInt_(uid)]) {
     [self->typings_ removeWithId:JavaLangInteger_valueOfWithInt_(uid)];
-    if (self->callback_ != nil) {
-      [self->callback_ onTypingEnd:uid];
-    }
+    [((AMValueModel *) nil_chk([((ImActorModelViewmodelUserTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getTypingWithInt:uid])) getTyping])) changeWithId:JavaLangBoolean_valueOfWithBoolean_(NO)];
   }
 }
 
@@ -196,9 +191,7 @@ void ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withInt_(Im
     JavaUtilHashSet *set = [[JavaUtilHashSet alloc] init];
     [set addWithId:JavaLangInteger_valueOfWithInt_(uid)];
     (void) [self->groupTypings_ putWithId:JavaLangInteger_valueOfWithInt_(gid) withId:set];
-    if (self->callback_ != nil) {
-      [self->callback_ onGroupTyping:gid withUsers:[IOSIntArray newArrayWithInts:(jint[]){ uid } count:1]];
-    }
+    [((AMValueModel *) nil_chk([((ImActorModelViewmodelGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:gid])) getActive])) changeWithId:[IOSIntArray newArrayWithInts:(jint[]){ uid } count:1]];
   }
   else {
     JavaUtilHashSet *src = [self->groupTypings_ getWithId:JavaLangInteger_valueOfWithInt_(gid)];
@@ -209,9 +202,7 @@ void ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withInt_(Im
       for (jint i = 0; i < ids->size_; i++) {
         *IOSIntArray_GetRef(ids2, i) = [((JavaLangInteger *) nil_chk(IOSObjectArray_Get(ids, i))) intValue];
       }
-      if (self->callback_ != nil) {
-        [self->callback_ onGroupTyping:gid withUsers:ids2];
-      }
+      [((AMValueModel *) nil_chk([((ImActorModelViewmodelGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:gid])) getActive])) changeWithId:ids2];
     }
   }
   [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopGroupTyping alloc] initWithInt:gid withInt:uid] withLong:ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT];
@@ -229,9 +220,7 @@ void ImActorModelModulesTypingTypingActor_stopGroupTypingWithInt_withInt_(ImActo
     for (jint i = 0; i < ids->size_; i++) {
       *IOSIntArray_GetRef(ids2, i) = [((JavaLangInteger *) nil_chk(IOSObjectArray_Get(ids, i))) intValue];
     }
-    if (self->callback_ != nil) {
-      [self->callback_ onGroupTyping:gid withUsers:ids2];
-    }
+    [((AMValueModel *) nil_chk([((ImActorModelViewmodelGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:gid])) getActive])) changeWithId:ids2];
   }
 }
 

@@ -6,9 +6,9 @@
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/LocaleProvider.h"
 #include "im/actor/model/LogCallback.h"
 #include "im/actor/model/MainThread.h"
-#include "im/actor/model/MessengerCallback.h"
 #include "im/actor/model/Networking.h"
 #include "im/actor/model/Storage.h"
 #include "im/actor/model/Threading.h"
@@ -20,8 +20,9 @@
   id<AMThreading> threading_;
   id<AMMainThread> mainThread_;
   id<AMStorage> storage_;
-  id<AMMessengerCallback> callback_;
   id<AMLogCallback> log_;
+  jboolean persistUploadingFiles_;
+  id<AMLocaleProvider> localeProvider_;
 }
 @end
 
@@ -30,8 +31,8 @@ J2OBJC_FIELD_SETTER(AMConfiguration, endpoints_, IOSObjectArray *)
 J2OBJC_FIELD_SETTER(AMConfiguration, threading_, id<AMThreading>)
 J2OBJC_FIELD_SETTER(AMConfiguration, mainThread_, id<AMMainThread>)
 J2OBJC_FIELD_SETTER(AMConfiguration, storage_, id<AMStorage>)
-J2OBJC_FIELD_SETTER(AMConfiguration, callback_, id<AMMessengerCallback>)
 J2OBJC_FIELD_SETTER(AMConfiguration, log_, id<AMLogCallback>)
+J2OBJC_FIELD_SETTER(AMConfiguration, localeProvider_, id<AMLocaleProvider>)
 
 @implementation AMConfiguration
 
@@ -40,16 +41,18 @@ J2OBJC_FIELD_SETTER(AMConfiguration, log_, id<AMLogCallback>)
                      withAMThreading:(id<AMThreading>)threading
                     withAMMainThread:(id<AMMainThread>)mainThread
                        withAMStorage:(id<AMStorage>)storage
-             withAMMessengerCallback:(id<AMMessengerCallback>)callback
-                   withAMLogCallback:(id<AMLogCallback>)log {
+                   withAMLogCallback:(id<AMLogCallback>)log
+                         withBoolean:(jboolean)persistUploadingFiles
+                withAMLocaleProvider:(id<AMLocaleProvider>)localeProvider {
   if (self = [super init]) {
     self->networking_ = networking;
     self->endpoints_ = endpoints;
     self->threading_ = threading;
     self->mainThread_ = mainThread;
     self->storage_ = storage;
-    self->callback_ = callback;
     self->log_ = log;
+    self->persistUploadingFiles_ = persistUploadingFiles;
+    self->localeProvider_ = localeProvider;
   }
   return self;
 }
@@ -74,12 +77,16 @@ J2OBJC_FIELD_SETTER(AMConfiguration, log_, id<AMLogCallback>)
   return storage_;
 }
 
-- (id<AMMessengerCallback>)getCallback {
-  return callback_;
-}
-
 - (id<AMLogCallback>)getLog {
   return log_;
+}
+
+- (jboolean)isPersistUploadingFiles {
+  return persistUploadingFiles_;
+}
+
+- (id<AMLocaleProvider>)getLocaleProvider {
+  return localeProvider_;
 }
 
 - (void)copyAllFieldsTo:(AMConfiguration *)other {
@@ -89,8 +96,9 @@ J2OBJC_FIELD_SETTER(AMConfiguration, log_, id<AMLogCallback>)
   other->threading_ = threading_;
   other->mainThread_ = mainThread_;
   other->storage_ = storage_;
-  other->callback_ = callback_;
   other->log_ = log_;
+  other->persistUploadingFiles_ = persistUploadingFiles_;
+  other->localeProvider_ = localeProvider_;
 }
 
 @end

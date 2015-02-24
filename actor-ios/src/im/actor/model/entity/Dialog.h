@@ -16,7 +16,7 @@
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/mvvm/ListEngineItem.h"
+#include "im/actor/model/storage/ListEngineItem.h"
 #include "java/lang/Enum.h"
 
 @interface AMDialog : BSBserObject < AMListEngineItem > {

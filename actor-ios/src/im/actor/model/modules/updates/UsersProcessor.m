@@ -12,10 +12,10 @@
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
-#include "im/actor/model/modules/entity/EntityConverter.h"
 #include "im/actor/model/modules/messages/DialogsActor.h"
+#include "im/actor/model/modules/messages/entity/EntityConverter.h"
 #include "im/actor/model/modules/updates/UsersProcessor.h"
-#include "im/actor/model/mvvm/KeyValueEngine.h"
+#include "im/actor/model/storage/KeyValueEngine.h"
 #include "im/actor/model/util/JavaUtil.h"
 #include "java/lang/Integer.h"
 #include "java/util/ArrayList.h"
@@ -33,10 +33,10 @@
   for (ImActorModelApiUser * __strong u in nil_chk(updated)) {
     AMUser *saved = [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:[((ImActorModelApiUser *) nil_chk(u)) getId]];
     if (saved == nil) {
-      [batch addWithId:ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiUser_(u)];
+      [batch addWithId:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiUser_(u)];
     }
     else if (forced) {
-      AMUser *upd = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiUser_(u);
+      AMUser *upd = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiUser_(u);
       [batch addWithId:upd];
       if (![((NSString *) nil_chk([((AMUser *) nil_chk(upd)) getName])) isEqual:[saved getName]] || !AMJavaUtil_equalsEWithId_withId_([upd getAvatar], [saved getAvatar])) {
         [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithAMUser:upd]];
@@ -81,7 +81,7 @@
 
 - (void)onUserAvatarChangedWithInt:(jint)uid
          withImActorModelApiAvatar:(ImActorModelApiAvatar *)_avatar {
-  AMAvatar *avatar = ImActorModelModulesEntityEntityConverter_convertWithImActorModelApiAvatar_(_avatar);
+  AMAvatar *avatar = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_(_avatar);
   AMUser *u = [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
   if (u != nil) {
     if ([u getAvatar] == nil && avatar == nil) {

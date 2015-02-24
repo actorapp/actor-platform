@@ -8,15 +8,16 @@
 #include "im/actor/model/MainThread.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/BaseModule.h"
+#include "im/actor/model/modules/Groups.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/Users.h"
-#include "im/actor/model/mvvm/KeyValueEngine.h"
 #include "im/actor/model/network/ActorApi.h"
 #include "im/actor/model/network/RpcCallback.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/parser/Request.h"
 #include "im/actor/model/network/parser/Response.h"
+#include "im/actor/model/storage/KeyValueEngine.h"
 #include "im/actor/model/storage/PreferencesStorage.h"
 #include "java/lang/Runnable.h"
 
@@ -68,6 +69,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModule
 
 - (id<AMKeyValueEngine>)users {
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsers];
+}
+
+- (id<AMKeyValueEngine>)groups {
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getGroupsModule])) getGroups];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesBaseModule *)other {
