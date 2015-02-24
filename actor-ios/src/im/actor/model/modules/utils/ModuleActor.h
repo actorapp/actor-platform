@@ -7,16 +7,16 @@
 #define _ImActorModelModulesUtilsModuleActor_H_
 
 @class AMGroup;
+@class AMGroupVM;
 @class AMPeer;
 @class AMRpcException;
 @class AMUser;
+@class AMUserVM;
 @class DKActorRef;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdates;
 @class ImActorModelNetworkParserRequest;
 @class ImActorModelNetworkParserResponse;
-@class ImActorModelViewmodelGroupVM;
-@class ImActorModelViewmodelUserVM;
 @protocol AMKeyValueEngine;
 @protocol AMListEngine;
 @protocol AMPreferencesStorage;
@@ -39,9 +39,9 @@
 
 - (AMUser *)getUserWithInt:(jint)uid;
 
-- (ImActorModelViewmodelUserVM *)getUserVMWithInt:(jint)uid;
+- (AMUserVM *)getUserVMWithInt:(jint)uid;
 
-- (ImActorModelViewmodelGroupVM *)getGroupVMWithInt:(jint)gid;
+- (AMGroupVM *)getGroupVMWithInt:(jint)gid;
 
 - (id<AMPreferencesStorage>)preferences;
 

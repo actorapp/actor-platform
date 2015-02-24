@@ -8,18 +8,18 @@
 #include "im/actor/model/viewmodel/UserPresence.h"
 #include "java/lang/IllegalArgumentException.h"
 
-@interface ImActorModelViewmodelUserPresence () {
+@interface AMUserPresence () {
  @public
-  ImActorModelViewmodelUserPresence_StateEnum *state_;
+  AMUserPresence_StateEnum *state_;
   jlong lastSeen_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserPresence, state_, ImActorModelViewmodelUserPresence_StateEnum *)
+J2OBJC_FIELD_SETTER(AMUserPresence, state_, AMUserPresence_StateEnum *)
 
-@implementation ImActorModelViewmodelUserPresence
+@implementation AMUserPresence
 
-- (instancetype)initWithImActorModelViewmodelUserPresence_StateEnum:(ImActorModelViewmodelUserPresence_StateEnum *)state {
+- (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state {
   if (self = [super init]) {
     self->state_ = state;
     self->lastSeen_ = 0;
@@ -27,8 +27,8 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserPresence, state_, ImActorModelViewm
   return self;
 }
 
-- (instancetype)initWithImActorModelViewmodelUserPresence_StateEnum:(ImActorModelViewmodelUserPresence_StateEnum *)state
-                                                           withLong:(jlong)lastSeen {
+- (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state
+                                        withLong:(jlong)lastSeen {
   if (self = [super init]) {
     self->state_ = state;
     self->lastSeen_ = lastSeen;
@@ -36,7 +36,7 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserPresence, state_, ImActorModelViewm
   return self;
 }
 
-- (ImActorModelViewmodelUserPresence_StateEnum *)getState {
+- (AMUserPresence_StateEnum *)getState {
   return state_;
 }
 
@@ -44,7 +44,7 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserPresence, state_, ImActorModelViewm
   return lastSeen_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelViewmodelUserPresence *)other {
+- (void)copyAllFieldsTo:(AMUserPresence *)other {
   [super copyAllFieldsTo:other];
   other->state_ = state_;
   other->lastSeen_ = lastSeen_;
@@ -52,35 +52,35 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserPresence, state_, ImActorModelViewm
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelViewmodelUserPresence)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserPresence)
 
-BOOL ImActorModelViewmodelUserPresence_StateEnum_initialized = NO;
+BOOL AMUserPresence_StateEnum_initialized = NO;
 
-ImActorModelViewmodelUserPresence_StateEnum *ImActorModelViewmodelUserPresence_StateEnum_values_[3];
+AMUserPresence_StateEnum *AMUserPresence_StateEnum_values_[3];
 
-@implementation ImActorModelViewmodelUserPresence_StateEnum
+@implementation AMUserPresence_StateEnum
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal {
   return [super initWithNSString:__name withInt:__ordinal];
 }
 
-IOSObjectArray *ImActorModelViewmodelUserPresence_StateEnum_values() {
-  ImActorModelViewmodelUserPresence_StateEnum_init();
-  return [IOSObjectArray arrayWithObjects:ImActorModelViewmodelUserPresence_StateEnum_values_ count:3 type:ImActorModelViewmodelUserPresence_StateEnum_class_()];
+IOSObjectArray *AMUserPresence_StateEnum_values() {
+  AMUserPresence_StateEnum_init();
+  return [IOSObjectArray arrayWithObjects:AMUserPresence_StateEnum_values_ count:3 type:AMUserPresence_StateEnum_class_()];
 }
 + (IOSObjectArray *)values {
-  return ImActorModelViewmodelUserPresence_StateEnum_values();
+  return AMUserPresence_StateEnum_values();
 }
 
-+ (ImActorModelViewmodelUserPresence_StateEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelViewmodelUserPresence_StateEnum_valueOfWithNSString_(name);
++ (AMUserPresence_StateEnum *)valueOfWithNSString:(NSString *)name {
+  return AMUserPresence_StateEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelViewmodelUserPresence_StateEnum *ImActorModelViewmodelUserPresence_StateEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelViewmodelUserPresence_StateEnum_init();
+AMUserPresence_StateEnum *AMUserPresence_StateEnum_valueOfWithNSString_(NSString *name) {
+  AMUserPresence_StateEnum_init();
   for (int i = 0; i < 3; i++) {
-    ImActorModelViewmodelUserPresence_StateEnum *e = ImActorModelViewmodelUserPresence_StateEnum_values_[i];
+    AMUserPresence_StateEnum *e = AMUserPresence_StateEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -94,14 +94,14 @@ ImActorModelViewmodelUserPresence_StateEnum *ImActorModelViewmodelUserPresence_S
 }
 
 + (void)initialize {
-  if (self == [ImActorModelViewmodelUserPresence_StateEnum class]) {
-    ImActorModelViewmodelUserPresence_StateEnum_UNKNOWN = [[ImActorModelViewmodelUserPresence_StateEnum alloc] initWithNSString:@"UNKNOWN" withInt:0];
-    ImActorModelViewmodelUserPresence_StateEnum_ONLINE = [[ImActorModelViewmodelUserPresence_StateEnum alloc] initWithNSString:@"ONLINE" withInt:1];
-    ImActorModelViewmodelUserPresence_StateEnum_OFFLINE = [[ImActorModelViewmodelUserPresence_StateEnum alloc] initWithNSString:@"OFFLINE" withInt:2];
-    J2OBJC_SET_INITIALIZED(ImActorModelViewmodelUserPresence_StateEnum)
+  if (self == [AMUserPresence_StateEnum class]) {
+    AMUserPresence_StateEnum_UNKNOWN = [[AMUserPresence_StateEnum alloc] initWithNSString:@"UNKNOWN" withInt:0];
+    AMUserPresence_StateEnum_ONLINE = [[AMUserPresence_StateEnum alloc] initWithNSString:@"ONLINE" withInt:1];
+    AMUserPresence_StateEnum_OFFLINE = [[AMUserPresence_StateEnum alloc] initWithNSString:@"OFFLINE" withInt:2];
+    J2OBJC_SET_INITIALIZED(AMUserPresence_StateEnum)
   }
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelViewmodelUserPresence_StateEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserPresence_StateEnum)

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/i18n/I18nEngine.java
 //
 
-#ifndef _ImActorModelI18nI18nEngine_H_
-#define _ImActorModelI18nI18nEngine_H_
+#ifndef _AMI18nEngine_H_
+#define _AMI18nEngine_H_
 
 @class IOSObjectArray;
 @class JavaUtilHashMap;
@@ -12,7 +12,7 @@
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelI18nI18nEngine : NSObject {
+@interface AMI18nEngine : NSObject {
 }
 
 - (instancetype)initWithAMLocaleProvider:(id<AMLocaleProvider>)provider;
@@ -21,11 +21,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelI18nI18nEngine)
+J2OBJC_EMPTY_STATIC_INIT(AMI18nEngine)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelI18nI18nEngine)
+typedef AMI18nEngine ImActorModelI18nI18nEngine;
 
-#endif // _ImActorModelI18nI18nEngine_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine)
+
+#endif // _AMI18nEngine_H_

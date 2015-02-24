@@ -8,15 +8,15 @@
 
 @class AMAuthStateEnum;
 @class AMConfiguration;
+@class AMGroupTypingVM;
+@class AMI18nEngine;
 @class AMMVVMCollection;
 @class AMPeer;
+@class AMUserTypingVM;
 @class DKActor;
 @class DKActorRef;
 @class DKEnvelope;
-@class ImActorModelI18nI18nEngine;
 @class ImActorModelModulesModules;
-@class ImActorModelViewmodelGroupTypingVM;
-@class ImActorModelViewmodelUserTypingVM;
 @class JavaLangException;
 @protocol AMCommand;
 @protocol AMListEngine;
@@ -27,7 +27,7 @@
 @interface AMMessenger : NSObject {
 }
 
-- (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration;
+- (instancetype)initWithConfig:(AMConfiguration *)configuration;
 
 - (AMAuthStateEnum *)getAuthState;
 
@@ -47,7 +47,7 @@
 
 - (jint)myUid;
 
-- (ImActorModelI18nI18nEngine *)getFormatter;
+- (AMI18nEngine *)getFormatter;
 
 - (AMMVVMCollection *)getUsers;
 
@@ -57,38 +57,33 @@
 
 - (id<AMListEngine>)getMessagesWithAMPeer:(AMPeer *)peer;
 
-- (ImActorModelViewmodelUserTypingVM *)getTypingWithInt:(jint)uid;
+- (AMUserTypingVM *)getTyping:(jint)uid;
 
-- (ImActorModelViewmodelGroupTypingVM *)getGroupTypingWithInt:(jint)gid;
+- (AMGroupTypingVM *)getGroupTyping:(jint)gid;
 
 - (void)onAppVisible;
 
 - (void)onAppHidden;
 
-- (void)onConversationOpenWithAMPeer:(AMPeer *)peer;
+- (void)onConversationOpen:(AMPeer *)peer;
 
-- (void)onConversationClosedWithAMPeer:(AMPeer *)peer;
+- (void)onConversationClosed:(AMPeer *)peer;
 
-- (void)onProfileOpenWithInt:(jint)uid;
+- (void)onProfileOpen:(jint)uid;
 
-- (void)onProfileClosedWithInt:(jint)uid;
+- (void)onProfileClosed:(jint)uid;
 
-- (void)onInMessageShownWithAMPeer:(AMPeer *)peer
-                          withLong:(jlong)rid
-                          withLong:(jlong)sortDate
-                       withBoolean:(jboolean)isEncrypted;
+- (void)onInMessageShown:(AMPeer *)peer withRid:(jlong)rid withDate:(jlong)sortDate withEncrypted:(jboolean)isEncrypted;
 
-- (void)onTypingWithAMPeer:(AMPeer *)peer;
+- (void)onTyping:(AMPeer *)peer;
 
-- (jlong)loadLastReadSortDateWithAMPeer:(AMPeer *)peer;
+- (jlong)loadLastReadDate:(AMPeer *)peer;
 
-- (void)saveDraftWithAMPeer:(AMPeer *)peer
-               withNSString:(NSString *)draft;
+- (void)saveDraft:(AMPeer *)peer withText:(NSString *)draft;
 
-- (NSString *)loadDraftWithAMPeer:(AMPeer *)peer;
+- (NSString *)loadDraft:(AMPeer *)peer;
 
-- (void)sendMessageWithAMPeer:(AMPeer *)peer
-                 withNSString:(NSString *)text;
+- (void)sendMessage:(AMPeer *)peer withText:(NSString *)text;
 
 - (id<AMCommand>)editMyNameWithNSString:(NSString *)newName;
 

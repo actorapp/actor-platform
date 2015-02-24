@@ -7,9 +7,9 @@
 #define _ImActorModelModulesGroups_H_
 
 @class AMGroup;
+@class AMGroupVM;
 @class IOSByteArray;
 @class ImActorModelModulesModules;
-@class ImActorModelViewmodelGroupVM;
 @protocol AMKeyValueEngine;
 @protocol AMKeyValueStorage;
 
@@ -38,7 +38,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups)
 @interface ImActorModelModulesGroups_$1 : AMMVVMCollection {
 }
 
-- (ImActorModelViewmodelGroupVM *)createNewWithAMKeyValueItem:(AMGroup *)raw;
+- (AMGroupVM *)createNewWithAMKeyValueItem:(AMGroup *)raw;
 
 - (IOSByteArray *)serializeWithAMKeyValueItem:(AMGroup *)raw;
 

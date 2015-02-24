@@ -61,7 +61,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, localeProvider_, id<AMLocaleProvider
   return self;
 }
 
-- (AMConfigurationBuilder *)setLocaleWithAMLocaleProvider:(id<AMLocaleProvider>)localeProvider {
+- (AMConfigurationBuilder *)setLocale:(id<AMLocaleProvider>)localeProvider {
   self->localeProvider_ = localeProvider;
   return self;
 }
@@ -108,7 +108,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, localeProvider_, id<AMLocaleProvider
   return self;
 }
 
-- (AMConfigurationBuilder *)setUploadFilePersistWithBoolean:(jboolean)isUploadFilePersist {
+- (AMConfigurationBuilder *)setUploadFilePersist:(jboolean)isUploadFilePersist {
   self->isUploadFilePersist_ = isUploadFilePersist;
   return self;
 }

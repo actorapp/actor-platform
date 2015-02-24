@@ -28,11 +28,11 @@
 
 - (AMConfigurationBuilder *)setStorage:(id<AMStorage>)storage;
 
-- (AMConfigurationBuilder *)setLocaleWithAMLocaleProvider:(id<AMLocaleProvider>)localeProvider;
+- (AMConfigurationBuilder *)setLocale:(id<AMLocaleProvider>)localeProvider;
 
 - (AMConfigurationBuilder *)addEndpoint:(NSString *)url;
 
-- (AMConfigurationBuilder *)setUploadFilePersistWithBoolean:(jboolean)isUploadFilePersist;
+- (AMConfigurationBuilder *)setUploadFilePersist:(jboolean)isUploadFilePersist;
 
 - (AMConfigurationBuilder *)setMainThread:(id<AMMainThread>)mainThread;
 

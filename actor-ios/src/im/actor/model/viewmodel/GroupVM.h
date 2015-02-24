@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/viewmodel/GroupVM.java
 //
 
-#ifndef _ImActorModelViewmodelGroupVM_H_
-#define _ImActorModelViewmodelGroupVM_H_
+#ifndef _AMGroupVM_H_
+#define _AMGroupVM_H_
 
 @class AMGroup;
 @class AMValueModel;
@@ -15,7 +15,7 @@
 #include "im/actor/model/mvvm/BaseValueModel.h"
 #include "java/lang/Runnable.h"
 
-@interface ImActorModelViewmodelGroupVM : AMBaseValueModel {
+@interface AMGroupVM : AMBaseValueModel {
 }
 
 - (instancetype)initWithAMGroup:(AMGroup *)rawObj;
@@ -44,27 +44,29 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelViewmodelGroupVM)
+J2OBJC_EMPTY_STATIC_INIT(AMGroupVM)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelViewmodelGroupVM)
+typedef AMGroupVM ImActorModelViewmodelGroupVM;
 
-@interface ImActorModelViewmodelGroupVM_$1 : NSObject < JavaLangRunnable > {
+J2OBJC_TYPE_LITERAL_HEADER(AMGroupVM)
+
+@interface AMGroupVM_$1 : NSObject < JavaLangRunnable > {
 }
 
 - (void)run;
 
-- (instancetype)initWithImActorModelViewmodelGroupVM:(ImActorModelViewmodelGroupVM *)outer$;
+- (instancetype)initWithAMGroupVM:(AMGroupVM *)outer$;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelViewmodelGroupVM_$1)
+J2OBJC_EMPTY_STATIC_INIT(AMGroupVM_$1)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelViewmodelGroupVM_$1)
+J2OBJC_TYPE_LITERAL_HEADER(AMGroupVM_$1)
 
-#endif // _ImActorModelViewmodelGroupVM_H_
+#endif // _AMGroupVM_H_

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/viewmodel/UserVM.java
 //
 
-#ifndef _ImActorModelViewmodelUserVM_H_
-#define _ImActorModelViewmodelUserVM_H_
+#ifndef _AMUserVM_H_
+#define _AMUserVM_H_
 
 @class AMSexEnum;
 @class AMUser;
@@ -16,7 +16,7 @@
 #include "im/actor/model/mvvm/BaseValueModel.h"
 #include "java/lang/Runnable.h"
 
-@interface ImActorModelViewmodelUserVM : AMBaseValueModel {
+@interface AMUserVM : AMBaseValueModel {
 }
 
 - (instancetype)initWithAMUser:(AMUser *)user;
@@ -43,27 +43,29 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelViewmodelUserVM)
+J2OBJC_EMPTY_STATIC_INIT(AMUserVM)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelViewmodelUserVM)
+typedef AMUserVM ImActorModelViewmodelUserVM;
 
-@interface ImActorModelViewmodelUserVM_$1 : NSObject < JavaLangRunnable > {
+J2OBJC_TYPE_LITERAL_HEADER(AMUserVM)
+
+@interface AMUserVM_$1 : NSObject < JavaLangRunnable > {
 }
 
 - (void)run;
 
-- (instancetype)initWithImActorModelViewmodelUserVM:(ImActorModelViewmodelUserVM *)outer$;
+- (instancetype)initWithAMUserVM:(AMUserVM *)outer$;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelViewmodelUserVM_$1)
+J2OBJC_EMPTY_STATIC_INIT(AMUserVM_$1)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelViewmodelUserVM_$1)
+J2OBJC_TYPE_LITERAL_HEADER(AMUserVM_$1)
 
-#endif // _ImActorModelViewmodelUserVM_H_
+#endif // _AMUserVM_H_
