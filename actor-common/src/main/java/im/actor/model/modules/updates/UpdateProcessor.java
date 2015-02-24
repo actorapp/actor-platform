@@ -20,8 +20,10 @@ import im.actor.model.api.updates.UpdateEncryptedMessage;
 import im.actor.model.api.updates.UpdateEncryptedRead;
 import im.actor.model.api.updates.UpdateEncryptedReadByMe;
 import im.actor.model.api.updates.UpdateEncryptedReceived;
+import im.actor.model.api.updates.UpdateGroupAvatarChanged;
 import im.actor.model.api.updates.UpdateGroupInvite;
 import im.actor.model.api.updates.UpdateGroupOnline;
+import im.actor.model.api.updates.UpdateGroupTitleChanged;
 import im.actor.model.api.updates.UpdateGroupUserAdded;
 import im.actor.model.api.updates.UpdateGroupUserKick;
 import im.actor.model.api.updates.UpdateGroupUserLeave;
@@ -44,6 +46,7 @@ import im.actor.model.api.updates.UpdateUserOnline;
 import im.actor.model.api.updates.UpdateUserStateChanged;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
+import im.actor.model.modules.messages.entity.EntityConverter;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.modules.updates.internal.LoggedIn;
@@ -177,6 +180,31 @@ public class UpdateProcessor {
         } else if (update instanceof UpdateTyping) {
             UpdateTyping typing = (UpdateTyping) update;
             typingProcessor.onTyping(typing.getPeer(), typing.getUid(), typing.getTypingType());
+        } else if (update instanceof UpdateGroupTitleChanged) {
+            UpdateGroupTitleChanged titleChanged = (UpdateGroupTitleChanged) update;
+            groupsProcessor.onTitleChanged(titleChanged.getGroupId(), titleChanged.getRid(),
+                    titleChanged.getUid(), titleChanged.getTitle(), titleChanged.getDate());
+        } else if (update instanceof UpdateGroupAvatarChanged) {
+            UpdateGroupAvatarChanged avatarChanged = (UpdateGroupAvatarChanged) update;
+            groupsProcessor.onAvatarChanged(avatarChanged.getGroupId(), avatarChanged.getRid(),
+                    avatarChanged.getUid(), EntityConverter.convert(avatarChanged.getAvatar()),
+                    avatarChanged.getDate());
+        } else if (update instanceof UpdateGroupInvite) {
+            UpdateGroupInvite groupInvite = (UpdateGroupInvite) update;
+            groupsProcessor.onGroupInvite(groupInvite.getGroupId(),
+                    groupInvite.getRid(), groupInvite.getInviteUid(), groupInvite.getDate());
+        } else if (update instanceof UpdateGroupUserLeave) {
+            UpdateGroupUserLeave leave = (UpdateGroupUserLeave) update;
+            groupsProcessor.onUserLeave(leave.getGroupId(), leave.getRid(), leave.getUid(),
+                    leave.getDate());
+        } else if (update instanceof UpdateGroupUserKick) {
+            UpdateGroupUserKick userKick = (UpdateGroupUserKick) update;
+            groupsProcessor.onUserKicked(userKick.getGroupId(),
+                    userKick.getRid(), userKick.getUid(), userKick.getKickerUid(), userKick.getDate());
+        } else if (update instanceof UpdateGroupUserAdded) {
+            UpdateGroupUserAdded userAdded = (UpdateGroupUserAdded) update;
+            groupsProcessor.onUserAdded(userAdded.getGroupId(),
+                    userAdded.getRid(), userAdded.getUid(), userAdded.getInviterUid(), userAdded.getDate());
         }
     }
 

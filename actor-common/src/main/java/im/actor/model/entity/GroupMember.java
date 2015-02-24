@@ -67,4 +67,21 @@ public class GroupMember extends BserObject {
         writer.writeLong(3, inviteDate);
         writer.writeBool(4, isAdministrator);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GroupMember member = (GroupMember) o;
+
+        if (uid != member.uid) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return uid;
+    }
 }

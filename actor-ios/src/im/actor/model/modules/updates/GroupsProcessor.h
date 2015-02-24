@@ -6,6 +6,7 @@
 #ifndef _ImActorModelModulesUpdatesGroupsProcessor_H_
 #define _ImActorModelModulesUpdatesGroupsProcessor_H_
 
+@class AMAvatar;
 @class ImActorModelModulesModules;
 @protocol JavaUtilCollection;
 
@@ -19,6 +20,40 @@
 
 - (void)applyGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)updated
                               withBoolean:(jboolean)forced;
+
+- (void)onGroupInviteWithInt:(jint)groupId
+                    withLong:(jlong)rid
+                     withInt:(jint)inviterId
+                    withLong:(jlong)date;
+
+- (void)onUserLeaveWithInt:(jint)groupId
+                  withLong:(jlong)rid
+                   withInt:(jint)uid
+                  withLong:(jlong)date;
+
+- (void)onUserKickedWithInt:(jint)groupId
+                   withLong:(jlong)rid
+                    withInt:(jint)uid
+                    withInt:(jint)kicker
+                   withLong:(jlong)date;
+
+- (void)onUserAddedWithInt:(jint)groupId
+                  withLong:(jlong)rid
+                   withInt:(jint)uid
+                   withInt:(jint)adder
+                  withLong:(jlong)date;
+
+- (void)onTitleChangedWithInt:(jint)groupId
+                     withLong:(jlong)rid
+                      withInt:(jint)uid
+                 withNSString:(NSString *)title
+                     withLong:(jlong)date;
+
+- (void)onAvatarChangedWithInt:(jint)groupId
+                      withLong:(jlong)rid
+                       withInt:(jint)uid
+                  withAMAvatar:(AMAvatar *)avatar
+                      withLong:(jlong)date;
 
 - (jboolean)hasGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)gids;
 

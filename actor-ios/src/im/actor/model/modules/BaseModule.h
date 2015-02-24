@@ -6,7 +6,9 @@
 #ifndef _ImActorModelModulesBaseModule_H_
 #define _ImActorModelModulesBaseModule_H_
 
+@class AMPeer;
 @class AMRpcException;
+@class DKActorRef;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdates;
 @class ImActorModelNetworkParserRequest;
@@ -28,6 +30,18 @@
 - (ImActorModelModulesUpdates *)updates;
 
 - (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable;
+
+- (DKActorRef *)sendActor;
+
+- (DKActorRef *)dialogsActor;
+
+- (DKActorRef *)dialogsHistoryActor;
+
+- (DKActorRef *)ownReadActor;
+
+- (DKActorRef *)plainReceiveActor;
+
+- (DKActorRef *)conversationActorWithAMPeer:(AMPeer *)peer;
 
 - (id<AMPreferencesStorage>)preferences;
 

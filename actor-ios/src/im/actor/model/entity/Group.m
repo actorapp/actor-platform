@@ -97,6 +97,46 @@ J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
   return isMember__;
 }
 
+- (AMGroup *)changeMemberWithBoolean:(jboolean)isMember {
+  return [[AMGroup alloc] initWithInt:groupId_ withLong:accessHash_ withNSString:title_ withAMAvatar:avatar_ withJavaUtilList:members_ withInt:adminId_ withBoolean:isMember];
+}
+
+- (AMGroup *)clearMembers {
+  return [[AMGroup alloc] initWithInt:groupId_ withLong:accessHash_ withNSString:title_ withAMAvatar:avatar_ withJavaUtilList:[[JavaUtilArrayList alloc] init] withInt:adminId_ withBoolean:isMember__];
+}
+
+- (AMGroup *)removeMemberWithInt:(jint)uid {
+  JavaUtilArrayList *nMembers = [[JavaUtilArrayList alloc] init];
+  for (AMGroupMember * __strong member in nMembers) {
+    if ([((AMGroupMember *) nil_chk(member)) getUid] != uid) {
+      [nMembers addWithId:member];
+    }
+  }
+  return [[AMGroup alloc] initWithInt:groupId_ withLong:accessHash_ withNSString:title_ withAMAvatar:avatar_ withJavaUtilList:nMembers withInt:adminId_ withBoolean:isMember__];
+}
+
+- (AMGroup *)addMemberWithInt:(jint)uid
+                      withInt:(jint)inviterUid
+                     withLong:(jlong)inviteDate
+                  withBoolean:(jboolean)isAdmin {
+  JavaUtilArrayList *nMembers = [[JavaUtilArrayList alloc] init];
+  for (AMGroupMember * __strong member in nMembers) {
+    if ([((AMGroupMember *) nil_chk(member)) getUid] != uid) {
+      [nMembers addWithId:member];
+    }
+  }
+  [nMembers addWithId:[[AMGroupMember alloc] initWithInt:uid withInt:inviterUid withLong:inviteDate withBoolean:isAdmin]];
+  return [[AMGroup alloc] initWithInt:groupId_ withLong:accessHash_ withNSString:title_ withAMAvatar:avatar_ withJavaUtilList:nMembers withInt:adminId_ withBoolean:isMember__];
+}
+
+- (AMGroup *)editTitleWithNSString:(NSString *)title {
+  return [[AMGroup alloc] initWithInt:groupId_ withLong:accessHash_ withNSString:title withAMAvatar:avatar_ withJavaUtilList:members_ withInt:adminId_ withBoolean:isMember__];
+}
+
+- (AMGroup *)editAvatarWithAMAvatar:(AMAvatar *)avatar {
+  return [[AMGroup alloc] initWithInt:groupId_ withLong:accessHash_ withNSString:title_ withAMAvatar:avatar withJavaUtilList:members_ withInt:adminId_ withBoolean:isMember__];
+}
+
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   accessHash_ = [values getLongWithInt:2];
