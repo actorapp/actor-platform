@@ -1,22 +1,53 @@
 package im.actor.model.modules.updates;
 
-import im.actor.model.Messenger;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 import im.actor.model.api.ContactRecord;
 import im.actor.model.api.Group;
 import im.actor.model.api.PeerType;
 import im.actor.model.api.User;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
-import im.actor.model.api.updates.*;
+import im.actor.model.api.updates.UpdateChatClear;
+import im.actor.model.api.updates.UpdateChatDelete;
+import im.actor.model.api.updates.UpdateContactMoved;
+import im.actor.model.api.updates.UpdateContactRegistered;
+import im.actor.model.api.updates.UpdateContactTitleChanged;
+import im.actor.model.api.updates.UpdateContactsAdded;
+import im.actor.model.api.updates.UpdateContactsRemoved;
+import im.actor.model.api.updates.UpdateEncryptedMessage;
+import im.actor.model.api.updates.UpdateEncryptedRead;
+import im.actor.model.api.updates.UpdateEncryptedReadByMe;
+import im.actor.model.api.updates.UpdateEncryptedReceived;
+import im.actor.model.api.updates.UpdateGroupInvite;
+import im.actor.model.api.updates.UpdateGroupOnline;
+import im.actor.model.api.updates.UpdateGroupUserAdded;
+import im.actor.model.api.updates.UpdateGroupUserKick;
+import im.actor.model.api.updates.UpdateGroupUserLeave;
+import im.actor.model.api.updates.UpdateMessage;
+import im.actor.model.api.updates.UpdateMessageDelete;
+import im.actor.model.api.updates.UpdateMessageRead;
+import im.actor.model.api.updates.UpdateMessageReadByMe;
+import im.actor.model.api.updates.UpdateMessageReceived;
+import im.actor.model.api.updates.UpdateMessageSent;
+import im.actor.model.api.updates.UpdateTyping;
+import im.actor.model.api.updates.UpdateUserAvatarChanged;
+import im.actor.model.api.updates.UpdateUserContactAdded;
+import im.actor.model.api.updates.UpdateUserContactRemoved;
+import im.actor.model.api.updates.UpdateUserContactsChanged;
+import im.actor.model.api.updates.UpdateUserLastSeen;
+import im.actor.model.api.updates.UpdateUserLocalNameChanged;
+import im.actor.model.api.updates.UpdateUserNameChanged;
+import im.actor.model.api.updates.UpdateUserOffline;
+import im.actor.model.api.updates.UpdateUserOnline;
+import im.actor.model.api.updates.UpdateUserStateChanged;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.modules.updates.internal.LoggedIn;
 import im.actor.model.network.parser.Update;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * Created by ex3ndr on 09.02.15.
@@ -37,7 +68,7 @@ public class UpdateProcessor {
         this.modules = modules;
         this.usersProcessor = new UsersProcessor(modules);
         this.messagesProcessor = new MessagesProcessor(modules);
-        this.groupsProcessor = new GroupsProcessor();
+        this.groupsProcessor = new GroupsProcessor(modules);
         this.presenceProcessor = new PresenceProcessor(modules);
         this.typingProcessor = new TypingProcessor(modules);
     }
@@ -47,6 +78,7 @@ public class UpdateProcessor {
                              List<ContactRecord> contactRecords,
                              boolean force) {
         usersProcessor.applyUsers(users, force);
+        groupsProcessor.applyGroups(groups, force);
     }
 
     public void processInternalUpdate(InternalUpdate update) {
@@ -212,6 +244,10 @@ public class UpdateProcessor {
         }
 
         if (!usersProcessor.hasUsers(users)) {
+            return true;
+        }
+
+        if (!groupsProcessor.hasGroups(groups)) {
             return true;
         }
 

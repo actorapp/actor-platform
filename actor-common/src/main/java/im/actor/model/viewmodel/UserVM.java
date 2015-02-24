@@ -1,9 +1,13 @@
 package im.actor.model.viewmodel;
 
+import java.util.ArrayList;
+
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Sex;
 import im.actor.model.entity.User;
 import im.actor.model.mvvm.BaseValueModel;
+import im.actor.model.mvvm.MVVMEngine;
+import im.actor.model.mvvm.ModelChangedListener;
 import im.actor.model.mvvm.ValueModel;
 
 /**
@@ -17,6 +21,7 @@ public class UserVM extends BaseValueModel<User> {
     private Sex sex;
     private ValueModel<Boolean> isContact;
     private ValueModel<UserPresence> presence;
+    private ArrayList<ModelChangedListener<UserVM>> listeners = new ArrayList<ModelChangedListener<UserVM>>();
 
     public UserVM(User user) {
         super(user);
@@ -32,8 +37,12 @@ public class UserVM extends BaseValueModel<User> {
 
     @Override
     protected void updateValues(User rawObj) {
-        name.change(rawObj.getName());
-        avatar.change(rawObj.getAvatar());
+        boolean isChanged = false;
+        isChanged |= name.change(rawObj.getName());
+        isChanged |= avatar.change(rawObj.getAvatar());
+        if (isChanged) {
+            notifyChange();
+        }
     }
 
     public int getId() {
@@ -62,5 +71,30 @@ public class UserVM extends BaseValueModel<User> {
 
     public ValueModel<UserPresence> getPresence() {
         return presence;
+    }
+
+    // We expect that subscribe will be called only on UI Thread
+    public void subscribe(ModelChangedListener<UserVM> listener) {
+        if (listeners.contains(listener)) {
+            return;
+        }
+        listeners.add(listener);
+        listener.onChanged(this);
+    }
+
+    // We expect that subscribe will be called only on UI Thread
+    public void unsubscribe(ModelChangedListener<UserVM> listener) {
+        listeners.remove(listener);
+    }
+
+    private void notifyChange() {
+        MVVMEngine.getMainThread().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (ModelChangedListener<UserVM> l : listeners.toArray(new ModelChangedListener[0])) {
+                    l.onChanged(UserVM.this);
+                }
+            }
+        });
     }
 }

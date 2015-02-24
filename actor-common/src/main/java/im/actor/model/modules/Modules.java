@@ -5,7 +5,7 @@ import im.actor.model.i18n.I18nEngine;
 import im.actor.model.network.ActorApi;
 import im.actor.model.network.ActorApiCallback;
 import im.actor.model.network.Endpoints;
-import im.actor.model.storage.PreferenceApiStorage;
+import im.actor.model.modules.utils.PreferenceApiStorage;
 import im.actor.model.storage.PreferencesStorage;
 
 /**
@@ -19,6 +19,7 @@ public class Modules {
 
     private volatile PreferencesStorage preferences;
     private volatile Users users;
+    private volatile Groups groups;
     private volatile Updates updates;
     private volatile Messages messages;
     private volatile Presence presence;
@@ -63,6 +64,7 @@ public class Modules {
 
     public void onLoggedIn() {
         users = new Users(this);
+        groups = new Groups(this);
         messages = new Messages(this);
         updates = new Updates(this);
         presence = new Presence(this);
@@ -87,6 +89,10 @@ public class Modules {
 
     public Users getUsersModule() {
         return users;
+    }
+
+    public Groups getGroupsModule() {
+        return groups;
     }
 
     public Messages getMessagesModule() {

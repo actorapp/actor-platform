@@ -44,6 +44,15 @@ public class JsStorage implements Storage {
     }
 
     @Override
+    public KeyValueStorage createGroupsEngine() {
+        if (isLocalStorageSupported()) {
+            return new JsKeyValue(storage, "group");
+        } else {
+            return new MemoryKeyValue();
+        }
+    }
+
+    @Override
     public ListEngine<Dialog> createDialogsEngine() {
         return new JsListEngine<Dialog>("dialogs", storage) {
             @Override

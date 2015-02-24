@@ -20,15 +20,17 @@ public class ValueModel<T> {
         return value;
     }
 
-    public void change(T value) {
+    public boolean change(T value) {
         if (this.value != null && value != null && value.equals(this.value)) {
-            return;
+            return false;
         }
 
         // No need in sync. We are not expected complex sync of value models
         this.value = value;
 
         notify(value);
+
+        return true;
     }
 
     // We expect that subscribe will be called only on UI Thread
@@ -59,6 +61,6 @@ public class ValueModel<T> {
 
     @Override
     public String toString() {
-        return value+"";
+        return value + "";
     }
 }

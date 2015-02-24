@@ -17,11 +17,27 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
-import android.view.*;
+import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.*;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.droidkit.mvvm.ui.Listener;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
@@ -35,24 +51,20 @@ import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
 import im.actor.messenger.core.AppContext;
-import im.actor.messenger.model.*;
 import im.actor.messenger.settings.ChatSettings;
 import im.actor.messenger.storage.scheme.groups.GroupState;
-import im.actor.messenger.util.*;
+import im.actor.messenger.util.RandomUtil;
 import im.actor.messenger.util.io.IOUtils;
 import im.actor.model.Messenger;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
-import im.actor.model.viewmodel.UserPresence;
+import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-
-import static im.actor.messenger.app.view.ViewUtils.*;
+import static im.actor.messenger.app.view.ViewUtils.goneView;
+import static im.actor.messenger.app.view.ViewUtils.hideView;
+import static im.actor.messenger.app.view.ViewUtils.showView;
+import static im.actor.messenger.core.Core.groups;
 import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.users;
 
@@ -311,32 +323,24 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                 return;
             }
 
+            // TODO: Dynamically update avatar drawable after name change
             barAvatar.setEmptyDrawable(AvatarDrawable.create(user, 18, this));
             bind(barAvatar, user.getAvatar());
             bind(barTitle, user.getName());
             bind(barSubtitle, barSubtitleContainer, user);
             bind(barTyping, barTypingContainer, barTitle, messenger().getTyping(user.getId()));
         } else if (peer.getPeerType() == PeerType.GROUP) {
-//            final GroupModel groupInfo = groups().get(chatId);
-//
-//            if (groupInfo == null) {
-//                finish();
-//                return;
-//            }
-//
-//
-//            barAvatar.setEmptyDrawable(AvatarDrawable.create(groupInfo, 18, this));
-//            getBinder().bind(groupInfo.getAvatarModel(), new Listener<Avatar>() {
-//                @Override
-//                public void onUpdated(Avatar a) {
-//                    if (a != null) {
-//                        barAvatar.bindFastAvatar(38, a);
-//                    } else {
-//                        barAvatar.unbind();
-//                    }
-//                }
-//            });
-//
+            GroupVM group = groups().get(peer.getPeerId());
+            if (group == null) {
+                finish();
+                return;
+            }
+
+            // TODO: Dynamically update avatar drawable after title change
+            barAvatar.setEmptyDrawable(AvatarDrawable.create(group, 18, this));
+            bind(barAvatar, group.getAvatar());
+            bind(barTitle, group.getName());
+
 //            getBinder().bindText(barTitle, groupInfo.getTitleModel());
 //
 //            barSubtitle.setVisibility(View.VISIBLE);
