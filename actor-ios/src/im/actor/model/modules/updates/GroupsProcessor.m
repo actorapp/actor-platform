@@ -8,6 +8,15 @@
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/Group.h"
+#include "im/actor/model/entity/Message.h"
+#include "im/actor/model/entity/MessageState.h"
+#include "im/actor/model/entity/Peer.h"
+#include "im/actor/model/entity/content/ServiceGroupAvatarChanged.h"
+#include "im/actor/model/entity/content/ServiceGroupCreated.h"
+#include "im/actor/model/entity/content/ServiceGroupTitleChanged.h"
+#include "im/actor/model/entity/content/ServiceGroupUserAdded.h"
+#include "im/actor/model/entity/content/ServiceGroupUserKicked.h"
+#include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
@@ -45,6 +54,108 @@
   if ([batch size] > 0) {
     [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemsWithJavaUtilList:batch];
   }
+}
+
+- (void)onGroupInviteWithInt:(jint)groupId
+                    withLong:(jlong)rid
+                     withInt:(jint)inviterId
+                    withLong:(jlong)date {
+  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  if (group == nil) {
+    return;
+  }
+  [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:[((AMGroup *) nil_chk([((AMGroup *) nil_chk(group)) changeMemberWithBoolean:YES])) addMemberWithInt:[self myUid] withInt:inviterId withLong:date withBoolean:inviterId == [self myUid]]];
+  if (inviterId == [self myUid]) {
+    AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:inviterId withAMMessageStateEnum:AMMessageStateEnum_get_UNKNOWN() withImActorModelEntityContentAbsContent:[[ImActorModelEntityContentServiceGroupCreated alloc] initWithNSString:[group getTitle]]];
+    [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
+  }
+  else {
+    AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:inviterId withAMMessageStateEnum:AMMessageStateEnum_get_SENT() withImActorModelEntityContentAbsContent:[[ImActorModelEntityContentServiceGroupUserAdded alloc] initWithInt:[self myUid]]];
+    [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
+  }
+}
+
+- (void)onUserLeaveWithInt:(jint)groupId
+                  withLong:(jlong)rid
+                   withInt:(jint)uid
+                  withLong:(jlong)date {
+  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  if (group == nil) {
+    return;
+  }
+  if (uid == [self myUid]) {
+    [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:[((AMGroup *) nil_chk([((AMGroup *) nil_chk(group)) clearMembers])) changeMemberWithBoolean:NO]];
+  }
+  else {
+    [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:[((AMGroup *) nil_chk(group)) removeMemberWithInt:uid]];
+  }
+  AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withImActorModelEntityContentAbsContent:[[ImActorModelEntityContentServiceGroupUserLeave alloc] init]];
+  [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[((AMGroup *) nil_chk(group)) peer]])) sendWithId:message];
+}
+
+- (void)onUserKickedWithInt:(jint)groupId
+                   withLong:(jlong)rid
+                    withInt:(jint)uid
+                    withInt:(jint)kicker
+                   withLong:(jlong)date {
+  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  if (group == nil) {
+    return;
+  }
+  if (uid == [self myUid]) {
+    [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:[((AMGroup *) nil_chk([((AMGroup *) nil_chk(group)) clearMembers])) changeMemberWithBoolean:NO]];
+  }
+  else {
+    [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:[((AMGroup *) nil_chk(group)) removeMemberWithInt:uid]];
+  }
+  AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:kicker withAMMessageStateEnum:kicker == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withImActorModelEntityContentAbsContent:[[ImActorModelEntityContentServiceGroupUserKicked alloc] initWithInt:uid]];
+  [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[((AMGroup *) nil_chk(group)) peer]])) sendWithId:message];
+}
+
+- (void)onUserAddedWithInt:(jint)groupId
+                  withLong:(jlong)rid
+                   withInt:(jint)uid
+                   withInt:(jint)adder
+                  withLong:(jlong)date {
+  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  if (group == nil) {
+    return;
+  }
+  [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:[((AMGroup *) nil_chk(group)) addMemberWithInt:uid withInt:adder withLong:date withBoolean:NO]];
+  AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:adder withAMMessageStateEnum:adder == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withImActorModelEntityContentAbsContent:[[ImActorModelEntityContentServiceGroupUserAdded alloc] initWithInt:uid]];
+  [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
+}
+
+- (void)onTitleChangedWithInt:(jint)groupId
+                     withLong:(jlong)rid
+                      withInt:(jint)uid
+                 withNSString:(NSString *)title
+                     withLong:(jlong)date {
+  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  if (group == nil) {
+    return;
+  }
+  AMGroup *upd = [((AMGroup *) nil_chk(group)) editTitleWithNSString:title];
+  [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:upd];
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_GroupChanged alloc] initWithAMGroup:upd]];
+  AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withImActorModelEntityContentAbsContent:[[ImActorModelEntityContentServiceGroupTitleChanged alloc] initWithNSString:title]];
+  [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
+}
+
+- (void)onAvatarChangedWithInt:(jint)groupId
+                      withLong:(jlong)rid
+                       withInt:(jint)uid
+                  withAMAvatar:(AMAvatar *)avatar
+                      withLong:(jlong)date {
+  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  if (group == nil) {
+    return;
+  }
+  AMGroup *upd = [((AMGroup *) nil_chk(group)) editAvatarWithAMAvatar:avatar];
+  [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:upd];
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_GroupChanged alloc] initWithAMGroup:upd]];
+  AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withImActorModelEntityContentAbsContent:[[ImActorModelEntityContentServiceGroupAvatarChanged alloc] initWithAMAvatar:avatar]];
+  [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
 }
 
 - (jboolean)hasGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)gids {

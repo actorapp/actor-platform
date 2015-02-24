@@ -46,6 +46,21 @@
 
 - (jboolean)isMember;
 
+- (AMGroup *)changeMemberWithBoolean:(jboolean)isMember;
+
+- (AMGroup *)clearMembers;
+
+- (AMGroup *)removeMemberWithInt:(jint)uid;
+
+- (AMGroup *)addMemberWithInt:(jint)uid
+                      withInt:(jint)inviterUid
+                     withLong:(jlong)inviteDate
+                  withBoolean:(jboolean)isAdmin;
+
+- (AMGroup *)editTitleWithNSString:(NSString *)title;
+
+- (AMGroup *)editAvatarWithAMAvatar:(AMAvatar *)avatar;
+
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;

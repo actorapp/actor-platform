@@ -1,6 +1,8 @@
 package im.actor.model.modules;
 
+import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.Group;
+import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
@@ -29,6 +31,30 @@ public class BaseModule {
 
     public void runOnUiThread(Runnable runnable) {
         modules.getConfiguration().getMainThread().runOnUiThread(runnable);
+    }
+
+    public ActorRef sendActor() {
+        return modules().getMessagesModule().getSendMessageActor();
+    }
+
+    public ActorRef dialogsActor() {
+        return modules().getMessagesModule().getDialogsActor();
+    }
+
+    public ActorRef dialogsHistoryActor() {
+        return modules().getMessagesModule().getDialogsHistoryActor();
+    }
+
+    public ActorRef ownReadActor() {
+        return modules().getMessagesModule().getOwnReadActor();
+    }
+
+    public ActorRef plainReceiveActor() {
+        return modules().getMessagesModule().getPlainReceiverActor();
+    }
+
+    public ActorRef conversationActor(Peer peer) {
+        return modules().getMessagesModule().getConversationActor(peer);
     }
 
     public PreferencesStorage preferences() {

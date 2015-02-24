@@ -6,9 +6,12 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/MainThread.h"
+#include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Groups.h"
+#include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/Users.h"
@@ -48,6 +51,30 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModule
 
 - (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
   [((id<AMMainThread>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThread])) runOnUiThread:runnable];
+}
+
+- (DKActorRef *)sendActor {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getSendMessageActor];
+}
+
+- (DKActorRef *)dialogsActor {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor];
+}
+
+- (DKActorRef *)dialogsHistoryActor {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsHistoryActor];
+}
+
+- (DKActorRef *)ownReadActor {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getOwnReadActor];
+}
+
+- (DKActorRef *)plainReceiveActor {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getPlainReceiverActor];
+}
+
+- (DKActorRef *)conversationActorWithAMPeer:(AMPeer *)peer {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationActorWithAMPeer:peer];
 }
 
 - (id<AMPreferencesStorage>)preferences {
