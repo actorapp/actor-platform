@@ -28,6 +28,8 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
+- (void)run;
+
 - (jint)myUid;
 
 - (AMAuthStateEnum *)getAuthState;

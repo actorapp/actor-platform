@@ -88,7 +88,7 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
 
 - (IOSByteArray *)readBytesWithInt:(jint)count {
   if (offset_ + count > maxOffset_) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw [[JavaIoIOException alloc] initWithNSString:JreStrcat("$I$I", @"Too many to read, max len: ", maxOffset_, @", required len: ", (offset_ + count))];
   }
   IOSByteArray *res = [IOSByteArray newArrayWithLength:count];
   for (jint i = 0; i < count; i++) {

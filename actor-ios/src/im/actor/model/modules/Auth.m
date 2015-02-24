@@ -19,6 +19,8 @@
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Modules.h"
+#include "im/actor/model/modules/Updates.h"
+#include "im/actor/model/modules/updates/internal/LoggedIn.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/storage/PreferencesStorage.h"
 #include "im/actor/model/util/RandomUtils.h"
@@ -168,15 +170,18 @@ NSString * ImActorModelModulesAuth_KEY_SMS_CODE_ = @"auth_sms_code";
       deviceHash_ = AMRandomUtils_seedWithInt_(32);
       [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:ImActorModelModulesAuth_KEY_DEVICE_HASH_ withByteArray:deviceHash_];
     }
-    if ([((id<AMPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesAuth_KEY_AUTH_ withBoolean:NO]) {
-      state_ = AMAuthStateEnum_get_LOGGED_IN();
-      [modules onLoggedIn];
-    }
-    else {
-      state_ = AMAuthStateEnum_get_AUTH_START();
-    }
   }
   return self;
+}
+
+- (void)run {
+  if ([((id<AMPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesAuth_KEY_AUTH_ withBoolean:NO]) {
+    state_ = AMAuthStateEnum_get_LOGGED_IN();
+    [((ImActorModelModulesModules *) nil_chk([self modules])) onLoggedIn];
+  }
+  else {
+    state_ = AMAuthStateEnum_get_AUTH_START();
+  }
 }
 
 - (jint)myUid {
@@ -348,7 +353,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2)
   this$0_->this$0_->myUid__ = [((ImActorModelApiUser *) nil_chk([((ImActorModelApiRpcResponseAuth *) nil_chk(response)) getUser])) getId];
   [((id<AMPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putIntWithNSString:ImActorModelModulesAuth_get_KEY_AUTH_UID_() withInt:this$0_->this$0_->myUid__];
   [((ImActorModelModulesModules *) nil_chk([this$0_->this$0_ modules])) onLoggedIn];
-  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesAuth_$2_$1_$1 alloc] initWithImActorModelModulesAuth_$2_$1:self]];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalLoggedIn alloc] initWithImActorModelApiRpcResponseAuth:response withJavaLangRunnable:[[ImActorModelModulesAuth_$2_$1_$1 alloc] initWithImActorModelModulesAuth_$2_$1:self]]];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
@@ -453,7 +458,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$3)
   this$0_->this$0_->myUid__ = [((ImActorModelApiUser *) nil_chk([((ImActorModelApiRpcResponseAuth *) nil_chk(response)) getUser])) getId];
   [((id<AMPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putIntWithNSString:ImActorModelModulesAuth_get_KEY_AUTH_UID_() withInt:this$0_->this$0_->myUid__];
   [((ImActorModelModulesModules *) nil_chk([this$0_->this$0_ modules])) onLoggedIn];
-  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesAuth_$3_$1_$1 alloc] initWithImActorModelModulesAuth_$3_$1:self]];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalLoggedIn alloc] initWithImActorModelApiRpcResponseAuth:response withJavaLangRunnable:[[ImActorModelModulesAuth_$3_$1_$1 alloc] initWithImActorModelModulesAuth_$3_$1:self]]];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {

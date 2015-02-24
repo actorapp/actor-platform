@@ -8,13 +8,21 @@
 
 @class AMAuthStateEnum;
 @class AMConfiguration;
+@class AMMVVMCollection;
 @class AMPeer;
+@class DKActor;
+@class DKActorRef;
+@class DKEnvelope;
+@class ImActorModelI18nI18nEngine;
 @class ImActorModelModulesModules;
+@class ImActorModelViewmodelGroupTypingVM;
+@class ImActorModelViewmodelUserTypingVM;
+@class JavaLangException;
 @protocol AMCommand;
-@protocol AMKeyValueEngine;
 @protocol AMListEngine;
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/actors/debug/TraceInterface.h"
 
 @interface AMMessenger : NSObject {
 }
@@ -39,11 +47,19 @@
 
 - (jint)myUid;
 
-- (id<AMKeyValueEngine>)getUsers;
+- (ImActorModelI18nI18nEngine *)getFormatter;
+
+- (AMMVVMCollection *)getUsers;
+
+- (AMMVVMCollection *)getGroups;
 
 - (id<AMListEngine>)getDialogs;
 
 - (id<AMListEngine>)getMessagesWithAMPeer:(AMPeer *)peer;
+
+- (ImActorModelViewmodelUserTypingVM *)getTypingWithInt:(jint)uid;
+
+- (ImActorModelViewmodelGroupTypingVM *)getGroupTypingWithInt:(jint)gid;
 
 - (void)onAppVisible;
 
@@ -53,12 +69,26 @@
 
 - (void)onConversationClosedWithAMPeer:(AMPeer *)peer;
 
+- (void)onProfileOpenWithInt:(jint)uid;
+
+- (void)onProfileClosedWithInt:(jint)uid;
+
+- (void)onInMessageShownWithAMPeer:(AMPeer *)peer
+                          withLong:(jlong)rid
+                          withLong:(jlong)sortDate
+                       withBoolean:(jboolean)isEncrypted;
+
 - (void)onTypingWithAMPeer:(AMPeer *)peer;
+
+- (jlong)loadLastReadSortDateWithAMPeer:(AMPeer *)peer;
 
 - (void)saveDraftWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)draft;
 
 - (NSString *)loadDraftWithAMPeer:(AMPeer *)peer;
+
+- (void)sendMessageWithAMPeer:(AMPeer *)peer
+                 withNSString:(NSString *)text;
 
 - (id<AMCommand>)editMyNameWithNSString:(NSString *)newName;
 
@@ -75,5 +105,34 @@ CF_EXTERN_C_END
 typedef AMMessenger ImActorModelMessenger;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMMessenger)
+
+@interface AMMessenger_$1 : NSObject < ImActorModelDroidkitActorsDebugTraceInterface > {
+}
+
+- (void)onEnvelopeDeliveredWithDKEnvelope:(DKEnvelope *)envelope;
+
+- (void)onEnvelopeProcessedWithDKEnvelope:(DKEnvelope *)envelope
+                                 withLong:(jlong)duration;
+
+- (void)onDropWithDKActorRef:(DKActorRef *)sender
+                      withId:(id)message
+                 withDKActor:(DKActor *)actor;
+
+- (void)onDeadLetterWithDKActorRef:(DKActorRef *)receiver
+                            withId:(id)message;
+
+- (void)onActorDieWithDKActorRef:(DKActorRef *)ref
+           withJavaLangException:(JavaLangException *)e;
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMMessenger_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMMessenger_$1)
 
 #endif // _AMMessenger_H_

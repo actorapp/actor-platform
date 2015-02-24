@@ -3,10 +3,20 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/Group.java
 //
 
+#include "IOSClass.h"
+#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/Group.h"
-#include "im/actor/model/entity/GroupState.h"
+#include "im/actor/model/entity/GroupMember.h"
+#include "im/actor/model/entity/Peer.h"
+#include "im/actor/model/entity/PeerType.h"
+#include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 @interface AMGroup () {
@@ -15,18 +25,22 @@
   jlong accessHash_;
   NSString *title_;
   AMAvatar *avatar_;
-  id<JavaUtilList> members_;
   jint adminId_;
-  AMGroupStateEnum *groupState_;
+  jboolean isMember__;
+  id<JavaUtilList> members_;
 }
+- (instancetype)init;
 @end
 
 J2OBJC_FIELD_SETTER(AMGroup, title_, NSString *)
 J2OBJC_FIELD_SETTER(AMGroup, avatar_, AMAvatar *)
 J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(AMGroup, groupState_, AMGroupStateEnum *)
 
 @implementation AMGroup
+
++ (AMGroup *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMGroup_fromBytesWithByteArray_(data);
+}
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)accessHash
@@ -34,7 +48,7 @@ J2OBJC_FIELD_SETTER(AMGroup, groupState_, AMGroupStateEnum *)
                withAMAvatar:(AMAvatar *)avatar
            withJavaUtilList:(id<JavaUtilList>)members
                     withInt:(jint)adminId
-       withAMGroupStateEnum:(AMGroupStateEnum *)groupState {
+                withBoolean:(jboolean)isMember {
   if (self = [super init]) {
     self->groupId_ = groupId;
     self->accessHash_ = accessHash;
@@ -42,9 +56,17 @@ J2OBJC_FIELD_SETTER(AMGroup, groupState_, AMGroupStateEnum *)
     self->avatar_ = avatar;
     self->members_ = members;
     self->adminId_ = adminId;
-    self->groupState_ = groupState;
+    self->isMember__ = isMember;
   }
   return self;
+}
+
+- (instancetype)init {
+  return [super init];
+}
+
+- (AMPeer *)peer {
+  return [[AMPeer alloc] initWithAMPeerTypeEnum:AMPeerTypeEnum_get_GROUP() withInt:groupId_];
 }
 
 - (jint)getGroupId {
@@ -71,8 +93,43 @@ J2OBJC_FIELD_SETTER(AMGroup, groupState_, AMGroupStateEnum *)
   return adminId_;
 }
 
-- (AMGroupStateEnum *)getGroupState {
-  return groupState_;
+- (jboolean)isMember {
+  return isMember__;
+}
+
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
+  accessHash_ = [values getLongWithInt:2];
+  title_ = [values getStringWithInt:3];
+  if ([values optBytesWithInt:4] != nil) {
+    avatar_ = AMAvatar_fromBytesWithByteArray_([values getBytesWithInt:4]);
+  }
+  adminId_ = [values getIntWithInt:5];
+  jint count = [values getRepeatedCountWithInt:6];
+  if (count > 0) {
+    JavaUtilArrayList *res = [[JavaUtilArrayList alloc] init];
+    for (jint i = 0; i < count; i++) {
+      [res addWithId:[[AMGroupMember alloc] init]];
+    }
+    members_ = [values getRepeatedObjWithInt:6 withJavaUtilList:res];
+  }
+  isMember__ = [values getBoolWithInt:7];
+}
+
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:groupId_];
+  [writer writeLongWithInt:2 withLong:accessHash_];
+  [writer writeStringWithInt:3 withNSString:title_];
+  if (avatar_ != nil) {
+    [writer writeObjectWithInt:4 withBSBserObject:avatar_];
+  }
+  [writer writeIntWithInt:5 withInt:adminId_];
+  [writer writeRepeatedObjWithInt:6 withJavaUtilList:members_];
+  [writer writeBoolWithInt:7 withBoolean:isMember__];
+}
+
+- (jlong)getEngineId {
+  return groupId_;
 }
 
 - (void)copyAllFieldsTo:(AMGroup *)other {
@@ -81,11 +138,16 @@ J2OBJC_FIELD_SETTER(AMGroup, groupState_, AMGroupStateEnum *)
   other->accessHash_ = accessHash_;
   other->title_ = title_;
   other->avatar_ = avatar_;
-  other->members_ = members_;
   other->adminId_ = adminId_;
-  other->groupState_ = groupState_;
+  other->isMember__ = isMember__;
+  other->members_ = members_;
 }
 
 @end
+
+AMGroup *AMGroup_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMGroup_init();
+  return ((AMGroup *) BSBser_parseWithBSBserObject_withByteArray_([[AMGroup alloc] init], data));
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroup)

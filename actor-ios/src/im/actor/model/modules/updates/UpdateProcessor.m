@@ -5,10 +5,14 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/Configuration.h"
+#include "im/actor/model/MainThread.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/MessageContent.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/PeerType.h"
+#include "im/actor/model/api/User.h"
+#include "im/actor/model/api/rpc/ResponseAuth.h"
 #include "im/actor/model/api/rpc/ResponseLoadDialogs.h"
 #include "im/actor/model/api/updates/UpdateChatClear.h"
 #include "im/actor/model/api/updates/UpdateChatDelete.h"
@@ -53,13 +57,17 @@
 #include "im/actor/model/modules/updates/UsersProcessor.h"
 #include "im/actor/model/modules/updates/internal/DialogHistoryLoaded.h"
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
+#include "im/actor/model/modules/updates/internal/LoggedIn.h"
 #include "im/actor/model/network/parser/Update.h"
 #include "java/lang/Integer.h"
+#include "java/lang/Runnable.h"
+#include "java/util/ArrayList.h"
 #include "java/util/HashSet.h"
 #include "java/util/List.h"
 
 @interface ImActorModelModulesUpdatesUpdateProcessor () {
  @public
+  ImActorModelModulesModules *modules_;
   ImActorModelModulesUpdatesUsersProcessor *usersProcessor_;
   ImActorModelModulesUpdatesMessagesProcessor *messagesProcessor_;
   ImActorModelModulesUpdatesGroupsProcessor *groupsProcessor_;
@@ -68,6 +76,7 @@
 }
 @end
 
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, modules_, ImActorModelModulesModules *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, usersProcessor_, ImActorModelModulesUpdatesUsersProcessor *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, messagesProcessor_, ImActorModelModulesUpdatesMessagesProcessor *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, groupsProcessor_, ImActorModelModulesUpdatesGroupsProcessor *)
@@ -80,9 +89,10 @@ NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super init]) {
+    self->modules_ = modules;
     self->usersProcessor_ = [[ImActorModelModulesUpdatesUsersProcessor alloc] initWithImActorModelModulesModules:modules];
     self->messagesProcessor_ = [[ImActorModelModulesUpdatesMessagesProcessor alloc] initWithImActorModelModulesModules:modules];
-    self->groupsProcessor_ = [[ImActorModelModulesUpdatesGroupsProcessor alloc] init];
+    self->groupsProcessor_ = [[ImActorModelModulesUpdatesGroupsProcessor alloc] initWithImActorModelModulesModules:modules];
     self->presenceProcessor_ = [[ImActorModelModulesUpdatesPresenceProcessor alloc] initWithImActorModelModulesModules:modules];
     self->typingProcessor_ = [[ImActorModelModulesUpdatesTypingProcessor alloc] initWithImActorModelModulesModules:modules];
   }
@@ -94,6 +104,7 @@ NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
                     withJavaUtilList:(id<JavaUtilList>)contactRecords
                          withBoolean:(jboolean)force {
   [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) applyUsersWithJavaUtilCollection:users withBoolean:force];
+  [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) applyGroupsWithJavaUtilCollection:groups withBoolean:force];
 }
 
 - (void)processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:(ImActorModelModulesUpdatesInternalInternalUpdate *)update {
@@ -101,6 +112,12 @@ NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
     ImActorModelApiRpcResponseLoadDialogs *dialogs = [((ImActorModelModulesUpdatesInternalDialogHistoryLoaded *) nil_chk(((ImActorModelModulesUpdatesInternalDialogHistoryLoaded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalDialogHistoryLoaded class])))) getDialogs];
     [self applyRelatedWithJavaUtilList:[((ImActorModelApiRpcResponseLoadDialogs *) nil_chk(dialogs)) getUsers] withJavaUtilList:[dialogs getGroups] withJavaUtilList:nil withBoolean:NO];
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onDialogsLoadedWithImActorModelApiRpcResponseLoadDialogs:dialogs];
+  }
+  else if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalLoggedIn class]]) {
+    JavaUtilArrayList *users = [[JavaUtilArrayList alloc] init];
+    [users addWithId:[((ImActorModelApiRpcResponseAuth *) nil_chk([((ImActorModelModulesUpdatesInternalLoggedIn *) nil_chk(((ImActorModelModulesUpdatesInternalLoggedIn *) check_class_cast(update, [ImActorModelModulesUpdatesInternalLoggedIn class])))) getAuth])) getUser]];
+    [self applyRelatedWithJavaUtilList:users withJavaUtilList:[[JavaUtilArrayList alloc] init] withJavaUtilList:[((ImActorModelApiRpcResponseAuth *) nil_chk([((ImActorModelModulesUpdatesInternalLoggedIn *) nil_chk(((ImActorModelModulesUpdatesInternalLoggedIn *) check_class_cast(update, [ImActorModelModulesUpdatesInternalLoggedIn class])))) getAuth])) getContacts] withBoolean:YES];
+    [((id<AMMainThread>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getConfiguration])) getMainThread])) runOnUiThread:[((ImActorModelModulesUpdatesInternalLoggedIn *) nil_chk(((ImActorModelModulesUpdatesInternalLoggedIn *) check_class_cast(update, [ImActorModelModulesUpdatesInternalLoggedIn class])))) getRunnable]];
   }
 }
 
@@ -280,11 +297,15 @@ NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
   if (![((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) hasUsersWithJavaUtilCollection:users]) {
     return YES;
   }
+  if (![((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) hasGroupsWithJavaUtilCollection:groups]) {
+    return YES;
+  }
   return NO;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesUpdateProcessor *)other {
   [super copyAllFieldsTo:other];
+  other->modules_ = modules_;
   other->usersProcessor_ = usersProcessor_;
   other->messagesProcessor_ = messagesProcessor_;
   other->groupsProcessor_ = groupsProcessor_;

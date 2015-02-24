@@ -8,6 +8,7 @@
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/Dialog.h"
 #include "im/actor/model/entity/DialogBuilder.h"
+#include "im/actor/model/entity/Group.h"
 #include "im/actor/model/entity/Message.h"
 #include "im/actor/model/entity/MessageState.h"
 #include "im/actor/model/entity/Peer.h"
@@ -16,17 +17,18 @@
 #include "im/actor/model/entity/content/AbsContent.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
-#include "im/actor/model/modules/entity/DialogHistory.h"
 #include "im/actor/model/modules/messages/ContentDescription.h"
 #include "im/actor/model/modules/messages/DialogsActor.h"
+#include "im/actor/model/modules/messages/entity/DialogHistory.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/mvvm/ListEngine.h"
+#include "im/actor/model/storage/ListEngine.h"
 #include "im/actor/model/util/JavaUtil.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, AMMessage *message, jboolean isAfterDelete);
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onUserChangedWithAMUser_(ImActorModelModulesMessagesDialogsActor *self, AMUser *user);
+__attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onGroupChangedWithAMGroup_(ImActorModelModulesMessagesDialogsActor *self, AMGroup *group);
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onChatDeletedWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer);
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onChatClearWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer);
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onMessageStatusChangedWithAMPeer_withLong_withAMMessageStateEnum_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jlong rid, AMMessageStateEnum *state);
@@ -44,6 +46,8 @@ __attribute__((unused)) static ImActorModelModulesMessagesDialogsActor_PeerDesc 
                 withBoolean:(jboolean)isAfterDelete;
 
 - (void)onUserChangedWithAMUser:(AMUser *)user;
+
+- (void)onGroupChangedWithAMGroup:(AMGroup *)group;
 
 - (void)onChatDeletedWithAMPeer:(AMPeer *)peer;
 
@@ -110,6 +114,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_InMessage, message_,
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_UserChanged, user_, AMUser *)
 
+@interface ImActorModelModulesMessagesDialogsActor_GroupChanged () {
+ @public
+  AMGroup *group_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_GroupChanged, group_, AMGroup *)
+
 @interface ImActorModelModulesMessagesDialogsActor_MessageStateChanged () {
  @public
   AMPeer *peer_;
@@ -165,6 +177,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded, histo
 
 - (void)onUserChangedWithAMUser:(AMUser *)user {
   ImActorModelModulesMessagesDialogsActor_onUserChangedWithAMUser_(self, user);
+}
+
+- (void)onGroupChangedWithAMGroup:(AMGroup *)group {
+  ImActorModelModulesMessagesDialogsActor_onGroupChangedWithAMGroup_(self, group);
 }
 
 - (void)onChatDeletedWithAMPeer:(AMPeer *)peer {
@@ -225,6 +241,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded, histo
     ImActorModelModulesMessagesDialogsActor_HistoryLoaded *historyLoaded = (ImActorModelModulesMessagesDialogsActor_HistoryLoaded *) check_class_cast(message, [ImActorModelModulesMessagesDialogsActor_HistoryLoaded class]);
     ImActorModelModulesMessagesDialogsActor_onHistoryLoadedWithJavaUtilList_(self, [((ImActorModelModulesMessagesDialogsActor_HistoryLoaded *) nil_chk(historyLoaded)) getHistory]);
   }
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsActor_GroupChanged class]]) {
+    ImActorModelModulesMessagesDialogsActor_GroupChanged *groupChanged = (ImActorModelModulesMessagesDialogsActor_GroupChanged *) check_class_cast(message, [ImActorModelModulesMessagesDialogsActor_GroupChanged class]);
+    ImActorModelModulesMessagesDialogsActor_onGroupChangedWithAMGroup_(self, [((ImActorModelModulesMessagesDialogsActor_GroupChanged *) nil_chk(groupChanged)) getGroup]);
+  }
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsActor *)other {
@@ -270,6 +290,16 @@ void ImActorModelModulesMessagesDialogsActor_onUserChangedWithAMUser_(ImActorMod
   }
 }
 
+void ImActorModelModulesMessagesDialogsActor_onGroupChangedWithAMGroup_(ImActorModelModulesMessagesDialogsActor *self, AMGroup *group) {
+  AMDialog *dialog = [((id<AMListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk([((AMGroup *) nil_chk(group)) peer])) getUid]];
+  if (dialog != nil) {
+    if ([((NSString *) nil_chk([dialog getDialogTitle])) isEqual:[group getTitle]] && AMJavaUtil_equalsEWithId_withId_([dialog getDialogAvatar], [group getAvatar])) {
+      return;
+    }
+    [self->dialogs_ addOrUpdateItemWithAMListEngineItem:[dialog editPeerInfoWithNSString:[group getTitle] withAMAvatar:[group getAvatar]]];
+  }
+}
+
 void ImActorModelModulesMessagesDialogsActor_onChatDeletedWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer) {
   [((id<AMListEngine>) nil_chk(self->dialogs_)) removeItemWithLong:[((AMPeer *) nil_chk(peer)) getUid]];
 }
@@ -297,8 +327,8 @@ void ImActorModelModulesMessagesDialogsActor_onCounterChangedWithAMPeer_withInt_
 
 void ImActorModelModulesMessagesDialogsActor_onHistoryLoadedWithJavaUtilList_(ImActorModelModulesMessagesDialogsActor *self, id<JavaUtilList> history) {
   JavaUtilArrayList *updated = [[JavaUtilArrayList alloc] init];
-  for (ImActorModelModulesEntityDialogHistory * __strong dialogHistory in nil_chk(history)) {
-    if ([((id<AMListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk([((ImActorModelModulesEntityDialogHistory *) nil_chk(dialogHistory)) getPeer])) getUid]] != nil) {
+  for (ImActorModelModulesMessagesEntityDialogHistory * __strong dialogHistory in nil_chk(history)) {
+    if ([((id<AMListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk([((ImActorModelModulesMessagesEntityDialogHistory *) nil_chk(dialogHistory)) getPeer])) getUid]] != nil) {
       continue;
     }
     ImActorModelModulesMessagesDialogsActor_PeerDesc *peerDesc = ImActorModelModulesMessagesDialogsActor_buildPeerDescWithAMPeer_(self, [dialogHistory getPeer]);
@@ -314,10 +344,14 @@ void ImActorModelModulesMessagesDialogsActor_onHistoryLoadedWithJavaUtilList_(Im
 ImActorModelModulesMessagesDialogsActor_PeerDesc *ImActorModelModulesMessagesDialogsActor_buildPeerDescWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer) {
   {
     AMUser *u;
+    AMGroup *g;
     switch ([[((AMPeer *) nil_chk(peer)) getPeerType] ordinal]) {
       case AMPeerType_PRIVATE:
       u = [self getUserWithInt:[peer getPeerId]];
       return [[ImActorModelModulesMessagesDialogsActor_PeerDesc alloc] initWithImActorModelModulesMessagesDialogsActor:self withNSString:[((AMUser *) nil_chk(u)) getName] withAMAvatar:[u getAvatar]];
+      case AMPeerType_GROUP:
+      g = [self getGroupWithInt:[peer getPeerId]];
+      return [[ImActorModelModulesMessagesDialogsActor_PeerDesc alloc] initWithImActorModelModulesMessagesDialogsActor:self withNSString:[((AMGroup *) nil_chk(g)) getTitle] withAMAvatar:[g getAvatar]];
       default:
       return nil;
     }
@@ -450,6 +484,28 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_InMessa
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_UserChanged)
+
+@implementation ImActorModelModulesMessagesDialogsActor_GroupChanged
+
+- (instancetype)initWithAMGroup:(AMGroup *)group {
+  if (self = [super init]) {
+    self->group_ = group;
+  }
+  return self;
+}
+
+- (AMGroup *)getGroup {
+  return group_;
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsActor_GroupChanged *)other {
+  [super copyAllFieldsTo:other];
+  other->group_ = group_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_GroupChanged)
 
 @implementation ImActorModelModulesMessagesDialogsActor_MessageStateChanged
 

@@ -9,8 +9,8 @@
 @class AMMessage;
 @class AMPeer;
 @class DKActorRef;
+@class ImActorModelModulesMessagesEntityOutUnreadMessagesStorage;
 @class ImActorModelModulesModules;
-@protocol AMKeyValueEngine;
 @protocol AMListEngine;
 @protocol JavaUtilList;
 
@@ -134,6 +134,22 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageSent)
+
+@interface ImActorModelModulesMessagesConversationActor_MessageError : NSObject {
+}
+
+- (instancetype)initWithLong:(jlong)rid;
+
+- (jlong)getRid;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageError)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageError)
 
 @interface ImActorModelModulesMessagesConversationActor_MessageDeleted : NSObject {
 }

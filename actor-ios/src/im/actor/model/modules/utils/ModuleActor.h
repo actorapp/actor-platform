@@ -6,13 +6,17 @@
 #ifndef _ImActorModelModulesUtilsModuleActor_H_
 #define _ImActorModelModulesUtilsModuleActor_H_
 
+@class AMGroup;
 @class AMPeer;
 @class AMRpcException;
 @class AMUser;
+@class DKActorRef;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdates;
 @class ImActorModelNetworkParserRequest;
 @class ImActorModelNetworkParserResponse;
+@class ImActorModelViewmodelGroupVM;
+@class ImActorModelViewmodelUserVM;
 @protocol AMKeyValueEngine;
 @protocol AMListEngine;
 @protocol AMPreferencesStorage;
@@ -29,7 +33,15 @@
 
 - (id<AMKeyValueEngine>)users;
 
+- (id<AMKeyValueEngine>)groups;
+
+- (AMGroup *)getGroupWithInt:(jint)gid;
+
 - (AMUser *)getUserWithInt:(jint)uid;
+
+- (ImActorModelViewmodelUserVM *)getUserVMWithInt:(jint)uid;
+
+- (ImActorModelViewmodelGroupVM *)getGroupVMWithInt:(jint)gid;
 
 - (id<AMPreferencesStorage>)preferences;
 
@@ -40,6 +52,8 @@
 - (jint)myUid;
 
 - (ImActorModelModulesModules *)modules;
+
+- (DKActorRef *)getConversationActorWithAMPeer:(AMPeer *)peer;
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request;
 

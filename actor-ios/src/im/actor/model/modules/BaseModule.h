@@ -40,6 +40,8 @@
 
 - (id<AMKeyValueEngine>)users;
 
+- (id<AMKeyValueEngine>)groups;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesBaseModule)

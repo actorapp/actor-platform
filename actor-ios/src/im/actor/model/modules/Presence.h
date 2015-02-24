@@ -26,9 +26,7 @@
 
 - (void)onAppHidden;
 
-- (void)onConversationOpenWithAMPeer:(AMPeer *)peer;
-
-- (void)onConversationClosedWithAMPeer:(AMPeer *)peer;
+- (void)subscribeWithAMPeer:(AMPeer *)peer;
 
 - (void)onNewSessionCreated;
 

@@ -15,7 +15,7 @@
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/mvvm/KeyValueItem.h"
+#include "im/actor/model/storage/KeyValueItem.h"
 
 @interface AMUser : BSBserObject < AMKeyValueItem > {
 }
