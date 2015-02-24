@@ -49,6 +49,7 @@ android {
 
     dexOptions {
         preDexLibraries = false
+        javaMaxHeapSize "4g"
     }
 
     buildTypes {
@@ -339,7 +340,7 @@ dependencies {
     // UI
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     // compile project(':photoviewer')
-    compile ('com.github.chrisbanes.photoview:library:1.2.3'){
+    compile('com.github.chrisbanes.photoview:library:1.2.3') {
         exclude module: 'support-v13'
     }
     compile 'com.getbase:floatingactionbutton:1.5.1'

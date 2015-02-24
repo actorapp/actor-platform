@@ -1,6 +1,7 @@
-package im.actor.model.storage;
+package im.actor.model.modules.utils;
 
 import im.actor.model.network.AuthKeyStorage;
+import im.actor.model.storage.PreferencesStorage;
 
 /**
  * Created by ex3ndr on 08.02.15.

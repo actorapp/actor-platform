@@ -12,10 +12,10 @@ import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.User;
 import im.actor.model.mvvm.MVVMCollection;
-import im.actor.model.storage.KeyValueEngine;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
+import im.actor.model.storage.KeyValueEngine;
 import im.actor.model.viewmodel.UserVM;
 
 /**
@@ -134,5 +134,10 @@ public class Users extends BaseModule {
                 });
             }
         };
+    }
+
+    public Command<Boolean> editAvatar(String avatarPath) {
+        // TODO: Implement
+        throw new RuntimeException("Not Implemented");
     }
 }

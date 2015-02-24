@@ -89,6 +89,11 @@
          }]);
 
 
+
+
+
+
+
     </script>
 </head>
 
@@ -114,11 +119,10 @@
         <div class="row">
             <div class="col-md-4">
                 <div ng-controller="DialogsController">
-                    <ul class="unstyled">
-                        <li ng-repeat="dialog in dialogs">
-                            {{dialog.title}} : {{dialog.text}}
-                        </li>
-                    </ul>
+                    <div ng-repeat="dialog in dialogs">
+                        <b>{{dialog.title}}</b> {{dialog.date}}<br/>
+                        {{dialog.text}}
+                    </div>
                 </div>
             </div>
         </div>

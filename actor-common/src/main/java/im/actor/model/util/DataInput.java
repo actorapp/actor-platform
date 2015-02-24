@@ -74,12 +74,12 @@ public class DataInput {
         long a3 = data[offset + 1] & 0xFF;
         long a4 = data[offset + 0] & 0xFF;
         offset += 4;
-        return  (a1) + (a2 << 8) + (a3 << 16) + (a4 << 24);
+        return (a1) + (a2 << 8) + (a3 << 16) + (a4 << 24);
     }
 
     public byte[] readBytes(int count) throws IOException {
         if (offset + count > maxOffset) {
-            throw new IOException();
+            throw new IOException("Too many to read, max len: " + maxOffset + ", required len: " + (offset + count));
         }
 
         byte[] res = new byte[count];

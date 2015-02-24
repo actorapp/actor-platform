@@ -1,13 +1,20 @@
 package im.actor.model.modules.messages;
 
-import im.actor.model.entity.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import im.actor.model.entity.Avatar;
+import im.actor.model.entity.Dialog;
+import im.actor.model.entity.DialogBuilder;
+import im.actor.model.entity.Group;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.MessageState;
+import im.actor.model.entity.Peer;
+import im.actor.model.entity.User;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.DialogHistory;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.storage.ListEngine;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static im.actor.model.util.JavaUtil.equalsE;
 
@@ -84,6 +91,17 @@ public class DialogsActor extends ModuleActor {
         }
     }
 
+    private void onGroupChanged(Group group) {
+        Dialog dialog = dialogs.getValue(group.peer().getUid());
+        if (dialog != null) {
+            if (dialog.getDialogTitle().equals(group.getTitle())
+                    && equalsE(dialog.getDialogAvatar(), group.getAvatar())) {
+                return;
+            }
+            dialogs.addOrUpdateItem(dialog.editPeerInfo(group.getTitle(), group.getAvatar()));
+        }
+    }
+
     private void onChatDeleted(Peer peer) {
         dialogs.removeItem(peer.getUid());
     }
@@ -148,6 +166,9 @@ public class DialogsActor extends ModuleActor {
             case PRIVATE:
                 User u = getUser(peer.getPeerId());
                 return new PeerDesc(u.getName(), u.getAvatar());
+            case GROUP:
+                Group g = getGroup(peer.getPeerId());
+                return new PeerDesc(g.getTitle(), g.getAvatar());
             default:
                 return null;
         }
@@ -199,6 +220,9 @@ public class DialogsActor extends ModuleActor {
         } else if (message instanceof HistoryLoaded) {
             HistoryLoaded historyLoaded = (HistoryLoaded) message;
             onHistoryLoaded(historyLoaded.getHistory());
+        } else if (message instanceof GroupChanged) {
+            GroupChanged groupChanged = (GroupChanged) message;
+            onGroupChanged(groupChanged.getGroup());
         }
     }
 
@@ -253,6 +277,18 @@ public class DialogsActor extends ModuleActor {
 
         public User getUser() {
             return user;
+        }
+    }
+
+    public static class GroupChanged {
+        private Group group;
+
+        public GroupChanged(Group group) {
+            this.group = group;
+        }
+
+        public Group getGroup() {
+            return group;
         }
     }
 

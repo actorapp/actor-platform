@@ -1,11 +1,13 @@
-package im.actor.model.storage;
+package im.actor.model.storage.temp;
 
 import java.util.HashMap;
+
+import im.actor.model.storage.PreferencesStorage;
 
 /**
  * Created by ex3ndr on 08.02.15.
  */
-public class MemoryPreferences implements PreferencesStorage {
+public class TempPreferences implements PreferencesStorage {
 
     private HashMap<String, Object> items = new HashMap<String, Object>();
 
@@ -23,12 +25,12 @@ public class MemoryPreferences implements PreferencesStorage {
     }
 
     @Override
-    public void putInt(String key, int v) {
+    public synchronized void putInt(String key, int v) {
         items.put(key, v);
     }
 
     @Override
-    public int getInt(String key, int def) {
+    public synchronized int getInt(String key, int def) {
         if (items.containsKey(key)) {
             return (Integer) items.get(key);
         }
@@ -36,12 +38,12 @@ public class MemoryPreferences implements PreferencesStorage {
     }
 
     @Override
-    public void putBool(String key, boolean v) {
+    public synchronized void putBool(String key, boolean v) {
         items.put(key, v);
     }
 
     @Override
-    public boolean getBool(String key, boolean def) {
+    public synchronized boolean getBool(String key, boolean def) {
         if (items.containsKey(key)) {
             return (Boolean) items.get(key);
         }
@@ -49,12 +51,12 @@ public class MemoryPreferences implements PreferencesStorage {
     }
 
     @Override
-    public void putBytes(String key, byte[] v) {
+    public synchronized void putBytes(String key, byte[] v) {
         items.put(key, v);
     }
 
     @Override
-    public byte[] getBytes(String key) {
+    public synchronized byte[] getBytes(String key) {
         if (items.containsKey(key)) {
             return (byte[]) items.get(key);
         }
@@ -62,12 +64,12 @@ public class MemoryPreferences implements PreferencesStorage {
     }
 
     @Override
-    public void putString(String key, String v) {
+    public synchronized void putString(String key, String v) {
         items.put(key, v);
     }
 
     @Override
-    public String getString(String key) {
+    public synchronized String getString(String key) {
         if (items.containsKey(key)) {
             return (String) items.get(key);
         }

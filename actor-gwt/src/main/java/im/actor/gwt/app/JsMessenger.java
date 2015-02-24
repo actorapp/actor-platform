@@ -1,5 +1,7 @@
 package im.actor.gwt.app;
 
+import com.google.gwt.storage.client.Storage;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
@@ -39,11 +41,11 @@ public class JsMessenger implements Exportable {
     private Messenger messenger;
     private JsStorage jsStorage;
     private JsMainThread mainThread;
-    private JsList<JsDialog,Dialog> dialogList;
+    private JsList<JsDialog, Dialog> dialogList;
 
     @Export
     public JsMessenger() {
-        // Storage.getLocalStorageIfSupported().clear();
+        Storage.getLocalStorageIfSupported().clear();
         jsStorage = new JsStorage();
         mainThread = new JsMainThread();
         Configuration configuration = new ConfigurationBuilder()
@@ -139,7 +141,7 @@ public class JsMessenger implements Exportable {
 
     // Models
 
-    private JsList<JsDialog,Dialog> getDialogList() {
+    private JsList<JsDialog, Dialog> getDialogList() {
         if (dialogList == null) {
             dialogList = new JsList<JsDialog, Dialog>((im.actor.gwt.app.storage.JsListEngine<Dialog>) messenger.getDialogs(),
                     new JsDialogEntityConverter(messenger));

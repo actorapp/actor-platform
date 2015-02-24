@@ -1,15 +1,19 @@
 package im.actor.messenger.app.view;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.TypedValue;
 
 import im.actor.messenger.R;
-import im.actor.messenger.model.GroupModel;
 import im.actor.messenger.storage.scheme.GlobalSearch;
 import im.actor.model.entity.Dialog;
+import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
 /**
@@ -17,8 +21,8 @@ import im.actor.model.viewmodel.UserVM;
  */
 public class AvatarDrawable extends Drawable {
 
-    public static AvatarDrawable create(GroupModel groupModel, float fontSize, Context context) {
-        return new AvatarDrawable(groupModel.getTitle(), groupModel.getChatId(), fontSize, context);
+    public static AvatarDrawable create(GroupVM groupModel, float fontSize, Context context) {
+        return new AvatarDrawable(groupModel.getName().get(), groupModel.getId(), fontSize, context);
     }
 
     public static AvatarDrawable create(Dialog dialogItem, float fontSize, Context context) {

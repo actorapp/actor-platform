@@ -16,6 +16,8 @@ public interface Storage {
 
     public KeyValueStorage createUsersEngine();
 
+    public KeyValueStorage createGroupsEngine();
+
     public ListEngine<Dialog> createDialogsEngine();
 
     public ListEngine<Message> createMessagesEngine(Peer peer);

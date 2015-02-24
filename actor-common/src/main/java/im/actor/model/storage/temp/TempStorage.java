@@ -1,8 +1,5 @@
-package im.actor.messenger.storage.provider;
+package im.actor.model.storage.temp;
 
-import im.actor.messenger.storage.ListEngines;
-import im.actor.messenger.storage.SQLiteProvider;
-import im.actor.messenger.storage.sqlite.SQLiteKeyValue;
 import im.actor.model.Storage;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
@@ -12,31 +9,31 @@ import im.actor.model.storage.ListEngine;
 import im.actor.model.storage.PreferencesStorage;
 
 /**
- * Created by ex3ndr on 14.02.15.
+ * Created by ex3ndr on 23.02.15.
  */
-public class AppEngineFactory implements Storage {
+public class TempStorage implements Storage {
     @Override
     public PreferencesStorage createPreferencesStorage() {
-        return new PropertiesProvider();
+        return new TempPreferences();
     }
 
     @Override
     public KeyValueStorage createUsersEngine() {
-        return new SQLiteKeyValue(SQLiteProvider.db(), "actor_users");
+        return new TempKeyValueStorage();
     }
 
     @Override
     public KeyValueStorage createGroupsEngine() {
-        return new SQLiteKeyValue(SQLiteProvider.db(), "actor_groups");
+        return new TempKeyValueStorage();
     }
 
     @Override
     public ListEngine<Dialog> createDialogsEngine() {
-        return new ListProvider<Dialog>(ListEngines.getChatsListEngine());
+        return new TempListEngine<Dialog>();
     }
 
     @Override
     public ListEngine<Message> createMessagesEngine(Peer peer) {
-        return new ListProvider<Message>(ListEngines.getMessages(peer));
+        return new TempListEngine<Message>();
     }
 }
