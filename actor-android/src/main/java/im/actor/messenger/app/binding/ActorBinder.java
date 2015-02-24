@@ -12,6 +12,8 @@ import im.actor.messenger.app.view.Formatter;
 import im.actor.model.entity.Avatar;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
+import im.actor.model.viewmodel.GroupTypingVM;
+import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserPresence;
 import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
@@ -28,6 +30,22 @@ public class ActorBinder {
             @Override
             public void onChanged(String val, ValueModel<String> valueModel) {
                 textView.setText(val);
+            }
+        });
+    }
+
+    public void bind(final TextView textView, final View container, final View titleContainer, final GroupTypingVM typing) {
+        bind(typing.getActive(), new ValueChangedListener<int[]>() {
+            @Override
+            public void onChanged(int[] val, ValueModel<int[]> valueModel) {
+                if (val.length == 0) {
+                    container.setVisibility(View.INVISIBLE);
+                    titleContainer.setVisibility(View.VISIBLE);
+                } else {
+                    textView.setText(Formatter.formatTyping(val));
+                    container.setVisibility(View.VISIBLE);
+                    titleContainer.setVisibility(View.INVISIBLE);
+                }
             }
         });
     }
@@ -61,6 +79,15 @@ public class ActorBinder {
                     container.setVisibility(View.GONE);
                     textView.setText("");
                 }
+            }
+        });
+    }
+
+    public void bind(final TextView textView, final GroupVM value) {
+        bind(value.getPresence(), new ValueChangedListener<Integer>() {
+            @Override
+            public void onChanged(Integer val, ValueModel<Integer> valueModel) {
+
             }
         });
     }

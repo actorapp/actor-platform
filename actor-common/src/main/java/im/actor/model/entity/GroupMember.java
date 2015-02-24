@@ -22,10 +22,14 @@ public class GroupMember extends BserObject {
 
     private long inviteDate;
 
-    public GroupMember(int uid, int inviterUid, long inviteDate) {
+    private boolean isAdministrator;
+
+    public GroupMember(int uid, int inviterUid, long inviteDate,
+                       boolean isAdministrator) {
         this.uid = uid;
         this.inviterUid = inviterUid;
         this.inviteDate = inviteDate;
+        this.isAdministrator = isAdministrator;
     }
 
     public GroupMember() {
@@ -44,11 +48,16 @@ public class GroupMember extends BserObject {
         return inviteDate;
     }
 
+    public boolean isAdministrator() {
+        return isAdministrator;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         uid = values.getInt(1);
         inviterUid = values.getInt(2);
         inviteDate = values.getLong(3);
+        isAdministrator = values.getBool(4);
     }
 
     @Override
@@ -56,5 +65,6 @@ public class GroupMember extends BserObject {
         writer.writeInt(1, uid);
         writer.writeInt(2, inviterUid);
         writer.writeLong(3, inviteDate);
+        writer.writeBool(4, isAdministrator);
     }
 }
