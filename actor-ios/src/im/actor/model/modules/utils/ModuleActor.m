@@ -5,22 +5,27 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/entity/Group.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/modules/Auth.h"
+#include "im/actor/model/modules/Groups.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/Users.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/mvvm/KeyValueEngine.h"
-#include "im/actor/model/mvvm/ListEngine.h"
+#include "im/actor/model/mvvm/MVVMCollection.h"
 #include "im/actor/model/network/ActorApi.h"
 #include "im/actor/model/network/RpcCallback.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/parser/Request.h"
 #include "im/actor/model/network/parser/Response.h"
+#include "im/actor/model/storage/KeyValueEngine.h"
+#include "im/actor/model/storage/ListEngine.h"
 #include "im/actor/model/storage/PreferencesStorage.h"
+#include "im/actor/model/viewmodel/GroupVM.h"
+#include "im/actor/model/viewmodel/UserVM.h"
 
 @interface ImActorModelModulesUtilsModuleActor () {
  @public
@@ -73,8 +78,24 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getUsersModule])) getUsers];
 }
 
+- (id<AMKeyValueEngine>)groups {
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getGroupsModule])) getGroups];
+}
+
+- (AMGroup *)getGroupWithInt:(jint)gid {
+  return [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:gid];
+}
+
 - (AMUser *)getUserWithInt:(jint)uid {
   return [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
+}
+
+- (ImActorModelViewmodelUserVM *)getUserVMWithInt:(jint)uid {
+  return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getUsersModule])) getUsersCollection])) getWithLong:uid];
+}
+
+- (ImActorModelViewmodelGroupVM *)getGroupVMWithInt:(jint)gid {
+  return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getGroupsModule])) getGroupsCollection])) getWithLong:gid];
 }
 
 - (id<AMPreferencesStorage>)preferences {
@@ -95,6 +116,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
 
 - (ImActorModelModulesModules *)modules {
   return messenger_;
+}
+
+- (DKActorRef *)getConversationActorWithAMPeer:(AMPeer *)peer {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationActorWithAMPeer:peer];
 }
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request {

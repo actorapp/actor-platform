@@ -8,10 +8,13 @@
 
 @class AMPeer;
 @class DKActorRef;
-@class ImActorModelEntityContentAbsContent;
 @class ImActorModelModulesMessagesConversationActor;
 @class ImActorModelModulesMessagesDialogsActor;
 @class ImActorModelModulesMessagesDialogsHistoryActor;
+@class ImActorModelModulesMessagesOwnReadActor;
+@class ImActorModelModulesMessagesPlainReaderActor;
+@class ImActorModelModulesMessagesPlainReceiverActor;
+@class ImActorModelModulesMessagesSenderActor;
 @class ImActorModelModulesModules;
 @class JavaUtilHashMap;
 @protocol AMListEngine;
@@ -27,6 +30,14 @@
 
 - (void)run;
 
+- (DKActorRef *)getSendMessageActor;
+
+- (DKActorRef *)getPlainReadActor;
+
+- (DKActorRef *)getPlainReceiverActor;
+
+- (DKActorRef *)getOwnReadActor;
+
 - (DKActorRef *)getConversationActorWithAMPeer:(AMPeer *)peer;
 
 - (id<AMListEngine>)getConversationEngineWithAMPeer:(AMPeer *)peer;
@@ -38,13 +49,17 @@
 - (id<AMListEngine>)getDialogsEngine;
 
 - (void)sendMessageWithAMPeer:(AMPeer *)peer
-withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)message;
+                 withNSString:(NSString *)message;
 
-- (void)onInboundMessageShownWithAMPeer:(AMPeer *)peer
-                               withLong:(jlong)rid
-                               withLong:(jlong)sortDate
-                               withLong:(jlong)date
-                            withBoolean:(jboolean)isEncrypted;
+- (void)onInMessageShownWithAMPeer:(AMPeer *)peer
+                          withLong:(jlong)rid
+                          withLong:(jlong)sortDate
+                       withBoolean:(jboolean)isEncrypted;
+
+- (void)saveReadStateWithAMPeer:(AMPeer *)peer
+                       withLong:(jlong)lastReadDate;
+
+- (jlong)loadReadStateWithAMPeer:(AMPeer *)peer;
 
 - (void)saveDraftWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)draft;
@@ -95,10 +110,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$2)
 @interface ImActorModelModulesMessages_$3 : NSObject < DKActorCreator > {
 }
 
-- (ImActorModelModulesMessagesConversationActor *)create;
+- (ImActorModelModulesMessagesOwnReadActor *)create;
 
-- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$
-                                         withAMPeer:(AMPeer *)capture$0;
+- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$;
 
 @end
 
@@ -108,5 +122,70 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$3)
+
+@interface ImActorModelModulesMessages_$4 : NSObject < DKActorCreator > {
+}
+
+- (ImActorModelModulesMessagesPlainReaderActor *)create;
+
+- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessages_$4)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$4)
+
+@interface ImActorModelModulesMessages_$5 : NSObject < DKActorCreator > {
+}
+
+- (ImActorModelModulesMessagesPlainReceiverActor *)create;
+
+- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessages_$5)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$5)
+
+@interface ImActorModelModulesMessages_$6 : NSObject < DKActorCreator > {
+}
+
+- (ImActorModelModulesMessagesSenderActor *)create;
+
+- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessages_$6)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$6)
+
+@interface ImActorModelModulesMessages_$7 : NSObject < DKActorCreator > {
+}
+
+- (ImActorModelModulesMessagesConversationActor *)create;
+
+- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$
+                                         withAMPeer:(AMPeer *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessages_$7)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$7)
 
 #endif // _ImActorModelModulesMessages_H_

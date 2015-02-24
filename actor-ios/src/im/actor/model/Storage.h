@@ -7,7 +7,7 @@
 #define _AMStorage_H_
 
 @class AMPeer;
-@protocol AMKeyValueEngine;
+@protocol AMKeyValueStorage;
 @protocol AMListEngine;
 @protocol AMPreferencesStorage;
 
@@ -17,13 +17,13 @@
 
 - (id<AMPreferencesStorage>)createPreferencesStorage;
 
-- (id<AMKeyValueEngine>)createUsersEngine;
+- (id<AMKeyValueStorage>)createUsersEngine;
+
+- (id<AMKeyValueStorage>)createGroupsEngine;
 
 - (id<AMListEngine>)createDialogsEngine;
 
 - (id<AMListEngine>)createMessagesEngineWithAMPeer:(AMPeer *)peer;
-
-- (id<AMKeyValueEngine>)pendingMessagesWithAMPeer:(AMPeer *)peer;
 
 @end
 

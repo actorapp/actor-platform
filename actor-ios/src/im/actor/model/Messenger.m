@@ -7,20 +7,31 @@
 #include "im/actor/model/AuthState.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/LogCallback.h"
+#include "im/actor/model/MainThread.h"
 #include "im/actor/model/Messenger.h"
 #include "im/actor/model/Threading.h"
 #include "im/actor/model/concurrency/Command.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
+#include "im/actor/model/droidkit/actors/mailbox/Envelope.h"
 #include "im/actor/model/entity/Peer.h"
+#include "im/actor/model/i18n/I18nEngine.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Auth.h"
+#include "im/actor/model/modules/Groups.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Presence.h"
 #include "im/actor/model/modules/Typing.h"
 #include "im/actor/model/modules/Users.h"
-#include "im/actor/model/mvvm/KeyValueEngine.h"
-#include "im/actor/model/mvvm/ListEngine.h"
+#include "im/actor/model/mvvm/MVVMCollection.h"
+#include "im/actor/model/mvvm/MVVMEngine.h"
+#include "im/actor/model/storage/ListEngine.h"
+#include "im/actor/model/viewmodel/GroupTypingVM.h"
+#include "im/actor/model/viewmodel/UserTypingVM.h"
+#include "java/lang/Exception.h"
 
 @interface AMMessenger () {
  @public
@@ -35,8 +46,11 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
   if (self = [super init]) {
     DKEnvironment_setThreadingWithAMThreading_([((AMConfiguration *) nil_chk(configuration)) getThreading]);
+    AMMVVMEngine_init__WithAMMainThread_([configuration getMainThread]);
     AMLog_setLogWithAMLogCallback_([configuration getLog]);
+    [((DKActorSystem *) nil_chk(DKActorSystem_system())) setTraceInterfaceWithImActorModelDroidkitActorsDebugTraceInterface:[[AMMessenger_$1 alloc] init]];
     self->modules_ = [[ImActorModelModulesModules alloc] initWithAMConfiguration:configuration];
+    [self->modules_ run];
   }
   return self;
 }
@@ -75,8 +89,16 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) myUid];
 }
 
-- (id<AMKeyValueEngine>)getUsers {
-  return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) getUsers];
+- (ImActorModelI18nI18nEngine *)getFormatter {
+  return [((ImActorModelModulesModules *) nil_chk(modules_)) getI18nEngine];
+}
+
+- (AMMVVMCollection *)getUsers {
+  return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) getUsersCollection];
+}
+
+- (AMMVVMCollection *)getGroups {
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) getGroupsCollection];
 }
 
 - (id<AMListEngine>)getDialogs {
@@ -85,6 +107,14 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 
 - (id<AMListEngine>)getMessagesWithAMPeer:(AMPeer *)peer {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getConversationEngineWithAMPeer:peer];
+}
+
+- (ImActorModelViewmodelUserTypingVM *)getTypingWithInt:(jint)uid {
+  return [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) getTypingWithInt:uid];
+}
+
+- (ImActorModelViewmodelGroupTypingVM *)getGroupTypingWithInt:(jint)gid {
+  return [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) getGroupTypingWithInt:gid];
 }
 
 - (void)onAppVisible {
@@ -100,15 +130,32 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 }
 
 - (void)onConversationOpenWithAMPeer:(AMPeer *)peer {
-  [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) onConversationOpenWithAMPeer:peer];
+  [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) subscribeWithAMPeer:peer];
 }
 
 - (void)onConversationClosedWithAMPeer:(AMPeer *)peer {
-  [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) onConversationClosedWithAMPeer:peer];
+}
+
+- (void)onProfileOpenWithInt:(jint)uid {
+  [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) subscribeWithAMPeer:AMPeer_userWithInt_(uid)];
+}
+
+- (void)onProfileClosedWithInt:(jint)uid {
+}
+
+- (void)onInMessageShownWithAMPeer:(AMPeer *)peer
+                          withLong:(jlong)rid
+                          withLong:(jlong)sortDate
+                       withBoolean:(jboolean)isEncrypted {
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) onInMessageShownWithAMPeer:peer withLong:rid withLong:sortDate withBoolean:isEncrypted];
 }
 
 - (void)onTypingWithAMPeer:(AMPeer *)peer {
   [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) onTypingWithAMPeer:peer];
+}
+
+- (jlong)loadLastReadSortDateWithAMPeer:(AMPeer *)peer {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) loadReadStateWithAMPeer:peer];
 }
 
 - (void)saveDraftWithAMPeer:(AMPeer *)peer
@@ -118,6 +165,11 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 
 - (NSString *)loadDraftWithAMPeer:(AMPeer *)peer {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) loadDraftWithAMPeer:peer];
+}
+
+- (void)sendMessageWithAMPeer:(AMPeer *)peer
+                 withNSString:(NSString *)text {
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text];
 }
 
 - (id<AMCommand>)editMyNameWithNSString:(NSString *)newName {
@@ -137,3 +189,37 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessenger)
+
+@implementation AMMessenger_$1
+
+- (void)onEnvelopeDeliveredWithDKEnvelope:(DKEnvelope *)envelope {
+}
+
+- (void)onEnvelopeProcessedWithDKEnvelope:(DKEnvelope *)envelope
+                                 withLong:(jlong)duration {
+}
+
+- (void)onDropWithDKActorRef:(DKActorRef *)sender
+                      withId:(id)message
+                 withDKActor:(DKActor *)actor {
+  AMLog_wWithNSString_withNSString_(@"ACTOR_SYSTEM", JreStrcat("$@", @"Drop: ", message));
+}
+
+- (void)onDeadLetterWithDKActorRef:(DKActorRef *)receiver
+                            withId:(id)message {
+  AMLog_wWithNSString_withNSString_(@"ACTOR_SYSTEM", JreStrcat("$@", @"Dead Letter: ", message));
+}
+
+- (void)onActorDieWithDKActorRef:(DKActorRef *)ref
+           withJavaLangException:(JavaLangException *)e {
+  AMLog_wWithNSString_withNSString_(@"ACTOR_SYSTEM", JreStrcat("$@", @"Die: ", e));
+  [((JavaLangException *) nil_chk(e)) printStackTrace];
+}
+
+- (instancetype)init {
+  return [super init];
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessenger_$1)

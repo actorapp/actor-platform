@@ -6,14 +6,24 @@
 #ifndef _AMGroupMember_H_
 #define _AMGroupMember_H_
 
-#include "J2ObjC_header.h"
+@class BSBserValues;
+@class BSBserWriter;
+@class IOSByteArray;
 
-@interface AMGroupMember : NSObject {
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
+@interface AMGroupMember : BSBserObject {
 }
+
++ (AMGroupMember *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
-                   withLong:(jlong)inviteDate;
+                   withLong:(jlong)inviteDate
+                withBoolean:(jboolean)isAdministrator;
+
+- (instancetype)init;
 
 - (jint)getUid;
 
@@ -21,11 +31,19 @@
 
 - (jlong)getInviteDate;
 
+- (jboolean)isAdministrator;
+
+- (void)parseWithBSBserValues:(BSBserValues *)values;
+
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMGroupMember)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT AMGroupMember *AMGroupMember_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
 typedef AMGroupMember ImActorModelEntityGroupMember;

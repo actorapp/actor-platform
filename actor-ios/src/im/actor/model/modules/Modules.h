@@ -8,7 +8,10 @@
 
 @class AMActorApi;
 @class AMConfiguration;
+@class ImActorModelI18nI18nEngine;
 @class ImActorModelModulesAuth;
+@class ImActorModelModulesFilesModule;
+@class ImActorModelModulesGroups;
 @class ImActorModelModulesMessages;
 @class ImActorModelModulesPresence;
 @class ImActorModelModulesTyping;
@@ -24,6 +27,8 @@
 
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration;
 
+- (void)run;
+
 - (void)onLoggedIn;
 
 - (id<AMPreferencesStorage>)getPreferences;
@@ -34,6 +39,8 @@
 
 - (ImActorModelModulesUsers *)getUsersModule;
 
+- (ImActorModelModulesGroups *)getGroupsModule;
+
 - (ImActorModelModulesMessages *)getMessagesModule;
 
 - (ImActorModelModulesUpdates *)getUpdatesModule;
@@ -43,6 +50,8 @@
 - (ImActorModelModulesPresence *)getPresenceModule;
 
 - (AMActorApi *)getActorApi;
+
+- (ImActorModelI18nI18nEngine *)getI18nEngine;
 
 @end
 

@@ -19,58 +19,65 @@
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/Users.h"
-#include "im/actor/model/mvvm/KeyValueEngine.h"
+#include "im/actor/model/mvvm/MVVMCollection.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/RpcInternalException.h"
+#include "im/actor/model/storage/KeyValueEngine.h"
+#include "im/actor/model/storage/KeyValueStorage.h"
+#include "im/actor/model/viewmodel/UserVM.h"
+#include "java/io/IOException.h"
 #include "java/lang/Boolean.h"
+#include "java/lang/RuntimeException.h"
 
 @interface ImActorModelModulesUsers () {
  @public
   id<AMKeyValueEngine> users_;
+  AMMVVMCollection *collection_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUsers, users_, id<AMKeyValueEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers, collection_, AMMVVMCollection *)
 
-@interface ImActorModelModulesUsers_$1 () {
+@interface ImActorModelModulesUsers_$2 () {
  @public
   ImActorModelModulesUsers *this$0_;
   NSString *val$newName_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1, this$0_, ImActorModelModulesUsers *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1, val$newName_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2, this$0_, ImActorModelModulesUsers *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2, val$newName_, NSString *)
 
-@interface ImActorModelModulesUsers_$1_$1 () {
+@interface ImActorModelModulesUsers_$2_$1 () {
  @public
-  ImActorModelModulesUsers_$1 *this$0_;
+  ImActorModelModulesUsers_$2 *this$0_;
   id<AMCommandCallback> val$callback_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1_$1, this$0_, ImActorModelModulesUsers_$1 *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1_$1, val$callback_, id<AMCommandCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$1, this$0_, ImActorModelModulesUsers_$2 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$1, val$callback_, id<AMCommandCallback>)
 
-@interface ImActorModelModulesUsers_$1_$1_$1 () {
+@interface ImActorModelModulesUsers_$2_$1_$1 () {
  @public
-  ImActorModelModulesUsers_$1_$1 *this$0_;
+  ImActorModelModulesUsers_$2_$1 *this$0_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1_$1_$1, this$0_, ImActorModelModulesUsers_$1_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$1_$1, this$0_, ImActorModelModulesUsers_$2_$1 *)
 
-@interface ImActorModelModulesUsers_$1_$1_$2 () {
+@interface ImActorModelModulesUsers_$2_$1_$2 () {
  @public
-  ImActorModelModulesUsers_$1_$1 *this$0_;
+  ImActorModelModulesUsers_$2_$1 *this$0_;
   AMRpcException *val$e_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1_$1_$2, this$0_, ImActorModelModulesUsers_$1_$1 *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1_$1_$2, val$e_, AMRpcException *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$1_$2, this$0_, ImActorModelModulesUsers_$2_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$1_$2, val$e_, AMRpcException *)
 
-@interface ImActorModelModulesUsers_$2 () {
+@interface ImActorModelModulesUsers_$3 () {
  @public
   ImActorModelModulesUsers *this$0_;
   jint val$uid_;
@@ -78,50 +85,55 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1_$1_$2, val$e_, AMRpcException *)
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2, this$0_, ImActorModelModulesUsers *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2, val$name_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$3, this$0_, ImActorModelModulesUsers *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$3, val$name_, NSString *)
 
-@interface ImActorModelModulesUsers_$2_$1 () {
+@interface ImActorModelModulesUsers_$3_$1 () {
  @public
   id<AMCommandCallback> val$callback_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$1, val$callback_, id<AMCommandCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$3_$1, val$callback_, id<AMCommandCallback>)
 
-@interface ImActorModelModulesUsers_$2_$2 () {
+@interface ImActorModelModulesUsers_$3_$2 () {
  @public
-  ImActorModelModulesUsers_$2 *this$0_;
+  ImActorModelModulesUsers_$3 *this$0_;
   id<AMCommandCallback> val$callback_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$2, this$0_, ImActorModelModulesUsers_$2 *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$2, val$callback_, id<AMCommandCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$3_$2, this$0_, ImActorModelModulesUsers_$3 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$3_$2, val$callback_, id<AMCommandCallback>)
 
-@interface ImActorModelModulesUsers_$2_$2_$1 () {
+@interface ImActorModelModulesUsers_$3_$2_$1 () {
  @public
-  ImActorModelModulesUsers_$2_$2 *this$0_;
+  ImActorModelModulesUsers_$3_$2 *this$0_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$2_$1, this$0_, ImActorModelModulesUsers_$2_$2 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$3_$2_$1, this$0_, ImActorModelModulesUsers_$3_$2 *)
 
-@interface ImActorModelModulesUsers_$2_$2_$2 () {
+@interface ImActorModelModulesUsers_$3_$2_$2 () {
  @public
-  ImActorModelModulesUsers_$2_$2 *this$0_;
+  ImActorModelModulesUsers_$3_$2 *this$0_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$2_$2, this$0_, ImActorModelModulesUsers_$2_$2 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$3_$2_$2, this$0_, ImActorModelModulesUsers_$3_$2 *)
 
 @implementation ImActorModelModulesUsers
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   if (self = [super initWithImActorModelModulesModules:messenger]) {
-    self->users_ = [((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getStorage])) createUsersEngine];
+    self->collection_ = [[ImActorModelModulesUsers_$1 alloc] initWithAMKeyValueStorage:[((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getStorage])) createUsersEngine]];
+    self->users_ = [collection_ getEngine];
   }
   return self;
+}
+
+- (AMMVVMCollection *)getUsersCollection {
+  return collection_;
 }
 
 - (id<AMKeyValueEngine>)getUsers {
@@ -129,17 +141,22 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$2_$2_$2, this$0_, ImActorModelModu
 }
 
 - (id<AMCommand>)editMyNameWithNSString:(NSString *)newName {
-  return [[ImActorModelModulesUsers_$1 alloc] initWithImActorModelModulesUsers:self withNSString:newName];
+  return [[ImActorModelModulesUsers_$2 alloc] initWithImActorModelModulesUsers:self withNSString:newName];
 }
 
 - (id<AMCommand>)editNameWithInt:(jint)uid
                     withNSString:(NSString *)name {
-  return [[ImActorModelModulesUsers_$2 alloc] initWithImActorModelModulesUsers:self withInt:uid withNSString:name];
+  return [[ImActorModelModulesUsers_$3 alloc] initWithImActorModelModulesUsers:self withInt:uid withNSString:name];
+}
+
+- (id<AMCommand>)editAvatarWithNSString:(NSString *)avatarPath {
+  @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Not Implemented"];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUsers *)other {
   [super copyAllFieldsTo:other];
   other->users_ = users_;
+  other->collection_ = collection_;
 }
 
 @end
@@ -148,8 +165,36 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers)
 
 @implementation ImActorModelModulesUsers_$1
 
+- (ImActorModelViewmodelUserVM *)createNewWithAMKeyValueItem:(AMUser *)raw {
+  return [[ImActorModelViewmodelUserVM alloc] initWithAMUser:raw];
+}
+
+- (IOSByteArray *)serializeWithAMKeyValueItem:(AMUser *)raw {
+  return [((AMUser *) nil_chk(raw)) toByteArray];
+}
+
+- (AMUser *)deserializeWithByteArray:(IOSByteArray *)raw {
+  @try {
+    return AMUser_fromBytesWithByteArray_(raw);
+  }
+  @catch (JavaIoIOException *e) {
+    [((JavaIoIOException *) nil_chk(e)) printStackTrace];
+    return nil;
+  }
+}
+
+- (instancetype)initWithAMKeyValueStorage:(id<AMKeyValueStorage>)arg$0 {
+  return [super initWithAMKeyValueStorage:arg$0];
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1)
+
+@implementation ImActorModelModulesUsers_$2
+
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
-  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestEditName alloc] initWithNSString:val$newName_] withAMRpcCallback:[[ImActorModelModulesUsers_$1_$1 alloc] initWithImActorModelModulesUsers_$1:self withAMCommandCallback:callback]];
+  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestEditName alloc] initWithNSString:val$newName_] withAMRpcCallback:[[ImActorModelModulesUsers_$2_$1 alloc] initWithImActorModelModulesUsers_$2:self withAMCommandCallback:callback]];
 }
 
 - (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
@@ -159,7 +204,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers)
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$1 *)other {
+- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$2 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$newName_ = val$newName_;
@@ -167,28 +212,28 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers)
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2)
 
-@implementation ImActorModelModulesUsers_$1_$1
+@implementation ImActorModelModulesUsers_$2_$1
 
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response {
   ImActorModelApiBaseSeqUpdate *update = [[ImActorModelApiBaseSeqUpdate alloc] initWithInt:[((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq] withByteArray:[response getState] withInt:ImActorModelApiUpdatesUpdateUserNameChanged_HEADER withByteArray:[((ImActorModelApiUpdatesUpdateUserNameChanged *) [[ImActorModelApiUpdatesUpdateUserNameChanged alloc] initWithInt:[this$0_->this$0_ myUid] withNSString:this$0_->val$newName_]) toByteArray]];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
-  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$1_$1_$1 alloc] initWithImActorModelModulesUsers_$1_$1:self]];
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$2_$1_$1 alloc] initWithImActorModelModulesUsers_$2_$1:self]];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
-  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$1_$1_$2 alloc] initWithImActorModelModulesUsers_$1_$1:self withAMRpcException:e]];
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$2_$1_$2 alloc] initWithImActorModelModulesUsers_$2_$1:self withAMRpcException:e]];
 }
 
-- (instancetype)initWithImActorModelModulesUsers_$1:(ImActorModelModulesUsers_$1 *)outer$
+- (instancetype)initWithImActorModelModulesUsers_$2:(ImActorModelModulesUsers_$2 *)outer$
                               withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
   this$0_ = outer$;
   val$callback_ = capture$0;
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$1_$1 *)other {
+- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$2_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$callback_ = val$callback_;
@@ -196,42 +241,42 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1)
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$1)
 
-@implementation ImActorModelModulesUsers_$1_$1_$1
+@implementation ImActorModelModulesUsers_$2_$1_$1
 
 - (void)run {
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
 
-- (instancetype)initWithImActorModelModulesUsers_$1_$1:(ImActorModelModulesUsers_$1_$1 *)outer$ {
+- (instancetype)initWithImActorModelModulesUsers_$2_$1:(ImActorModelModulesUsers_$2_$1 *)outer$ {
   this$0_ = outer$;
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$1_$1_$1 *)other {
+- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$2_$1_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$1_$1)
 
-@implementation ImActorModelModulesUsers_$1_$1_$2
+@implementation ImActorModelModulesUsers_$2_$1_$2
 
 - (void)run {
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
 }
 
-- (instancetype)initWithImActorModelModulesUsers_$1_$1:(ImActorModelModulesUsers_$1_$1 *)outer$
+- (instancetype)initWithImActorModelModulesUsers_$2_$1:(ImActorModelModulesUsers_$2_$1 *)outer$
                                     withAMRpcException:(AMRpcException *)capture$0 {
   this$0_ = outer$;
   val$e_ = capture$0;
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$1_$1_$2 *)other {
+- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$2_$1_$2 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$e_ = val$e_;
@@ -239,17 +284,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1_$1)
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1_$2)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$1_$2)
 
-@implementation ImActorModelModulesUsers_$2
+@implementation ImActorModelModulesUsers_$3
 
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   AMUser *user = [((id<AMKeyValueEngine>) nil_chk([this$0_ getUsers])) getValueWithLong:val$uid_];
   if (user == nil) {
-    [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$2_$1 alloc] initWithAMCommandCallback:callback]];
+    [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$3_$1 alloc] initWithAMCommandCallback:callback]];
     return;
   }
-  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestEditUserLocalName alloc] initWithInt:[((AMUser *) nil_chk(user)) getUid] withLong:[user getAccessHash] withNSString:val$name_] withAMRpcCallback:[[ImActorModelModulesUsers_$2_$2 alloc] initWithImActorModelModulesUsers_$2:self withAMCommandCallback:callback]];
+  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestEditUserLocalName alloc] initWithInt:[((AMUser *) nil_chk(user)) getUid] withLong:[user getAccessHash] withNSString:val$name_] withAMRpcCallback:[[ImActorModelModulesUsers_$3_$2 alloc] initWithImActorModelModulesUsers_$3:self withAMCommandCallback:callback]];
 }
 
 - (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
@@ -261,7 +306,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1_$2)
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$2 *)other {
+- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$3 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$uid_ = val$uid_;
@@ -270,9 +315,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1_$1_$2)
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$3)
 
-@implementation ImActorModelModulesUsers_$2_$1
+@implementation ImActorModelModulesUsers_$3_$1
 
 - (void)run {
   [((id<AMCommandCallback>) nil_chk(val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
@@ -283,35 +328,35 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2)
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$2_$1 *)other {
+- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$3_$1 *)other {
   [super copyAllFieldsTo:other];
   other->val$callback_ = val$callback_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$3_$1)
 
-@implementation ImActorModelModulesUsers_$2_$2
+@implementation ImActorModelModulesUsers_$3_$2
 
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response {
   ImActorModelApiBaseSeqUpdate *update = [[ImActorModelApiBaseSeqUpdate alloc] initWithInt:[((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq] withByteArray:[response getState] withInt:ImActorModelApiUpdatesUpdateUserLocalNameChanged_HEADER withByteArray:[((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) [[ImActorModelApiUpdatesUpdateUserLocalNameChanged alloc] initWithInt:this$0_->val$uid_ withNSString:this$0_->val$name_]) toByteArray]];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
-  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$2_$2_$1 alloc] initWithImActorModelModulesUsers_$2_$2:self]];
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$3_$2_$1 alloc] initWithImActorModelModulesUsers_$3_$2:self]];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
-  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$2_$2_$2 alloc] initWithImActorModelModulesUsers_$2_$2:self]];
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$3_$2_$2 alloc] initWithImActorModelModulesUsers_$3_$2:self]];
 }
 
-- (instancetype)initWithImActorModelModulesUsers_$2:(ImActorModelModulesUsers_$2 *)outer$
+- (instancetype)initWithImActorModelModulesUsers_$3:(ImActorModelModulesUsers_$3 *)outer$
                               withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
   this$0_ = outer$;
   val$callback_ = capture$0;
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$2_$2 *)other {
+- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$3_$2 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$callback_ = val$callback_;
@@ -319,44 +364,44 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$1)
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$2)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$3_$2)
 
-@implementation ImActorModelModulesUsers_$2_$2_$1
+@implementation ImActorModelModulesUsers_$3_$2_$1
 
 - (void)run {
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
 
-- (instancetype)initWithImActorModelModulesUsers_$2_$2:(ImActorModelModulesUsers_$2_$2 *)outer$ {
+- (instancetype)initWithImActorModelModulesUsers_$3_$2:(ImActorModelModulesUsers_$3_$2 *)outer$ {
   this$0_ = outer$;
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$2_$2_$1 *)other {
+- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$3_$2_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$2_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$3_$2_$1)
 
-@implementation ImActorModelModulesUsers_$2_$2_$2
+@implementation ImActorModelModulesUsers_$3_$2_$2
 
 - (void)run {
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
-- (instancetype)initWithImActorModelModulesUsers_$2_$2:(ImActorModelModulesUsers_$2_$2 *)outer$ {
+- (instancetype)initWithImActorModelModulesUsers_$3_$2:(ImActorModelModulesUsers_$3_$2 *)outer$ {
   this$0_ = outer$;
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$2_$2_$2 *)other {
+- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$3_$2_$2 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$2_$2)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$3_$2_$2)

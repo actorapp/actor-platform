@@ -54,11 +54,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresence_$1, val$modules_, ImActorModelMo
   [((DKActorRef *) nil_chk(myPresence_)) sendWithId:[[ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden alloc] init]];
 }
 
-- (void)onConversationOpenWithAMPeer:(AMPeer *)peer {
+- (void)subscribeWithAMPeer:(AMPeer *)peer {
   [((DKActorRef *) nil_chk(presence_)) sendWithId:[[ImActorModelModulesPresencePresenceActor_Subscribe alloc] initWithAMPeer:peer]];
-}
-
-- (void)onConversationClosedWithAMPeer:(AMPeer *)peer {
 }
 
 - (void)onNewSessionCreated {

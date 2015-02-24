@@ -10,6 +10,9 @@
 @class DKActorRef;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesTypingOwnTypingActor;
+@class ImActorModelViewmodelGroupTypingVM;
+@class ImActorModelViewmodelUserTypingVM;
+@class JavaUtilHashMap;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
@@ -19,6 +22,10 @@
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
+
+- (ImActorModelViewmodelGroupTypingVM *)getGroupTypingWithInt:(jint)gid;
+
+- (ImActorModelViewmodelUserTypingVM *)getTypingWithInt:(jint)uid;
 
 - (void)onTypingWithAMPeer:(AMPeer *)peer;
 
