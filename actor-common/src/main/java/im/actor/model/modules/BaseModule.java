@@ -1,5 +1,6 @@
 package im.actor.model.modules;
 
+import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
@@ -58,6 +59,10 @@ public class BaseModule {
 
     public KeyValueEngine<User> users() {
         return modules.getUsersModule().getUsers();
+    }
+
+    public KeyValueEngine<Group> groups() {
+        return modules.getGroupsModule().getGroups();
     }
 }
 

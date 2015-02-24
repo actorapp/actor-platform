@@ -1,19 +1,42 @@
 package im.actor.model.modules.messages.entity;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import im.actor.model.api.*;
+import im.actor.model.api.FileExPhoto;
+import im.actor.model.api.FileExVideo;
+import im.actor.model.api.Member;
+import im.actor.model.api.ServiceExChangedAvatar;
+import im.actor.model.api.ServiceExChangedTitle;
+import im.actor.model.api.ServiceExUserAdded;
+import im.actor.model.api.ServiceExUserKicked;
+import im.actor.model.api.ServiceMessage;
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.AvatarImage;
 import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.Group;
+import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.Sex;
 import im.actor.model.entity.User;
-import im.actor.model.entity.content.*;
+import im.actor.model.entity.content.AbsContent;
+import im.actor.model.entity.content.DocumentContent;
 import im.actor.model.entity.content.FastThumb;
+import im.actor.model.entity.content.FileRemoteSource;
+import im.actor.model.entity.content.PhotoContent;
+import im.actor.model.entity.content.ServiceContent;
+import im.actor.model.entity.content.ServiceGroupAvatarChanged;
+import im.actor.model.entity.content.ServiceGroupCreated;
+import im.actor.model.entity.content.ServiceGroupTitleChanged;
+import im.actor.model.entity.content.ServiceGroupUserAdded;
+import im.actor.model.entity.content.ServiceGroupUserKicked;
+import im.actor.model.entity.content.ServiceGroupUserLeave;
+import im.actor.model.entity.content.TextContent;
+import im.actor.model.entity.content.VideoContent;
 
 /**
  * Created by ex3ndr on 08.02.15.
@@ -75,6 +98,19 @@ public class EntityConverter {
     public static User convert(im.actor.model.api.User user) {
         return new User(user.getId(), user.getAccessHash(), user.getName(), user.getLocalName(),
                 convert(user.getAvatar()), convert(user.getSex()));
+    }
+
+    public static Group convert(im.actor.model.api.Group group) {
+        return new Group(group.getId(), group.getAccessHash(), group.getTitle(), convert(group.getAvatar()),
+                convert(group.getMembers()), group.getAdminUid(), group.isMember());
+    }
+
+    public static ArrayList<GroupMember> convert(List<Member> members) {
+        ArrayList<GroupMember> res = new ArrayList<GroupMember>();
+        for (Member m : members) {
+            res.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate()));
+        }
+        return res;
     }
 
     public static PeerType convert(im.actor.model.api.PeerType peerType) {

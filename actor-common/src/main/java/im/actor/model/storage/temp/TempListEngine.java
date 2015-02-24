@@ -1,17 +1,20 @@
-package im.actor.model.storage;
+package im.actor.model.storage.temp;
 
 import java.util.*;
+
+import im.actor.model.storage.ListEngine;
+import im.actor.model.storage.ListEngineItem;
 
 /**
  * Created by ex3ndr on 09.02.15.
  */
-public class MemoryListEngine<V extends ListEngineItem> implements ListEngine<V> {
+public class TempListEngine<V extends ListEngineItem> implements ListEngine<V> {
 
     private HashMap<Long, V> items = new HashMap<Long, V>();
     private ArrayList<V> sortList = new ArrayList<V>();
     private ArrayList<EngineListener> listeners = new ArrayList<EngineListener>();
 
-    public MemoryListEngine() {
+    public TempListEngine() {
     }
 
     public void addListener(EngineListener l) {

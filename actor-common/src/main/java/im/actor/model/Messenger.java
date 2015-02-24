@@ -8,6 +8,7 @@ import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.debug.TraceInterface;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
@@ -18,6 +19,7 @@ import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.storage.ListEngine;
 import im.actor.model.viewmodel.GroupTypingVM;
+import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
@@ -109,6 +111,10 @@ public class Messenger {
 
     public MVVMCollection<User, UserVM> getUsers() {
         return modules.getUsersModule().getUsersCollection();
+    }
+
+    public MVVMCollection<Group, GroupVM> getGroups() {
+        return modules.getGroupsModule().getGroupsCollection();
     }
 
     public ListEngine<Dialog> getDialogs() {

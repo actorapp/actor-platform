@@ -25,10 +25,13 @@ import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
 import im.actor.model.android.AndroidLog;
 import im.actor.model.android.AndroidMainThread;
+import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
+import im.actor.model.jvm.JavaLocale;
 import im.actor.model.jvm.JavaNetworking;
 import im.actor.model.jvm.JavaThreading;
 import im.actor.model.mvvm.MVVMCollection;
+import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
 import static com.droidkit.actors.ActorSystem.system;
@@ -70,6 +73,10 @@ public class Core {
 
     public static MVVMCollection<User, UserVM> users() {
         return core().messenger.getUsers();
+    }
+
+    public static MVVMCollection<Group, GroupVM> groups() {
+        return core().messenger.getGroups();
     }
 
     private ImageLoader imageLoader;
@@ -127,6 +134,8 @@ public class Core {
         builder.setMainThread(new AndroidMainThread());
         builder.setLog(new AndroidLog());
         builder.setStorage(new AppEngineFactory());
+
+        builder.setLocale(new JavaLocale("En"));
 
         if (BuildConfig.API_SSL) {
             builder.addEndpoint("tls://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);

@@ -2,17 +2,18 @@ package im.actor.model.modules.utils;
 
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.Updates;
-import im.actor.model.storage.KeyValueEngine;
-import im.actor.model.storage.ListEngine;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
+import im.actor.model.storage.KeyValueEngine;
+import im.actor.model.storage.ListEngine;
 import im.actor.model.storage.PreferencesStorage;
 import im.actor.model.viewmodel.UserVM;
 
@@ -28,6 +29,14 @@ public class ModuleActor extends Actor {
 
     public KeyValueEngine<User> users() {
         return messenger.getUsersModule().getUsers();
+    }
+
+    public KeyValueEngine<Group> groups() {
+        return messenger.getGroupsModule().getGroups();
+    }
+
+    public Group getGroup(int gid) {
+        return groups().getValue(gid);
     }
 
     public User getUser(int uid) {
