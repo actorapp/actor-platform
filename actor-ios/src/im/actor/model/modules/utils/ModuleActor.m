@@ -90,11 +90,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
   return [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
 }
 
-- (ImActorModelViewmodelUserVM *)getUserVMWithInt:(jint)uid {
+- (AMUserVM *)getUserVMWithInt:(jint)uid {
   return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getUsersModule])) getUsersCollection])) getWithLong:uid];
 }
 
-- (ImActorModelViewmodelGroupVM *)getGroupVMWithInt:(jint)gid {
+- (AMGroupVM *)getGroupVMWithInt:(jint)gid {
   return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getGroupsModule])) getGroupsCollection])) getWithLong:gid];
 }
 

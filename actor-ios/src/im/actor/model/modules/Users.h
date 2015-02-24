@@ -8,10 +8,10 @@
 
 @class AMRpcException;
 @class AMUser;
+@class AMUserVM;
 @class IOSByteArray;
 @class ImActorModelApiRpcResponseSeq;
 @class ImActorModelModulesModules;
-@class ImActorModelViewmodelUserVM;
 @protocol AMCommandCallback;
 @protocol AMKeyValueEngine;
 @protocol AMKeyValueStorage;
@@ -51,7 +51,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers)
 @interface ImActorModelModulesUsers_$1 : AMMVVMCollection {
 }
 
-- (ImActorModelViewmodelUserVM *)createNewWithAMKeyValueItem:(AMUser *)raw;
+- (AMUserVM *)createNewWithAMKeyValueItem:(AMUser *)raw;
 
 - (IOSByteArray *)serializeWithAMKeyValueItem:(AMUser *)raw;
 

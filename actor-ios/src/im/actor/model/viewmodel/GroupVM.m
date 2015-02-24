@@ -17,9 +17,9 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-__attribute__((unused)) static void ImActorModelViewmodelGroupVM_notifyChange(ImActorModelViewmodelGroupVM *self);
+__attribute__((unused)) static void AMGroupVM_notifyChange(AMGroupVM *self);
 
-@interface ImActorModelViewmodelGroupVM () {
+@interface AMGroupVM () {
  @public
   jint id__;
   jlong hash__;
@@ -35,22 +35,22 @@ __attribute__((unused)) static void ImActorModelViewmodelGroupVM_notifyChange(Im
 - (void)notifyChange;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupVM, avatar_, AMValueModel *)
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupVM, name_, AMValueModel *)
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupVM, isMember__, AMValueModel *)
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupVM, members_, AMValueModel *)
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupVM, presence_, AMValueModel *)
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupVM, listeners_, JavaUtilArrayList *)
+J2OBJC_FIELD_SETTER(AMGroupVM, avatar_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMGroupVM, name_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMGroupVM, isMember__, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMGroupVM, members_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMGroupVM, presence_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMGroupVM, listeners_, JavaUtilArrayList *)
 
-@interface ImActorModelViewmodelGroupVM_$1 () {
+@interface AMGroupVM_$1 () {
  @public
-  ImActorModelViewmodelGroupVM *this$0_;
+  AMGroupVM *this$0_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupVM_$1, this$0_, ImActorModelViewmodelGroupVM *)
+J2OBJC_FIELD_SETTER(AMGroupVM_$1, this$0_, AMGroupVM *)
 
-@implementation ImActorModelViewmodelGroupVM
+@implementation AMGroupVM
 
 - (instancetype)initWithAMGroup:(AMGroup *)rawObj {
   if (self = [super initWithId:rawObj]) {
@@ -106,7 +106,7 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupVM_$1, this$0_, ImActorModelViewmo
   isChanged |= [((AMValueModel *) nil_chk(isMember__)) changeWithId:JavaLangBoolean_valueOfWithBoolean_([rawObj isMember])];
   isChanged |= [((AMValueModel *) nil_chk(members_)) changeWithId:[rawObj getMembers]];
   if (isChanged) {
-    ImActorModelViewmodelGroupVM_notifyChange(self);
+    AMGroupVM_notifyChange(self);
   }
 }
 
@@ -123,10 +123,10 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupVM_$1, this$0_, ImActorModelViewmo
 }
 
 - (void)notifyChange {
-  ImActorModelViewmodelGroupVM_notifyChange(self);
+  AMGroupVM_notifyChange(self);
 }
 
-- (void)copyAllFieldsTo:(ImActorModelViewmodelGroupVM *)other {
+- (void)copyAllFieldsTo:(AMGroupVM *)other {
   [super copyAllFieldsTo:other];
   other->id__ = id__;
   other->hash__ = hash__;
@@ -141,13 +141,13 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupVM_$1, this$0_, ImActorModelViewmo
 
 @end
 
-void ImActorModelViewmodelGroupVM_notifyChange(ImActorModelViewmodelGroupVM *self) {
-  [((id<AMMainThread>) nil_chk(AMMVVMEngine_getMainThread())) runOnUiThread:[[ImActorModelViewmodelGroupVM_$1 alloc] initWithImActorModelViewmodelGroupVM:self]];
+void AMGroupVM_notifyChange(AMGroupVM *self) {
+  [((id<AMMainThread>) nil_chk(AMMVVMEngine_getMainThread())) runOnUiThread:[[AMGroupVM_$1 alloc] initWithAMGroupVM:self]];
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelViewmodelGroupVM)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupVM)
 
-@implementation ImActorModelViewmodelGroupVM_$1
+@implementation AMGroupVM_$1
 
 - (void)run {
   {
@@ -161,16 +161,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelViewmodelGroupVM)
   }
 }
 
-- (instancetype)initWithImActorModelViewmodelGroupVM:(ImActorModelViewmodelGroupVM *)outer$ {
+- (instancetype)initWithAMGroupVM:(AMGroupVM *)outer$ {
   this$0_ = outer$;
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelViewmodelGroupVM_$1 *)other {
+- (void)copyAllFieldsTo:(AMGroupVM_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelViewmodelGroupVM_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupVM_$1)

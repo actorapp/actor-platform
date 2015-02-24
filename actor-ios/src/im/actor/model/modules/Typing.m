@@ -52,19 +52,19 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTyping_$1, val$messenger_, ImActorModelMo
   return self;
 }
 
-- (ImActorModelViewmodelGroupTypingVM *)getGroupTypingWithInt:(jint)gid {
+- (AMGroupTypingVM *)getGroupTypingWithInt:(jint)gid {
   @synchronized(groups_) {
     if (![((JavaUtilHashMap *) nil_chk(groups_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_(gid)]) {
-      (void) [groups_ putWithId:JavaLangInteger_valueOfWithInt_(gid) withId:[[ImActorModelViewmodelGroupTypingVM alloc] initWithInt:gid]];
+      (void) [groups_ putWithId:JavaLangInteger_valueOfWithInt_(gid) withId:[[AMGroupTypingVM alloc] initWithInt:gid]];
     }
     return [groups_ getWithId:JavaLangInteger_valueOfWithInt_(gid)];
   }
 }
 
-- (ImActorModelViewmodelUserTypingVM *)getTypingWithInt:(jint)uid {
+- (AMUserTypingVM *)getTypingWithInt:(jint)uid {
   @synchronized(uids_) {
     if (![((JavaUtilHashMap *) nil_chk(uids_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_(uid)]) {
-      (void) [uids_ putWithId:JavaLangInteger_valueOfWithInt_(uid) withId:[[ImActorModelViewmodelUserTypingVM alloc] initWithInt:uid]];
+      (void) [uids_ putWithId:JavaLangInteger_valueOfWithInt_(uid) withId:[[AMUserTypingVM alloc] initWithInt:uid]];
     }
     return [uids_ getWithId:JavaLangInteger_valueOfWithInt_(uid)];
   }
