@@ -1,10 +1,12 @@
 package im.actor.model.modules.utils;
 
+import im.actor.model.api.OutPeer;
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.PeerType;
 import im.actor.model.entity.User;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.Updates;
@@ -26,6 +28,24 @@ public class ModuleActor extends Actor {
 
     public ModuleActor(Modules messenger) {
         this.messenger = messenger;
+    }
+
+    public OutPeer buidOutPeer(Peer peer) {
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            User user = getUser(peer.getPeerId());
+            if (user == null) {
+                return null;
+            }
+            return new OutPeer(im.actor.model.api.PeerType.PRIVATE, user.getUid(), user.getAccessHash());
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            Group group = getGroup(peer.getPeerId());
+            if (group == null) {
+                return null;
+            }
+            return new OutPeer(im.actor.model.api.PeerType.GROUP, group.getGroupId(), group.getAccessHash());
+        } else {
+            return null;
+        }
     }
 
     public KeyValueEngine<User> users() {
