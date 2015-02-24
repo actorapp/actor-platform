@@ -56,8 +56,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups)
 
 @implementation ImActorModelModulesGroups_$1
 
-- (ImActorModelViewmodelGroupVM *)createNewWithAMKeyValueItem:(AMGroup *)raw {
-  return [[ImActorModelViewmodelGroupVM alloc] initWithAMGroup:raw];
+- (AMGroupVM *)createNewWithAMKeyValueItem:(AMGroup *)raw {
+  return [[AMGroupVM alloc] initWithAMGroup:raw];
 }
 
 - (IOSByteArray *)serializeWithAMKeyValueItem:(AMGroup *)raw {

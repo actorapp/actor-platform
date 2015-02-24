@@ -8,16 +8,16 @@
 #include "im/actor/model/viewmodel/UserTypingVM.h"
 #include "java/lang/Boolean.h"
 
-@interface ImActorModelViewmodelUserTypingVM () {
+@interface AMUserTypingVM () {
  @public
   jint uid_;
   AMValueModel *userTyping_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserTypingVM, userTyping_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMUserTypingVM, userTyping_, AMValueModel *)
 
-@implementation ImActorModelViewmodelUserTypingVM
+@implementation AMUserTypingVM
 
 - (instancetype)initWithInt:(jint)uid {
   if (self = [super init]) {
@@ -39,7 +39,7 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserTypingVM, userTyping_, AMValueModel
   return userTyping_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelViewmodelUserTypingVM *)other {
+- (void)copyAllFieldsTo:(AMUserTypingVM *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;
   other->userTyping_ = userTyping_;
@@ -47,4 +47,4 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserTypingVM, userTyping_, AMValueModel
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelViewmodelUserTypingVM)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserTypingVM)

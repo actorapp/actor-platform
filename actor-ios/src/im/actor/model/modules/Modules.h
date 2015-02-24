@@ -8,7 +8,7 @@
 
 @class AMActorApi;
 @class AMConfiguration;
-@class ImActorModelI18nI18nEngine;
+@class AMI18nEngine;
 @class ImActorModelModulesAuth;
 @class ImActorModelModulesFilesModule;
 @class ImActorModelModulesGroups;
@@ -51,7 +51,7 @@
 
 - (AMActorApi *)getActorApi;
 
-- (ImActorModelI18nI18nEngine *)getI18nEngine;
+- (AMI18nEngine *)getI18nEngine;
 
 @end
 

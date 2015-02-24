@@ -3,71 +3,73 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/viewmodel/UserPresence.java
 //
 
-#ifndef _ImActorModelViewmodelUserPresence_H_
-#define _ImActorModelViewmodelUserPresence_H_
+#ifndef _AMUserPresence_H_
+#define _AMUserPresence_H_
 
-@class ImActorModelViewmodelUserPresence_StateEnum;
+@class AMUserPresence_StateEnum;
 
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-@interface ImActorModelViewmodelUserPresence : NSObject {
+@interface AMUserPresence : NSObject {
 }
 
-- (instancetype)initWithImActorModelViewmodelUserPresence_StateEnum:(ImActorModelViewmodelUserPresence_StateEnum *)state;
+- (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state;
 
-- (instancetype)initWithImActorModelViewmodelUserPresence_StateEnum:(ImActorModelViewmodelUserPresence_StateEnum *)state
-                                                           withLong:(jlong)lastSeen;
+- (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state
+                                        withLong:(jlong)lastSeen;
 
-- (ImActorModelViewmodelUserPresence_StateEnum *)getState;
+- (AMUserPresence_StateEnum *)getState;
 
 - (jlong)getLastSeen;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelViewmodelUserPresence)
+J2OBJC_EMPTY_STATIC_INIT(AMUserPresence)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelViewmodelUserPresence)
+typedef AMUserPresence ImActorModelViewmodelUserPresence;
 
-typedef NS_ENUM(NSUInteger, ImActorModelViewmodelUserPresence_State) {
-  ImActorModelViewmodelUserPresence_State_UNKNOWN = 0,
-  ImActorModelViewmodelUserPresence_State_ONLINE = 1,
-  ImActorModelViewmodelUserPresence_State_OFFLINE = 2,
+J2OBJC_TYPE_LITERAL_HEADER(AMUserPresence)
+
+typedef NS_ENUM(NSUInteger, AMUserPresence_State) {
+  AMUserPresence_State_UNKNOWN = 0,
+  AMUserPresence_State_ONLINE = 1,
+  AMUserPresence_State_OFFLINE = 2,
 };
 
-@interface ImActorModelViewmodelUserPresence_StateEnum : JavaLangEnum < NSCopying > {
+@interface AMUserPresence_StateEnum : JavaLangEnum < NSCopying > {
 }
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal;
 
 + (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelViewmodelUserPresence_StateEnum_values();
+FOUNDATION_EXPORT IOSObjectArray *AMUserPresence_StateEnum_values();
 
-+ (ImActorModelViewmodelUserPresence_StateEnum *)valueOfWithNSString:(NSString *)name;
++ (AMUserPresence_StateEnum *)valueOfWithNSString:(NSString *)name;
 
-FOUNDATION_EXPORT ImActorModelViewmodelUserPresence_StateEnum *ImActorModelViewmodelUserPresence_StateEnum_valueOfWithNSString_(NSString *name);
+FOUNDATION_EXPORT AMUserPresence_StateEnum *AMUserPresence_StateEnum_valueOfWithNSString_(NSString *name);
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelViewmodelUserPresence_StateEnum_initialized;
-J2OBJC_STATIC_INIT(ImActorModelViewmodelUserPresence_StateEnum)
+FOUNDATION_EXPORT BOOL AMUserPresence_StateEnum_initialized;
+J2OBJC_STATIC_INIT(AMUserPresence_StateEnum)
 
-FOUNDATION_EXPORT ImActorModelViewmodelUserPresence_StateEnum *ImActorModelViewmodelUserPresence_StateEnum_values_[];
+FOUNDATION_EXPORT AMUserPresence_StateEnum *AMUserPresence_StateEnum_values_[];
 
-#define ImActorModelViewmodelUserPresence_StateEnum_UNKNOWN ImActorModelViewmodelUserPresence_StateEnum_values_[ImActorModelViewmodelUserPresence_State_UNKNOWN]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelViewmodelUserPresence_StateEnum, UNKNOWN)
+#define AMUserPresence_StateEnum_UNKNOWN AMUserPresence_StateEnum_values_[AMUserPresence_State_UNKNOWN]
+J2OBJC_ENUM_CONSTANT_GETTER(AMUserPresence_StateEnum, UNKNOWN)
 
-#define ImActorModelViewmodelUserPresence_StateEnum_ONLINE ImActorModelViewmodelUserPresence_StateEnum_values_[ImActorModelViewmodelUserPresence_State_ONLINE]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelViewmodelUserPresence_StateEnum, ONLINE)
+#define AMUserPresence_StateEnum_ONLINE AMUserPresence_StateEnum_values_[AMUserPresence_State_ONLINE]
+J2OBJC_ENUM_CONSTANT_GETTER(AMUserPresence_StateEnum, ONLINE)
 
-#define ImActorModelViewmodelUserPresence_StateEnum_OFFLINE ImActorModelViewmodelUserPresence_StateEnum_values_[ImActorModelViewmodelUserPresence_State_OFFLINE]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelViewmodelUserPresence_StateEnum, OFFLINE)
+#define AMUserPresence_StateEnum_OFFLINE AMUserPresence_StateEnum_values_[AMUserPresence_State_OFFLINE]
+J2OBJC_ENUM_CONSTANT_GETTER(AMUserPresence_StateEnum, OFFLINE)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelViewmodelUserPresence_StateEnum)
+J2OBJC_TYPE_LITERAL_HEADER(AMUserPresence_StateEnum)
 
-#endif // _ImActorModelViewmodelUserPresence_H_
+#endif // _AMUserPresence_H_

@@ -10,7 +10,7 @@
 #include "java/util/Date.h"
 #include "java/util/HashMap.h"
 
-@interface ImActorModelI18nI18nEngine () {
+@interface AMI18nEngine () {
  @public
   JavaUtilHashMap *locale_;
   IOSObjectArray *MONTHS_SHORT_;
@@ -20,11 +20,11 @@
 - (NSString *)formatTwoDigitWithInt:(jint)v;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelI18nI18nEngine, locale_, JavaUtilHashMap *)
-J2OBJC_FIELD_SETTER(ImActorModelI18nI18nEngine, MONTHS_SHORT_, IOSObjectArray *)
-J2OBJC_FIELD_SETTER(ImActorModelI18nI18nEngine, MONTHS_, IOSObjectArray *)
+J2OBJC_FIELD_SETTER(AMI18nEngine, locale_, JavaUtilHashMap *)
+J2OBJC_FIELD_SETTER(AMI18nEngine, MONTHS_SHORT_, IOSObjectArray *)
+J2OBJC_FIELD_SETTER(AMI18nEngine, MONTHS_, IOSObjectArray *)
 
-@implementation ImActorModelI18nI18nEngine
+@implementation AMI18nEngine
 
 - (instancetype)initWithAMLocaleProvider:(id<AMLocaleProvider>)provider {
   if (self = [super init]) {
@@ -69,7 +69,7 @@ J2OBJC_FIELD_SETTER(ImActorModelI18nI18nEngine, MONTHS_, IOSObjectArray *)
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelI18nI18nEngine *)other {
+- (void)copyAllFieldsTo:(AMI18nEngine *)other {
   [super copyAllFieldsTo:other];
   other->locale_ = locale_;
   other->MONTHS_SHORT_ = MONTHS_SHORT_;
@@ -78,4 +78,4 @@ J2OBJC_FIELD_SETTER(ImActorModelI18nI18nEngine, MONTHS_, IOSObjectArray *)
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelI18nI18nEngine)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMI18nEngine)

@@ -6,12 +6,12 @@
 #ifndef _ImActorModelModulesTyping_H_
 #define _ImActorModelModulesTyping_H_
 
+@class AMGroupTypingVM;
 @class AMPeer;
+@class AMUserTypingVM;
 @class DKActorRef;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesTypingOwnTypingActor;
-@class ImActorModelViewmodelGroupTypingVM;
-@class ImActorModelViewmodelUserTypingVM;
 @class JavaUtilHashMap;
 
 #include "J2ObjC_header.h"
@@ -23,9 +23,9 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
-- (ImActorModelViewmodelGroupTypingVM *)getGroupTypingWithInt:(jint)gid;
+- (AMGroupTypingVM *)getGroupTypingWithInt:(jint)gid;
 
-- (ImActorModelViewmodelUserTypingVM *)getTypingWithInt:(jint)uid;
+- (AMUserTypingVM *)getTypingWithInt:(jint)uid;
 
 - (void)onTypingWithAMPeer:(AMPeer *)peer;
 

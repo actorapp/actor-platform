@@ -27,7 +27,7 @@
 @interface ImActorModelModulesModules () {
  @public
   AMConfiguration *configuration_;
-  ImActorModelI18nI18nEngine *i18nEngine_;
+  AMI18nEngine *i18nEngine_;
   AMActorApi *actorApi_;
   ImActorModelModulesAuth *auth_;
   id<AMPreferencesStorage> preferences_;
@@ -42,7 +42,7 @@
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, configuration_, AMConfiguration *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesModules, i18nEngine_, ImActorModelI18nI18nEngine *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesModules, i18nEngine_, AMI18nEngine *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, actorApi_, AMActorApi *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, auth_, ImActorModelModulesAuth *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, preferences_, id<AMPreferencesStorage>)
@@ -67,7 +67,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
   if (self = [super init]) {
     self->configuration_ = configuration;
-    self->i18nEngine_ = [[ImActorModelI18nI18nEngine alloc] initWithAMLocaleProvider:[((AMConfiguration *) nil_chk(configuration)) getLocaleProvider]];
+    self->i18nEngine_ = [[AMI18nEngine alloc] initWithAMLocaleProvider:[((AMConfiguration *) nil_chk(configuration)) getLocaleProvider]];
     self->preferences_ = [((id<AMStorage>) nil_chk([configuration getStorage])) createPreferencesStorage];
     self->actorApi_ = [[AMActorApi alloc] initWithAMEndpoints:[[AMEndpoints alloc] initWithAMConnectionEndpointArray:[configuration getEndpoints]] withAMAuthKeyStorage:[[ImActorModelModulesUtilsPreferenceApiStorage alloc] initWithAMPreferencesStorage:preferences_] withAMActorApiCallback:[[ImActorModelModulesModules_$1 alloc] initWithImActorModelModulesModules:self] withAMNetworking:[configuration getNetworking]];
     self->auth_ = [[ImActorModelModulesAuth alloc] initWithImActorModelModulesModules:self];
@@ -132,7 +132,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   return actorApi_;
 }
 
-- (ImActorModelI18nI18nEngine *)getI18nEngine {
+- (AMI18nEngine *)getI18nEngine {
   return i18nEngine_;
 }
 

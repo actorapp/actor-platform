@@ -8,33 +8,33 @@
 #include "im/actor/model/i18n/SupportedLocales.h"
 #include "java/lang/IllegalArgumentException.h"
 
-BOOL ImActorModelI18nSupportedLocalesEnum_initialized = NO;
+BOOL AMSupportedLocalesEnum_initialized = NO;
 
-ImActorModelI18nSupportedLocalesEnum *ImActorModelI18nSupportedLocalesEnum_values_[2];
+AMSupportedLocalesEnum *AMSupportedLocalesEnum_values_[2];
 
-@implementation ImActorModelI18nSupportedLocalesEnum
+@implementation AMSupportedLocalesEnum
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal {
   return [super initWithNSString:__name withInt:__ordinal];
 }
 
-IOSObjectArray *ImActorModelI18nSupportedLocalesEnum_values() {
-  ImActorModelI18nSupportedLocalesEnum_init();
-  return [IOSObjectArray arrayWithObjects:ImActorModelI18nSupportedLocalesEnum_values_ count:2 type:ImActorModelI18nSupportedLocalesEnum_class_()];
+IOSObjectArray *AMSupportedLocalesEnum_values() {
+  AMSupportedLocalesEnum_init();
+  return [IOSObjectArray arrayWithObjects:AMSupportedLocalesEnum_values_ count:2 type:AMSupportedLocalesEnum_class_()];
 }
 + (IOSObjectArray *)values {
-  return ImActorModelI18nSupportedLocalesEnum_values();
+  return AMSupportedLocalesEnum_values();
 }
 
-+ (ImActorModelI18nSupportedLocalesEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelI18nSupportedLocalesEnum_valueOfWithNSString_(name);
++ (AMSupportedLocalesEnum *)valueOfWithNSString:(NSString *)name {
+  return AMSupportedLocalesEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelI18nSupportedLocalesEnum *ImActorModelI18nSupportedLocalesEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelI18nSupportedLocalesEnum_init();
+AMSupportedLocalesEnum *AMSupportedLocalesEnum_valueOfWithNSString_(NSString *name) {
+  AMSupportedLocalesEnum_init();
   for (int i = 0; i < 2; i++) {
-    ImActorModelI18nSupportedLocalesEnum *e = ImActorModelI18nSupportedLocalesEnum_values_[i];
+    AMSupportedLocalesEnum *e = AMSupportedLocalesEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -48,13 +48,13 @@ ImActorModelI18nSupportedLocalesEnum *ImActorModelI18nSupportedLocalesEnum_value
 }
 
 + (void)initialize {
-  if (self == [ImActorModelI18nSupportedLocalesEnum class]) {
-    ImActorModelI18nSupportedLocalesEnum_EN = [[ImActorModelI18nSupportedLocalesEnum alloc] initWithNSString:@"EN" withInt:0];
-    ImActorModelI18nSupportedLocalesEnum_RU = [[ImActorModelI18nSupportedLocalesEnum alloc] initWithNSString:@"RU" withInt:1];
-    J2OBJC_SET_INITIALIZED(ImActorModelI18nSupportedLocalesEnum)
+  if (self == [AMSupportedLocalesEnum class]) {
+    AMSupportedLocalesEnum_EN = [[AMSupportedLocalesEnum alloc] initWithNSString:@"EN" withInt:0];
+    AMSupportedLocalesEnum_RU = [[AMSupportedLocalesEnum alloc] initWithNSString:@"RU" withInt:1];
+    J2OBJC_SET_INITIALIZED(AMSupportedLocalesEnum)
   }
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelI18nSupportedLocalesEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMSupportedLocalesEnum)

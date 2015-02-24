@@ -3,14 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/viewmodel/GroupTypingVM.java
 //
 
-#ifndef _ImActorModelViewmodelGroupTypingVM_H_
-#define _ImActorModelViewmodelGroupTypingVM_H_
+#ifndef _AMGroupTypingVM_H_
+#define _AMGroupTypingVM_H_
 
 @class AMValueModel;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelViewmodelGroupTypingVM : NSObject {
+@interface AMGroupTypingVM : NSObject {
 }
 
 - (instancetype)initWithInt:(jint)gid;
@@ -21,11 +21,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelViewmodelGroupTypingVM)
+J2OBJC_EMPTY_STATIC_INIT(AMGroupTypingVM)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelViewmodelGroupTypingVM)
+typedef AMGroupTypingVM ImActorModelViewmodelGroupTypingVM;
 
-#endif // _ImActorModelViewmodelGroupTypingVM_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMGroupTypingVM)
+
+#endif // _AMGroupTypingVM_H_

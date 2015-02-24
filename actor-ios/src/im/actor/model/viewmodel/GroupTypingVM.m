@@ -8,16 +8,16 @@
 #include "im/actor/model/mvvm/ValueModel.h"
 #include "im/actor/model/viewmodel/GroupTypingVM.h"
 
-@interface ImActorModelViewmodelGroupTypingVM () {
+@interface AMGroupTypingVM () {
  @public
   jint gid_;
   AMValueModel *active_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupTypingVM, active_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMGroupTypingVM, active_, AMValueModel *)
 
-@implementation ImActorModelViewmodelGroupTypingVM
+@implementation AMGroupTypingVM
 
 - (instancetype)initWithInt:(jint)gid {
   if (self = [super init]) {
@@ -35,7 +35,7 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupTypingVM, active_, AMValueModel *)
   return active_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelViewmodelGroupTypingVM *)other {
+- (void)copyAllFieldsTo:(AMGroupTypingVM *)other {
   [super copyAllFieldsTo:other];
   other->gid_ = gid_;
   other->active_ = active_;
@@ -43,4 +43,4 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelGroupTypingVM, active_, AMValueModel *)
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelViewmodelGroupTypingVM)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupTypingVM)

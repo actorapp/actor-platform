@@ -168,7 +168,7 @@ void ImActorModelModulesTypingTypingActor_privateTypingWithInt_withInt_(ImActorM
   }
   if (![((JavaUtilHashSet *) nil_chk(self->typings_)) containsWithId:JavaLangInteger_valueOfWithInt_(uid)]) {
     [self->typings_ addWithId:JavaLangInteger_valueOfWithInt_(uid)];
-    [((AMValueModel *) nil_chk([((ImActorModelViewmodelUserTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getTypingWithInt:uid])) getTyping])) changeWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
+    [((AMValueModel *) nil_chk([((AMUserTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getTypingWithInt:uid])) getTyping])) changeWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
   }
   [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopTyping alloc] initWithInt:uid] withLong:ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT];
 }
@@ -176,7 +176,7 @@ void ImActorModelModulesTypingTypingActor_privateTypingWithInt_withInt_(ImActorM
 void ImActorModelModulesTypingTypingActor_stopPrivateTypingWithInt_(ImActorModelModulesTypingTypingActor *self, jint uid) {
   if ([((JavaUtilHashSet *) nil_chk(self->typings_)) containsWithId:JavaLangInteger_valueOfWithInt_(uid)]) {
     [self->typings_ removeWithId:JavaLangInteger_valueOfWithInt_(uid)];
-    [((AMValueModel *) nil_chk([((ImActorModelViewmodelUserTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getTypingWithInt:uid])) getTyping])) changeWithId:JavaLangBoolean_valueOfWithBoolean_(NO)];
+    [((AMValueModel *) nil_chk([((AMUserTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getTypingWithInt:uid])) getTyping])) changeWithId:JavaLangBoolean_valueOfWithBoolean_(NO)];
   }
 }
 
@@ -191,7 +191,7 @@ void ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withInt_(Im
     JavaUtilHashSet *set = [[JavaUtilHashSet alloc] init];
     [set addWithId:JavaLangInteger_valueOfWithInt_(uid)];
     (void) [self->groupTypings_ putWithId:JavaLangInteger_valueOfWithInt_(gid) withId:set];
-    [((AMValueModel *) nil_chk([((ImActorModelViewmodelGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:gid])) getActive])) changeWithId:[IOSIntArray newArrayWithInts:(jint[]){ uid } count:1]];
+    [((AMValueModel *) nil_chk([((AMGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:gid])) getActive])) changeWithId:[IOSIntArray newArrayWithInts:(jint[]){ uid } count:1]];
   }
   else {
     JavaUtilHashSet *src = [self->groupTypings_ getWithId:JavaLangInteger_valueOfWithInt_(gid)];
@@ -202,7 +202,7 @@ void ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withInt_(Im
       for (jint i = 0; i < ids->size_; i++) {
         *IOSIntArray_GetRef(ids2, i) = [((JavaLangInteger *) nil_chk(IOSObjectArray_Get(ids, i))) intValue];
       }
-      [((AMValueModel *) nil_chk([((ImActorModelViewmodelGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:gid])) getActive])) changeWithId:ids2];
+      [((AMValueModel *) nil_chk([((AMGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:gid])) getActive])) changeWithId:ids2];
     }
   }
   [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopGroupTyping alloc] initWithInt:gid withInt:uid] withLong:ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT];
@@ -220,7 +220,7 @@ void ImActorModelModulesTypingTypingActor_stopGroupTypingWithInt_withInt_(ImActo
     for (jint i = 0; i < ids->size_; i++) {
       *IOSIntArray_GetRef(ids2, i) = [((JavaLangInteger *) nil_chk(IOSObjectArray_Get(ids, i))) intValue];
     }
-    [((AMValueModel *) nil_chk([((ImActorModelViewmodelGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:gid])) getActive])) changeWithId:ids2];
+    [((AMValueModel *) nil_chk([((AMGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:gid])) getActive])) changeWithId:ids2];
   }
 }
 

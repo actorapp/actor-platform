@@ -17,9 +17,9 @@
 #include "java/lang/Boolean.h"
 #include "java/util/ArrayList.h"
 
-__attribute__((unused)) static void ImActorModelViewmodelUserVM_notifyChange(ImActorModelViewmodelUserVM *self);
+__attribute__((unused)) static void AMUserVM_notifyChange(AMUserVM *self);
 
-@interface ImActorModelViewmodelUserVM () {
+@interface AMUserVM () {
  @public
   jint id__;
   jlong hash__;
@@ -34,22 +34,22 @@ __attribute__((unused)) static void ImActorModelViewmodelUserVM_notifyChange(ImA
 - (void)notifyChange;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserVM, name_, AMValueModel *)
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserVM, avatar_, AMValueModel *)
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserVM, sex_, AMSexEnum *)
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserVM, isContact__, AMValueModel *)
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserVM, presence_, AMValueModel *)
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserVM, listeners_, JavaUtilArrayList *)
+J2OBJC_FIELD_SETTER(AMUserVM, name_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMUserVM, avatar_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMUserVM, sex_, AMSexEnum *)
+J2OBJC_FIELD_SETTER(AMUserVM, isContact__, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMUserVM, presence_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMUserVM, listeners_, JavaUtilArrayList *)
 
-@interface ImActorModelViewmodelUserVM_$1 () {
+@interface AMUserVM_$1 () {
  @public
-  ImActorModelViewmodelUserVM *this$0_;
+  AMUserVM *this$0_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserVM_$1, this$0_, ImActorModelViewmodelUserVM *)
+J2OBJC_FIELD_SETTER(AMUserVM_$1, this$0_, AMUserVM *)
 
-@implementation ImActorModelViewmodelUserVM
+@implementation AMUserVM
 
 - (instancetype)initWithAMUser:(AMUser *)user {
   if (self = [super initWithId:user]) {
@@ -60,7 +60,7 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserVM_$1, this$0_, ImActorModelViewmod
     name_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"user.", id__, @".name") withId:[user getName]];
     avatar_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"user.", id__, @".avatar") withId:[user getAvatar]];
     isContact__ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"user.", id__, @".contact") withId:JavaLangBoolean_valueOfWithBoolean_(NO)];
-    presence_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"user.", id__, @".presence") withId:[[ImActorModelViewmodelUserPresence alloc] initWithImActorModelViewmodelUserPresence_StateEnum:ImActorModelViewmodelUserPresence_StateEnum_get_UNKNOWN()]];
+    presence_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"user.", id__, @".presence") withId:[[AMUserPresence alloc] initWithAMUserPresence_StateEnum:AMUserPresence_StateEnum_get_UNKNOWN()]];
   }
   return self;
 }
@@ -70,7 +70,7 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserVM_$1, this$0_, ImActorModelViewmod
   isChanged |= [((AMValueModel *) nil_chk(name_)) changeWithId:[((AMUser *) nil_chk(rawObj)) getName]];
   isChanged |= [((AMValueModel *) nil_chk(avatar_)) changeWithId:[rawObj getAvatar]];
   if (isChanged) {
-    ImActorModelViewmodelUserVM_notifyChange(self);
+    AMUserVM_notifyChange(self);
   }
 }
 
@@ -115,10 +115,10 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserVM_$1, this$0_, ImActorModelViewmod
 }
 
 - (void)notifyChange {
-  ImActorModelViewmodelUserVM_notifyChange(self);
+  AMUserVM_notifyChange(self);
 }
 
-- (void)copyAllFieldsTo:(ImActorModelViewmodelUserVM *)other {
+- (void)copyAllFieldsTo:(AMUserVM *)other {
   [super copyAllFieldsTo:other];
   other->id__ = id__;
   other->hash__ = hash__;
@@ -132,13 +132,13 @@ J2OBJC_FIELD_SETTER(ImActorModelViewmodelUserVM_$1, this$0_, ImActorModelViewmod
 
 @end
 
-void ImActorModelViewmodelUserVM_notifyChange(ImActorModelViewmodelUserVM *self) {
-  [((id<AMMainThread>) nil_chk(AMMVVMEngine_getMainThread())) runOnUiThread:[[ImActorModelViewmodelUserVM_$1 alloc] initWithImActorModelViewmodelUserVM:self]];
+void AMUserVM_notifyChange(AMUserVM *self) {
+  [((id<AMMainThread>) nil_chk(AMMVVMEngine_getMainThread())) runOnUiThread:[[AMUserVM_$1 alloc] initWithAMUserVM:self]];
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelViewmodelUserVM)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserVM)
 
-@implementation ImActorModelViewmodelUserVM_$1
+@implementation AMUserVM_$1
 
 - (void)run {
   {
@@ -152,16 +152,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelViewmodelUserVM)
   }
 }
 
-- (instancetype)initWithImActorModelViewmodelUserVM:(ImActorModelViewmodelUserVM *)outer$ {
+- (instancetype)initWithAMUserVM:(AMUserVM *)outer$ {
   this$0_ = outer$;
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelViewmodelUserVM_$1 *)other {
+- (void)copyAllFieldsTo:(AMUserVM_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelViewmodelUserVM_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserVM_$1)

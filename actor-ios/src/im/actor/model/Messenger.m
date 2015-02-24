@@ -43,16 +43,13 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 
 @implementation AMMessenger
 
-- (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
-  if (self = [super init]) {
-    DKEnvironment_setThreadingWithAMThreading_([((AMConfiguration *) nil_chk(configuration)) getThreading]);
-    AMMVVMEngine_init__WithAMMainThread_([configuration getMainThread]);
-    AMLog_setLogWithAMLogCallback_([configuration getLog]);
-    [((DKActorSystem *) nil_chk(DKActorSystem_system())) setTraceInterfaceWithImActorModelDroidkitActorsDebugTraceInterface:[[AMMessenger_$1 alloc] init]];
-    self->modules_ = [[ImActorModelModulesModules alloc] initWithAMConfiguration:configuration];
-    [self->modules_ run];
-  }
-  return self;
+- (instancetype)initWithConfig:(AMConfiguration *)configuration {
+  [super init]DKEnvironment_setThreadingWithAMThreading_([((AMConfiguration *) nil_chk(configuration)) getThreading]);
+  AMMVVMEngine_init__WithAMMainThread_([configuration getMainThread]);
+  AMLog_setLogWithAMLogCallback_([configuration getLog]);
+  [((DKActorSystem *) nil_chk(DKActorSystem_system())) setTraceInterfaceWithImActorModelDroidkitActorsDebugTraceInterface:[[AMMessenger_$1 alloc] init]];
+  self->modules_ = [[ImActorModelModulesModules alloc] initWithAMConfiguration:configuration];
+  [self->modules_ run];
 }
 
 - (AMAuthStateEnum *)getAuthState {
@@ -89,7 +86,7 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) myUid];
 }
 
-- (ImActorModelI18nI18nEngine *)getFormatter {
+- (AMI18nEngine *)getFormatter {
   return [((ImActorModelModulesModules *) nil_chk(modules_)) getI18nEngine];
 }
 
@@ -109,11 +106,11 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getConversationEngineWithAMPeer:peer];
 }
 
-- (ImActorModelViewmodelUserTypingVM *)getTypingWithInt:(jint)uid {
+- (AMUserTypingVM *)getTyping:(jint)uid {
   return [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) getTypingWithInt:uid];
 }
 
-- (ImActorModelViewmodelGroupTypingVM *)getGroupTypingWithInt:(jint)gid {
+- (AMGroupTypingVM *)getGroupTyping:(jint)gid {
   return [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) getGroupTypingWithInt:gid];
 }
 
@@ -129,46 +126,41 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
   }
 }
 
-- (void)onConversationOpenWithAMPeer:(AMPeer *)peer {
+- (void)onConversationOpen:(AMPeer *)peer {
   [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) subscribeWithAMPeer:peer];
 }
 
-- (void)onConversationClosedWithAMPeer:(AMPeer *)peer {
+- (void)onConversationClosed:(AMPeer *)peer {
 }
 
-- (void)onProfileOpenWithInt:(jint)uid {
+- (void)onProfileOpen:(jint)uid {
   [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) subscribeWithAMPeer:AMPeer_userWithInt_(uid)];
 }
 
-- (void)onProfileClosedWithInt:(jint)uid {
+- (void)onProfileClosed:(jint)uid {
 }
 
-- (void)onInMessageShownWithAMPeer:(AMPeer *)peer
-                          withLong:(jlong)rid
-                          withLong:(jlong)sortDate
-                       withBoolean:(jboolean)isEncrypted {
+- (void)onInMessageShown:(AMPeer *)peer withRid:(jlong)rid withDate:(jlong)sortDate withEncrypted:(jboolean)isEncrypted {
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) onInMessageShownWithAMPeer:peer withLong:rid withLong:sortDate withBoolean:isEncrypted];
 }
 
-- (void)onTypingWithAMPeer:(AMPeer *)peer {
+- (void)onTyping:(AMPeer *)peer {
   [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) onTypingWithAMPeer:peer];
 }
 
-- (jlong)loadLastReadSortDateWithAMPeer:(AMPeer *)peer {
+- (jlong)loadLastReadDate:(AMPeer *)peer {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) loadReadStateWithAMPeer:peer];
 }
 
-- (void)saveDraftWithAMPeer:(AMPeer *)peer
-               withNSString:(NSString *)draft {
+- (void)saveDraft:(AMPeer *)peer withText:(NSString *)draft {
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) saveDraftWithAMPeer:peer withNSString:draft];
 }
 
-- (NSString *)loadDraftWithAMPeer:(AMPeer *)peer {
+- (NSString *)loadDraft:(AMPeer *)peer {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) loadDraftWithAMPeer:peer];
 }
 
-- (void)sendMessageWithAMPeer:(AMPeer *)peer
-                 withNSString:(NSString *)text {
+- (void)sendMessage:(AMPeer *)peer withText:(NSString *)text {
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text];
 }
 

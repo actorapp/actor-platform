@@ -165,8 +165,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers)
 
 @implementation ImActorModelModulesUsers_$1
 
-- (ImActorModelViewmodelUserVM *)createNewWithAMKeyValueItem:(AMUser *)raw {
-  return [[ImActorModelViewmodelUserVM alloc] initWithAMUser:raw];
+- (AMUserVM *)createNewWithAMKeyValueItem:(AMUser *)raw {
+  return [[AMUserVM alloc] initWithAMUser:raw];
 }
 
 - (IOSByteArray *)serializeWithAMKeyValueItem:(AMUser *)raw {

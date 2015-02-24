@@ -3,44 +3,46 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/i18n/SupportedLocales.java
 //
 
-#ifndef _ImActorModelI18nSupportedLocales_H_
-#define _ImActorModelI18nSupportedLocales_H_
+#ifndef _AMSupportedLocales_H_
+#define _AMSupportedLocales_H_
 
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-typedef NS_ENUM(NSUInteger, ImActorModelI18nSupportedLocales) {
-  ImActorModelI18nSupportedLocales_EN = 0,
-  ImActorModelI18nSupportedLocales_RU = 1,
+typedef NS_ENUM(NSUInteger, AMSupportedLocales) {
+  AMSupportedLocales_EN = 0,
+  AMSupportedLocales_RU = 1,
 };
 
-@interface ImActorModelI18nSupportedLocalesEnum : JavaLangEnum < NSCopying > {
+@interface AMSupportedLocalesEnum : JavaLangEnum < NSCopying > {
 }
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal;
 
 + (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelI18nSupportedLocalesEnum_values();
+FOUNDATION_EXPORT IOSObjectArray *AMSupportedLocalesEnum_values();
 
-+ (ImActorModelI18nSupportedLocalesEnum *)valueOfWithNSString:(NSString *)name;
++ (AMSupportedLocalesEnum *)valueOfWithNSString:(NSString *)name;
 
-FOUNDATION_EXPORT ImActorModelI18nSupportedLocalesEnum *ImActorModelI18nSupportedLocalesEnum_valueOfWithNSString_(NSString *name);
+FOUNDATION_EXPORT AMSupportedLocalesEnum *AMSupportedLocalesEnum_valueOfWithNSString_(NSString *name);
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelI18nSupportedLocalesEnum_initialized;
-J2OBJC_STATIC_INIT(ImActorModelI18nSupportedLocalesEnum)
+FOUNDATION_EXPORT BOOL AMSupportedLocalesEnum_initialized;
+J2OBJC_STATIC_INIT(AMSupportedLocalesEnum)
 
-FOUNDATION_EXPORT ImActorModelI18nSupportedLocalesEnum *ImActorModelI18nSupportedLocalesEnum_values_[];
+FOUNDATION_EXPORT AMSupportedLocalesEnum *AMSupportedLocalesEnum_values_[];
 
-#define ImActorModelI18nSupportedLocalesEnum_EN ImActorModelI18nSupportedLocalesEnum_values_[ImActorModelI18nSupportedLocales_EN]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelI18nSupportedLocalesEnum, EN)
+#define AMSupportedLocalesEnum_EN AMSupportedLocalesEnum_values_[AMSupportedLocales_EN]
+J2OBJC_ENUM_CONSTANT_GETTER(AMSupportedLocalesEnum, EN)
 
-#define ImActorModelI18nSupportedLocalesEnum_RU ImActorModelI18nSupportedLocalesEnum_values_[ImActorModelI18nSupportedLocales_RU]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelI18nSupportedLocalesEnum, RU)
+#define AMSupportedLocalesEnum_RU AMSupportedLocalesEnum_values_[AMSupportedLocales_RU]
+J2OBJC_ENUM_CONSTANT_GETTER(AMSupportedLocalesEnum, RU)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelI18nSupportedLocalesEnum)
+typedef AMSupportedLocalesEnum ImActorModelI18nSupportedLocalesEnum;
 
-#endif // _ImActorModelI18nSupportedLocales_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMSupportedLocalesEnum)
+
+#endif // _AMSupportedLocales_H_
