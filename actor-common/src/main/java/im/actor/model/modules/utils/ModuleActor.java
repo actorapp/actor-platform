@@ -15,6 +15,7 @@ import im.actor.model.network.parser.Response;
 import im.actor.model.storage.KeyValueEngine;
 import im.actor.model.storage.ListEngine;
 import im.actor.model.storage.PreferencesStorage;
+import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
 /**
@@ -45,6 +46,10 @@ public class ModuleActor extends Actor {
 
     public UserVM getUserVM(int uid) {
         return messenger.getUsersModule().getUsersCollection().get(uid);
+    }
+
+    public GroupVM getGroupVM(int gid) {
+        return messenger.getGroupsModule().getGroupsCollection().get(gid);
     }
 
     public PreferencesStorage preferences() {

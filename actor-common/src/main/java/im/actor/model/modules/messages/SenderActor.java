@@ -9,6 +9,7 @@ import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestSendMessage;
 import im.actor.model.api.rpc.ResponseSeqDate;
 import im.actor.model.api.updates.UpdateMessageSent;
+import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
@@ -81,6 +82,13 @@ public class SenderActor extends ModuleActor {
 
             outPeer = new OutPeer(im.actor.model.api.PeerType.PRIVATE, user.getUid(), user.getAccessHash());
             apiPeer = new im.actor.model.api.Peer(im.actor.model.api.PeerType.PRIVATE, user.getUid());
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            Group group = getGroup(peer.getPeerId());
+            if (group == null) {
+                return;
+            }
+            outPeer = new OutPeer(im.actor.model.api.PeerType.GROUP, group.getGroupId(), group.getAccessHash());
+            apiPeer = new im.actor.model.api.Peer(im.actor.model.api.PeerType.GROUP, group.getGroupId());
         } else {
             return;
         }

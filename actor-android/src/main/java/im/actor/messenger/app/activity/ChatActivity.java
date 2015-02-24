@@ -31,8 +31,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.droidkit.mvvm.ui.Listener;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -52,7 +50,6 @@ import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
 import im.actor.messenger.core.AppContext;
 import im.actor.messenger.settings.ChatSettings;
-import im.actor.messenger.storage.scheme.groups.GroupState;
 import im.actor.messenger.util.RandomUtil;
 import im.actor.messenger.util.io.IOUtils;
 import im.actor.model.Messenger;
@@ -61,14 +58,13 @@ import im.actor.model.entity.PeerType;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.hideView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
 import static im.actor.messenger.core.Core.groups;
 import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.users;
 
-public class ChatActivity extends BaseBarActivity implements Listener<GroupState> {
+public class ChatActivity extends BaseBarActivity {
 
     private static final int REQUEST_GALLERY = 0;
     private static final int REQUEST_PHOTO = 1;
@@ -143,7 +139,10 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                 if (peer.getPeerType() == PeerType.PRIVATE) {
                     startActivity(Intents.openProfile(peer.getPeerId(), ChatActivity.this));
                 } else if (peer.getPeerType() == PeerType.GROUP) {
+                    // TODO: Open Group Info
                     // startActivity(Intents.openGroup(chatId, ChatActivity.this));
+                } else {
+                    // Nothing to do
                 }
             }
         });
@@ -154,6 +153,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
 
         getWindow().setBackgroundDrawable(null);
 
+        // TODO: Check recreate on resume?
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.messagesFragment, MessagesFragment.create(peer))
                 .commit();
@@ -328,7 +328,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             bind(barAvatar, user.getAvatar());
             bind(barTitle, user.getName());
             bind(barSubtitle, barSubtitleContainer, user);
-            bind(barTyping, barTypingContainer, barTitle, messenger().getTyping(user.getId()));
+            bind(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
         } else if (peer.getPeerType() == PeerType.GROUP) {
             GroupVM group = groups().get(peer.getPeerId());
             if (group == null) {
@@ -340,25 +340,11 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
             barAvatar.setEmptyDrawable(AvatarDrawable.create(group, 18, this));
             bind(barAvatar, group.getAvatar());
             bind(barTitle, group.getName());
-
-//            getBinder().bindText(barTitle, groupInfo.getTitleModel());
-//
-//            barSubtitle.setVisibility(View.VISIBLE);
-//
-//            getBinder().bind(groupInfo.getStateModel(), this);
-//
-//            getBinder().bind(TypingModel.groupChatTyping(chatId), new Listener<int[]>() {
-//                @Override
-//                public void onUpdated(int[] ints) {
-//                    updateGroupStatus(groupInfo.getOnlineModel().getValue(), ints);
-//                }
-//            });
-//            getBinder().bind(groupInfo.getOnlineModel(), new Listener<int[]>() {
-//                @Override
-//                public void onUpdated(int[] ints) {
-//                    updateGroupStatus(ints, TypingModel.groupChatTyping(chatId).getValue());
-//                }
-//            });
+            // Always visible
+            barSubtitleContainer.setVisibility(View.VISIBLE);
+            // bind(barSubtitle, );
+            // TODO: Implement counters
+            bind(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
         }
 
         if (isCompose) {
@@ -512,17 +498,6 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
     }
 
     @Override
-    public void onUpdated(GroupState groupState) {
-        if (groupState == GroupState.JOINED) {
-            goneView(kicked, false);
-        } else if (groupState == GroupState.KICKED) {
-            showView(kicked, false);
-        } else {
-            finish();
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.chat_menu, menu);
 
@@ -580,7 +555,7 @@ public class ChatActivity extends BaseBarActivity implements Listener<GroupState
                         .setCanceledOnTouchOutside(true);
                 break;
             case R.id.contact:
-                // startActivity(Intents.openProfile(chatId, ChatActivity.this));
+                startActivity(Intents.openProfile(peer.getPeerId(), ChatActivity.this));
                 break;
             case R.id.groupInfo:
                 // startActivity(Intents.openGroup(chatId, ChatActivity.this));

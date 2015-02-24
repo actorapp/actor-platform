@@ -96,7 +96,7 @@ public class TypingActor extends ModuleActor {
             modules().getTypingModule()
                     .getGroupTyping(gid)
                     .getActive()
-                    .change(new int[uid]);
+                    .change(new int[]{uid});
         } else {
             HashSet<Integer> src = groupTypings.get(gid);
             if (!src.contains(uid)) {
