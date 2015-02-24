@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.model.api.GroupOutPeer;
 import im.actor.model.api.UserOutPeer;
+import im.actor.model.api.rpc.RequestSubscribeToGroupOnline;
 import im.actor.model.api.rpc.RequestSubscribeToOnline;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
@@ -14,11 +16,13 @@ import im.actor.model.droidkit.actors.Props;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.droidkit.actors.mailbox.Mailbox;
 import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
+import im.actor.model.entity.Group;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.User;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
+import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserPresence;
 import im.actor.model.viewmodel.UserVM;
 
@@ -52,6 +56,7 @@ public class PresenceActor extends ModuleActor {
     private static final int ONLINE_TIMEOUT = 5 * 60 * 1000;
 
     private HashSet<Integer> uids = new HashSet<Integer>();
+    private HashSet<Integer> gids = new HashSet<Integer>();
 
     public PresenceActor(Modules messenger) {
         super(messenger);
@@ -80,7 +85,10 @@ public class PresenceActor extends ModuleActor {
     }
 
     private void onGroupOnline(int gid, int count) {
-        // TODO: Implement
+        GroupVM vm = getGroupVM(gid);
+        if (vm != null) {
+            vm.getPresence().change(count);
+        }
     }
 
     private void subscribe(Peer peer) {
@@ -97,7 +105,17 @@ public class PresenceActor extends ModuleActor {
             peers.add(new UserOutPeer(user.getUid(), user.getAccessHash()));
             request(new RequestSubscribeToOnline(peers));
         } else if (peer.getPeerType() == PeerType.GROUP) {
-            // TODO: Implement
+            if (gids.contains(peer.getPeerId())) {
+                return;
+            }
+            Group group = getGroup(peer.getPeerId());
+            if (group == null) {
+                return;
+            }
+            gids.add(peer.getPeerId());
+            List<GroupOutPeer> peers = new ArrayList<GroupOutPeer>();
+            peers.add(new GroupOutPeer(group.getGroupId(), group.getAccessHash()));
+            request(new RequestSubscribeToGroupOnline(peers));
         }
     }
 
@@ -112,6 +130,18 @@ public class PresenceActor extends ModuleActor {
         }
         if (userPeers.size() > 0) {
             request(new RequestSubscribeToOnline(userPeers));
+        }
+
+        List<GroupOutPeer> groupPeers = new ArrayList<GroupOutPeer>();
+        for (int gid : gids) {
+            Group group = getGroup(gid);
+            if (group == null) {
+                continue;
+            }
+            groupPeers.add(new GroupOutPeer(group.getGroupId(), group.getAccessHash()));
+        }
+        if (groupPeers.size() > 0) {
+            request(new RequestSubscribeToGroupOnline(groupPeers));
         }
     }
 

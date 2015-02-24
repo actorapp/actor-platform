@@ -102,13 +102,13 @@ public class EntityConverter {
 
     public static Group convert(im.actor.model.api.Group group) {
         return new Group(group.getId(), group.getAccessHash(), group.getTitle(), convert(group.getAvatar()),
-                convert(group.getMembers()), group.getAdminUid(), group.isMember());
+                convert(group.getMembers(), group.getAdminUid()), group.getAdminUid(), group.isMember());
     }
 
-    public static ArrayList<GroupMember> convert(List<Member> members) {
+    public static ArrayList<GroupMember> convert(List<Member> members, int admin) {
         ArrayList<GroupMember> res = new ArrayList<GroupMember>();
         for (Member m : members) {
-            res.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate()));
+            res.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(), m.getUid() == admin));
         }
         return res;
     }

@@ -1,16 +1,15 @@
 package im.actor.messenger.app.base;
 
-import android.app.ProgressDialog;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.TextView;
-
-import com.droidkit.mvvm.ui.Binder;
 
 import im.actor.messenger.app.binding.ActorBinder;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.model.entity.Avatar;
 import im.actor.model.mvvm.ValueModel;
+import im.actor.model.viewmodel.GroupTypingVM;
+import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
@@ -40,7 +39,15 @@ public class BaseBarActivity extends ActionBarActivity {
         BINDER.bind(textView, container, user);
     }
 
+    public void bind(final TextView textView, GroupVM value) {
+        BINDER.bind(textView, value);
+    }
+
     public void bind(final TextView textView, final View container, final View titleContainer, final UserTypingVM typing) {
+        BINDER.bind(textView, container, titleContainer, typing);
+    }
+
+    public void bind(final TextView textView, final View container, final View titleContainer, final GroupTypingVM typing) {
         BINDER.bind(textView, container, titleContainer, typing);
     }
 
