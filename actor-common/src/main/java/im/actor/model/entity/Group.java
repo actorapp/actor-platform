@@ -74,6 +74,43 @@ public class Group extends BserObject implements KeyValueItem {
         return isMember;
     }
 
+    public Group changeMember(boolean isMember) {
+        return new Group(groupId, accessHash, title, avatar, members, adminId, isMember);
+    }
+
+    public Group clearMembers() {
+        return new Group(groupId, accessHash, title, avatar, new ArrayList<GroupMember>(), adminId, isMember);
+    }
+
+    public Group removeMember(int uid) {
+        ArrayList<GroupMember> nMembers = new ArrayList<GroupMember>();
+        for (GroupMember member : nMembers) {
+            if (member.getUid() != uid) {
+                nMembers.add(member);
+            }
+        }
+        return new Group(groupId, accessHash, title, avatar, nMembers, adminId, isMember);
+    }
+
+    public Group addMember(int uid, int inviterUid, long inviteDate, boolean isAdmin) {
+        ArrayList<GroupMember> nMembers = new ArrayList<GroupMember>();
+        for (GroupMember member : nMembers) {
+            if (member.getUid() != uid) {
+                nMembers.add(member);
+            }
+        }
+        nMembers.add(new GroupMember(uid, inviterUid, inviteDate, isAdmin));
+        return new Group(groupId, accessHash, title, avatar, nMembers, adminId, isMember);
+    }
+
+    public Group editTitle(String title) {
+        return new Group(groupId, accessHash, title, avatar, members, adminId, isMember);
+    }
+
+    public Group editAvatar(Avatar avatar) {
+        return new Group(groupId, accessHash, title, avatar, members, adminId, isMember);
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         groupId = values.getInt(1);

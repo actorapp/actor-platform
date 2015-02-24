@@ -25,8 +25,10 @@
 #include "im/actor/model/api/updates/UpdateEncryptedRead.h"
 #include "im/actor/model/api/updates/UpdateEncryptedReadByMe.h"
 #include "im/actor/model/api/updates/UpdateEncryptedReceived.h"
+#include "im/actor/model/api/updates/UpdateGroupAvatarChanged.h"
 #include "im/actor/model/api/updates/UpdateGroupInvite.h"
 #include "im/actor/model/api/updates/UpdateGroupOnline.h"
+#include "im/actor/model/api/updates/UpdateGroupTitleChanged.h"
 #include "im/actor/model/api/updates/UpdateGroupUserAdded.h"
 #include "im/actor/model/api/updates/UpdateGroupUserKick.h"
 #include "im/actor/model/api/updates/UpdateGroupUserLeave.h"
@@ -47,8 +49,10 @@
 #include "im/actor/model/api/updates/UpdateUserOffline.h"
 #include "im/actor/model/api/updates/UpdateUserOnline.h"
 #include "im/actor/model/api/updates/UpdateUserStateChanged.h"
+#include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Modules.h"
+#include "im/actor/model/modules/messages/entity/EntityConverter.h"
 #include "im/actor/model/modules/updates/GroupsProcessor.h"
 #include "im/actor/model/modules/updates/MessagesProcessor.h"
 #include "im/actor/model/modules/updates/PresenceProcessor.h"
@@ -221,6 +225,30 @@ NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateTyping class]]) {
     ImActorModelApiUpdatesUpdateTyping *typing = (ImActorModelApiUpdatesUpdateTyping *) check_class_cast(update, [ImActorModelApiUpdatesUpdateTyping class]);
     [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onTypingWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateTyping *) nil_chk(typing)) getPeer] withInt:[typing getUid] withInt:[typing getTypingType]];
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupTitleChanged class]]) {
+    ImActorModelApiUpdatesUpdateGroupTitleChanged *titleChanged = (ImActorModelApiUpdatesUpdateGroupTitleChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupTitleChanged class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onTitleChangedWithInt:[((ImActorModelApiUpdatesUpdateGroupTitleChanged *) nil_chk(titleChanged)) getGroupId] withLong:[titleChanged getRid] withInt:[titleChanged getUid] withNSString:[titleChanged getTitle] withLong:[titleChanged getDate]];
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupAvatarChanged class]]) {
+    ImActorModelApiUpdatesUpdateGroupAvatarChanged *avatarChanged = (ImActorModelApiUpdatesUpdateGroupAvatarChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupAvatarChanged class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onAvatarChangedWithInt:[((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) nil_chk(avatarChanged)) getGroupId] withLong:[avatarChanged getRid] withInt:[avatarChanged getUid] withAMAvatar:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_([avatarChanged getAvatar]) withLong:[avatarChanged getDate]];
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupInvite class]]) {
+    ImActorModelApiUpdatesUpdateGroupInvite *groupInvite = (ImActorModelApiUpdatesUpdateGroupInvite *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupInvite class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onGroupInviteWithInt:[((ImActorModelApiUpdatesUpdateGroupInvite *) nil_chk(groupInvite)) getGroupId] withLong:[groupInvite getRid] withInt:[groupInvite getInviteUid] withLong:[groupInvite getDate]];
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserLeave class]]) {
+    ImActorModelApiUpdatesUpdateGroupUserLeave *leave = (ImActorModelApiUpdatesUpdateGroupUserLeave *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserLeave class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserLeaveWithInt:[((ImActorModelApiUpdatesUpdateGroupUserLeave *) nil_chk(leave)) getGroupId] withLong:[leave getRid] withInt:[leave getUid] withLong:[leave getDate]];
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserKick class]]) {
+    ImActorModelApiUpdatesUpdateGroupUserKick *userKick = (ImActorModelApiUpdatesUpdateGroupUserKick *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserKick class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserKickedWithInt:[((ImActorModelApiUpdatesUpdateGroupUserKick *) nil_chk(userKick)) getGroupId] withLong:[userKick getRid] withInt:[userKick getUid] withInt:[userKick getKickerUid] withLong:[userKick getDate]];
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserAdded class]]) {
+    ImActorModelApiUpdatesUpdateGroupUserAdded *userAdded = (ImActorModelApiUpdatesUpdateGroupUserAdded *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserAdded class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserAddedWithInt:[((ImActorModelApiUpdatesUpdateGroupUserAdded *) nil_chk(userAdded)) getGroupId] withLong:[userAdded getRid] withInt:[userAdded getUid] withInt:[userAdded getInviterUid] withLong:[userAdded getDate]];
   }
 }
 

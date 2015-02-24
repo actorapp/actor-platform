@@ -6,8 +6,6 @@
 #ifndef _ImActorModelModulesUpdatesMessagesProcessor_H_
 #define _ImActorModelModulesUpdatesMessagesProcessor_H_
 
-@class AMPeer;
-@class DKActorRef;
 @class ImActorModelApiMessageContent;
 @class ImActorModelApiPeer;
 @class ImActorModelApiRpcResponseLoadDialogs;

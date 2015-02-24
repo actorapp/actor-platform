@@ -1,7 +1,7 @@
 package im.actor.model.viewmodel;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Group;
@@ -22,7 +22,7 @@ public class GroupVM extends BaseValueModel<Group> {
     private ValueModel<Avatar> avatar;
     private ValueModel<String> name;
     private ValueModel<Boolean> isMember;
-    private ValueModel<List<GroupMember>> members;
+    private ValueModel<HashSet<GroupMember>> members;
     private ValueModel<Integer> presence;
 
     private ArrayList<ModelChangedListener<GroupVM>> listeners = new ArrayList<ModelChangedListener<GroupVM>>();
@@ -35,7 +35,7 @@ public class GroupVM extends BaseValueModel<Group> {
         this.name = new ValueModel<String>("group." + id + ".title", rawObj.getTitle());
         this.avatar = new ValueModel<Avatar>("group." + id + ".avatar", rawObj.getAvatar());
         this.isMember = new ValueModel<Boolean>("group." + id + ".isMember", rawObj.isMember());
-        this.members = new ValueModel<List<GroupMember>>("group." + id + ".members", rawObj.getMembers());
+        this.members = new ValueModel<HashSet<GroupMember>>("group." + id + ".members", new HashSet<GroupMember>(rawObj.getMembers()));
         this.presence = new ValueModel<Integer>("group." + id + ".presence", 0);
     }
 
@@ -63,7 +63,7 @@ public class GroupVM extends BaseValueModel<Group> {
         return isMember;
     }
 
-    public ValueModel<List<GroupMember>> getMembers() {
+    public ValueModel<HashSet<GroupMember>> getMembers() {
         return members;
     }
 
@@ -77,9 +77,7 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= name.change(rawObj.getTitle());
         isChanged |= avatar.change(rawObj.getAvatar());
         isChanged |= isMember.change(rawObj.isMember());
-
-        // TODO: Better members equals checking
-        isChanged |= members.change(rawObj.getMembers());
+        isChanged |= members.change(new HashSet<GroupMember>(rawObj.getMembers()));
 
         if (isChanged) {
             notifyChange();

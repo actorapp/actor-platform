@@ -1,25 +1,24 @@
 package im.actor.model.modules.updates;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import im.actor.model.api.rpc.ResponseLoadDialogs;
-import im.actor.model.droidkit.actors.ActorRef;
-import im.actor.model.entity.*;
+import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.ServiceUserRegistered;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.messages.PlainReceiverActor;
-import im.actor.model.modules.messages.SenderActor;
-import im.actor.model.modules.messages.entity.DialogHistory;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
 import im.actor.model.modules.messages.OwnReadActor;
+import im.actor.model.modules.messages.PlainReceiverActor;
+import im.actor.model.modules.messages.SenderActor;
+import im.actor.model.modules.messages.entity.DialogHistory;
 import im.actor.model.modules.utils.RandomUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static im.actor.model.modules.messages.entity.EntityConverter.convert;
 
@@ -29,30 +28,6 @@ import static im.actor.model.modules.messages.entity.EntityConverter.convert;
 public class MessagesProcessor extends BaseModule {
     public MessagesProcessor(Modules messenger) {
         super(messenger);
-    }
-
-    private ActorRef sendActor() {
-        return modules().getMessagesModule().getSendMessageActor();
-    }
-
-    private ActorRef dialogsActor() {
-        return modules().getMessagesModule().getDialogsActor();
-    }
-
-    private ActorRef dialogsHistoryActor() {
-        return modules().getMessagesModule().getDialogsHistoryActor();
-    }
-
-    private ActorRef ownReadActor() {
-        return modules().getMessagesModule().getOwnReadActor();
-    }
-
-    private ActorRef plainReceiveActor() {
-        return modules().getMessagesModule().getPlainReceiverActor();
-    }
-
-    private ActorRef conversationActor(Peer peer) {
-        return modules().getMessagesModule().getConversationActor(peer);
     }
 
     public void onDialogsLoaded(ResponseLoadDialogs dialogsResponse) {
