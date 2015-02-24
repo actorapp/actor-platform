@@ -16,7 +16,6 @@ public class SQLiteKeyValue implements KeyValueStorage {
 
     private SQLiteStatement insertStatement;
     private SQLiteStatement deleteStatement;
-    private SQLiteStatement getStatement;
 
     private SQLiteDatabase db;
     private String name;
@@ -26,29 +25,23 @@ public class SQLiteKeyValue implements KeyValueStorage {
         this.name = name;
 
         if (!SQLiteHelpers.isTableExists(db, name)) {
-            db.execSQL("CREATE TABLE IF NOT EXISTS '" + name + "' (" + //
-                    "'ID' INTEGER NOT NULL," + // 0: id
-                    "'BYTES' BLOB NOT NULL," + // 1: bytes
-                    "PRIMARY KEY('ID'));");
+            db.execSQL("CREATE TABLE IF NOT EXISTS \"" + name + "\" (" + //
+                    "\"ID\" INTEGER NOT NULL," + // 0: id
+                    "\"BYTES\" BLOB NOT NULL," + // 1: bytes
+                    "PRIMARY KEY(\"ID\"));");
         }
     }
 
     private void checkInsertStatement() {
         if (insertStatement == null) {
-            insertStatement = db.compileStatement("INSERT OR REPLACE INTO '" + name + "' " +
-                    "(ID,BYTES) VALUES (?,?)");
+            insertStatement = db.compileStatement("INSERT OR REPLACE INTO \"" + name + "\" " +
+                    "(\"ID\",\"BYTES\") VALUES (?,?)");
         }
     }
 
     private void checkDeleteStatement() {
         if (deleteStatement == null) {
-            deleteStatement = db.compileStatement("DELETE FROM '" + name + "' WHERE ID=?");
-        }
-    }
-
-    private void checkGetStatement() {
-        if (getStatement == null) {
-            getStatement = db.compileStatement("SELECT 'ID','BYTES' FROM '" + name + "' WHERE ID=?");
+            deleteStatement = db.compileStatement("DELETE FROM \"" + name + "\" WHERE \"ID\"=?");
         }
     }
 
@@ -118,7 +111,7 @@ public class SQLiteKeyValue implements KeyValueStorage {
     public void clear() {
         db.beginTransaction();
         try {
-            db.execSQL("DELETE FROM '" + name + "'");
+            db.execSQL("DELETE FROM \"" + name + "\"");
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
@@ -127,14 +120,13 @@ public class SQLiteKeyValue implements KeyValueStorage {
 
     @Override
     public byte[] getValue(long id) {
-        checkGetStatement();
-        Cursor cursor = db.query("'" + name + "'", new String[]{"'ID'", "'BYTES'"}, "ID = ?", new String[]{"" + id}, null, null, null);
+        Cursor cursor = db.query("\"" + name + "\"", new String[]{"\"BYTES\""}, "\"ID\" = ?", new String[]{"" + id}, null, null, null);
         if (cursor == null) {
             return null;
         }
         try {
             if (cursor.moveToFirst()) {
-                return cursor.getBlob(1);
+                return cursor.getBlob(0);
             }
         } finally {
             cursor.close();
