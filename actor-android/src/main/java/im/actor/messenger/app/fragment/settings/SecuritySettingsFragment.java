@@ -10,12 +10,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseCompatFragment;
+import im.actor.messenger.app.base.BaseFragment;
 
 /**
  * Created by ex3ndr on 09.10.14.
  */
-public class SecuritySettingsFragment extends BaseCompatFragment {
+public class SecuritySettingsFragment extends BaseFragment {
 
     private TextView loading;
     private LinearLayout authItems;

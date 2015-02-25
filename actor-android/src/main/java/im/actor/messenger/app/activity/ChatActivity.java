@@ -13,10 +13,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -39,12 +36,10 @@ import java.util.ArrayList;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseBarActivity;
+import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
 import im.actor.messenger.app.intents.Intents;
-import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
@@ -58,13 +53,11 @@ import im.actor.model.entity.PeerType;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.view.ViewUtils.hideView;
-import static im.actor.messenger.app.view.ViewUtils.showView;
 import static im.actor.messenger.core.Core.groups;
 import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.users;
 
-public class ChatActivity extends BaseBarActivity {
+public class ChatActivity extends BaseActivity {
 
     private static final int REQUEST_GALLERY = 0;
     private static final int REQUEST_PHOTO = 1;
@@ -323,9 +316,7 @@ public class ChatActivity extends BaseBarActivity {
                 return;
             }
 
-            // TODO: Dynamically update avatar drawable after name change
-            barAvatar.setEmptyDrawable(AvatarDrawable.create(user, 18, this));
-            bind(barAvatar, user.getAvatar());
+            bind(barAvatar, user.getId(), 18, user.getAvatar(), user.getName());
             bind(barTitle, user.getName());
             bind(barSubtitle, barSubtitleContainer, user);
             bind(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
@@ -336,14 +327,11 @@ public class ChatActivity extends BaseBarActivity {
                 return;
             }
 
-            // TODO: Dynamically update avatar drawable after title change
-            barAvatar.setEmptyDrawable(AvatarDrawable.create(group, 18, this));
-            bind(barAvatar, group.getAvatar());
+            bind(barAvatar, group.getId(), 18, group.getAvatar(), group.getName());
             bind(barTitle, group.getName());
-            // Always visible
+            // Subtitle is always visible for Groups
             barSubtitleContainer.setVisibility(View.VISIBLE);
-            // bind(barSubtitle, );
-            // TODO: Implement counters
+            bind(barSubtitle, group);
             bind(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
         }
 
@@ -363,28 +351,6 @@ public class ChatActivity extends BaseBarActivity {
             messageBody.setText("");
         }
         isTypingDisabled = false;
-    }
-
-    private void updateGroupStatus(int[] onlines, int[] typings) {
-        if (typings.length > 0) {
-            barTyping.setText(Formatter.formatTyping(typings));
-            showView(barTypingContainer);
-            hideView(barSubtitle);
-        } else {
-            if (onlines.length == 1) {
-                SpannableStringBuilder builder = new SpannableStringBuilder(
-                        getString(R.string.chat_group_members).replace("{0}", onlines[0] + ""));
-                builder.setSpan(new ForegroundColorSpan(0xB7ffffff), 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                barSubtitle.setText(builder);
-            } else {
-                SpannableStringBuilder builder = new SpannableStringBuilder(getString(R.string.chat_group_members).replace("{0}", onlines[0] + "") + ", ");
-                builder.setSpan(new ForegroundColorSpan(0xB7ffffff), 0, builder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                builder.append(getString(R.string.chat_group_members_online).replace("{0}", onlines[1] + ""));
-                barSubtitle.setText(builder);
-            }
-            hideView(barTypingContainer);
-            showView(barSubtitle);
-        }
     }
 
     private void sendMessage() {

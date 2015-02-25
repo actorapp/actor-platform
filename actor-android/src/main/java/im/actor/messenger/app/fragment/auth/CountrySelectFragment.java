@@ -13,14 +13,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseCompatFragment;
+import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.view.ViewHolder;
 import im.actor.messenger.util.country.Country;
 import im.actor.messenger.util.country.CountryDb;
 
 import java.util.ArrayList;
 
-public class CountrySelectFragment extends BaseCompatFragment {
+public class CountrySelectFragment extends BaseFragment {
 
     private ListView countriesListView;
     private CountryAdapter adapter;

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
@@ -13,15 +12,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.droidkit.engine.uilist.UiListListener;
 import com.droidkit.mvvm.ValueChangeListener;
-import com.droidkit.mvvm.ui.Listener;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.AddContactActivity;
@@ -34,7 +30,6 @@ import im.actor.messenger.app.fragment.contacts.ContactsFragment;
 import im.actor.messenger.app.fragment.dialogs.DialogsFragment;
 import im.actor.messenger.app.fragment.search.SearchAdapter;
 import im.actor.messenger.app.intents.Intents;
-import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
@@ -278,8 +273,7 @@ public class MainPhoneController extends MainBaseController implements ValueChan
         if (messenger().isLoggedIn()) {
             UserVM userModel = users().get(myUid());
             if (userModel != null) {
-                avatarView.setEmptyDrawable(AvatarDrawable.create(userModel, 18, getActivity()));
-                getActivity().bind(avatarView, userModel.getAvatar());
+                getActivity().bind(avatarView, myUid(), 18, userModel.getAvatar(), userModel.getName());
             }
         }
         menuItem.getActionView().setOnClickListener(new View.OnClickListener() {

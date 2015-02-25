@@ -2,13 +2,13 @@ package im.actor.messenger.app.activity;
 
 import android.os.Bundle;
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseBarFragmentActivity;
+import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.compose.ComposeFragment;
 
 /**
  * Created by ex3ndr on 20.09.14.
  */
-public class ComposeActivity extends BaseBarFragmentActivity {
+public class ComposeActivity extends BaseFragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,7 +1,5 @@
 package im.actor.messenger.app.fragment.contacts;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -18,16 +16,13 @@ import android.widget.TextView;
 
 import com.droidkit.engine.list.view.ListState;
 import com.droidkit.mvvm.ui.Listener;
-import com.droidkit.mvvm.ui.Processor;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseCompatFragment;
-import im.actor.messenger.app.intents.Intents;
+import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.model.ContactsSyncState;
 import im.actor.messenger.util.Screen;
 
-public class ContactsFragment extends BaseCompatFragment implements Listener<ListState> {
+public class ContactsFragment extends BaseFragment implements Listener<ListState> {
 
     // private ContactsAdapter adapter;
     private ListView listView;

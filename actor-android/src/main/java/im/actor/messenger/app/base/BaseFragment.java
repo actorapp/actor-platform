@@ -10,7 +10,7 @@ import im.actor.messenger.app.view.ViewUtils;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 
-public class BaseCompatFragment extends BinderCompatFragment {
+public class BaseFragment extends BinderCompatFragment {
 
     @Override
     public void onCreate(Bundle saveInstance) {

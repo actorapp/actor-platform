@@ -3,13 +3,13 @@ package im.actor.messenger.app.activity;
 import android.os.Bundle;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseBarFragmentActivity;
+import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.pick.PickUserFragment;
 
 /**
  * Created by ex3ndr on 08.10.14.
  */
-public class PickUserActivity extends BaseBarFragmentActivity {
+public class PickUserActivity extends BaseFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

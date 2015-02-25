@@ -1,31 +1,25 @@
 package im.actor.messenger.app.base;
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.view.WindowManager;
+import android.widget.TextView;
 
-import com.droidkit.mvvm.ui.Binder;
-
-import im.actor.messenger.R;
-import im.actor.messenger.app.view.ViewUtils;
+import im.actor.messenger.app.binding.ActorBinder;
+import im.actor.messenger.app.view.AvatarView;
+import im.actor.model.entity.Avatar;
+import im.actor.model.mvvm.ValueModel;
+import im.actor.model.viewmodel.GroupTypingVM;
+import im.actor.model.viewmodel.GroupVM;
+import im.actor.model.viewmodel.UserTypingVM;
+import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.messenger;
 
-public class BaseActivity extends Activity {
-
-    private final Binder BINDER = new Binder();
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        getWindow().setBackgroundDrawableResource(R.drawable.transparent);
-    }
-
-    protected Binder getBinder() {
-        return BINDER;
-    }
+/**
+ * Created by ex3ndr on 29.12.14.
+ */
+public class BaseActivity extends ActionBarActivity {
+    private final ActorBinder BINDER = new ActorBinder();
 
     @Override
     protected void onResume() {
@@ -33,46 +27,35 @@ public class BaseActivity extends Activity {
         messenger().onAppVisible();
     }
 
+    public void bind(final TextView textView, ValueModel<String> value) {
+        BINDER.bind(textView, value);
+    }
+
+    public void bind(final AvatarView avatarView, final int id, final float size,
+                     final ValueModel<Avatar> avatar, final ValueModel<String> name) {
+        BINDER.bind(avatarView, id, size, avatar, name);
+    }
+
+    public void bind(final TextView textView, final View container, final UserVM user) {
+        BINDER.bind(textView, container, user);
+    }
+
+    public void bind(final TextView textView, GroupVM value) {
+        BINDER.bind(textView, value);
+    }
+
+    public void bind(final TextView textView, final View container, final View titleContainer, final UserTypingVM typing) {
+        BINDER.bind(textView, container, titleContainer, typing);
+    }
+
+    public void bind(final TextView textView, final View container, final View titleContainer, final GroupTypingVM typing) {
+        BINDER.bind(textView, container, titleContainer, typing);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         messenger().onAppHidden();
         BINDER.unbindAll();
-    }
-
-    public void goneView(View view) {
-        ViewUtils.goneView(view);
-    }
-
-    public void goneView(final View view, boolean isAnimated) {
-        ViewUtils.goneView(view, isAnimated);
-    }
-
-    public void goneView(final View view, boolean isAnimated, boolean isSlow) {
-        ViewUtils.goneView(view, isAnimated, isSlow);
-    }
-
-    public void hideView(View view) {
-        ViewUtils.hideView(view);
-    }
-
-    public void hideView(final View view, boolean isAnimated) {
-        ViewUtils.hideView(view, isAnimated);
-    }
-
-    public void hideView(final View view, boolean isAnimated, boolean isSlow) {
-        ViewUtils.hideView(view, isAnimated, isSlow);
-    }
-
-    public void showView(View view) {
-        ViewUtils.showView(view);
-    }
-
-    public void showView(final View view, boolean isAnimated) {
-        ViewUtils.showView(view, isAnimated);
-    }
-
-    public void showView(final View view, boolean isAnimated, boolean isSlow) {
-        ViewUtils.showView(view, isAnimated, isSlow);
     }
 }

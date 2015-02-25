@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseBarFragmentActivity;
+import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.profile.ProfileFragment;
 import im.actor.messenger.app.intents.Intents;
 
@@ -18,7 +18,7 @@ import static im.actor.messenger.core.Core.messenger;
 /**
  * Created by ex3ndr on 12.09.14.
  */
-public class ProfileActivity extends BaseBarFragmentActivity {
+public class ProfileActivity extends BaseFragmentActivity {
 
     private int uid;
 

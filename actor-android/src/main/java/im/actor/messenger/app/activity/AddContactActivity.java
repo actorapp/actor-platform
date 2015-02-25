@@ -5,13 +5,13 @@ import android.view.View;
 import android.widget.EditText;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseBarFragmentActivity;
+import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.view.KeyboardHelper;
 
 /**
  * Created by ex3ndr on 03.11.14.
  */
-public class AddContactActivity extends BaseBarFragmentActivity {
+public class AddContactActivity extends BaseFragmentActivity {
 
     private KeyboardHelper helper;
     private EditText searchQuery;
