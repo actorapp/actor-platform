@@ -24,7 +24,6 @@ public class AddContactActivity extends BaseFragmentActivity {
 
     private KeyboardHelper helper;
     private EditText searchQuery;
-    private View progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +40,6 @@ public class AddContactActivity extends BaseFragmentActivity {
         setContentView(R.layout.activity_add);
 
         searchQuery = (EditText) findViewById(R.id.searchField);
-        progress = findViewById(R.id.progress);
-        progress.setVisibility(View.GONE);
 
         findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
