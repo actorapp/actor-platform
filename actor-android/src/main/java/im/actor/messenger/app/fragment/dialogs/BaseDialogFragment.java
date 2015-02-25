@@ -14,15 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.droidkit.engine.list.view.ListState;
 import com.droidkit.engine.uilist.UiListStateListener;
-import com.droidkit.mvvm.ui.Listener;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseCompatFragment;
+import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.MaterialInterpolator;
 import im.actor.messenger.app.view.OnItemClickedListener;
@@ -33,7 +31,7 @@ import im.actor.model.entity.Dialog;
 /**
  * Created by ex3ndr on 22.11.14.
  */
-public class BaseDialogFragment extends BaseCompatFragment implements UiListStateListener {
+public class BaseDialogFragment extends BaseFragment implements UiListStateListener {
 
     private ListView listView;
 

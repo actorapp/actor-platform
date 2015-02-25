@@ -21,7 +21,7 @@ import com.droidkit.engine.uilist.UiListStateListener;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseCompatFragment;
+import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.fragment.chat.adapter.ChatAdapter;
 import im.actor.messenger.app.view.BackgroundView;
 import im.actor.messenger.app.view.Fonts;
@@ -45,7 +45,7 @@ import static im.actor.messenger.core.Core.users;
 /**
  * Created by ex3ndr on 01.09.14.
  */
-public class MessagesFragment extends BaseCompatFragment implements UiListStateListener, ExScrollListener {
+public class MessagesFragment extends BaseFragment implements UiListStateListener, ExScrollListener {
 
     public static MessagesFragment create(Peer peer) {
         Bundle bundle = new Bundle();

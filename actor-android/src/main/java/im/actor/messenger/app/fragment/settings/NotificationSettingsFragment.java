@@ -4,16 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseCompatFragment;
+import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.settings.NotificationSettings;
 
 /**
  * Created by ex3ndr on 17.09.14.
  */
-public class NotificationSettingsFragment extends BaseCompatFragment {
+public class NotificationSettingsFragment extends BaseFragment {
 
     private NotificationSettings settings = NotificationSettings.getInstance();
 

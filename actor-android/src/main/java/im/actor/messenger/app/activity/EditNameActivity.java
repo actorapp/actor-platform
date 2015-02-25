@@ -3,14 +3,14 @@ package im.actor.messenger.app.activity;
 import android.os.Bundle;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseBarFragmentActivity;
+import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.settings.EditNameFragment;
 import im.actor.messenger.app.intents.Intents;
 
 /**
  * Created by ex3ndr on 20.10.14.
  */
-public class EditNameActivity extends BaseBarFragmentActivity {
+public class EditNameActivity extends BaseFragmentActivity {
 
     public static final int TYPE_ME = 0;
     public static final int TYPE_USER = 1;

@@ -4,13 +4,13 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseBarFragmentActivity;
+import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.compose.GroupNameFragment;
 
 /**
  * Created by ex3ndr on 04.10.14.
  */
-public class CreateGroupActivity extends BaseBarFragmentActivity {
+public class CreateGroupActivity extends BaseFragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

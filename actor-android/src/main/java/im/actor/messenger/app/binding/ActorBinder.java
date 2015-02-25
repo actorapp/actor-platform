@@ -1,15 +1,23 @@
 package im.actor.messenger.app.binding;
 
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Formatter;
+import im.actor.messenger.core.AppContext;
 import im.actor.model.entity.Avatar;
+import im.actor.model.entity.GroupMember;
+import im.actor.model.mvvm.DoubleValueChangedListener;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupTypingVM;
@@ -84,18 +92,39 @@ public class ActorBinder {
     }
 
     public void bind(final TextView textView, final GroupVM value) {
-        bind(value.getPresence(), new ValueChangedListener<Integer>() {
+        bind(value.getPresence(), value.getMembers(), new DoubleValueChangedListener<Integer, HashSet<GroupMember>>() {
             @Override
-            public void onChanged(Integer val, ValueModel<Integer> valueModel) {
-
+            public void onChanged(Integer online,
+                                  ValueModel<Integer> onlineModel,
+                                  HashSet<GroupMember> members,
+                                  ValueModel<HashSet<GroupMember>> membersModel) {
+                if (online <= 0) {
+                    SpannableStringBuilder builder = new SpannableStringBuilder(
+                            AppContext.getContext().getString(R.string.chat_group_members)
+                                    .replace("{0}", members.size() + ""));
+                    builder.setSpan(new ForegroundColorSpan(0xB7ffffff), 0, builder.length(),
+                            Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    textView.setText(builder);
+                } else {
+                    SpannableStringBuilder builder = new SpannableStringBuilder(
+                            AppContext.getContext().getString(R.string.chat_group_members)
+                                    .replace("{0}", members.size() + "") + ", ");
+                    builder.setSpan(new ForegroundColorSpan(0xB7ffffff), 0, builder.length(),
+                            Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    builder.append(AppContext.getContext()
+                            .getString(R.string.chat_group_members_online).replace("{0}", online + ""));
+                    textView.setText(builder);
+                }
             }
         });
     }
 
-    public void bind(final AvatarView avatarView, final ValueModel<Avatar> avatar) {
-        bind(avatar, new ValueChangedListener<Avatar>() {
+    public void bind(final AvatarView avatarView, final int id, final float size,
+                     final ValueModel<Avatar> avatar, final ValueModel<String> name) {
+        bind(avatar, name, new DoubleValueChangedListener<Avatar, String>() {
             @Override
-            public void onChanged(Avatar val, ValueModel<Avatar> valueModel) {
+            public void onChanged(Avatar val, ValueModel<Avatar> valueModel, String val2, ValueModel<String> valueModel2) {
+                avatarView.setEmptyDrawable(new AvatarDrawable(val2, id, size, AppContext.getContext()));
                 if (val != null) {
                     avatarView.bindAvatar(0, val);
                 } else {
@@ -121,6 +150,29 @@ public class ActorBinder {
     public <T> void bind(ValueModel<T> value, ValueChangedListener<T> listener) {
         value.subscribe(listener);
         bindings.add(new Binding(value, listener));
+    }
+
+    public <T> void bind(ValueModel<T> value, boolean notify, ValueChangedListener<T> listener) {
+        value.subscribe(listener, notify);
+        bindings.add(new Binding(value, listener));
+    }
+
+    public <T, V> void bind(final ValueModel<T> value1, final ValueModel<V> value2,
+                            final DoubleValueChangedListener<T, V> listener) {
+
+        bind(value1, false, new ValueChangedListener<T>() {
+            @Override
+            public void onChanged(T val, ValueModel<T> valueModel) {
+                listener.onChanged(val, valueModel, value2.get(), value2);
+            }
+        });
+        bind(value2, false, new ValueChangedListener<V>() {
+            @Override
+            public void onChanged(V val, ValueModel<V> valueModel) {
+                listener.onChanged(value1.get(), value1, val, valueModel);
+            }
+        });
+        listener.onChanged(value1.get(), value1, value2.get(), value2);
     }
 
     public void unbindAll() {

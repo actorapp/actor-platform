@@ -14,7 +14,7 @@ import android.widget.ListView;
 import com.droidkit.engine.uilist.UiListListener;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseCompatFragment;
+import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.util.Screen;
 import im.actor.model.viewmodel.UserVM;
 
@@ -25,7 +25,7 @@ import static im.actor.messenger.core.Core.users;
 /**
  * Created by ex3ndr on 04.10.14.
  */
-public class GroupUsersFragment extends BaseCompatFragment implements UiListListener {
+public class GroupUsersFragment extends BaseFragment implements UiListListener {
 
     public static GroupUsersFragment create(String title, String avatarPath) {
         GroupUsersFragment res = new GroupUsersFragment();

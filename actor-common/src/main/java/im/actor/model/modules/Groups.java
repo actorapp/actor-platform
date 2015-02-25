@@ -48,6 +48,4 @@ public class Groups extends BaseModule {
     public MVVMCollection<Group, GroupVM> getGroupsCollection() {
         return collection;
     }
-
-
 }

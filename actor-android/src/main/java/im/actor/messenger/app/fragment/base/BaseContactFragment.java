@@ -9,13 +9,13 @@ import android.widget.ListView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.HelpActivity;
-import im.actor.messenger.app.base.BaseCompatFragment;
+import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.util.Screen;
 
 /**
  * Created by ex3ndr on 23.09.14.
  */
-public abstract class BaseContactFragment extends BaseCompatFragment {
+public abstract class BaseContactFragment extends BaseFragment {
 
     // private ContactsAdapter adapter;
     private ListView listView;

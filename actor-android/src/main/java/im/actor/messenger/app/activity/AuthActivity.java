@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseBarFragmentActivity;
+import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.auth.SignInFragment;
 import im.actor.messenger.app.fragment.auth.SignPhoneFragment;
 import im.actor.messenger.app.fragment.auth.SignUpFragment;
@@ -20,7 +20,7 @@ import im.actor.model.network.RpcTimeoutException;
 
 import static im.actor.messenger.core.Core.messenger;
 
-public class AuthActivity extends BaseBarFragmentActivity {
+public class AuthActivity extends BaseFragmentActivity {
 
     private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
