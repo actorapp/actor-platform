@@ -1,11 +1,14 @@
 package im.actor.messenger.app.base;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.TextView;
 
 import im.actor.messenger.app.ActorBinder;
 import im.actor.messenger.app.view.AvatarView;
+import im.actor.model.concurrency.Command;
+import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Avatar;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
@@ -62,5 +65,45 @@ public class BaseActivity extends ActionBarActivity {
         super.onPause();
         messenger().onAppHidden();
         BINDER.unbindAll();
+    }
+
+    public <T> void execute(Command<T> cmd, int title, final CommandCallback<T> callback) {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(title));
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+        cmd.start(new CommandCallback<T>() {
+            @Override
+            public void onResult(T res) {
+                progressDialog.dismiss();
+                callback.onResult(res);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                progressDialog.dismiss();
+                callback.onError(e);
+            }
+        });
+    }
+
+    public <T> void execute(Command<T> cmd, int title) {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(title));
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+        cmd.start(new CommandCallback<T>() {
+            @Override
+            public void onResult(T res) {
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                progressDialog.dismiss();
+            }
+        });
     }
 }

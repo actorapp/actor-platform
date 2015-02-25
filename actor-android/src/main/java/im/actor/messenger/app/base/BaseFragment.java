@@ -87,4 +87,23 @@ public class BaseFragment extends BinderCompatFragment {
             }
         });
     }
+
+    public <T> void execute(Command<T> cmd, int title) {
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(title));
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+        cmd.start(new CommandCallback<T>() {
+            @Override
+            public void onResult(T res) {
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                progressDialog.dismiss();
+            }
+        });
+    }
 }
