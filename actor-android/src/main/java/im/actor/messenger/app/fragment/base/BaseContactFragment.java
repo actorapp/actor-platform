@@ -3,24 +3,35 @@ package im.actor.messenger.app.fragment.base;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
+
+import com.droidkit.engine.list.view.EngineUiList;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.HelpActivity;
 import im.actor.messenger.app.base.BaseFragment;
+import im.actor.messenger.app.fragment.contacts.ContactsAdapter;
+import im.actor.messenger.app.view.OnItemClickedListener;
+import im.actor.messenger.storage.ListEngines;
 import im.actor.messenger.util.Screen;
+import im.actor.model.entity.Contact;
 
 /**
  * Created by ex3ndr on 23.09.14.
  */
 public abstract class BaseContactFragment extends BaseFragment {
 
-    // private ContactsAdapter adapter;
+    private ContactsAdapter adapter;
     private ListView listView;
     private View emptyView;
-    // private EngineUiList<Contact> engineUiList;
+    private EngineUiList<Contact> engineUiList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,15 +42,15 @@ public abstract class BaseContactFragment extends BaseFragment {
         View header = new View(getActivity());
         header.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
         listView.addHeaderView(header, null, false);
-//        engineUiList = new EngineUiList<Contact>(ListEngines.getContactsEngine());
-//        adapter = new ContactsAdapter(engineUiList, getActivity(), false, new OnItemClickedListener<Contact>() {
-//            @Override
-//            public void onClicked(Contact item) {
-//                onUserSelected((int) (long) item.getUid());
-//                getActivity().finish();
-//            }
-//        }, null);
-//        listView.setAdapter(adapter);
+        engineUiList = new EngineUiList<Contact>(ListEngines.getContactsListEngine());
+        adapter = new ContactsAdapter(engineUiList, getActivity(), false, new OnItemClickedListener<Contact>() {
+            @Override
+            public void onClicked(Contact item) {
+                onUserSelected((int) (long) item.getUid());
+                getActivity().finish();
+            }
+        }, null);
+        listView.setAdapter(adapter);
 
 //        getBinder().bind(engineUiList.getListState(), new Listener<ListState>() {
 //            @Override
@@ -80,8 +91,8 @@ public abstract class BaseContactFragment extends BaseFragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // engineUiList.filter(newText);
-                // adapter.setQuery(newText.toLowerCase());
+                engineUiList.filter(newText);
+                adapter.setQuery(newText.toLowerCase());
                 return true;
             }
         });
@@ -100,14 +111,14 @@ public abstract class BaseContactFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        if (adapter != null) {
-//            adapter.dispose();
-//            adapter = null;
-//        }
-//        if (engineUiList != null) {
-//            engineUiList.release();
-//            engineUiList = null;
-//        }
+        if (adapter != null) {
+            adapter.dispose();
+            adapter = null;
+        }
+        if (engineUiList != null) {
+            engineUiList.release();
+            engineUiList = null;
+        }
         listView = null;
         emptyView = null;
     }
