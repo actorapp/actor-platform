@@ -1,6 +1,7 @@
 package im.actor.model.storage.temp;
 
 import im.actor.model.Storage;
+import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
@@ -25,6 +26,11 @@ public class TempStorage implements Storage {
     @Override
     public KeyValueStorage createGroupsEngine() {
         return new TempKeyValueStorage();
+    }
+
+    @Override
+    public ListEngine<Contact> createContactsEngine() {
+        return new TempListEngine<Contact>();
     }
 
     @Override

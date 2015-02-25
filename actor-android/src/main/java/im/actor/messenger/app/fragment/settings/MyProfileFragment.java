@@ -101,7 +101,7 @@ public class MyProfileFragment extends BaseFragment {
                         } else {
                             tintImageView.setVisibility(View.INVISIBLE);
                         }
-                        if (i != val.size()) {
+                        if (i != val.size() - 1) {
                             recordView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
                         } else {
                             recordView.findViewById(R.id.divider).setVisibility(View.GONE);

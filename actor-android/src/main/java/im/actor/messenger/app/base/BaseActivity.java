@@ -7,6 +7,7 @@ import android.widget.TextView;
 import im.actor.messenger.app.ActorBinder;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.model.entity.Avatar;
+import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupTypingVM;
 import im.actor.model.viewmodel.GroupVM;
@@ -50,6 +51,10 @@ public class BaseActivity extends ActionBarActivity {
 
     public void bind(final TextView textView, final View container, final View titleContainer, final GroupTypingVM typing) {
         BINDER.bind(textView, container, titleContainer, typing);
+    }
+
+    public <T> void bind(ValueModel<T> value, ValueChangedListener<T> listener) {
+        BINDER.bind(value, listener);
     }
 
     @Override

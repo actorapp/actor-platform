@@ -1,5 +1,6 @@
 package im.actor.model;
 
+import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
@@ -17,6 +18,8 @@ public interface Storage {
     public KeyValueStorage createUsersEngine();
 
     public KeyValueStorage createGroupsEngine();
+
+    public ListEngine<Contact> createContactsEngine();
 
     public ListEngine<Dialog> createDialogsEngine();
 

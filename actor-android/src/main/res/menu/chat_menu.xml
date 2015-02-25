@@ -9,9 +9,6 @@
         android:id="@+id/contact"
         android:title="@string/chat_menu_view_contact" />
     <item
-        android:id="@+id/call"
-        android:title="@string/chat_menu_call" />
-    <item
         android:id="@+id/files"
         android:title="@string/chat_menu_files" />
     <item

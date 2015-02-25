@@ -22,10 +22,16 @@ public class Configuration {
 
     private LocaleProvider localeProvider;
 
+    private PhoneBookProvider phoneBookProvider;
+
+    private CryptoProvider cryptoProvider;
+
     public Configuration(Networking networking, ConnectionEndpoint[] endpoints,
                          Threading threading, MainThread mainThread, Storage storage,
                          LogCallback log, boolean persistUploadingFiles,
-                         LocaleProvider localeProvider) {
+                         LocaleProvider localeProvider,
+                         PhoneBookProvider phoneBookProvider,
+                         CryptoProvider cryptoProvider) {
         this.networking = networking;
         this.endpoints = endpoints;
         this.threading = threading;
@@ -34,6 +40,16 @@ public class Configuration {
         this.log = log;
         this.persistUploadingFiles = persistUploadingFiles;
         this.localeProvider = localeProvider;
+        this.phoneBookProvider = phoneBookProvider;
+        this.cryptoProvider = cryptoProvider;
+    }
+
+    public CryptoProvider getCryptoProvider() {
+        return cryptoProvider;
+    }
+
+    public PhoneBookProvider getPhoneBookProvider() {
+        return phoneBookProvider;
     }
 
     public Networking getNetworking() {

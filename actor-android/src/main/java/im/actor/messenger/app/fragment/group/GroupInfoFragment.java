@@ -22,9 +22,9 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.base.BaseFragment;
-import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.CoverAvatarView;

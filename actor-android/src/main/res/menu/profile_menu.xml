@@ -10,11 +10,6 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/call"
-        android:title="@string/profile_menu_call"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/remove"
         android:title="@string/profile_menu_remove"
         app:showAsAction="never" />

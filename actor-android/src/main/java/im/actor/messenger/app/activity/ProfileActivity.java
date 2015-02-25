@@ -1,19 +1,21 @@
 package im.actor.messenger.app.activity;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.profile.ProfileFragment;
-import im.actor.messenger.app.Intents;
+import im.actor.model.mvvm.ValueChangedListener;
+import im.actor.model.mvvm.ValueModel;
+import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.messenger;
+import static im.actor.messenger.core.Core.users;
 
 /**
  * Created by ex3ndr on 12.09.14.
@@ -37,30 +39,31 @@ public class ProfileActivity extends BaseFragmentActivity {
         if (savedInstanceState == null) {
             showFragment(ProfileFragment.create(uid), false, false);
         }
-
-//        getBinder().bind(users().get(uid).getContactModel(), new Listener<Boolean>() {
-//            @Override
-//            public void onUpdated(Boolean aBoolean) {
-//                invalidateOptionsMenu();
-//            }
-//        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        bind(users().get(uid).isContact(), new ValueChangedListener<Boolean>() {
+            @Override
+            public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                invalidateOptionsMenu();
+            }
+        });
         messenger().onProfileOpen(uid);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile_menu, menu);
-
-        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        menu.findItem(R.id.call).setVisible(tm.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE);
-//        UserModel userModel = users().get(uid);
-//        menu.findItem(R.id.remove).setVisible(userModel.getContactModel().getValue());
-//        menu.findItem(R.id.add).setVisible(!userModel.getContactModel().getValue());
+        UserVM userVM = users().get(uid);
+        if (userVM.isContact().get()) {
+            menu.findItem(R.id.remove).setVisible(true);
+            menu.findItem(R.id.add).setVisible(false);
+        } else {
+            menu.findItem(R.id.remove).setVisible(false);
+            menu.findItem(R.id.add).setVisible(true);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -68,10 +71,6 @@ public class ProfileActivity extends BaseFragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
-            return true;
-        } else if (item.getItemId() == R.id.call) {
-            // UserModel userModel = users().get(uid);
-            // startActivity(new Intent(Intent.ACTION_DIAL).setData(Uri.parse("tel:+" + userModel.getPhone())));
             return true;
         } else if (item.getItemId() == R.id.add) {
 //            ask(ContactsActor.contactsList().addContact(uid), getString(R.string.profile_adding), new UiAskCallback<Boolean>() {
