@@ -4,21 +4,37 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
-import android.text.*;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.style.ReplacementSpan;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.droidkit.engine.list.view.EngineUiList;
 import com.droidkit.engine.uilist.UiListListener;
+
+import java.util.ArrayList;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragment;
+import im.actor.messenger.app.fragment.contacts.ContactsAdapter;
+import im.actor.messenger.app.view.OnItemClickedListener;
+import im.actor.messenger.storage.ListEngines;
 import im.actor.messenger.util.Screen;
+import im.actor.model.entity.Contact;
 import im.actor.model.viewmodel.UserVM;
-
-import java.util.ArrayList;
 
 import static im.actor.messenger.core.Core.users;
 
@@ -36,10 +52,10 @@ public class GroupUsersFragment extends BaseFragment implements UiListListener {
         return res;
     }
 
-    // private ContactsAdapter adapter;
+    private ContactsAdapter adapter;
     private ListView listView;
     private EditText searchField;
-    // private EngineUiList<Contact> engineUiList;
+    private EngineUiList<Contact> engineUiList;
     private ArrayList<Integer> selectedUsers = new ArrayList<Integer>();
     private TextWatcher textWatcher;
 
@@ -72,37 +88,36 @@ public class GroupUsersFragment extends BaseFragment implements UiListListener {
 
             @Override
             public void afterTextChanged(Editable s) {
-
                 checkForDeletions(s);
-
                 String filter = s.toString().trim();
                 while (filter.length() > 0 && filter.charAt(0) == '!') {
                     filter = filter.substring(1);
                 }
-                // engineUiList.filter(filter);
+                engineUiList.filter(filter);
+                adapter.setQuery(filter);
             }
         };
         listView = (ListView) res.findViewById(R.id.contactsList);
         View header = new View(getActivity());
         header.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
         listView.addHeaderView(header, null, false);
-//        engineUiList = new EngineUiList<Contact>(ListEngines.getContactsEngine());
-//        adapter = new ContactsAdapter(engineUiList, getActivity(), true, new OnItemClickedListener<Contact>() {
-//            @Override
-//            public void onClicked(Contact contact) {
-//                if (selectedUsers.contains(contact.getUid())) {
-//                    selectedUsers.remove((Integer) contact.getUid());
-//                    adapter.unselect(contact.getUid());
-//                } else {
-//                    selectedUsers.add(contact.getUid());
-//                    adapter.select(contact.getUid());
-//                }
-//                getActivity().invalidateOptionsMenu();
-//                updateEditText();
-//            }
-//        }, null);
-//        listView.setAdapter(adapter);
-//        engineUiList.getUiList().addListener(this);
+        engineUiList = new EngineUiList<Contact>(ListEngines.getContactsListEngine());
+        adapter = new ContactsAdapter(engineUiList, getActivity(), true, new OnItemClickedListener<Contact>() {
+            @Override
+            public void onClicked(Contact contact) {
+                if (selectedUsers.contains(contact.getUid())) {
+                    selectedUsers.remove((Integer) contact.getUid());
+                    adapter.unselect(contact.getUid());
+                } else {
+                    selectedUsers.add(contact.getUid());
+                    adapter.select(contact.getUid());
+                }
+                getActivity().invalidateOptionsMenu();
+                updateEditText();
+            }
+        }, null);
+        listView.setAdapter(adapter);
+        engineUiList.getUiList().addListener(this);
         return res;
     }
 
@@ -160,15 +175,15 @@ public class GroupUsersFragment extends BaseFragment implements UiListListener {
 
     @Override
     public void onListUpdated() {
-//        if (engineUiList.getUiList().getSize() == 1) {
-//            Contact contact = engineUiList.getUiList().getItem(0);
-//            if (!selectedUsers.contains(contact.getUid())) {
-//                selectedUsers.add(contact.getUid());
-//                adapter.select(contact.getUid());
-//                getActivity().invalidateOptionsMenu();
-//                updateEditText();
-//            }
-//        }
+        if (engineUiList.getUiList().getSize() == 1) {
+            Contact contact = engineUiList.getUiList().getItem(0);
+            if (!selectedUsers.contains(contact.getUid())) {
+                selectedUsers.add(contact.getUid());
+                adapter.select(contact.getUid());
+                getActivity().invalidateOptionsMenu();
+                updateEditText();
+            }
+        }
     }
 
     private void updateEditText() {
@@ -184,7 +199,7 @@ public class GroupUsersFragment extends BaseFragment implements UiListListener {
         searchField.setText(spannable);
         searchField.setSelection(spannable.length());
         searchField.addTextChangedListener(textWatcher);
-        // engineUiList.filter("");
+        engineUiList.filter("");
         listView.invalidateViews();
     }
 
@@ -224,11 +239,11 @@ public class GroupUsersFragment extends BaseFragment implements UiListListener {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // engineUiList.getUiList().removeListener(this);
-//        if (adapter != null) {
-//            adapter.dispose();
-//            adapter = null;
-//        }
+        engineUiList.getUiList().removeListener(this);
+        if (adapter != null) {
+            adapter.dispose();
+            adapter = null;
+        }
         listView = null;
     }
 
