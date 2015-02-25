@@ -4,6 +4,7 @@ import im.actor.messenger.storage.ListEngines;
 import im.actor.messenger.storage.SQLiteProvider;
 import im.actor.messenger.storage.sqlite.SQLiteKeyValue;
 import im.actor.model.Storage;
+import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
@@ -28,6 +29,11 @@ public class AppEngineFactory implements Storage {
     @Override
     public KeyValueStorage createGroupsEngine() {
         return new SQLiteKeyValue(SQLiteProvider.db(), "actor_groups");
+    }
+
+    @Override
+    public ListEngine<Contact> createContactsEngine() {
+        return new ListProvider<Contact>(ListEngines.getContactsListEngine());
     }
 
     @Override

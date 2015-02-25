@@ -109,7 +109,7 @@ public class ProfileFragment extends BaseFragment {
                 } else {
                     tintImageView.setVisibility(View.INVISIBLE);
                 }
-                if (i != phones.size()) {
+                if (i != phones.size() - 1) {
                     recordView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
                 } else {
                     recordView.findViewById(R.id.divider).setVisibility(View.GONE);

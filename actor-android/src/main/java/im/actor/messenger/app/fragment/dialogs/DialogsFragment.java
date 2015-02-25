@@ -65,7 +65,7 @@ public class DialogsFragment extends BaseDialogFragment implements UiListStateLi
                         @Override
                         public void onClick(DialogInterface dialog2, int which) {
                             if (which == 0) {
-                                // startActivity(Intents.openGroup(dialog.getId(), getActivity()));
+                                startActivity(Intents.openGroup(dialog.getPeer().getPeerId(), getActivity()));
                             } else if (which == 1) {
                                 startActivity(Intents.editGroupTitle(dialog.getPeer().getPeerId(), getActivity()));
                             } else if (which == 2) {

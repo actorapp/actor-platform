@@ -3,6 +3,8 @@ package im.actor.messenger.core;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.database.ContentObserver;
+import android.provider.ContactsContract;
 
 import com.droidkit.images.cache.BitmapClasificator;
 import com.droidkit.images.loading.ImageLoader;
@@ -23,8 +25,10 @@ import im.actor.messenger.core.images.VideoTask;
 import im.actor.messenger.storage.provider.AppEngineFactory;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
+import im.actor.model.android.AndroidCryptoProvider;
 import im.actor.model.android.AndroidLog;
 import im.actor.model.android.AndroidMainThread;
+import im.actor.model.android.AndroidPhoneBook;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
 import im.actor.model.jvm.JavaLocale;
@@ -136,6 +140,8 @@ public class Core {
         builder.setStorage(new AppEngineFactory());
 
         builder.setLocale(new JavaLocale("En"));
+        builder.setPhoneBookProvider(new AndroidPhoneBook());
+        builder.setCryptoProvider(new AndroidCryptoProvider());
 
         if (BuildConfig.API_SSL) {
             builder.addEndpoint("tls://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
@@ -144,5 +150,16 @@ public class Core {
         }
 
         this.messenger = new im.actor.model.Messenger(builder.build());
+
+        // Bind phone book change
+        AppContext.getContext()
+                .getContentResolver()
+                .registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true,
+                        new ContentObserver(null) {
+                            @Override
+                            public void onChange(boolean selfChange) {
+                                messenger.onPhoneBookChanged();
+                            }
+                        });
     }
 }

@@ -24,6 +24,20 @@ public class ConfigurationBuilder {
 
     private LocaleProvider localeProvider;
 
+    private PhoneBookProvider phoneBookProvider;
+
+    private CryptoProvider cryptoProvider;
+
+    public ConfigurationBuilder setCryptoProvider(CryptoProvider cryptoProvider) {
+        this.cryptoProvider = cryptoProvider;
+        return this;
+    }
+
+    public ConfigurationBuilder setPhoneBookProvider(PhoneBookProvider phoneBookProvider) {
+        this.phoneBookProvider = phoneBookProvider;
+        return this;
+    }
+
     public ConfigurationBuilder setLog(LogCallback log) {
         this.log = log;
         return this;
@@ -118,7 +132,14 @@ public class ConfigurationBuilder {
         if (localeProvider == null) {
             throw new RuntimeException("Locale Provider not set");
         }
+        if (phoneBookProvider == null) {
+            throw new RuntimeException("Phonebook Provider not set");
+        }
+        if (cryptoProvider == null) {
+            throw new RuntimeException("Crypto Provider not set");
+        }
         return new Configuration(networking, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
-                threading, mainThread, enginesFactory, log, isUploadFilePersist, localeProvider);
+                threading, mainThread, enginesFactory, log, isUploadFilePersist, localeProvider,
+                phoneBookProvider, cryptoProvider);
     }
 }

@@ -2,10 +2,10 @@ package im.actor.model.modules;
 
 import im.actor.model.Configuration;
 import im.actor.model.i18n.I18nEngine;
+import im.actor.model.modules.utils.PreferenceApiStorage;
 import im.actor.model.network.ActorApi;
 import im.actor.model.network.ActorApiCallback;
 import im.actor.model.network.Endpoints;
-import im.actor.model.modules.utils.PreferenceApiStorage;
 import im.actor.model.storage.PreferencesStorage;
 
 /**
@@ -25,6 +25,7 @@ public class Modules {
     private volatile Presence presence;
     private volatile Typing typing;
     private volatile FilesModule filesModule;
+    private volatile Contacts contacts;
 
     public Modules(Configuration configuration) {
         this.configuration = configuration;
@@ -70,6 +71,7 @@ public class Modules {
         presence = new Presence(this);
         typing = new Typing(this);
         filesModule = new FilesModule(this);
+        contacts = new Contacts(this);
         messages.run();
         updates.run();
         presence.run();
@@ -117,5 +119,9 @@ public class Modules {
 
     public I18nEngine getI18nEngine() {
         return i18nEngine;
+    }
+
+    public Contacts getContactsModule() {
+        return contacts;
     }
 }

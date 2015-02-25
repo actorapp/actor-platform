@@ -1,20 +1,34 @@
 package im.actor.messenger.storage;
 
-import com.droidkit.engine.list.*;
+import com.droidkit.engine.list.ListEngine;
 import com.droidkit.engine.list.storage.SQLiteStorageAdapter;
-import com.droidkit.engine.list.view.*;
+import com.droidkit.engine.list.view.EngineUiList;
+import com.droidkit.engine.list.view.ListHolder;
 
+import java.util.HashMap;
+
+import im.actor.messenger.storage.adapters.ContactsAdapter;
 import im.actor.messenger.storage.adapters.DialogsAdapter;
 import im.actor.messenger.storage.adapters.MessagesAdapter;
+import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 
-import java.util.HashMap;
-
 public final class ListEngines {
 
     private ListEngines() {
+    }
+
+    // Contacts
+    private static final ListHolder<Contact> CONTACTS_ENGINE = new ListHolder<Contact>(new ContactsAdapter(), "CONTACTS");
+
+    public static ListEngine<Contact> getContactsListEngine() {
+        return CONTACTS_ENGINE.getEngine();
+    }
+
+    public static EngineUiList<Contact> getContactsUiListEngine() {
+        return CONTACTS_ENGINE.getUiListEngine();
     }
 
     // Dialogs

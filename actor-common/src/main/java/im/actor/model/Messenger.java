@@ -1,6 +1,7 @@
 package im.actor.model;
 
 import im.actor.model.concurrency.Command;
+import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.ActorSystem;
@@ -32,6 +33,9 @@ public class Messenger {
     public Messenger(Configuration configuration) {
         // Init internal actor system
         Environment.setThreading(configuration.getThreading());
+
+        // Init Crypto
+        CryptoUtils.init(configuration.getCryptoProvider());
 
         // Init MVVM
         MVVMEngine.init(configuration.getMainThread());
@@ -169,6 +173,12 @@ public class Messenger {
         modules.getTypingModule().onTyping(peer);
     }
 
+    public void onPhoneBookChanged() {
+        if (modules.getContactsModule() != null) {
+            modules.getContactsModule().onPhoneBookChanged();
+        }
+    }
+
     public long loadLastReadSortDate(Peer peer) {
         return modules.getMessagesModule().loadReadState(peer);
     }
@@ -195,5 +205,9 @@ public class Messenger {
 
     public Command<Boolean> editGroupTitle(final int gid, final String title) {
         return modules.getGroupsModule().editTitle(gid, title);
+    }
+
+    public Command<Boolean> leaveGroup(final int gid) {
+        return modules.getGroupsModule().leaveGroup(gid);
     }
 }

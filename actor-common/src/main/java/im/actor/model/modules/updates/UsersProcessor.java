@@ -7,6 +7,7 @@ import im.actor.model.api.Avatar;
 import im.actor.model.entity.User;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
+import im.actor.model.modules.contacts.ContactsSyncActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.entity.EntityConverter;
 
@@ -37,6 +38,8 @@ public class UsersProcessor extends BaseModule {
                         !equalsE(upd.getAvatar(), saved.getAvatar())) {
                     modules().getMessagesModule().getDialogsActor()
                             .send(new DialogsActor.UserChanged(upd));
+                    modules().getContactsModule().getContactSyncActor()
+                            .send(new ContactsSyncActor.UserChanged(upd));
                 }
             }
         }
@@ -56,6 +59,8 @@ public class UsersProcessor extends BaseModule {
             if (u.getLocalName() == null) {
                 modules().getMessagesModule().getDialogsActor()
                         .send(new DialogsActor.UserChanged(u));
+                modules().getContactsModule().getContactSyncActor()
+                        .send(new ContactsSyncActor.UserChanged(u));
             }
         }
     }
@@ -74,6 +79,8 @@ public class UsersProcessor extends BaseModule {
 
             modules().getMessagesModule().getDialogsActor().send(
                     new DialogsActor.UserChanged(u));
+            modules().getContactsModule().getContactSyncActor()
+                    .send(new ContactsSyncActor.UserChanged(u));
         }
     }
 
@@ -93,6 +100,8 @@ public class UsersProcessor extends BaseModule {
 
             modules().getMessagesModule().getDialogsActor().send(
                     new DialogsActor.UserChanged(u));
+            modules().getContactsModule().getContactSyncActor()
+                    .send(new ContactsSyncActor.UserChanged(u));
         }
     }
 
