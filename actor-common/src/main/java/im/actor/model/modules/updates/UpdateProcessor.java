@@ -80,7 +80,7 @@ public class UpdateProcessor {
                              List<Group> groups,
                              List<ContactRecord> contactRecords,
                              boolean force) {
-        usersProcessor.applyUsers(users, force);
+        usersProcessor.applyUsers(users, contactRecords, force);
         groupsProcessor.applyGroups(groups, force);
     }
 

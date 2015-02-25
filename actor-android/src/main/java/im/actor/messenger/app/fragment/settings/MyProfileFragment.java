@@ -1,8 +1,12 @@
 package im.actor.messenger.app.fragment.settings;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
@@ -12,16 +16,31 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
+
+import java.util.ArrayList;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.activity.*;
+import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.activity.ChatSettingsActivity;
+import im.actor.messenger.app.activity.HelpActivity;
+import im.actor.messenger.app.activity.NotificationsActivity;
+import im.actor.messenger.app.activity.SecuritySettingsActivity;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.base.BaseFragment;
-import im.actor.messenger.app.intents.Intents;
 import im.actor.messenger.app.view.CoverAvatarView;
+import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.Screen;
+import im.actor.model.mvvm.ValueChangedListener;
+import im.actor.model.mvvm.ValueModel;
+import im.actor.model.viewmodel.UserPhone;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.myUid;
@@ -37,7 +56,7 @@ public class MyProfileFragment extends BaseFragment {
     private CoverAvatarView avatar;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         baseColor = getResources().getColor(R.color.primary);
@@ -47,15 +66,6 @@ public class MyProfileFragment extends BaseFragment {
         final TextView nameView = (TextView) view.findViewById(R.id.name);
 
         bind(nameView, userModel.getName());
-
-        TextView phoneView = (TextView) view.findViewById(R.id.phone);
-//        try {
-//            Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + userModel.getPhone(), "us");
-//            phoneView.setText(PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL));
-//        } catch (NumberParseException e) {
-//            e.printStackTrace();
-//            phoneView.setText("+" + userModel.getPhone());
-//        }
 
         view.findViewById(R.id.notifications).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,72 +81,99 @@ public class MyProfileFragment extends BaseFragment {
             }
         });
 
-        view.findViewById(R.id.profileAction).setOnClickListener(new View.OnClickListener() {
+        final LinearLayout contactsContainer = (LinearLayout) view.findViewById(R.id.phoneContainer);
+
+        // TODO: Move bindings to onResume
+        bind(userModel.getPhones(), new ValueChangedListener<ArrayList<UserPhone>>() {
             @Override
-            public void onClick(View v) {
-//                final String phoneNumber;
-//                String phoneNumber1;
-//                try {
-//                    Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + userModel.getPhone(), "us");
-//                    phoneNumber1 = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
-//                } catch (NumberParseException e) {
-//                    e.printStackTrace();
-//                    phoneNumber1 = "+" + userModel.getPhone();
-//                }
-//                phoneNumber = phoneNumber1;
-//
-//                startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND)
-//                                .setType("text/plain")
-//                                .putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_text)
-//                                        .replace("{0}", phoneNumber)),
-//                        getString(R.string.settings_share_profile_title)));
+            public void onChanged(ArrayList<UserPhone> val, ValueModel<ArrayList<UserPhone>> valueModel) {
+                if (val.size() == 0) {
+                    contactsContainer.setVisibility(View.GONE);
+                } else {
+                    contactsContainer.setVisibility(View.VISIBLE);
+                    for (int i = 0; i < val.size(); i++) {
+                        final UserPhone record = val.get(i);
+                        View recordView = inflater.inflate(R.layout.contact_record, contactsContainer, false);
+                        TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
+                        if (i == 0) {
+                            tintImageView.setResource(R.drawable.ic_call_white_36dp);
+                            tintImageView.setVisibility(View.VISIBLE);
+                        } else {
+                            tintImageView.setVisibility(View.INVISIBLE);
+                        }
+                        if (i != val.size()) {
+                            recordView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
+                        } else {
+                            recordView.findViewById(R.id.divider).setVisibility(View.GONE);
+                        }
+
+                        String _phoneNumber;
+                        try {
+                            Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + record.getPhone(), "us");
+                            _phoneNumber = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
+                        } catch (NumberParseException e) {
+                            e.printStackTrace();
+                            _phoneNumber = "+" + record.getPhone();
+                        }
+                        final String phoneNumber = _phoneNumber;
+
+                        ((TextView) recordView.findViewById(R.id.value)).setText(phoneNumber);
+                        ((TextView) recordView.findViewById(R.id.title)).setText(record.getTitle());
+                        contactsContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                Screen.dp(72)));
+
+                        recordView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                new AlertDialog.Builder(getActivity())
+                                        .setItems(new CharSequence[]{
+                                                getString(R.string.phone_menu_call).replace("{0}", phoneNumber),
+                                                getString(R.string.phone_menu_sms).replace("{0}", phoneNumber),
+                                                getString(R.string.phone_menu_share).replace("{0}", phoneNumber),
+                                                getString(R.string.phone_menu_copy)
+                                        }, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if (which == 0) {
+                                                    startActivity(new Intent(Intent.ACTION_DIAL)
+                                                            .setData(Uri.parse("tel:+" + record.getPhone())));
+                                                } else if (which == 1) {
+                                                    startActivity(new Intent(Intent.ACTION_VIEW)
+                                                            .setData(Uri.parse("sms:+" + record.getPhone())));
+                                                } else if (which == 2) {
+                                                    startActivity(new Intent(Intent.ACTION_SEND)
+                                                            .setType("text/plain")
+                                                            .putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_text)
+                                                                    .replace("{0}", phoneNumber)
+                                                                    .replace("{1}", userModel.getName().get())));
+                                                } else if (which == 3) {
+                                                    android.content.ClipboardManager clipboard =
+                                                            (android.content.ClipboardManager) getActivity()
+                                                                    .getSystemService(Context.CLIPBOARD_SERVICE);
+                                                    android.content.ClipData clip = android.content.ClipData.newPlainText("Phone number", phoneNumber);
+                                                    clipboard.setPrimaryClip(clip);
+                                                    Toast.makeText(getActivity(), R.string.toast_phone_copied, Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        })
+                                        .show()
+                                        .setCanceledOnTouchOutside(true);
+                            }
+                        });
+                        recordView.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                                android.content.ClipData clip = android.content.ClipData.newPlainText("Phone number", "+" + record.getPhone());
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(getActivity(), R.string.toast_phone_copied, Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                        });
+                    }
+                }
             }
         });
-
-//        view.findViewById(R.id.phoneContainer).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                final String phoneNumber;
-//                String phoneNumber1;
-//                try {
-//                    Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + userModel.getPhone(), "us");
-//                    phoneNumber1 = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
-//                } catch (NumberParseException e) {
-//                    e.printStackTrace();
-//                    phoneNumber1 = "+" + userModel.getPhone();
-//                }
-//                phoneNumber = phoneNumber1;
-//
-//                new AlertDialog.Builder(getActivity())
-//                        .setItems(new CharSequence[]{
-//                                getString(R.string.phone_menu_call).replace("{0}", phoneNumber),
-//                                getString(R.string.phone_menu_sms).replace("{0}", phoneNumber),
-//                                getString(R.string.phone_menu_share).replace("{0}", phoneNumber),
-//                                getString(R.string.phone_menu_copy)
-//                        }, new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                if (which == 0) {
-//                                    startActivity(new Intent(Intent.ACTION_DIAL).setData(Uri.parse("tel:+" + userModel.getPhone())));
-//                                } else if (which == 1) {
-//                                    startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("sms:+" + userModel.getPhone())));
-//                                } else if (which == 2) {
-//                                    startActivity(new Intent(Intent.ACTION_SEND)
-//                                            .setType("text/plain")
-//                                            .putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_text)
-//                                                    .replace("{0}", phoneNumber)));
-//                                } else if (which == 3) {
-//                                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-//                                    android.content.ClipData clip = android.content.ClipData.newPlainText("Phone number", phoneNumber);
-//                                    clipboard.setPrimaryClip(clip);
-//                                    Toast.makeText(getActivity(), R.string.toast_phone_copied, Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        })
-//                        .show()
-//                        .setCanceledOnTouchOutside(true);
-//            }
-//        });
 
         view.findViewById(R.id.chatSettings).setOnClickListener(new View.OnClickListener() {
             @Override

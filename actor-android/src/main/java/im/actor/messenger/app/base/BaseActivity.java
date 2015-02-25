@@ -4,7 +4,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import im.actor.messenger.app.binding.ActorBinder;
+import im.actor.messenger.app.ActorBinder;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.model.entity.Avatar;
 import im.actor.model.mvvm.ValueModel;

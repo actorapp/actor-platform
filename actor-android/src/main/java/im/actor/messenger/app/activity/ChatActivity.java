@@ -38,7 +38,7 @@ import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
-import im.actor.messenger.app.intents.Intents;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.TintImageView;

@@ -3,7 +3,7 @@ package im.actor.messenger.app.fragment.pick;
 import android.app.Activity;
 import android.content.Intent;
 import im.actor.messenger.app.fragment.base.BaseContactFragment;
-import im.actor.messenger.app.intents.Intents;
+import im.actor.messenger.app.Intents;
 
 /**
  * Created by ex3ndr on 08.10.14.

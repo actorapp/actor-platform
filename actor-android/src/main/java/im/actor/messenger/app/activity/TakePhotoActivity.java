@@ -14,7 +14,7 @@ import com.soundcloud.android.crop.Crop;
 import java.io.File;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.intents.Intents;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.core.AppContext;
 
 /**

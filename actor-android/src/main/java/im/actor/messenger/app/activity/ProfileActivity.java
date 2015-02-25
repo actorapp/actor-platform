@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.profile.ProfileFragment;
-import im.actor.messenger.app.intents.Intents;
+import im.actor.messenger.app.Intents;
 
 import static im.actor.messenger.core.Core.messenger;
 

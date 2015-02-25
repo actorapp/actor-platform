@@ -5,7 +5,7 @@ import android.os.Bundle;
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.settings.EditNameFragment;
-import im.actor.messenger.app.intents.Intents;
+import im.actor.messenger.app.Intents;
 
 /**
  * Created by ex3ndr on 20.10.14.
