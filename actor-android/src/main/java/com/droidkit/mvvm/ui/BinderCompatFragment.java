@@ -6,6 +6,8 @@ import android.widget.TextView;
 import im.actor.messenger.app.binding.ActorBinder;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.model.entity.Avatar;
+import im.actor.model.mvvm.ValueChangedListener;
+import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.UserVM;
 
 /**
@@ -19,9 +21,9 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
         BINDER.bind(textView, value);
     }
 
-//    public void bind(final AvatarView avatarView, final im.actor.model.mvvm.ValueModel<Avatar> avatar) {
-//        BINDER.bind(avatarView, avatar);
-//    }
+    public <T> void bind(ValueModel<T> value, ValueChangedListener<T> listener) {
+        BINDER.bind(value, listener);
+    }
 
     public void bind(final CoverAvatarView avatarView, final im.actor.model.mvvm.ValueModel<Avatar> avatar) {
         BINDER.bind(avatarView, avatar);
