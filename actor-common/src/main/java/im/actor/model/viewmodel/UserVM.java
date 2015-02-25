@@ -7,6 +7,7 @@ import im.actor.model.entity.Avatar;
 import im.actor.model.entity.ContactRecord;
 import im.actor.model.entity.Sex;
 import im.actor.model.entity.User;
+import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.BaseValueModel;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.mvvm.ModelChangedListener;
@@ -26,7 +27,7 @@ public class UserVM extends BaseValueModel<User> {
     private ArrayList<ModelChangedListener<UserVM>> listeners = new ArrayList<ModelChangedListener<UserVM>>();
     private ValueModel<ArrayList<UserPhone>> phones;
 
-    public UserVM(User user) {
+    public UserVM(User user, Modules modules) {
         super(user);
 
         id = user.getUid();
@@ -34,7 +35,7 @@ public class UserVM extends BaseValueModel<User> {
         sex = user.getSex();
         name = new ValueModel<String>("user." + id + ".name", user.getName());
         avatar = new ValueModel<Avatar>("user." + id + ".avatar", user.getAvatar());
-        isContact = new ValueModel<Boolean>("user." + id + ".contact", false);
+        isContact = new ValueModel<Boolean>("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
         presence = new ValueModel<UserPresence>("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
         phones = new ValueModel<ArrayList<UserPhone>>("user." + id + ".phones", buildPhones(user.getRecords()));
     }

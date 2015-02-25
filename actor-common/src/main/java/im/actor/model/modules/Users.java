@@ -30,7 +30,7 @@ public class Users extends BaseModule {
         this.collection = new MVVMCollection<User, UserVM>(messenger.getConfiguration().getStorage().createUsersEngine()) {
             @Override
             protected UserVM createNew(User raw) {
-                return new UserVM(raw);
+                return new UserVM(raw, modules());
             }
 
             @Override
@@ -134,10 +134,5 @@ public class Users extends BaseModule {
                 });
             }
         };
-    }
-
-    public Command<Boolean> editAvatar(String avatarPath) {
-        // TODO: Implement
-        throw new RuntimeException("Not Implemented");
     }
 }

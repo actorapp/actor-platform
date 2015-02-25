@@ -210,4 +210,12 @@ public class Messenger {
     public Command<Boolean> leaveGroup(final int gid) {
         return modules.getGroupsModule().leaveGroup(gid);
     }
+
+    public Command<Boolean> removeContact(int uid) {
+        return modules.getContactsModule().removeContact(uid);
+    }
+
+    public Command<Boolean> addContact(int uid) {
+        return modules.getContactsModule().addContact(uid);
+    }
 }

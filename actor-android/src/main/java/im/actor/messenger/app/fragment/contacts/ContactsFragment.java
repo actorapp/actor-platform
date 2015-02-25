@@ -25,7 +25,10 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.storage.ListEngines;
 import im.actor.messenger.util.Screen;
+import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Contact;
+
+import static im.actor.messenger.core.Core.messenger;
 
 public class ContactsFragment extends BaseFragment implements Listener<ListState> {
 
@@ -144,22 +147,17 @@ public class ContactsFragment extends BaseFragment implements Listener<ListState
                                     .setPositiveButton(R.string.alert_remove_contact_yes, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-//                                            ask(ContactsActor.contactsList().removeContact(contact.getUid()), getString(R.string.contacts_menu_remove_progress), new UiAskCallback<Boolean>() {
-//                                                @Override
-//                                                public void onPreStart() {
-//
-//                                                }
-//
-//                                                @Override
-//                                                public void onCompleted(Boolean res) {
-//
-//                                                }
-//
-//                                                @Override
-//                                                public void onError(Throwable t) {
-//
-//                                                }
-//                                            });
+                                            execute(messenger().removeContact(contact.getUid()), R.string.contacts_menu_remove_progress, new CommandCallback<Boolean>() {
+                                                @Override
+                                                public void onResult(Boolean res) {
+
+                                                }
+
+                                                @Override
+                                                public void onError(Exception e) {
+
+                                                }
+                                            });
                                         }
                                     })
                                     .setNegativeButton(R.string.dialog_cancel, null)

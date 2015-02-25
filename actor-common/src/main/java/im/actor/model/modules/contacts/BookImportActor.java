@@ -27,7 +27,9 @@ import im.actor.model.network.RpcException;
  */
 public class BookImportActor extends ModuleActor {
 
-    private static final String TAG = "BookImportActor";
+    private static final String TAG = "ContactsImport";
+
+    private final boolean ENABLE_LOG;
 
     private static final int MAX_IMPORT_SIZE = 50;
 
@@ -38,6 +40,7 @@ public class BookImportActor extends ModuleActor {
 
     public BookImportActor(Modules messenger) {
         super(messenger);
+        ENABLE_LOG = messenger.getConfiguration().isEnableContactsLogging();
     }
 
     @Override
@@ -47,10 +50,19 @@ public class BookImportActor extends ModuleActor {
     }
 
     private void performSync() {
+        if (ENABLE_LOG) {
+            Log.d(TAG, "Checking sync...");
+        }
         if (isSyncInProgress) {
+            if (ENABLE_LOG) {
+                Log.d(TAG, "Sync already in progress");
+            }
             return;
         }
         isSyncInProgress = true;
+        if (ENABLE_LOG) {
+            Log.d(TAG, "Starting book loading...");
+        }
 
         modules().getConfiguration().getPhoneBookProvider()
                 .loadPhoneBook(new PhoneBookProvider.Callback() {
@@ -63,6 +75,9 @@ public class BookImportActor extends ModuleActor {
 
     private void onPhoneBookLoaded(List<PhoneBookContact> phoneBook) {
         isSyncInProgress = false;
+        if (ENABLE_LOG) {
+            Log.d(TAG, "Book load completed");
+        }
 
         ArrayList<PhoneToImport> phoneToImports = new ArrayList<PhoneToImport>();
         ArrayList<EmailToImport> emailToImports = new ArrayList<EmailToImport>();
@@ -79,18 +94,27 @@ public class BookImportActor extends ModuleActor {
             }
 
             for (PhoneBookEmail email : record.getEmails()) {
-                if (isImported(email.getEmail())) {
+                if (isImported(email.getEmail().toLowerCase())) {
                     continue;
                 }
-                if (importingEmails.contains(email.getEmail())) {
+                if (importingEmails.contains(email.getEmail().toLowerCase())) {
                     continue;
                 }
-                importingEmails.add(email.getEmail());
-                emailToImports.add(new EmailToImport(email.getEmail(), record.getName()));
+                importingEmails.add(email.getEmail().toLowerCase());
+                emailToImports.add(new EmailToImport(email.getEmail().toLowerCase(), record.getName()));
             }
         }
 
-        Log.d(TAG, "Importing contacts: " + (phoneToImports.size() + emailToImports.size()));
+        if (phoneToImports.size() == 0 && emailToImports.size() == 0) {
+            if (ENABLE_LOG) {
+                Log.d(TAG, "No new contacts found");
+            }
+            return;
+        } else {
+            if (ENABLE_LOG) {
+                Log.d(TAG, "Founded new " + (phoneToImports.size() + emailToImports.size()) + " contact records");
+            }
+        }
 
         ArrayList<PhoneToImport> phoneToImportsPart = new ArrayList<PhoneToImport>();
         ArrayList<EmailToImport> emailToImportsPart = new ArrayList<EmailToImport>();
@@ -124,6 +148,12 @@ public class BookImportActor extends ModuleActor {
 
     private void performImport(ArrayList<PhoneToImport> phoneToImportsPart,
                                ArrayList<EmailToImport> emailToImportsPart) {
+
+        if (ENABLE_LOG) {
+            Log.d(TAG, "Performing import part with " + phoneToImportsPart.size() +
+                    " phones and " + emailToImportsPart.size() + " emails");
+        }
+
         final PhoneToImport[] phones = phoneToImportsPart.toArray(new PhoneToImport[phoneToImportsPart.size()]);
         final EmailToImport[] emailToImports = emailToImportsPart.toArray(new EmailToImport[emailToImportsPart.size()]);
 
@@ -141,11 +171,15 @@ public class BookImportActor extends ModuleActor {
                 }
 
                 if (response.getUsers().size() == 0) {
-                    Log.d(TAG, "Import success: empty");
+                    if (ENABLE_LOG) {
+                        Log.d(TAG, "Import success, but no new contacts found");
+                    }
                     return;
                 }
 
-                Log.d(TAG, "Import success: " + response.getUsers().size());
+                if (ENABLE_LOG) {
+                    Log.d(TAG, "Import success with " + response.getUsers().size() + " new contacts");
+                }
 
                 ArrayList<Integer> uids = new ArrayList<Integer>();
                 for (im.actor.model.api.User u : response.getUsers()) {
@@ -163,7 +197,9 @@ public class BookImportActor extends ModuleActor {
             @Override
             public void onError(RpcException e) {
                 // TODO: Better error handling
-                Log.d(TAG, "Import failure");
+                if (ENABLE_LOG) {
+                    Log.d(TAG, "Import failure");
+                }
                 e.printStackTrace();
             }
         });
