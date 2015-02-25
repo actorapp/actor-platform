@@ -25,7 +25,9 @@ import im.actor.model.util.DataOutput;
  */
 public class ContactsSyncActor extends ModuleActor {
 
-    private static final String TAG = "ContactsActor";
+    private static final String TAG = "ContactsServerSync";
+
+    private final boolean ENABLE_LOG;
 
     private ArrayList<Integer> contacts = new ArrayList<Integer>();
 
@@ -34,11 +36,15 @@ public class ContactsSyncActor extends ModuleActor {
 
     public ContactsSyncActor(Modules messenger) {
         super(messenger);
+        ENABLE_LOG = messenger.getConfiguration().isEnableContactsLogging();
     }
 
     @Override
     public void preStart() {
         super.preStart();
+        if (ENABLE_LOG) {
+            Log.d(TAG, "Loading contacts ids from storage...");
+        }
         byte[] data = preferences().getBytes("contact_list");
         if (data != null) {
             try {
@@ -55,12 +61,23 @@ public class ContactsSyncActor extends ModuleActor {
     }
 
     public void performSync() {
+        if (ENABLE_LOG) {
+            Log.d(TAG, "Checking sync");
+        }
+
         if (isInProgress) {
+            if (ENABLE_LOG) {
+                Log.d(TAG, "Sync in progress, invalidating current sync");
+            }
             isInvalidated = true;
             return;
         }
         isInProgress = true;
         isInvalidated = false;
+
+        if (ENABLE_LOG) {
+            Log.d(TAG, "Starting sync");
+        }
 
         Integer[] uids = contacts.toArray(new Integer[0]);
         Arrays.sort(uids);
@@ -92,6 +109,10 @@ public class ContactsSyncActor extends ModuleActor {
     }
 
     public void onContactsLoaded(ResponseGetContacts result) {
+        if (ENABLE_LOG) {
+            Log.d(TAG, "Sync result received");
+        }
+
         isInProgress = false;
         if (result.isNotChanged()) {
             Log.d(TAG, "Sync: Not changed");
@@ -103,34 +124,91 @@ public class ContactsSyncActor extends ModuleActor {
             return;
         }
 
-        contacts.clear();
+        if (ENABLE_LOG) {
+            Log.d(TAG, "Sync received " + result.getUsers().size() + " contacts");
+        }
+
+        outer:
+        for (Integer uid : contacts.toArray(new Integer[contacts.size()])) {
+            for (im.actor.model.api.User u : result.getUsers()) {
+                if (u.getId() == uid) {
+                    continue outer;
+                }
+            }
+            if (ENABLE_LOG) {
+                Log.d(TAG, "Removing: #" + uid);
+            }
+            contacts.remove((Integer) uid);
+            if (getUser(uid) != null) {
+                getUserVM(uid).isContact().change(false);
+            }
+            modules().getContactsModule().markNonContact(uid);
+        }
         for (im.actor.model.api.User u : result.getUsers()) {
+            if (contacts.contains(u.getId())) {
+                continue;
+            }
+            if (ENABLE_LOG) {
+                Log.d(TAG, "Adding: #" + u.getId());
+            }
             contacts.add(u.getId());
+            if (getUser(u.getId()) != null) {
+                getUserVM(u.getId()).isContact().change(true);
+            }
+            modules().getContactsModule().markContact(u.getId());
         }
         saveList();
 
         updateEngineList();
+
+        if (isInvalidated) {
+            self().send(new PerformSync());
+        }
     }
 
     public void onContactsAdded(int[] uids) {
+        if (ENABLE_LOG) {
+            Log.d(TAG, "OnContactsAdded received");
+        }
+
         for (int uid : uids) {
+            if (ENABLE_LOG) {
+                Log.d(TAG, "Adding: #" + uid);
+            }
             contacts.add(uid);
+            modules().getContactsModule().markContact(uid);
+            getUserVM(uid).isContact().change(true);
         }
         saveList();
 
         updateEngineList();
+
+        self().send(new PerformSync());
     }
 
     public void onContactsRemoved(int[] uids) {
+        if (ENABLE_LOG) {
+            Log.d(TAG, "OnContactsRemoved received");
+        }
+
         for (int uid : uids) {
-            contacts.remove(uid);
+            Log.d(TAG, "Removing: #" + uid);
+            contacts.remove((Integer) uid);
+            modules().getContactsModule().markNonContact(uid);
+            getUserVM(uid).isContact().change(false);
         }
         saveList();
 
         updateEngineList();
+
+        self().send(new PerformSync());
     }
 
     public void onUserChanged(User user) {
+        if (ENABLE_LOG) {
+            Log.d(TAG, "OnUserChanged #" + user.getUid() + " received");
+        }
+
         if (!contacts.contains(user.getUid())) {
             return;
         }
@@ -139,6 +217,9 @@ public class ContactsSyncActor extends ModuleActor {
     }
 
     private void updateEngineList() {
+        if (ENABLE_LOG) {
+            Log.d(TAG, "Saving contact EngineList");
+        }
         ArrayList<User> userList = new ArrayList<User>();
         for (int u : contacts) {
             userList.add(getUser(u));
@@ -163,11 +244,15 @@ public class ContactsSyncActor extends ModuleActor {
     }
 
     private void saveList() {
+        if (ENABLE_LOG) {
+            Log.d(TAG, "Saving contacts ids to storage");
+        }
         DataOutput dataOutput = new DataOutput();
         dataOutput.writeInt(contacts.size());
         for (int l : contacts) {
             dataOutput.writeInt(l);
         }
+        preferences().putBytes("contact_list", dataOutput.toByteArray());
     }
 
     @Override

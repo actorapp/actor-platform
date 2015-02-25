@@ -35,7 +35,10 @@ public class DataInput {
             throw new IOException();
         }
 
-        int res = data[offset + 3] + (data[offset + 2] << 8) + (data[offset + 1] << 16) + (data[offset] << 24);
+        int res = (data[offset + 3] & 0xFF) +
+                ((data[offset + 2] & 0xFF) << 8) +
+                ((data[offset + 1] & 0xFF) << 16) +
+                ((data[offset] & 0xFF) << 24);
         offset += 4;
         return res;
     }
@@ -99,7 +102,7 @@ public class DataInput {
                 throw new IOException();
             }
 
-            b = data[offset++];
+            b = data[offset++] & 0xFF;
 
             if ((b & 0x80) != 0) {
                 value |= (b & 0x7F) << i;

@@ -149,6 +149,8 @@ public class Core {
             builder.addEndpoint("tcp://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
         }
 
+        builder.setEnableContactsLogging(true);
+
         this.messenger = new im.actor.model.Messenger(builder.build());
 
         // Bind phone book change
