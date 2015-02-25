@@ -12,8 +12,10 @@ import im.actor.messenger.app.activity.EditNameActivity;
 import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
+import static im.actor.messenger.core.Core.groups;
 import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.myUid;
 import static im.actor.messenger.core.Core.users;
@@ -54,8 +56,8 @@ public class EditNameFragment extends BaseFragment {
             UserVM userModel = users().get(id);
             nameEdit.setText(userModel.getName().get());
         } else if (type == EditNameActivity.TYPE_GROUP) {
-//            GroupModel info = groups().get(id);
-//            nameEdit.setText(info.getTitle());
+            GroupVM group = groups().get(id);
+            nameEdit.setText(group.getName().get());
         }
         res.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,22 +100,17 @@ public class EditNameFragment extends BaseFragment {
                         }
                     });
                 } else if (type == EditNameActivity.TYPE_GROUP) {
-                    //                    ask(GroupsActor.groupUpdates().editGroupName(id, name), getString(R.string.edit_name_process), new UiAskCallback<Boolean>() {
-//
-//                        @Override
-//                        public void onPreStart() {
-//                        }
-//
-//                        @Override
-//                        public void onCompleted(Boolean res) {
-//                            getActivity().finish();
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable t) {
-//                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
+                    execute(messenger().editGroupTitle(id, name), R.string.edit_name_process, new CommandCallback<Boolean>() {
+                        @Override
+                        public void onResult(Boolean res) {
+                            getActivity().finish();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });

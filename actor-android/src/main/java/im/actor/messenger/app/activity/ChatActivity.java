@@ -524,7 +524,7 @@ public class ChatActivity extends BaseActivity {
                 startActivity(Intents.openProfile(peer.getPeerId(), ChatActivity.this));
                 break;
             case R.id.groupInfo:
-                // startActivity(Intents.openGroup(chatId, ChatActivity.this));
+                startActivity(Intents.openGroup(peer.getPeerId(), ChatActivity.this));
                 break;
             case R.id.files:
                 // startActivity(Intents.openDocs(chatType, chatId, ChatActivity.this));
