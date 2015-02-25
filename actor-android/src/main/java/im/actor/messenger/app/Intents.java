@@ -1,4 +1,4 @@
-package im.actor.messenger.app.intents;
+package im.actor.messenger.app;
 
 import android.content.Context;
 import android.content.Intent;

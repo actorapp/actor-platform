@@ -7,7 +7,7 @@ import com.droidkit.engine.uilist.UiList;
 
 import im.actor.messenger.app.fragment.chat.BubbleContainer;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
-import im.actor.messenger.app.intents.Intents;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.view.ViewHolder;
 import im.actor.messenger.util.TextUtils;
 import im.actor.model.entity.Message;

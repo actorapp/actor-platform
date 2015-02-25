@@ -1,7 +1,12 @@
 package im.actor.messenger.app.fragment.profile;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SwitchCompat;
@@ -9,15 +14,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
+
+import java.util.ArrayList;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.base.BaseFragment;
-import im.actor.messenger.app.intents.Intents;
 import im.actor.messenger.app.view.CoverAvatarView;
+import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.Screen;
+import im.actor.model.viewmodel.UserPhone;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.users;
@@ -78,63 +93,93 @@ public class ProfileFragment extends BaseFragment {
         res.findViewById(R.id.sharedDiv).setVisibility(View.GONE);
         res.findViewById(R.id.sharedTitle).setVisibility(View.GONE);
 
-//        ((TextView) res.findViewById(R.id.phone)).setText("+" + user.getPhone());
-//        res.findViewById(R.id.phoneContainer).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                final String phoneNumber;
-//                String phoneNumber1;
-//                try {
-//                    Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + user.getPhone(), "us");
-//                    phoneNumber1 = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
-//                } catch (NumberParseException e) {
-//                    e.printStackTrace();
-//                    phoneNumber1 = "+" + user.getPhone();
-//                }
-//                phoneNumber = phoneNumber1;
-//
-//                new AlertDialog.Builder(getActivity())
-//                        .setItems(new CharSequence[]{
-//                                getString(R.string.phone_menu_call).replace("{0}", phoneNumber),
-//                                getString(R.string.phone_menu_sms).replace("{0}", phoneNumber),
-//                                getString(R.string.phone_menu_share).replace("{0}", phoneNumber),
-//                                getString(R.string.phone_menu_copy)
-//                        }, new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                if (which == 0) {
-//                                    startActivity(new Intent(Intent.ACTION_DIAL).setData(Uri.parse("tel:+" + user.getPhone())));
-//                                } else if (which == 1) {
-//                                    startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("sms:+" + user.getPhone())));
-//                                } else if (which == 2) {
-//                                    startActivity(new Intent(Intent.ACTION_SEND)
-//                                            .setType("text/plain")
-//                                            .putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_text)
-//                                                    .replace("{0}", phoneNumber)
-//                                                    .replace("{1}", user.getName())));
-//                                } else if (which == 3) {
-//                                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-//                                    android.content.ClipData clip = android.content.ClipData.newPlainText("Phone number", phoneNumber);
-//                                    clipboard.setPrimaryClip(clip);
-//                                    Toast.makeText(getActivity(), R.string.toast_phone_copied, Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        })
-//                        .show()
-//                        .setCanceledOnTouchOutside(true);
-//            }
-//        });
+        LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.phoneContainer);
+        if (user.getPhones().get().size() == 0) {
+            contactsContainer.setVisibility(View.GONE);
+        } else {
+            contactsContainer.setVisibility(View.VISIBLE);
+            ArrayList<UserPhone> phones = user.getPhones().get();
+            for (int i = 0; i < phones.size(); i++) {
+                final UserPhone record = phones.get(i);
+                View recordView = inflater.inflate(R.layout.contact_record, contactsContainer, false);
+                TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
+                if (i == 0) {
+                    tintImageView.setResource(R.drawable.ic_call_white_36dp);
+                    tintImageView.setVisibility(View.VISIBLE);
+                } else {
+                    tintImageView.setVisibility(View.INVISIBLE);
+                }
+                if (i != phones.size()) {
+                    recordView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
+                } else {
+                    recordView.findViewById(R.id.divider).setVisibility(View.GONE);
+                }
 
-//        res.findViewById(R.id.phoneContainer).setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-//                android.content.ClipData clip = android.content.ClipData.newPlainText("Phone number", "+" + user.getPhone());
-//                clipboard.setPrimaryClip(clip);
-//                Toast.makeText(getActivity(), R.string.toast_phone_copied, Toast.LENGTH_SHORT).show();
-//                return true;
-//            }
-//        });
+                String _phoneNumber;
+                try {
+                    Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + record.getPhone(), "us");
+                    _phoneNumber = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
+                } catch (NumberParseException e) {
+                    e.printStackTrace();
+                    _phoneNumber = "+" + record.getPhone();
+                }
+                final String phoneNumber = _phoneNumber;
+
+                ((TextView) recordView.findViewById(R.id.value)).setText(phoneNumber);
+                ((TextView) recordView.findViewById(R.id.title)).setText(record.getTitle());
+                contactsContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        Screen.dp(72)));
+
+                recordView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new AlertDialog.Builder(getActivity())
+                                .setItems(new CharSequence[]{
+                                        getString(R.string.phone_menu_call).replace("{0}", phoneNumber),
+                                        getString(R.string.phone_menu_sms).replace("{0}", phoneNumber),
+                                        getString(R.string.phone_menu_share).replace("{0}", phoneNumber),
+                                        getString(R.string.phone_menu_copy)
+                                }, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (which == 0) {
+                                            startActivity(new Intent(Intent.ACTION_DIAL)
+                                                    .setData(Uri.parse("tel:+" + record.getPhone())));
+                                        } else if (which == 1) {
+                                            startActivity(new Intent(Intent.ACTION_VIEW)
+                                                    .setData(Uri.parse("sms:+" + record.getPhone())));
+                                        } else if (which == 2) {
+                                            startActivity(new Intent(Intent.ACTION_SEND)
+                                                    .setType("text/plain")
+                                                    .putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_text)
+                                                            .replace("{0}", phoneNumber)
+                                                            .replace("{1}", user.getName().get())));
+                                        } else if (which == 3) {
+                                            android.content.ClipboardManager clipboard =
+                                                    (android.content.ClipboardManager) getActivity()
+                                                            .getSystemService(Context.CLIPBOARD_SERVICE);
+                                            android.content.ClipData clip = android.content.ClipData.newPlainText("Phone number", phoneNumber);
+                                            clipboard.setPrimaryClip(clip);
+                                            Toast.makeText(getActivity(), R.string.toast_phone_copied, Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                })
+                                .show()
+                                .setCanceledOnTouchOutside(true);
+                    }
+                });
+                recordView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        android.content.ClipData clip = android.content.ClipData.newPlainText("Phone number", "+" + record.getPhone());
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(getActivity(), R.string.toast_phone_copied, Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+            }
+        }
 
         res.findViewById(R.id.profileAction).setOnClickListener(new View.OnClickListener() {
             @Override

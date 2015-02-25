@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.group.GroupInfoFragment;
-import im.actor.messenger.app.intents.Intents;
+import im.actor.messenger.app.Intents;
 
 import static im.actor.messenger.core.Core.groups;
 

@@ -7,7 +7,7 @@ import android.widget.ListView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragment;
-import im.actor.messenger.app.intents.Intents;
+import im.actor.messenger.app.Intents;
 import im.actor.model.entity.Peer;
 
 /**

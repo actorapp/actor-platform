@@ -134,12 +134,8 @@ public abstract class MVVMCollection<T extends KeyValueItem, V extends BaseValue
 
         @Override
         public synchronized void clear() {
-            synchronized (cache) {
-                cache.clear();
-            }
-
+            cache.clear();
             notifyClear();
-
             collectionStorage.clear();
         }
 
