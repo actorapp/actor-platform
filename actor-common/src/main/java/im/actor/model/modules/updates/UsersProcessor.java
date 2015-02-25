@@ -21,7 +21,8 @@ public class UsersProcessor extends BaseModule {
         super(messenger);
     }
 
-    public void applyUsers(Collection<im.actor.model.api.User> updated, boolean forced) {
+    public void applyUsers(Collection<im.actor.model.api.User> updated,
+                           Collection<im.actor.model.api.ContactRecord> updatedContact, boolean forced) {
         ArrayList<User> batch = new ArrayList<User>();
         for (im.actor.model.api.User u : updated) {
             User saved = users().getValue(u.getId());

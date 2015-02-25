@@ -1,4 +1,4 @@
-package im.actor.messenger.app.binding;
+package im.actor.messenger.app;
 
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;

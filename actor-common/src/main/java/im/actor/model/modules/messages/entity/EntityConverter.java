@@ -2,11 +2,13 @@ package im.actor.model.modules.messages.entity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import im.actor.model.api.FileExPhoto;
 import im.actor.model.api.FileExVideo;
 import im.actor.model.api.Member;
+import im.actor.model.api.RecordType;
 import im.actor.model.api.ServiceExChangedAvatar;
 import im.actor.model.api.ServiceExChangedTitle;
 import im.actor.model.api.ServiceExUserAdded;
@@ -15,6 +17,7 @@ import im.actor.model.api.ServiceMessage;
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.AvatarImage;
+import im.actor.model.entity.ContactRecord;
 import im.actor.model.entity.FileLocation;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.GroupMember;
@@ -95,9 +98,39 @@ public class EntityConverter {
         }
     }
 
+    public static ContactRecord convert(im.actor.model.api.ContactRecord record) {
+        return new ContactRecord(record.getId(),
+                record.getAccessHash(),
+                record.getRecordType() == RecordType.PHONE ?
+                        ContactRecord.TYPE_PHONE :
+                        ContactRecord.TYPE_EMAIL,
+                record.getRecord(),
+                record.getTitle());
+    }
+
     public static User convert(im.actor.model.api.User user) {
+        ArrayList<ContactRecord> res = new ArrayList<ContactRecord>();
+        res.add(new ContactRecord(0, 0, ContactRecord.TYPE_PHONE, "" + user.getPhone(), "Mobile"));
         return new User(user.getId(), user.getAccessHash(), user.getName(), user.getLocalName(),
-                convert(user.getAvatar()), convert(user.getSex()));
+                convert(user.getAvatar()), convert(user.getSex()),
+                res);
+    }
+
+    public static List<ContactRecord> convert(List<Integer> contacts, Collection<im.actor.model.api.ContactRecord> updatedContact) {
+        ArrayList<ContactRecord> res = new ArrayList<ContactRecord>();
+        for (Integer i : contacts) {
+            res.add(convert(i, updatedContact));
+        }
+        return res;
+    }
+
+    public static ContactRecord convert(int contactId, Collection<im.actor.model.api.ContactRecord> updatedContact) {
+        for (im.actor.model.api.ContactRecord contactRecord : updatedContact) {
+            if (contactRecord.getId() == contactId) {
+                return convert(contactRecord);
+            }
+        }
+        return null;
     }
 
     public static Group convert(im.actor.model.api.Group group) {

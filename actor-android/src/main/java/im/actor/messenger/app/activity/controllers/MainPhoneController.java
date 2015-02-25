@@ -29,7 +29,7 @@ import im.actor.messenger.app.activity.MyProfileActivity;
 import im.actor.messenger.app.fragment.contacts.ContactsFragment;
 import im.actor.messenger.app.fragment.dialogs.DialogsFragment;
 import im.actor.messenger.app.fragment.search.SearchAdapter;
-import im.actor.messenger.app.intents.Intents;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;

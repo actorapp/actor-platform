@@ -1,8 +1,10 @@
 package im.actor.model.viewmodel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import im.actor.model.entity.Avatar;
+import im.actor.model.entity.ContactRecord;
 import im.actor.model.entity.Sex;
 import im.actor.model.entity.User;
 import im.actor.model.mvvm.BaseValueModel;
@@ -22,6 +24,7 @@ public class UserVM extends BaseValueModel<User> {
     private ValueModel<Boolean> isContact;
     private ValueModel<UserPresence> presence;
     private ArrayList<ModelChangedListener<UserVM>> listeners = new ArrayList<ModelChangedListener<UserVM>>();
+    private ValueModel<ArrayList<UserPhone>> phones;
 
     public UserVM(User user) {
         super(user);
@@ -33,6 +36,7 @@ public class UserVM extends BaseValueModel<User> {
         avatar = new ValueModel<Avatar>("user." + id + ".avatar", user.getAvatar());
         isContact = new ValueModel<Boolean>("user." + id + ".contact", false);
         presence = new ValueModel<UserPresence>("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
+        phones = new ValueModel<ArrayList<UserPhone>>("user." + id + ".phones", buildPhones(user.getRecords()));
     }
 
     @Override
@@ -40,6 +44,8 @@ public class UserVM extends BaseValueModel<User> {
         boolean isChanged = false;
         isChanged |= name.change(rawObj.getName());
         isChanged |= avatar.change(rawObj.getAvatar());
+        isChanged |= phones.change(buildPhones(rawObj.getRecords()));
+
         if (isChanged) {
             notifyChange();
         }
@@ -71,6 +77,20 @@ public class UserVM extends BaseValueModel<User> {
 
     public ValueModel<UserPresence> getPresence() {
         return presence;
+    }
+
+    public ValueModel<ArrayList<UserPhone>> getPhones() {
+        return phones;
+    }
+
+    private ArrayList<UserPhone> buildPhones(List<ContactRecord> records) {
+        ArrayList<UserPhone> res = new ArrayList<UserPhone>();
+        for (ContactRecord r : records) {
+            if (r.getRecordType() == ContactRecord.TYPE_PHONE) {
+                res.add(new UserPhone(Long.parseLong(r.getRecordData()), r.getRecordTitle()));
+            }
+        }
+        return res;
     }
 
     // We expect that subscribe will be called only on UI Thread

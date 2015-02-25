@@ -3,7 +3,7 @@ package com.droidkit.mvvm.ui;
 import android.view.View;
 import android.widget.TextView;
 
-import im.actor.messenger.app.binding.ActorBinder;
+import im.actor.messenger.app.ActorBinder;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.model.entity.Avatar;
 import im.actor.model.mvvm.ValueChangedListener;

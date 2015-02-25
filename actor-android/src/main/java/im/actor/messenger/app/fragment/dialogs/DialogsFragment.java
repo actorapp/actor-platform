@@ -7,7 +7,7 @@ import com.droidkit.engine.uilist.UiListStateListener;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.*;
-import im.actor.messenger.app.intents.Intents;
+import im.actor.messenger.app.Intents;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 
