@@ -192,4 +192,8 @@ public class Messenger {
     public Command<Boolean> editName(final int uid, final String name) {
         return modules.getUsersModule().editName(uid, name);
     }
+
+    public Command<Boolean> editGroupTitle(final int gid, final String title) {
+        return modules.getGroupsModule().editTitle(gid, title);
+    }
 }
