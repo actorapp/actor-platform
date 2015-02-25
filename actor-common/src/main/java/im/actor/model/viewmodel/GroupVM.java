@@ -51,6 +51,10 @@ public class GroupVM extends BaseValueModel<Group> {
         return creatorId;
     }
 
+    public int getMembersCount() {
+        return members.get().size();
+    }
+
     public ValueModel<String> getName() {
         return name;
     }
