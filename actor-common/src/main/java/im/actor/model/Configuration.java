@@ -26,12 +26,17 @@ public class Configuration {
 
     private CryptoProvider cryptoProvider;
 
+    private boolean enableContactsLogging = false;
+    private boolean enableNetworkLogging = false;
+
     public Configuration(Networking networking, ConnectionEndpoint[] endpoints,
                          Threading threading, MainThread mainThread, Storage storage,
                          LogCallback log, boolean persistUploadingFiles,
                          LocaleProvider localeProvider,
                          PhoneBookProvider phoneBookProvider,
-                         CryptoProvider cryptoProvider) {
+                         CryptoProvider cryptoProvider,
+                         boolean enableContactsLogging,
+                         boolean enableNetworkLogging) {
         this.networking = networking;
         this.endpoints = endpoints;
         this.threading = threading;
@@ -42,6 +47,16 @@ public class Configuration {
         this.localeProvider = localeProvider;
         this.phoneBookProvider = phoneBookProvider;
         this.cryptoProvider = cryptoProvider;
+        this.enableContactsLogging = enableContactsLogging;
+        this.enableNetworkLogging = enableNetworkLogging;
+    }
+
+    public boolean isEnableContactsLogging() {
+        return enableContactsLogging;
+    }
+
+    public boolean isEnableNetworkLogging() {
+        return enableNetworkLogging;
     }
 
     public CryptoProvider getCryptoProvider() {

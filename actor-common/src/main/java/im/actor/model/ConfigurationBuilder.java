@@ -28,6 +28,19 @@ public class ConfigurationBuilder {
 
     private CryptoProvider cryptoProvider;
 
+    private boolean enableContactsLogging = false;
+    private boolean enableNetworkLogging = false;
+
+    public ConfigurationBuilder setEnableContactsLogging(boolean enableContactsLogging) {
+        this.enableContactsLogging = enableContactsLogging;
+        return this;
+    }
+
+    public ConfigurationBuilder setEnableNetworkLogging(boolean enableNetworkLogging) {
+        this.enableNetworkLogging = enableNetworkLogging;
+        return this;
+    }
+
     public ConfigurationBuilder setCryptoProvider(CryptoProvider cryptoProvider) {
         this.cryptoProvider = cryptoProvider;
         return this;
@@ -140,6 +153,7 @@ public class ConfigurationBuilder {
         }
         return new Configuration(networking, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
                 threading, mainThread, enginesFactory, log, isUploadFilePersist, localeProvider,
-                phoneBookProvider, cryptoProvider);
+                phoneBookProvider, cryptoProvider,
+                enableContactsLogging, enableNetworkLogging);
     }
 }

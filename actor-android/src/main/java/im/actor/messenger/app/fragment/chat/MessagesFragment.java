@@ -1,9 +1,11 @@
 package im.actor.messenger.app.fragment.chat;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
@@ -13,11 +15,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AbsListView;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.droidkit.engine.list.view.EngineUiList;
 import com.droidkit.engine.uilist.UiList;
 import com.droidkit.engine.uilist.UiListStateListener;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
@@ -29,14 +40,14 @@ import im.actor.messenger.storage.ListEngines;
 import im.actor.messenger.util.Logger;
 import im.actor.messenger.util.Screen;
 import im.actor.messenger.util.VisibleViewItem;
+import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.TextContent;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
+import im.actor.model.mvvm.ValueChangedListener;
+import im.actor.model.mvvm.ValueModel;
+import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.myUid;
@@ -45,6 +56,7 @@ import static im.actor.messenger.core.Core.users;
 /**
  * Created by ex3ndr on 01.09.14.
  */
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MessagesFragment extends BaseFragment implements UiListStateListener, ExScrollListener {
 
     public static MessagesFragment create(Peer peer) {
@@ -174,46 +186,41 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
         addContact.setAllCaps(true);
         addContact.setTextColor(getResources().getColor(R.color.text_primary_light));
         addContact.setTextSize(14);
-        addContact.setTypeface(Fonts.load(getActivity(), "Medium"));
+        addContact.setTypeface(Fonts.medium());
         addContact.setGravity(Gravity.CENTER);
         addContact.setBackgroundResource(R.drawable.selector_add);
         addContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                ask(ContactsActor.contactsList().addContact(chatId), getString(R.string.chat_add_to_contacts_progress), new UiAskCallback<Boolean>() {
-//                    @Override
-//                    public void onPreStart() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onCompleted(Boolean res) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable t) {
-//
-//                    }
-//                });
+                execute(messenger().addContact(peer.getPeerId()), R.string.chat_add_to_contacts_progress, new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
             }
         });
 
-//        if (chatType == DialogType.TYPE_USER) {
-//            UserModel u = users().get(chatId);
-//            getBinder().bind(u.getContactModel(), new Listener<Boolean>() {
-//                @Override
-//                public void onUpdated(Boolean aBoolean) {
-//                    if (aBoolean) {
-//                        addContact.setVisibility(View.GONE);
-//                    } else {
-//                        addContact.setVisibility(View.VISIBLE);
-//                    }
-//                }
-//            });
-//        } else {
-//            addContact.setVisibility(View.GONE);
-//        }
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            UserVM user = users().get(peer.getPeerId());
+            bind(user.isContact(), new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                    if (val) {
+                        addContact.setVisibility(View.GONE);
+                    } else {
+                        addContact.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+        } else {
+            addContact.setVisibility(View.GONE);
+        }
 
         header.addView(addContact);
         listView.addHeaderView(header, null, false);
@@ -604,9 +611,6 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
             actionMode.finish();
         }
         listView.invalidateViews();
-        // listView.setAdapter(null);
-        // adapter.dispose();
-        // bg.release();
     }
 
     @Override
