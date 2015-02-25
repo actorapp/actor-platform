@@ -35,11 +35,18 @@ public class ValueModel<T> {
 
     // We expect that subscribe will be called only on UI Thread
     public void subscribe(ValueChangedListener<T> listener) {
+        subscribe(listener, true);
+    }
+
+    // We expect that subscribe will be called only on UI Thread
+    public void subscribe(ValueChangedListener<T> listener, boolean notify) {
         if (listeners.contains(listener)) {
             return;
         }
         listeners.add(listener);
-        listener.onChanged(value, this);
+        if (notify) {
+            listener.onChanged(value, this);
+        }
     }
 
     // We expect that subscribe will be called only on UI Thread

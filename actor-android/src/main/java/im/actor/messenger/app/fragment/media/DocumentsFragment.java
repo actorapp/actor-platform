@@ -6,14 +6,14 @@ import android.view.*;
 import android.widget.ListView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseCompatFragment;
+import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.intents.Intents;
 import im.actor.model.entity.Peer;
 
 /**
  * Created by ex3ndr on 18.10.14.
  */
-public class DocumentsFragment extends BaseCompatFragment {
+public class DocumentsFragment extends BaseFragment {
 
     public static DocumentsFragment open(Peer peer) {
         Bundle args = new Bundle();

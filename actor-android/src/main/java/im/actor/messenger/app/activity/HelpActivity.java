@@ -1,16 +1,15 @@
 package im.actor.messenger.app.activity;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseBarFragmentActivity;
+import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.help.HelpFragment;
 
 /**
  * Created by ex3ndr on 30.09.14.
  */
-public class HelpActivity extends BaseBarFragmentActivity {
+public class HelpActivity extends BaseFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

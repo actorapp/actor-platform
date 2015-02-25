@@ -12,12 +12,12 @@ import android.widget.Toast;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseCompatFragment;
+import im.actor.messenger.app.base.BaseFragment;
 
 /**
  * Created by ex3ndr on 30.09.14.
  */
-public class HelpFragment extends BaseCompatFragment {
+public class HelpFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View res = inflater.inflate(R.layout.help_main, container, false);

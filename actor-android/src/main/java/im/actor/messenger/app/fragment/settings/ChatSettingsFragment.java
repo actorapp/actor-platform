@@ -4,15 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseCompatFragment;
+import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.settings.ChatSettings;
 
 /**
  * Created by ex3ndr on 17.09.14.
  */
-public class ChatSettingsFragment extends BaseCompatFragment {
+public class ChatSettingsFragment extends BaseFragment {
 
     private ChatSettings chatSettings;
 

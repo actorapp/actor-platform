@@ -12,7 +12,7 @@ import im.actor.messenger.R;
 /**
  * Created by ex3ndr on 29.12.14.
  */
-public class BaseBarFragmentActivity extends BaseBarActivity {
+public class BaseFragmentActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

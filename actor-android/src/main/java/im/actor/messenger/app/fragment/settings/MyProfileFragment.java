@@ -15,12 +15,10 @@ import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.droidkit.mvvm.ui.Listener;
-
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.*;
-import im.actor.messenger.app.base.BaseBarActivity;
-import im.actor.messenger.app.base.BaseCompatFragment;
+import im.actor.messenger.app.base.BaseActivity;
+import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.intents.Intents;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.util.Screen;
@@ -32,7 +30,7 @@ import static im.actor.messenger.core.Core.users;
 /**
  * Created by ex3ndr on 09.09.14.
  */
-public class MyProfileFragment extends BaseCompatFragment {
+public class MyProfileFragment extends BaseFragment {
 
     private int baseColor;
 
@@ -183,7 +181,7 @@ public class MyProfileFragment extends BaseCompatFragment {
 
         avatar.setOffset(offset);
 
-        ActionBar bar = ((BaseBarActivity) getActivity()).getSupportActionBar();
+        ActionBar bar = ((BaseActivity) getActivity()).getSupportActionBar();
         int fullColor = baseColor;
 
         if (Math.abs(offset) > Screen.dp(248 - 56)) {

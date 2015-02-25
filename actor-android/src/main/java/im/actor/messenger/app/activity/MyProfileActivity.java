@@ -4,14 +4,13 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
-import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseBarFragmentActivity;
+import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.settings.MyProfileFragment;
 
 /**
  * Created by ex3ndr on 27.12.14.
  */
-public class MyProfileActivity extends BaseBarFragmentActivity {
+public class MyProfileActivity extends BaseFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

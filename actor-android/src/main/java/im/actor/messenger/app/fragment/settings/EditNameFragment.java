@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.EditNameActivity;
-import im.actor.messenger.app.base.BaseCompatFragment;
+import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.viewmodel.UserVM;
@@ -21,7 +21,7 @@ import static im.actor.messenger.core.Core.users;
 /**
  * Created by ex3ndr on 25.10.14.
  */
-public class EditNameFragment extends BaseCompatFragment {
+public class EditNameFragment extends BaseFragment {
 
     public static EditNameFragment editName(int type, int id) {
         Bundle args = new Bundle();
