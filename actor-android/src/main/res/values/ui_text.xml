@@ -12,6 +12,8 @@
     <string name="pick_photo_remove">Remove photo</string>
     <string name="pick_downloading">Downloading</string>
 
+    <string name="progress_common">Loading…</string>
+
     <string name="toast_no_sdcard">No SD Card</string>
     <string name="toast_phone_copied">Phone number copied to pastebin</string>
     <string name="toast_messages_copied">Messages copied to pastebin</string>

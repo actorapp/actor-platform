@@ -2,10 +2,11 @@ package im.actor.model.modules;
 
 import java.util.ArrayList;
 
-import im.actor.model.api.User;
 import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestAddContact;
 import im.actor.model.api.rpc.RequestRemoveContact;
+import im.actor.model.api.rpc.RequestSearchContacts;
+import im.actor.model.api.rpc.ResponseSearchContacts;
 import im.actor.model.api.rpc.ResponseSeq;
 import im.actor.model.api.updates.UpdateContactsAdded;
 import im.actor.model.api.updates.UpdateContactsRemoved;
@@ -17,10 +18,12 @@ import im.actor.model.droidkit.actors.Props;
 import im.actor.model.entity.Contact;
 import im.actor.model.modules.contacts.BookImportActor;
 import im.actor.model.modules.contacts.ContactsSyncActor;
+import im.actor.model.modules.updates.internal.UsersFounded;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
 import im.actor.model.storage.ListEngine;
+import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
@@ -74,11 +77,37 @@ public class Contacts extends BaseModule {
         return preferences().getBool("contact_" + uid, false);
     }
 
-    public Command<User[]> findUsers(String query) {
-        return new Command<User[]>() {
+    public Command<UserVM[]> findUsers(final String query) {
+        return new Command<UserVM[]>() {
             @Override
-            public void start(CommandCallback<User[]> callback) {
+            public void start(final CommandCallback<UserVM[]> callback) {
+                request(new RequestSearchContacts(query), new RpcCallback<ResponseSearchContacts>() {
+                    @Override
+                    public void onResult(ResponseSearchContacts response) {
+                        if (response.getUsers().size() == 0) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onResult(new UserVM[0]);
+                                }
+                            });
+                            return;
+                        }
 
+                        updates().onUpdateReceived(new UsersFounded(response.getUsers(), callback));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        e.printStackTrace();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onResult(new UserVM[0]);
+                            }
+                        });
+                    }
+                });
             }
         };
     }
