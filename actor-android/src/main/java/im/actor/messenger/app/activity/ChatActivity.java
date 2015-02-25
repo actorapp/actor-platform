@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
-import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
@@ -36,9 +35,9 @@ import java.util.ArrayList;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
-import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.TintImageView;
@@ -469,11 +468,8 @@ public class ChatActivity extends BaseActivity {
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
             menu.findItem(R.id.contact).setVisible(true);
-            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            menu.findItem(R.id.call).setVisible(tm.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE);
         } else {
             menu.findItem(R.id.contact).setVisible(false);
-            menu.findItem(R.id.call).setVisible(false);
         }
 
         if (peer.getPeerType() == PeerType.GROUP) {
@@ -508,7 +504,8 @@ public class ChatActivity extends BaseActivity {
                 break;
             case R.id.leaveGroup:
                 new AlertDialog.Builder(this)
-                        .setMessage(R.string.alert_delete_group_title)
+                        .setMessage(getString(R.string.alert_delete_group_title)
+                                .replace("{0}", groups().get(peer.getPeerId()).getName().get()))
                         .setPositiveButton(R.string.alert_delete_group_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog2, int which) {
@@ -528,10 +525,6 @@ public class ChatActivity extends BaseActivity {
                 break;
             case R.id.files:
                 // startActivity(Intents.openDocs(chatType, chatId, ChatActivity.this));
-                break;
-            case R.id.call:
-//                UserModel user = users().get(chatId);
-//                startActivity(new Intent(Intent.ACTION_DIAL).setData(Uri.parse("tel:+" + user.getPhone())));
                 break;
         }
         return super.onOptionsItemSelected(item);

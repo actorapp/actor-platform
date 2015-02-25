@@ -5,8 +5,10 @@ import java.io.IOException;
 import im.actor.model.api.GroupOutPeer;
 import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestEditGroupTitle;
+import im.actor.model.api.rpc.RequestLeaveGroup;
 import im.actor.model.api.rpc.ResponseSeqDate;
 import im.actor.model.api.updates.UpdateGroupTitleChanged;
+import im.actor.model.api.updates.UpdateGroupUserLeave;
 import im.actor.model.api.updates.UpdateUserLocalNameChanged;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
@@ -84,6 +86,52 @@ public class Groups extends BaseModule {
                                 UpdateUserLocalNameChanged.HEADER,
                                 new UpdateGroupTitleChanged(gid, rid, myUid(),
                                         name, response.getDate()).toByteArray());
+                        updates().onUpdateReceived(update);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onResult(true);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<Boolean> leaveGroup(final int gid) {
+        return new Command<Boolean>() {
+            @Override
+            public void start(final CommandCallback<Boolean> callback) {
+                Group group = getGroups().getValue(gid);
+                if (group == null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(new RpcInternalException());
+                        }
+                    });
+                    return;
+                }
+                final long rid = RandomUtils.nextRid();
+                request(new RequestLeaveGroup(new GroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                        rid), new RpcCallback<ResponseSeqDate>() {
+                    @Override
+                    public void onResult(ResponseSeqDate response) {
+                        SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
+                                UpdateUserLocalNameChanged.HEADER,
+                                new UpdateGroupUserLeave(gid, rid, myUid(),
+                                        response.getDate()).toByteArray());
                         updates().onUpdateReceived(update);
                         runOnUiThread(new Runnable() {
                             @Override

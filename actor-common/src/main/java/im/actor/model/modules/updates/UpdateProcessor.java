@@ -46,7 +46,9 @@ import im.actor.model.api.updates.UpdateUserOnline;
 import im.actor.model.api.updates.UpdateUserStateChanged;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
+import im.actor.model.modules.contacts.ContactsSyncActor;
 import im.actor.model.modules.messages.entity.EntityConverter;
+import im.actor.model.modules.updates.internal.ContactsLoaded;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.modules.updates.internal.LoggedIn;
@@ -66,6 +68,7 @@ public class UpdateProcessor {
     private GroupsProcessor groupsProcessor;
     private PresenceProcessor presenceProcessor;
     private TypingProcessor typingProcessor;
+    private ContactsProcessor contactsProcessor;
 
     public UpdateProcessor(Modules modules) {
         this.modules = modules;
@@ -74,6 +77,7 @@ public class UpdateProcessor {
         this.groupsProcessor = new GroupsProcessor(modules);
         this.presenceProcessor = new PresenceProcessor(modules);
         this.typingProcessor = new TypingProcessor(modules);
+        this.contactsProcessor = new ContactsProcessor(modules);
     }
 
     public void applyRelated(List<User> users,
@@ -95,6 +99,12 @@ public class UpdateProcessor {
             users.add(((LoggedIn) update).getAuth().getUser());
             applyRelated(users, new ArrayList<Group>(), ((LoggedIn) update).getAuth().getContacts(), true);
             modules.getConfiguration().getMainThread().runOnUiThread(((LoggedIn) update).getRunnable());
+        } else if (update instanceof ContactsLoaded) {
+            ContactsLoaded contactsLoaded = (ContactsLoaded) update;
+            applyRelated(contactsLoaded.getContacts().getUsers(), new ArrayList<Group>(),
+                    new ArrayList<ContactRecord>(), false);
+            modules.getContactsModule().getContactSyncActor()
+                    .send(new ContactsSyncActor.ContactsLoaded(contactsLoaded.getContacts()));
         }
     }
 
@@ -205,6 +215,20 @@ public class UpdateProcessor {
             UpdateGroupUserAdded userAdded = (UpdateGroupUserAdded) update;
             groupsProcessor.onUserAdded(userAdded.getGroupId(),
                     userAdded.getRid(), userAdded.getUid(), userAdded.getInviterUid(), userAdded.getDate());
+        } else if (update instanceof UpdateContactsAdded) {
+            UpdateContactsAdded contactsAdded = (UpdateContactsAdded) update;
+            int[] res = new int[contactsAdded.getUids().size()];
+            for (int i = 0; i < res.length; i++) {
+                res[i] = contactsAdded.getUids().get(i);
+            }
+            contactsProcessor.onContactsAdded(res);
+        } else if (update instanceof UpdateContactsRemoved) {
+            UpdateContactsRemoved contactsRemoved = (UpdateContactsRemoved) update;
+            int[] res = new int[contactsRemoved.getUids().size()];
+            for (int i = 0; i < res.length; i++) {
+                res[i] = contactsRemoved.getUids().get(i);
+            }
+            contactsProcessor.onContactsRemoved(res);
         }
     }
 

@@ -1,5 +1,7 @@
 package im.actor.messenger.app.fragment.contacts;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -7,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,13 +19,17 @@ import com.droidkit.engine.list.view.ListState;
 import com.droidkit.mvvm.ui.Listener;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.view.Fonts;
+import im.actor.messenger.app.view.OnItemClickedListener;
+import im.actor.messenger.storage.ListEngines;
 import im.actor.messenger.util.Screen;
+import im.actor.model.entity.Contact;
 
 public class ContactsFragment extends BaseFragment implements Listener<ListState> {
 
-    // private ContactsAdapter adapter;
+    private ContactsAdapter adapter;
     private ListView listView;
     private View noContacts;
     private ImageView emptyContactsImage;
@@ -84,25 +89,25 @@ public class ContactsFragment extends BaseFragment implements Listener<ListState
 //            }
 //        });
 
-//        adapter = new ContactsAdapter(ListEngines.getContactsList(), getActivity(), false,
-//                new OnItemClickedListener<Contact>() {
-//                    @Override
-//                    public void onClicked(Contact item) {
-//                        onClick(item);
-//                    }
-//                }, new OnItemClickedListener<Contact>() {
-//            @Override
-//            public void onClicked(Contact item) {
-//                onLongClick(item);
-//            }
-//        });
-//        listView.setAdapter(adapter);
-//        listView.setRecyclerListener(new AbsListView.RecyclerListener() {
-//            @Override
-//            public void onMovedToScrapHeap(View view) {
-//                adapter.onMovedToScrapHeap(view);
-//            }
-//        });
+        adapter = new ContactsAdapter(ListEngines.getContactsUiListEngine(), getActivity(), false,
+                new OnItemClickedListener<Contact>() {
+                    @Override
+                    public void onClicked(Contact item) {
+                        onClick(item);
+                    }
+                }, new OnItemClickedListener<Contact>() {
+            @Override
+            public void onClicked(Contact item) {
+                onLongClick(item);
+            }
+        });
+        listView.setAdapter(adapter);
+        listView.setRecyclerListener(new AbsListView.RecyclerListener() {
+            @Override
+            public void onMovedToScrapHeap(View view) {
+                adapter.onMovedToScrapHeap(view);
+            }
+        });
 
         noContacts = res.findViewById(R.id.noContacts);
 
@@ -117,57 +122,61 @@ public class ContactsFragment extends BaseFragment implements Listener<ListState
             }
         });
 
+        // Temp
+        goneView(noContacts);
+        showView(listView);
+
         // getBinder().bind(ContactsFragment.this, ListEngines.getContactsList().getListState(), ContactsFragment.this);
         return res;
     }
 
-//    private void onLongClick(final Contact contact) {
-//        new AlertDialog.Builder(getActivity())
-//                .setItems(new CharSequence[]{
-//                        getString(R.string.contacts_menu_remove).replace("{0}", contact.getName()),
-//                        getString(R.string.contacts_menu_edit),
-//                }, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        if (which == 0) {
-//                            new AlertDialog.Builder(getActivity())
-//                                    .setMessage(getString(R.string.alert_remove_contact_text).replace("{0}", contact.getName()))
-//                                    .setPositiveButton(R.string.alert_remove_contact_yes, new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialog, int which) {
-////                                            ask(ContactsActor.contactsList().removeContact(contact.getUid()), getString(R.string.contacts_menu_remove_progress), new UiAskCallback<Boolean>() {
-////                                                @Override
-////                                                public void onPreStart() {
-////
-////                                                }
-////
-////                                                @Override
-////                                                public void onCompleted(Boolean res) {
-////
-////                                                }
-////
-////                                                @Override
-////                                                public void onError(Throwable t) {
-////
-////                                                }
-////                                            });
-//                                        }
-//                                    })
-//                                    .setNegativeButton(R.string.dialog_cancel, null)
-//                                    .show()
-//                                    .setCanceledOnTouchOutside(true);
-//                        } else {
-//                            startActivity(Intents.editUserName(contact.getUid(), getActivity()));
-//                        }
-//                    }
-//                })
-//                .show()
-//                .setCanceledOnTouchOutside(true);
-//    }
+    private void onLongClick(final Contact contact) {
+        new AlertDialog.Builder(getActivity())
+                .setItems(new CharSequence[]{
+                        getString(R.string.contacts_menu_remove).replace("{0}", contact.getName()),
+                        getString(R.string.contacts_menu_edit),
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            new AlertDialog.Builder(getActivity())
+                                    .setMessage(getString(R.string.alert_remove_contact_text).replace("{0}", contact.getName()))
+                                    .setPositiveButton(R.string.alert_remove_contact_yes, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+//                                            ask(ContactsActor.contactsList().removeContact(contact.getUid()), getString(R.string.contacts_menu_remove_progress), new UiAskCallback<Boolean>() {
+//                                                @Override
+//                                                public void onPreStart() {
 //
-//    private void onClick(Contact contact) {
-//        getActivity().startActivity(Intents.openPrivateDialog(contact.getUid(), true, getActivity()));
-//    }
+//                                                }
+//
+//                                                @Override
+//                                                public void onCompleted(Boolean res) {
+//
+//                                                }
+//
+//                                                @Override
+//                                                public void onError(Throwable t) {
+//
+//                                                }
+//                                            });
+                                        }
+                                    })
+                                    .setNegativeButton(R.string.dialog_cancel, null)
+                                    .show()
+                                    .setCanceledOnTouchOutside(true);
+                        } else {
+                            startActivity(Intents.editUserName(contact.getUid(), getActivity()));
+                        }
+                    }
+                })
+                .show()
+                .setCanceledOnTouchOutside(true);
+    }
+
+    private void onClick(Contact contact) {
+        getActivity().startActivity(Intents.openPrivateDialog(contact.getUid(), true, getActivity()));
+    }
 
     @Override
     public void onUpdated(ListState listState) {
@@ -202,10 +211,10 @@ public class ContactsFragment extends BaseFragment implements Listener<ListState
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        if (adapter != null) {
-//            adapter.dispose();
-//            adapter = null;
-//        }
+        if (adapter != null) {
+            adapter.dispose();
+            adapter = null;
+        }
         listView = null;
         noContacts = null;
         emptyContactsImage = null;
