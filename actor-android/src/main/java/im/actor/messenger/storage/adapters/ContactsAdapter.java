@@ -1,6 +1,6 @@
 package im.actor.messenger.storage.adapters;
 
-import com.droidkit.engine.list.DataAdapter;
+import com.droidkit.engine.list.FilterableDataAdapter;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import im.actor.model.entity.Contact;
 /**
  * Created by ex3ndr on 25.02.15.
  */
-public class ContactsAdapter implements DataAdapter<Contact> {
+public class ContactsAdapter implements FilterableDataAdapter<Contact> {
     @Override
     public long getId(Contact value) {
         return value.getListId();
@@ -33,5 +33,10 @@ public class ContactsAdapter implements DataAdapter<Contact> {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public String getFilterValue(Contact value) {
+        return value.getName();
     }
 }
