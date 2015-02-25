@@ -218,4 +218,8 @@ public class Messenger {
     public Command<Boolean> addContact(int uid) {
         return modules.getContactsModule().addContact(uid);
     }
+
+    public Command<UserVM[]> findUsers(String query) {
+        return modules.getContactsModule().findUsers(query);
+    }
 }

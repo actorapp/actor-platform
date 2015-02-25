@@ -12,6 +12,8 @@
     <string name="pick_photo_remove">Удалить фото</string>
     <string name="pick_downloading">Загрузка</string>
 
+    <string name="progress_common">Загрузка…</string>
+
     <string name="toast_no_sdcard">Нет SD-карты</string>
     <string name="toast_phone_copied">Телефон скопирован в буфер обмена</string>
     <string name="toast_messages_copied">Сообщения скопированы в буфер обмена</string>

@@ -45,6 +45,7 @@ import im.actor.model.api.updates.UpdateUserOffline;
 import im.actor.model.api.updates.UpdateUserOnline;
 import im.actor.model.api.updates.UpdateUserStateChanged;
 import im.actor.model.log.Log;
+import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.contacts.ContactsSyncActor;
 import im.actor.model.modules.messages.entity.EntityConverter;
@@ -52,16 +53,16 @@ import im.actor.model.modules.updates.internal.ContactsLoaded;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.modules.updates.internal.LoggedIn;
+import im.actor.model.modules.updates.internal.UsersFounded;
 import im.actor.model.network.parser.Update;
+import im.actor.model.viewmodel.UserVM;
 
 /**
  * Created by ex3ndr on 09.02.15.
  */
-public class UpdateProcessor {
+public class UpdateProcessor extends BaseModule {
 
     private static final String TAG = "Updates";
-
-    private Modules modules;
 
     private UsersProcessor usersProcessor;
     private MessagesProcessor messagesProcessor;
@@ -71,7 +72,7 @@ public class UpdateProcessor {
     private ContactsProcessor contactsProcessor;
 
     public UpdateProcessor(Modules modules) {
-        this.modules = modules;
+        super(modules);
         this.usersProcessor = new UsersProcessor(modules);
         this.messagesProcessor = new MessagesProcessor(modules);
         this.groupsProcessor = new GroupsProcessor(modules);
@@ -98,13 +99,26 @@ public class UpdateProcessor {
             ArrayList<User> users = new ArrayList<User>();
             users.add(((LoggedIn) update).getAuth().getUser());
             applyRelated(users, new ArrayList<Group>(), ((LoggedIn) update).getAuth().getContacts(), true);
-            modules.getConfiguration().getMainThread().runOnUiThread(((LoggedIn) update).getRunnable());
+            runOnUiThread(((LoggedIn) update).getRunnable());
         } else if (update instanceof ContactsLoaded) {
             ContactsLoaded contactsLoaded = (ContactsLoaded) update;
             applyRelated(contactsLoaded.getContacts().getUsers(), new ArrayList<Group>(),
                     new ArrayList<ContactRecord>(), false);
-            modules.getContactsModule().getContactSyncActor()
+            modules().getContactsModule().getContactSyncActor()
                     .send(new ContactsSyncActor.ContactsLoaded(contactsLoaded.getContacts()));
+        } else if (update instanceof UsersFounded) {
+            final UsersFounded founded = (UsersFounded) update;
+            applyRelated(((UsersFounded) update).getUsers(), new ArrayList<Group>(), new ArrayList<ContactRecord>(), false);
+            final ArrayList<UserVM> users = new ArrayList<UserVM>();
+            for (User u : founded.getUsers()) {
+                users.add(modules().getUsersModule().getUsersCollection().get(u.getId()));
+            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    founded.getCommandCallback().onResult(users.toArray(new UserVM[users.size()]));
+                }
+            });
         }
     }
 
