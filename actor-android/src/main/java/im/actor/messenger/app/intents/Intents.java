@@ -59,11 +59,11 @@ public class Intents {
                 .putExtra(EXTRA_EDIT_ID, groupId);
     }
 
-//    public static Intent openGroup(int chatId, Context context) {
-//        Intent res = new Intent(context, GroupInfoActivity.class);
-//        res.putExtra(EXTRA_GROUP_ID, chatId);
-//        return res;
-//    }
+    public static Intent openGroup(int chatId, Context context) {
+        Intent res = new Intent(context, GroupInfoActivity.class);
+        res.putExtra(EXTRA_GROUP_ID, chatId);
+        return res;
+    }
 
     public static Intent openDialog(Peer peer, boolean compose, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);

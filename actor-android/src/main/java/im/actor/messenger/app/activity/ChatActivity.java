@@ -132,8 +132,7 @@ public class ChatActivity extends BaseActivity {
                 if (peer.getPeerType() == PeerType.PRIVATE) {
                     startActivity(Intents.openProfile(peer.getPeerId(), ChatActivity.this));
                 } else if (peer.getPeerType() == PeerType.GROUP) {
-                    // TODO: Open Group Info
-                    // startActivity(Intents.openGroup(chatId, ChatActivity.this));
+                    startActivity(Intents.openGroup(peer.getPeerId(), ChatActivity.this));
                 } else {
                     // Nothing to do
                 }
@@ -146,10 +145,11 @@ public class ChatActivity extends BaseActivity {
 
         getWindow().setBackgroundDrawable(null);
 
-        // TODO: Check recreate on resume?
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.messagesFragment, MessagesFragment.create(peer))
-                .commit();
+        if (saveInstance == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.messagesFragment, MessagesFragment.create(peer))
+                    .commit();
+        }
 
         messageBody = (EditText) findViewById(R.id.et_message);
         messageBody.addTextChangedListener(new TextWatcher() {
