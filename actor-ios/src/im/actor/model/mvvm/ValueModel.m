@@ -63,11 +63,18 @@ J2OBJC_FIELD_SETTER(AMValueModel_$1, val$value_, id)
 }
 
 - (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener {
+  [self subscribeWithAMValueChangedListener:listener withBoolean:YES];
+}
+
+- (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener
+                                withBoolean:(jboolean)notify {
   if ([((JavaUtilArrayList *) nil_chk(listeners_)) containsWithId:listener]) {
     return;
   }
   [listeners_ addWithId:listener];
-  [((id<AMValueChangedListener>) nil_chk(listener)) onChangedWithId:value_ withAMValueModel:self];
+  if (notify) {
+    [((id<AMValueChangedListener>) nil_chk(listener)) onChangedWithId:value_ withAMValueModel:self];
+  }
 }
 
 - (void)unsubscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener {

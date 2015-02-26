@@ -13,6 +13,7 @@
 @class AMUser;
 @class AMUserVM;
 @class DKActorRef;
+@class ImActorModelApiOutPeer;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdates;
 @class ImActorModelNetworkParserRequest;
@@ -30,6 +31,8 @@
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
+
+- (ImActorModelApiOutPeer *)buidOutPeerWithAMPeer:(AMPeer *)peer;
 
 - (id<AMKeyValueEngine>)users;
 

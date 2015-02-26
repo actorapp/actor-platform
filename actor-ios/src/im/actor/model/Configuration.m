@@ -6,10 +6,13 @@
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/CryptoProvider.h"
+#include "im/actor/model/FileSystemProvider.h"
 #include "im/actor/model/LocaleProvider.h"
 #include "im/actor/model/LogCallback.h"
 #include "im/actor/model/MainThread.h"
 #include "im/actor/model/Networking.h"
+#include "im/actor/model/PhoneBookProvider.h"
 #include "im/actor/model/Storage.h"
 #include "im/actor/model/Threading.h"
 
@@ -23,6 +26,11 @@
   id<AMLogCallback> log_;
   jboolean persistUploadingFiles_;
   id<AMLocaleProvider> localeProvider_;
+  id<AMPhoneBookProvider> phoneBookProvider_;
+  id<AMCryptoProvider> cryptoProvider_;
+  jboolean enableContactsLogging_;
+  jboolean enableNetworkLogging_;
+  id<AMFileSystemProvider> fileSystemProvider_;
 }
 @end
 
@@ -33,6 +41,9 @@ J2OBJC_FIELD_SETTER(AMConfiguration, mainThread_, id<AMMainThread>)
 J2OBJC_FIELD_SETTER(AMConfiguration, storage_, id<AMStorage>)
 J2OBJC_FIELD_SETTER(AMConfiguration, log_, id<AMLogCallback>)
 J2OBJC_FIELD_SETTER(AMConfiguration, localeProvider_, id<AMLocaleProvider>)
+J2OBJC_FIELD_SETTER(AMConfiguration, phoneBookProvider_, id<AMPhoneBookProvider>)
+J2OBJC_FIELD_SETTER(AMConfiguration, cryptoProvider_, id<AMCryptoProvider>)
+J2OBJC_FIELD_SETTER(AMConfiguration, fileSystemProvider_, id<AMFileSystemProvider>)
 
 @implementation AMConfiguration
 
@@ -43,8 +54,15 @@ J2OBJC_FIELD_SETTER(AMConfiguration, localeProvider_, id<AMLocaleProvider>)
                        withAMStorage:(id<AMStorage>)storage
                    withAMLogCallback:(id<AMLogCallback>)log
                          withBoolean:(jboolean)persistUploadingFiles
-                withAMLocaleProvider:(id<AMLocaleProvider>)localeProvider {
+                withAMLocaleProvider:(id<AMLocaleProvider>)localeProvider
+             withAMPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider
+                withAMCryptoProvider:(id<AMCryptoProvider>)cryptoProvider
+            withAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider
+                         withBoolean:(jboolean)enableContactsLogging
+                         withBoolean:(jboolean)enableNetworkLogging {
   if (self = [super init]) {
+    enableContactsLogging_ = NO;
+    enableNetworkLogging_ = NO;
     self->networking_ = networking;
     self->endpoints_ = endpoints;
     self->threading_ = threading;
@@ -53,8 +71,29 @@ J2OBJC_FIELD_SETTER(AMConfiguration, localeProvider_, id<AMLocaleProvider>)
     self->log_ = log;
     self->persistUploadingFiles_ = persistUploadingFiles;
     self->localeProvider_ = localeProvider;
+    self->phoneBookProvider_ = phoneBookProvider;
+    self->cryptoProvider_ = cryptoProvider;
+    self->fileSystemProvider_ = fileSystemProvider;
+    self->enableContactsLogging_ = enableContactsLogging;
+    self->enableNetworkLogging_ = enableNetworkLogging;
   }
   return self;
+}
+
+- (jboolean)isEnableContactsLogging {
+  return enableContactsLogging_;
+}
+
+- (jboolean)isEnableNetworkLogging {
+  return enableNetworkLogging_;
+}
+
+- (id<AMCryptoProvider>)getCryptoProvider {
+  return cryptoProvider_;
+}
+
+- (id<AMPhoneBookProvider>)getPhoneBookProvider {
+  return phoneBookProvider_;
 }
 
 - (id<AMNetworking>)getNetworking {
@@ -89,6 +128,10 @@ J2OBJC_FIELD_SETTER(AMConfiguration, localeProvider_, id<AMLocaleProvider>)
   return localeProvider_;
 }
 
+- (id<AMFileSystemProvider>)getFileSystemProvider {
+  return fileSystemProvider_;
+}
+
 - (void)copyAllFieldsTo:(AMConfiguration *)other {
   [super copyAllFieldsTo:other];
   other->networking_ = networking_;
@@ -99,6 +142,11 @@ J2OBJC_FIELD_SETTER(AMConfiguration, localeProvider_, id<AMLocaleProvider>)
   other->log_ = log_;
   other->persistUploadingFiles_ = persistUploadingFiles_;
   other->localeProvider_ = localeProvider_;
+  other->phoneBookProvider_ = phoneBookProvider_;
+  other->cryptoProvider_ = cryptoProvider_;
+  other->enableContactsLogging_ = enableContactsLogging_;
+  other->enableNetworkLogging_ = enableNetworkLogging_;
+  other->fileSystemProvider_ = fileSystemProvider_;
 }
 
 @end

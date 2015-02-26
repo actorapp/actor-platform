@@ -21,6 +21,10 @@
 
 - (id<AMKeyValueStorage>)createGroupsEngine;
 
+- (id<AMKeyValueStorage>)createDownloadsEngine;
+
+- (id<AMListEngine>)createContactsEngine;
+
 - (id<AMListEngine>)createDialogsEngine;
 
 - (id<AMListEngine>)createMessagesEngineWithAMPeer:(AMPeer *)peer;

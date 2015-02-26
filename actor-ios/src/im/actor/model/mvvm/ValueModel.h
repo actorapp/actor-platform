@@ -24,6 +24,9 @@
 
 - (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener;
 
+- (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener
+                                withBoolean:(jboolean)notify;
+
 - (void)unsubscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener;
 
 - (NSString *)description;

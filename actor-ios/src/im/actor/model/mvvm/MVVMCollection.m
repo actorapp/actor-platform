@@ -197,9 +197,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
 
 - (void)clear {
   @synchronized(self) {
-    @synchronized(cache_) {
-      [((JavaUtilHashMap *) nil_chk(cache_)) clear];
-    }
+    [((JavaUtilHashMap *) nil_chk(cache_)) clear];
     AMMVVMCollection_notifyClear(this$0_);
     [((id<AMKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) clear];
   }

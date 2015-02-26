@@ -19,6 +19,7 @@
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)applyUsersWithJavaUtilCollection:(id<JavaUtilCollection>)updated
+                  withJavaUtilCollection:(id<JavaUtilCollection>)updatedContact
                              withBoolean:(jboolean)forced;
 
 - (void)onUserNameChangedWithInt:(jint)uid

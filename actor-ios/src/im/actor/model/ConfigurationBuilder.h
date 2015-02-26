@@ -8,10 +8,13 @@
 
 @class AMConfiguration;
 @class JavaUtilArrayList;
+@protocol AMCryptoProvider;
+@protocol AMFileSystemProvider;
 @protocol AMLocaleProvider;
 @protocol AMLogCallback;
 @protocol AMMainThread;
 @protocol AMNetworking;
+@protocol AMPhoneBookProvider;
 @protocol AMStorage;
 @protocol AMThreading;
 
@@ -19,6 +22,16 @@
 
 @interface AMConfigurationBuilder : NSObject {
 }
+
+- (AMConfigurationBuilder *)setFileSystemProviderWithAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider;
+
+- (AMConfigurationBuilder *)setEnableContactsLoggingWithBoolean:(jboolean)enableContactsLogging;
+
+- (AMConfigurationBuilder *)setEnableNetworkLoggingWithBoolean:(jboolean)enableNetworkLogging;
+
+- (AMConfigurationBuilder *)setCryptoProviderWithAMCryptoProvider:(id<AMCryptoProvider>)cryptoProvider;
+
+- (AMConfigurationBuilder *)setPhoneBookProviderWithAMPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider;
 
 - (AMConfigurationBuilder *)setLog:(id<AMLogCallback>)log;
 

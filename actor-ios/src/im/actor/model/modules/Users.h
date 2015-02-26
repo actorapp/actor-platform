@@ -37,8 +37,6 @@
 - (id<AMCommand>)editNameWithInt:(jint)uid
                     withNSString:(NSString *)name;
 
-- (id<AMCommand>)editAvatarWithNSString:(NSString *)avatarPath;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUsers)
@@ -57,7 +55,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers)
 
 - (AMUser *)deserializeWithByteArray:(IOSByteArray *)raw;
 
-- (instancetype)initWithAMKeyValueStorage:(id<AMKeyValueStorage>)arg$0;
+- (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
+                           withAMKeyValueStorage:(id<AMKeyValueStorage>)arg$0;
 
 @end
 
