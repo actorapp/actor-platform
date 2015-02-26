@@ -4,9 +4,12 @@
 //
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/OutPeer.h"
+#include "im/actor/model/api/PeerType.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/entity/Group.h"
 #include "im/actor/model/entity/Peer.h"
+#include "im/actor/model/entity/PeerType.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/Groups.h"
@@ -72,6 +75,26 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
     self->messenger_ = messenger;
   }
   return self;
+}
+
+- (ImActorModelApiOutPeer *)buidOutPeerWithAMPeer:(AMPeer *)peer {
+  if ([((AMPeer *) nil_chk(peer)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
+    AMUser *user = [self getUserWithInt:[peer getPeerId]];
+    if (user == nil) {
+      return nil;
+    }
+    return [[ImActorModelApiOutPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[((AMUser *) nil_chk(user)) getUid] withLong:[user getAccessHash]];
+  }
+  else if ([peer getPeerType] == AMPeerTypeEnum_get_GROUP()) {
+    AMGroup *group = [self getGroupWithInt:[peer getPeerId]];
+    if (group == nil) {
+      return nil;
+    }
+    return [[ImActorModelApiOutPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_GROUP() withInt:[((AMGroup *) nil_chk(group)) getGroupId] withLong:[group getAccessHash]];
+  }
+  else {
+    return nil;
+  }
 }
 
 - (id<AMKeyValueEngine>)users {

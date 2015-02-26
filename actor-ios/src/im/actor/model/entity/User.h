@@ -12,6 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
+@protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -27,7 +28,8 @@
                withNSString:(NSString *)name
                withNSString:(NSString *)localName
                withAMAvatar:(AMAvatar *)avatar
-              withAMSexEnum:(AMSexEnum *)sex;
+              withAMSexEnum:(AMSexEnum *)sex
+           withJavaUtilList:(id<JavaUtilList>)records;
 
 - (AMPeer *)peer;
 
@@ -44,6 +46,8 @@
 - (AMAvatar *)getAvatar;
 
 - (AMSexEnum *)getSex;
+
+- (id<JavaUtilList>)getRecords;
 
 - (AMUser *)editNameWithNSString:(NSString *)name;
 

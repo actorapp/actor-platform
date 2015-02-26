@@ -50,7 +50,7 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
   if (offset_ + 4 > maxOffset_) {
     @throw [[JavaIoIOException alloc] init];
   }
-  jint res = IOSByteArray_Get(nil_chk(data_), offset_ + 3) + (LShift32(IOSByteArray_Get(data_, offset_ + 2), 8)) + (LShift32(IOSByteArray_Get(data_, offset_ + 1), 16)) + (LShift32(IOSByteArray_Get(data_, offset_), 24));
+  jint res = (IOSByteArray_Get(nil_chk(data_), offset_ + 3) & (jint) 0xFF) + (LShift32((IOSByteArray_Get(data_, offset_ + 2) & (jint) 0xFF), 8)) + (LShift32((IOSByteArray_Get(data_, offset_ + 1) & (jint) 0xFF), 16)) + (LShift32((IOSByteArray_Get(data_, offset_) & (jint) 0xFF), 24));
   offset_ += 4;
   return res;
 }
@@ -105,7 +105,7 @@ J2OBJC_FIELD_SETTER(AMDataInput, data_, IOSByteArray *)
     if (offset_ == maxOffset_) {
       @throw [[JavaIoIOException alloc] init];
     }
-    b = IOSByteArray_Get(nil_chk(data_), offset_++);
+    b = IOSByteArray_Get(nil_chk(data_), offset_++) & (jint) 0xFF;
     if ((b & (jint) 0x80) != 0) {
       value |= LShift64((b & (jint) 0x7F), i);
       i += 7;

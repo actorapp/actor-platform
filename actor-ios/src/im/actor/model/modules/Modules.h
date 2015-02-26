@@ -10,7 +10,8 @@
 @class AMConfiguration;
 @class AMI18nEngine;
 @class ImActorModelModulesAuth;
-@class ImActorModelModulesFilesModule;
+@class ImActorModelModulesContacts;
+@class ImActorModelModulesFiles;
 @class ImActorModelModulesGroups;
 @class ImActorModelModulesMessages;
 @class ImActorModelModulesPresence;
@@ -52,6 +53,10 @@
 - (AMActorApi *)getActorApi;
 
 - (AMI18nEngine *)getI18nEngine;
+
+- (ImActorModelModulesContacts *)getContactsModule;
+
+- (ImActorModelModulesFiles *)getFilesModule;
 
 @end
 

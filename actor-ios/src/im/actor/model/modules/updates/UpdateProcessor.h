@@ -7,18 +7,23 @@
 #define _ImActorModelModulesUpdatesUpdateProcessor_H_
 
 @class ImActorModelModulesModules;
+@class ImActorModelModulesUpdatesContactsProcessor;
 @class ImActorModelModulesUpdatesGroupsProcessor;
 @class ImActorModelModulesUpdatesInternalInternalUpdate;
+@class ImActorModelModulesUpdatesInternalUsersFounded;
 @class ImActorModelModulesUpdatesMessagesProcessor;
 @class ImActorModelModulesUpdatesPresenceProcessor;
 @class ImActorModelModulesUpdatesTypingProcessor;
 @class ImActorModelModulesUpdatesUsersProcessor;
 @class ImActorModelNetworkParserUpdate;
+@class JavaUtilArrayList;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/modules/BaseModule.h"
+#include "java/lang/Runnable.h"
 
-@interface ImActorModelModulesUpdatesUpdateProcessor : NSObject {
+@interface ImActorModelModulesUpdatesUpdateProcessor : ImActorModelModulesBaseModule {
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
@@ -45,5 +50,22 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUpdatesUpdateProcessor, TAG_, NSSt
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor)
+
+@interface ImActorModelModulesUpdatesUpdateProcessor_$1 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesUpdatesInternalUsersFounded:(ImActorModelModulesUpdatesInternalUsersFounded *)capture$0
+                                                 withJavaUtilArrayList:(JavaUtilArrayList *)capture$1;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesUpdateProcessor_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$1)
 
 #endif // _ImActorModelModulesUpdatesUpdateProcessor_H_
