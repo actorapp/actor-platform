@@ -83,6 +83,7 @@ public class PhotoPreview extends ImageReceiverView {
     public void setSrc(Bitmap src) {
         this.src = src;
         bindShader(src);
+        invalidate();
     }
 
     @Override

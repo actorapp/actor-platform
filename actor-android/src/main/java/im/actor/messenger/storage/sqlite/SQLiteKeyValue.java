@@ -19,16 +19,22 @@ public class SQLiteKeyValue implements KeyValueStorage {
 
     private SQLiteDatabase db;
     private String name;
+    private boolean isSqliteChecked = false;
 
     public SQLiteKeyValue(SQLiteDatabase db, String name) {
         this.db = db;
         this.name = name;
+    }
 
-        if (!SQLiteHelpers.isTableExists(db, name)) {
-            db.execSQL("CREATE TABLE IF NOT EXISTS \"" + name + "\" (" + //
-                    "\"ID\" INTEGER NOT NULL," + // 0: id
-                    "\"BYTES\" BLOB NOT NULL," + // 1: bytes
-                    "PRIMARY KEY(\"ID\"));");
+    private void checkSqlite() {
+        if (!isSqliteChecked) {
+            isSqliteChecked = true;
+            if (!SQLiteHelpers.isTableExists(db, name)) {
+                db.execSQL("CREATE TABLE IF NOT EXISTS \"" + name + "\" (" + //
+                        "\"ID\" INTEGER NOT NULL," + // 0: id
+                        "\"BYTES\" BLOB NOT NULL," + // 1: bytes
+                        "PRIMARY KEY(\"ID\"));");
+            }
         }
     }
 
@@ -47,6 +53,7 @@ public class SQLiteKeyValue implements KeyValueStorage {
 
     @Override
     public void addOrUpdateItem(long id, byte[] data) {
+        checkSqlite();
         checkInsertStatement();
 
         db.beginTransaction();
@@ -62,6 +69,7 @@ public class SQLiteKeyValue implements KeyValueStorage {
 
     @Override
     public void addOrUpdateItems(List<KeyValueRecord> values) {
+        checkSqlite();
         checkInsertStatement();
 
         db.beginTransaction();
@@ -79,6 +87,7 @@ public class SQLiteKeyValue implements KeyValueStorage {
 
     @Override
     public void removeItem(long id) {
+        checkSqlite();
         checkDeleteStatement();
 
         db.beginTransaction();
@@ -93,6 +102,7 @@ public class SQLiteKeyValue implements KeyValueStorage {
 
     @Override
     public void removeItems(long[] ids) {
+        checkSqlite();
         checkDeleteStatement();
 
         db.beginTransaction();
@@ -109,6 +119,7 @@ public class SQLiteKeyValue implements KeyValueStorage {
 
     @Override
     public void clear() {
+        checkSqlite();
         db.beginTransaction();
         try {
             db.execSQL("DELETE FROM \"" + name + "\"");
@@ -120,6 +131,7 @@ public class SQLiteKeyValue implements KeyValueStorage {
 
     @Override
     public byte[] getValue(long id) {
+        checkSqlite();
         Cursor cursor = db.query("\"" + name + "\"", new String[]{"\"BYTES\""}, "\"ID\" = ?", new String[]{"" + id}, null, null, null);
         if (cursor == null) {
             return null;

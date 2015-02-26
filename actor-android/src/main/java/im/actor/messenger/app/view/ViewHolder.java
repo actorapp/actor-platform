@@ -6,13 +6,17 @@ import android.view.ViewGroup;
 
 public abstract class ViewHolder<T> {
 
-    @Deprecated
-    private View view;
+    private long id;
 
-    @Deprecated
-    public View getView() {
-        return view;
+    public long getId() {
+        return id;
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    private View view;
 
     @Deprecated
     public abstract View init(T data, ViewGroup viewGroup, Context context);

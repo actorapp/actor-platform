@@ -9,6 +9,7 @@ import im.actor.model.api.rpc.ResponseAuth;
 import im.actor.model.api.rpc.ResponseSendAuthCode;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.log.Log;
 import im.actor.model.modules.updates.internal.LoggedIn;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
@@ -37,17 +38,22 @@ public class Auth extends BaseModule {
     public Auth(Modules modules) {
         super(modules);
 
+        long start = modules.getConfiguration().getThreading().getActorTime();
         this.mainThread = modules.getConfiguration().getMainThread();
+        Log.d("CORE_INIT", "Loading stage5.3.1 in " + (modules.getConfiguration().getThreading().getActorTime() - start) + " ms");
+        start = modules.getConfiguration().getThreading().getActorTime();
 
         this.myUid = preferences().getInt(KEY_AUTH_UID, 0);
+        Log.d("CORE_INIT", "Loading stage5.3.2 in " + (modules.getConfiguration().getThreading().getActorTime() - start) + " ms");
+        start = modules.getConfiguration().getThreading().getActorTime();
 
         deviceHash = preferences().getBytes(KEY_DEVICE_HASH);
         if (deviceHash == null) {
             deviceHash = RandomUtils.seed(32);
             preferences().putBytes(KEY_DEVICE_HASH, deviceHash);
         }
-
-
+        Log.d("CORE_INIT", "Loading stage5.3.3 in " + (modules.getConfiguration().getThreading().getActorTime() - start) + " ms");
+        start = modules.getConfiguration().getThreading().getActorTime();
     }
 
     public void run() {

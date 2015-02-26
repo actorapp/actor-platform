@@ -9,7 +9,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
-import im.actor.messenger.util.Logger;
+
 import im.actor.messenger.util.VisibleViewItem;
 
 /**
@@ -147,6 +147,24 @@ public class ConversationListView extends ListView {
         oldHeight = b - t;
     }
 
+    private boolean lockLayout = false;
+
+    public void safeSetSelectionFromTop(int index, int top) {
+        lockLayout = true;
+        setSelectionFromTop(index, top);
+        lockLayout = false;
+    }
+
+    @Override
+    public void requestLayout() {
+        if (!lockLayout) {
+            super.requestLayout();
+        }
+    }
+
+    public void unlockLayout() {
+
+    }
 
     protected int getPx(float dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());

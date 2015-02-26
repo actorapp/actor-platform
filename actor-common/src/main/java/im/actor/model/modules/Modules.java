@@ -2,6 +2,7 @@ package im.actor.model.modules;
 
 import im.actor.model.Configuration;
 import im.actor.model.i18n.I18nEngine;
+import im.actor.model.log.Log;
 import im.actor.model.modules.utils.PreferenceApiStorage;
 import im.actor.model.network.ActorApi;
 import im.actor.model.network.ActorApiCallback;
@@ -29,8 +30,12 @@ public class Modules {
 
     public Modules(Configuration configuration) {
         this.configuration = configuration;
+        long start = configuration.getThreading().getActorTime();
         this.i18nEngine = new I18nEngine(configuration.getLocaleProvider());
+        Log.d("CORE_INIT", "Loading stage5.1 in " + (configuration.getThreading().getActorTime() - start) + " ms");
         this.preferences = configuration.getStorage().createPreferencesStorage();
+        Log.d("CORE_INIT", "Loading stage5.2 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         this.actorApi = new ActorApi(new Endpoints(configuration.getEndpoints()),
                 new PreferenceApiStorage(preferences),
                 new ActorApiCallback() {
@@ -56,7 +61,11 @@ public class Modules {
                         }
                     }
                 }, configuration.getNetworking());
+        Log.d("CORE_INIT", "Loading stage5.3 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         this.auth = new Auth(this);
+        Log.d("CORE_INIT", "Loading stage5.4 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
     }
 
     public void run() {
@@ -64,18 +73,43 @@ public class Modules {
     }
 
     public void onLoggedIn() {
+        long start = configuration.getThreading().getActorTime();
         users = new Users(this);
+        Log.d("CORE_INIT", "Loading stage6.1 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         groups = new Groups(this);
+        Log.d("CORE_INIT", "Loading stage6.2 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         messages = new Messages(this);
+        Log.d("CORE_INIT", "Loading stage6.3 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         updates = new Updates(this);
+        Log.d("CORE_INIT", "Loading stage6.4 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         presence = new Presence(this);
+        Log.d("CORE_INIT", "Loading stage6.5 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         typing = new Typing(this);
+        Log.d("CORE_INIT", "Loading stage6.6 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         filesModule = new Files(this);
+        Log.d("CORE_INIT", "Loading stage6.7 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         contacts = new Contacts(this);
+        Log.d("CORE_INIT", "Loading stage6.8 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         filesModule.run();
+        Log.d("CORE_INIT", "Loading stage6.9 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         messages.run();
+        Log.d("CORE_INIT", "Loading stage6.10 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         updates.run();
+        Log.d("CORE_INIT", "Loading stage6.11 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
         presence.run();
+        Log.d("CORE_INIT", "Loading stage6.12 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
     }
 
     public PreferencesStorage getPreferences() {

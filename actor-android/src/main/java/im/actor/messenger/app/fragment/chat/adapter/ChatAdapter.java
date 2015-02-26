@@ -10,7 +10,11 @@ import im.actor.messenger.app.view.ViewHolder;
 import im.actor.messenger.storage.ListEngines;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
-import im.actor.model.entity.content.*;
+import im.actor.model.entity.content.DocumentContent;
+import im.actor.model.entity.content.PhotoContent;
+import im.actor.model.entity.content.ServiceContent;
+import im.actor.model.entity.content.TextContent;
+import im.actor.model.entity.content.VideoContent;
 
 public class ChatAdapter extends EngineHolderAdapter<Message> {
 
@@ -85,5 +89,15 @@ public class ChatAdapter extends EngineHolderAdapter<Message> {
                 // ConversationHistoryActor.conv(type, id).onEndReached();
             }
         }
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyDataSetInvalidated() {
+        super.notifyDataSetInvalidated();
     }
 }

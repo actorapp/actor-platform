@@ -3,9 +3,9 @@ package com.droidkit.engine.list.view;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
 import com.droidkit.engine.uilist.UiList;
 import com.droidkit.engine.uilist.UiListListener;
-import im.actor.messenger.util.Logger;
 
 /**
  * Created by ex3ndr on 30.08.14.
@@ -119,16 +119,10 @@ public abstract class ListEngineAdapter<V> extends BaseAdapter {
         if (autoUpdate) {
             uiList.addListener(listListener);
         }
-        notifyDataSetChanged();
+        notifyDataSetInvalidated();
     }
 
     public void dispose() {
         pause();
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-        // Logger.d("ListEngine", "notifyDataSetChanged");
     }
 }

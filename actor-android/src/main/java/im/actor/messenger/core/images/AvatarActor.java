@@ -31,6 +31,9 @@ public class AvatarActor extends BasicTaskActor<AvatarTask> {
     }
 
     private void onDownloaded(FileReference reference) {
+        if (isCompleted()) {
+            return;
+        }
         AndroidFileReference fileDescriptor = (AndroidFileReference) reference;
         try {
             completeTask(ImageLoading.loadBitmap(fileDescriptor.getDescriptor()));
