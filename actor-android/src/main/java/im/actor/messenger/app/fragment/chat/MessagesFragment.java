@@ -9,44 +9,36 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.droidkit.engine.list.view.EngineUiList;
-import com.droidkit.engine.uilist.UiList;
-import com.droidkit.engine.uilist.UiListStateListener;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragment;
-import im.actor.messenger.app.fragment.chat.adapter.ChatAdapter;
+import im.actor.messenger.app.fragment.chat.recycler.RecyclerMessagesAdapter;
 import im.actor.messenger.app.view.BackgroundView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.storage.ListEngines;
-import im.actor.messenger.util.Logger;
 import im.actor.messenger.util.Screen;
 import im.actor.messenger.util.VisibleViewItem;
-import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
-import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.TextContent;
-import im.actor.model.mvvm.ValueChangedListener;
-import im.actor.model.mvvm.ValueModel;
-import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.myUid;
@@ -56,7 +48,7 @@ import static im.actor.messenger.core.Core.users;
  * Created by ex3ndr on 01.09.14.
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class MessagesFragment extends BaseFragment implements UiListStateListener, ExScrollListener {
+public class MessagesFragment extends BaseFragment {
 
     public static MessagesFragment create(Peer peer) {
         Bundle bundle = new Bundle();
@@ -72,10 +64,10 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
 
     private Peer peer;
 
-    private ConversationListView listView;
-    private ChatAdapter adapter;
+    private RecyclerView messagesView;
+    private RecyclerMessagesAdapter messagesAdapter;
+    // private ChatAdapter adapter;
     private EngineUiList<Message> listEngine;
-    private UiList<Message> list;
     private ImageView scrollUp;
     private ImageView scrollDown;
     private TextView scrollNewMessage;
@@ -105,10 +97,23 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
         return firstUnread;
     }
 
+    public EngineUiList<Message> getListEngine() {
+        return listEngine;
+    }
+
+    public Peer getPeer() {
+        return peer;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        // Building model
+
         peer = Peer.fromUid(getArguments().getLong("CHAT_PEER"));
+        listEngine = ListEngines.getMessagesList(peer);
+
+        // Building view
 
         scrollNewMessage = new TextView(getActivity());
         scrollNewMessage.setTextColor(Color.WHITE);
@@ -116,121 +121,113 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
         scrollNewMessage.setBackgroundResource(R.drawable.conv_scroll_down_new);
         scrollNewMessage.setTypeface(Fonts.load(getActivity(), "Regular"));
         scrollNewMessage.setTextSize(14);
-        scrollNewMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (state != STATE_BOTTOM) {
-                    state = STATE_BOTTOM;
-                    listEngine.scrollToStart();
-                } else {
-                    for (int i = 0; i < list.getSize(); i++) {
-                        if (list.getItem(i).getRid() == newMessageId) {
-                            listView.setSelectionFromTop(list.getSize() - i - 1, Screen.dp(48));
-                            break;
-                        }
-                    }
-                    newMessageId = 0;
-                    if (showNewMessage) {
-                        showNewMessage = false;
-                        goneView(scrollNewMessage);
-                    }
-                }
-            }
-        });
+//        scrollNewMessage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (state != STATE_BOTTOM) {
+//                    state = STATE_BOTTOM;
+//                    listEngine.scrollToStart();
+//                } else {
+//                    for (int i = 0; i < list.getSize(); i++) {
+//                        if (list.getItem(i).getRid() == newMessageId) {
+//                            listView.setSelectionFromTop(list.getSize() - i - 1, Screen.dp(48));
+//                            break;
+//                        }
+//                    }
+//                    newMessageId = 0;
+//                    if (showNewMessage) {
+//                        showNewMessage = false;
+//                        goneView(scrollNewMessage);
+//                    }
+//                }
+//            }
+//        });
         scrollNewMessage.setVisibility(View.GONE);
 
         scrollUp = new ImageView(getActivity());
         scrollUp.setImageResource(R.drawable.conv_scroll_up);
-        scrollUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                state = STATE_TOP;
-                listEngine.scrollToEnd();
-            }
-        });
+//        scrollUp.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                state = STATE_TOP;
+//                listEngine.scrollToEnd();
+//            }
+//        });
 
         scrollDown = new ImageView(getActivity());
         scrollDown.setImageResource(R.drawable.conv_scroll_down);
-        scrollDown.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                state = STATE_BOTTOM;
-                listEngine.scrollToStart();
-            }
-        });
+//        scrollDown.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                state = STATE_BOTTOM;
+//                listEngine.scrollToStart();
+//            }
+//        });
 
-        listView = new ConversationListView(getActivity());
-        listView.setDividerHeight(0);
-        listView.setDivider(null);
-        // listView.setBackgroundResource(R.drawable.chat_bg_container);
-        listView.setCacheColorHint(Color.TRANSPARENT);
-        listView.setScrollingCacheEnabled(false);
-        // listView.setCacheColorHint(getResources().getColor(R.color.conv_bg));
-        // listView.setBackgroundColor(getResources().getColor(R.color.conv_bg));
-        listView.setStackFromBottom(true);
+        messagesView = new RecyclerView(getActivity());
+        messagesView.setVerticalScrollBarEnabled(true);
+        messagesView.setHorizontalScrollBarEnabled(false);
+        messagesView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        linearLayoutManager.setReverseLayout(true);
+        messagesView.setLayoutManager(linearLayoutManager);
 
-        listEngine = ListEngines.getMessagesList(peer);
-        list = listEngine.getUiList();
-        adapter = new ChatAdapter(peer, this, getActivity());
-        View view = new View(getActivity());
-        view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(10)));
-        listView.addFooterView(view, null, false);
+        messagesAdapter = new RecyclerMessagesAdapter(this);
+        messagesView.setAdapter(messagesAdapter);
 
-        FrameLayout header = new FrameLayout(getActivity());
-        header.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        header.setPadding(0, 0, 0, Screen.dp(8));
-        final TextView addContact = new TextView(getActivity());
-        addContact.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(48)));
-        addContact.setText(R.string.chat_add_to_contacts);
-        addContact.setAllCaps(true);
-        addContact.setTextColor(getResources().getColor(R.color.text_primary_light));
-        addContact.setTextSize(14);
-        addContact.setTypeface(Fonts.medium());
-        addContact.setGravity(Gravity.CENTER);
-        addContact.setBackgroundResource(R.drawable.selector_add);
-        addContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                execute(messenger().addContact(peer.getPeerId()), R.string.chat_add_to_contacts_progress, new CommandCallback<Boolean>() {
-                    @Override
-                    public void onResult(Boolean res) {
-
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-
-                    }
-                });
-            }
-        });
-
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            UserVM user = users().get(peer.getPeerId());
-            bind(user.isContact(), new ValueChangedListener<Boolean>() {
-                @Override
-                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
-                    if (val) {
-                        addContact.setVisibility(View.GONE);
-                    } else {
-                        addContact.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-        } else {
-            addContact.setVisibility(View.GONE);
-        }
-
-        header.addView(addContact);
-        listView.addHeaderView(header, null, false);
-
-        listView.setAdapter(adapter);
-        listView.setRecyclerListener(new AbsListView.RecyclerListener() {
-            @Override
-            public void onMovedToScrapHeap(View view) {
-                adapter.onMovedToScrapHeap(view);
-            }
-        });
+        // adapter = new ChatAdapter(peer, this, getActivity());
+//        View view = new View(getActivity());
+//        view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(10)));
+//        listView.addFooterView(view, null, false);
+//
+//        FrameLayout header = new FrameLayout(getActivity());
+//        header.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        header.setPadding(0, 0, 0, Screen.dp(8));
+//        final TextView addContact = new TextView(getActivity());
+//        addContact.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(48)));
+//        addContact.setText(R.string.chat_add_to_contacts);
+//        addContact.setAllCaps(true);
+//        addContact.setTextColor(getResources().getColor(R.color.text_primary_light));
+//        addContact.setTextSize(14);
+//        addContact.setTypeface(Fonts.medium());
+//        addContact.setGravity(Gravity.CENTER);
+//        addContact.setBackgroundResource(R.drawable.selector_add);
+//        addContact.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                execute(messenger().addContact(peer.getPeerId()), R.string.chat_add_to_contacts_progress, new CommandCallback<Boolean>() {
+//                    @Override
+//                    public void onResult(Boolean res) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//
+//                    }
+//                });
+//            }
+//        });
+//
+//        if (peer.getPeerType() == PeerType.PRIVATE) {
+//            UserVM user = users().get(peer.getPeerId());
+//            bind(user.isContact(), new ValueChangedListener<Boolean>() {
+//                @Override
+//                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+//                    if (val) {
+//                        addContact.setVisibility(View.GONE);
+//                    } else {
+//                        addContact.setVisibility(View.VISIBLE);
+//                    }
+//                }
+//            });
+//        } else {
+//            addContact.setVisibility(View.GONE);
+//        }
+//
+//        header.addView(addContact);
+//        listView.addHeaderView(header, null, false);
 
         bg = new BackgroundView(getActivity());
 
@@ -239,8 +236,9 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
         rootLayout.addView(bg, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        rootLayout.addView(listView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
+        rootLayout.addView(messagesView,
+                new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
         {
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -272,7 +270,6 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
     @Override
     public void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
 
         if (isFirst) {
             isFirst = false;
@@ -281,46 +278,39 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
 
         scrollUp.setVisibility(View.GONE);
         scrollDown.setVisibility(View.GONE);
-
-        listEngine.getUiList().addExListener(this);
-        listView.setExScrollListener(this);
-
-        // listView.setAdapter(adapter);
-
-        // bg.bind();
     }
 
     private void initUnreadLocation() {
 
-        if (list.getSize() == 0) {
-            return;
-        }
-
-        long lastRead = messenger().loadLastReadSortDate(peer);
-        if (lastRead == 0) {
-            listView.setSelectionFromTop(list.getSize() - 1, -10000);
-            return;
-        }
-
-        int index = -1;
-
-        for (int i = list.getSize() - 1; i >= 0; i--) {
-            Message messageModel = list.getItem(i);
-            if (messageModel.getSenderId() == myUid()) {
-                continue;
-            }
-            if (messageModel.getSortDate() > lastRead) {
-                firstUnread = messageModel.getRid();
-                index = i;
-                break;
-            }
-        }
-
-        if (index >= 0) {
-            listView.setSelectionFromTop(list.getSize() - index, Screen.dp(48));
-        } else {
-            listView.setSelectionFromTop(list.getSize(), -10000);
-        }
+//        if (list.getSize() == 0) {
+//            return;
+//        }
+//
+//        long lastRead = messenger().loadLastReadSortDate(peer);
+//        if (lastRead == 0) {
+//            listView.setSelectionFromTop(list.getSize() - 1, -10000);
+//            return;
+//        }
+//
+//        int index = -1;
+//
+//        for (int i = list.getSize() - 1; i >= 0; i--) {
+//            Message messageModel = list.getItem(i);
+//            if (messageModel.getSenderId() == myUid()) {
+//                continue;
+//            }
+//            if (messageModel.getSortDate() > lastRead) {
+//                firstUnread = messageModel.getRid();
+//                index = i;
+//                break;
+//            }
+//        }
+//
+//        if (index >= 0) {
+//            listView.setSelectionFromTop(list.getSize() - index, Screen.dp(48));
+//        } else {
+//            listView.setSelectionFromTop(list.getSize(), -10000);
+//        }
     }
 
     public boolean onClick(Message messageModel) {
@@ -439,7 +429,7 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
                 @Override
                 public void onDestroyActionMode(ActionMode mode) {
                     selected.clear();
-                    listView.invalidateViews();
+                    // listView.invalidateViews();
                     actionMode = null;
                 }
             });
@@ -473,165 +463,22 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
     }
 
     @Override
-    public void onStoppedScroll() {
-        goneView(scrollUp);
-        goneView(scrollDown);
-    }
-
-    @Override
-    public void onScrolledUp() {
-        showView(scrollUp);
-        goneView(scrollDown);
-    }
-
-    @Override
-    public void onScrolledDown() {
-        goneView(scrollUp);
-        if (!showNewMessage) {
-            showView(scrollDown);
-        }
-    }
-
-    @Override
-    public void onScrolledToEnd() {
-        isScrolledToEnd = true;
-        if (showNewMessage) {
-            showNewMessage = false;
-            goneView(scrollNewMessage);
-        }
-    }
-
-    @Override
-    public void onScrolledFromEnd() {
-        isScrolledToEnd = false;
-    }
-
-    @Override
-    public void onListPreUpdated() {
-        preDump = dumpState();
-        preSize = list.getSize();
-        bottomId = 0;
-        if (preSize > 0) {
-            Message bottomMessage = list.getItem(0);
-            bottomId = bottomMessage.getRid();
-        }
-    }
-
-    @Override
-    public void onListPostUpdated() {
-        adapter.notifyDataSetChanged();
-
-//        // Empty list
-        if (list.getSize() == 0) {
-            return;
-        }
-
-        // Initial load
-        if (preDump.length == 0) {
-            adapter.notifyDataSetChanged();
-            if (state == STATE_BOTTOM) {
-                listView.setSelectionFromTop(list.getSize() - 1, -10000);
-            } else if (state == STATE_TOP) {
-                listView.setSelectionFromTop(0, 0);
-            } else if (state == STATE_UNREAD) {
-                initUnreadLocation();
-            }
-            return;
-        }
-
-        // Scrolling to bottom on new messages
-
-        if (list.getSize() > 0 && preSize > 0 && listView.getLastVisiblePosition() >= preSize - 1
-                && bottomId != list.getItem(0).getRid()) {
-            listView.safeSetSelectionFromTop(list.getSize(), -10000);
-//            if (BuildConfig.ENABLE_CHROME) {
-//                listView.smoothScrollToPosition(list.getSize());
-//            } else {
-//                listView.setSelectionFromTop(list.getSize(), -10000);
-//                listView.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        listView.setSelectionFromTop(list.getSize(), -10000);
-//                    }
-//                });
-//            }
-//            if (listView.getLastVisiblePosition() == list.getSize()) {
-//                // Bottom visible
-//                listView.smoothScrollToPosition(list.getSize() + 1);
-//            } else {
-//                listView.smoothScrollToPosition(list.getSize());
-//            }
-            return;
-        }
-
-        // Keeping position
-
-        // Fallback values
-        int newIndex = preDump[0].getIndex() + (list.getSize() - preSize) - 1;
-        int newTop = preDump[0].getTop();
-
-        Logger.d("MessagesList", "Apply change");
-
-        // TODO: Optimize
-        outer:
-        for (int i = 0; i < list.getSize(); i++) {
-            for (int j = 0; j < preDump.length; j++) {
-                if (preDump[j].getId() == list.getItem(list.getSize() - i - 1).getRid()) {
-                    newIndex = i;
-                    newTop = preDump[j].getTop();
-                    break outer;
-                }
-            }
-        }
-
-        listView.safeSetSelectionFromTop(newIndex, newTop);
-    }
-
-    public VisibleViewItem[] dumpState() {
-        int childCount = listView.getChildCount();
-        int headerCount = 0;
-
-        ArrayList<VisibleViewItem> res = new ArrayList<VisibleViewItem>();
-        for (int i = 0; i < childCount; i++) {
-            View v = listView.getChildAt(i);
-            int index = listView.getFirstVisiblePosition() + i;
-            if (index >= list.getSize()) {
-                continue;
-            }
-            long id = list.getItem(list.getSize() - index - 1).getRid();
-            if (id != 0) {
-                int top = ((v == null) ? 0 : v.getTop()) - listView.getPaddingTop();
-                res.add(new VisibleViewItem(index + headerCount, top, id));
-            }
-        }
-
-        return res.toArray(new VisibleViewItem[0]);
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
-        listEngine.getUiList().removeExListener(this);
-        listView.setExScrollListener(null);
         if (actionMode != null) {
             actionMode.finish();
         }
-        listView.invalidateViews();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (adapter != null) {
-            adapter.dispose();
+        if (messagesAdapter != null) {
+            messagesAdapter.dispose();
         }
-        if (listView != null) {
-            listView.setRecyclerListener(null);
-        }
-        adapter = null;
-        listView = null;
+        messagesAdapter = null;
+        messagesView = null;
         listEngine = null;
-        list = null;
         scrollUp = null;
         scrollDown = null;
         preDump = null;

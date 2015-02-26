@@ -46,7 +46,7 @@ import static im.actor.messenger.core.Core.myUid;
 class PhotoHolder extends BubbleHolder {
 
     PhotoHolder(Peer peer, MessagesFragment fragment, UiList<Message> uiList) {
-        super(peer, fragment, uiList);
+        super(fragment, uiList);
 
     }
 

@@ -1,10 +1,10 @@
 package im.actor.model.entity.content;
 
+import java.io.IOException;
+
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
-
-import java.io.IOException;
 
 /**
  * Created by ex3ndr on 14.02.15.
@@ -41,6 +41,15 @@ public class DocumentContent extends AbsContent {
 
     public FastThumb getFastThumb() {
         return fastThumb;
+    }
+
+    public String getExt() {
+        String ext = "";
+        int dotIndex = name.lastIndexOf('.');
+        if (dotIndex >= 0) {
+            ext = name.substring(dotIndex + 1);
+        }
+        return ext;
     }
 
     @Override

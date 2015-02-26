@@ -1,17 +1,12 @@
-package im.actor.messenger.app.fragment.chat.adapter;
+package im.actor.messenger.app.fragment.chat.recycler;
 
-import android.content.Context;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.util.Linkify;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
-import com.droidkit.engine.uilist.UiList;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.BubbleContainer;
@@ -20,9 +15,9 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.TextUtils;
 import im.actor.model.entity.Message;
-import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.TextContent;
+import im.actor.model.log.Log;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.myUid;
@@ -31,7 +26,7 @@ import static im.actor.messenger.core.Core.users;
 /**
  * Created by ex3ndr on 10.09.14.
  */
-public class TextHolder extends BubbleHolder {
+public class TextHolder extends MessageHolder {
 
     private BubbleContainer messageBubbleContainer;
     private FrameLayout messageBubble;
@@ -46,59 +41,48 @@ public class TextHolder extends BubbleHolder {
     private int readColor;
     private int errorColor;
 
-    protected TextHolder(Peer peer, MessagesFragment fragment, UiList<Message> uiList) {
-        super(fragment, uiList);
-    }
+    public TextHolder(MessagesFragment fragment, View itemView) {
+        super(fragment, itemView, false);
 
-    @Override
-    public View init(Message data, ViewGroup parent, Context context) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        messageBubbleContainer = (BubbleContainer) inflater.inflate(R.layout.adapter_dialog_text, parent, false);
-
-        messageBubble = (FrameLayout) messageBubbleContainer.findViewById(R.id.fl_bubble);
-        text = (TextView) messageBubbleContainer.findViewById(R.id.tv_text);
+        messageBubbleContainer = (BubbleContainer) itemView;
+        messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
+        text = (TextView) itemView.findViewById(R.id.tv_text);
         text.setTypeface(Fonts.regular());
-        time = (TextView) messageBubbleContainer.findViewById(R.id.tv_time);
+        time = (TextView) itemView.findViewById(R.id.tv_time);
         time.setTypeface(Fonts.regular());
-        status = (TintImageView) messageBubbleContainer.findViewById(R.id.stateIcon);
+        status = (TintImageView) itemView.findViewById(R.id.stateIcon);
 
         colors = new int[]{
-                context.getResources().getColor(R.color.placeholder_0),
-                context.getResources().getColor(R.color.placeholder_1),
-                context.getResources().getColor(R.color.placeholder_2),
-                context.getResources().getColor(R.color.placeholder_3),
-                context.getResources().getColor(R.color.placeholder_4),
-                context.getResources().getColor(R.color.placeholder_5),
-                context.getResources().getColor(R.color.placeholder_6),
+                itemView.getResources().getColor(R.color.placeholder_0),
+                itemView.getResources().getColor(R.color.placeholder_1),
+                itemView.getResources().getColor(R.color.placeholder_2),
+                itemView.getResources().getColor(R.color.placeholder_3),
+                itemView.getResources().getColor(R.color.placeholder_4),
+                itemView.getResources().getColor(R.color.placeholder_5),
+                itemView.getResources().getColor(R.color.placeholder_6),
         };
 
-        waitColor = context.getResources().getColor(R.color.conv_state_pending);
-        sentColor = context.getResources().getColor(R.color.conv_state_sent);
-        deliveredColor = context.getResources().getColor(R.color.conv_state_delivered);
-        readColor = context.getResources().getColor(R.color.conv_state_read);
-        errorColor = context.getResources().getColor(R.color.conv_state_error);
-
-        initBubbleHolder(messageBubbleContainer, false);
-
-        return messageBubbleContainer;
+        waitColor = itemView.getResources().getColor(R.color.conv_state_pending);
+        sentColor = itemView.getResources().getColor(R.color.conv_state_sent);
+        deliveredColor = itemView.getResources().getColor(R.color.conv_state_delivered);
+        readColor = itemView.getResources().getColor(R.color.conv_state_read);
+        errorColor = itemView.getResources().getColor(R.color.conv_state_error);
     }
 
     @Override
-    public void update(final Message data, int position, boolean isUpdated, Context context) {
-        if (data == null) {
-            return;
-        }
-
-        if (data.getSenderId() == myUid()) {
-
+    protected void bindData(Message message, boolean isUpdated) {
+        Log.d("TextHolder", "bindData " + hashCode() + " #" + message.getListId() + " " + isUpdated);
+        if (message.getSenderId() == myUid()) {
+            messageBubbleContainer.makeOutboundBubble();
             messageBubble.setBackgroundResource(R.drawable.bubble_text_out);
         } else {
+            messageBubbleContainer.makeInboundBubble(false, message.getSenderId());
             messageBubble.setBackgroundResource(R.drawable.bubble_text_in);
         }
 
-        if (peer.getPeerType() == PeerType.GROUP && data.getSenderId() != myUid()) {
+        if (getPeer().getPeerType() == PeerType.GROUP && message.getSenderId() != myUid()) {
             String name;
-            UserVM userModel = users().get(data.getSenderId());
+            UserVM userModel = users().get(message.getSenderId());
             if (userModel != null) {
                 name = userModel.getName().get();
             } else {
@@ -107,21 +91,21 @@ public class TextHolder extends BubbleHolder {
 
             SpannableStringBuilder builder = new SpannableStringBuilder();
             builder.append(name);
-            builder.setSpan(new ForegroundColorSpan(colors[Math.abs(data.getSenderId()) % colors.length]), 0, name.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            builder.setSpan(new ForegroundColorSpan(colors[Math.abs(message.getSenderId()) % colors.length]), 0, name.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             builder.append("\n");
-            builder.append(((TextContent) data.getContent()).getText());
+            builder.append(((TextContent) message.getContent()).getText());
             text.setText(builder);
         } else {
-            text.setText(((TextContent) data.getContent()).getText());
+            text.setText(((TextContent) message.getContent()).getText());
         }
 
         Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS |
                 Linkify.WEB_URLS);
 
-        if (data.getSenderId() == myUid()) {
+        if (message.getSenderId() == myUid()) {
             status.setVisibility(View.VISIBLE);
 
-            switch (data.getMessageState()) {
+            switch (message.getMessageState()) {
                 case SENT:
                     status.setResource(R.drawable.msg_check_1);
                     status.setTint(sentColor);
@@ -148,13 +132,6 @@ public class TextHolder extends BubbleHolder {
             status.setVisibility(View.GONE);
         }
 
-        time.setText(TextUtils.formatTime(data.getDate()));
-
-        super.update(data, position, isUpdated, context);
-    }
-
-    @Override
-    public void unbind() {
-
+        time.setText(TextUtils.formatTime(message.getDate()));
     }
 }
