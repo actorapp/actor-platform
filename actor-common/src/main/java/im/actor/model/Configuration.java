@@ -29,12 +29,15 @@ public class Configuration {
     private boolean enableContactsLogging = false;
     private boolean enableNetworkLogging = false;
 
+    private FileSystemProvider fileSystemProvider;
+
     public Configuration(Networking networking, ConnectionEndpoint[] endpoints,
                          Threading threading, MainThread mainThread, Storage storage,
                          LogCallback log, boolean persistUploadingFiles,
                          LocaleProvider localeProvider,
                          PhoneBookProvider phoneBookProvider,
                          CryptoProvider cryptoProvider,
+                         FileSystemProvider fileSystemProvider,
                          boolean enableContactsLogging,
                          boolean enableNetworkLogging) {
         this.networking = networking;
@@ -47,6 +50,7 @@ public class Configuration {
         this.localeProvider = localeProvider;
         this.phoneBookProvider = phoneBookProvider;
         this.cryptoProvider = cryptoProvider;
+        this.fileSystemProvider = fileSystemProvider;
         this.enableContactsLogging = enableContactsLogging;
         this.enableNetworkLogging = enableNetworkLogging;
     }
@@ -97,5 +101,9 @@ public class Configuration {
 
     public LocaleProvider getLocaleProvider() {
         return localeProvider;
+    }
+
+    public FileSystemProvider getFileSystemProvider() {
+        return fileSystemProvider;
     }
 }

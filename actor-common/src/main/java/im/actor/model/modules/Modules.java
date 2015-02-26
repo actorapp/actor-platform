@@ -24,7 +24,7 @@ public class Modules {
     private volatile Messages messages;
     private volatile Presence presence;
     private volatile Typing typing;
-    private volatile FilesModule filesModule;
+    private volatile Files filesModule;
     private volatile Contacts contacts;
 
     public Modules(Configuration configuration) {
@@ -70,8 +70,9 @@ public class Modules {
         updates = new Updates(this);
         presence = new Presence(this);
         typing = new Typing(this);
-        filesModule = new FilesModule(this);
+        filesModule = new Files(this);
         contacts = new Contacts(this);
+        filesModule.run();
         messages.run();
         updates.run();
         presence.run();
@@ -123,5 +124,9 @@ public class Modules {
 
     public Contacts getContactsModule() {
         return contacts;
+    }
+
+    public Files getFilesModule() {
+        return filesModule;
     }
 }
