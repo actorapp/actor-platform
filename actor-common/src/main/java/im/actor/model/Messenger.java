@@ -9,6 +9,7 @@ import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.debug.TraceInterface;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.FileLocation;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
@@ -19,6 +20,7 @@ import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.storage.ListEngine;
+import im.actor.model.viewmodel.FileCallback;
 import im.actor.model.viewmodel.GroupTypingVM;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserTypingVM;
@@ -221,5 +223,14 @@ public class Messenger {
 
     public Command<UserVM[]> findUsers(String query) {
         return modules.getContactsModule().findUsers(query);
+    }
+
+    // File operations
+    public void bindFile(FileLocation fileLocation, boolean isAutostart, FileCallback callback) {
+        modules.getFilesModule().bindFile(fileLocation, isAutostart, callback);
+    }
+
+    public void unbindFile(long fileId, FileCallback callback, boolean cancel) {
+        modules.getFilesModule().unbindFile(fileId, callback, cancel);
     }
 }

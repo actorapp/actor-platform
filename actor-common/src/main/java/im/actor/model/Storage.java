@@ -19,6 +19,8 @@ public interface Storage {
 
     public KeyValueStorage createGroupsEngine();
 
+    public KeyValueStorage createDownloadsEngine();
+
     public ListEngine<Contact> createContactsEngine();
 
     public ListEngine<Dialog> createDialogsEngine();

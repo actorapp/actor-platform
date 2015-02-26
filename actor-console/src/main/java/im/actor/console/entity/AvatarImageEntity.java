@@ -1,12 +1,12 @@
 package im.actor.console.entity;
 
+import java.io.IOException;
+
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.entity.AvatarImage;
 import im.actor.model.entity.FileLocation;
-
-import java.io.IOException;
 
 /**
  * Created by ex3ndr on 09.02.15.
@@ -60,7 +60,7 @@ public class AvatarImageEntity extends BserObject {
     }
 
     public AvatarImage getImage() {
-        return new AvatarImage(w, h, new FileLocation(fileId, accessHash, fileSize));
+        return new AvatarImage(w, h, new FileLocation(fileId, accessHash, fileSize, ""));
     }
 
     @Override

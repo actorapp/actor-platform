@@ -76,11 +76,11 @@ public class EntityConverter {
             return null;
         }
         return new AvatarImage(avatarImage.getWidth(), avatarImage.getHeight(),
-                convert(avatarImage.getFileLocation(), avatarImage.getFileSize()));
+                convert(avatarImage.getFileLocation(), "avatar.jpg", avatarImage.getFileSize()));
     }
 
-    public static FileLocation convert(im.actor.model.api.FileLocation location, int size) {
-        return new FileLocation(location.getFileId(), location.getAccessHash(), size);
+    public static FileLocation convert(im.actor.model.api.FileLocation location, String fileName, int size) {
+        return new FileLocation(location.getFileId(), location.getAccessHash(), size, fileName);
     }
 
     public static Sex convert(im.actor.model.api.Sex sex) {
@@ -196,8 +196,10 @@ public class EntityConverter {
                 String mimeType = fileMessage.getMimeType();
                 String name = fileMessage.getName();
                 im.actor.model.entity.content.FastThumb fastThumb = convert(fileMessage.getThumb());
-                FileLocation fileLocation = new FileLocation(fileMessage.getFileId(), fileMessage.getAccessHash(),
-                        fileMessage.getFileSize());
+                FileLocation fileLocation = new FileLocation(fileMessage.getFileId(),
+                        fileMessage.getAccessHash(),
+                        fileMessage.getFileSize(),
+                        fileMessage.getName());
                 FileRemoteSource source = new FileRemoteSource(fileLocation);
 
                 if (fileMessage.getExtType() == 0x01) {

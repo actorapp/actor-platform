@@ -29,6 +29,11 @@ public class TempStorage implements Storage {
     }
 
     @Override
+    public KeyValueStorage createDownloadsEngine() {
+        return new TempKeyValueStorage();
+    }
+
+    @Override
     public ListEngine<Contact> createContactsEngine() {
         return new TempListEngine<Contact>();
     }

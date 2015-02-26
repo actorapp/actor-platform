@@ -32,6 +32,11 @@ public class AppEngineFactory implements Storage {
     }
 
     @Override
+    public KeyValueStorage createDownloadsEngine() {
+        return new SQLiteKeyValue(SQLiteProvider.db(), "actor_downloads");
+    }
+
+    @Override
     public ListEngine<Contact> createContactsEngine() {
         return new ListProvider<Contact>(ListEngines.getContactsListEngine());
     }
