@@ -14,7 +14,6 @@ import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.storage.KeyValueEngine;
-import im.actor.model.viewmodel.FileCallback;
 
 /**
  * Created by ex3ndr on 26.02.15.
@@ -379,17 +378,17 @@ public class DownloadManager extends ModuleActor {
     }
 
     public static class UnbindDownload {
-        private int fileId;
+        private long fileId;
         private boolean isAutocancel;
         private FileCallback callback;
 
-        public UnbindDownload(int fileId, boolean isAutocancel, FileCallback callback) {
+        public UnbindDownload(long fileId, boolean isAutocancel, FileCallback callback) {
             this.fileId = fileId;
             this.isAutocancel = isAutocancel;
             this.callback = callback;
         }
 
-        public int getFileId() {
+        public long getFileId() {
             return fileId;
         }
 

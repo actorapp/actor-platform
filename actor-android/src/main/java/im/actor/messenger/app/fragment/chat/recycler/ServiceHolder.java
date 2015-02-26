@@ -1,47 +1,37 @@
-package im.actor.messenger.app.fragment.chat.adapter;
+package im.actor.messenger.app.fragment.chat.recycler;
 
-import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.droidkit.engine.uilist.UiList;
-
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.chat.BubbleContainer;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
 import im.actor.messenger.app.view.MessageTextFormatter;
 import im.actor.model.entity.Message;
-import im.actor.model.entity.Peer;
-import im.actor.model.entity.content.*;
+import im.actor.model.entity.content.ServiceGroupAvatarChanged;
+import im.actor.model.entity.content.ServiceGroupCreated;
+import im.actor.model.entity.content.ServiceGroupTitleChanged;
+import im.actor.model.entity.content.ServiceGroupUserAdded;
+import im.actor.model.entity.content.ServiceGroupUserKicked;
+import im.actor.model.entity.content.ServiceGroupUserLeave;
+import im.actor.model.entity.content.ServiceUserRegistered;
 
 /**
- * Created by ex3ndr on 25.09.14.
+ * Created by ex3ndr on 27.02.15.
  */
-public class ServiceHolder extends BubbleHolder {
-
-    protected ServiceHolder(Peer peer, MessagesFragment fragment, UiList<Message> uiList) {
-        super(fragment, uiList);
-    }
+public class ServiceHolder extends MessageHolder {
 
     private TextView messageText;
 
+    public ServiceHolder(MessagesFragment fragment, View itemView) {
+        super(fragment, itemView, true);
 
-    @Override
-    public View init(Message data, ViewGroup viewGroup, Context context) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        BubbleContainer v = (BubbleContainer) inflater.inflate(R.layout.adapter_dialog_service, viewGroup, false);
-        messageText = (TextView) v.findViewById(R.id.serviceMessage);
-        initBubbleHolder(v, true);
-        return v;
+        messageText = (TextView) itemView.findViewById(R.id.serviceMessage);
     }
 
     @Override
-    public void update(Message message, int pos, boolean isUpdated, Context context) {
-        super.update(message, pos, isUpdated, context);
+    protected void bindData(Message message, boolean isUpdated) {
         if (message.getContent() instanceof ServiceUserRegistered) {
-            messageText.setText(MessageTextFormatter.joinedActorFull(peer.getPeerId()));
+            messageText.setText(MessageTextFormatter.joinedActorFull(getPeer().getPeerId()));
         } else if (message.getContent() instanceof ServiceGroupCreated) {
             messageText.setText(MessageTextFormatter.groupCreatedFull(message.getSenderId(),
                     ((ServiceGroupCreated) message.getContent()).getGroupTitle()));

@@ -30,14 +30,10 @@ public abstract class BubbleHolder extends ViewHolder<Message> {
     private BubbleContainer container;
     private boolean isFullSize;
 
-    protected BubbleHolder(Peer peer, MessagesFragment fragment, UiList<Message> uiList) {
-        this.peer = peer;
-        this.uiList = uiList;
+    protected BubbleHolder(MessagesFragment fragment, UiList<Message> uiList) {
         this.fragment = fragment;
-    }
-
-    public MessagesFragment getFragment() {
-        return fragment;
+        this.peer = fragment.getPeer();
+        this.uiList = uiList;
     }
 
     protected void initBubbleHolder(final BubbleContainer container, boolean isFullSize) {

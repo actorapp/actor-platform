@@ -64,7 +64,7 @@ public class DocHolder extends BubbleHolder {
     };
 
     protected DocHolder(Peer peer, MessagesFragment fragment, UiList<Message> uiList) {
-        super(peer, fragment, uiList);
+        super(fragment, uiList);
     }
 
     @Override
