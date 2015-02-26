@@ -12,6 +12,7 @@ import im.actor.model.files.FileReference;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
+import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.storage.KeyValueEngine;
 import im.actor.model.viewmodel.FileCallback;
 
@@ -113,15 +114,76 @@ public class DownloadManager extends ModuleActor {
     }
 
     public void startDownload(FileLocation fileLocation) {
-
+        Log.d(TAG, "Starting download #" + fileLocation.getFileId());
+        QueueItem queueItem = findItem(fileLocation.getFileId());
+        if (queueItem == null) {
+            Log.d(TAG, "- Adding to queue");
+            queueItem = new QueueItem(fileLocation);
+            queueItem.isStopped = false;
+            queue.add(0, queueItem);
+        } else {
+            Log.d(TAG, "- Promoting in queue");
+            if (queueItem.isStopped) {
+                queueItem.isStopped = false;
+                for (FileCallback callback : queueItem.callbacks) {
+                    callback.onDownloading(0);
+                }
+            }
+            promote(fileLocation.getFileId());
+        }
     }
 
     public void cancelDownload(long fileId) {
+        Log.d(TAG, "Stopping download #" + fileId);
+        QueueItem queueItem = findItem(fileId);
+        if (queueItem == null) {
+            Log.d(TAG, "- Not present in queue");
+        } else {
+            if (queueItem.isStarted) {
+                Log.d(TAG, "- Stopping actor");
+                queueItem.taskRef.send(PoisonPill.INSTANCE);
+                queueItem.taskRef = null;
+                queueItem.isStarted = false;
+            }
+            Log.d(TAG, "- Marking as stopped");
+            queueItem.isStopped = true;
 
+            for (FileCallback callback : queueItem.callbacks) {
+                callback.onNotDownloaded();
+            }
+        }
     }
 
     public void unbindDownload(long fileId, boolean autoCancel, FileCallback callback) {
+        Log.d(TAG, "Unbind file #" + fileId);
+        QueueItem queueItem = findItem(fileId);
+        if (queueItem == null) {
+            Log.d(TAG, "- Not present in queue");
+        } else {
+            if (autoCancel) {
+                if (queueItem.isStarted) {
+                    Log.d(TAG, "- Stopping actor");
+                    queueItem.taskRef.send(PoisonPill.INSTANCE);
+                    queueItem.taskRef = null;
+                    queueItem.isStarted = false;
+                }
 
+                if (!queueItem.isStopped) {
+                    Log.d(TAG, "- Marking as stopped");
+                    queueItem.isStopped = true;
+
+                    for (FileCallback c : queueItem.callbacks) {
+                        if (c != callback) {
+                            c.onNotDownloaded();
+                        }
+                    }
+                }
+                queue.remove(queueItem);
+            } else {
+                Log.d(TAG, "- Removing callback");
+                queueItem.callbacks.remove(callback);
+            }
+        }
     }
 
     private void checkQueue() {
@@ -161,7 +223,7 @@ public class DownloadManager extends ModuleActor {
             public DownloadTask create() {
                 return new DownloadTask(finalPendingQueue.fileLocation, self(), modules());
             }
-        }), "actor/download/task_" + finalPendingQueue.fileLocation.getFileId());
+        }), "actor/download/task_" + RandomUtils.nextRid());
     }
 
     // Queue processing

@@ -36,6 +36,11 @@ public class AndroidPhoneBook implements PhoneBookProvider {
         new Thread() {
             @Override
             public void run() {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 ArrayList<PhoneBookContact> contacts = loadPhoneBook(AppContext.getContext(),
                         CountryUtil.getDeviceCountry(AppContext.getContext()));
                 callback.onLoaded(contacts);

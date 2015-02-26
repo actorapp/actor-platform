@@ -9,6 +9,8 @@ import android.provider.ContactsContract;
 import com.droidkit.images.cache.BitmapClasificator;
 import com.droidkit.images.loading.ImageLoader;
 
+import java.util.HashMap;
+
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.emoji.EmojiProcessor;
 import im.actor.messenger.app.view.Formatter;
@@ -24,6 +26,7 @@ import im.actor.messenger.core.images.VideoPreviewTask;
 import im.actor.messenger.core.images.VideoTask;
 import im.actor.messenger.storage.provider.AppEngineFactory;
 import im.actor.model.ConfigurationBuilder;
+import im.actor.model.LocaleProvider;
 import im.actor.model.Messenger;
 import im.actor.model.android.AndroidCryptoProvider;
 import im.actor.model.android.AndroidFileProvider;
@@ -32,7 +35,6 @@ import im.actor.model.android.AndroidMainThread;
 import im.actor.model.android.AndroidPhoneBook;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
-import im.actor.model.jvm.JavaLocale;
 import im.actor.model.jvm.JavaNetworking;
 import im.actor.model.jvm.JavaThreading;
 import im.actor.model.mvvm.MVVMCollection;
@@ -73,14 +75,9 @@ public class Core {
         // Init actor system
         system().setClassLoader(AppContext.getContext().getClassLoader());
         system().addDispatcher("db", 1);
-        system().addDispatcher("contacts", 1);
-        system().addDispatcher("file_encryption", 1);
-        system().addDispatcher("rsa", 1);
-        system().addDispatcher("updates", 1);
-        system().addDispatcher("push", 1);
 
         // Emoji
-        this.emojiProcessor = new EmojiProcessor(application);
+        // this.emojiProcessor = new EmojiProcessor(application);
 
         // Init Image Engine
         ActivityManager activityManager = (ActivityManager) AppContext.getContext().getSystemService(Context.ACTIVITY_SERVICE);
@@ -90,15 +87,23 @@ public class Core {
         int freeCacheLimit = cacheLimit / 2;
 
         BitmapClasificator clasificator = new BitmapClasificator.Builder()
+
                 .startExactSize(100, 100)
                 .setFreeSize(2)
                 .setLruSize(15)
                 .endFilter()
+
+                .startLessOrEqSize(90, 90)
+                .setFreeSize(10)
+                .useSizeInAmount()
+                .endFilter()
+                
                 .startAny()
                 .useSizeInBytes()
                 .setLruSize(cacheLimit)
                 .setFreeSize(freeCacheLimit)
                 .endFilter()
+
                 .build();
         this.imageLoader = new ImageLoader(clasificator, application);
         this.imageLoader.getTaskResolver().register(ImagePreviewTask.class, ImagePreviewActor.class);
@@ -107,26 +112,28 @@ public class Core {
         this.imageLoader.getTaskResolver().register(AvatarTask.class, AvatarActor.class);
         this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
 
-        ConfigurationBuilder builder = new ConfigurationBuilder();
 
+        ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setThreading(new JavaThreading());
         builder.setNetworking(new JavaNetworking());
-
         builder.setMainThread(new AndroidMainThread());
         builder.setLog(new AndroidLog());
         builder.setStorage(new AppEngineFactory());
-
-        builder.setLocale(new JavaLocale("En"));
+        //builder.setLocale(new JavaLocale("En"));
+        builder.setLocale(new LocaleProvider() {
+            @Override
+            public HashMap<String, String> loadLocale() {
+                return new HashMap<String, String>();
+            }
+        });
         builder.setPhoneBookProvider(new AndroidPhoneBook());
         builder.setCryptoProvider(new AndroidCryptoProvider());
         builder.setFileSystemProvider(new AndroidFileProvider(application));
-
         if (BuildConfig.API_SSL) {
             builder.addEndpoint("tls://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
         } else {
             builder.addEndpoint("tcp://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
         }
-
         builder.setEnableContactsLogging(true);
 
         this.messenger = new im.actor.model.Messenger(builder.build());

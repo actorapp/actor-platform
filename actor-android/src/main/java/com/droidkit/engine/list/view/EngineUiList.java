@@ -1,19 +1,13 @@
 package com.droidkit.engine.list.view;
 
-import android.util.Log;
-
 import com.droidkit.engine.list.DataAdapter;
 import com.droidkit.engine.list.ListEngine;
 import com.droidkit.engine.list.ListEngineCallback;
 import com.droidkit.engine.list.LoadCallback;
 import com.droidkit.engine.list.LoadCenterCallback;
-import com.droidkit.engine.uilist.ListModification;
 import com.droidkit.engine.uilist.UiList;
 import com.droidkit.engine.uilist.UiListListener;
-import com.droidkit.images.util.UiUtil;
 import com.droidkit.mvvm.ValueModel;
-
-import im.actor.messenger.util.Logger;
 
 import java.util.List;
 
@@ -224,7 +218,8 @@ public class EngineUiList<V> {
     }
 
     public void initGeneral() {
-        initForward(UiUtil.isMainThread());
+        // initForward(UiUtil.isMainThread());
+        initForward(false);
     }
 
     public void scrollToStart(boolean clear) {

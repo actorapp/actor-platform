@@ -249,7 +249,7 @@ public class BaseDialogFragment extends BaseFragment implements UiListStateListe
 
                     listView.getViewTreeObserver().removeOnPreDrawListener(this);
 
-                    for (int i = 0; i < listView.getChildCount(); i++) {
+                    for (int i = 1; i < listView.getChildCount() - 1; i++) {
                         View view = listView.getChildAt(i);
                         long id = listView.getItemIdAtPosition(
                                 listView.getFirstVisiblePosition() + i);

@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.fragment.chat.adapter.ChatAdapter;
@@ -168,7 +167,7 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
         listView.setScrollingCacheEnabled(false);
         // listView.setCacheColorHint(getResources().getColor(R.color.conv_bg));
         // listView.setBackgroundColor(getResources().getColor(R.color.conv_bg));
-        // listView.setStackFromBottom(true);
+        listView.setStackFromBottom(true);
 
         listEngine = ListEngines.getMessagesList(peer);
         list = listEngine.getUiList();
@@ -522,7 +521,7 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
     public void onListPostUpdated() {
         adapter.notifyDataSetChanged();
 
-        // Empty list
+//        // Empty list
         if (list.getSize() == 0) {
             return;
         }
@@ -544,17 +543,24 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
 
         if (list.getSize() > 0 && preSize > 0 && listView.getLastVisiblePosition() >= preSize - 1
                 && bottomId != list.getItem(0).getRid()) {
-            if (BuildConfig.ENABLE_CHROME) {
-                listView.smoothScrollToPosition(list.getSize());
-            } else {
-                listView.setSelectionFromTop(list.getSize(), -10000);
-                listView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        listView.setSelectionFromTop(list.getSize(), -10000);
-                    }
-                });
-            }
+            listView.safeSetSelectionFromTop(list.getSize(), -10000);
+//            if (BuildConfig.ENABLE_CHROME) {
+//                listView.smoothScrollToPosition(list.getSize());
+//            } else {
+//                listView.setSelectionFromTop(list.getSize(), -10000);
+//                listView.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        listView.setSelectionFromTop(list.getSize(), -10000);
+//                    }
+//                });
+//            }
+//            if (listView.getLastVisiblePosition() == list.getSize()) {
+//                // Bottom visible
+//                listView.smoothScrollToPosition(list.getSize() + 1);
+//            } else {
+//                listView.smoothScrollToPosition(list.getSize());
+//            }
             return;
         }
 
@@ -578,7 +584,7 @@ public class MessagesFragment extends BaseFragment implements UiListStateListene
             }
         }
 
-        listView.setSelectionFromTop(newIndex, newTop);
+        listView.safeSetSelectionFromTop(newIndex, newTop);
     }
 
     public VisibleViewItem[] dumpState() {

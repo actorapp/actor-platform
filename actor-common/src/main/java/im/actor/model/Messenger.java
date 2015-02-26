@@ -30,20 +30,32 @@ import im.actor.model.viewmodel.UserVM;
  * Created by ex3ndr on 08.02.15.
  */
 public class Messenger {
+    private static final String TAG = "CORE_INIT";
     private Modules modules;
 
     public Messenger(Configuration configuration) {
+        // Init Log
+        Log.setLog(configuration.getLog());
+
+        long start = configuration.getThreading().getActorTime();
+
         // Init internal actor system
         Environment.setThreading(configuration.getThreading());
+
+        Log.d(TAG, "Loading stage1 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
 
         // Init Crypto
         CryptoUtils.init(configuration.getCryptoProvider());
 
+        Log.d(TAG, "Loading stage2 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
+
         // Init MVVM
         MVVMEngine.init(configuration.getMainThread());
 
-        // Init Log
-        Log.setLog(configuration.getLog());
+        Log.d(TAG, "Loading stage3 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
 
         ActorSystem.system().setTraceInterface(new TraceInterface() {
             @Override
@@ -53,7 +65,9 @@ public class Messenger {
 
             @Override
             public void onEnvelopeProcessed(Envelope envelope, long duration) {
-
+                if (duration > 300) {
+                    Log.w("ACTOR_SYSTEM", "Too long " + envelope.getScope().getPath() + " {" + envelope.getMessage() + "}");
+                }
             }
 
             @Override
@@ -73,8 +87,18 @@ public class Messenger {
             }
         });
 
+        Log.d(TAG, "Loading stage4 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
+
         this.modules = new Modules(configuration);
+
+        Log.d(TAG, "Loading stage5 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
+
         this.modules.run();
+
+        Log.d(TAG, "Loading stage6 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
     }
 
     // Auth

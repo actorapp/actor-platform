@@ -23,7 +23,6 @@ public class DownloadTask extends ModuleActor {
     private final String TAG;
 
     private FileLocation fileLocation;
-    private String fileName;
     private ActorRef manager;
     private FileSystemProvider fileSystemProvider;
 

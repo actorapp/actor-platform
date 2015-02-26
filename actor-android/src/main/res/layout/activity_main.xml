@@ -95,8 +95,7 @@
                 android:layout_gravity="top"
                 android:layout_marginTop="8dp"
                 android:scaleType="centerInside"
-                android:id="@+id/emptyDialogsImage"
-                android:src="@drawable/contacts_empty_large" />
+                android:id="@+id/emptyDialogsImage"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -150,8 +149,7 @@
                     android:layout_gravity="top"
                     android:layout_marginTop="8dp"
                     android:scaleType="centerInside"
-                    android:id="@+id/emptyContactsImage"
-                    android:src="@drawable/contacts_empty_large" />
+                    android:id="@+id/emptyContactsImage" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
