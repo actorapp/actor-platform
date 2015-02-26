@@ -75,6 +75,18 @@
   [writer writeBoolWithInt:4 withBoolean:isAdministrator__];
 }
 
+- (jboolean)isEqual:(id)o {
+  if (self == o) return YES;
+  if (o == nil || [self getClass] != [o getClass]) return NO;
+  AMGroupMember *member = (AMGroupMember *) check_class_cast(o, [AMGroupMember class]);
+  if (uid_ != ((AMGroupMember *) nil_chk(member))->uid_) return NO;
+  return YES;
+}
+
+- (NSUInteger)hash {
+  return uid_;
+}
+
 - (void)copyAllFieldsTo:(AMGroupMember *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;

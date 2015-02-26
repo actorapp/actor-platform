@@ -7,10 +7,13 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/ConfigurationBuilder.h"
+#include "im/actor/model/CryptoProvider.h"
+#include "im/actor/model/FileSystemProvider.h"
 #include "im/actor/model/LocaleProvider.h"
 #include "im/actor/model/LogCallback.h"
 #include "im/actor/model/MainThread.h"
 #include "im/actor/model/Networking.h"
+#include "im/actor/model/PhoneBookProvider.h"
 #include "im/actor/model/Storage.h"
 #include "im/actor/model/Threading.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
@@ -28,6 +31,11 @@
   JavaUtilArrayList *endpoints_;
   jboolean isUploadFilePersist_;
   id<AMLocaleProvider> localeProvider_;
+  id<AMPhoneBookProvider> phoneBookProvider_;
+  id<AMCryptoProvider> cryptoProvider_;
+  id<AMFileSystemProvider> fileSystemProvider_;
+  jboolean enableContactsLogging_;
+  jboolean enableNetworkLogging_;
 }
 @end
 
@@ -38,8 +46,36 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, mainThread_, id<AMMainThread>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, enginesFactory_, id<AMStorage>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, endpoints_, JavaUtilArrayList *)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, localeProvider_, id<AMLocaleProvider>)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, phoneBookProvider_, id<AMPhoneBookProvider>)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, cryptoProvider_, id<AMCryptoProvider>)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, fileSystemProvider_, id<AMFileSystemProvider>)
 
 @implementation AMConfigurationBuilder
+
+- (AMConfigurationBuilder *)setFileSystemProviderWithAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider {
+  self->fileSystemProvider_ = fileSystemProvider;
+  return self;
+}
+
+- (AMConfigurationBuilder *)setEnableContactsLoggingWithBoolean:(jboolean)enableContactsLogging {
+  self->enableContactsLogging_ = enableContactsLogging;
+  return self;
+}
+
+- (AMConfigurationBuilder *)setEnableNetworkLoggingWithBoolean:(jboolean)enableNetworkLogging {
+  self->enableNetworkLogging_ = enableNetworkLogging;
+  return self;
+}
+
+- (AMConfigurationBuilder *)setCryptoProviderWithAMCryptoProvider:(id<AMCryptoProvider>)cryptoProvider {
+  self->cryptoProvider_ = cryptoProvider;
+  return self;
+}
+
+- (AMConfigurationBuilder *)setPhoneBookProviderWithAMPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider {
+  self->phoneBookProvider_ = phoneBookProvider;
+  return self;
+}
 
 - (AMConfigurationBuilder *)setLog:(id<AMLogCallback>)log {
   self->log_ = log;
@@ -137,12 +173,20 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, localeProvider_, id<AMLocaleProvider
   if (localeProvider_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Locale Provider not set"];
   }
-  return [[AMConfiguration alloc] initWithAMNetworking:networking_ withAMConnectionEndpointArray:[endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]] withAMThreading:threading_ withAMMainThread:mainThread_ withAMStorage:enginesFactory_ withAMLogCallback:log_ withBoolean:isUploadFilePersist_ withAMLocaleProvider:localeProvider_];
+  if (phoneBookProvider_ == nil) {
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Phonebook Provider not set"];
+  }
+  if (cryptoProvider_ == nil) {
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Crypto Provider not set"];
+  }
+  return [[AMConfiguration alloc] initWithAMNetworking:networking_ withAMConnectionEndpointArray:[endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]] withAMThreading:threading_ withAMMainThread:mainThread_ withAMStorage:enginesFactory_ withAMLogCallback:log_ withBoolean:isUploadFilePersist_ withAMLocaleProvider:localeProvider_ withAMPhoneBookProvider:phoneBookProvider_ withAMCryptoProvider:cryptoProvider_ withAMFileSystemProvider:fileSystemProvider_ withBoolean:enableContactsLogging_ withBoolean:enableNetworkLogging_];
 }
 
 - (instancetype)init {
   if (self = [super init]) {
     endpoints_ = [[JavaUtilArrayList alloc] init];
+    enableContactsLogging_ = NO;
+    enableNetworkLogging_ = NO;
   }
   return self;
 }
@@ -157,6 +201,11 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, localeProvider_, id<AMLocaleProvider
   other->endpoints_ = endpoints_;
   other->isUploadFilePersist_ = isUploadFilePersist_;
   other->localeProvider_ = localeProvider_;
+  other->phoneBookProvider_ = phoneBookProvider_;
+  other->cryptoProvider_ = cryptoProvider_;
+  other->fileSystemProvider_ = fileSystemProvider_;
+  other->enableContactsLogging_ = enableContactsLogging_;
+  other->enableNetworkLogging_ = enableNetworkLogging_;
 }
 
 @end

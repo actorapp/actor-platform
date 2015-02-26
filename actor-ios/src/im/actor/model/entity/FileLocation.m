@@ -18,9 +18,12 @@
   jlong fileId_;
   jlong accessHash_;
   jint fileSize_;
+  NSString *fileName_;
 }
 - (instancetype)init;
 @end
+
+J2OBJC_FIELD_SETTER(AMFileLocation, fileName_, NSString *)
 
 @implementation AMFileLocation
 
@@ -30,11 +33,13 @@
 
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
-                     withInt:(jint)fileSize {
+                     withInt:(jint)fileSize
+                withNSString:(NSString *)fileName {
   if (self = [super init]) {
     self->fileId_ = fileId;
     self->accessHash_ = accessHash;
     self->fileSize_ = fileSize;
+    self->fileName_ = fileName;
   }
   return self;
 }
@@ -55,6 +60,10 @@
   return accessHash_;
 }
 
+- (NSString *)getFileName {
+  return fileName_;
+}
+
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
@@ -71,12 +80,14 @@
   fileId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   accessHash_ = [values getLongWithInt:2];
   fileSize_ = [values getIntWithInt:3];
+  fileName_ = [values getStringWithInt:4];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:fileId_];
   [writer writeLongWithInt:2 withLong:accessHash_];
   [writer writeIntWithInt:3 withInt:fileSize_];
+  [writer writeStringWithInt:4 withNSString:fileName_];
 }
 
 - (void)copyAllFieldsTo:(AMFileLocation *)other {
@@ -84,6 +95,7 @@
   other->fileId_ = fileId_;
   other->accessHash_ = accessHash_;
   other->fileSize_ = fileSize_;
+  other->fileName_ = fileName_;
 }
 
 @end

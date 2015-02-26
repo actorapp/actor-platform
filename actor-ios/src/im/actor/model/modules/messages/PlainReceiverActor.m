@@ -5,12 +5,9 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/OutPeer.h"
-#include "im/actor/model/api/PeerType.h"
 #include "im/actor/model/api/rpc/RequestMessageReceived.h"
 #include "im/actor/model/api/rpc/ResponseVoid.h"
 #include "im/actor/model/entity/Peer.h"
-#include "im/actor/model/entity/PeerType.h"
-#include "im/actor/model/entity/User.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/messages/PlainCursorActor.h"
 #include "im/actor/model/modules/messages/PlainReceiverActor.h"
@@ -51,15 +48,8 @@ NSString * ImActorModelModulesMessagesPlainReceiverActor_PREFERENCE_ = @"plain_r
 
 - (void)performWithAMPeer:(AMPeer *)peer
                  withLong:(jlong)date {
-  ImActorModelApiOutPeer *outPeer;
-  if ([((AMPeer *) nil_chk(peer)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
-    AMUser *user = [self getUserWithInt:[peer getPeerId]];
-    if (user == nil) {
-      return;
-    }
-    outPeer = [[ImActorModelApiOutPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[((AMUser *) nil_chk(user)) getUid] withLong:[user getAccessHash]];
-  }
-  else {
+  ImActorModelApiOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
+  if (outPeer == nil) {
     return;
   }
   [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestMessageReceived alloc] initWithImActorModelApiOutPeer:outPeer withLong:date] withAMRpcCallback:[[ImActorModelModulesMessagesPlainReceiverActor_$1 alloc] initWithImActorModelModulesMessagesPlainReceiverActor:self withAMPeer:peer withLong:date]];

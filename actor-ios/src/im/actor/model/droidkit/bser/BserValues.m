@@ -14,11 +14,13 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "im/actor/model/util/DataInput.h"
 #include "java/io/IOException.h"
+#include "java/io/UnsupportedEncodingException.h"
 #include "java/lang/Byte.h"
 #include "java/lang/Double.h"
 #include "java/lang/Integer.h"
 #include "java/lang/Long.h"
 #include "java/lang/NumberFormatException.h"
+#include "java/lang/RuntimeException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
@@ -131,7 +133,12 @@ J2OBJC_FIELD_SETTER(BSBserValues, fields_, ImActorModelDroidkitBserUtilSparseArr
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
     id res = [fields_ getWithInt:id_];
     if ([res isKindOfClass:[IOSByteArray class]]) {
-      return [NSString stringWithBytes:(IOSByteArray *) check_class_cast(res, [IOSByteArray class])];
+      @try {
+        return [NSString stringWithBytes:(IOSByteArray *) check_class_cast(res, [IOSByteArray class]) charsetName:@"UTF-8"];
+      }
+      @catch (JavaIoUnsupportedEncodingException *e) {
+        @throw [[JavaLangRuntimeException alloc] initWithJavaLangThrowable:e];
+      }
     }
     return JreStrcat("@", res);
   }
@@ -298,7 +305,12 @@ J2OBJC_FIELD_SETTER(BSBserValues, fields_, ImActorModelDroidkitBserUtilSparseArr
           [res addWithId:JreStrcat("@", val2)];
         }
         else if ([val2 isKindOfClass:[IOSByteArray class]]) {
-          [res addWithId:[NSString stringWithBytes:(IOSByteArray *) check_class_cast(val2, [IOSByteArray class])]];
+          @try {
+            [res addWithId:[NSString stringWithBytes:(IOSByteArray *) check_class_cast(val2, [IOSByteArray class]) charsetName:@"UTF-8"]];
+          }
+          @catch (JavaIoUnsupportedEncodingException *e) {
+            @throw [[JavaLangRuntimeException alloc] initWithJavaLangThrowable:e];
+          }
         }
         else {
           @throw [[BSIncorrectTypeException alloc] initWithNSString:JreStrcat("$$", @"Expected type: byte[], got ", [[nil_chk(val2) getClass] getSimpleName])];

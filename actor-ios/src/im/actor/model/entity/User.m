@@ -11,11 +11,14 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/Avatar.h"
+#include "im/actor/model/entity/ContactRecord.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/PeerType.h"
 #include "im/actor/model/entity/Sex.h"
 #include "im/actor/model/entity/User.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
+#include "java/util/List.h"
 
 @interface AMUser () {
  @public
@@ -25,6 +28,7 @@
   NSString *localName_;
   AMAvatar *avatar_;
   AMSexEnum *sex_;
+  id<JavaUtilList> records_;
 }
 - (instancetype)init;
 @end
@@ -33,6 +37,7 @@ J2OBJC_FIELD_SETTER(AMUser, name_, NSString *)
 J2OBJC_FIELD_SETTER(AMUser, localName_, NSString *)
 J2OBJC_FIELD_SETTER(AMUser, avatar_, AMAvatar *)
 J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
+J2OBJC_FIELD_SETTER(AMUser, records_, id<JavaUtilList>)
 
 @implementation AMUser
 
@@ -45,7 +50,8 @@ J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
                withNSString:(NSString *)name
                withNSString:(NSString *)localName
                withAMAvatar:(AMAvatar *)avatar
-              withAMSexEnum:(AMSexEnum *)sex {
+              withAMSexEnum:(AMSexEnum *)sex
+           withJavaUtilList:(id<JavaUtilList>)records {
   if (self = [super init]) {
     self->uid_ = uid;
     self->accessHash_ = accessHash;
@@ -53,6 +59,7 @@ J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
     self->localName_ = localName;
     self->avatar_ = avatar;
     self->sex_ = sex;
+    self->records_ = records;
   }
   return self;
 }
@@ -98,16 +105,20 @@ J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
   return sex_;
 }
 
+- (id<JavaUtilList>)getRecords {
+  return records_;
+}
+
 - (AMUser *)editNameWithNSString:(NSString *)name {
-  return [[AMUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name withNSString:localName_ withAMAvatar:avatar_ withAMSexEnum:sex_];
+  return [[AMUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name withNSString:localName_ withAMAvatar:avatar_ withAMSexEnum:sex_ withJavaUtilList:records_];
 }
 
 - (AMUser *)editLocalNameWithNSString:(NSString *)localName {
-  return [[AMUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name_ withNSString:localName withAMAvatar:avatar_ withAMSexEnum:sex_];
+  return [[AMUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name_ withNSString:localName withAMAvatar:avatar_ withAMSexEnum:sex_ withJavaUtilList:records_];
 }
 
 - (AMUser *)editAvatarWithAMAvatar:(AMAvatar *)avatar {
-  return [[AMUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name_ withNSString:localName_ withAMAvatar:avatar withAMSexEnum:sex_];
+  return [[AMUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name_ withNSString:localName_ withAMAvatar:avatar withAMSexEnum:sex_ withJavaUtilList:records_];
 }
 
 - (jlong)getEngineId {
@@ -124,6 +135,14 @@ J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
     avatar_ = AMAvatar_fromBytesWithByteArray_(a);
   }
   sex_ = AMSexEnum_fromValueWithInt_([values getIntWithInt:6]);
+  jint count = [values getRepeatedCountWithInt:7];
+  if (count > 0) {
+    JavaUtilArrayList *rec = [[JavaUtilArrayList alloc] init];
+    for (jint i = 0; i < count; i++) {
+      [rec addWithId:[[AMContactRecord alloc] init]];
+    }
+    records_ = [values getRepeatedObjWithInt:7 withJavaUtilList:rec];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -137,6 +156,7 @@ J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
     [writer writeObjectWithInt:5 withBSBserObject:avatar_];
   }
   [writer writeIntWithInt:6 withInt:[((AMSexEnum *) nil_chk(sex_)) getValue]];
+  [writer writeRepeatedObjWithInt:7 withJavaUtilList:records_];
 }
 
 - (void)copyAllFieldsTo:(AMUser *)other {
@@ -147,6 +167,7 @@ J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
   other->localName_ = localName_;
   other->avatar_ = avatar_;
   other->sex_ = sex_;
+  other->records_ = records_;
 }
 
 @end

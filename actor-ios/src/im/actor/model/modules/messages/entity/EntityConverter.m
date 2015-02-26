@@ -7,6 +7,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/AvatarImage.h"
+#include "im/actor/model/api/ContactRecord.h"
 #include "im/actor/model/api/FastThumb.h"
 #include "im/actor/model/api/FileExPhoto.h"
 #include "im/actor/model/api/FileExVideo.h"
@@ -18,6 +19,7 @@
 #include "im/actor/model/api/MessageState.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/PeerType.h"
+#include "im/actor/model/api/RecordType.h"
 #include "im/actor/model/api/ServiceExChangedAvatar.h"
 #include "im/actor/model/api/ServiceExChangedTitle.h"
 #include "im/actor/model/api/ServiceExUserAdded.h"
@@ -30,6 +32,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/AvatarImage.h"
+#include "im/actor/model/entity/ContactRecord.h"
 #include "im/actor/model/entity/FileLocation.h"
 #include "im/actor/model/entity/Group.h"
 #include "im/actor/model/entity/GroupMember.h"
@@ -54,7 +57,9 @@
 #include "im/actor/model/entity/content/VideoContent.h"
 #include "im/actor/model/modules/messages/entity/EntityConverter.h"
 #include "java/io/IOException.h"
+#include "java/lang/Integer.h"
 #include "java/util/ArrayList.h"
+#include "java/util/Collection.h"
 #include "java/util/List.h"
 
 @implementation ImActorModelModulesMessagesEntityEntityConverter
@@ -72,16 +77,31 @@
 }
 
 + (AMFileLocation *)convertWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)location
+                                              withNSString:(NSString *)fileName
                                                    withInt:(jint)size {
-  return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withInt_(location, size);
+  return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_(location, fileName, size);
 }
 
 + (AMSexEnum *)convertWithImActorModelApiSexEnum:(ImActorModelApiSexEnum *)sex {
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiSexEnum_(sex);
 }
 
++ (AMContactRecord *)convertWithImActorModelApiContactRecord:(ImActorModelApiContactRecord *)record {
+  return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiContactRecord_(record);
+}
+
 + (AMUser *)convertWithImActorModelApiUser:(ImActorModelApiUser *)user {
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiUser_(user);
+}
+
++ (id<JavaUtilList>)convertWithJavaUtilList:(id<JavaUtilList>)contacts
+                     withJavaUtilCollection:(id<JavaUtilCollection>)updatedContact {
+  return ImActorModelModulesMessagesEntityEntityConverter_convertWithJavaUtilList_withJavaUtilCollection_(contacts, updatedContact);
+}
+
++ (AMContactRecord *)convertWithInt:(jint)contactId
+             withJavaUtilCollection:(id<JavaUtilCollection>)updatedContact {
+  return ImActorModelModulesMessagesEntityEntityConverter_convertWithInt_withJavaUtilCollection_(contactId, updatedContact);
 }
 
 + (AMGroup *)convertWithImActorModelApiGroup:(ImActorModelApiGroup *)group {
@@ -145,12 +165,12 @@ AMAvatarImage *ImActorModelModulesMessagesEntityEntityConverter_convertWithImAct
   if (avatarImage == nil) {
     return nil;
   }
-  return [[AMAvatarImage alloc] initWithInt:[((ImActorModelApiAvatarImage *) nil_chk(avatarImage)) getWidth] withInt:[avatarImage getHeight] withAMFileLocation:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withInt_([avatarImage getFileLocation], [avatarImage getFileSize])];
+  return [[AMAvatarImage alloc] initWithInt:[((ImActorModelApiAvatarImage *) nil_chk(avatarImage)) getWidth] withInt:[avatarImage getHeight] withAMFileLocation:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_([avatarImage getFileLocation], @"avatar.jpg", [avatarImage getFileSize])];
 }
 
-AMFileLocation *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withInt_(ImActorModelApiFileLocation *location, jint size) {
+AMFileLocation *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_(ImActorModelApiFileLocation *location, NSString *fileName, jint size) {
   ImActorModelModulesMessagesEntityEntityConverter_init();
-  return [[AMFileLocation alloc] initWithLong:[((ImActorModelApiFileLocation *) nil_chk(location)) getFileId] withLong:[location getAccessHash] withInt:size];
+  return [[AMFileLocation alloc] initWithLong:[((ImActorModelApiFileLocation *) nil_chk(location)) getFileId] withLong:[location getAccessHash] withInt:size withNSString:fileName];
 }
 
 AMSexEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiSexEnum_(ImActorModelApiSexEnum *sex) {
@@ -169,9 +189,35 @@ AMSexEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorMo
   }
 }
 
+AMContactRecord *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiContactRecord_(ImActorModelApiContactRecord *record) {
+  ImActorModelModulesMessagesEntityEntityConverter_init();
+  return [[AMContactRecord alloc] initWithInt:[((ImActorModelApiContactRecord *) nil_chk(record)) getId] withLong:[record getAccessHash] withInt:[record getRecordType] == ImActorModelApiRecordTypeEnum_get_PHONE() ? AMContactRecord_get_TYPE_PHONE_() : AMContactRecord_get_TYPE_EMAIL_() withNSString:[record getRecord] withNSString:[record getTitle]];
+}
+
 AMUser *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiUser_(ImActorModelApiUser *user) {
   ImActorModelModulesMessagesEntityEntityConverter_init();
-  return [[AMUser alloc] initWithInt:[((ImActorModelApiUser *) nil_chk(user)) getId] withLong:[user getAccessHash] withNSString:[user getName] withNSString:[user getLocalName] withAMAvatar:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_([user getAvatar]) withAMSexEnum:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiSexEnum_([user getSex])];
+  JavaUtilArrayList *res = [[JavaUtilArrayList alloc] init];
+  [res addWithId:[[AMContactRecord alloc] initWithInt:0 withLong:0 withInt:AMContactRecord_get_TYPE_PHONE_() withNSString:JreStrcat("J", [((ImActorModelApiUser *) nil_chk(user)) getPhone]) withNSString:@"Mobile"]];
+  return [[AMUser alloc] initWithInt:[user getId] withLong:[user getAccessHash] withNSString:[user getName] withNSString:[user getLocalName] withAMAvatar:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_([user getAvatar]) withAMSexEnum:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiSexEnum_([user getSex]) withJavaUtilList:res];
+}
+
+id<JavaUtilList> ImActorModelModulesMessagesEntityEntityConverter_convertWithJavaUtilList_withJavaUtilCollection_(id<JavaUtilList> contacts, id<JavaUtilCollection> updatedContact) {
+  ImActorModelModulesMessagesEntityEntityConverter_init();
+  JavaUtilArrayList *res = [[JavaUtilArrayList alloc] init];
+  for (JavaLangInteger * __strong i in nil_chk(contacts)) {
+    [res addWithId:ImActorModelModulesMessagesEntityEntityConverter_convertWithInt_withJavaUtilCollection_([((JavaLangInteger *) nil_chk(i)) intValue], updatedContact)];
+  }
+  return res;
+}
+
+AMContactRecord *ImActorModelModulesMessagesEntityEntityConverter_convertWithInt_withJavaUtilCollection_(jint contactId, id<JavaUtilCollection> updatedContact) {
+  ImActorModelModulesMessagesEntityEntityConverter_init();
+  for (ImActorModelApiContactRecord * __strong contactRecord in nil_chk(updatedContact)) {
+    if ([((ImActorModelApiContactRecord *) nil_chk(contactRecord)) getId] == contactId) {
+      return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiContactRecord_(contactRecord);
+    }
+  }
+  return nil;
 }
 
 AMGroup *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(ImActorModelApiGroup *group) {
@@ -246,7 +292,7 @@ ImActorModelEntityContentAbsContent *ImActorModelModulesMessagesEntityEntityConv
       NSString *mimeType = [((ImActorModelApiFileMessage *) nil_chk(fileMessage)) getMimeType];
       NSString *name = [fileMessage getName];
       ImActorModelEntityContentFastThumb *fastThumb = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFastThumb_([fileMessage getThumb]);
-      AMFileLocation *fileLocation = [[AMFileLocation alloc] initWithLong:[fileMessage getFileId] withLong:[fileMessage getAccessHash] withInt:[fileMessage getFileSize]];
+      AMFileLocation *fileLocation = [[AMFileLocation alloc] initWithLong:[fileMessage getFileId] withLong:[fileMessage getAccessHash] withInt:[fileMessage getFileSize] withNSString:[fileMessage getName]];
       ImActorModelEntityContentFileRemoteSource *source = [[ImActorModelEntityContentFileRemoteSource alloc] initWithAMFileLocation:fileLocation];
       if ([fileMessage getExtType] == (jint) 0x01) {
         @try {

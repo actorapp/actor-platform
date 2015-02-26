@@ -7,10 +7,13 @@
 #define _AMConfiguration_H_
 
 @class IOSObjectArray;
+@protocol AMCryptoProvider;
+@protocol AMFileSystemProvider;
 @protocol AMLocaleProvider;
 @protocol AMLogCallback;
 @protocol AMMainThread;
 @protocol AMNetworking;
+@protocol AMPhoneBookProvider;
 @protocol AMStorage;
 @protocol AMThreading;
 
@@ -26,7 +29,20 @@
                        withAMStorage:(id<AMStorage>)storage
                    withAMLogCallback:(id<AMLogCallback>)log
                          withBoolean:(jboolean)persistUploadingFiles
-                withAMLocaleProvider:(id<AMLocaleProvider>)localeProvider;
+                withAMLocaleProvider:(id<AMLocaleProvider>)localeProvider
+             withAMPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider
+                withAMCryptoProvider:(id<AMCryptoProvider>)cryptoProvider
+            withAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider
+                         withBoolean:(jboolean)enableContactsLogging
+                         withBoolean:(jboolean)enableNetworkLogging;
+
+- (jboolean)isEnableContactsLogging;
+
+- (jboolean)isEnableNetworkLogging;
+
+- (id<AMCryptoProvider>)getCryptoProvider;
+
+- (id<AMPhoneBookProvider>)getPhoneBookProvider;
 
 - (id<AMNetworking>)getNetworking;
 
@@ -43,6 +59,8 @@
 - (jboolean)isPersistUploadingFiles;
 
 - (id<AMLocaleProvider>)getLocaleProvider;
+
+- (id<AMFileSystemProvider>)getFileSystemProvider;
 
 @end
 

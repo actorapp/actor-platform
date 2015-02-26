@@ -20,13 +20,16 @@
 
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
-                     withInt:(jint)fileSize;
+                     withInt:(jint)fileSize
+                withNSString:(NSString *)fileName;
 
 - (jint)getFileSize;
 
 - (jlong)getFileId;
 
 - (jlong)getAccessHash;
+
+- (NSString *)getFileName;
 
 - (jboolean)isEqual:(id)o;
 
