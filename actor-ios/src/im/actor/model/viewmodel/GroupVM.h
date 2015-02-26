@@ -26,6 +26,8 @@
 
 - (jlong)getCreatorId;
 
+- (jint)getMembersCount;
+
 - (AMValueModel *)getName;
 
 - (AMValueModel *)getAvatar;

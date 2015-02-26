@@ -6,32 +6,58 @@
 #ifndef _AMContactRecord_H_
 #define _AMContactRecord_H_
 
-#include "J2ObjC_header.h"
+@class BSBserValues;
+@class BSBserWriter;
+@class IOSByteArray;
 
-@interface AMContactRecord : NSObject {
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/storage/KeyValueItem.h"
+
+@interface AMContactRecord : BSBserObject < AMKeyValueItem > {
 }
+
++ (AMContactRecord *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
-                    withInt:(jint)type
-               withNSString:(NSString *)title
-               withNSString:(NSString *)value;
+                    withInt:(jint)recordType
+               withNSString:(NSString *)recordData
+               withNSString:(NSString *)recordTitle;
+
+- (instancetype)init;
 
 - (jint)getId;
 
 - (jlong)getAccessHash;
 
-- (jint)getType;
+- (jint)getRecordType;
 
-- (NSString *)getTitle;
+- (NSString *)getRecordData;
 
-- (NSString *)getValue;
+- (NSString *)getRecordTitle;
+
+- (void)parseWithBSBserValues:(BSBserValues *)values;
+
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+- (jlong)getEngineId;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMContactRecord)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT AMContactRecord *AMContactRecord_fromBytesWithByteArray_(IOSByteArray *data);
+
+FOUNDATION_EXPORT jint AMContactRecord_TYPE_PHONE_;
+J2OBJC_STATIC_FIELD_GETTER(AMContactRecord, TYPE_PHONE_, jint)
+J2OBJC_STATIC_FIELD_REF_GETTER(AMContactRecord, TYPE_PHONE_, jint)
+
+FOUNDATION_EXPORT jint AMContactRecord_TYPE_EMAIL_;
+J2OBJC_STATIC_FIELD_GETTER(AMContactRecord, TYPE_EMAIL_, jint)
+J2OBJC_STATIC_FIELD_REF_GETTER(AMContactRecord, TYPE_EMAIL_, jint)
 CF_EXTERN_C_END
 
 typedef AMContactRecord ImActorModelEntityContactRecord;

@@ -8,6 +8,7 @@
 #include "im/actor/model/AuthState.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/MainThread.h"
+#include "im/actor/model/Threading.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/rpc/RequestSendAuthCode.h"
 #include "im/actor/model/api/rpc/RequestSignIn.h"
@@ -16,6 +17,7 @@
 #include "im/actor/model/api/rpc/ResponseSendAuthCode.h"
 #include "im/actor/model/concurrency/Command.h"
 #include "im/actor/model/concurrency/CommandCallback.h"
+#include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Modules.h"
@@ -163,13 +165,20 @@ NSString * ImActorModelModulesAuth_KEY_SMS_CODE_ = @"auth_sms_code";
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super initWithImActorModelModulesModules:modules]) {
-    self->mainThread_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getMainThread];
+    jlong start = [((id<AMThreading>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getThreading])) getActorTime];
+    self->mainThread_ = [((AMConfiguration *) nil_chk([modules getConfiguration])) getMainThread];
+    AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.3.1 in ", ([((id<AMThreading>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreading])) getActorTime] - start), @" ms"));
+    start = [((id<AMThreading>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreading])) getActorTime];
     self->myUid__ = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getIntWithNSString:ImActorModelModulesAuth_KEY_AUTH_UID_ withInt:0];
+    AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.3.2 in ", ([((id<AMThreading>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreading])) getActorTime] - start), @" ms"));
+    start = [((id<AMThreading>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreading])) getActorTime];
     deviceHash_ = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:ImActorModelModulesAuth_KEY_DEVICE_HASH_];
     if (deviceHash_ == nil) {
       deviceHash_ = AMRandomUtils_seedWithInt_(32);
       [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:ImActorModelModulesAuth_KEY_DEVICE_HASH_ withByteArray:deviceHash_];
     }
+    AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.3.3 in ", ([((id<AMThreading>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreading])) getActorTime] - start), @" ms"));
+    start = [((id<AMThreading>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreading])) getActorTime];
   }
   return self;
 }

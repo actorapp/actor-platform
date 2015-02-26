@@ -27,6 +27,14 @@
   return [[ImActorModelStorageTempTempKeyValueStorage alloc] init];
 }
 
+- (id<AMKeyValueStorage>)createDownloadsEngine {
+  return [[ImActorModelStorageTempTempKeyValueStorage alloc] init];
+}
+
+- (id<AMListEngine>)createContactsEngine {
+  return [[ImActorModelStorageTempTempListEngine alloc] init];
+}
+
 - (id<AMListEngine>)createDialogsEngine {
   return [[ImActorModelStorageTempTempListEngine alloc] init];
 }

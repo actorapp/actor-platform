@@ -8,6 +8,7 @@
 
 @class AMAuthStateEnum;
 @class AMConfiguration;
+@class AMFileLocation;
 @class AMGroupTypingVM;
 @class AMI18nEngine;
 @class AMMVVMCollection;
@@ -19,6 +20,7 @@
 @class ImActorModelModulesModules;
 @class JavaLangException;
 @protocol AMCommand;
+@protocol AMFileCallback;
 @protocol AMListEngine;
 
 #include "J2ObjC_header.h"
@@ -77,6 +79,8 @@
 
 - (void)onTyping:(AMPeer *)peer;
 
+- (void)onPhoneBookChanged;
+
 - (jlong)loadLastReadDate:(AMPeer *)peer;
 
 - (void)saveDraft:(AMPeer *)peer withText:(NSString *)draft;
@@ -90,11 +94,33 @@
 - (id<AMCommand>)editNameWithInt:(jint)uid
                     withNSString:(NSString *)name;
 
+- (id<AMCommand>)editGroupTitleWithInt:(jint)gid
+                          withNSString:(NSString *)title;
+
+- (id<AMCommand>)leaveGroupWithInt:(jint)gid;
+
+- (id<AMCommand>)removeContactWithInt:(jint)uid;
+
+- (id<AMCommand>)addContactWithInt:(jint)uid;
+
+- (id<AMCommand>)findUsersWithNSString:(NSString *)query;
+
+- (void)bindFileWithAMFileLocation:(AMFileLocation *)fileLocation
+                       withBoolean:(jboolean)isAutostart
+                withAMFileCallback:(id<AMFileCallback>)callback;
+
+- (void)unbindFileWithLong:(jlong)fileId
+        withAMFileCallback:(id<AMFileCallback>)callback
+               withBoolean:(jboolean)cancel;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMMessenger)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT NSString *AMMessenger_TAG_;
+J2OBJC_STATIC_FIELD_GETTER(AMMessenger, TAG_, NSString *)
 CF_EXTERN_C_END
 
 typedef AMMessenger ImActorModelMessenger;
