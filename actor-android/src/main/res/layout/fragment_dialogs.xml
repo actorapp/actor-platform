@@ -1,84 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/bg_grey">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <ListView
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@android:color/transparent"
             android:divider="@null"
             android:dividerHeight="0dp"
             android:drawSelectorOnTop="true"
             android:listSelector="@drawable/selector" />
 
-        <FrameLayout
-            android:id="@+id/loadingProgress"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/bg_grey">
-            <!--<ProgressBar android:layout_width="64dp"-->
-            <!--android:layout_height="64dp"-->
-            <!--android:layout_gravity="center"/>-->
-        </FrameLayout>
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@color/bg_grey" />-->
 
-        <FrameLayout
-            android:id="@+id/noMessages"
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/loadingProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_grey">
+        <!--<ProgressBar android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:layout_gravity="center"/>-->
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/noMessages"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_light"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/bg_light"
-            android:gravity="center"
+            android:layout_height="150dp"
+            android:background="@color/primary" />
+
+        <ImageView
+            android:id="@+id/emptyDialogsImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:scaleType="centerInside" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="216dp"
             android:orientation="vertical">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:background="@color/primary" />
-
-            <ImageView
-                android:id="@+id/emptyDialogsImage"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:scaleType="centerInside"
-                android:src="@drawable/dialogs_empty_large" />
+                android:gravity="center"
+                android:text="@string/dialogs_empty_title"
+                android:textColor="@color/primary"
+                android:textSize="21sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="216dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/dialogs_empty_title"
-                    android:textColor="@color/primary"
-                    android:textSize="21sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:lineSpacingMultiplier="1.4"
-                    android:paddingLeft="32dp"
-                    android:paddingRight="32dp"
-                    android:text="@string/dialogs_empty"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="16sp" />
-            </LinearLayout>
-        </FrameLayout>
-
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.4"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:text="@string/dialogs_empty"
+                android:textColor="@color/text_secondary"
+                android:textSize="16sp" />
+        </LinearLayout>
     </FrameLayout>
-</LinearLayout>
+</FrameLayout>

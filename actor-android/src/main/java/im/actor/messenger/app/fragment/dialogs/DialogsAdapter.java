@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,16 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
         return new Holder();
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyDataSetInvalidated() {
+        super.notifyDataSetInvalidated();
+    }
+
     private class Holder extends ViewHolder<Dialog> {
         private AvatarView avatar;
         private TextView title;
@@ -87,6 +98,8 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
         private int readColor;
         private int errorColor;
 
+        private long binded;
+
         @Override
         public View init(final Dialog data, ViewGroup parent, Context context) {
 
@@ -98,7 +111,7 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
 
             FrameLayout fl = new FrameLayout(context);
             fl.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(72)));
-            fl.setBackgroundResource(R.drawable.selector_white);
+            fl.setBackgroundResource(R.drawable.selector);
 
             avatar = new AvatarView(context);
             {
@@ -225,6 +238,17 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
 
         @Override
         public void bind(Dialog data, int position, final Context context) {
+            if (binded != 0) {
+                if (data.getPeer().getUid() != binded) {
+                    Log.d("ListDialogs", "Bind new #" + position);
+                } else {
+                    Log.d("ListDialogs", "Bind updated #" + position);
+                }
+            } else {
+                Log.d("ListDialogs", "Bind fresh #" + position);
+            }
+            binded = data.getPeer().getUid();
+
             if (getEngine().getListState().getValue().getState() == ListState.State.LOADED) {
                 if (position > getCount() - LOAD_GAP) {
                     // DialogsHistoryActor.get().onEndReached();
@@ -389,7 +413,7 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
                 groupTypingListener = null;
             }
 
-            avatar.unbind();
+            // avatar.unbind();
         }
     }
 }

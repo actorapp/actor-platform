@@ -1,7 +1,10 @@
 package im.actor.messenger.app.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+
+import net.hockeyapp.android.UpdateManager;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
@@ -10,11 +13,8 @@ import im.actor.messenger.app.activity.controllers.MainBaseController;
 import im.actor.messenger.app.activity.controllers.MainPhoneController;
 import im.actor.messenger.app.tour.TourActivity;
 import im.actor.messenger.core.Core;
-
 import im.actor.model.AuthState;
 import im.actor.model.entity.Dialog;
-
-import net.hockeyapp.android.UpdateManager;
 
 public class MainActivity extends ControllerActivity<MainBaseController> {
 
@@ -25,7 +25,9 @@ public class MainActivity extends ControllerActivity<MainBaseController> {
 
     @Override
     public void onCreate(Bundle savedInstance) {
+
         super.onCreate(savedInstance);
+
 
         checkForUpdates();
 
@@ -35,7 +37,7 @@ public class MainActivity extends ControllerActivity<MainBaseController> {
             return;
         }
 
-        getWindow().setBackgroundDrawable(null);
+        getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.bg_light)));
     }
 
     public void onDialogClicked(Dialog item) {

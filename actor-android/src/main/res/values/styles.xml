@@ -16,6 +16,7 @@
     <style name="MainActivityTheme" parent="AppToolbarTheme">
         <item name="windowActionBar">false</item>
         <item name="android:windowActionBar">false</item>
+        <item name="android:windowBackground">@color/bg_light</item>
     </style>
 
     <style name="ProfileActivityTheme" parent="AppToolbarTheme">

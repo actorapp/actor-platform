@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.droidkit.engine.uilist.UiList;
 import com.droidkit.images.common.ImageLoadException;
 import com.droidkit.images.ops.ImageLoading;
-import com.droidkit.mvvm.ValueChangeListener;
 import com.droidkit.progress.CircularView;
 
 import im.actor.messenger.R;
@@ -29,10 +28,16 @@ import im.actor.messenger.util.Screen;
 import im.actor.messenger.util.TextUtils;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
-import im.actor.model.entity.content.*;
+import im.actor.model.entity.content.DocumentContent;
+import im.actor.model.entity.content.FileRemoteSource;
+import im.actor.model.entity.content.PhotoContent;
+import im.actor.model.entity.content.VideoContent;
+import im.actor.model.files.FileReference;
+import im.actor.model.viewmodel.FileVM;
 
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
+import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.myUid;
 
 /**
@@ -71,19 +76,7 @@ class PhotoHolder extends BubbleHolder {
     private int readColor;
     private int errorColor;
 
-    private ValueChangeListener<UploadState> uploadStateListener = new ValueChangeListener<UploadState>() {
-        @Override
-        public void onChanged(UploadState value) {
-            onUploadChanged(value);
-        }
-    };
-
-    private ValueChangeListener<DownloadState> downloadStateListener = new ValueChangeListener<DownloadState>() {
-        @Override
-        public void onChanged(DownloadState value) {
-            onDownloadChanged(value);
-        }
-    };
+    private FileVM removeFileVM;
 
     @Override
     public View init(Message data, ViewGroup viewGroup, Context context) {
@@ -120,7 +113,7 @@ class PhotoHolder extends BubbleHolder {
     }
 
     @Override
-    public void update(final Message data, int position, boolean isUpdated, final Context context) {
+    public void update(final Message data, final int position, boolean isUpdated, final Context context) {
         super.update(data, position, isUpdated, context);
 
         this.fileMessage = (DocumentContent) data.getContent();
@@ -161,20 +154,17 @@ class PhotoHolder extends BubbleHolder {
         }
 
         int w, h;
-        FastThumb thumb;
         if (data.getContent() instanceof PhotoContent) {
             w = ((PhotoContent) data.getContent()).getW();
             h = ((PhotoContent) data.getContent()).getH();
-            thumb = ((PhotoContent) data.getContent()).getFastThumb();
             duration.setVisibility(View.GONE);
         } else if (data.getContent() instanceof VideoContent) {
             w = ((VideoContent) data.getContent()).getW();
             h = ((VideoContent) data.getContent()).getH();
-            thumb = ((VideoContent) data.getContent()).getFastThumb();
             duration.setVisibility(View.VISIBLE);
             duration.setText(Formatter.duration(((VideoContent) data.getContent()).getDuration()));
         } else {
-            return;
+            throw new RuntimeException("Unsupported content");
         }
 
         int maxHeight = context.getResources().getDisplayMetrics().heightPixels - Screen.dp(96 + 32);
@@ -192,66 +182,130 @@ class PhotoHolder extends BubbleHolder {
         time.setText(TextUtils.formatTime(data.getDate()));
 
         if (isUpdated) {
-            if (thumb != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    try {
-                        imageKitView.setSrc(ImageLoading.loadReuse(thumb.getImage(), smallPreview).getRes());
-                    } catch (ImageLoadException e) {
-                        e.printStackTrace();
-                        imageKitView.setSrc(null);
-                    }
-                } else {
-                    try {
-                        imageKitView.setSrc(ImageLoading.loadBitmap(thumb.getImage()));
-                    } catch (ImageLoadException e) {
-                        e.printStackTrace();
-                        imageKitView.setSrc(null);
-                    }
-                }
-            } else {
-                imageKitView.setSrc(null);
+            imageKitView.setSrc(null);
+
+            if (removeFileVM != null) {
+                removeFileVM.detach();
+                removeFileVM = null;
             }
 
-            imageKitView.clear();
-            isInitialBind = true;
-            hideProgress(false);
-            isInitialBind = false;
+            if (fileMessage.getSource() instanceof FileRemoteSource) {
+                final DocumentContent doc = fileMessage;
+                FileRemoteSource remoteSource = (FileRemoteSource) fileMessage.getSource();
+                removeFileVM = new FileVM(remoteSource.getFileLocation(), false, messenger()) {
+
+                    private boolean isFastThumbLoaded = false;
+
+                    private void loadFastThumb() {
+                        if (isFastThumbLoaded) {
+                            return;
+                        }
+                        if (doc.getFastThumb() != null) {
+                            try {
+                                post(ImageLoading.loadBitmap(doc.getFastThumb().getImage()));
+                            } catch (ImageLoadException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        isFastThumbLoaded = true;
+                    }
+
+                    @Override
+                    protected void onObjectReceived(Object obj) {
+                        if (obj instanceof Bitmap) {
+                            imageKitView.setSrc((Bitmap) obj);
+                        } else if (obj instanceof DownloadProgress) {
+                            showProgress((int) (100 * ((DownloadProgress) obj).getProgress()));
+                        } else if (obj instanceof DownloadStopped) {
+                            showIcon(R.drawable.conv_media_download);
+                        } else if (obj instanceof DownloadCompleted) {
+                            hideProgress(true);
+                        }
+                    }
+
+                    @Override
+                    public void onNotDownloaded() {
+                        loadFastThumb();
+                        post(new DownloadStopped());
+                    }
+
+                    @Override
+                    public void onDownloading(float progress) {
+                        loadFastThumb();
+                        post(new DownloadProgress(progress));
+                    }
+
+                    @Override
+                    public void onDownloaded(FileReference reference) {
+                        post(new DownloadCompleted());
+                    }
+                };
+            }
+        } else {
+
         }
-        isInitialBind = true;
-        if (fileMessage.getSource() instanceof FileLocalSource) {
-            FileLocalSource localSource = (FileLocalSource) fileMessage.getSource();
-            if (currentMessage.getContent() instanceof PhotoContent) {
-                imageKitView.requestPhoto(localSource.getFileName());
-            } else if (currentMessage.getContent() instanceof VideoContent) {
-                imageKitView.requestVideo(localSource.getFileName());
-            }
-            // UploadModel.uploadState(message.getRid()).addUiSubscriber(uploadStateListener);
-        } else if (fileMessage.getSource() instanceof FileRemoteSource) {
-            FileRemoteSource remoteSource = (FileRemoteSource) fileMessage.getSource();
 
-//            if (fileMessage.isDownloaded()) {
-//                if (message.getContent() instanceof PhotoMessage) {
-//                    imageKitView.requestPhoto(type, id, message);
-//                    hideProgress(true);
-//                } else if (message.getContent() instanceof VideoMessage) {
-//                    imageKitView.requestVideo(type, id, message);
-//                    showIcon(R.drawable.conv_video_play);
+//        if (isUpdated) {
+//            if (thumb != null) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                    try {
+//                        imageKitView.setSrc(ImageLoading.loadReuse(thumb.getImage(), smallPreview).getRes());
+//                    } catch (ImageLoadException e) {
+//                        e.printStackTrace();
+//                        imageKitView.setSrc(null);
+//                    }
+//                } else {
+//                    try {
+//                        imageKitView.setSrc(ImageLoading.loadBitmap(thumb.getImage()));
+//                    } catch (ImageLoadException e) {
+//                        e.printStackTrace();
+//                        imageKitView.setSrc(null);
+//                    }
 //                }
 //            } else {
-//                DownloadModel.downloadState(fileMessage.getLocation().getFileId()).addUiSubscriber(downloadStateListener);
+//                imageKitView.setSrc(null);
 //            }
-        }
-        isInitialBind = false;
+//
+//            imageKitView.clear();
+//            isInitialBind = true;
+//            hideProgress(false);
+//            isInitialBind = false;
+//        }
+//        isInitialBind = true;
+//        if (fileMessage.getSource() instanceof FileLocalSource) {
+//            FileLocalSource localSource = (FileLocalSource) fileMessage.getSource();
+//            if (currentMessage.getContent() instanceof PhotoContent) {
+//                imageKitView.requestPhoto(localSource.getFileName());
+//            } else if (currentMessage.getContent() instanceof VideoContent) {
+//                imageKitView.requestVideo(localSource.getFileName());
+//            }
+//            // UploadModel.uploadState(message.getRid()).addUiSubscriber(uploadStateListener);
+//        } else if (fileMessage.getSource() instanceof FileRemoteSource) {
+//            FileRemoteSource remoteSource = (FileRemoteSource) fileMessage.getSource();
+//
+////            if (fileMessage.isDownloaded()) {
+////                if (message.getContent() instanceof PhotoMessage) {
+////                    imageKitView.requestPhoto(type, id, message);
+////                    hideProgress(true);
+////                } else if (message.getContent() instanceof VideoMessage) {
+////                    imageKitView.requestVideo(type, id, message);
+////                    showIcon(R.drawable.conv_video_play);
+////                }
+////            } else {
+////                DownloadModel.downloadState(fileMessage.getLocation().getFileId()).addUiSubscriber(downloadStateListener);
+////            }
+//        }
+//        isInitialBind = false;
     }
 
-    private boolean isInitialBind = false;
+//    private boolean isInitialBind = false;
 
     private void showIcon(int resId) {
         progressIcon.setImageResource(resId);
-        showView(progressContainer, !isInitialBind);
-        showView(progressIcon, !isInitialBind);
-        goneView(progressView, !isInitialBind);
-        goneView(progressValue, !isInitialBind);
+        showView(progressContainer, false);
+        showView(progressIcon);
+        goneView(progressView);
+        goneView(progressValue);
     }
 
     private void hideProgress(boolean success) {
@@ -259,19 +313,19 @@ class PhotoHolder extends BubbleHolder {
             progressView.setValue(100);
             progressValue.setText("100");
         }
-        goneView(progressContainer, !isInitialBind);
-        goneView(progressView, !isInitialBind);
-        goneView(progressValue, !isInitialBind);
-        goneView(progressIcon, !isInitialBind);
+        goneView(progressContainer);
+        goneView(progressView);
+        goneView(progressValue);
+        goneView(progressIcon);
     }
 
     private void showProgress(int progress) {
         progressView.setValue(progress);
         progressValue.setText("" + progress);
-        showView(progressContainer, !isInitialBind);
-        showView(progressView, !isInitialBind);
-        showView(progressValue, !isInitialBind);
-        goneView(progressIcon, !isInitialBind);
+        showView(progressContainer);
+        showView(progressView);
+        showView(progressValue);
+        goneView(progressIcon);
     }
 
     private void onUploadChanged(UploadState uploadState) {
@@ -365,5 +419,25 @@ class PhotoHolder extends BubbleHolder {
         imageKitView.noRequest();
         imageKitView.setSrc(null);
         imageKitView.close();
+    }
+
+    private class DownloadProgress {
+        private float progress;
+
+        private DownloadProgress(float progress) {
+            this.progress = progress;
+        }
+
+        public float getProgress() {
+            return progress;
+        }
+    }
+
+    private class DownloadStopped {
+
+    }
+
+    private class DownloadCompleted {
+
     }
 }

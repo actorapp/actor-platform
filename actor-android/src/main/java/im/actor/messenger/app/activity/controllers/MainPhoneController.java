@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.droidkit.mvvm.ValueChangeListener;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.activity.ComposeActivity;
 import im.actor.messenger.app.activity.CreateGroupActivity;
@@ -29,7 +30,6 @@ import im.actor.messenger.app.activity.MyProfileActivity;
 import im.actor.messenger.app.fragment.contacts.ContactsFragment;
 import im.actor.messenger.app.fragment.dialogs.DialogsFragment;
 import im.actor.messenger.app.fragment.search.SearchAdapter;
-import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
@@ -226,8 +226,8 @@ public class MainPhoneController extends MainBaseController implements ValueChan
 
         ProfileSyncState.getSyncState().addUiSubscriber(this);
 
-        emptyContactsImage.setImageResource(R.drawable.contacts_empty_large);
-        emptyDialogsImage.setImageResource(R.drawable.contacts_empty_large);
+//        emptyContactsImage.setImageResource(R.drawable.contacts_empty_large);
+//        emptyDialogsImage.setImageResource(R.drawable.contacts_empty_large);
     }
 
     public void onChanged(ProfileSyncState.State value) {
@@ -260,8 +260,8 @@ public class MainPhoneController extends MainBaseController implements ValueChan
     @Override
     public void onPause() {
         ProfileSyncState.getSyncState().removeUiSubscriber(this);
-        emptyContactsImage.setImageBitmap(null);
-        emptyDialogsImage.setImageBitmap(null);
+//        emptyContactsImage.setImageBitmap(null);
+//        emptyDialogsImage.setImageBitmap(null);
     }
 
     @Override

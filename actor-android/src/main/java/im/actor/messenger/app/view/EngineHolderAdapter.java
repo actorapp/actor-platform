@@ -1,6 +1,7 @@
 package im.actor.messenger.app.view;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -51,14 +52,22 @@ public abstract class EngineHolderAdapter<V> extends ListEngineAdapter<V> {
             view = holder.init(object, parent, context);
             view.setTag(holder);
             holders.add(holder);
+            Log.d("EngineHolderAdapter", "bind fresh #" + position);
         } else {
             holder = (ViewHolder<V>) convertView.getTag();
+            if (holder.getId() != getItemId(object)) {
+                Log.d("EngineHolderAdapter", "bind new #" + position);
+            } else {
+                Log.d("EngineHolderAdapter", "bind update #" + position);
+            }
             view = convertView;
         }
+        holder.setId(getItemId(object));
 
         holder.bind(object, position, context);
 
         afterItemLoaded(object, position);
+
 
         return view;
     }
