@@ -1,11 +1,12 @@
 package im.actor.model.droidkit.bser;
 
-import im.actor.model.droidkit.bser.util.SparseArray;
-import im.actor.model.util.DataInput;
-
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import im.actor.model.droidkit.bser.util.SparseArray;
+import im.actor.model.util.DataInput;
 
 /**
  * Created by ex3ndr on 17.10.14.
@@ -100,7 +101,11 @@ public class BserValues {
         if (fields.containsKey(id)) {
             Object res = fields.get(id);
             if (res instanceof byte[]) {
-                return new String((byte[]) res);
+                try {
+                    return new String((byte[]) res, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
             }
             return res + "";
         }
@@ -254,7 +259,11 @@ public class BserValues {
                     } else if (val2 instanceof Integer) {
                         res.add("" + val2);
                     } else if (val2 instanceof byte[]) {
-                        res.add(new String((byte[]) val2));
+                        try {
+                            res.add(new String((byte[]) val2, "UTF-8"));
+                        } catch (UnsupportedEncodingException e) {
+                            throw new RuntimeException(e);
+                        }
                     } else {
                         throw new IncorrectTypeException("Expected type: byte[], got " + val2.getClass().getSimpleName());
                     }

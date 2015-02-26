@@ -37,6 +37,10 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+- (jboolean)isEqual:(id)o;
+
+- (NSUInteger)hash;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMGroupMember)
