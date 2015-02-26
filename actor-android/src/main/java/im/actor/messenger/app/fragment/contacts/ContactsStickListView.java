@@ -135,7 +135,7 @@ public class ContactsStickListView extends ListView {
                 View view = getChildAt(1);
                 if (view != null) {
                     offset = view.getTop();
-                    if (getAdapter().getCount() > 0) {
+                    if (adapter.getCount() > 0) {
                         visibleHeader = ((StickAdapter) adapter).getItemHeader(0);
                         headerMeasure = HEADER_PAINT.measureText(visibleHeader);
                     }

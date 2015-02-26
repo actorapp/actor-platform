@@ -28,8 +28,15 @@ public class ConfigurationBuilder {
 
     private CryptoProvider cryptoProvider;
 
+    private FileSystemProvider fileSystemProvider;
+
     private boolean enableContactsLogging = false;
     private boolean enableNetworkLogging = false;
+
+    public ConfigurationBuilder setFileSystemProvider(FileSystemProvider fileSystemProvider) {
+        this.fileSystemProvider = fileSystemProvider;
+        return this;
+    }
 
     public ConfigurationBuilder setEnableContactsLogging(boolean enableContactsLogging) {
         this.enableContactsLogging = enableContactsLogging;
@@ -153,7 +160,7 @@ public class ConfigurationBuilder {
         }
         return new Configuration(networking, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
                 threading, mainThread, enginesFactory, log, isUploadFilePersist, localeProvider,
-                phoneBookProvider, cryptoProvider,
+                phoneBookProvider, cryptoProvider, fileSystemProvider,
                 enableContactsLogging, enableNetworkLogging);
     }
 }

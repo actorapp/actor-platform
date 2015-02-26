@@ -26,6 +26,7 @@ import im.actor.messenger.storage.provider.AppEngineFactory;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
 import im.actor.model.android.AndroidCryptoProvider;
+import im.actor.model.android.AndroidFileProvider;
 import im.actor.model.android.AndroidLog;
 import im.actor.model.android.AndroidMainThread;
 import im.actor.model.android.AndroidPhoneBook;
@@ -57,30 +58,6 @@ public class Core {
         }
 
         return core;
-    }
-
-    public static EmojiProcessor emoji() {
-        return core().emojiProcessor;
-    }
-
-    public static int myUid() {
-        return core().messenger.myUid();
-    }
-
-    public static ImageLoader getImageLoader() {
-        return core().imageLoader;
-    }
-
-    public static Messenger messenger() {
-        return core().messenger;
-    }
-
-    public static MVVMCollection<User, UserVM> users() {
-        return core().messenger.getUsers();
-    }
-
-    public static MVVMCollection<Group, GroupVM> groups() {
-        return core().messenger.getGroups();
     }
 
     private ImageLoader imageLoader;
@@ -142,6 +119,7 @@ public class Core {
         builder.setLocale(new JavaLocale("En"));
         builder.setPhoneBookProvider(new AndroidPhoneBook());
         builder.setCryptoProvider(new AndroidCryptoProvider());
+        builder.setFileSystemProvider(new AndroidFileProvider(application));
 
         if (BuildConfig.API_SSL) {
             builder.addEndpoint("tls://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
@@ -163,5 +141,29 @@ public class Core {
                                 messenger.onPhoneBookChanged();
                             }
                         });
+    }
+
+    public static EmojiProcessor emoji() {
+        return core().emojiProcessor;
+    }
+
+    public static int myUid() {
+        return core().messenger.myUid();
+    }
+
+    public static ImageLoader getImageLoader() {
+        return core().imageLoader;
+    }
+
+    public static Messenger messenger() {
+        return core().messenger;
+    }
+
+    public static MVVMCollection<User, UserVM> users() {
+        return core().messenger.getUsers();
+    }
+
+    public static MVVMCollection<Group, GroupVM> groups() {
+        return core().messenger.getGroups();
     }
 }
