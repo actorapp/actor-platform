@@ -10,7 +10,7 @@ import im.actor.model.modules.file.DownloadManager;
 import im.actor.model.modules.file.Downloaded;
 import im.actor.model.modules.utils.BaseKeyValueEngine;
 import im.actor.model.storage.KeyValueEngine;
-import im.actor.model.viewmodel.FileCallback;
+import im.actor.model.modules.file.FileCallback;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
@@ -62,6 +62,6 @@ public class Files extends BaseModule {
     }
 
     public void unbindFile(long fileId, FileCallback callback, boolean cancel) {
-
+        downloadManager.send(new DownloadManager.UnbindDownload(fileId, cancel, callback));
     }
 }

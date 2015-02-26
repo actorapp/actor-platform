@@ -17,10 +17,12 @@ import im.actor.model.entity.User;
 import im.actor.model.i18n.I18nEngine;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
+import im.actor.model.modules.file.FileCallback;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.storage.ListEngine;
-import im.actor.model.viewmodel.FileCallback;
+import im.actor.model.viewmodel.FileVM;
+import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.GroupTypingVM;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserTypingVM;
@@ -250,11 +252,15 @@ public class Messenger {
     }
 
     // File operations
-    public void bindFile(FileLocation fileLocation, boolean isAutostart, FileCallback callback) {
-        modules.getFilesModule().bindFile(fileLocation, isAutostart, callback);
+    public FileVM bindFile(FileLocation fileLocation, boolean isAutoStart, FileVMCallback callback) {
+        return new FileVM(fileLocation, isAutoStart, modules, callback);
     }
 
-    public void unbindFile(long fileId, FileCallback callback, boolean cancel) {
-        modules.getFilesModule().unbindFile(fileId, callback, cancel);
+    public void bindRawFile(FileLocation fileLocation, boolean isAutoStart, FileCallback callback) {
+        modules.getFilesModule().bindFile(fileLocation, isAutoStart, callback);
+    }
+
+    public void unbindRawFile(long fileId, boolean isAutoCancel, FileCallback callback) {
+        modules.getFilesModule().unbindFile(fileId, callback, isAutoCancel);
     }
 }

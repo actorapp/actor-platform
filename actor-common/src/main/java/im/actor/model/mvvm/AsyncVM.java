@@ -1,6 +1,4 @@
-package im.actor.model.viewmodel;
-
-import im.actor.model.mvvm.MVVMEngine;
+package im.actor.model.mvvm;
 
 /**
  * Created by ex3ndr on 26.02.15.
