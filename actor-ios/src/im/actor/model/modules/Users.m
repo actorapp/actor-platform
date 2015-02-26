@@ -27,7 +27,6 @@
 #include "im/actor/model/viewmodel/UserVM.h"
 #include "java/io/IOException.h"
 #include "java/lang/Boolean.h"
-#include "java/lang/RuntimeException.h"
 
 @interface ImActorModelModulesUsers () {
  @public
@@ -38,6 +37,14 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUsers, users_, id<AMKeyValueEngine>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUsers, collection_, AMMVVMCollection *)
+
+@interface ImActorModelModulesUsers_$1 () {
+ @public
+  ImActorModelModulesUsers *this$0_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$1, this$0_, ImActorModelModulesUsers *)
 
 @interface ImActorModelModulesUsers_$2 () {
  @public
@@ -126,7 +133,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$3_$2_$2, this$0_, ImActorModelModu
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   if (self = [super initWithImActorModelModulesModules:messenger]) {
-    self->collection_ = [[ImActorModelModulesUsers_$1 alloc] initWithAMKeyValueStorage:[((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getStorage])) createUsersEngine]];
+    self->collection_ = [[ImActorModelModulesUsers_$1 alloc] initWithImActorModelModulesUsers:self withAMKeyValueStorage:[((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getStorage])) createUsersEngine]];
     self->users_ = [collection_ getEngine];
   }
   return self;
@@ -149,10 +156,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$3_$2_$2, this$0_, ImActorModelModu
   return [[ImActorModelModulesUsers_$3 alloc] initWithImActorModelModulesUsers:self withInt:uid withNSString:name];
 }
 
-- (id<AMCommand>)editAvatarWithNSString:(NSString *)avatarPath {
-  @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Not Implemented"];
-}
-
 - (void)copyAllFieldsTo:(ImActorModelModulesUsers *)other {
   [super copyAllFieldsTo:other];
   other->users_ = users_;
@@ -166,7 +169,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers)
 @implementation ImActorModelModulesUsers_$1
 
 - (AMUserVM *)createNewWithAMKeyValueItem:(AMUser *)raw {
-  return [[AMUserVM alloc] initWithAMUser:raw];
+  return [[AMUserVM alloc] initWithAMUser:raw withImActorModelModulesModules:[this$0_ modules]];
 }
 
 - (IOSByteArray *)serializeWithAMKeyValueItem:(AMUser *)raw {
@@ -183,8 +186,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers)
   }
 }
 
-- (instancetype)initWithAMKeyValueStorage:(id<AMKeyValueStorage>)arg$0 {
+- (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
+                           withAMKeyValueStorage:(id<AMKeyValueStorage>)arg$0 {
+  this$0_ = outer$;
   return [super initWithAMKeyValueStorage:arg$0];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesUsers_$1 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
 }
 
 @end

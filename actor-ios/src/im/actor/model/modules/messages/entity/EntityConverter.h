@@ -8,6 +8,7 @@
 
 @class AMAvatar;
 @class AMAvatarImage;
+@class AMContactRecord;
 @class AMFileLocation;
 @class AMGroup;
 @class AMMessageStateEnum;
@@ -17,6 +18,7 @@
 @class AMUser;
 @class ImActorModelApiAvatar;
 @class ImActorModelApiAvatarImage;
+@class ImActorModelApiContactRecord;
 @class ImActorModelApiFastThumb;
 @class ImActorModelApiFileLocation;
 @class ImActorModelApiGroup;
@@ -29,6 +31,7 @@
 @class ImActorModelEntityContentAbsContent;
 @class ImActorModelEntityContentFastThumb;
 @class JavaUtilArrayList;
+@protocol JavaUtilCollection;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -43,11 +46,20 @@
 + (AMAvatarImage *)convertWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)avatarImage;
 
 + (AMFileLocation *)convertWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)location
+                                              withNSString:(NSString *)fileName
                                                    withInt:(jint)size;
 
 + (AMSexEnum *)convertWithImActorModelApiSexEnum:(ImActorModelApiSexEnum *)sex;
 
++ (AMContactRecord *)convertWithImActorModelApiContactRecord:(ImActorModelApiContactRecord *)record;
+
 + (AMUser *)convertWithImActorModelApiUser:(ImActorModelApiUser *)user;
+
++ (id<JavaUtilList>)convertWithJavaUtilList:(id<JavaUtilList>)contacts
+                     withJavaUtilCollection:(id<JavaUtilCollection>)updatedContact;
+
++ (AMContactRecord *)convertWithInt:(jint)contactId
+             withJavaUtilCollection:(id<JavaUtilCollection>)updatedContact;
 
 + (AMGroup *)convertWithImActorModelApiGroup:(ImActorModelApiGroup *)group;
 
@@ -76,11 +88,17 @@ FOUNDATION_EXPORT AMAvatar *ImActorModelModulesMessagesEntityEntityConverter_con
 
 FOUNDATION_EXPORT AMAvatarImage *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *avatarImage);
 
-FOUNDATION_EXPORT AMFileLocation *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withInt_(ImActorModelApiFileLocation *location, jint size);
+FOUNDATION_EXPORT AMFileLocation *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_(ImActorModelApiFileLocation *location, NSString *fileName, jint size);
 
 FOUNDATION_EXPORT AMSexEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiSexEnum_(ImActorModelApiSexEnum *sex);
 
+FOUNDATION_EXPORT AMContactRecord *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiContactRecord_(ImActorModelApiContactRecord *record);
+
 FOUNDATION_EXPORT AMUser *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiUser_(ImActorModelApiUser *user);
+
+FOUNDATION_EXPORT id<JavaUtilList> ImActorModelModulesMessagesEntityEntityConverter_convertWithJavaUtilList_withJavaUtilCollection_(id<JavaUtilList> contacts, id<JavaUtilCollection> updatedContact);
+
+FOUNDATION_EXPORT AMContactRecord *ImActorModelModulesMessagesEntityEntityConverter_convertWithInt_withJavaUtilCollection_(jint contactId, id<JavaUtilCollection> updatedContact);
 
 FOUNDATION_EXPORT AMGroup *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(ImActorModelApiGroup *group);
 

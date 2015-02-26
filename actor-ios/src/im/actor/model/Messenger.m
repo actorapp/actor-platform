@@ -6,20 +6,26 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/AuthState.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/CryptoProvider.h"
 #include "im/actor/model/LogCallback.h"
 #include "im/actor/model/MainThread.h"
 #include "im/actor/model/Messenger.h"
 #include "im/actor/model/Threading.h"
 #include "im/actor/model/concurrency/Command.h"
+#include "im/actor/model/crypto/CryptoUtils.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/actors/ActorScope.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/droidkit/actors/mailbox/Envelope.h"
+#include "im/actor/model/entity/FileLocation.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/i18n/I18nEngine.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Auth.h"
+#include "im/actor/model/modules/Contacts.h"
+#include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Groups.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
@@ -29,6 +35,7 @@
 #include "im/actor/model/mvvm/MVVMCollection.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
 #include "im/actor/model/storage/ListEngine.h"
+#include "im/actor/model/viewmodel/FileCallback.h"
 #include "im/actor/model/viewmodel/GroupTypingVM.h"
 #include "im/actor/model/viewmodel/UserTypingVM.h"
 #include "java/lang/Exception.h"
@@ -43,13 +50,29 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 
 @implementation AMMessenger
 
+NSString * AMMessenger_TAG_ = @"CORE_INIT";
+
 - (instancetype)initWithConfig:(AMConfiguration *)configuration {
-  [super init]DKEnvironment_setThreadingWithAMThreading_([((AMConfiguration *) nil_chk(configuration)) getThreading]);
+  [super init]AMLog_setLogWithAMLogCallback_([((AMConfiguration *) nil_chk(configuration)) getLog]);
+  jlong start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
+  DKEnvironment_setThreadingWithAMThreading_([configuration getThreading]);
+  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage1 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
+  ImActorModelCryptoCryptoUtils_init__WithAMCryptoProvider_([configuration getCryptoProvider]);
+  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage2 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
   AMMVVMEngine_init__WithAMMainThread_([configuration getMainThread]);
-  AMLog_setLogWithAMLogCallback_([configuration getLog]);
+  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage3 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
   [((DKActorSystem *) nil_chk(DKActorSystem_system())) setTraceInterfaceWithImActorModelDroidkitActorsDebugTraceInterface:[[AMMessenger_$1 alloc] init]];
+  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage4 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
   self->modules_ = [[ImActorModelModulesModules alloc] initWithAMConfiguration:configuration];
+  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage5 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
   [self->modules_ run];
+  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage6 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
 }
 
 - (AMAuthStateEnum *)getAuthState {
@@ -148,6 +171,12 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
   [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) onTypingWithAMPeer:peer];
 }
 
+- (void)onPhoneBookChanged {
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getContactsModule] != nil) {
+    [((ImActorModelModulesContacts *) nil_chk([modules_ getContactsModule])) onPhoneBookChanged];
+  }
+}
+
 - (jlong)loadLastReadDate:(AMPeer *)peer {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) loadReadStateWithAMPeer:peer];
 }
@@ -173,6 +202,39 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) editNameWithInt:uid withNSString:name];
 }
 
+- (id<AMCommand>)editGroupTitleWithInt:(jint)gid
+                          withNSString:(NSString *)title {
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) editTitleWithInt:gid withNSString:title];
+}
+
+- (id<AMCommand>)leaveGroupWithInt:(jint)gid {
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) leaveGroupWithInt:gid];
+}
+
+- (id<AMCommand>)removeContactWithInt:(jint)uid {
+  return [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getContactsModule])) removeContactWithInt:uid];
+}
+
+- (id<AMCommand>)addContactWithInt:(jint)uid {
+  return [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getContactsModule])) addContactWithInt:uid];
+}
+
+- (id<AMCommand>)findUsersWithNSString:(NSString *)query {
+  return [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getContactsModule])) findUsersWithNSString:query];
+}
+
+- (void)bindFileWithAMFileLocation:(AMFileLocation *)fileLocation
+                       withBoolean:(jboolean)isAutostart
+                withAMFileCallback:(id<AMFileCallback>)callback {
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) bindFileWithAMFileLocation:fileLocation withBoolean:isAutostart withAMFileCallback:callback];
+}
+
+- (void)unbindFileWithLong:(jlong)fileId
+        withAMFileCallback:(id<AMFileCallback>)callback
+               withBoolean:(jboolean)cancel {
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindFileWithLong:fileId withAMFileCallback:callback withBoolean:cancel];
+}
+
 - (void)copyAllFieldsTo:(AMMessenger *)other {
   [super copyAllFieldsTo:other];
   other->modules_ = modules_;
@@ -189,6 +251,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessenger)
 
 - (void)onEnvelopeProcessedWithDKEnvelope:(DKEnvelope *)envelope
                                  withLong:(jlong)duration {
+  if (duration > 300) {
+    AMLog_wWithNSString_withNSString_(@"ACTOR_SYSTEM", JreStrcat("$$$@C", @"Too long ", [((DKActorScope *) nil_chk([((DKEnvelope *) nil_chk(envelope)) getScope])) getPath], @" {", [envelope getMessage], '}'));
+  }
 }
 
 - (void)onDropWithDKActorRef:(DKActorRef *)sender

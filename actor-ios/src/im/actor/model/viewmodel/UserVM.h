@@ -9,8 +9,10 @@
 @class AMSexEnum;
 @class AMUser;
 @class AMValueModel;
+@class ImActorModelModulesModules;
 @class JavaUtilArrayList;
 @protocol AMModelChangedListener;
+@protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/mvvm/BaseValueModel.h"
@@ -19,7 +21,8 @@
 @interface AMUserVM : AMBaseValueModel {
 }
 
-- (instancetype)initWithAMUser:(AMUser *)user;
+- (instancetype)initWithAMUser:(AMUser *)user
+withImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (void)updateValuesWithId:(AMUser *)rawObj;
 
@@ -36,6 +39,8 @@
 - (AMValueModel *)isContact;
 
 - (AMValueModel *)getPresence;
+
+- (AMValueModel *)getPhones;
 
 - (void)subscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener;
 

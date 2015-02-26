@@ -15,6 +15,7 @@
 #include "java/lang/Boolean.h"
 #include "java/lang/Integer.h"
 #include "java/util/ArrayList.h"
+#include "java/util/HashSet.h"
 #include "java/util/List.h"
 
 __attribute__((unused)) static void AMGroupVM_notifyChange(AMGroupVM *self);
@@ -61,7 +62,7 @@ J2OBJC_FIELD_SETTER(AMGroupVM_$1, this$0_, AMGroupVM *)
     self->name_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"group.", id__, @".title") withId:[rawObj getTitle]];
     self->avatar_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"group.", id__, @".avatar") withId:[rawObj getAvatar]];
     self->isMember__ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"group.", id__, @".isMember") withId:JavaLangBoolean_valueOfWithBoolean_([rawObj isMember])];
-    self->members_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"group.", id__, @".members") withId:[rawObj getMembers]];
+    self->members_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"group.", id__, @".members") withId:[[JavaUtilHashSet alloc] initWithJavaUtilCollection:[rawObj getMembers]]];
     self->presence_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"group.", id__, @".presence") withId:JavaLangInteger_valueOfWithInt_(0)];
   }
   return self;
@@ -77,6 +78,10 @@ J2OBJC_FIELD_SETTER(AMGroupVM_$1, this$0_, AMGroupVM *)
 
 - (jlong)getCreatorId {
   return creatorId_;
+}
+
+- (jint)getMembersCount {
+  return [((JavaUtilHashSet *) nil_chk([((AMValueModel *) nil_chk(members_)) get])) size];
 }
 
 - (AMValueModel *)getName {
@@ -104,7 +109,7 @@ J2OBJC_FIELD_SETTER(AMGroupVM_$1, this$0_, AMGroupVM *)
   isChanged |= [((AMValueModel *) nil_chk(name_)) changeWithId:[((AMGroup *) nil_chk(rawObj)) getTitle]];
   isChanged |= [((AMValueModel *) nil_chk(avatar_)) changeWithId:[rawObj getAvatar]];
   isChanged |= [((AMValueModel *) nil_chk(isMember__)) changeWithId:JavaLangBoolean_valueOfWithBoolean_([rawObj isMember])];
-  isChanged |= [((AMValueModel *) nil_chk(members_)) changeWithId:[rawObj getMembers]];
+  isChanged |= [((AMValueModel *) nil_chk(members_)) changeWithId:[[JavaUtilHashSet alloc] initWithJavaUtilCollection:[rawObj getMembers]]];
   if (isChanged) {
     AMGroupVM_notifyChange(self);
   }
