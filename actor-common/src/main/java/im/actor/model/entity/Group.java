@@ -84,7 +84,7 @@ public class Group extends BserObject implements KeyValueItem {
 
     public Group removeMember(int uid) {
         ArrayList<GroupMember> nMembers = new ArrayList<GroupMember>();
-        for (GroupMember member : nMembers) {
+        for (GroupMember member : members) {
             if (member.getUid() != uid) {
                 nMembers.add(member);
             }
@@ -94,7 +94,7 @@ public class Group extends BserObject implements KeyValueItem {
 
     public Group addMember(int uid, int inviterUid, long inviteDate, boolean isAdmin) {
         ArrayList<GroupMember> nMembers = new ArrayList<GroupMember>();
-        for (GroupMember member : nMembers) {
+        for (GroupMember member : members) {
             if (member.getUid() != uid) {
                 nMembers.add(member);
             }

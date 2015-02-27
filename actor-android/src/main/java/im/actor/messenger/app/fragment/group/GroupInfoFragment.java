@@ -1,5 +1,6 @@
 package im.actor.messenger.app.fragment.group;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +18,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,6 +32,7 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.ViewHolder;
 import im.actor.messenger.util.Screen;
+import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.mvvm.ValueChangedListener;
@@ -38,6 +41,7 @@ import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.groups;
+import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.myUid;
 import static im.actor.messenger.core.Core.users;
 
@@ -295,49 +299,41 @@ public class GroupInfoFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode == Activity.RESULT_OK && requestCode == 0 && data != null && data.hasExtra(Intents.EXTRA_UID)) {
-//            final UserModel userModel = users().get(data.getIntExtra(Intents.EXTRA_UID, 0));
-//
-//            for (GroupMember uid : groupInfo.getUsers()) {
-//                if (uid.getUid() == userModel.getId()) {
-//                    Toast.makeText(getActivity(), R.string.toast_already_member, Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//            }
-//
-//            new AlertDialog.Builder(getActivity())
-//                    .setMessage(getString(R.string.alert_group_add_text).replace("{0}", userModel.getName()))
-//                    .setPositiveButton(R.string.alert_group_add_yes, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog2, int which) {
-//                            ask(GroupsActor.groupUpdates().addUser(chatId, userModel.getId()), getString(R.string.group_adding),
-//                                    new UiAskCallback<Boolean>() {
-//
-//                                        @Override
-//                                        public void onPreStart() {
-//
-//                                        }
-//
-//                                        @Override
-//                                        public void onCompleted(Boolean res) {
-//                                            if (!res) {
-//                                                Toast.makeText(getActivity(), R.string.toast_unable_add, Toast.LENGTH_SHORT).show();
-//                                            }
-//                                        }
-//
-//                                        @Override
-//                                        public void onError(Throwable t) {
-//                                            Toast.makeText(getActivity(), R.string.toast_unable_add, Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    });
-//                        }
-//                    })
-//                    .setNegativeButton(R.string.dialog_cancel, null)
-//                    .show()
-//                    .setCanceledOnTouchOutside(true);
-//        } else {
-//            super.onActivityResult(requestCode, resultCode, data);
-//        }
+        if (resultCode == Activity.RESULT_OK && requestCode == 0 && data != null && data.hasExtra(Intents.EXTRA_UID)) {
+            final UserVM userModel = users().get(data.getIntExtra(Intents.EXTRA_UID, 0));
+
+            for (GroupMember uid : groupInfo.getMembers().get()) {
+                if (uid.getUid() == userModel.getId()) {
+                    Toast.makeText(getActivity(), R.string.toast_already_member, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.alert_group_add_text).replace("{0}", userModel.getName().get()))
+                    .setPositiveButton(R.string.alert_group_add_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog2, int which) {
+                            execute(messenger().addMemberToGroup(chatId, userModel.getId()),
+                                    R.string.progress_common, new CommandCallback<Boolean>() {
+                                        @Override
+                                        public void onResult(Boolean res) {
+
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+                                            Toast.makeText(getActivity(), R.string.toast_unable_add, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, null)
+                    .show()
+                    .setCanceledOnTouchOutside(true);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
