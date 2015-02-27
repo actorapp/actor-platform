@@ -1,4 +1,4 @@
-package im.actor.server.service
+package im.actor.server.api.service
 
 import akka.actor._
 import akka.stream.actor.ActorPublisher
@@ -17,7 +17,7 @@ object AuthorizationManager {
   case class FrontendPackage(p: MTPackage)
 
   @SerialVersionUID(1L)
-  case class SessionPackage(p: MTPackage)
+  case class SessionPackage(p: MTProto)
 
   def props() = Props(new AuthorizationManager)
 }
@@ -28,7 +28,7 @@ class AuthorizationManager extends Actor with ActorLogging with ActorPublisher[M
   import context.dispatcher
 
   private var authId: Long = 0L
-  private var buf = Vector.empty[MTPackage]
+  private var buf = Vector.empty[MTProto]
 
   def receive = {
     case FrontendPackage(p) =>
