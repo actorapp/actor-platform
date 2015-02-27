@@ -191,6 +191,7 @@ public class DocHolder extends MessageHolder {
             downloadIcon.setVisibility(View.GONE);
             progressView.setVisibility(View.GONE);
             progressValue.setVisibility(View.GONE);
+            fileIcon.setVisibility(View.GONE);
             menu.setVisibility(View.GONE);
             status.setVisibility(View.GONE);
 
