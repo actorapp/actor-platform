@@ -157,53 +157,38 @@ public class GroupInfoFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Object item = parent.getItemAtPosition(position);
-                if (item != null && item instanceof UserVM) {
-                    final UserVM userModel = (UserVM) item;
-                    if (userModel.getId() == myUid()) {
+                if (item != null && item instanceof GroupMember) {
+                    final GroupMember groupMember = (GroupMember) item;
+                    if (groupMember.getUid() == myUid()) {
+                        return;
+                    }
+                    final UserVM userVM = users().get(groupMember.getUid());
+                    if (userVM == null) {
                         return;
                     }
                     new AlertDialog.Builder(getActivity())
                             .setItems(new CharSequence[]{
-                                    getString(R.string.group_context_message).replace("{0}", userModel.getName().get()),
-                                    getString(R.string.group_context_call).replace("{0}", userModel.getName().get()),
-                                    getString(R.string.group_context_view).replace("{0}", userModel.getName().get()),
-                                    getString(R.string.group_context_remove).replace("{0}", userModel.getName().get()),
+                                    getString(R.string.group_context_message).replace("{0}", userVM.getName().get()),
+                                    getString(R.string.group_context_call).replace("{0}", userVM.getName().get()),
+                                    getString(R.string.group_context_view).replace("{0}", userVM.getName().get()),
+                                    getString(R.string.group_context_remove).replace("{0}", userVM.getName().get()),
                             }, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     if (which == 0) {
-                                        startActivity(Intents.openPrivateDialog(userModel.getId(), true, getActivity()));
+                                        startActivity(Intents.openPrivateDialog(userVM.getId(), true, getActivity()));
                                     } else if (which == 1) {
                                         // startActivity(Intents.call(userModel.getPhone()));
                                     } else if (which == 2) {
-                                        startActivity(Intents.openProfile(userModel.getId(), getActivity()));
+                                        startActivity(Intents.openProfile(userVM.getId(), getActivity()));
                                     } else if (which == 3) {
                                         new AlertDialog.Builder(getActivity())
-                                                .setMessage(getString(R.string.alert_group_remove_text).replace("{0}", userModel.getName().get()))
+                                                .setMessage(getString(R.string.alert_group_remove_text).replace("{0}", userVM.getName().get()))
                                                 .setPositiveButton(R.string.alert_group_remove_yes, new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog2, int which) {
-//                                                        ask(GroupsActor.groupUpdates().kickUser(chatId, userModel.getId()),
-//                                                                getString(R.string.group_removing),
-//                                                                new UiAskCallback<Boolean>() {
-//
-//                                                                    @Override
-//                                                                    public void onPreStart() {
-//
-//                                                                    }
-//
-//                                                                    @Override
-//                                                                    public void onCompleted(Boolean res) {
-//                                                                        if (!res) {
-//                                                                            Toast.makeText(getActivity(), R.string.toast_unable_kick, Toast.LENGTH_SHORT).show();
-//                                                                        }
-//                                                                    }
-//
-//                                                                    @Override
-//                                                                    public void onError(Throwable t) {
-//                                                                        Toast.makeText(getActivity(), R.string.toast_unable_kick, Toast.LENGTH_SHORT).show();
-//                                                                    }
-//                                                                });
+                                                        execute(messenger().kickMember(chatId, userVM.getId()),
+                                                                R.string.progress_common);
                                                     }
                                                 })
                                                 .setNegativeButton(R.string.dialog_cancel, null)

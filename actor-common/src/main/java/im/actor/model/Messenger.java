@@ -243,6 +243,10 @@ public class Messenger {
         return modules.getGroupsModule().addMemberToGroup(gid, uid);
     }
 
+    public Command<Boolean> kickMember(int gid, int uid) {
+        return modules.getGroupsModule().kickMember(gid, uid);
+    }
+
     public Command<Boolean> removeContact(int uid) {
         return modules.getContactsModule().removeContact(uid);
     }
