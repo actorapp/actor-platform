@@ -1,15 +1,23 @@
 package im.actor.model.modules;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import im.actor.model.api.ContactRecord;
 import im.actor.model.api.GroupOutPeer;
+import im.actor.model.api.Member;
 import im.actor.model.api.UserOutPeer;
+import im.actor.model.api.base.FatSeqUpdate;
 import im.actor.model.api.base.SeqUpdate;
+import im.actor.model.api.rpc.RequestCreateGroup;
 import im.actor.model.api.rpc.RequestEditGroupTitle;
 import im.actor.model.api.rpc.RequestInviteUser;
 import im.actor.model.api.rpc.RequestKickUser;
 import im.actor.model.api.rpc.RequestLeaveGroup;
+import im.actor.model.api.rpc.ResponseCreateGroup;
 import im.actor.model.api.rpc.ResponseSeqDate;
+import im.actor.model.api.updates.UpdateGroupInvite;
 import im.actor.model.api.updates.UpdateGroupTitleChanged;
 import im.actor.model.api.updates.UpdateGroupUserAdded;
 import im.actor.model.api.updates.UpdateGroupUserKick;
@@ -19,6 +27,7 @@ import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
+import im.actor.model.modules.updates.internal.GroupCreated;
 import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.network.RpcCallback;
@@ -67,6 +76,57 @@ public class Groups extends BaseModule {
 
     public MVVMCollection<Group, GroupVM> getGroupsCollection() {
         return collection;
+    }
+
+    public Command<Integer> createGroup(final String title, final int[] uids) {
+        return new Command<Integer>() {
+            @Override
+            public void start(final CommandCallback<Integer> callback) {
+                ArrayList<UserOutPeer> peers = new ArrayList<UserOutPeer>();
+                for (int u : uids) {
+                    User user = users().getValue(u);
+                    if (user != null) {
+                        peers.add(new UserOutPeer(u, user.getAccessHash()));
+                    }
+                }
+                final long rid = RandomUtils.nextRid();
+                request(new RequestCreateGroup(rid, title, peers), new RpcCallback<ResponseCreateGroup>() {
+                    @Override
+                    public void onResult(ResponseCreateGroup response) {
+                        List<Member> members = new ArrayList<Member>();
+                        for (int u : uids) {
+                            members.add(new Member(u, myUid(), response.getDate()));
+                        }
+                        im.actor.model.api.Group group = new im.actor.model.api.Group(
+                                response.getGroupPeer().getGroupId(),
+                                response.getGroupPeer().getAccessHash(),
+                                title, null, true, myUid(), members,
+                                response.getDate());
+                        ArrayList<im.actor.model.api.Group> groups = new ArrayList<im.actor.model.api.Group>();
+                        groups.add(group);
+
+                        updates().onUpdateReceived(new FatSeqUpdate(response.getSeq(),
+                                response.getState(),
+                                UpdateGroupInvite.HEADER,
+                                new UpdateGroupInvite(response.getGroupPeer().getGroupId(),
+                                        rid, myUid(), response.getDate()).toByteArray(),
+                                new ArrayList<im.actor.model.api.User>(), groups, new ArrayList<ContactRecord>()));
+                        updates().onUpdateReceived(new GroupCreated(group, callback));
+                    }
+
+                    @Override
+                    public void onError(final RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(e);
+                            }
+                        });
+                    }
+                });
+
+            }
+        };
     }
 
     public Command<Boolean> editTitle(final int gid, final String name) {
