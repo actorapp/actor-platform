@@ -1,14 +1,19 @@
 package im.actor.model.modules.messages;
 
+import im.actor.model.api.rpc.RequestLoadDialogs;
+import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.modules.Modules;
+import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.utils.ModuleActor;
+import im.actor.model.network.RpcCallback;
+import im.actor.model.network.RpcException;
 
 /**
  * Created by ex3ndr on 13.02.15.
  */
 public class DialogsHistoryActor extends ModuleActor {
 
-    private static final int LIMIT = 5;
+    private static final int LIMIT = 50;
 
     private long historyMaxDate;
     private boolean historyLoaded;
@@ -35,32 +40,36 @@ public class DialogsHistoryActor extends ModuleActor {
         }
         isLoading = true;
 
-        // Disable history loading because of problems
-//        request(new RequestLoadDialogs(historyMaxDate, LIMIT),
-//                new RpcCallback<ResponseLoadDialogs>() {
-//                    @Override
-//                    public void onResult(ResponseLoadDialogs response) {
-//                        // Invoke on sequence actor
-//                        updates().onUpdateReceived(new DialogHistoryLoaded(response));
-//                    }
-//
-//                    @Override
-//                    public void onError(RpcException e) {
-//                        e.printStackTrace();
-//                        //TODO: Error processing
-//                    }
-//                });
+
+        request(new RequestLoadDialogs(historyMaxDate, LIMIT),
+                new RpcCallback<ResponseLoadDialogs>() {
+                    @Override
+                    public void onResult(ResponseLoadDialogs response) {
+                        // Invoke on sequence actor
+                        updates().onUpdateReceived(new DialogHistoryLoaded(response));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        e.printStackTrace();
+                        //TODO: Error processing
+                    }
+                });
     }
 
     private void onLoadedMore(int loaded, long maxLoadedDate) {
         isLoading = false;
 
-        if (loaded < LIMIT) {
-            historyLoaded = true;
-        } else {
-            historyLoaded = false;
-            historyMaxDate = maxLoadedDate;
-        }
+        // Disable loading more because of server bug
+        historyLoaded = true;
+        historyMaxDate = maxLoadedDate;
+
+//        if (loaded < LIMIT) {
+//            historyLoaded = true;
+//        } else {
+//            historyLoaded = false;
+//            historyMaxDate = maxLoadedDate;
+//        }
         preferences().putLong("dialogs_history_date", maxLoadedDate);
         preferences().putBool("dialogs_history_loaded", historyLoaded);
     }

@@ -10,6 +10,7 @@ import im.actor.gwt.app.helpers.Enums;
 import im.actor.gwt.app.helpers.JsAuthErrorClosure;
 import im.actor.gwt.app.helpers.JsAuthSuccessClosure;
 import im.actor.gwt.app.locale.JsLocaleProvider;
+import im.actor.gwt.app.phones.JsPhoneBookProvider;
 import im.actor.gwt.app.storage.JsStorage;
 import im.actor.gwt.app.sys.JsLog;
 import im.actor.gwt.app.sys.JsMainThread;
@@ -56,7 +57,8 @@ public class JsMessenger implements Exportable {
                 .setLog(new JsLog())
                 .setMainThread(mainThread)
                 .setUploadFilePersist(false)
-                .setLocale(new JsLocaleProvider()).build();
+                .setLocale(new JsLocaleProvider())
+                .setPhoneBookProvider(new JsPhoneBookProvider()).build();
         messenger = new Messenger(configuration);
         Log.d(TAG, "JsMessenger created");
     }
