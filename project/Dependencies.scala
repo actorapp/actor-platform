@@ -48,6 +48,7 @@ object Dependencies {
     val scalacheck      = "org.scalacheck"                %% "scalacheck"                    % "1.12.2" % "test"
     val specs2          = "org.specs2"                    %% "specs2-core"                   % "2.4.15" % "test"
     val slickTestkit    = "com.typesafe.slick"            %% "slick-testkit"                 % V.slick % "test"
+    val utilTesting     = "im.actor"                      %% "actor-util-testing"            % "0.0.1-SNAPSHOT" % "test"
   }
   import Compile._, Test._
 
@@ -62,6 +63,11 @@ object Dependencies {
   val rpcApi = common ++ Seq(akkaSlf4j, akkaActor, protobuf)
 
   val internalServices = common ++ Seq(akkaActor, akkaStream, scodecBits)
+
+  val session = common ++ Seq(
+    akkaSlf4j, akkaActor, akkaKernel, akkaStream, scodecCore, scalazCore,
+    akkaTestkit, specs2, utilTesting
+  )
 
   val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP)
 
