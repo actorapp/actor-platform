@@ -7,10 +7,12 @@ import im.actor.model.api.UserOutPeer;
 import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestEditGroupTitle;
 import im.actor.model.api.rpc.RequestInviteUser;
+import im.actor.model.api.rpc.RequestKickUser;
 import im.actor.model.api.rpc.RequestLeaveGroup;
 import im.actor.model.api.rpc.ResponseSeqDate;
 import im.actor.model.api.updates.UpdateGroupTitleChanged;
 import im.actor.model.api.updates.UpdateGroupUserAdded;
+import im.actor.model.api.updates.UpdateGroupUserKick;
 import im.actor.model.api.updates.UpdateGroupUserLeave;
 import im.actor.model.api.updates.UpdateUserLocalNameChanged;
 import im.actor.model.concurrency.Command;
@@ -182,6 +184,53 @@ public class Groups extends BaseModule {
                         SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
                                 UpdateGroupUserAdded.HEADER,
                                 new UpdateGroupUserAdded(gid, rid, uid, myUid(),
+                                        response.getDate()).toByteArray());
+                        updates().onUpdateReceived(update);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onResult(true);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<Boolean> kickMember(final int gid, final int uid) {
+        return new Command<Boolean>() {
+            @Override
+            public void start(final CommandCallback<Boolean> callback) {
+                Group group = getGroups().getValue(gid);
+                User user = users().getValue(uid);
+                if (group == null || user == null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(new RpcInternalException());
+                        }
+                    });
+                    return;
+                }
+                final long rid = RandomUtils.nextRid();
+                request(new RequestKickUser(new GroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                        rid, new UserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponseSeqDate>() {
+                    @Override
+                    public void onResult(ResponseSeqDate response) {
+                        SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
+                                UpdateGroupUserKick.HEADER,
+                                new UpdateGroupUserKick(gid, rid, uid, myUid(),
                                         response.getDate()).toByteArray());
                         updates().onUpdateReceived(update);
                         runOnUiThread(new Runnable() {
