@@ -28,8 +28,8 @@ tasks.compileJava.dependsOn(copyGenSources)
 tasks.clean.dependsOn(cleanGenSources)
 
 dependencies {
-    compile 'com.google.gwt:gwt-user:2.7.0'
-    compile 'org.timepedia.exporter:gwtexporter:2.4.0'
+//    compile 'com.google.gwt:gwt-user:2.7.0'
+//    compile 'org.timepedia.exporter:gwtexporter:2.4.0'
     gwt 'org.timepedia.exporter:gwtexporter:2.4.0'
 }
 
@@ -48,7 +48,7 @@ gwt {
     compiler {
         strict = true;
         enableClosureCompiler = true;
-        disableClassMetadata = true;
-        disableCastChecking = true;
+//        disableClassMetadata = true;
+//        disableCastChecking = true;
     }
 }
