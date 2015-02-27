@@ -60,6 +60,38 @@ public class DownloadManager extends ModuleActor {
 
     // Tasks
 
+    public void requestState(long fileId, FileCallback callback) {
+        Log.d(TAG, "Requesting state file #" + fileId);
+
+        Downloaded downloaded1 = downloaded.getValue(fileId);
+        if (downloaded1 != null) {
+            FileSystemProvider provider = modules().getConfiguration().getFileSystemProvider();
+            FileReference reference = provider.fileFromDescriptor(downloaded1.getDescriptor());
+            if (reference.isExist() && reference.getSize() == downloaded1.getFileSize()) {
+                Log.d(TAG, "- Downloaded");
+                callback.onDownloaded(modules().getConfiguration().getFileSystemProvider()
+                        .fileFromDescriptor(downloaded1.getDescriptor()));
+                return;
+            } else {
+                Log.d(TAG, "- File is corrupted");
+                downloaded.removeItem(downloaded1.getFileId());
+            }
+        }
+
+        QueueItem queueItem = findItem(fileId);
+        if (queueItem == null) {
+            callback.onNotDownloaded();
+        } else {
+            if (queueItem.isStarted) {
+                callback.onDownloading(queueItem.progress);
+            } else if (queueItem.isStopped) {
+                callback.onNotDownloaded();
+            } else {
+                callback.onDownloading(0);
+            }
+        }
+    }
+
     public void bindDownload(final FileLocation fileLocation, boolean autoStart, FileCallback callback) {
         Log.d(TAG, "Binding file #" + fileLocation.getFileId());
         Downloaded downloaded1 = downloaded.getValue(fileLocation.getFileId());
@@ -130,6 +162,8 @@ public class DownloadManager extends ModuleActor {
             }
             promote(fileLocation.getFileId());
         }
+
+        checkQueue();
     }
 
     public void cancelDownload(long fileId) {
@@ -151,6 +185,8 @@ public class DownloadManager extends ModuleActor {
                 callback.onNotDownloaded();
             }
         }
+
+        checkQueue();
     }
 
     public void unbindDownload(long fileId, boolean autoCancel, FileCallback callback) {
@@ -183,6 +219,8 @@ public class DownloadManager extends ModuleActor {
                 queueItem.callbacks.remove(callback);
             }
         }
+
+        checkQueue();
     }
 
     private void checkQueue() {
@@ -234,6 +272,10 @@ public class DownloadManager extends ModuleActor {
             return;
         }
 
+        if (!queueItem.isStarted) {
+            return;
+        }
+
         queueItem.progress = progress;
 
         for (FileCallback fileCallback : queueItem.callbacks) {
@@ -245,6 +287,10 @@ public class DownloadManager extends ModuleActor {
         Log.d(TAG, "onDownloaded file #" + fileId);
         QueueItem queueItem = findItem(fileId);
         if (queueItem == null) {
+            return;
+        }
+
+        if (!queueItem.isStarted) {
             return;
         }
 
@@ -263,6 +309,10 @@ public class DownloadManager extends ModuleActor {
         Log.d(TAG, "onDownloadError file #" + fileId);
         QueueItem queueItem = findItem(fileId);
         if (queueItem == null) {
+            return;
+        }
+
+        if (!queueItem.isStarted) {
             return;
         }
 
@@ -318,8 +368,29 @@ public class DownloadManager extends ModuleActor {
         } else if (message instanceof OnDownloadedError) {
             OnDownloadedError error = (OnDownloadedError) message;
             onDownloadError(error.getFileId());
+        } else if (message instanceof RequestState) {
+            RequestState requestState = (RequestState) message;
+            requestState(requestState.getFileId(), requestState.getCallback());
         } else {
             drop(message);
+        }
+    }
+
+    public static class RequestState {
+        private long fileId;
+        private FileCallback callback;
+
+        public RequestState(long fileId, FileCallback callback) {
+            this.fileId = fileId;
+            this.callback = callback;
+        }
+
+        public long getFileId() {
+            return fileId;
+        }
+
+        public FileCallback getCallback() {
+            return callback;
         }
     }
 
@@ -360,20 +431,14 @@ public class DownloadManager extends ModuleActor {
     }
 
     public static class CancelDownload {
-        private int fileId;
-        private FileCallback callback;
+        private long fileId;
 
-        public CancelDownload(int fileId, FileCallback callback) {
+        public CancelDownload(long fileId) {
             this.fileId = fileId;
-            this.callback = callback;
         }
 
-        public int getFileId() {
+        public long getFileId() {
             return fileId;
-        }
-
-        public FileCallback getCallback() {
-            return callback;
         }
     }
 

@@ -15,11 +15,18 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.FileTypes;
+import im.actor.model.entity.FileLocation;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.content.DocumentContent;
+import im.actor.model.entity.content.FileRemoteSource;
 import im.actor.model.files.FileReference;
+import im.actor.model.modules.file.FileCallback;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
+
+import static im.actor.messenger.app.view.ViewUtils.goneView;
+import static im.actor.messenger.app.view.ViewUtils.showView;
+import static im.actor.messenger.core.Core.messenger;
 
 /**
  * Created by ex3ndr on 27.02.15.
@@ -43,6 +50,7 @@ public class DocHolder extends MessageHolder {
 
     // Binded model
     private FileVM downloadFileVM;
+    private DocumentContent document;
 
     public DocHolder(final MessagesFragment fragment, View itemView) {
         super(fragment, itemView, false);
@@ -89,7 +97,7 @@ public class DocHolder extends MessageHolder {
 
     @Override
     protected void bindData(Message message, boolean isUpdated) {
-        DocumentContent document = (DocumentContent) message.getContent();
+        document = (DocumentContent) message.getContent();
 
         // Content data
         fileName.setText(document.getName());
@@ -175,33 +183,113 @@ public class DocHolder extends MessageHolder {
 
         }
 
+        if (downloadFileVM == null) {
+            needRebind = true;
+        }
+
         if (needRebind) {
             downloadIcon.setVisibility(View.GONE);
             progressView.setVisibility(View.GONE);
             progressValue.setVisibility(View.GONE);
+            menu.setVisibility(View.GONE);
+            status.setVisibility(View.GONE);
 
-//            if (document.getSource() instanceof FileRemoteSource) {
-//
-//            }
-//            downloadFileVM = messenger().bindFile()
+            if (document.getSource() instanceof FileRemoteSource) {
+                FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
+                boolean autoDownload = remoteSource.getFileLocation().getFileSize() <= 1024 * 1024;// < 1MB
+                downloadFileVM = messenger().bindFile(remoteSource.getFileLocation(),
+                        autoDownload, new DownloadVMCallback());
+            }
         }
     }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+
+        if (document.getSource() instanceof FileRemoteSource) {
+            FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
+            final FileLocation location = remoteSource.getFileLocation();
+            messenger().requestState(location.getFileId(), new FileCallback() {
+                @Override
+                public void onNotDownloaded() {
+                    messenger().startDownloading(location);
+                }
+
+                @Override
+                public void onDownloading(float progress) {
+                    messenger().cancelDownloading(location.getFileId());
+                }
+
+                @Override
+                public void onDownloaded(FileReference reference) {
+                    // TODO: Open file
+                }
+            });
+        }
+
+    }
+
+    @Override
+    public void unbind() {
+        super.unbind();
+
+        // Unbinding model
+        if (downloadFileVM != null) {
+            downloadFileVM.detach();
+            downloadFileVM = null;
+        }
+    }
+
 
     private class DownloadVMCallback implements FileVMCallback {
 
         @Override
         public void onNotDownloaded() {
+            status.setText(R.string.chat_doc_download);
+            showView(status);
 
+            goneView(menu);
+
+            // File Icon
+            goneView(fileIcon);
+
+            downloadIcon.setResource(R.drawable.ic_cloud_download_white_36dp);
+            showView(downloadIcon);
+            progressView.setValue(0);
+            goneView(progressValue);
+            goneView(progressView);
         }
 
         @Override
         public void onDownloading(float progress) {
+            status.setText(R.string.chat_doc_stop);
+            showView(status);
 
+            goneView(menu);
+
+            goneView(fileIcon);
+
+            goneView(downloadIcon);
+            int val = (int) (progress * 100);
+            progressView.setValue(val);
+            progressValue.setText("" + val);
+            showView(progressView);
+            showView(progressValue);
         }
 
         @Override
         public void onDownloaded(FileReference reference) {
+            status.setText(R.string.chat_doc_open);
+            showView(status);
 
+            showView(menu);
+
+            showView(fileIcon);
+
+            goneView(downloadIcon);
+            goneView(progressValue);
+            goneView(progressView);
         }
     }
 }

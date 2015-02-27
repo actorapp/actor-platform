@@ -36,10 +36,24 @@ public class FileTypes {
         // Documents
         TYPES.put("doc", TYPE_DOC);
         TYPES.put("docx", TYPE_DOC);
+        TYPES.put("docm", TYPE_DOC);
+        TYPES.put("dot", TYPE_DOC);
+        TYPES.put("dotx", TYPE_DOC);
+        TYPES.put("epub", TYPE_DOC);
+        TYPES.put("fb2", TYPE_DOC);
+        TYPES.put("xml", TYPE_DOC);
+        TYPES.put("info", TYPE_DOC);
+        TYPES.put("tex", TYPE_DOC);
+        TYPES.put("stw", TYPE_DOC);
+        TYPES.put("sxw", TYPE_DOC);
         TYPES.put("txt", TYPE_DOC);
         TYPES.put("xlc", TYPE_DOC);
         TYPES.put("odf", TYPE_DOC);
+        TYPES.put("odt", TYPE_DOC);
+        TYPES.put("ott", TYPE_DOC);
         TYPES.put("rtf", TYPE_DOC);
+        TYPES.put("pages", TYPE_DOC);
+        TYPES.put("ini", TYPE_DOC);
 
         // Spreadsheet
         TYPES.put("xls", TYPE_XLS);
@@ -51,23 +65,38 @@ public class FileTypes {
         // Pictures
         TYPES.put("jpg", TYPE_PICTURE);
         TYPES.put("jpeg", TYPE_PICTURE);
+        TYPES.put("jp2", TYPE_PICTURE);
+        TYPES.put("jps", TYPE_PICTURE);
         TYPES.put("gif", TYPE_PICTURE);
         TYPES.put("tiff", TYPE_PICTURE);
         TYPES.put("png", TYPE_PICTURE);
         TYPES.put("psd", TYPE_PICTURE);
+        TYPES.put("webp", TYPE_PICTURE);
+        TYPES.put("ico", TYPE_PICTURE);
+        TYPES.put("pcx", TYPE_PICTURE);
+        TYPES.put("tga", TYPE_PICTURE);
+        TYPES.put("raw", TYPE_PICTURE);
+        TYPES.put("svg", TYPE_PICTURE);
 
         // Video
         TYPES.put("mp4", TYPE_VIDEO);
         TYPES.put("3gp", TYPE_VIDEO);
         TYPES.put("m4v", TYPE_VIDEO);
+        TYPES.put("webm", TYPE_VIDEO);
+
+        // Presentation
+        TYPES.put("ppt", TYPE_PPT);
+        TYPES.put("key", TYPE_PPT);
+        TYPES.put("keynote", TYPE_PPT);
 
         // Other
         TYPES.put("pdf", TYPE_PDF);
         TYPES.put("apk", TYPE_APK);
         TYPES.put("rar", TYPE_RAR);
         TYPES.put("zip", TYPE_ZIP);
-        TYPES.put("ppt", TYPE_PPT);
         TYPES.put("csv", TYPE_CSV);
+
+        TYPES.put("xhtm", TYPE_HTM);
         TYPES.put("htm", TYPE_HTM);
         TYPES.put("html", TYPE_HTML);
     }
