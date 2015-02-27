@@ -1,21 +1,14 @@
 package im.actor.model.modules.messages;
 
-import im.actor.model.Messenger;
-import im.actor.model.api.rpc.RequestLoadDialogs;
-import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.utils.ModuleActor;
-import im.actor.model.network.RpcCallback;
-import im.actor.model.network.RpcException;
-import im.actor.model.storage.PreferencesStorage;
 
 /**
  * Created by ex3ndr on 13.02.15.
  */
 public class DialogsHistoryActor extends ModuleActor {
 
-    private static final int LIMIT = 50;
+    private static final int LIMIT = 5;
 
     private long historyMaxDate;
     private boolean historyLoaded;
@@ -28,8 +21,8 @@ public class DialogsHistoryActor extends ModuleActor {
 
     @Override
     public void preStart() {
-        historyMaxDate = preferences().getLong("dialogs_history_date", 0);
-        historyLoaded = preferences().getBool("dialogs_history_loaded", false);
+        historyMaxDate = 0;//preferences().getLong("dialogs_history_date", 0);
+        historyLoaded = false;//preferences().getBool("dialogs_history_loaded", false);
         self().sendOnce(new LoadMore());
     }
 
@@ -42,32 +35,33 @@ public class DialogsHistoryActor extends ModuleActor {
         }
         isLoading = true;
 
-        request(new RequestLoadDialogs(historyMaxDate, LIMIT),
-                new RpcCallback<ResponseLoadDialogs>() {
-                    @Override
-                    public void onResult(ResponseLoadDialogs response) {
-                        // Invoke on sequence actor
-                        updates().onUpdateReceived(new DialogHistoryLoaded(response));
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        e.printStackTrace();
-                        //TODO: Error processing
-                    }
-                });
+        // Disable history loading because of problems
+//        request(new RequestLoadDialogs(historyMaxDate, LIMIT),
+//                new RpcCallback<ResponseLoadDialogs>() {
+//                    @Override
+//                    public void onResult(ResponseLoadDialogs response) {
+//                        // Invoke on sequence actor
+//                        updates().onUpdateReceived(new DialogHistoryLoaded(response));
+//                    }
+//
+//                    @Override
+//                    public void onError(RpcException e) {
+//                        e.printStackTrace();
+//                        //TODO: Error processing
+//                    }
+//                });
     }
 
-    private void onLoadedMore(boolean isFinished, long maxLoadedDate) {
+    private void onLoadedMore(int loaded, long maxLoadedDate) {
         isLoading = false;
 
-        if (isFinished) {
+        if (loaded < LIMIT) {
             historyLoaded = true;
         } else {
             historyLoaded = false;
             historyMaxDate = maxLoadedDate;
         }
-        preferences().putLong("dialogs_history_date", 0);
+        preferences().putLong("dialogs_history_date", maxLoadedDate);
         preferences().putBool("dialogs_history_loaded", historyLoaded);
     }
 
@@ -79,7 +73,7 @@ public class DialogsHistoryActor extends ModuleActor {
             onLoadMore();
         } else if (message instanceof LoadedMore) {
             LoadedMore loaded = (LoadedMore) message;
-            onLoadedMore(loaded.isFinished, loaded.maxLoadedDate);
+            onLoadedMore(loaded.loaded, loaded.maxLoadedDate);
         } else {
             drop(message);
         }
@@ -90,11 +84,11 @@ public class DialogsHistoryActor extends ModuleActor {
     }
 
     public static class LoadedMore {
-        private boolean isFinished;
+        private int loaded;
         private long maxLoadedDate;
 
-        public LoadedMore(boolean isFinished, long maxLoadedDate) {
-            this.isFinished = isFinished;
+        public LoadedMore(int loaded, long maxLoadedDate) {
+            this.loaded = loaded;
             this.maxLoadedDate = maxLoadedDate;
         }
     }

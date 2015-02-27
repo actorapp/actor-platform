@@ -8,18 +8,30 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AbsListView;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.droidkit.engine.list.view.EngineUiList;
 import com.droidkit.engine.list.view.ListState;
 import com.droidkit.mvvm.ValueChangeListener;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.*;
+import im.actor.messenger.app.view.AvatarDrawable;
+import im.actor.messenger.app.view.AvatarView;
+import im.actor.messenger.app.view.EngineHolderAdapter;
+import im.actor.messenger.app.view.Fonts;
+import im.actor.messenger.app.view.Formatter;
+import im.actor.messenger.app.view.MessageTextFormatter;
+import im.actor.messenger.app.view.OnItemClickedListener;
+import im.actor.messenger.app.view.TintImageView;
+import im.actor.messenger.app.view.ViewHolder;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 
+import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.myUid;
 
 public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
@@ -62,16 +74,6 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
     @Override
     protected ViewHolder<Dialog> createHolder(Dialog obj) {
         return new Holder();
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyDataSetInvalidated() {
-        super.notifyDataSetInvalidated();
     }
 
     private class Holder extends ViewHolder<Dialog> {
@@ -251,7 +253,7 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
 
             if (getEngine().getListState().getValue().getState() == ListState.State.LOADED) {
                 if (position > getCount() - LOAD_GAP) {
-                    // DialogsHistoryActor.get().onEndReached();
+                    messenger().loadMoreDialogs();
                 }
             }
 
@@ -284,7 +286,12 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
 
             title.setCompoundDrawablesWithIntrinsicBounds(left, 0, right, 0);
 
-            time.setText(Formatter.formatShortDate(data.getDate()));
+            if (data.getDate() > 0) {
+                time.setVisibility(View.VISIBLE);
+                time.setText(Formatter.formatShortDate(data.getDate()));
+            } else {
+                time.setVisibility(View.GONE);
+            }
 
             boolean isGroup = data.getPeer().getPeerType() == PeerType.GROUP;
             if (data.getMessageType() == Dialog.ContentType.TEXT) {

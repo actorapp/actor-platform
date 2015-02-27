@@ -251,6 +251,14 @@ public class Messenger {
         return modules.getContactsModule().findUsers(query);
     }
 
+    public Command<Boolean> deleteChat(Peer peer) {
+        return modules.getMessagesModule().deleteChat(peer);
+    }
+
+    public Command<Boolean> clearChat(Peer peer) {
+        return modules.getMessagesModule().clearChat(peer);
+    }
+
     // File operations
     public FileVM bindFile(FileLocation fileLocation, boolean isAutoStart, FileVMCallback callback) {
         return new FileVM(fileLocation, isAutoStart, modules, callback);
@@ -274,5 +282,9 @@ public class Messenger {
 
     public void startDownloading(FileLocation location) {
         modules.getFilesModule().startDownloading(location);
+    }
+
+    public void loadMoreDialogs() {
+        modules.getMessagesModule().loadMoreDialogs();
     }
 }

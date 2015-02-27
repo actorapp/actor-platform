@@ -128,6 +128,8 @@ public class Group extends BserObject implements KeyValueItem {
                 res.add(new GroupMember());
             }
             members = values.getRepeatedObj(6, res);
+        } else {
+            members = new ArrayList<GroupMember>();
         }
 
         isMember = values.getBool(7);

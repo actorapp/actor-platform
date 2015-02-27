@@ -2,12 +2,24 @@ package im.actor.model.modules;
 
 import java.util.HashMap;
 
+import im.actor.model.api.OutPeer;
+import im.actor.model.api.base.SeqUpdate;
+import im.actor.model.api.rpc.RequestClearChat;
+import im.actor.model.api.rpc.RequestDeleteChat;
+import im.actor.model.api.rpc.ResponseSeq;
+import im.actor.model.api.updates.UpdateChatClear;
+import im.actor.model.api.updates.UpdateChatDelete;
+import im.actor.model.concurrency.Command;
+import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.PeerType;
+import im.actor.model.entity.User;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
@@ -15,6 +27,9 @@ import im.actor.model.modules.messages.OwnReadActor;
 import im.actor.model.modules.messages.PlainReaderActor;
 import im.actor.model.modules.messages.PlainReceiverActor;
 import im.actor.model.modules.messages.SenderActor;
+import im.actor.model.network.RpcCallback;
+import im.actor.model.network.RpcException;
+import im.actor.model.network.RpcInternalException;
 import im.actor.model.storage.ListEngine;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
@@ -131,6 +146,10 @@ public class Messages extends BaseModule {
         return dialogs;
     }
 
+    public void loadMoreDialogs() {
+        dialogsHistoryActor.send(new DialogsHistoryActor.LoadMore());
+    }
+
     public void sendMessage(final Peer peer, final String message) {
         sendMessageActor.send(new SenderActor.SendText(peer, message));
     }
@@ -158,5 +177,153 @@ public class Messages extends BaseModule {
         } else {
             return res;
         }
+    }
+
+    public Command<Boolean> deleteChat(final Peer peer) {
+        return new Command<Boolean>() {
+            @Override
+            public void start(final CommandCallback<Boolean> callback) {
+                OutPeer outPeer;
+                final im.actor.model.api.Peer apiPeer;
+                if (peer.getPeerType() == PeerType.PRIVATE) {
+                    User user = users().getValue(peer.getPeerId());
+                    if (user == null) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                        return;
+                    }
+                    outPeer = new OutPeer(im.actor.model.api.PeerType.PRIVATE, user.getUid(),
+                            user.getAccessHash());
+                    apiPeer = new im.actor.model.api.Peer(im.actor.model.api.PeerType.PRIVATE,
+                            user.getUid());
+                } else if (peer.getPeerType() == PeerType.GROUP) {
+                    Group group = groups().getValue(peer.getPeerId());
+                    if (group == null) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                        return;
+                    }
+                    outPeer = new OutPeer(im.actor.model.api.PeerType.GROUP, group.getGroupId(),
+                            group.getAccessHash());
+                    apiPeer = new im.actor.model.api.Peer(im.actor.model.api.PeerType.GROUP,
+                            group.getGroupId());
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(new RpcInternalException());
+                        }
+                    });
+                    return;
+                }
+                request(new RequestDeleteChat(outPeer), new RpcCallback<ResponseSeq>() {
+                    @Override
+                    public void onResult(ResponseSeq response) {
+                        updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
+                                response.getState(),
+                                UpdateChatDelete.HEADER,
+                                new UpdateChatDelete(apiPeer).toByteArray()));
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onResult(true);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(final RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(e);
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<Boolean> clearChat(final Peer peer) {
+        return new Command<Boolean>() {
+            @Override
+            public void start(final CommandCallback<Boolean> callback) {
+                OutPeer outPeer;
+                final im.actor.model.api.Peer apiPeer;
+                if (peer.getPeerType() == PeerType.PRIVATE) {
+                    User user = users().getValue(peer.getPeerId());
+                    if (user == null) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                        return;
+                    }
+                    outPeer = new OutPeer(im.actor.model.api.PeerType.PRIVATE, user.getUid(),
+                            user.getAccessHash());
+                    apiPeer = new im.actor.model.api.Peer(im.actor.model.api.PeerType.PRIVATE,
+                            user.getUid());
+                } else if (peer.getPeerType() == PeerType.GROUP) {
+                    Group group = groups().getValue(peer.getPeerId());
+                    if (group == null) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                        return;
+                    }
+                    outPeer = new OutPeer(im.actor.model.api.PeerType.GROUP, group.getGroupId(),
+                            group.getAccessHash());
+                    apiPeer = new im.actor.model.api.Peer(im.actor.model.api.PeerType.GROUP,
+                            group.getGroupId());
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(new RpcInternalException());
+                        }
+                    });
+                    return;
+                }
+                request(new RequestClearChat(outPeer), new RpcCallback<ResponseSeq>() {
+                    @Override
+                    public void onResult(ResponseSeq response) {
+                        updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
+                                response.getState(),
+                                UpdateChatClear.HEADER,
+                                new UpdateChatClear(apiPeer).toByteArray()));
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onResult(true);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(final RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(e);
+                            }
+                        });
+                    }
+                });
+            }
+        };
     }
 }

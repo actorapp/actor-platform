@@ -10,6 +10,10 @@ import im.actor.messenger.app.activity.*;
 import im.actor.messenger.app.Intents;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
+import im.actor.model.viewmodel.GroupVM;
+
+import static im.actor.messenger.core.Core.groups;
+import static im.actor.messenger.core.Core.messenger;
 
 public class DialogsFragment extends BaseDialogFragment implements UiListStateListener {
 
@@ -43,7 +47,7 @@ public class DialogsFragment extends BaseDialogFragment implements UiListStateLi
                                         .setPositiveButton(R.string.alert_delete_chat_yes, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog2, int which) {
-                                                // ChatActionsActor.actions().deleteChat(dialog.getType(), dialog.getId());
+                                                execute(messenger().clearChat(dialog.getPeer()), R.string.progress_common);
                                             }
                                         })
                                         .setNegativeButton(R.string.dialog_cancel, null)
@@ -56,11 +60,15 @@ public class DialogsFragment extends BaseDialogFragment implements UiListStateLi
                     .show()
                     .setCanceledOnTouchOutside(true);
         } else if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
+            GroupVM groupVM = groups().get(dialog.getPeer().getPeerId());
+
+            final boolean isMember = groupVM.isMember().get();
             new AlertDialog.Builder(getActivity())
                     .setItems(new CharSequence[]{
                             getString(R.string.dialogs_menu_group_view),
                             getString(R.string.dialogs_menu_group_rename),
-                            getString(R.string.dialogs_menu_group_delete),
+                            isMember ? getString(R.string.dialogs_menu_group_leave)
+                                    : getString(R.string.dialogs_menu_group_delete),
                     }, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog2, int which) {
@@ -69,18 +77,34 @@ public class DialogsFragment extends BaseDialogFragment implements UiListStateLi
                             } else if (which == 1) {
                                 startActivity(Intents.editGroupTitle(dialog.getPeer().getPeerId(), getActivity()));
                             } else if (which == 2) {
-                                new AlertDialog.Builder(getActivity())
-                                        .setMessage(getString(R.string.alert_delete_group_title)
-                                                .replace("{0}", dialog.getDialogTitle()))
-                                        .setPositiveButton(R.string.alert_delete_group_yes, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog2, int which) {
-                                                // GroupsActor.groupUpdates().leaveChat(dialog.getId());
-                                            }
-                                        })
-                                        .setNegativeButton(R.string.dialog_cancel, null)
-                                        .show()
-                                        .setCanceledOnTouchOutside(true);
+                                if (isMember) {
+                                    new AlertDialog.Builder(getActivity())
+                                            .setMessage(getString(R.string.alert_leave_group_message)
+                                                    .replace("{0}", dialog.getDialogTitle()))
+                                            .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog2, int which) {
+                                                    execute(messenger().leaveGroup(dialog.getPeer().getPeerId()),
+                                                            R.string.progress_common);
+                                                }
+                                            })
+                                            .setNegativeButton(R.string.dialog_cancel, null)
+                                            .show()
+                                            .setCanceledOnTouchOutside(true);
+                                } else {
+                                    new AlertDialog.Builder(getActivity())
+                                            .setMessage(getString(R.string.alert_delete_group_title)
+                                                    .replace("{0}", dialog.getDialogTitle()))
+                                            .setPositiveButton(R.string.alert_delete_group_yes, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog2, int which) {
+                                                    execute(messenger().clearChat(dialog.getPeer()), R.string.progress_common);
+                                                }
+                                            })
+                                            .setNegativeButton(R.string.dialog_cancel, null)
+                                            .show()
+                                            .setCanceledOnTouchOutside(true);
+                                }
                             }
                         }
                     })

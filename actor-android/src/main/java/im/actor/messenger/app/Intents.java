@@ -3,14 +3,16 @@ package im.actor.messenger.app;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.webkit.MimeTypeMap;
-
-import java.io.File;
 
 import im.actor.messenger.BuildConfig;
-import im.actor.messenger.app.activity.*;
-import im.actor.messenger.storage.scheme.media.Downloaded;
-import im.actor.messenger.util.io.IOUtils;
+import im.actor.messenger.app.activity.AddContactActivity;
+import im.actor.messenger.app.activity.ChatActivity;
+import im.actor.messenger.app.activity.DocumentsActivity;
+import im.actor.messenger.app.activity.EditNameActivity;
+import im.actor.messenger.app.activity.GroupInfoActivity;
+import im.actor.messenger.app.activity.PickUserActivity;
+import im.actor.messenger.app.activity.ProfileActivity;
+import im.actor.messenger.app.activity.TakePhotoActivity;
 import im.actor.model.entity.FileLocation;
 import im.actor.model.entity.Peer;
 
@@ -108,51 +110,51 @@ public class Intents {
         return intent;
     }
 
-    private static Uri getDocUri(Downloaded downloaded) {
-        return Uri.fromFile(new File(downloaded.getDownloadedPath()));
-//        if (BuildConfig.ENABLE_CHROME) {
-//            return Uri.fromFile(new File(downloaded.getDownloadedPath()));
-//        } else {
-//            return Uri.parse("content://im.actor.media/" + downloaded.getFileId());
-//        }
-    }
+//    private static Uri getDocUri(Downloaded downloaded) {
+//        return Uri.fromFile(new File(downloaded.getDownloadedPath()));
+////        if (BuildConfig.ENABLE_CHROME) {
+////            return Uri.fromFile(new File(downloaded.getDownloadedPath()));
+////        } else {
+////            return Uri.parse("content://im.actor.media/" + downloaded.getFileId());
+////        }
+//    }
 
     private static Uri getAvatarUri(FileLocation location) {
         return Uri.parse("content://im.actor.avatar/" + location.getFileId());
     }
 
-    public static Intent shareDoc(Downloaded downloaded) {
-        String mimeType = MimeTypeMap.getSingleton()
-                .getMimeTypeFromExtension(IOUtils.getFileExtension(downloaded.getName()));
-        if (mimeType == null) {
-            mimeType = "*/*";
-        }
-
-        return new Intent(Intent.ACTION_SEND)
-                .putExtra(Intent.EXTRA_STREAM, getDocUri(downloaded))
-                .setType(mimeType);
-    }
-
-    public static Intent openDoc(Downloaded downloaded) {
-        String mimeType = MimeTypeMap.getSingleton()
-                .getMimeTypeFromExtension(IOUtils.getFileExtension(downloaded.getName()));
-        if (mimeType == null) {
-            mimeType = "*/*";
-        }
-
-        if (BuildConfig.ENABLE_CHROME) {
-            return shareDoc(downloaded);
-        } else {
-            return new Intent(Intent.ACTION_VIEW)
-                    .setDataAndType(getDocUri(downloaded), mimeType);
-        }
-    }
-
-    public static Intent sharePhoto(Downloaded downloaded) {
-        return new Intent(Intent.ACTION_SEND)
-                .putExtra(Intent.EXTRA_STREAM, getDocUri(downloaded))
-                .setType("image/jpeg");
-    }
+//    public static Intent shareDoc(Downloaded downloaded) {
+//        String mimeType = MimeTypeMap.getSingleton()
+//                .getMimeTypeFromExtension(IOUtils.getFileExtension(downloaded.getName()));
+//        if (mimeType == null) {
+//            mimeType = "*/*";
+//        }
+//
+//        return new Intent(Intent.ACTION_SEND)
+//                .putExtra(Intent.EXTRA_STREAM, getDocUri(downloaded))
+//                .setType(mimeType);
+//    }
+//
+//    public static Intent openDoc(Downloaded downloaded) {
+//        String mimeType = MimeTypeMap.getSingleton()
+//                .getMimeTypeFromExtension(IOUtils.getFileExtension(downloaded.getName()));
+//        if (mimeType == null) {
+//            mimeType = "*/*";
+//        }
+//
+//        if (BuildConfig.ENABLE_CHROME) {
+//            return shareDoc(downloaded);
+//        } else {
+//            return new Intent(Intent.ACTION_VIEW)
+//                    .setDataAndType(getDocUri(downloaded), mimeType);
+//        }
+//    }
+//
+//    public static Intent sharePhoto(Downloaded downloaded) {
+//        return new Intent(Intent.ACTION_SEND)
+//                .putExtra(Intent.EXTRA_STREAM, getDocUri(downloaded))
+//                .setType("image/jpeg");
+//    }
 
     public static Intent shareAvatar(FileLocation location) {
         return new Intent(Intent.ACTION_SEND)
@@ -176,29 +178,29 @@ public class Intents {
         return intent;
     }
 
-    public static Intent openPhoto(Downloaded downloaded) {
-        if (BuildConfig.ENABLE_CHROME) {
-            return sharePhoto(downloaded);
-        } else {
-            return new Intent(Intent.ACTION_VIEW)
-                    .setDataAndType(getDocUri(downloaded), "image/jpeg");
-        }
-    }
-
-    public static Intent shareVideo(Downloaded downloaded) {
-        return new Intent(Intent.ACTION_SEND)
-                .putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(downloaded.getDownloadedPath())))
-                .setType("image/jpeg");
-    }
-
-    public static Intent openVideo(Downloaded downloaded) {
-        if (BuildConfig.ENABLE_CHROME) {
-            return shareVideo(downloaded);
-        } else {
-            return new Intent(Intent.ACTION_VIEW)
-                    .setDataAndType(getDocUri(downloaded), "video/mp4");
-        }
-    }
+//    public static Intent openPhoto(Downloaded downloaded) {
+//        if (BuildConfig.ENABLE_CHROME) {
+//            return sharePhoto(downloaded);
+//        } else {
+//            return new Intent(Intent.ACTION_VIEW)
+//                    .setDataAndType(getDocUri(downloaded), "image/jpeg");
+//        }
+//    }
+//
+//    public static Intent shareVideo(Downloaded downloaded) {
+//        return new Intent(Intent.ACTION_SEND)
+//                .putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(downloaded.getDownloadedPath())))
+//                .setType("image/jpeg");
+//    }
+//
+//    public static Intent openVideo(Downloaded downloaded) {
+//        if (BuildConfig.ENABLE_CHROME) {
+//            return shareVideo(downloaded);
+//        } else {
+//            return new Intent(Intent.ACTION_VIEW)
+//                    .setDataAndType(getDocUri(downloaded), "video/mp4");
+//        }
+//    }
 
     public static Intent pickFile(Context context) {
         if (BuildConfig.ENABLE_CHROME) {
