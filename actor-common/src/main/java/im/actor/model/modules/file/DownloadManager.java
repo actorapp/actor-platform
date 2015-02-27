@@ -130,6 +130,10 @@ public class DownloadManager extends ModuleActor {
 
             promote(fileLocation.getFileId());
 
+            if (!queueItem.callbacks.contains(callback)) {
+                queueItem.callbacks.add(callback);
+            }
+
             if (queueItem.isStopped) {
                 callback.onNotDownloaded();
             } else {
