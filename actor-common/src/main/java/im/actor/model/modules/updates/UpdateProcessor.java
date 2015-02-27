@@ -22,6 +22,7 @@ import im.actor.model.api.updates.UpdateEncryptedReadByMe;
 import im.actor.model.api.updates.UpdateEncryptedReceived;
 import im.actor.model.api.updates.UpdateGroupAvatarChanged;
 import im.actor.model.api.updates.UpdateGroupInvite;
+import im.actor.model.api.updates.UpdateGroupMembersUpdate;
 import im.actor.model.api.updates.UpdateGroupOnline;
 import im.actor.model.api.updates.UpdateGroupTitleChanged;
 import im.actor.model.api.updates.UpdateGroupUserAdded;
@@ -243,6 +244,9 @@ public class UpdateProcessor extends BaseModule {
                 res[i] = contactsRemoved.getUids().get(i);
             }
             contactsProcessor.onContactsRemoved(res);
+        } else if (update instanceof UpdateGroupMembersUpdate) {
+            groupsProcessor.onMembersUpdated(((UpdateGroupMembersUpdate) update).getGroupId(),
+                    ((UpdateGroupMembersUpdate) update).getMembers());
         }
     }
 

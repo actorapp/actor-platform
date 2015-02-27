@@ -2,7 +2,9 @@ package im.actor.model.modules.updates;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import im.actor.model.api.Member;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
@@ -163,6 +165,19 @@ public class GroupsProcessor extends BaseModule {
                 uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
                 new ServiceGroupAvatarChanged(avatar));
         conversationActor(group.peer()).send(message);
+    }
+
+    public void onMembersUpdated(int groupId, List<Member> members) {
+        Group group = groups().getValue(groupId);
+        if (group == null) {
+            return;
+        }
+
+        group = group.clearMembers();
+        for (Member m : members) {
+            group = group.addMember(m.getUid(), m.getInviterUid(), m.getDate(), m.getUid() == group.getAdminId());
+        }
+        groups().addOrUpdateItem(group);
     }
 
     public boolean hasGroups(Collection<Integer> gids) {
