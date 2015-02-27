@@ -7,6 +7,7 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
 import im.actor.messenger.app.view.MessageTextFormatter;
 import im.actor.model.entity.Message;
+import im.actor.model.entity.content.ServiceContent;
 import im.actor.model.entity.content.ServiceGroupAvatarChanged;
 import im.actor.model.entity.content.ServiceGroupCreated;
 import im.actor.model.entity.content.ServiceGroupTitleChanged;
@@ -54,7 +55,7 @@ public class ServiceHolder extends MessageHolder {
                 messageText.setText(MessageTextFormatter.groupRemoveAvatar(message.getSenderId()));
             }
         } else {
-            messageText.setText("???");
+            messageText.setText(((ServiceContent) message.getContent()).getCompatText());
         }
     }
 }

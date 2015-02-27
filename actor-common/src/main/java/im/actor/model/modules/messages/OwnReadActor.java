@@ -2,6 +2,7 @@ package im.actor.model.modules.messages;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import im.actor.model.entity.Peer;
@@ -145,7 +146,7 @@ public class OwnReadActor extends ModuleActor {
         // Finding suitable message
         Set<UnreadMessage> unread = messagesStorage.getUnread(peer);
         for (UnreadMessage u : unread.toArray(new UnreadMessage[0])) {
-            if (!u.isEncrypted()) {
+            if (u.isEncrypted()) {
                 continue;
             }
             if (u.getSortDate() <= sortingDate && u.getSortDate() > msgSortingDate) {
@@ -164,6 +165,9 @@ public class OwnReadActor extends ModuleActor {
 
         Set<UnreadMessage> unread = messagesStorage.getUnread(peer);
         for (UnreadMessage u : unread.toArray(new UnreadMessage[0])) {
+            if (!u.isEncrypted()) {
+                continue;
+            }
             if (u.getRid() == rid) {
                 unreadMessage = u;
                 break;
@@ -173,6 +177,26 @@ public class OwnReadActor extends ModuleActor {
         if (unreadMessage != null) {
             onMessageRead(peer, unreadMessage.getRid(), unreadMessage.getSortDate(), true);
         }
+    }
+
+    public void onMessageDelete(Peer peer, List<Long> rids) {
+        Set<UnreadMessage> unread = messagesStorage.getUnread(peer);
+        boolean isRemoved = false;
+        for (UnreadMessage u : unread.toArray(new UnreadMessage[0])) {
+            if (rids.contains(u.getRid())) {
+                unread.remove(u);
+                isRemoved = true;
+            }
+        }
+        if (!isRemoved) {
+            return;
+        }
+
+        saveStorage();
+
+        // Updating counter
+        modules().getMessagesModule().getDialogsActor()
+                .send(new DialogsActor.CounterChanged(peer, unread.size()));
     }
 
     private void saveStorage() {
@@ -201,6 +225,9 @@ public class OwnReadActor extends ModuleActor {
         } else if (message instanceof MessageReadByMeEncrypted) {
             MessageReadByMeEncrypted readByMeEncrypted = (MessageReadByMeEncrypted) message;
             onMessageReadByMeEncrypted(readByMeEncrypted.getPeer(), readByMeEncrypted.getRid());
+        } else if (message instanceof MessageDeleted) {
+            MessageDeleted deleted = (MessageDeleted) message;
+            onMessageDelete(deleted.getPeer(), deleted.getRids());
         } else {
             drop(message);
         }
@@ -329,6 +356,24 @@ public class OwnReadActor extends ModuleActor {
 
         public boolean isEncrypted() {
             return isEncrypted;
+        }
+    }
+
+    public static class MessageDeleted {
+        Peer peer;
+        List<Long> rids;
+
+        public MessageDeleted(Peer peer, List<Long> rids) {
+            this.peer = peer;
+            this.rids = rids;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public List<Long> getRids() {
+            return rids;
         }
     }
 }

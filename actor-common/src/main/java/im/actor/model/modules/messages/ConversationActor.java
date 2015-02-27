@@ -1,17 +1,17 @@
 package im.actor.model.modules.messages;
 
+import java.io.IOException;
+import java.util.List;
+
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
-import im.actor.model.modules.messages.entity.OutUnreadMessage;
 import im.actor.model.modules.Modules;
+import im.actor.model.modules.messages.entity.OutUnreadMessage;
 import im.actor.model.modules.messages.entity.OutUnreadMessagesStorage;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.storage.ListEngine;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by ex3ndr on 09.02.15.
@@ -160,6 +160,16 @@ public class ConversationActor extends ModuleActor {
         }
     }
 
+    private void onClearConversation() {
+        messages.clear();
+        dialogsActor.send(new DialogsActor.ChatClear(peer));
+    }
+
+    private void onDeleteConversation() {
+        messages.clear();
+        dialogsActor.send(new DialogsActor.ChatDelete(peer));
+    }
+
     @Override
     public void onReceive(Object message) {
         if (message instanceof Message) {
@@ -180,6 +190,10 @@ public class ConversationActor extends ModuleActor {
             onMessageEncryptedReceived(((MessageEncryptedReceived) message).getRid());
         } else if (message instanceof HistoryLoaded) {
             onHistoryLoaded(((HistoryLoaded) message).getMessages());
+        } else if (message instanceof ClearConversation) {
+            onClearConversation();
+        } else if (message instanceof DeleteConversation) {
+            onDeleteConversation();
         } else {
             drop(message);
         }
@@ -285,5 +299,13 @@ public class ConversationActor extends ModuleActor {
         public List<Long> getRids() {
             return rids;
         }
+    }
+
+    public static class ClearConversation {
+
+    }
+
+    public static class DeleteConversation {
+
     }
 }
