@@ -6,11 +6,12 @@ import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.entity.FileLocation;
+import im.actor.model.files.FileReference;
 import im.actor.model.modules.file.DownloadManager;
 import im.actor.model.modules.file.Downloaded;
+import im.actor.model.modules.file.FileCallback;
 import im.actor.model.modules.utils.BaseKeyValueEngine;
 import im.actor.model.storage.KeyValueEngine;
-import im.actor.model.modules.file.FileCallback;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
@@ -63,5 +64,47 @@ public class Files extends BaseModule {
 
     public void unbindFile(long fileId, FileCallback callback, boolean cancel) {
         downloadManager.send(new DownloadManager.UnbindDownload(fileId, cancel, callback));
+    }
+
+    public void requestState(long fileId, final FileCallback callback) {
+        downloadManager.send(new DownloadManager.RequestState(fileId, new FileCallback() {
+            @Override
+            public void onNotDownloaded() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onNotDownloaded();
+                    }
+                });
+            }
+
+            @Override
+            public void onDownloading(final float progress) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onDownloading(progress);
+                    }
+                });
+            }
+
+            @Override
+            public void onDownloaded(final FileReference reference) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onDownloaded(reference);
+                    }
+                });
+            }
+        }));
+    }
+
+    public void cancelDownloading(long fileId) {
+        downloadManager.send(new DownloadManager.CancelDownload(fileId));
+    }
+
+    public void startDownloading(FileLocation location) {
+        downloadManager.send(new DownloadManager.StartDownload(location));
     }
 }

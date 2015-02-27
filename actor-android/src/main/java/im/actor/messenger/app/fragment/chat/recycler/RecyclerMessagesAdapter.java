@@ -3,6 +3,7 @@ package im.actor.messenger.app.fragment.chat.recycler;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.droidkit.engine.list.view.EngineUiList;
@@ -14,8 +15,10 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.content.AbsContent;
+import im.actor.model.entity.content.DocumentContent;
 import im.actor.model.entity.content.PhotoContent;
 import im.actor.model.entity.content.ServiceContent;
+import im.actor.model.entity.content.TextContent;
 import im.actor.model.entity.content.VideoContent;
 
 /**
@@ -74,16 +77,20 @@ public class RecyclerMessagesAdapter extends RecyclerView.Adapter<BaseHolder> {
             return 0;
         } else {
             AbsContent content = getItem(position - 1).getContent();
-            if (content instanceof ServiceContent) {
+            if (content instanceof TextContent) {
                 return 1;
+            } else if (content instanceof ServiceContent) {
+                return 2;
             } else if (content instanceof PhotoContent) {
-                return 2;
-            } else if (content instanceof VideoContent) {
-                return 2;
-            } else {
                 return 3;
+            } else if (content instanceof VideoContent) {
+                return 3;
+            } else if (content instanceof DocumentContent) {
+                return 4;
             }
         }
+
+        throw new RuntimeException("Unknown view type");
     }
 
     @Override
@@ -92,23 +99,26 @@ public class RecyclerMessagesAdapter extends RecyclerView.Adapter<BaseHolder> {
             case 0:
                 return new FooterHolder(messagesFragment.getActivity());
             case 1:
-                return new ServiceHolder(messagesFragment,
-                        LayoutInflater
-                                .from(context)
-                                .inflate(R.layout.adapter_dialog_service, viewGroup, false));
-            case 2:
-                return new PhotoHolder(messagesFragment,
-                        LayoutInflater
-                                .from(context)
-                                .inflate(R.layout.adapter_dialog_photo, viewGroup, false));
-            case 3:
                 return new TextHolder(messagesFragment,
-                        LayoutInflater
-                                .from(context)
-                                .inflate(R.layout.adapter_dialog_text, viewGroup, false));
+                        inflate(R.layout.adapter_dialog_text, viewGroup));
+            case 2:
+                return new ServiceHolder(messagesFragment,
+                        inflate(R.layout.adapter_dialog_service, viewGroup));
+            case 3:
+                return new PhotoHolder(messagesFragment,
+                        inflate(R.layout.adapter_dialog_photo, viewGroup));
+            case 4:
+                return new DocHolder(messagesFragment,
+                        inflate(R.layout.adapter_dialog_doc, viewGroup));
         }
 
         throw new RuntimeException("Unknown view type");
+    }
+
+    private View inflate(int id, ViewGroup viewGroup) {
+        return LayoutInflater
+                .from(context)
+                .inflate(id, viewGroup, false);
     }
 
     @Override

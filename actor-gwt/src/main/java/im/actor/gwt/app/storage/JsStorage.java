@@ -3,6 +3,7 @@ package im.actor.gwt.app.storage;
 import java.io.IOException;
 
 import im.actor.model.Storage;
+import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
@@ -50,6 +51,35 @@ public class JsStorage implements Storage {
         } else {
             return new MemoryKeyValue();
         }
+    }
+
+    @Override
+    public KeyValueStorage createDownloadsEngine() {
+        if (isLocalStorageSupported()) {
+            return new JsKeyValue(storage, "downloads");
+        } else {
+            return new MemoryKeyValue();
+        }
+    }
+
+    @Override
+    public ListEngine<Contact> createContactsEngine() {
+        return new JsListEngine<Contact>("сontacts", storage) {
+            @Override
+            protected byte[] serialize(Contact item) {
+                return item.toByteArray();
+            }
+
+            @Override
+            protected Contact deserialize(byte[] data) {
+                try {
+                    return Contact.fromBytes(data);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        };
     }
 
     @Override
