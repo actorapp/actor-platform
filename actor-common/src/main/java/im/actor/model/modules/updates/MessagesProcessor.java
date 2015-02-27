@@ -7,6 +7,7 @@ import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.ServiceUserRegistered;
 import im.actor.model.modules.BaseModule;
@@ -33,11 +34,11 @@ public class MessagesProcessor extends BaseModule {
     public void onDialogsLoaded(ResponseLoadDialogs dialogsResponse) {
         ArrayList<DialogHistory> dialogs = new ArrayList<DialogHistory>();
 
-        long maxLoadedDate = 0;
+        long maxLoadedDate = Long.MAX_VALUE;
 
         for (im.actor.model.api.Dialog dialog : dialogsResponse.getDialogs()) {
 
-            maxLoadedDate = Math.max(dialog.getSortDate(), maxLoadedDate);
+            maxLoadedDate = Math.min(dialog.getSortDate(), maxLoadedDate);
 
             Peer peer = convert(dialog.getPeer());
             AbsContent msgContent = convert(dialog.getMessage());
@@ -51,7 +52,8 @@ public class MessagesProcessor extends BaseModule {
         }
 
         dialogsActor().send(new DialogsActor.HistoryLoaded(dialogs));
-        dialogsHistoryActor().send(new DialogsHistoryActor.LoadedMore(maxLoadedDate == 0, maxLoadedDate));
+        dialogsHistoryActor().send(new DialogsHistoryActor.LoadedMore(dialogsResponse.getDialogs().size(),
+                maxLoadedDate));
     }
 
     public void onMessage(im.actor.model.api.Peer _peer, int senderUid, long date, long rid,
@@ -110,8 +112,7 @@ public class MessagesProcessor extends BaseModule {
     public void onMessageDelete(im.actor.model.api.Peer _peer, List<Long> rids) {
         Peer peer = convert(_peer);
         conversationActor(peer).send(new ConversationActor.MessageDeleted(rids));
-
-        // TODO: Notify own read actor
+        ownReadActor().send(new OwnReadActor.MessageDeleted(peer, rids));
         // TODO: Notify send actor
     }
 
@@ -119,34 +120,36 @@ public class MessagesProcessor extends BaseModule {
         Peer peer = convert(_peer);
         conversationActor(peer).send(new ConversationActor.MessageSent(rid, date));
         sendActor().send(new SenderActor.MessageSent(peer, rid));
-
-        // TODO: Notify own read actor
+        ownReadActor().send(new OwnReadActor.NewOutMessage(peer, rid, date, false));
     }
 
     public void onChatClear(im.actor.model.api.Peer _peer) {
         Peer peer = convert(_peer);
-        dialogsActor().send(new DialogsActor.ChatClear(peer));
 
-        // TODO: Move to conversation
         // TODO: Notify own read actor
         // TODO: Notify send actor
+
+        conversationActor(peer).send(new ConversationActor.ClearConversation());
     }
 
     public void onChatDelete(im.actor.model.api.Peer _peer) {
         Peer peer = convert(_peer);
-        dialogsActor().send(new DialogsActor.ChatDelete(peer));
 
-        // TODO: Move to conversation
         // TODO: Notify own read actor
         // TODO: Notify send actor
+
+        conversationActor(peer).send(new ConversationActor.DeleteConversation());
     }
 
     public void onUserRegistered(int uid, long date) {
-        Message message = new Message(RandomUtils.nextRid(), date, date, uid,
+        // TODO: New rid
+        long rid = RandomUtils.nextRid();
+        Message message = new Message(rid, date, date, uid,
                 MessageState.UNKNOWN, new ServiceUserRegistered());
-        conversationActor(Peer.user(uid)).send(message);
 
-        // TODO: Notify own read actor
+        ownReadActor().send(new OwnReadActor
+                .NewMessage(new Peer(PeerType.PRIVATE, uid), rid, date, false));
+        conversationActor(Peer.user(uid)).send(message);
     }
 
 }

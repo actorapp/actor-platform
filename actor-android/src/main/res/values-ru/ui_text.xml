@@ -130,7 +130,8 @@
 
     <string name="dialogs_menu_group_view">Информация о группе</string>
     <string name="dialogs_menu_group_rename">Переименовать группу</string>
-    <string name="dialogs_menu_group_delete">Удалить и выйти из группы</string>
+    <string name="dialogs_menu_group_leave">Выйти из группы</string>
+    <string name="dialogs_menu_group_delete">Удалить группу</string>
 
     <string name="dialogs_video">Видео</string>
     <string name="dialogs_photo">Фото</string>

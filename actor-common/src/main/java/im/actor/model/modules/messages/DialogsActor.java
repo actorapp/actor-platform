@@ -58,7 +58,8 @@ public class DialogsActor extends ModuleActor {
             builder.setPeer(dialog.getPeer())
                     .setDialogTitle(dialog.getDialogTitle())
                     .setDialogAvatar(dialog.getDialogAvatar())
-                    .setUnreadCount(dialog.getUnreadCount());
+                    .setUnreadCount(dialog.getUnreadCount())
+                    .setSortKey(dialog.getSortDate());
 
             // Do not push up dialogs for silent messages
             if (!contentDescription.isSilent()) {

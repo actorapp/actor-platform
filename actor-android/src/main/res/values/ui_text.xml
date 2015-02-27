@@ -129,7 +129,8 @@
 
     <string name="dialogs_menu_group_view">View group info</string>
     <string name="dialogs_menu_group_rename">Rename group</string>
-    <string name="dialogs_menu_group_delete">Delete and exit group</string>
+    <string name="dialogs_menu_group_leave">Exit group</string>
+    <string name="dialogs_menu_group_delete">Delete group</string>
 
     <string name="dialogs_video">Video</string>
     <string name="dialogs_photo">Photo</string>
@@ -416,6 +417,9 @@
 
     <string name="alert_delete_group_title">Delete and exit "{0}" group?</string>
     <string name="alert_delete_group_yes">Delete</string>
+
+    <string name="alert_leave_group_message">Are you sure want to exit group "{0}"?</string>
+    <string name="alert_leave_group_yes">Exit</string>
 
     <string name="alert_delete_chat_message">Delete chat with "{0}"?</string>
     <string name="alert_delete_chat_yes">Delete</string>

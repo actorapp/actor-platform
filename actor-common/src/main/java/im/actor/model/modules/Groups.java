@@ -154,4 +154,8 @@ public class Groups extends BaseModule {
             }
         };
     }
+
+//    public Command<Boolean> addMemberToGroup(final int gid, final int uid) {
+//
+//    }
 }
