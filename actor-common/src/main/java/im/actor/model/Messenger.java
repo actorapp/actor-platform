@@ -239,6 +239,10 @@ public class Messenger {
         return modules.getGroupsModule().leaveGroup(gid);
     }
 
+    public Command<Boolean> addMemberToGroup(int gid, int uid) {
+        return modules.getGroupsModule().addMemberToGroup(gid, uid);
+    }
+
     public Command<Boolean> removeContact(int uid) {
         return modules.getContactsModule().removeContact(uid);
     }
