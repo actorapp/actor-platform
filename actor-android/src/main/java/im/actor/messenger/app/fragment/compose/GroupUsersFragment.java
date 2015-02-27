@@ -28,14 +28,18 @@ import com.droidkit.engine.uilist.UiListListener;
 import java.util.ArrayList;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.fragment.contacts.ContactsAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.storage.ListEngines;
+import im.actor.messenger.util.BoxUtil;
 import im.actor.messenger.util.Screen;
+import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Contact;
 import im.actor.model.viewmodel.UserVM;
 
+import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.users;
 
 /**
@@ -143,31 +147,18 @@ public class GroupUsersFragment extends BaseFragment implements UiListListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.done) {
-//            ask(GroupsActor.groupUpdates().createGroup(title, BoxUtil.unbox(selectedUsers.toArray(new Integer[0]))),
-//                    new UiAskCallback<Integer>() {
-//                        @Override
-//                        public void onPreStart() {
-//                            isInProgress = true;
-//                            getActivity().invalidateOptionsMenu();
-//                            showView(progressView);
-//                        }
-//
-//                        @Override
-//                        public void onCompleted(Integer res) {
-//                            if (avatarPath != null) {
-//                                GroupAvatarActor.get().changeAvatar(res, avatarPath);
-//                            }
-//                            getActivity().startActivity(Intents.openGroupDialog(res, true, getActivity()));
-//                            getActivity().finish();
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable t) {
-//                            isInProgress = false;
-//                            getActivity().invalidateOptionsMenu();
-//                            goneView(progressView);
-//                        }
-//                    });
+            execute(messenger().createGroup(title, BoxUtil.unbox(selectedUsers.toArray(new Integer[0]))),
+                    R.string.progress_common, new CommandCallback<Integer>() {
+                        @Override
+                        public void onResult(Integer res) {
+                            getActivity().startActivity(Intents.openGroupDialog(res, true, getActivity()));
+                            getActivity().finish();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                        }
+                    });
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -52,6 +52,7 @@ import im.actor.model.modules.contacts.ContactsSyncActor;
 import im.actor.model.modules.messages.entity.EntityConverter;
 import im.actor.model.modules.updates.internal.ContactsLoaded;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
+import im.actor.model.modules.updates.internal.GroupCreated;
 import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.modules.updates.internal.LoggedIn;
 import im.actor.model.modules.updates.internal.UsersFounded;
@@ -118,6 +119,17 @@ public class UpdateProcessor extends BaseModule {
                 @Override
                 public void run() {
                     founded.getCommandCallback().onResult(users.toArray(new UserVM[users.size()]));
+                }
+            });
+        } else if (update instanceof GroupCreated) {
+            final GroupCreated created = (GroupCreated) update;
+            ArrayList<Group> groups = new ArrayList<Group>();
+            groups.add(created.getGroup());
+            applyRelated(new ArrayList<User>(), groups, new ArrayList<ContactRecord>(), false);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    created.getCallback().onResult(created.getGroup().getId());
                 }
             });
         }
