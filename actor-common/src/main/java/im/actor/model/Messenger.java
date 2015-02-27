@@ -231,6 +231,10 @@ public class Messenger {
         return modules.getUsersModule().editName(uid, name);
     }
 
+    public Command<Integer> createGroup(String title, int[] uids) {
+        return modules.getGroupsModule().createGroup(title, uids);
+    }
+
     public Command<Boolean> editGroupTitle(final int gid, final String title) {
         return modules.getGroupsModule().editTitle(gid, title);
     }
