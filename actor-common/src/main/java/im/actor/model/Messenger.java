@@ -263,4 +263,16 @@ public class Messenger {
     public void unbindRawFile(long fileId, boolean isAutoCancel, FileCallback callback) {
         modules.getFilesModule().unbindFile(fileId, callback, isAutoCancel);
     }
+
+    public void requestState(long fileId, final FileCallback callback) {
+        modules.getFilesModule().requestState(fileId, callback);
+    }
+
+    public void cancelDownloading(long fileId) {
+        modules.getFilesModule().cancelDownloading(fileId);
+    }
+
+    public void startDownloading(FileLocation location) {
+        modules.getFilesModule().startDownloading(location);
+    }
 }

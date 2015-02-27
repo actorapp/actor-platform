@@ -28,7 +28,6 @@ import im.actor.messenger.storage.provider.AppEngineFactory;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.LocaleProvider;
 import im.actor.model.Messenger;
-import im.actor.model.android.AndroidCryptoProvider;
 import im.actor.model.android.AndroidFileProvider;
 import im.actor.model.android.AndroidLog;
 import im.actor.model.android.AndroidMainThread;
@@ -97,7 +96,7 @@ public class Core {
                 .setFreeSize(10)
                 .useSizeInAmount()
                 .endFilter()
-                
+
                 .startAny()
                 .useSizeInBytes()
                 .setLruSize(cacheLimit)
@@ -127,7 +126,7 @@ public class Core {
             }
         });
         builder.setPhoneBookProvider(new AndroidPhoneBook());
-        builder.setCryptoProvider(new AndroidCryptoProvider());
+        // builder.setCryptoProvider(new AndroidCryptoProvider());
         builder.setFileSystemProvider(new AndroidFileProvider(application));
         if (BuildConfig.API_SSL) {
             builder.addEndpoint("tls://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);

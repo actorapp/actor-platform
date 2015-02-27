@@ -27,7 +27,7 @@ public class AvatarActor extends BasicTaskActor<AvatarTask> {
 
     @Override
     public void startTask() {
-        messenger().bindFile(location, true, fileCallback);
+        messenger().bindRawFile(location, true, fileCallback);
     }
 
     private void onDownloaded(FileReference reference) {
@@ -45,7 +45,7 @@ public class AvatarActor extends BasicTaskActor<AvatarTask> {
 
     @Override
     public void onTaskObsolete() {
-        messenger().unbindFile(location.getFileId(), fileCallback, false);
+        messenger().unbindRawFile(location.getFileId(), false, fileCallback);
     }
 
     @Override
