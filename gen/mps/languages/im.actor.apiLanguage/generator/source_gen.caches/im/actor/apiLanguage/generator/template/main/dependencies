@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dependenciesRoot>
-  <dependency className="im.actor.apiLanguage.generator.template.main.QueriesGenerated" file="QueriesGenerated.java">
-    <classNode dependClassName="jetbrains.mps.generator.runtime.Generated" />
-  </dependency>
-</dependenciesRoot>
-
