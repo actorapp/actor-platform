@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<debug-info>
-  <root>
-    <file name="QueriesGenerated.java">
-      <unit at="7,0,11,0" name="im.actor.apiLanguage.generator.template.main.QueriesGenerated" />
-    </file>
-  </root>
-</debug-info>
-
