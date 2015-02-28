@@ -58,7 +58,7 @@
       <concept id="2348480312265114812" name="im.actor.apiLanguage.structure.Rpc" flags="ng" index="2m6fVq">
         <child id="2348480312265120188" name="response" index="2m6efq" />
         <child id="4092665470043063721" name="throws" index="2uC9gA" />
-        <child id="4092665470044220438" name="docs" index="2uGzQp" />
+        <child id="3073351033372262909" name="docs2" index="1GBnQ6" />
       </concept>
       <concept id="2348480312264710733" name="im.actor.apiLanguage.structure.EnumAttribute" flags="ng" index="2m7y0F">
         <property id="2348480312264710768" name="id" index="2m7y0m" />
@@ -71,10 +71,6 @@
         <property id="4092665470043053055" name="errorCode" index="2uC4DK" />
         <property id="4092665470043053057" name="errorTag" index="2uC4Qe" />
         <property id="4092665470043111358" name="description" index="2uCiSL" />
-      </concept>
-      <concept id="4092665470043293715" name="im.actor.apiLanguage.structure.RpcDocParameter" flags="ng" index="2uJ1As">
-        <property id="4092665470043359042" name="description" index="2uJhrd" />
-        <reference id="4092665470043358846" name="paramter" index="2uJhvL" />
       </concept>
       <concept id="5312209286554516176" name="im.actor.apiLanguage.structure.Trait" flags="ng" index="w93zz" />
       <concept id="5312209286553980838" name="im.actor.apiLanguage.structure.AliasType" flags="ng" index="wb0Ql">
@@ -105,9 +101,6 @@
       </concept>
       <concept id="2861239048481125696" name="im.actor.apiLanguage.structure.SectionDoc" flags="ng" index="1Dx9M1">
         <property id="2861239048481125830" name="text" index="1Dx9K7" />
-      </concept>
-      <concept id="2861239048480449583" name="im.actor.apiLanguage.structure.RpcDocComment" flags="ng" index="1D$$RI">
-        <property id="2861239048480459664" name="content" index="1D$E9h" />
       </concept>
       <concept id="803735062395648228" name="im.actor.apiLanguage.structure.UpdateBox" flags="ng" index="3GIgwz">
         <child id="773119248390108862" name="docs" index="NXpPy" />
@@ -186,21 +179,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBB6EE" role="2m5mJr">
         <property role="TrG5h" value="SendAuthCode" />
-        <node concept="1D$$RI" id="3zc4oYAxuHe" role="2uGzQp">
-          <property role="1D$E9h" value="Sending SMS with activation code" />
-        </node>
-        <node concept="2uJ1As" id="3zc4oYAxfI9" role="2uGzQp">
-          <property role="2uJhrd" value="Phone number in international format" />
-          <ref role="2uJhvL" node="GBscvBB6EK" resolve="phoneNumber" />
-        </node>
-        <node concept="2uJ1As" id="3zc4oYAxtxa" role="2uGzQp">
-          <property role="2uJhrd" value="Application ID" />
-          <ref role="2uJhvL" node="GBscvBB6ER" resolve="appId" />
-        </node>
-        <node concept="2uJ1As" id="3zc4oYAxu76" role="2uGzQp">
-          <property role="2uJhrd" value="Application API key" />
-          <ref role="2uJhvL" node="GBscvBB6F0" resolve="apiKey" />
-        </node>
         <node concept="2uC4CA" id="3zc4oYArGMn" role="2uC9gA">
           <property role="2uC4DK" value="400" />
           <property role="2uC4Qe" value="PHONE_NUMBER_INVALID" />
@@ -239,28 +217,24 @@
             <property role="Nu42W" value="02" />
           </node>
         </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_S" role="1GBnQ6">
+          <property role="NXePf" value="Sending SMS with activation code" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_T" role="1GBnQ6">
+          <property role="NX6R2" value="Phone number in international format" />
+          <ref role="NX6Kv" node="GBscvBB6EK" resolve="phoneNumber" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_U" role="1GBnQ6">
+          <property role="NX6R2" value="Application ID" />
+          <ref role="NX6Kv" node="GBscvBB6ER" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_V" role="1GBnQ6">
+          <property role="NX6R2" value="Application API key" />
+          <ref role="NX6Kv" node="GBscvBB6F0" resolve="apiKey" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBB6MZ" role="2m5mJr">
         <property role="TrG5h" value="SendAuthCall" />
-        <node concept="1D$$RI" id="EUEXKTiKqN" role="2uGzQp">
-          <property role="1D$E9h" value="Requesting Phone activation" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiKqT" role="2uGzQp">
-          <property role="2uJhrd" value="Phone number in international format" />
-          <ref role="2uJhvL" node="GBscvBB6Nm" resolve="phoneNumber" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiLAT" role="2uGzQp">
-          <property role="2uJhrd" value="Code request hash from RequestAuthCode" />
-          <ref role="2uJhvL" node="GBscvBB6Nt" resolve="smsHash" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiMxx" role="2uGzQp">
-          <property role="2uJhrd" value="Application ID" />
-          <ref role="2uJhvL" node="GBscvBB6NA" resolve="appId" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiN7H" role="2uGzQp">
-          <property role="2uJhrd" value="Application API key" />
-          <ref role="2uJhvL" node="GBscvBB6NL" resolve="apiKey" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBB6Nm" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="phoneNumber" />
@@ -296,6 +270,25 @@
           <property role="2uC4DK" value="400" />
           <property role="2uC4Qe" value="PHONE_NUMVER_INVALID" />
           <property role="2uCiSL" value="Phone number invalid" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_D" role="1GBnQ6">
+          <property role="NXePf" value="Requesting Phone activation" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_E" role="1GBnQ6">
+          <property role="NX6R2" value="Phone number in international format" />
+          <ref role="NX6Kv" node="GBscvBB6Nm" resolve="phoneNumber" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_F" role="1GBnQ6">
+          <property role="NX6R2" value="Code request hash from RequestAuthCode" />
+          <ref role="NX6Kv" node="GBscvBB6Nt" resolve="smsHash" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_G" role="1GBnQ6">
+          <property role="NX6R2" value="Application ID" />
+          <ref role="NX6Kv" node="GBscvBB6NA" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_H" role="1GBnQ6">
+          <property role="NX6R2" value="Application API key" />
+          <ref role="NX6Kv" node="GBscvBB6NL" resolve="apiKey" />
         </node>
       </node>
       <node concept="2m62dX" id="GBscvBB6Vl" role="2m5mJr">
@@ -340,41 +333,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBB6QQ" role="2m5mJr">
         <property role="TrG5h" value="SignIn" />
-        <node concept="1D$$RI" id="EUEXKTiNso" role="2uGzQp">
-          <property role="1D$E9h" value="Performing user signin" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiNsu" role="2uGzQp">
-          <property role="2uJhrd" value="Phone number in international format" />
-          <ref role="2uJhvL" node="GBscvBB6Ro" resolve="phoneNumber" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiO2G" role="2uGzQp">
-          <property role="2uJhrd" value="Code request hash from RequestAuthCode" />
-          <ref role="2uJhvL" node="GBscvBB6Rv" resolve="smsHash" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiQ8i" role="2uGzQp">
-          <property role="2uJhrd" value="Confirmation code from SMS" />
-          <ref role="2uJhvL" node="GBscvBB6RC" resolve="smsCode" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiR1H" role="2uGzQp">
-          <property role="2uJhrd" value="Device RSA 2048 bit public key in x.509 format" />
-          <ref role="2uJhvL" node="GBscvBB6RN" resolve="publicKey" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiSej" role="2uGzQp">
-          <property role="2uJhrd" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
-          <ref role="2uJhvL" node="GBscvBB6S0" resolve="deviceHash" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiSOL" role="2uGzQp">
-          <property role="2uJhrd" value="Device title like 'Steven's iPhone'" />
-          <ref role="2uJhvL" node="GBscvBB6Sf" resolve="deviceTitle" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiSP3" role="2uGzQp">
-          <property role="2uJhrd" value="Application ID" />
-          <ref role="2uJhvL" node="GBscvBB6Sw" resolve="appId" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiSPn" role="2uGzQp">
-          <property role="2uJhrd" value="Application API key" />
-          <ref role="2uJhvL" node="GBscvBB6SN" resolve="appKey" />
-        </node>
         <node concept="2uC4CA" id="3zc4oYArRGS" role="2uC9gA">
           <property role="2uC4DK" value="400" />
           <property role="2uC4Qe" value="INVALID_KEY" />
@@ -451,19 +409,44 @@
         <node concept="2m1Rp1" id="GBscvBB742" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foBA" role="1GBnQ6">
+          <property role="NXePf" value="Performing user signin" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBB" role="1GBnQ6">
+          <property role="NX6R2" value="Phone number in international format" />
+          <ref role="NX6Kv" node="GBscvBB6Ro" resolve="phoneNumber" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBC" role="1GBnQ6">
+          <property role="NX6R2" value="Code request hash from RequestAuthCode" />
+          <ref role="NX6Kv" node="GBscvBB6Rv" resolve="smsHash" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBD" role="1GBnQ6">
+          <property role="NX6R2" value="Confirmation code from SMS" />
+          <ref role="NX6Kv" node="GBscvBB6RC" resolve="smsCode" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBE" role="1GBnQ6">
+          <property role="NX6R2" value="Device RSA 2048 bit public key in x.509 format" />
+          <ref role="NX6Kv" node="GBscvBB6RN" resolve="publicKey" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBF" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
+          <ref role="NX6Kv" node="GBscvBB6S0" resolve="deviceHash" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBG" role="1GBnQ6">
+          <property role="NX6R2" value="Device title like 'Steven's iPhone'" />
+          <ref role="NX6Kv" node="GBscvBB6Sf" resolve="deviceTitle" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBH" role="1GBnQ6">
+          <property role="NX6R2" value="Application ID" />
+          <ref role="NX6Kv" node="GBscvBB6Sw" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBI" role="1GBnQ6">
+          <property role="NX6R2" value="Application API key" />
+          <ref role="NX6Kv" node="GBscvBB6SN" resolve="appKey" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBB77K" role="2m5mJr">
         <property role="TrG5h" value="SignUp" />
-        <node concept="1D$$RI" id="EUEXKTiTaf" role="2uGzQp">
-          <property role="1D$E9h" value="Performing user signup. If user perform signup on already registered user it just override previous" />
-        </node>
-        <node concept="1D$$RI" id="EUEXKTiTat" role="2uGzQp">
-          <property role="1D$E9h" value="profile information" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiTaC" role="2uGzQp">
-          <property role="2uJhrd" value="Phone number in international format" />
-          <ref role="2uJhvL" node="GBscvBB78H" resolve="phoneNumber" />
-        </node>
         <node concept="2uC4CA" id="3zc4oYArSmI" role="2uC9gA">
           <property role="2uC4DK" value="400" />
           <property role="2uC4Qe" value="INVALID_KEY" />
@@ -545,37 +528,47 @@
         <node concept="2m1Rp1" id="GBscvBB7bd" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTiU4p" role="2uGzQp">
-          <property role="2uJhrd" value="Code request hash from RequestAuthCode" />
-          <ref role="2uJhvL" node="GBscvBB78O" resolve="smsHash" />
+        <node concept="NXeRC" id="2EAJ7H6foBk" role="1GBnQ6">
+          <property role="NXePf" value="Performing user signup. If user perform signup on already registered user it just override previous" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTiU4_" role="2uGzQp">
-          <property role="2uJhrd" value="Confirmation code from SMS" />
-          <ref role="2uJhvL" node="GBscvBB78X" resolve="smsCode" />
+        <node concept="NXeRC" id="2EAJ7H6foBl" role="1GBnQ6">
+          <property role="NXePf" value="profile information" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTiU4N" role="2uGzQp">
-          <property role="2uJhrd" value="User name" />
-          <ref role="2uJhvL" node="GBscvBB798" resolve="name" />
+        <node concept="NX1gA" id="2EAJ7H6foBm" role="1GBnQ6">
+          <property role="NX6R2" value="Phone number in international format" />
+          <ref role="NX6Kv" node="GBscvBB78H" resolve="phoneNumber" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTiUqb" role="2uGzQp">
-          <property role="2uJhrd" value="Device RSA 2048 bit public key in x.509 format" />
-          <ref role="2uJhvL" node="GBscvBB79l" resolve="publicKey" />
+        <node concept="NX1gA" id="2EAJ7H6foBn" role="1GBnQ6">
+          <property role="NX6R2" value="Code request hash from RequestAuthCode" />
+          <ref role="NX6Kv" node="GBscvBB78O" resolve="smsHash" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTiUqt" role="2uGzQp">
-          <property role="2uJhrd" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
-          <ref role="2uJhvL" node="GBscvBB79$" resolve="deviceHash" />
+        <node concept="NX1gA" id="2EAJ7H6foBo" role="1GBnQ6">
+          <property role="NX6R2" value="Confirmation code from SMS" />
+          <ref role="NX6Kv" node="GBscvBB78X" resolve="smsCode" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTiUqL" role="2uGzQp">
-          <property role="2uJhrd" value="Device title like 'Steven's iPhone'" />
-          <ref role="2uJhvL" node="GBscvBB79P" resolve="deviceTitle" />
+        <node concept="NX1gA" id="2EAJ7H6foBp" role="1GBnQ6">
+          <property role="NX6R2" value="User name" />
+          <ref role="NX6Kv" node="GBscvBB798" resolve="name" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTiUrB" role="2uGzQp">
-          <property role="2uJhrd" value="Application ID" />
-          <ref role="2uJhvL" node="GBscvBB7a8" resolve="appId" />
+        <node concept="NX1gA" id="2EAJ7H6foBq" role="1GBnQ6">
+          <property role="NX6R2" value="Device RSA 2048 bit public key in x.509 format" />
+          <ref role="NX6Kv" node="GBscvBB79l" resolve="publicKey" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTiUrZ" role="2uGzQp">
-          <property role="2uJhrd" value="pplication API key" />
-          <ref role="2uJhvL" node="GBscvBB7at" resolve="appKey" />
+        <node concept="NX1gA" id="2EAJ7H6foBr" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
+          <ref role="NX6Kv" node="GBscvBB79$" resolve="deviceHash" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBs" role="1GBnQ6">
+          <property role="NX6R2" value="Device title like 'Steven's iPhone'" />
+          <ref role="NX6Kv" node="GBscvBB79P" resolve="deviceTitle" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBt" role="1GBnQ6">
+          <property role="NX6R2" value="Application ID" />
+          <ref role="NX6Kv" node="GBscvBB7a8" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBu" role="1GBnQ6">
+          <property role="NX6R2" value="pplication API key" />
+          <ref role="NX6Kv" node="GBscvBB7at" resolve="appKey" />
         </node>
       </node>
       <node concept="2m5naR" id="GBscvBBahz" role="2m5mJr">
@@ -671,9 +664,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBBbTl" role="2m5mJr">
         <property role="TrG5h" value="GetAuthSessions" />
-        <node concept="1D$$RI" id="EUEXKTiV5U" role="2uGzQp">
-          <property role="1D$E9h" value="Getting of all active user's authentication sessions" />
-        </node>
         <node concept="Nu42z" id="GBscvBBbTm" role="NuuwV">
           <property role="Nu42W" value="50" />
         </node>
@@ -691,6 +681,9 @@
             <property role="Nu42W" value="51" />
           </node>
         </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_p" role="1GBnQ6">
+          <property role="NXePf" value="Getting of all active user's authentication sessions" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBcsy" role="2m5mJr">
         <property role="TrG5h" value="TerminateSession" />
@@ -705,12 +698,12 @@
         <node concept="2m1Rp1" id="GBscvBBcEs" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node concept="1D$$RI" id="EUEXKTiV5X" role="2uGzQp">
-          <property role="1D$E9h" value="SignOut on specified user's session" />
+        <node concept="NXeRC" id="2EAJ7H6foAi" role="1GBnQ6">
+          <property role="NXePf" value="SignOut on specified user's session" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTiVqU" role="2uGzQp">
-          <property role="2uJhrd" value="id from AuthItem" />
-          <ref role="2uJhvL" node="GBscvBBcQz" resolve="id" />
+        <node concept="NX1gA" id="2EAJ7H6foAj" role="1GBnQ6">
+          <property role="NX6R2" value="id from AuthItem" />
+          <ref role="NX6Kv" node="GBscvBBcQz" resolve="id" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBcKt" role="2m5mJr">
@@ -721,8 +714,8 @@
         <node concept="2m1Rp1" id="GBscvBBd6M" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node concept="1D$$RI" id="EUEXKTiWFw" role="2uGzQp">
-          <property role="1D$E9h" value="SignOut on all exept current sessions" />
+        <node concept="NXeRC" id="2EAJ7H6fo_A" role="1GBnQ6">
+          <property role="NXePf" value="SignOut on all exept current sessions" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBdcW" role="2m5mJr">
@@ -733,8 +726,8 @@
         <node concept="2m1Rp1" id="GBscvBBdjc" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node concept="1D$$RI" id="EUEXKTiX0s" role="2uGzQp">
-          <property role="1D$E9h" value="SignOut current session" />
+        <node concept="NXeRC" id="2EAJ7H6foBy" role="1GBnQ6">
+          <property role="NXePf" value="SignOut current session" />
         </node>
       </node>
     </node>
@@ -987,21 +980,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBBfq6" role="2m5mJr">
         <property role="TrG5h" value="EditUserLocalName" />
-        <node concept="1D$$RI" id="EUEXKTiXlr" role="2uGzQp">
-          <property role="1D$E9h" value="Renaming of user's visible name" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiXEt" role="2uGzQp">
-          <property role="2uJhrd" value="target User's uid" />
-          <ref role="2uJhvL" node="GBscvBBfqR" resolve="uid" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiYht" role="2uGzQp">
-          <property role="2uJhrd" value="User's accessHash" />
-          <ref role="2uJhvL" node="GBscvBBfqY" resolve="accessHash" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiYSx" role="2uGzQp">
-          <property role="2uJhrd" value="New user name" />
-          <ref role="2uJhvL" node="GBscvBBfr7" resolve="name" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBfqR" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="uid" />
@@ -1022,6 +1000,21 @@
         </node>
         <node concept="2m1Rp1" id="GBscvBBfri" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_q" role="1GBnQ6">
+          <property role="NXePf" value="Renaming of user's visible name" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_r" role="1GBnQ6">
+          <property role="NX6R2" value="target User's uid" />
+          <ref role="NX6Kv" node="GBscvBBfqR" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_s" role="1GBnQ6">
+          <property role="NX6R2" value="User's accessHash" />
+          <ref role="NX6Kv" node="GBscvBBfqY" resolve="accessHash" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_t" role="1GBnQ6">
+          <property role="NX6R2" value="New user name" />
+          <ref role="NX6Kv" node="GBscvBBfr7" resolve="name" />
         </node>
       </node>
       <node concept="NpBTk" id="GBscvBBfI5" role="2m5mJr">
@@ -1402,13 +1395,6 @@
       <property role="3XOG$Z" value="profile" />
       <node concept="2m6fVq" id="GBscvBB$Kt" role="2m5mJr">
         <property role="TrG5h" value="EditName" />
-        <node concept="1D$$RI" id="EUEXKTiZdC" role="2uGzQp">
-          <property role="1D$E9h" value="Changing account's name" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiZdI" role="2uGzQp">
-          <property role="2uJhrd" value="New name" />
-          <ref role="2uJhvL" node="GBscvBB$K_" resolve="name" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBB$K_" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="name" />
@@ -1419,6 +1405,13 @@
         </node>
         <node concept="2m1Rp1" id="GBscvBB$KG" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foB0" role="1GBnQ6">
+          <property role="NXePf" value="Changing account's name" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foB1" role="1GBnQ6">
+          <property role="NX6R2" value="New name" />
+          <ref role="NX6Kv" node="GBscvBB$K_" resolve="name" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBB$KQ" role="2m5mJr">
@@ -1432,13 +1425,6 @@
         </node>
         <node concept="Nu42z" id="GBscvBB$KR" role="NuuwV">
           <property role="Nu42W" value="1F" />
-        </node>
-        <node concept="1D$$RI" id="EUEXKTiZdM" role="2uGzQp">
-          <property role="1D$E9h" value="Changing account's avatar" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTiZdR" role="2uGzQp">
-          <property role="2uJhrd" value="File Location of uploaded unencrypted avatar" />
-          <ref role="2uJhvL" node="GBscvBB$L3" resolve="fileLocation" />
         </node>
         <node concept="2m1R6W" id="2vxDjoto8b2" role="2m6efq">
           <node concept="2m7Kf5" id="2vxDjoto8b7" role="2m0hLx">
@@ -1464,17 +1450,24 @@
             <property role="Nu42W" value="67" />
           </node>
         </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_x" role="1GBnQ6">
+          <property role="NXePf" value="Changing account's avatar" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_y" role="1GBnQ6">
+          <property role="NX6R2" value="File Location of uploaded unencrypted avatar" />
+          <ref role="NX6Kv" node="GBscvBB$L3" resolve="fileLocation" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBB_00" role="2m5mJr">
         <property role="TrG5h" value="RemoveAvatar" />
-        <node concept="1D$$RI" id="EUEXKTiZP1" role="2uGzQp">
-          <property role="1D$E9h" value="Removing account's avatar" />
-        </node>
         <node concept="Nu42z" id="GBscvBB_01" role="NuuwV">
           <property role="Nu42W" value="5B" />
         </node>
         <node concept="2m1Rp1" id="GBscvBB_0i" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foAp" role="1GBnQ6">
+          <property role="NXePf" value="Removing account's avatar" />
         </node>
       </node>
       <node concept="2m6fVq" id="1ydqyopRjUA" role="2m5mJr">
@@ -1494,13 +1487,6 @@
           <property role="2uC4Qe" value="ALREADY_USED" />
           <property role="2uCiSL" value="Email is already added to some different account" />
         </node>
-        <node concept="1D$$RI" id="1ydqyopR$tI" role="2uGzQp">
-          <property role="1D$E9h" value="Sending activation code to email" />
-        </node>
-        <node concept="2uJ1As" id="1ydqyopRBtK" role="2uGzQp">
-          <property role="2uJhrd" value="Email for attaching to account" />
-          <ref role="2uJhvL" node="1ydqyopRjV7" resolve="email" />
-        </node>
         <node concept="2m7Kf5" id="1ydqyopRjV7" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="email" />
@@ -1519,16 +1505,16 @@
         <node concept="2m1Rp1" id="1ydqyopT91P" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_v" role="1GBnQ6">
+          <property role="NXePf" value="Sending activation code to email" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_w" role="1GBnQ6">
+          <property role="NX6R2" value="Email for attaching to account" />
+          <ref role="NX6Kv" node="1ydqyopRjV7" resolve="email" />
+        </node>
       </node>
       <node concept="2m6fVq" id="1ydqyopRNAQ" role="2m5mJr">
         <property role="TrG5h" value="DetachEmail" />
-        <node concept="1D$$RI" id="1ydqyopRPhU" role="2uGzQp">
-          <property role="1D$E9h" value="Detaching email from account" />
-        </node>
-        <node concept="2uJ1As" id="1ydqyopRPIj" role="2uGzQp">
-          <property role="2uJhrd" value="Email id for deattach" />
-          <ref role="2uJhvL" node="1ydqyopRNBU" resolve="email" />
-        </node>
         <node concept="2m7Kf5" id="1ydqyopRNBU" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="email" />
@@ -1555,20 +1541,16 @@
           <property role="2uC4Qe" value="UNKNOWN_EMAIL" />
           <property role="2uCiSL" value="Email is not attached to account" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foAS" role="1GBnQ6">
+          <property role="NXePf" value="Detaching email from account" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAT" role="1GBnQ6">
+          <property role="NX6R2" value="Email id for deattach" />
+          <ref role="NX6Kv" node="1ydqyopRNBU" resolve="email" />
+        </node>
       </node>
       <node concept="2m6fVq" id="1ydqyopSr1V" role="2m5mJr">
         <property role="TrG5h" value="ChangePhoneTitle" />
-        <node concept="1D$$RI" id="1ydqyopSrvU" role="2uGzQp">
-          <property role="1D$E9h" value="Change phone description" />
-        </node>
-        <node concept="2uJ1As" id="1ydqyopSthl" role="2uGzQp">
-          <property role="2uJhrd" value="Phone number id" />
-          <ref role="2uJhvL" node="1ydqyopSr3i" resolve="phoneId" />
-        </node>
-        <node concept="2uJ1As" id="1ydqyopSthQ" role="2uGzQp">
-          <property role="2uJhrd" value="New phone title" />
-          <ref role="2uJhvL" node="1ydqyopSths" resolve="title" />
-        </node>
         <node concept="2m7Kf5" id="1ydqyopSr3i" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="phoneId" />
@@ -1585,20 +1567,20 @@
         <node concept="2m1Rp1" id="1ydqyopSr3p" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foAX" role="1GBnQ6">
+          <property role="NXePf" value="Change phone description" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAY" role="1GBnQ6">
+          <property role="NX6R2" value="Phone number id" />
+          <ref role="NX6Kv" node="1ydqyopSr3i" resolve="phoneId" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAZ" role="1GBnQ6">
+          <property role="NX6R2" value="New phone title" />
+          <ref role="NX6Kv" node="1ydqyopSths" resolve="title" />
+        </node>
       </node>
       <node concept="2m6fVq" id="1ydqyopSsNa" role="2m5mJr">
         <property role="TrG5h" value="ChangeEmailTitle" />
-        <node concept="1D$$RI" id="1ydqyopSsOG" role="2uGzQp">
-          <property role="1D$E9h" value="Change email description" />
-        </node>
-        <node concept="2uJ1As" id="1ydqyopSthI" role="2uGzQp">
-          <property role="2uJhrd" value="Email id" />
-          <ref role="2uJhvL" node="1ydqyopSsOw" resolve="emailId" />
-        </node>
-        <node concept="2uJ1As" id="1ydqyopSthZ" role="2uGzQp">
-          <property role="2uJhrd" value="New email title" />
-          <ref role="2uJhvL" node="1ydqyopSth_" resolve="title" />
-        </node>
         <node concept="2m7Kf5" id="1ydqyopSsOw" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="emailId" />
@@ -1614,6 +1596,17 @@
         </node>
         <node concept="2m1Rp1" id="1ydqyopSsOB" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foBQ" role="1GBnQ6">
+          <property role="NXePf" value="Change email description" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBR" role="1GBnQ6">
+          <property role="NX6R2" value="Email id" />
+          <ref role="NX6Kv" node="1ydqyopSsOw" resolve="emailId" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBS" role="1GBnQ6">
+          <property role="NX6R2" value="New email title" />
+          <ref role="NX6Kv" node="1ydqyopSth_" resolve="title" />
         </node>
       </node>
     </node>
@@ -1718,20 +1711,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBBg8u" role="2m5mJr">
         <property role="TrG5h" value="ImportContacts" />
-        <node concept="1D$$RI" id="EUEXKTj0aa" role="2uGzQp">
-          <property role="1D$E9h" value="Importing phones and emails for building contact list" />
-        </node>
-        <node concept="1D$$RI" id="EUEXKTj0vt" role="2uGzQp">
-          <property role="1D$E9h" value="Maximum amount of items for import per method call equals to 100." />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj0vl" role="2uGzQp">
-          <property role="2uJhrd" value="Phones for import" />
-          <ref role="2uJhvL" node="GBscvBBg8Z" resolve="phones" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj0vB" role="2uGzQp">
-          <property role="2uJhrd" value="Emails for import" />
-          <ref role="2uJhvL" node="GBscvBBg9c" resolve="emails" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBg8Z" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="phones" />
@@ -1779,6 +1758,20 @@
             <property role="Nu42W" value="08" />
           </node>
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foBM" role="1GBnQ6">
+          <property role="NXePf" value="Importing phones and emails for building contact list" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foBN" role="1GBnQ6">
+          <property role="NXePf" value="Maximum amount of items for import per method call equals to 100." />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBO" role="1GBnQ6">
+          <property role="NX6R2" value="Phones for import" />
+          <ref role="NX6Kv" node="GBscvBBg8Z" resolve="phones" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBP" role="1GBnQ6">
+          <property role="NX6R2" value="Emails for import" />
+          <ref role="NX6Kv" node="GBscvBBg9c" resolve="emails" />
+        </node>
       </node>
       <node concept="NvyAe" id="GBscvBBgtW" role="2m5mJr" />
       <node concept="NvWBy" id="GBscvBBggO" role="2m5mJr">
@@ -1786,22 +1779,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBBgv0" role="2m5mJr">
         <property role="TrG5h" value="GetContacts" />
-        <node concept="1D$$RI" id="EUEXKTj1Ld" role="2uGzQp">
-          <property role="1D$E9h" value="Getting current contact list" />
-        </node>
-        <node concept="1D$$RI" id="EUEXKTj26s" role="2uGzQp">
-          <property role="1D$E9h" value="SHA256 hash of list of a comma-separated list of contact UIDs in ascending " />
-        </node>
-        <node concept="1D$$RI" id="EUEXKTj3q5" role="2uGzQp">
-          <property role="1D$E9h" value="order may be passed in contactsHash parameter. " />
-        </node>
-        <node concept="1D$$RI" id="EUEXKTj2rI" role="2uGzQp">
-          <property role="1D$E9h" value="If the contact list was not changed, isNotChanged will be true." />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj36e" role="2uGzQp">
-          <property role="2uJhrd" value="Hash of saved list in application" />
-          <ref role="2uJhvL" node="GBscvBBgvC" resolve="contactsHash" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBgvC" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="contactsHash" />
@@ -1829,20 +1806,25 @@
             <property role="Nu42W" value="58" />
           </node>
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foAF" role="1GBnQ6">
+          <property role="NXePf" value="Getting current contact list" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foAG" role="1GBnQ6">
+          <property role="NXePf" value="SHA256 hash of list of a comma-separated list of contact UIDs in ascending " />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foAH" role="1GBnQ6">
+          <property role="NXePf" value="order may be passed in contactsHash parameter. " />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foAI" role="1GBnQ6">
+          <property role="NXePf" value="If the contact list was not changed, isNotChanged will be true." />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAJ" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of saved list in application" />
+          <ref role="NX6Kv" node="GBscvBBgvC" resolve="contactsHash" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBgx0" role="2m5mJr">
         <property role="TrG5h" value="RemoveContact" />
-        <node concept="1D$$RI" id="EUEXKTj44C" role="2uGzQp">
-          <property role="1D$E9h" value="Removing contact from contact list" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj44Q" role="2uGzQp">
-          <property role="2uJhrd" value="Contact's UID" />
-          <ref role="2uJhvL" node="GBscvBBgxN" resolve="uid" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj4Gq" role="2uGzQp">
-          <property role="2uJhrd" value="Contact's AccessHash" />
-          <ref role="2uJhvL" node="GBscvBBgxU" resolve="accessHash" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBgxN" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="uid" />
@@ -1859,20 +1841,20 @@
         <node concept="2m1Rp1" id="GBscvBBgy3" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foAU" role="1GBnQ6">
+          <property role="NXePf" value="Removing contact from contact list" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAV" role="1GBnQ6">
+          <property role="NX6R2" value="Contact's UID" />
+          <ref role="NX6Kv" node="GBscvBBgxN" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAW" role="1GBnQ6">
+          <property role="NX6R2" value="Contact's AccessHash" />
+          <ref role="NX6Kv" node="GBscvBBgxU" resolve="accessHash" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBgyU" role="2m5mJr">
         <property role="TrG5h" value="AddContact" />
-        <node concept="1D$$RI" id="EUEXKTj5lw" role="2uGzQp">
-          <property role="1D$E9h" value="Adding contact to contact list" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj5lA" role="2uGzQp">
-          <property role="2uJhrd" value="Contact's UID" />
-          <ref role="2uJhvL" node="GBscvBBgzO" resolve="uid" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj5lT" role="2uGzQp">
-          <property role="2uJhrd" value="Contact's AccessHash" />
-          <ref role="2uJhvL" node="GBscvBBgzV" resolve="accessHash" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBgzO" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="uid" />
@@ -1889,12 +1871,20 @@
         <node concept="2m1Rp1" id="GBscvBBg$4" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foAa" role="1GBnQ6">
+          <property role="NXePf" value="Adding contact to contact list" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAb" role="1GBnQ6">
+          <property role="NX6R2" value="Contact's UID" />
+          <ref role="NX6Kv" node="GBscvBBgzO" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAc" role="1GBnQ6">
+          <property role="NX6R2" value="Contact's AccessHash" />
+          <ref role="NX6Kv" node="GBscvBBgzV" resolve="accessHash" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBgEJ" role="2m5mJr">
         <property role="TrG5h" value="SearchContacts" />
-        <node concept="1D$$RI" id="EUEXKTj5DM" role="2uGzQp">
-          <property role="1D$E9h" value="Searching contacts by user's query" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBgFK" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="request" />
@@ -1916,6 +1906,9 @@
           <node concept="Nu42z" id="GBscvBBgFS" role="NuuwV">
             <property role="Nu42W" value="71" />
           </node>
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_u" role="1GBnQ6">
+          <property role="NXePf" value="Searching contacts by user's query" />
         </node>
       </node>
       <node concept="NvyAe" id="GBscvBBh1m" role="2m5mJr" />
@@ -2630,29 +2623,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBBpQg" role="2m5mJr">
         <property role="TrG5h" value="SendEncryptedMessage" />
-        <node concept="1D$$RI" id="EUEXKTj6kv" role="2uGzQp">
-          <property role="1D$E9h" value="Sending encrypted message" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj6k_" role="2uGzQp">
-          <property role="2uJhrd" value="Destination peer for message" />
-          <ref role="2uJhvL" node="GBscvBBpTl" resolve="peer" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj6Wn" role="2uGzQp">
-          <property role="2uJhrd" value="Message random id (generated on client side)" />
-          <ref role="2uJhvL" node="GBscvBBpTs" resolve="rid" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj6Wx" role="2uGzQp">
-          <property role="2uJhrd" value="message encrypted by random aes key" />
-          <ref role="2uJhvL" node="GBscvBBpT_" resolve="encryptedMessage" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj7g$" role="2uGzQp">
-          <property role="2uJhrd" value="encrypted aes keys for receivers devices" />
-          <ref role="2uJhvL" node="GBscvBBpTK" resolve="keys" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj7gM" role="2uGzQp">
-          <property role="2uJhrd" value="encrypted aes keys for own devices" />
-          <ref role="2uJhvL" node="GBscvBBqb7" resolve="ownKeys" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBpTl" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="peer" />
@@ -2696,24 +2666,32 @@
         <node concept="2m1Rp1" id="2vxDjotnTL6" role="2m6efq">
           <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_M" role="1GBnQ6">
+          <property role="NXePf" value="Sending encrypted message" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_N" role="1GBnQ6">
+          <property role="NX6R2" value="Destination peer for message" />
+          <ref role="NX6Kv" node="GBscvBBpTl" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_O" role="1GBnQ6">
+          <property role="NX6R2" value="Message random id (generated on client side)" />
+          <ref role="NX6Kv" node="GBscvBBpTs" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_P" role="1GBnQ6">
+          <property role="NX6R2" value="message encrypted by random aes key" />
+          <ref role="NX6Kv" node="GBscvBBpT_" resolve="encryptedMessage" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_Q" role="1GBnQ6">
+          <property role="NX6R2" value="encrypted aes keys for receivers devices" />
+          <ref role="NX6Kv" node="GBscvBBpTK" resolve="keys" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_R" role="1GBnQ6">
+          <property role="NX6R2" value="encrypted aes keys for own devices" />
+          <ref role="NX6Kv" node="GBscvBBqb7" resolve="ownKeys" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBqzL" role="2m5mJr">
         <property role="TrG5h" value="SendMessage" />
-        <node concept="1D$$RI" id="EUEXKTj8fD" role="2uGzQp">
-          <property role="1D$E9h" value="Sending plain message" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj8fJ" role="2uGzQp">
-          <property role="2uJhrd" value="Destination peer for message (now supported only user's peer)" />
-          <ref role="2uJhvL" node="GBscvBBqBa" resolve="peer" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj8fR" role="2uGzQp">
-          <property role="2uJhrd" value="Message random id (generated on clien side)" />
-          <ref role="2uJhvL" node="GBscvBBqBh" resolve="rid" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj8g1" role="2uGzQp">
-          <property role="2uJhrd" value="The message" />
-          <ref role="2uJhvL" node="GBscvBBqBq" resolve="message" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBqBa" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="peer" />
@@ -2741,6 +2719,21 @@
         <node concept="2m1Rp1" id="2vxDjotnUc7" role="2m6efq">
           <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foAO" role="1GBnQ6">
+          <property role="NXePf" value="Sending plain message" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAP" role="1GBnQ6">
+          <property role="NX6R2" value="Destination peer for message (now supported only user's peer)" />
+          <ref role="NX6Kv" node="GBscvBBqBa" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAQ" role="1GBnQ6">
+          <property role="NX6R2" value="Message random id (generated on clien side)" />
+          <ref role="NX6Kv" node="GBscvBBqBh" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAR" role="1GBnQ6">
+          <property role="NX6R2" value="The message" />
+          <ref role="NX6Kv" node="GBscvBBqBq" resolve="message" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBqPG" role="2m5mJr">
         <property role="TrG5h" value="EncryptedReceived" />
@@ -2764,31 +2757,20 @@
         <node concept="2m1Rp1" id="GBscvBBqTu" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node concept="1D$$RI" id="EUEXKTj9dv" role="2uGzQp">
-          <property role="1D$E9h" value="Confirmation of encrypted message receive by device" />
+        <node concept="NXeRC" id="2EAJ7H6fo_W" role="1GBnQ6">
+          <property role="NXePf" value="Confirmation of encrypted message receive by device" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTj9d$" role="2uGzQp">
-          <property role="2uJhrd" value="Destination peer" />
-          <ref role="2uJhvL" node="GBscvBBqTe" resolve="peer" />
+        <node concept="NX1gA" id="2EAJ7H6fo_X" role="1GBnQ6">
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="GBscvBBqTe" resolve="peer" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTj9dG" role="2uGzQp">
-          <property role="2uJhrd" value="Message random id" />
-          <ref role="2uJhvL" node="GBscvBBqTl" resolve="rid" />
+        <node concept="NX1gA" id="2EAJ7H6fo_Y" role="1GBnQ6">
+          <property role="NX6R2" value="Message random id" />
+          <ref role="NX6Kv" node="GBscvBBqTl" resolve="rid" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBqX4" role="2m5mJr">
         <property role="TrG5h" value="EncryptedRead" />
-        <node concept="1D$$RI" id="EUEXKTj9dN" role="2uGzQp">
-          <property role="1D$E9h" value="Marking encrypted message as read" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj9dT" role="2uGzQp">
-          <property role="2uJhrd" value="Destination peer" />
-          <ref role="2uJhvL" node="GBscvBBr0H" resolve="peer" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj9e1" role="2uGzQp">
-          <property role="2uJhrd" value="Message random id" />
-          <ref role="2uJhvL" node="GBscvBBr0O" resolve="rid" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBr0H" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="peer" />
@@ -2809,20 +2791,20 @@
         <node concept="2m1Rp1" id="GBscvBBr0X" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foA3" role="1GBnQ6">
+          <property role="NXePf" value="Marking encrypted message as read" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foA4" role="1GBnQ6">
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="GBscvBBr0H" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foA5" role="1GBnQ6">
+          <property role="NX6R2" value="Message random id" />
+          <ref role="NX6Kv" node="GBscvBBr0O" resolve="rid" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBr4E" role="2m5mJr">
         <property role="TrG5h" value="MessageReceived" />
-        <node concept="1D$$RI" id="EUEXKTj9zQ" role="2uGzQp">
-          <property role="1D$E9h" value="Confirmation of plain message receive by device" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj9zW" role="2uGzQp">
-          <property role="2uJhrd" value="Destination peer" />
-          <ref role="2uJhvL" node="GBscvBBr8q" resolve="peer" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj9$4" role="2uGzQp">
-          <property role="2uJhrd" value="Maximum date of received messages" />
-          <ref role="2uJhvL" node="GBscvBBr8z" resolve="date" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBr8q" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="peer" />
@@ -2842,6 +2824,17 @@
         </node>
         <node concept="2m1Rp1" id="GBscvBBr8G" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foAq" role="1GBnQ6">
+          <property role="NXePf" value="Confirmation of plain message receive by device" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAr" role="1GBnQ6">
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="GBscvBBr8q" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAs" role="1GBnQ6">
+          <property role="NX6R2" value="Maximum date of received messages" />
+          <ref role="NX6Kv" node="GBscvBBr8z" resolve="date" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBrcw" role="2m5mJr">
@@ -2866,31 +2859,20 @@
         <node concept="2m1Rp1" id="GBscvBBrgB" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node concept="1D$$RI" id="EUEXKTj9TK" role="2uGzQp">
-          <property role="1D$E9h" value="Marking plain messages as read" />
+        <node concept="NXeRC" id="2EAJ7H6fo_Z" role="1GBnQ6">
+          <property role="NXePf" value="Marking plain messages as read" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTj9TX" role="2uGzQp">
-          <property role="2uJhrd" value="Destination peer" />
-          <ref role="2uJhvL" node="GBscvBBrgn" resolve="peer" />
+        <node concept="NX1gA" id="2EAJ7H6foA0" role="1GBnQ6">
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="GBscvBBrgn" resolve="peer" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTj9U5" role="2uGzQp">
-          <property role="2uJhrd" value="Maximum date of read messages" />
-          <ref role="2uJhvL" node="GBscvBBrgu" resolve="date" />
+        <node concept="NX1gA" id="2EAJ7H6foA1" role="1GBnQ6">
+          <property role="NX6R2" value="Maximum date of read messages" />
+          <ref role="NX6Kv" node="GBscvBBrgu" resolve="date" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBrky" role="2m5mJr">
         <property role="TrG5h" value="DeleteMessage" />
-        <node concept="1D$$RI" id="EUEXKTj9Uc" role="2uGzQp">
-          <property role="1D$E9h" value="Deleting messages" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj9Ui" role="2uGzQp">
-          <property role="2uJhrd" value="Destination peer" />
-          <ref role="2uJhvL" node="GBscvBBrow" resolve="peer" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTj9Uq" role="2uGzQp">
-          <property role="2uJhrd" value="Message random id" />
-          <ref role="2uJhvL" node="GBscvBBroB" resolve="rids" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBrow" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="peer" />
@@ -2913,6 +2895,17 @@
         <node concept="2m1Rp1" id="GBscvBBroK" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foAk" role="1GBnQ6">
+          <property role="NXePf" value="Deleting messages" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAl" role="1GBnQ6">
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="GBscvBBrow" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAm" role="1GBnQ6">
+          <property role="NX6R2" value="Message random id" />
+          <ref role="NX6Kv" node="GBscvBBroB" resolve="rids" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBrBX" role="2m5mJr">
         <property role="TrG5h" value="ClearChat" />
@@ -2929,12 +2922,12 @@
         <node concept="2m1Rp1" id="GBscvBBrG2" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
-        <node concept="1D$$RI" id="EUEXKTjagc" role="2uGzQp">
-          <property role="1D$E9h" value="Clearing of conversation (without removing dialog from dialogs list)" />
+        <node concept="NXeRC" id="2EAJ7H6foA6" role="1GBnQ6">
+          <property role="NXePf" value="Clearing of conversation (without removing dialog from dialogs list)" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTjagh" role="2uGzQp">
-          <property role="2uJhrd" value="Conversation peer" />
-          <ref role="2uJhvL" node="GBscvBBrG5" resolve="peer" />
+        <node concept="NX1gA" id="2EAJ7H6foA7" role="1GBnQ6">
+          <property role="NX6R2" value="Conversation peer" />
+          <ref role="NX6Kv" node="GBscvBBrG5" resolve="peer" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBrVw" role="2m5mJr">
@@ -2952,12 +2945,12 @@
         <node concept="2m1Rp1" id="GBscvBBrZP" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
-        <node concept="1D$$RI" id="EUEXKTjagl" role="2uGzQp">
-          <property role="1D$E9h" value="Deleting of conversation (also leave group for group conversations)" />
+        <node concept="NXeRC" id="2EAJ7H6foAg" role="1GBnQ6">
+          <property role="NXePf" value="Deleting of conversation (also leave group for group conversations)" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTjagy" role="2uGzQp">
-          <property role="2uJhrd" value="Conversation peer" />
-          <ref role="2uJhvL" node="GBscvBBrZI" resolve="peer" />
+        <node concept="NX1gA" id="2EAJ7H6foAh" role="1GBnQ6">
+          <property role="NX6R2" value="Conversation peer" />
+          <ref role="NX6Kv" node="GBscvBBrZI" resolve="peer" />
         </node>
       </node>
       <node concept="NvyAe" id="GBscvBBkAs" role="2m5mJr" />
@@ -3379,21 +3372,6 @@
       <node concept="NvyAe" id="GBscvBBwdP" role="2m5mJr" />
       <node concept="2m6fVq" id="GBscvBBsbt" role="2m5mJr">
         <property role="TrG5h" value="CreateGroup" />
-        <node concept="1D$$RI" id="EUEXKTjaAp" role="2uGzQp">
-          <property role="1D$E9h" value="Creating group chat" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjaAv" role="2uGzQp">
-          <property role="2uJhrd" value="Random Id for avoiding double create" />
-          <ref role="2uJhvL" node="GBscvBBsbN" resolve="rid" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjaAB" role="2uGzQp">
-          <property role="2uJhrd" value="Group title" />
-          <ref role="2uJhvL" node="GBscvBBsbU" resolve="title" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjaAL" role="2uGzQp">
-          <property role="2uJhrd" value="Members of group" />
-          <ref role="2uJhvL" node="GBscvBBsc3" resolve="users" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBsbN" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="rid" />
@@ -3456,24 +3434,24 @@
             <property role="Nu42W" value="42" />
           </node>
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foAK" role="1GBnQ6">
+          <property role="NXePf" value="Creating group chat" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAL" role="1GBnQ6">
+          <property role="NX6R2" value="Random Id for avoiding double create" />
+          <ref role="NX6Kv" node="GBscvBBsbN" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAM" role="1GBnQ6">
+          <property role="NX6R2" value="Group title" />
+          <ref role="NX6Kv" node="GBscvBBsbU" resolve="title" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAN" role="1GBnQ6">
+          <property role="NX6R2" value="Members of group" />
+          <ref role="NX6Kv" node="GBscvBBsc3" resolve="users" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBspc" role="2m5mJr">
         <property role="TrG5h" value="EditGroupTitle" />
-        <node concept="1D$$RI" id="EUEXKTjaAT" role="2uGzQp">
-          <property role="1D$E9h" value="Changing group title" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjaWP" role="2uGzQp">
-          <property role="2uJhrd" value="Group's peer" />
-          <ref role="2uJhvL" node="GBscvBBspP" resolve="groupPeer" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjaWX" role="2uGzQp">
-          <property role="2uJhrd" value="new group title" />
-          <ref role="2uJhvL" node="GBscvBBspW" resolve="title" />
-        </node>
-        <node concept="2uJ1As" id="2hmARQJSZ3y" role="2uGzQp">
-          <property role="2uJhrd" value="Random Id of operation" />
-          <ref role="2uJhvL" node="2hmARQJSOZp" resolve="rid" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBspP" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="groupPeer" />
@@ -3499,24 +3477,24 @@
         <node concept="2m1Rp1" id="2vxDjoto7JX" role="2m6efq">
           <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foB8" role="1GBnQ6">
+          <property role="NXePf" value="Changing group title" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foB9" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <ref role="NX6Kv" node="GBscvBBspP" resolve="groupPeer" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBa" role="1GBnQ6">
+          <property role="NX6R2" value="new group title" />
+          <ref role="NX6Kv" node="GBscvBBspW" resolve="title" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBb" role="1GBnQ6">
+          <property role="NX6R2" value="Random Id of operation" />
+          <ref role="NX6Kv" node="2hmARQJSOZp" resolve="rid" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBt0k" role="2m5mJr">
         <property role="TrG5h" value="EditGroupAvatar" />
-        <node concept="1D$$RI" id="EUEXKTjaX4" role="2uGzQp">
-          <property role="1D$E9h" value="Changing group avatar" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjaXa" role="2uGzQp">
-          <property role="2uJhrd" value="Group's peer" />
-          <ref role="2uJhvL" node="GBscvBBt14" resolve="groupPeer" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjaXi" role="2uGzQp">
-          <property role="2uJhrd" value="uploaded file for avatar" />
-          <ref role="2uJhvL" node="GBscvBBt1b" resolve="fileLocation" />
-        </node>
-        <node concept="2uJ1As" id="2hmARQJSZ3H" role="2uGzQp">
-          <property role="2uJhrd" value="Random Id of operation" />
-          <ref role="2uJhvL" node="2hmARQJSPrC" resolve="rid" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBt14" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="groupPeer" />
@@ -3572,20 +3550,24 @@
             <property role="Nu42W" value="73" />
           </node>
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foBT" role="1GBnQ6">
+          <property role="NXePf" value="Changing group avatar" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBU" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <ref role="NX6Kv" node="GBscvBBt14" resolve="groupPeer" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBV" role="1GBnQ6">
+          <property role="NX6R2" value="uploaded file for avatar" />
+          <ref role="NX6Kv" node="GBscvBBt1b" resolve="fileLocation" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBW" role="1GBnQ6">
+          <property role="NX6R2" value="Random Id of operation" />
+          <ref role="NX6Kv" node="2hmARQJSPrC" resolve="rid" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBte6" role="2m5mJr">
         <property role="TrG5h" value="RemoveGroupAvatar" />
-        <node concept="1D$$RI" id="EUEXKTjaXp" role="2uGzQp">
-          <property role="1D$E9h" value="Removing group avatar" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjaXv" role="2uGzQp">
-          <property role="2uJhrd" value="Group's peer" />
-          <ref role="2uJhvL" node="GBscvBBteX" resolve="groupPeer" />
-        </node>
-        <node concept="2uJ1As" id="2hmARQJSZ3R" role="2uGzQp">
-          <property role="2uJhrd" value="Random Id of operation" />
-          <ref role="2uJhvL" node="2hmARQJSPRq" resolve="rid" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBteX" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="groupPeer" />
@@ -3606,24 +3588,20 @@
         <node concept="2m1Rp1" id="2vxDjoto92C" role="2m6efq">
           <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foA$" role="1GBnQ6">
+          <property role="NXePf" value="Removing group avatar" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foA_" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <ref role="NX6Kv" node="GBscvBBteX" resolve="groupPeer" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAA" role="1GBnQ6">
+          <property role="NX6R2" value="Random Id of operation" />
+          <ref role="NX6Kv" node="2hmARQJSPRq" resolve="rid" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBu09" role="2m5mJr">
         <property role="TrG5h" value="InviteUser" />
-        <node concept="1D$$RI" id="EUEXKTjbjy" role="2uGzQp">
-          <property role="1D$E9h" value="Inviting user to group" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjbjC" role="2uGzQp">
-          <property role="2uJhrd" value="Group's peer" />
-          <ref role="2uJhvL" node="GBscvBBu15" resolve="groupPeer" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjbjK" role="2uGzQp">
-          <property role="2uJhrd" value="Users for invitation" />
-          <ref role="2uJhvL" node="GBscvBBu1c" resolve="user" />
-        </node>
-        <node concept="2uJ1As" id="2hmARQJSZ41" role="2uGzQp">
-          <property role="2uJhrd" value="Random Id of operation" />
-          <ref role="2uJhvL" node="2hmARQJSQj8" resolve="rid" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBu15" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="groupPeer" />
@@ -3651,20 +3629,24 @@
         <node concept="2m1Rp1" id="2vxDjoto9tV" role="2m6efq">
           <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foB2" role="1GBnQ6">
+          <property role="NXePf" value="Inviting user to group" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foB3" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <ref role="NX6Kv" node="GBscvBBu15" resolve="groupPeer" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foB4" role="1GBnQ6">
+          <property role="NX6R2" value="Users for invitation" />
+          <ref role="NX6Kv" node="GBscvBBu1c" resolve="user" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foB5" role="1GBnQ6">
+          <property role="NX6R2" value="Random Id of operation" />
+          <ref role="NX6Kv" node="2hmARQJSQj8" resolve="rid" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBu2s" role="2m5mJr">
         <property role="TrG5h" value="LeaveGroup" />
-        <node concept="1D$$RI" id="EUEXKTjbjR" role="2uGzQp">
-          <property role="1D$E9h" value="Leaving group" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjbjX" role="2uGzQp">
-          <property role="2uJhrd" value="Group's peer" />
-          <ref role="2uJhvL" node="GBscvBBu3w" resolve="groupPeer" />
-        </node>
-        <node concept="2uJ1As" id="2hmARQJSZ4b" role="2uGzQp">
-          <property role="2uJhrd" value="Random Id of operation" />
-          <ref role="2uJhvL" node="2hmARQJSQIU" resolve="rid" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBu3w" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="groupPeer" />
@@ -3685,24 +3667,20 @@
         <node concept="2m1Rp1" id="2vxDjoto9Te" role="2m6efq">
           <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foBv" role="1GBnQ6">
+          <property role="NXePf" value="Leaving group" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBw" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <ref role="NX6Kv" node="GBscvBBu3w" resolve="groupPeer" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBx" role="1GBnQ6">
+          <property role="NX6R2" value="Random Id of operation" />
+          <ref role="NX6Kv" node="2hmARQJSQIU" resolve="rid" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBu78" role="2m5mJr">
         <property role="TrG5h" value="KickUser" />
-        <node concept="1D$$RI" id="EUEXKTjbkn" role="2uGzQp">
-          <property role="1D$E9h" value="Kicking user from group" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjbkt" role="2uGzQp">
-          <property role="2uJhrd" value="Group's peer" />
-          <ref role="2uJhvL" node="GBscvBBu8m" resolve="groupPeer" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjbk_" role="2uGzQp">
-          <property role="2uJhrd" value="users for removing" />
-          <ref role="2uJhvL" node="GBscvBBu8t" resolve="user" />
-        </node>
-        <node concept="2uJ1As" id="2hmARQJSZ4u" role="2uGzQp">
-          <property role="2uJhrd" value="Random Id of operation" />
-          <ref role="2uJhvL" node="2hmARQJSRAi" resolve="rid" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBu8m" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="groupPeer" />
@@ -3729,6 +3707,21 @@
         </node>
         <node concept="2m1Rp1" id="2vxDjotoaJO" role="2m6efq">
           <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_I" role="1GBnQ6">
+          <property role="NXePf" value="Kicking user from group" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_J" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <ref role="NX6Kv" node="GBscvBBu8m" resolve="groupPeer" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_K" role="1GBnQ6">
+          <property role="NX6R2" value="users for removing" />
+          <ref role="NX6Kv" node="GBscvBBu8t" resolve="user" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_L" role="1GBnQ6">
+          <property role="NX6R2" value="Random Id of operation" />
+          <ref role="NX6Kv" node="2hmARQJSRAi" resolve="rid" />
         </node>
       </node>
       <node concept="NpBTk" id="GBscvBByXn" role="2m5mJr">
@@ -4174,21 +4167,6 @@
       </node>
       <node concept="2m6fVq" id="2uPas5edloX" role="2m5mJr">
         <property role="TrG5h" value="LoadHistory" />
-        <node concept="1D$$RI" id="EUEXKTjcn1" role="2uGzQp">
-          <property role="1D$E9h" value="Loading history of chat" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjcn7" role="2uGzQp">
-          <property role="2uJhrd" value="Peer of conversation" />
-          <ref role="2uJhvL" node="2uPas5edlpe" resolve="peer" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjcnq" role="2uGzQp">
-          <property role="2uJhrd" value="start date of messages for loading or 0 for loading from start" />
-          <ref role="2uJhvL" node="2uPas5edlpl" resolve="startDate" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjcn$" role="2uGzQp">
-          <property role="2uJhrd" value="maximum amount of messages (max is 100)" />
-          <ref role="2uJhvL" node="2uPas5edlpu" resolve="limit" />
-        </node>
         <node concept="2m7Kf5" id="2uPas5edlpe" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="peer" />
@@ -4233,6 +4211,21 @@
           <node concept="Nu42z" id="2uPas5edlpE" role="NuuwV">
             <property role="Nu42W" value="77" />
           </node>
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foAw" role="1GBnQ6">
+          <property role="NXePf" value="Loading history of chat" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAx" role="1GBnQ6">
+          <property role="NX6R2" value="Peer of conversation" />
+          <ref role="NX6Kv" node="2uPas5edlpe" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAy" role="1GBnQ6">
+          <property role="NX6R2" value="start date of messages for loading or 0 for loading from start" />
+          <ref role="NX6Kv" node="2uPas5edlpl" resolve="startDate" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAz" role="1GBnQ6">
+          <property role="NX6R2" value="maximum amount of messages (max is 100)" />
+          <ref role="NX6Kv" node="2uPas5edlpu" resolve="limit" />
         </node>
       </node>
       <node concept="NvyAe" id="2uPas5edomt" role="2m5mJr" />
@@ -4326,17 +4319,6 @@
       </node>
       <node concept="2m6fVq" id="2uPas5edmy5" role="2m5mJr">
         <property role="TrG5h" value="LoadDialogs" />
-        <node concept="1D$$RI" id="EUEXKTjcHR" role="2uGzQp">
-          <property role="1D$E9h" value="Loading conversation history" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjcI5" role="2uGzQp">
-          <property role="2uJhrd" value="start date of conversation loading" />
-          <ref role="2uJhvL" node="2uPas5edmOy" resolve="startDate" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjeoQ" role="2uGzQp">
-          <property role="2uJhrd" value="limit maximum amount of messages (max is 100)" />
-          <ref role="2uJhvL" node="2uPas5edmOD" resolve="limit" />
-        </node>
         <node concept="2m7Kf5" id="2uPas5edmOy" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="startDate" />
@@ -4383,6 +4365,17 @@
           <node concept="Nu42z" id="2uPas5ednrT" role="NuuwV">
             <property role="Nu42W" value="69" />
           </node>
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foBh" role="1GBnQ6">
+          <property role="NXePf" value="Loading conversation history" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBi" role="1GBnQ6">
+          <property role="NX6R2" value="start date of conversation loading" />
+          <ref role="NX6Kv" node="2uPas5edmOy" resolve="startDate" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBj" role="1GBnQ6">
+          <property role="NX6R2" value="limit maximum amount of messages (max is 100)" />
+          <ref role="NX6Kv" node="2uPas5edmOD" resolve="limit" />
         </node>
       </node>
       <node concept="1Dx9M1" id="2uPas5edbOX" role="1Dx9rD">
@@ -4643,13 +4636,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBBe$c" role="2m5mJr">
         <property role="TrG5h" value="GetPublicKeys" />
-        <node concept="1D$$RI" id="EUEXKTjeJb" role="2uGzQp">
-          <property role="1D$E9h" value="Loading required publick keys" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjeJh" role="2uGzQp">
-          <property role="2uJhrd" value="key requests" />
-          <ref role="2uJhvL" node="1qxBM7m23s" resolve="keys" />
-        </node>
         <node concept="2m7Kf5" id="1qxBM7m23s" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="keys" />
@@ -4676,6 +4662,13 @@
             <property role="Nu42W" value="18" />
           </node>
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foAn" role="1GBnQ6">
+          <property role="NXePf" value="Loading required publick keys" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAo" role="1GBnQ6">
+          <property role="NX6R2" value="key requests" />
+          <ref role="NX6Kv" node="1qxBM7m23s" resolve="keys" />
+        </node>
       </node>
     </node>
     <node concept="2m5mJO" id="GBscvBBulc" role="2m5lHt">
@@ -4701,31 +4694,20 @@
         <node concept="2m1Rp1" id="GBscvBBuy4" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node concept="1D$$RI" id="EUEXKTjfrP" role="2uGzQp">
-          <property role="1D$E9h" value="Sending typing notification" />
+        <node concept="NXeRC" id="2EAJ7H6foBz" role="1GBnQ6">
+          <property role="NXePf" value="Sending typing notification" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTjfs2" role="2uGzQp">
-          <property role="2uJhrd" value="Destination peer" />
-          <ref role="2uJhvL" node="GBscvBBuxO" resolve="peer" />
+        <node concept="NX1gA" id="2EAJ7H6foB$" role="1GBnQ6">
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="GBscvBBuxO" resolve="peer" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTjfsa" role="2uGzQp">
-          <property role="2uJhrd" value="typing type." />
-          <ref role="2uJhvL" node="GBscvBBuxV" resolve="typingType" />
+        <node concept="NX1gA" id="2EAJ7H6foB_" role="1GBnQ6">
+          <property role="NX6R2" value="typing type." />
+          <ref role="NX6Kv" node="GBscvBBuxV" resolve="typingType" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBuyg" role="2m5mJr">
         <property role="TrG5h" value="SetOnline" />
-        <node concept="1D$$RI" id="EUEXKTjfsh" role="2uGzQp">
-          <property role="1D$E9h" value="Sending online state" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjfsn" role="2uGzQp">
-          <property role="2uJhrd" value="is user online" />
-          <ref role="2uJhvL" node="GBscvBBuyv" resolve="isOnline" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjfsv" role="2uGzQp">
-          <property role="2uJhrd" value="timeout of online state" />
-          <ref role="2uJhvL" node="GBscvBBuyA" resolve="timeout" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBuyv" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="isOnline" />
@@ -4741,6 +4723,17 @@
         </node>
         <node concept="2m1Rp1" id="GBscvBBuyJ" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foAB" role="1GBnQ6">
+          <property role="NXePf" value="Sending online state" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAC" role="1GBnQ6">
+          <property role="NX6R2" value="is user online" />
+          <ref role="NX6Kv" node="GBscvBBuyv" resolve="isOnline" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAD" role="1GBnQ6">
+          <property role="NX6R2" value="timeout of online state" />
+          <ref role="NX6Kv" node="GBscvBBuyA" resolve="timeout" />
         </node>
       </node>
       <node concept="NvyAe" id="GBscvBBxyf" role="2m5mJr" />
@@ -5026,21 +5019,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBBiy9" role="2m5mJr">
         <property role="TrG5h" value="GetFile" />
-        <node concept="1D$$RI" id="EUEXKTjfMW" role="2uGzQp">
-          <property role="1D$E9h" value="Downloading file part" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjfN2" role="2uGzQp">
-          <property role="2uJhrd" value="location of file" />
-          <ref role="2uJhvL" node="GBscvBBiyL" resolve="fileLocation" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjfNa" role="2uGzQp">
-          <property role="2uJhrd" value="offset in file in bytes" />
-          <ref role="2uJhvL" node="GBscvBBiyS" resolve="offset" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjfNk" role="2uGzQp">
-          <property role="2uJhrd" value="maximum size of file part" />
-          <ref role="2uJhvL" node="GBscvBBiz1" resolve="limit" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBiyL" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="fileLocation" />
@@ -5071,6 +5049,21 @@
             <property role="Nu42W" value="11" />
           </node>
         </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_l" role="1GBnQ6">
+          <property role="NXePf" value="Downloading file part" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_m" role="1GBnQ6">
+          <property role="NX6R2" value="location of file" />
+          <ref role="NX6Kv" node="GBscvBBiyL" resolve="fileLocation" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_n" role="1GBnQ6">
+          <property role="NX6R2" value="offset in file in bytes" />
+          <ref role="NX6Kv" node="GBscvBBiyS" resolve="offset" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_o" role="1GBnQ6">
+          <property role="NX6R2" value="maximum size of file part" />
+          <ref role="NX6Kv" node="GBscvBBiz1" resolve="limit" />
+        </node>
       </node>
       <node concept="NvyAe" id="GBscvBBiZs" role="2m5mJr" />
       <node concept="2m5naR" id="GBscvBBj9g" role="2m5mJr">
@@ -5090,9 +5083,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBBjkf" role="2m5mJr">
         <property role="TrG5h" value="StartUpload" />
-        <node concept="1D$$RI" id="EUEXKTjg9Q" role="2uGzQp">
-          <property role="1D$E9h" value="Starting file upload" />
-        </node>
         <node concept="Nu42z" id="GBscvBBjkg" role="NuuwV">
           <property role="Nu42W" value="12" />
         </node>
@@ -5107,6 +5097,9 @@
           <node concept="Nu42z" id="GBscvBBjla" role="NuuwV">
             <property role="Nu42W" value="13" />
           </node>
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foBc" role="1GBnQ6">
+          <property role="NXePf" value="Starting file upload" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBjt3" role="2m5mJr">
@@ -5134,35 +5127,20 @@
         <node concept="2m1Rp1" id="GBscvBBjuu" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node concept="1D$$RI" id="EUEXKTjg9T" role="2uGzQp">
-          <property role="1D$E9h" value="Uploading part of file" />
+        <node concept="NXeRC" id="2EAJ7H6foAd" role="1GBnQ6">
+          <property role="NXePf" value="Uploading part of file" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTjg9Y" role="2uGzQp">
-          <property role="2uJhrd" value="index of block" />
-          <ref role="2uJhvL" node="GBscvBBjua" resolve="blockIndex" />
+        <node concept="NX1gA" id="2EAJ7H6foAe" role="1GBnQ6">
+          <property role="NX6R2" value="index of block" />
+          <ref role="NX6Kv" node="GBscvBBjua" resolve="blockIndex" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTjga6" role="2uGzQp">
-          <property role="2uJhrd" value="block payload" />
-          <ref role="2uJhvL" node="GBscvBBjuj" resolve="payload" />
+        <node concept="NX1gA" id="2EAJ7H6foAf" role="1GBnQ6">
+          <property role="NX6R2" value="block payload" />
+          <ref role="NX6Kv" node="GBscvBBjuj" resolve="payload" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBjv$" role="2m5mJr">
         <property role="TrG5h" value="CompleteUpload" />
-        <node concept="1D$$RI" id="EUEXKTjgad" role="2uGzQp">
-          <property role="1D$E9h" value="Complete uploading" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjgaj" role="2uGzQp">
-          <property role="2uJhrd" value="Upload configuration" />
-          <ref role="2uJhvL" node="GBscvBBjwH" resolve="config" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjgar" role="2uGzQp">
-          <property role="2uJhrd" value="blocks count" />
-          <ref role="2uJhvL" node="GBscvBBjwO" resolve="blocksCount" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjga_" role="2uGzQp">
-          <property role="2uJhrd" value="crc32 of uploaded file" />
-          <ref role="2uJhvL" node="GBscvBBjwX" resolve="crc32" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBjwH" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="config" />
@@ -5195,6 +5173,21 @@
             <property role="Nu42W" value="17" />
           </node>
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foBd" role="1GBnQ6">
+          <property role="NXePf" value="Complete uploading" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBe" role="1GBnQ6">
+          <property role="NX6R2" value="Upload configuration" />
+          <ref role="NX6Kv" node="GBscvBBjwH" resolve="config" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBf" role="1GBnQ6">
+          <property role="NX6R2" value="blocks count" />
+          <ref role="NX6Kv" node="GBscvBBjwO" resolve="blocksCount" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBg" role="1GBnQ6">
+          <property role="NX6R2" value="crc32 of uploaded file" />
+          <ref role="NX6Kv" node="GBscvBBjwX" resolve="crc32" />
+        </node>
       </node>
     </node>
     <node concept="2m5mJO" id="GBscvBBuJu" role="2m5lHt">
@@ -5208,17 +5201,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBBv8U" role="2m5mJr">
         <property role="TrG5h" value="RegisterGooglePush" />
-        <node concept="1D$$RI" id="EUEXKTjgxf" role="2uGzQp">
-          <property role="1D$E9h" value="Registering push token on server" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjgxl" role="2uGzQp">
-          <property role="2uJhrd" value="Project Id of token" />
-          <ref role="2uJhvL" node="GBscvBBv92" resolve="projectId" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjgxt" role="2uGzQp">
-          <property role="2uJhrd" value="token value" />
-          <ref role="2uJhvL" node="1qxBM7m3kL" resolve="token" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBv92" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="projectId" />
@@ -5234,6 +5216,17 @@
         </node>
         <node concept="2m1Rp1" id="GBscvBBv99" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foAt" role="1GBnQ6">
+          <property role="NXePf" value="Registering push token on server" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAu" role="1GBnQ6">
+          <property role="NX6R2" value="Project Id of token" />
+          <ref role="NX6Kv" node="GBscvBBv92" resolve="projectId" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foAv" role="1GBnQ6">
+          <property role="NX6R2" value="token value" />
+          <ref role="NX6Kv" node="1qxBM7m3kL" resolve="token" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBv9j" role="2m5mJr">
@@ -5254,28 +5247,28 @@
         <node concept="2m1Rp1" id="GBscvBBv9K" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node concept="1D$$RI" id="EUEXKTjgxy" role="2uGzQp">
-          <property role="1D$E9h" value="Registering apple push on server" />
+        <node concept="NXeRC" id="2EAJ7H6fo_z" role="1GBnQ6">
+          <property role="NXePf" value="Registering apple push on server" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTjgxB" role="2uGzQp">
-          <property role="2uJhrd" value="apns key id" />
-          <ref role="2uJhvL" node="GBscvBBv9w" resolve="apnsKey" />
+        <node concept="NX1gA" id="2EAJ7H6fo_$" role="1GBnQ6">
+          <property role="NX6R2" value="apns key id" />
+          <ref role="NX6Kv" node="GBscvBBv9w" resolve="apnsKey" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTjgxJ" role="2uGzQp">
-          <property role="2uJhrd" value="token value" />
-          <ref role="2uJhvL" node="GBscvBBv9B" resolve="token" />
+        <node concept="NX1gA" id="2EAJ7H6fo__" role="1GBnQ6">
+          <property role="NX6R2" value="token value" />
+          <ref role="NX6Kv" node="GBscvBBv9B" resolve="token" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBvmU" role="2m5mJr">
         <property role="TrG5h" value="UnregisterPush" />
-        <node concept="1D$$RI" id="EUEXKTjgSu" role="2uGzQp">
-          <property role="1D$E9h" value="Unregister push" />
-        </node>
         <node concept="Nu42z" id="GBscvBBvmV" role="NuuwV">
           <property role="Nu42W" value="34" />
         </node>
         <node concept="2m1Rp1" id="GBscvBBvni" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foBJ" role="1GBnQ6">
+          <property role="NXePf" value="Unregister push" />
         </node>
       </node>
     </node>
@@ -5626,14 +5619,14 @@
       <node concept="NvyAe" id="GBscvBBQmv" role="2m5mJr" />
       <node concept="2m6fVq" id="GBscvBBAdf" role="2m5mJr">
         <property role="TrG5h" value="GetState" />
-        <node concept="1D$$RI" id="EUEXKTjhfc" role="2uGzQp">
-          <property role="1D$E9h" value="Get main sequence state" />
-        </node>
         <node concept="Nu42z" id="GBscvBBAdg" role="NuuwV">
           <property role="Nu42W" value="09" />
         </node>
         <node concept="2m1Rp1" id="GBscvBBAdN" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foAE" role="1GBnQ6">
+          <property role="NXePf" value="Get main sequence state" />
         </node>
       </node>
       <node concept="2m5naR" id="GBscvBB_GO" role="2m5mJr">
@@ -5662,9 +5655,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBB_Gl" role="2m5mJr">
         <property role="TrG5h" value="GetDifference" />
-        <node concept="1D$$RI" id="EUEXKTjhfh" role="2uGzQp">
-          <property role="1D$E9h" value="Getting difference of sequence" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBB_Gr" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="seq" />
@@ -5747,17 +5737,13 @@
             <property role="Nu42W" value="0C" />
           </node>
         </node>
+        <node concept="NXeRC" id="2EAJ7H6foA2" role="1GBnQ6">
+          <property role="NXePf" value="Getting difference of sequence" />
+        </node>
       </node>
       <node concept="NvyAe" id="GBscvBBAXl" role="2m5mJr" />
       <node concept="2m6fVq" id="GBscvBBBd$" role="2m5mJr">
         <property role="TrG5h" value="SubscribeToOnline" />
-        <node concept="1D$$RI" id="EUEXKTjhfm" role="2uGzQp">
-          <property role="1D$E9h" value="Subscribing for users online" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjhfs" role="2uGzQp">
-          <property role="2uJhrd" value="Users for subscription" />
-          <ref role="2uJhvL" node="GBscvBBBec" resolve="users" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBBec" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="users" />
@@ -5773,16 +5759,16 @@
         <node concept="2m1Rp1" id="55bmeIQ92fp" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_B" role="1GBnQ6">
+          <property role="NXePf" value="Subscribing for users online" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_C" role="1GBnQ6">
+          <property role="NX6R2" value="Users for subscription" />
+          <ref role="NX6Kv" node="GBscvBBBec" resolve="users" />
+        </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBBf4" role="2m5mJr">
         <property role="TrG5h" value="SubscribeFromOnline" />
-        <node concept="1D$$RI" id="EUEXKTjhfy" role="2uGzQp">
-          <property role="1D$E9h" value="Removing subscription for users online" />
-        </node>
-        <node concept="2uJ1As" id="EUEXKTjhfC" role="2uGzQp">
-          <property role="2uJhrd" value="Users of subscriptions" />
-          <ref role="2uJhvL" node="GBscvBBBfM" resolve="users" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBBfM" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="users" />
@@ -5797,6 +5783,13 @@
         </node>
         <node concept="2m1Rp1" id="55bmeIQ92fm" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foBK" role="1GBnQ6">
+          <property role="NXePf" value="Removing subscription for users online" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBL" role="1GBnQ6">
+          <property role="NX6R2" value="Users of subscriptions" />
+          <ref role="NX6Kv" node="GBscvBBBfM" resolve="users" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBBgN" role="2m5mJr">
@@ -5816,12 +5809,12 @@
         <node concept="2m1Rp1" id="55bmeIQ92fj" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node concept="1D$$RI" id="EUEXKTjhfG" role="2uGzQp">
-          <property role="1D$E9h" value="Subscribing for groups online" />
+        <node concept="NXeRC" id="2EAJ7H6foB6" role="1GBnQ6">
+          <property role="NXePf" value="Subscribing for groups online" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTjhfL" role="2uGzQp">
-          <property role="2uJhrd" value="Groups for subscription" />
-          <ref role="2uJhvL" node="GBscvBBBhB" resolve="groups" />
+        <node concept="NX1gA" id="2EAJ7H6foB7" role="1GBnQ6">
+          <property role="NX6R2" value="Groups for subscription" />
+          <ref role="NX6Kv" node="GBscvBBBhB" resolve="groups" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBBiF" role="2m5mJr">
@@ -5841,12 +5834,12 @@
         <node concept="2m1Rp1" id="55bmeIQ92fg" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
-        <node concept="1D$$RI" id="EUEXKTjhfP" role="2uGzQp">
-          <property role="1D$E9h" value="Removing subscription for groups online" />
+        <node concept="NXeRC" id="2EAJ7H6foA8" role="1GBnQ6">
+          <property role="NXePf" value="Removing subscription for groups online" />
         </node>
-        <node concept="2uJ1As" id="EUEXKTjhfU" role="2uGzQp">
-          <property role="2uJhrd" value="Groups of subscriptions" />
-          <ref role="2uJhvL" node="GBscvBBBj_" resolve="groups" />
+        <node concept="NX1gA" id="2EAJ7H6foA9" role="1GBnQ6">
+          <property role="NX6R2" value="Groups of subscriptions" />
+          <ref role="NX6Kv" node="GBscvBBBj_" resolve="groups" />
         </node>
       </node>
     </node>
