@@ -82,15 +82,6 @@
       </node>
     </node>
   </node>
-  <node concept="1M2fIO" id="3zc4oYAsIyl">
-    <ref role="1M2myG" to="tsp6:3zc4oYAs0wj" resolve="RpcDocParameter" />
-    <node concept="1N5Pfh" id="3zc4oYAtoaZ" role="1Mr941">
-      <ref role="1N5Vy1" to="tsp6:3zc4oYAsgpY" />
-      <node concept="1dDu$B" id="3zc4oYAtocp" role="1N6uqs">
-        <ref role="1dDu$A" to="tsp6:22nuAqQy7Az" resolve="StructAttribute" />
-      </node>
-    </node>
-  </node>
   <node concept="1M2fIO" id="EUEXKTjHP9">
     <ref role="1M2myG" to="tsp6:EUEXKTjFZU" resolve="StructDocParameter" />
     <node concept="1N5Pfh" id="EUEXKTjHPa" role="1Mr941">
