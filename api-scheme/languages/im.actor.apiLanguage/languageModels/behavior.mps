@@ -216,12 +216,6 @@
       </node>
     </node>
   </node>
-  <node concept="13h7C7" id="3zc4oYAsIoi">
-    <ref role="13h7C2" to="tsp6:3zc4oYAs0wj" resolve="RpcDocParameter" />
-    <node concept="13hLZK" id="3zc4oYAsIqE" role="13h7CW">
-      <node concept="3clFbS" id="3zc4oYAsIqF" role="2VODD2" />
-    </node>
-  </node>
   <node concept="13h7C7" id="3zc4oYAt5p6">
     <ref role="13h7C2" to="tsp6:22nuAqQ_Ani" resolve="IStruct" />
     <node concept="13hLZK" id="3zc4oYAt5p7" role="13h7CW">

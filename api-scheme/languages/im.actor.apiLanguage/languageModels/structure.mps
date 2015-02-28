@@ -270,11 +270,11 @@
     <property role="TrG5h" value="Rpc" />
     <property role="34LRSv" value="rpc" />
     <ref role="1TJDcQ" node="22nuAqQy50h" resolve="ApiNamedDef" />
-    <node concept="1TJgyj" id="3zc4oYAvyKm" role="1TKVEi">
+    <node concept="1TJgyj" id="2EAJ7H6eW7X" role="1TKVEi">
       <property role="20lmBu" value="aggregation" />
       <property role="20kJfa" value="docs" />
       <property role="20lbJX" value="0..n" />
-      <ref role="20lvS9" node="3zc4oYAsgmi" resolve="RpcDoc" />
+      <ref role="20lvS9" node="EUEXKTjp2A" resolve="StructDoc" />
     </node>
     <node concept="1TJgyj" id="22nuAqQzTAW" role="1TKVEi">
       <property role="20lmBu" value="aggregation" />
@@ -447,15 +447,6 @@
       <ref role="20lvS9" node="EUEXKTjp2A" resolve="StructDoc" />
     </node>
   </node>
-  <node concept="1TIwiD" id="2uPas5e9QgJ">
-    <property role="TrG5h" value="RpcDocComment" />
-    <property role="34LRSv" value="#" />
-    <ref role="1TJDcQ" node="3zc4oYAsgmi" resolve="RpcDoc" />
-    <node concept="1TJgyi" id="2uPas5e9SIg" role="1TKVEl">
-      <property role="TrG5h" value="content" />
-      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
-    </node>
-  </node>
   <node concept="1TIwiD" id="2uPas5ecrl0">
     <property role="TrG5h" value="SectionDoc" />
     <property role="34LRSv" value="#" />
@@ -480,27 +471,6 @@
       <property role="TrG5h" value="description" />
       <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
     </node>
-  </node>
-  <node concept="1TIwiD" id="3zc4oYAs0wj">
-    <property role="TrG5h" value="RpcDocParameter" />
-    <property role="34LRSv" value="param" />
-    <ref role="1TJDcQ" node="3zc4oYAsgmi" resolve="RpcDoc" />
-    <node concept="1TJgyj" id="3zc4oYAsgpY" role="1TKVEi">
-      <property role="20lmBu" value="reference" />
-      <property role="20kJfa" value="paramter" />
-      <property role="20lbJX" value="1" />
-      <ref role="20lvS9" node="22nuAqQy7Az" resolve="StructAttribute" />
-    </node>
-    <node concept="1TJgyi" id="3zc4oYAsgt2" role="1TKVEl">
-      <property role="TrG5h" value="description" />
-      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
-    </node>
-  </node>
-  <node concept="1TIwiD" id="3zc4oYAsgmi">
-    <property role="TrG5h" value="RpcDoc" />
-    <property role="R5$K7" value="true" />
-    <property role="R5$K2" value="false" />
-    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
   </node>
   <node concept="1TIwiD" id="EUEXKTjp2A">
     <property role="TrG5h" value="StructDoc" />
