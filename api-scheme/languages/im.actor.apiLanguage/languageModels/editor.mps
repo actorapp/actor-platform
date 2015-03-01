@@ -26,6 +26,7 @@
       <concept id="1237308012275" name="jetbrains.mps.lang.editor.structure.IndentLayoutNewLineStyleClassItem" flags="ln" index="ljvvj" />
       <concept id="1142886221719" name="jetbrains.mps.lang.editor.structure.QueryFunction_NodeCondition" flags="in" index="pkWqt" />
       <concept id="1142886811589" name="jetbrains.mps.lang.editor.structure.ConceptFunctionParameter_node" flags="nn" index="pncrf" />
+      <concept id="1237385578942" name="jetbrains.mps.lang.editor.structure.IndentLayoutOnNewLineStyleClassItem" flags="ln" index="pVoyu" />
       <concept id="1080736578640" name="jetbrains.mps.lang.editor.structure.BaseEditorComponent" flags="ig" index="2wURMF">
         <child id="1080736633877" name="cellModel" index="2wV5jI" />
       </concept>
@@ -722,8 +723,27 @@
   <node concept="24kQdi" id="22nuAqQ$5Fr">
     <ref role="1XX52x" to="tsp6:22nuAqQ$0Jq" resolve="ResponseRefAnonymous" />
     <node concept="3EZMnI" id="22nuAqQ$5MV" role="2wV5jI">
+      <node concept="3F0ifn" id="4zDDY4ETjuX" role="3EZMnx">
+        <property role="3F0ifm" value="" />
+        <node concept="ljvvj" id="4zDDY4ETjve" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+      </node>
+      <node concept="3F2HdR" id="4zDDY4ESNt7" role="3EZMnx">
+        <ref role="1NtTu8" to="tsp6:4zDDY4ESNfc" />
+        <node concept="lj46D" id="4zDDY4ETjuE" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+        <node concept="2iRkQZ" id="4zDDY4ETO4U" role="2czzBx" />
+      </node>
       <node concept="3F0ifn" id="22nuAqQ$5Y7" role="3EZMnx">
         <property role="3F0ifm" value="tuple" />
+        <node concept="lj46D" id="4zDDY4ERMXK" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+        <node concept="pVoyu" id="4zDDY4ESiOt" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
       </node>
       <node concept="3F1sOY" id="44kR2PMrjJF" role="3EZMnx">
         <ref role="1NtTu8" to="tsp6:44kR2PMrjgm" />
@@ -731,6 +751,9 @@
       <node concept="3F0ifn" id="22nuAqQ$6eP" role="3EZMnx">
         <property role="3F0ifm" value="(" />
         <node concept="11LMrY" id="22nuAqQ_7uj" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+        <node concept="lj46D" id="4zDDY4ERMXN" role="3F10Kt">
           <property role="VOm3f" value="true" />
         </node>
       </node>

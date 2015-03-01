@@ -313,6 +313,12 @@
     <property role="TrG5h" value="ResponseRefAnonymous" />
     <property role="34LRSv" value="tuple" />
     <ref role="1TJDcQ" node="22nuAqQ$0I1" resolve="ResponseRef" />
+    <node concept="1TJgyj" id="4zDDY4ESNfc" role="1TKVEi">
+      <property role="20lmBu" value="aggregation" />
+      <property role="20kJfa" value="docs" />
+      <property role="20lbJX" value="0..n" />
+      <ref role="20lvS9" node="EUEXKTjp2A" resolve="StructDoc" />
+    </node>
     <node concept="PrWs8" id="22nuAqQ$kkD" role="PzmwI">
       <ref role="PrY4T" node="22nuAqQ$k66" resolve="IRpcObject" />
     </node>

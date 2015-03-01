@@ -6,10 +6,16 @@ package im.actor.generator.scheme;
 public class SchemeDocParameter extends SchemeDoc {
     private String argument;
     private String description;
+    private ParameterCategory category;
 
-    public SchemeDocParameter(String argument, String description) {
+    public SchemeDocParameter(String argument, String description, ParameterCategory category) {
         this.argument = argument;
         this.description = description.trim();
+        this.category = category;
+    }
+
+    public ParameterCategory getCategory() {
+        return category;
     }
 
     public String getArgument() {
