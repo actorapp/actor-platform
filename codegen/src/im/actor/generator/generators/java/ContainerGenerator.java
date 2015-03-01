@@ -72,6 +72,142 @@ public class ContainerGenerator {
         }
     }
 
+    public static void generateToString(FileGenerator generator, SchemeContainer container,
+                                        SchemeDefinition definition) throws IOException {
+        generator.appendLn("@Override");
+        generator.appendLn("public String toString() {");
+        generator.increaseDepth();
+        generator.append("String res = \"");
+        if (container instanceof SchemeUpdate) {
+            generator.append("update " + ((SchemeUpdate) container).getName());
+        } else if (container instanceof SchemeResponse) {
+            generator.append("response " + ((SchemeResponse) container).getName());
+        } else if (container instanceof SchemeRpc) {
+            generator.append("rpc " + ((SchemeRpc) container).getName());
+        } else if (container instanceof SchemeResponseAnonymous) {
+            generator.append("tuple " + ((SchemeResponseAnonymous) container).getRpc().getName());
+        } else if (container instanceof SchemeUpdateBox) {
+            generator.append("update box " + ((SchemeUpdateBox) container).getName());
+        } else if (container instanceof SchemeStruct) {
+            generator.append("struct " + ((SchemeStruct) container).getName());
+        } else {
+            throw new IOException();
+        }
+        generator.appendLn("{\";");
+        boolean isFirst = true;
+        for (SchemeAttribute attribute : container.getAttributes()) {
+            ParameterCategory category = container.getParameterCategory(attribute.getName());
+            if (category == ParameterCategory.HIDDEN ||
+                    category == ParameterCategory.DANGER) {
+                continue;
+            }
+            if (isFirst) {
+                isFirst = false;
+                generator.append("res += \"" + attribute.getName() + "=\" + ");
+            } else {
+                generator.append("res += \", " + attribute.getName() + "=\" + ");
+            }
+
+            generateToStringAppend(generator, attribute.getName(), attribute.getType(), definition, category);
+            generator.appendLn(";");
+        }
+        generator.appendLn("res += \"}\";");
+        generator.appendLn("return res;");
+        generator.decreaseDepth();
+        generator.appendLn("}");
+        generator.appendLn();
+    }
+
+    public static void generateToStringAppend(FileGenerator generator, String attributeName, SchemeType type,
+                                              SchemeDefinition definition,
+                                              ParameterCategory category) throws IOException {
+        type = JavaConfig.reduceAlias(type, definition);
+
+        if (type instanceof SchemePrimitiveType) {
+            SchemePrimitiveType primitiveType = (SchemePrimitiveType) type;
+            if (primitiveType.getName().equals("bytes")) {
+                if (category == ParameterCategory.COMPACT) {
+                    generator.append("byteArrayToStringCompact(this." + attributeName + ")");
+                } else {
+                    generator.append("byteArrayToString(this." + attributeName + ")");
+                }
+            } else {
+                generator.append("this." + attributeName);
+            }
+        } else if (type instanceof SchemeStructType) {
+            if (category == ParameterCategory.COMPACT) {
+                generator.append("(this." + attributeName + " != null ? \"set\":\"empty\")");
+            } else {
+                generator.append("this." + attributeName);
+            }
+        } else if (type instanceof SchemeEnumType) {
+            generator.append("this." + attributeName);
+        } else if (type instanceof SchemeOptionalType) {
+            SchemeOptionalType optType = (SchemeOptionalType) type;
+            SchemeType childType = JavaConfig.reduceAlias(optType.getType(), definition);
+
+            if (category == ParameterCategory.COMPACT) {
+                if (childType instanceof SchemePrimitiveType) {
+                    SchemePrimitiveType primitiveType = (SchemePrimitiveType) childType;
+                    if (primitiveType.getName().equals("bytes")) {
+                        generator.append("byteArrayToStringCompact(this." + attributeName + ")");
+                    } else {
+                        generator.append("this." + attributeName);
+                    }
+                } else if (childType instanceof SchemeStructType) {
+                    generator.append("(this." + attributeName + " != null ? \"set\":\"empty\")");
+                } else if (childType instanceof SchemeEnumType) {
+                    generator.append("this." + attributeName);
+                } else if (childType instanceof SchemeTraitType) {
+                    generator.append("(this." + attributeName + " != null ? \"set\":\"empty\")");
+                }
+            } else {
+                generator.append("this." + attributeName);
+            }
+        } else if (type instanceof SchemeListType) {
+
+            // TODO: Implement
+            if (category == ParameterCategory.COMPACT) {
+                generator.append("this." + attributeName + ".size()");
+            } else {
+                generator.append("this." + attributeName);
+            }
+
+//            SchemeListType listType = (SchemeListType) type;
+//            SchemeType childType = JavaConfig.reduceAlias(listType.getType(), definition);
+//            if (childType instanceof SchemePrimitiveType) {
+//                SchemePrimitiveType primitiveType = (SchemePrimitiveType) childType;
+//                if (primitiveType.getName().equals("int32")) {
+//                    generator.appendLn("writer.writeRepeatedInt(" + attributeId + ", this." + attributeName + ");");
+//                } else if (primitiveType.getName().equals("int64")) {
+//                    generator.appendLn("writer.writeRepeatedLong(" + attributeId + ", this." + attributeName + ");");
+//                } else if (primitiveType.getName().equals("bool")) {
+//                    generator.appendLn("writer.writeRepeatedBool(" + attributeId + ", this." + attributeName + ");");
+//                } else if (primitiveType.getName().equals("bytes")) {
+//                    generator.appendLn("writer.writeRepeatedBytes(" + attributeId + ", this." + attributeName + ");");
+//                } else if (primitiveType.getName().equals("string")) {
+//                    generator.appendLn("writer.writeRepeatedString(" + attributeId + ", this." + attributeName + ");");
+//                } else if (primitiveType.getName().equals("double")) {
+//                    generator.appendLn("writer.writeRepeatedDouble(" + attributeId + ", this." + attributeName + ");");
+//                } else {
+//                    throw new IOException();
+//                }
+//            } else if (childType instanceof SchemeStructType) {
+//                generator.appendLn("writer.writeRepeatedObj(" + attributeId + ", this." + attributeName + ");");
+//            } else {
+//                throw new IOException();
+//            }
+        } else if (type instanceof SchemeTraitType) {
+            if (category == ParameterCategory.COMPACT) {
+                generator.append("(this." + attributeName + " != null ? \"set\":\"empty\")");
+            } else {
+                generator.append("this." + attributeName);
+            }
+        } else {
+            throw new IOException();
+        }
+    }
+
     public static void generateSerialization(FileGenerator generator, SchemeContainer container,
                                              SchemeDefinition definition) throws IOException {
         generator.appendLn("@Override");
@@ -107,7 +243,7 @@ public class ContainerGenerator {
             }
         } else if (type instanceof SchemeStructType) {
             generator.appendLn("this." + attributeName + " = values.getObj(" + attributeId + ", " +
-                    JavaConfig.getStructName(((SchemeStructType) type).getType()) + ".class);");
+                    "new " + JavaConfig.getStructName(((SchemeStructType) type).getType()) + "());");
         } else if (type instanceof SchemeEnumType) {
             SchemeEnumType e = (SchemeEnumType) type;
             generator.appendLn("this." + attributeName + " = " + JavaConfig.getEnumName(e.getName()) + ".parse(values.getInt(" + attributeId + "));");
@@ -133,7 +269,7 @@ public class ContainerGenerator {
                 }
             } else if (childType instanceof SchemeStructType) {
                 generator.appendLn("this." + attributeName + " = values.optObj(" + attributeId + ", " +
-                        JavaConfig.getStructName(((SchemeStructType) childType).getType()) + ".class);");
+                        "new " + JavaConfig.getStructName(((SchemeStructType) childType).getType()) + "());");
             } else if (childType instanceof SchemeEnumType) {
                 generator.appendLn("int val_" + attributeName + " = values.getInt(" + attributeId + ", 0);");
                 generator.appendLn("if (val_" + attributeName + " != 0) {");
@@ -168,8 +304,16 @@ public class ContainerGenerator {
                     throw new IOException();
                 }
             } else if (childType instanceof SchemeStructType) {
+                String typeName = JavaConfig.getStructName(((SchemeStructType) childType).getType());
+                generator.appendLn("List<" + typeName + "> _" + attributeName + " = new ArrayList<" + typeName + ">();");
+                generator.appendLn("for (int i = 0; i < values.getRepeatedCount(" + attributeId + "); i ++) {");
+                generator.increaseDepth();
+                generator.appendLn("_" + attributeName + ".add(new " + typeName + "());");
+                generator.decreaseDepth();
+                generator.appendLn("}");
                 generator.appendLn("this." + attributeName + " = values.getRepeatedObj(" + attributeId + ", " +
-                        JavaConfig.getStructName(((SchemeStructType) childType).getType()) + ".class);");
+                        "_" + attributeName + ");");
+
             } else {
                 throw new IOException();
             }

@@ -19,6 +19,9 @@ public class UpdateGenerator {
             String javaName = JavaConfig.getUpdateName(u);
             FileGenerator generator = new FileGenerator(destFolder + "/" + javaName + ".java");
             generator.appendLn("package " + JavaConfig.PACKAGE + ".updates;");
+            generator.appendLn(JavaConfig.NOTICE);
+            generator.appendLn();
+
             for (String im : JavaConfig.IMPORTS) {
                 generator.appendLn("import " + im + ";");
             }
@@ -30,7 +33,7 @@ public class UpdateGenerator {
             generator.appendLn("public static final int HEADER = 0x" + Integer.toHexString(u.getHeader()) + ";");
             generator.appendLn("public static " + javaName + " fromBytes(byte[] data) throws IOException {");
             generator.increaseDepth();
-            generator.appendLn("return Bser.parse(" + javaName + ".class, data);");
+            generator.appendLn("return Bser.parse(new " + javaName + "(), data);");
             generator.decreaseDepth();
             generator.appendLn("}");
             generator.appendLn();
@@ -51,6 +54,7 @@ public class UpdateGenerator {
 
             ContainerGenerator.generateSerialization(generator, u, definition);
             ContainerGenerator.generateDeserialization(generator, u, definition);
+            ContainerGenerator.generateToString(generator, u, definition);
 
             generator.appendLn("@Override");
             generator.appendLn("public int getHeaderKey() {");
@@ -70,6 +74,9 @@ public class UpdateGenerator {
         new File(destFolder).mkdirs();
         FileGenerator generator = new FileGenerator(destFolder + "/UpdatesParser.java");
         generator.appendLn("package " + JavaConfig.PACKAGE + ".parser;");
+        generator.appendLn(JavaConfig.NOTICE);
+        generator.appendLn();
+
         for (String im : JavaConfig.IMPORTS) {
             generator.appendLn("import " + im + ";");
         }

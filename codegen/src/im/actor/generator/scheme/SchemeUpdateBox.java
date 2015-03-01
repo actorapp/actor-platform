@@ -10,15 +10,9 @@ public class SchemeUpdateBox extends SchemeContainer implements SchemeRecord {
     private String name;
     private int header;
 
-    private List<SchemeDoc> docs = new ArrayList<SchemeDoc>();
-
     public SchemeUpdateBox(String name, int header) {
         this.name = name;
         this.header = header;
-    }
-
-    public List<SchemeDoc> getDocs() {
-        return docs;
     }
 
     public String getName() {
