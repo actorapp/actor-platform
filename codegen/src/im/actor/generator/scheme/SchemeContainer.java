@@ -9,6 +9,8 @@ import java.util.List;
 public abstract class SchemeContainer {
     private List<SchemeAttribute> attributes = new ArrayList<SchemeAttribute>();
 
+    private List<SchemeDoc> docs = new ArrayList<SchemeDoc>();
+
     public List<SchemeAttribute> getAttributes() {
         return attributes;
     }
@@ -20,5 +22,21 @@ public abstract class SchemeContainer {
             }
         }
         return null;
+    }
+
+    public List<SchemeDoc> getDocs() {
+        return docs;
+    }
+
+    public ParameterCategory getParameterCategory(String name) {
+        for (SchemeDoc doc : docs) {
+            if (doc instanceof SchemeDocParameter) {
+                SchemeDocParameter docParameter = (SchemeDocParameter) doc;
+                if (docParameter.getArgument().equals(name)) {
+                    return docParameter.getCategory();
+                }
+            }
+        }
+        return ParameterCategory.HIDDEN;
     }
 }

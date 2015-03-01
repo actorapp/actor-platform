@@ -14,7 +14,7 @@
     }
   ],
   "obj-c-prefix": "AM",
-  "java-package": "im.actor.api",
+  "java-package": "im.actor.model.api",
   "sections": [
     {
       "title": "Authentication",
@@ -44,6 +44,21 @@
             "response": {
               "type": "anonymous",
               "header": 2,
+              "doc": [
+                "Sms Request response",
+                {
+                  "type": "reference",
+                  "argument": "smsHash",
+                  "category": "danger",
+                  "description": "  Hash of SMS request"
+                },
+                {
+                  "type": "reference",
+                  "argument": "isRegistered",
+                  "category": "full",
+                  "description": "  true if user is registered"
+                }
+              ],
               "attributes": [
                 {
                   "type": "string",
@@ -62,16 +77,38 @@
               {
                 "type": "reference",
                 "argument": "phoneNumber",
+                "category": "full",
                 "description": "Phone number in international format"
               },
               {
                 "type": "reference",
                 "argument": "appId",
+                "category": "hidden",
                 "description": "Application ID"
               },
               {
                 "type": "reference",
                 "argument": "apiKey",
+                "category": "hidden",
+                "description": "Application API key"
+              },
+              "Sending SMS with activation code",
+              {
+                "type": "reference",
+                "argument": "phoneNumber",
+                "category": "full",
+                "description": "Phone number in international format"
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "category": "hidden",
+                "description": "Application ID"
+              },
+              {
+                "type": "reference",
+                "argument": "apiKey",
+                "category": "hidden",
                 "description": "Application API key"
               }
             ],
@@ -108,21 +145,25 @@
               {
                 "type": "reference",
                 "argument": "phoneNumber",
+                "category": "full",
                 "description": "Phone number in international format"
               },
               {
                 "type": "reference",
                 "argument": "smsHash",
+                "category": "danger",
                 "description": "Code request hash from RequestAuthCode"
               },
               {
                 "type": "reference",
                 "argument": "appId",
+                "category": "hidden",
                 "description": "Application ID"
               },
               {
                 "type": "reference",
                 "argument": "apiKey",
+                "category": "hidden",
                 "description": "Application API key"
               }
             ],
@@ -160,16 +201,19 @@
               {
                 "type": "reference",
                 "argument": "publicKeyHash",
+                "category": "danger",
                 "description": "  Public Key Hash of current authentication"
               },
               {
                 "type": "reference",
                 "argument": "user",
+                "category": "compact",
                 "description": "  The authenticated User"
               },
               {
                 "type": "reference",
                 "argument": "config",
+                "category": "full",
                 "description": "  Current config of server"
               }
             ],
@@ -212,41 +256,49 @@
               {
                 "type": "reference",
                 "argument": "phoneNumber",
+                "category": "danger",
                 "description": "Phone number in international format"
               },
               {
                 "type": "reference",
                 "argument": "smsHash",
+                "category": "danger",
                 "description": "Code request hash from RequestAuthCode"
               },
               {
                 "type": "reference",
                 "argument": "smsCode",
+                "category": "danger",
                 "description": "Confirmation code from SMS"
               },
               {
                 "type": "reference",
                 "argument": "publicKey",
+                "category": "compact",
                 "description": "Device RSA 2048 bit public key in x.509 format"
               },
               {
                 "type": "reference",
                 "argument": "deviceHash",
+                "category": "full",
                 "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
               },
               {
                 "type": "reference",
                 "argument": "deviceTitle",
+                "category": "full",
                 "description": "Device title like 'Steven's iPhone'"
               },
               {
                 "type": "reference",
                 "argument": "appId",
+                "category": "hidden",
                 "description": "Application ID"
               },
               {
                 "type": "reference",
                 "argument": "appKey",
+                "category": "hidden",
                 "description": "Application API key"
               }
             ],
@@ -309,46 +361,55 @@
               {
                 "type": "reference",
                 "argument": "phoneNumber",
+                "category": "danger",
                 "description": "Phone number in international format"
               },
               {
                 "type": "reference",
                 "argument": "smsHash",
+                "category": "danger",
                 "description": "Code request hash from RequestAuthCode"
               },
               {
                 "type": "reference",
                 "argument": "smsCode",
+                "category": "danger",
                 "description": "Confirmation code from SMS"
               },
               {
                 "type": "reference",
                 "argument": "name",
+                "category": "full",
                 "description": "User name"
               },
               {
                 "type": "reference",
                 "argument": "publicKey",
+                "category": "compact",
                 "description": "Device RSA 2048 bit public key in x.509 format"
               },
               {
                 "type": "reference",
                 "argument": "deviceHash",
+                "category": "full",
                 "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
               },
               {
                 "type": "reference",
                 "argument": "deviceTitle",
+                "category": "full",
                 "description": "Device title like 'Steven's iPhone'"
               },
               {
                 "type": "reference",
                 "argument": "appId",
+                "category": "hidden",
                 "description": "Application ID"
               },
               {
                 "type": "reference",
                 "argument": "appKey",
+                "category": "hidden",
                 "description": "pplication API key"
               }
             ],
@@ -415,46 +476,55 @@
               {
                 "type": "reference",
                 "argument": "id",
+                "category": "full",
                 "description": "  Unuque ID of session"
               },
               {
                 "type": "reference",
                 "argument": "authHolder",
+                "category": "full",
                 "description": "  holder of session. 0 - this device, 1 - other."
               },
               {
                 "type": "reference",
                 "argument": "appId",
+                "category": "full",
                 "description": "  Application Id (user in SignIn/SignUp)"
               },
               {
                 "type": "reference",
                 "argument": "appTitle",
+                "category": "full",
                 "description": "  Title of application"
               },
               {
                 "type": "reference",
                 "argument": "deviceTitle",
+                "category": "full",
                 "description": "  Title of device"
               },
               {
                 "type": "reference",
                 "argument": "authTime",
+                "category": "full",
                 "description": "  Time of session creating"
               },
               {
                 "type": "reference",
                 "argument": "authLocation",
+                "category": "hidden",
                 "description": "  two-letter country code of session create"
               },
               {
                 "type": "reference",
                 "argument": "latitude",
+                "category": "hidden",
                 "description": "  optional latitude of auth if available"
               },
               {
                 "type": "reference",
                 "argument": "longitude",
+                "category": "hidden",
                 "description": "  optional longitude of auth if available"
               }
             ],
@@ -465,7 +535,10 @@
                 "name": "id"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "enum",
+                  "childType": "AuthHolder"
+                },
                 "id": 2,
                 "name": "authHolder"
               },
@@ -514,6 +587,22 @@
           }
         },
         {
+          "type": "enum",
+          "content": {
+            "name": "AuthHolder",
+            "values": [
+              {
+                "name": "ThisDevice",
+                "id": 1
+              },
+              {
+                "name": "OtherDevice",
+                "id": 2
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "GetAuthSessions",
@@ -521,6 +610,15 @@
             "response": {
               "type": "anonymous",
               "header": 81,
+              "doc": [
+                "Current Auth sessions",
+                {
+                  "type": "reference",
+                  "argument": "userAuths",
+                  "category": "compact",
+                  "description": "  User authentications"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -555,6 +653,7 @@
               {
                 "type": "reference",
                 "argument": "id",
+                "category": "full",
                 "description": "id from AuthItem"
               }
             ],
@@ -665,12 +764,26 @@
               "Extendend phone information",
               {
                 "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Phone id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "danger",
+                "description": "  Access hash of phone number"
+              },
+              {
+                "type": "reference",
                 "argument": "phone",
+                "category": "full",
                 "description": "  Phone number in international format"
               },
               {
                 "type": "reference",
                 "argument": "phoneTitle",
+                "category": "full",
                 "description": "  Title of phone"
               }
             ],
@@ -706,12 +819,26 @@
               "Extendend email information",
               {
                 "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Email id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "danger",
+                "description": "  Access hash of email"
+              },
+              {
+                "type": "reference",
                 "argument": "email",
+                "category": "full",
                 "description": "  Email"
               },
               {
                 "type": "reference",
                 "argument": "emailTitle",
+                "category": "full",
                 "description": "  Descruption of email"
               }
             ],
@@ -748,51 +875,61 @@
               {
                 "type": "reference",
                 "argument": "id",
+                "category": "full",
                 "description": "  uid"
               },
               {
                 "type": "reference",
                 "argument": "accessHash",
+                "category": "danger",
                 "description": "  user's access hash"
               },
               {
                 "type": "reference",
                 "argument": "name",
+                "category": "full",
                 "description": "  user's name"
               },
               {
                 "type": "reference",
                 "argument": "localName",
+                "category": "full",
                 "description": "  user's local name"
               },
               {
                 "type": "reference",
                 "argument": "sex",
+                "category": "full",
                 "description": "  optional sex of user"
               },
               {
                 "type": "reference",
                 "argument": "keyHashes",
+                "category": "compact",
                 "description": "  key hashes of user"
               },
               {
                 "type": "reference",
                 "argument": "phone",
+                "category": "hidden",
                 "description": "  [DEPRECATED] Phone number of user"
               },
               {
                 "type": "reference",
                 "argument": "avatar",
+                "category": "compact",
                 "description": "  avatar of user"
               },
               {
                 "type": "reference",
                 "argument": "phones",
+                "category": "compact",
                 "description": "  phones of user"
               },
               {
                 "type": "reference",
                 "argument": "emails",
+                "category": "compact",
                 "description": "  emails of user"
               }
             ],
@@ -896,16 +1033,19 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "target User's uid"
               },
               {
                 "type": "reference",
                 "argument": "accessHash",
+                "category": "danger",
                 "description": "User's accessHash"
               },
               {
                 "type": "reference",
                 "argument": "name",
+                "category": "full",
                 "description": "New user name"
               }
             ],
@@ -938,11 +1078,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  user's uid"
               },
               {
                 "type": "reference",
                 "argument": "avatar",
+                "category": "compact",
                 "description": "  user's new avatar"
               }
             ],
@@ -976,11 +1118,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  user's uid"
               },
               {
                 "type": "reference",
                 "argument": "name",
+                "category": "full",
                 "description": "  user's name"
               }
             ],
@@ -1008,11 +1152,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  user's uid"
               },
               {
                 "type": "reference",
                 "argument": "localName",
+                "category": "full",
                 "description": "  new user's local name"
               }
             ],
@@ -1043,11 +1189,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  user's id"
               },
               {
                 "type": "reference",
                 "argument": "phoneId",
+                "category": "full",
                 "description": "  added phone id"
               }
             ],
@@ -1075,11 +1223,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  user's id"
               },
               {
                 "type": "reference",
                 "argument": "phoneId",
+                "category": "full",
                 "description": "  removed phone id"
               }
             ],
@@ -1107,11 +1257,13 @@
               {
                 "type": "reference",
                 "argument": "phoneId",
+                "category": "full",
                 "description": "  phone number"
               },
               {
                 "type": "reference",
                 "argument": "title",
+                "category": "full",
                 "description": "  new title for phone"
               }
             ],
@@ -1139,11 +1291,13 @@
               {
                 "type": "reference",
                 "argument": "phoneId",
+                "category": "full",
                 "description": "  Phone number id"
               },
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  new uid for phone"
               }
             ],
@@ -1171,11 +1325,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  user's id"
               },
               {
                 "type": "reference",
                 "argument": "emailId",
+                "category": "full",
                 "description": "  added email id"
               }
             ],
@@ -1203,11 +1359,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  user's id"
               },
               {
                 "type": "reference",
                 "argument": "emailId",
+                "category": "full",
                 "description": "  removed email id"
               }
             ],
@@ -1235,11 +1393,13 @@
               {
                 "type": "reference",
                 "argument": "emailId",
+                "category": "full",
                 "description": "  email id"
               },
               {
                 "type": "reference",
                 "argument": "title",
+                "category": "full",
                 "description": "  new title for email"
               }
             ],
@@ -1267,11 +1427,13 @@
               {
                 "type": "reference",
                 "argument": "emailId",
+                "category": "full",
                 "description": "  Email id"
               },
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  new uid for email"
               }
             ],
@@ -1299,16 +1461,19 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  user's uid"
               },
               {
                 "type": "reference",
                 "argument": "phones",
+                "category": "compact",
                 "description": "  new phones list"
               },
               {
                 "type": "reference",
                 "argument": "emails",
+                "category": "compact",
                 "description": "  new emails list"
               }
             ],
@@ -1347,11 +1512,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  user's id"
               },
               {
                 "type": "reference",
                 "argument": "state",
+                "category": "full",
                 "description": "  new user state"
               }
             ],
@@ -1392,6 +1559,7 @@
               {
                 "type": "reference",
                 "argument": "name",
+                "category": "full",
                 "description": "New name"
               }
             ],
@@ -1412,6 +1580,27 @@
             "response": {
               "type": "anonymous",
               "header": 103,
+              "doc": [
+                "Response for change account avatar",
+                {
+                  "type": "reference",
+                  "argument": "avatar",
+                  "category": "full",
+                  "description": "  New avatar"
+                },
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Sequence number"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "compact",
+                  "description": "  Sequence state"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -1441,6 +1630,7 @@
               {
                 "type": "reference",
                 "argument": "fileLocation",
+                "category": "compact",
                 "description": "File Location of uploaded unencrypted avatar"
               }
             ],
@@ -1485,7 +1675,21 @@
               {
                 "type": "reference",
                 "argument": "email",
+                "category": "full",
                 "description": "Email for attaching to account"
+              },
+              "Sending activation code to email",
+              {
+                "type": "reference",
+                "argument": "email",
+                "category": "full",
+                "description": "Email for adding"
+              },
+              {
+                "type": "reference",
+                "argument": "description",
+                "category": "full",
+                "description": "Optional description for email"
               }
             ],
             "attributes": [
@@ -1519,7 +1723,14 @@
               {
                 "type": "reference",
                 "argument": "email",
-                "description": "Email id for deattach"
+                "category": "hidden",
+                "description": "Detaching email"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "danger",
+                "description": "Access hash of email"
               }
             ],
             "attributes": [
@@ -1550,11 +1761,13 @@
               {
                 "type": "reference",
                 "argument": "phoneId",
+                "category": "full",
                 "description": "Phone number id"
               },
               {
                 "type": "reference",
                 "argument": "title",
+                "category": "full",
                 "description": "New phone title"
               }
             ],
@@ -1586,11 +1799,13 @@
               {
                 "type": "reference",
                 "argument": "emailId",
+                "category": "full",
                 "description": "Email id"
               },
               {
                 "type": "reference",
                 "argument": "title",
+                "category": "full",
                 "description": "New email title"
               }
             ],
@@ -1642,11 +1857,13 @@
               {
                 "type": "reference",
                 "argument": "phoneNumber",
+                "category": "full",
                 "description": "  phone number for import in international format"
               },
               {
                 "type": "reference",
                 "argument": "name",
+                "category": "full",
                 "description": "  optional name for contact"
               }
             ],
@@ -1676,11 +1893,13 @@
               {
                 "type": "reference",
                 "argument": "email",
+                "category": "full",
                 "description": "  email for importing"
               },
               {
                 "type": "reference",
                 "argument": "name",
+                "category": "full",
                 "description": "  optional name for contact"
               }
             ],
@@ -1709,6 +1928,27 @@
             "response": {
               "type": "anonymous",
               "header": 8,
+              "doc": [
+                "Imported contacts",
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Imported users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Sequence number if users are imported"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "compact",
+                  "description": "  Sequence state if users are imported"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -1742,11 +1982,13 @@
               {
                 "type": "reference",
                 "argument": "phones",
+                "category": "compact",
                 "description": "Phones for import"
               },
               {
                 "type": "reference",
                 "argument": "emails",
+                "category": "compact",
                 "description": "Emails for import"
               }
             ],
@@ -1791,6 +2033,21 @@
             "response": {
               "type": "anonymous",
               "header": 88,
+              "doc": [
+                "Current contact list",
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "hidden",
+                  "description": "  User list if list is changed"
+                },
+                {
+                  "type": "reference",
+                  "argument": "isNotChanged",
+                  "category": "full",
+                  "description": "  is list changed"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -1818,6 +2075,7 @@
               {
                 "type": "reference",
                 "argument": "contactsHash",
+                "category": "full",
                 "description": "Hash of saved list in application"
               }
             ],
@@ -1844,11 +2102,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "Contact's UID"
               },
               {
                 "type": "reference",
                 "argument": "accessHash",
+                "category": "danger",
                 "description": "Contact's AccessHash"
               }
             ],
@@ -1880,11 +2140,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "Contact's UID"
               },
               {
                 "type": "reference",
                 "argument": "accessHash",
+                "category": "danger",
                 "description": "Contact's AccessHash"
               }
             ],
@@ -1910,6 +2172,15 @@
             "response": {
               "type": "anonymous",
               "header": 113,
+              "doc": [
+                "Founded users",
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Founded users"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -1925,7 +2196,13 @@
               ]
             },
             "doc": [
-              "Searching contacts by user's query"
+              "Searching contacts by user's query",
+              {
+                "type": "reference",
+                "argument": "request",
+                "category": "full",
+                "description": "Search query"
+              }
             ],
             "attributes": [
               {
@@ -1949,16 +2226,19 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  contact's uid"
               },
               {
                 "type": "reference",
                 "argument": "isSilent",
+                "category": "full",
                 "description": "  is registration silent. If this value is true then don't show notification about registration"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  date of registration"
               }
             ],
@@ -1994,11 +2274,13 @@
               {
                 "type": "reference",
                 "argument": "emailId",
+                "category": "full",
                 "description": "  Email id"
               },
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  Registered user's id"
               }
             ],
@@ -2026,6 +2308,7 @@
               {
                 "type": "reference",
                 "argument": "uids",
+                "category": "compact",
                 "description": "  added contacts"
               }
             ],
@@ -2051,6 +2334,7 @@
               {
                 "type": "reference",
                 "argument": "uids",
+                "category": "compact",
                 "description": "  removed contacts"
               }
             ],
@@ -2128,11 +2412,13 @@
               {
                 "type": "reference",
                 "argument": "type",
+                "category": "full",
                 "description": "  type of content. 1 => TextMessage, 2 => ServiceMessage, 3 => FileMessage"
               },
               {
                 "type": "reference",
                 "argument": "content",
+                "category": "compact",
                 "description": "  serialized content of message"
               }
             ],
@@ -2169,16 +2455,19 @@
               {
                 "type": "reference",
                 "argument": "text",
+                "category": "full",
                 "description": "  the text"
               },
               {
                 "type": "reference",
                 "argument": "extType",
+                "category": "full",
                 "description": "  type of extension. Now there are no extensions."
               },
               {
                 "type": "reference",
                 "argument": "ext",
+                "category": "full",
                 "description": "  Optional bytes of extension"
               }
             ],
@@ -2217,12 +2506,20 @@
               {
                 "type": "reference",
                 "argument": "text",
+                "category": "full",
                 "description": "  service message text"
               },
               {
                 "type": "reference",
                 "argument": "extType",
+                "category": "full",
                 "description": "  extension type. 0x01 => ServiceExUserAdded, 0x02 => ServiceExUserKicked, 0x03 => ServiveExUserLeft, 0x04 => ServiceExGroupCreated, 0x05 => ServiceExGroupChangedTitle, 0x06 => ServiceExGroupChangedAvatar"
+              },
+              {
+                "type": "reference",
+                "argument": "ext",
+                "category": "compact",
+                "description": "  Extension"
               }
             ],
             "trait": {
@@ -2270,6 +2567,7 @@
               {
                 "type": "reference",
                 "argument": "addedUid",
+                "category": "full",
                 "description": "  added user id"
               }
             ],
@@ -2295,6 +2593,7 @@
               {
                 "type": "reference",
                 "argument": "kickedUid",
+                "category": "full",
                 "description": "  kicked user id"
               }
             ],
@@ -2344,7 +2643,13 @@
           "content": {
             "name": "ServiceExChangedTitle",
             "doc": [
-              "Service message about group title change"
+              "Service message about group title change",
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  New group title"
+              }
             ],
             "trait": {
               "name": "ServiceExtension",
@@ -2364,7 +2669,13 @@
           "content": {
             "name": "ServiceExChangedAvatar",
             "doc": [
-              "Service message about avatar change"
+              "Service message about avatar change",
+              {
+                "type": "reference",
+                "argument": "avatar",
+                "category": "compact",
+                "description": "  Updated avatar"
+              }
             ],
             "trait": {
               "name": "ServiceExtension",
@@ -2390,7 +2701,13 @@
           "content": {
             "name": "ServiceExEmailContactRegistered",
             "doc": [
-              "Service message about email user registration"
+              "Service message about email user registration",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User id"
+              }
             ],
             "trait": {
               "name": "ServiceExtension",
@@ -2414,41 +2731,49 @@
               {
                 "type": "reference",
                 "argument": "fileId",
+                "category": "full",
                 "description": "  file id"
               },
               {
                 "type": "reference",
                 "argument": "accessHash",
+                "category": "danger",
                 "description": "  file access hash"
               },
               {
                 "type": "reference",
                 "argument": "fileSize",
+                "category": "full",
                 "description": "  file size"
               },
               {
                 "type": "reference",
                 "argument": "name",
+                "category": "full",
                 "description": "  name of file"
               },
               {
                 "type": "reference",
                 "argument": "mimeType",
+                "category": "full",
                 "description": "  mimetype of file"
               },
               {
                 "type": "reference",
                 "argument": "thumb",
+                "category": "compact",
                 "description": "  optional thumb of file. JPEG less that 90x90 with 60-70 quality."
               },
               {
                 "type": "reference",
                 "argument": "extType",
+                "category": "full",
                 "description": "  Extension type"
               },
               {
                 "type": "reference",
                 "argument": "ext",
+                "category": "compact",
                 "description": "  Extension"
               }
             ],
@@ -2525,11 +2850,13 @@
               {
                 "type": "reference",
                 "argument": "w",
+                "category": "full",
                 "description": "  image width"
               },
               {
                 "type": "reference",
                 "argument": "h",
+                "category": "full",
                 "description": "  image height"
               }
             ],
@@ -2560,16 +2887,19 @@
               {
                 "type": "reference",
                 "argument": "w",
+                "category": "full",
                 "description": "  video width"
               },
               {
                 "type": "reference",
                 "argument": "h",
+                "category": "full",
                 "description": "  video height"
               },
               {
                 "type": "reference",
                 "argument": "duration",
+                "category": "full",
                 "description": "  video duration"
               }
             ],
@@ -2605,6 +2935,7 @@
               {
                 "type": "reference",
                 "argument": "duration",
+                "category": "full",
                 "description": "  voice duration"
               }
             ],
@@ -2633,16 +2964,19 @@
               {
                 "type": "reference",
                 "argument": "newKeys",
+                "category": "full",
                 "description": "  added keys to user"
               },
               {
                 "type": "reference",
                 "argument": "removedKeys",
+                "category": "full",
                 "description": "  disabled keys"
               },
               {
                 "type": "reference",
                 "argument": "invalidKeys",
+                "category": "full",
                 "description": "  invalid keys"
               }
             ],
@@ -2695,11 +3029,13 @@
               {
                 "type": "reference",
                 "argument": "keyHash",
+                "category": "full",
                 "description": "  hash of public key of encrypted aes key"
               },
               {
                 "type": "reference",
                 "argument": "aesEncryptedKey",
+                "category": "compact",
                 "description": "  encrypted aes key"
               }
             ],
@@ -2731,26 +3067,31 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "Destination peer for message"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "Message random id (generated on client side)"
               },
               {
                 "type": "reference",
                 "argument": "encryptedMessage",
+                "category": "compact",
                 "description": "message encrypted by random aes key"
               },
               {
                 "type": "reference",
                 "argument": "keys",
+                "category": "compact",
                 "description": "encrypted aes keys for receivers devices"
               },
               {
                 "type": "reference",
                 "argument": "ownKeys",
+                "category": "compact",
                 "description": "encrypted aes keys for own devices"
               }
             ],
@@ -2815,16 +3156,19 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "Destination peer for message (now supported only user's peer)"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "Message random id (generated on clien side)"
               },
               {
                 "type": "reference",
                 "argument": "message",
+                "category": "full",
                 "description": "The message"
               }
             ],
@@ -2870,11 +3214,13 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "Destination peer"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "Message random id"
               }
             ],
@@ -2912,11 +3258,13 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "Destination peer"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "Message random id"
               }
             ],
@@ -2954,11 +3302,13 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "Destination peer"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "Maximum date of received messages"
               }
             ],
@@ -2996,11 +3346,13 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "Destination peer"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "Maximum date of read messages"
               }
             ],
@@ -3038,11 +3390,13 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "Destination peer"
               },
               {
                 "type": "reference",
                 "argument": "rids",
+                "category": "full",
                 "description": "Message random id"
               }
             ],
@@ -3083,6 +3437,7 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "Conversation peer"
               }
             ],
@@ -3112,6 +3467,7 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "Conversation peer"
               }
             ],
@@ -3144,26 +3500,31 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "  Destination peer"
               },
               {
                 "type": "reference",
                 "argument": "senderUid",
+                "category": "full",
                 "description": "  sender of message"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  date of message"
               },
               {
                 "type": "reference",
                 "argument": "keyHash",
+                "category": "full",
                 "description": "  device's public key hash"
               },
               {
                 "type": "reference",
                 "argument": "aesEncryptedKey",
+                "category": "compact",
                 "description": "  Encrypted key for current device"
               }
             ],
@@ -3213,7 +3574,37 @@
             "name": "Message",
             "header": 55,
             "doc": [
-              "Update about plain message"
+              "Update about plain message",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "senderUid",
+                "category": "full",
+                "description": "  Sender of message"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  date of message"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Rid of message"
+              },
+              {
+                "type": "reference",
+                "argument": "message",
+                "category": "full",
+                "description": "  message content"
+              }
             ],
             "attributes": [
               {
@@ -3261,6 +3652,27 @@
           "content": {
             "name": "MessageSent",
             "header": 4,
+            "doc": [
+              "Update about message sent",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Rid of message"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Date of message"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3298,6 +3710,27 @@
           "content": {
             "name": "EncryptedReceived",
             "header": 18,
+            "doc": [
+              "Update about encrypted message received",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Rid of message"
+              },
+              {
+                "type": "reference",
+                "argument": "receivedDate",
+                "category": "full",
+                "description": "  Date of receive"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3331,6 +3764,27 @@
           "content": {
             "name": "EncryptedRead",
             "header": 52,
+            "doc": [
+              "Update about encrypted message read",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Rid of message"
+              },
+              {
+                "type": "reference",
+                "argument": "readDate",
+                "category": "full",
+                "description": "  Date of read"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3364,6 +3818,21 @@
           "content": {
             "name": "EncryptedReadByMe",
             "header": 53,
+            "doc": [
+              "Update about encrypted message read by me",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Rid of message"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3393,6 +3862,27 @@
           "content": {
             "name": "MessageReceived",
             "header": 54,
+            "doc": [
+              "Update about message received",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "startDate",
+                "category": "full",
+                "description": "  Start date of received message"
+              },
+              {
+                "type": "reference",
+                "argument": "receivedDate",
+                "category": "full",
+                "description": "  Date of receive"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3426,6 +3916,27 @@
           "content": {
             "name": "MessageRead",
             "header": 19,
+            "doc": [
+              "Update about message read",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "startDate",
+                "category": "full",
+                "description": "  Start date of read message"
+              },
+              {
+                "type": "reference",
+                "argument": "readDate",
+                "category": "full",
+                "description": "  Date of read"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3459,6 +3970,21 @@
           "content": {
             "name": "MessageReadByMe",
             "header": 50,
+            "doc": [
+              "Update about message read by me",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "startDate",
+                "category": "full",
+                "description": "  Start date of read message"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3488,6 +4014,21 @@
           "content": {
             "name": "MessageDelete",
             "header": 46,
+            "doc": [
+              "Update about message delete",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rids",
+                "category": "full",
+                "description": "  Deleted messages"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3516,6 +4057,15 @@
           "content": {
             "name": "ChatClear",
             "header": 47,
+            "doc": [
+              "Update about chat clear",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3533,6 +4083,15 @@
           "content": {
             "name": "ChatDelete",
             "header": 48,
+            "doc": [
+              "Update about chat delete",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              }
+            ],
             "attributes": [
               {
                 "type": {
@@ -3555,6 +4114,57 @@
           "type": "struct",
           "content": {
             "name": "Group",
+            "doc": [
+              "Group information",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  group id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "danger",
+                "description": "  Access hash of group"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "hidden",
+                "description": "  Title of group"
+              },
+              {
+                "type": "reference",
+                "argument": "avatar",
+                "category": "compact",
+                "description": "  Avatar of group"
+              },
+              {
+                "type": "reference",
+                "argument": "isMember",
+                "category": "full",
+                "description": "  is member of group"
+              },
+              {
+                "type": "reference",
+                "argument": "creatorUid",
+                "category": "hidden",
+                "description": "  Group creator"
+              },
+              {
+                "type": "reference",
+                "argument": "members",
+                "category": "compact",
+                "description": "  Members of group"
+              },
+              {
+                "type": "reference",
+                "argument": "createDate",
+                "category": "full",
+                "description": "  Date of creation"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -3590,7 +4200,7 @@
               {
                 "type": "int32",
                 "id": 8,
-                "name": "adminUid"
+                "name": "creatorUid"
               },
               {
                 "type": {
@@ -3618,6 +4228,27 @@
           "type": "struct",
           "content": {
             "name": "Member",
+            "doc": [
+              "Member information",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User id"
+              },
+              {
+                "type": "reference",
+                "argument": "inviterUid",
+                "category": "full",
+                "description": "  User inviter id"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Adding date"
+              }
+            ],
             "attributes": [
               {
                 "type": "int32",
@@ -3648,6 +4279,39 @@
             "response": {
               "type": "anonymous",
               "header": 66,
+              "doc": [
+                "Created group",
+                {
+                  "type": "reference",
+                  "argument": "groupPeer",
+                  "category": "full",
+                  "description": "  Peer of created group"
+                },
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Sequence number"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "compact",
+                  "description": "  Sequence state"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Members of created group"
+                },
+                {
+                  "type": "reference",
+                  "argument": "date",
+                  "category": "full",
+                  "description": "  Group creation date"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -3693,17 +4357,32 @@
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "Random Id for avoiding double create"
               },
               {
                 "type": "reference",
                 "argument": "title",
+                "category": "full",
                 "description": "Group title"
               },
               {
                 "type": "reference",
                 "argument": "users",
+                "category": "compact",
                 "description": "Members of group"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "Title of new group"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "full",
+                "description": "Members of new group"
               }
             ],
             "attributes": [
@@ -3748,16 +4427,19 @@
               {
                 "type": "reference",
                 "argument": "groupPeer",
+                "category": "full",
                 "description": "Group's peer"
               },
               {
                 "type": "reference",
                 "argument": "title",
+                "category": "full",
                 "description": "new group title"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "Random Id of operation"
               }
             ],
@@ -3794,6 +4476,33 @@
             "response": {
               "type": "anonymous",
               "header": 115,
+              "doc": [
+                "Updated group avatar",
+                {
+                  "type": "reference",
+                  "argument": "avatar",
+                  "category": "compact",
+                  "description": "  Changed avatar"
+                },
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Sequence number"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "compact",
+                  "description": "  Sequence state"
+                },
+                {
+                  "type": "reference",
+                  "argument": "date",
+                  "category": "full",
+                  "description": "  Avatar change date"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -3831,16 +4540,19 @@
               {
                 "type": "reference",
                 "argument": "groupPeer",
+                "category": "full",
                 "description": "Group's peer"
               },
               {
                 "type": "reference",
                 "argument": "fileLocation",
+                "category": "compact",
                 "description": "uploaded file for avatar"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "Random Id of operation"
               }
             ],
@@ -3886,11 +4598,13 @@
               {
                 "type": "reference",
                 "argument": "groupPeer",
+                "category": "full",
                 "description": "Group's peer"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "Random Id of operation"
               }
             ],
@@ -3928,16 +4642,19 @@
               {
                 "type": "reference",
                 "argument": "groupPeer",
+                "category": "full",
                 "description": "Group's peer"
               },
               {
                 "type": "reference",
                 "argument": "user",
+                "category": "full",
                 "description": "Users for invitation"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "Random Id of operation"
               }
             ],
@@ -3983,11 +4700,13 @@
               {
                 "type": "reference",
                 "argument": "groupPeer",
+                "category": "full",
                 "description": "Group's peer"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "Random Id of operation"
               }
             ],
@@ -4025,16 +4744,19 @@
               {
                 "type": "reference",
                 "argument": "groupPeer",
+                "category": "full",
                 "description": "Group's peer"
               },
               {
                 "type": "reference",
                 "argument": "user",
+                "category": "full",
                 "description": "users for removing"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "Random Id of operation"
               }
             ],
@@ -4076,21 +4798,25 @@
               {
                 "type": "reference",
                 "argument": "groupId",
+                "category": "full",
                 "description": "  Group Id"
               },
               {
                 "type": "reference",
                 "argument": "inviteUid",
+                "category": "full",
                 "description": "  Inviter UID. If equals to current uid than group created by user."
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  Date of creating"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "  Random Id of operation"
               }
             ],
@@ -4134,26 +4860,31 @@
               {
                 "type": "reference",
                 "argument": "groupId",
+                "category": "full",
                 "description": "  Group Id"
               },
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  Added user ID"
               },
               {
                 "type": "reference",
                 "argument": "inviterUid",
+                "category": "full",
                 "description": "  Inviter user ID"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  Date of adding user to group"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "  Random Id of operation"
               }
             ],
@@ -4202,21 +4933,25 @@
               {
                 "type": "reference",
                 "argument": "groupId",
+                "category": "full",
                 "description": "  Group Id"
               },
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  User's ID"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  Date of user leave"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "  Random Id of operation"
               }
             ],
@@ -4260,26 +4995,31 @@
               {
                 "type": "reference",
                 "argument": "groupId",
+                "category": "full",
                 "description": "  Group Id"
               },
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  Kicked user's ID"
               },
               {
                 "type": "reference",
                 "argument": "kickerUid",
+                "category": "full",
                 "description": "  Kicker user's ID"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  Date of user kick"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "  Random Id of operation"
               }
             ],
@@ -4328,11 +5068,13 @@
               {
                 "type": "reference",
                 "argument": "groupId",
+                "category": "full",
                 "description": "  Group Id"
               },
               {
                 "type": "reference",
                 "argument": "members",
+                "category": "full",
                 "description": "  New members list"
               }
             ],
@@ -4366,26 +5108,31 @@
               {
                 "type": "reference",
                 "argument": "groupId",
+                "category": "full",
                 "description": "  Group Id"
               },
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  Changer UID"
               },
               {
                 "type": "reference",
                 "argument": "title",
+                "category": "full",
                 "description": "  New Title of group"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  Date of title change"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "  Random Id of operation"
               }
             ],
@@ -4434,26 +5181,31 @@
               {
                 "type": "reference",
                 "argument": "groupId",
+                "category": "full",
                 "description": "  Group Id"
               },
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  Avatar changer uid"
               },
               {
                 "type": "reference",
                 "argument": "avatar",
+                "category": "compact",
                 "description": "  New Avatar. If null then avatar is removed"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  Date of avatar change"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "  Random Id of operation"
               }
             ],
@@ -4560,21 +5312,25 @@
               {
                 "type": "reference",
                 "argument": "senderUid",
+                "category": "full",
                 "description": "  Sender of mesasge"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "  Random Id of message"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  Date of message"
               },
               {
                 "type": "reference",
                 "argument": "message",
+                "category": "full",
                 "description": "  Content of message"
               }
             ],
@@ -4630,6 +5386,21 @@
             "response": {
               "type": "anonymous",
               "header": 119,
+              "doc": [
+                "Loaded history",
+                {
+                  "type": "reference",
+                  "argument": "history",
+                  "category": "compact",
+                  "description": "  Messages"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Loaded users"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -4660,16 +5431,19 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "Peer of conversation"
               },
               {
                 "type": "reference",
                 "argument": "startDate",
+                "category": "full",
                 "description": "start date of messages for loading or 0 for loading from start"
               },
               {
                 "type": "reference",
                 "argument": "limit",
+                "category": "full",
                 "description": "maximum amount of messages (max is 100)"
               }
             ],
@@ -4710,36 +5484,43 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "  Peer of conversation"
               },
               {
                 "type": "reference",
                 "argument": "unreadCount",
+                "category": "full",
                 "description": "  plain messages unread messages count"
               },
               {
                 "type": "reference",
                 "argument": "sortDate",
+                "category": "full",
                 "description": "  date of conversation for sorting"
               },
               {
                 "type": "reference",
                 "argument": "senderUid",
+                "category": "full",
                 "description": "  Sender of top message (may be zero)"
               },
               {
                 "type": "reference",
                 "argument": "rid",
+                "category": "full",
                 "description": "  Random ID of top message (may be zero)"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  Date of top message (can't be zero)"
               },
               {
                 "type": "reference",
                 "argument": "message",
+                "category": "full",
                 "description": "  Content of message"
               }
             ],
@@ -4816,6 +5597,27 @@
             "response": {
               "type": "anonymous",
               "header": 105,
+              "doc": [
+                "Loaded dialogs",
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "compact",
+                  "description": "  Loaded groups"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Loaded users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "dialogs",
+                  "category": "compact",
+                  "description": "  Loaded dialogs"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -4857,11 +5659,13 @@
               {
                 "type": "reference",
                 "argument": "startDate",
+                "category": "full",
                 "description": "start date of conversation loading"
               },
               {
                 "type": "reference",
                 "argument": "limit",
+                "category": "full",
                 "description": "limit maximum amount of messages (max is 100)"
               }
             ],
@@ -4903,11 +5707,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  User ID"
               },
               {
                 "type": "reference",
                 "argument": "keyHash",
+                "category": "full",
                 "description": "  Public key hash"
               }
             ],
@@ -4934,16 +5740,19 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  Key's User Id"
               },
               {
                 "type": "reference",
                 "argument": "keyHash",
+                "category": "full",
                 "description": "  hash of user's key"
               },
               {
                 "type": "reference",
                 "argument": "key",
+                "category": "compact",
                 "description": "  RSA Public Key in x.509 format"
               }
             ],
@@ -4976,21 +5785,25 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  User's ID"
               },
               {
                 "type": "reference",
                 "argument": "keyHash",
+                "category": "full",
                 "description": "  Public key hash"
               },
               {
                 "type": "reference",
                 "argument": "key",
+                "category": "compact",
                 "description": "  optional RSA Public Key in x.509 format"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  Date of adding new key"
               }
             ],
@@ -5031,11 +5844,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  User's ID"
               },
               {
                 "type": "reference",
                 "argument": "keyHash",
+                "category": "full",
                 "description": "  Key Hash of removed key"
               }
             ],
@@ -5065,16 +5880,19 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  uiser's ID"
               },
               {
                 "type": "reference",
                 "argument": "accessHash",
+                "category": "full",
                 "description": "  Access Hash of User"
               },
               {
                 "type": "reference",
                 "argument": "keyHash",
+                "category": "full",
                 "description": "  Public Key hash"
               }
             ],
@@ -5105,6 +5923,15 @@
             "response": {
               "type": "anonymous",
               "header": 24,
+              "doc": [
+                "Response about loaded keys",
+                {
+                  "type": "reference",
+                  "argument": "keys",
+                  "category": "full",
+                  "description": "  Loaded keys"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -5124,6 +5951,7 @@
               {
                 "type": "reference",
                 "argument": "keys",
+                "category": "compact",
                 "description": "key requests"
               }
             ],
@@ -5149,6 +5977,18 @@
       "package": "weak",
       "items": [
         {
+          "type": "enum",
+          "content": {
+            "name": "TypingType",
+            "values": [
+              {
+                "name": "Text",
+                "id": 0
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "Typing",
@@ -5162,11 +6002,13 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "Destination peer"
               },
               {
                 "type": "reference",
                 "argument": "typingType",
+                "category": "full",
                 "description": "typing type."
               }
             ],
@@ -5180,7 +6022,10 @@
                 "name": "peer"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "enum",
+                  "childType": "TypingType"
+                },
                 "id": 3,
                 "name": "typingType"
               }
@@ -5201,11 +6046,13 @@
               {
                 "type": "reference",
                 "argument": "isOnline",
+                "category": "full",
                 "description": "is user online"
               },
               {
                 "type": "reference",
                 "argument": "timeout",
+                "category": "full",
                 "description": "timeout of online state"
               }
             ],
@@ -5236,16 +6083,19 @@
               {
                 "type": "reference",
                 "argument": "peer",
+                "category": "full",
                 "description": "  Conversation peer"
               },
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  User's id"
               },
               {
                 "type": "reference",
                 "argument": "typingType",
+                "category": "full",
                 "description": "  Type of typing"
               }
             ],
@@ -5264,7 +6114,10 @@
                 "name": "uid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "enum",
+                  "childType": "TypingType"
+                },
                 "id": 3,
                 "name": "typingType"
               }
@@ -5281,6 +6134,7 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  User's Id"
               }
             ],
@@ -5303,6 +6157,7 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  User's id"
               }
             ],
@@ -5325,11 +6180,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  User's id"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  Last seen time"
               }
             ],
@@ -5360,11 +6217,13 @@
               {
                 "type": "reference",
                 "argument": "groupId",
+                "category": "full",
                 "description": "  Group id"
               },
               {
                 "type": "reference",
                 "argument": "count",
+                "category": "full",
                 "description": "  current online user's count"
               }
             ],
@@ -5397,11 +6256,13 @@
               {
                 "type": "reference",
                 "argument": "fileId",
+                "category": "full",
                 "description": "  Unique Id of file"
               },
               {
                 "type": "reference",
                 "argument": "accessHash",
+                "category": "danger",
                 "description": "  Access hash of file"
               }
             ],
@@ -5428,21 +6289,25 @@
               {
                 "type": "reference",
                 "argument": "fileLocation",
+                "category": "full",
                 "description": "  Location of file"
               },
               {
                 "type": "reference",
                 "argument": "width",
+                "category": "full",
                 "description": "  Width of avatar image"
               },
               {
                 "type": "reference",
                 "argument": "height",
+                "category": "full",
                 "description": "  Height of avatar image"
               },
               {
                 "type": "reference",
                 "argument": "fileSize",
+                "category": "full",
                 "description": "  Size of file"
               }
             ],
@@ -5482,16 +6347,19 @@
               {
                 "type": "reference",
                 "argument": "smallImage",
+                "category": "compact",
                 "description": "  Optional small image of avatar box in 100x100"
               },
               {
                 "type": "reference",
                 "argument": "largeImage",
+                "category": "compact",
                 "description": "  Optional large image of avatar box in 200x200"
               },
               {
                 "type": "reference",
                 "argument": "fullImage",
+                "category": "compact",
                 "description": "  Optional full screen image of avatar"
               }
             ],
@@ -5541,16 +6409,19 @@
               {
                 "type": "reference",
                 "argument": "w",
+                "category": "full",
                 "description": "  Width of thumb"
               },
               {
                 "type": "reference",
                 "argument": "h",
+                "category": "full",
                 "description": "  Height of thump"
               },
               {
                 "type": "reference",
                 "argument": "thumb",
+                "category": "compact",
                 "description": "  compressed image data"
               }
             ],
@@ -5581,6 +6452,15 @@
             "response": {
               "type": "anonymous",
               "header": 17,
+              "doc": [
+                "Loaded file part",
+                {
+                  "type": "reference",
+                  "argument": "payload",
+                  "category": "hidden",
+                  "description": "  File part"
+                }
+              ],
               "attributes": [
                 {
                   "type": "bytes",
@@ -5594,16 +6474,19 @@
               {
                 "type": "reference",
                 "argument": "fileLocation",
+                "category": "full",
                 "description": "location of file"
               },
               {
                 "type": "reference",
                 "argument": "offset",
+                "category": "full",
                 "description": "offset in file in bytes"
               },
               {
                 "type": "reference",
                 "argument": "limit",
+                "category": "full",
                 "description": "maximum size of file part"
               }
             ],
@@ -5641,6 +6524,7 @@
               {
                 "type": "reference",
                 "argument": "serverData",
+                "category": "compact",
                 "description": "  server related data for upload"
               }
             ],
@@ -5661,6 +6545,15 @@
             "response": {
               "type": "anonymous",
               "header": 19,
+              "doc": [
+                "Upload started",
+                {
+                  "type": "reference",
+                  "argument": "config",
+                  "category": "full",
+                  "description": "  Upload started"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -5692,11 +6585,13 @@
               {
                 "type": "reference",
                 "argument": "blockIndex",
+                "category": "full",
                 "description": "index of block"
               },
               {
                 "type": "reference",
                 "argument": "payload",
+                "category": "compact",
                 "description": "block payload"
               }
             ],
@@ -5730,6 +6625,15 @@
             "response": {
               "type": "anonymous",
               "header": 23,
+              "doc": [
+                "Upload completed",
+                {
+                  "type": "reference",
+                  "argument": "location",
+                  "category": "full",
+                  "description": "  Uploaded file location"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -5746,16 +6650,19 @@
               {
                 "type": "reference",
                 "argument": "config",
+                "category": "full",
                 "description": "Upload configuration"
               },
               {
                 "type": "reference",
                 "argument": "blocksCount",
+                "category": "full",
                 "description": "blocks count"
               },
               {
                 "type": "reference",
                 "argument": "crc32",
+                "category": "full",
                 "description": "crc32 of uploaded file"
               }
             ],
@@ -5805,11 +6712,13 @@
               {
                 "type": "reference",
                 "argument": "projectId",
+                "category": "hidden",
                 "description": "Project Id of token"
               },
               {
                 "type": "reference",
                 "argument": "token",
+                "category": "danger",
                 "description": "token value"
               }
             ],
@@ -5841,11 +6750,13 @@
               {
                 "type": "reference",
                 "argument": "apnsKey",
+                "category": "hidden",
                 "description": "apns key id"
               },
               {
                 "type": "reference",
                 "argument": "token",
+                "category": "danger",
                 "description": "token value"
               }
             ],
@@ -5916,11 +6827,13 @@
               {
                 "type": "reference",
                 "argument": "type",
+                "category": "full",
                 "description": "  Peer Type"
               },
               {
                 "type": "reference",
                 "argument": "id",
+                "category": "full",
                 "description": "  Peer Id"
               }
             ],
@@ -5950,16 +6863,19 @@
               {
                 "type": "reference",
                 "argument": "type",
+                "category": "full",
                 "description": "  Peer Type"
               },
               {
                 "type": "reference",
                 "argument": "id",
+                "category": "full",
                 "description": "  Peer Id"
               },
               {
                 "type": "reference",
                 "argument": "accessHash",
+                "category": "danger",
                 "description": "  Peer access hash"
               }
             ],
@@ -5994,11 +6910,13 @@
               {
                 "type": "reference",
                 "argument": "uid",
+                "category": "full",
                 "description": "  User's id"
               },
               {
                 "type": "reference",
                 "argument": "accessHash",
+                "category": "danger",
                 "description": "  User's access hash"
               }
             ],
@@ -6025,11 +6943,13 @@
               {
                 "type": "reference",
                 "argument": "groupId",
+                "category": "full",
                 "description": "  Group's Id"
               },
               {
                 "type": "reference",
                 "argument": "accessHash",
+                "category": "danger",
                 "description": "  Group's access hash"
               }
             ],
@@ -6074,21 +6994,25 @@
               {
                 "type": "reference",
                 "argument": "seq",
+                "category": "full",
                 "description": "  Sequence number of update"
               },
               {
                 "type": "reference",
                 "argument": "state",
+                "category": "compact",
                 "description": "  Sequece state of update"
               },
               {
                 "type": "reference",
                 "argument": "updateHeader",
+                "category": "full",
                 "description": "  header of update"
               },
               {
                 "type": "reference",
                 "argument": "update",
+                "category": "compact",
                 "description": "  The update"
               }
             ],
@@ -6129,31 +7053,37 @@
               {
                 "type": "reference",
                 "argument": "seq",
+                "category": "full",
                 "description": "  Sequence number of update"
               },
               {
                 "type": "reference",
                 "argument": "state",
+                "category": "compact",
                 "description": "  Sequence state of update"
               },
               {
                 "type": "reference",
                 "argument": "updateHeader",
+                "category": "full",
                 "description": "  header of update"
               },
               {
                 "type": "reference",
                 "argument": "update",
+                "category": "compact",
                 "description": "  The update"
               },
               {
                 "type": "reference",
                 "argument": "users",
+                "category": "compact",
                 "description": "  Users that are referenced in update"
               },
               {
                 "type": "reference",
                 "argument": "groups",
+                "category": "compact",
                 "description": "  Groups that are referenced in update"
               }
             ],
@@ -6238,16 +7168,19 @@
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  Date of update"
               },
               {
                 "type": "reference",
                 "argument": "updateHeader",
+                "category": "full",
                 "description": "  Header of update"
               },
               {
                 "type": "reference",
                 "argument": "update",
+                "category": "compact",
                 "description": "  The update"
               }
             ],
@@ -6308,11 +7241,13 @@
               {
                 "type": "reference",
                 "argument": "updateHeader",
+                "category": "full",
                 "description": "  Header of update"
               },
               {
                 "type": "reference",
                 "argument": "update",
+                "category": "compact",
                 "description": "  The update"
               }
             ],
@@ -6415,7 +7350,19 @@
               ]
             },
             "doc": [
-              "Getting difference of sequence"
+              "Getting difference of sequence",
+              {
+                "type": "reference",
+                "argument": "seq",
+                "category": "full",
+                "description": "Sequence number"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "category": "compact",
+                "description": "Sequence state"
+              }
             ],
             "attributes": [
               {
@@ -6451,6 +7398,7 @@
               {
                 "type": "reference",
                 "argument": "users",
+                "category": "compact",
                 "description": "Users for subscription"
               }
             ],
@@ -6483,6 +7431,7 @@
               {
                 "type": "reference",
                 "argument": "users",
+                "category": "compact",
                 "description": "Users of subscriptions"
               }
             ],
@@ -6515,6 +7464,7 @@
               {
                 "type": "reference",
                 "argument": "groups",
+                "category": "compact",
                 "description": "Groups for subscription"
               }
             ],
@@ -6547,6 +7497,7 @@
               {
                 "type": "reference",
                 "argument": "groups",
+                "category": "compact",
                 "description": "Groups of subscriptions"
               }
             ],
@@ -6592,11 +7543,13 @@
               {
                 "type": "reference",
                 "argument": "seq",
+                "category": "full",
                 "description": "  Sequence number of response"
               },
               {
                 "type": "reference",
                 "argument": "state",
+                "category": "full",
                 "description": "  Sequence state of response"
               }
             ],
@@ -6627,16 +7580,19 @@
               {
                 "type": "reference",
                 "argument": "seq",
+                "category": "full",
                 "description": "  Sequence number of response"
               },
               {
                 "type": "reference",
                 "argument": "state",
+                "category": "full",
                 "description": "  Sequence state of response"
               },
               {
                 "type": "reference",
                 "argument": "date",
+                "category": "full",
                 "description": "  Date of response"
               }
             ],
@@ -6674,6 +7630,7 @@
               {
                 "type": "reference",
                 "argument": "maxGroupSize",
+                "category": "full",
                 "description": "  Current maximum group size"
               }
             ],
@@ -6696,6 +7653,7 @@
               {
                 "type": "reference",
                 "argument": "config",
+                "category": "full",
                 "description": "  new config"
               }
             ],

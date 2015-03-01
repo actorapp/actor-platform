@@ -14,5 +14,4 @@ public class SchemeBaseResponse extends SchemeContainer implements SchemeRecord 
     public int getHeader() {
         return header;
     }
-
 }

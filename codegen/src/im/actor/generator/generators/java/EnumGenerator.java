@@ -23,6 +23,8 @@ public class EnumGenerator {
             String javaName = JavaConfig.getEnumName(e.getName());
             FileGenerator generator = new FileGenerator(destFolder + "/" + javaName + ".java");
             generator.appendLn("package " + pkg + ";");
+            generator.appendLn(JavaConfig.NOTICE);
+            generator.appendLn();
             generator.appendLn("import java.io.IOException;");
             generator.appendLn();
             generator.appendLn("public enum " + javaName + " {");
@@ -37,6 +39,8 @@ public class EnumGenerator {
                 }
                 generator.append(JavaConfig.getEnumRecordName(r) + "(" + r.getId() + ")");
             }
+            generator.appendLn(",");
+            generator.append("UNSUPPORTED_VALUE(-1)");
             generator.appendLn(";");
             generator.appendLn();
 
@@ -63,9 +67,9 @@ public class EnumGenerator {
             for (SchemeEnum.Record r : e.getRecord()) {
                 generator.appendLn("case " + r.getId() + ": return " + javaName + "." + JavaConfig.getEnumRecordName(r) + ";");
             }
+            generator.appendLn("default: return " + javaName + ".UNSUPPORTED_VALUE;");
             generator.decreaseDepth();
             generator.appendLn("}");
-            generator.appendLn("throw new IOException();");
             generator.decreaseDepth();
             generator.appendLn("}");
             generator.decreaseDepth();
