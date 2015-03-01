@@ -286,12 +286,13 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
 
             title.setCompoundDrawablesWithIntrinsicBounds(left, 0, right, 0);
 
-            if (data.getDate() > 0) {
-                time.setVisibility(View.VISIBLE);
-                time.setText(Formatter.formatShortDate(data.getDate()));
-            } else {
-                time.setVisibility(View.GONE);
-            }
+            time.setText(Formatter.formatShortDate(data.getSortDate()));
+//            if (data.getDate() > 0) {
+//                time.setVisibility(View.VISIBLE);
+//                time.setText(Formatter.formatShortDate(data.getDate()));
+//            } else {
+//                time.setVisibility(View.GONE);
+//            }
 
             boolean isGroup = data.getPeer().getPeerType() == PeerType.GROUP;
             if (data.getMessageType() == Dialog.ContentType.TEXT) {

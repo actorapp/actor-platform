@@ -1,10 +1,10 @@
 package im.actor.model.modules.updates;
 
-import im.actor.model.Messenger;
-import im.actor.model.api.ContactRecord;
+
+import java.io.IOException;
+import java.util.HashMap;
+
 import im.actor.model.api.DifferenceUpdate;
-import im.actor.model.api.Group;
-import im.actor.model.api.User;
 import im.actor.model.api.base.FatSeqUpdate;
 import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.base.SeqUpdateTooLong;
@@ -16,17 +16,11 @@ import im.actor.model.api.rpc.ResponseGetDifference;
 import im.actor.model.api.rpc.ResponseSeq;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.Updates;
 import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.parser.Update;
-import im.actor.model.storage.PreferencesStorage;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by ex3ndr on 09.02.15.
@@ -153,14 +147,14 @@ public class SequenceActor extends ModuleActor {
 
         if (u instanceof FatSeqUpdate) {
             FatSeqUpdate fatSeqUpdate = (FatSeqUpdate) u;
-            processor.applyRelated(fatSeqUpdate.getUsers(), fatSeqUpdate.getGroups(), fatSeqUpdate.getContacts(), false);
+            processor.applyRelated(fatSeqUpdate.getUsers(), fatSeqUpdate.getGroups(), false);
         }
 
         processor.processUpdate(update);
 
         if (u instanceof FatSeqUpdate) {
             FatSeqUpdate fatSeqUpdate = (FatSeqUpdate) u;
-            processor.applyRelated(fatSeqUpdate.getUsers(), fatSeqUpdate.getGroups(), fatSeqUpdate.getContacts(), true);
+            processor.applyRelated(fatSeqUpdate.getUsers(), fatSeqUpdate.getGroups(), true);
         }
 
         // Saving state
@@ -231,7 +225,7 @@ public class SequenceActor extends ModuleActor {
 
                     Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "}");
 
-                    processor.applyRelated(response.getUsers(), response.getGroups(), response.getContacts(), false);
+                    processor.applyRelated(response.getUsers(), response.getGroups(), false);
                     for (DifferenceUpdate u : response.getUpdates()) {
                         try {
                             Update update = parser.read(u.getUpdateHeader(), u.getUpdate());
@@ -241,7 +235,7 @@ public class SequenceActor extends ModuleActor {
                             Log.d(TAG, "Broken update #" + u.getUpdateHeader() + ": ignoring");
                         }
                     }
-                    processor.applyRelated(response.getUsers(), response.getGroups(), response.getContacts(), true);
+                    processor.applyRelated(response.getUsers(), response.getGroups(), true);
 
                     seq = response.getSeq();
                     state = response.getState();

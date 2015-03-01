@@ -9,7 +9,8 @@ public enum MessageState {
 
     SENT(1),
     RECEIVED(2),
-    READ(3);
+    READ(3),
+    UNSUPPORTED_VALUE(-1);
 
     private int value;
 
@@ -26,7 +27,7 @@ public enum MessageState {
             case 1: return MessageState.SENT;
             case 2: return MessageState.RECEIVED;
             case 3: return MessageState.READ;
+            default: return MessageState.UNSUPPORTED_VALUE;
         }
-        throw new IOException();
     }
 }

@@ -4,8 +4,10 @@ package im.actor.model.api.updates;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
@@ -53,6 +55,15 @@ public class UpdateGroupMembersUpdate extends Update {
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.groupId);
         writer.writeRepeatedObj(2, this.members);
+    }
+
+    @Override
+    public String toString() {
+        String res = "update GroupMembersUpdate{";
+        res += "groupId=" + this.groupId;
+        res += ", members=" + this.members;
+        res += "}";
+        return res;
     }
 
     @Override

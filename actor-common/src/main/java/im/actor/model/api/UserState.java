@@ -9,7 +9,8 @@ public enum UserState {
 
     REGISTERED(1),
     EMAIL(2),
-    DELETED(3);
+    DELETED(3),
+    UNSUPPORTED_VALUE(-1);
 
     private int value;
 
@@ -26,7 +27,7 @@ public enum UserState {
             case 1: return UserState.REGISTERED;
             case 2: return UserState.EMAIL;
             case 3: return UserState.DELETED;
+            default: return UserState.UNSUPPORTED_VALUE;
         }
-        throw new IOException();
     }
 }

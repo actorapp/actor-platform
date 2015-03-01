@@ -4,8 +4,10 @@ package im.actor.model.api.base;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
@@ -25,16 +27,18 @@ public class FatSeqUpdate extends RpcScope {
     private byte[] update;
     private List<User> users;
     private List<Group> groups;
-    private List<ContactRecord> contacts;
+    private List<Phone> phones;
+    private List<Email> emails;
 
-    public FatSeqUpdate(int seq, byte[] state, int updateHeader, byte[] update, List<User> users, List<Group> groups, List<ContactRecord> contacts) {
+    public FatSeqUpdate(int seq, byte[] state, int updateHeader, byte[] update, List<User> users, List<Group> groups, List<Phone> phones, List<Email> emails) {
         this.seq = seq;
         this.state = state;
         this.updateHeader = updateHeader;
         this.update = update;
         this.users = users;
         this.groups = groups;
-        this.contacts = contacts;
+        this.phones = phones;
+        this.emails = emails;
     }
 
     public FatSeqUpdate() {
@@ -65,8 +69,12 @@ public class FatSeqUpdate extends RpcScope {
         return this.groups;
     }
 
-    public List<ContactRecord> getContacts() {
-        return this.contacts;
+    public List<Phone> getPhones() {
+        return this.phones;
+    }
+
+    public List<Email> getEmails() {
+        return this.emails;
     }
 
     @Override
@@ -85,11 +93,16 @@ public class FatSeqUpdate extends RpcScope {
             _groups.add(new Group());
         }
         this.groups = values.getRepeatedObj(6, _groups);
-        List<ContactRecord> _contacts = new ArrayList<ContactRecord>();
+        List<Phone> _phones = new ArrayList<Phone>();
         for (int i = 0; i < values.getRepeatedCount(7); i ++) {
-            _contacts.add(new ContactRecord());
+            _phones.add(new Phone());
         }
-        this.contacts = values.getRepeatedObj(7, _contacts);
+        this.phones = values.getRepeatedObj(7, _phones);
+        List<Email> _emails = new ArrayList<Email>();
+        for (int i = 0; i < values.getRepeatedCount(8); i ++) {
+            _emails.add(new Email());
+        }
+        this.emails = values.getRepeatedObj(8, _emails);
     }
 
     @Override
@@ -106,7 +119,21 @@ public class FatSeqUpdate extends RpcScope {
         writer.writeBytes(4, this.update);
         writer.writeRepeatedObj(5, this.users);
         writer.writeRepeatedObj(6, this.groups);
-        writer.writeRepeatedObj(7, this.contacts);
+        writer.writeRepeatedObj(7, this.phones);
+        writer.writeRepeatedObj(8, this.emails);
+    }
+
+    @Override
+    public String toString() {
+        String res = "update box FatSeqUpdate{";
+        res += "seq=" + this.seq;
+        res += ", state=" + byteArrayToStringCompact(this.state);
+        res += ", updateHeader=" + this.updateHeader;
+        res += ", update=" + byteArrayToStringCompact(this.update);
+        res += ", users=" + this.users.size();
+        res += ", groups=" + this.groups.size();
+        res += "}";
+        return res;
     }
 
     @Override

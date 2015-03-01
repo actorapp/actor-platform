@@ -4,8 +4,10 @@ package im.actor.model.api.rpc;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
@@ -57,6 +59,13 @@ public class ResponseLoadHistory extends Response {
     public void serialize(BserWriter writer) throws IOException {
         writer.writeRepeatedObj(1, this.history);
         writer.writeRepeatedObj(2, this.users);
+    }
+
+    @Override
+    public String toString() {
+        String res = "tuple LoadHistory{";
+        res += "}";
+        return res;
     }
 
     @Override

@@ -4,10 +4,15 @@ package im.actor.model.api.base;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
+import java.util.List;
+import java.util.ArrayList;
+import im.actor.model.api.*;
 
 public class SeqUpdate extends RpcScope {
 
@@ -68,6 +73,17 @@ public class SeqUpdate extends RpcScope {
             throw new IOException();
         }
         writer.writeBytes(4, this.update);
+    }
+
+    @Override
+    public String toString() {
+        String res = "update box SeqUpdate{";
+        res += "seq=" + this.seq;
+        res += ", state=" + byteArrayToStringCompact(this.state);
+        res += ", updateHeader=" + this.updateHeader;
+        res += ", update=" + byteArrayToStringCompact(this.update);
+        res += "}";
+        return res;
     }
 
     @Override

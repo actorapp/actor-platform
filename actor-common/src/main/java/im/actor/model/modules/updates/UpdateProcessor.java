@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import im.actor.model.api.ContactRecord;
 import im.actor.model.api.Group;
 import im.actor.model.api.PeerType;
 import im.actor.model.api.User;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.api.updates.UpdateChatClear;
 import im.actor.model.api.updates.UpdateChatDelete;
-import im.actor.model.api.updates.UpdateContactMoved;
 import im.actor.model.api.updates.UpdateContactRegistered;
-import im.actor.model.api.updates.UpdateContactTitleChanged;
 import im.actor.model.api.updates.UpdateContactsAdded;
 import im.actor.model.api.updates.UpdateContactsRemoved;
 import im.actor.model.api.updates.UpdateEncryptedMessage;
@@ -36,9 +33,6 @@ import im.actor.model.api.updates.UpdateMessageReceived;
 import im.actor.model.api.updates.UpdateMessageSent;
 import im.actor.model.api.updates.UpdateTyping;
 import im.actor.model.api.updates.UpdateUserAvatarChanged;
-import im.actor.model.api.updates.UpdateUserContactAdded;
-import im.actor.model.api.updates.UpdateUserContactRemoved;
-import im.actor.model.api.updates.UpdateUserContactsChanged;
 import im.actor.model.api.updates.UpdateUserLastSeen;
 import im.actor.model.api.updates.UpdateUserLocalNameChanged;
 import im.actor.model.api.updates.UpdateUserNameChanged;
@@ -85,32 +79,29 @@ public class UpdateProcessor extends BaseModule {
 
     public void applyRelated(List<User> users,
                              List<Group> groups,
-                             List<ContactRecord> contactRecords,
                              boolean force) {
-        usersProcessor.applyUsers(users, contactRecords, force);
+        usersProcessor.applyUsers(users, force);
         groupsProcessor.applyGroups(groups, force);
     }
 
     public void processInternalUpdate(InternalUpdate update) {
         if (update instanceof DialogHistoryLoaded) {
             ResponseLoadDialogs dialogs = ((DialogHistoryLoaded) update).getDialogs();
-            applyRelated(dialogs.getUsers(), dialogs.getGroups(),
-                    null, false);
+            applyRelated(dialogs.getUsers(), dialogs.getGroups(), false);
             messagesProcessor.onDialogsLoaded(dialogs);
         } else if (update instanceof LoggedIn) {
             ArrayList<User> users = new ArrayList<User>();
             users.add(((LoggedIn) update).getAuth().getUser());
-            applyRelated(users, new ArrayList<Group>(), ((LoggedIn) update).getAuth().getContacts(), true);
+            applyRelated(users, new ArrayList<Group>(), true);
             runOnUiThread(((LoggedIn) update).getRunnable());
         } else if (update instanceof ContactsLoaded) {
             ContactsLoaded contactsLoaded = (ContactsLoaded) update;
-            applyRelated(contactsLoaded.getContacts().getUsers(), new ArrayList<Group>(),
-                    new ArrayList<ContactRecord>(), false);
+            applyRelated(contactsLoaded.getContacts().getUsers(), new ArrayList<Group>(), false);
             modules().getContactsModule().getContactSyncActor()
                     .send(new ContactsSyncActor.ContactsLoaded(contactsLoaded.getContacts()));
         } else if (update instanceof UsersFounded) {
             final UsersFounded founded = (UsersFounded) update;
-            applyRelated(((UsersFounded) update).getUsers(), new ArrayList<Group>(), new ArrayList<ContactRecord>(), false);
+            applyRelated(((UsersFounded) update).getUsers(), new ArrayList<Group>(), false);
             final ArrayList<UserVM> users = new ArrayList<UserVM>();
             for (User u : founded.getUsers()) {
                 users.add(modules().getUsersModule().getUsersCollection().get(u.getId()));
@@ -125,7 +116,7 @@ public class UpdateProcessor extends BaseModule {
             final GroupCreated created = (GroupCreated) update;
             ArrayList<Group> groups = new ArrayList<Group>();
             groups.add(created.getGroup());
-            applyRelated(new ArrayList<User>(), groups, new ArrayList<ContactRecord>(), false);
+            applyRelated(new ArrayList<User>(), groups, false);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -137,17 +128,7 @@ public class UpdateProcessor extends BaseModule {
 
     public void processUpdate(Update update) {
         Log.d(TAG, update + "");
-        if (update instanceof UpdateUserContactAdded) {
-            // TODO: Implement
-        } else if (update instanceof UpdateUserContactRemoved) {
-            // TODO: Implement
-        } else if (update instanceof UpdateContactMoved) {
-            // TODO: Implement
-        } else if (update instanceof UpdateContactTitleChanged) {
-            // TODO: Implement
-        } else if (update instanceof UpdateUserContactsChanged) {
-            // TODO: Implement
-        } else if (update instanceof UpdateUserNameChanged) {
+        if (update instanceof UpdateUserNameChanged) {
             UpdateUserNameChanged userNameChanged = (UpdateUserNameChanged) update;
             usersProcessor.onUserNameChanged(userNameChanged.getUid(), userNameChanged.getName());
         } else if (update instanceof UpdateUserLocalNameChanged) {
@@ -312,14 +293,6 @@ public class UpdateProcessor extends BaseModule {
             users.addAll(((UpdateContactsAdded) update).getUids());
         } else if (update instanceof UpdateContactsRemoved) {
             users.addAll(((UpdateContactsRemoved) update).getUids());
-        } else if (update instanceof UpdateUserContactAdded) {
-            UpdateUserContactAdded contactAdded = (UpdateUserContactAdded) update;
-            users.add(contactAdded.getUid());
-            contacts.add(contactAdded.getContactId());
-        } else if (update instanceof UpdateUserContactRemoved) {
-            UpdateUserContactRemoved contactAdded = (UpdateUserContactRemoved) update;
-            users.add(contactAdded.getUid());
-            contacts.add(contactAdded.getContactId());
         } else if (update instanceof UpdateUserLocalNameChanged) {
             UpdateUserLocalNameChanged localNameChanged = (UpdateUserLocalNameChanged) update;
             users.add(localNameChanged.getUid());

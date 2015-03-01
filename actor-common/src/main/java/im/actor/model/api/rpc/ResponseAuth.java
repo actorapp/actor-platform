@@ -4,8 +4,10 @@ package im.actor.model.api.rpc;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
@@ -21,13 +23,11 @@ public class ResponseAuth extends Response {
 
     private long publicKeyHash;
     private User user;
-    private List<ContactRecord> contacts;
     private Config config;
 
-    public ResponseAuth(long publicKeyHash, User user, List<ContactRecord> contacts, Config config) {
+    public ResponseAuth(long publicKeyHash, User user, Config config) {
         this.publicKeyHash = publicKeyHash;
         this.user = user;
-        this.contacts = contacts;
         this.config = config;
     }
 
@@ -43,10 +43,6 @@ public class ResponseAuth extends Response {
         return this.user;
     }
 
-    public List<ContactRecord> getContacts() {
-        return this.contacts;
-    }
-
     public Config getConfig() {
         return this.config;
     }
@@ -55,11 +51,6 @@ public class ResponseAuth extends Response {
     public void parse(BserValues values) throws IOException {
         this.publicKeyHash = values.getLong(1);
         this.user = values.getObj(2, new User());
-        List<ContactRecord> _contacts = new ArrayList<ContactRecord>();
-        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
-            _contacts.add(new ContactRecord());
-        }
-        this.contacts = values.getRepeatedObj(4, _contacts);
         this.config = values.getObj(3, new Config());
     }
 
@@ -70,11 +61,17 @@ public class ResponseAuth extends Response {
             throw new IOException();
         }
         writer.writeObject(2, this.user);
-        writer.writeRepeatedObj(4, this.contacts);
         if (this.config == null) {
             throw new IOException();
         }
         writer.writeObject(3, this.config);
+    }
+
+    @Override
+    public String toString() {
+        String res = "response Auth{";
+        res += "}";
+        return res;
     }
 
     @Override
