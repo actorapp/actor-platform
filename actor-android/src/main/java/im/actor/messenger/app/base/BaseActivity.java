@@ -17,7 +17,7 @@ import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.core.Core.messenger;
+import static im.actor.messenger.core.AppStateBroker.stateBroker;
 
 /**
  * Created by ex3ndr on 29.12.14.
@@ -28,7 +28,7 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        messenger().onAppVisible();
+        stateBroker().onActivityOpen();
     }
 
     public void bind(final TextView textView, ValueModel<String> value) {
@@ -63,7 +63,7 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        messenger().onAppHidden();
+        stateBroker().onActivityClose();
         BINDER.unbindAll();
     }
 

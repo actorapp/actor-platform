@@ -1,5 +1,6 @@
 package im.actor.model.modules.utils;
 
+import im.actor.model.Configuration;
 import im.actor.model.api.OutPeer;
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorRef;
@@ -74,6 +75,10 @@ public class ModuleActor extends Actor {
 
     public PreferencesStorage preferences() {
         return messenger.getPreferences();
+    }
+
+    public Configuration config() {
+        return messenger.getConfiguration();
     }
 
     public Updates updates() {

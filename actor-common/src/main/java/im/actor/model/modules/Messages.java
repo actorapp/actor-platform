@@ -159,19 +159,19 @@ public class Messages extends BaseModule {
     }
 
     public void saveReadState(Peer peer, long lastReadDate) {
-        preferences().putLong("read_state_" + peer.getUid(), lastReadDate);
+        preferences().putLong("read_state_" + peer.getUnuqueId(), lastReadDate);
     }
 
     public long loadReadState(Peer peer) {
-        return preferences().getLong("read_state_" + peer.getUid(), 0);
+        return preferences().getLong("read_state_" + peer.getUnuqueId(), 0);
     }
 
     public void saveDraft(Peer peer, String draft) {
-        preferences().putString("draft_" + peer.getUid(), draft.trim());
+        preferences().putString("draft_" + peer.getUnuqueId(), draft.trim());
     }
 
     public String loadDraft(Peer peer) {
-        String res = preferences().getString("draft_" + peer.getUid());
+        String res = preferences().getString("draft_" + peer.getUnuqueId());
         if (res == null) {
             return "";
         } else {

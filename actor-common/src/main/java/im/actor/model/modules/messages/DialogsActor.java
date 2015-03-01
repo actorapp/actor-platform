@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.entity.Avatar;
+import im.actor.model.entity.ContentDescription;
+import im.actor.model.entity.ContentType;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.DialogBuilder;
 import im.actor.model.entity.Group;
@@ -36,16 +38,16 @@ public class DialogsActor extends ModuleActor {
             return;
         }
 
-        Dialog dialog = dialogs.getValue(peer.getUid());
+        Dialog dialog = dialogs.getValue(peer.getUnuqueId());
 
-        ContentDescription contentDescription = new ContentDescription(message.getContent());
+        ContentDescription contentDescription = ContentDescription.fromContent(message.getContent());
 
         DialogBuilder builder = new DialogBuilder()
                 .setRid(message.getRid())
                 .setTime(message.getDate())
                 .setMessageType(contentDescription.getContentType())
                 .setText(contentDescription.getText())
-                .setRelatedUid(contentDescription.getRelatedUid())
+                .setRelatedUid(contentDescription.getRelatedUser())
                 .setStatus(message.getMessageState())
                 .setSenderId(message.getSenderId());
 
@@ -82,7 +84,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     private void onUserChanged(User user) {
-        Dialog dialog = dialogs.getValue(user.peer().getUid());
+        Dialog dialog = dialogs.getValue(user.peer().getUnuqueId());
         if (dialog != null) {
             if (dialog.getDialogTitle().equals(user.getName())
                     && equalsE(dialog.getDialogAvatar(), user.getAvatar())) {
@@ -93,7 +95,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     private void onGroupChanged(Group group) {
-        Dialog dialog = dialogs.getValue(group.peer().getUid());
+        Dialog dialog = dialogs.getValue(group.peer().getUnuqueId());
         if (dialog != null) {
             if (dialog.getDialogTitle().equals(group.getTitle())
                     && equalsE(dialog.getDialogAvatar(), group.getAvatar())) {
@@ -104,14 +106,14 @@ public class DialogsActor extends ModuleActor {
     }
 
     private void onChatDeleted(Peer peer) {
-        dialogs.removeItem(peer.getUid());
+        dialogs.removeItem(peer.getUnuqueId());
     }
 
     private void onChatClear(Peer peer) {
-        Dialog dialog = dialogs.getValue(peer.getUid());
+        Dialog dialog = dialogs.getValue(peer.getUnuqueId());
         if (dialog != null) {
             dialogs.addOrUpdateItem(new DialogBuilder(dialog)
-                    .setMessageType(Dialog.ContentType.EMPTY)
+                    .setMessageType(ContentType.EMPTY)
                     .setText(null)
                     .setTime(0)
                     .setUnreadCount(0)
@@ -121,7 +123,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     private void onMessageStatusChanged(Peer peer, long rid, MessageState state) {
-        Dialog dialog = dialogs.getValue(peer.getUid());
+        Dialog dialog = dialogs.getValue(peer.getUnuqueId());
         if (dialog != null && dialog.getRid() == rid) {
             dialogs.addOrUpdateItem(new DialogBuilder(dialog)
                     .setStatus(state)
@@ -130,7 +132,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     private void onCounterChanged(Peer peer, int count) {
-        Dialog dialog = dialogs.getValue(peer.getUid());
+        Dialog dialog = dialogs.getValue(peer.getUnuqueId());
         if (dialog != null) {
             dialogs.addOrUpdateItem(new DialogBuilder(dialog)
                     .setUnreadCount(count)
@@ -142,7 +144,7 @@ public class DialogsActor extends ModuleActor {
         ArrayList<Dialog> updated = new ArrayList<Dialog>();
         for (DialogHistory dialogHistory : history) {
             // Ignore already available dialogs
-            if (dialogs.getValue(dialogHistory.getPeer().getUid()) != null) {
+            if (dialogs.getValue(dialogHistory.getPeer().getUnuqueId()) != null) {
                 continue;
             }
 
@@ -151,13 +153,13 @@ public class DialogsActor extends ModuleActor {
                 continue;
             }
 
-            ContentDescription description = new ContentDescription(dialogHistory.getContent());
+            ContentDescription description = ContentDescription.fromContent(dialogHistory.getContent());
 
             updated.add(new Dialog(dialogHistory.getPeer(),
                     dialogHistory.getSortDate(), peerDesc.getTitle(), peerDesc.getAvatar(),
                     dialogHistory.getUnreadCount(),
                     dialogHistory.getRid(), description.getContentType(), description.getText(), dialogHistory.getStatus(),
-                    dialogHistory.getSenderId(), dialogHistory.getDate(), description.getRelatedUid()));
+                    dialogHistory.getSenderId(), dialogHistory.getDate(), description.getRelatedUser()));
         }
         dialogs.addOrUpdateItems(updated);
     }

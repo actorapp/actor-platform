@@ -28,6 +28,7 @@ import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.ViewHolder;
 import im.actor.messenger.util.Screen;
+import im.actor.model.entity.ContentType;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 
@@ -241,7 +242,7 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
         @Override
         public void bind(Dialog data, int position, final Context context) {
             if (binded != 0) {
-                if (data.getPeer().getUid() != binded) {
+                if (data.getPeer().getUnuqueId() != binded) {
                     Log.d("ListDialogs", "Bind new #" + position);
                 } else {
                     Log.d("ListDialogs", "Bind updated #" + position);
@@ -249,7 +250,7 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
             } else {
                 Log.d("ListDialogs", "Bind fresh #" + position);
             }
-            binded = data.getPeer().getUid();
+            binded = data.getPeer().getUnuqueId();
 
             if (getEngine().getListState().getValue().getState() == ListState.State.LOADED) {
                 if (position > getCount() - LOAD_GAP) {
@@ -295,29 +296,29 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
 //            }
 
             boolean isGroup = data.getPeer().getPeerType() == PeerType.GROUP;
-            if (data.getMessageType() == Dialog.ContentType.TEXT) {
+            if (data.getMessageType() == ContentType.TEXT) {
                 bindedText = MessageTextFormatter.textMessage(data.getSenderId(), isGroup, data.getText());
-            } else if (data.getMessageType() == Dialog.ContentType.DOCUMENT_PHOTO) {
+            } else if (data.getMessageType() == ContentType.DOCUMENT_PHOTO) {
                 bindedText = MessageTextFormatter.photoMessage(data.getSenderId(), isGroup);
-            } else if (data.getMessageType() == Dialog.ContentType.DOCUMENT_VIDEO) {
+            } else if (data.getMessageType() == ContentType.DOCUMENT_VIDEO) {
                 bindedText = MessageTextFormatter.videoMessage(data.getSenderId(), isGroup);
-            } else if (data.getMessageType() == Dialog.ContentType.DOCUMENT) {
+            } else if (data.getMessageType() == ContentType.DOCUMENT) {
                 bindedText = MessageTextFormatter.documentMessage(data.getSenderId(), isGroup);
-            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_REGISTERED) {
+            } else if (data.getMessageType() == ContentType.SERVICE_REGISTERED) {
                 bindedText = MessageTextFormatter.joinedActor(data.getSenderId());
-            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_CREATED) {
+            } else if (data.getMessageType() == ContentType.SERVICE_CREATED) {
                 bindedText = MessageTextFormatter.groupCreated(data.getSenderId());
-            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_LEAVE) {
+            } else if (data.getMessageType() == ContentType.SERVICE_LEAVE) {
                 bindedText = MessageTextFormatter.groupLeave(data.getSenderId());
-            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_ADD) {
+            } else if (data.getMessageType() == ContentType.SERVICE_ADD) {
                 bindedText = MessageTextFormatter.groupAdd(data.getSenderId(), data.getRelatedUid());
-            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_KICK) {
+            } else if (data.getMessageType() == ContentType.SERVICE_KICK) {
                 bindedText = MessageTextFormatter.groupKicked(data.getSenderId(), data.getRelatedUid());
-            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_TITLE) {
+            } else if (data.getMessageType() == ContentType.SERVICE_TITLE) {
                 bindedText = MessageTextFormatter.groupChangeTitle(data.getSenderId());
-            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_AVATAR) {
+            } else if (data.getMessageType() == ContentType.SERVICE_AVATAR) {
                 bindedText = MessageTextFormatter.groupChangeAvatar(data.getSenderId());
-            } else if (data.getMessageType() == Dialog.ContentType.SERVICE_AVATAR_REMOVED) {
+            } else if (data.getMessageType() == ContentType.SERVICE_AVATAR_REMOVED) {
                 bindedText = MessageTextFormatter.groupRemoveAvatar(data.getSenderId());
             } else {
                 bindedText = "";

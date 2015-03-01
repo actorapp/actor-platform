@@ -7,7 +7,7 @@ public class DialogBuilder {
     private Avatar dialogAvatar;
     private int unreadCount;
     private long rid;
-    private Dialog.ContentType messageType;
+    private ContentType messageType;
     private String text;
     private MessageState status;
     private int senderId;
@@ -58,7 +58,7 @@ public class DialogBuilder {
         return this;
     }
 
-    public DialogBuilder setMessageType(Dialog.ContentType messageType) {
+    public DialogBuilder setMessageType(ContentType messageType) {
         this.messageType = messageType;
         return this;
     }
