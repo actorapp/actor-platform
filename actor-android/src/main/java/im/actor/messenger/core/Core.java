@@ -9,8 +9,6 @@ import android.provider.ContactsContract;
 import com.droidkit.images.cache.BitmapClasificator;
 import com.droidkit.images.loading.ImageLoader;
 
-import java.util.HashMap;
-
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.emoji.EmojiProcessor;
 import im.actor.messenger.app.view.Formatter;
@@ -26,14 +24,15 @@ import im.actor.messenger.core.images.VideoPreviewTask;
 import im.actor.messenger.core.images.VideoTask;
 import im.actor.messenger.storage.provider.AppEngineFactory;
 import im.actor.model.ConfigurationBuilder;
-import im.actor.model.LocaleProvider;
 import im.actor.model.Messenger;
 import im.actor.model.android.AndroidFileProvider;
 import im.actor.model.android.AndroidLog;
 import im.actor.model.android.AndroidMainThread;
+import im.actor.model.android.AndroidNotifications;
 import im.actor.model.android.AndroidPhoneBook;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
+import im.actor.model.jvm.JavaLocale;
 import im.actor.model.jvm.JavaNetworking;
 import im.actor.model.jvm.JavaThreading;
 import im.actor.model.mvvm.MVVMCollection;
@@ -118,16 +117,12 @@ public class Core {
         builder.setMainThread(new AndroidMainThread());
         builder.setLog(new AndroidLog());
         builder.setStorage(new AppEngineFactory());
-        //builder.setLocale(new JavaLocale("En"));
-        builder.setLocale(new LocaleProvider() {
-            @Override
-            public HashMap<String, String> loadLocale() {
-                return new HashMap<String, String>();
-            }
-        });
+        builder.setLocale(new JavaLocale("En"));
         builder.setPhoneBookProvider(new AndroidPhoneBook());
         // builder.setCryptoProvider(new AndroidCryptoProvider());
         builder.setFileSystemProvider(new AndroidFileProvider(application));
+        builder.setNotificationProvider(new AndroidNotifications());
+        
         if (BuildConfig.API_SSL) {
             builder.addEndpoint("tls://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
         } else {

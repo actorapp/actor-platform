@@ -31,6 +31,8 @@ public class Configuration {
 
     private FileSystemProvider fileSystemProvider;
 
+    private NotificationProvider notificationProvider;
+
     public Configuration(Networking networking, ConnectionEndpoint[] endpoints,
                          Threading threading, MainThread mainThread, Storage storage,
                          LogCallback log, boolean persistUploadingFiles,
@@ -38,6 +40,7 @@ public class Configuration {
                          PhoneBookProvider phoneBookProvider,
                          CryptoProvider cryptoProvider,
                          FileSystemProvider fileSystemProvider,
+                         NotificationProvider notificationProvider,
                          boolean enableContactsLogging,
                          boolean enableNetworkLogging) {
         this.networking = networking;
@@ -53,6 +56,11 @@ public class Configuration {
         this.fileSystemProvider = fileSystemProvider;
         this.enableContactsLogging = enableContactsLogging;
         this.enableNetworkLogging = enableNetworkLogging;
+        this.notificationProvider = notificationProvider;
+    }
+
+    public NotificationProvider getNotificationProvider() {
+        return notificationProvider;
     }
 
     public boolean isEnableContactsLogging() {

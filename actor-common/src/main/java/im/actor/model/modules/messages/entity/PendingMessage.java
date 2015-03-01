@@ -46,14 +46,14 @@ public class PendingMessage extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        peer = Peer.fromUid(values.getLong(1));
+        peer = Peer.fromUniqueId(values.getLong(1));
         rid = values.getLong(2);
         content = AbsContent.contentFromBytes(values.getBytes(3));
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, peer.getUid());
+        writer.writeLong(1, peer.getUnuqueId());
         writer.writeLong(2, rid);
         writer.writeBytes(3, content.toByteArray());
     }

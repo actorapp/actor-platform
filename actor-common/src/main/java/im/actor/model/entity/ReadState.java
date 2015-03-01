@@ -39,18 +39,18 @@ public class ReadState extends BserObject implements KeyValueItem {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        peer = Peer.fromUid(values.getLong(1));
+        peer = Peer.fromUniqueId(values.getLong(1));
         lastReadSortingDate = values.getLong(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, peer.getUid());
+        writer.writeLong(1, peer.getUnuqueId());
         writer.writeLong(2, lastReadSortingDate);
     }
 
     @Override
     public long getEngineId() {
-        return peer.getUid();
+        return peer.getUnuqueId();
     }
 }

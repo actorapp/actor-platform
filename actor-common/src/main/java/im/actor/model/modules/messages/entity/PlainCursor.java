@@ -53,14 +53,14 @@ public class PlainCursor extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        peer = Peer.fromUid(values.getLong(1));
+        peer = Peer.fromUniqueId(values.getLong(1));
         sortDate = values.getLong(2);
         pendingSortDate = values.getLong(3);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, peer.getUid());
+        writer.writeLong(1, peer.getUnuqueId());
         writer.writeLong(2, sortDate);
         writer.writeLong(3, pendingSortDate);
     }

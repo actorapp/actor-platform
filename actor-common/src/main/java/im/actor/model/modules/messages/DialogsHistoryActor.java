@@ -16,7 +16,7 @@ public class DialogsHistoryActor extends ModuleActor {
 
     private static final String TAG = "DialogHistory";
 
-    private static final int LIMIT = 5;
+    private static final int LIMIT = 50;
 
     private long historyMaxDate;
     private boolean historyLoaded;
@@ -29,10 +29,8 @@ public class DialogsHistoryActor extends ModuleActor {
 
     @Override
     public void preStart() {
-//        historyMaxDate = preferences().getLong("dialogs_history_date", Long.MAX_VALUE);
-//        historyLoaded = preferences().getBool("dialogs_history_loaded", false);
-        historyMaxDate = 0;
-        historyLoaded = false;
+        historyMaxDate = preferences().getLong("dialogs_history_date", Long.MAX_VALUE);
+        historyLoaded = preferences().getBool("dialogs_history_loaded", false);
         self().sendOnce(new LoadMore());
     }
 
@@ -69,10 +67,6 @@ public class DialogsHistoryActor extends ModuleActor {
 
     private void onLoadedMore(int loaded, long maxLoadedDate) {
         isLoading = false;
-
-        // Disable loading more because of server bug
-//        historyLoaded = true;
-//        historyMaxDate = maxLoadedDate;
 
         if (loaded < LIMIT) {
             historyLoaded = true;

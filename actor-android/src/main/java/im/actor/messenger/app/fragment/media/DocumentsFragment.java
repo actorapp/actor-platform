@@ -17,7 +17,7 @@ public class DocumentsFragment extends BaseFragment {
 
     public static DocumentsFragment open(Peer peer) {
         Bundle args = new Bundle();
-        args.putLong(Intents.EXTRA_CHAT_PEER, peer.getUid());
+        args.putLong(Intents.EXTRA_CHAT_PEER, peer.getUnuqueId());
         DocumentsFragment res = new DocumentsFragment();
         res.setArguments(args);
         return res;

@@ -179,10 +179,11 @@ public class Messenger {
 
     public void onConversationOpen(Peer peer) {
         modules.getPresenceModule().subscribe(peer);
+        modules.getNotifications().onConversationOpen(peer);
     }
 
     public void onConversationClosed(Peer peer) {
-
+        modules.getNotifications().onConversationClose(peer);
     }
 
     public void onProfileOpen(int uid) {

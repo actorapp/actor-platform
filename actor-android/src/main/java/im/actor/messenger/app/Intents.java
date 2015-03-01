@@ -69,7 +69,7 @@ public class Intents {
 
     public static Intent openDialog(Peer peer, boolean compose, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);
-        intent.putExtra(EXTRA_CHAT_PEER, peer.getUid());
+        intent.putExtra(EXTRA_CHAT_PEER, peer.getUnuqueId());
         intent.putExtra(EXTRA_CHAT_COMPOSE, compose);
         return intent;
     }
@@ -106,7 +106,7 @@ public class Intents {
 
     public static Intent openDocs(Peer peer, Context context) {
         final Intent intent = new Intent(context, DocumentsActivity.class);
-        intent.putExtra(EXTRA_CHAT_PEER, peer.getUid());
+        intent.putExtra(EXTRA_CHAT_PEER, peer.getUnuqueId());
         return intent;
     }
 

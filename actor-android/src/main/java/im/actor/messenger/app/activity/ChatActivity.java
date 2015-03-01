@@ -97,7 +97,7 @@ public class ChatActivity extends BaseActivity {
 
         keyboardUtils = new KeyboardHelper(this);
 
-        peer = Peer.fromUid(getIntent().getExtras().getLong(Intents.EXTRA_CHAT_PEER));
+        peer = Peer.fromUniqueId(getIntent().getExtras().getLong(Intents.EXTRA_CHAT_PEER));
 
         isCompose = saveInstance == null && getIntent().getExtras().getBoolean(Intents.EXTRA_CHAT_COMPOSE, false);
 
