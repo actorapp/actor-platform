@@ -4,10 +4,14 @@ package im.actor.model.api.updates;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateTyping extends Update {
@@ -19,9 +23,9 @@ public class UpdateTyping extends Update {
 
     private Peer peer;
     private int uid;
-    private int typingType;
+    private TypingType typingType;
 
-    public UpdateTyping(Peer peer, int uid, int typingType) {
+    public UpdateTyping(Peer peer, int uid, TypingType typingType) {
         this.peer = peer;
         this.uid = uid;
         this.typingType = typingType;
@@ -39,7 +43,7 @@ public class UpdateTyping extends Update {
         return this.uid;
     }
 
-    public int getTypingType() {
+    public TypingType getTypingType() {
         return this.typingType;
     }
 
@@ -47,7 +51,7 @@ public class UpdateTyping extends Update {
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new Peer());
         this.uid = values.getInt(2);
-        this.typingType = values.getInt(3);
+        this.typingType = TypingType.parse(values.getInt(3));
     }
 
     @Override
@@ -57,7 +61,20 @@ public class UpdateTyping extends Update {
         }
         writer.writeObject(1, this.peer);
         writer.writeInt(2, this.uid);
-        writer.writeInt(3, this.typingType);
+        if (this.typingType == null) {
+            throw new IOException();
+        }
+        writer.writeInt(3, this.typingType.getValue());
+    }
+
+    @Override
+    public String toString() {
+        String res = "update Typing{";
+        res += "peer=" + this.peer;
+        res += ", uid=" + this.uid;
+        res += ", typingType=" + this.typingType;
+        res += "}";
+        return res;
     }
 
     @Override

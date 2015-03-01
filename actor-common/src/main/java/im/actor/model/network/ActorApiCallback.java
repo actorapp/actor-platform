@@ -1,12 +1,5 @@
 package im.actor.model.network;
 
-import im.actor.model.api.ContactRecord;
-import im.actor.model.api.Group;
-import im.actor.model.api.User;
-import im.actor.model.network.parser.Update;
-
-import java.util.List;
-
 /**
  * Created by ex3ndr on 08.02.15.
  */

@@ -4,10 +4,14 @@ package im.actor.model.api.updates;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateEncryptedMessage extends Update {
@@ -88,6 +92,18 @@ public class UpdateEncryptedMessage extends Update {
             throw new IOException();
         }
         writer.writeBytes(5, this.message);
+    }
+
+    @Override
+    public String toString() {
+        String res = "update EncryptedMessage{";
+        res += "peer=" + this.peer;
+        res += ", senderUid=" + this.senderUid;
+        res += ", date=" + this.date;
+        res += ", keyHash=" + this.keyHash;
+        res += ", aesEncryptedKey=" + byteArrayToStringCompact(this.aesEncryptedKey);
+        res += "}";
+        return res;
     }
 
     @Override

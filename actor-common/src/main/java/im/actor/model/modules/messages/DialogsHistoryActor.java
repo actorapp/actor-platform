@@ -2,6 +2,7 @@ package im.actor.model.modules.messages;
 
 import im.actor.model.api.rpc.RequestLoadDialogs;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
+import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.utils.ModuleActor;
@@ -13,7 +14,9 @@ import im.actor.model.network.RpcException;
  */
 public class DialogsHistoryActor extends ModuleActor {
 
-    private static final int LIMIT = 50;
+    private static final String TAG = "DialogHistory";
+
+    private static final int LIMIT = 5;
 
     private long historyMaxDate;
     private boolean historyLoaded;
@@ -26,8 +29,10 @@ public class DialogsHistoryActor extends ModuleActor {
 
     @Override
     public void preStart() {
-        historyMaxDate = 0;//preferences().getLong("dialogs_history_date", 0);
-        historyLoaded = false;//preferences().getBool("dialogs_history_loaded", false);
+//        historyMaxDate = preferences().getLong("dialogs_history_date", Long.MAX_VALUE);
+//        historyLoaded = preferences().getBool("dialogs_history_loaded", false);
+        historyMaxDate = 0;
+        historyLoaded = false;
         self().sendOnce(new LoadMore());
     }
 
@@ -40,11 +45,16 @@ public class DialogsHistoryActor extends ModuleActor {
         }
         isLoading = true;
 
+        Log.d(TAG, "Loading history {date=" + historyMaxDate + "}");
 
         request(new RequestLoadDialogs(historyMaxDate, LIMIT),
                 new RpcCallback<ResponseLoadDialogs>() {
                     @Override
                     public void onResult(ResponseLoadDialogs response) {
+                        for (im.actor.model.api.Dialog dialog : response.getDialogs()) {
+                            Log.d(TAG, "Loaded record {date=" + dialog.getDate() + " sort=" + dialog.getSortDate() + "}");
+                        }
+
                         // Invoke on sequence actor
                         updates().onUpdateReceived(new DialogHistoryLoaded(response));
                     }
@@ -61,15 +71,15 @@ public class DialogsHistoryActor extends ModuleActor {
         isLoading = false;
 
         // Disable loading more because of server bug
-        historyLoaded = true;
-        historyMaxDate = maxLoadedDate;
+//        historyLoaded = true;
+//        historyMaxDate = maxLoadedDate;
 
-//        if (loaded < LIMIT) {
-//            historyLoaded = true;
-//        } else {
-//            historyLoaded = false;
-//            historyMaxDate = maxLoadedDate;
-//        }
+        if (loaded < LIMIT) {
+            historyLoaded = true;
+        } else {
+            historyLoaded = false;
+            historyMaxDate = maxLoadedDate;
+        }
         preferences().putLong("dialogs_history_date", maxLoadedDate);
         preferences().putBool("dialogs_history_loaded", historyLoaded);
     }

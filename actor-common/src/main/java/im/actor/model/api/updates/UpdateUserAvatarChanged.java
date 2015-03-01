@@ -4,10 +4,14 @@ package im.actor.model.api.updates;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.model.api.*;
 
 public class UpdateUserAvatarChanged extends Update {
@@ -49,6 +53,15 @@ public class UpdateUserAvatarChanged extends Update {
         if (this.avatar != null) {
             writer.writeObject(2, this.avatar);
         }
+    }
+
+    @Override
+    public String toString() {
+        String res = "update UserAvatarChanged{";
+        res += "uid=" + this.uid;
+        res += ", avatar=" + (this.avatar != null ? "set":"empty");
+        res += "}";
+        return res;
     }
 
     @Override

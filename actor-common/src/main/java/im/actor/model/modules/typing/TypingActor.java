@@ -3,6 +3,7 @@ package im.actor.model.modules.typing;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import im.actor.model.api.TypingType;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.ActorSystem;
@@ -50,9 +51,9 @@ public class TypingActor extends ModuleActor {
         super(messenger);
     }
 
-    private void privateTyping(int uid, int type) {
-        // Support only simple typings
-        if (type != 0) {
+    private void privateTyping(int uid, TypingType type) {
+        // Support only text typings
+        if (type != TypingType.TEXT) {
             return;
         }
 
@@ -76,9 +77,9 @@ public class TypingActor extends ModuleActor {
         }
     }
 
-    private void groupTyping(int gid, int uid, int type) {
-        // Support only simple typings
-        if (type != 0) {
+    private void groupTyping(int gid, int uid, TypingType type) {
+        // Support only text typings
+        if (type != TypingType.TEXT) {
             return;
         }
 
@@ -227,9 +228,9 @@ public class TypingActor extends ModuleActor {
 
     public static class PrivateTyping {
         private int uid;
-        private int type;
+        private TypingType type;
 
-        public PrivateTyping(int uid, int type) {
+        public PrivateTyping(int uid, TypingType type) {
             this.uid = uid;
             this.type = type;
         }
@@ -238,7 +239,7 @@ public class TypingActor extends ModuleActor {
             return uid;
         }
 
-        public int getType() {
+        public TypingType getType() {
             return type;
         }
 
@@ -258,7 +259,7 @@ public class TypingActor extends ModuleActor {
         @Override
         public int hashCode() {
             int result = uid;
-            result = 31 * result + type;
+            result = 31 * result + type.getValue();
             return result;
         }
     }
@@ -266,9 +267,9 @@ public class TypingActor extends ModuleActor {
     public static class GroupTyping {
         private int gid;
         private int uid;
-        private int type;
+        private TypingType type;
 
-        public GroupTyping(int gid, int uid, int type) {
+        public GroupTyping(int gid, int uid, TypingType type) {
             this.gid = gid;
             this.uid = uid;
             this.type = type;
@@ -282,7 +283,7 @@ public class TypingActor extends ModuleActor {
             return uid;
         }
 
-        public int getType() {
+        public TypingType getType() {
             return type;
         }
 
@@ -304,7 +305,7 @@ public class TypingActor extends ModuleActor {
         public int hashCode() {
             int result = gid;
             result = 31 * result + uid;
-            result = 31 * result + type;
+            result = 31 * result + type.getValue();
             return result;
         }
     }

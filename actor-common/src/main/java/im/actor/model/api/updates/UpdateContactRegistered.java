@@ -4,10 +4,15 @@ package im.actor.model.api.updates;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
+import java.util.List;
+import java.util.ArrayList;
+import im.actor.model.api.*;
 
 public class UpdateContactRegistered extends Update {
 
@@ -54,6 +59,16 @@ public class UpdateContactRegistered extends Update {
         writer.writeInt(1, this.uid);
         writer.writeBool(2, this.isSilent);
         writer.writeLong(3, this.date);
+    }
+
+    @Override
+    public String toString() {
+        String res = "update ContactRegistered{";
+        res += "uid=" + this.uid;
+        res += ", isSilent=" + this.isSilent;
+        res += ", date=" + this.date;
+        res += "}";
+        return res;
     }
 
     @Override
