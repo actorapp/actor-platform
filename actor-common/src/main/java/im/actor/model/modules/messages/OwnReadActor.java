@@ -137,6 +137,8 @@ public class OwnReadActor extends ModuleActor {
         // Updating counter
         modules().getMessagesModule().getDialogsActor()
                 .send(new DialogsActor.CounterChanged(peer, unread.size()));
+
+        modules().getNotifications().onOwnRead(peer, sortingDate);
     }
 
     public void onMessageReadByMe(Peer peer, long sortingDate) {
@@ -197,6 +199,8 @@ public class OwnReadActor extends ModuleActor {
         // Updating counter
         modules().getMessagesModule().getDialogsActor()
                 .send(new DialogsActor.CounterChanged(peer, unread.size()));
+
+        // TODO: Notify delete
     }
 
     private void saveStorage() {

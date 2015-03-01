@@ -22,7 +22,7 @@ public class DocumentsActivity extends BaseFragmentActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(false);
         getSupportActionBar().setTitle(R.string.documents_title);
 
-        Peer peer = Peer.fromUid(getIntent().getLongExtra(Intents.EXTRA_CHAT_PEER, 0));
+        Peer peer = Peer.fromUniqueId(getIntent().getLongExtra(Intents.EXTRA_CHAT_PEER, 0));
         showFragment(DocumentsFragment.open(peer), false, false);
     }
 }

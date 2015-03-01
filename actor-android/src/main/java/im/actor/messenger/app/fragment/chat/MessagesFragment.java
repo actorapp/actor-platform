@@ -52,7 +52,7 @@ public class MessagesFragment extends BaseFragment {
 
     public static MessagesFragment create(Peer peer) {
         Bundle bundle = new Bundle();
-        bundle.putLong("CHAT_PEER", peer.getUid());
+        bundle.putLong("CHAT_PEER", peer.getUnuqueId());
         MessagesFragment res = new MessagesFragment();
         res.setArguments(bundle);
         return res;
@@ -110,7 +110,7 @@ public class MessagesFragment extends BaseFragment {
 
         // Building model
 
-        peer = Peer.fromUid(getArguments().getLong("CHAT_PEER"));
+        peer = Peer.fromUniqueId(getArguments().getLong("CHAT_PEER"));
         listEngine = ListEngines.getMessagesList(peer);
 
         // Building view

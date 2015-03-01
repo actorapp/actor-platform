@@ -27,6 +27,7 @@ public class Modules {
     private volatile Typing typing;
     private volatile Files filesModule;
     private volatile Contacts contacts;
+    private volatile Notifications notifications;
 
     public Modules(Configuration configuration) {
         this.configuration = configuration;
@@ -93,6 +94,9 @@ public class Modules {
         Log.d("CORE_INIT", "Loading stage6.6 in " + (configuration.getThreading().getActorTime() - start) + " ms");
         start = configuration.getThreading().getActorTime();
         filesModule = new Files(this);
+        Log.d("CORE_INIT", "Loading stage6.6.2 in " + (configuration.getThreading().getActorTime() - start) + " ms");
+        start = configuration.getThreading().getActorTime();
+        notifications = new Notifications(this);
         Log.d("CORE_INIT", "Loading stage6.7 in " + (configuration.getThreading().getActorTime() - start) + " ms");
         start = configuration.getThreading().getActorTime();
         contacts = new Contacts(this);
@@ -110,6 +114,7 @@ public class Modules {
         presence.run();
         Log.d("CORE_INIT", "Loading stage6.12 in " + (configuration.getThreading().getActorTime() - start) + " ms");
         start = configuration.getThreading().getActorTime();
+
     }
 
     public PreferencesStorage getPreferences() {
@@ -162,5 +167,9 @@ public class Modules {
 
     public Files getFilesModule() {
         return filesModule;
+    }
+
+    public Notifications getNotifications() {
+        return notifications;
     }
 }

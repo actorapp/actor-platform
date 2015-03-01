@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.api.rpc.ResponseLoadDialogs;
+import im.actor.model.entity.ContentDescription;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
@@ -73,6 +74,8 @@ public class MessagesProcessor extends BaseModule {
 
         if (!isOut) {
             ownReadActor().send(new OwnReadActor.NewMessage(peer, rid, date, false));
+            modules().getNotifications().onInMessage(peer, senderUid, date,
+                    ContentDescription.fromContent(message.getContent()));
             plainReceiveActor().send(new PlainReceiverActor.MarkReceived(peer, date));
         } else {
             ownReadActor().send(new OwnReadActor.NewOutMessage(peer, rid, date, false));

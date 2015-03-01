@@ -32,7 +32,7 @@ public class ConversationActor extends ModuleActor {
     public void preStart() {
         messages = messages(peer);
         messagesStorage = new OutUnreadMessagesStorage();
-        byte[] data = preferences().getBytes("conv_pending_" + peer.getUid());
+        byte[] data = preferences().getBytes("conv_pending_" + peer.getUnuqueId());
         if (data != null) {
             try {
                 messagesStorage = OutUnreadMessagesStorage.fromBytes(data);
@@ -100,7 +100,7 @@ public class ConversationActor extends ModuleActor {
     }
 
     private void savePending() {
-        preferences().putBytes("conv_pending_" + peer.getUid(), messagesStorage.toByteArray());
+        preferences().putBytes("conv_pending_" + peer.getUnuqueId(), messagesStorage.toByteArray());
     }
 
     private void onMessageEncryptedReceived(long rid) {

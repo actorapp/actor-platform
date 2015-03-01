@@ -1,11 +1,11 @@
 package im.actor.model.entity;
 
+import java.io.IOException;
+
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
-
-import java.io.IOException;
 
 /**
  * Created by ex3ndr on 09.02.15.
@@ -16,7 +16,7 @@ public class Peer extends BserObject {
         return Bser.parse(new Peer(), data);
     }
 
-    public static Peer fromUid(long uid) {
+    public static Peer fromUniqueId(long uid) {
         int id = (int) (uid & 0xFFFFFFFFL);
         int type = (int) ((uid >> 32) & 0xFFFFFFFFL);
 
@@ -51,7 +51,7 @@ public class Peer extends BserObject {
 
     }
 
-    public long getUid() {
+    public long getUnuqueId() {
         int type;
         switch (peerType) {
             default:

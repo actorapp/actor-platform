@@ -71,7 +71,7 @@ public final class ListEngines {
         private ConversationHolder(Peer peer) {
 
             SQLiteStorageAdapter storageAdapter = new SQLiteStorageAdapter(
-                    SQLiteProvider.db(), "MESSAGES_" + peer.getUid());
+                    SQLiteProvider.db(), "MESSAGES_" + peer.getUnuqueId());
             engine = new ListEngine<Message>(storageAdapter, new MessagesAdapter());
             uiList = new EngineUiList<Message>(engine, 20, false);
 
