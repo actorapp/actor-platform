@@ -9,7 +9,8 @@ public enum Sex {
 
     UNKNOWN(1),
     MALE(2),
-    FEMALE(3);
+    FEMALE(3),
+    UNSUPPORTED_VALUE(-1);
 
     private int value;
 
@@ -26,7 +27,7 @@ public enum Sex {
             case 1: return Sex.UNKNOWN;
             case 2: return Sex.MALE;
             case 3: return Sex.FEMALE;
+            default: return Sex.UNSUPPORTED_VALUE;
         }
-        throw new IOException();
     }
 }

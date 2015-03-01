@@ -4,10 +4,15 @@ package im.actor.model.api.updates;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
+import java.util.List;
+import java.util.ArrayList;
+import im.actor.model.api.*;
 
 public class UpdateNewDevice extends Update {
 
@@ -64,6 +69,17 @@ public class UpdateNewDevice extends Update {
             writer.writeBytes(3, this.key);
         }
         writer.writeLong(4, this.date);
+    }
+
+    @Override
+    public String toString() {
+        String res = "update NewDevice{";
+        res += "uid=" + this.uid;
+        res += ", keyHash=" + this.keyHash;
+        res += ", key=" + byteArrayToStringCompact(this.key);
+        res += ", date=" + this.date;
+        res += "}";
+        return res;
     }
 
     @Override

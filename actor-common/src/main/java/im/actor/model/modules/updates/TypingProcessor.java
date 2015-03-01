@@ -3,6 +3,7 @@ package im.actor.model.modules.updates;
 import im.actor.model.Messenger;
 import im.actor.model.api.Peer;
 import im.actor.model.api.PeerType;
+import im.actor.model.api.TypingType;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
@@ -19,7 +20,7 @@ public class TypingProcessor extends BaseModule {
         this.typingActor = TypingActor.get(modules);
     }
 
-    public void onTyping(Peer peer, int uid, int type) {
+    public void onTyping(Peer peer, int uid, TypingType type) {
         if (peer.getType() == PeerType.PRIVATE) {
             typingActor.sendOnce(new TypingActor.PrivateTyping(uid, type));
         } else if (peer.getType() == PeerType.GROUP) {

@@ -4,10 +4,15 @@ package im.actor.model.api.base;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
+import java.util.List;
+import java.util.ArrayList;
+import im.actor.model.api.*;
 
 public class SeqUpdateTooLong extends RpcScope {
 
@@ -27,6 +32,13 @@ public class SeqUpdateTooLong extends RpcScope {
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
+    }
+
+    @Override
+    public String toString() {
+        String res = "update box SeqUpdateTooLong{";
+        res += "}";
+        return res;
     }
 
     @Override

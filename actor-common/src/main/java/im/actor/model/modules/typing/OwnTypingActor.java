@@ -1,6 +1,7 @@
 package im.actor.model.modules.typing;
 
 import im.actor.model.api.OutPeer;
+import im.actor.model.api.TypingType;
 import im.actor.model.api.rpc.RequestTyping;
 import im.actor.model.droidkit.actors.ActorTime;
 import im.actor.model.entity.Peer;
@@ -42,7 +43,7 @@ public class OwnTypingActor extends ModuleActor {
             return;
         }
 
-        request(new RequestTyping(outPeer, 0));
+        request(new RequestTyping(outPeer, TypingType.TEXT));
     }
 
     @Override

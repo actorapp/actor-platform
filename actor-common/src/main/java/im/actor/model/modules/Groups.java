@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.model.api.ContactRecord;
+import im.actor.model.api.Email;
 import im.actor.model.api.GroupOutPeer;
 import im.actor.model.api.Member;
+import im.actor.model.api.Phone;
 import im.actor.model.api.UserOutPeer;
 import im.actor.model.api.base.FatSeqUpdate;
 import im.actor.model.api.base.SeqUpdate;
@@ -110,7 +111,7 @@ public class Groups extends BaseModule {
                                 UpdateGroupInvite.HEADER,
                                 new UpdateGroupInvite(response.getGroupPeer().getGroupId(),
                                         rid, myUid(), response.getDate()).toByteArray(),
-                                new ArrayList<im.actor.model.api.User>(), groups, new ArrayList<ContactRecord>()));
+                                new ArrayList<im.actor.model.api.User>(), groups, new ArrayList<Phone>(), new ArrayList<Email>()));
                         updates().onUpdateReceived(new GroupCreated(group, callback));
                     }
 

@@ -4,22 +4,19 @@ package im.actor.model.api.rpc;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
-
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
-
 import im.actor.model.network.parser.*;
-
 import java.util.List;
 import java.util.ArrayList;
-
 import im.actor.model.api.*;
 
 public class ResponseGetDifference extends Response {
 
     public static final int HEADER = 0xc;
-
     public static ResponseGetDifference fromBytes(byte[] data) throws IOException {
         return Bser.parse(new ResponseGetDifference(), data);
     }
@@ -28,16 +25,18 @@ public class ResponseGetDifference extends Response {
     private byte[] state;
     private List<User> users;
     private List<Group> groups;
-    private List<ContactRecord> contacts;
+    private List<Phone> phones;
+    private List<Email> emails;
     private List<DifferenceUpdate> updates;
     private boolean needMore;
 
-    public ResponseGetDifference(int seq, byte[] state, List<User> users, List<Group> groups, List<ContactRecord> contacts, List<DifferenceUpdate> updates, boolean needMore) {
+    public ResponseGetDifference(int seq, byte[] state, List<User> users, List<Group> groups, List<Phone> phones, List<Email> emails, List<DifferenceUpdate> updates, boolean needMore) {
         this.seq = seq;
         this.state = state;
         this.users = users;
         this.groups = groups;
-        this.contacts = contacts;
+        this.phones = phones;
+        this.emails = emails;
         this.updates = updates;
         this.needMore = needMore;
     }
@@ -62,8 +61,12 @@ public class ResponseGetDifference extends Response {
         return this.groups;
     }
 
-    public List<ContactRecord> getContacts() {
-        return this.contacts;
+    public List<Phone> getPhones() {
+        return this.phones;
+    }
+
+    public List<Email> getEmails() {
+        return this.emails;
     }
 
     public List<DifferenceUpdate> getUpdates() {
@@ -79,25 +82,27 @@ public class ResponseGetDifference extends Response {
         this.seq = values.getInt(1);
         this.state = values.getBytes(2);
         List<User> _users = new ArrayList<User>();
-        for (int i = 0; i < values.getRepeatedCount(3); i++) {
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
             _users.add(new User());
         }
         this.users = values.getRepeatedObj(3, _users);
         List<Group> _groups = new ArrayList<Group>();
-        for (int i = 0; i < values.getRepeatedCount(6); i++) {
+        for (int i = 0; i < values.getRepeatedCount(6); i ++) {
             _groups.add(new Group());
         }
         this.groups = values.getRepeatedObj(6, _groups);
-
-//        List<ContactRecord> _contacts = new ArrayList<ContactRecord>();
-//        for (int i = 0; i < values.getRepeatedCount(7); i ++) {
-//            _contacts.add(new ContactRecord());
-//        }
-//        this.contacts = values.getRepeatedObj(7, _contacts);
-        this.contacts = new ArrayList<ContactRecord>();
-
+        List<Phone> _phones = new ArrayList<Phone>();
+        for (int i = 0; i < values.getRepeatedCount(7); i ++) {
+            _phones.add(new Phone());
+        }
+        this.phones = values.getRepeatedObj(7, _phones);
+        List<Email> _emails = new ArrayList<Email>();
+        for (int i = 0; i < values.getRepeatedCount(8); i ++) {
+            _emails.add(new Email());
+        }
+        this.emails = values.getRepeatedObj(8, _emails);
         List<DifferenceUpdate> _updates = new ArrayList<DifferenceUpdate>();
-        for (int i = 0; i < values.getRepeatedCount(4); i++) {
+        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
             _updates.add(new DifferenceUpdate());
         }
         this.updates = values.getRepeatedObj(4, _updates);
@@ -113,9 +118,17 @@ public class ResponseGetDifference extends Response {
         writer.writeBytes(2, this.state);
         writer.writeRepeatedObj(3, this.users);
         writer.writeRepeatedObj(6, this.groups);
-        writer.writeRepeatedObj(7, this.contacts);
+        writer.writeRepeatedObj(7, this.phones);
+        writer.writeRepeatedObj(8, this.emails);
         writer.writeRepeatedObj(4, this.updates);
         writer.writeBool(5, this.needMore);
+    }
+
+    @Override
+    public String toString() {
+        String res = "tuple GetDifference{";
+        res += "}";
+        return res;
     }
 
     @Override

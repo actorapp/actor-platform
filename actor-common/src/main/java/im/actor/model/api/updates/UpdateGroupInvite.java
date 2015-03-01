@@ -4,10 +4,15 @@ package im.actor.model.api.updates;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
+import java.util.List;
+import java.util.ArrayList;
+import im.actor.model.api.*;
 
 public class UpdateGroupInvite extends Update {
 
@@ -62,6 +67,17 @@ public class UpdateGroupInvite extends Update {
         writer.writeLong(9, this.rid);
         writer.writeInt(5, this.inviteUid);
         writer.writeLong(8, this.date);
+    }
+
+    @Override
+    public String toString() {
+        String res = "update GroupInvite{";
+        res += "groupId=" + this.groupId;
+        res += ", rid=" + this.rid;
+        res += ", inviteUid=" + this.inviteUid;
+        res += ", date=" + this.date;
+        res += "}";
+        return res;
     }
 
     @Override

@@ -5,14 +5,14 @@ package im.actor.model.api;
 
 import java.io.IOException;
 
-public enum RecordType {
+public enum TypingType {
 
-    PHONE(1),
-    EMAIL(2);
+    TEXT(0),
+    UNSUPPORTED_VALUE(-1);
 
     private int value;
 
-    RecordType(int value) {
+    TypingType(int value) {
         this.value = value;
     }
 
@@ -20,11 +20,10 @@ public enum RecordType {
         return value;
     }
 
-    public static RecordType parse(int value) throws IOException {
+    public static TypingType parse(int value) throws IOException {
         switch(value) {
-            case 1: return RecordType.PHONE;
-            case 2: return RecordType.EMAIL;
+            case 0: return TypingType.TEXT;
+            default: return TypingType.UNSUPPORTED_VALUE;
         }
-        throw new IOException();
     }
 }
