@@ -50,7 +50,8 @@ public class SchemeFactory {
                                 if (docType.equals("reference")) {
                                     String arg = node.get("argument").textValue();
                                     String descr = node.get("description").textValue();
-                                    entity.getDocs().add(new SchemeDocParameter(arg, descr));
+                                    String category = node.get("category").textValue();
+                                    entity.getDocs().add(new SchemeDocParameter(arg, descr, loadCategory(category)));
                                 }
                             } else {
                                 entity.getDocs().add(new SchemeDocComment(node.textValue()));
@@ -100,7 +101,8 @@ public class SchemeFactory {
                                 if (docType.equals("reference")) {
                                     String arg = node.get("argument").textValue();
                                     String descr = node.get("description").textValue();
-                                    entity.getDocs().add(new SchemeDocParameter(arg, descr));
+                                    String category = node.get("category").textValue();
+                                    entity.getDocs().add(new SchemeDocParameter(arg, descr, loadCategory(category)));
                                 }
                             } else {
                                 entity.getDocs().add(new SchemeDocComment(node.textValue()));
@@ -127,7 +129,8 @@ public class SchemeFactory {
                                 if (docType.equals("reference")) {
                                     String arg = node.get("argument").textValue();
                                     String descr = node.get("description").textValue();
-                                    entity.getDocs().add(new SchemeDocParameter(arg, descr));
+                                    String category = node.get("category").textValue();
+                                    entity.getDocs().add(new SchemeDocParameter(arg, descr, loadCategory(category)));
                                 }
                             } else {
                                 entity.getDocs().add(new SchemeDocComment(node.textValue()));
@@ -154,7 +157,8 @@ public class SchemeFactory {
                                 if (docType.equals("reference")) {
                                     String arg = node.get("argument").textValue();
                                     String descr = node.get("description").textValue();
-                                    entity.getDocs().add(new SchemeDocParameter(arg, descr));
+                                    String category = node.get("category").textValue();
+                                    entity.getDocs().add(new SchemeDocParameter(arg, descr, loadCategory(category)));
                                 }
                             } else {
                                 entity.getDocs().add(new SchemeDocComment(node.textValue()));
@@ -191,7 +195,8 @@ public class SchemeFactory {
                                 if (docType.equals("reference")) {
                                     String arg = node.get("argument").textValue();
                                     String descr = node.get("description").textValue();
-                                    entity.getDocs().add(new SchemeDocParameter(arg, descr));
+                                    String category = node.get("category").textValue();
+                                    entity.getDocs().add(new SchemeDocParameter(arg, descr, loadCategory(category)));
                                 }
                             } else {
                                 entity.getDocs().add(new SchemeDocComment(node.textValue()));
@@ -232,5 +237,18 @@ public class SchemeFactory {
         } else {
             return new SchemePrimitiveType(node.textValue());
         }
+    }
+
+    private static ParameterCategory loadCategory(String category) throws IOException {
+        if (category.equals("full")) {
+            return ParameterCategory.VISIBLE;
+        } else if (category.equals("hidden")) {
+            return ParameterCategory.HIDDEN;
+        } else if (category.equals("danger")) {
+            return ParameterCategory.DANGER;
+        } else if (category.equals("compact")) {
+            return ParameterCategory.COMPACT;
+        }
+        throw new IOException();
     }
 }

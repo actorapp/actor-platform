@@ -22,6 +22,10 @@
 // phoneNumber Phone number in international format
 // appId Application ID
 // apiKey Application API key
+// Sending SMS with activation code
+// phoneNumber Phone number in international format
+// appId Application ID
+// apiKey Application API key
 message RequestSendAuthCode {
     required int64 phoneNumber = 1;
     required int32 appId = 2;
@@ -119,7 +123,7 @@ message RequestSignUp {
 // longitude optional longitude of auth if available
 message AuthSession {
     required int32 id = 1;
-    required int32 authHolder = 2;
+    required AuthHolder authHolder = 2;
     required int32 appId = 3;
     required string appTitle = 4;
     required string deviceTitle = 5;
@@ -127,6 +131,11 @@ message AuthSession {
     required string authLocation = 7;
     optional double latitude = 8;
     optional double longitude = 9;
+}
+
+enum AuthHolder {
+    THISDEVICE = 1;
+    OTHERDEVICE = 2;
 }
 
 // API#0x50
@@ -185,6 +194,8 @@ enum UserState {
 }
 
 // Extendend phone information
+// id Phone id
+// accessHash Access hash of phone number
 // phone Phone number in international format
 // phoneTitle Title of phone
 message Phone {
@@ -195,6 +206,8 @@ message Phone {
 }
 
 // Extendend email information
+// id Email id
+// accessHash Access hash of email
 // email Email
 // emailTitle Descruption of email
 message Email {
@@ -397,6 +410,9 @@ message RequestRemoveAvatar {
 // ResponseVoid
 // Sending activation code to email
 // email Email for attaching to account
+// Sending activation code to email
+// email Email for adding
+// description Optional description for email
 message RequestSendEmailCode {
     required string email = 1;
     optional string description = 2;
@@ -405,7 +421,8 @@ message RequestSendEmailCode {
 // API#0x7B
 // ResponseSeq
 // Detaching email from account
-// email Email id for deattach
+// email Detaching email
+// accessHash Access hash of email
 message RequestDetachEmail {
     required int32 email = 1;
     required int64 accessHash = 2;
@@ -522,6 +539,7 @@ message RequestAddContact {
 // API#0x70
 // ResponseSearchContacts
 // Searching contacts by user's query
+// request Search query
 message RequestSearchContacts {
     required string request = 1;
 }
@@ -631,6 +649,7 @@ message TextMessage {
 // Service message
 // text service message text
 // extType extension type. 0x01 => ServiceExUserAdded, 0x02 => ServiceExUserKicked, 0x03 => ServiveExUserLeft, 0x04 => ServiceExGroupCreated, 0x05 => ServiceExGroupChangedTitle, 0x06 => ServiceExGroupChangedAvatar
+// ext Extension
 message ServiceMessage {
     required string text = 1;
     required int32 extType = 2;
@@ -658,16 +677,19 @@ message ServiceExGroupCreated {
 }
 
 // Service message about group title change
+// title New group title
 message ServiceExChangedTitle {
     required string title = 1;
 }
 
 // Service message about avatar change
+// avatar Updated avatar
 message ServiceExChangedAvatar {
     optional Avatar avatar = 1;
 }
 
 // Service message about email user registration
+// uid User id
 message ServiceExEmailContactRegistered {
     required int32 uid = 1;
 }
@@ -846,6 +868,11 @@ message UpdateEncryptedMessage {
 
 // API#0x37
 // Update about plain message
+// peer Destination peer
+// senderUid Sender of message
+// date date of message
+// rid Rid of message
+// message message content
 message UpdateMessage {
     required Peer peer = 1;
     required int32 senderUid = 2;
@@ -855,6 +882,10 @@ message UpdateMessage {
 }
 
 // API#0x04
+// Update about message sent
+// peer Destination peer
+// rid Rid of message
+// date Date of message
 message UpdateMessageSent {
     required Peer peer = 1;
     required int64 rid = 2;
@@ -862,6 +893,10 @@ message UpdateMessageSent {
 }
 
 // API#0x12
+// Update about encrypted message received
+// peer Destination peer
+// rid Rid of message
+// receivedDate Date of receive
 message UpdateEncryptedReceived {
     required Peer peer = 1;
     required int64 rid = 2;
@@ -869,6 +904,10 @@ message UpdateEncryptedReceived {
 }
 
 // API#0x34
+// Update about encrypted message read
+// peer Destination peer
+// rid Rid of message
+// readDate Date of read
 message UpdateEncryptedRead {
     required Peer peer = 1;
     required int64 rid = 2;
@@ -876,12 +915,19 @@ message UpdateEncryptedRead {
 }
 
 // API#0x35
+// Update about encrypted message read by me
+// peer Destination peer
+// rid Rid of message
 message UpdateEncryptedReadByMe {
     required Peer peer = 1;
     required int64 rid = 2;
 }
 
 // API#0x36
+// Update about message received
+// peer Destination peer
+// startDate Start date of received message
+// receivedDate Date of receive
 message UpdateMessageReceived {
     required Peer peer = 1;
     required int64 startDate = 2;
@@ -889,6 +935,10 @@ message UpdateMessageReceived {
 }
 
 // API#0x13
+// Update about message read
+// peer Destination peer
+// startDate Start date of read message
+// readDate Date of read
 message UpdateMessageRead {
     required Peer peer = 1;
     required int64 startDate = 2;
@@ -896,23 +946,33 @@ message UpdateMessageRead {
 }
 
 // API#0x32
+// Update about message read by me
+// peer Destination peer
+// startDate Start date of read message
 message UpdateMessageReadByMe {
     required Peer peer = 1;
     required int64 startDate = 2;
 }
 
 // API#0x2E
+// Update about message delete
+// peer Destination peer
+// rids Deleted messages
 message UpdateMessageDelete {
     required Peer peer = 1;
     repeated int64 rids = 2;
 }
 
 // API#0x2F
+// Update about chat clear
+// peer Destination peer
 message UpdateChatClear {
     required Peer peer = 1;
 }
 
 // API#0x30
+// Update about chat delete
+// peer Destination peer
 message UpdateChatDelete {
     required Peer peer = 1;
 }
@@ -921,17 +981,30 @@ message UpdateChatDelete {
 // Groups
 //////////////////////////////////////////////////////
 
+// Group information
+// id group id
+// accessHash Access hash of group
+// title Title of group
+// avatar Avatar of group
+// isMember is member of group
+// creatorUid Group creator
+// members Members of group
+// createDate Date of creation
 message Group {
     required int32 id = 1;
     required int64 accessHash = 2;
     required string title = 3;
     optional Avatar avatar = 4;
     required bool isMember = 6;
-    required int32 adminUid = 8;
+    required int32 creatorUid = 8;
     repeated Member members = 9;
     required int64 createDate = 10;
 }
 
+// Member information
+// uid User id
+// inviterUid User inviter id
+// date Adding date
 message Member {
     required int32 uid = 1;
     required int32 inviterUid = 2;
@@ -944,6 +1017,8 @@ message Member {
 // rid Random Id for avoiding double create
 // title Group title
 // users Members of group
+// title Title of new group
+// users Members of new group
 message RequestCreateGroup {
     required int64 rid = 1;
     required string title = 2;
@@ -1307,6 +1382,10 @@ message ResponseGetPublicKeys {
 // Typing and Online
 //////////////////////////////////////////////////////
 
+enum TypingType {
+    TEXT = 0;
+}
+
 // API#0x1B
 // ResponseVoid
 // Sending typing notification
@@ -1314,7 +1393,7 @@ message ResponseGetPublicKeys {
 // typingType typing type.
 message RequestTyping {
     required OutPeer peer = 1;
-    required int32 typingType = 3;
+    required TypingType typingType = 3;
 }
 
 // API#0x1D
@@ -1335,7 +1414,7 @@ message RequestSetOnline {
 message UpdateTyping {
     required Peer peer = 1;
     required int32 uid = 2;
-    required int32 typingType = 3;
+    required TypingType typingType = 3;
 }
 
 // API#0x07
@@ -1631,6 +1710,8 @@ message DifferenceUpdate {
 // API#0x0B
 // ResponseGetDifference
 // Getting difference of sequence
+// seq Sequence number
+// state Sequence state
 message RequestGetDifference {
     required int32 seq = 1;
     required bytes state = 2;
