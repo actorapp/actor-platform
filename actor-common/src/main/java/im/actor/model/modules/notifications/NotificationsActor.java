@@ -22,6 +22,8 @@ public class NotificationsActor extends ModuleActor {
     private PendingStorage pendingStorage;
 
     private Peer visiblePeer;
+    private boolean isAppVisible = false;
+    private boolean isDialogsVisible = false;
 
     public NotificationsActor(Modules messenger) {
         super(messenger);
@@ -50,14 +52,24 @@ public class NotificationsActor extends ModuleActor {
 
         allPending.add(new PendingNotification(peer, sender, date, description));
 
+        saveStorage();
+
         if (config().getNotificationProvider() != null) {
             if (visiblePeer != null && visiblePeer.equals(peer)) {
                 config().getNotificationProvider().onMessageArriveInApp();
                 return;
             }
+            if (isDialogsVisible) {
+                config().getNotificationProvider().onMessageArriveInApp();
+                return;
+            }
+
             List<PendingNotification> destNotifications;
             if (allPending.size() <= MAX_NOTIFICATION_COUNT) {
-                destNotifications = allPending;
+                destNotifications = new ArrayList<PendingNotification>();
+                for (int i = 0; i < allPending.size(); i++) {
+                    destNotifications.add(allPending.get(allPending.size() - 1 - i));
+                }
             } else {
                 destNotifications = new ArrayList<PendingNotification>();
                 for (int i = 0; i < MAX_NOTIFICATION_COUNT; i++) {
@@ -70,7 +82,7 @@ public class NotificationsActor extends ModuleActor {
                 res.add(new Notification(p.getPeer(), p.getSender(), p.getContent()));
             }
 
-            int messagesCount = destNotifications.size();
+            int messagesCount = allPending.size();
             HashSet<Peer> peers = new HashSet<Peer>();
             for (PendingNotification p : allPending) {
                 peers.add(p.getPeer());
@@ -97,12 +109,34 @@ public class NotificationsActor extends ModuleActor {
 
     public void onConversationVisible(Peer peer) {
         this.visiblePeer = peer;
+        if (config().getNotificationProvider() != null) {
+            config().getNotificationProvider().onChatOpen(peer);
+        }
     }
 
     public void onConversationHidden(Peer peer) {
         if (visiblePeer != null && visiblePeer.equals(peer)) {
             this.visiblePeer = null;
         }
+    }
+
+    public void onAppVisible() {
+        isAppVisible = true;
+    }
+
+    public void onAppHidden() {
+        isAppVisible = false;
+    }
+
+    public void onDialogsVisible() {
+        isDialogsVisible = true;
+        if (config().getNotificationProvider() != null) {
+            config().getNotificationProvider().onDialogsOpen();
+        }
+    }
+
+    public void onDialogsHidden() {
+        isDialogsVisible = false;
     }
 
     private void saveStorage() {
@@ -124,6 +158,14 @@ public class NotificationsActor extends ModuleActor {
             onConversationVisible(((OnConversationVisible) message).getPeer());
         } else if (message instanceof OnConversationHidden) {
             onConversationHidden(((OnConversationHidden) message).getPeer());
+        } else if (message instanceof OnAppHidden) {
+            onAppHidden();
+        } else if (message instanceof OnAppVisible) {
+            onAppVisible();
+        } else if (message instanceof OnDialogsVisible) {
+            onDialogsVisible();
+        } else if (message instanceof OnDialogsHidden) {
+            onDialogsHidden();
         } else {
             drop(message);
         }
@@ -199,5 +241,21 @@ public class NotificationsActor extends ModuleActor {
         public Peer getPeer() {
             return peer;
         }
+    }
+
+    public static class OnAppVisible {
+
+    }
+
+    public static class OnAppHidden {
+
+    }
+
+    public static class OnDialogsVisible {
+
+    }
+
+    public static class OnDialogsHidden {
+
     }
 }
