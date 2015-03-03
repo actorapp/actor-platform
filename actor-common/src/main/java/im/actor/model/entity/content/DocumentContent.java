@@ -52,6 +52,10 @@ public class DocumentContent extends AbsContent {
         return ext;
     }
 
+    public String getMimetype() {
+        return mimetype;
+    }
+
     @Override
     protected ContentType getContentType() {
         return ContentType.DOCUMENT;
@@ -63,7 +67,7 @@ public class DocumentContent extends AbsContent {
         source = FileSource.fromBytes(values.getBytes(2));
         mimetype = values.getString(3);
         name = values.getString(4);
-        byte[] ft = values.getBytes(5);
+        byte[] ft = values.optBytes(5);
         if (ft != null) {
             fastThumb = FastThumb.fromBytes(ft);
         }

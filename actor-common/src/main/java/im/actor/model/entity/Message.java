@@ -1,13 +1,13 @@
 package im.actor.model.entity;
 
+import java.io.IOException;
+
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.storage.ListEngineItem;
-
-import java.io.IOException;
 
 /**
  * Created by ex3ndr on 09.02.15.
@@ -67,6 +67,10 @@ public class Message extends BserObject implements ListEngineItem {
     }
 
     public Message changeDate(long date) {
+        return new Message(rid, sortDate, date, senderId, messageState, content);
+    }
+
+    public Message changeContent(AbsContent content) {
         return new Message(rid, sortDate, date, senderId, messageState, content);
     }
 

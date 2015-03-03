@@ -1,6 +1,7 @@
 package im.actor.model.android;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import im.actor.model.files.FileReference;
@@ -44,6 +45,11 @@ public class AndroidFileReference implements FileReference {
 
     @Override
     public InputFile openRead() {
-        return null;
+        try {
+            return new AndroidInputFile(fileName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

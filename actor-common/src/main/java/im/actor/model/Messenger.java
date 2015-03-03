@@ -14,10 +14,12 @@ import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
+import im.actor.model.entity.content.FastThumb;
+import im.actor.model.files.FileReference;
 import im.actor.model.i18n.I18nEngine;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.file.FileCallback;
+import im.actor.model.modules.file.DownloadCallback;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.storage.ListEngine;
@@ -25,6 +27,8 @@ import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.GroupTypingVM;
 import im.actor.model.viewmodel.GroupVM;
+import im.actor.model.viewmodel.UploadFileVM;
+import im.actor.model.viewmodel.UploadFileVMCallback;
 import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
@@ -102,9 +106,6 @@ public class Messenger {
         Log.d(TAG, "Loading stage6 in " + (configuration.getThreading().getActorTime() - start) + " ms");
         start = configuration.getThreading().getActorTime();
 
-        // Notify about app visible
-        modules.getPresenceModule().onAppVisible();
-        modules.getNotifications().onAppVisible();
     }
 
     // Auth
@@ -238,6 +239,21 @@ public class Messenger {
         modules.getMessagesModule().sendMessage(peer, text);
     }
 
+    public void sendPhoto(Peer peer, String fileName,
+                          int w, int h, FastThumb fastThumb,
+                          FileReference fileReference) {
+        modules.getMessagesModule().sendPhoto(peer, fileName, w, h, fastThumb, fileReference);
+    }
+
+    public void sendDocument(Peer peer, String fileName, String mimeType, FileReference fileReference) {
+        sendDocument(peer, fileName, mimeType, fileReference, null);
+    }
+
+    public void sendDocument(Peer peer, String fileName, String mimeType, FileReference fileReference,
+                             FastThumb fastThumb) {
+        modules.getMessagesModule().sendDocument(peer, fileName, mimeType, fastThumb, fileReference);
+    }
+
     public Command<Boolean> editMyName(final String newName) {
         return modules.getUsersModule().editMyName(newName);
     }
@@ -291,15 +307,19 @@ public class Messenger {
         return new FileVM(fileLocation, isAutoStart, modules, callback);
     }
 
-    public void bindRawFile(FileLocation fileLocation, boolean isAutoStart, FileCallback callback) {
+    public UploadFileVM bindUpload(long rid, UploadFileVMCallback callback) {
+        return new UploadFileVM(rid, callback, modules);
+    }
+
+    public void bindRawFile(FileLocation fileLocation, boolean isAutoStart, DownloadCallback callback) {
         modules.getFilesModule().bindFile(fileLocation, isAutoStart, callback);
     }
 
-    public void unbindRawFile(long fileId, boolean isAutoCancel, FileCallback callback) {
+    public void unbindRawFile(long fileId, boolean isAutoCancel, DownloadCallback callback) {
         modules.getFilesModule().unbindFile(fileId, callback, isAutoCancel);
     }
 
-    public void requestState(long fileId, final FileCallback callback) {
+    public void requestState(long fileId, final DownloadCallback callback) {
         modules.getFilesModule().requestState(fileId, callback);
     }
 

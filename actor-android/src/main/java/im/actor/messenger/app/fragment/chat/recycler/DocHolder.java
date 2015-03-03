@@ -18,11 +18,14 @@ import im.actor.messenger.util.FileTypes;
 import im.actor.model.entity.FileLocation;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.content.DocumentContent;
+import im.actor.model.entity.content.FileLocalSource;
 import im.actor.model.entity.content.FileRemoteSource;
 import im.actor.model.files.FileReference;
-import im.actor.model.modules.file.FileCallback;
+import im.actor.model.modules.file.DownloadCallback;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
+import im.actor.model.viewmodel.UploadFileVM;
+import im.actor.model.viewmodel.UploadFileVMCallback;
 
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
@@ -50,6 +53,7 @@ public class DocHolder extends MessageHolder {
 
     // Binded model
     private FileVM downloadFileVM;
+    private UploadFileVM uploadFileVM;
     private DocumentContent document;
 
     public DocHolder(final MessagesFragment fragment, View itemView) {
@@ -178,6 +182,10 @@ public class DocHolder extends MessageHolder {
                 downloadFileVM.detach();
                 downloadFileVM = null;
             }
+            if (uploadFileVM != null) {
+                uploadFileVM.detach();
+                uploadFileVM = null;
+            }
             needRebind = true;
         } else {
 
@@ -200,6 +208,8 @@ public class DocHolder extends MessageHolder {
                 boolean autoDownload = remoteSource.getFileLocation().getFileSize() <= 1024 * 1024;// < 1MB
                 downloadFileVM = messenger().bindFile(remoteSource.getFileLocation(),
                         autoDownload, new DownloadVMCallback());
+            } else if (document.getSource() instanceof FileLocalSource) {
+                uploadFileVM = messenger().bindUpload(message.getRid(), new UploadVMCallback());
             }
         }
     }
@@ -211,7 +221,7 @@ public class DocHolder extends MessageHolder {
         if (document.getSource() instanceof FileRemoteSource) {
             FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
             final FileLocation location = remoteSource.getFileLocation();
-            messenger().requestState(location.getFileId(), new FileCallback() {
+            messenger().requestState(location.getFileId(), new DownloadCallback() {
                 @Override
                 public void onNotDownloaded() {
                     messenger().startDownloading(location);
@@ -240,8 +250,11 @@ public class DocHolder extends MessageHolder {
             downloadFileVM.detach();
             downloadFileVM = null;
         }
+        if (uploadFileVM != null) {
+            uploadFileVM.detach();
+            uploadFileVM = null;
+        }
     }
-
 
     private class DownloadVMCallback implements FileVMCallback {
 
@@ -291,6 +304,48 @@ public class DocHolder extends MessageHolder {
             goneView(downloadIcon);
             goneView(progressValue);
             goneView(progressView);
+        }
+    }
+
+    private class UploadVMCallback implements UploadFileVMCallback {
+
+        @Override
+        public void onNotUploaded() {
+            status.setText(R.string.chat_doc_send);
+            showView(status);
+
+            goneView(menu);
+
+            // File Icon
+            goneView(fileIcon);
+
+            downloadIcon.setResource(R.drawable.ic_cloud_upload_white_36dp);
+            showView(downloadIcon);
+            progressView.setValue(0);
+            goneView(progressValue);
+            goneView(progressView);
+        }
+
+        @Override
+        public void onUploading(float progress) {
+            status.setText(R.string.chat_doc_stop);
+            showView(status);
+
+            goneView(menu);
+
+            goneView(fileIcon);
+
+            goneView(downloadIcon);
+            int val = (int) (progress * 100);
+            progressView.setValue(val);
+            progressValue.setText("" + val);
+            showView(progressView);
+            showView(progressValue);
+        }
+
+        @Override
+        public void onUploaded() {
+            onUploading(1);
         }
     }
 }

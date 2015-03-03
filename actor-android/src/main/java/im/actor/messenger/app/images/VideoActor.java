@@ -1,4 +1,4 @@
-package im.actor.messenger.core.images;
+package im.actor.messenger.app.images;
 
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;

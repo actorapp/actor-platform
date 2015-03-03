@@ -87,7 +87,6 @@ public class DownloadTask extends ModuleActor {
         if (isCompleted) {
             return;
         }
-        isCompleted = true;
 
         Log.d(TAG, "Closing file...");
         if (!outputFile.close()) {
@@ -96,15 +95,20 @@ public class DownloadTask extends ModuleActor {
         }
 
         FileReference reference = fileSystemProvider.commitTempFile(destReference, fileLocation);
+        if (reference == null) {
+            reportError();
+            return;
+        }
 
         Log.d(TAG, "Complete download {" + reference.getDescriptor() + "}");
-        manager.send(new DownloadManager.OnDownloaded(fileLocation.getFileId(), reference));
+        reportComplete(reference);
     }
 
     private void checkQueue() {
         if (isCompleted) {
             return;
         }
+
         Log.d(TAG, "checkQueue " + currentDownloads + "/" + nextBlock);
         if (currentDownloads == 0 && nextBlock >= blocksCount) {
             completeDownload();
@@ -149,11 +153,25 @@ public class DownloadTask extends ModuleActor {
     }
 
     private void reportError() {
+        if (isCompleted) {
+            return;
+        }
         isCompleted = true;
         manager.send(new DownloadManager.OnDownloadedError(fileLocation.getFileId()));
     }
 
     private void reportProgress(float progress) {
+        if (isCompleted) {
+            return;
+        }
         manager.send(new DownloadManager.OnDownloadProgress(fileLocation.getFileId(), progress));
+    }
+
+    private void reportComplete(FileReference reference) {
+        if (isCompleted) {
+            return;
+        }
+        isCompleted = true;
+        manager.send(new DownloadManager.OnDownloaded(fileLocation.getFileId(), reference));
     }
 }

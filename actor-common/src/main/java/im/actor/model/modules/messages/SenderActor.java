@@ -2,6 +2,8 @@ package im.actor.model.modules.messages;
 
 import java.io.IOException;
 
+import im.actor.model.api.FileExPhoto;
+import im.actor.model.api.FileMessage;
 import im.actor.model.api.MessageContent;
 import im.actor.model.api.OutPeer;
 import im.actor.model.api.TextMessage;
@@ -9,14 +11,20 @@ import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestSendMessage;
 import im.actor.model.api.rpc.ResponseSeqDate;
 import im.actor.model.api.updates.UpdateMessageSent;
-import im.actor.model.entity.Group;
+import im.actor.model.entity.FileLocation;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
-import im.actor.model.entity.PeerType;
-import im.actor.model.entity.User;
+import im.actor.model.entity.content.AbsContent;
+import im.actor.model.entity.content.DocumentContent;
+import im.actor.model.entity.content.FastThumb;
+import im.actor.model.entity.content.FileLocalSource;
+import im.actor.model.entity.content.FileRemoteSource;
+import im.actor.model.entity.content.PhotoContent;
 import im.actor.model.entity.content.TextContent;
+import im.actor.model.entity.content.VideoContent;
 import im.actor.model.modules.Modules;
+import im.actor.model.modules.file.UploadManager;
 import im.actor.model.modules.messages.entity.PendingMessage;
 import im.actor.model.modules.messages.entity.PendingMessagesStorage;
 import im.actor.model.modules.utils.ModuleActor;
@@ -51,13 +59,14 @@ public class SenderActor extends ModuleActor {
 
         for (PendingMessage pending : pendingMessages.getPendingMessages()) {
             if (pending.getContent() instanceof TextContent) {
-                performTextSend(pending.getPeer(), pending.getRid(),
-                        ((TextContent) pending.getContent()).getText());
+                performSendContent(pending.getPeer(), pending.getRid(), pending.getContent());
             } else {
                 // TODO: Process file upload
             }
         }
     }
+
+    // Sending text
 
     public void doSendText(Peer peer, String text) {
         long rid = RandomUtils.nextRid();
@@ -68,32 +77,129 @@ public class SenderActor extends ModuleActor {
 
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, new TextContent(text)));
 
-        performTextSend(peer, rid, text);
+        performSendContent(peer, rid, new TextContent(text));
     }
 
-    private void performTextSend(final Peer peer, final long rid, String text) {
-        OutPeer outPeer;
-        final im.actor.model.api.Peer apiPeer;
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            User user = getUser(peer.getPeerId());
-            if (user == null) {
-                return;
+    // Sending documents
+
+    public void doSendDocument(Peer peer, String fileName, String mimeType, int fileSize,
+                               FastThumb fastThumb, String descriptor) {
+        long rid = RandomUtils.nextRid();
+        long date = System.currentTimeMillis();
+        DocumentContent documentContent = new DocumentContent(
+                new FileLocalSource(fileName, fileSize, descriptor),
+                mimeType, fileName, fastThumb);
+        Message message = new Message(rid, date, date, myUid(), MessageState.PENDING, documentContent);
+        getConversationActor(peer).send(message);
+
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, documentContent));
+
+        performUploadFile(rid, descriptor);
+    }
+
+    public void doSendPhoto(Peer peer, FastThumb fastThumb, String descriptor, String fileName,
+                            int fileSize, int w, int h) {
+        long rid = RandomUtils.nextRid();
+        long date = System.currentTimeMillis();
+        PhotoContent photoContent = new PhotoContent(
+                new FileLocalSource(fileName, fileSize, descriptor), "image/jpeg", fileName,
+                fastThumb, w, h);
+
+        Message message = new Message(rid, date, date, myUid(), MessageState.PENDING, photoContent);
+        getConversationActor(peer).send(message);
+
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, photoContent));
+
+        performUploadFile(rid, descriptor);
+    }
+
+    private void performUploadFile(long rid, String descriptor) {
+        modules().getFilesModule().requestUpload(rid, descriptor, self());
+    }
+
+    private void onFileUploaded(long rid, FileLocation fileLocation) {
+        PendingMessage msg = findPending(rid);
+        if (msg == null) {
+            return;
+        }
+
+        pendingMessages.getPendingMessages().remove(msg);
+
+        AbsContent nContent;
+        if (msg.getContent() instanceof PhotoContent) {
+            return;
+        } else if (msg.getContent() instanceof VideoContent) {
+            return;
+        } else if (msg.getContent() instanceof DocumentContent) {
+            DocumentContent baseDocContent = (DocumentContent) msg.getContent();
+            nContent = new DocumentContent(new FileRemoteSource(fileLocation), baseDocContent.getMimetype(),
+                    baseDocContent.getName(), baseDocContent.getFastThumb());
+        } else {
+            return;
+        }
+        
+        pendingMessages.getPendingMessages().add(new PendingMessage(msg.getPeer(), msg.getRid(), nContent));
+        getConversationActor(msg.getPeer()).send(new ConversationActor.MessageContentUpdated(msg.getRid(), nContent));
+
+        performSendContent(msg.getPeer(), rid, nContent);
+    }
+
+    private void onFileUploadError(long rid) {
+        PendingMessage msg = findPending(rid);
+        if (msg == null) {
+            return;
+        }
+
+        self().send(new MessageError(msg.getPeer(), msg.getRid()));
+    }
+
+    // Sending content
+
+    private void performSendContent(final Peer peer, final long rid, AbsContent content) {
+        final OutPeer outPeer = buidOutPeer(peer);
+        final im.actor.model.api.Peer apiPeer = buildApiPeer(peer);
+        if (outPeer == null || apiPeer == null) {
+            return;
+        }
+
+        MessageContent reqContent;
+        if (content instanceof TextContent) {
+            reqContent = new MessageContent(0x01,
+                    new TextMessage(((TextContent) content).getText(), 0, new byte[0]).toByteArray());
+        } else if (content instanceof DocumentContent) {
+            DocumentContent documentContent = (DocumentContent) content;
+            FileRemoteSource source = (FileRemoteSource) documentContent.getSource();
+
+            int extType = 0;
+            byte[] ext = null;
+
+            if (content instanceof PhotoContent) {
+                PhotoContent photoContent = (PhotoContent) content;
+                extType = 1;
+                ext = new FileExPhoto(photoContent.getW(), photoContent.getH()).toByteArray();
             }
 
-            outPeer = new OutPeer(im.actor.model.api.PeerType.PRIVATE, user.getUid(), user.getAccessHash());
-            apiPeer = new im.actor.model.api.Peer(im.actor.model.api.PeerType.PRIVATE, user.getUid());
-        } else if (peer.getPeerType() == PeerType.GROUP) {
-            Group group = getGroup(peer.getPeerId());
-            if (group == null) {
-                return;
+            im.actor.model.api.FastThumb fastThumb = null;
+            if (documentContent.getFastThumb() != null) {
+                fastThumb = new im.actor.model.api.FastThumb(
+                        documentContent.getFastThumb().getW(),
+                        documentContent.getFastThumb().getH(),
+                        documentContent.getFastThumb().getImage());
             }
-            outPeer = new OutPeer(im.actor.model.api.PeerType.GROUP, group.getGroupId(), group.getAccessHash());
-            apiPeer = new im.actor.model.api.Peer(im.actor.model.api.PeerType.GROUP, group.getGroupId());
+
+            reqContent = new MessageContent(0x03,
+                    new FileMessage(source.getFileLocation().getFileId(),
+                            source.getFileLocation().getAccessHash(),
+                            source.getFileLocation().getFileSize(),
+                            source.getFileLocation().getFileName(),
+                            documentContent.getMimetype(),
+                            fastThumb,
+                            extType, ext).toByteArray());
         } else {
             return;
         }
 
-        request(new RequestSendMessage(outPeer, rid, new MessageContent(0x01, new TextMessage(text, 0, new byte[0]).toByteArray())),
+        request(new RequestSendMessage(outPeer, rid, reqContent),
                 new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {
@@ -107,7 +213,6 @@ public class SenderActor extends ModuleActor {
                     @Override
                     public void onError(RpcException e) {
                         self().send(new MessageError(peer, rid));
-                        getConversationActor(peer).send(new ConversationActor.MessageError(rid));
                     }
                 });
     }
@@ -130,13 +235,23 @@ public class SenderActor extends ModuleActor {
             }
         }
         savePending();
+        getConversationActor(peer).send(new ConversationActor.MessageError(rid));
     }
 
     private void savePending() {
         preferences().putBytes(PREFERENCES, pendingMessages.toByteArray());
     }
 
-    // Messages
+    private PendingMessage findPending(long rid) {
+        for (PendingMessage message : pendingMessages.getPendingMessages()) {
+            if (message.getRid() == rid) {
+                return message;
+            }
+        }
+        return null;
+    }
+
+    //region Messages
 
     @Override
     public void onReceive(Object message) {
@@ -149,8 +264,115 @@ public class SenderActor extends ModuleActor {
         } else if (message instanceof MessageError) {
             MessageError messageError = (MessageError) message;
             onError(messageError.getPeer(), messageError.getRid());
+        } else if (message instanceof SendDocument) {
+            SendDocument sendDocument = (SendDocument) message;
+            doSendDocument(sendDocument.getPeer(), sendDocument.getFileName(), sendDocument.getMimeType(),
+                    sendDocument.getFileSize(), sendDocument.getFastThumb(), sendDocument.getDescriptor());
+        } else if (message instanceof UploadManager.UploadCompleted) {
+            UploadManager.UploadCompleted uploadCompleted = (UploadManager.UploadCompleted) message;
+            onFileUploaded(uploadCompleted.getRid(), uploadCompleted.getFileLocation());
+        } else if (message instanceof UploadManager.UploadError) {
+            UploadManager.UploadError uploadError = (UploadManager.UploadError) message;
+            onFileUploadError(uploadError.getRid());
+        } else if (message instanceof SendPhoto) {
+            SendPhoto sendPhoto = (SendPhoto) message;
+            doSendPhoto(sendPhoto.getPeer(), sendPhoto.getFastThumb(),
+                    sendPhoto.getDescriptor(), sendPhoto.getFileName(), sendPhoto.getFileSize(),
+                    sendPhoto.getW(), sendPhoto.getH());
         } else {
             drop(message);
+        }
+    }
+
+    public static class SendDocument {
+        private Peer peer;
+        private FastThumb fastThumb;
+        private String descriptor;
+        private String fileName;
+        private String mimeType;
+        private int fileSize;
+
+        public SendDocument(Peer peer, String fileName, String mimeType, int fileSize, String descriptor,
+                            FastThumb fastThumb) {
+            this.peer = peer;
+            this.fastThumb = fastThumb;
+            this.descriptor = descriptor;
+            this.fileName = fileName;
+            this.mimeType = mimeType;
+            this.fileSize = fileSize;
+        }
+
+        public FastThumb getFastThumb() {
+            return fastThumb;
+        }
+
+        public int getFileSize() {
+            return fileSize;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public String getMimeType() {
+            return mimeType;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public String getDescriptor() {
+            return descriptor;
+        }
+    }
+
+    public static class SendPhoto {
+        private Peer peer;
+        private FastThumb fastThumb;
+        private String descriptor;
+        private String fileName;
+        private int fileSize;
+        private int w;
+        private int h;
+
+        public SendPhoto(Peer peer, FastThumb fastThumb, String descriptor, String fileName,
+                         int fileSize, int w, int h) {
+            this.peer = peer;
+            this.fastThumb = fastThumb;
+            this.descriptor = descriptor;
+            this.fileName = fileName;
+            this.fileSize = fileSize;
+            this.w = w;
+            this.h = h;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public FastThumb getFastThumb() {
+            return fastThumb;
+        }
+
+        public String getDescriptor() {
+            return descriptor;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public int getFileSize() {
+            return fileSize;
+        }
+
+        public int getW() {
+            return w;
+        }
+
+        public int getH() {
+            return h;
         }
     }
 
@@ -207,4 +429,6 @@ public class SenderActor extends ModuleActor {
             return rid;
         }
     }
+
+    //endregion
 }

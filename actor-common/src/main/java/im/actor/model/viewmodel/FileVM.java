@@ -3,7 +3,7 @@ package im.actor.model.viewmodel;
 import im.actor.model.entity.FileLocation;
 import im.actor.model.files.FileReference;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.file.FileCallback;
+import im.actor.model.modules.file.DownloadCallback;
 import im.actor.model.mvvm.AsyncVM;
 
 /**
@@ -12,7 +12,7 @@ import im.actor.model.mvvm.AsyncVM;
 public class FileVM extends AsyncVM {
     private Modules modules;
     private FileLocation location;
-    private FileCallback callback;
+    private DownloadCallback callback;
     private FileVMCallback vmCallback;
 
     public FileVM(FileLocation location, boolean isAutostart, Modules modules,
@@ -20,7 +20,7 @@ public class FileVM extends AsyncVM {
         this.modules = modules;
         this.location = location;
         this.vmCallback = vmCallback;
-        this.callback = new FileCallback() {
+        this.callback = new DownloadCallback() {
             @Override
             public void onNotDownloaded() {
                 post(new OnNotDownloaded());
@@ -46,7 +46,7 @@ public class FileVM extends AsyncVM {
         } else if (obj instanceof OnDownloading) {
             vmCallback.onDownloading(((OnDownloading) obj).getProgress());
         } else if (obj instanceof OnDownloaded) {
-            vmCallback.onDownloaded(((OnDownloaded) obj).fileReference);
+            vmCallback.onDownloaded(((OnDownloaded) obj).getFileReference());
         }
     }
 

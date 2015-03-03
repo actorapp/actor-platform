@@ -20,6 +20,8 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.User;
+import im.actor.model.entity.content.FastThumb;
+import im.actor.model.files.FileReference;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
@@ -152,6 +154,19 @@ public class Messages extends BaseModule {
 
     public void sendMessage(final Peer peer, final String message) {
         sendMessageActor.send(new SenderActor.SendText(peer, message));
+    }
+
+    public void sendPhoto(Peer peer, String fileName, int w, int h, FastThumb fastThumb,
+                          FileReference fileReference) {
+        sendMessageActor.send(new SenderActor.SendPhoto(peer, fastThumb,
+                fileReference.getDescriptor(),
+                fileName, fileReference.getSize(), w, h));
+    }
+
+    public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
+                             FileReference fileReference) {
+        sendMessageActor.send(new SenderActor.SendDocument(peer, fileName, mimeType,
+                fileReference.getSize(), fileReference.getDescriptor(), fastThumb));
     }
 
     public void onInMessageShown(Peer peer, long rid, long sortDate, boolean isEncrypted) {

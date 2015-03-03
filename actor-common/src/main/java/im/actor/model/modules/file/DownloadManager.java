@@ -60,7 +60,7 @@ public class DownloadManager extends ModuleActor {
 
     // Tasks
 
-    public void requestState(long fileId, FileCallback callback) {
+    public void requestState(long fileId, DownloadCallback callback) {
         Log.d(TAG, "Requesting state file #" + fileId);
 
         Downloaded downloaded1 = downloaded.getValue(fileId);
@@ -92,7 +92,7 @@ public class DownloadManager extends ModuleActor {
         }
     }
 
-    public void bindDownload(final FileLocation fileLocation, boolean autoStart, FileCallback callback) {
+    public void bindDownload(final FileLocation fileLocation, boolean autoStart, DownloadCallback callback) {
         Log.d(TAG, "Binding file #" + fileLocation.getFileId());
         Downloaded downloaded1 = downloaded.getValue(fileLocation.getFileId());
         if (downloaded1 != null) {
@@ -160,7 +160,7 @@ public class DownloadManager extends ModuleActor {
             Log.d(TAG, "- Promoting in queue");
             if (queueItem.isStopped) {
                 queueItem.isStopped = false;
-                for (FileCallback callback : queueItem.callbacks) {
+                for (DownloadCallback callback : queueItem.callbacks) {
                     callback.onDownloading(0);
                 }
             }
@@ -185,7 +185,7 @@ public class DownloadManager extends ModuleActor {
             Log.d(TAG, "- Marking as stopped");
             queueItem.isStopped = true;
 
-            for (FileCallback callback : queueItem.callbacks) {
+            for (DownloadCallback callback : queueItem.callbacks) {
                 callback.onNotDownloaded();
             }
         }
@@ -193,7 +193,7 @@ public class DownloadManager extends ModuleActor {
         checkQueue();
     }
 
-    public void unbindDownload(long fileId, boolean autoCancel, FileCallback callback) {
+    public void unbindDownload(long fileId, boolean autoCancel, DownloadCallback callback) {
         Log.d(TAG, "Unbind file #" + fileId);
         QueueItem queueItem = findItem(fileId);
         if (queueItem == null) {
@@ -211,7 +211,7 @@ public class DownloadManager extends ModuleActor {
                     Log.d(TAG, "- Marking as stopped");
                     queueItem.isStopped = true;
 
-                    for (FileCallback c : queueItem.callbacks) {
+                    for (DownloadCallback c : queueItem.callbacks) {
                         if (c != callback) {
                             c.onNotDownloaded();
                         }
@@ -282,7 +282,7 @@ public class DownloadManager extends ModuleActor {
 
         queueItem.progress = progress;
 
-        for (FileCallback fileCallback : queueItem.callbacks) {
+        for (DownloadCallback fileCallback : queueItem.callbacks) {
             fileCallback.onDownloading(progress);
         }
     }
@@ -304,7 +304,7 @@ public class DownloadManager extends ModuleActor {
         queue.remove(queueItem);
         queueItem.taskRef.send(PoisonPill.INSTANCE);
 
-        for (FileCallback fileCallback : queueItem.callbacks) {
+        for (DownloadCallback fileCallback : queueItem.callbacks) {
             fileCallback.onDownloaded(reference);
         }
     }
@@ -324,7 +324,7 @@ public class DownloadManager extends ModuleActor {
         queueItem.isStopped = true;
         queueItem.isStarted = false;
 
-        for (FileCallback fileCallback : queueItem.callbacks) {
+        for (DownloadCallback fileCallback : queueItem.callbacks) {
             fileCallback.onNotDownloaded();
         }
     }
@@ -333,7 +333,7 @@ public class DownloadManager extends ModuleActor {
         private FileLocation fileLocation;
         private boolean isStopped;
 
-        private ArrayList<FileCallback> callbacks = new ArrayList<FileCallback>();
+        private ArrayList<DownloadCallback> callbacks = new ArrayList<DownloadCallback>();
 
         private boolean isStarted;
         private float progress;
@@ -345,7 +345,7 @@ public class DownloadManager extends ModuleActor {
         }
     }
 
-    // Messages
+    //region Messages
 
     @Override
     public void onReceive(Object message) {
@@ -382,9 +382,9 @@ public class DownloadManager extends ModuleActor {
 
     public static class RequestState {
         private long fileId;
-        private FileCallback callback;
+        private DownloadCallback callback;
 
-        public RequestState(long fileId, FileCallback callback) {
+        public RequestState(long fileId, DownloadCallback callback) {
             this.fileId = fileId;
             this.callback = callback;
         }
@@ -393,7 +393,7 @@ public class DownloadManager extends ModuleActor {
             return fileId;
         }
 
-        public FileCallback getCallback() {
+        public DownloadCallback getCallback() {
             return callback;
         }
     }
@@ -401,9 +401,9 @@ public class DownloadManager extends ModuleActor {
     public static class BindDownload {
         private FileLocation fileLocation;
         private boolean isAutostart;
-        private FileCallback callback;
+        private DownloadCallback callback;
 
-        public BindDownload(FileLocation fileLocation, boolean isAutostart, FileCallback callback) {
+        public BindDownload(FileLocation fileLocation, boolean isAutostart, DownloadCallback callback) {
             this.fileLocation = fileLocation;
             this.isAutostart = isAutostart;
             this.callback = callback;
@@ -417,7 +417,7 @@ public class DownloadManager extends ModuleActor {
             return isAutostart;
         }
 
-        public FileCallback getCallback() {
+        public DownloadCallback getCallback() {
             return callback;
         }
     }
@@ -449,9 +449,9 @@ public class DownloadManager extends ModuleActor {
     public static class UnbindDownload {
         private long fileId;
         private boolean isAutocancel;
-        private FileCallback callback;
+        private DownloadCallback callback;
 
-        public UnbindDownload(long fileId, boolean isAutocancel, FileCallback callback) {
+        public UnbindDownload(long fileId, boolean isAutocancel, DownloadCallback callback) {
             this.fileId = fileId;
             this.isAutocancel = isAutocancel;
             this.callback = callback;
@@ -461,7 +461,7 @@ public class DownloadManager extends ModuleActor {
             return fileId;
         }
 
-        public FileCallback getCallback() {
+        public DownloadCallback getCallback() {
             return callback;
         }
 
@@ -517,4 +517,6 @@ public class DownloadManager extends ModuleActor {
             return fileId;
         }
     }
+
+    //endregion
 }

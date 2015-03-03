@@ -18,8 +18,6 @@ public class Configuration {
 
     private final LogCallback log;
 
-    private final boolean persistUploadingFiles;
-
     private LocaleProvider localeProvider;
 
     private PhoneBookProvider phoneBookProvider;
@@ -35,7 +33,7 @@ public class Configuration {
 
     public Configuration(Networking networking, ConnectionEndpoint[] endpoints,
                          Threading threading, MainThread mainThread, Storage storage,
-                         LogCallback log, boolean persistUploadingFiles,
+                         LogCallback log,
                          LocaleProvider localeProvider,
                          PhoneBookProvider phoneBookProvider,
                          CryptoProvider cryptoProvider,
@@ -49,7 +47,6 @@ public class Configuration {
         this.mainThread = mainThread;
         this.storage = storage;
         this.log = log;
-        this.persistUploadingFiles = persistUploadingFiles;
         this.localeProvider = localeProvider;
         this.phoneBookProvider = phoneBookProvider;
         this.cryptoProvider = cryptoProvider;
@@ -101,10 +98,6 @@ public class Configuration {
 
     public LogCallback getLog() {
         return log;
-    }
-
-    public boolean isPersistUploadingFiles() {
-        return persistUploadingFiles;
     }
 
     public LocaleProvider getLocaleProvider() {

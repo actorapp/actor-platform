@@ -11,5 +11,7 @@ public interface FileSystemProvider {
 
     public FileReference commitTempFile(FileReference sourceFile, FileLocation fileLocation);
 
+    public boolean isFsPersistent();
+
     public FileReference fileFromDescriptor(String descriptor);
 }
