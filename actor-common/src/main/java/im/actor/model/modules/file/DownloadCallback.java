@@ -5,7 +5,7 @@ import im.actor.model.files.FileReference;
 /**
  * Created by ex3ndr on 26.02.15.
  */
-public interface FileCallback {
+public interface DownloadCallback {
     public void onNotDownloaded();
 
     public void onDownloading(float progress);

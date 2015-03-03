@@ -1,4 +1,4 @@
-package im.actor.messenger.core.images;
+package im.actor.messenger.app.images;
 
 import com.droidkit.images.common.ImageLoadException;
 import com.droidkit.images.loading.ImageLoader;
@@ -8,7 +8,7 @@ import com.droidkit.images.ops.ImageLoading;
 import im.actor.model.android.AndroidFileReference;
 import im.actor.model.entity.FileLocation;
 import im.actor.model.files.FileReference;
-import im.actor.model.modules.file.FileCallback;
+import im.actor.model.modules.file.DownloadCallback;
 
 import static im.actor.messenger.core.Core.messenger;
 
@@ -17,7 +17,7 @@ import static im.actor.messenger.core.Core.messenger;
  */
 public class AvatarActor extends BasicTaskActor<AvatarTask> {
 
-    private FileCallback fileCallback = new ActorFileCallback();
+    private DownloadCallback fileCallback = new ActorFileCallback();
     private FileLocation location;
 
     public AvatarActor(AvatarTask task, ImageLoader loader) {
@@ -57,7 +57,7 @@ public class AvatarActor extends BasicTaskActor<AvatarTask> {
         }
     }
 
-    private class ActorFileCallback implements FileCallback {
+    private class ActorFileCallback implements DownloadCallback {
 
         @Override
         public void onNotDownloaded() {

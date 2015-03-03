@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,6 +28,14 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.droidkit.images.common.ImageLoadException;
+import com.droidkit.images.common.ImageMetadata;
+import com.droidkit.images.common.ImageSaveException;
+import com.droidkit.images.ops.ImageLoading;
+import com.droidkit.images.ops.ImageRotating;
+import com.droidkit.images.ops.ImageScaling;
+import com.droidkit.images.sources.FileSource;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -46,8 +55,10 @@ import im.actor.messenger.core.AppContext;
 import im.actor.messenger.util.RandomUtil;
 import im.actor.messenger.util.io.IOUtils;
 import im.actor.model.Messenger;
+import im.actor.model.android.AndroidFileReference;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
+import im.actor.model.entity.content.FastThumb;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
@@ -375,7 +386,7 @@ public class ChatActivity extends BaseActivity {
                     sendUri(data.getData());
                 }
             } else if (requestCode == REQUEST_PHOTO) {
-                // MessageDeliveryActor.messageSender().sendPhoto(chatType, chatId, fileName);
+                sendImage(fileName);
             } else if (requestCode == REQUEST_VIDEO) {
                 // MessageDeliveryActor.messageSender().sendVideo(chatType, chatId, fileName);
             } else if (requestCode == REQUEST_DOC) {
@@ -442,14 +453,14 @@ public class ChatActivity extends BaseActivity {
                     }
                 }
 
-//                if (mimeType.startsWith("video/")) {
+                if (mimeType.startsWith("video/")) {
 //                    MessageDeliveryActor.messageSender().sendVideo(chatType, chatId, picturePath);
-//                } else if (mimeType.startsWith("image/")) {
-//                    MessageDeliveryActor.messageSender().sendPhoto(chatType, chatId, picturePath);
-//                } else {
+                } else if (mimeType.startsWith("image/")) {
+                    sendImage(picturePath);
+                } else {
 //                    MessageDeliveryActor.messageSender().sendDocument(chatType, chatId, picturePath,
 //                            fileName);
-//                }
+                }
 
                 return null;
             }
@@ -527,6 +538,30 @@ public class ChatActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendImage(String fileName) {
+        try {
+            ImageMetadata metadata = new FileSource(fileName).getImageMetadata();
+            Bitmap bitmap = ImageLoading.loadBitmapOptimizedHQ(fileName);
+            Bitmap optimized = ImageRotating.fixExif(bitmap, metadata.getExifOrientation());
+            Bitmap smallThumb = ImageScaling.scaleFit(optimized, 90, 90);
+            byte[] data = ImageLoading.saveJpeg(smallThumb, ImageLoading.JPEG_QUALITY_LOW);
+            String resultFileName = AppContext.getExternalTempFile("image", "jpg");
+            if (resultFileName == null) {
+                return;
+            }
+            ImageLoading.save(optimized, resultFileName);
+            messenger.sendDocument(peer, new File(fileName).getName(), "image/jpeg", new AndroidFileReference(resultFileName),
+                    new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), data));
+//            messenger.sendPhoto(peer, fileName, optimized.getWidth(), optimized.getHeight(),
+//                    new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), data),
+//                    new AndroidFileReference(resultFileName));
+        } catch (ImageLoadException e) {
+            e.printStackTrace();
+        } catch (ImageSaveException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -1,4 +1,4 @@
-package im.actor.messenger.core.images;
+package im.actor.messenger.app.images;
 
 import com.droidkit.images.loading.AbsTask;
 import im.actor.model.entity.Avatar;

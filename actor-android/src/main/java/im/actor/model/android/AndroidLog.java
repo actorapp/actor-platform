@@ -10,7 +10,7 @@ import im.actor.model.LogCallback;
 public class AndroidLog implements LogCallback {
     @Override
     public void w(String tag, String message) {
-        Log.d(tag, message);
+        Log.w(tag, message);
     }
 
     @Override

@@ -16,8 +16,8 @@ import com.droidkit.images.ops.ImageLoading;
 
 import im.actor.messenger.R;
 import im.actor.messenger.core.Core;
-import im.actor.messenger.core.images.FileKeys;
-import im.actor.messenger.core.images.FullAvatarTask;
+import im.actor.messenger.app.images.FileKeys;
+import im.actor.messenger.app.images.FullAvatarTask;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.FileLocation;

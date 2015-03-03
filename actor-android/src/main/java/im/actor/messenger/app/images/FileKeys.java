@@ -1,4 +1,4 @@
-package im.actor.messenger.core.images;
+package im.actor.messenger.app.images;
 
 /**
  * Created by ex3ndr on 30.10.14.

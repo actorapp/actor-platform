@@ -25,10 +25,10 @@ import im.actor.model.viewmodel.UserVM;
  * Created by ex3ndr on 08.02.15.
  */
 public class ModuleActor extends Actor {
-    private Modules messenger;
+    private Modules modules;
 
-    public ModuleActor(Modules messenger) {
-        this.messenger = messenger;
+    public ModuleActor(Modules modules) {
+        this.modules = modules;
     }
 
     public OutPeer buidOutPeer(Peer peer) {
@@ -49,12 +49,22 @@ public class ModuleActor extends Actor {
         }
     }
 
+    public im.actor.model.api.Peer buildApiPeer(Peer peer) {
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            return new im.actor.model.api.Peer(im.actor.model.api.PeerType.PRIVATE, peer.getPeerId());
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            return new im.actor.model.api.Peer(im.actor.model.api.PeerType.GROUP, peer.getPeerId());
+        } else {
+            return null;
+        }
+    }
+
     public KeyValueEngine<User> users() {
-        return messenger.getUsersModule().getUsers();
+        return modules.getUsersModule().getUsers();
     }
 
     public KeyValueEngine<Group> groups() {
-        return messenger.getGroupsModule().getGroups();
+        return modules.getGroupsModule().getGroups();
     }
 
     public Group getGroup(int gid) {
@@ -66,35 +76,35 @@ public class ModuleActor extends Actor {
     }
 
     public UserVM getUserVM(int uid) {
-        return messenger.getUsersModule().getUsersCollection().get(uid);
+        return modules.getUsersModule().getUsersCollection().get(uid);
     }
 
     public GroupVM getGroupVM(int gid) {
-        return messenger.getGroupsModule().getGroupsCollection().get(gid);
+        return modules.getGroupsModule().getGroupsCollection().get(gid);
     }
 
     public PreferencesStorage preferences() {
-        return messenger.getPreferences();
+        return modules.getPreferences();
     }
 
     public Configuration config() {
-        return messenger.getConfiguration();
+        return modules.getConfiguration();
     }
 
     public Updates updates() {
-        return messenger.getUpdatesModule();
+        return modules.getUpdatesModule();
     }
 
     public ListEngine<Message> messages(Peer peer) {
-        return messenger.getMessagesModule().getConversationEngine(peer);
+        return modules.getMessagesModule().getConversationEngine(peer);
     }
 
     public int myUid() {
-        return messenger.getAuthModule().myUid();
+        return modules.getAuthModule().myUid();
     }
 
     public Modules modules() {
-        return messenger;
+        return modules;
     }
 
     public ActorRef getConversationActor(final Peer peer) {
@@ -116,7 +126,7 @@ public class ModuleActor extends Actor {
     }
 
     public <T extends Response> void request(Request<T> request, final RpcCallback<T> callback) {
-        messenger.getActorApi().request(request, new RpcCallback<T>() {
+        modules.getActorApi().request(request, new RpcCallback<T>() {
             @Override
             public void onResult(final T response) {
                 self().send(new Runnable() {
