@@ -101,6 +101,10 @@ public class Messenger {
 
         Log.d(TAG, "Loading stage6 in " + (configuration.getThreading().getActorTime() - start) + " ms");
         start = configuration.getThreading().getActorTime();
+
+        // Notify about app visible
+        modules.getPresenceModule().onAppVisible();
+        modules.getNotifications().onAppVisible();
     }
 
     // Auth
@@ -168,12 +172,14 @@ public class Messenger {
     public void onAppVisible() {
         if (modules.getPresenceModule() != null) {
             modules.getPresenceModule().onAppVisible();
+            modules.getNotifications().onAppVisible();
         }
     }
 
     public void onAppHidden() {
         if (modules.getPresenceModule() != null) {
             modules.getPresenceModule().onAppHidden();
+            modules.getNotifications().onAppHidden();
         }
     }
 
@@ -184,6 +190,14 @@ public class Messenger {
 
     public void onConversationClosed(Peer peer) {
         modules.getNotifications().onConversationClose(peer);
+    }
+
+    public void onDialogsOpen() {
+        modules.getNotifications().onDialogsOpen();
+    }
+
+    public void onDialogsClosed() {
+        modules.getNotifications().onDialogsClosed();
     }
 
     public void onProfileOpen(int uid) {

@@ -40,4 +40,20 @@ public class Notifications extends BaseModule {
     public void onConversationClose(Peer peer) {
         notificationsActor.send(new NotificationsActor.OnConversationHidden(peer));
     }
+
+    public void onDialogsOpen() {
+        notificationsActor.send(new NotificationsActor.OnDialogsVisible());
+    }
+
+    public void onDialogsClosed() {
+        notificationsActor.send(new NotificationsActor.OnDialogsHidden());
+    }
+
+    public void onAppVisible() {
+        notificationsActor.send(new NotificationsActor.OnAppVisible());
+    }
+
+    public void onAppHidden() {
+        notificationsActor.send(new NotificationsActor.OnAppHidden());
+    }
 }
