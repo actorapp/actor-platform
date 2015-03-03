@@ -28,6 +28,8 @@ import im.actor.messenger.storage.ListEngines;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Dialog;
 
+import static im.actor.messenger.core.Core.messenger;
+
 /**
  * Created by ex3ndr on 22.11.14.
  */
@@ -154,6 +156,7 @@ public class BaseDialogFragment extends BaseFragment implements UiListStateListe
         ListEngines.getChatsUiListEngine().getUiList().addExListener(this);
         adapter.resume();
         dialogsEmptyImage.setImageResource(R.drawable.dialogs_empty_large);
+        messenger().onDialogsOpen();
     }
 
     @Override
@@ -162,6 +165,7 @@ public class BaseDialogFragment extends BaseFragment implements UiListStateListe
         ListEngines.getChatsUiListEngine().getUiList().removeExListener(this);
         adapter.pause();
         dialogsEmptyImage.setImageBitmap(null);
+        messenger().onDialogsClosed();
     }
 
     @Override
