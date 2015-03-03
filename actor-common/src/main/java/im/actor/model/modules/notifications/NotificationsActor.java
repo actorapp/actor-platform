@@ -48,19 +48,29 @@ public class NotificationsActor extends ModuleActor {
 
     public void onNewMessage(Peer peer, int sender, long date, ContentDescription description) {
 
+        boolean isEnabled = modules().getSettings().isNotificationsEnabled(peer);
         List<PendingNotification> allPending = getNotifications();
 
-        allPending.add(new PendingNotification(peer, sender, date, description));
-
-        saveStorage();
+        if (isEnabled) {
+            allPending.add(new PendingNotification(peer, sender, date, description));
+            saveStorage();
+        }
 
         if (config().getNotificationProvider() != null) {
             if (visiblePeer != null && visiblePeer.equals(peer)) {
-                config().getNotificationProvider().onMessageArriveInApp();
+                if (modules().getSettings().isConversationTonesEnabled()) {
+                    config().getNotificationProvider().onMessageArriveInApp();
+                }
                 return;
             }
             if (isDialogsVisible) {
-                config().getNotificationProvider().onMessageArriveInApp();
+                if (modules().getSettings().isConversationTonesEnabled()) {
+                    config().getNotificationProvider().onMessageArriveInApp();
+                }
+                return;
+            }
+
+            if (!isEnabled) {
                 return;
             }
 

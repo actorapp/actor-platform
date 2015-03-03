@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -32,9 +33,11 @@ import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.Screen;
+import im.actor.model.entity.Peer;
 import im.actor.model.viewmodel.UserPhone;
 import im.actor.model.viewmodel.UserVM;
 
+import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.users;
 
 /**
@@ -199,11 +202,20 @@ public class ProfileFragment extends BaseFragment {
         });
 
         View notificationContainter = res.findViewById(R.id.notificationsCont);
-        SwitchCompat notificationEnable = (SwitchCompat) res.findViewById(R.id.enableNotifications);
-
-//        getBinder().bindChecked(notificationEnable, NotificationSettings.getInstance().convValue(DialogUids.getDialogUid(0, uid)));
-//        getBinder().bindOnClick(notificationContainter, NotificationSettings.getInstance().convValue(DialogUids.getDialogUid(0, uid)));
-//        getBinder().bindOnClick(notificationEnable, NotificationSettings.getInstance().convValue(DialogUids.getDialogUid(0, uid)));
+        final SwitchCompat notificationEnable = (SwitchCompat) res.findViewById(R.id.enableNotifications);
+        notificationEnable.setChecked(messenger().isNotificationsEnabled(Peer.user(uid)));
+        notificationEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                messenger().changeNotificationsEnabled(Peer.user(uid), isChecked);
+            }
+        });
+        notificationContainter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notificationEnable.setChecked(!notificationEnable.isChecked());
+            }
+        });
 
         final ScrollView scrollView = ((ScrollView) res.findViewById(R.id.scrollContainer));
 

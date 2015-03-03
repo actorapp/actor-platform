@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +37,7 @@ import im.actor.messenger.util.Screen;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.GroupMember;
+import im.actor.model.entity.Peer;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupVM;
@@ -127,6 +130,21 @@ public class GroupInfoFragment extends BaseFragment {
 //            ((TextView) header.findViewById(R.id.documentCount)).setText(
 //                    ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount() + "");
 //        }
+
+        final SwitchCompat isNotificationsEnabled = (SwitchCompat) header.findViewById(R.id.enableNotifications);
+        isNotificationsEnabled.setChecked(messenger().isNotificationsEnabled(Peer.group(chatId)));
+        isNotificationsEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                messenger().changeNotificationsEnabled(Peer.group(chatId), isChecked);
+            }
+        });
+        header.findViewById(R.id.notificationsCont).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isNotificationsEnabled.setChecked(!isNotificationsEnabled.isChecked());
+            }
+        });
 
         ((TextView) header.findViewById(R.id.membersCount)).setText(
                 getString(R.string.group_members_count)
