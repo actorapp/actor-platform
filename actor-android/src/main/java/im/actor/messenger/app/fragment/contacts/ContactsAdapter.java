@@ -32,7 +32,7 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.SearchHighlight;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.messenger.core.images.AvatarTask;
+import im.actor.messenger.app.images.AvatarTask;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Contact;

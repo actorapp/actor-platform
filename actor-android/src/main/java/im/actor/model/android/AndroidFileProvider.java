@@ -110,6 +110,11 @@ public class AndroidFileProvider implements FileSystemProvider {
     }
 
     @Override
+    public boolean isFsPersistent() {
+        return true;
+    }
+
+    @Override
     public synchronized FileReference fileFromDescriptor(String descriptor) {
         checkTempDirs();
 

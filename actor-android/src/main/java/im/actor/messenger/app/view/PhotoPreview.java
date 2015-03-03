@@ -9,9 +9,9 @@ import com.droidkit.images.loading.view.ImageReceiverView;
 
 import java.lang.reflect.Field;
 
-import im.actor.messenger.core.images.ImagePreviewTask;
-import im.actor.messenger.core.images.VideoPreviewTask;
-import im.actor.messenger.core.images.VideoTask;
+import im.actor.messenger.app.images.ImagePreviewTask;
+import im.actor.messenger.app.images.VideoPreviewTask;
+import im.actor.messenger.app.images.VideoTask;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Message;
 

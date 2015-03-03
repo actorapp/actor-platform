@@ -21,8 +21,6 @@ public class ConfigurationBuilder {
 
     private ArrayList<ConnectionEndpoint> endpoints = new ArrayList<ConnectionEndpoint>();
 
-    private boolean isUploadFilePersist;
-
     private LocaleProvider localeProvider;
 
     private PhoneBookProvider phoneBookProvider;
@@ -131,11 +129,6 @@ public class ConfigurationBuilder {
         return this;
     }
 
-    public ConfigurationBuilder setUploadFilePersist(boolean isUploadFilePersist) {
-        this.isUploadFilePersist = isUploadFilePersist;
-        return this;
-    }
-
     public ConfigurationBuilder setMainThread(MainThread mainThread) {
         this.mainThread = mainThread;
         return this;
@@ -167,7 +160,7 @@ public class ConfigurationBuilder {
             throw new RuntimeException("Crypto Provider not set");
         }
         return new Configuration(networking, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
-                threading, mainThread, enginesFactory, log, isUploadFilePersist, localeProvider,
+                threading, mainThread, enginesFactory, log, localeProvider,
                 phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider,
                 enableContactsLogging, enableNetworkLogging);
     }

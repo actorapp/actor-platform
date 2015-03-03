@@ -7,6 +7,7 @@ import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.AbsContent;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.OutUnreadMessage;
 import im.actor.model.modules.messages.entity.OutUnreadMessagesStorage;
@@ -62,6 +63,12 @@ public class ConversationActor extends ModuleActor {
             messagesStorage.getMessages().add(new OutUnreadMessage(message.getRid(), message.getDate()));
             savePending();
         }
+    }
+
+    private void onMessageContentUpdated(long rid, AbsContent content) {
+        Message message = messages.getValue(rid);
+        messages.addOrUpdateItem(message.changeContent(content));
+        // TODO: Update in dialogs
     }
 
     private void onMessagePlainRead(long date) {
@@ -174,6 +181,9 @@ public class ConversationActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof Message) {
             onInMessage((Message) message);
+        } else if (message instanceof MessageContentUpdated) {
+            MessageContentUpdated contentUpdated = (MessageContentUpdated) message;
+            onMessageContentUpdated(contentUpdated.getRid(), contentUpdated.getContent());
         } else if (message instanceof MessageSent) {
             MessageSent sent = (MessageSent) message;
             onMessageSent(sent.getRid(), sent.getDate());
@@ -196,6 +206,24 @@ public class ConversationActor extends ModuleActor {
             onDeleteConversation();
         } else {
             drop(message);
+        }
+    }
+
+    public static class MessageContentUpdated {
+        private long rid;
+        private AbsContent content;
+
+        public MessageContentUpdated(long rid, AbsContent content) {
+            this.rid = rid;
+            this.content = content;
+        }
+
+        public long getRid() {
+            return rid;
+        }
+
+        public AbsContent getContent() {
+            return content;
         }
     }
 

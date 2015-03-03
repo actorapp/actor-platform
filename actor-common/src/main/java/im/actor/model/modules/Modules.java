@@ -119,6 +119,9 @@ public class Modules {
         Log.d("CORE_INIT", "Loading stage6.12 in " + (configuration.getThreading().getActorTime() - start) + " ms");
         start = configuration.getThreading().getActorTime();
 
+        // Notify about app visible
+        presence.onAppVisible();
+        notifications.onAppVisible();
     }
 
     public PreferencesStorage getPreferences() {
