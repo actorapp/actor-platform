@@ -43,7 +43,6 @@ import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
 import im.actor.messenger.core.AppContext;
-import im.actor.messenger.settings.ChatSettings;
 import im.actor.messenger.util.RandomUtil;
 import im.actor.messenger.util.io.IOUtils;
 import im.actor.model.Messenger;
@@ -178,7 +177,7 @@ public class ChatActivity extends BaseActivity {
         messageBody.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int keycode, KeyEvent keyEvent) {
-                if (ChatSettings.getInstance().isSendByEnter()) {
+                if (messenger().isSendByEnterEnabled()) {
                     if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER) {
                         sendMessage();
                         return true;
@@ -198,7 +197,7 @@ public class ChatActivity extends BaseActivity {
                     sendMessage();
                     return true;
                 }
-                if (ChatSettings.getInstance().isSendByEnter()) {
+                if (messenger().isSendByEnterEnabled()) {
                     if (keyEvent != null && i == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                         sendMessage();
                         return true;

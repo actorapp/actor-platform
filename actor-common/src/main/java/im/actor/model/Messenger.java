@@ -314,4 +314,54 @@ public class Messenger {
     public void loadMoreDialogs() {
         modules.getMessagesModule().loadMoreDialogs();
     }
+
+    // Settings operations
+
+    public boolean isConversationTonesEnabled() {
+        return modules.getSettings().isConversationTonesEnabled();
+    }
+
+    public void changeConversationTonesEnabled(boolean val) {
+        modules.getSettings().changeConversationTonesEnabled(val);
+    }
+
+    public boolean isNotificationSoundEnabled() {
+        return modules.getSettings().isNotificationSoundEnabled();
+    }
+
+    public void changeNotificationSoundEnabled(boolean val) {
+        modules.getSettings().changeNotificationSoundEnabled(val);
+    }
+
+    public boolean isNotificationVibrationEnabled() {
+        return modules.getSettings().isVibrationEnabled();
+    }
+
+    public void changeNotificationVibrationEnabled(boolean val) {
+        modules.getSettings().changeNotificationVibrationEnabled(val);
+    }
+
+    public boolean isShowNotificationsText() {
+        return modules.getSettings().isShowNotificationsText();
+    }
+
+    public void changeShowNotificationTextEnabled(boolean val) {
+        modules.getSettings().changeShowNotificationTextEnabled(val);
+    }
+
+    public boolean isSendByEnterEnabled() {
+        return modules.getSettings().isSendByEnterEnabled();
+    }
+
+    public void changeSendByEnter(boolean val) {
+        modules.getSettings().changeSendByEnter(val);
+    }
+
+    public boolean isNotificationsEnabled(Peer peer) {
+        return modules.getSettings().isNotificationsEnabled(peer);
+    }
+
+    public void changeNotificationsEnabled(Peer peer, boolean val) {
+        modules.getSettings().changeNotificationsEnabled(peer, val);
+    }
 }

@@ -24,6 +24,7 @@ import im.actor.model.entity.PeerType;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.core.Core.groups;
+import static im.actor.messenger.core.Core.messenger;
 import static im.actor.messenger.core.Core.users;
 
 /**
@@ -56,7 +57,15 @@ public class AndroidNotifications implements NotificationProvider {
         builder.setSmallIcon(R.drawable.ic_app_notify);
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
         builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
-        builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+
+        int defaults = NotificationCompat.DEFAULT_LIGHTS;
+        if (messenger().isNotificationSoundEnabled()) {
+            defaults |= NotificationCompat.DEFAULT_SOUND;
+        }
+        if (messenger().isNotificationVibrationEnabled()) {
+            defaults |= NotificationCompat.DEFAULT_VIBRATE;
+        }
+        builder.setDefaults(defaults);
 
         // Wearable
 
