@@ -23,6 +23,7 @@ import im.actor.model.entity.content.FileLocalSource;
 import im.actor.model.entity.content.FileRemoteSource;
 import im.actor.model.files.FileReference;
 import im.actor.model.modules.file.DownloadCallback;
+import im.actor.model.modules.file.UploadCallback;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.UploadFileVM;
@@ -247,6 +248,23 @@ public class DocHolder extends MessageHolder {
                 @Override
                 public void onDownloaded(FileReference reference) {
                     // TODO: Open file
+                }
+            });
+        } else if (document.getSource() instanceof FileLocalSource) {
+            messenger().requestUploadState(currentMessage.getRid(), new UploadCallback() {
+                @Override
+                public void onNotUploading() {
+                    messenger().resumeUpload(currentMessage.getRid());
+                }
+
+                @Override
+                public void onUploading(float progress) {
+                    messenger().pauseUpload(currentMessage.getRid());
+                }
+
+                @Override
+                public void onUploaded() {
+                    // Nothing to do
                 }
             });
         }
