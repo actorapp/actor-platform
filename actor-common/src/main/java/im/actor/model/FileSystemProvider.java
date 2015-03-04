@@ -7,7 +7,8 @@ import im.actor.model.files.FileReference;
  * Created by ex3ndr on 26.02.15.
  */
 public interface FileSystemProvider {
-    public FileReference createTempFile(FileLocation fileLocation);
+
+    public FileReference createTempFile();
 
     public FileReference commitTempFile(FileReference sourceFile, FileLocation fileLocation);
 

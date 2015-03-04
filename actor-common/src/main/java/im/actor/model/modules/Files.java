@@ -127,8 +127,8 @@ public class Files extends BaseModule {
         uploadManager.send(new UploadManager.UnbindUpload(rid, callback));
     }
 
-    public void requestUpload(long rid, String descriptor, ActorRef requester) {
-        uploadManager.send(new UploadManager.StartUpload(rid, descriptor), requester);
+    public void requestUpload(long rid, String descriptor, String fileName, ActorRef requester) {
+        uploadManager.send(new UploadManager.StartUpload(rid, descriptor, fileName), requester);
     }
 
     public void cancelUpload(long rid) {

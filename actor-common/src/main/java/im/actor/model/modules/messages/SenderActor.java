@@ -69,7 +69,9 @@ public class SenderActor extends ModuleActor {
                 if (documentContent.getSource() instanceof FileLocalSource) {
                     if (config().getFileSystemProvider() != null &&
                             config().getFileSystemProvider().isFsPersistent()) {
-                        performUploadFile(pending.getRid(), ((FileLocalSource) documentContent.getSource()).getFileDescriptor());
+                        performUploadFile(pending.getRid(),
+                                ((FileLocalSource) documentContent.getSource()).getFileDescriptor(),
+                                ((FileLocalSource) documentContent.getSource()).getFileName());
                     } else {
                         List<Long> rids = new ArrayList<Long>();
                         rids.add(pending.getRid());
@@ -118,7 +120,7 @@ public class SenderActor extends ModuleActor {
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, documentContent));
         savePending();
 
-        performUploadFile(rid, descriptor);
+        performUploadFile(rid, descriptor, fileName);
     }
 
     public void doSendPhoto(Peer peer, FastThumb fastThumb, String descriptor, String fileName,
@@ -135,7 +137,7 @@ public class SenderActor extends ModuleActor {
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, photoContent));
         savePending();
 
-        performUploadFile(rid, descriptor);
+        performUploadFile(rid, descriptor, fileName);
     }
 
     public void doSendVideo(Peer peer, String fileName, int w, int h, int duration,
@@ -152,11 +154,11 @@ public class SenderActor extends ModuleActor {
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, videoContent));
         savePending();
 
-        performUploadFile(rid, descriptor);
+        performUploadFile(rid, descriptor, fileName);
     }
 
-    private void performUploadFile(long rid, String descriptor) {
-        modules().getFilesModule().requestUpload(rid, descriptor, self());
+    private void performUploadFile(long rid, String descriptor, String fileName) {
+        modules().getFilesModule().requestUpload(rid, descriptor, fileName, self());
     }
 
     private void onFileUploaded(long rid, FileLocation fileLocation) {

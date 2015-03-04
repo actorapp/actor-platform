@@ -13,6 +13,7 @@ import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.FileLocation;
 import im.actor.model.files.FileReference;
 import im.actor.model.files.InputFile;
+import im.actor.model.files.OutputFile;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.EntityConverter;
@@ -30,10 +31,14 @@ public class UploadTask extends ModuleActor {
     private final String TAG;
 
     private long rid;
+    private String fileName;
     private String descriptor;
 
     private FileReference srcReference;
     private InputFile inputFile;
+
+    private FileReference destReference;
+    private OutputFile outputFile;
 
     private ActorRef manager;
     private boolean isCompleted = false;
@@ -47,9 +52,10 @@ public class UploadTask extends ModuleActor {
     private UploadConfig uploadConfig;
     private CRC32 crc32;
 
-    public UploadTask(long rid, String descriptor, ActorRef manager, Modules modules) {
+    public UploadTask(long rid, String descriptor, String fileName, ActorRef manager, Modules modules) {
         super(modules);
         this.rid = rid;
+        this.fileName = fileName;
         this.descriptor = descriptor;
         this.manager = manager;
         this.TAG = "UploadTask{" + rid + "}";
@@ -64,9 +70,24 @@ public class UploadTask extends ModuleActor {
             return;
         }
 
+        destReference = config().getFileSystemProvider().createTempFile();
+        if (destReference == null) {
+            Log.d(TAG, "Error during file dest reference creating");
+            reportError();
+            return;
+        }
+
         inputFile = srcReference.openRead();
         if (inputFile == null) {
             Log.d(TAG, "Error during file open");
+            reportError();
+            return;
+        }
+
+        outputFile = destReference.openWrite(srcReference.getSize());
+        if (outputFile == null) {
+            inputFile.close();
+            Log.d(TAG, "Error during dest file open");
             reportError();
             return;
         }
@@ -111,13 +132,20 @@ public class UploadTask extends ModuleActor {
             long crc = crc32.getValue();
             Log.d(TAG, "Src #" + crc);
 
+            Log.d(TAG, "Closing files...");
+            inputFile.close();
+            outputFile.close();
+
             request(new RequestCompleteUpload(uploadConfig, blocksCount, crc), new RpcCallback<ResponseCompleteUpload>() {
                 @Override
                 public void onResult(ResponseCompleteUpload response) {
                     Log.d(TAG, "Upload completed...");
 
-                    // TODO: Add file name
-                    reportComplete(EntityConverter.convert(response.getLocation(), "", srcReference.getSize()));
+                    FileLocation location = EntityConverter.convert(response.getLocation(), fileName, srcReference.getSize());
+
+                    FileReference reference = config().getFileSystemProvider().commitTempFile(destReference, location);
+
+                    reportComplete(location, reference);
                 }
 
                 @Override
@@ -141,6 +169,11 @@ public class UploadTask extends ModuleActor {
 
             if (!inputFile.read(fileOffset, data, 0, size)) {
                 Log.d(TAG, "read #" + blockIndex + " error");
+                reportError();
+                return;
+            }
+            if (!outputFile.write(fileOffset, data, 0, size)) {
+                Log.d(TAG, "write #" + blockIndex + " error");
                 reportError();
                 return;
             }
@@ -192,11 +225,11 @@ public class UploadTask extends ModuleActor {
         manager.send(new UploadManager.UploadTaskProgress(rid, progress));
     }
 
-    private void reportComplete(FileLocation location) {
+    private void reportComplete(FileLocation location, FileReference reference) {
         if (isCompleted) {
             return;
         }
         isCompleted = true;
-        manager.send(new UploadManager.UploadTaskComplete(rid, location));
+        manager.send(new UploadManager.UploadTaskComplete(rid, location, reference));
     }
 }

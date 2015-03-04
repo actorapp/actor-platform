@@ -7,6 +7,7 @@ import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.droidkit.actors.messages.PoisonPill;
 import im.actor.model.entity.FileLocation;
+import im.actor.model.files.FileReference;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
@@ -29,9 +30,9 @@ public class UploadManager extends ModuleActor {
 
     // Tasks
 
-    public void startUpload(long rid, String descriptor, ActorRef requestActor) {
+    public void startUpload(long rid, String descriptor, String fileName, ActorRef requestActor) {
         Log.d(TAG, "Starting upload #" + rid + " with descriptor " + descriptor);
-        QueueItem queueItem = new QueueItem(rid, descriptor, requestActor);
+        QueueItem queueItem = new QueueItem(rid, descriptor, fileName, requestActor);
         queueItem.isStopped = false;
         queue.add(queueItem);
         checkQueue();
@@ -167,7 +168,7 @@ public class UploadManager extends ModuleActor {
         }
     }
 
-    public void onUploadTaskComplete(long rid, FileLocation fileLocation) {
+    public void onUploadTaskComplete(long rid, FileLocation fileLocation, FileReference reference) {
         Log.d(TAG, "Upload #" + rid + " complete");
 
         QueueItem queueItem = findItem(rid);
@@ -181,6 +182,10 @@ public class UploadManager extends ModuleActor {
 
         queue.remove(queueItem);
         queueItem.taskRef.send(PoisonPill.INSTANCE);
+
+        // Saving reference to uploaded file
+        modules().getFilesModule().getDownloadedEngine().addOrUpdateItem(new Downloaded(fileLocation.getFileId(),
+                fileLocation.getFileSize(), reference.getDescriptor()));
 
         for (UploadCallback fileCallback : queueItem.callbacks) {
             fileCallback.onUploaded();
@@ -224,7 +229,8 @@ public class UploadManager extends ModuleActor {
         pendingQueue.taskRef = system().actorOf(Props.create(UploadTask.class, new ActorCreator<UploadTask>() {
             @Override
             public UploadTask create() {
-                return new UploadTask(finalPendingQueue.rid, finalPendingQueue.fileDescriptor, self(), modules());
+                return new UploadTask(finalPendingQueue.rid, finalPendingQueue.fileDescriptor,
+                        finalPendingQueue.fileName, self(), modules());
             }
         }), "actor/upload/task_" + RandomUtils.nextRid());
     }
@@ -246,12 +252,14 @@ public class UploadManager extends ModuleActor {
         private float progress;
         private ActorRef taskRef;
         private ActorRef requestActor;
+        private String fileName;
         private ArrayList<UploadCallback> callbacks = new ArrayList<UploadCallback>();
 
-        private QueueItem(long rid, String fileDescriptor, ActorRef requestActor) {
+        private QueueItem(long rid, String fileDescriptor, String fileName, ActorRef requestActor) {
             this.rid = rid;
             this.fileDescriptor = fileDescriptor;
             this.requestActor = requestActor;
+            this.fileName = fileName;
         }
     }
 
@@ -261,7 +269,8 @@ public class UploadManager extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof StartUpload) {
             StartUpload startUpload = (StartUpload) message;
-            startUpload(startUpload.getRid(), startUpload.getFileDescriptor(), sender());
+            startUpload(startUpload.getRid(), startUpload.getFileDescriptor(),
+                    startUpload.getFileName(), sender());
         } else if (message instanceof StopUpload) {
             StopUpload cancelUpload = (StopUpload) message;
             stopUpload(cancelUpload.getRid());
@@ -273,7 +282,8 @@ public class UploadManager extends ModuleActor {
             onUploadTaskProgress(taskProgress.getRid(), taskProgress.getProgress());
         } else if (message instanceof UploadTaskComplete) {
             UploadTaskComplete taskComplete = (UploadTaskComplete) message;
-            onUploadTaskComplete(taskComplete.getRid(), taskComplete.getLocation());
+            onUploadTaskComplete(taskComplete.getRid(), taskComplete.getLocation(),
+                    taskComplete.getReference());
         } else if (message instanceof BindUpload) {
             BindUpload bindUpload = (BindUpload) message;
             bindUpload(bindUpload.getRid(), bindUpload.getCallback());
@@ -297,10 +307,12 @@ public class UploadManager extends ModuleActor {
     public static class StartUpload {
         private long rid;
         private String fileDescriptor;
+        private String fileName;
 
-        public StartUpload(long rid, String fileDescriptor) {
+        public StartUpload(long rid, String fileDescriptor, String fileName) {
             this.rid = rid;
             this.fileDescriptor = fileDescriptor;
+            this.fileName = fileName;
         }
 
         public long getRid() {
@@ -309,6 +321,10 @@ public class UploadManager extends ModuleActor {
 
         public String getFileDescriptor() {
             return fileDescriptor;
+        }
+
+        public String getFileName() {
+            return fileName;
         }
     }
 
@@ -393,14 +409,20 @@ public class UploadManager extends ModuleActor {
     public static class UploadTaskComplete {
         private long rid;
         private FileLocation location;
+        private FileReference reference;
 
-        public UploadTaskComplete(long rid, FileLocation location) {
+        public UploadTaskComplete(long rid, FileLocation location, FileReference reference) {
             this.rid = rid;
             this.location = location;
+            this.reference = reference;
         }
 
         public long getRid() {
             return rid;
+        }
+
+        public FileReference getReference() {
+            return reference;
         }
 
         public FileLocation getLocation() {
