@@ -20,6 +20,7 @@ import im.actor.model.i18n.I18nEngine;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.file.DownloadCallback;
+import im.actor.model.modules.file.UploadCallback;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.storage.ListEngine;
@@ -339,12 +340,24 @@ public class Messenger {
         modules.getFilesModule().requestState(fileId, callback);
     }
 
+    public void requestUploadState(long rid, UploadCallback callback) {
+        modules.getFilesModule().requestUploadState(rid, callback);
+    }
+
     public void cancelDownloading(long fileId) {
         modules.getFilesModule().cancelDownloading(fileId);
     }
 
     public void startDownloading(FileLocation location) {
         modules.getFilesModule().startDownloading(location);
+    }
+
+    public void resumeUpload(long rid) {
+        modules.getFilesModule().resumeUpload(rid);
+    }
+
+    public void pauseUpload(long rid) {
+        modules.getFilesModule().pauseUpload(rid);
     }
 
     public String getDownloadedDescriptor(long fileId) {

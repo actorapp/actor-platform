@@ -572,10 +572,13 @@ public class ChatActivity extends BaseActivity {
                 return;
             }
             ImageLoading.save(optimized, resultFileName);
-            messenger.sendPhoto(peer, new File(name).getName(),
-                    optimized.getWidth(), optimized.getHeight(),
-                    new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), data),
-                    new AndroidFileReference(resultFileName));
+//            messenger.sendPhoto(peer, new File(name).getName(),
+//                    optimized.getWidth(), optimized.getHeight(),
+//                    new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), data),
+//                    new AndroidFileReference(resultFileName));
+            messenger.sendDocument(peer, new File(name).getName(), "?/?",
+                    new AndroidFileReference(resultFileName),
+                    new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), data));
         } catch (ImageLoadException e) {
             e.printStackTrace();
         } catch (ImageSaveException e) {

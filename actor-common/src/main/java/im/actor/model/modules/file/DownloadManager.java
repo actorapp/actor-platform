@@ -37,27 +37,6 @@ public class DownloadManager extends ModuleActor {
         downloaded = modules().getFilesModule().getDownloadedEngine();
     }
 
-    private QueueItem findItem(long id) {
-        for (QueueItem q : queue) {
-            if (q.fileLocation.getFileId() == id) {
-                return q;
-            }
-        }
-        return null;
-    }
-
-    private void promote(long id) {
-        for (QueueItem q : queue) {
-            if (q.fileLocation.getFileId() == id) {
-                if (!q.isStarted) {
-                    queue.remove(q);
-                    queue.add(0, q);
-                }
-                return;
-            }
-        }
-    }
-
     // Tasks
 
     public void requestState(long fileId, DownloadCallback callback) {
@@ -227,6 +206,8 @@ public class DownloadManager extends ModuleActor {
         checkQueue();
     }
 
+    // Queue processing
+
     private void checkQueue() {
         Log.d(TAG, "- Checking queue");
 
@@ -266,8 +247,6 @@ public class DownloadManager extends ModuleActor {
             }
         }), "actor/download/task_" + RandomUtils.nextRid());
     }
-
-    // Queue processing
 
     public void onDownloadProgress(long fileId, float progress) {
         Log.d(TAG, "onDownloadProgress file #" + fileId + " " + progress);
@@ -326,6 +305,27 @@ public class DownloadManager extends ModuleActor {
 
         for (DownloadCallback fileCallback : queueItem.callbacks) {
             fileCallback.onNotDownloaded();
+        }
+    }
+
+    private QueueItem findItem(long id) {
+        for (QueueItem q : queue) {
+            if (q.fileLocation.getFileId() == id) {
+                return q;
+            }
+        }
+        return null;
+    }
+
+    private void promote(long id) {
+        for (QueueItem q : queue) {
+            if (q.fileLocation.getFileId() == id) {
+                if (!q.isStarted) {
+                    queue.remove(q);
+                    queue.add(0, q);
+                }
+                return;
+            }
         }
     }
 

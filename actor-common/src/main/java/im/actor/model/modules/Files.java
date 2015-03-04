@@ -75,14 +75,6 @@ public class Files extends BaseModule {
         downloadManager.send(new DownloadManager.UnbindDownload(fileId, cancel, callback));
     }
 
-    public void bindUploadFile(long rid, UploadCallback uploadCallback) {
-        uploadManager.send(new UploadManager.BindUpload(rid, uploadCallback));
-    }
-
-    public void unbindUploadFile(long rid, UploadCallback callback) {
-        uploadManager.send(new UploadManager.UnbindUpload(rid, callback));
-    }
-
     public void requestState(long fileId, final DownloadCallback callback) {
         downloadManager.send(new DownloadManager.RequestState(fileId, new DownloadCallback() {
             @Override
@@ -117,16 +109,38 @@ public class Files extends BaseModule {
         }));
     }
 
-    public void cancelDownloading(long fileId) {
-        downloadManager.send(new DownloadManager.CancelDownload(fileId));
-    }
-
     public void startDownloading(FileLocation location) {
         downloadManager.send(new DownloadManager.StartDownload(location));
     }
 
+    public void cancelDownloading(long fileId) {
+        downloadManager.send(new DownloadManager.CancelDownload(fileId));
+    }
+
+    // Upload
+
+    public void bindUploadFile(long rid, UploadCallback uploadCallback) {
+        uploadManager.send(new UploadManager.BindUpload(rid, uploadCallback));
+    }
+
+    public void unbindUploadFile(long rid, UploadCallback callback) {
+        uploadManager.send(new UploadManager.UnbindUpload(rid, callback));
+    }
+
     public void requestUpload(long rid, String descriptor, ActorRef requester) {
         uploadManager.send(new UploadManager.StartUpload(rid, descriptor), requester);
+    }
+
+    public void requestUploadState(long rid, UploadCallback callback) {
+        uploadManager.send(new UploadManager.RequestState(rid, callback));
+    }
+
+    public void resumeUpload(long rid) {
+        uploadManager.send(new UploadManager.ResumeUpload(rid));
+    }
+
+    public void pauseUpload(long rid) {
+        uploadManager.send(new UploadManager.PauseUpload(rid));
     }
 
     public String getDownloadedDescriptor(long fileId) {
