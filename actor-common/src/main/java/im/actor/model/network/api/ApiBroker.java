@@ -1,24 +1,39 @@
 package im.actor.model.network.api;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Random;
+
 import im.actor.model.Networking;
-import im.actor.model.droidkit.actors.*;
-import im.actor.model.util.AtomicLongCompat;
 import im.actor.model.api.parser.RpcParser;
+import im.actor.model.droidkit.actors.Actor;
+import im.actor.model.droidkit.actors.ActorCreator;
+import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.ActorSystem;
+import im.actor.model.droidkit.actors.Environment;
+import im.actor.model.droidkit.actors.Props;
 import im.actor.model.log.Log;
-import im.actor.model.network.*;
+import im.actor.model.network.ActorApiCallback;
+import im.actor.model.network.AuthKeyStorage;
+import im.actor.model.network.Endpoints;
+import im.actor.model.network.RpcCallback;
+import im.actor.model.network.RpcException;
+import im.actor.model.network.RpcInternalException;
 import im.actor.model.network.mtp.AuthIdRetriever;
 import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.MTProtoCallback;
 import im.actor.model.network.mtp.entity.ProtoSerializer;
 import im.actor.model.network.mtp.entity.ProtoStruct;
-import im.actor.model.network.mtp.entity.rpc.*;
+import im.actor.model.network.mtp.entity.rpc.Push;
+import im.actor.model.network.mtp.entity.rpc.RpcError;
+import im.actor.model.network.mtp.entity.rpc.RpcFloodWait;
+import im.actor.model.network.mtp.entity.rpc.RpcInternalError;
+import im.actor.model.network.mtp.entity.rpc.RpcOk;
+import im.actor.model.network.mtp.entity.rpc.RpcRequest;
 import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
 import im.actor.model.network.parser.RpcScope;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Random;
+import im.actor.model.util.AtomicLongCompat;
 
 /**
  * Created by ex3ndr on 08.02.15.
@@ -207,9 +222,14 @@ public class ApiBroker extends Actor {
                 idMap.remove(holder.protoId);
             }
 
+            Log.w(TAG, "<- error#" + holder.publicId + ": " + e.errorTag + " " + e.errorCode + " " + e.userMessage);
+
             holder.callback.onError(new RpcException(e.errorTag, e.errorCode, e.userMessage, e.canTryAgain, e.relatedData));
         } else if (protoStruct instanceof RpcInternalError) {
             RpcInternalError e = ((RpcInternalError) protoStruct);
+
+            Log.d(TAG, "<- internal_error#" + holder.publicId);
+
             if (e.isCanTryAgain()) {
                 self().send(new ForceResend(rid), e.getTryAgainDelay() * 1000L);
             } else {
@@ -221,6 +241,7 @@ public class ApiBroker extends Actor {
             }
         } else if (protoStruct instanceof RpcFloodWait) {
             RpcFloodWait f = (RpcFloodWait) protoStruct;
+            Log.d(TAG, "<- flood_wait#" + holder.publicId + " " + f.getDelay() + " sec");
             self().send(new ForceResend(rid), f.getDelay() * 1000L);
         } else {
             // Unknown
