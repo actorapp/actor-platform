@@ -245,6 +245,11 @@ public class Messenger {
         modules.getMessagesModule().sendPhoto(peer, fileName, w, h, fastThumb, fileReference);
     }
 
+    public void sendVideo(Peer peer, String fileName, int w, int h, int duration,
+                          FastThumb fastThumb, FileReference fileReference) {
+        modules.getMessagesModule().sendVideo(peer, fileName, w, h, duration, fastThumb, fileReference);
+    }
+
     public void sendDocument(Peer peer, String fileName, String mimeType, FileReference fileReference) {
         sendDocument(peer, fileName, mimeType, fileReference, null);
     }

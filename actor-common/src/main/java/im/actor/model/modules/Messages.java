@@ -163,6 +163,12 @@ public class Messages extends BaseModule {
                 fileName, fileReference.getSize(), w, h));
     }
 
+    public void sendVideo(Peer peer, String fileName, int w, int h, int duration,
+                          FastThumb fastThumb, FileReference fileReference) {
+        sendMessageActor.send(new SenderActor.SendVideo(peer, fileName, w, h, duration,
+                fastThumb, fileReference.getDescriptor(), fileReference.getSize()));
+    }
+
     public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
                              FileReference fileReference) {
         sendMessageActor.send(new SenderActor.SendDocument(peer, fileName, mimeType,
