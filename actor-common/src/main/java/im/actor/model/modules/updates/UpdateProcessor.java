@@ -206,28 +206,32 @@ public class UpdateProcessor extends BaseModule {
         } else if (update instanceof UpdateGroupTitleChanged) {
             UpdateGroupTitleChanged titleChanged = (UpdateGroupTitleChanged) update;
             groupsProcessor.onTitleChanged(titleChanged.getGroupId(), titleChanged.getRid(),
-                    titleChanged.getUid(), titleChanged.getTitle(), titleChanged.getDate());
+                    titleChanged.getUid(), titleChanged.getTitle(), titleChanged.getDate(),
+                    false);
         } else if (update instanceof UpdateGroupAvatarChanged) {
             UpdateGroupAvatarChanged avatarChanged = (UpdateGroupAvatarChanged) update;
             groupsProcessor.onAvatarChanged(avatarChanged.getGroupId(), avatarChanged.getRid(),
                     avatarChanged.getUid(), EntityConverter.convert(avatarChanged.getAvatar()),
-                    avatarChanged.getDate());
+                    avatarChanged.getDate(), false);
         } else if (update instanceof UpdateGroupInvite) {
             UpdateGroupInvite groupInvite = (UpdateGroupInvite) update;
             groupsProcessor.onGroupInvite(groupInvite.getGroupId(),
-                    groupInvite.getRid(), groupInvite.getInviteUid(), groupInvite.getDate());
+                    groupInvite.getRid(), groupInvite.getInviteUid(), groupInvite.getDate(),
+                    false);
         } else if (update instanceof UpdateGroupUserLeave) {
             UpdateGroupUserLeave leave = (UpdateGroupUserLeave) update;
             groupsProcessor.onUserLeave(leave.getGroupId(), leave.getRid(), leave.getUid(),
-                    leave.getDate());
+                    leave.getDate(), false);
         } else if (update instanceof UpdateGroupUserKick) {
             UpdateGroupUserKick userKick = (UpdateGroupUserKick) update;
             groupsProcessor.onUserKicked(userKick.getGroupId(),
-                    userKick.getRid(), userKick.getUid(), userKick.getKickerUid(), userKick.getDate());
+                    userKick.getRid(), userKick.getUid(), userKick.getKickerUid(), userKick.getDate(),
+                    false);
         } else if (update instanceof UpdateGroupUserAdded) {
             UpdateGroupUserAdded userAdded = (UpdateGroupUserAdded) update;
             groupsProcessor.onUserAdded(userAdded.getGroupId(),
-                    userAdded.getRid(), userAdded.getUid(), userAdded.getInviterUid(), userAdded.getDate());
+                    userAdded.getRid(), userAdded.getUid(), userAdded.getInviterUid(), userAdded.getDate(),
+                    false);
         } else if (update instanceof UpdateContactsAdded) {
             UpdateContactsAdded contactsAdded = (UpdateContactsAdded) update;
             int[] res = new int[contactsAdded.getUids().size()];

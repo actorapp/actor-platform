@@ -3,6 +3,7 @@ package im.actor.model.modules.messages;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.model.annotation.Verified;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.ContentDescription;
 import im.actor.model.entity.ContentType;
@@ -30,89 +31,120 @@ public class DialogsActor extends ModuleActor {
 
     public DialogsActor(Modules messenger) {
         super(messenger);
-        this.dialogs = messenger.getMessagesModule().getDialogsEngine();
     }
 
-    private void onMessage(Peer peer, Message message, boolean isAfterDelete) {
+    @Override
+    public void preStart() {
+        super.preStart();
+        this.dialogs = modules().getMessagesModule().getDialogsEngine();
+    }
+
+    @Verified
+    private void onMessage(Peer peer, Message message, boolean forceWrite) {
         PeerDesc peerDesc = buildPeerDesc(peer);
         if (peerDesc == null) {
             return;
         }
 
-        Dialog dialog = dialogs.getValue(peer.getUnuqueId());
-
-        ContentDescription contentDescription = ContentDescription.fromContent(message.getContent());
-
-        DialogBuilder builder = new DialogBuilder()
-                .setRid(message.getRid())
-                .setTime(message.getDate())
-                .setMessageType(contentDescription.getContentType())
-                .setText(contentDescription.getText())
-                .setRelatedUid(contentDescription.getRelatedUser())
-                .setStatus(message.getMessageState())
-                .setSenderId(message.getSenderId());
-
-        if (dialog != null) {
-            // Ignore old messages
-            if (!isAfterDelete && dialog.getSortDate() > message.getSortDate()) {
+        if (message == null) {
+            // Ignore empty message if not forcing write
+            if (!forceWrite) {
                 return;
             }
 
-            builder.setPeer(dialog.getPeer())
-                    .setDialogTitle(dialog.getDialogTitle())
-                    .setDialogAvatar(dialog.getDialogAvatar())
-                    .setUnreadCount(dialog.getUnreadCount())
-                    .setSortKey(dialog.getSortDate());
-
-            // Do not push up dialogs for silent messages
-            if (!contentDescription.isSilent()) {
-                builder.setSortKey(message.getSortDate());
-            }
+            // Else perform chat clear
+            onChatClear(peer);
         } else {
-            // Do not create dialogs for silent messages
-            if (contentDescription.isSilent()) {
-                return;
+            Dialog dialog = dialogs.getValue(peer.getUnuqueId());
+
+            ContentDescription contentDescription = ContentDescription.fromContent(message.getContent());
+
+            DialogBuilder builder = new DialogBuilder()
+                    .setRid(message.getRid())
+                    .setTime(message.getDate())
+                    .setMessageType(contentDescription.getContentType())
+                    .setText(contentDescription.getText())
+                    .setRelatedUid(contentDescription.getRelatedUser())
+                    .setStatus(message.getMessageState())
+                    .setSenderId(message.getSenderId());
+
+            if (dialog != null) {
+                // Ignore old messages if no force
+                if (!forceWrite && dialog.getSortDate() > message.getSortDate()) {
+                    return;
+                }
+
+                builder.setPeer(dialog.getPeer())
+                        .setDialogTitle(dialog.getDialogTitle())
+                        .setDialogAvatar(dialog.getDialogAvatar())
+                        .setUnreadCount(dialog.getUnreadCount())
+                        .setSortKey(dialog.getSortDate());
+
+                // Do not push up dialogs for silent messages
+                if (!contentDescription.isSilent()) {
+                    builder.setSortKey(message.getSortDate());
+                }
+            } else {
+                // Do not create dialogs for silent messages
+                if (contentDescription.isSilent()) {
+                    return;
+                }
+
+                builder.setPeer(peer)
+                        .setDialogTitle(peerDesc.getTitle())
+                        .setDialogAvatar(peerDesc.getAvatar())
+                        .setUnreadCount(0)
+                        .setSortKey(message.getSortDate());
             }
 
-            builder.setPeer(peer)
-                    .setDialogTitle(peerDesc.getTitle())
-                    .setDialogAvatar(peerDesc.getAvatar())
-                    .setUnreadCount(0)
-                    .setSortKey(message.getSortDate());
+            dialogs.addOrUpdateItem(builder.createDialog());
         }
-
-        dialogs.addOrUpdateItem(builder.createDialog());
     }
 
+    @Verified
     private void onUserChanged(User user) {
         Dialog dialog = dialogs.getValue(user.peer().getUnuqueId());
         if (dialog != null) {
+            // Ignore if nothing changed
             if (dialog.getDialogTitle().equals(user.getName())
                     && equalsE(dialog.getDialogAvatar(), user.getAvatar())) {
                 return;
             }
+
+            // Update dialog peer info
             dialogs.addOrUpdateItem(dialog.editPeerInfo(user.getName(), user.getAvatar()));
         }
     }
 
+    @Verified
     private void onGroupChanged(Group group) {
         Dialog dialog = dialogs.getValue(group.peer().getUnuqueId());
         if (dialog != null) {
+            // Ignore if nothing changed
             if (dialog.getDialogTitle().equals(group.getTitle())
                     && equalsE(dialog.getDialogAvatar(), group.getAvatar())) {
                 return;
             }
+
+            // Update dialog peer info
             dialogs.addOrUpdateItem(dialog.editPeerInfo(group.getTitle(), group.getAvatar()));
         }
     }
 
+    @Verified
     private void onChatDeleted(Peer peer) {
+        // Removing dialog
         dialogs.removeItem(peer.getUnuqueId());
     }
 
+    @Verified
     private void onChatClear(Peer peer) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
+
+        // If we have dialog for this peer
         if (dialog != null) {
+
+            // Update dialog
             dialogs.addOrUpdateItem(new DialogBuilder(dialog)
                     .setMessageType(ContentType.EMPTY)
                     .setText(null)
@@ -125,18 +157,28 @@ public class DialogsActor extends ModuleActor {
         }
     }
 
+    @Verified
     private void onMessageStatusChanged(Peer peer, long rid, MessageState state) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
+
+        // If message is on top
         if (dialog != null && dialog.getRid() == rid) {
+
+            // Update dialog
             dialogs.addOrUpdateItem(new DialogBuilder(dialog)
                     .setStatus(state)
                     .createDialog());
         }
     }
 
+    @Verified
     private void onMessageSent(Peer peer, long rid, long date) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
+
+        // If message is on top
         if (dialog != null && dialog.getRid() == rid) {
+
+            // Update dialog
             dialogs.addOrUpdateItem(new DialogBuilder(dialog)
                     .setStatus(MessageState.SENT)
                     .setTime(date)
@@ -144,9 +186,14 @@ public class DialogsActor extends ModuleActor {
         }
     }
 
+    @Verified
     private void onMessageContentChanged(Peer peer, long rid, AbsContent content) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
+
+        // If message is on top
         if (dialog != null && dialog.getRid() == rid) {
+
+            // Update dialog
             ContentDescription description = ContentDescription.fromContent(content);
             dialogs.addOrUpdateItem(new DialogBuilder(dialog)
                     .setText(description.getText())
@@ -156,15 +203,21 @@ public class DialogsActor extends ModuleActor {
         }
     }
 
+    @Verified
     private void onCounterChanged(Peer peer, int count) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
+
+        // If we have dialog for this peer
         if (dialog != null) {
+
+            // Update dialog
             dialogs.addOrUpdateItem(new DialogBuilder(dialog)
                     .setUnreadCount(count)
                     .createDialog());
         }
     }
 
+    @Verified
     private void onHistoryLoaded(List<DialogHistory> history) {
         ArrayList<Dialog> updated = new ArrayList<Dialog>();
         for (DialogHistory dialogHistory : history) {
@@ -191,6 +244,7 @@ public class DialogsActor extends ModuleActor {
 
     // Utils
 
+    @Verified
     private PeerDesc buildPeerDesc(Peer peer) {
         switch (peer.getPeerType()) {
             case PRIVATE:

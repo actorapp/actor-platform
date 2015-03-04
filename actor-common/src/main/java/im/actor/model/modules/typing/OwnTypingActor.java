@@ -1,5 +1,6 @@
 package im.actor.model.modules.typing;
 
+import im.actor.model.annotation.Verified;
 import im.actor.model.api.OutPeer;
 import im.actor.model.api.TypingType;
 import im.actor.model.api.rpc.RequestTyping;
@@ -11,16 +12,19 @@ import im.actor.model.modules.utils.ModuleActor;
 /**
  * Created by ex3ndr on 15.02.15.
  */
+@Verified
 public class OwnTypingActor extends ModuleActor {
 
     private static final long TYPING_DELAY = 1000L;
 
     private long lastTypingTime = 0;
 
+    @Verified
     public OwnTypingActor(Modules messenger) {
         super(messenger);
     }
 
+    @Verified
     private void onTyping(Peer peer) {
         if (ActorTime.currentTime() - lastTypingTime < TYPING_DELAY) {
             return;
@@ -34,6 +38,8 @@ public class OwnTypingActor extends ModuleActor {
 
         request(new RequestTyping(outPeer, TypingType.TEXT));
     }
+
+    // Messages
 
     @Override
     public void onReceive(Object message) {
