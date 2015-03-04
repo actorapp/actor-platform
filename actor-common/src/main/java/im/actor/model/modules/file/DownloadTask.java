@@ -56,7 +56,7 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        destReference = fileSystemProvider.createTempFile(fileLocation);
+        destReference = fileSystemProvider.createTempFile();
         if (destReference == null) {
             reportError();
             Log.d(TAG, "Unable to create reference");

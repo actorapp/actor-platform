@@ -35,7 +35,7 @@ public class OwnAvatarChangeActor extends ModuleActor {
 
         modules().getProfile().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(descriptor, true));
 
-        modules().getFilesModule().requestUpload(currentChangeTask, descriptor, self());
+        modules().getFilesModule().requestUpload(currentChangeTask, descriptor, "avatar.jpg", self());
     }
 
     public void uploadCompleted(long rid, FileLocation fileLocation) {

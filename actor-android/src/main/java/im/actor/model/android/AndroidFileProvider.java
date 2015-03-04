@@ -86,7 +86,7 @@ public class AndroidFileProvider implements FileSystemProvider {
     }
 
     @Override
-    public synchronized FileReference createTempFile(FileLocation fileLocation) {
+    public synchronized FileReference createTempFile() {
         checkTempDirs();
 
         String destFile = buildTempFile();

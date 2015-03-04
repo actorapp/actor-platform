@@ -454,6 +454,10 @@ public class ChatActivity extends BaseActivity {
                     }
                 }
 
+                if (fileName == null) {
+                    fileName = picturePath;
+                }
+
                 if (mimeType.startsWith("video/")) {
                     sendVideo(picturePath, fileName);
                 } else if (mimeType.startsWith("image/")) {
