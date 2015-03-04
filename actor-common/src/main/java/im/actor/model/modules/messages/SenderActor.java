@@ -3,6 +3,7 @@ package im.actor.model.modules.messages;
 import java.io.IOException;
 
 import im.actor.model.api.FileExPhoto;
+import im.actor.model.api.FileExVideo;
 import im.actor.model.api.FileMessage;
 import im.actor.model.api.MessageContent;
 import im.actor.model.api.OutPeer;
@@ -113,6 +114,22 @@ public class SenderActor extends ModuleActor {
         performUploadFile(rid, descriptor);
     }
 
+    public void doSendVideo(Peer peer, String fileName, int w, int h, int duration,
+                            FastThumb fastThumb, String descriptor, int fileSize) {
+        long rid = RandomUtils.nextRid();
+        long date = System.currentTimeMillis();
+        VideoContent videoContent = new VideoContent(
+                new FileLocalSource(fileName, fileSize, descriptor), "video/mp4", fileName,
+                fastThumb, duration, w, h);
+
+        Message message = new Message(rid, date, date, myUid(), MessageState.PENDING, videoContent);
+        getConversationActor(peer).send(message);
+
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, videoContent));
+
+        performUploadFile(rid, descriptor);
+    }
+
     private void performUploadFile(long rid, String descriptor) {
         modules().getFilesModule().requestUpload(rid, descriptor, self());
     }
@@ -127,9 +144,15 @@ public class SenderActor extends ModuleActor {
 
         AbsContent nContent;
         if (msg.getContent() instanceof PhotoContent) {
-            return;
+            PhotoContent basePhotoContent = (PhotoContent) msg.getContent();
+            nContent = new PhotoContent(new FileRemoteSource(fileLocation), basePhotoContent.getMimetype(),
+                    basePhotoContent.getName(), basePhotoContent.getFastThumb(), basePhotoContent.getW(),
+                    basePhotoContent.getH());
         } else if (msg.getContent() instanceof VideoContent) {
-            return;
+            VideoContent baseVideoContent = (VideoContent) msg.getContent();
+            nContent = new VideoContent(new FileRemoteSource(fileLocation), baseVideoContent.getMimetype(),
+                    baseVideoContent.getName(), baseVideoContent.getFastThumb(), baseVideoContent.getDuration(),
+                    baseVideoContent.getW(), baseVideoContent.getH());
         } else if (msg.getContent() instanceof DocumentContent) {
             DocumentContent baseDocContent = (DocumentContent) msg.getContent();
             nContent = new DocumentContent(new FileRemoteSource(fileLocation), baseDocContent.getMimetype(),
@@ -137,7 +160,7 @@ public class SenderActor extends ModuleActor {
         } else {
             return;
         }
-        
+
         pendingMessages.getPendingMessages().add(new PendingMessage(msg.getPeer(), msg.getRid(), nContent));
         getConversationActor(msg.getPeer()).send(new ConversationActor.MessageContentUpdated(msg.getRid(), nContent));
 
@@ -177,6 +200,10 @@ public class SenderActor extends ModuleActor {
                 PhotoContent photoContent = (PhotoContent) content;
                 extType = 1;
                 ext = new FileExPhoto(photoContent.getW(), photoContent.getH()).toByteArray();
+            } else if (content instanceof VideoContent) {
+                VideoContent videoContent = (VideoContent) content;
+                extType = 2;
+                ext = new FileExVideo(videoContent.getW(), videoContent.getH(), videoContent.getDuration()).toByteArray();
             }
 
             im.actor.model.api.FastThumb fastThumb = null;
@@ -279,6 +306,11 @@ public class SenderActor extends ModuleActor {
             doSendPhoto(sendPhoto.getPeer(), sendPhoto.getFastThumb(),
                     sendPhoto.getDescriptor(), sendPhoto.getFileName(), sendPhoto.getFileSize(),
                     sendPhoto.getW(), sendPhoto.getH());
+        } else if (message instanceof SendVideo) {
+            SendVideo sendVideo = (SendVideo) message;
+            doSendVideo(sendVideo.getPeer(), sendVideo.getFileName(),
+                    sendVideo.getW(), sendVideo.getH(), sendVideo.getDuration(),
+                    sendVideo.getFastThumb(), sendVideo.getDescriptor(), sendVideo.getFileSize());
         } else {
             drop(message);
         }
@@ -373,6 +405,61 @@ public class SenderActor extends ModuleActor {
 
         public int getH() {
             return h;
+        }
+    }
+
+    public static class SendVideo {
+        private Peer peer;
+        private String fileName;
+        private int w;
+        private int h;
+        private int duration;
+        private FastThumb fastThumb;
+        private String descriptor;
+        private int fileSize;
+
+        public SendVideo(Peer peer, String fileName, int w, int h, int duration,
+                         FastThumb fastThumb, String descriptor, int fileSize) {
+            this.peer = peer;
+            this.fileName = fileName;
+            this.w = w;
+            this.h = h;
+            this.duration = duration;
+            this.fastThumb = fastThumb;
+            this.descriptor = descriptor;
+            this.fileSize = fileSize;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public int getW() {
+            return w;
+        }
+
+        public int getH() {
+            return h;
+        }
+
+        public int getDuration() {
+            return duration;
+        }
+
+        public FastThumb getFastThumb() {
+            return fastThumb;
+        }
+
+        public String getDescriptor() {
+            return descriptor;
+        }
+
+        public int getFileSize() {
+            return fileSize;
         }
     }
 
