@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import im.actor.messenger.core.AppContext;
+import im.actor.messenger.app.AppContext;
 import im.actor.messenger.util.Logger;
 import im.actor.messenger.util.country.CountryUtil;
 import im.actor.model.PhoneBookProvider;

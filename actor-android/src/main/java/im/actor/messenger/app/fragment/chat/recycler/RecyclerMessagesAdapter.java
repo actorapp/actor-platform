@@ -21,7 +21,7 @@ import im.actor.model.entity.content.ServiceContent;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.entity.content.VideoContent;
 
-import static im.actor.messenger.core.Core.messenger;
+import static im.actor.messenger.app.Core.messenger;
 
 /**
  * Created by ex3ndr on 26.02.15.

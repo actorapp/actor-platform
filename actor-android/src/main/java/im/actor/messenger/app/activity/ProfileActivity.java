@@ -14,8 +14,8 @@ import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.core.Core.messenger;
-import static im.actor.messenger.core.Core.users;
+import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 12.09.14.

@@ -18,7 +18,7 @@ import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
 import im.actor.model.network.RpcTimeoutException;
 
-import static im.actor.messenger.core.Core.messenger;
+import static im.actor.messenger.app.Core.messenger;
 
 public class AuthActivity extends BaseFragmentActivity {
 

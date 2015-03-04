@@ -10,7 +10,7 @@ import im.actor.model.entity.FileLocation;
 import im.actor.model.files.FileReference;
 import im.actor.model.modules.file.DownloadCallback;
 
-import static im.actor.messenger.core.Core.messenger;
+import static im.actor.messenger.app.Core.messenger;
 
 /**
  * Created by ex3ndr on 17.09.14.

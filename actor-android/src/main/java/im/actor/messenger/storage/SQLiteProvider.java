@@ -3,7 +3,7 @@ package im.actor.messenger.storage;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import im.actor.messenger.core.AppContext;
+import im.actor.messenger.app.AppContext;
 
 /**
  * Created by ex3ndr on 14.02.15.

@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import im.actor.messenger.BuildConfig;
-import im.actor.messenger.core.Core;
+import im.actor.messenger.app.Core;
 import im.actor.messenger.app.images.FileKeys;
 
 /**

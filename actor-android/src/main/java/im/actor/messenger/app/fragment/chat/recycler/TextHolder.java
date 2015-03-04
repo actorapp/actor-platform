@@ -20,8 +20,8 @@ import im.actor.model.entity.content.TextContent;
 import im.actor.model.log.Log;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.core.Core.users;
+import static im.actor.messenger.app.Core.myUid;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 10.09.14.

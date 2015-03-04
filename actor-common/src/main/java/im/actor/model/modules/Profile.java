@@ -34,7 +34,7 @@ public class Profile extends BaseModule {
         avatarChangeActor.send(new OwnAvatarChangeActor.ChangeAvatar(descriptor));
     }
 
-    public void cancelChangeAvatar() {
-
+    public void removeAvatar() {
+        avatarChangeActor.send(new OwnAvatarChangeActor.RemoveAvatar());
     }
 }
