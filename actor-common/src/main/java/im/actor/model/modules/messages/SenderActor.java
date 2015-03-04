@@ -1,6 +1,8 @@
 package im.actor.model.modules.messages;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import im.actor.model.api.FileExPhoto;
 import im.actor.model.api.FileExVideo;
@@ -58,12 +60,32 @@ public class SenderActor extends ModuleActor {
             }
         }
 
-        for (PendingMessage pending : pendingMessages.getPendingMessages()) {
+        boolean isChanged = false;
+        for (PendingMessage pending : pendingMessages.getPendingMessages().toArray(new PendingMessage[0])) {
             if (pending.getContent() instanceof TextContent) {
                 performSendContent(pending.getPeer(), pending.getRid(), pending.getContent());
-            } else {
-                // TODO: Process file upload
+            } else if (pending.getContent() instanceof DocumentContent) {
+                DocumentContent documentContent = (DocumentContent) pending.getContent();
+                if (documentContent.getSource() instanceof FileLocalSource) {
+                    if (config().getFileSystemProvider() != null &&
+                            config().getFileSystemProvider().isFsPersistent()) {
+                        performUploadFile(pending.getRid(), ((FileLocalSource) documentContent.getSource()).getFileDescriptor());
+                    } else {
+                        List<Long> rids = new ArrayList<Long>();
+                        rids.add(pending.getRid());
+                        getConversationActor(pending.getPeer()).send(new ConversationActor.MessageDeleted(rids));
+                        pendingMessages.getPendingMessages().remove(pending);
+                        isChanged = true;
+                    }
+                } else {
+                    performSendContent(pending.getPeer(), pending.getRid(),
+                            pending.getContent());
+                }
             }
+        }
+
+        if (isChanged) {
+            savePending();
         }
     }
 
@@ -94,7 +116,8 @@ public class SenderActor extends ModuleActor {
         getConversationActor(peer).send(message);
 
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, documentContent));
-
+        savePending();
+        
         performUploadFile(rid, descriptor);
     }
 
@@ -110,6 +133,7 @@ public class SenderActor extends ModuleActor {
         getConversationActor(peer).send(message);
 
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, photoContent));
+        savePending();
 
         performUploadFile(rid, descriptor);
     }
@@ -126,6 +150,7 @@ public class SenderActor extends ModuleActor {
         getConversationActor(peer).send(message);
 
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, videoContent));
+        savePending();
 
         performUploadFile(rid, descriptor);
     }

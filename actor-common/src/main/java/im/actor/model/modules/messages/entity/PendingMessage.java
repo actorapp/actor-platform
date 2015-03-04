@@ -21,6 +21,7 @@ public class PendingMessage extends BserObject {
     private Peer peer;
     private long rid;
     private AbsContent content;
+    private boolean isError;
 
     public PendingMessage(Peer peer, long rid, AbsContent content) {
         this.peer = peer;
@@ -44,11 +45,16 @@ public class PendingMessage extends BserObject {
         return rid;
     }
 
+    public boolean isError() {
+        return isError;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         peer = Peer.fromUniqueId(values.getLong(1));
         rid = values.getLong(2);
         content = AbsContent.contentFromBytes(values.getBytes(3));
+        isError = values.getBool(4, false);
     }
 
     @Override
@@ -56,5 +62,6 @@ public class PendingMessage extends BserObject {
         writer.writeLong(1, peer.getUnuqueId());
         writer.writeLong(2, rid);
         writer.writeBytes(3, content.toByteArray());
+        writer.writeBool(4, isError);
     }
 }
