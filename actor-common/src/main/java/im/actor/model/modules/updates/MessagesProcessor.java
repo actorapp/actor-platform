@@ -3,6 +3,7 @@ package im.actor.model.modules.updates;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.model.annotation.Verified;
 import im.actor.model.api.HistoryMessage;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.api.rpc.ResponseLoadHistory;
@@ -36,7 +37,11 @@ public class MessagesProcessor extends BaseModule {
         super(messenger);
     }
 
+    @Verified
     public void onDialogsLoaded(ResponseLoadDialogs dialogsResponse) {
+
+        // Should we eliminate DialogHistory?
+
         ArrayList<DialogHistory> dialogs = new ArrayList<DialogHistory>();
 
         long maxLoadedDate = Long.MAX_VALUE;
@@ -56,13 +61,17 @@ public class MessagesProcessor extends BaseModule {
                     dialog.getRid(), dialog.getDate(), dialog.getSenderUid(), msgContent, convert(dialog.getState())));
         }
 
+        // Sending updates to dialogs actor
         if (dialogs.size() > 0) {
             dialogsActor().send(new DialogsActor.HistoryLoaded(dialogs));
         }
+
+        // Sending notification to history actor
         dialogsHistoryActor().send(new DialogsHistoryActor.LoadedMore(dialogsResponse.getDialogs().size(),
                 maxLoadedDate));
     }
 
+    @Verified
     public void onMessagesLoaded(Peer peer, ResponseLoadHistory historyResponse) {
         ArrayList<Message> messages = new ArrayList<Message>();
         long maxLoadedDate = Long.MAX_VALUE;
@@ -81,79 +90,123 @@ public class MessagesProcessor extends BaseModule {
                     state, content));
         }
 
+        // Sending updates to conversation actor
         if (messages.size() > 0) {
             conversationActor(peer).send(new ConversationActor.HistoryLoaded(messages));
         }
+
+        // Sending notification to conversation history actor
         conversationHistoryActor(peer).send(new ConversationHistoryActor.LoadedMore(historyResponse.getHistory().size(),
                 maxLoadedDate));
     }
 
+
     public void onMessage(im.actor.model.api.Peer _peer, int senderUid, long date, long rid,
                           im.actor.model.api.MessageContent content) {
+
         Peer peer = convert(_peer);
         AbsContent msgContent = convert(content);
+        boolean isOut = myUid() == senderUid;
 
         if (msgContent == null) {
+            // Ignore if content is unsupported
             return;
         }
 
-        boolean isOut = myUid() == senderUid;
-
+        // Sending message to conversation
         Message message = new Message(rid, date, date, senderUid,
                 isOut ? MessageState.SENT : MessageState.UNKNOWN, msgContent);
         conversationActor(peer).send(message);
 
         if (!isOut) {
+
+            // Send to OwnReadActor for adding to unread index
             ownReadActor().send(new OwnReadActor.NewMessage(peer, rid, date, false));
+
+            // Notify notification actor
             modules().getNotifications().onInMessage(peer, senderUid, date,
                     ContentDescription.fromContent(message.getContent()));
+
+            // mark message as received
             plainReceiveActor().send(new PlainReceiverActor.MarkReceived(peer, date));
+
         } else {
+
+            // Send information to OwnReadActor about out message
             ownReadActor().send(new OwnReadActor.NewOutMessage(peer, rid, date, false));
         }
     }
 
+    @Verified
     public void onMessageRead(im.actor.model.api.Peer _peer, long startDate, long readDate) {
         Peer peer = convert(_peer);
+
+        // Sending event to conversation actor
         conversationActor(peer).send(new ConversationActor.MessageRead(startDate));
     }
 
+    @Verified
     public void onMessageEncryptedRead(im.actor.model.api.Peer _peer, long rid, long readDate) {
         Peer peer = convert(_peer);
+
+        // Sending event to conversation actor
         conversationActor(peer).send(new ConversationActor.MessageEncryptedRead(rid));
     }
 
+    @Verified
     public void onMessageReceived(im.actor.model.api.Peer _peer, long startDate, long receivedDate) {
         Peer peer = convert(_peer);
+
+        // Sending event to conversation actor
         conversationActor(peer).send(new ConversationActor.MessageReceived(startDate));
     }
 
+    @Verified
     public void onMessageEncryptedReceived(im.actor.model.api.Peer _peer, long rid, long receivedDate) {
         Peer peer = convert(_peer);
+
+        // Sending event to conversation actor
         conversationActor(peer).send(new ConversationActor.MessageEncryptedReceived(rid));
     }
 
+    @Verified
     public void onMessageReadByMe(im.actor.model.api.Peer _peer, long startDate) {
         Peer peer = convert(_peer);
+
+        // Sending event to OwnReadActor for syncing read state across devices
         ownReadActor().send(new OwnReadActor.MessageReadByMe(peer, startDate));
     }
 
+    @Verified
     public void onMessageEncryptedReadByMe(im.actor.model.api.Peer _peer, long rid) {
         Peer peer = convert(_peer);
+
+        // Sending event to OwnReadActor for syncing read state across devices
         ownReadActor().send(new OwnReadActor.MessageReadByMeEncrypted(peer, rid));
     }
 
     public void onMessageDelete(im.actor.model.api.Peer _peer, List<Long> rids) {
         Peer peer = convert(_peer);
+
+        // Deleting messages from conversation
         conversationActor(peer).send(new ConversationActor.MessagesDeleted(rids));
+
+        // Remove messages from unread index
         ownReadActor().send(new OwnReadActor.MessageDeleted(peer, rids));
-        // TODO: Notify send actor
+
+        // TODO: Notify send actor for canceling
     }
 
     public void onMessageSent(im.actor.model.api.Peer _peer, long rid, long date) {
         Peer peer = convert(_peer);
+
+        // Change message state in conversation
         conversationActor(peer).send(new ConversationActor.MessageSent(rid, date));
+
+        // Notify Sender Actor
         sendActor().send(new SenderActor.MessageSent(peer, rid));
+
+        // Send information to OwnReadActor about out message
         ownReadActor().send(new OwnReadActor.NewOutMessage(peer, rid, date, false));
     }
 
@@ -163,6 +216,7 @@ public class MessagesProcessor extends BaseModule {
         // TODO: Notify own read actor
         // TODO: Notify send actor
 
+        // Clearing conversation
         conversationActor(peer).send(new ConversationActor.ClearConversation());
     }
 
@@ -172,6 +226,7 @@ public class MessagesProcessor extends BaseModule {
         // TODO: Notify own read actor
         // TODO: Notify send actor
 
+        // Deleting conversation
         conversationActor(peer).send(new ConversationActor.DeleteConversation());
     }
 
@@ -185,5 +240,4 @@ public class MessagesProcessor extends BaseModule {
                 .NewMessage(new Peer(PeerType.PRIVATE, uid), rid, date, false));
         conversationActor(Peer.user(uid)).send(message);
     }
-
 }

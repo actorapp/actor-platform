@@ -255,8 +255,13 @@ public class ConversationActor extends ModuleActor {
 
     // History
 
+    @Verified
     private void onHistoryLoaded(List<Message> history) {
+
         ArrayList<Message> updated = new ArrayList<Message>();
+        boolean isPendingChanged = false;
+
+        // Processing all new messages
         for (Message historyMessage : history) {
             // Ignore already present messages
             if (messages.getValue(historyMessage.getListId()) != null) {
@@ -264,10 +269,25 @@ public class ConversationActor extends ModuleActor {
             }
 
             updated.add(historyMessage);
+
+            // Add unread messages to pending index
+            if (historyMessage.getMessageState() == MessageState.SENT) {
+                messagesStorage.getMessages().add(new OutUnreadMessage(historyMessage.getRid(), historyMessage.getDate()));
+                isPendingChanged = true;
+            }
         }
+
+        // Saving pending index if required
+        if (isPendingChanged) {
+            savePending();
+        }
+
+        // Updating messages
         if (updated.size() > 0) {
             messages.addOrUpdateItems(updated);
         }
+
+        // No need to update dialogs: all history messages are always too old
     }
 
     // Utils

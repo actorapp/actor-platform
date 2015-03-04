@@ -1,6 +1,6 @@
 package im.actor.model.modules.updates;
 
-import im.actor.model.Messenger;
+import im.actor.model.annotation.Verified;
 import im.actor.model.api.Peer;
 import im.actor.model.api.PeerType;
 import im.actor.model.api.TypingType;
@@ -12,14 +12,17 @@ import im.actor.model.modules.typing.TypingActor;
 /**
  * Created by ex3ndr on 16.02.15.
  */
+@Verified
 public class TypingProcessor extends BaseModule {
     private ActorRef typingActor;
 
+    @Verified
     public TypingProcessor(Modules modules) {
         super(modules);
         this.typingActor = TypingActor.get(modules);
     }
 
+    @Verified
     public void onTyping(Peer peer, int uid, TypingType type) {
         if (peer.getType() == PeerType.PRIVATE) {
             typingActor.sendOnce(new TypingActor.PrivateTyping(uid, type));
@@ -30,6 +33,7 @@ public class TypingProcessor extends BaseModule {
         }
     }
 
+    @Verified
     public void onMessage(Peer peer, int uid) {
         if (peer.getType() == PeerType.PRIVATE) {
             typingActor.sendOnce(new TypingActor.StopTyping(uid));

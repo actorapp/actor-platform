@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.model.annotation.Verified;
 import im.actor.model.api.GroupOutPeer;
 import im.actor.model.api.UserOutPeer;
 import im.actor.model.api.rpc.RequestSubscribeToGroupOnline;
@@ -29,6 +30,7 @@ import im.actor.model.viewmodel.UserVM;
 /**
  * Created by ex3ndr on 15.02.15.
  */
+@Verified
 public class PresenceActor extends ModuleActor {
 
     public static ActorRef get(final Modules messenger) {
@@ -62,6 +64,7 @@ public class PresenceActor extends ModuleActor {
         super(messenger);
     }
 
+    @Verified
     private void onUserOnline(int uid) {
         UserVM vm = getUserVM(uid);
         if (vm != null) {
@@ -70,6 +73,7 @@ public class PresenceActor extends ModuleActor {
         self().sendOnce(new UserOffline(uid), ONLINE_TIMEOUT);
     }
 
+    @Verified
     private void onUserOffline(int uid) {
         UserVM vm = getUserVM(uid);
         if (vm != null) {
@@ -77,6 +81,7 @@ public class PresenceActor extends ModuleActor {
         }
     }
 
+    @Verified
     private void onUserLastSeen(int uid, long date) {
         UserVM vm = getUserVM(uid);
         if (vm != null) {
@@ -84,6 +89,7 @@ public class PresenceActor extends ModuleActor {
         }
     }
 
+    @Verified
     private void onGroupOnline(int gid, int count) {
         GroupVM vm = getGroupVM(gid);
         if (vm != null) {
@@ -91,27 +97,36 @@ public class PresenceActor extends ModuleActor {
         }
     }
 
+    @Verified
     private void subscribe(Peer peer) {
         if (peer.getPeerType() == PeerType.PRIVATE) {
+            // Already subscribed
             if (uids.contains(peer.getPeerId())) {
                 return;
             }
+
             User user = getUser(peer.getPeerId());
             if (user == null) {
                 return;
             }
+
+            // Subscribing to user online sates
             uids.add(user.getUid());
             List<UserOutPeer> peers = new ArrayList<UserOutPeer>();
             peers.add(new UserOutPeer(user.getUid(), user.getAccessHash()));
             request(new RequestSubscribeToOnline(peers));
         } else if (peer.getPeerType() == PeerType.GROUP) {
+            // Already subscribed
             if (gids.contains(peer.getPeerId())) {
                 return;
             }
+
             Group group = getGroup(peer.getPeerId());
             if (group == null) {
                 return;
             }
+
+            // Subscribing to group online sates
             gids.add(peer.getPeerId());
             List<GroupOutPeer> peers = new ArrayList<GroupOutPeer>();
             peers.add(new GroupOutPeer(group.getGroupId(), group.getAccessHash()));
@@ -119,7 +134,10 @@ public class PresenceActor extends ModuleActor {
         }
     }
 
+    @Verified
     private void onNewSessionCreated() {
+
+        // Resubscribing for online states of users
         List<UserOutPeer> userPeers = new ArrayList<UserOutPeer>();
         for (int uid : uids) {
             User user = getUser(uid);
@@ -132,6 +150,7 @@ public class PresenceActor extends ModuleActor {
             request(new RequestSubscribeToOnline(userPeers));
         }
 
+        // Resubscribing for online states of groups
         List<GroupOutPeer> groupPeers = new ArrayList<GroupOutPeer>();
         for (int gid : gids) {
             Group group = getGroup(gid);
