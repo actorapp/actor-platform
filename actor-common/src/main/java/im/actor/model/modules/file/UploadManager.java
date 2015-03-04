@@ -27,20 +27,33 @@ public class UploadManager extends ModuleActor {
         super(messenger);
     }
 
-    private QueueItem findItem(long rid) {
-        for (QueueItem q : queue) {
-            if (q.rid == rid) {
-                return q;
-            }
-        }
-        return null;
-    }
+    // Tasks
 
     public void startUpload(long rid, String descriptor, ActorRef requestActor) {
         Log.d(TAG, "Starting upload #" + rid + " with descriptor " + descriptor);
         QueueItem queueItem = new QueueItem(rid, descriptor, requestActor);
         queueItem.isStopped = false;
         queue.add(queueItem);
+        checkQueue();
+    }
+
+    public void stopUpload(long rid) {
+        Log.d(TAG, "Stopping download #" + rid);
+        QueueItem queueItem = findItem(rid);
+        if (queueItem == null) {
+            Log.d(TAG, "- Not present in queue");
+        } else {
+            if (queueItem.isStarted) {
+                Log.d(TAG, "- Stopping actor");
+                queueItem.taskRef.send(PoisonPill.INSTANCE);
+                queueItem.taskRef = null;
+                queueItem.isStarted = false;
+            }
+            queue.remove(queueItem);
+            for (UploadCallback callback : queueItem.callbacks) {
+                callback.onNotUploading();
+            }
+        }
         checkQueue();
     }
 
@@ -65,22 +78,52 @@ public class UploadManager extends ModuleActor {
         }
     }
 
-    public void stopUpload(long rid) {
-        Log.d(TAG, "Stopping download #" + rid);
+    public void requestState(long rid, UploadCallback callback) {
         QueueItem queueItem = findItem(rid);
         if (queueItem == null) {
-            Log.d(TAG, "- Not present in queue");
+            callback.onNotUploading();
         } else {
+            if (queueItem.isStopped) {
+                callback.onNotUploading();
+            } else {
+                callback.onUploading(queueItem.progress);
+            }
+        }
+    }
+
+    public void resumeUpload(long rid) {
+        QueueItem queueItem = findItem(rid);
+        if (queueItem != null) {
             if (queueItem.isStarted) {
-                Log.d(TAG, "- Stopping actor");
+                return;
+            }
+            if (queueItem.isStopped) {
+                queueItem.isStopped = false;
+            }
+            queueItem.progress = 0;
+            for (UploadCallback callback : queueItem.callbacks) {
+                callback.onUploading(0);
+            }
+            checkQueue();
+        }
+    }
+
+    public void pauseUpload(long rid) {
+        QueueItem queueItem = findItem(rid);
+        if (queueItem != null) {
+            if (queueItem.isStarted) {
                 queueItem.taskRef.send(PoisonPill.INSTANCE);
                 queueItem.taskRef = null;
                 queueItem.isStarted = false;
             }
-            queue.remove(queueItem);
+            queueItem.isStopped = true;
+            for (UploadCallback callback : queueItem.callbacks) {
+                callback.onNotUploading();
+            }
         }
-        checkQueue();
     }
+
+    // Queue processing
 
     public void onUploadTaskError(long rid) {
         Log.d(TAG, "Upload #" + rid + " error");
@@ -186,6 +229,15 @@ public class UploadManager extends ModuleActor {
         }), "actor/upload/task_" + RandomUtils.nextRid());
     }
 
+    private QueueItem findItem(long rid) {
+        for (QueueItem q : queue) {
+            if (q.rid == rid) {
+                return q;
+            }
+        }
+        return null;
+    }
+
     private class QueueItem {
         private long rid;
         private String fileDescriptor;
@@ -228,6 +280,15 @@ public class UploadManager extends ModuleActor {
         } else if (message instanceof UnbindUpload) {
             UnbindUpload unbindUpload = (UnbindUpload) message;
             unbindUpload(unbindUpload.getRid(), unbindUpload.getCallback());
+        } else if (message instanceof RequestState) {
+            RequestState requestState = (RequestState) message;
+            requestState(requestState.getRid(), requestState.getCallback());
+        } else if (message instanceof PauseUpload) {
+            PauseUpload pauseUpload = (PauseUpload) message;
+            pauseUpload(pauseUpload.getRid());
+        } else if (message instanceof ResumeUpload) {
+            ResumeUpload resumeUpload = (ResumeUpload) message;
+            resumeUpload(resumeUpload.getRid());
         } else {
             drop(message);
         }
@@ -376,5 +437,48 @@ public class UploadManager extends ModuleActor {
             return rid;
         }
     }
+
+    public static class RequestState {
+        private long rid;
+        private UploadCallback callback;
+
+        public RequestState(long rid, UploadCallback callback) {
+            this.rid = rid;
+            this.callback = callback;
+        }
+
+        public long getRid() {
+            return rid;
+        }
+
+        public UploadCallback getCallback() {
+            return callback;
+        }
+    }
+
+    public static class PauseUpload {
+        private long rid;
+
+        public PauseUpload(long rid) {
+            this.rid = rid;
+        }
+
+        public long getRid() {
+            return rid;
+        }
+    }
+
+    public static class ResumeUpload {
+        private long rid;
+
+        public ResumeUpload(long rid) {
+            this.rid = rid;
+        }
+
+        public long getRid() {
+            return rid;
+        }
+    }
+
     //endregion
 }
