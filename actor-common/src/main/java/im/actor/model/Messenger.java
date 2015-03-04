@@ -421,4 +421,8 @@ public class Messenger {
     public void changeAvatar(String descriptor) {
         modules.getProfile().changeAvatar(descriptor);
     }
+
+    public void removeAvatar() {
+        modules.getProfile().removeAvatar();
+    }
 }

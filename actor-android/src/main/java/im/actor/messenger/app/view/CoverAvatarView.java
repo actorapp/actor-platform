@@ -15,7 +15,7 @@ import com.droidkit.images.loading.view.ImageReceiverView;
 import com.droidkit.images.ops.ImageLoading;
 
 import im.actor.messenger.R;
-import im.actor.messenger.core.Core;
+import im.actor.messenger.app.Core;
 import im.actor.messenger.app.images.FileKeys;
 import im.actor.messenger.app.images.FullAvatarTask;
 import im.actor.messenger.util.Screen;

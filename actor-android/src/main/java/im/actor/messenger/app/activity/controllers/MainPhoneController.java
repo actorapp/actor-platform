@@ -37,9 +37,9 @@ import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
-import static im.actor.messenger.core.Core.messenger;
-import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.core.Core.users;
+import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.myUid;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 25.10.14.

@@ -17,7 +17,7 @@ import im.actor.messenger.util.Screen;
 import im.actor.messenger.util.TextUtils;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.core.Core.users;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 19.01.15.

@@ -3,7 +3,7 @@ package im.actor.messenger.app.view;
 import android.content.Context;
 
 import im.actor.messenger.R;
-import im.actor.messenger.core.AppContext;
+import im.actor.messenger.app.AppContext;
 import im.actor.messenger.util.TextUtils;
 import im.actor.model.entity.Sex;
 import im.actor.model.viewmodel.UserPresence;
@@ -12,7 +12,7 @@ import im.actor.model.viewmodel.UserVM;
 import java.util.Calendar;
 import java.util.Date;
 
-import static im.actor.messenger.core.Core.users;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 20.10.14.

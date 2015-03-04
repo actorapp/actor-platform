@@ -15,7 +15,7 @@ import java.util.List;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.MainActivity;
-import im.actor.messenger.core.AppContext;
+import im.actor.messenger.app.AppContext;
 import im.actor.model.NotificationProvider;
 import im.actor.model.entity.ContentDescription;
 import im.actor.model.entity.Notification;
@@ -23,9 +23,9 @@ import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.core.Core.groups;
-import static im.actor.messenger.core.Core.messenger;
-import static im.actor.messenger.core.Core.users;
+import static im.actor.messenger.app.Core.groups;
+import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 01.03.15.

@@ -9,7 +9,7 @@ import android.widget.CheckBox;
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragment;
 
-import static im.actor.messenger.core.Core.messenger;
+import static im.actor.messenger.app.Core.messenger;
 
 /**
  * Created by ex3ndr on 17.09.14.

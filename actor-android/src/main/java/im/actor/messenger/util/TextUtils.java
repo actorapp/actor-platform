@@ -1,6 +1,6 @@
 package im.actor.messenger.util;
 
-import im.actor.messenger.core.AppContext;
+import im.actor.messenger.app.AppContext;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

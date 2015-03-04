@@ -31,7 +31,7 @@ import im.actor.model.viewmodel.UploadFileVMCallback;
 
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
-import static im.actor.messenger.core.Core.messenger;
+import static im.actor.messenger.app.Core.messenger;
 
 /**
  * Created by ex3ndr on 27.02.15.

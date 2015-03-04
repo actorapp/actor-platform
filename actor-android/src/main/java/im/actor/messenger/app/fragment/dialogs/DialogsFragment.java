@@ -12,8 +12,8 @@ import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 import im.actor.model.viewmodel.GroupVM;
 
-import static im.actor.messenger.core.Core.groups;
-import static im.actor.messenger.core.Core.messenger;
+import static im.actor.messenger.app.Core.groups;
+import static im.actor.messenger.app.Core.messenger;
 
 public class DialogsFragment extends BaseDialogFragment implements UiListStateListener {
 

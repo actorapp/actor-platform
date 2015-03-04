@@ -28,7 +28,7 @@ import im.actor.messenger.util.Screen;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Contact;
 
-import static im.actor.messenger.core.Core.messenger;
+import static im.actor.messenger.app.Core.messenger;
 
 public class ContactsFragment extends BaseFragment implements Listener<ListState> {
 

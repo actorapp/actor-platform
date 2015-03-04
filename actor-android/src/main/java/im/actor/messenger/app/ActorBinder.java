@@ -14,7 +14,6 @@ import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Formatter;
-import im.actor.messenger.core.AppContext;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.mvvm.DoubleValueChangedListener;
