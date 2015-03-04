@@ -73,7 +73,7 @@ public class SenderActor extends ModuleActor {
                     } else {
                         List<Long> rids = new ArrayList<Long>();
                         rids.add(pending.getRid());
-                        getConversationActor(pending.getPeer()).send(new ConversationActor.MessageDeleted(rids));
+                        getConversationActor(pending.getPeer()).send(new ConversationActor.MessagesDeleted(rids));
                         pendingMessages.getPendingMessages().remove(pending);
                         isChanged = true;
                     }
@@ -117,7 +117,7 @@ public class SenderActor extends ModuleActor {
 
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, documentContent));
         savePending();
-        
+
         performUploadFile(rid, descriptor);
     }
 

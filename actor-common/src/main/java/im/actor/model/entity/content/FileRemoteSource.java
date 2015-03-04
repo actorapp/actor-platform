@@ -1,10 +1,10 @@
 package im.actor.model.entity.content;
 
+import java.io.IOException;
+
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.entity.FileLocation;
-
-import java.io.IOException;
 
 /**
  * Created by ex3ndr on 14.02.15.
@@ -29,6 +29,16 @@ public class FileRemoteSource extends FileSource {
 
     public FileLocation getFileLocation() {
         return fileLocation;
+    }
+
+    @Override
+    public int getSize() {
+        return fileLocation.getFileSize();
+    }
+
+    @Override
+    public String getFileName() {
+        return fileLocation.getFileName();
     }
 
     @Override

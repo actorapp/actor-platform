@@ -13,6 +13,7 @@ import com.droidkit.progress.CircularView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
+import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.FileTypes;
 import im.actor.model.entity.FileLocation;
@@ -105,11 +106,10 @@ public class DocHolder extends MessageHolder {
 
         // Content data
         fileName.setText(document.getName());
-        // TODO Update file sizes
-        // fileSize.setText(Formatter.formatFileSize(document.getSource().parse().getSize()) + " " + ext.toUpperCase());
+        fileSize.setText(Formatter.formatFileSize(document.getSource().getSize())
+                + " " + document.getExt().toUpperCase());
 
         //region File icon
-
         if (isUpdated) {
             boolean isAppliedThumb = false;
             if (document.getFastThumb() != null) {
@@ -188,10 +188,22 @@ public class DocHolder extends MessageHolder {
             }
             needRebind = true;
         } else {
-
+            if (document.getSource() instanceof FileLocalSource) {
+                if (uploadFileVM == null && downloadFileVM != null) {
+                    downloadFileVM.detach();
+                    downloadFileVM = null;
+                    needRebind = true;
+                }
+            } else if (document.getSource() instanceof FileRemoteSource) {
+                if (uploadFileVM != null && downloadFileVM == null) {
+                    uploadFileVM.detach();
+                    uploadFileVM = null;
+                    needRebind = true;
+                }
+            }
         }
 
-        if (downloadFileVM == null) {
+        if (downloadFileVM == null && uploadFileVM == null) {
             needRebind = true;
         }
 

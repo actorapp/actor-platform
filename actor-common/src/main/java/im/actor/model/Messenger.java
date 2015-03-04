@@ -187,6 +187,7 @@ public class Messenger {
     public void onConversationOpen(Peer peer) {
         modules.getPresenceModule().subscribe(peer);
         modules.getNotifications().onConversationOpen(peer);
+        modules.getMessagesModule().onConversationOpen(peer);
     }
 
     public void onConversationClosed(Peer peer) {
@@ -307,6 +308,14 @@ public class Messenger {
         return modules.getMessagesModule().clearChat(peer);
     }
 
+    public void loadMoreDialogs() {
+        modules.getMessagesModule().loadMoreDialogs();
+    }
+
+    public void loadMoreHistory(Peer peer) {
+        modules.getMessagesModule().loadMoreHistory(peer);
+    }
+
     // File operations
     public FileVM bindFile(FileLocation fileLocation, boolean isAutoStart, FileVMCallback callback) {
         return new FileVM(fileLocation, isAutoStart, modules, callback);
@@ -336,9 +345,6 @@ public class Messenger {
         modules.getFilesModule().startDownloading(location);
     }
 
-    public void loadMoreDialogs() {
-        modules.getMessagesModule().loadMoreDialogs();
-    }
 
     // Settings operations
 
