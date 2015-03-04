@@ -14,10 +14,6 @@ public class ChatSettingsActivity extends BaseFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setDisplayShowCustomEnabled(false);
         getSupportActionBar().setTitle(R.string.settings_chat_title);
 
         showFragment(new ChatSettingsFragment(), false, false);

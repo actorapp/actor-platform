@@ -33,6 +33,7 @@ import im.actor.messenger.app.activity.ChatSettingsActivity;
 import im.actor.messenger.app.activity.HelpActivity;
 import im.actor.messenger.app.activity.NotificationsActivity;
 import im.actor.messenger.app.activity.SecuritySettingsActivity;
+import im.actor.messenger.app.activity.ViewAvatarActivity;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.view.CoverAvatarView;
@@ -195,7 +196,7 @@ public class MyProfileFragment extends BaseFragment {
         view.findViewById(R.id.avatar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // startActivity(ViewAvatarActivity.viewAvatar(myUid(), getActivity()));
+                startActivity(ViewAvatarActivity.viewAvatar(myUid(), getActivity()));
             }
         });
 

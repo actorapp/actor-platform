@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -241,15 +240,7 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
 
         @Override
         public void bind(Dialog data, int position, final Context context) {
-            if (binded != 0) {
-                if (data.getPeer().getUnuqueId() != binded) {
-                    Log.d("ListDialogs", "Bind new #" + position);
-                } else {
-                    Log.d("ListDialogs", "Bind updated #" + position);
-                }
-            } else {
-                Log.d("ListDialogs", "Bind fresh #" + position);
-            }
+
             binded = data.getPeer().getUnuqueId();
 
             if (getEngine().getListState().getValue().getState() == ListState.State.LOADED) {
@@ -287,13 +278,12 @@ public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
 
             title.setCompoundDrawablesWithIntrinsicBounds(left, 0, right, 0);
 
-            time.setText(Formatter.formatShortDate(data.getSortDate()));
-//            if (data.getDate() > 0) {
-//                time.setVisibility(View.VISIBLE);
-//                time.setText(Formatter.formatShortDate(data.getDate()));
-//            } else {
-//                time.setVisibility(View.GONE);
-//            }
+            if (data.getDate() > 0) {
+                time.setVisibility(View.VISIBLE);
+                time.setText(Formatter.formatShortDate(data.getDate()));
+            } else {
+                time.setVisibility(View.GONE);
+            }
 
             boolean isGroup = data.getPeer().getPeerType() == PeerType.GROUP;
             if (data.getMessageType() == ContentType.TEXT) {

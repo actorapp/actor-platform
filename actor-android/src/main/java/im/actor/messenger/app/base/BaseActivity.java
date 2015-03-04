@@ -5,11 +5,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import im.actor.messenger.R;
 import im.actor.messenger.app.ActorBinder;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Avatar;
+import im.actor.model.mvvm.DoubleValueChangedListener;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupTypingVM;
@@ -60,6 +62,11 @@ public class BaseActivity extends ActionBarActivity {
         BINDER.bind(value, listener);
     }
 
+    public <T, V> void bind(final ValueModel<T> value1, final ValueModel<V> value2,
+                            final DoubleValueChangedListener<T, V> listener) {
+        BINDER.bind(value1, value2, listener);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -86,6 +93,10 @@ public class BaseActivity extends ActionBarActivity {
                 callback.onError(e);
             }
         });
+    }
+
+    public <T> void execute(Command<T> cmd) {
+        execute(cmd, R.string.progress_common);
     }
 
     public <T> void execute(Command<T> cmd, int title) {

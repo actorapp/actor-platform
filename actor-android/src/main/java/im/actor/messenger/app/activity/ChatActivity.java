@@ -506,7 +506,7 @@ public class ChatActivity extends BaseActivity {
                         .setPositiveButton(R.string.alert_delete_all_messages_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // ChatActionsActor.actions().clearChat(chatType, chatId);
+                                execute(messenger().clearChat(peer));
                             }
                         })
                         .setNegativeButton(R.string.dialog_cancel, null)
@@ -515,12 +515,12 @@ public class ChatActivity extends BaseActivity {
                 break;
             case R.id.leaveGroup:
                 new AlertDialog.Builder(this)
-                        .setMessage(getString(R.string.alert_delete_group_title)
+                        .setMessage(getString(R.string.alert_leave_group_message)
                                 .replace("{0}", groups().get(peer.getPeerId()).getName().get()))
-                        .setPositiveButton(R.string.alert_delete_group_yes, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog2, int which) {
-                                // groupUpdates().leaveChat(chatId);
+                                execute(messenger().leaveGroup(peer.getPeerId()));
                                 finish();
                             }
                         })

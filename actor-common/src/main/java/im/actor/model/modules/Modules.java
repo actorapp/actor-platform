@@ -29,6 +29,7 @@ public class Modules {
     private volatile Contacts contacts;
     private volatile Notifications notifications;
     private volatile Settings settings;
+    private volatile Profile profile;
 
     public Modules(Configuration configuration) {
         this.configuration = configuration;
@@ -104,6 +105,7 @@ public class Modules {
         Log.d("CORE_INIT", "Loading stage6.8 in " + (configuration.getThreading().getActorTime() - start) + " ms");
         start = configuration.getThreading().getActorTime();
         settings = new Settings(this);
+        profile = new Profile(this);
         Log.d("CORE_INIT", "Loading stage6.8.2 in " + (configuration.getThreading().getActorTime() - start) + " ms");
         start = configuration.getThreading().getActorTime();
         filesModule.run();
@@ -182,5 +184,9 @@ public class Modules {
 
     public Settings getSettings() {
         return settings;
+    }
+
+    public Profile getProfile() {
+        return profile;
     }
 }

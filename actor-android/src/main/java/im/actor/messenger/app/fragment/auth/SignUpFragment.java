@@ -52,7 +52,7 @@ public class SignUpFragment extends BaseAuthFragment {
         sendConfirmCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                messenger().signUp(firstNameEditText.getText().toString().trim(), avatarPath, false);
+                executeAuth(messenger().signUp(firstNameEditText.getText().toString().trim(), avatarPath, false));
             }
         });
 

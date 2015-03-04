@@ -418,11 +418,7 @@
     <string name="alert_remove_contact_text">Вы уверены, что хотите удалить {0} из контактов?</string>
     <string name="alert_remove_contact_yes">Удалить</string>
 
-    <string name="alert_delete_group_title">Вы уверены, что хотите удалить и покинуть группу "{0}"?</string>
-    <string name="alert_delete_group_yes">Удалить</string>
 
-    <string name="alert_delete_chat_message">Вы уверены, что хотите удалить чат с "{0}"?</string>
-    <string name="alert_delete_chat_yes">Удалить</string>
 
     <string name="alert_group_add_text">Вы уверены, что хотите добавить {0} в группу?</string>
     <string name="alert_group_add_yes">Добавить</string>
@@ -432,6 +428,17 @@
 
     <string name="alert_invite_text">"{0}" на зарегистрирован в Акторе. Выслать ему приглашение?</string>
     <string name="alert_invite_yes">Пригласить</string>
+
+    <!-- Dialogs -->
+
+    <string name="alert_leave_group_message">Вы уверены, что хотите выйти из группы "%1$s"?</string>
+    <string name="alert_leave_group_yes">Выйти</string>
+
+    <string name="alert_delete_group_title">Вы уверены, что хотите удалить группу "%1$s"?</string>
+    <string name="alert_delete_group_yes">Удалить</string>
+
+    <string name="alert_delete_chat_message">Вы уверены, что хотите удалить чат с "%1$s"?</string>
+    <string name="alert_delete_chat_yes">Удалить</string>
 
     <!-- Errors -->
     <string name="error_connection">Невозможно подключиться к сети. Пожалуйста, проверьте, что вы подключены к интернету и

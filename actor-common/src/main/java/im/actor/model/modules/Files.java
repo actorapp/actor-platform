@@ -128,4 +128,13 @@ public class Files extends BaseModule {
     public void requestUpload(long rid, String descriptor, ActorRef requester) {
         uploadManager.send(new UploadManager.StartUpload(rid, descriptor), requester);
     }
+
+    public String getDownloadedDescriptor(long fileId) {
+        Downloaded downloaded = downloadedEngine.getValue(fileId);
+        if (downloaded == null) {
+            return null;
+        } else {
+            return downloaded.getDescriptor();
+        }
+    }
 }

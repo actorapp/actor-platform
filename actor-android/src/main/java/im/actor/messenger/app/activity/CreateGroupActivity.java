@@ -1,7 +1,6 @@
 package im.actor.messenger.app.activity;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragmentActivity;
@@ -16,21 +15,6 @@ public class CreateGroupActivity extends BaseFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setTitle(R.string.create_group_title);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setDisplayShowCustomEnabled(false);
-
         showFragment(new GroupNameFragment(), false, false);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return false;
     }
 }

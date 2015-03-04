@@ -9,15 +9,4 @@
         android:title="@string/avatar_menu_edit"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/shareAvatar"
-        android:icon="@drawable/ic_share_white_24dp"
-        android:title="@string/menu_share"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/setAs"
-        android:title="@string/avatar_menu_set_as"
-        app:showAsAction="never" />
-
 </menu>

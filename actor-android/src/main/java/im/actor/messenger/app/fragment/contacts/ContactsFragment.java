@@ -163,7 +163,7 @@ public class ContactsFragment extends BaseFragment implements Listener<ListState
                                     .setNegativeButton(R.string.dialog_cancel, null)
                                     .show()
                                     .setCanceledOnTouchOutside(true);
-                        } else {
+                        } else if (which == 1) {
                             startActivity(Intents.editUserName(contact.getUid(), getActivity()));
                         }
                     }

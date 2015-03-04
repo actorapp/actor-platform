@@ -69,7 +69,7 @@ public class AuthActivity extends BaseFragmentActivity {
         }
     }
 
-    public void execute(final Command<AuthState> command) {
+    public void executeAuth(final Command<AuthState> command) {
         dismissProgress();
         progressDialog = new ProgressDialog(this);
         progressDialog.setCanceledOnTouchOutside(false);
