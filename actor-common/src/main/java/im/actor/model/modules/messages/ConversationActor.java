@@ -167,6 +167,17 @@ public class ConversationActor extends ModuleActor {
         }
     }
 
+    private void onMessageDeleted(List<Long> rids) {
+        // messages.getHeadValue();
+        long[] rids2 = new long[rids.size()];
+        for (int i = 0; i < rids2.length; i++) {
+            rids2[i] = rids.get(i);
+        }
+        messages.removeItems(rids2);
+
+        // TODO: Update data in dialogs
+    }
+
     private void onClearConversation() {
         messages.clear();
         dialogsActor.send(new DialogsActor.ChatClear(peer));
@@ -204,6 +215,8 @@ public class ConversationActor extends ModuleActor {
             onClearConversation();
         } else if (message instanceof DeleteConversation) {
             onDeleteConversation();
+        } else if (message instanceof MessageDeleted) {
+            onMessageDeleted(((MessageDeleted) message).getRids());
         } else {
             drop(message);
         }

@@ -17,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.droidkit.mvvm.ValueChangeListener;
-
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.AddContactActivity;
@@ -33,7 +31,6 @@ import im.actor.messenger.app.fragment.search.SearchAdapter;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
-import im.actor.messenger.model.ProfileSyncState;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Dialog;
 import im.actor.model.viewmodel.UserVM;
@@ -47,7 +44,7 @@ import static im.actor.messenger.core.Core.users;
 /**
  * Created by ex3ndr on 25.10.14.
  */
-public class MainPhoneController extends MainBaseController implements ValueChangeListener<ProfileSyncState.State> {
+public class MainPhoneController extends MainBaseController {
 
     private ViewPager pager;
 
@@ -224,42 +221,45 @@ public class MainPhoneController extends MainBaseController implements ValueChan
         tabsContainer.setLayoutParams(lp);
         ab.setCustomView(tabsContainer);
 
-        ProfileSyncState.getSyncState().addUiSubscriber(this);
+        barTabs.setVisibility(View.VISIBLE);
+        emptyContactsView.setVisibility(View.GONE);
+        syncInProgressView.setVisibility(View.GONE);
+        // ProfileSyncState.getSyncState().addUiSubscriber(this);
 
 //        emptyContactsImage.setImageResource(R.drawable.contacts_empty_large);
 //        emptyDialogsImage.setImageResource(R.drawable.contacts_empty_large);
     }
 
-    public void onChanged(ProfileSyncState.State value) {
-        barTabs.setVisibility(View.VISIBLE);
-        emptyContactsView.setVisibility(View.GONE);
-        syncInProgressView.setVisibility(View.GONE);
-//        switch (value) {
-//            default:
-//            case READY:
-//                barTabs.setVisibility(View.VISIBLE);
-//                emptyContactsView.setVisibility(View.GONE);
-//                syncInProgressView.setVisibility(View.GONE);
-//                getActivity().invalidateOptionsMenu();
-//                break;
-//            case EMPTY_APP:
-//                barTabs.setVisibility(View.GONE);
-//                emptyContactsView.setVisibility(View.VISIBLE);
-//                syncInProgressView.setVisibility(View.GONE);
-//                getActivity().invalidateOptionsMenu();
-//                break;
-//            case IN_PROGRESS:
-//                barTabs.setVisibility(View.GONE);
-//                emptyContactsView.setVisibility(View.GONE);
-//                syncInProgressView.setVisibility(View.VISIBLE);
-//                getActivity().invalidateOptionsMenu();
-//                break;
-//        }
-    }
+//    public void onChanged(ProfileSyncState.State value) {
+//        barTabs.setVisibility(View.VISIBLE);
+//        emptyContactsView.setVisibility(View.GONE);
+//        syncInProgressView.setVisibility(View.GONE);
+////        switch (value) {
+////            default:
+////            case READY:
+////                barTabs.setVisibility(View.VISIBLE);
+////                emptyContactsView.setVisibility(View.GONE);
+////                syncInProgressView.setVisibility(View.GONE);
+////                getActivity().invalidateOptionsMenu();
+////                break;
+////            case EMPTY_APP:
+////                barTabs.setVisibility(View.GONE);
+////                emptyContactsView.setVisibility(View.VISIBLE);
+////                syncInProgressView.setVisibility(View.GONE);
+////                getActivity().invalidateOptionsMenu();
+////                break;
+////            case IN_PROGRESS:
+////                barTabs.setVisibility(View.GONE);
+////                emptyContactsView.setVisibility(View.GONE);
+////                syncInProgressView.setVisibility(View.VISIBLE);
+////                getActivity().invalidateOptionsMenu();
+////                break;
+////        }
+//    }
 
     @Override
     public void onPause() {
-        ProfileSyncState.getSyncState().removeUiSubscriber(this);
+//        ProfileSyncState.getSyncState().removeUiSubscriber(this);
 //        emptyContactsImage.setImageBitmap(null);
 //        emptyDialogsImage.setImageBitmap(null);
     }
@@ -284,7 +284,7 @@ public class MainPhoneController extends MainBaseController implements ValueChan
         });
 
         searchMenu = menu.findItem(R.id.search);
-        searchMenu.setVisible(ProfileSyncState.getSyncState().getValue() == ProfileSyncState.State.READY);
+        // searchMenu.setVisible(ProfileSyncState.getSyncState().getValue() == ProfileSyncState.State.READY);
         searchView = (SearchView) searchMenu.getActionView();
         searchView.setIconifiedByDefault(true);
 
