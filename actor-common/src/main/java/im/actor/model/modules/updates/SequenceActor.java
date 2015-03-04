@@ -3,6 +3,7 @@ package im.actor.model.modules.updates;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import im.actor.model.api.DifferenceUpdate;
 import im.actor.model.api.base.FatSeqUpdate;
@@ -16,6 +17,7 @@ import im.actor.model.api.rpc.ResponseGetDifference;
 import im.actor.model.api.rpc.ResponseSeq;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
+import im.actor.model.modules.updates.internal.ExecuteAfter;
 import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.network.RpcCallback;
@@ -34,6 +36,8 @@ public class SequenceActor extends ModuleActor {
     private static final String KEY_STATE = "updates_state";
 
     private HashMap<Integer, Object> further = new HashMap<Integer, Object>();
+
+    private CopyOnWriteArrayList<ExecuteAfter> pendingRunnables = new CopyOnWriteArrayList<ExecuteAfter>();
 
     private boolean isValidated = true;
     private int seq;
@@ -69,6 +73,10 @@ public class SequenceActor extends ModuleActor {
             onUpdateReceived(message);
         } else if (message instanceof InternalUpdate) {
             onUpdateReceived(message);
+        } else if (message instanceof ExecuteAfter) {
+            onUpdateReceived(message);
+        } else {
+            drop(message);
         }
     }
 
@@ -101,6 +109,14 @@ public class SequenceActor extends ModuleActor {
         } else if (u instanceof InternalUpdate) {
             Log.w(TAG, "Received internal update");
             processor.processInternalUpdate((InternalUpdate) u);
+            return;
+        } else if (u instanceof ExecuteAfter) {
+            ExecuteAfter after = (ExecuteAfter) u;
+            if (after.getSeq() <= this.seq) {
+                after.getRunnable().run();
+            } else {
+                pendingRunnables.add(after);
+            }
             return;
         } else {
             return;
@@ -163,6 +179,7 @@ public class SequenceActor extends ModuleActor {
         preferences().putInt(KEY_SEQ, seq);
         preferences().putBytes(KEY_STATE, state);
 
+        checkRunnables();
         checkFuture();
 
         // Faaaaaar away
@@ -198,10 +215,11 @@ public class SequenceActor extends ModuleActor {
 
                     Log.d(TAG, "State loaded {seq=" + seq + "}");
 
+                    checkRunnables();
+                    checkFuture();
+
                     // Faaaaaar away
                     self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
-
-                    checkFuture();
                 }
 
                 @Override
@@ -245,10 +263,11 @@ public class SequenceActor extends ModuleActor {
                     preferences().putInt(KEY_SEQ, seq);
                     preferences().putBytes(KEY_STATE, state);
 
+                    checkRunnables();
+                    checkFuture();
+
                     // Faaaaaar away
                     self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
-
-                    checkFuture();
 
                     if (response.needMore()) {
                         invalidate();
@@ -279,6 +298,15 @@ public class SequenceActor extends ModuleActor {
             }
         }
         further.clear();
+    }
+
+    private void checkRunnables() {
+        for (ExecuteAfter e : pendingRunnables) {
+            if (e.getSeq() <= this.seq) {
+                e.getRunnable().run();
+                pendingRunnables.remove(e);
+            }
+        }
     }
 
     public static class ForceInvalidate {
