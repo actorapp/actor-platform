@@ -23,10 +23,6 @@ public class EditNameActivity extends BaseFragmentActivity {
         int type = getIntent().getIntExtra(Intents.EXTRA_EDIT_TYPE, 0);
         int id = getIntent().getIntExtra(Intents.EXTRA_EDIT_ID, 0);
 
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setDisplayShowCustomEnabled(false);
         if (type == TYPE_ME) {
             getSupportActionBar().setTitle(R.string.edit_name_title_you);
         } else if (type == TYPE_USER) {
@@ -34,6 +30,9 @@ public class EditNameActivity extends BaseFragmentActivity {
         } else if (type == TYPE_GROUP) {
             getSupportActionBar().setTitle(R.string.edit_name_title_group);
         }
-        showFragment(EditNameFragment.editName(type, id), false, false);
+
+        if (savedInstanceState == null) {
+            showFragment(EditNameFragment.editName(type, id), false, false);
+        }
     }
 }

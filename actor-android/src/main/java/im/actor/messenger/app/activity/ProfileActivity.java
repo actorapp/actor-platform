@@ -73,40 +73,10 @@ public class ProfileActivity extends BaseFragmentActivity {
             finish();
             return true;
         } else if (item.getItemId() == R.id.add) {
-//            ask(ContactsActor.contactsList().addContact(uid), getString(R.string.profile_adding), new UiAskCallback<Boolean>() {
-//                @Override
-//                public void onPreStart() {
-//
-//                }
-//
-//                @Override
-//                public void onCompleted(Boolean res) {
-//
-//                }
-//
-//                @Override
-//                public void onError(Throwable t) {
-//
-//                }
-//            });
+            execute(messenger().addContact(uid), R.string.profile_adding);
             return true;
         } else if (item.getItemId() == R.id.remove) {
-//            ask(ContactsActor.contactsList().removeContact(uid), getString(R.string.profile_removing), new UiAskCallback<Boolean>() {
-//                @Override
-//                public void onPreStart() {
-//
-//                }
-//
-//                @Override
-//                public void onCompleted(Boolean res) {
-//
-//                }
-//
-//                @Override
-//                public void onError(Throwable t) {
-//
-//                }
-//            });
+            execute(messenger().removeContact(uid), R.string.profile_removing);
             return true;
         } else if (item.getItemId() == R.id.edit) {
             startActivity(Intents.editUserName(uid, this));

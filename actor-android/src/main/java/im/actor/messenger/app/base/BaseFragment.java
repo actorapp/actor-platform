@@ -4,8 +4,10 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.droidkit.mvvm.ui.BinderCompatFragment;
 
+import im.actor.messenger.R;
 import im.actor.messenger.app.view.ViewUtils;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
@@ -88,21 +90,27 @@ public class BaseFragment extends BinderCompatFragment {
         });
     }
 
+    public <T> void execute(Command<T> cmd) {
+        execute(cmd, R.string.progress_common);
+    }
+
     public <T> void execute(Command<T> cmd, int title) {
-        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(title));
-        progressDialog.setCancelable(false);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
+
+        final MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                .content(title)
+                .progress(true, 0)
+                .cancelable(false)
+                .show();
+
         cmd.start(new CommandCallback<T>() {
             @Override
             public void onResult(T res) {
-                progressDialog.dismiss();
+                materialDialog.dismiss();
             }
 
             @Override
             public void onError(Exception e) {
-                progressDialog.dismiss();
+                materialDialog.dismiss();
             }
         });
     }

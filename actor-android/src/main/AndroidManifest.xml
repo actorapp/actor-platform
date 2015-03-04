@@ -190,8 +190,6 @@
 
         <!-- Misc -->
 
-        <activity android:name="im.actor.messenger.app.activity.LogActivity" />
-
         <activity
             android:name=".app.activity.TakePhotoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"

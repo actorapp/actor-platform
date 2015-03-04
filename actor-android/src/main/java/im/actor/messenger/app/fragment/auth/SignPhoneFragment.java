@@ -232,7 +232,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
             return;
         }
 
-        execute(messenger().requestSms(Long.parseLong(rawPhoneN)));
+        executeAuth(messenger().requestSms(Long.parseLong(rawPhoneN)));
     }
 
     private void focusCode() {

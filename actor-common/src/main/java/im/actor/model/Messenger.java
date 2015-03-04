@@ -27,6 +27,7 @@ import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.GroupTypingVM;
 import im.actor.model.viewmodel.GroupVM;
+import im.actor.model.viewmodel.OwnAvatarVM;
 import im.actor.model.viewmodel.UploadFileVM;
 import im.actor.model.viewmodel.UploadFileVMCallback;
 import im.actor.model.viewmodel.UserTypingVM;
@@ -317,6 +318,7 @@ public class Messenger {
     }
 
     // File operations
+
     public FileVM bindFile(FileLocation fileLocation, boolean isAutoStart, FileVMCallback callback) {
         return new FileVM(fileLocation, isAutoStart, modules, callback);
     }
@@ -345,6 +347,9 @@ public class Messenger {
         modules.getFilesModule().startDownloading(location);
     }
 
+    public String getDownloadedDescriptor(long fileId) {
+        return modules.getFilesModule().getDownloadedDescriptor(fileId);
+    }
 
     // Settings operations
 
@@ -394,5 +399,13 @@ public class Messenger {
 
     public void changeNotificationsEnabled(Peer peer, boolean val) {
         modules.getSettings().changeNotificationsEnabled(peer, val);
+    }
+
+    public OwnAvatarVM getOwnAvatarVM() {
+        return modules.getProfile().getOwnAvatarVM();
+    }
+
+    public void changeAvatar(String descriptor) {
+        modules.getProfile().changeAvatar(descriptor);
     }
 }

@@ -1,13 +1,13 @@
 package im.actor.messenger.app.fragment.dialogs;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.droidkit.engine.uilist.UiListStateListener;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.activity.*;
 import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.activity.MainActivity;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 import im.actor.model.viewmodel.GroupVM;
@@ -28,88 +28,92 @@ public class DialogsFragment extends BaseDialogFragment implements UiListStateLi
 
     protected void onItemLongClick(final Dialog dialog) {
         if (dialog.getPeer().getPeerType() == PeerType.PRIVATE) {
-            new AlertDialog.Builder(getActivity())
-                    .setItems(new CharSequence[]{
+            new MaterialDialog.Builder(getActivity())
+                    .items(new CharSequence[]{
                             getString(R.string.dialogs_menu_contact_view),
                             getString(R.string.dialogs_menu_contact_rename),
                             getString(R.string.dialogs_menu_conversation_delete)
-                    }, new DialogInterface.OnClickListener() {
+                    })
+                    .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
-                        public void onClick(DialogInterface dialog2, int which) {
+                        public void onSelection(MaterialDialog materialDialog, View view, int which,
+                                                CharSequence charSequence) {
                             if (which == 0) {
+
+                                // View profile
                                 startActivity(Intents.openProfile(dialog.getPeer().getPeerId(), getActivity()));
+
                             } else if (which == 1) {
+
+                                // Rename user
                                 startActivity(Intents.editUserName(dialog.getPeer().getPeerId(), getActivity()));
+
                             } else if (which == 2) {
-                                new AlertDialog.Builder(getActivity())
-                                        .setMessage(getString(R.string.alert_delete_chat_message)
-                                                .replace("{0}", dialog.getDialogTitle()))
-                                        .setPositiveButton(R.string.alert_delete_chat_yes, new DialogInterface.OnClickListener() {
+
+                                // Delete chat
+                                new MaterialDialog.Builder(getActivity())
+                                        .content(R.string.alert_delete_chat_message, dialog.getDialogTitle())
+                                        .positiveText(R.string.alert_delete_chat_yes)
+                                        .negativeText(R.string.dialog_cancel)
+                                        .callback(new MaterialDialog.ButtonCallback() {
                                             @Override
-                                            public void onClick(DialogInterface dialog2, int which) {
-                                                execute(messenger().clearChat(dialog.getPeer()), R.string.progress_common);
+                                            public void onPositive(MaterialDialog materialDialog1) {
+                                                execute(messenger().deleteChat(dialog.getPeer()));
                                             }
                                         })
-                                        .setNegativeButton(R.string.dialog_cancel, null)
-                                        .show()
-                                        .setCanceledOnTouchOutside(true);
-
+                                        .show();
                             }
                         }
                     })
-                    .show()
-                    .setCanceledOnTouchOutside(true);
+                    .show();
         } else if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
             GroupVM groupVM = groups().get(dialog.getPeer().getPeerId());
-
             final boolean isMember = groupVM.isMember().get();
-            new AlertDialog.Builder(getActivity())
-                    .setItems(new CharSequence[]{
+
+            new MaterialDialog.Builder(getActivity())
+                    .items(new CharSequence[]{
                             getString(R.string.dialogs_menu_group_view),
                             getString(R.string.dialogs_menu_group_rename),
                             isMember ? getString(R.string.dialogs_menu_group_leave)
                                     : getString(R.string.dialogs_menu_group_delete),
-                    }, new DialogInterface.OnClickListener() {
+                    })
+                    .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
-                        public void onClick(DialogInterface dialog2, int which) {
+                        public void onSelection(MaterialDialog materialDialog, View view, int which,
+                                                CharSequence charSequence) {
                             if (which == 0) {
                                 startActivity(Intents.openGroup(dialog.getPeer().getPeerId(), getActivity()));
                             } else if (which == 1) {
                                 startActivity(Intents.editGroupTitle(dialog.getPeer().getPeerId(), getActivity()));
                             } else if (which == 2) {
                                 if (isMember) {
-                                    new AlertDialog.Builder(getActivity())
-                                            .setMessage(getString(R.string.alert_leave_group_message)
-                                                    .replace("{0}", dialog.getDialogTitle()))
-                                            .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
+                                    new MaterialDialog.Builder(getActivity())
+                                            .content(R.string.alert_leave_group_message, dialog.getDialogTitle())
+                                            .positiveText(R.string.alert_leave_group_yes)
+                                            .negativeText(R.string.dialog_cancel)
+                                            .callback(new MaterialDialog.ButtonCallback() {
                                                 @Override
-                                                public void onClick(DialogInterface dialog2, int which) {
-                                                    execute(messenger().leaveGroup(dialog.getPeer().getPeerId()),
-                                                            R.string.progress_common);
+                                                public void onPositive(MaterialDialog materialDialog1) {
+                                                    execute(messenger().leaveGroup(dialog.getPeer().getPeerId()));
                                                 }
-                                            })
-                                            .setNegativeButton(R.string.dialog_cancel, null)
-                                            .show()
-                                            .setCanceledOnTouchOutside(true);
+                                            }).show();
                                 } else {
-                                    new AlertDialog.Builder(getActivity())
-                                            .setMessage(getString(R.string.alert_delete_group_title)
-                                                    .replace("{0}", dialog.getDialogTitle()))
-                                            .setPositiveButton(R.string.alert_delete_group_yes, new DialogInterface.OnClickListener() {
+                                    new MaterialDialog.Builder(getActivity())
+                                            .content(R.string.alert_delete_group_title, dialog.getDialogTitle())
+                                            .positiveText(R.string.alert_delete_group_yes)
+                                            .negativeText(R.string.dialog_cancel)
+                                            .callback(new MaterialDialog.ButtonCallback() {
                                                 @Override
-                                                public void onClick(DialogInterface dialog2, int which) {
-                                                    execute(messenger().clearChat(dialog.getPeer()), R.string.progress_common);
+                                                public void onPositive(MaterialDialog materialDialog) {
+                                                    execute(messenger().deleteChat(dialog.getPeer()));
                                                 }
                                             })
-                                            .setNegativeButton(R.string.dialog_cancel, null)
-                                            .show()
-                                            .setCanceledOnTouchOutside(true);
+                                            .show();
                                 }
                             }
                         }
                     })
-                    .show()
-                    .setCanceledOnTouchOutside(true);
+                    .show();
         }
     }
 }
