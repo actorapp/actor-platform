@@ -1,12 +1,12 @@
 package im.actor.model.entity.content;
 
+import java.io.IOException;
+
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.util.DataInput;
-
-import java.io.IOException;
 
 /**
  * Created by ex3ndr on 14.02.15.
@@ -25,6 +25,10 @@ public abstract class FileSource extends BserObject {
                 throw new IOException("Invalid source type");
         }
     }
+
+    public abstract int getSize();
+
+    public abstract String getFileName();
 
     @Override
     public void parse(BserValues values) throws IOException {

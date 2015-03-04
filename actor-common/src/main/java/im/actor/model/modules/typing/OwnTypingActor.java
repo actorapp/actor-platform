@@ -5,8 +5,6 @@ import im.actor.model.api.TypingType;
 import im.actor.model.api.rpc.RequestTyping;
 import im.actor.model.droidkit.actors.ActorTime;
 import im.actor.model.entity.Peer;
-import im.actor.model.entity.PeerType;
-import im.actor.model.entity.User;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 
@@ -29,17 +27,8 @@ public class OwnTypingActor extends ModuleActor {
         }
         lastTypingTime = ActorTime.currentTime();
 
-        OutPeer outPeer;
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            User user = getUser(peer.getPeerId());
-            if (user == null) {
-                return;
-            }
-            outPeer = new OutPeer(im.actor.model.api.PeerType.PRIVATE, user.getUid(), user.getAccessHash());
-        } else if (peer.getPeerType() == PeerType.GROUP) {
-            // TODO: Implement for groups
-            return;
-        } else {
+        OutPeer outPeer = buidOutPeer(peer);
+        if (outPeer == null) {
             return;
         }
 

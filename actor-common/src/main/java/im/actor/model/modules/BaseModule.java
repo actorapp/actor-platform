@@ -57,6 +57,10 @@ public class BaseModule {
         return modules().getMessagesModule().getConversationActor(peer);
     }
 
+    public ActorRef conversationHistoryActor(Peer peer) {
+        return modules().getMessagesModule().getConversationHistoryActor(peer);
+    }
+
     public PreferencesStorage preferences() {
         return modules.getPreferences();
     }

@@ -21,6 +21,8 @@ import im.actor.model.entity.content.ServiceContent;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.entity.content.VideoContent;
 
+import static im.actor.messenger.core.Core.messenger;
+
 /**
  * Created by ex3ndr on 26.02.15.
  */
@@ -142,7 +144,7 @@ public class RecyclerMessagesAdapter extends RecyclerView.Adapter<BaseHolder> {
         // Autoload if required
         if (position > getItemCount() - LOAD_GAP) {
             if (engine.getListState().getValue().getState() == ListState.State.LOADED) {
-                // TODO: Load history
+                messenger().loadMoreHistory(messagesFragment.getPeer());
             } else {
                 engine.requestLoadTail();
             }
