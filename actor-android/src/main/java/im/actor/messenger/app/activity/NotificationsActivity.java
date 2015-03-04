@@ -12,12 +12,10 @@ public class NotificationsActivity extends BaseFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setDisplayShowCustomEnabled(false);
         getSupportActionBar().setTitle(R.string.not_title);
 
-        showFragment(new NotificationSettingsFragment(), false, false);
+        if (savedInstanceState == null) {
+            showFragment(new NotificationSettingsFragment(), false, false);
+        }
     }
 }

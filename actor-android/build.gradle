@@ -10,6 +10,7 @@ apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
+    jcenter()
     maven {
         url "https://mint.splunk.com/gradle/"
     }
@@ -344,13 +345,14 @@ dependencies {
         exclude module: 'support-v13'
     }
     compile 'com.getbase:floatingactionbutton:1.5.1'
+    compile 'com.afollestad:material-dialogs:0.6.3.4'
 
     // Android Support
-    compile 'com.android.support:support-v4:21.0.2'
-    compile 'com.android.support:support-v13:21.0.2'
-    compile 'com.android.support:appcompat-v7:21.0.2'
-    compile 'com.android.support:palette-v7:21.0.2'
-    compile 'com.android.support:recyclerview-v7:21.0.2'
+    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:support-v13:21.0.3'
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:palette-v7:21.0.3'
+    compile 'com.android.support:recyclerview-v7:21.0.3'
 
     releaseCompile 'com.google.android.gms:play-services:6.+'
     playCompile 'com.google.android.gms:play-services:6.+'

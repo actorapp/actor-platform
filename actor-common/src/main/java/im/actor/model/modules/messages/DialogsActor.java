@@ -147,7 +147,7 @@ public class DialogsActor extends ModuleActor {
             // Update dialog
             dialogs.addOrUpdateItem(new DialogBuilder(dialog)
                     .setMessageType(ContentType.EMPTY)
-                    .setText(null)
+                    .setText("")
                     .setTime(0)
                     .setUnreadCount(0)
                     .setRid(0)

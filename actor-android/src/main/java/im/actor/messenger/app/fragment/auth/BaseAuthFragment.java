@@ -25,8 +25,8 @@ public abstract class BaseAuthFragment extends BaseFragment {
         ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(title);
     }
 
-    protected void execute(Command<AuthState> command) {
-        ((AuthActivity) getActivity()).execute(command);
+    protected void executeAuth(Command<AuthState> command) {
+        ((AuthActivity) getActivity()).executeAuth(command);
     }
 
     protected void updateState() {

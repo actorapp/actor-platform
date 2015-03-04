@@ -74,7 +74,6 @@ public class EditNameFragment extends BaseFragment {
                     return;
                 }
 
-
                 if (type == EditNameActivity.TYPE_ME) {
                     execute(messenger().editMyName(name), R.string.edit_name_process, new CommandCallback<Boolean>() {
                         @Override
