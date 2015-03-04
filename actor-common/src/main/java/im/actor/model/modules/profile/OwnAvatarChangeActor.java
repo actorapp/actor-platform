@@ -9,6 +9,7 @@ import im.actor.model.api.updates.UpdateUserAvatarChanged;
 import im.actor.model.entity.FileLocation;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.file.UploadManager;
+import im.actor.model.modules.updates.internal.ExecuteAfter;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.network.RpcCallback;
@@ -38,7 +39,7 @@ public class OwnAvatarChangeActor extends ModuleActor {
         modules().getFilesModule().requestUpload(currentChangeTask, descriptor, "avatar.jpg", self());
     }
 
-    public void uploadCompleted(long rid, FileLocation fileLocation) {
+    public void uploadCompleted(final long rid, FileLocation fileLocation) {
         if (rid != currentChangeTask) {
             return;
         }
@@ -52,14 +53,32 @@ public class OwnAvatarChangeActor extends ModuleActor {
                         response.getState(), UpdateUserAvatarChanged.HEADER,
                         new UpdateUserAvatarChanged(myUid(), response.getAvatar()).toByteArray()));
 
-                modules().getProfile().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, false));
+                // After update applied turn of uploading state
+                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), new Runnable() {
+                    @Override
+                    public void run() {
+                        self().send(new AvatarChanged(rid));
+                    }
+                }));
             }
 
             @Override
             public void onError(RpcException e) {
+                if (rid != currentChangeTask) {
+                    return;
+                }
+                currentChangeTask = 0;
                 modules().getProfile().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, false));
             }
         });
+    }
+
+    public void avatarChanged(long rid) {
+        if (rid != currentChangeTask) {
+            return;
+        }
+        currentChangeTask = 0;
+        modules().getProfile().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, false));
     }
 
     public void uploadError(long rid) {
@@ -109,6 +128,8 @@ public class OwnAvatarChangeActor extends ModuleActor {
             uploadError(uploadError.getRid());
         } else if (message instanceof RemoveAvatar) {
             removeAvatar();
+        } else if (message instanceof AvatarChanged) {
+            avatarChanged(((AvatarChanged) message).getRid());
         } else {
             drop(message);
         }
@@ -130,5 +151,16 @@ public class OwnAvatarChangeActor extends ModuleActor {
 
     }
 
+    public static class AvatarChanged {
+        private long rid;
+
+        public AvatarChanged(long rid) {
+            this.rid = rid;
+        }
+
+        public long getRid() {
+            return rid;
+        }
+    }
     //endregion
 }
