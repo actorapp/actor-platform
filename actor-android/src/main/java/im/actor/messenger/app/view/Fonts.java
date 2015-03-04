@@ -5,7 +5,7 @@ import android.graphics.Typeface;
 
 import java.util.HashMap;
 
-import im.actor.messenger.core.AppContext;
+import im.actor.messenger.app.AppContext;
 
 /**
  * Created by ex3ndr on 01.09.14.

@@ -1,4 +1,4 @@
-package im.actor.messenger.core;
+package im.actor.messenger.app;
 
 import android.app.ActivityManager;
 import android.app.Application;

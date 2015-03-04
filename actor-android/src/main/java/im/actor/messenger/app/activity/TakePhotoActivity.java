@@ -15,7 +15,7 @@ import java.io.File;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.core.AppContext;
+import im.actor.messenger.app.AppContext;
 
 /**
  * Created by ex3ndr on 09.01.15.

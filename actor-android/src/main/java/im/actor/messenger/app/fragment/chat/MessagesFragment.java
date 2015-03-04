@@ -40,9 +40,9 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.TextContent;
 
-import static im.actor.messenger.core.Core.messenger;
-import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.core.Core.users;
+import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.myUid;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 01.09.14.

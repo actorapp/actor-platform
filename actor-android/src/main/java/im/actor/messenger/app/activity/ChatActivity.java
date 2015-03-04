@@ -52,7 +52,7 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
-import im.actor.messenger.core.AppContext;
+import im.actor.messenger.app.AppContext;
 import im.actor.messenger.util.RandomUtil;
 import im.actor.messenger.util.io.IOUtils;
 import im.actor.model.Messenger;
@@ -63,9 +63,9 @@ import im.actor.model.entity.content.FastThumb;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.core.Core.groups;
-import static im.actor.messenger.core.Core.messenger;
-import static im.actor.messenger.core.Core.users;
+import static im.actor.messenger.app.Core.groups;
+import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.users;
 
 public class ChatActivity extends BaseActivity {
 

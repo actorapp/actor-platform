@@ -37,8 +37,8 @@ import im.actor.model.entity.Peer;
 import im.actor.model.viewmodel.UserPhone;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.core.Core.messenger;
-import static im.actor.messenger.core.Core.users;
+import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 12.09.14.

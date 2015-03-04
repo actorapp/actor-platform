@@ -27,8 +27,8 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.images.FullAvatarTask;
-import im.actor.messenger.core.AppContext;
-import im.actor.messenger.core.Core;
+import im.actor.messenger.app.AppContext;
+import im.actor.messenger.app.Core;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
@@ -40,10 +40,10 @@ import uk.co.senab.photoview.PhotoView;
 
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
-import static im.actor.messenger.core.Core.groups;
-import static im.actor.messenger.core.Core.messenger;
-import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.core.Core.users;
+import static im.actor.messenger.app.Core.groups;
+import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.myUid;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 29.10.14.
@@ -278,13 +278,13 @@ public class ViewAvatarActivity extends BaseActivity {
                                 i.setType("image/*");
                                 startActivityForResult(i, REQUEST_GALLERY);
                             } else if (which == 2) {
-//                                if (chatType == DialogType.TYPE_USER) {
-//                                    if (chatId == myUid()) {
-//                                        AvatarChangeActor.avatarSender().clearAvatar();
-//                                    }
-//                                } else if (chatType == DialogType.TYPE_GROUP) {
-//                                    GroupAvatarActor.get().clearAvatar(chatId);
-//                                }
+                                if (peer.getPeerType() == PeerType.PRIVATE) {
+                                    if (peer.getPeerId() == myUid()) {
+                                        messenger().removeAvatar();
+                                    }
+                                } else if (peer.getPeerType() == PeerType.GROUP) {
+                                    // TODO: Implement
+                                }
                             }
                         }
                     })

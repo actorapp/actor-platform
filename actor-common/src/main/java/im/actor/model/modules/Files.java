@@ -131,6 +131,10 @@ public class Files extends BaseModule {
         uploadManager.send(new UploadManager.StartUpload(rid, descriptor), requester);
     }
 
+    public void cancelUpload(long rid) {
+        uploadManager.send(new UploadManager.StopUpload(rid));
+    }
+
     public void requestUploadState(long rid, UploadCallback callback) {
         uploadManager.send(new UploadManager.RequestState(rid, callback));
     }

@@ -43,10 +43,10 @@ import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.core.Core.groups;
-import static im.actor.messenger.core.Core.messenger;
-import static im.actor.messenger.core.Core.myUid;
-import static im.actor.messenger.core.Core.users;
+import static im.actor.messenger.app.Core.groups;
+import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.myUid;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 07.10.14.

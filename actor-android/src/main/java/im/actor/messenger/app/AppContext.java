@@ -2,7 +2,7 @@
  * File created on 27/06/14 at 23:03
  * Copyright Vyacheslav Krylov, 2014
  */
-package im.actor.messenger.core;
+package im.actor.messenger.app;
 
 import android.content.Context;
 import im.actor.messenger.util.RandomUtil;

@@ -1,4 +1,4 @@
-package im.actor.messenger.core;
+package im.actor.messenger.app;
 
 import im.actor.model.entity.Peer;
 

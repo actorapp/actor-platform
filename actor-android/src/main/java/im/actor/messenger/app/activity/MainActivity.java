@@ -12,7 +12,7 @@ import im.actor.messenger.app.activity.base.ControllerActivity;
 import im.actor.messenger.app.activity.controllers.MainBaseController;
 import im.actor.messenger.app.activity.controllers.MainPhoneController;
 import im.actor.messenger.app.tour.TourActivity;
-import im.actor.messenger.core.Core;
+import im.actor.messenger.app.Core;
 import im.actor.model.AuthState;
 import im.actor.model.entity.Dialog;
 

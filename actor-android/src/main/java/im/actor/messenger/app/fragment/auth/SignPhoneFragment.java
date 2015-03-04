@@ -25,7 +25,7 @@ import im.actor.messenger.util.country.Country;
 import im.actor.messenger.util.country.CountryDb;
 import im.actor.messenger.util.country.CountryUtil;
 
-import static im.actor.messenger.core.Core.messenger;
+import static im.actor.messenger.app.Core.messenger;
 
 public class SignPhoneFragment extends BaseAuthFragment {
 

@@ -4,7 +4,7 @@
  */
 package im.actor.messenger.util;
 
-import im.actor.messenger.core.AppContext;
+import im.actor.messenger.app.AppContext;
 
 public class Screen {
     private static float density;

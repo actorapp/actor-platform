@@ -15,7 +15,7 @@ import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.core.Core.messenger;
+import static im.actor.messenger.app.Core.messenger;
 
 /**
  * Created by ex3ndr on 03.11.14.

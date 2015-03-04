@@ -31,8 +31,8 @@ import im.actor.model.entity.ContentType;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 
-import static im.actor.messenger.core.Core.messenger;
-import static im.actor.messenger.core.Core.myUid;
+import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.myUid;
 
 public class DialogsAdapter extends EngineHolderAdapter<Dialog> {
 

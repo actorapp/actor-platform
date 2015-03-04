@@ -37,7 +37,7 @@ import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Contact;
 
-import static im.actor.messenger.core.Core.core;
+import static im.actor.messenger.app.Core.core;
 
 public class ContactsAdapter extends EngineHolderAdapter<Contact> implements ContactsStickListView.StickAdapter {
 

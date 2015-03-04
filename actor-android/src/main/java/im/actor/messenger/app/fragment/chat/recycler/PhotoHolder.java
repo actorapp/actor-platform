@@ -28,8 +28,8 @@ import im.actor.model.viewmodel.FileVMCallback;
 
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
-import static im.actor.messenger.core.Core.messenger;
-import static im.actor.messenger.core.Core.myUid;
+import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.myUid;
 
 /**
  * Created by ex3ndr on 27.02.15.

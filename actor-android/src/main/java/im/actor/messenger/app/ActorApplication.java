@@ -9,7 +9,6 @@ import com.droidkit.images.loading.ImageLoaderProvider;
 import com.splunk.mint.Mint;
 
 import im.actor.messenger.app.service.KeepAliveService;
-import im.actor.messenger.core.Core;
 
 public class ActorApplication extends Application implements ImageLoaderProvider {
 

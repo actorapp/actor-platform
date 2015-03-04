@@ -28,7 +28,7 @@ import im.actor.messenger.storage.ListEngines;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Dialog;
 
-import static im.actor.messenger.core.Core.messenger;
+import static im.actor.messenger.app.Core.messenger;
 
 /**
  * Created by ex3ndr on 22.11.14.

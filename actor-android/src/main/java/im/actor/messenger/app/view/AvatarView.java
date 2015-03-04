@@ -21,7 +21,7 @@ import com.droidkit.images.loading.tasks.RawFileTask;
 import com.droidkit.images.loading.view.ReferenceDrawable;
 import com.droidkit.images.ops.ImageLoading;
 
-import im.actor.messenger.core.Core;
+import im.actor.messenger.app.Core;
 import im.actor.messenger.app.images.AvatarTask;
 import im.actor.messenger.app.images.FileKeys;
 import im.actor.messenger.util.Logger;

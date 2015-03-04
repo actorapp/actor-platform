@@ -19,7 +19,7 @@ import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.core.AppStateBroker.stateBroker;
+import static im.actor.messenger.app.AppStateBroker.stateBroker;
 
 /**
  * Created by ex3ndr on 29.12.14.

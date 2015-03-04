@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 
-import im.actor.messenger.core.AppContext;
+import im.actor.messenger.app.AppContext;
 import im.actor.model.storage.PreferencesStorage;
 
 /**
