@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -386,7 +387,7 @@ public class ChatActivity extends BaseActivity {
                     sendUri(data.getData());
                 }
             } else if (requestCode == REQUEST_PHOTO) {
-                sendImage(fileName);
+                // sendImage(fileName);
             } else if (requestCode == REQUEST_VIDEO) {
                 // MessageDeliveryActor.messageSender().sendVideo(chatType, chatId, fileName);
             } else if (requestCode == REQUEST_DOC) {
@@ -454,9 +455,9 @@ public class ChatActivity extends BaseActivity {
                 }
 
                 if (mimeType.startsWith("video/")) {
-//                    MessageDeliveryActor.messageSender().sendVideo(chatType, chatId, picturePath);
+                    sendVideo(picturePath, fileName);
                 } else if (mimeType.startsWith("image/")) {
-                    sendImage(picturePath);
+                    sendImage(picturePath, fileName);
                 } else {
 //                    MessageDeliveryActor.messageSender().sendDocument(chatType, chatId, picturePath,
 //                            fileName);
@@ -540,7 +541,26 @@ public class ChatActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void sendImage(String fileName) {
+    private void sendVideo(String fileName, String name) {
+        try {
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(fileName);
+            int duration = (int) (Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000L);
+            Bitmap img = retriever.getFrameAtTime(0);
+            int width = img.getWidth();
+            int height = img.getHeight();
+            Bitmap smallThumb = ImageScaling.scaleFit(img, 90, 90);
+            byte[] smallThumbData = ImageLoading.saveJpeg(smallThumb, ImageLoading.JPEG_QUALITY_LOW);
+
+            FastThumb thumb = new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), smallThumbData);
+
+            messenger.sendVideo(peer, name, width, height, duration, thumb, new AndroidFileReference(fileName));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendImage(String fileName, String name) {
         try {
             ImageMetadata metadata = new FileSource(fileName).getImageMetadata();
             Bitmap bitmap = ImageLoading.loadBitmapOptimizedHQ(fileName);
@@ -552,11 +572,10 @@ public class ChatActivity extends BaseActivity {
                 return;
             }
             ImageLoading.save(optimized, resultFileName);
-            messenger.sendDocument(peer, new File(fileName).getName(), "image/jpeg", new AndroidFileReference(resultFileName),
-                    new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), data));
-//            messenger.sendPhoto(peer, fileName, optimized.getWidth(), optimized.getHeight(),
-//                    new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), data),
-//                    new AndroidFileReference(resultFileName));
+            messenger.sendPhoto(peer, new File(name).getName(),
+                    optimized.getWidth(), optimized.getHeight(),
+                    new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), data),
+                    new AndroidFileReference(resultFileName));
         } catch (ImageLoadException e) {
             e.printStackTrace();
         } catch (ImageSaveException e) {
