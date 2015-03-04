@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import im.actor.model.annotation.Verified;
 import im.actor.model.api.Member;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Group;
@@ -31,6 +32,7 @@ public class GroupsProcessor extends BaseModule {
         super(modules);
     }
 
+    @Verified
     public void applyGroups(Collection<im.actor.model.api.Group> updated, boolean forced) {
         ArrayList<Group> batch = new ArrayList<Group>();
         for (im.actor.model.api.Group group : updated) {
@@ -44,8 +46,7 @@ public class GroupsProcessor extends BaseModule {
                 // Sending changes to dialogs
                 if (!equalsE(upd.getAvatar(), saved.getAvatar()) ||
                         !upd.getTitle().equals(saved.getTitle())) {
-                    modules().getMessagesModule().getDialogsActor()
-                            .send(new DialogsActor.GroupChanged(upd));
+                    onGroupDescChanged(upd);
                 }
             }
         }
@@ -55,131 +56,183 @@ public class GroupsProcessor extends BaseModule {
         }
     }
 
-    public void onGroupInvite(int groupId, long rid, int inviterId, long date) {
+    @Verified
+    public void onGroupInvite(int groupId, long rid, int inviterId, long date, boolean isSilent) {
         Group group = groups().getValue(groupId);
-        if (group == null) {
-            return;
-        }
+        if (group != null) {
 
-        groups().addOrUpdateItem(group
-                .changeMember(true)
-                .addMember(myUid(), inviterId, date, inviterId == myUid()));
-
-        if (inviterId == myUid()) {
-            Message message = new Message(rid, date, date, inviterId,
-                    MessageState.UNKNOWN, new ServiceGroupCreated(group.getTitle()));
-            conversationActor(group.peer()).send(message);
-        } else {
-            Message message = new Message(rid, date, date, inviterId,
-                    MessageState.SENT, new ServiceGroupUserAdded(myUid()));
-            conversationActor(group.peer()).send(message);
-        }
-    }
-
-    public void onUserLeave(int groupId, long rid, int uid, long date) {
-        Group group = groups().getValue(groupId);
-        if (group == null) {
-            return;
-        }
-
-        if (uid == myUid()) {
+            // Updating group
             groups().addOrUpdateItem(group
-                    .clearMembers()
-                    .changeMember(false));
-        } else {
+                    .changeMember(true)
+                    .addMember(myUid(), inviterId, date, inviterId == myUid()));
+
+            if (!isSilent) {
+                if (inviterId == myUid()) {
+                    // If current user invite himself, add create group message
+                    Message message = new Message(rid, date, date, inviterId,
+                            MessageState.UNKNOWN, new ServiceGroupCreated(group.getTitle()));
+                    conversationActor(group.peer()).send(message);
+                } else {
+                    // else add invite message
+                    Message message = new Message(rid, date, date, inviterId,
+                            MessageState.SENT, new ServiceGroupUserAdded(myUid()));
+                    conversationActor(group.peer()).send(message);
+                }
+            }
+        }
+    }
+
+    @Verified
+    public void onUserLeave(int groupId, long rid, int uid, long date, boolean isSilent) {
+        Group group = groups().getValue(groupId);
+        if (group != null) {
+
+            if (uid == myUid()) {
+                // If current user leave, clear members and change member state
+                groups().addOrUpdateItem(group
+                        .clearMembers()
+                        .changeMember(false));
+            } else {
+                // else remove leaved user
+                groups().addOrUpdateItem(group
+                        .removeMember(uid));
+            }
+
+            // Create message if needed
+            if (!isSilent) {
+                Message message = new Message(rid, date, date, uid,
+                        uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
+                        new ServiceGroupUserLeave());
+                conversationActor(group.peer()).send(message);
+            }
+        }
+    }
+
+    @Verified
+    public void onUserKicked(int groupId, long rid, int uid, int kicker, long date, boolean isSilent) {
+        Group group = groups().getValue(groupId);
+        if (group != null) {
+
+            if (uid == myUid()) {
+                // If kicked me, clear members and change member state
+                groups().addOrUpdateItem(group
+                        .clearMembers()
+                        .changeMember(false));
+            } else {
+                // else remove kicked user
+                groups().addOrUpdateItem(group
+                        .removeMember(uid));
+            }
+
+            // Create message if needed
+            if (!isSilent) {
+                Message message = new Message(rid, date, date, kicker,
+                        kicker == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
+                        new ServiceGroupUserKicked(uid));
+                conversationActor(group.peer()).send(message);
+            }
+        }
+    }
+
+    @Verified
+    public void onUserAdded(int groupId, long rid, int uid, int adder, long date, boolean isSilent) {
+        Group group = groups().getValue(groupId);
+        if (group != null) {
+
+            // Adding member
             groups().addOrUpdateItem(group
-                    .removeMember(uid));
-        }
+                    .addMember(uid, adder, date, false));
 
-        Message message = new Message(rid, date, date, uid,
-                uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                new ServiceGroupUserLeave());
-        conversationActor(group.peer()).send(message);
+            // Create message if needed
+            if (!isSilent) {
+                Message message = new Message(rid, date, date, adder,
+                        adder == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
+                        new ServiceGroupUserAdded(uid));
+                conversationActor(group.peer()).send(message);
+            }
+        }
     }
 
-    public void onUserKicked(int groupId, long rid, int uid, int kicker, long date) {
+    @Verified
+    public void onTitleChanged(int groupId, long rid, int uid, String title, long date,
+                               boolean isSilent) {
         Group group = groups().getValue(groupId);
-        if (group == null) {
-            return;
-        }
+        if (group != null) {
 
-        if (uid == myUid()) {
-            groups().addOrUpdateItem(group
-                    .clearMembers()
-                    .changeMember(false));
-        } else {
-            groups().addOrUpdateItem(group
-                    .removeMember(uid));
-        }
+            // We can't just ignore not changed avatar
+            // because we need to make message in conversation
+            // about avatar change
 
-        Message message = new Message(rid, date, date, kicker,
-                kicker == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                new ServiceGroupUserKicked(uid));
-        conversationActor(group.peer()).send(message);
+            if (!group.getTitle().equals(title)) {
+                // Change group title
+                Group upd = group.editTitle(title);
+
+                // Update group
+                groups().addOrUpdateItem(upd);
+
+                // Notify about group change
+                onGroupDescChanged(upd);
+            }
+
+            // Create message if needed
+            if (!isSilent) {
+                Message message = new Message(rid, date, date, uid,
+                        uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
+                        new ServiceGroupTitleChanged(title));
+                conversationActor(group.peer()).send(message);
+            }
+        }
     }
 
-    public void onUserAdded(int groupId, long rid, int uid, int adder, long date) {
+    @Verified
+    public void onAvatarChanged(int groupId, long rid, int uid, Avatar avatar, long date,
+                                boolean isSilent) {
         Group group = groups().getValue(groupId);
-        if (group == null) {
-            return;
+        if (group != null) {
+
+            // We can't just ignore not changed avatar
+            // because we need to make message in conversation
+            // about avatar change
+
+            if (!equalsE(group.getAvatar(), avatar)) {
+                // Change group avatar
+                Group upd = group.editAvatar(avatar);
+
+                // Update group
+                groups().addOrUpdateItem(upd);
+
+                // Notify about group change
+                onGroupDescChanged(upd);
+            }
+
+            // Create message if needed
+            if (!isSilent) {
+                Message message = new Message(rid, date, date, uid,
+                        uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
+                        new ServiceGroupAvatarChanged(avatar));
+                conversationActor(group.peer()).send(message);
+            }
         }
-
-        groups().addOrUpdateItem(group
-                .addMember(uid, adder, date, false));
-
-        Message message = new Message(rid, date, date, adder,
-                adder == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                new ServiceGroupUserAdded(uid));
-        conversationActor(group.peer()).send(message);
     }
 
-    public void onTitleChanged(int groupId, long rid, int uid, String title, long date) {
-        Group group = groups().getValue(groupId);
-        if (group == null) {
-            return;
-        }
-
-        Group upd = group.editTitle(title);
-        groups().addOrUpdateItem(upd);
-        modules().getMessagesModule().getDialogsActor()
-                .send(new DialogsActor.GroupChanged(upd));
-
-        Message message = new Message(rid, date, date, uid,
-                uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                new ServiceGroupTitleChanged(title));
-        conversationActor(group.peer()).send(message);
-    }
-
-    public void onAvatarChanged(int groupId, long rid, int uid, Avatar avatar, long date) {
-        Group group = groups().getValue(groupId);
-        if (group == null) {
-            return;
-        }
-
-        Group upd = group.editAvatar(avatar);
-        groups().addOrUpdateItem(upd);
-        modules().getMessagesModule().getDialogsActor()
-                .send(new DialogsActor.GroupChanged(upd));
-
-        Message message = new Message(rid, date, date, uid,
-                uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                new ServiceGroupAvatarChanged(avatar));
-        conversationActor(group.peer()).send(message);
-    }
-
+    @Verified
     public void onMembersUpdated(int groupId, List<Member> members) {
         Group group = groups().getValue(groupId);
-        if (group == null) {
-            return;
-        }
+        if (group != null) {
+            // TODO: Better logic
 
-        group = group.clearMembers();
-        for (Member m : members) {
-            group = group.addMember(m.getUid(), m.getInviterUid(), m.getDate(), m.getUid() == group.getAdminId());
+            // Updating members list
+            group = group.clearMembers();
+            for (Member m : members) {
+                group = group.addMember(m.getUid(), m.getInviterUid(), m.getDate(), m.getUid() == group.getAdminId());
+            }
+
+            // Update group
+            groups().addOrUpdateItem(group);
         }
-        groups().addOrUpdateItem(group);
     }
 
+    @Verified
     public boolean hasGroups(Collection<Integer> gids) {
         for (Integer uid : gids) {
             if (groups().getValue(uid) == null) {
@@ -187,5 +240,11 @@ public class GroupsProcessor extends BaseModule {
             }
         }
         return true;
+    }
+
+    @Verified
+    private void onGroupDescChanged(Group group) {
+        modules().getMessagesModule().getDialogsActor()
+                .send(new DialogsActor.GroupChanged(group));
     }
 }

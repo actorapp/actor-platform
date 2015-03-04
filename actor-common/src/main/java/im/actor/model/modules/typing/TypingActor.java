@@ -3,6 +3,7 @@ package im.actor.model.modules.typing;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import im.actor.model.annotation.Verified;
 import im.actor.model.api.TypingType;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
@@ -18,6 +19,7 @@ import im.actor.model.modules.utils.ModuleActor;
 /**
  * Created by ex3ndr on 16.02.15.
  */
+@Verified
 public class TypingActor extends ModuleActor {
 
     public static ActorRef get(final Modules messenger) {
@@ -51,6 +53,7 @@ public class TypingActor extends ModuleActor {
         super(messenger);
     }
 
+    @Verified
     private void privateTyping(int uid, TypingType type) {
         // Support only text typings
         if (type != TypingType.TEXT) {
@@ -69,6 +72,7 @@ public class TypingActor extends ModuleActor {
         self().sendOnce(new StopTyping(uid), TYPING_TEXT_TIMEOUT);
     }
 
+    @Verified
     private void stopPrivateTyping(int uid) {
         if (typings.contains(uid)) {
             typings.remove(uid);
@@ -77,6 +81,7 @@ public class TypingActor extends ModuleActor {
         }
     }
 
+    @Verified
     private void groupTyping(int gid, int uid, TypingType type) {
         // Support only text typings
         if (type != TypingType.TEXT) {
@@ -120,6 +125,7 @@ public class TypingActor extends ModuleActor {
         self().sendOnce(new StopGroupTyping(gid, uid), TYPING_TEXT_TIMEOUT);
     }
 
+    @Verified
     private void stopGroupTyping(int gid, int uid) {
         if (!groupTypings.containsKey(gid)) {
             return;
