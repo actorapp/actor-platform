@@ -132,7 +132,7 @@ public abstract class ActorDispatcher {
 
         ActorScope scope = envelope.getScope();
 
-        // Log.d("ACTOR_TRACE", "processEnvelope: " + envelope.getMessage() + " -> " + scope.getPath());
+        // Log.d("ACTOR_TRACE", "processEnvelope: " + envelope.getTopMessage() + " -> " + scope.getPath());
 
         if (actorSystem.getTraceInterface() != null) {
             actorSystem.getTraceInterface().onEnvelopeDelivered(envelope);

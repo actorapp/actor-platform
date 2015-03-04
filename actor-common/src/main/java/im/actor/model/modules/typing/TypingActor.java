@@ -83,7 +83,9 @@ public class TypingActor extends ModuleActor {
             return;
         }
 
-        // TODO: add group check
+        if (getGroup(gid) == null) {
+            return;
+        }
 
         if (getUser(uid) == null) {
             return;

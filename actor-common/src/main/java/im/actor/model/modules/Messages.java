@@ -23,6 +23,7 @@ import im.actor.model.entity.User;
 import im.actor.model.entity.content.FastThumb;
 import im.actor.model.files.FileReference;
 import im.actor.model.modules.messages.ConversationActor;
+import im.actor.model.modules.messages.ConversationHistoryActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
 import im.actor.model.modules.messages.OwnReadActor;
@@ -51,6 +52,7 @@ public class Messages extends BaseModule {
 
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<Peer, ListEngine<Message>>();
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
+    private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<Peer, ActorRef>();
 
     public Messages(final Modules messenger) {
         super(messenger);
@@ -112,7 +114,7 @@ public class Messages extends BaseModule {
         return ownReadActor;
     }
 
-    public ActorRef getConversationActor(final Peer peer) {
+    private void assumeConvActor(final Peer peer) {
         synchronized (conversationActors) {
             if (!conversationActors.containsKey(peer)) {
                 conversationActors.put(peer, system().actorOf(Props.create(ConversationActor.class,
@@ -122,9 +124,32 @@ public class Messages extends BaseModule {
                                 return new ConversationActor(peer, modules());
                             }
                         }), "actor/conv_" + peer.getPeerType() + "_" + peer.getPeerId()));
+                conversationHistoryActors.put(peer, system().actorOf(Props.create(ConversationHistoryActor.class, new ActorCreator<ConversationHistoryActor>() {
+                    @Override
+                    public ConversationHistoryActor create() {
+                        return new ConversationHistoryActor(peer, modules());
+                    }
+                }), "actor/conv_" + peer.getPeerType() + "_" + peer.getPeerId() + "/history"));
             }
+        }
+    }
+
+    public ActorRef getConversationHistoryActor(final Peer peer) {
+        assumeConvActor(peer);
+        synchronized (conversationActors) {
+            return conversationHistoryActors.get(peer);
+        }
+    }
+
+    public ActorRef getConversationActor(final Peer peer) {
+        assumeConvActor(peer);
+        synchronized (conversationActors) {
             return conversationActors.get(peer);
         }
+    }
+
+    public void onConversationOpen(Peer peer) {
+        assumeConvActor(peer);
     }
 
     public ListEngine<Message> getConversationEngine(Peer peer) {
@@ -150,6 +175,10 @@ public class Messages extends BaseModule {
 
     public void loadMoreDialogs() {
         dialogsHistoryActor.send(new DialogsHistoryActor.LoadMore());
+    }
+
+    public void loadMoreHistory(Peer peer) {
+        getConversationHistoryActor(peer).send(new ConversationHistoryActor.LoadMore());
     }
 
     public void sendMessage(final Peer peer, final String message) {

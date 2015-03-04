@@ -13,6 +13,7 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
+import im.actor.model.entity.content.AbsContent;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.DialogHistory;
 import im.actor.model.modules.utils.ModuleActor;
@@ -118,6 +119,8 @@ public class DialogsActor extends ModuleActor {
                     .setTime(0)
                     .setUnreadCount(0)
                     .setRid(0)
+                    .setSenderId(0)
+                    .setStatus(MessageState.UNKNOWN)
                     .createDialog());
         }
     }
@@ -127,6 +130,28 @@ public class DialogsActor extends ModuleActor {
         if (dialog != null && dialog.getRid() == rid) {
             dialogs.addOrUpdateItem(new DialogBuilder(dialog)
                     .setStatus(state)
+                    .createDialog());
+        }
+    }
+
+    private void onMessageSent(Peer peer, long rid, long date) {
+        Dialog dialog = dialogs.getValue(peer.getUnuqueId());
+        if (dialog != null && dialog.getRid() == rid) {
+            dialogs.addOrUpdateItem(new DialogBuilder(dialog)
+                    .setStatus(MessageState.SENT)
+                    .setTime(date)
+                    .createDialog());
+        }
+    }
+
+    private void onMessageContentChanged(Peer peer, long rid, AbsContent content) {
+        Dialog dialog = dialogs.getValue(peer.getUnuqueId());
+        if (dialog != null && dialog.getRid() == rid) {
+            ContentDescription description = ContentDescription.fromContent(content);
+            dialogs.addOrUpdateItem(new DialogBuilder(dialog)
+                    .setText(description.getText())
+                    .setRelatedUid(description.getRelatedUser())
+                    .setMessageType(description.getContentType())
                     .createDialog());
         }
     }
@@ -163,6 +188,8 @@ public class DialogsActor extends ModuleActor {
         }
         dialogs.addOrUpdateItems(updated);
     }
+
+    // Utils
 
     private PeerDesc buildPeerDesc(Peer peer) {
         switch (peer.getPeerType()) {
@@ -217,39 +244,24 @@ public class DialogsActor extends ModuleActor {
         } else if (message instanceof CounterChanged) {
             CounterChanged counterChanged = (CounterChanged) message;
             onCounterChanged(counterChanged.getPeer(), counterChanged.getCount());
-        } else if (message instanceof Deleted) {
-            Deleted deleted = (Deleted) message;
-            onMessage(deleted.getPeer(), deleted.getMessage(), true);
+        } else if (message instanceof MessageDeleted) {
+            MessageDeleted deleted = (MessageDeleted) message;
+            onMessage(deleted.getPeer(), deleted.getTopMessage(), true);
         } else if (message instanceof HistoryLoaded) {
             HistoryLoaded historyLoaded = (HistoryLoaded) message;
             onHistoryLoaded(historyLoaded.getHistory());
         } else if (message instanceof GroupChanged) {
             GroupChanged groupChanged = (GroupChanged) message;
             onGroupChanged(groupChanged.getGroup());
-        }
-    }
-
-    public static class ChatClear {
-        private Peer peer;
-
-        public ChatClear(Peer peer) {
-            this.peer = peer;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-    }
-
-    public static class ChatDelete {
-        private Peer peer;
-
-        public ChatDelete(Peer peer) {
-            this.peer = peer;
-        }
-
-        public Peer getPeer() {
-            return peer;
+        } else if (message instanceof MessageSent) {
+            MessageSent messageSent = (MessageSent) message;
+            onMessageSent(messageSent.getPeer(), messageSent.getRid(), messageSent.getDate());
+        } else if (message instanceof MessageContentChanged) {
+            MessageContentChanged contentChanged = (MessageContentChanged) message;
+            onMessageContentChanged(contentChanged.getPeer(), contentChanged.getRid(),
+                    contentChanged.getContent());
+        } else {
+            drop(message);
         }
     }
 
@@ -295,6 +307,30 @@ public class DialogsActor extends ModuleActor {
         }
     }
 
+    public static class ChatClear {
+        private Peer peer;
+
+        public ChatClear(Peer peer) {
+            this.peer = peer;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+    }
+
+    public static class ChatDelete {
+        private Peer peer;
+
+        public ChatDelete(Peer peer) {
+            this.peer = peer;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+    }
+
     public static class MessageStateChanged {
         private Peer peer;
         private long rid;
@@ -319,6 +355,84 @@ public class DialogsActor extends ModuleActor {
         }
     }
 
+    public static class MessageSent {
+        private Peer peer;
+        private long rid;
+        private long date;
+
+        public MessageSent(Peer peer, long rid, long date) {
+            this.peer = peer;
+            this.rid = rid;
+            this.date = date;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public long getRid() {
+            return rid;
+        }
+
+        public long getDate() {
+            return date;
+        }
+    }
+
+    public static class MessageContentChanged {
+        private Peer peer;
+        private long rid;
+        private AbsContent content;
+
+        public MessageContentChanged(Peer peer, long rid, AbsContent content) {
+            this.peer = peer;
+            this.rid = rid;
+            this.content = content;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public long getRid() {
+            return rid;
+        }
+
+        public AbsContent getContent() {
+            return content;
+        }
+    }
+
+    public static class MessageDeleted {
+        private Peer peer;
+        private Message topMessage;
+
+        public MessageDeleted(Peer peer, Message topMessage) {
+            this.peer = peer;
+            this.topMessage = topMessage;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public Message getTopMessage() {
+            return topMessage;
+        }
+    }
+
+    public static class HistoryLoaded {
+        private List<DialogHistory> history;
+
+        public HistoryLoaded(List<DialogHistory> history) {
+            this.history = history;
+        }
+
+        public List<DialogHistory> getHistory() {
+            return history;
+        }
+    }
+
     public static class CounterChanged {
         private Peer peer;
         private int count;
@@ -334,36 +448,6 @@ public class DialogsActor extends ModuleActor {
 
         public int getCount() {
             return count;
-        }
-    }
-
-    public static class Deleted {
-        private Peer peer;
-        private Message message;
-
-        public Deleted(Peer peer, Message message) {
-            this.peer = peer;
-            this.message = message;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public Message getMessage() {
-            return message;
-        }
-    }
-
-    public static class HistoryLoaded {
-        private List<DialogHistory> history;
-
-        public HistoryLoaded(List<DialogHistory> history) {
-            this.history = history;
-        }
-
-        public List<DialogHistory> getHistory() {
-            return history;
         }
     }
 }

@@ -30,10 +30,12 @@ public class FileLocalSource extends FileSource {
 
     }
 
+    @Override
     public String getFileName() {
         return fileName;
     }
 
+    @Override
     public int getSize() {
         return size;
     }

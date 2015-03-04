@@ -3,7 +3,9 @@ package im.actor.model.modules.updates;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.model.api.HistoryMessage;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
+import im.actor.model.api.rpc.ResponseLoadHistory;
 import im.actor.model.entity.ContentDescription;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
@@ -14,12 +16,14 @@ import im.actor.model.entity.content.ServiceUserRegistered;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.ConversationActor;
+import im.actor.model.modules.messages.ConversationHistoryActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
 import im.actor.model.modules.messages.OwnReadActor;
 import im.actor.model.modules.messages.PlainReceiverActor;
 import im.actor.model.modules.messages.SenderActor;
 import im.actor.model.modules.messages.entity.DialogHistory;
+import im.actor.model.modules.messages.entity.EntityConverter;
 import im.actor.model.modules.utils.RandomUtils;
 
 import static im.actor.model.modules.messages.entity.EntityConverter.convert;
@@ -52,8 +56,35 @@ public class MessagesProcessor extends BaseModule {
                     dialog.getRid(), dialog.getDate(), dialog.getSenderUid(), msgContent, convert(dialog.getState())));
         }
 
-        dialogsActor().send(new DialogsActor.HistoryLoaded(dialogs));
+        if (dialogs.size() > 0) {
+            dialogsActor().send(new DialogsActor.HistoryLoaded(dialogs));
+        }
         dialogsHistoryActor().send(new DialogsHistoryActor.LoadedMore(dialogsResponse.getDialogs().size(),
+                maxLoadedDate));
+    }
+
+    public void onMessagesLoaded(Peer peer, ResponseLoadHistory historyResponse) {
+        ArrayList<Message> messages = new ArrayList<Message>();
+        long maxLoadedDate = Long.MAX_VALUE;
+        for (HistoryMessage historyMessage : historyResponse.getHistory()) {
+
+            maxLoadedDate = Math.min(historyMessage.getDate(), maxLoadedDate);
+
+            AbsContent content = EntityConverter.convert(historyMessage.getMessage());
+            if (content == null) {
+                continue;
+            }
+            MessageState state = EntityConverter.convert(historyMessage.getState());
+
+            messages.add(new Message(historyMessage.getRid(), historyMessage.getDate(),
+                    historyMessage.getDate(), historyMessage.getSenderUid(),
+                    state, content));
+        }
+
+        if (messages.size() > 0) {
+            conversationActor(peer).send(new ConversationActor.HistoryLoaded(messages));
+        }
+        conversationHistoryActor(peer).send(new ConversationHistoryActor.LoadedMore(historyResponse.getHistory().size(),
                 maxLoadedDate));
     }
 
@@ -114,7 +145,7 @@ public class MessagesProcessor extends BaseModule {
 
     public void onMessageDelete(im.actor.model.api.Peer _peer, List<Long> rids) {
         Peer peer = convert(_peer);
-        conversationActor(peer).send(new ConversationActor.MessageDeleted(rids));
+        conversationActor(peer).send(new ConversationActor.MessagesDeleted(rids));
         ownReadActor().send(new OwnReadActor.MessageDeleted(peer, rids));
         // TODO: Notify send actor
     }

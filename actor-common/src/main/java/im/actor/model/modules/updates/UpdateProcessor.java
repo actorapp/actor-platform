@@ -49,6 +49,7 @@ import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.updates.internal.GroupCreated;
 import im.actor.model.modules.updates.internal.InternalUpdate;
 import im.actor.model.modules.updates.internal.LoggedIn;
+import im.actor.model.modules.updates.internal.MessagesHistoryLoaded;
 import im.actor.model.modules.updates.internal.UsersFounded;
 import im.actor.model.network.parser.Update;
 import im.actor.model.viewmodel.UserVM;
@@ -89,6 +90,10 @@ public class UpdateProcessor extends BaseModule {
             ResponseLoadDialogs dialogs = ((DialogHistoryLoaded) update).getDialogs();
             applyRelated(dialogs.getUsers(), dialogs.getGroups(), false);
             messagesProcessor.onDialogsLoaded(dialogs);
+        } else if (update instanceof MessagesHistoryLoaded) {
+            MessagesHistoryLoaded historyLoaded = (MessagesHistoryLoaded) update;
+            applyRelated(historyLoaded.getLoadHistory().getUsers(), new ArrayList<Group>(), false);
+            messagesProcessor.onMessagesLoaded(historyLoaded.getPeer(), historyLoaded.getLoadHistory());
         } else if (update instanceof LoggedIn) {
             ArrayList<User> users = new ArrayList<User>();
             users.add(((LoggedIn) update).getAuth().getUser());
