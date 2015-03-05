@@ -22,6 +22,12 @@
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
+- (NSString *)description {
+  NSString *res = @"struct ServiceExGroupCreated{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExGroupCreated)

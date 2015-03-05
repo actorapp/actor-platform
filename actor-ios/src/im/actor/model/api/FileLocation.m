@@ -50,6 +50,13 @@
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct FileLocation{";
+  res = JreStrcat("$$", res, JreStrcat("$J", @"fileId=", self->fileId_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiFileLocation *)other {
   [super copyAllFieldsTo:other];
   other->fileId_ = fileId_;

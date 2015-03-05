@@ -66,6 +66,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->members_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update GroupMembersUpdate{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", members=", self->members_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateGroupMembersUpdate_HEADER;
 }

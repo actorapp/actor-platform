@@ -19,13 +19,14 @@
  @public
   AMPeer *peer_;
   jlong rid_;
-  ImActorModelEntityContentAbsContent *content_;
+  AMAbsContent *content_;
+  jboolean isError__;
 }
 - (instancetype)init;
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessage, peer_, AMPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessage, content_, ImActorModelEntityContentAbsContent *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessage, content_, AMAbsContent *)
 
 @implementation ImActorModelModulesMessagesEntityPendingMessage
 
@@ -35,7 +36,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessage, content_, I
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
-withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content {
+              withAMAbsContent:(AMAbsContent *)content {
   if (self = [super init]) {
     self->peer_ = peer;
     self->rid_ = rid;
@@ -52,7 +53,7 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
   return peer_;
 }
 
-- (ImActorModelEntityContentAbsContent *)getContent {
+- (AMAbsContent *)getContent {
   return content_;
 }
 
@@ -60,16 +61,22 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
   return rid_;
 }
 
+- (jboolean)isError {
+  return isError__;
+}
+
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  peer_ = AMPeer_fromUidWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
+  peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   rid_ = [values getLongWithInt:2];
-  content_ = ImActorModelEntityContentAbsContent_contentFromBytesWithByteArray_([values getBytesWithInt:3]);
+  content_ = AMAbsContent_contentFromBytesWithByteArray_([values getBytesWithInt:3]);
+  isError__ = [values getBoolWithInt:4 withBoolean:NO];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUid]];
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:rid_];
-  [writer writeBytesWithInt:3 withByteArray:[((ImActorModelEntityContentAbsContent *) nil_chk(content_)) toByteArray]];
+  [writer writeBytesWithInt:3 withByteArray:[((AMAbsContent *) nil_chk(content_)) toByteArray]];
+  [writer writeBoolWithInt:4 withBoolean:isError__];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesEntityPendingMessage *)other {
@@ -77,6 +84,7 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
   other->peer_ = peer_;
   other->rid_ = rid_;
   other->content_ = content_;
+  other->isError__ = isError__;
 }
 
 @end

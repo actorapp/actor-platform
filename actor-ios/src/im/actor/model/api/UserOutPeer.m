@@ -50,6 +50,13 @@
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct UserOutPeer{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiUserOutPeer *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;

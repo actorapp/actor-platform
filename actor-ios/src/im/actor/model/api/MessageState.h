@@ -13,6 +13,7 @@ typedef NS_ENUM(NSUInteger, ImActorModelApiMessageState) {
   ImActorModelApiMessageState_SENT = 0,
   ImActorModelApiMessageState_RECEIVED = 1,
   ImActorModelApiMessageState_READ = 2,
+  ImActorModelApiMessageState_UNSUPPORTED_VALUE = 3,
 };
 
 @interface ImActorModelApiMessageStateEnum : JavaLangEnum < NSCopying > {
@@ -51,6 +52,9 @@ J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiMessageStateEnum, RECEIVED)
 
 #define ImActorModelApiMessageStateEnum_READ ImActorModelApiMessageStateEnum_values_[ImActorModelApiMessageState_READ]
 J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiMessageStateEnum, READ)
+
+#define ImActorModelApiMessageStateEnum_UNSUPPORTED_VALUE ImActorModelApiMessageStateEnum_values_[ImActorModelApiMessageState_UNSUPPORTED_VALUE]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiMessageStateEnum, UNSUPPORTED_VALUE)
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiMessageStateEnum)
 

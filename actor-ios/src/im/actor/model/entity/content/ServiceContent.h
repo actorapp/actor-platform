@@ -3,21 +3,21 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/ServiceContent.java
 //
 
-#ifndef _ImActorModelEntityContentServiceContent_H_
-#define _ImActorModelEntityContentServiceContent_H_
+#ifndef _AMServiceContent_H_
+#define _AMServiceContent_H_
 
+@class AMAbsContent_ContentTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelEntityContentAbsContent_ContentTypeEnum;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/AbsContent.h"
 
-@interface ImActorModelEntityContentServiceContent : ImActorModelEntityContentAbsContent {
+@interface AMServiceContent : AMAbsContent {
 }
 
-+ (ImActorModelEntityContentServiceContent *)serviceFromBytesWithByteArray:(IOSByteArray *)data;
++ (AMServiceContent *)serviceFromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithNSString:(NSString *)compatText;
 
@@ -25,7 +25,7 @@
 
 - (NSString *)getCompatText;
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -33,13 +33,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentServiceContent)
+J2OBJC_EMPTY_STATIC_INIT(AMServiceContent)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentServiceContent *ImActorModelEntityContentServiceContent_serviceFromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceContent *AMServiceContent_serviceFromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentServiceContent)
+typedef AMServiceContent ImActorModelEntityContentServiceContent;
 
-#endif // _ImActorModelEntityContentServiceContent_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMServiceContent)
+
+#endif // _AMServiceContent_H_

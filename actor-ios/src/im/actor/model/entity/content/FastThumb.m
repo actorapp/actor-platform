@@ -13,7 +13,7 @@
 #include "im/actor/model/entity/content/FastThumb.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityContentFastThumb () {
+@interface AMFastThumb () {
  @public
   jint w_;
   jint h_;
@@ -22,12 +22,12 @@
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentFastThumb, image_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(AMFastThumb, image_, IOSByteArray *)
 
-@implementation ImActorModelEntityContentFastThumb
+@implementation AMFastThumb
 
-+ (ImActorModelEntityContentFastThumb *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentFastThumb_fromBytesWithByteArray_(data);
++ (AMFastThumb *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMFastThumb_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)w
@@ -69,7 +69,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFastThumb, image_, IOSByteArray *)
   [writer writeBytesWithInt:3 withByteArray:image_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentFastThumb *)other {
+- (void)copyAllFieldsTo:(AMFastThumb *)other {
   [super copyAllFieldsTo:other];
   other->w_ = w_;
   other->h_ = h_;
@@ -78,9 +78,9 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFastThumb, image_, IOSByteArray *)
 
 @end
 
-ImActorModelEntityContentFastThumb *ImActorModelEntityContentFastThumb_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentFastThumb_init();
-  return ((ImActorModelEntityContentFastThumb *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentFastThumb alloc] init], data));
+AMFastThumb *AMFastThumb_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMFastThumb_init();
+  return ((AMFastThumb *) BSBser_parseWithBSBserObject_withByteArray_([[AMFastThumb alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentFastThumb)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFastThumb)

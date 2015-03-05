@@ -57,6 +57,14 @@
   [writer writeLongWithInt:2 withLong:self->timeout_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc SetOnline{";
+  res = JreStrcat("$$", res, JreStrcat("$Z", @"isOnline=", self->isOnline__));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", timeout=", self->timeout_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSetOnline_HEADER;
 }

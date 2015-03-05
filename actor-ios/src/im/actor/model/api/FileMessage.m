@@ -10,6 +10,7 @@
 #include "im/actor/model/api/FileMessage.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiFileMessage () {
@@ -119,6 +120,19 @@ withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
   if (self->ext_ != nil) {
     [writer writeBytesWithInt:8 withByteArray:self->ext_];
   }
+}
+
+- (NSString *)description {
+  NSString *res = @"struct FileMessage{";
+  res = JreStrcat("$$", res, JreStrcat("$J", @"fileId=", self->fileId_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", fileSize=", self->fileSize_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", name=", self->name_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", mimeType=", self->mimeType_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", thumb=", (self->thumb_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", extType=", self->extType_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", ext=", BSUtils_byteArrayToStringCompactWithByteArray_(self->ext_)));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiFileMessage *)other {

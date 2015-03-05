@@ -8,6 +8,7 @@
 
 @class BSBserValues;
 @class BSBserWriter;
+@class ImActorModelApiAuthHolderEnum;
 @class JavaLangDouble;
 
 #include "J2ObjC_header.h"
@@ -17,7 +18,7 @@
 }
 
 - (instancetype)initWithInt:(jint)id_
-                    withInt:(jint)authHolder
+withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
                     withInt:(jint)appId
                withNSString:(NSString *)appTitle
                withNSString:(NSString *)deviceTitle
@@ -30,7 +31,7 @@
 
 - (jint)getId;
 
-- (jint)getAuthHolder;
+- (ImActorModelApiAuthHolderEnum *)getAuthHolder;
 
 - (jint)getAppId;
 
@@ -49,6 +50,8 @@
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+- (NSString *)description;
 
 @end
 

@@ -6,9 +6,11 @@
 #ifndef _ImActorModelModulesUpdatesMessagesProcessor_H_
 #define _ImActorModelModulesUpdatesMessagesProcessor_H_
 
+@class AMPeer;
 @class ImActorModelApiMessageContent;
 @class ImActorModelApiPeer;
 @class ImActorModelApiRpcResponseLoadDialogs;
+@class ImActorModelApiRpcResponseLoadHistory;
 @class ImActorModelModulesModules;
 @protocol JavaUtilList;
 
@@ -21,6 +23,9 @@
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)onDialogsLoadedWithImActorModelApiRpcResponseLoadDialogs:(ImActorModelApiRpcResponseLoadDialogs *)dialogsResponse;
+
+- (void)onMessagesLoadedWithAMPeer:(AMPeer *)peer
+withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory *)historyResponse;
 
 - (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                                  withInt:(jint)senderUid

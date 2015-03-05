@@ -14,17 +14,17 @@
 #include "im/actor/model/entity/content/ServiceGroupUserKicked.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityContentServiceGroupUserKicked () {
+@interface AMServiceGroupUserKicked () {
  @public
   jint kickedUid_;
 }
 - (instancetype)init;
 @end
 
-@implementation ImActorModelEntityContentServiceGroupUserKicked
+@implementation AMServiceGroupUserKicked
 
-+ (ImActorModelEntityContentServiceGroupUserKicked *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentServiceGroupUserKicked_fromBytesWithByteArray_(data);
++ (AMServiceGroupUserKicked *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMServiceGroupUserKicked_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)kickedUid {
@@ -42,8 +42,8 @@
   return kickedUid_;
 }
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType {
-  return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_KICKED();
+- (AMAbsContent_ContentTypeEnum *)getContentType {
+  return AMAbsContent_ContentTypeEnum_get_SERVICE_KICKED();
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -56,16 +56,16 @@
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:kickedUid_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentServiceGroupUserKicked *)other {
+- (void)copyAllFieldsTo:(AMServiceGroupUserKicked *)other {
   [super copyAllFieldsTo:other];
   other->kickedUid_ = kickedUid_;
 }
 
 @end
 
-ImActorModelEntityContentServiceGroupUserKicked *ImActorModelEntityContentServiceGroupUserKicked_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentServiceGroupUserKicked_init();
-  return ((ImActorModelEntityContentServiceGroupUserKicked *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupUserKicked alloc] init], data));
+AMServiceGroupUserKicked *AMServiceGroupUserKicked_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMServiceGroupUserKicked_init();
+  return ((AMServiceGroupUserKicked *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupUserKicked alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupUserKicked)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceGroupUserKicked)

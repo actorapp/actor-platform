@@ -16,26 +16,26 @@
 #include "im/actor/model/entity/content/PhotoContent.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityContentPhotoContent () {
+@interface AMPhotoContent () {
  @public
   jint w_;
   jint h_;
 }
 @end
 
-@implementation ImActorModelEntityContentPhotoContent
+@implementation AMPhotoContent
 
-+ (ImActorModelEntityContentPhotoContent *)photoFromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentPhotoContent_photoFromBytesWithByteArray_(data);
++ (AMPhotoContent *)photoFromBytesWithByteArray:(IOSByteArray *)data {
+  return AMPhotoContent_photoFromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelEntityContentFileSource:(ImActorModelEntityContentFileSource *)location
-                                               withNSString:(NSString *)mimetype
-                                               withNSString:(NSString *)name
-                     withImActorModelEntityContentFastThumb:(ImActorModelEntityContentFastThumb *)fastThumb
-                                                    withInt:(jint)w
-                                                    withInt:(jint)h {
-  if (self = [super initWithImActorModelEntityContentFileSource:location withNSString:mimetype withNSString:name withImActorModelEntityContentFastThumb:fastThumb]) {
+- (instancetype)initWithAMFileSource:(AMFileSource *)location
+                        withNSString:(NSString *)mimetype
+                        withNSString:(NSString *)name
+                     withAMFastThumb:(AMFastThumb *)fastThumb
+                             withInt:(jint)w
+                             withInt:(jint)h {
+  if (self = [super initWithAMFileSource:location withNSString:mimetype withNSString:name withAMFastThumb:fastThumb]) {
     self->w_ = w;
     self->h_ = h;
   }
@@ -54,8 +54,8 @@
   return h_;
 }
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType {
-  return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_DOCUMENT_PHOTO();
+- (AMAbsContent_ContentTypeEnum *)getContentType {
+  return AMAbsContent_ContentTypeEnum_get_DOCUMENT_PHOTO();
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -70,7 +70,7 @@
   [writer writeIntWithInt:11 withInt:h_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentPhotoContent *)other {
+- (void)copyAllFieldsTo:(AMPhotoContent *)other {
   [super copyAllFieldsTo:other];
   other->w_ = w_;
   other->h_ = h_;
@@ -78,9 +78,9 @@
 
 @end
 
-ImActorModelEntityContentPhotoContent *ImActorModelEntityContentPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentPhotoContent_init();
-  return ((ImActorModelEntityContentPhotoContent *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentPhotoContent alloc] init], data));
+AMPhotoContent *AMPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data) {
+  AMPhotoContent_init();
+  return ((AMPhotoContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMPhotoContent alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentPhotoContent)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMPhotoContent)

@@ -12,9 +12,9 @@
 @class ImActorModelModulesFileDownloadTask;
 @class ImActorModelModulesModules;
 @class JavaUtilArrayList;
-@protocol AMFileCallback;
 @protocol AMKeyValueEngine;
 @protocol ImActorModelFilesFileReference;
+@protocol ImActorModelModulesFileDownloadCallback;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
@@ -29,9 +29,12 @@
 
 - (void)preStart;
 
+- (void)requestStateWithLong:(jlong)fileId
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+
 - (void)bindDownloadWithAMFileLocation:(AMFileLocation *)fileLocation
                            withBoolean:(jboolean)autoStart
-                    withAMFileCallback:(id<AMFileCallback>)callback;
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
 
 - (void)startDownloadWithAMFileLocation:(AMFileLocation *)fileLocation;
 
@@ -39,7 +42,7 @@
 
 - (void)unbindDownloadWithLong:(jlong)fileId
                    withBoolean:(jboolean)autoCancel
-            withAMFileCallback:(id<AMFileCallback>)callback;
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
 
 - (void)onDownloadProgressWithLong:(jlong)fileId
                          withFloat:(jfloat)progress;
@@ -77,18 +80,37 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_QueueItem)
 
+@interface ImActorModelModulesFileDownloadManager_RequestState : NSObject {
+}
+
+- (instancetype)initWithLong:(jlong)fileId
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+
+- (jlong)getFileId;
+
+- (id<ImActorModelModulesFileDownloadCallback>)getCallback;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileDownloadManager_RequestState)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_RequestState)
+
 @interface ImActorModelModulesFileDownloadManager_BindDownload : NSObject {
 }
 
 - (instancetype)initWithAMFileLocation:(AMFileLocation *)fileLocation
                            withBoolean:(jboolean)isAutostart
-                    withAMFileCallback:(id<AMFileCallback>)callback;
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
 
 - (AMFileLocation *)getFileLocation;
 
 - (jboolean)isAutostart;
 
-- (id<AMFileCallback>)getCallback;
+- (id<ImActorModelModulesFileDownloadCallback>)getCallback;
 
 @end
 
@@ -118,12 +140,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_StartDownload)
 @interface ImActorModelModulesFileDownloadManager_CancelDownload : NSObject {
 }
 
-- (instancetype)initWithInt:(jint)fileId
-         withAMFileCallback:(id<AMFileCallback>)callback;
+- (instancetype)initWithLong:(jlong)fileId;
 
-- (jint)getFileId;
-
-- (id<AMFileCallback>)getCallback;
+- (jlong)getFileId;
 
 @end
 
@@ -137,13 +156,13 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_CancelDownload
 @interface ImActorModelModulesFileDownloadManager_UnbindDownload : NSObject {
 }
 
-- (instancetype)initWithInt:(jint)fileId
-                withBoolean:(jboolean)isAutocancel
-         withAMFileCallback:(id<AMFileCallback>)callback;
+- (instancetype)initWithLong:(jlong)fileId
+                 withBoolean:(jboolean)isAutocancel
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
 
-- (jint)getFileId;
+- (jlong)getFileId;
 
-- (id<AMFileCallback>)getCallback;
+- (id<ImActorModelModulesFileDownloadCallback>)getCallback;
 
 - (jboolean)isAutocancel;
 

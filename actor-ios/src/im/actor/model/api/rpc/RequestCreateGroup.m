@@ -79,6 +79,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
   [writer writeRepeatedObjWithInt:3 withJavaUtilList:self->users_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc CreateGroup{";
+  res = JreStrcat("$$", res, JreStrcat("$J", @"rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", title=", self->title_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", users=", [((id<JavaUtilList>) nil_chk(self->users_)) size]));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestCreateGroup_HEADER;
 }

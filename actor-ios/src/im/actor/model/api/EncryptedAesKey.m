@@ -9,6 +9,7 @@
 #include "im/actor/model/api/EncryptedAesKey.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiEncryptedAesKey () {
@@ -54,6 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedAesKey, aesEncryptedKey_, IOSByteArr
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:2 withByteArray:self->aesEncryptedKey_];
+}
+
+- (NSString *)description {
+  NSString *res = @"struct EncryptedAesKey{";
+  res = JreStrcat("$$", res, JreStrcat("$J", @"keyHash=", self->keyHash_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", aesEncryptedKey=", BSUtils_byteArrayToStringCompactWithByteArray_(self->aesEncryptedKey_)));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiEncryptedAesKey *)other {

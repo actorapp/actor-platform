@@ -63,6 +63,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLeaveGroup, groupPeer_, ImActorMode
   [writer writeLongWithInt:2 withLong:self->rid_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc LeaveGroup{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"groupPeer=", self->groupPeer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestLeaveGroup_HEADER;
 }

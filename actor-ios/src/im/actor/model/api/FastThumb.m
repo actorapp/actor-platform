@@ -9,6 +9,7 @@
 #include "im/actor/model/api/FastThumb.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiFastThumb () {
@@ -63,6 +64,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:3 withByteArray:self->thumb_];
+}
+
+- (NSString *)description {
+  NSString *res = @"struct FastThumb{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"w=", self->w_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", h=", self->h_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", thumb=", BSUtils_byteArrayToStringCompactWithByteArray_(self->thumb_)));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiFastThumb *)other {

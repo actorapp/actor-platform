@@ -13,6 +13,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
@@ -105,6 +106,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEncryptedMessage, ownKeys_, id<
   [writer writeBytesWithInt:4 withByteArray:self->encryptedMessage_];
   [writer writeRepeatedObjWithInt:5 withJavaUtilList:self->keys_];
   [writer writeRepeatedObjWithInt:6 withJavaUtilList:self->ownKeys_];
+}
+
+- (NSString *)description {
+  NSString *res = @"rpc SendEncryptedMessage{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", encryptedMessage=", BSUtils_byteArrayToStringCompactWithByteArray_(self->encryptedMessage_)));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", keys=", [((id<JavaUtilList>) nil_chk(self->keys_)) size]));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", ownKeys=", [((id<JavaUtilList>) nil_chk(self->ownKeys_)) size]));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {

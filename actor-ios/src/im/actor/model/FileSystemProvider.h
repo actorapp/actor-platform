@@ -13,10 +13,12 @@
 
 @protocol AMFileSystemProvider < NSObject, JavaObject >
 
-- (id<ImActorModelFilesFileReference>)createTempFileWithAMFileLocation:(AMFileLocation *)fileLocation;
+- (id<ImActorModelFilesFileReference>)createTempFile;
 
 - (id<ImActorModelFilesFileReference>)commitTempFileWithImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)sourceFile
                                                                     withAMFileLocation:(AMFileLocation *)fileLocation;
+
+- (jboolean)isFsPersistent;
 
 - (id<ImActorModelFilesFileReference>)fileFromDescriptorWithNSString:(NSString *)descriptor;
 

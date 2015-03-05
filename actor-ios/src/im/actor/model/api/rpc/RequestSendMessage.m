@@ -77,6 +77,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
   [writer writeObjectWithInt:4 withBSBserObject:self->message_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc SendMessage{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", message=", self->message_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSendMessage_HEADER;
 }

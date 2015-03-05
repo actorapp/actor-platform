@@ -7,8 +7,8 @@
 #define _AMDialogBuilder_H_
 
 @class AMAvatar;
+@class AMContentTypeEnum;
 @class AMDialog;
-@class AMDialog_ContentTypeEnum;
 @class AMMessageStateEnum;
 @class AMPeer;
 
@@ -31,7 +31,7 @@
 
 - (AMDialogBuilder *)setRidWithLong:(jlong)rid;
 
-- (AMDialogBuilder *)setMessageTypeWithAMDialog_ContentTypeEnum:(AMDialog_ContentTypeEnum *)messageType;
+- (AMDialogBuilder *)setMessageTypeWithAMContentTypeEnum:(AMContentTypeEnum *)messageType;
 
 - (AMDialogBuilder *)setTextWithNSString:(NSString *)text;
 

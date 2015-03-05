@@ -53,6 +53,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->name_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc EditName{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"name=", self->name_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestEditName_HEADER;
 }

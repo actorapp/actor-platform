@@ -21,8 +21,6 @@
 + (id)parseWithBSBserObject:(BSBserObject *)res
               withByteArray:(IOSByteArray *)data;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSBser)

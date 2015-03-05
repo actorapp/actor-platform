@@ -53,6 +53,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiMessageContent, content_, IOSByteArray *)
   [writer writeBytesWithInt:2 withByteArray:self->content_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct MessageContent{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"type=", self->type_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", content=", (self->content_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiMessageContent *)other {
   [super copyAllFieldsTo:other];
   other->type_ = type_;

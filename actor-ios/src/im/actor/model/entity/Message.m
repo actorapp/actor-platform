@@ -22,13 +22,13 @@
   jlong date_;
   jint senderId_;
   AMMessageStateEnum *messageState_;
-  ImActorModelEntityContentAbsContent *content_;
+  AMAbsContent *content_;
 }
 - (instancetype)init;
 @end
 
 J2OBJC_FIELD_SETTER(AMMessage, messageState_, AMMessageStateEnum *)
-J2OBJC_FIELD_SETTER(AMMessage, content_, ImActorModelEntityContentAbsContent *)
+J2OBJC_FIELD_SETTER(AMMessage, content_, AMAbsContent *)
 
 @implementation AMMessage
 
@@ -41,7 +41,7 @@ J2OBJC_FIELD_SETTER(AMMessage, content_, ImActorModelEntityContentAbsContent *)
                     withLong:(jlong)date
                      withInt:(jint)senderId
       withAMMessageStateEnum:(AMMessageStateEnum *)messageState
-withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content {
+            withAMAbsContent:(AMAbsContent *)content {
   if (self = [super init]) {
     self->rid_ = rid;
     self->sortDate_ = sortDate;
@@ -77,16 +77,20 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
   return messageState_;
 }
 
-- (ImActorModelEntityContentAbsContent *)getContent {
+- (AMAbsContent *)getContent {
   return content_;
 }
 
 - (AMMessage *)changeStateWithAMMessageStateEnum:(AMMessageStateEnum *)messageState {
-  return [[AMMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date_ withInt:senderId_ withAMMessageStateEnum:messageState withImActorModelEntityContentAbsContent:content_];
+  return [[AMMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date_ withInt:senderId_ withAMMessageStateEnum:messageState withAMAbsContent:content_];
 }
 
 - (AMMessage *)changeDateWithLong:(jlong)date {
-  return [[AMMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date withInt:senderId_ withAMMessageStateEnum:messageState_ withImActorModelEntityContentAbsContent:content_];
+  return [[AMMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date withInt:senderId_ withAMMessageStateEnum:messageState_ withAMAbsContent:content_];
+}
+
+- (AMMessage *)changeContentWithAMAbsContent:(AMAbsContent *)content {
+  return [[AMMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date_ withInt:senderId_ withAMMessageStateEnum:messageState_ withAMAbsContent:content];
 }
 
 - (jlong)getListId {
@@ -103,7 +107,7 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
   date_ = [values getLongWithInt:3];
   senderId_ = [values getIntWithInt:4];
   messageState_ = AMMessageStateEnum_fromValueWithInt_([values getIntWithInt:5]);
-  content_ = ImActorModelEntityContentAbsContent_contentFromBytesWithByteArray_([values getBytesWithInt:6]);
+  content_ = AMAbsContent_contentFromBytesWithByteArray_([values getBytesWithInt:6]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {

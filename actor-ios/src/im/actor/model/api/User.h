@@ -27,7 +27,8 @@
            withJavaUtilList:(id<JavaUtilList>)keyHashes
                    withLong:(jlong)phone
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
-           withJavaUtilList:(id<JavaUtilList>)contacts
+           withJavaUtilList:(id<JavaUtilList>)phones
+           withJavaUtilList:(id<JavaUtilList>)emails
 withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState;
 
 - (instancetype)init;
@@ -48,13 +49,17 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState;
 
 - (ImActorModelApiAvatar *)getAvatar;
 
-- (id<JavaUtilList>)getContacts;
+- (id<JavaUtilList>)getPhones;
+
+- (id<JavaUtilList>)getEmails;
 
 - (ImActorModelApiUserStateEnum *)getUserState;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+- (NSString *)description;
 
 @end
 

@@ -3,27 +3,27 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/ServiceGroupTitleChanged.java
 //
 
-#ifndef _ImActorModelEntityContentServiceGroupTitleChanged_H_
-#define _ImActorModelEntityContentServiceGroupTitleChanged_H_
+#ifndef _AMServiceGroupTitleChanged_H_
+#define _AMServiceGroupTitleChanged_H_
 
+@class AMAbsContent_ContentTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelEntityContentAbsContent_ContentTypeEnum;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@interface ImActorModelEntityContentServiceGroupTitleChanged : ImActorModelEntityContentServiceContent {
+@interface AMServiceGroupTitleChanged : AMServiceContent {
 }
 
-+ (ImActorModelEntityContentServiceGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMServiceGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithNSString:(NSString *)newTitle;
 
 - (NSString *)getNewTitle;
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -31,13 +31,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentServiceGroupTitleChanged)
+J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupTitleChanged)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentServiceGroupTitleChanged *ImActorModelEntityContentServiceGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceGroupTitleChanged *AMServiceGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentServiceGroupTitleChanged)
+typedef AMServiceGroupTitleChanged ImActorModelEntityContentServiceGroupTitleChanged;
 
-#endif // _ImActorModelEntityContentServiceGroupTitleChanged_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupTitleChanged)
+
+#endif // _AMServiceGroupTitleChanged_H_

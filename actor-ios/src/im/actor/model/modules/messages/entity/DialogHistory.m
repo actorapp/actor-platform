@@ -17,13 +17,13 @@
   jlong rid_;
   jlong date_;
   jint senderId_;
-  ImActorModelEntityContentAbsContent *content_;
+  AMAbsContent *content_;
   AMMessageStateEnum *status_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDialogHistory, peer_, AMPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDialogHistory, content_, ImActorModelEntityContentAbsContent *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDialogHistory, content_, AMAbsContent *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDialogHistory, status_, AMMessageStateEnum *)
 
 @implementation ImActorModelModulesMessagesEntityDialogHistory
@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDialogHistory, status_, AMM
                       withLong:(jlong)rid
                       withLong:(jlong)date
                        withInt:(jint)senderId
-withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content
+              withAMAbsContent:(AMAbsContent *)content
         withAMMessageStateEnum:(AMMessageStateEnum *)status {
   if (self = [super init]) {
     self->peer_ = peer;
@@ -73,7 +73,7 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
   return senderId_;
 }
 
-- (ImActorModelEntityContentAbsContent *)getContent {
+- (AMAbsContent *)getContent {
   return content_;
 }
 

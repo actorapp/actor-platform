@@ -9,6 +9,7 @@
 @class DKActorRef;
 @class DKEnvelope;
 @class DKMailboxesQueue;
+@class ImActorModelApiTypingTypeEnum;
 @class ImActorModelModulesModules;
 @class JavaUtilHashMap;
 @class JavaUtilHashSet;
@@ -90,11 +91,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_StopGroupTyping)
 }
 
 - (instancetype)initWithInt:(jint)uid
-                    withInt:(jint)type;
+withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
 
 - (jint)getUid;
 
-- (jint)getType;
+- (ImActorModelApiTypingTypeEnum *)getType;
 
 - (jboolean)isEqual:(id)o;
 
@@ -114,13 +115,13 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_PrivateTyping)
 
 - (instancetype)initWithInt:(jint)gid
                     withInt:(jint)uid
-                    withInt:(jint)type;
+withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
 
 - (jint)getGid;
 
 - (jint)getUid;
 
-- (jint)getType;
+- (ImActorModelApiTypingTypeEnum *)getType;
 
 - (jboolean)isEqual:(id)o;
 

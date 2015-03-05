@@ -107,7 +107,7 @@ J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
 
 - (AMGroup *)removeMemberWithInt:(jint)uid {
   JavaUtilArrayList *nMembers = [[JavaUtilArrayList alloc] init];
-  for (AMGroupMember * __strong member in nMembers) {
+  for (AMGroupMember * __strong member in nil_chk(members_)) {
     if ([((AMGroupMember *) nil_chk(member)) getUid] != uid) {
       [nMembers addWithId:member];
     }
@@ -120,7 +120,7 @@ J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
                      withLong:(jlong)inviteDate
                   withBoolean:(jboolean)isAdmin {
   JavaUtilArrayList *nMembers = [[JavaUtilArrayList alloc] init];
-  for (AMGroupMember * __strong member in nMembers) {
+  for (AMGroupMember * __strong member in nil_chk(members_)) {
     if ([((AMGroupMember *) nil_chk(member)) getUid] != uid) {
       [nMembers addWithId:member];
     }
@@ -152,6 +152,9 @@ J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
       [res addWithId:[[AMGroupMember alloc] init]];
     }
     members_ = [values getRepeatedObjWithInt:6 withJavaUtilList:res];
+  }
+  else {
+    members_ = [[JavaUtilArrayList alloc] init];
   }
   isMember__ = [values getBoolWithInt:7];
 }

@@ -22,17 +22,22 @@
 + (ImActorModelApiUpdatesUpdateUserContactsChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithInt:(jint)uid
-           withJavaUtilList:(id<JavaUtilList>)contacts;
+           withJavaUtilList:(id<JavaUtilList>)phones
+           withJavaUtilList:(id<JavaUtilList>)emails;
 
 - (instancetype)init;
 
 - (jint)getUid;
 
-- (id<JavaUtilList>)getContacts;
+- (id<JavaUtilList>)getPhones;
+
+- (id<JavaUtilList>)getEmails;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+- (NSString *)description;
 
 - (jint)getHeaderKey;
 

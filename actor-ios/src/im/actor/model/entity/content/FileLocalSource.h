@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/FileLocalSource.java
 //
 
-#ifndef _ImActorModelEntityContentFileLocalSource_H_
-#define _ImActorModelEntityContentFileLocalSource_H_
+#ifndef _AMFileLocalSource_H_
+#define _AMFileLocalSource_H_
 
 @class BSBserValues;
 @class BSBserWriter;
@@ -12,14 +12,20 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/FileSource.h"
 
-@interface ImActorModelEntityContentFileLocalSource : ImActorModelEntityContentFileSource {
+@interface AMFileLocalSource : AMFileSource {
 }
 
-+ (ImActorModelEntityContentFileLocalSource *)fromValuesWithBSBserValues:(BSBserValues *)reader;
++ (AMFileLocalSource *)fromValuesWithBSBserValues:(BSBserValues *)reader;
 
-- (instancetype)initWithNSString:(NSString *)fileName;
+- (instancetype)initWithNSString:(NSString *)fileName
+                         withInt:(jint)size
+                    withNSString:(NSString *)fileDescriptor;
 
 - (NSString *)getFileName;
+
+- (jint)getSize;
+
+- (NSString *)getFileDescriptor;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -27,13 +33,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentFileLocalSource)
+J2OBJC_EMPTY_STATIC_INIT(AMFileLocalSource)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentFileLocalSource *ImActorModelEntityContentFileLocalSource_fromValuesWithBSBserValues_(BSBserValues *reader);
+FOUNDATION_EXPORT AMFileLocalSource *AMFileLocalSource_fromValuesWithBSBserValues_(BSBserValues *reader);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentFileLocalSource)
+typedef AMFileLocalSource ImActorModelEntityContentFileLocalSource;
 
-#endif // _ImActorModelEntityContentFileLocalSource_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMFileLocalSource)
+
+#endif // _AMFileLocalSource_H_

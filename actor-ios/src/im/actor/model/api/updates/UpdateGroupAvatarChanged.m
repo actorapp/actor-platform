@@ -89,6 +89,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImA
   [writer writeLongWithInt:4 withLong:self->date_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update GroupAvatarChanged{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", avatar=", (self->avatar_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER;
 }

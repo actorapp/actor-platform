@@ -57,6 +57,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromOnline, users_, id<Jav
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc SubscribeFromOnline{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"users=", [((id<JavaUtilList>) nil_chk(self->users_)) size]));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSubscribeFromOnline_HEADER;
 }

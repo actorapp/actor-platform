@@ -14,6 +14,7 @@
 @protocol AMLogCallback;
 @protocol AMMainThread;
 @protocol AMNetworking;
+@protocol AMNotificationProvider;
 @protocol AMPhoneBookProvider;
 @protocol AMStorage;
 @protocol AMThreading;
@@ -22,6 +23,8 @@
 
 @interface AMConfigurationBuilder : NSObject {
 }
+
+- (AMConfigurationBuilder *)setNotificationProviderWithAMNotificationProvider:(id<AMNotificationProvider>)notificationProvider;
 
 - (AMConfigurationBuilder *)setFileSystemProviderWithAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider;
 
@@ -44,8 +47,6 @@
 - (AMConfigurationBuilder *)setLocale:(id<AMLocaleProvider>)localeProvider;
 
 - (AMConfigurationBuilder *)addEndpoint:(NSString *)url;
-
-- (AMConfigurationBuilder *)setUploadFilePersist:(jboolean)isUploadFilePersist;
 
 - (AMConfigurationBuilder *)setMainThread:(id<AMMainThread>)mainThread;
 

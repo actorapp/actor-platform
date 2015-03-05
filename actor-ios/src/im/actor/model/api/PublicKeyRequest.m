@@ -59,6 +59,15 @@
   [writer writeLongWithInt:3 withLong:self->keyHash_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct PublicKeyRequest{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", accessHash=", self->accessHash_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", keyHash=", self->keyHash_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiPublicKeyRequest *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;

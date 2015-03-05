@@ -13,9 +13,11 @@
 #include "im/actor/model/LogCallback.h"
 #include "im/actor/model/MainThread.h"
 #include "im/actor/model/Networking.h"
+#include "im/actor/model/NotificationProvider.h"
 #include "im/actor/model/PhoneBookProvider.h"
 #include "im/actor/model/Storage.h"
 #include "im/actor/model/Threading.h"
+#include "im/actor/model/crypto/BouncyCastleProvider.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
 #include "java/lang/Integer.h"
 #include "java/lang/RuntimeException.h"
@@ -29,13 +31,13 @@
   id<AMMainThread> mainThread_;
   id<AMStorage> enginesFactory_;
   JavaUtilArrayList *endpoints_;
-  jboolean isUploadFilePersist_;
   id<AMLocaleProvider> localeProvider_;
   id<AMPhoneBookProvider> phoneBookProvider_;
   id<AMCryptoProvider> cryptoProvider_;
   id<AMFileSystemProvider> fileSystemProvider_;
   jboolean enableContactsLogging_;
   jboolean enableNetworkLogging_;
+  id<AMNotificationProvider> notificationProvider_;
 }
 @end
 
@@ -49,8 +51,14 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, localeProvider_, id<AMLocaleProvider
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, phoneBookProvider_, id<AMPhoneBookProvider>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, cryptoProvider_, id<AMCryptoProvider>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, fileSystemProvider_, id<AMFileSystemProvider>)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, notificationProvider_, id<AMNotificationProvider>)
 
 @implementation AMConfigurationBuilder
+
+- (AMConfigurationBuilder *)setNotificationProviderWithAMNotificationProvider:(id<AMNotificationProvider>)notificationProvider {
+  self->notificationProvider_ = notificationProvider;
+  return self;
+}
 
 - (AMConfigurationBuilder *)setFileSystemProviderWithAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider {
   self->fileSystemProvider_ = fileSystemProvider;
@@ -144,11 +152,6 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, fileSystemProvider_, id<AMFileSystem
   return self;
 }
 
-- (AMConfigurationBuilder *)setUploadFilePersist:(jboolean)isUploadFilePersist {
-  self->isUploadFilePersist_ = isUploadFilePersist;
-  return self;
-}
-
 - (AMConfigurationBuilder *)setMainThread:(id<AMMainThread>)mainThread {
   self->mainThread_ = mainThread;
   return self;
@@ -179,12 +182,13 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, fileSystemProvider_, id<AMFileSystem
   if (cryptoProvider_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Crypto Provider not set"];
   }
-  return [[AMConfiguration alloc] initWithAMNetworking:networking_ withAMConnectionEndpointArray:[endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]] withAMThreading:threading_ withAMMainThread:mainThread_ withAMStorage:enginesFactory_ withAMLogCallback:log_ withBoolean:isUploadFilePersist_ withAMLocaleProvider:localeProvider_ withAMPhoneBookProvider:phoneBookProvider_ withAMCryptoProvider:cryptoProvider_ withAMFileSystemProvider:fileSystemProvider_ withBoolean:enableContactsLogging_ withBoolean:enableNetworkLogging_];
+  return [[AMConfiguration alloc] initWithAMNetworking:networking_ withAMConnectionEndpointArray:[endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]] withAMThreading:threading_ withAMMainThread:mainThread_ withAMStorage:enginesFactory_ withAMLogCallback:log_ withAMLocaleProvider:localeProvider_ withAMPhoneBookProvider:phoneBookProvider_ withAMCryptoProvider:cryptoProvider_ withAMFileSystemProvider:fileSystemProvider_ withAMNotificationProvider:notificationProvider_ withBoolean:enableContactsLogging_ withBoolean:enableNetworkLogging_];
 }
 
 - (instancetype)init {
   if (self = [super init]) {
     endpoints_ = [[JavaUtilArrayList alloc] init];
+    cryptoProvider_ = [[ImActorModelCryptoBouncyCastleProvider alloc] init];
     enableContactsLogging_ = NO;
     enableNetworkLogging_ = NO;
   }
@@ -199,13 +203,13 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, fileSystemProvider_, id<AMFileSystem
   other->mainThread_ = mainThread_;
   other->enginesFactory_ = enginesFactory_;
   other->endpoints_ = endpoints_;
-  other->isUploadFilePersist_ = isUploadFilePersist_;
   other->localeProvider_ = localeProvider_;
   other->phoneBookProvider_ = phoneBookProvider_;
   other->cryptoProvider_ = cryptoProvider_;
   other->fileSystemProvider_ = fileSystemProvider_;
   other->enableContactsLogging_ = enableContactsLogging_;
   other->enableNetworkLogging_ = enableNetworkLogging_;
+  other->notificationProvider_ = notificationProvider_;
 }
 
 @end

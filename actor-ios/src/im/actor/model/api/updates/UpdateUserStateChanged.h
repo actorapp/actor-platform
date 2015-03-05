@@ -34,6 +34,8 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)state;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+- (NSString *)description;
+
 - (jint)getHeaderKey;
 
 @end

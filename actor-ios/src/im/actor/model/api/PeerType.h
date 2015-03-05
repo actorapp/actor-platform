@@ -13,6 +13,7 @@ typedef NS_ENUM(NSUInteger, ImActorModelApiPeerType) {
   ImActorModelApiPeerType_PRIVATE = 0,
   ImActorModelApiPeerType_GROUP = 1,
   ImActorModelApiPeerType_EMAIL = 2,
+  ImActorModelApiPeerType_UNSUPPORTED_VALUE = 3,
 };
 
 @interface ImActorModelApiPeerTypeEnum : JavaLangEnum < NSCopying > {
@@ -51,6 +52,9 @@ J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiPeerTypeEnum, GROUP)
 
 #define ImActorModelApiPeerTypeEnum_EMAIL ImActorModelApiPeerTypeEnum_values_[ImActorModelApiPeerType_EMAIL]
 J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiPeerTypeEnum, EMAIL)
+
+#define ImActorModelApiPeerTypeEnum_UNSUPPORTED_VALUE ImActorModelApiPeerTypeEnum_values_[ImActorModelApiPeerType_UNSUPPORTED_VALUE]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiPeerTypeEnum, UNSUPPORTED_VALUE)
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiPeerTypeEnum)
 

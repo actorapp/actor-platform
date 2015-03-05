@@ -57,6 +57,14 @@
   [writer writeIntWithInt:2 withInt:self->count_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update GroupOnline{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", count=", self->count_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateGroupOnline_HEADER;
 }

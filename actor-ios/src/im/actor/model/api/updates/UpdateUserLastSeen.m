@@ -57,6 +57,14 @@
   [writer writeLongWithInt:2 withLong:self->date_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update UserLastSeen{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserLastSeen_HEADER;
 }

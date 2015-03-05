@@ -7,18 +7,23 @@
 #define _AMFileVM_H_
 
 @class AMFileLocation;
-@class AMMessenger;
+@class ImActorModelModulesModules;
+@protocol AMFileVMCallback;
+@protocol ImActorModelFilesFileReference;
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/viewmodel/AsyncVM.h"
-#include "im/actor/model/viewmodel/FileCallback.h"
+#include "im/actor/model/modules/file/DownloadCallback.h"
+#include "im/actor/model/mvvm/AsyncVM.h"
 
-@interface AMFileVM : AMAsyncVM < AMFileCallback > {
+@interface AMFileVM : AMAsyncVM {
 }
 
 - (instancetype)initWithAMFileLocation:(AMFileLocation *)location
                            withBoolean:(jboolean)isAutostart
-                       withAMMessenger:(AMMessenger *)messenger;
+        withImActorModelModulesModules:(ImActorModelModulesModules *)modules
+                  withAMFileVMCallback:(id<AMFileVMCallback>)vmCallback;
+
+- (void)onObjectReceivedWithId:(id)obj;
 
 - (void)detach;
 
@@ -32,5 +37,67 @@ CF_EXTERN_C_END
 typedef AMFileVM ImActorModelViewmodelFileVM;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMFileVM)
+
+@interface AMFileVM_OnNotDownloaded : NSObject {
+}
+
+- (instancetype)initWithAMFileVM:(AMFileVM *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMFileVM_OnNotDownloaded)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMFileVM_OnNotDownloaded)
+
+@interface AMFileVM_OnDownloading : NSObject {
+}
+
+- (jfloat)getProgress;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMFileVM_OnDownloading)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMFileVM_OnDownloading)
+
+@interface AMFileVM_OnDownloaded : NSObject {
+}
+
+- (id<ImActorModelFilesFileReference>)getFileReference;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMFileVM_OnDownloaded)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMFileVM_OnDownloaded)
+
+@interface AMFileVM_$1 : NSObject < ImActorModelModulesFileDownloadCallback > {
+}
+
+- (void)onNotDownloaded;
+
+- (void)onDownloadingWithFloat:(jfloat)progress;
+
+- (void)onDownloadedWithImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference;
+
+- (instancetype)initWithAMFileVM:(AMFileVM *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMFileVM_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMFileVM_$1)
 
 #endif // _AMFileVM_H_

@@ -50,6 +50,13 @@
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct GroupOutPeer{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiGroupOutPeer *)other {
   [super copyAllFieldsTo:other];
   other->groupId_ = groupId_;

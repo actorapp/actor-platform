@@ -57,6 +57,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetPublicKeys, keys_, id<JavaUtilLi
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->keys_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc GetPublicKeys{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"keys=", [((id<JavaUtilList>) nil_chk(self->keys_)) size]));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestGetPublicKeys_HEADER;
 }

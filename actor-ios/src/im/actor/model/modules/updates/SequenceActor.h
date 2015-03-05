@@ -13,6 +13,7 @@
 @class ImActorModelApiRpcResponseSeq;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdatesUpdateProcessor;
+@class JavaUtilConcurrentCopyOnWriteArrayList;
 @class JavaUtilHashMap;
 
 #include "J2ObjC_header.h"

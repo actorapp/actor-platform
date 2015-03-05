@@ -78,6 +78,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiWrongKeysErrorData, invalidKeys_, id<JavaUtil
   [writer writeRepeatedObjWithInt:3 withJavaUtilList:self->invalidKeys_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct WrongKeysErrorData{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"newKeys=", self->newKeys_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", removedKeys=", self->removedKeys_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", invalidKeys=", self->invalidKeys_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiWrongKeysErrorData *)other {
   [super copyAllFieldsTo:other];
   other->newKeys_ = newKeys_;

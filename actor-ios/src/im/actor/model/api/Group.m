@@ -21,7 +21,7 @@
   NSString *title_;
   ImActorModelApiAvatar *avatar_;
   jboolean isMember__;
-  jint adminUid_;
+  jint creatorUid_;
   id<JavaUtilList> members_;
   jlong createDate_;
 }
@@ -38,7 +38,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
                withNSString:(NSString *)title
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
                 withBoolean:(jboolean)isMember
-                    withInt:(jint)adminUid
+                    withInt:(jint)creatorUid
            withJavaUtilList:(id<JavaUtilList>)members
                    withLong:(jlong)createDate {
   if (self = [super init]) {
@@ -47,7 +47,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
     self->title_ = title;
     self->avatar_ = avatar;
     self->isMember__ = isMember;
-    self->adminUid_ = adminUid;
+    self->creatorUid_ = creatorUid;
     self->members_ = members;
     self->createDate_ = createDate;
   }
@@ -78,8 +78,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   return self->isMember__;
 }
 
-- (jint)getAdminUid {
-  return self->adminUid_;
+- (jint)getCreatorUid {
+  return self->creatorUid_;
 }
 
 - (id<JavaUtilList>)getMembers {
@@ -96,7 +96,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   self->title_ = [values getStringWithInt:3];
   self->avatar_ = [values optObjWithInt:4 withBSBserObject:[[ImActorModelApiAvatar alloc] init]];
   self->isMember__ = [values getBoolWithInt:6];
-  self->adminUid_ = [values getIntWithInt:8];
+  self->creatorUid_ = [values getIntWithInt:8];
   id<JavaUtilList> _members = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:9]; i++) {
     [_members addWithId:[[ImActorModelApiMember alloc] init]];
@@ -116,9 +116,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
     [writer writeObjectWithInt:4 withBSBserObject:self->avatar_];
   }
   [writer writeBoolWithInt:6 withBoolean:self->isMember__];
-  [writer writeIntWithInt:8 withInt:self->adminUid_];
+  [writer writeIntWithInt:8 withInt:self->creatorUid_];
   [writer writeRepeatedObjWithInt:9 withJavaUtilList:self->members_];
   [writer writeLongWithInt:10 withLong:self->createDate_];
+}
+
+- (NSString *)description {
+  NSString *res = @"struct Group{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"id=", self->id__));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", avatar=", (self->avatar_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$$", res, JreStrcat("$Z", @", isMember=", self->isMember__));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", members=", [((id<JavaUtilList>) nil_chk(self->members_)) size]));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", createDate=", self->createDate_));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiGroup *)other {
@@ -128,7 +139,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   other->title_ = title_;
   other->avatar_ = avatar_;
   other->isMember__ = isMember__;
-  other->adminUid_ = adminUid_;
+  other->creatorUid_ = creatorUid_;
   other->members_ = members_;
   other->createDate_ = createDate_;
 }

@@ -57,6 +57,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSearchContacts, users_, id<JavaUti
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple SearchContacts{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseSearchContacts_HEADER;
 }

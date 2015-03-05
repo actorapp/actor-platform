@@ -72,6 +72,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedReceived, peer_, ImActo
   [writer writeLongWithInt:3 withLong:self->receivedDate_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update EncryptedReceived{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", receivedDate=", self->receivedDate_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateEncryptedReceived_HEADER;
 }

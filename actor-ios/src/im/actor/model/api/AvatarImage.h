@@ -35,6 +35,8 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+- (NSString *)description;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiAvatarImage)

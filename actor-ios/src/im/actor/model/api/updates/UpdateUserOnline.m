@@ -48,6 +48,13 @@
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update UserOnline{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserOnline_HEADER;
 }

@@ -11,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiBaseSeqUpdate () {
@@ -82,6 +83,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseSeqUpdate, update_, IOSByteArray *)
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:4 withByteArray:self->update_];
+}
+
+- (NSString *)description {
+  NSString *res = @"update box SeqUpdate{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"seq=", self->seq_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", state=", BSUtils_byteArrayToStringCompactWithByteArray_(self->state_)));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", updateHeader=", self->updateHeader_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", update=", BSUtils_byteArrayToStringCompactWithByteArray_(self->update_)));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {

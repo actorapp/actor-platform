@@ -51,6 +51,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaU
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedIntWithInt:1 withJavaUtilList:self->uids_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update ContactsRemoved{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uids=", [((id<JavaUtilList>) nil_chk(self->uids_)) size]));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateContactsRemoved_HEADER;
 }

@@ -11,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestGetDifference () {
@@ -60,6 +61,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetDifference, state_, IOSByteArray
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:2 withByteArray:self->state_];
+}
+
+- (NSString *)description {
+  NSString *res = @"rpc GetDifference{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"seq=", self->seq_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", state=", BSUtils_byteArrayToStringCompactWithByteArray_(self->state_)));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {

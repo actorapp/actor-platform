@@ -54,6 +54,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->config_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update Config{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"config=", self->config_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateConfig_HEADER;
 }

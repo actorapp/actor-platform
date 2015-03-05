@@ -75,6 +75,16 @@
   [writer writeLongWithInt:8 withLong:self->date_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update GroupInvite{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", inviteUid=", self->inviteUid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateGroupInvite_HEADER;
 }

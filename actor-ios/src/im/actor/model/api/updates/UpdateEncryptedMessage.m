@@ -12,6 +12,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateEncryptedMessage () {
@@ -105,6 +106,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedMessage, message_, IOSB
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:5 withByteArray:self->message_];
+}
+
+- (NSString *)description {
+  NSString *res = @"update EncryptedMessage{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", senderUid=", self->senderUid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", keyHash=", self->keyHash_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", aesEncryptedKey=", BSUtils_byteArrayToStringCompactWithByteArray_(self->aesEncryptedKey_)));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {

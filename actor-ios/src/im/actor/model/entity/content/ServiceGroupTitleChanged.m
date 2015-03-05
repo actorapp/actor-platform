@@ -14,19 +14,19 @@
 #include "im/actor/model/entity/content/ServiceGroupTitleChanged.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityContentServiceGroupTitleChanged () {
+@interface AMServiceGroupTitleChanged () {
  @public
   NSString *newTitle_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupTitleChanged, newTitle_, NSString *)
+J2OBJC_FIELD_SETTER(AMServiceGroupTitleChanged, newTitle_, NSString *)
 
-@implementation ImActorModelEntityContentServiceGroupTitleChanged
+@implementation AMServiceGroupTitleChanged
 
-+ (ImActorModelEntityContentServiceGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentServiceGroupTitleChanged_fromBytesWithByteArray_(data);
++ (AMServiceGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMServiceGroupTitleChanged_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)newTitle {
@@ -44,8 +44,8 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupTitleChanged, newTitle_
   return newTitle_;
 }
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType {
-  return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_TITLE();
+- (AMAbsContent_ContentTypeEnum *)getContentType {
+  return AMAbsContent_ContentTypeEnum_get_SERVICE_TITLE();
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -58,16 +58,16 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupTitleChanged, newTitle_
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:newTitle_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentServiceGroupTitleChanged *)other {
+- (void)copyAllFieldsTo:(AMServiceGroupTitleChanged *)other {
   [super copyAllFieldsTo:other];
   other->newTitle_ = newTitle_;
 }
 
 @end
 
-ImActorModelEntityContentServiceGroupTitleChanged *ImActorModelEntityContentServiceGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentServiceGroupTitleChanged_init();
-  return ((ImActorModelEntityContentServiceGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupTitleChanged alloc] init], data));
+AMServiceGroupTitleChanged *AMServiceGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMServiceGroupTitleChanged_init();
+  return ((AMServiceGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupTitleChanged alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupTitleChanged)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceGroupTitleChanged)

@@ -3,30 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/ServiceUserRegistered.java
 //
 
-#ifndef _ImActorModelEntityContentServiceUserRegistered_H_
-#define _ImActorModelEntityContentServiceUserRegistered_H_
+#ifndef _AMServiceUserRegistered_H_
+#define _AMServiceUserRegistered_H_
 
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@interface ImActorModelEntityContentServiceUserRegistered : ImActorModelEntityContentServiceContent {
+@interface AMServiceUserRegistered : AMServiceContent {
 }
 
-+ (ImActorModelEntityContentServiceUserRegistered *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMServiceUserRegistered *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)init;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentServiceUserRegistered)
+J2OBJC_EMPTY_STATIC_INIT(AMServiceUserRegistered)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentServiceUserRegistered *ImActorModelEntityContentServiceUserRegistered_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceUserRegistered *AMServiceUserRegistered_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentServiceUserRegistered)
+typedef AMServiceUserRegistered ImActorModelEntityContentServiceUserRegistered;
 
-#endif // _ImActorModelEntityContentServiceUserRegistered_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMServiceUserRegistered)
+
+#endif // _AMServiceUserRegistered_H_

@@ -11,7 +11,6 @@
 @class IOSByteArray;
 @class ImActorModelApiConfig;
 @class ImActorModelApiUser;
-@protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -25,7 +24,6 @@
 
 - (instancetype)initWithLong:(jlong)publicKeyHash
      withImActorModelApiUser:(ImActorModelApiUser *)user
-            withJavaUtilList:(id<JavaUtilList>)contacts
    withImActorModelApiConfig:(ImActorModelApiConfig *)config;
 
 - (instancetype)init;
@@ -34,13 +32,13 @@
 
 - (ImActorModelApiUser *)getUser;
 
-- (id<JavaUtilList>)getContacts;
-
 - (ImActorModelApiConfig *)getConfig;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+- (NSString *)description;
 
 - (jint)getHeaderKey;
 

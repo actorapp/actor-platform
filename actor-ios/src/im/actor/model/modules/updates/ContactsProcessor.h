@@ -6,6 +6,7 @@
 #ifndef _ImActorModelModulesUpdatesContactsProcessor_H_
 #define _ImActorModelModulesUpdatesContactsProcessor_H_
 
+@class DKActorRef;
 @class IOSIntArray;
 @class ImActorModelModulesModules;
 

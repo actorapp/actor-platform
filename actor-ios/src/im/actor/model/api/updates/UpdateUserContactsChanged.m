@@ -17,11 +17,13 @@
 @interface ImActorModelApiUpdatesUpdateUserContactsChanged () {
  @public
   jint uid_;
-  id<JavaUtilList> contacts_;
+  id<JavaUtilList> phones_;
+  id<JavaUtilList> emails_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, contacts_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, phones_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, emails_, id<JavaUtilList>)
 
 @implementation ImActorModelApiUpdatesUpdateUserContactsChanged
 
@@ -30,10 +32,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, contacts_, 
 }
 
 - (instancetype)initWithInt:(jint)uid
-           withJavaUtilList:(id<JavaUtilList>)contacts {
+           withJavaUtilList:(id<JavaUtilList>)phones
+           withJavaUtilList:(id<JavaUtilList>)emails {
   if (self = [super init]) {
     self->uid_ = uid;
-    self->contacts_ = contacts;
+    self->phones_ = phones;
+    self->emails_ = emails;
   }
   return self;
 }
@@ -46,18 +50,33 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, contacts_, 
   return self->uid_;
 }
 
-- (id<JavaUtilList>)getContacts {
-  return self->contacts_;
+- (id<JavaUtilList>)getPhones {
+  return self->phones_;
+}
+
+- (id<JavaUtilList>)getEmails {
+  return self->emails_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
-  self->contacts_ = [values getRepeatedIntWithInt:2];
+  self->phones_ = [values getRepeatedIntWithInt:2];
+  self->emails_ = [values getRepeatedIntWithInt:3];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
-  [writer writeRepeatedIntWithInt:2 withJavaUtilList:self->contacts_];
+  [writer writeRepeatedIntWithInt:2 withJavaUtilList:self->phones_];
+  [writer writeRepeatedIntWithInt:3 withJavaUtilList:self->emails_];
+}
+
+- (NSString *)description {
+  NSString *res = @"update UserContactsChanged{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", phones=", [((id<JavaUtilList>) nil_chk(self->phones_)) size]));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", emails=", [((id<JavaUtilList>) nil_chk(self->emails_)) size]));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {
@@ -67,7 +86,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, contacts_, 
 - (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateUserContactsChanged *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;
-  other->contacts_ = contacts_;
+  other->phones_ = phones_;
+  other->emails_ = emails_;
 }
 
 @end

@@ -10,24 +10,31 @@
 #include "im/actor/model/entity/content/FileLocalSource.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityContentFileLocalSource () {
+@interface AMFileLocalSource () {
  @public
   NSString *fileName_;
+  NSString *fileDescriptor_;
+  jint size_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileLocalSource, fileName_, NSString *)
+J2OBJC_FIELD_SETTER(AMFileLocalSource, fileName_, NSString *)
+J2OBJC_FIELD_SETTER(AMFileLocalSource, fileDescriptor_, NSString *)
 
-@implementation ImActorModelEntityContentFileLocalSource
+@implementation AMFileLocalSource
 
-+ (ImActorModelEntityContentFileLocalSource *)fromValuesWithBSBserValues:(BSBserValues *)reader {
-  return ImActorModelEntityContentFileLocalSource_fromValuesWithBSBserValues_(reader);
++ (AMFileLocalSource *)fromValuesWithBSBserValues:(BSBserValues *)reader {
+  return AMFileLocalSource_fromValuesWithBSBserValues_(reader);
 }
 
-- (instancetype)initWithNSString:(NSString *)fileName {
+- (instancetype)initWithNSString:(NSString *)fileName
+                         withInt:(jint)size
+                    withNSString:(NSString *)fileDescriptor {
   if (self = [super init]) {
     self->fileName_ = fileName;
+    self->size_ = size;
+    self->fileDescriptor_ = fileDescriptor;
   }
   return self;
 }
@@ -40,28 +47,42 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileLocalSource, fileName_, NSStrin
   return fileName_;
 }
 
+- (jint)getSize {
+  return size_;
+}
+
+- (NSString *)getFileDescriptor {
+  return fileDescriptor_;
+}
+
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   fileName_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:2];
+  size_ = [values getIntWithInt:3];
+  fileDescriptor_ = [values getStringWithInt:4];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:fileName_];
+  [writer writeIntWithInt:3 withInt:size_];
+  [writer writeStringWithInt:4 withNSString:fileDescriptor_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentFileLocalSource *)other {
+- (void)copyAllFieldsTo:(AMFileLocalSource *)other {
   [super copyAllFieldsTo:other];
   other->fileName_ = fileName_;
+  other->fileDescriptor_ = fileDescriptor_;
+  other->size_ = size_;
 }
 
 @end
 
-ImActorModelEntityContentFileLocalSource *ImActorModelEntityContentFileLocalSource_fromValuesWithBSBserValues_(BSBserValues *reader) {
-  ImActorModelEntityContentFileLocalSource_init();
-  ImActorModelEntityContentFileLocalSource *fileLocalSource = [[ImActorModelEntityContentFileLocalSource alloc] init];
+AMFileLocalSource *AMFileLocalSource_fromValuesWithBSBserValues_(BSBserValues *reader) {
+  AMFileLocalSource_init();
+  AMFileLocalSource *fileLocalSource = [[AMFileLocalSource alloc] init];
   [fileLocalSource parseWithBSBserValues:reader];
   return fileLocalSource;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentFileLocalSource)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileLocalSource)

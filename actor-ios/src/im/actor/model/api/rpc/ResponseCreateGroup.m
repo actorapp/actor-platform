@@ -96,6 +96,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
   [writer writeLongWithInt:6 withLong:self->date_];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple CreateGroup{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseCreateGroup_HEADER;
 }

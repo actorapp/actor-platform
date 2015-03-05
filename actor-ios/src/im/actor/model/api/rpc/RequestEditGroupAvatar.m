@@ -77,6 +77,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
   [writer writeObjectWithInt:3 withBSBserObject:self->fileLocation_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc EditGroupAvatar{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"groupPeer=", self->groupPeer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", fileLocation=", (self->fileLocation_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestEditGroupAvatar_HEADER;
 }

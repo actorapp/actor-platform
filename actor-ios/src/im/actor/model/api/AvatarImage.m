@@ -74,6 +74,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
   [writer writeIntWithInt:4 withInt:self->fileSize_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct AvatarImage{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"fileLocation=", self->fileLocation_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", width=", self->width_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", height=", self->height_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", fileSize=", self->fileSize_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiAvatarImage *)other {
   [super copyAllFieldsTo:other];
   other->fileLocation_ = fileLocation_;

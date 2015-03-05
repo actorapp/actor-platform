@@ -22,7 +22,7 @@
                withNSString:(NSString *)title
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
                 withBoolean:(jboolean)isMember
-                    withInt:(jint)adminUid
+                    withInt:(jint)creatorUid
            withJavaUtilList:(id<JavaUtilList>)members
                    withLong:(jlong)createDate;
 
@@ -38,7 +38,7 @@
 
 - (jboolean)isMember;
 
-- (jint)getAdminUid;
+- (jint)getCreatorUid;
 
 - (id<JavaUtilList>)getMembers;
 
@@ -47,6 +47,8 @@
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+- (NSString *)description;
 
 @end
 

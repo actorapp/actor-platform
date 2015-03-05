@@ -6,6 +6,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/PeerType.h"
+#include "im/actor/model/api/TypingType.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/typing/TypingActor.h"
@@ -30,12 +31,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesTypingProcessor, typingActor_, DKA
 
 - (void)onTypingWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                 withInt:(jint)uid
-                                withInt:(jint)type {
+      withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
   if ([((ImActorModelApiPeer *) nil_chk(peer)) getType] == ImActorModelApiPeerTypeEnum_get_PRIVATE()) {
-    [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_PrivateTyping alloc] initWithInt:uid withInt:type]];
+    [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_PrivateTyping alloc] initWithInt:uid withImActorModelApiTypingTypeEnum:type]];
   }
   else if ([peer getType] == ImActorModelApiPeerTypeEnum_get_GROUP()) {
-    [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_GroupTyping alloc] initWithInt:[peer getId] withInt:uid withInt:type]];
+    [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_GroupTyping alloc] initWithInt:[peer getId] withInt:uid withImActorModelApiTypingTypeEnum:type]];
   }
   else {
   }

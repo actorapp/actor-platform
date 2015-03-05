@@ -54,6 +54,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseStartUpload, config_, ImActorModel
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->config_];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple StartUpload{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseStartUpload_HEADER;
 }

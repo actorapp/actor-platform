@@ -61,6 +61,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
   }
 }
 
+- (NSString *)description {
+  NSString *res = @"update UserLocalNameChanged{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", localName=", self->localName_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserLocalNameChanged_HEADER;
 }

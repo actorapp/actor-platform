@@ -79,6 +79,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseImportContacts, state_, IOSByteArr
   [writer writeBytesWithInt:3 withByteArray:self->state_];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple ImportContacts{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseImportContacts_HEADER;
 }

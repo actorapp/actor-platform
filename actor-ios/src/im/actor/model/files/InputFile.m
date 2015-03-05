@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/files/InputFile.java
 //
 
+#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/files/InputFile.h"
 

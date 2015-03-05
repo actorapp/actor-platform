@@ -65,14 +65,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  peer_ = AMPeer_fromUidWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
+  peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   rid_ = [values getLongWithInt:2];
   sortDate_ = [values getLongWithInt:3];
   isEncrypted__ = [values getBoolWithInt:5];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUid]];
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:rid_];
   [writer writeLongWithInt:3 withLong:sortDate_];
   [writer writeBoolWithInt:5 withBoolean:isEncrypted__];

@@ -3,27 +3,27 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/TextContent.java
 //
 
-#ifndef _ImActorModelEntityContentTextContent_H_
-#define _ImActorModelEntityContentTextContent_H_
+#ifndef _AMTextContent_H_
+#define _AMTextContent_H_
 
+@class AMAbsContent_ContentTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelEntityContentAbsContent_ContentTypeEnum;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/AbsContent.h"
 
-@interface ImActorModelEntityContentTextContent : ImActorModelEntityContentAbsContent {
+@interface AMTextContent : AMAbsContent {
 }
 
-+ (ImActorModelEntityContentTextContent *)textFromBytesWithByteArray:(IOSByteArray *)data;
++ (AMTextContent *)textFromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithNSString:(NSString *)text;
 
 - (NSString *)getText;
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -31,13 +31,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentTextContent)
+J2OBJC_EMPTY_STATIC_INIT(AMTextContent)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentTextContent *ImActorModelEntityContentTextContent_textFromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMTextContent *AMTextContent_textFromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentTextContent)
+typedef AMTextContent ImActorModelEntityContentTextContent;
 
-#endif // _ImActorModelEntityContentTextContent_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMTextContent)
+
+#endif // _AMTextContent_H_

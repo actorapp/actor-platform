@@ -13,6 +13,7 @@ typedef NS_ENUM(NSUInteger, ImActorModelApiSex) {
   ImActorModelApiSex_UNKNOWN = 0,
   ImActorModelApiSex_MALE = 1,
   ImActorModelApiSex_FEMALE = 2,
+  ImActorModelApiSex_UNSUPPORTED_VALUE = 3,
 };
 
 @interface ImActorModelApiSexEnum : JavaLangEnum < NSCopying > {
@@ -51,6 +52,9 @@ J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiSexEnum, MALE)
 
 #define ImActorModelApiSexEnum_FEMALE ImActorModelApiSexEnum_values_[ImActorModelApiSex_FEMALE]
 J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiSexEnum, FEMALE)
+
+#define ImActorModelApiSexEnum_UNSUPPORTED_VALUE ImActorModelApiSexEnum_values_[ImActorModelApiSex_UNSUPPORTED_VALUE]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiSexEnum, UNSUPPORTED_VALUE)
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiSexEnum)
 

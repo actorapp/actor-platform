@@ -368,16 +368,18 @@ void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImAc
     if (((ImActorModelNetworkApiApiBroker_RequestHolder *) nil_chk(holder))->protoId_ != 0) {
       (void) [self->idMap_ removeWithId:JavaLangLong_valueOfWithLong_(holder->protoId_)];
     }
-    [((id<AMRpcCallback>) nil_chk(holder->callback_)) onErrorWithAMRpcException:[[AMRpcException alloc] initWithNSString:((MTRpcError *) nil_chk(e))->errorTag_ withInt:e->errorCode_ withNSString:e->userMessage_ withBoolean:e->canTryAgain_ withByteArray:e->relatedData_]];
+    AMLog_wWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, JreStrcat("$J$$CIC$", @"<- error#", holder->publicId_, @": ", ((MTRpcError *) nil_chk(e))->errorTag_, ' ', e->errorCode_, ' ', e->userMessage_));
+    [((id<AMRpcCallback>) nil_chk(holder->callback_)) onErrorWithAMRpcException:[[AMRpcException alloc] initWithNSString:e->errorTag_ withInt:e->errorCode_ withNSString:e->userMessage_ withBoolean:e->canTryAgain_ withByteArray:e->relatedData_]];
   }
   else if ([protoStruct isKindOfClass:[MTRpcInternalError class]]) {
     MTRpcInternalError *e = ((MTRpcInternalError *) check_class_cast(protoStruct, [MTRpcInternalError class]));
+    AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, JreStrcat("$J", @"<- internal_error#", ((ImActorModelNetworkApiApiBroker_RequestHolder *) nil_chk(holder))->publicId_));
     if ([((MTRpcInternalError *) nil_chk(e)) isCanTryAgain]) {
       [((DKActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelNetworkApiApiBroker_ForceResend alloc] initWithImActorModelNetworkApiApiBroker:self withLong:rid] withLong:[e getTryAgainDelay] * 1000LL];
     }
     else {
       (void) [self->requests_ removeWithId:JavaLangLong_valueOfWithLong_(rid)];
-      if (((ImActorModelNetworkApiApiBroker_RequestHolder *) nil_chk(holder))->protoId_ != 0) {
+      if (holder->protoId_ != 0) {
         (void) [self->idMap_ removeWithId:JavaLangLong_valueOfWithLong_(holder->protoId_)];
       }
       [((id<AMRpcCallback>) nil_chk(holder->callback_)) onErrorWithAMRpcException:[[AMRpcInternalException alloc] init]];
@@ -385,7 +387,8 @@ void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImAc
   }
   else if ([protoStruct isKindOfClass:[MTRpcFloodWait class]]) {
     MTRpcFloodWait *f = (MTRpcFloodWait *) check_class_cast(protoStruct, [MTRpcFloodWait class]);
-    [((DKActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelNetworkApiApiBroker_ForceResend alloc] initWithImActorModelNetworkApiApiBroker:self withLong:rid] withLong:[((MTRpcFloodWait *) nil_chk(f)) getDelay] * 1000LL];
+    AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, JreStrcat("$JCI$", @"<- flood_wait#", ((ImActorModelNetworkApiApiBroker_RequestHolder *) nil_chk(holder))->publicId_, ' ', [((MTRpcFloodWait *) nil_chk(f)) getDelay], @" sec"));
+    [((DKActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelNetworkApiApiBroker_ForceResend alloc] initWithImActorModelNetworkApiApiBroker:self withLong:rid] withLong:[f getDelay] * 1000LL];
   }
   else {
   }

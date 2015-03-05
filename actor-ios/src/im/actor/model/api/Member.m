@@ -59,6 +59,15 @@
   [writer writeLongWithInt:3 withLong:self->date_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct Member{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", inviterUid=", self->inviterUid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiMember *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;

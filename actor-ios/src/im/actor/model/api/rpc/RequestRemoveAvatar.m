@@ -29,6 +29,12 @@
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc RemoveAvatar{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestRemoveAvatar_HEADER;
 }

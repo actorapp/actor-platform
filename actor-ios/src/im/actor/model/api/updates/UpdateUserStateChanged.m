@@ -63,6 +63,14 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)state {
   [writer writeIntWithInt:2 withInt:[((ImActorModelApiUserStateEnum *) nil_chk(self->state_)) getValue]];
 }
 
+- (NSString *)description {
+  NSString *res = @"update UserStateChanged{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", state=", self->state_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserStateChanged_HEADER;
 }

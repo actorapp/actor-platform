@@ -16,16 +16,16 @@
 #include "im/actor/model/entity/content/FileSource.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelEntityContentDocumentContent
+@implementation AMDocumentContent
 
-+ (ImActorModelEntityContentDocumentContent *)docFromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentDocumentContent_docFromBytesWithByteArray_(data);
++ (AMDocumentContent *)docFromBytesWithByteArray:(IOSByteArray *)data {
+  return AMDocumentContent_docFromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelEntityContentFileSource:(ImActorModelEntityContentFileSource *)source
-                                               withNSString:(NSString *)mimetype
-                                               withNSString:(NSString *)name
-                     withImActorModelEntityContentFastThumb:(ImActorModelEntityContentFastThumb *)fastThumb {
+- (instancetype)initWithAMFileSource:(AMFileSource *)source
+                        withNSString:(NSString *)mimetype
+                        withNSString:(NSString *)name
+                     withAMFastThumb:(AMFastThumb *)fastThumb {
   if (self = [super init]) {
     self->source_ = source;
     self->mimetype_ = mimetype;
@@ -39,7 +39,7 @@
   return [super init];
 }
 
-- (ImActorModelEntityContentFileSource *)getSource {
+- (AMFileSource *)getSource {
   return source_;
 }
 
@@ -47,28 +47,41 @@
   return name_;
 }
 
-- (ImActorModelEntityContentFastThumb *)getFastThumb {
+- (AMFastThumb *)getFastThumb {
   return fastThumb_;
 }
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType {
-  return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_DOCUMENT();
+- (NSString *)getExt {
+  NSString *ext = @"";
+  jint dotIndex = [((NSString *) nil_chk(name_)) lastIndexOf:'.'];
+  if (dotIndex >= 0) {
+    ext = [name_ substring:dotIndex + 1];
+  }
+  return ext;
+}
+
+- (NSString *)getMimetype {
+  return mimetype_;
+}
+
+- (AMAbsContent_ContentTypeEnum *)getContentType {
+  return AMAbsContent_ContentTypeEnum_get_DOCUMENT();
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
-  source_ = ImActorModelEntityContentFileSource_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
+  source_ = AMFileSource_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
   mimetype_ = [values getStringWithInt:3];
   name_ = [values getStringWithInt:4];
-  IOSByteArray *ft = [values getBytesWithInt:5];
+  IOSByteArray *ft = [values optBytesWithInt:5];
   if (ft != nil) {
-    fastThumb_ = ImActorModelEntityContentFastThumb_fromBytesWithByteArray_(ft);
+    fastThumb_ = AMFastThumb_fromBytesWithByteArray_(ft);
   }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
-  [((BSBserWriter *) nil_chk(writer)) writeBytesWithInt:2 withByteArray:[((ImActorModelEntityContentFileSource *) nil_chk(source_)) toByteArray]];
+  [((BSBserWriter *) nil_chk(writer)) writeBytesWithInt:2 withByteArray:[((AMFileSource *) nil_chk(source_)) toByteArray]];
   [writer writeStringWithInt:3 withNSString:mimetype_];
   [writer writeStringWithInt:4 withNSString:name_];
   if (fastThumb_ != nil) {
@@ -76,7 +89,7 @@
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentDocumentContent *)other {
+- (void)copyAllFieldsTo:(AMDocumentContent *)other {
   [super copyAllFieldsTo:other];
   other->source_ = source_;
   other->mimetype_ = mimetype_;
@@ -86,9 +99,9 @@
 
 @end
 
-ImActorModelEntityContentDocumentContent *ImActorModelEntityContentDocumentContent_docFromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentDocumentContent_init();
-  return ((ImActorModelEntityContentDocumentContent *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentDocumentContent alloc] init], data));
+AMDocumentContent *AMDocumentContent_docFromBytesWithByteArray_(IOSByteArray *data) {
+  AMDocumentContent_init();
+  return ((AMDocumentContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMDocumentContent alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentDocumentContent)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDocumentContent)

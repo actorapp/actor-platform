@@ -63,6 +63,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedReadByMe, peer_, ImActo
   [writer writeLongWithInt:2 withLong:self->rid_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update EncryptedReadByMe{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateEncryptedReadByMe_HEADER;
 }

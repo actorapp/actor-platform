@@ -57,6 +57,14 @@
   [writer writeIntWithInt:2 withInt:self->uid_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update EmailContactRegistered{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"emailId=", self->emailId_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", uid=", self->uid_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateEmailContactRegistered_HEADER;
 }

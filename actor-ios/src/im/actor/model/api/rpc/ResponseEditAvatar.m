@@ -76,6 +76,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *
   [writer writeBytesWithInt:3 withByteArray:self->state_];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple EditAvatar{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseEditAvatar_HEADER;
 }

@@ -6,6 +6,7 @@
 #ifndef _ImActorModelModulesUpdatesUsersProcessor_H_
 #define _ImActorModelModulesUpdatesUsersProcessor_H_
 
+@class AMUser;
 @class ImActorModelApiAvatar;
 @class ImActorModelModulesModules;
 @protocol JavaUtilCollection;
@@ -19,7 +20,6 @@
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)applyUsersWithJavaUtilCollection:(id<JavaUtilCollection>)updated
-                  withJavaUtilCollection:(id<JavaUtilCollection>)updatedContact
                              withBoolean:(jboolean)forced;
 
 - (void)onUserNameChangedWithInt:(jint)uid

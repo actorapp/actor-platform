@@ -19,7 +19,7 @@
 
 + (AMPeer *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-+ (AMPeer *)fromUidWithLong:(jlong)uid;
++ (AMPeer *)fromUniqueIdWithLong:(jlong)uid;
 
 + (AMPeer *)userWithInt:(jint)uid;
 
@@ -28,7 +28,7 @@
 - (instancetype)initWithAMPeerTypeEnum:(AMPeerTypeEnum *)peerType
                                withInt:(jint)peerId;
 
-- (jlong)getUid;
+- (jlong)getUnuqueId;
 
 - (AMPeerTypeEnum *)getPeerType;
 
@@ -50,7 +50,7 @@ CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT AMPeer *AMPeer_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT AMPeer *AMPeer_fromUidWithLong_(jlong uid);
+FOUNDATION_EXPORT AMPeer *AMPeer_fromUniqueIdWithLong_(jlong uid);
 
 FOUNDATION_EXPORT AMPeer *AMPeer_userWithInt_(jint uid);
 
