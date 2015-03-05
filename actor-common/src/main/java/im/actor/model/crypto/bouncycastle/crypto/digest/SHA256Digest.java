@@ -1,8 +1,8 @@
-package im.actor.model.crypto.bouncycastle.digest;
+package im.actor.model.crypto.bouncycastle.crypto.digest;
 
 
-import im.actor.model.crypto.bouncycastle.util.Memoable;
-import im.actor.model.crypto.bouncycastle.util.Pack;
+import im.actor.model.crypto.bouncycastle.utils.Memoable;
+import im.actor.model.crypto.bouncycastle.utils.Pack;
 
 /**
  * FIPS 180-2 implementation of SHA-256.

@@ -1,4 +1,4 @@
-package im.actor.model.crypto.bouncycastle;
+package im.actor.model.crypto.bouncycastle.crypto;
 
 /**
  * interface that a message digest conforms to.

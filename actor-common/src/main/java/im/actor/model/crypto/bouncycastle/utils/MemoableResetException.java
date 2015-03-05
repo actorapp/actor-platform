@@ -1,4 +1,4 @@
-package im.actor.model.crypto.bouncycastle.util;
+package im.actor.model.crypto.bouncycastle.utils;
 
 /**
  * Exception to be thrown on a failure to reset an object implementing Memoable.

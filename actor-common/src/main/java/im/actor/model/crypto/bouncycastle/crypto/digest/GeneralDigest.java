@@ -1,8 +1,8 @@
-package im.actor.model.crypto.bouncycastle.digest;
+package im.actor.model.crypto.bouncycastle.crypto.digest;
 
-import im.actor.model.crypto.bouncycastle.ExtendedDigest;
-import im.actor.model.crypto.bouncycastle.util.Memoable;
-import im.actor.model.crypto.bouncycastle.util.Pack;
+import im.actor.model.crypto.bouncycastle.crypto.ExtendedDigest;
+import im.actor.model.crypto.bouncycastle.utils.Memoable;
+import im.actor.model.crypto.bouncycastle.utils.Pack;
 
 /**
  * base implementation of MD4 family style digest as outlined in
