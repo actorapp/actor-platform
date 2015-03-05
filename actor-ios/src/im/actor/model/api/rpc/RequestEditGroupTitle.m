@@ -76,6 +76,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
   [writer writeStringWithInt:3 withNSString:self->title_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc EditGroupTitle{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"groupPeer=", self->groupPeer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", title=", self->title_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestEditGroupTitle_HEADER;
 }

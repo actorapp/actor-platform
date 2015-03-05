@@ -41,6 +41,13 @@
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->maxGroupSize_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct Config{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"maxGroupSize=", self->maxGroupSize_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiConfig *)other {
   [super copyAllFieldsTo:other];
   other->maxGroupSize_ = maxGroupSize_;

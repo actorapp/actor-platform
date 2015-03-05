@@ -43,6 +43,8 @@
 
 - (DKActorRef *)conversationActorWithAMPeer:(AMPeer *)peer;
 
+- (DKActorRef *)conversationHistoryActorWithAMPeer:(AMPeer *)peer;
+
 - (id<AMPreferencesStorage>)preferences;
 
 - (jint)myUid;

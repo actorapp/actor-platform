@@ -54,6 +54,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestClearChat, peer_, ImActorModelApiOu
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc ClearChat{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestClearChat_HEADER;
 }

@@ -66,6 +66,15 @@
   [writer writeLongWithInt:3 withLong:self->date_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update ContactRegistered{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$Z", @", isSilent=", self->isSilent__));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateContactRegistered_HEADER;
 }

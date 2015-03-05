@@ -5,6 +5,7 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/AuthHolder.h"
 #include "im/actor/model/api/AuthSession.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -14,7 +15,7 @@
 @interface ImActorModelApiAuthSession () {
  @public
   jint id__;
-  jint authHolder_;
+  ImActorModelApiAuthHolderEnum *authHolder_;
   jint appId_;
   NSString *appTitle_;
   NSString *deviceTitle_;
@@ -25,6 +26,7 @@
 }
 @end
 
+J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, authHolder_, ImActorModelApiAuthHolderEnum *)
 J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, appTitle_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, deviceTitle_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, authLocation_, NSString *)
@@ -34,7 +36,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, longitude_, JavaLangDouble *)
 @implementation ImActorModelApiAuthSession
 
 - (instancetype)initWithInt:(jint)id_
-                    withInt:(jint)authHolder
+withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
                     withInt:(jint)appId
                withNSString:(NSString *)appTitle
                withNSString:(NSString *)deviceTitle
@@ -64,7 +66,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, longitude_, JavaLangDouble *)
   return self->id__;
 }
 
-- (jint)getAuthHolder {
+- (ImActorModelApiAuthHolderEnum *)getAuthHolder {
   return self->authHolder_;
 }
 
@@ -98,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, longitude_, JavaLangDouble *)
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
-  self->authHolder_ = [values getIntWithInt:2];
+  self->authHolder_ = ImActorModelApiAuthHolderEnum_parseWithInt_([values getIntWithInt:2]);
   self->appId_ = [values getIntWithInt:3];
   self->appTitle_ = [values getStringWithInt:4];
   self->deviceTitle_ = [values getStringWithInt:5];
@@ -110,7 +112,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, longitude_, JavaLangDouble *)
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
-  [writer writeIntWithInt:2 withInt:self->authHolder_];
+  if (self->authHolder_ == nil) {
+    @throw [[JavaIoIOException alloc] init];
+  }
+  [writer writeIntWithInt:2 withInt:[((ImActorModelApiAuthHolderEnum *) nil_chk(self->authHolder_)) getValue]];
   [writer writeIntWithInt:3 withInt:self->appId_];
   if (self->appTitle_ == nil) {
     @throw [[JavaIoIOException alloc] init];
@@ -131,6 +136,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, longitude_, JavaLangDouble *)
   if (self->longitude_ != nil) {
     [writer writeDoubleWithInt:9 withDouble:[self->longitude_ doubleValue]];
   }
+}
+
+- (NSString *)description {
+  NSString *res = @"struct AuthSession{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"id=", self->id__));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", authHolder=", self->authHolder_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", appId=", self->appId_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", appTitle=", self->appTitle_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", deviceTitle=", self->deviceTitle_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", authTime=", self->authTime_));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiAuthSession *)other {

@@ -5,6 +5,7 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/Avatar.h"
+#include "im/actor/model/entity/ContentType.h"
 #include "im/actor/model/entity/Dialog.h"
 #include "im/actor/model/entity/DialogBuilder.h"
 #include "im/actor/model/entity/MessageState.h"
@@ -18,7 +19,7 @@
   AMAvatar *dialogAvatar_;
   jint unreadCount_;
   jlong rid_;
-  AMDialog_ContentTypeEnum *messageType_;
+  AMContentTypeEnum *messageType_;
   NSString *text_;
   AMMessageStateEnum *status_;
   jint senderId_;
@@ -30,7 +31,7 @@
 J2OBJC_FIELD_SETTER(AMDialogBuilder, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(AMDialogBuilder, dialogTitle_, NSString *)
 J2OBJC_FIELD_SETTER(AMDialogBuilder, dialogAvatar_, AMAvatar *)
-J2OBJC_FIELD_SETTER(AMDialogBuilder, messageType_, AMDialog_ContentTypeEnum *)
+J2OBJC_FIELD_SETTER(AMDialogBuilder, messageType_, AMContentTypeEnum *)
 J2OBJC_FIELD_SETTER(AMDialogBuilder, text_, NSString *)
 J2OBJC_FIELD_SETTER(AMDialogBuilder, status_, AMMessageStateEnum *)
 
@@ -87,7 +88,7 @@ J2OBJC_FIELD_SETTER(AMDialogBuilder, status_, AMMessageStateEnum *)
   return self;
 }
 
-- (AMDialogBuilder *)setMessageTypeWithAMDialog_ContentTypeEnum:(AMDialog_ContentTypeEnum *)messageType {
+- (AMDialogBuilder *)setMessageTypeWithAMContentTypeEnum:(AMContentTypeEnum *)messageType {
   self->messageType_ = messageType;
   return self;
 }
@@ -123,7 +124,7 @@ J2OBJC_FIELD_SETTER(AMDialogBuilder, status_, AMMessageStateEnum *)
 }
 
 - (AMDialog *)createDialog {
-  return [[AMDialog alloc] initWithAMPeer:peer_ withLong:sortKey_ withNSString:dialogTitle_ withAMAvatar:dialogAvatar_ withInt:unreadCount_ withLong:rid_ withAMDialog_ContentTypeEnum:messageType_ withNSString:text_ withAMMessageStateEnum:status_ withInt:senderId_ withLong:time_ withInt:relatedUid_];
+  return [[AMDialog alloc] initWithAMPeer:peer_ withLong:sortKey_ withNSString:dialogTitle_ withAMAvatar:dialogAvatar_ withInt:unreadCount_ withLong:rid_ withAMContentTypeEnum:messageType_ withNSString:text_ withAMMessageStateEnum:status_ withInt:senderId_ withLong:time_ withInt:relatedUid_];
 }
 
 - (void)copyAllFieldsTo:(AMDialogBuilder *)other {

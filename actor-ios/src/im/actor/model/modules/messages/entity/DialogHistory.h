@@ -6,9 +6,9 @@
 #ifndef _ImActorModelModulesMessagesEntityDialogHistory_H_
 #define _ImActorModelModulesMessagesEntityDialogHistory_H_
 
+@class AMAbsContent;
 @class AMMessageStateEnum;
 @class AMPeer;
-@class ImActorModelEntityContentAbsContent;
 
 #include "J2ObjC_header.h"
 
@@ -21,7 +21,7 @@
                       withLong:(jlong)rid
                       withLong:(jlong)date
                        withInt:(jint)senderId
-withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content
+              withAMAbsContent:(AMAbsContent *)content
         withAMMessageStateEnum:(AMMessageStateEnum *)status;
 
 - (AMPeer *)getPeer;
@@ -36,7 +36,7 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
 
 - (jint)getSenderId;
 
-- (ImActorModelEntityContentAbsContent *)getContent;
+- (AMAbsContent *)getContent;
 
 - (AMMessageStateEnum *)getStatus;
 

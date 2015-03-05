@@ -6,6 +6,7 @@
 #ifndef _ImActorModelModulesMessagesDialogsActor_H_
 #define _ImActorModelModulesMessagesDialogsActor_H_
 
+@class AMAbsContent;
 @class AMAvatar;
 @class AMGroup;
 @class AMMessage;
@@ -24,6 +25,8 @@
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
+
+- (void)preStart;
 
 - (void)onReceiveWithId:(id)message;
 
@@ -51,38 +54,6 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_PeerDesc)
-
-@interface ImActorModelModulesMessagesDialogsActor_ChatClear : NSObject {
-}
-
-- (instancetype)initWithAMPeer:(AMPeer *)peer;
-
-- (AMPeer *)getPeer;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_ChatClear)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_ChatClear)
-
-@interface ImActorModelModulesMessagesDialogsActor_ChatDelete : NSObject {
-}
-
-- (instancetype)initWithAMPeer:(AMPeer *)peer;
-
-- (AMPeer *)getPeer;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_ChatDelete)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_ChatDelete)
 
 @interface ImActorModelModulesMessagesDialogsActor_InMessage : NSObject {
 }
@@ -135,6 +106,38 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_GroupChanged)
 
+@interface ImActorModelModulesMessagesDialogsActor_ChatClear : NSObject {
+}
+
+- (instancetype)initWithAMPeer:(AMPeer *)peer;
+
+- (AMPeer *)getPeer;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_ChatClear)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_ChatClear)
+
+@interface ImActorModelModulesMessagesDialogsActor_ChatDelete : NSObject {
+}
+
+- (instancetype)initWithAMPeer:(AMPeer *)peer;
+
+- (AMPeer *)getPeer;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_ChatDelete)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_ChatDelete)
+
 @interface ImActorModelModulesMessagesDialogsActor_MessageStateChanged : NSObject {
 }
 
@@ -157,6 +160,85 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_MessageStateChanged)
 
+@interface ImActorModelModulesMessagesDialogsActor_MessageSent : NSObject {
+}
+
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                      withLong:(jlong)rid
+                      withLong:(jlong)date;
+
+- (AMPeer *)getPeer;
+
+- (jlong)getRid;
+
+- (jlong)getDate;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_MessageSent)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_MessageSent)
+
+@interface ImActorModelModulesMessagesDialogsActor_MessageContentChanged : NSObject {
+}
+
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                      withLong:(jlong)rid
+              withAMAbsContent:(AMAbsContent *)content;
+
+- (AMPeer *)getPeer;
+
+- (jlong)getRid;
+
+- (AMAbsContent *)getContent;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_MessageContentChanged)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_MessageContentChanged)
+
+@interface ImActorModelModulesMessagesDialogsActor_MessageDeleted : NSObject {
+}
+
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                 withAMMessage:(AMMessage *)topMessage;
+
+- (AMPeer *)getPeer;
+
+- (AMMessage *)getTopMessage;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_MessageDeleted)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_MessageDeleted)
+
+@interface ImActorModelModulesMessagesDialogsActor_HistoryLoaded : NSObject {
+}
+
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)history;
+
+- (id<JavaUtilList>)getHistory;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_HistoryLoaded)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded)
+
 @interface ImActorModelModulesMessagesDialogsActor_CounterChanged : NSObject {
 }
 
@@ -175,40 +257,5 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_CounterChanged)
-
-@interface ImActorModelModulesMessagesDialogsActor_Deleted : NSObject {
-}
-
-- (instancetype)initWithAMPeer:(AMPeer *)peer
-                 withAMMessage:(AMMessage *)message;
-
-- (AMPeer *)getPeer;
-
-- (AMMessage *)getMessage;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_Deleted)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_Deleted)
-
-@interface ImActorModelModulesMessagesDialogsActor_HistoryLoaded : NSObject {
-}
-
-- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)history;
-
-- (id<JavaUtilList>)getHistory;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_HistoryLoaded)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded)
 
 #endif // _ImActorModelModulesMessagesDialogsActor_H_

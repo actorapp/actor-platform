@@ -17,7 +17,7 @@
 
 BOOL ImActorModelApiSexEnum_initialized = NO;
 
-ImActorModelApiSexEnum *ImActorModelApiSexEnum_values_[3];
+ImActorModelApiSexEnum *ImActorModelApiSexEnum_values_[4];
 
 @implementation ImActorModelApiSexEnum
 
@@ -40,7 +40,7 @@ ImActorModelApiSexEnum *ImActorModelApiSexEnum_values_[3];
 
 IOSObjectArray *ImActorModelApiSexEnum_values() {
   ImActorModelApiSexEnum_init();
-  return [IOSObjectArray arrayWithObjects:ImActorModelApiSexEnum_values_ count:3 type:ImActorModelApiSexEnum_class_()];
+  return [IOSObjectArray arrayWithObjects:ImActorModelApiSexEnum_values_ count:4 type:ImActorModelApiSexEnum_class_()];
 }
 + (IOSObjectArray *)values {
   return ImActorModelApiSexEnum_values();
@@ -52,7 +52,7 @@ IOSObjectArray *ImActorModelApiSexEnum_values() {
 
 ImActorModelApiSexEnum *ImActorModelApiSexEnum_valueOfWithNSString_(NSString *name) {
   ImActorModelApiSexEnum_init();
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 4; i++) {
     ImActorModelApiSexEnum *e = ImActorModelApiSexEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
@@ -71,6 +71,7 @@ ImActorModelApiSexEnum *ImActorModelApiSexEnum_valueOfWithNSString_(NSString *na
     ImActorModelApiSexEnum_UNKNOWN = [[ImActorModelApiSexEnum alloc] initWithInt:1 withNSString:@"UNKNOWN" withInt:0];
     ImActorModelApiSexEnum_MALE = [[ImActorModelApiSexEnum alloc] initWithInt:2 withNSString:@"MALE" withInt:1];
     ImActorModelApiSexEnum_FEMALE = [[ImActorModelApiSexEnum alloc] initWithInt:3 withNSString:@"FEMALE" withInt:2];
+    ImActorModelApiSexEnum_UNSUPPORTED_VALUE = [[ImActorModelApiSexEnum alloc] initWithInt:-1 withNSString:@"UNSUPPORTED_VALUE" withInt:3];
     J2OBJC_SET_INITIALIZED(ImActorModelApiSexEnum)
   }
 }
@@ -86,8 +87,9 @@ ImActorModelApiSexEnum *ImActorModelApiSexEnum_parseWithInt_(jint value) {
     return ImActorModelApiSexEnum_MALE;
     case 3:
     return ImActorModelApiSexEnum_FEMALE;
+    default:
+    return ImActorModelApiSexEnum_UNSUPPORTED_VALUE;
   }
-  @throw [[JavaIoIOException alloc] init];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiSexEnum)

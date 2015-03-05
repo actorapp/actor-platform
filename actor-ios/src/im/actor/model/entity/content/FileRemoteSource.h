@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/FileRemoteSource.java
 //
 
-#ifndef _ImActorModelEntityContentFileRemoteSource_H_
-#define _ImActorModelEntityContentFileRemoteSource_H_
+#ifndef _AMFileRemoteSource_H_
+#define _AMFileRemoteSource_H_
 
 @class AMFileLocation;
 @class BSBserValues;
@@ -13,14 +13,18 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/FileSource.h"
 
-@interface ImActorModelEntityContentFileRemoteSource : ImActorModelEntityContentFileSource {
+@interface AMFileRemoteSource : AMFileSource {
 }
 
-+ (ImActorModelEntityContentFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader;
++ (AMFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader;
 
 - (instancetype)initWithAMFileLocation:(AMFileLocation *)fileLocation;
 
 - (AMFileLocation *)getFileLocation;
+
+- (jint)getSize;
+
+- (NSString *)getFileName;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -28,13 +32,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentFileRemoteSource)
+J2OBJC_EMPTY_STATIC_INIT(AMFileRemoteSource)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentFileRemoteSource *ImActorModelEntityContentFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader);
+FOUNDATION_EXPORT AMFileRemoteSource *AMFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentFileRemoteSource)
+typedef AMFileRemoteSource ImActorModelEntityContentFileRemoteSource;
 
-#endif // _ImActorModelEntityContentFileRemoteSource_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMFileRemoteSource)
+
+#endif // _AMFileRemoteSource_H_

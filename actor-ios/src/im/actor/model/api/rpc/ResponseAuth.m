@@ -7,7 +7,6 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Config.h"
-#include "im/actor/model/api/ContactRecord.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/rpc/ResponseAuth.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
@@ -15,20 +14,16 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
-#include "java/util/ArrayList.h"
-#include "java/util/List.h"
 
 @interface ImActorModelApiRpcResponseAuth () {
  @public
   jlong publicKeyHash_;
   ImActorModelApiUser *user_;
-  id<JavaUtilList> contacts_;
   ImActorModelApiConfig *config_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, user_, ImActorModelApiUser *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, contacts_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConfig *)
 
 @implementation ImActorModelApiRpcResponseAuth
@@ -39,12 +34,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
 
 - (instancetype)initWithLong:(jlong)publicKeyHash
      withImActorModelApiUser:(ImActorModelApiUser *)user
-            withJavaUtilList:(id<JavaUtilList>)contacts
    withImActorModelApiConfig:(ImActorModelApiConfig *)config {
   if (self = [super init]) {
     self->publicKeyHash_ = publicKeyHash;
     self->user_ = user;
-    self->contacts_ = contacts;
     self->config_ = config;
   }
   return self;
@@ -62,10 +55,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
   return self->user_;
 }
 
-- (id<JavaUtilList>)getContacts {
-  return self->contacts_;
-}
-
 - (ImActorModelApiConfig *)getConfig {
   return self->config_;
 }
@@ -73,11 +62,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->publicKeyHash_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->user_ = [values getObjWithInt:2 withBSBserObject:[[ImActorModelApiUser alloc] init]];
-  id<JavaUtilList> _contacts = [[JavaUtilArrayList alloc] init];
-  for (jint i = 0; i < [values getRepeatedCountWithInt:4]; i++) {
-    [_contacts addWithId:[[ImActorModelApiContactRecord alloc] init]];
-  }
-  self->contacts_ = [values getRepeatedObjWithInt:4 withJavaUtilList:_contacts];
   self->config_ = [values getObjWithInt:3 withBSBserObject:[[ImActorModelApiConfig alloc] init]];
 }
 
@@ -87,11 +71,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeObjectWithInt:2 withBSBserObject:self->user_];
-  [writer writeRepeatedObjWithInt:4 withJavaUtilList:self->contacts_];
   if (self->config_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeObjectWithInt:3 withBSBserObject:self->config_];
+}
+
+- (NSString *)description {
+  NSString *res = @"response Auth{";
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {
@@ -102,7 +91,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
   [super copyAllFieldsTo:other];
   other->publicKeyHash_ = publicKeyHash_;
   other->user_ = user_;
-  other->contacts_ = contacts_;
   other->config_ = config_;
 }
 

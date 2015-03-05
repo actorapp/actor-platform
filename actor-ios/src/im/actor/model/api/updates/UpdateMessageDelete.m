@@ -65,6 +65,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageDelete, rids_, id<JavaUti
   [writer writeRepeatedLongWithInt:2 withJavaUtilList:self->rids_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update MessageDelete{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", rids=", self->rids_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateMessageDelete_HEADER;
 }

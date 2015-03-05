@@ -59,6 +59,15 @@
   [writer writeIntWithInt:3 withInt:self->duration_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct FileExVideo{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"w=", self->w_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", h=", self->h_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", duration=", self->duration_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiFileExVideo *)other {
   [super copyAllFieldsTo:other];
   other->w_ = w_;

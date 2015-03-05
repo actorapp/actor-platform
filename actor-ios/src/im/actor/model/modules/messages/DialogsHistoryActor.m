@@ -15,9 +15,10 @@
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/storage/PreferencesStorage.h"
+#include "java/lang/Long.h"
 
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(ImActorModelModulesMessagesDialogsHistoryActor *self);
-__attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithBoolean_withLong_(ImActorModelModulesMessagesDialogsHistoryActor *self, jboolean isFinished, jlong maxLoadedDate);
+__attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithInt_withLong_(ImActorModelModulesMessagesDialogsHistoryActor *self, jint loaded, jlong maxLoadedDate);
 
 @interface ImActorModelModulesMessagesDialogsHistoryActor () {
  @public
@@ -28,13 +29,13 @@ __attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryAct
 
 - (void)onLoadMore;
 
-- (void)onLoadedMoreWithBoolean:(jboolean)isFinished
-                       withLong:(jlong)maxLoadedDate;
+- (void)onLoadedMoreWithInt:(jint)loaded
+                   withLong:(jlong)maxLoadedDate;
 @end
 
 @interface ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore () {
  @public
-  jboolean isFinished_;
+  jint loaded_;
   jlong maxLoadedDate_;
 }
 @end
@@ -49,6 +50,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor_$1, this$0_, 
 
 @implementation ImActorModelModulesMessagesDialogsHistoryActor
 
+NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ = @"dialogs_history_date";
+NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ = @"dialogs_history_loaded";
+NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ = @"dialogs_history_inited";
+
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   if (self = [super initWithImActorModelModulesModules:messenger]) {
     isLoading_ = NO;
@@ -57,18 +62,20 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor_$1, this$0_, 
 }
 
 - (void)preStart {
-  historyMaxDate_ = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:@"dialogs_history_date" withLong:0];
-  historyLoaded_ = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:@"dialogs_history_loaded" withBoolean:NO];
-  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesMessagesDialogsHistoryActor_LoadMore alloc] init]];
+  historyMaxDate_ = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ withLong:JavaLangLong_MAX_VALUE];
+  historyLoaded_ = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ withBoolean:NO];
+  if (![((id<AMPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ withBoolean:NO]) {
+    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesMessagesDialogsHistoryActor_LoadMore alloc] init]];
+  }
 }
 
 - (void)onLoadMore {
   ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(self);
 }
 
-- (void)onLoadedMoreWithBoolean:(jboolean)isFinished
-                       withLong:(jlong)maxLoadedDate {
-  ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithBoolean_withLong_(self, isFinished, maxLoadedDate);
+- (void)onLoadedMoreWithInt:(jint)loaded
+                   withLong:(jlong)maxLoadedDate {
+  ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithInt_withLong_(self, loaded, maxLoadedDate);
 }
 
 - (void)onReceiveWithId:(id)message {
@@ -77,7 +84,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor_$1, this$0_, 
   }
   else if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore class]]) {
     ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *loaded = (ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *) check_class_cast(message, [ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore class]);
-    ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithBoolean_withLong_(self, ((ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *) nil_chk(loaded))->isFinished_, loaded->maxLoadedDate_);
+    ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithInt_withLong_(self, ((ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *) nil_chk(loaded))->loaded_, loaded->maxLoadedDate_);
   }
   else {
     [self dropWithId:message];
@@ -104,17 +111,18 @@ void ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(ImActorModelModul
   [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestLoadDialogs alloc] initWithLong:self->historyMaxDate_ withInt:ImActorModelModulesMessagesDialogsHistoryActor_LIMIT] withAMRpcCallback:[[ImActorModelModulesMessagesDialogsHistoryActor_$1 alloc] initWithImActorModelModulesMessagesDialogsHistoryActor:self]];
 }
 
-void ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithBoolean_withLong_(ImActorModelModulesMessagesDialogsHistoryActor *self, jboolean isFinished, jlong maxLoadedDate) {
+void ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithInt_withLong_(ImActorModelModulesMessagesDialogsHistoryActor *self, jint loaded, jlong maxLoadedDate) {
   self->isLoading_ = NO;
-  if (isFinished) {
+  if (loaded < ImActorModelModulesMessagesDialogsHistoryActor_LIMIT) {
     self->historyLoaded_ = YES;
   }
   else {
     self->historyLoaded_ = NO;
     self->historyMaxDate_ = maxLoadedDate;
   }
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:@"dialogs_history_date" withLong:0];
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:@"dialogs_history_loaded" withBoolean:self->historyLoaded_];
+  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ withLong:maxLoadedDate];
+  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ withBoolean:self->historyLoaded_];
+  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ withBoolean:YES];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor)
@@ -131,10 +139,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_
 
 @implementation ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore
 
-- (instancetype)initWithBoolean:(jboolean)isFinished
-                       withLong:(jlong)maxLoadedDate {
+- (instancetype)initWithInt:(jint)loaded
+                   withLong:(jlong)maxLoadedDate {
   if (self = [super init]) {
-    self->isFinished_ = isFinished;
+    self->loaded_ = loaded;
     self->maxLoadedDate_ = maxLoadedDate;
   }
   return self;
@@ -142,7 +150,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_
 
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *)other {
   [super copyAllFieldsTo:other];
-  other->isFinished_ = isFinished_;
+  other->loaded_ = loaded_;
   other->maxLoadedDate_ = maxLoadedDate_;
 }
 

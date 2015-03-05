@@ -6,11 +6,11 @@
 #ifndef _AMMessage_H_
 #define _AMMessage_H_
 
+@class AMAbsContent;
 @class AMMessageStateEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelEntityContentAbsContent;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -26,7 +26,7 @@
                     withLong:(jlong)date
                      withInt:(jint)senderId
       withAMMessageStateEnum:(AMMessageStateEnum *)messageState
-withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content;
+            withAMAbsContent:(AMAbsContent *)content;
 
 - (jlong)getRid;
 
@@ -38,11 +38,13 @@ withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)c
 
 - (AMMessageStateEnum *)getMessageState;
 
-- (ImActorModelEntityContentAbsContent *)getContent;
+- (AMAbsContent *)getContent;
 
 - (AMMessage *)changeStateWithAMMessageStateEnum:(AMMessageStateEnum *)messageState;
 
 - (AMMessage *)changeDateWithLong:(jlong)date;
+
+- (AMMessage *)changeContentWithAMAbsContent:(AMAbsContent *)content;
 
 - (jlong)getListId;
 

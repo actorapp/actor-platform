@@ -3,30 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/ServiceGroupUserLeave.java
 //
 
-#ifndef _ImActorModelEntityContentServiceGroupUserLeave_H_
-#define _ImActorModelEntityContentServiceGroupUserLeave_H_
+#ifndef _AMServiceGroupUserLeave_H_
+#define _AMServiceGroupUserLeave_H_
 
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@interface ImActorModelEntityContentServiceGroupUserLeave : ImActorModelEntityContentServiceContent {
+@interface AMServiceGroupUserLeave : AMServiceContent {
 }
 
-+ (ImActorModelEntityContentServiceGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMServiceGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)init;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentServiceGroupUserLeave)
+J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupUserLeave)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentServiceGroupUserLeave *ImActorModelEntityContentServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceGroupUserLeave *AMServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentServiceGroupUserLeave)
+typedef AMServiceGroupUserLeave ImActorModelEntityContentServiceGroupUserLeave;
 
-#endif // _ImActorModelEntityContentServiceGroupUserLeave_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupUserLeave)
+
+#endif // _AMServiceGroupUserLeave_H_

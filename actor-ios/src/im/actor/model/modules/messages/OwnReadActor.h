@@ -9,6 +9,7 @@
 @class AMPeer;
 @class ImActorModelModulesMessagesEntityUnreadMessagesStorage;
 @class ImActorModelModulesModules;
+@protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
@@ -40,6 +41,9 @@
 
 - (void)onMessageReadByMeEncryptedWithAMPeer:(AMPeer *)peer
                                     withLong:(jlong)rid;
+
+- (void)onMessageDeleteWithAMPeer:(AMPeer *)peer
+                 withJavaUtilList:(id<JavaUtilList>)rids;
 
 - (void)onReceiveWithId:(id)message;
 
@@ -195,5 +199,30 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_NewMessage)
+
+@interface ImActorModelModulesMessagesOwnReadActor_MessageDeleted : NSObject {
+ @public
+  AMPeer *peer_;
+  id<JavaUtilList> rids_;
+}
+
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+              withJavaUtilList:(id<JavaUtilList>)rids;
+
+- (AMPeer *)getPeer;
+
+- (id<JavaUtilList>)getRids;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesOwnReadActor_MessageDeleted)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_MessageDeleted, peer_, AMPeer *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_MessageDeleted, rids_, id<JavaUtilList>)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageDeleted)
 
 #endif // _ImActorModelModulesMessagesOwnReadActor_H_

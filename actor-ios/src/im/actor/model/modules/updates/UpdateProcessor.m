@@ -3,23 +3,23 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/modules/updates/UpdateProcessor.java
 //
 
-#include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
+#include "im/actor/model/api/Group.h"
 #include "im/actor/model/api/MessageContent.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/PeerType.h"
+#include "im/actor/model/api/TypingType.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/rpc/ResponseAuth.h"
 #include "im/actor/model/api/rpc/ResponseGetContacts.h"
 #include "im/actor/model/api/rpc/ResponseLoadDialogs.h"
+#include "im/actor/model/api/rpc/ResponseLoadHistory.h"
 #include "im/actor/model/api/updates/UpdateChatClear.h"
 #include "im/actor/model/api/updates/UpdateChatDelete.h"
-#include "im/actor/model/api/updates/UpdateContactMoved.h"
 #include "im/actor/model/api/updates/UpdateContactRegistered.h"
-#include "im/actor/model/api/updates/UpdateContactTitleChanged.h"
 #include "im/actor/model/api/updates/UpdateContactsAdded.h"
 #include "im/actor/model/api/updates/UpdateContactsRemoved.h"
 #include "im/actor/model/api/updates/UpdateEncryptedMessage.h"
@@ -28,6 +28,7 @@
 #include "im/actor/model/api/updates/UpdateEncryptedReceived.h"
 #include "im/actor/model/api/updates/UpdateGroupAvatarChanged.h"
 #include "im/actor/model/api/updates/UpdateGroupInvite.h"
+#include "im/actor/model/api/updates/UpdateGroupMembersUpdate.h"
 #include "im/actor/model/api/updates/UpdateGroupOnline.h"
 #include "im/actor/model/api/updates/UpdateGroupTitleChanged.h"
 #include "im/actor/model/api/updates/UpdateGroupUserAdded.h"
@@ -41,9 +42,6 @@
 #include "im/actor/model/api/updates/UpdateMessageSent.h"
 #include "im/actor/model/api/updates/UpdateTyping.h"
 #include "im/actor/model/api/updates/UpdateUserAvatarChanged.h"
-#include "im/actor/model/api/updates/UpdateUserContactAdded.h"
-#include "im/actor/model/api/updates/UpdateUserContactRemoved.h"
-#include "im/actor/model/api/updates/UpdateUserContactsChanged.h"
 #include "im/actor/model/api/updates/UpdateUserLastSeen.h"
 #include "im/actor/model/api/updates/UpdateUserLocalNameChanged.h"
 #include "im/actor/model/api/updates/UpdateUserNameChanged.h"
@@ -53,6 +51,7 @@
 #include "im/actor/model/concurrency/CommandCallback.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/entity/Avatar.h"
+#include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Contacts.h"
@@ -69,8 +68,10 @@
 #include "im/actor/model/modules/updates/UsersProcessor.h"
 #include "im/actor/model/modules/updates/internal/ContactsLoaded.h"
 #include "im/actor/model/modules/updates/internal/DialogHistoryLoaded.h"
+#include "im/actor/model/modules/updates/internal/GroupCreated.h"
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 #include "im/actor/model/modules/updates/internal/LoggedIn.h"
+#include "im/actor/model/modules/updates/internal/MessagesHistoryLoaded.h"
 #include "im/actor/model/modules/updates/internal/UsersFounded.h"
 #include "im/actor/model/mvvm/MVVMCollection.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -109,6 +110,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, contactsProcessor
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor_$1, val$founded_, ImActorModelModulesUpdatesInternalUsersFounded *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor_$1, val$users_, JavaUtilArrayList *)
 
+@interface ImActorModelModulesUpdatesUpdateProcessor_$2 () {
+ @public
+  ImActorModelModulesUpdatesInternalGroupCreated *val$created_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor_$2, val$created_, ImActorModelModulesUpdatesInternalGroupCreated *)
+
 @implementation ImActorModelModulesUpdatesUpdateProcessor
 
 NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
@@ -127,53 +136,54 @@ NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
 
 - (void)applyRelatedWithJavaUtilList:(id<JavaUtilList>)users
                     withJavaUtilList:(id<JavaUtilList>)groups
-                    withJavaUtilList:(id<JavaUtilList>)contactRecords
                          withBoolean:(jboolean)force {
-  [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) applyUsersWithJavaUtilCollection:users withJavaUtilCollection:contactRecords withBoolean:force];
+  [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) applyUsersWithJavaUtilCollection:users withBoolean:force];
   [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) applyGroupsWithJavaUtilCollection:groups withBoolean:force];
 }
 
 - (void)processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:(ImActorModelModulesUpdatesInternalInternalUpdate *)update {
   if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalDialogHistoryLoaded class]]) {
     ImActorModelApiRpcResponseLoadDialogs *dialogs = [((ImActorModelModulesUpdatesInternalDialogHistoryLoaded *) nil_chk(((ImActorModelModulesUpdatesInternalDialogHistoryLoaded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalDialogHistoryLoaded class])))) getDialogs];
-    [self applyRelatedWithJavaUtilList:[((ImActorModelApiRpcResponseLoadDialogs *) nil_chk(dialogs)) getUsers] withJavaUtilList:[dialogs getGroups] withJavaUtilList:nil withBoolean:NO];
+    [self applyRelatedWithJavaUtilList:[((ImActorModelApiRpcResponseLoadDialogs *) nil_chk(dialogs)) getUsers] withJavaUtilList:[dialogs getGroups] withBoolean:NO];
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onDialogsLoadedWithImActorModelApiRpcResponseLoadDialogs:dialogs];
+  }
+  else if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalMessagesHistoryLoaded class]]) {
+    ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *historyLoaded = (ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalMessagesHistoryLoaded class]);
+    [self applyRelatedWithJavaUtilList:[((ImActorModelApiRpcResponseLoadHistory *) nil_chk([((ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *) nil_chk(historyLoaded)) getLoadHistory])) getUsers] withJavaUtilList:[[JavaUtilArrayList alloc] init] withBoolean:NO];
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessagesLoadedWithAMPeer:[historyLoaded getPeer] withImActorModelApiRpcResponseLoadHistory:[historyLoaded getLoadHistory]];
   }
   else if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalLoggedIn class]]) {
     JavaUtilArrayList *users = [[JavaUtilArrayList alloc] init];
     [users addWithId:[((ImActorModelApiRpcResponseAuth *) nil_chk([((ImActorModelModulesUpdatesInternalLoggedIn *) nil_chk(((ImActorModelModulesUpdatesInternalLoggedIn *) check_class_cast(update, [ImActorModelModulesUpdatesInternalLoggedIn class])))) getAuth])) getUser]];
-    [self applyRelatedWithJavaUtilList:users withJavaUtilList:[[JavaUtilArrayList alloc] init] withJavaUtilList:[((ImActorModelApiRpcResponseAuth *) nil_chk([((ImActorModelModulesUpdatesInternalLoggedIn *) nil_chk(((ImActorModelModulesUpdatesInternalLoggedIn *) check_class_cast(update, [ImActorModelModulesUpdatesInternalLoggedIn class])))) getAuth])) getContacts] withBoolean:YES];
+    [self applyRelatedWithJavaUtilList:users withJavaUtilList:[[JavaUtilArrayList alloc] init] withBoolean:YES];
     [self runOnUiThreadWithJavaLangRunnable:[((ImActorModelModulesUpdatesInternalLoggedIn *) nil_chk(((ImActorModelModulesUpdatesInternalLoggedIn *) check_class_cast(update, [ImActorModelModulesUpdatesInternalLoggedIn class])))) getRunnable]];
   }
   else if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalContactsLoaded class]]) {
     ImActorModelModulesUpdatesInternalContactsLoaded *contactsLoaded = (ImActorModelModulesUpdatesInternalContactsLoaded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalContactsLoaded class]);
-    [self applyRelatedWithJavaUtilList:[((ImActorModelApiRpcResponseGetContacts *) nil_chk([((ImActorModelModulesUpdatesInternalContactsLoaded *) nil_chk(contactsLoaded)) getContacts])) getUsers] withJavaUtilList:[[JavaUtilArrayList alloc] init] withJavaUtilList:[[JavaUtilArrayList alloc] init] withBoolean:NO];
+    [self applyRelatedWithJavaUtilList:[((ImActorModelApiRpcResponseGetContacts *) nil_chk([((ImActorModelModulesUpdatesInternalContactsLoaded *) nil_chk(contactsLoaded)) getContacts])) getUsers] withJavaUtilList:[[JavaUtilArrayList alloc] init] withBoolean:NO];
     [((DKActorRef *) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor])) sendWithId:[[ImActorModelModulesContactsContactsSyncActor_ContactsLoaded alloc] initWithImActorModelApiRpcResponseGetContacts:[contactsLoaded getContacts]]];
   }
   else if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalUsersFounded class]]) {
     ImActorModelModulesUpdatesInternalUsersFounded *founded = (ImActorModelModulesUpdatesInternalUsersFounded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalUsersFounded class]);
-    [self applyRelatedWithJavaUtilList:[((ImActorModelModulesUpdatesInternalUsersFounded *) nil_chk(((ImActorModelModulesUpdatesInternalUsersFounded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalUsersFounded class])))) getUsers] withJavaUtilList:[[JavaUtilArrayList alloc] init] withJavaUtilList:[[JavaUtilArrayList alloc] init] withBoolean:NO];
+    [self applyRelatedWithJavaUtilList:[((ImActorModelModulesUpdatesInternalUsersFounded *) nil_chk(((ImActorModelModulesUpdatesInternalUsersFounded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalUsersFounded class])))) getUsers] withJavaUtilList:[[JavaUtilArrayList alloc] init] withBoolean:NO];
     JavaUtilArrayList *users = [[JavaUtilArrayList alloc] init];
     for (ImActorModelApiUser * __strong u in nil_chk([((ImActorModelModulesUpdatesInternalUsersFounded *) nil_chk(founded)) getUsers])) {
       [users addWithId:[((AMMVVMCollection *) nil_chk([((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getUsersModule])) getUsersCollection])) getWithLong:[((ImActorModelApiUser *) nil_chk(u)) getId]]];
     }
     [self runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUpdatesUpdateProcessor_$1 alloc] initWithImActorModelModulesUpdatesInternalUsersFounded:founded withJavaUtilArrayList:users]];
   }
+  else if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalGroupCreated class]]) {
+    ImActorModelModulesUpdatesInternalGroupCreated *created = (ImActorModelModulesUpdatesInternalGroupCreated *) check_class_cast(update, [ImActorModelModulesUpdatesInternalGroupCreated class]);
+    JavaUtilArrayList *groups = [[JavaUtilArrayList alloc] init];
+    [groups addWithId:[((ImActorModelModulesUpdatesInternalGroupCreated *) nil_chk(created)) getGroup]];
+    [self applyRelatedWithJavaUtilList:[[JavaUtilArrayList alloc] init] withJavaUtilList:groups withBoolean:NO];
+    [self runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUpdatesUpdateProcessor_$2 alloc] initWithImActorModelModulesUpdatesInternalGroupCreated:created]];
+  }
 }
 
 - (void)processUpdateWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesUpdateProcessor_TAG_, JreStrcat("@", update));
-  if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserContactAdded class]]) {
-  }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserContactRemoved class]]) {
-  }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactMoved class]]) {
-  }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactTitleChanged class]]) {
-  }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserContactsChanged class]]) {
-  }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserNameChanged class]]) {
+  if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserNameChanged class]]) {
     ImActorModelApiUpdatesUpdateUserNameChanged *userNameChanged = (ImActorModelApiUpdatesUpdateUserNameChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserNameChanged class]);
     [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserNameChangedWithInt:[((ImActorModelApiUpdatesUpdateUserNameChanged *) nil_chk(userNameChanged)) getUid] withNSString:[userNameChanged getName]];
   }
@@ -260,31 +270,31 @@ NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateTyping class]]) {
     ImActorModelApiUpdatesUpdateTyping *typing = (ImActorModelApiUpdatesUpdateTyping *) check_class_cast(update, [ImActorModelApiUpdatesUpdateTyping class]);
-    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onTypingWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateTyping *) nil_chk(typing)) getPeer] withInt:[typing getUid] withInt:[typing getTypingType]];
+    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onTypingWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateTyping *) nil_chk(typing)) getPeer] withInt:[typing getUid] withImActorModelApiTypingTypeEnum:[typing getTypingType]];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupTitleChanged class]]) {
     ImActorModelApiUpdatesUpdateGroupTitleChanged *titleChanged = (ImActorModelApiUpdatesUpdateGroupTitleChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupTitleChanged class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onTitleChangedWithInt:[((ImActorModelApiUpdatesUpdateGroupTitleChanged *) nil_chk(titleChanged)) getGroupId] withLong:[titleChanged getRid] withInt:[titleChanged getUid] withNSString:[titleChanged getTitle] withLong:[titleChanged getDate]];
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onTitleChangedWithInt:[((ImActorModelApiUpdatesUpdateGroupTitleChanged *) nil_chk(titleChanged)) getGroupId] withLong:[titleChanged getRid] withInt:[titleChanged getUid] withNSString:[titleChanged getTitle] withLong:[titleChanged getDate] withBoolean:NO];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupAvatarChanged class]]) {
     ImActorModelApiUpdatesUpdateGroupAvatarChanged *avatarChanged = (ImActorModelApiUpdatesUpdateGroupAvatarChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupAvatarChanged class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onAvatarChangedWithInt:[((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) nil_chk(avatarChanged)) getGroupId] withLong:[avatarChanged getRid] withInt:[avatarChanged getUid] withAMAvatar:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_([avatarChanged getAvatar]) withLong:[avatarChanged getDate]];
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onAvatarChangedWithInt:[((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) nil_chk(avatarChanged)) getGroupId] withLong:[avatarChanged getRid] withInt:[avatarChanged getUid] withAMAvatar:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_([avatarChanged getAvatar]) withLong:[avatarChanged getDate] withBoolean:NO];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupInvite class]]) {
     ImActorModelApiUpdatesUpdateGroupInvite *groupInvite = (ImActorModelApiUpdatesUpdateGroupInvite *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupInvite class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onGroupInviteWithInt:[((ImActorModelApiUpdatesUpdateGroupInvite *) nil_chk(groupInvite)) getGroupId] withLong:[groupInvite getRid] withInt:[groupInvite getInviteUid] withLong:[groupInvite getDate]];
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onGroupInviteWithInt:[((ImActorModelApiUpdatesUpdateGroupInvite *) nil_chk(groupInvite)) getGroupId] withLong:[groupInvite getRid] withInt:[groupInvite getInviteUid] withLong:[groupInvite getDate] withBoolean:NO];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserLeave class]]) {
     ImActorModelApiUpdatesUpdateGroupUserLeave *leave = (ImActorModelApiUpdatesUpdateGroupUserLeave *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserLeave class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserLeaveWithInt:[((ImActorModelApiUpdatesUpdateGroupUserLeave *) nil_chk(leave)) getGroupId] withLong:[leave getRid] withInt:[leave getUid] withLong:[leave getDate]];
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserLeaveWithInt:[((ImActorModelApiUpdatesUpdateGroupUserLeave *) nil_chk(leave)) getGroupId] withLong:[leave getRid] withInt:[leave getUid] withLong:[leave getDate] withBoolean:NO];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserKick class]]) {
     ImActorModelApiUpdatesUpdateGroupUserKick *userKick = (ImActorModelApiUpdatesUpdateGroupUserKick *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserKick class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserKickedWithInt:[((ImActorModelApiUpdatesUpdateGroupUserKick *) nil_chk(userKick)) getGroupId] withLong:[userKick getRid] withInt:[userKick getUid] withInt:[userKick getKickerUid] withLong:[userKick getDate]];
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserKickedWithInt:[((ImActorModelApiUpdatesUpdateGroupUserKick *) nil_chk(userKick)) getGroupId] withLong:[userKick getRid] withInt:[userKick getUid] withInt:[userKick getKickerUid] withLong:[userKick getDate] withBoolean:NO];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserAdded class]]) {
     ImActorModelApiUpdatesUpdateGroupUserAdded *userAdded = (ImActorModelApiUpdatesUpdateGroupUserAdded *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserAdded class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserAddedWithInt:[((ImActorModelApiUpdatesUpdateGroupUserAdded *) nil_chk(userAdded)) getGroupId] withLong:[userAdded getRid] withInt:[userAdded getUid] withInt:[userAdded getInviterUid] withLong:[userAdded getDate]];
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserAddedWithInt:[((ImActorModelApiUpdatesUpdateGroupUserAdded *) nil_chk(userAdded)) getGroupId] withLong:[userAdded getRid] withInt:[userAdded getUid] withInt:[userAdded getInviterUid] withLong:[userAdded getDate] withBoolean:NO];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactsAdded class]]) {
     ImActorModelApiUpdatesUpdateContactsAdded *contactsAdded = (ImActorModelApiUpdatesUpdateContactsAdded *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactsAdded class]);
@@ -301,6 +311,9 @@ NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
       *IOSIntArray_GetRef(res, i) = [((JavaLangInteger *) nil_chk([((id<JavaUtilList>) nil_chk([contactsRemoved getUids])) getWithInt:i])) intValue];
     }
     [((ImActorModelModulesUpdatesContactsProcessor *) nil_chk(contactsProcessor_)) onContactsRemovedWithIntArray:res];
+  }
+  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupMembersUpdate class]]) {
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onMembersUpdatedWithInt:[((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) nil_chk(((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupMembersUpdate class])))) getGroupId] withJavaUtilList:[((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) nil_chk(((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupMembersUpdate class])))) getMembers]];
   }
 }
 
@@ -360,16 +373,6 @@ NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactsRemoved class]]) {
     [users addAllWithJavaUtilCollection:[((ImActorModelApiUpdatesUpdateContactsRemoved *) nil_chk(((ImActorModelApiUpdatesUpdateContactsRemoved *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactsRemoved class])))) getUids]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserContactAdded class]]) {
-    ImActorModelApiUpdatesUpdateUserContactAdded *contactAdded = (ImActorModelApiUpdatesUpdateUserContactAdded *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserContactAdded class]);
-    [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateUserContactAdded *) nil_chk(contactAdded)) getUid])];
-    [contacts addWithId:JavaLangInteger_valueOfWithInt_([contactAdded getContactId])];
-  }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserContactRemoved class]]) {
-    ImActorModelApiUpdatesUpdateUserContactRemoved *contactAdded = (ImActorModelApiUpdatesUpdateUserContactRemoved *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserContactRemoved class]);
-    [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateUserContactRemoved *) nil_chk(contactAdded)) getUid])];
-    [contacts addWithId:JavaLangInteger_valueOfWithInt_([contactAdded getContactId])];
-  }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserLocalNameChanged class]]) {
     ImActorModelApiUpdatesUpdateUserLocalNameChanged *localNameChanged = (ImActorModelApiUpdatesUpdateUserLocalNameChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserLocalNameChanged class]);
     [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) nil_chk(localNameChanged)) getUid])];
@@ -419,3 +422,23 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesUpdateProcessor)
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesUpdateProcessor_$1)
+
+@implementation ImActorModelModulesUpdatesUpdateProcessor_$2
+
+- (void)run {
+  [((id<AMCommandCallback>) nil_chk([((ImActorModelModulesUpdatesInternalGroupCreated *) nil_chk(val$created_)) getCallback])) onResultWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiGroup *) nil_chk([val$created_ getGroup])) getId])];
+}
+
+- (instancetype)initWithImActorModelModulesUpdatesInternalGroupCreated:(ImActorModelModulesUpdatesInternalGroupCreated *)capture$0 {
+  val$created_ = capture$0;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesUpdatesUpdateProcessor_$2 *)other {
+  [super copyAllFieldsTo:other];
+  other->val$created_ = val$created_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesUpdateProcessor_$2)

@@ -23,6 +23,13 @@
 #include "java/util/ArrayList.h"
 #include "java/util/Collection.h"
 
+__attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(ImActorModelModulesUpdatesUsersProcessor *self, AMUser *u);
+
+@interface ImActorModelModulesUpdatesUsersProcessor ()
+
+- (void)onUserDescChangedWithAMUser:(AMUser *)u;
+@end
+
 @implementation ImActorModelModulesUpdatesUsersProcessor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
@@ -30,7 +37,6 @@
 }
 
 - (void)applyUsersWithJavaUtilCollection:(id<JavaUtilCollection>)updated
-                  withJavaUtilCollection:(id<JavaUtilCollection>)updatedContact
                              withBoolean:(jboolean)forced {
   JavaUtilArrayList *batch = [[JavaUtilArrayList alloc] init];
   for (ImActorModelApiUser * __strong u in nil_chk(updated)) {
@@ -42,8 +48,7 @@
       AMUser *upd = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiUser_(u);
       [batch addWithId:upd];
       if (![((NSString *) nil_chk([((AMUser *) nil_chk(upd)) getName])) isEqual:[saved getName]] || !AMJavaUtil_equalsEWithId_withId_([upd getAvatar], [saved getAvatar])) {
-        [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithAMUser:upd]];
-        [((DKActorRef *) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor])) sendWithId:[[ImActorModelModulesContactsContactsSyncActor_UserChanged alloc] initWithAMUser:upd]];
+        ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(self, upd);
       }
     }
   }
@@ -62,8 +67,7 @@
     u = [u editNameWithNSString:name];
     [((id<AMKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithAMKeyValueItem:u];
     if ([((AMUser *) nil_chk(u)) getLocalName] == nil) {
-      [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithAMUser:u]];
-      [((DKActorRef *) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor])) sendWithId:[[ImActorModelModulesContactsContactsSyncActor_UserChanged alloc] initWithAMUser:u]];
+      ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(self, u);
     }
   }
 }
@@ -72,16 +76,12 @@
                          withNSString:(NSString *)name {
   AMUser *u = [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
   if (u != nil) {
-    if ([u getLocalName] == nil && name == nil) {
-      return;
-    }
-    if ([u getLocalName] != nil && [((NSString *) nil_chk([u getLocalName])) isEqual:name]) {
+    if (AMJavaUtil_equalsEWithId_withId_([u getLocalName], name)) {
       return;
     }
     u = [u editLocalNameWithNSString:name];
     [((id<AMKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithAMKeyValueItem:u];
-    [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithAMUser:u]];
-    [((DKActorRef *) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor])) sendWithId:[[ImActorModelModulesContactsContactsSyncActor_UserChanged alloc] initWithAMUser:u]];
+    ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(self, u);
   }
 }
 
@@ -90,16 +90,12 @@
   AMAvatar *avatar = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_(_avatar);
   AMUser *u = [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
   if (u != nil) {
-    if ([u getAvatar] == nil && avatar == nil) {
-      return;
-    }
-    if ([u getAvatar] != nil && [((AMAvatar *) nil_chk([u getAvatar])) isEqual:avatar]) {
+    if (AMJavaUtil_equalsEWithId_withId_([u getAvatar], avatar)) {
       return;
     }
     u = [u editAvatarWithAMAvatar:avatar];
     [((id<AMKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithAMKeyValueItem:u];
-    [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithAMUser:u]];
-    [((DKActorRef *) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor])) sendWithId:[[ImActorModelModulesContactsContactsSyncActor_UserChanged alloc] initWithAMUser:u]];
+    ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(self, u);
   }
 }
 
@@ -112,6 +108,15 @@
   return YES;
 }
 
+- (void)onUserDescChangedWithAMUser:(AMUser *)u {
+  ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(self, u);
+}
+
 @end
+
+void ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(ImActorModelModulesUpdatesUsersProcessor *self, AMUser *u) {
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithAMUser:u]];
+  [((DKActorRef *) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor])) sendWithId:[[ImActorModelModulesContactsContactsSyncActor_UserChanged alloc] initWithAMUser:u]];
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesUsersProcessor)

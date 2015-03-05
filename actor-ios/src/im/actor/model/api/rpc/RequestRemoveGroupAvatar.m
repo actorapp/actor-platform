@@ -63,6 +63,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
   [writer writeLongWithInt:4 withLong:self->rid_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc RemoveGroupAvatar{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"groupPeer=", self->groupPeer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestRemoveGroupAvatar_HEADER;
 }

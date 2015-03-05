@@ -29,6 +29,12 @@
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc TerminateAllSessions{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestTerminateAllSessions_HEADER;
 }

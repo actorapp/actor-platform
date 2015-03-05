@@ -14,7 +14,10 @@
 @class ImActorModelModulesFiles;
 @class ImActorModelModulesGroups;
 @class ImActorModelModulesMessages;
+@class ImActorModelModulesNotifications;
 @class ImActorModelModulesPresence;
+@class ImActorModelModulesProfile;
+@class ImActorModelModulesSettings;
 @class ImActorModelModulesTyping;
 @class ImActorModelModulesUpdates;
 @class ImActorModelModulesUsers;
@@ -57,6 +60,12 @@
 - (ImActorModelModulesContacts *)getContactsModule;
 
 - (ImActorModelModulesFiles *)getFilesModule;
+
+- (ImActorModelModulesNotifications *)getNotifications;
+
+- (ImActorModelModulesSettings *)getSettings;
+
+- (ImActorModelModulesProfile *)getProfile;
 
 @end
 

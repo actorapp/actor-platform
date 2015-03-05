@@ -3,27 +3,27 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/ServiceGroupCreated.java
 //
 
-#ifndef _ImActorModelEntityContentServiceGroupCreated_H_
-#define _ImActorModelEntityContentServiceGroupCreated_H_
+#ifndef _AMServiceGroupCreated_H_
+#define _AMServiceGroupCreated_H_
 
+@class AMAbsContent_ContentTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelEntityContentAbsContent_ContentTypeEnum;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@interface ImActorModelEntityContentServiceGroupCreated : ImActorModelEntityContentServiceContent {
+@interface AMServiceGroupCreated : AMServiceContent {
 }
 
-+ (ImActorModelEntityContentServiceGroupCreated *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMServiceGroupCreated *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithNSString:(NSString *)groupTitle;
 
 - (NSString *)getGroupTitle;
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -31,13 +31,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentServiceGroupCreated)
+J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupCreated)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentServiceGroupCreated *ImActorModelEntityContentServiceGroupCreated_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceGroupCreated *AMServiceGroupCreated_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentServiceGroupCreated)
+typedef AMServiceGroupCreated ImActorModelEntityContentServiceGroupCreated;
 
-#endif // _ImActorModelEntityContentServiceGroupCreated_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupCreated)
+
+#endif // _AMServiceGroupCreated_H_

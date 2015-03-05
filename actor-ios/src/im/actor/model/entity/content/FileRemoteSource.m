@@ -12,19 +12,19 @@
 #include "im/actor/model/entity/content/FileRemoteSource.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityContentFileRemoteSource () {
+@interface AMFileRemoteSource () {
  @public
   AMFileLocation *fileLocation_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileRemoteSource, fileLocation_, AMFileLocation *)
+J2OBJC_FIELD_SETTER(AMFileRemoteSource, fileLocation_, AMFileLocation *)
 
-@implementation ImActorModelEntityContentFileRemoteSource
+@implementation AMFileRemoteSource
 
-+ (ImActorModelEntityContentFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader {
-  return ImActorModelEntityContentFileRemoteSource_fromValuesWithBSBserValues_(reader);
++ (AMFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader {
+  return AMFileRemoteSource_fromValuesWithBSBserValues_(reader);
 }
 
 - (instancetype)initWithAMFileLocation:(AMFileLocation *)fileLocation {
@@ -42,6 +42,14 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileRemoteSource, fileLocation_, AM
   return fileLocation_;
 }
 
+- (jint)getSize {
+  return [((AMFileLocation *) nil_chk(fileLocation_)) getFileSize];
+}
+
+- (NSString *)getFileName {
+  return [((AMFileLocation *) nil_chk(fileLocation_)) getFileName];
+}
+
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   fileLocation_ = AMFileLocation_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
@@ -52,18 +60,18 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentFileRemoteSource, fileLocation_, AM
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withBSBserObject:fileLocation_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentFileRemoteSource *)other {
+- (void)copyAllFieldsTo:(AMFileRemoteSource *)other {
   [super copyAllFieldsTo:other];
   other->fileLocation_ = fileLocation_;
 }
 
 @end
 
-ImActorModelEntityContentFileRemoteSource *ImActorModelEntityContentFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader) {
-  ImActorModelEntityContentFileRemoteSource_init();
-  ImActorModelEntityContentFileRemoteSource *fileLocalSource = [[ImActorModelEntityContentFileRemoteSource alloc] init];
+AMFileRemoteSource *AMFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader) {
+  AMFileRemoteSource_init();
+  AMFileRemoteSource *fileLocalSource = [[AMFileRemoteSource alloc] init];
   [fileLocalSource parseWithBSBserValues:reader];
   return fileLocalSource;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentFileRemoteSource)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileRemoteSource)

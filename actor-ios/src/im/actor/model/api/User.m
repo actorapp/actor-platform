@@ -24,7 +24,8 @@
   id<JavaUtilList> keyHashes_;
   jlong phone_;
   ImActorModelApiAvatar *avatar_;
-  id<JavaUtilList> contacts_;
+  id<JavaUtilList> phones_;
+  id<JavaUtilList> emails_;
   ImActorModelApiUserStateEnum *userState_;
 }
 @end
@@ -34,7 +35,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUser, localName_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiUser, sex_, ImActorModelApiSexEnum *)
 J2OBJC_FIELD_SETTER(ImActorModelApiUser, keyHashes_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiUser, avatar_, ImActorModelApiAvatar *)
-J2OBJC_FIELD_SETTER(ImActorModelApiUser, contacts_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(ImActorModelApiUser, phones_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(ImActorModelApiUser, emails_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiUser, userState_, ImActorModelApiUserStateEnum *)
 
 @implementation ImActorModelApiUser
@@ -47,7 +49,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUser, userState_, ImActorModelApiUserStateEnu
            withJavaUtilList:(id<JavaUtilList>)keyHashes
                    withLong:(jlong)phone
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
-           withJavaUtilList:(id<JavaUtilList>)contacts
+           withJavaUtilList:(id<JavaUtilList>)phones
+           withJavaUtilList:(id<JavaUtilList>)emails
 withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
   if (self = [super init]) {
     self->id__ = id_;
@@ -58,7 +61,8 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
     self->keyHashes_ = keyHashes;
     self->phone_ = phone;
     self->avatar_ = avatar;
-    self->contacts_ = contacts;
+    self->phones_ = phones;
+    self->emails_ = emails;
     self->userState_ = userState;
   }
   return self;
@@ -100,8 +104,12 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
   return self->avatar_;
 }
 
-- (id<JavaUtilList>)getContacts {
-  return self->contacts_;
+- (id<JavaUtilList>)getPhones {
+  return self->phones_;
+}
+
+- (id<JavaUtilList>)getEmails {
+  return self->emails_;
 }
 
 - (ImActorModelApiUserStateEnum *)getUserState {
@@ -120,7 +128,8 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
   self->keyHashes_ = [values getRepeatedLongWithInt:6];
   self->phone_ = [values getLongWithInt:7];
   self->avatar_ = [values optObjWithInt:8 withBSBserObject:[[ImActorModelApiAvatar alloc] init]];
-  self->contacts_ = [values getRepeatedIntWithInt:9];
+  self->phones_ = [values getRepeatedIntWithInt:9];
+  self->emails_ = [values getRepeatedIntWithInt:10];
   self->userState_ = ImActorModelApiUserStateEnum_parseWithInt_([values getIntWithInt:11]);
 }
 
@@ -142,11 +151,26 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
   if (self->avatar_ != nil) {
     [writer writeObjectWithInt:8 withBSBserObject:self->avatar_];
   }
-  [writer writeRepeatedIntWithInt:9 withJavaUtilList:self->contacts_];
+  [writer writeRepeatedIntWithInt:9 withJavaUtilList:self->phones_];
+  [writer writeRepeatedIntWithInt:10 withJavaUtilList:self->emails_];
   if (self->userState_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeIntWithInt:11 withInt:[((ImActorModelApiUserStateEnum *) nil_chk(self->userState_)) getValue]];
+}
+
+- (NSString *)description {
+  NSString *res = @"struct User{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"id=", self->id__));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", name=", self->name_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", localName=", self->localName_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", sex=", self->sex_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", keyHashes=", [((id<JavaUtilList>) nil_chk(self->keyHashes_)) size]));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", avatar=", (self->avatar_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", phones=", [((id<JavaUtilList>) nil_chk(self->phones_)) size]));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", emails=", [((id<JavaUtilList>) nil_chk(self->emails_)) size]));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiUser *)other {
@@ -159,7 +183,8 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState {
   other->keyHashes_ = keyHashes_;
   other->phone_ = phone_;
   other->avatar_ = avatar_;
-  other->contacts_ = contacts_;
+  other->phones_ = phones_;
+  other->emails_ = emails_;
   other->userState_ = userState_;
 }
 

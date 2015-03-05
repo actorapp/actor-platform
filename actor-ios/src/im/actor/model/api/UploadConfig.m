@@ -9,6 +9,7 @@
 #include "im/actor/model/api/UploadConfig.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUploadConfig () {
@@ -45,6 +46,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUploadConfig, serverData_, IOSByteArray *)
     @throw [[JavaIoIOException alloc] init];
   }
   [((BSBserWriter *) nil_chk(writer)) writeBytesWithInt:1 withByteArray:self->serverData_];
+}
+
+- (NSString *)description {
+  NSString *res = @"struct UploadConfig{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"serverData=", BSUtils_byteArrayToStringCompactWithByteArray_(self->serverData_)));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiUploadConfig *)other {

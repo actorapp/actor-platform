@@ -41,6 +41,13 @@
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->duration_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct FileExVoice{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"duration=", self->duration_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiFileExVoice *)other {
   [super copyAllFieldsTo:other];
   other->duration_ = duration_;

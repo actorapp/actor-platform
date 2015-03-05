@@ -57,6 +57,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->userAuths_];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple GetAuthSessions{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseGetAuthSessions_HEADER;
 }

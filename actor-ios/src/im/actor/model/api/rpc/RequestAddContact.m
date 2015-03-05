@@ -57,6 +57,13 @@
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc AddContact{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestAddContact_HEADER;
 }

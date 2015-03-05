@@ -77,6 +77,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUse
   [writer writeObjectWithInt:3 withBSBserObject:self->user_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc KickUser{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"groupPeer=", self->groupPeer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", user=", self->user_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestKickUser_HEADER;
 }

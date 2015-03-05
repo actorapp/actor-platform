@@ -85,6 +85,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
   [writer writeLongWithInt:4 withLong:self->date_];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple EditGroupAvatar{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseEditGroupAvatar_HEADER;
 }

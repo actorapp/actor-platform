@@ -87,6 +87,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
   [writer writeRepeatedObjWithInt:3 withJavaUtilList:self->dialogs_];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple LoadDialogs{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseLoadDialogs_HEADER;
 }

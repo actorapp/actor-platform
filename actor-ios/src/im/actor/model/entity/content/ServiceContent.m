@@ -14,18 +14,18 @@
 #include "im/actor/model/entity/content/ServiceContent.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityContentServiceContent () {
+@interface AMServiceContent () {
  @public
   NSString *compatText_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceContent, compatText_, NSString *)
+J2OBJC_FIELD_SETTER(AMServiceContent, compatText_, NSString *)
 
-@implementation ImActorModelEntityContentServiceContent
+@implementation AMServiceContent
 
-+ (ImActorModelEntityContentServiceContent *)serviceFromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentServiceContent_serviceFromBytesWithByteArray_(data);
++ (AMServiceContent *)serviceFromBytesWithByteArray:(IOSByteArray *)data {
+  return AMServiceContent_serviceFromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)compatText {
@@ -43,8 +43,8 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceContent, compatText_, NSStri
   return compatText_;
 }
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType {
-  return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE();
+- (AMAbsContent_ContentTypeEnum *)getContentType {
+  return AMAbsContent_ContentTypeEnum_get_SERVICE();
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -57,16 +57,16 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceContent, compatText_, NSStri
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:compatText_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentServiceContent *)other {
+- (void)copyAllFieldsTo:(AMServiceContent *)other {
   [super copyAllFieldsTo:other];
   other->compatText_ = compatText_;
 }
 
 @end
 
-ImActorModelEntityContentServiceContent *ImActorModelEntityContentServiceContent_serviceFromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentServiceContent_init();
-  return ((ImActorModelEntityContentServiceContent *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceContent alloc] init], data));
+AMServiceContent *AMServiceContent_serviceFromBytesWithByteArray_(IOSByteArray *data) {
+  AMServiceContent_init();
+  return ((AMServiceContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceContent alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceContent)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceContent)

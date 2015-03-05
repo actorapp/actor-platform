@@ -72,6 +72,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedRead, peer_, ImActorMod
   [writer writeLongWithInt:3 withLong:self->readDate_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update EncryptedRead{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", readDate=", self->readDate_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateEncryptedRead_HEADER;
 }

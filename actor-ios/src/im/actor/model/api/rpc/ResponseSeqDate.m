@@ -71,6 +71,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
   [writer writeLongWithInt:3 withLong:self->date_];
 }
 
+- (NSString *)description {
+  NSString *res = @"response SeqDate{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseSeqDate_HEADER;
 }

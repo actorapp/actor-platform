@@ -62,6 +62,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImAc
   }
 }
 
+- (NSString *)description {
+  NSString *res = @"update UserAvatarChanged{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", avatar=", (self->avatar_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserAvatarChanged_HEADER;
 }

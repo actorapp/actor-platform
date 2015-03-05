@@ -3,43 +3,47 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/DocumentContent.java
 //
 
-#ifndef _ImActorModelEntityContentDocumentContent_H_
-#define _ImActorModelEntityContentDocumentContent_H_
+#ifndef _AMDocumentContent_H_
+#define _AMDocumentContent_H_
 
+@class AMAbsContent_ContentTypeEnum;
+@class AMFastThumb;
+@class AMFileSource;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelEntityContentAbsContent_ContentTypeEnum;
-@class ImActorModelEntityContentFastThumb;
-@class ImActorModelEntityContentFileSource;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/AbsContent.h"
 
-@interface ImActorModelEntityContentDocumentContent : ImActorModelEntityContentAbsContent {
+@interface AMDocumentContent : AMAbsContent {
  @public
-  ImActorModelEntityContentFileSource *source_;
+  AMFileSource *source_;
   NSString *mimetype_;
   NSString *name_;
-  ImActorModelEntityContentFastThumb *fastThumb_;
+  AMFastThumb *fastThumb_;
 }
 
-+ (ImActorModelEntityContentDocumentContent *)docFromBytesWithByteArray:(IOSByteArray *)data;
++ (AMDocumentContent *)docFromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)initWithImActorModelEntityContentFileSource:(ImActorModelEntityContentFileSource *)source
-                                               withNSString:(NSString *)mimetype
-                                               withNSString:(NSString *)name
-                     withImActorModelEntityContentFastThumb:(ImActorModelEntityContentFastThumb *)fastThumb;
+- (instancetype)initWithAMFileSource:(AMFileSource *)source
+                        withNSString:(NSString *)mimetype
+                        withNSString:(NSString *)name
+                     withAMFastThumb:(AMFastThumb *)fastThumb;
 
 - (instancetype)init;
 
-- (ImActorModelEntityContentFileSource *)getSource;
+- (AMFileSource *)getSource;
 
 - (NSString *)getName;
 
-- (ImActorModelEntityContentFastThumb *)getFastThumb;
+- (AMFastThumb *)getFastThumb;
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
+- (NSString *)getExt;
+
+- (NSString *)getMimetype;
+
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -47,18 +51,20 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentDocumentContent)
+J2OBJC_EMPTY_STATIC_INIT(AMDocumentContent)
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentDocumentContent, source_, ImActorModelEntityContentFileSource *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentDocumentContent, mimetype_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentDocumentContent, name_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentDocumentContent, fastThumb_, ImActorModelEntityContentFastThumb *)
+J2OBJC_FIELD_SETTER(AMDocumentContent, source_, AMFileSource *)
+J2OBJC_FIELD_SETTER(AMDocumentContent, mimetype_, NSString *)
+J2OBJC_FIELD_SETTER(AMDocumentContent, name_, NSString *)
+J2OBJC_FIELD_SETTER(AMDocumentContent, fastThumb_, AMFastThumb *)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentDocumentContent *ImActorModelEntityContentDocumentContent_docFromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMDocumentContent *AMDocumentContent_docFromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentDocumentContent)
+typedef AMDocumentContent ImActorModelEntityContentDocumentContent;
 
-#endif // _ImActorModelEntityContentDocumentContent_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMDocumentContent)
+
+#endif // _AMDocumentContent_H_

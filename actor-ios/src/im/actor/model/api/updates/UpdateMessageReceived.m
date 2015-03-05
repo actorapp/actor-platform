@@ -72,6 +72,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReceived, peer_, ImActorM
   [writer writeLongWithInt:3 withLong:self->receivedDate_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update MessageReceived{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", startDate=", self->startDate_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", receivedDate=", self->receivedDate_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateMessageReceived_HEADER;
 }

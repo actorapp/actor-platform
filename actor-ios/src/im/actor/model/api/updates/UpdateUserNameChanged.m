@@ -62,6 +62,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserNameChanged, name_, NSString
   [writer writeStringWithInt:2 withNSString:self->name_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update UserNameChanged{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", name=", self->name_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserNameChanged_HEADER;
 }

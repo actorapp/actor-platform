@@ -41,6 +41,13 @@
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->addedUid_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct ServiceExUserAdded{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"addedUid=", self->addedUid_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiServiceExUserAdded *)other {
   [super copyAllFieldsTo:other];
   other->addedUid_ = addedUid_;

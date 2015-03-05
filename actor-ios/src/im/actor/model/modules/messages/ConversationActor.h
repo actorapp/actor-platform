@@ -6,6 +6,7 @@
 #ifndef _ImActorModelModulesMessagesConversationActor_H_
 #define _ImActorModelModulesMessagesConversationActor_H_
 
+@class AMAbsContent;
 @class AMMessage;
 @class AMPeer;
 @class DKActorRef;
@@ -35,6 +36,25 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor)
+
+@interface ImActorModelModulesMessagesConversationActor_MessageContentUpdated : NSObject {
+}
+
+- (instancetype)initWithLong:(jlong)rid
+            withAMAbsContent:(AMAbsContent *)content;
+
+- (jlong)getRid;
+
+- (AMAbsContent *)getContent;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageContentUpdated)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageContentUpdated)
 
 @interface ImActorModelModulesMessagesConversationActor_HistoryLoaded : NSObject {
 }
@@ -151,7 +171,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageError)
 
-@interface ImActorModelModulesMessagesConversationActor_MessageDeleted : NSObject {
+@interface ImActorModelModulesMessagesConversationActor_MessagesDeleted : NSObject {
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)rids;
@@ -160,11 +180,39 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageE
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageDeleted)
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessagesDeleted)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageDeleted)
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessagesDeleted)
+
+@interface ImActorModelModulesMessagesConversationActor_ClearConversation : NSObject {
+}
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_ClearConversation)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_ClearConversation)
+
+@interface ImActorModelModulesMessagesConversationActor_DeleteConversation : NSObject {
+}
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_DeleteConversation)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_DeleteConversation)
 
 #endif // _ImActorModelModulesMessagesConversationActor_H_

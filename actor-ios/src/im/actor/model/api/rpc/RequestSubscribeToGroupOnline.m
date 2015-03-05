@@ -57,6 +57,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToGroupOnline, groups_, id
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->groups_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc SubscribeToGroupOnline{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"groups=", [((id<JavaUtilList>) nil_chk(self->groups_)) size]));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSubscribeToGroupOnline_HEADER;
 }

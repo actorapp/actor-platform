@@ -18,7 +18,10 @@
 #include "im/actor/model/modules/Groups.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
+#include "im/actor/model/modules/Notifications.h"
 #include "im/actor/model/modules/Presence.h"
+#include "im/actor/model/modules/Profile.h"
+#include "im/actor/model/modules/Settings.h"
 #include "im/actor/model/modules/Typing.h"
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/Users.h"
@@ -42,6 +45,9 @@
   ImActorModelModulesTyping *typing_;
   ImActorModelModulesFiles *filesModule_;
   ImActorModelModulesContacts *contacts_;
+  ImActorModelModulesNotifications *notifications_;
+  ImActorModelModulesSettings *settings_;
+  ImActorModelModulesProfile *profile_;
 }
 @end
 
@@ -58,6 +64,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules, presence_, ImActorModelModulesPr
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, typing_, ImActorModelModulesTyping *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, filesModule_, ImActorModelModulesFiles *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, contacts_, ImActorModelModulesContacts *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesModules, notifications_, ImActorModelModulesNotifications *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesModules, settings_, ImActorModelModulesSettings *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesModules, profile_, ImActorModelModulesProfile *)
 
 @interface ImActorModelModulesModules_$1 () {
  @public
@@ -113,10 +122,17 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.6 in ", ([((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime] - start), @" ms"));
   start = [((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime];
   filesModule_ = [[ImActorModelModulesFiles alloc] initWithImActorModelModulesModules:self];
+  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.6.2 in ", ([((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime];
+  notifications_ = [[ImActorModelModulesNotifications alloc] initWithImActorModelModulesModules:self];
   AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.7 in ", ([((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime] - start), @" ms"));
   start = [((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime];
   contacts_ = [[ImActorModelModulesContacts alloc] initWithImActorModelModulesModules:self];
   AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.8 in ", ([((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime];
+  settings_ = [[ImActorModelModulesSettings alloc] initWithImActorModelModulesModules:self];
+  profile_ = [[ImActorModelModulesProfile alloc] initWithImActorModelModulesModules:self];
+  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.8.2 in ", ([((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime] - start), @" ms"));
   start = [((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime];
   [filesModule_ run];
   AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.9 in ", ([((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime] - start), @" ms"));
@@ -130,6 +146,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   [presence_ run];
   AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.12 in ", ([((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime] - start), @" ms"));
   start = [((id<AMThreading>) nil_chk([configuration_ getThreading])) getActorTime];
+  [presence_ onAppVisible];
+  [notifications_ onAppVisible];
 }
 
 - (id<AMPreferencesStorage>)getPreferences {
@@ -184,6 +202,18 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   return filesModule_;
 }
 
+- (ImActorModelModulesNotifications *)getNotifications {
+  return notifications_;
+}
+
+- (ImActorModelModulesSettings *)getSettings {
+  return settings_;
+}
+
+- (ImActorModelModulesProfile *)getProfile {
+  return profile_;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelModulesModules *)other {
   [super copyAllFieldsTo:other];
   other->configuration_ = configuration_;
@@ -199,6 +229,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   other->typing_ = typing_;
   other->filesModule_ = filesModule_;
   other->contacts_ = contacts_;
+  other->notifications_ = notifications_;
+  other->settings_ = settings_;
+  other->profile_ = profile_;
 }
 
 @end

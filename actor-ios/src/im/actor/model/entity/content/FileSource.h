@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/FileSource.java
 //
 
-#ifndef _ImActorModelEntityContentFileSource_H_
-#define _ImActorModelEntityContentFileSource_H_
+#ifndef _AMFileSource_H_
+#define _AMFileSource_H_
 
 @class BSBserValues;
 @class BSBserWriter;
@@ -13,10 +13,14 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelEntityContentFileSource : BSBserObject {
+@interface AMFileSource : BSBserObject {
 }
 
-+ (ImActorModelEntityContentFileSource *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMFileSource *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getSize;
+
+- (NSString *)getFileName;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -26,13 +30,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentFileSource)
+J2OBJC_EMPTY_STATIC_INIT(AMFileSource)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentFileSource *ImActorModelEntityContentFileSource_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMFileSource *AMFileSource_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentFileSource)
+typedef AMFileSource ImActorModelEntityContentFileSource;
 
-#endif // _ImActorModelEntityContentFileSource_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMFileSource)
+
+#endif // _AMFileSource_H_

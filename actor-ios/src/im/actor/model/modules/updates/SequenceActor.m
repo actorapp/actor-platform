@@ -21,6 +21,7 @@
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/updates/SequenceActor.h"
 #include "im/actor/model/modules/updates/UpdateProcessor.h"
+#include "im/actor/model/modules/updates/internal/ExecuteAfter.h"
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/network/RpcException.h"
@@ -28,17 +29,21 @@
 #include "im/actor/model/storage/PreferencesStorage.h"
 #include "java/io/IOException.h"
 #include "java/lang/Integer.h"
+#include "java/lang/Runnable.h"
 #include "java/util/HashMap.h"
 #include "java/util/List.h"
+#include "java/util/concurrent/CopyOnWriteArrayList.h"
 
 __attribute__((unused)) static void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorModelModulesUpdatesSequenceActor *self, id u);
 __attribute__((unused)) static jboolean ImActorModelModulesUpdatesSequenceActor_isValidSeqWithInt_(ImActorModelModulesUpdatesSequenceActor *self, jint seq);
 __attribute__((unused)) static void ImActorModelModulesUpdatesSequenceActor_invalidate(ImActorModelModulesUpdatesSequenceActor *self);
 __attribute__((unused)) static void ImActorModelModulesUpdatesSequenceActor_checkFuture(ImActorModelModulesUpdatesSequenceActor *self);
+__attribute__((unused)) static void ImActorModelModulesUpdatesSequenceActor_checkRunnables(ImActorModelModulesUpdatesSequenceActor *self);
 
 @interface ImActorModelModulesUpdatesSequenceActor () {
  @public
   JavaUtilHashMap *further_;
+  JavaUtilConcurrentCopyOnWriteArrayList *pendingRunnables_;
   jboolean isValidated_;
   jint seq_;
   IOSByteArray *state_;
@@ -53,9 +58,12 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesSequenceActor_chec
 - (void)invalidate;
 
 - (void)checkFuture;
+
+- (void)checkRunnables;
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesSequenceActor, further_, JavaUtilHashMap *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesSequenceActor, pendingRunnables_, JavaUtilConcurrentCopyOnWriteArrayList *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesSequenceActor, state_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesSequenceActor, processor_, ImActorModelModulesUpdatesUpdateProcessor *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesSequenceActor, parser_, ImActorModelApiParserUpdatesParser *)
@@ -91,6 +99,7 @@ NSString * ImActorModelModulesUpdatesSequenceActor_KEY_STATE_ = @"updates_state"
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super initWithImActorModelModulesModules:modules]) {
     further_ = [[JavaUtilHashMap alloc] init];
+    pendingRunnables_ = [[JavaUtilConcurrentCopyOnWriteArrayList alloc] init];
     isValidated_ = YES;
   }
   return self;
@@ -120,6 +129,12 @@ NSString * ImActorModelModulesUpdatesSequenceActor_KEY_STATE_ = @"updates_state"
   else if ([message isKindOfClass:[ImActorModelModulesUpdatesInternalInternalUpdate class]]) {
     ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(self, message);
   }
+  else if ([message isKindOfClass:[ImActorModelModulesUpdatesInternalExecuteAfter class]]) {
+    ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(self, message);
+  }
+  else {
+    [self dropWithId:message];
+  }
 }
 
 - (void)onUpdateReceivedWithId:(id)u {
@@ -138,9 +153,14 @@ NSString * ImActorModelModulesUpdatesSequenceActor_KEY_STATE_ = @"updates_state"
   ImActorModelModulesUpdatesSequenceActor_checkFuture(self);
 }
 
+- (void)checkRunnables {
+  ImActorModelModulesUpdatesSequenceActor_checkRunnables(self);
+}
+
 - (void)copyAllFieldsTo:(ImActorModelModulesUpdatesSequenceActor *)other {
   [super copyAllFieldsTo:other];
   other->further_ = further_;
+  other->pendingRunnables_ = pendingRunnables_;
   other->isValidated_ = isValidated_;
   other->seq_ = seq_;
   other->state_ = state_;
@@ -184,6 +204,16 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
     [((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(self->processor_)) processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:(ImActorModelModulesUpdatesInternalInternalUpdate *) check_class_cast(u, [ImActorModelModulesUpdatesInternalInternalUpdate class])];
     return;
   }
+  else if ([u isKindOfClass:[ImActorModelModulesUpdatesInternalExecuteAfter class]]) {
+    ImActorModelModulesUpdatesInternalExecuteAfter *after = (ImActorModelModulesUpdatesInternalExecuteAfter *) check_class_cast(u, [ImActorModelModulesUpdatesInternalExecuteAfter class]);
+    if ([((ImActorModelModulesUpdatesInternalExecuteAfter *) nil_chk(after)) getSeq] <= self->seq_) {
+      [((id<JavaLangRunnable>) nil_chk([after getRunnable])) run];
+    }
+    else {
+      [((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(self->pendingRunnables_)) addWithId:after];
+    }
+    return;
+  }
   else {
     return;
   }
@@ -220,17 +250,18 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, JreStrcat("$@", @"Processing update: ", update));
   if ([u isKindOfClass:[ImActorModelApiBaseFatSeqUpdate class]]) {
     ImActorModelApiBaseFatSeqUpdate *fatSeqUpdate = (ImActorModelApiBaseFatSeqUpdate *) check_class_cast(u, [ImActorModelApiBaseFatSeqUpdate class]);
-    [self->processor_ applyRelatedWithJavaUtilList:[((ImActorModelApiBaseFatSeqUpdate *) nil_chk(fatSeqUpdate)) getUsers] withJavaUtilList:[fatSeqUpdate getGroups] withJavaUtilList:[fatSeqUpdate getContacts] withBoolean:NO];
+    [self->processor_ applyRelatedWithJavaUtilList:[((ImActorModelApiBaseFatSeqUpdate *) nil_chk(fatSeqUpdate)) getUsers] withJavaUtilList:[fatSeqUpdate getGroups] withBoolean:NO];
   }
   [self->processor_ processUpdateWithImActorModelNetworkParserUpdate:update];
   if ([u isKindOfClass:[ImActorModelApiBaseFatSeqUpdate class]]) {
     ImActorModelApiBaseFatSeqUpdate *fatSeqUpdate = (ImActorModelApiBaseFatSeqUpdate *) check_class_cast(u, [ImActorModelApiBaseFatSeqUpdate class]);
-    [self->processor_ applyRelatedWithJavaUtilList:[((ImActorModelApiBaseFatSeqUpdate *) nil_chk(fatSeqUpdate)) getUsers] withJavaUtilList:[fatSeqUpdate getGroups] withJavaUtilList:[fatSeqUpdate getContacts] withBoolean:YES];
+    [self->processor_ applyRelatedWithJavaUtilList:[((ImActorModelApiBaseFatSeqUpdate *) nil_chk(fatSeqUpdate)) getUsers] withJavaUtilList:[fatSeqUpdate getGroups] withBoolean:YES];
   }
   self->seq_ = seq;
   self->state_ = state;
   [((id<AMPreferencesStorage>) nil_chk([self preferences])) putIntWithNSString:ImActorModelModulesUpdatesSequenceActor_KEY_SEQ_ withInt:seq];
   [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:ImActorModelModulesUpdatesSequenceActor_KEY_STATE_ withByteArray:state];
+  ImActorModelModulesUpdatesSequenceActor_checkRunnables(self);
   ImActorModelModulesUpdatesSequenceActor_checkFuture(self);
   [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] withLong:24 * 60 * 60 * 1000LL];
 }
@@ -264,6 +295,15 @@ void ImActorModelModulesUpdatesSequenceActor_checkFuture(ImActorModelModulesUpda
     }
   }
   [((JavaUtilHashMap *) nil_chk(self->further_)) clear];
+}
+
+void ImActorModelModulesUpdatesSequenceActor_checkRunnables(ImActorModelModulesUpdatesSequenceActor *self) {
+  for (ImActorModelModulesUpdatesInternalExecuteAfter * __strong e in nil_chk(self->pendingRunnables_)) {
+    if ([((ImActorModelModulesUpdatesInternalExecuteAfter *) nil_chk(e)) getSeq] <= self->seq_) {
+      [((id<JavaLangRunnable>) nil_chk([e getRunnable])) run];
+      [self->pendingRunnables_ removeWithId:e];
+    }
+  }
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor)
@@ -318,8 +358,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_PushSeq
   [((id<AMPreferencesStorage>) nil_chk([this$0_ preferences])) putIntWithNSString:ImActorModelModulesUpdatesSequenceActor_get_KEY_SEQ_() withInt:this$0_->seq_];
   [((id<AMPreferencesStorage>) nil_chk([this$0_ preferences])) putBytesWithNSString:ImActorModelModulesUpdatesSequenceActor_get_KEY_STATE_() withByteArray:this$0_->state_];
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_get_TAG_(), JreStrcat("$IC", @"State loaded {seq=", this$0_->seq_, '}'));
-  [((DKActorRef *) nil_chk([this$0_ self__])) sendOnceWithId:[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] withLong:24 * 60 * 60 * 1000LL];
+  ImActorModelModulesUpdatesSequenceActor_checkRunnables(this$0_);
   ImActorModelModulesUpdatesSequenceActor_checkFuture(this$0_);
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendOnceWithId:[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] withLong:24 * 60 * 60 * 1000LL];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
@@ -351,7 +392,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_$1)
     return;
   }
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_get_TAG_(), JreStrcat("$IC", @"Difference loaded {seq=", [((ImActorModelApiRpcResponseGetDifference *) nil_chk(response)) getSeq], '}'));
-  [((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(this$0_->processor_)) applyRelatedWithJavaUtilList:[response getUsers] withJavaUtilList:[response getGroups] withJavaUtilList:[response getContacts] withBoolean:NO];
+  [((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(this$0_->processor_)) applyRelatedWithJavaUtilList:[response getUsers] withJavaUtilList:[response getGroups] withBoolean:NO];
   for (ImActorModelApiDifferenceUpdate * __strong u in nil_chk([response getUpdates])) {
     @try {
       ImActorModelNetworkParserUpdate *update = [((ImActorModelApiParserUpdatesParser *) nil_chk(this$0_->parser_)) readWithInt:[((ImActorModelApiDifferenceUpdate *) nil_chk(u)) getUpdateHeader] withByteArray:[u getUpdate]];
@@ -362,14 +403,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_$1)
       AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_get_TAG_(), JreStrcat("$I$", @"Broken update #", [((ImActorModelApiDifferenceUpdate *) nil_chk(u)) getUpdateHeader], @": ignoring"));
     }
   }
-  [this$0_->processor_ applyRelatedWithJavaUtilList:[response getUsers] withJavaUtilList:[response getGroups] withJavaUtilList:[response getContacts] withBoolean:YES];
+  [this$0_->processor_ applyRelatedWithJavaUtilList:[response getUsers] withJavaUtilList:[response getGroups] withBoolean:YES];
   this$0_->seq_ = [response getSeq];
   this$0_->state_ = [response getState];
   this$0_->isValidated_ = YES;
   [((id<AMPreferencesStorage>) nil_chk([this$0_ preferences])) putIntWithNSString:ImActorModelModulesUpdatesSequenceActor_get_KEY_SEQ_() withInt:this$0_->seq_];
   [((id<AMPreferencesStorage>) nil_chk([this$0_ preferences])) putBytesWithNSString:ImActorModelModulesUpdatesSequenceActor_get_KEY_STATE_() withByteArray:this$0_->state_];
-  [((DKActorRef *) nil_chk([this$0_ self__])) sendOnceWithId:[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] withLong:24 * 60 * 60 * 1000LL];
+  ImActorModelModulesUpdatesSequenceActor_checkRunnables(this$0_);
   ImActorModelModulesUpdatesSequenceActor_checkFuture(this$0_);
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendOnceWithId:[[ImActorModelModulesUpdatesSequenceActor_ForceInvalidate alloc] init] withLong:24 * 60 * 60 * 1000LL];
   if ([response needMore]) {
     ImActorModelModulesUpdatesSequenceActor_invalidate(this$0_);
   }

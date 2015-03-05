@@ -30,21 +30,21 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-@implementation ImActorModelEntityContentAbsContent
+@implementation AMAbsContent
 
-+ (ImActorModelEntityContentAbsContent *)contentFromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentAbsContent_contentFromBytesWithByteArray_(data);
++ (AMAbsContent *)contentFromBytesWithByteArray:(IOSByteArray *)data {
+  return AMAbsContent_contentFromBytesWithByteArray_(data);
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((ImActorModelEntityContentAbsContent_ContentTypeEnum *) nil_chk([self getContentType])) getValue]];
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((AMAbsContent_ContentTypeEnum *) nil_chk([self getContentType])) getValue]];
 }
 
-+ (ImActorModelEntityContentAbsContent_ContentTypeEnum *)typeFromValueWithInt:(jint)val {
-  return ImActorModelEntityContentAbsContent_typeFromValueWithInt_(val);
++ (AMAbsContent_ContentTypeEnum *)typeFromValueWithInt:(jint)val {
+  return AMAbsContent_typeFromValueWithInt_(val);
 }
 
 - (instancetype)init {
@@ -53,78 +53,78 @@
 
 @end
 
-ImActorModelEntityContentAbsContent *ImActorModelEntityContentAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentAbsContent_init();
+AMAbsContent *AMAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data) {
+  AMAbsContent_init();
   BSBserValues *reader = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithAMDataInput_([[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_])];
-  ImActorModelEntityContentAbsContent_ContentTypeEnum *type = ImActorModelEntityContentAbsContent_typeFromValueWithInt_([reader getIntWithInt:1]);
+  AMAbsContent_ContentTypeEnum *type = AMAbsContent_typeFromValueWithInt_([reader getIntWithInt:1]);
   switch ([type ordinal]) {
-    case ImActorModelEntityContentAbsContent_ContentType_TEXT:
-    return ImActorModelEntityContentTextContent_textFromBytesWithByteArray_(data);
-    case ImActorModelEntityContentAbsContent_ContentType_DOCUMENT:
-    return ImActorModelEntityContentDocumentContent_docFromBytesWithByteArray_(data);
-    case ImActorModelEntityContentAbsContent_ContentType_DOCUMENT_PHOTO:
-    return ImActorModelEntityContentPhotoContent_photoFromBytesWithByteArray_(data);
-    case ImActorModelEntityContentAbsContent_ContentType_DOCUMENT_VIDEO:
-    return ImActorModelEntityContentVideoContent_videoFromBytesWithByteArray_(data);
-    case ImActorModelEntityContentAbsContent_ContentType_SERVICE:
-    return ImActorModelEntityContentServiceContent_serviceFromBytesWithByteArray_(data);
-    case ImActorModelEntityContentAbsContent_ContentType_SERVICE_REGISTERED:
-    return ImActorModelEntityContentServiceUserRegistered_fromBytesWithByteArray_(data);
-    case ImActorModelEntityContentAbsContent_ContentType_SERVICE_CREATED:
-    return ImActorModelEntityContentServiceGroupCreated_fromBytesWithByteArray_(data);
-    case ImActorModelEntityContentAbsContent_ContentType_SERVICE_TITLE:
-    return ImActorModelEntityContentServiceGroupTitleChanged_fromBytesWithByteArray_(data);
-    case ImActorModelEntityContentAbsContent_ContentType_SERVICE_AVATAR:
-    return ImActorModelEntityContentServiceGroupAvatarChanged_fromBytesWithByteArray_(data);
-    case ImActorModelEntityContentAbsContent_ContentType_SERVICE_ADDED:
-    return ImActorModelEntityContentServiceGroupUserAdded_fromBytesWithByteArray_(data);
-    case ImActorModelEntityContentAbsContent_ContentType_SERVICE_KICKED:
-    return ImActorModelEntityContentServiceGroupUserKicked_fromBytesWithByteArray_(data);
-    case ImActorModelEntityContentAbsContent_ContentType_SERVICE_LEAVE:
-    return ImActorModelEntityContentServiceGroupUserLeave_fromBytesWithByteArray_(data);
+    case AMAbsContent_ContentType_TEXT:
+    return AMTextContent_textFromBytesWithByteArray_(data);
+    case AMAbsContent_ContentType_DOCUMENT:
+    return AMDocumentContent_docFromBytesWithByteArray_(data);
+    case AMAbsContent_ContentType_DOCUMENT_PHOTO:
+    return AMPhotoContent_photoFromBytesWithByteArray_(data);
+    case AMAbsContent_ContentType_DOCUMENT_VIDEO:
+    return AMVideoContent_videoFromBytesWithByteArray_(data);
+    case AMAbsContent_ContentType_SERVICE:
+    return AMServiceContent_serviceFromBytesWithByteArray_(data);
+    case AMAbsContent_ContentType_SERVICE_REGISTERED:
+    return AMServiceUserRegistered_fromBytesWithByteArray_(data);
+    case AMAbsContent_ContentType_SERVICE_CREATED:
+    return AMServiceGroupCreated_fromBytesWithByteArray_(data);
+    case AMAbsContent_ContentType_SERVICE_TITLE:
+    return AMServiceGroupTitleChanged_fromBytesWithByteArray_(data);
+    case AMAbsContent_ContentType_SERVICE_AVATAR:
+    return AMServiceGroupAvatarChanged_fromBytesWithByteArray_(data);
+    case AMAbsContent_ContentType_SERVICE_ADDED:
+    return AMServiceGroupUserAdded_fromBytesWithByteArray_(data);
+    case AMAbsContent_ContentType_SERVICE_KICKED:
+    return AMServiceGroupUserKicked_fromBytesWithByteArray_(data);
+    case AMAbsContent_ContentType_SERVICE_LEAVE:
+    return AMServiceGroupUserLeave_fromBytesWithByteArray_(data);
     default:
     @throw [[JavaIoIOException alloc] initWithNSString:@"Unknown type"];
   }
 }
 
-ImActorModelEntityContentAbsContent_ContentTypeEnum *ImActorModelEntityContentAbsContent_typeFromValueWithInt_(jint val) {
-  ImActorModelEntityContentAbsContent_init();
+AMAbsContent_ContentTypeEnum *AMAbsContent_typeFromValueWithInt_(jint val) {
+  AMAbsContent_init();
   switch (val) {
     default:
     case 1:
-    return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_TEXT();
+    return AMAbsContent_ContentTypeEnum_get_TEXT();
     case 2:
-    return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_DOCUMENT();
+    return AMAbsContent_ContentTypeEnum_get_DOCUMENT();
     case 3:
-    return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_DOCUMENT_PHOTO();
+    return AMAbsContent_ContentTypeEnum_get_DOCUMENT_PHOTO();
     case 4:
-    return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_DOCUMENT_VIDEO();
+    return AMAbsContent_ContentTypeEnum_get_DOCUMENT_VIDEO();
     case 5:
-    return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE();
+    return AMAbsContent_ContentTypeEnum_get_SERVICE();
     case 6:
-    return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_CREATED();
+    return AMAbsContent_ContentTypeEnum_get_SERVICE_CREATED();
     case 7:
-    return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_AVATAR();
+    return AMAbsContent_ContentTypeEnum_get_SERVICE_AVATAR();
     case 8:
-    return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_TITLE();
+    return AMAbsContent_ContentTypeEnum_get_SERVICE_TITLE();
     case 9:
-    return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_ADDED();
+    return AMAbsContent_ContentTypeEnum_get_SERVICE_ADDED();
     case 10:
-    return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_KICKED();
+    return AMAbsContent_ContentTypeEnum_get_SERVICE_KICKED();
     case 11:
-    return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_LEAVE();
+    return AMAbsContent_ContentTypeEnum_get_SERVICE_LEAVE();
     case 12:
-    return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_REGISTERED();
+    return AMAbsContent_ContentTypeEnum_get_SERVICE_REGISTERED();
   }
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentAbsContent)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAbsContent)
 
-BOOL ImActorModelEntityContentAbsContent_ContentTypeEnum_initialized = NO;
+BOOL AMAbsContent_ContentTypeEnum_initialized = NO;
 
-ImActorModelEntityContentAbsContent_ContentTypeEnum *ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[12];
+AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_values_[12];
 
-@implementation ImActorModelEntityContentAbsContent_ContentTypeEnum
+@implementation AMAbsContent_ContentTypeEnum
 
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
@@ -139,22 +139,22 @@ ImActorModelEntityContentAbsContent_ContentTypeEnum *ImActorModelEntityContentAb
   return value_;
 }
 
-IOSObjectArray *ImActorModelEntityContentAbsContent_ContentTypeEnum_values() {
-  ImActorModelEntityContentAbsContent_ContentTypeEnum_init();
-  return [IOSObjectArray arrayWithObjects:ImActorModelEntityContentAbsContent_ContentTypeEnum_values_ count:12 type:ImActorModelEntityContentAbsContent_ContentTypeEnum_class_()];
+IOSObjectArray *AMAbsContent_ContentTypeEnum_values() {
+  AMAbsContent_ContentTypeEnum_init();
+  return [IOSObjectArray arrayWithObjects:AMAbsContent_ContentTypeEnum_values_ count:12 type:AMAbsContent_ContentTypeEnum_class_()];
 }
 + (IOSObjectArray *)values {
-  return ImActorModelEntityContentAbsContent_ContentTypeEnum_values();
+  return AMAbsContent_ContentTypeEnum_values();
 }
 
-+ (ImActorModelEntityContentAbsContent_ContentTypeEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelEntityContentAbsContent_ContentTypeEnum_valueOfWithNSString_(name);
++ (AMAbsContent_ContentTypeEnum *)valueOfWithNSString:(NSString *)name {
+  return AMAbsContent_ContentTypeEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelEntityContentAbsContent_ContentTypeEnum *ImActorModelEntityContentAbsContent_ContentTypeEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelEntityContentAbsContent_ContentTypeEnum_init();
+AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_valueOfWithNSString_(NSString *name) {
+  AMAbsContent_ContentTypeEnum_init();
   for (int i = 0; i < 12; i++) {
-    ImActorModelEntityContentAbsContent_ContentTypeEnum *e = ImActorModelEntityContentAbsContent_ContentTypeEnum_values_[i];
+    AMAbsContent_ContentTypeEnum *e = AMAbsContent_ContentTypeEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -168,23 +168,23 @@ ImActorModelEntityContentAbsContent_ContentTypeEnum *ImActorModelEntityContentAb
 }
 
 + (void)initialize {
-  if (self == [ImActorModelEntityContentAbsContent_ContentTypeEnum class]) {
-    ImActorModelEntityContentAbsContent_ContentTypeEnum_TEXT = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:1 withNSString:@"TEXT" withInt:0];
-    ImActorModelEntityContentAbsContent_ContentTypeEnum_DOCUMENT = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:2 withNSString:@"DOCUMENT" withInt:1];
-    ImActorModelEntityContentAbsContent_ContentTypeEnum_DOCUMENT_PHOTO = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:3 withNSString:@"DOCUMENT_PHOTO" withInt:2];
-    ImActorModelEntityContentAbsContent_ContentTypeEnum_DOCUMENT_VIDEO = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:4 withNSString:@"DOCUMENT_VIDEO" withInt:3];
-    ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:5 withNSString:@"SERVICE" withInt:4];
-    ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_CREATED = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:6 withNSString:@"SERVICE_CREATED" withInt:5];
-    ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_AVATAR = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:7 withNSString:@"SERVICE_AVATAR" withInt:6];
-    ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_TITLE = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:8 withNSString:@"SERVICE_TITLE" withInt:7];
-    ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_ADDED = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:9 withNSString:@"SERVICE_ADDED" withInt:8];
-    ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_KICKED = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:10 withNSString:@"SERVICE_KICKED" withInt:9];
-    ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_LEAVE = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:11 withNSString:@"SERVICE_LEAVE" withInt:10];
-    ImActorModelEntityContentAbsContent_ContentTypeEnum_SERVICE_REGISTERED = [[ImActorModelEntityContentAbsContent_ContentTypeEnum alloc] initWithInt:12 withNSString:@"SERVICE_REGISTERED" withInt:11];
-    J2OBJC_SET_INITIALIZED(ImActorModelEntityContentAbsContent_ContentTypeEnum)
+  if (self == [AMAbsContent_ContentTypeEnum class]) {
+    AMAbsContent_ContentTypeEnum_TEXT = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:1 withNSString:@"TEXT" withInt:0];
+    AMAbsContent_ContentTypeEnum_DOCUMENT = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:2 withNSString:@"DOCUMENT" withInt:1];
+    AMAbsContent_ContentTypeEnum_DOCUMENT_PHOTO = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:3 withNSString:@"DOCUMENT_PHOTO" withInt:2];
+    AMAbsContent_ContentTypeEnum_DOCUMENT_VIDEO = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:4 withNSString:@"DOCUMENT_VIDEO" withInt:3];
+    AMAbsContent_ContentTypeEnum_SERVICE = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:5 withNSString:@"SERVICE" withInt:4];
+    AMAbsContent_ContentTypeEnum_SERVICE_CREATED = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:6 withNSString:@"SERVICE_CREATED" withInt:5];
+    AMAbsContent_ContentTypeEnum_SERVICE_AVATAR = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:7 withNSString:@"SERVICE_AVATAR" withInt:6];
+    AMAbsContent_ContentTypeEnum_SERVICE_TITLE = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:8 withNSString:@"SERVICE_TITLE" withInt:7];
+    AMAbsContent_ContentTypeEnum_SERVICE_ADDED = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:9 withNSString:@"SERVICE_ADDED" withInt:8];
+    AMAbsContent_ContentTypeEnum_SERVICE_KICKED = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:10 withNSString:@"SERVICE_KICKED" withInt:9];
+    AMAbsContent_ContentTypeEnum_SERVICE_LEAVE = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:11 withNSString:@"SERVICE_LEAVE" withInt:10];
+    AMAbsContent_ContentTypeEnum_SERVICE_REGISTERED = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:12 withNSString:@"SERVICE_REGISTERED" withInt:11];
+    J2OBJC_SET_INITIALIZED(AMAbsContent_ContentTypeEnum)
   }
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentAbsContent_ContentTypeEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAbsContent_ContentTypeEnum)

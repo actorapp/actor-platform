@@ -89,6 +89,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
   [writer writeLongWithInt:4 withLong:self->date_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update GroupTitleChanged{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", title=", self->title_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateGroupTitleChanged_HEADER;
 }

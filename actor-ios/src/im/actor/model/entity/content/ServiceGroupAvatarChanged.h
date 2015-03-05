@@ -3,28 +3,28 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/ServiceGroupAvatarChanged.java
 //
 
-#ifndef _ImActorModelEntityContentServiceGroupAvatarChanged_H_
-#define _ImActorModelEntityContentServiceGroupAvatarChanged_H_
+#ifndef _AMServiceGroupAvatarChanged_H_
+#define _AMServiceGroupAvatarChanged_H_
 
+@class AMAbsContent_ContentTypeEnum;
 @class AMAvatar;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelEntityContentAbsContent_ContentTypeEnum;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@interface ImActorModelEntityContentServiceGroupAvatarChanged : ImActorModelEntityContentServiceContent {
+@interface AMServiceGroupAvatarChanged : AMServiceContent {
 }
 
-+ (ImActorModelEntityContentServiceGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMServiceGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithAMAvatar:(AMAvatar *)newAvatar;
 
 - (AMAvatar *)getNewAvatar;
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -32,13 +32,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentServiceGroupAvatarChanged)
+J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupAvatarChanged)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentServiceGroupAvatarChanged *ImActorModelEntityContentServiceGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceGroupAvatarChanged *AMServiceGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentServiceGroupAvatarChanged)
+typedef AMServiceGroupAvatarChanged ImActorModelEntityContentServiceGroupAvatarChanged;
 
-#endif // _ImActorModelEntityContentServiceGroupAvatarChanged_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupAvatarChanged)
+
+#endif // _AMServiceGroupAvatarChanged_H_

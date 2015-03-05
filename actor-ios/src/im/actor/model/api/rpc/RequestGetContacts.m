@@ -53,6 +53,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetContacts, contactsHash_, NSStrin
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->contactsHash_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc GetContacts{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"contactsHash=", self->contactsHash_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestGetContacts_HEADER;
 }

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/FastThumb.java
 //
 
-#ifndef _ImActorModelEntityContentFastThumb_H_
-#define _ImActorModelEntityContentFastThumb_H_
+#ifndef _AMFastThumb_H_
+#define _AMFastThumb_H_
 
 @class BSBserValues;
 @class BSBserWriter;
@@ -13,10 +13,10 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelEntityContentFastThumb : BSBserObject {
+@interface AMFastThumb : BSBserObject {
 }
 
-+ (ImActorModelEntityContentFastThumb *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMFastThumb *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
@@ -34,13 +34,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentFastThumb)
+J2OBJC_EMPTY_STATIC_INIT(AMFastThumb)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentFastThumb *ImActorModelEntityContentFastThumb_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMFastThumb *AMFastThumb_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentFastThumb)
+typedef AMFastThumb ImActorModelEntityContentFastThumb;
 
-#endif // _ImActorModelEntityContentFastThumb_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMFastThumb)
+
+#endif // _AMFastThumb_H_

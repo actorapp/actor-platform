@@ -7,6 +7,7 @@
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/TypingType.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/actors/mailbox/Envelope.h"
 #include "im/actor/model/droidkit/actors/mailbox/Mailbox.h"
 #include "im/actor/model/droidkit/actors/mailbox/MailboxesQueue.h"
+#include "im/actor/model/entity/Group.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Typing.h"
@@ -27,9 +29,9 @@
 #include "java/util/HashMap.h"
 #include "java/util/HashSet.h"
 
-__attribute__((unused)) static void ImActorModelModulesTypingTypingActor_privateTypingWithInt_withInt_(ImActorModelModulesTypingTypingActor *self, jint uid, jint type);
+__attribute__((unused)) static void ImActorModelModulesTypingTypingActor_privateTypingWithInt_withImActorModelApiTypingTypeEnum_(ImActorModelModulesTypingTypingActor *self, jint uid, ImActorModelApiTypingTypeEnum *type);
 __attribute__((unused)) static void ImActorModelModulesTypingTypingActor_stopPrivateTypingWithInt_(ImActorModelModulesTypingTypingActor *self, jint uid);
-__attribute__((unused)) static void ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withInt_(ImActorModelModulesTypingTypingActor *self, jint gid, jint uid, jint type);
+__attribute__((unused)) static void ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withImActorModelApiTypingTypeEnum_(ImActorModelModulesTypingTypingActor *self, jint gid, jint uid, ImActorModelApiTypingTypeEnum *type);
 __attribute__((unused)) static void ImActorModelModulesTypingTypingActor_stopGroupTypingWithInt_withInt_(ImActorModelModulesTypingTypingActor *self, jint gid, jint uid);
 
 @interface ImActorModelModulesTypingTypingActor () {
@@ -39,13 +41,13 @@ __attribute__((unused)) static void ImActorModelModulesTypingTypingActor_stopGro
 }
 
 - (void)privateTypingWithInt:(jint)uid
-                     withInt:(jint)type;
+withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
 
 - (void)stopPrivateTypingWithInt:(jint)uid;
 
 - (void)groupTypingWithInt:(jint)gid
                    withInt:(jint)uid
-                   withInt:(jint)type;
+withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
 
 - (void)stopGroupTypingWithInt:(jint)gid
                        withInt:(jint)uid;
@@ -70,17 +72,21 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor, groupTypings_, JavaUti
 @interface ImActorModelModulesTypingTypingActor_PrivateTyping () {
  @public
   jint uid_;
-  jint type_;
+  ImActorModelApiTypingTypeEnum *type_;
 }
 @end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_PrivateTyping, type_, ImActorModelApiTypingTypeEnum *)
 
 @interface ImActorModelModulesTypingTypingActor_GroupTyping () {
  @public
   jint gid_;
   jint uid_;
-  jint type_;
+  ImActorModelApiTypingTypeEnum *type_;
 }
 @end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_GroupTyping, type_, ImActorModelApiTypingTypeEnum *)
 
 @interface ImActorModelModulesTypingTypingActor_$1 () {
  @public
@@ -105,8 +111,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_$1, val$messenger_, ImA
 }
 
 - (void)privateTypingWithInt:(jint)uid
-                     withInt:(jint)type {
-  ImActorModelModulesTypingTypingActor_privateTypingWithInt_withInt_(self, uid, type);
+withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
+  ImActorModelModulesTypingTypingActor_privateTypingWithInt_withImActorModelApiTypingTypeEnum_(self, uid, type);
 }
 
 - (void)stopPrivateTypingWithInt:(jint)uid {
@@ -115,8 +121,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_$1, val$messenger_, ImA
 
 - (void)groupTypingWithInt:(jint)gid
                    withInt:(jint)uid
-                   withInt:(jint)type {
-  ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withInt_(self, gid, uid, type);
+withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
+  ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withImActorModelApiTypingTypeEnum_(self, gid, uid, type);
 }
 
 - (void)stopGroupTypingWithInt:(jint)gid
@@ -127,11 +133,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_$1, val$messenger_, ImA
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesTypingTypingActor_PrivateTyping class]]) {
     ImActorModelModulesTypingTypingActor_PrivateTyping *typing = (ImActorModelModulesTypingTypingActor_PrivateTyping *) check_class_cast(message, [ImActorModelModulesTypingTypingActor_PrivateTyping class]);
-    ImActorModelModulesTypingTypingActor_privateTypingWithInt_withInt_(self, [((ImActorModelModulesTypingTypingActor_PrivateTyping *) nil_chk(typing)) getUid], [typing getType]);
+    ImActorModelModulesTypingTypingActor_privateTypingWithInt_withImActorModelApiTypingTypeEnum_(self, [((ImActorModelModulesTypingTypingActor_PrivateTyping *) nil_chk(typing)) getUid], [typing getType]);
   }
   else if ([message isKindOfClass:[ImActorModelModulesTypingTypingActor_GroupTyping class]]) {
     ImActorModelModulesTypingTypingActor_GroupTyping *typing = (ImActorModelModulesTypingTypingActor_GroupTyping *) check_class_cast(message, [ImActorModelModulesTypingTypingActor_GroupTyping class]);
-    ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withInt_(self, [((ImActorModelModulesTypingTypingActor_GroupTyping *) nil_chk(typing)) getGid], [typing getUid], [typing getType]);
+    ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withImActorModelApiTypingTypeEnum_(self, [((ImActorModelModulesTypingTypingActor_GroupTyping *) nil_chk(typing)) getGid], [typing getUid], [typing getType]);
   }
   else if ([message isKindOfClass:[ImActorModelModulesTypingTypingActor_StopTyping class]]) {
     ImActorModelModulesTypingTypingActor_StopTyping *typing = (ImActorModelModulesTypingTypingActor_StopTyping *) check_class_cast(message, [ImActorModelModulesTypingTypingActor_StopTyping class]);
@@ -159,8 +165,8 @@ DKActorRef *ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModul
   return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_withDKMailboxCreator_(ImActorModelModulesTypingTypingActor_class_(), [[ImActorModelModulesTypingTypingActor_$1 alloc] initWithImActorModelModulesModules:messenger], [[ImActorModelModulesTypingTypingActor_$2 alloc] init]) withNSString:@"actor/typing"];
 }
 
-void ImActorModelModulesTypingTypingActor_privateTypingWithInt_withInt_(ImActorModelModulesTypingTypingActor *self, jint uid, jint type) {
-  if (type != 0) {
+void ImActorModelModulesTypingTypingActor_privateTypingWithInt_withImActorModelApiTypingTypeEnum_(ImActorModelModulesTypingTypingActor *self, jint uid, ImActorModelApiTypingTypeEnum *type) {
+  if (type != ImActorModelApiTypingTypeEnum_get_TEXT()) {
     return;
   }
   if ([self getUserWithInt:uid] == nil) {
@@ -180,8 +186,11 @@ void ImActorModelModulesTypingTypingActor_stopPrivateTypingWithInt_(ImActorModel
   }
 }
 
-void ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withInt_(ImActorModelModulesTypingTypingActor *self, jint gid, jint uid, jint type) {
-  if (type != 0) {
+void ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withImActorModelApiTypingTypeEnum_(ImActorModelModulesTypingTypingActor *self, jint gid, jint uid, ImActorModelApiTypingTypeEnum *type) {
+  if (type != ImActorModelApiTypingTypeEnum_get_TEXT()) {
+    return;
+  }
+  if ([self getGroupWithInt:gid] == nil) {
     return;
   }
   if ([self getUserWithInt:uid] == nil) {
@@ -307,7 +316,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_StopGroupT
 @implementation ImActorModelModulesTypingTypingActor_PrivateTyping
 
 - (instancetype)initWithInt:(jint)uid
-                    withInt:(jint)type {
+withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
   if (self = [super init]) {
     self->uid_ = uid;
     self->type_ = type;
@@ -319,7 +328,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_StopGroupT
   return uid_;
 }
 
-- (jint)getType {
+- (ImActorModelApiTypingTypeEnum *)getType {
   return type_;
 }
 
@@ -334,7 +343,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_StopGroupT
 
 - (NSUInteger)hash {
   jint result = uid_;
-  result = 31 * result + type_;
+  result = 31 * result + [((ImActorModelApiTypingTypeEnum *) nil_chk(type_)) getValue];
   return result;
 }
 
@@ -352,7 +361,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_PrivateTyp
 
 - (instancetype)initWithInt:(jint)gid
                     withInt:(jint)uid
-                    withInt:(jint)type {
+withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
   if (self = [super init]) {
     self->gid_ = gid;
     self->uid_ = uid;
@@ -369,7 +378,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_PrivateTyp
   return uid_;
 }
 
-- (jint)getType {
+- (ImActorModelApiTypingTypeEnum *)getType {
   return type_;
 }
 
@@ -386,7 +395,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_PrivateTyp
 - (NSUInteger)hash {
   jint result = gid_;
   result = 31 * result + uid_;
-  result = 31 * result + type_;
+  result = 31 * result + [((ImActorModelApiTypingTypeEnum *) nil_chk(type_)) getValue];
   return result;
 }
 

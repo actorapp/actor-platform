@@ -29,6 +29,12 @@
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc StartUpload{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestStartUpload_HEADER;
 }

@@ -17,7 +17,7 @@
 
 BOOL ImActorModelApiUserStateEnum_initialized = NO;
 
-ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_values_[3];
+ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_values_[4];
 
 @implementation ImActorModelApiUserStateEnum
 
@@ -40,7 +40,7 @@ ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_values_[3];
 
 IOSObjectArray *ImActorModelApiUserStateEnum_values() {
   ImActorModelApiUserStateEnum_init();
-  return [IOSObjectArray arrayWithObjects:ImActorModelApiUserStateEnum_values_ count:3 type:ImActorModelApiUserStateEnum_class_()];
+  return [IOSObjectArray arrayWithObjects:ImActorModelApiUserStateEnum_values_ count:4 type:ImActorModelApiUserStateEnum_class_()];
 }
 + (IOSObjectArray *)values {
   return ImActorModelApiUserStateEnum_values();
@@ -52,7 +52,7 @@ IOSObjectArray *ImActorModelApiUserStateEnum_values() {
 
 ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_valueOfWithNSString_(NSString *name) {
   ImActorModelApiUserStateEnum_init();
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 4; i++) {
     ImActorModelApiUserStateEnum *e = ImActorModelApiUserStateEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
@@ -71,6 +71,7 @@ ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_valueOfWithNSString_(
     ImActorModelApiUserStateEnum_REGISTERED = [[ImActorModelApiUserStateEnum alloc] initWithInt:1 withNSString:@"REGISTERED" withInt:0];
     ImActorModelApiUserStateEnum_EMAIL = [[ImActorModelApiUserStateEnum alloc] initWithInt:2 withNSString:@"EMAIL" withInt:1];
     ImActorModelApiUserStateEnum_DELETED = [[ImActorModelApiUserStateEnum alloc] initWithInt:3 withNSString:@"DELETED" withInt:2];
+    ImActorModelApiUserStateEnum_UNSUPPORTED_VALUE = [[ImActorModelApiUserStateEnum alloc] initWithInt:-1 withNSString:@"UNSUPPORTED_VALUE" withInt:3];
     J2OBJC_SET_INITIALIZED(ImActorModelApiUserStateEnum)
   }
 }
@@ -86,8 +87,9 @@ ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_parseWithInt_(jint va
     return ImActorModelApiUserStateEnum_EMAIL;
     case 3:
     return ImActorModelApiUserStateEnum_DELETED;
+    default:
+    return ImActorModelApiUserStateEnum_UNSUPPORTED_VALUE;
   }
-  @throw [[JavaIoIOException alloc] init];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUserStateEnum)

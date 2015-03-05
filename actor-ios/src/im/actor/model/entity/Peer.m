@@ -30,8 +30,8 @@ J2OBJC_FIELD_SETTER(AMPeer, peerType_, AMPeerTypeEnum *)
   return AMPeer_fromBytesWithByteArray_(data);
 }
 
-+ (AMPeer *)fromUidWithLong:(jlong)uid {
-  return AMPeer_fromUidWithLong_(uid);
++ (AMPeer *)fromUniqueIdWithLong:(jlong)uid {
+  return AMPeer_fromUniqueIdWithLong_(uid);
 }
 
 + (AMPeer *)userWithInt:(jint)uid {
@@ -55,7 +55,7 @@ J2OBJC_FIELD_SETTER(AMPeer, peerType_, AMPeerTypeEnum *)
   return [super init];
 }
 
-- (jlong)getUid {
+- (jlong)getUnuqueId {
   jint type;
   switch ([peerType_ ordinal]) {
     default:
@@ -140,7 +140,7 @@ AMPeer *AMPeer_fromBytesWithByteArray_(IOSByteArray *data) {
   return ((AMPeer *) BSBser_parseWithBSBserObject_withByteArray_([[AMPeer alloc] init], data));
 }
 
-AMPeer *AMPeer_fromUidWithLong_(jlong uid) {
+AMPeer *AMPeer_fromUniqueIdWithLong_(jlong uid) {
   AMPeer_init();
   jint id_ = (jint) (uid & (jlong) 0xFFFFFFFFLL);
   jint type = (jint) ((RShift64(uid, 32)) & (jlong) 0xFFFFFFFFLL);

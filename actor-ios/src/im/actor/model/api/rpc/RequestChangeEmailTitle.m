@@ -62,6 +62,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangeEmailTitle, title_, NSString 
   [writer writeStringWithInt:2 withNSString:self->title_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc ChangeEmailTitle{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"emailId=", self->emailId_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", title=", self->title_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestChangeEmailTitle_HEADER;
 }

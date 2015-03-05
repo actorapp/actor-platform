@@ -16,20 +16,23 @@
 #include "im/actor/model/util/DataInput.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelEntityContentFileSource
+#pragma clang diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-+ (ImActorModelEntityContentFileSource *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentFileSource_fromBytesWithByteArray_(data);
+@implementation AMFileSource
+
++ (AMFileSource *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMFileSource_fromBytesWithByteArray_(data);
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  if ([self isKindOfClass:[ImActorModelEntityContentFileLocalSource class]]) {
+  if ([self isKindOfClass:[AMFileLocalSource class]]) {
     [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:1];
   }
-  else if ([self isKindOfClass:[ImActorModelEntityContentFileRemoteSource class]]) {
+  else if ([self isKindOfClass:[AMFileRemoteSource class]]) {
     [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:2];
   }
   else {
@@ -43,18 +46,18 @@
 
 @end
 
-ImActorModelEntityContentFileSource *ImActorModelEntityContentFileSource_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentFileSource_init();
+AMFileSource *AMFileSource_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMFileSource_init();
   BSBserValues *reader = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithAMDataInput_([[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_])];
   jint type = [reader getIntWithInt:1];
   switch (type) {
     case 1:
-    return ImActorModelEntityContentFileLocalSource_fromValuesWithBSBserValues_(reader);
+    return AMFileLocalSource_fromValuesWithBSBserValues_(reader);
     case 2:
-    return ImActorModelEntityContentFileRemoteSource_fromValuesWithBSBserValues_(reader);
+    return AMFileRemoteSource_fromValuesWithBSBserValues_(reader);
     default:
     @throw [[JavaIoIOException alloc] initWithNSString:@"Invalid source type"];
   }
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentFileSource)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileSource)

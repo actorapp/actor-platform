@@ -72,6 +72,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFile, fileLocation_, ImActorMode
   [writer writeIntWithInt:3 withInt:self->limit_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc GetFile{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"fileLocation=", self->fileLocation_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", offset=", self->offset_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", limit=", self->limit_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestGetFile_HEADER;
 }

@@ -12,6 +12,7 @@
 #include "im/actor/model/LogCallback.h"
 #include "im/actor/model/MainThread.h"
 #include "im/actor/model/Networking.h"
+#include "im/actor/model/NotificationProvider.h"
 #include "im/actor/model/PhoneBookProvider.h"
 #include "im/actor/model/Storage.h"
 #include "im/actor/model/Threading.h"
@@ -24,13 +25,13 @@
   id<AMMainThread> mainThread_;
   id<AMStorage> storage_;
   id<AMLogCallback> log_;
-  jboolean persistUploadingFiles_;
   id<AMLocaleProvider> localeProvider_;
   id<AMPhoneBookProvider> phoneBookProvider_;
   id<AMCryptoProvider> cryptoProvider_;
   jboolean enableContactsLogging_;
   jboolean enableNetworkLogging_;
   id<AMFileSystemProvider> fileSystemProvider_;
+  id<AMNotificationProvider> notificationProvider_;
 }
 @end
 
@@ -44,6 +45,7 @@ J2OBJC_FIELD_SETTER(AMConfiguration, localeProvider_, id<AMLocaleProvider>)
 J2OBJC_FIELD_SETTER(AMConfiguration, phoneBookProvider_, id<AMPhoneBookProvider>)
 J2OBJC_FIELD_SETTER(AMConfiguration, cryptoProvider_, id<AMCryptoProvider>)
 J2OBJC_FIELD_SETTER(AMConfiguration, fileSystemProvider_, id<AMFileSystemProvider>)
+J2OBJC_FIELD_SETTER(AMConfiguration, notificationProvider_, id<AMNotificationProvider>)
 
 @implementation AMConfiguration
 
@@ -53,11 +55,11 @@ J2OBJC_FIELD_SETTER(AMConfiguration, fileSystemProvider_, id<AMFileSystemProvide
                     withAMMainThread:(id<AMMainThread>)mainThread
                        withAMStorage:(id<AMStorage>)storage
                    withAMLogCallback:(id<AMLogCallback>)log
-                         withBoolean:(jboolean)persistUploadingFiles
                 withAMLocaleProvider:(id<AMLocaleProvider>)localeProvider
              withAMPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider
                 withAMCryptoProvider:(id<AMCryptoProvider>)cryptoProvider
             withAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider
+          withAMNotificationProvider:(id<AMNotificationProvider>)notificationProvider
                          withBoolean:(jboolean)enableContactsLogging
                          withBoolean:(jboolean)enableNetworkLogging {
   if (self = [super init]) {
@@ -69,15 +71,19 @@ J2OBJC_FIELD_SETTER(AMConfiguration, fileSystemProvider_, id<AMFileSystemProvide
     self->mainThread_ = mainThread;
     self->storage_ = storage;
     self->log_ = log;
-    self->persistUploadingFiles_ = persistUploadingFiles;
     self->localeProvider_ = localeProvider;
     self->phoneBookProvider_ = phoneBookProvider;
     self->cryptoProvider_ = cryptoProvider;
     self->fileSystemProvider_ = fileSystemProvider;
     self->enableContactsLogging_ = enableContactsLogging;
     self->enableNetworkLogging_ = enableNetworkLogging;
+    self->notificationProvider_ = notificationProvider;
   }
   return self;
+}
+
+- (id<AMNotificationProvider>)getNotificationProvider {
+  return notificationProvider_;
 }
 
 - (jboolean)isEnableContactsLogging {
@@ -120,10 +126,6 @@ J2OBJC_FIELD_SETTER(AMConfiguration, fileSystemProvider_, id<AMFileSystemProvide
   return log_;
 }
 
-- (jboolean)isPersistUploadingFiles {
-  return persistUploadingFiles_;
-}
-
 - (id<AMLocaleProvider>)getLocaleProvider {
   return localeProvider_;
 }
@@ -140,13 +142,13 @@ J2OBJC_FIELD_SETTER(AMConfiguration, fileSystemProvider_, id<AMFileSystemProvide
   other->mainThread_ = mainThread_;
   other->storage_ = storage_;
   other->log_ = log_;
-  other->persistUploadingFiles_ = persistUploadingFiles_;
   other->localeProvider_ = localeProvider_;
   other->phoneBookProvider_ = phoneBookProvider_;
   other->cryptoProvider_ = cryptoProvider_;
   other->enableContactsLogging_ = enableContactsLogging_;
   other->enableNetworkLogging_ = enableNetworkLogging_;
   other->fileSystemProvider_ = fileSystemProvider_;
+  other->notificationProvider_ = notificationProvider_;
 }
 
 @end

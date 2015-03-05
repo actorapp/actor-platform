@@ -72,6 +72,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->emails_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc ImportContacts{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"phones=", [((id<JavaUtilList>) nil_chk(self->phones_)) size]));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", emails=", [((id<JavaUtilList>) nil_chk(self->emails_)) size]));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestImportContacts_HEADER;
 }

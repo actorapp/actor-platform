@@ -53,6 +53,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFile, payload_, IOSByteArray *)
   [((BSBserWriter *) nil_chk(writer)) writeBytesWithInt:1 withByteArray:self->payload_];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple GetFile{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseGetFile_HEADER;
 }

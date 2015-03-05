@@ -6,9 +6,18 @@
 #ifndef _ImActorModelFilesInputFile_H_
 #define _ImActorModelFilesInputFile_H_
 
+@class IOSByteArray;
+
 #include "J2ObjC_header.h"
 
 @protocol ImActorModelFilesInputFile < NSObject, JavaObject >
+
+- (jboolean)readWithInt:(jint)fileOffset
+          withByteArray:(IOSByteArray *)data
+                withInt:(jint)offset
+                withInt:(jint)len;
+
+- (jboolean)close;
 
 @end
 

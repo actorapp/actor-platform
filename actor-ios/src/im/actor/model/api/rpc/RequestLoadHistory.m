@@ -72,6 +72,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
   [writer writeIntWithInt:4 withInt:self->limit_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc LoadHistory{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", startDate=", self->startDate_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", limit=", self->limit_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestLoadHistory_HEADER;
 }

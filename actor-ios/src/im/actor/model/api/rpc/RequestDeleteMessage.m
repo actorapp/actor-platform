@@ -65,6 +65,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
   [writer writeRepeatedLongWithInt:3 withJavaUtilList:self->rids_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc DeleteMessage{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", rids=", self->rids_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestDeleteMessage_HEADER;
 }

@@ -71,7 +71,10 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   self->rid_ = [values getLongWithInt:2];
   self->date_ = [values getLongWithInt:3];
   self->message_ = [values getObjWithInt:5 withBSBserObject:[[ImActorModelApiMessageContent alloc] init]];
-  self->state_ = ImActorModelApiMessageStateEnum_parseWithInt_([values getIntWithInt:6]);
+  jint val_state = [values getIntWithInt:6 withInt:0];
+  if (val_state != 0) {
+    self->state_ = ImActorModelApiMessageStateEnum_parseWithInt_(val_state);
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -82,10 +85,19 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeObjectWithInt:5 withBSBserObject:self->message_];
-  if (self->state_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+  if (self->state_ != nil) {
+    [writer writeIntWithInt:6 withInt:[self->state_ getValue]];
   }
-  [writer writeIntWithInt:6 withInt:[((ImActorModelApiMessageStateEnum *) nil_chk(self->state_)) getValue]];
+}
+
+- (NSString *)description {
+  NSString *res = @"struct HistoryMessage{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"senderUid=", self->senderUid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", message=", self->message_));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiHistoryMessage *)other {

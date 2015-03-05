@@ -14,19 +14,19 @@
 #include "im/actor/model/entity/content/TextContent.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityContentTextContent () {
+@interface AMTextContent () {
  @public
   NSString *text_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentTextContent, text_, NSString *)
+J2OBJC_FIELD_SETTER(AMTextContent, text_, NSString *)
 
-@implementation ImActorModelEntityContentTextContent
+@implementation AMTextContent
 
-+ (ImActorModelEntityContentTextContent *)textFromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentTextContent_textFromBytesWithByteArray_(data);
++ (AMTextContent *)textFromBytesWithByteArray:(IOSByteArray *)data {
+  return AMTextContent_textFromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)text {
@@ -44,8 +44,8 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentTextContent, text_, NSString *)
   return text_;
 }
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType {
-  return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_TEXT();
+- (AMAbsContent_ContentTypeEnum *)getContentType {
+  return AMAbsContent_ContentTypeEnum_get_TEXT();
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -58,16 +58,16 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentTextContent, text_, NSString *)
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:text_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentTextContent *)other {
+- (void)copyAllFieldsTo:(AMTextContent *)other {
   [super copyAllFieldsTo:other];
   other->text_ = text_;
 }
 
 @end
 
-ImActorModelEntityContentTextContent *ImActorModelEntityContentTextContent_textFromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentTextContent_init();
-  return ((ImActorModelEntityContentTextContent *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentTextContent alloc] init], data));
+AMTextContent *AMTextContent_textFromBytesWithByteArray_(IOSByteArray *data) {
+  AMTextContent_init();
+  return ((AMTextContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMTextContent alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentTextContent)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMTextContent)

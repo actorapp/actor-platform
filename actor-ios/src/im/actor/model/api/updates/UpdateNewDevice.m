@@ -11,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateNewDevice () {
@@ -77,6 +78,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateNewDevice, key_, IOSByteArray *)
     [writer writeBytesWithInt:3 withByteArray:self->key_];
   }
   [writer writeLongWithInt:4 withLong:self->date_];
+}
+
+- (NSString *)description {
+  NSString *res = @"update NewDevice{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", keyHash=", self->keyHash_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", key=", BSUtils_byteArrayToStringCompactWithByteArray_(self->key_)));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {
