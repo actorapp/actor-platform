@@ -5,7 +5,7 @@ object Dependencies {
     val akka = "2.3.9"
     val akkaExperimental = "1.0-M3"
     val scalaz = "7.1.1"
-    val slick = "3.0.0-M1"
+    val slick = "3.0.0-RC1"
   }
 
   object Compile {
@@ -22,9 +22,11 @@ object Dependencies {
 
     val postgresJdbc    = "org.postgresql"                %  "postgresql"                    % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick           = "com.typesafe.slick"            %% "slick"                         % V.slick
-    val slickJoda       = "com.github.tototoshi"          %% "slick-joda-mapper"             % "1.2.0"
+    val slickJoda       = "com.github.tototoshi"          %% "slick-joda-mapper"             % "1.3.0-SNAPSHOT"
     val flywayCore      = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
     val hikariCP        = "com.zaxxer"                    %  "HikariCP"                      % "2.3.2"
+
+    val libPhoneNumber  = "com.googlecode.libphonenumber" % "libphonenumber"                 % "7.0.+"
 
     val protobuf        = "com.google.protobuf"           %  "protobuf-java"                 % "2.6.1"
 
@@ -33,6 +35,8 @@ object Dependencies {
 
     val scalazCore      = "org.scalaz"                    %% "scalaz-core"                   % V.scalaz
     val scalazConcurrent = "org.scalaz"                   %% "scalaz-concurrent"             % V.scalaz
+
+    val shapeless       = "com.chuusai"                   %% "shapeless"                     % "2.1.0"
 
     val logbackClassic  = "ch.qos.logback"                % "logback-classic"                % "1.1.2"
     val scalaLogging    = "com.typesafe.scala-logging"    %% "scala-logging"                 % "3.1.0"
@@ -48,11 +52,12 @@ object Dependencies {
     val scalacheck      = "org.scalacheck"                %% "scalacheck"                    % "1.12.2" % "test"
     val specs2          = "org.specs2"                    %% "specs2-core"                   % "2.4.15" % "test"
     val slickTestkit    = "com.typesafe.slick"            %% "slick-testkit"                 % V.slick % "test"
+
     val utilTesting     = "im.actor"                      %% "actor-util-testing"            % "0.0.1-SNAPSHOT" % "test"
   }
   import Compile._, Test._
 
-  val common = Seq(logbackClassic, scalaLogging, jodaTime, jodaConvert)
+  val common = Seq(logbackClassic, scalaLogging)
 
   val root = common ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
@@ -60,7 +65,9 @@ object Dependencies {
 
   val api = common ++ Seq(akkaSlf4j, akkaActor, akkaStream, commonsCodec)
 
-  val rpcApi = common ++ Seq(akkaSlf4j, akkaActor, protobuf)
+  val rpcApi = common ++ Seq(
+    akkaSlf4j, akkaActor, libPhoneNumber, protobuf, shapeless
+  )
 
   val internalServices = common ++ Seq(akkaActor, akkaStream, scodecBits)
 
@@ -69,11 +76,11 @@ object Dependencies {
     akkaTestkit, specs2, utilTesting
   )
 
-  val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP)
+  val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val codecs = common ++ Seq(scalazCore, scodecBits, scodecCore)
 
-  val models = common ++ Seq(scodecBits, scodecCore, sprayJson)
+  val models = common ++ Seq(scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert)
 
   val frontend = common ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream, akkaStreamWS,
@@ -81,5 +88,5 @@ object Dependencies {
     scalazCore, scalazConcurrent
   )
 
-  val tests = common ++ Seq(akkaTestkit, scalacheck, specs2, slickTestkit)
+  val tests = common ++ Seq(akkaTestkit, scalacheck, specs2, slickTestkit, utilTesting)
 }

@@ -1,11 +1,10 @@
 package im.actor.server.persist
 
-import im.actor.server.db.Db
 import im.actor.server.models
-import slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import Database.dynamicSession
 
-class AuthSmsCodeTable(tag: Tag) extends Table[models.AuthSmsCode](tag, "auth_sms_code") {
+class AuthSmsCodeTable(tag: Tag) extends Table[models.AuthSmsCode](tag, "auth_sms_codes") {
   def phoneNumber = column[Long]("phone_number", O.PrimaryKey)
   def smsHash = column[String]("sms_hash")
   def smsCode = column[String]("sms_code")
@@ -14,5 +13,10 @@ class AuthSmsCodeTable(tag: Tag) extends Table[models.AuthSmsCode](tag, "auth_sm
 }
 
 object AuthSmsCode {
-  val table = TableQuery[AuthSmsCodeTable]
+  val codes = TableQuery[AuthSmsCodeTable]
+
+  def create(phoneNumber: Long, smsHash: String, smsCode: String) =
+    codes += models.AuthSmsCode(phoneNumber, smsHash, smsCode)
+
+  def findByPhoneNumber(number: Long) = codes.filter(_.phoneNumber === number).result
 }

@@ -1,6 +1,6 @@
 package im.actor.server.persist
 
-import slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import im.actor.server.models
 
 object MessageStateColumnType {
