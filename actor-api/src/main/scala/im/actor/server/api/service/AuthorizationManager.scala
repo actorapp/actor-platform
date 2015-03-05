@@ -11,6 +11,7 @@ import scala.annotation.tailrec
 import scala.concurrent.Future
 import scala.util.{ Success, Failure }
 import scalaz._
+import slick.driver.PostgresDriver.api.Database
 
 object AuthorizationManager {
   @SerialVersionUID(1L)
@@ -19,10 +20,10 @@ object AuthorizationManager {
   @SerialVersionUID(1L)
   case class SessionPackage(p: MTProto)
 
-  def props() = Props(new AuthorizationManager)
+  def props(db: Database) = Props(classOf[AuthorizationManager], db)
 }
 
-class AuthorizationManager extends Actor with ActorLogging with ActorPublisher[MTTransport] {
+class AuthorizationManager(db: Database) extends Actor with ActorLogging with ActorPublisher[MTTransport] {
   import akka.stream.actor.ActorPublisherMessage._
   import AuthorizationManager._
   import context.dispatcher
@@ -65,7 +66,7 @@ class AuthorizationManager extends Actor with ActorLogging with ActorPublisher[M
           val f =
             if (authId == 0L) {
               authId = rand.nextLong()
-              persist.AuthId.create(authId, None)
+              db.run(persist.AuthId.create(authId, None))
             } else Future.successful(())
 
           f.onComplete {

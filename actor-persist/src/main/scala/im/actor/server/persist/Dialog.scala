@@ -1,9 +1,7 @@
 package im.actor.server.persist
 
-import im.actor.server.db.Db
 import im.actor.server.models
-import im.actor.server.models.{MessageState, Peer}
-import slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import Database.dynamicSession
 import org.joda.time.DateTime
 import com.github.tototoshi.slick.PostgresJodaSupport._
@@ -26,7 +24,7 @@ class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
   def * = (userId, peerType, peerId, sortDate, senderUserId, randomId, date, messageContentHeader,
     messageContentData, state) <> (applyDialog, unapplyDialog)
 
-  def applyDialog: ((Int, Int, Int, DateTime, Int, Long, DateTime, Int, BitVector, MessageState)) => models.Dialog = {
+  def applyDialog: ((Int, Int, Int, DateTime, Int, Long, DateTime, Int, BitVector, models.MessageState)) => models.Dialog = {
     case (userId, peerType, peerId, sortDate, senderUserId, randomId, date, mcHeader, mcData, state) =>
       models.Dialog(userId = userId,
         peer = models.Peer(models.PeerType.fromInt(peerType), peerId),
@@ -40,7 +38,7 @@ class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
       )
   }
 
-  def unapplyDialog: models.Dialog => Option[(Int, Int, Int, DateTime, Int, Long, DateTime, Int, BitVector, MessageState)] = { dialog =>
+  def unapplyDialog: models.Dialog => Option[(Int, Int, Int, DateTime, Int, Long, DateTime, Int, BitVector, models.MessageState)] = { dialog =>
     models.Dialog.unapply(dialog).map {
       case (userId, peer, sortDate, senderUserId, randomId, date, mcHeader, mcData, state) =>
         (userId, peer.typ.toInt, peer.id, sortDate, senderUserId, randomId, date, mcHeader, mcData, state)

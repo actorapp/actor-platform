@@ -2,6 +2,8 @@ package im.actor.server.api.rpc
 
 import akka.actor._
 import im.actor.api.rpc._
+import im.actor.api.rpc.codecs._
+import scala.concurrent._
 import scodec.bits._
 
 object RpcApiService {
@@ -19,6 +21,10 @@ class RpcApiService extends Actor with ActorLogging {
 
   def receive = {
     case HandleRpcRequest(messageId, requestBytes) =>
-      sender() ! RpcResponse(messageId, BitVector.empty)
+      requestCodec.decode(requestBytes).require map {
+        case Request(rpcRequest) =>
+        case _ =>
+          Future.successful(Errors.UnsupportedRequest)
+      }
   }
 }

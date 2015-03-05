@@ -7,16 +7,18 @@ import akka.stream.scaladsl._
 import akka.stream.FlowMaterializer
 import im.actor.server.api.service.MTProto
 import scala.util.{ Success, Failure }
+import slick.driver.PostgresDriver.api.Database
 import com.typesafe.config.Config
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
 object Tcp {
-  def start(appConf: Config)(implicit system: ActorSystem, materializer: FlowMaterializer): Unit = {
+  def start(appConf: Config)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
     import system.dispatcher
 
     val log = Logging.getLogger(system, this)
     val config = appConf.getConfig("frontend.tcp")
+
     implicit val askTimeout = Timeout(config.getDuration("timeout", TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS)
     val maxBufferSize = config.getBytes("max-buffer-size").toInt
     val interface = config.getString("interface")

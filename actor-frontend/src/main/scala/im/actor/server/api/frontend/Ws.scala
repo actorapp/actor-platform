@@ -8,12 +8,13 @@ import akka.stream.scaladsl._
 import akka.util.{ ByteString, Timeout }
 import com.typesafe.config.Config
 import im.actor.server.api.service.MTProto
+import slick.driver.PostgresDriver.api.Database
 import spray.can.websocket.frame._
 import streamwebsocket._
 import java.util.concurrent.TimeUnit
 
 object Ws {
-  def start(appConf: Config)(implicit system: ActorSystem, materializer: FlowMaterializer): Unit = {
+  def start(appConf: Config)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
     import system.dispatcher
     import WebSocketMessage._
 

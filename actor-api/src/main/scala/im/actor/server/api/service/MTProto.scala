@@ -13,6 +13,7 @@ import scala.annotation.tailrec
 import scala.concurrent.Future
 import scodec.bits.BitVector
 import scodec.codecs
+import slick.driver.PostgresDriver.api.Database
 
 object MTProto {
   import akka.pattern.{ ask, AskTimeoutException }
@@ -22,8 +23,8 @@ object MTProto {
   val apiMajorVersions: Set[Byte] = Set(1)
 
   def flow(maxBufferSize: Int)
-          (implicit system: ActorSystem, timeout: Timeout): Flow[ByteString, ByteString] = {
-    val authManager = system.actorOf(AuthorizationManager.props())
+          (implicit db: Database, system: ActorSystem, timeout: Timeout): Flow[ByteString, ByteString] = {
+    val authManager = system.actorOf(AuthorizationManager.props(db))
     val auth = Source(ActorPublisher[MTTransport](authManager))
     val (watchManager, watch) = SourceWatchManager[MTTransport](authManager)
 

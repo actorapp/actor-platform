@@ -1,0 +1,8 @@
+actor-server {
+  sql {
+    url = "jdbc:postgresql://localhost:5432/actor-test"
+    username = "postgres"
+    password = ""
+    driver = org.postgresql.Driver
+  }
+}
