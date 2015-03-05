@@ -1,7 +1,7 @@
 package im.actor.model.crypto;
 
 import im.actor.model.CryptoProvider;
-import im.actor.model.crypto.bouncycastle.digest.SHA256Digest;
+import im.actor.model.crypto.bouncycastle.crypto.digest.SHA256Digest;
 
 /**
  * Created by ex3ndr on 27.02.15.

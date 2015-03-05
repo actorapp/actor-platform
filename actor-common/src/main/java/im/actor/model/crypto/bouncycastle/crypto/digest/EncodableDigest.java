@@ -1,4 +1,4 @@
-package im.actor.model.crypto.bouncycastle.digest;
+package im.actor.model.crypto.bouncycastle.crypto.digest;
 
 /**
  *  Encodable digests allow you to download an encoded copy of their internal state. This is useful for the situation where

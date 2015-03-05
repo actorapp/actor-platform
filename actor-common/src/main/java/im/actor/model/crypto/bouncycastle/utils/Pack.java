@@ -1,4 +1,4 @@
-package im.actor.model.crypto.bouncycastle.util;
+package im.actor.model.crypto.bouncycastle.utils;
 
 public abstract class Pack
 {
