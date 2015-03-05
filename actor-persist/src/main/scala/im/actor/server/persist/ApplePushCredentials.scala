@@ -1,8 +1,7 @@
 package im.actor.server.persist
 
-import im.actor.server.db.Db
 import im.actor.server.models
-import slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import Database.dynamicSession
 
 class ApplePushCredentialsTable(tag: Tag) extends Table[models.ApplePushCredentials](tag, "apple_push_credentials") {

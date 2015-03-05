@@ -1,3 +1,4 @@
 target/
 application.conf
 .ensime_cache
+application.conf
