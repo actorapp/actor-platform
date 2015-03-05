@@ -14,17 +14,17 @@
 #include "im/actor/model/entity/content/ServiceGroupUserAdded.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityContentServiceGroupUserAdded () {
+@interface AMServiceGroupUserAdded () {
  @public
   jint addedUid_;
 }
 - (instancetype)init;
 @end
 
-@implementation ImActorModelEntityContentServiceGroupUserAdded
+@implementation AMServiceGroupUserAdded
 
-+ (ImActorModelEntityContentServiceGroupUserAdded *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentServiceGroupUserAdded_fromBytesWithByteArray_(data);
++ (AMServiceGroupUserAdded *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMServiceGroupUserAdded_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)addedUid {
@@ -42,8 +42,8 @@
   return addedUid_;
 }
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType {
-  return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_ADDED();
+- (AMAbsContent_ContentTypeEnum *)getContentType {
+  return AMAbsContent_ContentTypeEnum_get_SERVICE_ADDED();
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -56,16 +56,16 @@
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:addedUid_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentServiceGroupUserAdded *)other {
+- (void)copyAllFieldsTo:(AMServiceGroupUserAdded *)other {
   [super copyAllFieldsTo:other];
   other->addedUid_ = addedUid_;
 }
 
 @end
 
-ImActorModelEntityContentServiceGroupUserAdded *ImActorModelEntityContentServiceGroupUserAdded_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentServiceGroupUserAdded_init();
-  return ((ImActorModelEntityContentServiceGroupUserAdded *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupUserAdded alloc] init], data));
+AMServiceGroupUserAdded *AMServiceGroupUserAdded_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMServiceGroupUserAdded_init();
+  return ((AMServiceGroupUserAdded *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupUserAdded alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupUserAdded)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceGroupUserAdded)

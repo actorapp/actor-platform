@@ -6,11 +6,11 @@
 #ifndef _ImActorModelModulesMessagesEntityPendingMessage_H_
 #define _ImActorModelModulesMessagesEntityPendingMessage_H_
 
+@class AMAbsContent;
 @class AMPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelEntityContentAbsContent;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -22,13 +22,15 @@
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
-withImActorModelEntityContentAbsContent:(ImActorModelEntityContentAbsContent *)content;
+              withAMAbsContent:(AMAbsContent *)content;
 
 - (AMPeer *)getPeer;
 
-- (ImActorModelEntityContentAbsContent *)getContent;
+- (AMAbsContent *)getContent;
 
 - (jlong)getRid;
+
+- (jboolean)isError;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 

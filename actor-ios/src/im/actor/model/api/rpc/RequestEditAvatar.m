@@ -54,6 +54,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditAvatar, fileLocation_, ImActorM
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->fileLocation_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc EditAvatar{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"fileLocation=", (self->fileLocation_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestEditAvatar_HEADER;
 }

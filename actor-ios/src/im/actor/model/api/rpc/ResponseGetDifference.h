@@ -25,7 +25,8 @@
               withByteArray:(IOSByteArray *)state
            withJavaUtilList:(id<JavaUtilList>)users
            withJavaUtilList:(id<JavaUtilList>)groups
-           withJavaUtilList:(id<JavaUtilList>)contacts
+           withJavaUtilList:(id<JavaUtilList>)phones
+           withJavaUtilList:(id<JavaUtilList>)emails
            withJavaUtilList:(id<JavaUtilList>)updates
                 withBoolean:(jboolean)needMore;
 
@@ -39,7 +40,9 @@
 
 - (id<JavaUtilList>)getGroups;
 
-- (id<JavaUtilList>)getContacts;
+- (id<JavaUtilList>)getPhones;
+
+- (id<JavaUtilList>)getEmails;
 
 - (id<JavaUtilList>)getUpdates;
 
@@ -48,6 +51,8 @@
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+- (NSString *)description;
 
 - (jint)getHeaderKey;
 

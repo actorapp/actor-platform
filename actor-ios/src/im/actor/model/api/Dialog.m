@@ -97,8 +97,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   self->rid_ = [values getLongWithInt:6];
   self->date_ = [values getLongWithInt:7];
   self->message_ = [values getObjWithInt:8 withBSBserObject:[[ImActorModelApiMessageContent alloc] init]];
-  if ([values optIntWithInt:9] != 0) {
-    self->state_ = ImActorModelApiMessageStateEnum_parseWithInt_([values optIntWithInt:9]);
+  jint val_state = [values getIntWithInt:9 withInt:0];
+  if (val_state != 0) {
+    self->state_ = ImActorModelApiMessageStateEnum_parseWithInt_(val_state);
   }
 }
 
@@ -119,6 +120,19 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   if (self->state_ != nil) {
     [writer writeIntWithInt:9 withInt:[self->state_ getValue]];
   }
+}
+
+- (NSString *)description {
+  NSString *res = @"struct Dialog{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", unreadCount=", self->unreadCount_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", sortDate=", self->sortDate_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", senderUid=", self->senderUid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", message=", self->message_));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiDialog *)other {

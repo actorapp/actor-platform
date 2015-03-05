@@ -10,6 +10,8 @@
 @class AMGroupVM;
 @class AMRpcException;
 @class IOSByteArray;
+@class IOSIntArray;
+@class ImActorModelApiRpcResponseCreateGroup;
 @class ImActorModelApiRpcResponseSeqDate;
 @class ImActorModelModulesModules;
 @protocol AMCommandCallback;
@@ -32,10 +34,19 @@
 
 - (AMMVVMCollection *)getGroupsCollection;
 
+- (id<AMCommand>)createGroupWithNSString:(NSString *)title
+                            withIntArray:(IOSIntArray *)uids;
+
 - (id<AMCommand>)editTitleWithInt:(jint)gid
                      withNSString:(NSString *)name;
 
 - (id<AMCommand>)leaveGroupWithInt:(jint)gid;
+
+- (id<AMCommand>)addMemberToGroupWithInt:(jint)gid
+                                 withInt:(jint)uid;
+
+- (id<AMCommand>)kickMemberWithInt:(jint)gid
+                           withInt:(jint)uid;
 
 @end
 
@@ -72,7 +83,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$1)
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
 
 - (instancetype)initWithImActorModelModulesGroups:(ImActorModelModulesGroups *)outer$
-                                          withInt:(jint)capture$0
+                                     withIntArray:(IOSIntArray *)capture$0
                                      withNSString:(NSString *)capture$1;
 
 @end
@@ -84,12 +95,16 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$2)
 
-@interface ImActorModelModulesGroups_$2_$1 : NSObject < JavaLangRunnable > {
+@interface ImActorModelModulesGroups_$2_$1 : NSObject < AMRpcCallback > {
 }
 
-- (void)run;
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseCreateGroup *)response;
 
-- (instancetype)initWithAMCommandCallback:(id<AMCommandCallback>)capture$0;
+- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesGroups_$2:(ImActorModelModulesGroups_$2 *)outer$
+                                            withLong:(jlong)capture$0
+                               withAMCommandCallback:(id<AMCommandCallback>)capture$1;
 
 @end
 
@@ -100,57 +115,22 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$2_$1)
 
-@interface ImActorModelModulesGroups_$2_$2 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeqDate *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesGroups_$2:(ImActorModelModulesGroups_$2 *)outer$
-                                            withLong:(jlong)capture$0
-                               withAMCommandCallback:(id<AMCommandCallback>)capture$1;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$2_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$2_$2)
-
-@interface ImActorModelModulesGroups_$2_$2_$1 : NSObject < JavaLangRunnable > {
+@interface ImActorModelModulesGroups_$2_$1_$1 : NSObject < JavaLangRunnable > {
 }
 
 - (void)run;
 
-- (instancetype)initWithImActorModelModulesGroups_$2_$2:(ImActorModelModulesGroups_$2_$2 *)outer$;
+- (instancetype)initWithImActorModelModulesGroups_$2_$1:(ImActorModelModulesGroups_$2_$1 *)outer$
+                                     withAMRpcException:(AMRpcException *)capture$0;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$2_$2_$1)
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$2_$1_$1)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$2_$2_$1)
-
-@interface ImActorModelModulesGroups_$2_$2_$2 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesGroups_$2_$2:(ImActorModelModulesGroups_$2_$2 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$2_$2_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$2_$2_$2)
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$2_$1_$1)
 
 @interface ImActorModelModulesGroups_$3 : NSObject < AMCommand > {
 }
@@ -158,7 +138,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$2_$2_$2)
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
 
 - (instancetype)initWithImActorModelModulesGroups:(ImActorModelModulesGroups *)outer$
-                                          withInt:(jint)capture$0;
+                                          withInt:(jint)capture$0
+                                     withNSString:(NSString *)capture$1;
 
 @end
 
@@ -236,5 +217,262 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$3_$2_$2)
+
+@interface ImActorModelModulesGroups_$4 : NSObject < AMCommand > {
+}
+
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
+
+- (instancetype)initWithImActorModelModulesGroups:(ImActorModelModulesGroups *)outer$
+                                          withInt:(jint)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$4)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$4)
+
+@interface ImActorModelModulesGroups_$4_$1 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithAMCommandCallback:(id<AMCommandCallback>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$4_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$4_$1)
+
+@interface ImActorModelModulesGroups_$4_$2 : NSObject < AMRpcCallback > {
+}
+
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeqDate *)response;
+
+- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesGroups_$4:(ImActorModelModulesGroups_$4 *)outer$
+                                            withLong:(jlong)capture$0
+                               withAMCommandCallback:(id<AMCommandCallback>)capture$1;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$4_$2)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$4_$2)
+
+@interface ImActorModelModulesGroups_$4_$2_$1 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesGroups_$4_$2:(ImActorModelModulesGroups_$4_$2 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$4_$2_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$4_$2_$1)
+
+@interface ImActorModelModulesGroups_$4_$2_$2 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesGroups_$4_$2:(ImActorModelModulesGroups_$4_$2 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$4_$2_$2)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$4_$2_$2)
+
+@interface ImActorModelModulesGroups_$5 : NSObject < AMCommand > {
+}
+
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
+
+- (instancetype)initWithImActorModelModulesGroups:(ImActorModelModulesGroups *)outer$
+                                          withInt:(jint)capture$0
+                                          withInt:(jint)capture$1;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$5)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$5)
+
+@interface ImActorModelModulesGroups_$5_$1 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithAMCommandCallback:(id<AMCommandCallback>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$5_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$5_$1)
+
+@interface ImActorModelModulesGroups_$5_$2 : NSObject < AMRpcCallback > {
+}
+
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeqDate *)response;
+
+- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesGroups_$5:(ImActorModelModulesGroups_$5 *)outer$
+                                            withLong:(jlong)capture$0
+                               withAMCommandCallback:(id<AMCommandCallback>)capture$1;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$5_$2)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$5_$2)
+
+@interface ImActorModelModulesGroups_$5_$2_$1 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesGroups_$5_$2:(ImActorModelModulesGroups_$5_$2 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$5_$2_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$5_$2_$1)
+
+@interface ImActorModelModulesGroups_$5_$2_$2 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesGroups_$5_$2:(ImActorModelModulesGroups_$5_$2 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$5_$2_$2)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$5_$2_$2)
+
+@interface ImActorModelModulesGroups_$6 : NSObject < AMCommand > {
+}
+
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
+
+- (instancetype)initWithImActorModelModulesGroups:(ImActorModelModulesGroups *)outer$
+                                          withInt:(jint)capture$0
+                                          withInt:(jint)capture$1;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$6)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$6)
+
+@interface ImActorModelModulesGroups_$6_$1 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithAMCommandCallback:(id<AMCommandCallback>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$6_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$6_$1)
+
+@interface ImActorModelModulesGroups_$6_$2 : NSObject < AMRpcCallback > {
+}
+
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeqDate *)response;
+
+- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesGroups_$6:(ImActorModelModulesGroups_$6 *)outer$
+                                            withLong:(jlong)capture$0
+                               withAMCommandCallback:(id<AMCommandCallback>)capture$1;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$6_$2)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$6_$2)
+
+@interface ImActorModelModulesGroups_$6_$2_$1 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesGroups_$6_$2:(ImActorModelModulesGroups_$6_$2 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$6_$2_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$6_$2_$1)
+
+@interface ImActorModelModulesGroups_$6_$2_$2 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesGroups_$6_$2:(ImActorModelModulesGroups_$6_$2 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$6_$2_$2)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$6_$2_$2)
 
 #endif // _ImActorModelModulesGroups_H_

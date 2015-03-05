@@ -72,6 +72,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCompleteUpload, config_, ImActorMod
   [writer writeLongWithInt:3 withLong:self->crc32_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc CompleteUpload{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"config=", self->config_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", blocksCount=", self->blocksCount_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", crc32=", self->crc32_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestCompleteUpload_HEADER;
 }

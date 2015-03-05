@@ -13,6 +13,7 @@ typedef NS_ENUM(NSUInteger, ImActorModelApiUserState) {
   ImActorModelApiUserState_REGISTERED = 0,
   ImActorModelApiUserState_EMAIL = 1,
   ImActorModelApiUserState_DELETED = 2,
+  ImActorModelApiUserState_UNSUPPORTED_VALUE = 3,
 };
 
 @interface ImActorModelApiUserStateEnum : JavaLangEnum < NSCopying > {
@@ -51,6 +52,9 @@ J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiUserStateEnum, EMAIL)
 
 #define ImActorModelApiUserStateEnum_DELETED ImActorModelApiUserStateEnum_values_[ImActorModelApiUserState_DELETED]
 J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiUserStateEnum, DELETED)
+
+#define ImActorModelApiUserStateEnum_UNSUPPORTED_VALUE ImActorModelApiUserStateEnum_values_[ImActorModelApiUserState_UNSUPPORTED_VALUE]
+J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiUserStateEnum, UNSUPPORTED_VALUE)
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUserStateEnum)
 

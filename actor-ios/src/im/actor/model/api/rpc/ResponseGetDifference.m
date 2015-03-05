@@ -7,7 +7,9 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/DifferenceUpdate.h"
+#include "im/actor/model/api/Email.h"
 #include "im/actor/model/api/Group.h"
+#include "im/actor/model/api/Phone.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/rpc/ResponseGetDifference.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
@@ -24,7 +26,8 @@
   IOSByteArray *state_;
   id<JavaUtilList> users_;
   id<JavaUtilList> groups_;
-  id<JavaUtilList> contacts_;
+  id<JavaUtilList> phones_;
+  id<JavaUtilList> emails_;
   id<JavaUtilList> updates_;
   jboolean needMore__;
 }
@@ -33,7 +36,8 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, state_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, users_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, groups_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, contacts_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, phones_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, emails_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUtilList>)
 
 @implementation ImActorModelApiRpcResponseGetDifference
@@ -46,7 +50,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
               withByteArray:(IOSByteArray *)state
            withJavaUtilList:(id<JavaUtilList>)users
            withJavaUtilList:(id<JavaUtilList>)groups
-           withJavaUtilList:(id<JavaUtilList>)contacts
+           withJavaUtilList:(id<JavaUtilList>)phones
+           withJavaUtilList:(id<JavaUtilList>)emails
            withJavaUtilList:(id<JavaUtilList>)updates
                 withBoolean:(jboolean)needMore {
   if (self = [super init]) {
@@ -54,7 +59,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
     self->state_ = state;
     self->users_ = users;
     self->groups_ = groups;
-    self->contacts_ = contacts;
+    self->phones_ = phones;
+    self->emails_ = emails;
     self->updates_ = updates;
     self->needMore__ = needMore;
   }
@@ -81,8 +87,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   return self->groups_;
 }
 
-- (id<JavaUtilList>)getContacts {
-  return self->contacts_;
+- (id<JavaUtilList>)getPhones {
+  return self->phones_;
+}
+
+- (id<JavaUtilList>)getEmails {
+  return self->emails_;
 }
 
 - (id<JavaUtilList>)getUpdates {
@@ -106,7 +116,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
     [_groups addWithId:[[ImActorModelApiGroup alloc] init]];
   }
   self->groups_ = [values getRepeatedObjWithInt:6 withJavaUtilList:_groups];
-  self->contacts_ = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> _phones = [[JavaUtilArrayList alloc] init];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:7]; i++) {
+    [_phones addWithId:[[ImActorModelApiPhone alloc] init]];
+  }
+  self->phones_ = [values getRepeatedObjWithInt:7 withJavaUtilList:_phones];
+  id<JavaUtilList> _emails = [[JavaUtilArrayList alloc] init];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:8]; i++) {
+    [_emails addWithId:[[ImActorModelApiEmail alloc] init]];
+  }
+  self->emails_ = [values getRepeatedObjWithInt:8 withJavaUtilList:_emails];
   id<JavaUtilList> _updates = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:4]; i++) {
     [_updates addWithId:[[ImActorModelApiDifferenceUpdate alloc] init]];
@@ -123,9 +142,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   [writer writeBytesWithInt:2 withByteArray:self->state_];
   [writer writeRepeatedObjWithInt:3 withJavaUtilList:self->users_];
   [writer writeRepeatedObjWithInt:6 withJavaUtilList:self->groups_];
-  [writer writeRepeatedObjWithInt:7 withJavaUtilList:self->contacts_];
+  [writer writeRepeatedObjWithInt:7 withJavaUtilList:self->phones_];
+  [writer writeRepeatedObjWithInt:8 withJavaUtilList:self->emails_];
   [writer writeRepeatedObjWithInt:4 withJavaUtilList:self->updates_];
   [writer writeBoolWithInt:5 withBoolean:self->needMore__];
+}
+
+- (NSString *)description {
+  NSString *res = @"tuple GetDifference{";
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {
@@ -138,7 +164,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   other->state_ = state_;
   other->users_ = users_;
   other->groups_ = groups_;
-  other->contacts_ = contacts_;
+  other->phones_ = phones_;
+  other->emails_ = emails_;
   other->updates_ = updates_;
   other->needMore__ = needMore__;
 }

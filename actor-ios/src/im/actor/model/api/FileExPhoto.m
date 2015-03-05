@@ -50,6 +50,14 @@
   [writer writeIntWithInt:2 withInt:self->h_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct FileExPhoto{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"w=", self->w_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", h=", self->h_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiFileExPhoto *)other {
   [super copyAllFieldsTo:other];
   other->w_ = w_;

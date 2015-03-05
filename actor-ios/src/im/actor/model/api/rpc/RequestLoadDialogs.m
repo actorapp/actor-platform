@@ -57,6 +57,14 @@
   [writer writeIntWithInt:2 withInt:self->limit_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc LoadDialogs{";
+  res = JreStrcat("$$", res, JreStrcat("$J", @"startDate=", self->startDate_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", limit=", self->limit_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestLoadDialogs_HEADER;
 }

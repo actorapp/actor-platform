@@ -6,9 +6,10 @@
 #ifndef _ImActorModelModulesMessagesEntityEntityConverter_H_
 #define _ImActorModelModulesMessagesEntityEntityConverter_H_
 
+@class AMAbsContent;
 @class AMAvatar;
 @class AMAvatarImage;
-@class AMContactRecord;
+@class AMFastThumb;
 @class AMFileLocation;
 @class AMGroup;
 @class AMMessageStateEnum;
@@ -18,7 +19,6 @@
 @class AMUser;
 @class ImActorModelApiAvatar;
 @class ImActorModelApiAvatarImage;
-@class ImActorModelApiContactRecord;
 @class ImActorModelApiFastThumb;
 @class ImActorModelApiFileLocation;
 @class ImActorModelApiGroup;
@@ -28,10 +28,7 @@
 @class ImActorModelApiPeerTypeEnum;
 @class ImActorModelApiSexEnum;
 @class ImActorModelApiUser;
-@class ImActorModelEntityContentAbsContent;
-@class ImActorModelEntityContentFastThumb;
 @class JavaUtilArrayList;
-@protocol JavaUtilCollection;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -51,15 +48,7 @@
 
 + (AMSexEnum *)convertWithImActorModelApiSexEnum:(ImActorModelApiSexEnum *)sex;
 
-+ (AMContactRecord *)convertWithImActorModelApiContactRecord:(ImActorModelApiContactRecord *)record;
-
 + (AMUser *)convertWithImActorModelApiUser:(ImActorModelApiUser *)user;
-
-+ (id<JavaUtilList>)convertWithJavaUtilList:(id<JavaUtilList>)contacts
-                     withJavaUtilCollection:(id<JavaUtilCollection>)updatedContact;
-
-+ (AMContactRecord *)convertWithInt:(jint)contactId
-             withJavaUtilCollection:(id<JavaUtilCollection>)updatedContact;
 
 + (AMGroup *)convertWithImActorModelApiGroup:(ImActorModelApiGroup *)group;
 
@@ -70,9 +59,9 @@
 
 + (AMPeer *)convertWithImActorModelApiPeer:(ImActorModelApiPeer *)peer;
 
-+ (ImActorModelEntityContentAbsContent *)convertWithImActorModelApiMessageContent:(ImActorModelApiMessageContent *)content;
++ (AMAbsContent *)convertWithImActorModelApiMessageContent:(ImActorModelApiMessageContent *)content;
 
-+ (ImActorModelEntityContentFastThumb *)convertWithImActorModelApiFastThumb:(ImActorModelApiFastThumb *)fastThumb;
++ (AMFastThumb *)convertWithImActorModelApiFastThumb:(ImActorModelApiFastThumb *)fastThumb;
 
 - (instancetype)init;
 
@@ -92,13 +81,7 @@ FOUNDATION_EXPORT AMFileLocation *ImActorModelModulesMessagesEntityEntityConvert
 
 FOUNDATION_EXPORT AMSexEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiSexEnum_(ImActorModelApiSexEnum *sex);
 
-FOUNDATION_EXPORT AMContactRecord *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiContactRecord_(ImActorModelApiContactRecord *record);
-
 FOUNDATION_EXPORT AMUser *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiUser_(ImActorModelApiUser *user);
-
-FOUNDATION_EXPORT id<JavaUtilList> ImActorModelModulesMessagesEntityEntityConverter_convertWithJavaUtilList_withJavaUtilCollection_(id<JavaUtilList> contacts, id<JavaUtilCollection> updatedContact);
-
-FOUNDATION_EXPORT AMContactRecord *ImActorModelModulesMessagesEntityEntityConverter_convertWithInt_withJavaUtilCollection_(jint contactId, id<JavaUtilCollection> updatedContact);
 
 FOUNDATION_EXPORT AMGroup *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(ImActorModelApiGroup *group);
 
@@ -108,9 +91,9 @@ FOUNDATION_EXPORT AMPeerTypeEnum *ImActorModelModulesMessagesEntityEntityConvert
 
 FOUNDATION_EXPORT AMPeer *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(ImActorModelApiPeer *peer);
 
-FOUNDATION_EXPORT ImActorModelEntityContentAbsContent *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessageContent_(ImActorModelApiMessageContent *content);
+FOUNDATION_EXPORT AMAbsContent *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessageContent_(ImActorModelApiMessageContent *content);
 
-FOUNDATION_EXPORT ImActorModelEntityContentFastThumb *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFastThumb_(ImActorModelApiFastThumb *fastThumb);
+FOUNDATION_EXPORT AMFastThumb *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFastThumb_(ImActorModelApiFastThumb *fastThumb);
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesEntityEntityConverter)

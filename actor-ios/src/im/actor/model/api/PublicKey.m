@@ -9,6 +9,7 @@
 #include "im/actor/model/api/PublicKey.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiPublicKey () {
@@ -63,6 +64,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPublicKey, key_, IOSByteArray *)
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:3 withByteArray:self->key_];
+}
+
+- (NSString *)description {
+  NSString *res = @"struct PublicKey{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", keyHash=", self->keyHash_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", key=", BSUtils_byteArrayToStringCompactWithByteArray_(self->key_)));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiPublicKey *)other {

@@ -6,14 +6,16 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/api/ContactRecord.h"
+#include "im/actor/model/api/Email.h"
 #include "im/actor/model/api/Group.h"
+#include "im/actor/model/api/Phone.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/base/FatSeqUpdate.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
@@ -26,7 +28,8 @@
   IOSByteArray *update_;
   id<JavaUtilList> users_;
   id<JavaUtilList> groups_;
-  id<JavaUtilList> contacts_;
+  id<JavaUtilList> phones_;
+  id<JavaUtilList> emails_;
 }
 @end
 
@@ -34,7 +37,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, state_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, update_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, users_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, groups_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, phones_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 
 @implementation ImActorModelApiBaseFatSeqUpdate
 
@@ -48,7 +52,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
               withByteArray:(IOSByteArray *)update
            withJavaUtilList:(id<JavaUtilList>)users
            withJavaUtilList:(id<JavaUtilList>)groups
-           withJavaUtilList:(id<JavaUtilList>)contacts {
+           withJavaUtilList:(id<JavaUtilList>)phones
+           withJavaUtilList:(id<JavaUtilList>)emails {
   if (self = [super init]) {
     self->seq_ = seq;
     self->state_ = state;
@@ -56,7 +61,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
     self->update_ = update;
     self->users_ = users;
     self->groups_ = groups;
-    self->contacts_ = contacts;
+    self->phones_ = phones;
+    self->emails_ = emails;
   }
   return self;
 }
@@ -89,8 +95,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
   return self->groups_;
 }
 
-- (id<JavaUtilList>)getContacts {
-  return self->contacts_;
+- (id<JavaUtilList>)getPhones {
+  return self->phones_;
+}
+
+- (id<JavaUtilList>)getEmails {
+  return self->emails_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -108,11 +118,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
     [_groups addWithId:[[ImActorModelApiGroup alloc] init]];
   }
   self->groups_ = [values getRepeatedObjWithInt:6 withJavaUtilList:_groups];
-  id<JavaUtilList> _contacts = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> _phones = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [values getRepeatedCountWithInt:7]; i++) {
-    [_contacts addWithId:[[ImActorModelApiContactRecord alloc] init]];
+    [_phones addWithId:[[ImActorModelApiPhone alloc] init]];
   }
-  self->contacts_ = [values getRepeatedObjWithInt:7 withJavaUtilList:_contacts];
+  self->phones_ = [values getRepeatedObjWithInt:7 withJavaUtilList:_phones];
+  id<JavaUtilList> _emails = [[JavaUtilArrayList alloc] init];
+  for (jint i = 0; i < [values getRepeatedCountWithInt:8]; i++) {
+    [_emails addWithId:[[ImActorModelApiEmail alloc] init]];
+  }
+  self->emails_ = [values getRepeatedObjWithInt:8 withJavaUtilList:_emails];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -128,7 +143,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
   [writer writeBytesWithInt:4 withByteArray:self->update_];
   [writer writeRepeatedObjWithInt:5 withJavaUtilList:self->users_];
   [writer writeRepeatedObjWithInt:6 withJavaUtilList:self->groups_];
-  [writer writeRepeatedObjWithInt:7 withJavaUtilList:self->contacts_];
+  [writer writeRepeatedObjWithInt:7 withJavaUtilList:self->phones_];
+  [writer writeRepeatedObjWithInt:8 withJavaUtilList:self->emails_];
+}
+
+- (NSString *)description {
+  NSString *res = @"update box FatSeqUpdate{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"seq=", self->seq_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", state=", BSUtils_byteArrayToStringCompactWithByteArray_(self->state_)));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", updateHeader=", self->updateHeader_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", update=", BSUtils_byteArrayToStringCompactWithByteArray_(self->update_)));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", users=", [((id<JavaUtilList>) nil_chk(self->users_)) size]));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", groups=", [((id<JavaUtilList>) nil_chk(self->groups_)) size]));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {
@@ -143,7 +171,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, contacts_, id<JavaUtilList>
   other->update_ = update_;
   other->users_ = users_;
   other->groups_ = groups_;
-  other->contacts_ = contacts_;
+  other->phones_ = phones_;
+  other->emails_ = emails_;
 }
 
 @end

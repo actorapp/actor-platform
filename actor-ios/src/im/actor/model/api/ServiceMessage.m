@@ -68,6 +68,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, IOSByteArray *)
   }
 }
 
+- (NSString *)description {
+  NSString *res = @"struct ServiceMessage{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"text=", self->text_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", extType=", self->extType_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", ext=", (self->ext_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiServiceMessage *)other {
   [super copyAllFieldsTo:other];
   other->text_ = text_;

@@ -46,6 +46,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
   }
 }
 
+- (NSString *)description {
+  NSString *res = @"struct ServiceExChangedAvatar{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"avatar=", (self->avatar_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiServiceExChangedAvatar *)other {
   [super copyAllFieldsTo:other];
   other->avatar_ = avatar_;

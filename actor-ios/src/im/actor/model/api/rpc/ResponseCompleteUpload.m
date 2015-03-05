@@ -54,6 +54,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCompleteUpload, location_, ImActor
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->location_];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple CompleteUpload{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseCompleteUpload_HEADER;
 }

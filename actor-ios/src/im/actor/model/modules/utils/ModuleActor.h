@@ -6,6 +6,7 @@
 #ifndef _ImActorModelModulesUtilsModuleActor_H_
 #define _ImActorModelModulesUtilsModuleActor_H_
 
+@class AMConfiguration;
 @class AMGroup;
 @class AMGroupVM;
 @class AMPeer;
@@ -14,6 +15,7 @@
 @class AMUserVM;
 @class DKActorRef;
 @class ImActorModelApiOutPeer;
+@class ImActorModelApiPeer;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdates;
 @class ImActorModelNetworkParserRequest;
@@ -30,9 +32,11 @@
 @interface ImActorModelModulesUtilsModuleActor : DKActor {
 }
 
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (ImActorModelApiOutPeer *)buidOutPeerWithAMPeer:(AMPeer *)peer;
+
+- (ImActorModelApiPeer *)buildApiPeerWithAMPeer:(AMPeer *)peer;
 
 - (id<AMKeyValueEngine>)users;
 
@@ -47,6 +51,8 @@
 - (AMGroupVM *)getGroupVMWithInt:(jint)gid;
 
 - (id<AMPreferencesStorage>)preferences;
+
+- (AMConfiguration *)config;
 
 - (ImActorModelModulesUpdates *)updates;
 

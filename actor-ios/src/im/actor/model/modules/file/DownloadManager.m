@@ -17,18 +17,18 @@
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
+#include "im/actor/model/modules/file/DownloadCallback.h"
 #include "im/actor/model/modules/file/DownloadManager.h"
 #include "im/actor/model/modules/file/DownloadTask.h"
 #include "im/actor/model/modules/file/Downloaded.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/modules/utils/RandomUtils.h"
 #include "im/actor/model/storage/KeyValueEngine.h"
-#include "im/actor/model/viewmodel/FileCallback.h"
 #include "java/util/ArrayList.h"
 
+__attribute__((unused)) static void ImActorModelModulesFileDownloadManager_checkQueue(ImActorModelModulesFileDownloadManager *self);
 __attribute__((unused)) static ImActorModelModulesFileDownloadManager_QueueItem *ImActorModelModulesFileDownloadManager_findItemWithLong_(ImActorModelModulesFileDownloadManager *self, jlong id_);
 __attribute__((unused)) static void ImActorModelModulesFileDownloadManager_promoteWithLong_(ImActorModelModulesFileDownloadManager *self, jlong id_);
-__attribute__((unused)) static void ImActorModelModulesFileDownloadManager_checkQueue(ImActorModelModulesFileDownloadManager *self);
 
 @interface ImActorModelModulesFileDownloadManager () {
  @public
@@ -36,11 +36,11 @@ __attribute__((unused)) static void ImActorModelModulesFileDownloadManager_check
   id<AMKeyValueEngine> downloaded_;
 }
 
+- (void)checkQueue;
+
 - (ImActorModelModulesFileDownloadManager_QueueItem *)findItemWithLong:(jlong)id_;
 
 - (void)promoteWithLong:(jlong)id_;
-
-- (void)checkQueue;
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager, queue_, JavaUtilArrayList *)
@@ -63,16 +63,25 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_QueueItem, fileLocati
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_QueueItem, callbacks_, JavaUtilArrayList *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_QueueItem, taskRef_, DKActorRef *)
 
+@interface ImActorModelModulesFileDownloadManager_RequestState () {
+ @public
+  jlong fileId_;
+  id<ImActorModelModulesFileDownloadCallback> callback_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_RequestState, callback_, id<ImActorModelModulesFileDownloadCallback>)
+
 @interface ImActorModelModulesFileDownloadManager_BindDownload () {
  @public
   AMFileLocation *fileLocation_;
   jboolean isAutostart__;
-  id<AMFileCallback> callback_;
+  id<ImActorModelModulesFileDownloadCallback> callback_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_BindDownload, fileLocation_, AMFileLocation *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_BindDownload, callback_, id<AMFileCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_BindDownload, callback_, id<ImActorModelModulesFileDownloadCallback>)
 
 @interface ImActorModelModulesFileDownloadManager_StartDownload () {
  @public
@@ -84,22 +93,19 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_StartDownload, fileLo
 
 @interface ImActorModelModulesFileDownloadManager_CancelDownload () {
  @public
-  jint fileId_;
-  id<AMFileCallback> callback_;
+  jlong fileId_;
 }
 @end
-
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_CancelDownload, callback_, id<AMFileCallback>)
 
 @interface ImActorModelModulesFileDownloadManager_UnbindDownload () {
  @public
-  jint fileId_;
+  jlong fileId_;
   jboolean isAutocancel__;
-  id<AMFileCallback> callback_;
+  id<ImActorModelModulesFileDownloadCallback> callback_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_UnbindDownload, callback_, id<AMFileCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_UnbindDownload, callback_, id<ImActorModelModulesFileDownloadCallback>)
 
 @interface ImActorModelModulesFileDownloadManager_OnDownloadProgress () {
  @public
@@ -149,17 +155,43 @@ NSString * ImActorModelModulesFileDownloadManager_TAG_ = @"DownloadManager";
   downloaded_ = [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) getDownloadedEngine];
 }
 
-- (ImActorModelModulesFileDownloadManager_QueueItem *)findItemWithLong:(jlong)id_ {
-  return ImActorModelModulesFileDownloadManager_findItemWithLong_(self, id_);
-}
-
-- (void)promoteWithLong:(jlong)id_ {
-  ImActorModelModulesFileDownloadManager_promoteWithLong_(self, id_);
+- (void)requestStateWithLong:(jlong)fileId
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
+  AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$J", @"Requesting state file #", fileId));
+  ImActorModelModulesFileDownloaded *downloaded1 = [((id<AMKeyValueEngine>) nil_chk(downloaded_)) getValueWithLong:fileId];
+  if (downloaded1 != nil) {
+    id<AMFileSystemProvider> provider = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider];
+    id<ImActorModelFilesFileReference> reference = [((id<AMFileSystemProvider>) nil_chk(provider)) fileFromDescriptorWithNSString:[downloaded1 getDescriptor]];
+    if ([((id<ImActorModelFilesFileReference>) nil_chk(reference)) isExist] && [reference getSize] == [downloaded1 getFileSize]) {
+      AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- Downloaded");
+      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadedWithImActorModelFilesFileReference:[((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider])) fileFromDescriptorWithNSString:[downloaded1 getDescriptor]]];
+      return;
+    }
+    else {
+      AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- File is corrupted");
+      [downloaded_ removeItemWithLong:[downloaded1 getFileId]];
+    }
+  }
+  ImActorModelModulesFileDownloadManager_QueueItem *queueItem = ImActorModelModulesFileDownloadManager_findItemWithLong_(self, fileId);
+  if (queueItem == nil) {
+    [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onNotDownloaded];
+  }
+  else {
+    if (queueItem->isStarted_) {
+      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadingWithFloat:queueItem->progress_];
+    }
+    else if (queueItem->isStopped_) {
+      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onNotDownloaded];
+    }
+    else {
+      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadingWithFloat:0];
+    }
+  }
 }
 
 - (void)bindDownloadWithAMFileLocation:(AMFileLocation *)fileLocation
                            withBoolean:(jboolean)autoStart
-                    withAMFileCallback:(id<AMFileCallback>)callback {
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$J", @"Binding file #", [((AMFileLocation *) nil_chk(fileLocation)) getFileId]));
   ImActorModelModulesFileDownloaded *downloaded1 = [((id<AMKeyValueEngine>) nil_chk(downloaded_)) getValueWithLong:[fileLocation getFileId]];
   if (downloaded1 != nil) {
@@ -167,7 +199,7 @@ NSString * ImActorModelModulesFileDownloadManager_TAG_ = @"DownloadManager";
     id<ImActorModelFilesFileReference> reference = [((id<AMFileSystemProvider>) nil_chk(provider)) fileFromDescriptorWithNSString:[downloaded1 getDescriptor]];
     if ([((id<ImActorModelFilesFileReference>) nil_chk(reference)) isExist] && [reference getSize] == [downloaded1 getFileSize]) {
       AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- Downloaded");
-      [((id<AMFileCallback>) nil_chk(callback)) onDownloadedWithImActorModelFilesFileReference:[((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider])) fileFromDescriptorWithNSString:[downloaded1 getDescriptor]]];
+      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadedWithImActorModelFilesFileReference:[((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider])) fileFromDescriptorWithNSString:[downloaded1 getDescriptor]]];
       return;
     }
     else {
@@ -182,26 +214,29 @@ NSString * ImActorModelModulesFileDownloadManager_TAG_ = @"DownloadManager";
     [((JavaUtilArrayList *) nil_chk(queueItem->callbacks_)) addWithId:callback];
     if (autoStart) {
       queueItem->isStopped_ = NO;
-      [((id<AMFileCallback>) nil_chk(callback)) onDownloadingWithFloat:0];
+      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadingWithFloat:0];
     }
     else {
       queueItem->isStopped_ = YES;
-      [((id<AMFileCallback>) nil_chk(callback)) onNotDownloaded];
+      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onNotDownloaded];
     }
     [((JavaUtilArrayList *) nil_chk(queue_)) addWithInt:0 withId:queueItem];
   }
   else {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- Promoting in queue");
     ImActorModelModulesFileDownloadManager_promoteWithLong_(self, [fileLocation getFileId]);
+    if (![((JavaUtilArrayList *) nil_chk(queueItem->callbacks_)) containsWithId:callback]) {
+      [queueItem->callbacks_ addWithId:callback];
+    }
     if (queueItem->isStopped_) {
-      [((id<AMFileCallback>) nil_chk(callback)) onNotDownloaded];
+      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onNotDownloaded];
     }
     else {
       if (queueItem->isStarted_) {
-        [((id<AMFileCallback>) nil_chk(callback)) onDownloadingWithFloat:queueItem->progress_];
+        [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadingWithFloat:queueItem->progress_];
       }
       else {
-        [((id<AMFileCallback>) nil_chk(callback)) onDownloadingWithFloat:0];
+        [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadingWithFloat:0];
       }
     }
   }
@@ -221,12 +256,13 @@ NSString * ImActorModelModulesFileDownloadManager_TAG_ = @"DownloadManager";
     AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- Promoting in queue");
     if (queueItem->isStopped_) {
       queueItem->isStopped_ = NO;
-      for (id<AMFileCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
-        [((id<AMFileCallback>) nil_chk(callback)) onDownloadingWithFloat:0];
+      for (id<ImActorModelModulesFileDownloadCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
+        [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadingWithFloat:0];
       }
     }
     ImActorModelModulesFileDownloadManager_promoteWithLong_(self, [fileLocation getFileId]);
   }
+  ImActorModelModulesFileDownloadManager_checkQueue(self);
 }
 
 - (void)cancelDownloadWithLong:(jlong)fileId {
@@ -244,15 +280,16 @@ NSString * ImActorModelModulesFileDownloadManager_TAG_ = @"DownloadManager";
     }
     AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- Marking as stopped");
     queueItem->isStopped_ = YES;
-    for (id<AMFileCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
-      [((id<AMFileCallback>) nil_chk(callback)) onNotDownloaded];
+    for (id<ImActorModelModulesFileDownloadCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
+      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onNotDownloaded];
     }
   }
+  ImActorModelModulesFileDownloadManager_checkQueue(self);
 }
 
 - (void)unbindDownloadWithLong:(jlong)fileId
                    withBoolean:(jboolean)autoCancel
-            withAMFileCallback:(id<AMFileCallback>)callback {
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$J", @"Unbind file #", fileId));
   ImActorModelModulesFileDownloadManager_QueueItem *queueItem = ImActorModelModulesFileDownloadManager_findItemWithLong_(self, fileId);
   if (queueItem == nil) {
@@ -269,9 +306,9 @@ NSString * ImActorModelModulesFileDownloadManager_TAG_ = @"DownloadManager";
       if (!queueItem->isStopped_) {
         AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- Marking as stopped");
         queueItem->isStopped_ = YES;
-        for (id<AMFileCallback> __strong c in nil_chk(queueItem->callbacks_)) {
+        for (id<ImActorModelModulesFileDownloadCallback> __strong c in nil_chk(queueItem->callbacks_)) {
           if (c != callback) {
-            [((id<AMFileCallback>) nil_chk(c)) onNotDownloaded];
+            [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(c)) onNotDownloaded];
           }
         }
       }
@@ -282,6 +319,7 @@ NSString * ImActorModelModulesFileDownloadManager_TAG_ = @"DownloadManager";
       [((JavaUtilArrayList *) nil_chk(queueItem->callbacks_)) removeWithId:callback];
     }
   }
+  ImActorModelModulesFileDownloadManager_checkQueue(self);
 }
 
 - (void)checkQueue {
@@ -295,9 +333,12 @@ NSString * ImActorModelModulesFileDownloadManager_TAG_ = @"DownloadManager";
   if (queueItem == nil) {
     return;
   }
-  ((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(queueItem))->progress_ = progress;
-  for (id<AMFileCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
-    [((id<AMFileCallback>) nil_chk(fileCallback)) onDownloadingWithFloat:progress];
+  if (!((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(queueItem))->isStarted_) {
+    return;
+  }
+  queueItem->progress_ = progress;
+  for (id<ImActorModelModulesFileDownloadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
+    [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(fileCallback)) onDownloadingWithFloat:progress];
   }
 }
 
@@ -308,11 +349,14 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference
   if (queueItem == nil) {
     return;
   }
-  [((id<AMKeyValueEngine>) nil_chk(downloaded_)) addOrUpdateItemWithAMKeyValueItem:[[ImActorModelModulesFileDownloaded alloc] initWithLong:[((AMFileLocation *) nil_chk(((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(queueItem))->fileLocation_)) getFileId] withInt:[queueItem->fileLocation_ getFileSize] withNSString:[((id<ImActorModelFilesFileReference>) nil_chk(reference)) getDescriptor]]];
+  if (!((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(queueItem))->isStarted_) {
+    return;
+  }
+  [((id<AMKeyValueEngine>) nil_chk(downloaded_)) addOrUpdateItemWithAMKeyValueItem:[[ImActorModelModulesFileDownloaded alloc] initWithLong:[((AMFileLocation *) nil_chk(queueItem->fileLocation_)) getFileId] withInt:[queueItem->fileLocation_ getFileSize] withNSString:[((id<ImActorModelFilesFileReference>) nil_chk(reference)) getDescriptor]]];
   [((JavaUtilArrayList *) nil_chk(queue_)) removeWithId:queueItem];
   [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
-  for (id<AMFileCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
-    [((id<AMFileCallback>) nil_chk(fileCallback)) onDownloadedWithImActorModelFilesFileReference:reference];
+  for (id<ImActorModelModulesFileDownloadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
+    [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(fileCallback)) onDownloadedWithImActorModelFilesFileReference:reference];
   }
 }
 
@@ -322,18 +366,29 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference
   if (queueItem == nil) {
     return;
   }
-  [((DKActorRef *) nil_chk(((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(queueItem))->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
+  if (!((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(queueItem))->isStarted_) {
+    return;
+  }
+  [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
   queueItem->isStopped_ = YES;
   queueItem->isStarted_ = NO;
-  for (id<AMFileCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
-    [((id<AMFileCallback>) nil_chk(fileCallback)) onNotDownloaded];
+  for (id<ImActorModelModulesFileDownloadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
+    [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(fileCallback)) onNotDownloaded];
   }
+}
+
+- (ImActorModelModulesFileDownloadManager_QueueItem *)findItemWithLong:(jlong)id_ {
+  return ImActorModelModulesFileDownloadManager_findItemWithLong_(self, id_);
+}
+
+- (void)promoteWithLong:(jlong)id_ {
+  ImActorModelModulesFileDownloadManager_promoteWithLong_(self, id_);
 }
 
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesFileDownloadManager_BindDownload class]]) {
     ImActorModelModulesFileDownloadManager_BindDownload *requestDownload = (ImActorModelModulesFileDownloadManager_BindDownload *) check_class_cast(message, [ImActorModelModulesFileDownloadManager_BindDownload class]);
-    [self bindDownloadWithAMFileLocation:[((ImActorModelModulesFileDownloadManager_BindDownload *) nil_chk(requestDownload)) getFileLocation] withBoolean:[requestDownload isAutostart] withAMFileCallback:[requestDownload getCallback]];
+    [self bindDownloadWithAMFileLocation:[((ImActorModelModulesFileDownloadManager_BindDownload *) nil_chk(requestDownload)) getFileLocation] withBoolean:[requestDownload isAutostart] withImActorModelModulesFileDownloadCallback:[requestDownload getCallback]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileDownloadManager_CancelDownload class]]) {
     ImActorModelModulesFileDownloadManager_CancelDownload *cancelDownload = (ImActorModelModulesFileDownloadManager_CancelDownload *) check_class_cast(message, [ImActorModelModulesFileDownloadManager_CancelDownload class]);
@@ -341,7 +396,7 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileDownloadManager_UnbindDownload class]]) {
     ImActorModelModulesFileDownloadManager_UnbindDownload *unbindDownload = (ImActorModelModulesFileDownloadManager_UnbindDownload *) check_class_cast(message, [ImActorModelModulesFileDownloadManager_UnbindDownload class]);
-    [self unbindDownloadWithLong:[((ImActorModelModulesFileDownloadManager_UnbindDownload *) nil_chk(unbindDownload)) getFileId] withBoolean:[unbindDownload isAutocancel] withAMFileCallback:[unbindDownload getCallback]];
+    [self unbindDownloadWithLong:[((ImActorModelModulesFileDownloadManager_UnbindDownload *) nil_chk(unbindDownload)) getFileId] withBoolean:[unbindDownload isAutocancel] withImActorModelModulesFileDownloadCallback:[unbindDownload getCallback]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileDownloadManager_StartDownload class]]) {
     ImActorModelModulesFileDownloadManager_StartDownload *startDownload = (ImActorModelModulesFileDownloadManager_StartDownload *) check_class_cast(message, [ImActorModelModulesFileDownloadManager_StartDownload class]);
@@ -359,6 +414,10 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference
     ImActorModelModulesFileDownloadManager_OnDownloadedError *error = (ImActorModelModulesFileDownloadManager_OnDownloadedError *) check_class_cast(message, [ImActorModelModulesFileDownloadManager_OnDownloadedError class]);
     [self onDownloadErrorWithLong:[((ImActorModelModulesFileDownloadManager_OnDownloadedError *) nil_chk(error)) getFileId]];
   }
+  else if ([message isKindOfClass:[ImActorModelModulesFileDownloadManager_RequestState class]]) {
+    ImActorModelModulesFileDownloadManager_RequestState *requestState = (ImActorModelModulesFileDownloadManager_RequestState *) check_class_cast(message, [ImActorModelModulesFileDownloadManager_RequestState class]);
+    [self requestStateWithLong:[((ImActorModelModulesFileDownloadManager_RequestState *) nil_chk(requestState)) getFileId] withImActorModelModulesFileDownloadCallback:[requestState getCallback]];
+  }
   else {
     [self dropWithId:message];
   }
@@ -371,27 +430,6 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference
 }
 
 @end
-
-ImActorModelModulesFileDownloadManager_QueueItem *ImActorModelModulesFileDownloadManager_findItemWithLong_(ImActorModelModulesFileDownloadManager *self, jlong id_) {
-  for (ImActorModelModulesFileDownloadManager_QueueItem * __strong q in nil_chk(self->queue_)) {
-    if ([((AMFileLocation *) nil_chk(((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(q))->fileLocation_)) getFileId] == id_) {
-      return q;
-    }
-  }
-  return nil;
-}
-
-void ImActorModelModulesFileDownloadManager_promoteWithLong_(ImActorModelModulesFileDownloadManager *self, jlong id_) {
-  for (ImActorModelModulesFileDownloadManager_QueueItem * __strong q in nil_chk(self->queue_)) {
-    if ([((AMFileLocation *) nil_chk(((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(q))->fileLocation_)) getFileId] == id_) {
-      if (!q->isStarted_) {
-        [self->queue_ removeWithId:q];
-        [self->queue_ addWithInt:0 withId:q];
-      }
-      return;
-    }
-  }
-}
 
 void ImActorModelModulesFileDownloadManager_checkQueue(ImActorModelModulesFileDownloadManager *self) {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- Checking queue");
@@ -422,6 +460,27 @@ void ImActorModelModulesFileDownloadManager_checkQueue(ImActorModelModulesFileDo
   pendingQueue->taskRef_ = [((DKActorSystem *) nil_chk([self system])) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileDownloadTask_class_(), [[ImActorModelModulesFileDownloadManager_$1 alloc] initWithImActorModelModulesFileDownloadManager:self withImActorModelModulesFileDownloadManager_QueueItem:finalPendingQueue]) withNSString:JreStrcat("$J", @"actor/download/task_", ImActorModelModulesUtilsRandomUtils_nextRid())];
 }
 
+ImActorModelModulesFileDownloadManager_QueueItem *ImActorModelModulesFileDownloadManager_findItemWithLong_(ImActorModelModulesFileDownloadManager *self, jlong id_) {
+  for (ImActorModelModulesFileDownloadManager_QueueItem * __strong q in nil_chk(self->queue_)) {
+    if ([((AMFileLocation *) nil_chk(((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(q))->fileLocation_)) getFileId] == id_) {
+      return q;
+    }
+  }
+  return nil;
+}
+
+void ImActorModelModulesFileDownloadManager_promoteWithLong_(ImActorModelModulesFileDownloadManager *self, jlong id_) {
+  for (ImActorModelModulesFileDownloadManager_QueueItem * __strong q in nil_chk(self->queue_)) {
+    if ([((AMFileLocation *) nil_chk(((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(q))->fileLocation_)) getFileId] == id_) {
+      if (!q->isStarted_) {
+        [self->queue_ removeWithId:q];
+        [self->queue_ addWithInt:0 withId:q];
+      }
+      return;
+    }
+  }
+}
+
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager)
 
 @implementation ImActorModelModulesFileDownloadManager_QueueItem
@@ -449,11 +508,40 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager)
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_QueueItem)
 
+@implementation ImActorModelModulesFileDownloadManager_RequestState
+
+- (instancetype)initWithLong:(jlong)fileId
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
+  if (self = [super init]) {
+    self->fileId_ = fileId;
+    self->callback_ = callback;
+  }
+  return self;
+}
+
+- (jlong)getFileId {
+  return fileId_;
+}
+
+- (id<ImActorModelModulesFileDownloadCallback>)getCallback {
+  return callback_;
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesFileDownloadManager_RequestState *)other {
+  [super copyAllFieldsTo:other];
+  other->fileId_ = fileId_;
+  other->callback_ = callback_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_RequestState)
+
 @implementation ImActorModelModulesFileDownloadManager_BindDownload
 
 - (instancetype)initWithAMFileLocation:(AMFileLocation *)fileLocation
                            withBoolean:(jboolean)isAutostart
-                    withAMFileCallback:(id<AMFileCallback>)callback {
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
   if (self = [super init]) {
     self->fileLocation_ = fileLocation;
     self->isAutostart__ = isAutostart;
@@ -470,7 +558,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_QueueIte
   return isAutostart__;
 }
 
-- (id<AMFileCallback>)getCallback {
+- (id<ImActorModelModulesFileDownloadCallback>)getCallback {
   return callback_;
 }
 
@@ -509,27 +597,20 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_StartDow
 
 @implementation ImActorModelModulesFileDownloadManager_CancelDownload
 
-- (instancetype)initWithInt:(jint)fileId
-         withAMFileCallback:(id<AMFileCallback>)callback {
+- (instancetype)initWithLong:(jlong)fileId {
   if (self = [super init]) {
     self->fileId_ = fileId;
-    self->callback_ = callback;
   }
   return self;
 }
 
-- (jint)getFileId {
+- (jlong)getFileId {
   return fileId_;
-}
-
-- (id<AMFileCallback>)getCallback {
-  return callback_;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesFileDownloadManager_CancelDownload *)other {
   [super copyAllFieldsTo:other];
   other->fileId_ = fileId_;
-  other->callback_ = callback_;
 }
 
 @end
@@ -538,9 +619,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_CancelDo
 
 @implementation ImActorModelModulesFileDownloadManager_UnbindDownload
 
-- (instancetype)initWithInt:(jint)fileId
-                withBoolean:(jboolean)isAutocancel
-         withAMFileCallback:(id<AMFileCallback>)callback {
+- (instancetype)initWithLong:(jlong)fileId
+                 withBoolean:(jboolean)isAutocancel
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
   if (self = [super init]) {
     self->fileId_ = fileId;
     self->isAutocancel__ = isAutocancel;
@@ -549,11 +630,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_CancelDo
   return self;
 }
 
-- (jint)getFileId {
+- (jlong)getFileId {
   return fileId_;
 }
 
-- (id<AMFileCallback>)getCallback {
+- (id<ImActorModelModulesFileDownloadCallback>)getCallback {
   return callback_;
 }
 

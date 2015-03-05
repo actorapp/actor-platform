@@ -11,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestSignIn () {
@@ -134,6 +135,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, appKey_, NSString *)
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeStringWithInt:8 withNSString:self->appKey_];
+}
+
+- (NSString *)description {
+  NSString *res = @"rpc SignIn{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"publicKey=", BSUtils_byteArrayToStringCompactWithByteArray_(self->publicKey_)));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", deviceHash=", BSUtils_byteArrayToStringWithByteArray_(self->deviceHash_)));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", deviceTitle=", self->deviceTitle_));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {

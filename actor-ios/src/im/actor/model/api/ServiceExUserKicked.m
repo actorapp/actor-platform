@@ -41,6 +41,13 @@
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->kickedUid_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct ServiceExUserKicked{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"kickedUid=", self->kickedUid_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiServiceExUserKicked *)other {
   [super copyAllFieldsTo:other];
   other->kickedUid_ = kickedUid_;

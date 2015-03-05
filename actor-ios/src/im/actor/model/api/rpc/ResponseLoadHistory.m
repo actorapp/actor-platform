@@ -72,6 +72,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadHistory, users_, id<JavaUtilLi
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->users_];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple LoadHistory{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseLoadHistory_HEADER;
 }

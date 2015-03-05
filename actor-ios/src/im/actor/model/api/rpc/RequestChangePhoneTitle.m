@@ -62,6 +62,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
   [writer writeStringWithInt:2 withNSString:self->title_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc ChangePhoneTitle{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"phoneId=", self->phoneId_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", title=", self->title_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestChangePhoneTitle_HEADER;
 }

@@ -8,6 +8,7 @@
 
 @class DKActorRef;
 @class ImActorModelApiPeer;
+@class ImActorModelApiTypingTypeEnum;
 @class ImActorModelModulesModules;
 
 #include "J2ObjC_header.h"
@@ -20,7 +21,7 @@
 
 - (void)onTypingWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                 withInt:(jint)uid
-                                withInt:(jint)type;
+      withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
 
 - (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                  withInt:(jint)uid;

@@ -71,6 +71,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
   [writer writeStringWithInt:3 withNSString:self->name_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc EditUserLocalName{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", name=", self->name_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestEditUserLocalName_HEADER;
 }

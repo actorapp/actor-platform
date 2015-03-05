@@ -35,6 +35,8 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+- (NSString *)description;
+
 - (jint)getHeaderKey;
 
 @end

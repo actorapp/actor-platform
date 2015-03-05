@@ -3,30 +3,30 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/PhotoContent.java
 //
 
-#ifndef _ImActorModelEntityContentPhotoContent_H_
-#define _ImActorModelEntityContentPhotoContent_H_
+#ifndef _AMPhotoContent_H_
+#define _AMPhotoContent_H_
 
+@class AMAbsContent_ContentTypeEnum;
+@class AMFastThumb;
+@class AMFileSource;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelEntityContentAbsContent_ContentTypeEnum;
-@class ImActorModelEntityContentFastThumb;
-@class ImActorModelEntityContentFileSource;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/DocumentContent.h"
 
-@interface ImActorModelEntityContentPhotoContent : ImActorModelEntityContentDocumentContent {
+@interface AMPhotoContent : AMDocumentContent {
 }
 
-+ (ImActorModelEntityContentPhotoContent *)photoFromBytesWithByteArray:(IOSByteArray *)data;
++ (AMPhotoContent *)photoFromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)initWithImActorModelEntityContentFileSource:(ImActorModelEntityContentFileSource *)location
-                                               withNSString:(NSString *)mimetype
-                                               withNSString:(NSString *)name
-                     withImActorModelEntityContentFastThumb:(ImActorModelEntityContentFastThumb *)fastThumb
-                                                    withInt:(jint)w
-                                                    withInt:(jint)h;
+- (instancetype)initWithAMFileSource:(AMFileSource *)location
+                        withNSString:(NSString *)mimetype
+                        withNSString:(NSString *)name
+                     withAMFastThumb:(AMFastThumb *)fastThumb
+                             withInt:(jint)w
+                             withInt:(jint)h;
 
 - (instancetype)init;
 
@@ -34,7 +34,7 @@
 
 - (jint)getH;
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -42,13 +42,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentPhotoContent)
+J2OBJC_EMPTY_STATIC_INIT(AMPhotoContent)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentPhotoContent *ImActorModelEntityContentPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMPhotoContent *AMPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentPhotoContent)
+typedef AMPhotoContent ImActorModelEntityContentPhotoContent;
 
-#endif // _ImActorModelEntityContentPhotoContent_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMPhotoContent)
+
+#endif // _AMPhotoContent_H_

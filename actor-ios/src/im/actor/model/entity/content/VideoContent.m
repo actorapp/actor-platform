@@ -16,7 +16,7 @@
 #include "im/actor/model/entity/content/VideoContent.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityContentVideoContent () {
+@interface AMVideoContent () {
  @public
   jint duration_;
   jint w_;
@@ -25,20 +25,20 @@
 - (instancetype)init;
 @end
 
-@implementation ImActorModelEntityContentVideoContent
+@implementation AMVideoContent
 
-+ (ImActorModelEntityContentVideoContent *)videoFromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentVideoContent_videoFromBytesWithByteArray_(data);
++ (AMVideoContent *)videoFromBytesWithByteArray:(IOSByteArray *)data {
+  return AMVideoContent_videoFromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelEntityContentFileSource:(ImActorModelEntityContentFileSource *)location
-                                               withNSString:(NSString *)mimetype
-                                               withNSString:(NSString *)name
-                     withImActorModelEntityContentFastThumb:(ImActorModelEntityContentFastThumb *)fastThumb
-                                                    withInt:(jint)duration
-                                                    withInt:(jint)w
-                                                    withInt:(jint)h {
-  if (self = [super initWithImActorModelEntityContentFileSource:location withNSString:mimetype withNSString:name withImActorModelEntityContentFastThumb:fastThumb]) {
+- (instancetype)initWithAMFileSource:(AMFileSource *)location
+                        withNSString:(NSString *)mimetype
+                        withNSString:(NSString *)name
+                     withAMFastThumb:(AMFastThumb *)fastThumb
+                             withInt:(jint)duration
+                             withInt:(jint)w
+                             withInt:(jint)h {
+  if (self = [super initWithAMFileSource:location withNSString:mimetype withNSString:name withAMFastThumb:fastThumb]) {
     self->duration_ = duration;
     self->w_ = w;
     self->h_ = h;
@@ -62,8 +62,8 @@
   return h_;
 }
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType {
-  return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_DOCUMENT_VIDEO();
+- (AMAbsContent_ContentTypeEnum *)getContentType {
+  return AMAbsContent_ContentTypeEnum_get_DOCUMENT_VIDEO();
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -80,7 +80,7 @@
   [writer writeIntWithInt:12 withInt:h_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentVideoContent *)other {
+- (void)copyAllFieldsTo:(AMVideoContent *)other {
   [super copyAllFieldsTo:other];
   other->duration_ = duration_;
   other->w_ = w_;
@@ -89,9 +89,9 @@
 
 @end
 
-ImActorModelEntityContentVideoContent *ImActorModelEntityContentVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentVideoContent_init();
-  return ((ImActorModelEntityContentVideoContent *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentVideoContent alloc] init], data));
+AMVideoContent *AMVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data) {
+  AMVideoContent_init();
+  return ((AMVideoContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMVideoContent alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentVideoContent)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMVideoContent)

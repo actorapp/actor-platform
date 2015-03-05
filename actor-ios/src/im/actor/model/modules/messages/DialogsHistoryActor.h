@@ -32,6 +32,15 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsHistoryActor)
 CF_EXTERN_C_BEGIN
 
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, LIMIT, jint)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, KEY_LOADED_DATE_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, KEY_LOADED_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, KEY_LOADED_INIT_, NSString *)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsHistoryActor)
@@ -53,8 +62,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsHistoryActor_LoadMo
 @interface ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore : NSObject {
 }
 
-- (instancetype)initWithBoolean:(jboolean)isFinished
-                       withLong:(jlong)maxLoadedDate;
+- (instancetype)initWithInt:(jint)loaded
+                   withLong:(jlong)maxLoadedDate;
 
 @end
 

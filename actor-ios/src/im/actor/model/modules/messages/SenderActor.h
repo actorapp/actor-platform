@@ -6,10 +6,14 @@
 #ifndef _ImActorModelModulesMessagesSenderActor_H_
 #define _ImActorModelModulesMessagesSenderActor_H_
 
+@class AMAbsContent;
+@class AMFastThumb;
+@class AMFileLocation;
 @class AMPeer;
 @class AMRpcException;
 @class ImActorModelApiPeer;
 @class ImActorModelApiRpcResponseSeqDate;
+@class ImActorModelModulesMessagesEntityPendingMessage;
 @class ImActorModelModulesMessagesEntityPendingMessagesStorage;
 @class ImActorModelModulesModules;
 
@@ -27,6 +31,30 @@
 - (void)doSendTextWithAMPeer:(AMPeer *)peer
                 withNSString:(NSString *)text;
 
+- (void)doSendDocumentWithAMPeer:(AMPeer *)peer
+                    withNSString:(NSString *)fileName
+                    withNSString:(NSString *)mimeType
+                         withInt:(jint)fileSize
+                 withAMFastThumb:(AMFastThumb *)fastThumb
+                    withNSString:(NSString *)descriptor;
+
+- (void)doSendPhotoWithAMPeer:(AMPeer *)peer
+              withAMFastThumb:(AMFastThumb *)fastThumb
+                 withNSString:(NSString *)descriptor
+                 withNSString:(NSString *)fileName
+                      withInt:(jint)fileSize
+                      withInt:(jint)w
+                      withInt:(jint)h;
+
+- (void)doSendVideoWithAMPeer:(AMPeer *)peer
+                 withNSString:(NSString *)fileName
+                      withInt:(jint)w
+                      withInt:(jint)h
+                      withInt:(jint)duration
+              withAMFastThumb:(AMFastThumb *)fastThumb
+                 withNSString:(NSString *)descriptor
+                      withInt:(jint)fileSize;
+
 - (void)onReceiveWithId:(id)message;
 
 @end
@@ -40,6 +68,108 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesSenderActor, PREFERENCES_,
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor)
+
+@interface ImActorModelModulesMessagesSenderActor_SendDocument : NSObject {
+}
+
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                  withNSString:(NSString *)fileName
+                  withNSString:(NSString *)mimeType
+                       withInt:(jint)fileSize
+                  withNSString:(NSString *)descriptor
+               withAMFastThumb:(AMFastThumb *)fastThumb;
+
+- (AMFastThumb *)getFastThumb;
+
+- (jint)getFileSize;
+
+- (NSString *)getFileName;
+
+- (NSString *)getMimeType;
+
+- (AMPeer *)getPeer;
+
+- (NSString *)getDescriptor;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor_SendDocument)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendDocument)
+
+@interface ImActorModelModulesMessagesSenderActor_SendPhoto : NSObject {
+}
+
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+               withAMFastThumb:(AMFastThumb *)fastThumb
+                  withNSString:(NSString *)descriptor
+                  withNSString:(NSString *)fileName
+                       withInt:(jint)fileSize
+                       withInt:(jint)w
+                       withInt:(jint)h;
+
+- (AMPeer *)getPeer;
+
+- (AMFastThumb *)getFastThumb;
+
+- (NSString *)getDescriptor;
+
+- (NSString *)getFileName;
+
+- (jint)getFileSize;
+
+- (jint)getW;
+
+- (jint)getH;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor_SendPhoto)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendPhoto)
+
+@interface ImActorModelModulesMessagesSenderActor_SendVideo : NSObject {
+}
+
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                  withNSString:(NSString *)fileName
+                       withInt:(jint)w
+                       withInt:(jint)h
+                       withInt:(jint)duration
+               withAMFastThumb:(AMFastThumb *)fastThumb
+                  withNSString:(NSString *)descriptor
+                       withInt:(jint)fileSize;
+
+- (AMPeer *)getPeer;
+
+- (NSString *)getFileName;
+
+- (jint)getW;
+
+- (jint)getH;
+
+- (jint)getDuration;
+
+- (AMFastThumb *)getFastThumb;
+
+- (NSString *)getDescriptor;
+
+- (jint)getFileSize;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor_SendVideo)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendVideo)
 
 @interface ImActorModelModulesMessagesSenderActor_SendText : NSObject {
 }

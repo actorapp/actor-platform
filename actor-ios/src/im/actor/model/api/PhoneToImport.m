@@ -54,6 +54,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
   }
 }
 
+- (NSString *)description {
+  NSString *res = @"struct PhoneToImport{";
+  res = JreStrcat("$$", res, JreStrcat("$J", @"phoneNumber=", self->phoneNumber_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", name=", self->name_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiPhoneToImport *)other {
   [super copyAllFieldsTo:other];
   other->phoneNumber_ = phoneNumber_;

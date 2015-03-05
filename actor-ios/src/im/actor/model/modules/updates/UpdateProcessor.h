@@ -9,6 +9,7 @@
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdatesContactsProcessor;
 @class ImActorModelModulesUpdatesGroupsProcessor;
+@class ImActorModelModulesUpdatesInternalGroupCreated;
 @class ImActorModelModulesUpdatesInternalInternalUpdate;
 @class ImActorModelModulesUpdatesInternalUsersFounded;
 @class ImActorModelModulesUpdatesMessagesProcessor;
@@ -30,7 +31,6 @@
 
 - (void)applyRelatedWithJavaUtilList:(id<JavaUtilList>)users
                     withJavaUtilList:(id<JavaUtilList>)groups
-                    withJavaUtilList:(id<JavaUtilList>)contactRecords
                          withBoolean:(jboolean)force;
 
 - (void)processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:(ImActorModelModulesUpdatesInternalInternalUpdate *)update;
@@ -67,5 +67,21 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$1)
+
+@interface ImActorModelModulesUpdatesUpdateProcessor_$2 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesUpdatesInternalGroupCreated:(ImActorModelModulesUpdatesInternalGroupCreated *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesUpdateProcessor_$2)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
 
 #endif // _ImActorModelModulesUpdatesUpdateProcessor_H_

@@ -13,6 +13,7 @@
 @protocol AMLogCallback;
 @protocol AMMainThread;
 @protocol AMNetworking;
+@protocol AMNotificationProvider;
 @protocol AMPhoneBookProvider;
 @protocol AMStorage;
 @protocol AMThreading;
@@ -28,13 +29,15 @@
                     withAMMainThread:(id<AMMainThread>)mainThread
                        withAMStorage:(id<AMStorage>)storage
                    withAMLogCallback:(id<AMLogCallback>)log
-                         withBoolean:(jboolean)persistUploadingFiles
                 withAMLocaleProvider:(id<AMLocaleProvider>)localeProvider
              withAMPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider
                 withAMCryptoProvider:(id<AMCryptoProvider>)cryptoProvider
             withAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider
+          withAMNotificationProvider:(id<AMNotificationProvider>)notificationProvider
                          withBoolean:(jboolean)enableContactsLogging
                          withBoolean:(jboolean)enableNetworkLogging;
+
+- (id<AMNotificationProvider>)getNotificationProvider;
 
 - (jboolean)isEnableContactsLogging;
 
@@ -55,8 +58,6 @@
 - (id<AMStorage>)getStorage;
 
 - (id<AMLogCallback>)getLog;
-
-- (jboolean)isPersistUploadingFiles;
 
 - (id<AMLocaleProvider>)getLocaleProvider;
 

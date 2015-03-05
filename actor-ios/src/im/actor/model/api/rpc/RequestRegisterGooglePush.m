@@ -62,6 +62,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
   [writer writeStringWithInt:2 withNSString:self->token_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc RegisterGooglePush{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestRegisterGooglePush_HEADER;
 }

@@ -48,6 +48,13 @@
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc TerminateSession{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"id=", self->id__));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestTerminateSession_HEADER;
 }

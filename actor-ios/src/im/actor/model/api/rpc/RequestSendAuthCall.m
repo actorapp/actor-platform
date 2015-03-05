@@ -84,6 +84,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
   [writer writeStringWithInt:4 withNSString:self->apiKey_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc SendAuthCall{";
+  res = JreStrcat("$$", res, JreStrcat("$J", @"phoneNumber=", self->phoneNumber_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSendAuthCall_HEADER;
 }

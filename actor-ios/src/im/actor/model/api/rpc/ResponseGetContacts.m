@@ -66,6 +66,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetContacts, users_, id<JavaUtilLi
   [writer writeBoolWithInt:2 withBoolean:self->isNotChanged__];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple GetContacts{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseGetContacts_HEADER;
 }

@@ -10,6 +10,7 @@
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiOutPeer;
+@class ImActorModelApiTypingTypeEnum;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -22,17 +23,19 @@
 + (ImActorModelApiRpcRequestTyping *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
-                                       withInt:(jint)typingType;
+             withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)typingType;
 
 - (instancetype)init;
 
 - (ImActorModelApiOutPeer *)getPeer;
 
-- (jint)getTypingType;
+- (ImActorModelApiTypingTypeEnum *)getTypingType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+- (NSString *)description;
 
 - (jint)getHeaderKey;
 

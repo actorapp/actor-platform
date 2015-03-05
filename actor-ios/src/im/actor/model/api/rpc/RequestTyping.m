@@ -7,6 +7,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/OutPeer.h"
+#include "im/actor/model/api/TypingType.h"
 #include "im/actor/model/api/rpc/RequestTyping.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -17,11 +18,12 @@
 @interface ImActorModelApiRpcRequestTyping () {
  @public
   ImActorModelApiOutPeer *peer_;
-  jint typingType_;
+  ImActorModelApiTypingTypeEnum *typingType_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, peer_, ImActorModelApiOutPeer *)
+J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, typingType_, ImActorModelApiTypingTypeEnum *)
 
 @implementation ImActorModelApiRpcRequestTyping
 
@@ -30,7 +32,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, peer_, ImActorModelApiOutPe
 }
 
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
-                                       withInt:(jint)typingType {
+             withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)typingType {
   if (self = [super init]) {
     self->peer_ = peer;
     self->typingType_ = typingType;
@@ -46,13 +48,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, peer_, ImActorModelApiOutPe
   return self->peer_;
 }
 
-- (jint)getTypingType {
+- (ImActorModelApiTypingTypeEnum *)getTypingType {
   return self->typingType_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiOutPeer alloc] init]];
-  self->typingType_ = [values getIntWithInt:3];
+  self->typingType_ = ImActorModelApiTypingTypeEnum_parseWithInt_([values getIntWithInt:3]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -60,7 +62,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, peer_, ImActorModelApiOutPe
     @throw [[JavaIoIOException alloc] init];
   }
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
-  [writer writeIntWithInt:3 withInt:self->typingType_];
+  if (self->typingType_ == nil) {
+    @throw [[JavaIoIOException alloc] init];
+  }
+  [writer writeIntWithInt:3 withInt:[((ImActorModelApiTypingTypeEnum *) nil_chk(self->typingType_)) getValue]];
+}
+
+- (NSString *)description {
+  NSString *res = @"rpc Typing{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", typingType=", self->typingType_));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {

@@ -62,6 +62,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeq, state_, IOSByteArray *)
   [writer writeBytesWithInt:2 withByteArray:self->state_];
 }
 
+- (NSString *)description {
+  NSString *res = @"response Seq{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseSeq_HEADER;
 }

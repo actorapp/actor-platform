@@ -70,6 +70,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
   }
 }
 
+- (NSString *)description {
+  NSString *res = @"struct Avatar{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"smallImage=", (self->smallImage_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", largeImage=", (self->largeImage_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", fullImage=", (self->fullImage_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiAvatar *)other {
   [super copyAllFieldsTo:other];
   other->smallImage_ = smallImage_;

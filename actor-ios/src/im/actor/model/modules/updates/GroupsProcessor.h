@@ -7,8 +7,10 @@
 #define _ImActorModelModulesUpdatesGroupsProcessor_H_
 
 @class AMAvatar;
+@class AMGroup;
 @class ImActorModelModulesModules;
 @protocol JavaUtilCollection;
+@protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
@@ -24,36 +26,45 @@
 - (void)onGroupInviteWithInt:(jint)groupId
                     withLong:(jlong)rid
                      withInt:(jint)inviterId
-                    withLong:(jlong)date;
+                    withLong:(jlong)date
+                 withBoolean:(jboolean)isSilent;
 
 - (void)onUserLeaveWithInt:(jint)groupId
                   withLong:(jlong)rid
                    withInt:(jint)uid
-                  withLong:(jlong)date;
+                  withLong:(jlong)date
+               withBoolean:(jboolean)isSilent;
 
 - (void)onUserKickedWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)uid
                     withInt:(jint)kicker
-                   withLong:(jlong)date;
+                   withLong:(jlong)date
+                withBoolean:(jboolean)isSilent;
 
 - (void)onUserAddedWithInt:(jint)groupId
                   withLong:(jlong)rid
                    withInt:(jint)uid
                    withInt:(jint)adder
-                  withLong:(jlong)date;
+                  withLong:(jlong)date
+               withBoolean:(jboolean)isSilent;
 
 - (void)onTitleChangedWithInt:(jint)groupId
                      withLong:(jlong)rid
                       withInt:(jint)uid
                  withNSString:(NSString *)title
-                     withLong:(jlong)date;
+                     withLong:(jlong)date
+                  withBoolean:(jboolean)isSilent;
 
 - (void)onAvatarChangedWithInt:(jint)groupId
                       withLong:(jlong)rid
                        withInt:(jint)uid
                   withAMAvatar:(AMAvatar *)avatar
-                      withLong:(jlong)date;
+                      withLong:(jlong)date
+                   withBoolean:(jboolean)isSilent;
+
+- (void)onMembersUpdatedWithInt:(jint)groupId
+               withJavaUtilList:(id<JavaUtilList>)members;
 
 - (jboolean)hasGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)gids;
 

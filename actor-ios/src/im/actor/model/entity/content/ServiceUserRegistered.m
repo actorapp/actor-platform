@@ -11,10 +11,10 @@
 #include "im/actor/model/entity/content/ServiceUserRegistered.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelEntityContentServiceUserRegistered
+@implementation AMServiceUserRegistered
 
-+ (ImActorModelEntityContentServiceUserRegistered *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentServiceUserRegistered_fromBytesWithByteArray_(data);
++ (AMServiceUserRegistered *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMServiceUserRegistered_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)init {
@@ -23,9 +23,9 @@
 
 @end
 
-ImActorModelEntityContentServiceUserRegistered *ImActorModelEntityContentServiceUserRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentServiceUserRegistered_init();
-  return ((ImActorModelEntityContentServiceUserRegistered *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceUserRegistered alloc] init], data));
+AMServiceUserRegistered *AMServiceUserRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMServiceUserRegistered_init();
+  return ((AMServiceUserRegistered *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceUserRegistered alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceUserRegistered)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceUserRegistered)

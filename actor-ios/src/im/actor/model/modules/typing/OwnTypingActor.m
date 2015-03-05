@@ -5,13 +5,11 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/OutPeer.h"
-#include "im/actor/model/api/PeerType.h"
+#include "im/actor/model/api/TypingType.h"
 #include "im/actor/model/api/rpc/RequestTyping.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorTime.h"
 #include "im/actor/model/entity/Peer.h"
-#include "im/actor/model/entity/PeerType.h"
-#include "im/actor/model/entity/User.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/typing/OwnTypingActor.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
@@ -68,21 +66,11 @@ void ImActorModelModulesTypingOwnTypingActor_onTypingWithAMPeer_(ImActorModelMod
     return;
   }
   self->lastTypingTime_ = DKActorTime_currentTime();
-  ImActorModelApiOutPeer *outPeer;
-  if ([((AMPeer *) nil_chk(peer)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
-    AMUser *user = [self getUserWithInt:[peer getPeerId]];
-    if (user == nil) {
-      return;
-    }
-    outPeer = [[ImActorModelApiOutPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[((AMUser *) nil_chk(user)) getUid] withLong:[user getAccessHash]];
-  }
-  else if ([peer getPeerType] == AMPeerTypeEnum_get_GROUP()) {
+  ImActorModelApiOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
+  if (outPeer == nil) {
     return;
   }
-  else {
-    return;
-  }
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestTyping alloc] initWithImActorModelApiOutPeer:outPeer withInt:0]];
+  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestTyping alloc] initWithImActorModelApiOutPeer:outPeer withImActorModelApiTypingTypeEnum:ImActorModelApiTypingTypeEnum_get_TEXT()]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingOwnTypingActor)

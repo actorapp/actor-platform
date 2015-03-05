@@ -65,6 +65,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
   }
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc SendEmailCode{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"email=", self->email_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", description=", self->description__));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSendEmailCode_HEADER;
 }

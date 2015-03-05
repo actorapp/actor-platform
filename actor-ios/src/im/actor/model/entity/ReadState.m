@@ -52,17 +52,17 @@ J2OBJC_FIELD_SETTER(AMReadState, peer_, AMPeer *)
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  peer_ = AMPeer_fromUidWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
+  peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   lastReadSortingDate_ = [values getLongWithInt:2];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUid]];
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:lastReadSortingDate_];
 }
 
 - (jlong)getEngineId {
-  return [((AMPeer *) nil_chk(peer_)) getUid];
+  return [((AMPeer *) nil_chk(peer_)) getUnuqueId];
 }
 
 - (void)copyAllFieldsTo:(AMReadState *)other {

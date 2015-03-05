@@ -62,6 +62,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *
   [writer writeBoolWithInt:2 withBoolean:self->isRegistered__];
 }
 
+- (NSString *)description {
+  NSString *res = @"tuple SendAuthCode{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseSendAuthCode_HEADER;
 }

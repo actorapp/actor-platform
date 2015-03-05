@@ -77,6 +77,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModule
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationActorWithAMPeer:peer];
 }
 
+- (DKActorRef *)conversationHistoryActorWithAMPeer:(AMPeer *)peer {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationHistoryActorWithAMPeer:peer];
+}
+
 - (id<AMPreferencesStorage>)preferences {
   return [((ImActorModelModulesModules *) nil_chk(modules__)) getPreferences];
 }

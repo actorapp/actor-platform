@@ -8,20 +8,29 @@
 
 @class AMAuthStateEnum;
 @class AMConfiguration;
+@class AMFastThumb;
 @class AMFileLocation;
+@class AMFileVM;
 @class AMGroupTypingVM;
 @class AMI18nEngine;
 @class AMMVVMCollection;
+@class AMOwnAvatarVM;
 @class AMPeer;
+@class AMUploadFileVM;
 @class AMUserTypingVM;
 @class DKActor;
 @class DKActorRef;
 @class DKEnvelope;
+@class IOSIntArray;
 @class ImActorModelModulesModules;
 @class JavaLangException;
 @protocol AMCommand;
-@protocol AMFileCallback;
+@protocol AMFileVMCallback;
 @protocol AMListEngine;
+@protocol AMUploadFileVMCallback;
+@protocol ImActorModelFilesFileReference;
+@protocol ImActorModelModulesFileDownloadCallback;
+@protocol ImActorModelModulesFileUploadCallback;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/debug/TraceInterface.h"
@@ -71,6 +80,10 @@
 
 - (void)onConversationClosed:(AMPeer *)peer;
 
+- (void)onDialogsOpen;
+
+- (void)onDialogsClosed;
+
 - (void)onProfileOpen:(jint)uid;
 
 - (void)onProfileClosed:(jint)uid;
@@ -89,15 +102,50 @@
 
 - (void)sendMessage:(AMPeer *)peer withText:(NSString *)text;
 
+- (void)sendPhotoWithAMPeer:(AMPeer *)peer
+               withNSString:(NSString *)fileName
+                    withInt:(jint)w
+                    withInt:(jint)h
+            withAMFastThumb:(AMFastThumb *)fastThumb
+withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference;
+
+- (void)sendVideoWithAMPeer:(AMPeer *)peer
+               withNSString:(NSString *)fileName
+                    withInt:(jint)w
+                    withInt:(jint)h
+                    withInt:(jint)duration
+            withAMFastThumb:(AMFastThumb *)fastThumb
+withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference;
+
+- (void)sendDocumentWithAMPeer:(AMPeer *)peer
+                  withNSString:(NSString *)fileName
+                  withNSString:(NSString *)mimeType
+withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference;
+
+- (void)sendDocumentWithAMPeer:(AMPeer *)peer
+                  withNSString:(NSString *)fileName
+                  withNSString:(NSString *)mimeType
+withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference
+               withAMFastThumb:(AMFastThumb *)fastThumb;
+
 - (id<AMCommand>)editMyNameWithNSString:(NSString *)newName;
 
 - (id<AMCommand>)editNameWithInt:(jint)uid
                     withNSString:(NSString *)name;
 
+- (id<AMCommand>)createGroupWithNSString:(NSString *)title
+                            withIntArray:(IOSIntArray *)uids;
+
 - (id<AMCommand>)editGroupTitleWithInt:(jint)gid
                           withNSString:(NSString *)title;
 
 - (id<AMCommand>)leaveGroupWithInt:(jint)gid;
+
+- (id<AMCommand>)addMemberToGroupWithInt:(jint)gid
+                                 withInt:(jint)uid;
+
+- (id<AMCommand>)kickMemberWithInt:(jint)gid
+                           withInt:(jint)uid;
 
 - (id<AMCommand>)removeContactWithInt:(jint)uid;
 
@@ -105,13 +153,75 @@
 
 - (id<AMCommand>)findUsersWithNSString:(NSString *)query;
 
-- (void)bindFileWithAMFileLocation:(AMFileLocation *)fileLocation
-                       withBoolean:(jboolean)isAutostart
-                withAMFileCallback:(id<AMFileCallback>)callback;
+- (id<AMCommand>)deleteChatWithAMPeer:(AMPeer *)peer;
 
-- (void)unbindFileWithLong:(jlong)fileId
-        withAMFileCallback:(id<AMFileCallback>)callback
-               withBoolean:(jboolean)cancel;
+- (id<AMCommand>)clearChatWithAMPeer:(AMPeer *)peer;
+
+- (void)loadMoreDialogs;
+
+- (void)loadMoreHistoryWithAMPeer:(AMPeer *)peer;
+
+- (AMFileVM *)bindFileWithAMFileLocation:(AMFileLocation *)fileLocation
+                             withBoolean:(jboolean)isAutoStart
+                    withAMFileVMCallback:(id<AMFileVMCallback>)callback;
+
+- (AMUploadFileVM *)bindUploadWithLong:(jlong)rid
+            withAMUploadFileVMCallback:(id<AMUploadFileVMCallback>)callback;
+
+- (void)bindRawFileWithAMFileLocation:(AMFileLocation *)fileLocation
+                          withBoolean:(jboolean)isAutoStart
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+
+- (void)unbindRawFileWithLong:(jlong)fileId
+                  withBoolean:(jboolean)isAutoCancel
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+
+- (void)requestStateWithLong:(jlong)fileId
+withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+
+- (void)requestUploadStateWithLong:(jlong)rid
+withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback;
+
+- (void)cancelDownloadingWithLong:(jlong)fileId;
+
+- (void)startDownloadingWithAMFileLocation:(AMFileLocation *)location;
+
+- (void)resumeUploadWithLong:(jlong)rid;
+
+- (void)pauseUploadWithLong:(jlong)rid;
+
+- (NSString *)getDownloadedDescriptorWithLong:(jlong)fileId;
+
+- (jboolean)isConversationTonesEnabled;
+
+- (void)changeConversationTonesEnabledWithBoolean:(jboolean)val;
+
+- (jboolean)isNotificationSoundEnabled;
+
+- (void)changeNotificationSoundEnabledWithBoolean:(jboolean)val;
+
+- (jboolean)isNotificationVibrationEnabled;
+
+- (void)changeNotificationVibrationEnabledWithBoolean:(jboolean)val;
+
+- (jboolean)isShowNotificationsText;
+
+- (void)changeShowNotificationTextEnabledWithBoolean:(jboolean)val;
+
+- (jboolean)isSendByEnterEnabled;
+
+- (void)changeSendByEnterWithBoolean:(jboolean)val;
+
+- (jboolean)isNotificationsEnabledWithAMPeer:(AMPeer *)peer;
+
+- (void)changeNotificationsEnabledWithAMPeer:(AMPeer *)peer
+                                 withBoolean:(jboolean)val;
+
+- (AMOwnAvatarVM *)getOwnAvatarVM;
+
+- (void)changeAvatarWithNSString:(NSString *)descriptor;
+
+- (void)removeAvatar;
 
 @end
 

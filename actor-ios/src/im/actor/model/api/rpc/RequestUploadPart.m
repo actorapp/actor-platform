@@ -12,6 +12,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestUploadPart () {
@@ -74,6 +75,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestUploadPart, payload_, IOSByteArray 
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:3 withByteArray:self->payload_];
+}
+
+- (NSString *)description {
+  NSString *res = @"rpc UploadPart{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"blockIndex=", self->blockIndex_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", payload=", BSUtils_byteArrayToStringCompactWithByteArray_(self->payload_)));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {

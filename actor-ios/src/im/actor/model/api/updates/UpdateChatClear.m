@@ -54,6 +54,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
 }
 
+- (NSString *)description {
+  NSString *res = @"update ChatClear{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateChatClear_HEADER;
 }

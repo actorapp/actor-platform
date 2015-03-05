@@ -367,7 +367,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsBookImportActor_$1)
   for (ImActorModelApiUser * __strong u in nil_chk([response getUsers])) {
     [uids addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUser *) nil_chk(u)) getId])];
   }
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelApiBaseFatSeqUpdate alloc] initWithInt:[response getSeq] withByteArray:[response getState] withInt:ImActorModelApiUpdatesUpdateContactsAdded_HEADER withByteArray:[((ImActorModelApiUpdatesUpdateContactsAdded *) [[ImActorModelApiUpdatesUpdateContactsAdded alloc] initWithJavaUtilList:uids]) toByteArray] withJavaUtilList:[response getUsers] withJavaUtilList:[[JavaUtilArrayList alloc] init] withJavaUtilList:[[JavaUtilArrayList alloc] init]]];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelApiBaseFatSeqUpdate alloc] initWithInt:[response getSeq] withByteArray:[response getState] withInt:ImActorModelApiUpdatesUpdateContactsAdded_HEADER withByteArray:[((ImActorModelApiUpdatesUpdateContactsAdded *) [[ImActorModelApiUpdatesUpdateContactsAdded alloc] initWithJavaUtilList:uids]) toByteArray] withJavaUtilList:[response getUsers] withJavaUtilList:[[JavaUtilArrayList alloc] init] withJavaUtilList:[[JavaUtilArrayList alloc] init] withJavaUtilList:[[JavaUtilArrayList alloc] init]]];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {

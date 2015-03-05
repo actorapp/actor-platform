@@ -11,10 +11,10 @@
 #include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelEntityContentServiceGroupUserLeave
+@implementation AMServiceGroupUserLeave
 
-+ (ImActorModelEntityContentServiceGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentServiceGroupUserLeave_fromBytesWithByteArray_(data);
++ (AMServiceGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMServiceGroupUserLeave_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)init {
@@ -23,9 +23,9 @@
 
 @end
 
-ImActorModelEntityContentServiceGroupUserLeave *ImActorModelEntityContentServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentServiceGroupUserLeave_init();
-  return ((ImActorModelEntityContentServiceGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupUserLeave alloc] init], data));
+AMServiceGroupUserLeave *AMServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMServiceGroupUserLeave_init();
+  return ((AMServiceGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupUserLeave alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupUserLeave)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceGroupUserLeave)

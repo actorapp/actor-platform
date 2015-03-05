@@ -11,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiBaseWeakUpdate () {
@@ -69,6 +70,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
     @throw [[JavaIoIOException alloc] init];
   }
   [writer writeBytesWithInt:3 withByteArray:self->update_];
+}
+
+- (NSString *)description {
+  NSString *res = @"update box WeakUpdate{";
+  res = JreStrcat("$$", res, JreStrcat("$J", @"date=", self->date_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", updateHeader=", self->updateHeader_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", update=", BSUtils_byteArrayToStringCompactWithByteArray_(self->update_)));
+  res = JreStrcat("$C", res, '}');
+  return res;
 }
 
 - (jint)getHeaderKey {

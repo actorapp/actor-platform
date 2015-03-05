@@ -62,6 +62,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
   [writer writeStringWithInt:2 withNSString:self->token_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc RegisterApplePush{";
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestRegisterApplePush_HEADER;
 }

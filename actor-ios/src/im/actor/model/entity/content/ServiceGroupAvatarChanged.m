@@ -15,19 +15,19 @@
 #include "im/actor/model/entity/content/ServiceGroupAvatarChanged.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityContentServiceGroupAvatarChanged () {
+@interface AMServiceGroupAvatarChanged () {
  @public
   AMAvatar *newAvatar_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupAvatarChanged, newAvatar_, AMAvatar *)
+J2OBJC_FIELD_SETTER(AMServiceGroupAvatarChanged, newAvatar_, AMAvatar *)
 
-@implementation ImActorModelEntityContentServiceGroupAvatarChanged
+@implementation AMServiceGroupAvatarChanged
 
-+ (ImActorModelEntityContentServiceGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentServiceGroupAvatarChanged_fromBytesWithByteArray_(data);
++ (AMServiceGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMServiceGroupAvatarChanged_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithAMAvatar:(AMAvatar *)newAvatar {
@@ -45,8 +45,8 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupAvatarChanged, newAvata
   return newAvatar_;
 }
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType {
-  return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_AVATAR();
+- (AMAbsContent_ContentTypeEnum *)getContentType {
+  return AMAbsContent_ContentTypeEnum_get_SERVICE_AVATAR();
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -64,16 +64,16 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupAvatarChanged, newAvata
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentServiceGroupAvatarChanged *)other {
+- (void)copyAllFieldsTo:(AMServiceGroupAvatarChanged *)other {
   [super copyAllFieldsTo:other];
   other->newAvatar_ = newAvatar_;
 }
 
 @end
 
-ImActorModelEntityContentServiceGroupAvatarChanged *ImActorModelEntityContentServiceGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentServiceGroupAvatarChanged_init();
-  return ((ImActorModelEntityContentServiceGroupAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupAvatarChanged alloc] init], data));
+AMServiceGroupAvatarChanged *AMServiceGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMServiceGroupAvatarChanged_init();
+  return ((AMServiceGroupAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupAvatarChanged alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupAvatarChanged)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceGroupAvatarChanged)

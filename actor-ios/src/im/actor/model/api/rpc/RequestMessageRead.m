@@ -63,6 +63,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageRead, peer_, ImActorModelApi
   [writer writeLongWithInt:3 withLong:self->date_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc MessageRead{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestMessageRead_HEADER;
 }

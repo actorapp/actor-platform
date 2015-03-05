@@ -65,6 +65,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *
   [writer writeLongWithInt:3 withLong:self->accessHash_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct OutPeer{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"type=", self->type_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", id=", self->id__));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiOutPeer *)other {
   [super copyAllFieldsTo:other];
   other->type_ = type_;

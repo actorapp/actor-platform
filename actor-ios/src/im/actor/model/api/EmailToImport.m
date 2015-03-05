@@ -58,6 +58,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
   }
 }
 
+- (NSString *)description {
+  NSString *res = @"struct EmailToImport{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"email=", self->email_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", name=", self->name_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiEmailToImport *)other {
   [super copyAllFieldsTo:other];
   other->email_ = email_;

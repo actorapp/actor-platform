@@ -63,6 +63,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEncryptedRead, peer_, ImActorModelA
   [writer writeLongWithInt:3 withLong:self->rid_];
 }
 
+- (NSString *)description {
+  NSString *res = @"rpc EncryptedRead{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestEncryptedRead_HEADER;
 }

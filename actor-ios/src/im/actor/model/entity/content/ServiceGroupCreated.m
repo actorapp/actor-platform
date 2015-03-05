@@ -14,19 +14,19 @@
 #include "im/actor/model/entity/content/ServiceGroupCreated.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelEntityContentServiceGroupCreated () {
+@interface AMServiceGroupCreated () {
  @public
   NSString *groupTitle_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupCreated, groupTitle_, NSString *)
+J2OBJC_FIELD_SETTER(AMServiceGroupCreated, groupTitle_, NSString *)
 
-@implementation ImActorModelEntityContentServiceGroupCreated
+@implementation AMServiceGroupCreated
 
-+ (ImActorModelEntityContentServiceGroupCreated *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelEntityContentServiceGroupCreated_fromBytesWithByteArray_(data);
++ (AMServiceGroupCreated *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return AMServiceGroupCreated_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)groupTitle {
@@ -44,8 +44,8 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupCreated, groupTitle_, N
   return groupTitle_;
 }
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType {
-  return ImActorModelEntityContentAbsContent_ContentTypeEnum_get_SERVICE_CREATED();
+- (AMAbsContent_ContentTypeEnum *)getContentType {
+  return AMAbsContent_ContentTypeEnum_get_SERVICE_CREATED();
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -58,16 +58,16 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityContentServiceGroupCreated, groupTitle_, N
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:groupTitle_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelEntityContentServiceGroupCreated *)other {
+- (void)copyAllFieldsTo:(AMServiceGroupCreated *)other {
   [super copyAllFieldsTo:other];
   other->groupTitle_ = groupTitle_;
 }
 
 @end
 
-ImActorModelEntityContentServiceGroupCreated *ImActorModelEntityContentServiceGroupCreated_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelEntityContentServiceGroupCreated_init();
-  return ((ImActorModelEntityContentServiceGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelEntityContentServiceGroupCreated alloc] init], data));
+AMServiceGroupCreated *AMServiceGroupCreated_fromBytesWithByteArray_(IOSByteArray *data) {
+  AMServiceGroupCreated_init();
+  return ((AMServiceGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupCreated alloc] init], data));
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelEntityContentServiceGroupCreated)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceGroupCreated)

@@ -67,13 +67,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPlainCursor, peer_, AMPeer 
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  peer_ = AMPeer_fromUidWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
+  peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   sortDate_ = [values getLongWithInt:2];
   pendingSortDate_ = [values getLongWithInt:3];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUid]];
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:sortDate_];
   [writer writeLongWithInt:3 withLong:pendingSortDate_];
 }

@@ -3,31 +3,31 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/VideoContent.java
 //
 
-#ifndef _ImActorModelEntityContentVideoContent_H_
-#define _ImActorModelEntityContentVideoContent_H_
+#ifndef _AMVideoContent_H_
+#define _AMVideoContent_H_
 
+@class AMAbsContent_ContentTypeEnum;
+@class AMFastThumb;
+@class AMFileSource;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelEntityContentAbsContent_ContentTypeEnum;
-@class ImActorModelEntityContentFastThumb;
-@class ImActorModelEntityContentFileSource;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/DocumentContent.h"
 
-@interface ImActorModelEntityContentVideoContent : ImActorModelEntityContentDocumentContent {
+@interface AMVideoContent : AMDocumentContent {
 }
 
-+ (ImActorModelEntityContentVideoContent *)videoFromBytesWithByteArray:(IOSByteArray *)data;
++ (AMVideoContent *)videoFromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)initWithImActorModelEntityContentFileSource:(ImActorModelEntityContentFileSource *)location
-                                               withNSString:(NSString *)mimetype
-                                               withNSString:(NSString *)name
-                     withImActorModelEntityContentFastThumb:(ImActorModelEntityContentFastThumb *)fastThumb
-                                                    withInt:(jint)duration
-                                                    withInt:(jint)w
-                                                    withInt:(jint)h;
+- (instancetype)initWithAMFileSource:(AMFileSource *)location
+                        withNSString:(NSString *)mimetype
+                        withNSString:(NSString *)name
+                     withAMFastThumb:(AMFastThumb *)fastThumb
+                             withInt:(jint)duration
+                             withInt:(jint)w
+                             withInt:(jint)h;
 
 - (jint)getDuration;
 
@@ -35,7 +35,7 @@
 
 - (jint)getH;
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -43,13 +43,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentVideoContent)
+J2OBJC_EMPTY_STATIC_INIT(AMVideoContent)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentVideoContent *ImActorModelEntityContentVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMVideoContent *AMVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentVideoContent)
+typedef AMVideoContent ImActorModelEntityContentVideoContent;
 
-#endif // _ImActorModelEntityContentVideoContent_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMVideoContent)
+
+#endif // _AMVideoContent_H_

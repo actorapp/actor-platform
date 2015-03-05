@@ -3,27 +3,27 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/entity/content/ServiceGroupUserKicked.java
 //
 
-#ifndef _ImActorModelEntityContentServiceGroupUserKicked_H_
-#define _ImActorModelEntityContentServiceGroupUserKicked_H_
+#ifndef _AMServiceGroupUserKicked_H_
+#define _AMServiceGroupUserKicked_H_
 
+@class AMAbsContent_ContentTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelEntityContentAbsContent_ContentTypeEnum;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@interface ImActorModelEntityContentServiceGroupUserKicked : ImActorModelEntityContentServiceContent {
+@interface AMServiceGroupUserKicked : AMServiceContent {
 }
 
-+ (ImActorModelEntityContentServiceGroupUserKicked *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMServiceGroupUserKicked *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithInt:(jint)kickedUid;
 
 - (jint)getKickedUid;
 
-- (ImActorModelEntityContentAbsContent_ContentTypeEnum *)getContentType;
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -31,13 +31,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityContentServiceGroupUserKicked)
+J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupUserKicked)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelEntityContentServiceGroupUserKicked *ImActorModelEntityContentServiceGroupUserKicked_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceGroupUserKicked *AMServiceGroupUserKicked_fromBytesWithByteArray_(IOSByteArray *data);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityContentServiceGroupUserKicked)
+typedef AMServiceGroupUserKicked ImActorModelEntityContentServiceGroupUserKicked;
 
-#endif // _ImActorModelEntityContentServiceGroupUserKicked_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupUserKicked)
+
+#endif // _AMServiceGroupUserKicked_H_

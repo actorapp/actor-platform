@@ -11,11 +11,11 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/Avatar.h"
+#include "im/actor/model/entity/ContentType.h"
 #include "im/actor/model/entity/Dialog.h"
 #include "im/actor/model/entity/MessageState.h"
 #include "im/actor/model/entity/Peer.h"
 #include "java/io/IOException.h"
-#include "java/lang/IllegalArgumentException.h"
 
 @interface AMDialog () {
  @public
@@ -26,7 +26,7 @@
   jlong sortDate_;
   jint senderId_;
   jlong date_;
-  AMDialog_ContentTypeEnum *messageType_;
+  AMContentTypeEnum *messageType_;
   NSString *text_;
   AMMessageStateEnum *status_;
   AMAvatar *dialogAvatar_;
@@ -37,7 +37,7 @@
 
 J2OBJC_FIELD_SETTER(AMDialog, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(AMDialog, dialogTitle_, NSString *)
-J2OBJC_FIELD_SETTER(AMDialog, messageType_, AMDialog_ContentTypeEnum *)
+J2OBJC_FIELD_SETTER(AMDialog, messageType_, AMContentTypeEnum *)
 J2OBJC_FIELD_SETTER(AMDialog, text_, NSString *)
 J2OBJC_FIELD_SETTER(AMDialog, status_, AMMessageStateEnum *)
 J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
@@ -54,7 +54,7 @@ J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
                   withAMAvatar:(AMAvatar *)dialogAvatar
                        withInt:(jint)unreadCount
                       withLong:(jlong)rid
-  withAMDialog_ContentTypeEnum:(AMDialog_ContentTypeEnum *)messageType
+         withAMContentTypeEnum:(AMContentTypeEnum *)messageType
                   withNSString:(NSString *)text
         withAMMessageStateEnum:(AMMessageStateEnum *)status
                        withInt:(jint)senderId
@@ -86,7 +86,7 @@ J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
 }
 
 - (jlong)getListId {
-  return [((AMPeer *) nil_chk(peer_)) getUid];
+  return [((AMPeer *) nil_chk(peer_)) getUnuqueId];
 }
 
 - (jlong)getListSortKey {
@@ -117,7 +117,7 @@ J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
   return date_;
 }
 
-- (AMDialog_ContentTypeEnum *)getMessageType {
+- (AMContentTypeEnum *)getMessageType {
   return messageType_;
 }
 
@@ -139,7 +139,7 @@ J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
 
 - (AMDialog *)editPeerInfoWithNSString:(NSString *)title
                           withAMAvatar:(AMAvatar *)dialogAvatar {
-  return [[AMDialog alloc] initWithAMPeer:peer_ withLong:sortDate_ withNSString:title withAMAvatar:dialogAvatar withInt:unreadCount_ withLong:rid_ withAMDialog_ContentTypeEnum:messageType_ withNSString:text_ withAMMessageStateEnum:status_ withInt:senderId_ withLong:date_ withInt:relatedUid_];
+  return [[AMDialog alloc] initWithAMPeer:peer_ withLong:sortDate_ withNSString:title withAMAvatar:dialogAvatar withInt:unreadCount_ withLong:rid_ withAMContentTypeEnum:messageType_ withNSString:text_ withAMMessageStateEnum:status_ withInt:senderId_ withLong:date_ withInt:relatedUid_];
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -154,7 +154,7 @@ J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
   rid_ = [values getLongWithInt:6];
   senderId_ = [values getIntWithInt:7];
   date_ = [values getLongWithInt:8];
-  messageType_ = AMDialog_ContentTypeEnum_fromValueWithInt_([values getIntWithInt:9]);
+  messageType_ = AMContentTypeEnum_fromValueWithInt_([values getIntWithInt:9]);
   text_ = [values getStringWithInt:10];
   status_ = AMMessageStateEnum_fromValueWithInt_([values getIntWithInt:11]);
   relatedUid_ = [values getIntWithInt:12];
@@ -171,7 +171,7 @@ J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
   [writer writeLongWithInt:6 withLong:rid_];
   [writer writeIntWithInt:7 withInt:senderId_];
   [writer writeLongWithInt:8 withLong:date_];
-  [writer writeIntWithInt:9 withInt:[((AMDialog_ContentTypeEnum *) nil_chk(messageType_)) getValue]];
+  [writer writeIntWithInt:9 withInt:[((AMContentTypeEnum *) nil_chk(messageType_)) getValue]];
   [writer writeStringWithInt:10 withNSString:text_];
   [writer writeIntWithInt:11 withInt:[((AMMessageStateEnum *) nil_chk(status_)) getValue]];
   [writer writeIntWithInt:12 withInt:relatedUid_];
@@ -201,113 +201,3 @@ AMDialog *AMDialog_fromBytesWithByteArray_(IOSByteArray *date) {
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDialog)
-
-BOOL AMDialog_ContentTypeEnum_initialized = NO;
-
-AMDialog_ContentTypeEnum *AMDialog_ContentTypeEnum_values_[14];
-
-@implementation AMDialog_ContentTypeEnum
-
-- (instancetype)initWithInt:(jint)value
-               withNSString:(NSString *)__name
-                    withInt:(jint)__ordinal {
-  if (self = [super initWithNSString:__name withInt:__ordinal]) {
-    self->value_ = value;
-  }
-  return self;
-}
-
-- (jint)getValue {
-  return value_;
-}
-
-+ (AMDialog_ContentTypeEnum *)fromValueWithInt:(jint)value {
-  return AMDialog_ContentTypeEnum_fromValueWithInt_(value);
-}
-
-IOSObjectArray *AMDialog_ContentTypeEnum_values() {
-  AMDialog_ContentTypeEnum_init();
-  return [IOSObjectArray arrayWithObjects:AMDialog_ContentTypeEnum_values_ count:14 type:AMDialog_ContentTypeEnum_class_()];
-}
-+ (IOSObjectArray *)values {
-  return AMDialog_ContentTypeEnum_values();
-}
-
-+ (AMDialog_ContentTypeEnum *)valueOfWithNSString:(NSString *)name {
-  return AMDialog_ContentTypeEnum_valueOfWithNSString_(name);
-}
-
-AMDialog_ContentTypeEnum *AMDialog_ContentTypeEnum_valueOfWithNSString_(NSString *name) {
-  AMDialog_ContentTypeEnum_init();
-  for (int i = 0; i < 14; i++) {
-    AMDialog_ContentTypeEnum *e = AMDialog_ContentTypeEnum_values_[i];
-    if ([name isEqual:[e name]]) {
-      return e;
-    }
-  }
-  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];
-  return nil;
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-  return self;
-}
-
-+ (void)initialize {
-  if (self == [AMDialog_ContentTypeEnum class]) {
-    AMDialog_ContentTypeEnum_TEXT = [[AMDialog_ContentTypeEnum alloc] initWithInt:2 withNSString:@"TEXT" withInt:0];
-    AMDialog_ContentTypeEnum_EMPTY = [[AMDialog_ContentTypeEnum alloc] initWithInt:1 withNSString:@"EMPTY" withInt:1];
-    AMDialog_ContentTypeEnum_DOCUMENT = [[AMDialog_ContentTypeEnum alloc] initWithInt:3 withNSString:@"DOCUMENT" withInt:2];
-    AMDialog_ContentTypeEnum_DOCUMENT_PHOTO = [[AMDialog_ContentTypeEnum alloc] initWithInt:4 withNSString:@"DOCUMENT_PHOTO" withInt:3];
-    AMDialog_ContentTypeEnum_DOCUMENT_VIDEO = [[AMDialog_ContentTypeEnum alloc] initWithInt:5 withNSString:@"DOCUMENT_VIDEO" withInt:4];
-    AMDialog_ContentTypeEnum_SERVICE = [[AMDialog_ContentTypeEnum alloc] initWithInt:6 withNSString:@"SERVICE" withInt:5];
-    AMDialog_ContentTypeEnum_SERVICE_ADD = [[AMDialog_ContentTypeEnum alloc] initWithInt:7 withNSString:@"SERVICE_ADD" withInt:6];
-    AMDialog_ContentTypeEnum_SERVICE_KICK = [[AMDialog_ContentTypeEnum alloc] initWithInt:8 withNSString:@"SERVICE_KICK" withInt:7];
-    AMDialog_ContentTypeEnum_SERVICE_LEAVE = [[AMDialog_ContentTypeEnum alloc] initWithInt:9 withNSString:@"SERVICE_LEAVE" withInt:8];
-    AMDialog_ContentTypeEnum_SERVICE_REGISTERED = [[AMDialog_ContentTypeEnum alloc] initWithInt:10 withNSString:@"SERVICE_REGISTERED" withInt:9];
-    AMDialog_ContentTypeEnum_SERVICE_CREATED = [[AMDialog_ContentTypeEnum alloc] initWithInt:11 withNSString:@"SERVICE_CREATED" withInt:10];
-    AMDialog_ContentTypeEnum_SERVICE_TITLE = [[AMDialog_ContentTypeEnum alloc] initWithInt:12 withNSString:@"SERVICE_TITLE" withInt:11];
-    AMDialog_ContentTypeEnum_SERVICE_AVATAR = [[AMDialog_ContentTypeEnum alloc] initWithInt:13 withNSString:@"SERVICE_AVATAR" withInt:12];
-    AMDialog_ContentTypeEnum_SERVICE_AVATAR_REMOVED = [[AMDialog_ContentTypeEnum alloc] initWithInt:14 withNSString:@"SERVICE_AVATAR_REMOVED" withInt:13];
-    J2OBJC_SET_INITIALIZED(AMDialog_ContentTypeEnum)
-  }
-}
-
-@end
-
-AMDialog_ContentTypeEnum *AMDialog_ContentTypeEnum_fromValueWithInt_(jint value) {
-  AMDialog_ContentTypeEnum_init();
-  switch (value) {
-    default:
-    case 1:
-    return AMDialog_ContentTypeEnum_EMPTY;
-    case 2:
-    return AMDialog_ContentTypeEnum_TEXT;
-    case 3:
-    return AMDialog_ContentTypeEnum_DOCUMENT;
-    case 4:
-    return AMDialog_ContentTypeEnum_DOCUMENT_PHOTO;
-    case 5:
-    return AMDialog_ContentTypeEnum_DOCUMENT_VIDEO;
-    case 6:
-    return AMDialog_ContentTypeEnum_SERVICE;
-    case 7:
-    return AMDialog_ContentTypeEnum_SERVICE_ADD;
-    case 8:
-    return AMDialog_ContentTypeEnum_SERVICE_KICK;
-    case 9:
-    return AMDialog_ContentTypeEnum_SERVICE_LEAVE;
-    case 10:
-    return AMDialog_ContentTypeEnum_SERVICE_REGISTERED;
-    case 11:
-    return AMDialog_ContentTypeEnum_SERVICE_CREATED;
-    case 12:
-    return AMDialog_ContentTypeEnum_SERVICE_TITLE;
-    case 13:
-    return AMDialog_ContentTypeEnum_SERVICE_AVATAR;
-    case 14:
-    return AMDialog_ContentTypeEnum_SERVICE_AVATAR_REMOVED;
-  }
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDialog_ContentTypeEnum)

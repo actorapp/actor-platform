@@ -4,7 +4,9 @@
 //
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/Configuration.h"
 #include "im/actor/model/api/OutPeer.h"
+#include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/PeerType.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/entity/Group.h"
@@ -32,11 +34,11 @@
 
 @interface ImActorModelModulesUtilsModuleActor () {
  @public
-  ImActorModelModulesModules *messenger_;
+  ImActorModelModulesModules *modules__;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor, messenger_, ImActorModelModulesModules *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor, modules__, ImActorModelModulesModules *)
 
 @interface ImActorModelModulesUtilsModuleActor_$2 () {
  @public
@@ -70,9 +72,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
 
 @implementation ImActorModelModulesUtilsModuleActor
 
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super init]) {
-    self->messenger_ = messenger;
+    self->modules__ = modules;
   }
   return self;
 }
@@ -97,12 +99,24 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
   }
 }
 
+- (ImActorModelApiPeer *)buildApiPeerWithAMPeer:(AMPeer *)peer {
+  if ([((AMPeer *) nil_chk(peer)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
+    return [[ImActorModelApiPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[peer getPeerId]];
+  }
+  else if ([peer getPeerType] == AMPeerTypeEnum_get_GROUP()) {
+    return [[ImActorModelApiPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_GROUP() withInt:[peer getPeerId]];
+  }
+  else {
+    return nil;
+  }
+}
+
 - (id<AMKeyValueEngine>)users {
-  return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getUsersModule])) getUsers];
+  return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsers];
 }
 
 - (id<AMKeyValueEngine>)groups {
-  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getGroupsModule])) getGroups];
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getGroupsModule])) getGroups];
 }
 
 - (AMGroup *)getGroupWithInt:(jint)gid {
@@ -114,31 +128,35 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
 }
 
 - (AMUserVM *)getUserVMWithInt:(jint)uid {
-  return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getUsersModule])) getUsersCollection])) getWithLong:uid];
+  return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsersCollection])) getWithLong:uid];
 }
 
 - (AMGroupVM *)getGroupVMWithInt:(jint)gid {
-  return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getGroupsModule])) getGroupsCollection])) getWithLong:gid];
+  return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getGroupsModule])) getGroupsCollection])) getWithLong:gid];
 }
 
 - (id<AMPreferencesStorage>)preferences {
-  return [((ImActorModelModulesModules *) nil_chk(messenger_)) getPreferences];
+  return [((ImActorModelModulesModules *) nil_chk(modules__)) getPreferences];
+}
+
+- (AMConfiguration *)config {
+  return [((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration];
 }
 
 - (ImActorModelModulesUpdates *)updates {
-  return [((ImActorModelModulesModules *) nil_chk(messenger_)) getUpdatesModule];
+  return [((ImActorModelModulesModules *) nil_chk(modules__)) getUpdatesModule];
 }
 
 - (id<AMListEngine>)messagesWithAMPeer:(AMPeer *)peer {
-  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getMessagesModule])) getConversationEngineWithAMPeer:peer];
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getMessagesModule])) getConversationEngineWithAMPeer:peer];
 }
 
 - (jint)myUid {
-  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getAuthModule])) myUid];
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getAuthModule])) myUid];
 }
 
 - (ImActorModelModulesModules *)modules {
-  return messenger_;
+  return modules__;
 }
 
 - (DKActorRef *)getConversationActorWithAMPeer:(AMPeer *)peer {
@@ -151,12 +169,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
-  [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger_)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:[[ImActorModelModulesUtilsModuleActor_$2 alloc] initWithImActorModelModulesUtilsModuleActor:self withAMRpcCallback:callback]];
+  [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:[[ImActorModelModulesUtilsModuleActor_$2 alloc] initWithImActorModelModulesUtilsModuleActor:self withAMRpcCallback:callback]];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUtilsModuleActor *)other {
   [super copyAllFieldsTo:other];
-  other->messenger_ = messenger_;
+  other->modules__ = modules__;
 }
 
 @end

@@ -50,6 +50,14 @@
   [writer writeLongWithInt:2 withLong:self->keyHash_];
 }
 
+- (NSString *)description {
+  NSString *res = @"struct UserKey{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", keyHash=", self->keyHash_));
+  res = JreStrcat("$C", res, '}');
+  return res;
+}
+
 - (void)copyAllFieldsTo:(ImActorModelApiUserKey *)other {
   [super copyAllFieldsTo:other];
   other->uid_ = uid_;

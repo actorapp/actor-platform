@@ -14,6 +14,10 @@
 #include "im/actor/model/util/DataInput.h"
 #include "java/io/IOException.h"
 
+@interface BSBser ()
+- (instancetype)init;
+@end
+
 @implementation BSBser
 
 + (id)parseWithBSBserObject:(BSBserObject *)res
