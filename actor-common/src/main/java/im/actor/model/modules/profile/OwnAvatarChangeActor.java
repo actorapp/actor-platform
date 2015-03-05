@@ -162,5 +162,6 @@ public class OwnAvatarChangeActor extends ModuleActor {
             return rid;
         }
     }
+
     //endregion
 }

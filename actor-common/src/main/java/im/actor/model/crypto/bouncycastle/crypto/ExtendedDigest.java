@@ -1,4 +1,4 @@
-package im.actor.model.crypto.bouncycastle;
+package im.actor.model.crypto.bouncycastle.crypto;
 
 public interface ExtendedDigest 
     extends Digest
