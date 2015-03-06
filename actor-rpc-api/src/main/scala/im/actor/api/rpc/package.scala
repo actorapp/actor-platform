@@ -6,6 +6,8 @@ package object rpc {
   import scalaz._, std.either._
 
   object Errors {
+    val Internal = RpcError(500, "INTERNAL_SERVER_ERROR", "", false, None)
+
     val UnsupportedRequest = RpcError(400, "REQUEST_NOT_SUPPORTED", "Operation not supported.", false, None)
     val PhoneNumberInvalid = RpcError(400, "PHONE_NUMBER_INVALID", "Invalid phone number.", false, None)
     val PhoneNumberUnoccupied = RpcError(400, "PHONE_NUMBER_UNOCCUPIED", "", false, None)
