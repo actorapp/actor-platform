@@ -19,4 +19,7 @@ object AuthId {
 
   def create(authId: Long, userId: Option[Int]) =
     authIds += models.AuthId(authId, userId)
+
+  def setUserId(authId: Long, userId: Int) =
+    authIds.filter(_.id === authId).map(_.userId).update(Some(userId))
 }
