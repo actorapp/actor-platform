@@ -26,6 +26,8 @@ object Dependencies {
     val flywayCore      = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
     val hikariCP        = "com.zaxxer"                    %  "HikariCP"                      % "2.3.2"
 
+    val bcprov          = "org.bouncycastle"              %  "bcprov-jdk15on"                % "1.50"
+
     val libPhoneNumber  = "com.googlecode.libphonenumber" % "libphonenumber"                 % "7.0.+"
 
     val protobuf        = "com.google.protobuf"           %  "protobuf-java"                 % "2.6.1"
@@ -50,7 +52,7 @@ object Dependencies {
   object Test {
     val akkaTestkit     = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka % "test"
     val scalacheck      = "org.scalacheck"                %% "scalacheck"                    % "1.12.2" % "test"
-    val specs2          = "org.specs2"                    %% "specs2-core"                   % "2.4.15" % "test"
+    val specs2          = "org.specs2"                    %% "specs2-core"                   % "3.0" % "test"
     val slickTestkit    = "com.typesafe.slick"            %% "slick-testkit"                 % V.slick % "test"
 
     val utilTesting     = "im.actor"                      %% "actor-util-testing"            % "0.0.1-SNAPSHOT" % "test"
@@ -66,7 +68,7 @@ object Dependencies {
   val api = common ++ Seq(akkaSlf4j, akkaActor, akkaStream, commonsCodec)
 
   val rpcApi = common ++ Seq(
-    akkaSlf4j, akkaActor, libPhoneNumber, protobuf, shapeless
+    akkaSlf4j, akkaActor, bcprov, libPhoneNumber, protobuf, shapeless
   )
 
   val internalServices = common ++ Seq(akkaActor, akkaStream, scodecBits)

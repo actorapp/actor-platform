@@ -2,7 +2,45 @@ package im.actor.server.models
 
 import scala.collection.immutable
 
+object AvatarData {
+  trait TypeVal {
+    def toInt: Int
+  }
+  object TypeVal {
+    def fromInt(i: Int): TypeVal =
+      i match {
+        case 1 => OfUser
+        case 2 => OfGroup
+      }
+  }
+  trait TypeValImpl[T] extends TypeVal
+  implicit object OfUser extends TypeValImpl[User] { def toInt = 1; }
+  implicit object OfGroup extends TypeValImpl[Group] { def toInt = 1; }
+  def typeVal[T]()(implicit impl: TypeValImpl[T]): TypeVal = impl
+
+  def empty[T](entityId: Long)(implicit impl: TypeValImpl[T]): AvatarData =
+    empty(impl, entityId)
+
+  def empty(impl: TypeVal, entityId: Long) = AvatarData(
+    impl,
+    entityId = entityId,
+    smallAvatarFileId = None,
+    smallAvatarFileHash = None,
+    smallAvatarFileSize = None,
+    largeAvatarFileId = None,
+    largeAvatarFileHash = None,
+    largeAvatarFileSize = None,
+    fullAvatarFileId = None,
+    fullAvatarFileHash = None,
+    fullAvatarFileSize = None,
+    fullAvatarWidth = None,
+    fullAvatarHeight = None
+  )
+}
+
 case class AvatarData(
+  entityType: AvatarData.TypeVal,
+  entityId: Long,
   smallAvatarFileId: Option[Long],
   smallAvatarFileHash: Option[Long],
   smallAvatarFileSize: Option[Int],
@@ -15,32 +53,26 @@ case class AvatarData(
   fullAvatarWidth: Option[Int],
   fullAvatarHeight: Option[Int]
 ) {
-  lazy val smallAvatarImage =
+  lazy val smallOpt =
     for (
       id <- smallAvatarFileId;
       hash <- smallAvatarFileHash;
       size <- smallAvatarFileSize
-    ) yield AvatarImage(FileLocation(id, hash), 100, 100, size)
+    ) yield (id, hash, size)
 
-  lazy val largeAvatarImage =
+  lazy val largeOpt =
     for (
       id <- largeAvatarFileId;
       hash <- largeAvatarFileHash;
       size <- largeAvatarFileSize
-    ) yield AvatarImage(FileLocation(id, hash), 200, 200, size)
+    ) yield (id, hash, size)
 
-  lazy val fullAvatarImage =
+  lazy val fullOpt =
     for (
       id <- fullAvatarFileId;
       hash <- fullAvatarFileHash;
       size <- fullAvatarFileSize;
       w <- fullAvatarWidth;
       h <- fullAvatarHeight
-    ) yield AvatarImage(FileLocation(id, hash), w, h, size)
-
-  lazy val avatar =
-    if (immutable.Seq(smallAvatarImage, largeAvatarImage, fullAvatarImage).exists(_.isDefined))
-      Some(Avatar(smallAvatarImage, largeAvatarImage, fullAvatarImage))
-    else
-      None
+    ) yield (id, hash, size, w, h)
 }

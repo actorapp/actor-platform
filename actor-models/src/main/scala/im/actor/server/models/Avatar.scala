@@ -1,5 +1,5 @@
 package im.actor.server.models
-
+/*
 @SerialVersionUID(1L)
 case class Avatar(
   smallImage: Option[AvatarImage],
@@ -24,3 +24,4 @@ case class Avatar(
 object Avatar {
   def empty = Avatar(None, None, None)
 }
+ */

@@ -6,6 +6,7 @@ object Resolvers {
     Resolver.typesafeRepo("releases"),
     Resolver.sonatypeRepo("snapshots"),
     Resolver.sonatypeRepo("releases"),
+    Resolver.bintrayRepo("scalaz", "releases"),
     "actor snapshots" at "http://repos.81port.com/nexus/content/repositories/snapshots",
     "actor releases" at "http://repos.81port.com/nexus/content/repositories/releases"
   )

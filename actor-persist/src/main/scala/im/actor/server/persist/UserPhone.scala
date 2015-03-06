@@ -20,4 +20,11 @@ object UserPhone {
   def byPhoneNumber(number: Long) = phones.filter(_.number === number)
 
   def exists(number: Long) = byPhoneNumber(number).exists.result
+
+  def findByPhoneNumber(number: Long) = byPhoneNumber(number).result
+
+  def findByUserId(userId: Int) = phones.filter(_.userId === userId).result
+
+  def create(id: Int, userId: Int, accessSalt: String, number: Long, title: String) =
+    phones += models.UserPhone(id, userId, accessSalt, number, title)
 }
