@@ -124,9 +124,9 @@ trait AuthServiceImpl extends AuthService with Helpers {
         else if (rawPublicKey.length == 0) Future.successful(Error(Errors.InvalidKey))
         else {
           val action = (for {
-            code <- persist.AuthSmsCode.findByPhoneNumber(normPhoneNumber).headOption
-            phone <- persist.UserPhone.findByPhoneNumber(normPhoneNumber).headOption
-          } yield (code :: phone :: HNil)).flatMap {
+            optCode <- persist.AuthSmsCode.findByPhoneNumber(normPhoneNumber).headOption
+            optPhone <- persist.UserPhone.findByPhoneNumber(normPhoneNumber).headOption
+          } yield (optCode :: optPhone :: HNil)).flatMap {
             case None :: _ :: HNil => DBIO.successful(Error(Errors.PhoneCodeExpired))
             case Some(smsCodeModel) :: _ :: HNil if smsCodeModel.smsHash != smsHash =>
               DBIO.successful(Error(Errors.PhoneCodeExpired))
@@ -147,7 +147,7 @@ trait AuthServiceImpl extends AuthService with Helpers {
                           _ <- persist.User.create(user)
                           _ <- persist.UserPhone.create(phoneId, userId, nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
                           pkHash = keyHash(publicKey)
-                          _ <- persist.UserPublicKey.create(userId, pkHash, publicKey, authId)
+                          _ <- persist.UserPublicKey.create(models.UserPublicKey(userId, pkHash, publicKey, authId))
                           _ <- persist.AuthId.setUserId(authId, userId)
                           _ <- persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
                         } yield {
@@ -155,12 +155,22 @@ trait AuthServiceImpl extends AuthService with Helpers {
                         }
                       }}
                       // Phone already exists, fall back to SignIn
-                      case Some(_) =>
-                        throw new Exception("")
+                      case Some(phone) =>
+                        withValidPublicKey(rawPublicKey) { publicKey =>
+                          signIn(authId, phone.userId, publicKey, keyHash(publicKey), countryCode)
+                        }
                     }
                   )
                 case In =>
-                  throw new Exception("xa")
+                  withValidPublicKey(rawPublicKey) { publicKey =>
+                    optPhone match {
+                      case None => DBIO.successful(Error(Errors.PhoneNumberUnoccupied))
+                      case Some(phone) =>
+                        persist.AuthSmsCode.deleteByPhoneNumber(normPhoneNumber).andThen(
+                          signIn(authId, phone.userId, publicKey, keyHash(publicKey), countryCode)
+                        )
+                    }
+                  }
               }
           }.flatMap {
             case \/-(user :: pkHash :: HNil) =>
@@ -196,7 +206,6 @@ trait AuthServiceImpl extends AuthService with Helpers {
                 )
               }
             case error @ -\/(_) => DBIO.successful(error)
-            //throw new Exception(user.id.toString)
           }
 
           db.run(action)
@@ -209,6 +218,31 @@ trait AuthServiceImpl extends AuthService with Helpers {
 
   override def handleTerminateSession(authId: Long, optUserId: Option[Int], id: Int): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
+
+  private def signIn(authId: Long, userId: Int, pkData: Array[Byte], pkHash: Long, countryCode: String) = {
+    persist.User.find(userId).headOption.flatMap {
+      case None => DBIO.successful(Error(Errors.Internal))
+      case Some(user) =>
+        (for {
+          _ <- persist.User.setCountryCode(userId = userId, countryCode = countryCode)
+          _ <- persist.AuthId.setUserId(authId = authId, userId = userId)
+          pkOpt <- persist.UserPublicKey.find(userId = userId, authId = authId).headOption
+        } yield pkOpt).flatMap {
+          case None =>
+            for (
+              _ <- persist.UserPublicKey.create(models.UserPublicKey(userId = userId, hash = pkHash, data = pkData, authId = authId))
+            ) yield \/-(user :: pkHash :: HNil)
+          case Some(pk) =>
+            if (!pkData.sameElements(pk.data)) {
+              for {
+                _ <- persist.UserPublicKey.delete(userId = userId, hash = pk.hash)
+                _ <- persist.UserPublicKey.create(models.UserPublicKey(userId = userId, hash = pkHash, data = pkData, authId = authId))
+              } yield \/-(user :: pkHash :: HNil)
+            } else
+              DBIO.successful(\/-(user :: pkHash :: HNil))
+        }
+    }
+  }
 
   private def sendSmsCode(authId: Long, phoneNumber: Long, code: String): Unit = {
 
