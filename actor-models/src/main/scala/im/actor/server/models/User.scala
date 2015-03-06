@@ -33,17 +33,10 @@ object UserState {
 
 @SerialVersionUID(1L)
 case class User(
-  uid: Int,
-  authId: Long,
-  publicKeyHash: Long,
-  publicKeyData: BitVector,
-  phoneNumber: Long,
+  id: Int,
   accessSalt: String,
   name: String,
   countryCode: String,
   sex: Sex,
-  phoneIds: immutable.Set[Int],
-  emailIds: immutable.Set[Int],
-  state: UserState,
-  publicKeyHashes: immutable.Set[Long]
+  state: UserState
 )

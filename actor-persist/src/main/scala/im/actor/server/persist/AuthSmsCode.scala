@@ -19,4 +19,6 @@ object AuthSmsCode {
     codes += models.AuthSmsCode(phoneNumber, smsHash, smsCode)
 
   def findByPhoneNumber(number: Long) = codes.filter(_.phoneNumber === number).result
+
+  def deleteByPhoneNumber(number: Long) = codes.filter(_.phoneNumber === number).delete
 }
