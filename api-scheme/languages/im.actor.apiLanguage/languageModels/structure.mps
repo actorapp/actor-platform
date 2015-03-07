@@ -550,6 +550,10 @@
     <property role="TrG5h" value="Trait" />
     <property role="34LRSv" value="trait" />
     <ref role="1TJDcQ" node="22nuAqQy50h" resolve="ApiNamedDef" />
+    <node concept="1TJgyi" id="5NX0N0RPBrE" role="1TKVEl">
+      <property role="TrG5h" value="isContainer" />
+      <ref role="AX2Wp" to="tpck:fKAQMTB" resolve="boolean" />
+    </node>
     <node concept="1TJgyj" id="4ASKzdDBz_8" role="1TKVEi">
       <property role="20lmBu" value="aggregation" />
       <property role="20kJfa" value="interfaces" />

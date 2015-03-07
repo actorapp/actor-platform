@@ -2798,6 +2798,33 @@
                 "name": "fileSize"
               },
               {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "EncryptionType"
+                  }
+                },
+                "id": 9,
+                "name": "encryptionType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 10,
+                "name": "encryptionKey"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 11,
+                "name": "plainFileSize"
+              },
+              {
                 "type": "string",
                 "id": 4,
                 "name": "name"
@@ -5973,6 +6000,399 @@
       ]
     },
     {
+      "title": "Encrypted Messages",
+      "package": "encrypted",
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedPackage",
+            "doc": [
+              "Encrypted package",
+              {
+                "type": "reference",
+                "argument": "v1MessageType",
+                "category": "full",
+                "description": "  Type of message v1. Always eq 1"
+              },
+              {
+                "type": "reference",
+                "argument": "v1Message",
+                "category": "compact",
+                "description": "  Body of message v1"
+              },
+              {
+                "type": "reference",
+                "argument": "v1Crc32",
+                "category": "full",
+                "description": "  Obsolete CRC32 of message type + body"
+              },
+              {
+                "type": "reference",
+                "argument": "v2Message",
+                "category": "compact",
+                "description": "  Serialized EncryptedPackageV2"
+              },
+              {
+                "type": "reference",
+                "argument": "v2HmacSha256",
+                "category": "full",
+                "description": "  HMAC-SHA256 of v2Message and AES key"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 1,
+                "name": "v1MessageType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 2,
+                "name": "v1Message"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int64"
+                },
+                "id": 3,
+                "name": "v1Crc32"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 5,
+                "name": "v2Message"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int64"
+                },
+                "id": 6,
+                "name": "v2HmacSha256"
+              }
+            ]
+          }
+        },
+        {
+          "type": "empty"
+        },
+        {
+          "type": "empty"
+        },
+        {
+          "type": "comment",
+          "content": "Encrypted V1 Data"
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedMessageV1",
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "rid"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "contentType"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "EncryptedContentV1"
+                },
+                "id": 3,
+                "name": "content"
+              }
+            ]
+          }
+        },
+        {
+          "type": "empty"
+        },
+        {
+          "type": "empty"
+        },
+        {
+          "type": "comment",
+          "content": "Encrypted V1 Content"
+        },
+        {
+          "type": "trait",
+          "content": {
+            "name": "EncryptedContentV1",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedTextContentV1",
+            "trait": {
+              "name": "EncryptedContentV1",
+              "key": 1
+            },
+            "attributes": [
+              {
+                "type": "string",
+                "id": 2,
+                "name": "text"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedDocumentV1",
+            "trait": {
+              "name": "EncryptedContentV1",
+              "key": 2
+            },
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "name"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "mimeType"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "EncryptedFileLocationV1"
+                },
+                "id": 3,
+                "name": "fileLocation"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "FastThumb"
+                  }
+                },
+                "id": 4,
+                "name": "fastThumb"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 5,
+                "name": "extType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 6,
+                "name": "extension"
+              }
+            ]
+          }
+        },
+        {
+          "type": "trait",
+          "content": {
+            "name": "EncryptedDocumentV1Extension",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedDocumentV1Photo",
+            "trait": {
+              "name": "EncryptedDocumentV1Extension",
+              "key": 1
+            },
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "width"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "height"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedDocumentV1Video",
+            "trait": {
+              "name": "EncryptedDocumentV1Extension",
+              "key": 2
+            },
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "width"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "height"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "duration"
+              }
+            ]
+          }
+        },
+        {
+          "type": "empty"
+        },
+        {
+          "type": "comment",
+          "content": "File"
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedFileLocationV1",
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "fileId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "fileSize"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "EncryptionType"
+                  }
+                },
+                "id": 4,
+                "name": "encryptionType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 5,
+                "name": "encryptedFileSize"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 6,
+                "name": "encryptionKey"
+              }
+            ]
+          }
+        },
+        {
+          "type": "empty"
+        },
+        {
+          "type": "empty"
+        },
+        {
+          "type": "comment",
+          "content": "Encrypted V2 Data"
+        },
+        {
+          "type": "trait",
+          "content": {
+            "isContainer": "true",
+            "name": "EncryptedPackageV2",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedMessageV2",
+            "doc": [
+              "Conversation message",
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  RandomId of message"
+              },
+              {
+                "type": "reference",
+                "argument": "content",
+                "category": "full",
+                "description": "  Content of message"
+              }
+            ],
+            "trait": {
+              "name": "EncryptedPackageV2",
+              "key": 1
+            },
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "rid"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "contentType"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
+                "id": 3,
+                "name": "content"
+              }
+            ]
+          }
+        },
+        {
+          "type": "empty"
+        }
+      ]
+    },
+    {
       "title": "Typing and Online",
       "package": "weak",
       "items": [
@@ -6247,6 +6667,26 @@
       "title": "Media and Files",
       "package": "files",
       "items": [
+        {
+          "type": "enum",
+          "content": {
+            "name": "EncryptionType",
+            "values": [
+              {
+                "name": "NONE",
+                "id": 0
+              },
+              {
+                "name": "AES",
+                "id": 1
+              },
+              {
+                "name": "AES_THEN_MAC",
+                "id": 2
+              }
+            ]
+          }
+        },
         {
           "type": "struct",
           "content": {

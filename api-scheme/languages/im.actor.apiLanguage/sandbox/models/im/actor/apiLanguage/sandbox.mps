@@ -74,7 +74,9 @@
         <property id="4092665470043053057" name="errorTag" index="2uC4Qe" />
         <property id="4092665470043111358" name="description" index="2uCiSL" />
       </concept>
-      <concept id="5312209286554516176" name="im.actor.apiLanguage.structure.Trait" flags="ng" index="w93zz" />
+      <concept id="5312209286554516176" name="im.actor.apiLanguage.structure.Trait" flags="ng" index="w93zz">
+        <property id="6700515326227281642" name="isContainer" index="1FaRnq" />
+      </concept>
       <concept id="5312209286553980838" name="im.actor.apiLanguage.structure.AliasType" flags="ng" index="wb0Ql">
         <reference id="5312209286553980954" name="alias" index="wb18D" />
       </concept>
@@ -2442,8 +2444,8 @@
           <ref role="NX6Kv" node="GBscvBBkKH" resolve="extType" />
         </node>
         <node concept="NX1gA" id="EUEXKTmpO4" role="NXodf">
-          <property role="NX6R2" value="Optional bytes of extension" />
           <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional bytes of extension" />
           <ref role="NX6Kv" node="GBscvBBkKQ" resolve="ext" />
         </node>
         <node concept="2m7Kf5" id="GBscvBBkKA" role="2m0hLx">
@@ -2707,6 +2709,29 @@
           <property role="2m7DUN" value="3" />
           <property role="TrG5h" value="fileSize" />
           <node concept="2m5ndE" id="GBscvBBlpl" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RT7yA" role="2m0hLx">
+          <property role="2m7DUN" value="9" />
+          <property role="TrG5h" value="encryptionType" />
+          <node concept="2m5nlT" id="5NX0N0RT7yW" role="2m7DVh">
+            <node concept="3GJkcs" id="5NX0N0RT7z2" role="3GH5xg">
+              <ref role="3GJkik" node="5NX0N0RPsmw" resolve="EncryptionType" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RT7z5" role="2m0hLx">
+          <property role="2m7DUN" value="10" />
+          <property role="TrG5h" value="encryptionKey" />
+          <node concept="2m5nlT" id="5NX0N0RT7zu" role="2m7DVh">
+            <node concept="2m61tm" id="5NX0N0RT7z$" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RT7zB" role="2m0hLx">
+          <property role="2m7DUN" value="11" />
+          <property role="TrG5h" value="plainFileSize" />
+          <node concept="2m5nlT" id="5NX0N0RT7$3" role="2m7DVh">
+            <node concept="2m5ndE" id="5NX0N0RT7$d" role="3GH5xg" />
+          </node>
         </node>
         <node concept="2m7Kf5" id="GBscvBBlpo" role="2m0hLx">
           <property role="2m7DUN" value="4" />
@@ -5399,6 +5424,308 @@
         </node>
       </node>
     </node>
+    <node concept="2m5mJO" id="5NX0N0ROTyN" role="2m5lHt">
+      <property role="TrG5h" value="Encrypted Messages" />
+      <property role="3XOG$Z" value="encrypted" />
+      <node concept="2m5naR" id="5NX0N0ROUAb" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedPackage" />
+        <node concept="NXeRC" id="5NX0N0ROV8a" role="NXodf">
+          <property role="NXePf" value="Encrypted package" />
+        </node>
+        <node concept="NX1gA" id="5NX0N0ROV8w" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Type of message v1. Always eq 1" />
+          <ref role="NX6Kv" node="5NX0N0RP5x6" resolve="v1MessageType" />
+        </node>
+        <node concept="NX1gA" id="5NX0N0ROV8C" role="NXodf">
+          <property role="NX6R2" value="Body of message v1" />
+          <property role="1GSvIU" value="compact" />
+          <ref role="NX6Kv" node="5NX0N0RP5xr" resolve="v1Message" />
+        </node>
+        <node concept="NX1gA" id="5NX0N0ROV8M" role="NXodf">
+          <property role="NX6R2" value="Obsolete CRC32 of message type + body" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5NX0N0ROUAu" resolve="v1Crc32" />
+        </node>
+        <node concept="NX1gA" id="5NX0N0RPero" role="NXodf">
+          <property role="NX6R2" value="Serialized EncryptedPackageV2" />
+          <property role="1GSvIU" value="compact" />
+          <ref role="NX6Kv" node="5NX0N0RPdmS" resolve="v2Message" />
+        </node>
+        <node concept="NX1gA" id="5NX0N0RPerC" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="HMAC-SHA256 of v2Message and AES key" />
+          <ref role="NX6Kv" node="5NX0N0RPdnh" resolve="v2HmacSha256" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RP5x6" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="v1MessageType" />
+          <node concept="2m5nlT" id="5NX0N0RPdmk" role="2m7DVh">
+            <node concept="2m5ndE" id="5NX0N0RPdmq" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RP5xr" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="v1Message" />
+          <node concept="2m5nlT" id="5NX0N0RPdmt" role="2m7DVh">
+            <node concept="2m61tm" id="5NX0N0RPdmz" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0ROUAu" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="v1Crc32" />
+          <node concept="2m5nlT" id="5NX0N0RPdmA" role="2m7DVh">
+            <node concept="2m5ndQ" id="5NX0N0RPdmG" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPdmS" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="v2Message" />
+          <node concept="2m5nlT" id="5NX0N0RPdn8" role="2m7DVh">
+            <node concept="2m61tm" id="5NX0N0RSWiC" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPdnh" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="v2HmacSha256" />
+          <node concept="2m5nlT" id="5NX0N0RPdn$" role="2m7DVh">
+            <node concept="2m5ndQ" id="5NX0N0RPdnE" role="3GH5xg" />
+          </node>
+        </node>
+      </node>
+      <node concept="NvyAe" id="5NX0N0RP$6d" role="2m5mJr" />
+      <node concept="NvyAe" id="5NX0N0RP$7F" role="2m5mJr" />
+      <node concept="NvWBy" id="5NX0N0RP$GS" role="2m5mJr">
+        <property role="NvWrd" value="Encrypted V1 Data" />
+      </node>
+      <node concept="2m5naR" id="5NX0N0ROYDQ" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedMessageV1" />
+        <property role="w4tQU" value="false" />
+        <node concept="2m7Kf5" id="5NX0N0ROZD5" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="rid" />
+          <node concept="2m5ndQ" id="5NX0N0ROZD9" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RP3We" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="contentType" />
+          <node concept="2m5ndE" id="5NX0N0RP3Wm" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RP3W5" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="content" />
+          <node concept="3BlaRf" id="5NX0N0RP3Wb" role="2m7DVh">
+            <ref role="3BrLez" node="5NX0N0RP2U1" resolve="EncryptedContentV1" />
+          </node>
+        </node>
+      </node>
+      <node concept="NvyAe" id="5NX0N0RP_l6" role="2m5mJr" />
+      <node concept="NvyAe" id="5NX0N0RP_o6" role="2m5mJr" />
+      <node concept="NvWBy" id="5NX0N0RP_r8" role="2m5mJr">
+        <property role="NvWrd" value="Encrypted V1 Content" />
+      </node>
+      <node concept="w93zz" id="5NX0N0RP2U1" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedContentV1" />
+      </node>
+      <node concept="2m5naR" id="5NX0N0RP0b5" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedTextContentV1" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="5NX0N0RP2U1" resolve="EncryptedContentV1" />
+        <node concept="2m7Kf5" id="5NX0N0RP0fP" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="text" />
+          <node concept="2m5ndX" id="5NX0N0RP0fT" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="5NX0N0RP2UL" role="3BtCOu">
+          <property role="Nu42W" value="01" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="5NX0N0RP0gw" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedDocumentV1" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="5NX0N0RP2U1" resolve="EncryptedContentV1" />
+        <node concept="2m7Kf5" id="5NX0N0RPtXZ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="5NX0N0RPtY3" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPtY6" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="mimeType" />
+          <node concept="2m5ndX" id="5NX0N0RPuw3" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPuw6" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="fileLocation" />
+          <node concept="2m5mGg" id="5NX0N0RPuwe" role="2m7DVh">
+            <ref role="2m5mJy" node="5NX0N0RPsjy" resolve="EncryptedFileLocationV1" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPv28" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="fastThumb" />
+          <node concept="2m5nlT" id="5NX0N0RPv2i" role="2m7DVh">
+            <node concept="2m5mGg" id="5NX0N0RPv2o" role="3GH5xg">
+              <ref role="2m5mJy" node="GBscvBB67s" resolve="FastThumb" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPv2r" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="extType" />
+          <node concept="2m5nlT" id="5NX0N0RPv2U" role="2m7DVh">
+            <node concept="2m5ndE" id="5NX0N0RPv30" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPv2F" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="extension" />
+          <node concept="2m5nlT" id="5NX0N0RPv33" role="2m7DVh">
+            <node concept="2m61tm" id="5NX0N0RPv39" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5NX0N0RPtYc" role="3BtCOu">
+          <property role="Nu42W" value="02" />
+        </node>
+      </node>
+      <node concept="w93zz" id="5NX0N0RPvAx" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedDocumentV1Extension" />
+      </node>
+      <node concept="2m5naR" id="5NX0N0RPvCX" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedDocumentV1Photo" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="5NX0N0RPvAx" resolve="EncryptedDocumentV1Extension" />
+        <node concept="2m7Kf5" id="5NX0N0RPwOU" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="width" />
+          <node concept="2m5ndE" id="5NX0N0RPwOY" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPwP1" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="height" />
+          <node concept="2m5ndE" id="5NX0N0RPwP7" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="5NX0N0RPvEc" role="3BtCOu">
+          <property role="Nu42W" value="01" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="5NX0N0RPvFA" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedDocumentV1Video" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="5NX0N0RPvAx" resolve="EncryptedDocumentV1Extension" />
+        <node concept="2m7Kf5" id="5NX0N0RPxnj" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="width" />
+          <node concept="2m5ndE" id="5NX0N0RPxnn" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPxnq" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="height" />
+          <node concept="2m5ndE" id="5NX0N0RPxnw" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPxnz" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="duration" />
+          <node concept="2m5ndE" id="5NX0N0RPxnF" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="5NX0N0RPvGR" role="3BtCOu">
+          <property role="Nu42W" value="02" />
+        </node>
+      </node>
+      <node concept="NvyAe" id="5NX0N0RPA0x" role="2m5mJr" />
+      <node concept="NvWBy" id="5NX0N0RPA6J" role="2m5mJr">
+        <property role="NvWrd" value="File" />
+      </node>
+      <node concept="2m5naR" id="5NX0N0RPsjy" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedFileLocationV1" />
+        <node concept="2m7Kf5" id="5NX0N0RPsjz" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="fileId" />
+          <node concept="2m5ndQ" id="5NX0N0RPsj$" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPsj_" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="5NX0N0RPsjA" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPsjB" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="fileSize" />
+          <node concept="2m5ndE" id="5NX0N0RPsjC" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPsjD" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="encryptionType" />
+          <node concept="2m5nlT" id="5NX0N0RPtrO" role="2m7DVh">
+            <node concept="3GJkcs" id="5NX0N0RT700" role="3GH5xg">
+              <ref role="3GJkik" node="5NX0N0RPsmw" resolve="EncryptionType" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPsjF" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="encryptedFileSize" />
+          <node concept="2m5nlT" id="5NX0N0RPtrX" role="2m7DVh">
+            <node concept="2m5ndE" id="5NX0N0RPts3" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RPsjH" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="encryptionKey" />
+          <node concept="2m5nlT" id="5NX0N0RPts6" role="2m7DVh">
+            <node concept="2m61tm" id="5NX0N0RPtsc" role="3GH5xg" />
+          </node>
+        </node>
+      </node>
+      <node concept="NvyAe" id="5NX0N0RT36Z" role="2m5mJr" />
+      <node concept="NvyAe" id="5NX0N0RT3at" role="2m5mJr" />
+      <node concept="NvWBy" id="5NX0N0RSozM" role="2m5mJr">
+        <property role="NvWrd" value="Encrypted V2 Data" />
+      </node>
+      <node concept="w93zz" id="5NX0N0RSVca" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedPackageV2" />
+        <property role="1FaRnq" value="true" />
+      </node>
+      <node concept="2m5naR" id="5NX0N0RSp9b" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedMessageV2" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="5NX0N0RSVca" resolve="EncryptedPackageV2" />
+        <node concept="NXeRC" id="5NX0N0RSZ_f" role="NXodf">
+          <property role="NXePf" value="Conversation message " />
+        </node>
+        <node concept="NX1gA" id="5NX0N0RT0G5" role="NXodf">
+          <property role="NX6R2" value="RandomId of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5NX0N0RSXTY" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="5NX0N0RT0Gd" role="NXodf">
+          <property role="NX6R2" value="Content of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5NX0N0RSpKj" resolve="content" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RSXTY" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="rid" />
+          <node concept="2m5ndQ" id="5NX0N0RSXU4" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RT1LL" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="contentType" />
+          <node concept="2m5ndE" id="5NX0N0RT1LT" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5NX0N0RSpKj" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="content" />
+          <node concept="3BlaRf" id="5NX0N0RT1LI" role="2m7DVh">
+            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5NX0N0RSXnv" role="3BtCOu">
+          <property role="Nu42W" value="01" />
+        </node>
+      </node>
+      <node concept="NvyAe" id="5NX0N0RPA3B" role="2m5mJr" />
+    </node>
     <node concept="2m5mJO" id="GBscvBBulc" role="2m5lHt">
       <property role="TrG5h" value="Typing and Online" />
       <property role="3XOG$Z" value="weak" />
@@ -5623,6 +5950,21 @@
     <node concept="2m5mJO" id="GBscvB$$H4" role="2m5lHt">
       <property role="TrG5h" value="Media and Files" />
       <property role="3XOG$Z" value="files" />
+      <node concept="2m488m" id="5NX0N0RPsmw" role="2m5mJr">
+        <property role="TrG5h" value="EncryptionType" />
+        <node concept="2m7y0F" id="5NX0N0RPsmx" role="2m7ymf">
+          <property role="TrG5h" value="NONE" />
+          <property role="2m7y0m" value="0" />
+        </node>
+        <node concept="2m7y0F" id="5NX0N0RPsmy" role="2m7ymf">
+          <property role="TrG5h" value="AES" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="5NX0N0RPsmz" role="2m7ymf">
+          <property role="TrG5h" value="AES_THEN_MAC" />
+          <property role="2m7y0m" value="2" />
+        </node>
+      </node>
       <node concept="2m5naR" id="GBscvB$$Hy" role="2m5mJr">
         <property role="TrG5h" value="FileLocation" />
         <node concept="NXeRC" id="EUEXKTmYot" role="NXodf">
@@ -6801,290 +7143,6 @@
         </node>
         <node concept="Nu42z" id="GBscvBBjCF" role="NuuwV">
           <property role="Nu42W" value="2A" />
-        </node>
-      </node>
-    </node>
-  </node>
-  <node concept="2m5nkH" id="1qxBM7lTRN">
-    <property role="TrG5h" value="ActorPlain" />
-    <node concept="2m5mJO" id="1qxBM7lTRO" role="2m5lHt">
-      <property role="TrG5h" value="End-To-End messages" />
-      <property role="3XOG$Z" value="e2e" />
-      <node concept="1Dx9M1" id="1qxBM7m14C" role="1Dx9rD">
-        <property role="1Dx9K7" value="Basic conainer for End-To-End message is PlainPackage." />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m14E" role="1Dx9rD">
-        <property role="1Dx9K7" value="If messageType in PlainPackage == 1 than contents of body is PlainMessage." />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m14H" role="1Dx9rD">
-        <property role="1Dx9K7" value="PlainMessage is a conversation message." />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m14L" role="1Dx9rD">
-        <property role="1Dx9K7" value="PlainMessage contans messageType:" />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m14Q" role="1Dx9rD">
-        <property role="1Dx9K7" value="  messageType == 0x01 =&gt; body is TextMessage" />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m14W" role="1Dx9rD">
-        <property role="1Dx9K7" value="  messageType == 0x02 =&gt; body is FileMessage" />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m153" role="1Dx9rD">
-        <property role="1Dx9K7" value="  messageType == 0x03 =&gt; body is ServiceMessage" />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m15b" role="1Dx9rD">
-        <property role="1Dx9K7" value=" " />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m15k" role="1Dx9rD">
-        <property role="1Dx9K7" value="TextMessage has extension" />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m15u" role="1Dx9rD">
-        <property role="1Dx9K7" value="  extType == 0x01 =&gt; extension is MarkdownMessage" />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m15P" role="1Dx9rD">
-        <property role="1Dx9K7" value=" " />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m15D" role="1Dx9rD">
-        <property role="1Dx9K7" value="FileMessage has extensions" />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m162" role="1Dx9rD">
-        <property role="1Dx9K7" value="  extType == 0x01 =&gt; extension is PhotoExtension" />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m16g" role="1Dx9rD">
-        <property role="1Dx9K7" value="  extType == 0x02 =&gt; extension is VideoExtension" />
-      </node>
-      <node concept="1Dx9M1" id="1qxBM7m16v" role="1Dx9rD">
-        <property role="1Dx9K7" value="  extType == 0x03 =&gt; extension is AudioExtension" />
-      </node>
-      <node concept="2m5naR" id="1qxBM7lUav" role="2m5mJr">
-        <property role="TrG5h" value="PlainPackage" />
-        <node concept="2m7Kf5" id="1qxBM7lUJP" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="messsageType" />
-          <node concept="2m5ndE" id="1qxBM7lUJT" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lVlk" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="body" />
-          <node concept="2m61tm" id="1qxBM7lVC8" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lVUT" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="crc32" />
-          <node concept="2m5ndQ" id="1qxBM7lWdL" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="1qxBM7lWNu" role="2m5mJr">
-        <property role="TrG5h" value="PlainMessage" />
-        <node concept="2m7Kf5" id="1qxBM7lXpa" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="guid" />
-          <node concept="2m5ndQ" id="1qxBM7lXpe" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lXG4" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="messageTyoe" />
-          <node concept="2m5ndE" id="1qxBM7lXYZ" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lY$G" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="body" />
-          <node concept="2m61tm" id="1qxBM7lYRF" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="1qxBM7lZtG" role="2m5mJr">
-        <property role="TrG5h" value="TextMessage" />
-        <node concept="2m7Kf5" id="1qxBM7lZKP" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="text" />
-          <node concept="2m5ndX" id="1qxBM7lZKT" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZKW" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="extType" />
-          <node concept="2m5ndE" id="1qxBM7lZL2" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZL5" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="extension" />
-          <node concept="2m5nlT" id="1qxBM7lZLd" role="2m7DVh">
-            <node concept="2m61tm" id="1qxBM7lZLj" role="3GH5xg" />
-          </node>
-        </node>
-      </node>
-      <node concept="2m5naR" id="1qxBM7lZLI" role="2m5mJr">
-        <property role="TrG5h" value="FileMessage" />
-        <node concept="2m7Kf5" id="1qxBM7lZM7" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="name" />
-          <node concept="2m5ndX" id="1qxBM7lZMb" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZMe" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="mimeType" />
-          <node concept="2m5ndX" id="1qxBM7lZMk" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZMn" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="fileLocation" />
-          <node concept="2m5mGg" id="1qxBM7m0s2" role="2m7DVh">
-            <ref role="2m5mJy" node="1qxBM7lZPB" resolve="PlainFileLocation" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7m0oV" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="fastThumb" />
-          <node concept="2m5nlT" id="1qxBM7m0p5" role="2m7DVh">
-            <node concept="2m5mGg" id="1qxBM7m0pb" role="3GH5xg">
-              <ref role="2m5mJy" node="1qxBM7lZS3" resolve="FastThumb" />
-            </node>
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7m0K0" role="2m0hLx">
-          <property role="2m7DUN" value="5" />
-          <property role="TrG5h" value="extType" />
-          <node concept="2m5ndE" id="1qxBM7m0Kd" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7m0Kg" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="extension" />
-          <node concept="2m5nlT" id="1qxBM7m0Kv" role="2m7DVh">
-            <node concept="2m61tm" id="1qxBM7m0K_" role="3GH5xg" />
-          </node>
-        </node>
-      </node>
-      <node concept="2m488m" id="1qxBM7lZOq" role="2m5mJr">
-        <property role="TrG5h" value="EncryptionType" />
-        <node concept="2m7y0F" id="1qxBM7lZOs" role="2m7ymf">
-          <property role="TrG5h" value="NONE" />
-          <property role="2m7y0m" value="0" />
-        </node>
-        <node concept="2m7y0F" id="1qxBM7lZOX" role="2m7ymf">
-          <property role="TrG5h" value="AES" />
-          <property role="2m7y0m" value="1" />
-        </node>
-        <node concept="2m7y0F" id="1qxBM7lZP0" role="2m7ymf">
-          <property role="TrG5h" value="AES_THEN_MAC" />
-          <property role="2m7y0m" value="2" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="1qxBM7lZPB" role="2m5mJr">
-        <property role="TrG5h" value="PlainFileLocation" />
-        <node concept="2m7Kf5" id="1qxBM7lZQb" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="fileId" />
-          <node concept="2m5ndQ" id="1qxBM7lZQf" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZQi" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="accessHash" />
-          <node concept="2m5ndQ" id="1qxBM7lZQo" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZQr" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="fileSize" />
-          <node concept="2m5ndE" id="1qxBM7lZQz" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZQA" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="encryptionType" />
-          <node concept="3GJkcs" id="1qxBM7lZQK" role="2m7DVh">
-            <ref role="3GJkik" node="1qxBM7lZOq" resolve="EncryptionType" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZQN" role="2m0hLx">
-          <property role="2m7DUN" value="5" />
-          <property role="TrG5h" value="encryptedFileSize" />
-          <node concept="2m5ndE" id="1qxBM7lZQZ" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZR2" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="encryptionKey" />
-          <node concept="2m61tm" id="1qxBM7lZRg" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="1qxBM7lZS3" role="2m5mJr">
-        <property role="TrG5h" value="FastThumb" />
-        <node concept="2m7Kf5" id="1qxBM7lZSO" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="w" />
-          <node concept="2m5ndE" id="1qxBM7lZSS" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZSV" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="h" />
-          <node concept="2m5ndE" id="1qxBM7lZT1" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZT4" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="preview" />
-          <node concept="2m61tm" id="1qxBM7lZTc" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="1qxBM7lZU6" role="2m5mJr">
-        <property role="TrG5h" value="ServiceMessage" />
-        <node concept="2m7Kf5" id="1qxBM7lZUY" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="text" />
-          <node concept="2m5ndX" id="1qxBM7lZV2" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZV5" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="extType" />
-          <node concept="2m5ndE" id="1qxBM7lZVb" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZVe" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="extension" />
-          <node concept="2m5nlT" id="1qxBM7lZVm" role="2m7DVh">
-            <node concept="2m61tm" id="1qxBM7lZVs" role="3GH5xg" />
-          </node>
-        </node>
-      </node>
-      <node concept="2m5naR" id="1qxBM7lZWu" role="2m5mJr">
-        <property role="TrG5h" value="MarkdownMessage" />
-        <node concept="2m7Kf5" id="1qxBM7lZXu" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="markdown" />
-          <node concept="2m5ndX" id="1qxBM7lZXy" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="1qxBM7lZYB" role="2m5mJr">
-        <property role="TrG5h" value="PhotoExtension" />
-        <node concept="2m7Kf5" id="1qxBM7lZZE" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="w" />
-          <node concept="2m5ndE" id="1qxBM7lZZI" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7lZZL" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="h" />
-          <node concept="2m5ndE" id="1qxBM7lZZR" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="1qxBM7m011" role="2m5mJr">
-        <property role="TrG5h" value="VideoExtension" />
-        <node concept="2m7Kf5" id="1qxBM7m029" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="w" />
-          <node concept="2m5ndE" id="1qxBM7m02d" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7m02g" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="h" />
-          <node concept="2m5ndE" id="1qxBM7m02m" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1qxBM7m0mc" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="duration" />
-          <node concept="2m5ndE" id="1qxBM7m0mk" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="1qxBM7m0n_" role="2m5mJr">
-        <property role="TrG5h" value="AudioExtension" />
-        <node concept="2m7Kf5" id="1qxBM7m0oO" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="duration" />
-          <node concept="2m5ndE" id="1qxBM7m0oS" role="2m7DVh" />
         </node>
       </node>
     </node>
