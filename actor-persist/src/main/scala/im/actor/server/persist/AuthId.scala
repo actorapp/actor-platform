@@ -22,4 +22,7 @@ object AuthId {
 
   def setUserId(authId: Long, userId: Int) =
     authIds.filter(_.id === authId).map(_.userId).update(Some(userId))
+
+  def find(authId: Long) =
+    authIds.filter(_.id === authId).result
 }

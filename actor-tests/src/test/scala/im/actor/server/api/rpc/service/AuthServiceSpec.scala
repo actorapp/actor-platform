@@ -1,6 +1,8 @@
 package im.actor.server.api.rpc.service
 
 import im.actor.api.{rpc => api}
+import im.actor.server.models
+import im.actor.server.persist
 import im.actor.server.SqlSpecHelpers
 import im.actor.util.testing._
 
@@ -58,7 +60,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
     case class signUp()  {
       val authId = createAuthId(service.db)
       val phoneNumber = buildPhone()
-      val smsHash = getSmsHash(authId, phoneNumber)(service)
+      val smsHash = getSmsHash(authId, phoneNumber)
 
       def e1 = {
         service.handleSignUp(
@@ -85,7 +87,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
       val phoneNumber = buildPhone()
 
       def unoccupied = {
-        val smsHash = getSmsHash(authId, phoneNumber)(service)
+        val smsHash = getSmsHash(authId, phoneNumber)
 
         service.handleSignIn(
           authId = authId,
@@ -106,7 +108,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
       def valid = {
         createUser(authId, phoneNumber)
 
-        val smsHash = getSmsHash(authId, phoneNumber)(service)
+        val smsHash = getSmsHash(authId, phoneNumber)
 
         service.handleSignIn(
           authId = authId,
@@ -120,7 +122,9 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
           appId = 1,
           appKey = "appKey"
         ) must beOkLike {
-          case (_: api.auth.ResponseAuth, Vector()) => ok
+          case (rsp: api.auth.ResponseAuth, Vector()) =>
+            service.db.run(persist.AuthId.find(authId).head) must be_==(models.AuthId(authId, Some(rsp.user.id))).await and
+            (service.db.run(persist.UserPublicKey.find(rsp.user.id, authId).headOption) must beSome[models.UserPublicKey].await)
         }.await
       }
     }

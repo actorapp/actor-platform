@@ -55,6 +55,8 @@ object Dependencies {
     val specs2          = "org.specs2"                    %% "specs2-core"                   % "3.0" % "test"
     val slickTestkit    = "com.typesafe.slick"            %% "slick-testkit"                 % V.slick % "test"
 
+    val jfairy          = "io.codearte.jfairy"            %  "jfairy"                        % "0.3.1" % "test"
+
     val utilTesting     = "im.actor"                      %% "actor-util-testing"            % "0.0.1-SNAPSHOT" % "test"
   }
   import Compile._, Test._
@@ -90,5 +92,5 @@ object Dependencies {
     scalazCore, scalazConcurrent
   )
 
-  val tests = common ++ Seq(akkaTestkit, scalacheck, specs2, slickTestkit, utilTesting)
+  val tests = common ++ Seq(akkaTestkit, jfairy, scalacheck, specs2, slickTestkit, utilTesting)
 }
