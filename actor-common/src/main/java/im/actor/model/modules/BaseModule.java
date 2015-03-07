@@ -1,5 +1,6 @@
 package im.actor.model.modules;
 
+import im.actor.model.CryptoProvider;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Peer;
@@ -63,6 +64,10 @@ public class BaseModule {
 
     public PreferencesStorage preferences() {
         return modules.getPreferences();
+    }
+
+    public CryptoProvider crypto() {
+        return modules.getConfiguration().getCryptoProvider();
     }
 
     public int myUid() {

@@ -5,8 +5,12 @@ import java.util.List;
 
 import im.actor.model.annotation.Verified;
 import im.actor.model.api.HistoryMessage;
+import im.actor.model.api.MessageContent;
+import im.actor.model.api.TextMessage;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.api.rpc.ResponseLoadHistory;
+import im.actor.model.crypto.AesCipher;
+import im.actor.model.crypto.RsaCipher;
 import im.actor.model.entity.ContentDescription;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
@@ -23,6 +27,9 @@ import im.actor.model.modules.messages.DialogsHistoryActor;
 import im.actor.model.modules.messages.OwnReadActor;
 import im.actor.model.modules.messages.PlainReceiverActor;
 import im.actor.model.modules.messages.SenderActor;
+import im.actor.model.modules.messages.encrypted.EncryptedTextMessage;
+import im.actor.model.modules.messages.encrypted.MessageContainer;
+import im.actor.model.modules.messages.encrypted.PlainMessage;
 import im.actor.model.modules.messages.entity.DialogHistory;
 import im.actor.model.modules.messages.entity.EntityConverter;
 import im.actor.model.modules.utils.RandomUtils;
@@ -135,6 +142,57 @@ public class MessagesProcessor extends BaseModule {
             // Send information to OwnReadActor about out message
             ownReadActor().send(new OwnReadActor.NewOutMessage(peer, rid, date, false));
         }
+    }
+
+    public void onEncryptedMessage(im.actor.model.api.Peer peer, int senderUid, long date,
+                                   long keyHash, byte[] aesEncryptedKey, byte[] message) {
+        RsaCipher cipher = crypto().createRSAOAEPSHA1Cipher(modules().getAuthModule().getPublicKey(),
+                modules().getAuthModule().getPrivateKey());
+        byte[] aesKey = cipher.decrypt(aesEncryptedKey);
+        if (aesKey == null) {
+            // unable to decrypt message
+            return;
+        }
+
+        byte[] key = substring(aesKey, aesKey.length - 16 - 32, 32);
+        byte[] iv = substring(aesKey, aesKey.length - 16, 16);
+
+        AesCipher aesCipher = crypto().createAESCBCPKS7Cipher(key, iv);
+
+        try {
+            byte[] decryptedRawMessage = aesCipher.decrypt(message);
+
+            int len = readInt(decryptedRawMessage, 0);
+            byte[] res = substring(decryptedRawMessage, 4, len);
+
+            MessageContainer container = MessageContainer.fromBytes(res);
+            if (container.getMessageType() == 1) {
+                PlainMessage plainMessage = PlainMessage.fromBytes(container.getBody());
+                if (plainMessage.getMessageType() == 1) {
+                    EncryptedTextMessage encryptedTextMessage =
+                            EncryptedTextMessage.fromBytes(plainMessage.getBody());
+                    onMessage(peer, senderUid, date, plainMessage.getRid(), new MessageContent(1,
+                            new TextMessage(encryptedTextMessage.getText(), 0, null).toByteArray()));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int readInt(byte[] bytes, int offset) {
+        int a = bytes[offset] & 0xFF;
+        int b = bytes[offset + 1] & 0xFF;
+        int c = bytes[offset + 2] & 0xFF;
+        int d = bytes[offset + 3] & 0xFF;
+
+        return d + (c << 8) + (b << 16) + (a << 24);
+    }
+
+    public static byte[] substring(byte[] src, int start, int len) {
+        byte[] res = new byte[len];
+        System.arraycopy(src, start, res, 0, len);
+        return res;
     }
 
     @Verified
