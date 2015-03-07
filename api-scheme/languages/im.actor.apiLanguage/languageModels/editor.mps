@@ -106,6 +106,9 @@
         <child id="1068581517665" name="statement" index="3cqZAp" />
       </concept>
       <concept id="1068581242875" name="jetbrains.mps.baseLanguage.structure.PlusExpression" flags="nn" index="3cpWs3" />
+      <concept id="1081516740877" name="jetbrains.mps.baseLanguage.structure.NotExpression" flags="nn" index="3fqX7Q">
+        <child id="1081516765348" name="expression" index="3fr31v" />
+      </concept>
       <concept id="1204053956946" name="jetbrains.mps.baseLanguage.structure.IMethodCall" flags="ng" index="1ndlxa">
         <reference id="1068499141037" name="baseMethodDeclaration" index="37wK5l" />
         <child id="1068499141038" name="actualArgument" index="37wK5m" />
@@ -1274,6 +1277,38 @@
         <property role="3F0ifm" value="trait" />
         <node concept="VechU" id="55bmeIQ9tMq" role="3F10Kt">
           <property role="Vb096" value="DARK_BLUE" />
+        </node>
+        <node concept="pkWqt" id="5NX0N0RPI5o" role="pqm2j">
+          <node concept="3clFbS" id="5NX0N0RPI5p" role="2VODD2">
+            <node concept="3clFbF" id="5NX0N0RPJte" role="3cqZAp">
+              <node concept="3fqX7Q" id="5NX0N0RPXER" role="3clFbG">
+                <node concept="2OqwBi" id="5NX0N0RPXET" role="3fr31v">
+                  <node concept="pncrf" id="5NX0N0RPXEU" role="2Oq$k0" />
+                  <node concept="3TrcHB" id="5NX0N0RPXEV" role="2OqNvi">
+                    <ref role="3TsBF5" to="tsp6:5NX0N0RPBrE" resolve="isContainer" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="3F0ifn" id="5NX0N0RPYb9" role="3EZMnx">
+        <property role="3F0ifm" value="container" />
+        <node concept="VechU" id="5NX0N0RPYnL" role="3F10Kt">
+          <property role="Vb096" value="DARK_BLUE" />
+        </node>
+        <node concept="pkWqt" id="5NX0N0RPYv6" role="pqm2j">
+          <node concept="3clFbS" id="5NX0N0RPYv7" role="2VODD2">
+            <node concept="3clFbF" id="5NX0N0RPYDp" role="3cqZAp">
+              <node concept="2OqwBi" id="5NX0N0RPYIP" role="3clFbG">
+                <node concept="pncrf" id="5NX0N0RPYDo" role="2Oq$k0" />
+                <node concept="3TrcHB" id="5NX0N0RPZ2b" role="2OqNvi">
+                  <ref role="3TsBF5" to="tsp6:5NX0N0RPBrE" resolve="isContainer" />
+                </node>
+              </node>
+            </node>
+          </node>
         </node>
       </node>
       <node concept="3F0A7n" id="4ASKzdDBzUD" role="3EZMnx">
