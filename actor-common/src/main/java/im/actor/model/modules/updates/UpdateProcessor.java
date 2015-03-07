@@ -166,7 +166,9 @@ public class UpdateProcessor extends BaseModule {
             messagesProcessor.onMessageSent(messageSent.getPeer(), messageSent.getRid(), messageSent.getDate());
         } else if (update instanceof UpdateEncryptedMessage) {
             UpdateEncryptedMessage encryptedMessage = (UpdateEncryptedMessage) update;
-            // TODO: Implement
+            messagesProcessor.onEncryptedMessage(encryptedMessage.getPeer(), encryptedMessage.getSenderUid(),
+                    encryptedMessage.getDate(), encryptedMessage.getKeyHash(), encryptedMessage.getAesEncryptedKey(),
+                    encryptedMessage.getMessage());
             typingProcessor.onMessage(encryptedMessage.getPeer(), encryptedMessage.getSenderUid());
         } else if (update instanceof UpdateEncryptedRead) {
             UpdateEncryptedRead encryptedRead = (UpdateEncryptedRead) update;
