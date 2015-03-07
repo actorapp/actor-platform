@@ -31,6 +31,8 @@ public class Configuration {
 
     private NotificationProvider notificationProvider;
 
+    private ApiConfiguration apiConfiguration;
+
     public Configuration(Networking networking, ConnectionEndpoint[] endpoints,
                          Threading threading, MainThread mainThread, Storage storage,
                          LogCallback log,
@@ -39,6 +41,7 @@ public class Configuration {
                          CryptoProvider cryptoProvider,
                          FileSystemProvider fileSystemProvider,
                          NotificationProvider notificationProvider,
+                         ApiConfiguration apiConfiguration,
                          boolean enableContactsLogging,
                          boolean enableNetworkLogging) {
         this.networking = networking;
@@ -54,6 +57,11 @@ public class Configuration {
         this.enableContactsLogging = enableContactsLogging;
         this.enableNetworkLogging = enableNetworkLogging;
         this.notificationProvider = notificationProvider;
+        this.apiConfiguration = apiConfiguration;
+    }
+
+    public ApiConfiguration getApiConfiguration() {
+        return apiConfiguration;
     }
 
     public NotificationProvider getNotificationProvider() {

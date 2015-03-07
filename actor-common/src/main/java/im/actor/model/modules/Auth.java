@@ -1,5 +1,6 @@
 package im.actor.model.modules;
 
+import im.actor.model.ApiConfiguration;
 import im.actor.model.AuthState;
 import im.actor.model.MainThread;
 import im.actor.model.api.rpc.RequestSendAuthCode;
@@ -9,30 +10,38 @@ import im.actor.model.api.rpc.ResponseAuth;
 import im.actor.model.api.rpc.ResponseSendAuthCode;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.crypto.CryptoKeyPair;
+import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.log.Log;
 import im.actor.model.modules.updates.internal.LoggedIn;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
-import im.actor.model.util.RandomUtils;
 
 /**
  * Created by ex3ndr on 08.02.15.
  */
 public class Auth extends BaseModule {
 
-    private static final int APP_ID = 1;
-    private static final String APP_KEY = "??";
-
     private static final String KEY_DEVICE_HASH = "device_hash";
+
     private static final String KEY_AUTH = "auth_yes";
     private static final String KEY_AUTH_UID = "auth_uid";
     private static final String KEY_PHONE = "auth_phone";
     private static final String KEY_SMS_HASH = "auth_sms_hash";
     private static final String KEY_SMS_CODE = "auth_sms_code";
 
+    private static final String KEY_PUBLIC_KEY = "auth_key_public";
+    private static final String KEY_PRIVATE_KEY = "auth_key_private";
+
     private AuthState state;
     private MainThread mainThread;
+
+    private byte[] publicKey;
+    private byte[] privateKey;
+
     private byte[] deviceHash;
+    private ApiConfiguration apiConfiguration;
+
     private int myUid;
 
     public Auth(Modules modules) {
@@ -47,11 +56,28 @@ public class Auth extends BaseModule {
         Log.d("CORE_INIT", "Loading stage5.3.2 in " + (modules.getConfiguration().getThreading().getActorTime() - start) + " ms");
         start = modules.getConfiguration().getThreading().getActorTime();
 
+        // Keep device hash always stable across launch
         deviceHash = preferences().getBytes(KEY_DEVICE_HASH);
         if (deviceHash == null) {
-            deviceHash = RandomUtils.seed(32);
+            deviceHash = modules.getConfiguration().getApiConfiguration().getDeviceHash();
             preferences().putBytes(KEY_DEVICE_HASH, deviceHash);
         }
+
+
+        // TODO: Make key gen async. Better logic on key lost.
+        publicKey = preferences().getBytes(KEY_PUBLIC_KEY);
+        privateKey = preferences().getBytes(KEY_PRIVATE_KEY);
+
+        if (publicKey == null || privateKey == null) {
+            CryptoKeyPair keyPair = CryptoUtils.generateRSA1024KeyPair();
+            publicKey = keyPair.getPublicKey();
+            privateKey = keyPair.getPrivateKey();
+            preferences().putBytes(KEY_PUBLIC_KEY, publicKey);
+            preferences().putBytes(KEY_PRIVATE_KEY, privateKey);
+        }
+
+        apiConfiguration = modules.getConfiguration().getApiConfiguration();
+
         Log.d("CORE_INIT", "Loading stage5.3.3 in " + (modules.getConfiguration().getThreading().getActorTime() - start) + " ms");
         start = modules.getConfiguration().getThreading().getActorTime();
     }
@@ -63,6 +89,14 @@ public class Auth extends BaseModule {
         } else {
             state = AuthState.AUTH_START;
         }
+    }
+
+    public byte[] getPublicKey() {
+        return publicKey;
+    }
+
+    public byte[] getPrivateKey() {
+        return privateKey;
     }
 
     public int myUid() {
@@ -77,7 +111,8 @@ public class Auth extends BaseModule {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                request(new RequestSendAuthCode(phone, APP_ID, APP_KEY),
+                request(new RequestSendAuthCode(phone, apiConfiguration.getAppId(),
+                                apiConfiguration.getAppKey()),
                         new RpcCallback<ResponseSendAuthCode>() {
                             @Override
                             public void onResult(final ResponseSendAuthCode response) {
@@ -116,10 +151,10 @@ public class Auth extends BaseModule {
                                 preferences().getLong(KEY_PHONE, 0),
                                 preferences().getString(KEY_SMS_HASH),
                                 code + "",
-                                RandomUtils.seed(1024),
+                                publicKey,
                                 deviceHash,
-                                "ActorLib",
-                                APP_ID, APP_KEY),
+                                apiConfiguration.getAppTitle(),
+                                apiConfiguration.getAppId(), apiConfiguration.getAppKey()),
                         new RpcCallback<ResponseAuth>() {
 
                             @Override
@@ -164,10 +199,10 @@ public class Auth extends BaseModule {
                         preferences().getString(KEY_SMS_HASH),
                         preferences().getInt(KEY_SMS_CODE, 0) + "",
                         firstName,
-                        RandomUtils.seed(1024),
+                        publicKey,
                         deviceHash,
-                        "ActorLib",
-                        APP_ID, APP_KEY,
+                        apiConfiguration.getAppTitle(),
+                        apiConfiguration.getAppId(), apiConfiguration.getAppKey(),
                         isSilent), new RpcCallback<ResponseAuth>() {
                     @Override
                     public void onResult(ResponseAuth response) {

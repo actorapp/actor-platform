@@ -15,6 +15,11 @@ public class CryptoUtils {
         CryptoUtils.provider = provider;
     }
 
+    public static CryptoKeyPair generateRSA1024KeyPair() {
+        return provider.generateRSA1024KeyPair();
+    }
+
+
     /**
      * Calculating SHA256
      *

@@ -2,7 +2,7 @@ package im.actor.model;
 
 import java.util.ArrayList;
 
-import im.actor.model.crypto.BouncyCastleProvider;
+import im.actor.model.crypto.bouncycastle.BouncyCastleProvider;
 import im.actor.model.network.ConnectionEndpoint;
 
 /**
@@ -33,6 +33,13 @@ public class ConfigurationBuilder {
     private boolean enableNetworkLogging = false;
 
     private NotificationProvider notificationProvider;
+
+    private ApiConfiguration apiConfiguration;
+
+    public ConfigurationBuilder setApiConfiguration(ApiConfiguration apiConfiguration) {
+        this.apiConfiguration = apiConfiguration;
+        return this;
+    }
 
     public ConfigurationBuilder setNotificationProvider(NotificationProvider notificationProvider) {
         this.notificationProvider = notificationProvider;
@@ -159,9 +166,12 @@ public class ConfigurationBuilder {
         if (cryptoProvider == null) {
             throw new RuntimeException("Crypto Provider not set");
         }
+        if (apiConfiguration == null) {
+            throw new RuntimeException("Api Configuration not set");
+        }
         return new Configuration(networking, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
                 threading, mainThread, enginesFactory, log, localeProvider,
                 phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider,
-                enableContactsLogging, enableNetworkLogging);
+                apiConfiguration, enableContactsLogging, enableNetworkLogging);
     }
 }

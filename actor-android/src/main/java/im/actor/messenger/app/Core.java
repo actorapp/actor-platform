@@ -23,6 +23,7 @@ import im.actor.messenger.app.images.VideoPreviewActor;
 import im.actor.messenger.app.images.VideoPreviewTask;
 import im.actor.messenger.app.images.VideoTask;
 import im.actor.messenger.storage.provider.AppEngineFactory;
+import im.actor.model.ApiConfiguration;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
 import im.actor.model.android.AndroidFileProvider;
@@ -122,13 +123,15 @@ public class Core {
         // builder.setCryptoProvider(new AndroidCryptoProvider());
         builder.setFileSystemProvider(new AndroidFileProvider(application));
         builder.setNotificationProvider(new AndroidNotifications());
-        
+
         if (BuildConfig.API_SSL) {
             builder.addEndpoint("tls://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
         } else {
             builder.addEndpoint("tcp://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
         }
         builder.setEnableContactsLogging(true);
+        builder.setApiConfiguration(new ApiConfiguration("Actor Android v0.1", 1, "??", "Android Device",
+                new byte[32]));
 
         this.messenger = new im.actor.model.Messenger(builder.build());
 
