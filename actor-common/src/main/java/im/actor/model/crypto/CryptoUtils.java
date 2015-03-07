@@ -26,6 +26,36 @@ public class CryptoUtils {
     }
 
     /**
+     * Calculating SHA256
+     *
+     * @param data source data
+     * @return SHA256 of data
+     */
+    public static byte[] SHA512(byte[] data) {
+        return provider.SHA512(data);
+    }
+
+    /**
+     * Generate securely random int
+     *
+     * @param maxValue maximum value of int
+     * @return random value
+     */
+    public static int randomInt(int maxValue) {
+        return provider.randomInt(maxValue);
+    }
+
+    /**
+     * Generate securely some amount of bytes
+     *
+     * @param len bytes count
+     * @return random bytes
+     */
+    public static byte[] randomBytes(int len) {
+        return provider.randomBytes(len);
+    }
+
+    /**
      * Calculating lowcase hex string
      *
      * @param bytes data for hex

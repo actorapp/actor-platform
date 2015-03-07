@@ -5,4 +5,10 @@ package im.actor.model;
  */
 public interface CryptoProvider {
     public byte[] SHA256(byte[] data);
+
+    public byte[] SHA512(byte[] data);
+
+    public byte[] randomBytes(int length);
+
+    public int randomInt(int maxValue);
 }
