@@ -46,6 +46,9 @@
       <concept id="1068580123137" name="jetbrains.mps.baseLanguage.structure.BooleanConstant" flags="nn" index="3clFbT">
         <property id="1068580123138" name="value" index="3clFbU" />
       </concept>
+      <concept id="1068581242878" name="jetbrains.mps.baseLanguage.structure.ReturnStatement" flags="nn" index="3cpWs6">
+        <child id="1068581517676" name="expression" index="3cqZAk" />
+      </concept>
       <concept id="1079359253375" name="jetbrains.mps.baseLanguage.structure.ParenthesizedExpression" flags="nn" index="1eOMI4">
         <child id="1079359253376" name="expression" index="1eOMHV" />
       </concept>
@@ -411,6 +414,60 @@
                   <node concept="uoxfO" id="2EAJ7H6ifBN" role="3t7uKA">
                     <ref role="uo_Cq" to="tsp6:2EAJ7H6hOqV" />
                   </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+  </node>
+  <node concept="2S6QgY" id="5NX0N0RPZlW">
+    <property role="TrG5h" value="SwitchTrait" />
+    <ref role="2ZfgGC" to="tsp6:4ASKzdDBfFg" resolve="Trait" />
+    <node concept="2Sbjvc" id="5NX0N0RPZlX" role="2ZfgGD">
+      <node concept="3clFbS" id="5NX0N0RPZlY" role="2VODD2">
+        <node concept="3clFbF" id="5NX0N0RQ2PZ" role="3cqZAp">
+          <node concept="37vLTI" id="5NX0N0RQ3tP" role="3clFbG">
+            <node concept="3fqX7Q" id="5NX0N0RQ3u9" role="37vLTx">
+              <node concept="2OqwBi" id="5NX0N0RQ3Bs" role="3fr31v">
+                <node concept="2Sf5sV" id="5NX0N0RQ3$n" role="2Oq$k0" />
+                <node concept="3TrcHB" id="5NX0N0RQ3Vq" role="2OqNvi">
+                  <ref role="3TsBF5" to="tsp6:5NX0N0RPBrE" resolve="isContainer" />
+                </node>
+              </node>
+            </node>
+            <node concept="2OqwBi" id="5NX0N0RQ2Se" role="37vLTJ">
+              <node concept="2Sf5sV" id="5NX0N0RQ2PX" role="2Oq$k0" />
+              <node concept="3TrcHB" id="5NX0N0RQ35k" role="2OqNvi">
+                <ref role="3TsBF5" to="tsp6:5NX0N0RPBrE" resolve="isContainer" />
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="2S6ZIM" id="5NX0N0RPZlZ" role="2ZfVej">
+      <node concept="3clFbS" id="5NX0N0RPZm0" role="2VODD2">
+        <node concept="3clFbJ" id="5NX0N0RQ0b$" role="3cqZAp">
+          <node concept="3clFbS" id="5NX0N0RQ0bA" role="3clFbx">
+            <node concept="3cpWs6" id="5NX0N0RQ1uL" role="3cqZAp">
+              <node concept="Xl_RD" id="5NX0N0RQ0Ub" role="3cqZAk">
+                <property role="Xl_RC" value="Change to Trait" />
+              </node>
+            </node>
+          </node>
+          <node concept="2OqwBi" id="5NX0N0RQ0m$" role="3clFbw">
+            <node concept="2Sf5sV" id="5NX0N0RQ0h9" role="2Oq$k0" />
+            <node concept="3TrcHB" id="5NX0N0RQ0HU" role="2OqNvi">
+              <ref role="3TsBF5" to="tsp6:5NX0N0RPBrE" resolve="isContainer" />
+            </node>
+          </node>
+          <node concept="9aQIb" id="5NX0N0RQ16o" role="9aQIa">
+            <node concept="3clFbS" id="5NX0N0RQ16p" role="9aQI4">
+              <node concept="3cpWs6" id="5NX0N0RQ1L1" role="3cqZAp">
+                <node concept="Xl_RD" id="5NX0N0RQ1iu" role="3cqZAk">
+                  <property role="Xl_RC" value="Change to Container" />
                 </node>
               </node>
             </node>

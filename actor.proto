@@ -707,6 +707,9 @@ message FileMessage {
     required int64 fileId = 1;
     required int64 accessHash = 2;
     required int32 fileSize = 3;
+    optional EncryptionType encryptionType = 9;
+    optional bytes encryptionKey = 10;
+    optional int32 plainFileSize = 11;
     required string name = 4;
     required string mimeType = 5;
     optional FastThumb thumb = 6;
@@ -1379,6 +1382,72 @@ message ResponseGetPublicKeys {
 }
 
 //////////////////////////////////////////////////////
+// Encrypted Messages
+//////////////////////////////////////////////////////
+
+// Encrypted package
+// v1MessageType Type of message v1. Always eq 1
+// v1Message Body of message v1
+// v1Crc32 Obsolete CRC32 of message type + body
+// v2Message Serialized EncryptedPackageV2
+// v2HmacSha256 HMAC-SHA256 of v2Message and AES key
+message EncryptedPackage {
+    optional int32 v1MessageType = 1;
+    optional bytes v1Message = 2;
+    optional int64 v1Crc32 = 3;
+    optional bytes v2Message = 5;
+    optional int64 v2HmacSha256 = 6;
+}
+
+message EncryptedMessageV1 {
+    required int64 rid = 1;
+    required int32 contentType = 2;
+    required bytes content = 3;
+}
+
+message EncryptedTextContentV1 {
+    required string text = 2;
+}
+
+message EncryptedDocumentV1 {
+    required string name = 1;
+    required string mimeType = 2;
+    required EncryptedFileLocationV1 fileLocation = 3;
+    optional FastThumb fastThumb = 4;
+    optional int32 extType = 5;
+    optional bytes extension = 6;
+}
+
+message EncryptedDocumentV1Photo {
+    required int32 width = 1;
+    required int32 height = 2;
+}
+
+message EncryptedDocumentV1Video {
+    required int32 width = 1;
+    required int32 height = 2;
+    required int32 duration = 3;
+}
+
+message EncryptedFileLocationV1 {
+    required int64 fileId = 1;
+    required int64 accessHash = 2;
+    required int32 fileSize = 3;
+    optional EncryptionType encryptionType = 4;
+    optional int32 encryptedFileSize = 5;
+    optional bytes encryptionKey = 6;
+}
+
+// Conversation message
+// rid RandomId of message
+// content Content of message
+message EncryptedMessageV2 {
+    required int64 rid = 1;
+    required int32 contentType = 2;
+    required bytes content = 3;
+}
+
+//////////////////////////////////////////////////////
 // Typing and Online
 //////////////////////////////////////////////////////
 
@@ -1452,6 +1521,12 @@ message UpdateGroupOnline {
 //////////////////////////////////////////////////////
 // Media and Files
 //////////////////////////////////////////////////////
+
+enum EncryptionType {
+    NONE = 0;
+    AES = 1;
+    AES_THEN_MAC = 2;
+}
 
 // Location of file on server
 // fileId Unique Id of file
