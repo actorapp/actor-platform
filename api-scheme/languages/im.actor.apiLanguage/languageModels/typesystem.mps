@@ -1122,6 +1122,43 @@
             </node>
           </node>
           <node concept="3clFbH" id="55bmeIQdEvq" role="3cqZAp" />
+          <node concept="3cpWs8" id="5NX0N0RSjsi" role="3cqZAp">
+            <node concept="3cpWsn" id="5NX0N0RSjsl" role="3cpWs9">
+              <property role="TrG5h" value="trait" />
+              <node concept="3Tqbb2" id="5NX0N0RSjsg" role="1tU5fm">
+                <ref role="ehGHo" to="tsp6:55bmeIQ7Zk$" resolve="TraitType" />
+              </node>
+              <node concept="1PxgMI" id="5NX0N0RSjY3" role="33vP2m">
+                <ref role="1PxNhF" to="tsp6:55bmeIQ7Zk$" resolve="TraitType" />
+                <node concept="2OqwBi" id="5NX0N0RSjwL" role="1PxMeX">
+                  <node concept="37vLTw" id="5NX0N0RSjul" role="2Oq$k0">
+                    <ref role="3cqZAo" node="55bmeIQb6CB" resolve="a" />
+                  </node>
+                  <node concept="3TrEf2" id="5NX0N0RSjMr" role="2OqNvi">
+                    <ref role="3Tt5mk" to="tsp6:22nuAqQyuiR" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+          <node concept="3clFbJ" id="5NX0N0RSk7d" role="3cqZAp">
+            <node concept="3clFbS" id="5NX0N0RSk7f" role="3clFbx">
+              <node concept="3N13vt" id="5NX0N0RSmBN" role="3cqZAp" />
+            </node>
+            <node concept="2OqwBi" id="5NX0N0RSlxB" role="3clFbw">
+              <node concept="2OqwBi" id="5NX0N0RSknG" role="2Oq$k0">
+                <node concept="37vLTw" id="5NX0N0RSkll" role="2Oq$k0">
+                  <ref role="3cqZAo" node="5NX0N0RSjsl" resolve="trait" />
+                </node>
+                <node concept="3TrEf2" id="5NX0N0RSllA" role="2OqNvi">
+                  <ref role="3Tt5mk" to="tsp6:55bmeIQ94H8" />
+                </node>
+              </node>
+              <node concept="3TrcHB" id="5NX0N0RSmAa" role="2OqNvi">
+                <ref role="3TsBF5" to="tsp6:5NX0N0RPBrE" resolve="isContainer" />
+              </node>
+            </node>
+          </node>
           <node concept="3clFbH" id="55bmeIQb4w2" role="3cqZAp" />
           <node concept="3clFbJ" id="55bmeIQaZKX" role="3cqZAp">
             <node concept="3clFbS" id="55bmeIQaZKY" role="3clFbx">
