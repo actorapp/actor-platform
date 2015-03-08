@@ -3,6 +3,7 @@ package im.actor.generator.generators.java;
 import im.actor.generator.FileGenerator;
 import im.actor.generator.scheme.SchemeDefinition;
 import im.actor.generator.scheme.SchemeStruct;
+import im.actor.generator.scheme.SchemeTrait;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,106 @@ public class StructGenerator {
         String destFolder = path + "/" + String.join("/", pkg.split("\\."));
         new File(destFolder).mkdirs();
 
+        for (SchemeTrait u : definition.getAllTraits()) {
+            String javaName = JavaConfig.getStructName(u.getName());
+            FileGenerator generator = new FileGenerator(destFolder + "/" + javaName + ".java");
+
+            generator.appendLn("package " + pkg + ";");
+            generator.appendLn(JavaConfig.NOTICE);
+            generator.appendLn();
+
+            for (String im : JavaConfig.IMPORTS) {
+                generator.appendLn("import " + im + ";");
+            }
+            generator.appendLn();
+            generator.appendLn("public abstract class " + javaName + " extends BserObject {");
+            generator.increaseDepth();
+            if (u.isContainer()) {
+                generator.appendLn("public static " + javaName + " fromBytes(byte[] src) throws IOException {");
+                generator.increaseDepth();
+                generator.appendLn("DataInput input = new DataInput(src, 0, src.length);");
+                generator.appendLn("int key = input.readInt();");
+                generator.appendLn("byte[] content = input.readProtoBytes();");
+            } else {
+                generator.appendLn("public static " + javaName + " fromBytes(int key, byte[] content) throws IOException {");
+                generator.increaseDepth();
+            }
+
+            generator.appendLn("switch(key) { ");
+            generator.increaseDepth();
+            for (SchemeStruct r : definition.getTraitedStructs(u.getName())) {
+                generator.appendLn("case " + r.getTraitRef().getKey() + ": return Bser.parse(new " + r.getName() + "(), content);");
+            }
+            generator.appendLn("default: return new " + u.getName() + "Unsupported(key, content);");
+            generator.decreaseDepth();
+            generator.appendLn("}");
+            generator.decreaseDepth();
+            generator.appendLn("}");
+
+            generator.appendLn("public abstract int getHeader();");
+
+            generator.decreaseDepth();
+            generator.appendLn("}");
+            generator.close();
+
+
+            generator = new FileGenerator(destFolder + "/" + javaName + "Unsupported.java");
+
+            generator.appendLn("package " + pkg + ";");
+            generator.appendLn(JavaConfig.NOTICE);
+            generator.appendLn();
+
+            for (String im : JavaConfig.IMPORTS) {
+                generator.appendLn("import " + im + ";");
+            }
+            generator.appendLn();
+            generator.appendLn("public class " + javaName + "Unsupported extends " + javaName + " {");
+            generator.increaseDepth();
+            generator.appendLn();
+            generator.appendLn("private int key;");
+            generator.appendLn("private byte[] content;");
+            generator.appendLn();
+            generator.appendLn("public " + javaName + "Unsupported(int key, byte[] content) {");
+            generator.increaseDepth();
+            generator.appendLn("this.key = key;");
+            generator.appendLn("this.content = content;");
+            generator.decreaseDepth();
+            generator.appendLn("}");
+            generator.appendLn();
+
+            generator.appendLn("@Override");
+            generator.appendLn("public int getHeader() {");
+            generator.increaseDepth();
+            generator.appendLn("return this.key;");
+            generator.decreaseDepth();
+            generator.appendLn("}");
+            generator.appendLn();
+            generator.appendLn("@Override");
+            generator.appendLn("public void parse(BserValues values) throws IOException {");
+            generator.increaseDepth();
+            generator.appendLn("throw new IOException(\"Parsing is unsupported\");");
+            generator.decreaseDepth();
+            generator.appendLn("}");
+            generator.appendLn();
+            generator.appendLn("@Override");
+            generator.appendLn("public void serialize(BserWriter writer) throws IOException {");
+            generator.increaseDepth();
+
+            if (u.isContainer()) {
+                generator.appendLn("writer.writeInt(1, key);");
+                generator.appendLn("writer.writeBytes(2, content);");
+            } else {
+                generator.appendLn("writer.writeRaw(content);");
+            }
+
+            generator.decreaseDepth();
+            generator.appendLn("}");
+            generator.appendLn();
+            generator.decreaseDepth();
+            generator.appendLn("}");
+            generator.close();
+        }
+
         for (SchemeStruct u : definition.getAllStructs()) {
             String javaName = JavaConfig.getStructName(u.getName());
             FileGenerator generator = new FileGenerator(destFolder + "/" + javaName + ".java");
@@ -30,7 +131,11 @@ public class StructGenerator {
                 generator.appendLn("import " + im + ";");
             }
             generator.appendLn();
-            generator.appendLn("public class " + javaName + " extends BserObject {");
+            if (u.getTraitRef() != null) {
+                generator.appendLn("public class " + javaName + " extends " + JavaConfig.getStructName(u.getTraitRef().getTrait()) + " {");
+            } else {
+                generator.appendLn("public class " + javaName + " extends BserObject {");
+            }
             generator.increaseDepth();
             generator.appendLn();
             ContainerGenerator.generateFields(generator, definition, u);
@@ -45,6 +150,15 @@ public class StructGenerator {
             generator.appendLn();
             generator.appendLn("}");
             generator.appendLn();
+
+            if (u.getTraitRef() != null) {
+                generator.appendLn("public int getHeader() {");
+                generator.increaseDepth();
+                generator.appendLn("return " + u.getTraitRef().getKey() + ";");
+                generator.decreaseDepth();
+                generator.appendLn("}");
+                generator.appendLn();
+            }
 
             ContainerGenerator.generateGetters(generator, definition, u);
 

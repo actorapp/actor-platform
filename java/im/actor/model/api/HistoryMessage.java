@@ -4,9 +4,11 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -18,10 +20,10 @@ public class HistoryMessage extends BserObject {
     private int senderUid;
     private long rid;
     private long date;
-    private MessageContent message;
+    private Message message;
     private MessageState state;
 
-    public HistoryMessage(int senderUid, long rid, long date, MessageContent message, MessageState state) {
+    public HistoryMessage(int senderUid, long rid, long date, Message message, MessageState state) {
         this.senderUid = senderUid;
         this.rid = rid;
         this.date = date;
@@ -45,7 +47,7 @@ public class HistoryMessage extends BserObject {
         return this.date;
     }
 
-    public MessageContent getMessage() {
+    public Message getMessage() {
         return this.message;
     }
 
@@ -58,7 +60,7 @@ public class HistoryMessage extends BserObject {
         this.senderUid = values.getInt(1);
         this.rid = values.getLong(2);
         this.date = values.getLong(3);
-        this.message = values.getObj(5, new MessageContent());
+        this.message = Message.fromBytes(values.getBytes(5));
         int val_state = values.getInt(6, 0);
         if (val_state != 0) {
             this.state = MessageState.parse(val_state);
@@ -73,7 +75,8 @@ public class HistoryMessage extends BserObject {
         if (this.message == null) {
             throw new IOException();
         }
-        writer.writeObject(5, this.message);
+
+        writer.writeBytes(5, this.message.toByteArray());
         if (this.state != null) {
             writer.writeInt(6, this.state.getValue());
         }

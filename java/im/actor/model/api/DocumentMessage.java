@@ -4,16 +4,18 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class FileMessage extends BserObject {
+public class DocumentMessage extends Message {
 
     private long fileId;
     private long accessHash;
@@ -27,7 +29,7 @@ public class FileMessage extends BserObject {
     private int extType;
     private byte[] ext;
 
-    public FileMessage(long fileId, long accessHash, int fileSize, EncryptionType encryptionType, byte[] encryptionKey, Integer plainFileSize, String name, String mimeType, FastThumb thumb, int extType, byte[] ext) {
+    public DocumentMessage(long fileId, long accessHash, int fileSize, EncryptionType encryptionType, byte[] encryptionKey, Integer plainFileSize, String name, String mimeType, FastThumb thumb, int extType, byte[] ext) {
         this.fileId = fileId;
         this.accessHash = accessHash;
         this.fileSize = fileSize;
@@ -41,8 +43,12 @@ public class FileMessage extends BserObject {
         this.ext = ext;
     }
 
-    public FileMessage() {
+    public DocumentMessage() {
 
+    }
+
+    public int getHeader() {
+        return 3;
     }
 
     public long getFileId() {
@@ -104,7 +110,9 @@ public class FileMessage extends BserObject {
         this.mimeType = values.getString(5);
         this.thumb = values.optObj(6, new FastThumb());
         this.extType = values.getInt(7);
-        this.ext = values.optBytes(8);
+        if (values.optBytes(8) != null) {
+            this.ext = DocumentEx.fromBytes(values.getInt(7), values.getBytes(8));
+        }
     }
 
     @Override
@@ -134,20 +142,21 @@ public class FileMessage extends BserObject {
         }
         writer.writeInt(7, this.extType);
         if (this.ext != null) {
+            writer.writeInt(7, this.ext.getHeader());
             writer.writeBytes(8, this.ext);
         }
     }
 
     @Override
     public String toString() {
-        String res = "struct FileMessage{";
+        String res = "struct DocumentMessage{";
         res += "fileId=" + this.fileId;
         res += ", fileSize=" + this.fileSize;
         res += ", name=" + this.name;
         res += ", mimeType=" + this.mimeType;
         res += ", thumb=" + (this.thumb != null ? "set":"empty");
         res += ", extType=" + this.extType;
-        res += ", ext=" + byteArrayToStringCompact(this.ext);
+        res += ", ext=" + (this.ext != null ? "set":"empty");
         res += "}";
         return res;
     }

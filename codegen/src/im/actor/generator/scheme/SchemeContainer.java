@@ -1,5 +1,6 @@
 package im.actor.generator.scheme;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,12 +8,27 @@ import java.util.List;
  * Created by ex3ndr on 14.11.14.
  */
 public abstract class SchemeContainer {
-    private List<SchemeAttribute> attributes = new ArrayList<SchemeAttribute>();
+    private ArrayList<SchemeAttribute> attributes = new ArrayList<SchemeAttribute>();
 
-    private List<SchemeDoc> docs = new ArrayList<SchemeDoc>();
+    private ArrayList<SchemeDoc> docs = new ArrayList<SchemeDoc>();
 
-    public List<SchemeAttribute> getAttributes() {
+    public ArrayList<SchemeAttribute> getAttributes() {
         return attributes;
+    }
+
+    public ArrayList<SchemeAttribute> getFilteredAttributes() {
+        ArrayList<SchemeAttribute> res = new ArrayList<SchemeAttribute>();
+        for (int i = 0; i < attributes.size(); i++) {
+            SchemeAttribute a = attributes.get(i);
+            if (a.getType() instanceof SchemePrimitiveType && ((SchemePrimitiveType) a.getType()).getName().equals("int32") &&
+                    i < attributes.size() - 1) {
+                if (attributes.get(i + 1).getType() instanceof SchemeTraitType) {
+                    continue;
+                }
+            }
+            res.add(a);
+        }
+        return res;
     }
 
     public SchemeAttribute getAttribute(String name) {
@@ -24,7 +40,7 @@ public abstract class SchemeContainer {
         return null;
     }
 
-    public List<SchemeDoc> getDocs() {
+    public ArrayList<SchemeDoc> getDocs() {
         return docs;
     }
 

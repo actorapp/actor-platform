@@ -28,6 +28,25 @@ public class SchemeDefinition {
         return res;
     }
 
+    public SchemeTrait getTrait(String name) {
+        for (SchemeTrait trait : getAllTraits()) {
+            if (trait.getName().equals(name)) {
+                return trait;
+            }
+        }
+        throw new RuntimeException("Unable to find trait");
+    }
+
+    public List<SchemeStruct> getTraitedStructs(String name) {
+        List<SchemeStruct> res = new ArrayList<SchemeStruct>();
+        for (SchemeStruct s : getAllStructs()) {
+            if (s.getTraitRef() != null && s.getTraitRef().getTrait().equals(name)) {
+                res.add(s);
+            }
+        }
+        return res;
+    }
+
     public List<SchemeTrait> getAllTraits() {
         List<SchemeTrait> res = new ArrayList<SchemeTrait>();
         for (SchemeSection section : sections) {
