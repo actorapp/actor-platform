@@ -4,47 +4,40 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class FileExVoice extends BserObject {
+public class DocumentExUnsupported extends DocumentEx {
 
-    private int duration;
+    private int key;
+    private byte[] content;
 
-    public FileExVoice(int duration) {
-        this.duration = duration;
+    public DocumentExUnsupported(int key, byte[] content) {
+        this.key = key;
+        this.content = content;
     }
 
-    public FileExVoice() {
-
-    }
-
-    public int getDuration() {
-        return this.duration;
+    @Override
+    public int getHeader() {
+        return this.key;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.duration = values.getInt(1);
+        throw new IOException("Parsing is unsupported");
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.duration);
-    }
-
-    @Override
-    public String toString() {
-        String res = "struct FileExVoice{";
-        res += "duration=" + this.duration;
-        res += "}";
-        return res;
+        writer.writeRaw(content);
     }
 
 }

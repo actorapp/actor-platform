@@ -4,16 +4,18 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class EncryptedDocumentV1 extends BserObject {
+public class EncryptedDocumentV1 extends EncryptedContentV1 {
 
     private String name;
     private String mimeType;
@@ -33,6 +35,10 @@ public class EncryptedDocumentV1 extends BserObject {
 
     public EncryptedDocumentV1() {
 
+    }
+
+    public int getHeader() {
+        return 2;
     }
 
     public String getName() {
@@ -66,7 +72,9 @@ public class EncryptedDocumentV1 extends BserObject {
         this.fileLocation = values.getObj(3, new EncryptedFileLocationV1());
         this.fastThumb = values.optObj(4, new FastThumb());
         this.extType = values.optInt(5);
-        this.extension = values.optBytes(6);
+        if (values.optBytes(6) != null) {
+            this.extension = EncryptedDocumentV1Ex.fromBytes(values.getInt(5), values.getBytes(6));
+        }
     }
 
     @Override
@@ -90,6 +98,7 @@ public class EncryptedDocumentV1 extends BserObject {
             writer.writeInt(5, this.extType);
         }
         if (this.extension != null) {
+            writer.writeInt(5, this.extension.getHeader());
             writer.writeBytes(6, this.extension);
         }
     }

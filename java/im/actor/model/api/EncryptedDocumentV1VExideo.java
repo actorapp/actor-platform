@@ -4,29 +4,35 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class EncryptedDocumentV1Video extends BserObject {
+public class EncryptedDocumentV1VExideo extends EncryptedDocumentV1Ex {
 
     private int width;
     private int height;
     private int duration;
 
-    public EncryptedDocumentV1Video(int width, int height, int duration) {
+    public EncryptedDocumentV1VExideo(int width, int height, int duration) {
         this.width = width;
         this.height = height;
         this.duration = duration;
     }
 
-    public EncryptedDocumentV1Video() {
+    public EncryptedDocumentV1VExideo() {
 
+    }
+
+    public int getHeader() {
+        return 2;
     }
 
     public int getWidth() {
@@ -57,7 +63,7 @@ public class EncryptedDocumentV1Video extends BserObject {
 
     @Override
     public String toString() {
-        String res = "struct EncryptedDocumentV1Video{";
+        String res = "struct EncryptedDocumentV1VExideo{";
         res += "}";
         return res;
     }

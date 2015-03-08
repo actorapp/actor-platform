@@ -4,9 +4,11 @@ package im.actor.model.api.rpc;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -67,6 +69,9 @@ public class ResponseSeqDate extends Response {
     @Override
     public String toString() {
         String res = "response SeqDate{";
+        res += "seq=" + this.seq;
+        res += ", state=" + byteArrayToString(this.state);
+        res += ", date=" + this.date;
         res += "}";
         return res;
     }

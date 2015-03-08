@@ -9,15 +9,9 @@ import java.util.List;
 public class SchemeResponse extends SchemeBaseResponse {
     private String name;
 
-    private List<SchemeDoc> docs = new ArrayList<SchemeDoc>();
-
     public SchemeResponse(String name, int header) {
         super(header);
         this.name = name;
-    }
-
-    public List<SchemeDoc> getDocs() {
-        return docs;
     }
 
     public String getName() {

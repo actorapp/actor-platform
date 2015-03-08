@@ -4,9 +4,11 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -21,10 +23,10 @@ public class Dialog extends BserObject {
     private int senderUid;
     private long rid;
     private long date;
-    private MessageContent message;
+    private Message message;
     private MessageState state;
 
-    public Dialog(Peer peer, int unreadCount, long sortDate, int senderUid, long rid, long date, MessageContent message, MessageState state) {
+    public Dialog(Peer peer, int unreadCount, long sortDate, int senderUid, long rid, long date, Message message, MessageState state) {
         this.peer = peer;
         this.unreadCount = unreadCount;
         this.sortDate = sortDate;
@@ -63,7 +65,7 @@ public class Dialog extends BserObject {
         return this.date;
     }
 
-    public MessageContent getMessage() {
+    public Message getMessage() {
         return this.message;
     }
 
@@ -79,7 +81,7 @@ public class Dialog extends BserObject {
         this.senderUid = values.getInt(5);
         this.rid = values.getLong(6);
         this.date = values.getLong(7);
-        this.message = values.getObj(8, new MessageContent());
+        this.message = Message.fromBytes(values.getBytes(8));
         int val_state = values.getInt(9, 0);
         if (val_state != 0) {
             this.state = MessageState.parse(val_state);
@@ -100,7 +102,8 @@ public class Dialog extends BserObject {
         if (this.message == null) {
             throw new IOException();
         }
-        writer.writeObject(8, this.message);
+
+        writer.writeBytes(8, this.message.toByteArray());
         if (this.state != null) {
             writer.writeInt(9, this.state.getValue());
         }

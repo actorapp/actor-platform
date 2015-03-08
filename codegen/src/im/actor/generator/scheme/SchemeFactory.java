@@ -42,6 +42,11 @@ public class SchemeFactory {
                         SchemeType attrType = loadType(attr.get("type"));
                         entity.getAttributes().add(new SchemeAttribute(attrName, attrId, attrType));
                     }
+                    if (content.has("trait")) {
+                        JsonNode jsonNode = content.get("trait");
+                        entity.setTraitRef(new SchemeTraitRef(jsonNode.get("key").asInt(),
+                                jsonNode.get("name").textValue()));
+                    }
                     if (content.has("doc")) {
                         JsonNode docs = content.get("doc");
                         for (JsonNode node : docs) {
@@ -205,7 +210,12 @@ public class SchemeFactory {
                         }
                     }
                 } else if (type.equals("trait")) {
-                    sect.getRecords().add(new SchemeTrait(item.get("content").get("name").textValue()));
+                    JsonNode node = item.get("content");
+                    boolean isContainer = false;
+                    if (node.has("isContainer")) {
+                        isContainer = node.get("isContainer").asBoolean();
+                    }
+                    sect.getRecords().add(new SchemeTrait(node.get("name").textValue(), isContainer));
                 } else if (type.equals("empty")) {
                     sect.getRecords().add(new SchemeWhitespace());
                 } else if (type.equals("comment")) {
