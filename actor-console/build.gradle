@@ -1,9 +1,20 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.tkruse.gradle:gradle-groovysh-plugin:1.0.4'
+    }
+}
+
 repositories {
     mavenCentral()
 }
 
-apply plugin: 'application'
+apply plugin: 'java'
 
+apply plugin: 'com.github.tkruse.groovysh'
 
 group = 'im.actor'
 version = '1.0'
@@ -13,13 +24,16 @@ compileJava {
     targetCompatibility = 1.6
 }
 
-mainClassName = "im.actor.console.Main"
+groovysh {
+    shell {
+        args = ['-e', 'import im.actor.console.ConsoleActor;\nConsoleActor.connect();\nmsg = ConsoleActor.getMessenger();']
+    }
+}
 
 dependencies {
     compile project(':actor-common')
     compile project(':actor-java')
     compile project(':actor-java-base')
-    compile 'com.googlecode.lanterna:lanterna:2.1.9'
+    compile project(':actor-bc')
     compile 'org.mapdb:mapdb:1.0.6'
-    compile 'com.droidkit:bser:1.2'
 }

@@ -1,11 +1,5 @@
 package im.actor.model.jvm;
 
-import im.actor.model.log.Log;
-import im.actor.model.network.Connection;
-import im.actor.model.network.ConnectionCallback;
-import im.actor.model.network.ConnectionEndpoint;
-
-import javax.net.ssl.SSLSocketFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +8,13 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.zip.CRC32;
+
+import javax.net.ssl.SSLSocketFactory;
+
+import im.actor.model.log.Log;
+import im.actor.model.network.Connection;
+import im.actor.model.network.ConnectionCallback;
+import im.actor.model.network.ConnectionEndpoint;
 
 /**
  * Created by ex3ndr on 06.02.15.
@@ -193,7 +194,7 @@ public class JavaTcpConnection implements Connection {
 //                        if (LOG != null && DEBUG) {
 //                            LOG.d(TAG, "Read #" + pkgIndex + " in " + (System.currentTimeMillis() - start) + " ms");
 //                        }
-                    callback.onMessage(pkg, 0, pkgLen);
+                    callback.onMessage(pkg, 0, pkg.length);
                 }
             } catch (final Throwable e) {
                 Log.e(TAG, e);
