@@ -4,54 +4,53 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class MessageContent extends BserObject {
+public class EncryptedTextContentV1 extends EncryptedContentV1 {
 
-    private int type;
-    private byte[] content;
+    private String text;
 
-    public MessageContent(int type, byte[] content) {
-        this.type = type;
-        this.content = content;
+    public EncryptedTextContentV1(String text) {
+        this.text = text;
     }
 
-    public MessageContent() {
+    public EncryptedTextContentV1() {
 
     }
 
-    public int getType() {
-        return this.type;
+    public int getHeader() {
+        return 1;
     }
 
-    public byte[] getContent() {
-        return this.content;
+    public String getText() {
+        return this.text;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.type = values.getInt(1);
-        this.content = values.getBytes(2);
+        this.text = values.getString(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.type);
-        writer.writeBytes(2, this.content);
+        if (this.text == null) {
+            throw new IOException();
+        }
+        writer.writeString(2, this.text);
     }
 
     @Override
     public String toString() {
-        String res = "struct MessageContent{";
-        res += "type=" + this.type;
-        res += ", content=" + (this.content != null ? "set":"empty");
+        String res = "struct EncryptedTextContentV1{";
         res += "}";
         return res;
     }

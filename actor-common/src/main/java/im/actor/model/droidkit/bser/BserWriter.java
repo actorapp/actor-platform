@@ -1,7 +1,5 @@
 package im.actor.model.droidkit.bser;
 
-import im.actor.model.util.DataOutput;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -83,6 +81,10 @@ public class BserWriter {
         BserWriter writer = new BserWriter(outputStream);
         value.serialize(writer);
         writeBytes(outputStream.toByteArray());
+    }
+
+    public void writeRaw(byte[] raw) throws IOException {
+        stream.writeBytes(raw, 0, raw.length);
     }
 
     private void writeTag(int fieldNumber, int wireType) throws IOException {

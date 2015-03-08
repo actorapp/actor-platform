@@ -4,9 +4,11 @@ package im.actor.model.api.rpc;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -70,6 +72,8 @@ public class ResponseAuth extends Response {
     @Override
     public String toString() {
         String res = "response Auth{";
+        res += "user=" + (this.user != null ? "set":"empty");
+        res += ", config=" + this.config;
         res += "}";
         return res;
     }

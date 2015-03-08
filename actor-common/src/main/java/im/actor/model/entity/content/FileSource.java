@@ -6,7 +6,7 @@ import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
-import im.actor.model.util.DataInput;
+import im.actor.model.droidkit.bser.DataInput;
 
 /**
  * Created by ex3ndr on 14.02.15.

@@ -5,7 +5,6 @@ import java.util.List;
 
 import im.actor.model.annotation.Verified;
 import im.actor.model.api.HistoryMessage;
-import im.actor.model.api.MessageContent;
 import im.actor.model.api.TextMessage;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.api.rpc.ResponseLoadHistory;
@@ -109,7 +108,7 @@ public class MessagesProcessor extends BaseModule {
 
 
     public void onMessage(im.actor.model.api.Peer _peer, int senderUid, long date, long rid,
-                          im.actor.model.api.MessageContent content) {
+                          im.actor.model.api.Message content) {
 
         Peer peer = convert(_peer);
         AbsContent msgContent = convert(content);
@@ -171,8 +170,8 @@ public class MessagesProcessor extends BaseModule {
                 if (plainMessage.getMessageType() == 1) {
                     EncryptedTextMessage encryptedTextMessage =
                             EncryptedTextMessage.fromBytes(plainMessage.getBody());
-                    onMessage(peer, senderUid, date, plainMessage.getRid(), new MessageContent(1,
-                            new TextMessage(encryptedTextMessage.getText(), 0, null).toByteArray()));
+                    onMessage(peer, senderUid, date, plainMessage.getRid(),
+                            new TextMessage(encryptedTextMessage.getText(), null));
                 }
             }
         } catch (Exception e) {

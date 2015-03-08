@@ -2,8 +2,6 @@ package im.actor.model.droidkit.bser;
 
 import java.io.IOException;
 
-import im.actor.model.util.DataInput;
-
 /**
  * Created by ex3ndr on 17.10.14.
  */

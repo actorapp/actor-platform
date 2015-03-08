@@ -1,13 +1,15 @@
 package im.actor.model.droidkit.bser;
 
-import im.actor.model.droidkit.bser.util.SparseArray;
-import im.actor.model.util.DataInput;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static im.actor.model.droidkit.bser.WireTypes.*;
+import im.actor.model.droidkit.bser.util.SparseArray;
+
+import static im.actor.model.droidkit.bser.WireTypes.TYPE_32BIT;
+import static im.actor.model.droidkit.bser.WireTypes.TYPE_64BIT;
+import static im.actor.model.droidkit.bser.WireTypes.TYPE_LENGTH_DELIMITED;
+import static im.actor.model.droidkit.bser.WireTypes.TYPE_VARINT;
 
 /**
  * Created by ex3ndr on 17.10.14.
