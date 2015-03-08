@@ -19,7 +19,7 @@ import im.actor.model.api.TextMessage;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.AvatarImage;
 import im.actor.model.entity.ContactRecord;
-import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.MessageState;
@@ -80,8 +80,8 @@ public class EntityConverter {
                 convert(avatarImage.getFileLocation(), "avatar.jpg", avatarImage.getFileSize()));
     }
 
-    public static FileLocation convert(im.actor.model.api.FileLocation location, String fileName, int size) {
-        return new FileLocation(location.getFileId(), location.getAccessHash(), size, fileName);
+    public static FileReference convert(im.actor.model.api.FileLocation location, String fileName, int size) {
+        return new FileReference(location.getFileId(), location.getAccessHash(), size, fileName);
     }
 
     public static Sex convert(im.actor.model.api.Sex sex) {
@@ -170,11 +170,11 @@ public class EntityConverter {
             String mimeType = documentMessage.getMimeType();
             String name = documentMessage.getName();
             im.actor.model.entity.content.FastThumb fastThumb = convert(documentMessage.getThumb());
-            FileLocation fileLocation = new FileLocation(documentMessage.getFileId(),
+            FileReference fileReference = new FileReference(documentMessage.getFileId(),
                     documentMessage.getAccessHash(),
                     documentMessage.getFileSize(),
                     documentMessage.getName());
-            FileRemoteSource source = new FileRemoteSource(fileLocation);
+            FileRemoteSource source = new FileRemoteSource(fileReference);
 
             if (documentMessage.getExt() instanceof DocumentExPhoto) {
                 DocumentExPhoto photo = (DocumentExPhoto) documentMessage.getExt();

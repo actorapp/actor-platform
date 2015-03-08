@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
-import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.FileReference;
 
 /**
  * Created by ex3ndr on 14.02.15.
@@ -17,39 +17,39 @@ public class FileRemoteSource extends FileSource {
         return fileLocalSource;
     }
 
-    private FileLocation fileLocation;
+    private FileReference fileReference;
 
-    public FileRemoteSource(FileLocation fileLocation) {
-        this.fileLocation = fileLocation;
+    public FileRemoteSource(FileReference fileReference) {
+        this.fileReference = fileReference;
     }
 
     private FileRemoteSource() {
 
     }
 
-    public FileLocation getFileLocation() {
-        return fileLocation;
+    public FileReference getFileReference() {
+        return fileReference;
     }
 
     @Override
     public int getSize() {
-        return fileLocation.getFileSize();
+        return fileReference.getFileSize();
     }
 
     @Override
     public String getFileName() {
-        return fileLocation.getFileName();
+        return fileReference.getFileName();
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         super.parse(values);
-        fileLocation = FileLocation.fromBytes(values.getBytes(2));
+        fileReference = FileReference.fromBytes(values.getBytes(2));
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         super.serialize(writer);
-        writer.writeObject(2, fileLocation);
+        writer.writeObject(2, fileReference);
     }
 }

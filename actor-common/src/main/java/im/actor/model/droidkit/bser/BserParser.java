@@ -14,11 +14,12 @@ import static im.actor.model.droidkit.bser.WireTypes.TYPE_VARINT;
 /**
  * Created by ex3ndr on 17.10.14.
  */
-public class BserParser {
+public final class BserParser {
     public static SparseArray<Object> deserialize(DataInput is) throws IOException {
         SparseArray<Object> hashMap = new SparseArray<Object>();
-        int currentTag;
-        while ((currentTag = is.readByteSilent()) > 0) {
+        while (!is.isEOF()) {
+            int currentTag = (int) is.readVarInt32();
+
             int id = currentTag >> 3;
             int type = currentTag & 0x7;
 
@@ -51,5 +52,9 @@ public class BserParser {
         } else {
             hashMap.put(id, res);
         }
+    }
+
+    private BserParser() {
+
     }
 }

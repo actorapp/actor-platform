@@ -3,6 +3,7 @@ repositories {
 }
 
 apply plugin: 'java'
+apply plugin: "jacoco"
 
 group = 'im.actor'
 version = '1.0'
@@ -10,6 +11,10 @@ version = '1.0'
 compileJava {
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
+}
+
+jacoco {
+    toolVersion = "0.7.1.201405082137"
 }
 
 dependencies {
@@ -24,3 +29,5 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
 }
+
+test { finalizedBy jacocoTestReport }

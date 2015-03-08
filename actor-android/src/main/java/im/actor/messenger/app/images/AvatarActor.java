@@ -6,8 +6,7 @@ import com.droidkit.images.loading.actors.base.BasicTaskActor;
 import com.droidkit.images.ops.ImageLoading;
 
 import im.actor.model.android.AndroidFileReference;
-import im.actor.model.entity.FileLocation;
-import im.actor.model.files.FileReference;
+import im.actor.model.entity.FileReference;
 import im.actor.model.modules.file.DownloadCallback;
 
 import static im.actor.messenger.app.Core.messenger;
@@ -18,11 +17,11 @@ import static im.actor.messenger.app.Core.messenger;
 public class AvatarActor extends BasicTaskActor<AvatarTask> {
 
     private DownloadCallback fileCallback = new ActorFileCallback();
-    private FileLocation location;
+    private FileReference location;
 
     public AvatarActor(AvatarTask task, ImageLoader loader) {
         super(task, loader);
-        location = getTask().getAvatar().getSmallImage().getFileLocation();
+        location = getTask().getAvatar().getSmallImage().getFileReference();
     }
 
     @Override
@@ -30,7 +29,7 @@ public class AvatarActor extends BasicTaskActor<AvatarTask> {
         messenger().bindRawFile(location, true, fileCallback);
     }
 
-    private void onDownloaded(FileReference reference) {
+    private void onDownloaded(im.actor.model.files.FileReference reference) {
         if (isCompleted()) {
             return;
         }
@@ -70,19 +69,19 @@ public class AvatarActor extends BasicTaskActor<AvatarTask> {
         }
 
         @Override
-        public void onDownloaded(FileReference reference) {
+        public void onDownloaded(im.actor.model.files.FileReference reference) {
             self().send(new OnDownloaded(reference));
         }
     }
 
     private class OnDownloaded {
-        private FileReference reference;
+        private im.actor.model.files.FileReference reference;
 
-        private OnDownloaded(FileReference reference) {
+        private OnDownloaded(im.actor.model.files.FileReference reference) {
             this.reference = reference;
         }
 
-        public FileReference getReference() {
+        public im.actor.model.files.FileReference getReference() {
             return reference;
         }
     }

@@ -193,7 +193,7 @@ public class PhotoHolder extends MessageHolder {
 
             if (fileMessage.getSource() instanceof FileRemoteSource) {
                 boolean autoDownload = fileMessage instanceof PhotoContent;
-                downloadFileVM = messenger().bindFile(((FileRemoteSource) fileMessage.getSource()).getFileLocation(),
+                downloadFileVM = messenger().bindFile(((FileRemoteSource) fileMessage.getSource()).getFileReference(),
                         autoDownload, new DownloadVMCallback(fileMessage));
             } else if (fileMessage.getSource() instanceof FileLocalSource) {
                 // TODO: Implement

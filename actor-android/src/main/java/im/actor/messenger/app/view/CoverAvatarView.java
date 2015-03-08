@@ -20,7 +20,7 @@ import im.actor.messenger.app.images.FileKeys;
 import im.actor.messenger.app.images.FullAvatarTask;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Avatar;
-import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.FileReference;
 
 /**
  * Created by ex3ndr on 26.12.14.
@@ -76,9 +76,9 @@ public class CoverAvatarView extends ImageReceiverView {
         clear();
 
         {
-            FileLocation fileLocation = avatar.getLargeImage().getFileLocation();
+            FileReference fileReference = avatar.getLargeImage().getFileReference();
             DiskCache diskCache = Core.getImageLoader().getInternalDiskCache();
-            String avatarKey = FileKeys.avatarKey(fileLocation.getFileId());
+            String avatarKey = FileKeys.avatarKey(fileReference.getFileId());
             String file = diskCache.lockFile(avatarKey);
             if (file != null) {
                 try {
@@ -91,9 +91,9 @@ public class CoverAvatarView extends ImageReceiverView {
             }
         }
         {
-            FileLocation fileLocation = avatar.getSmallImage().getFileLocation();
+            FileReference fileReference = avatar.getSmallImage().getFileReference();
             DiskCache diskCache = Core.getImageLoader().getInternalDiskCache();
-            String avatarKey = FileKeys.avatarKey(fileLocation.getFileId());
+            String avatarKey = FileKeys.avatarKey(fileReference.getFileId());
             String file = diskCache.lockFile(avatarKey);
             if (file != null) {
                 try {

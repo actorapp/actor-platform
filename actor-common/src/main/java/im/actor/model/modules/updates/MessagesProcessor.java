@@ -4,19 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.annotation.Verified;
+import im.actor.model.api.EncryptedDocumentV1;
+import im.actor.model.api.EncryptedDocumentV1ExPhoto;
+import im.actor.model.api.EncryptedDocumentV1VExideo;
+import im.actor.model.api.EncryptedMessageV1;
+import im.actor.model.api.EncryptedPackage;
+import im.actor.model.api.EncryptedTextContentV1;
 import im.actor.model.api.HistoryMessage;
-import im.actor.model.api.TextMessage;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.api.rpc.ResponseLoadHistory;
 import im.actor.model.crypto.AesCipher;
 import im.actor.model.crypto.RsaCipher;
+import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.entity.ContentDescription;
+import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.AbsContent;
+import im.actor.model.entity.content.DocumentContent;
+import im.actor.model.entity.content.FastThumb;
+import im.actor.model.entity.content.FileRemoteSource;
+import im.actor.model.entity.content.PhotoContent;
 import im.actor.model.entity.content.ServiceUserRegistered;
+import im.actor.model.entity.content.TextContent;
+import im.actor.model.entity.content.VideoContent;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.ConversationActor;
@@ -26,9 +39,6 @@ import im.actor.model.modules.messages.DialogsHistoryActor;
 import im.actor.model.modules.messages.OwnReadActor;
 import im.actor.model.modules.messages.PlainReceiverActor;
 import im.actor.model.modules.messages.SenderActor;
-import im.actor.model.modules.messages.encrypted.EncryptedTextMessage;
-import im.actor.model.modules.messages.encrypted.MessageContainer;
-import im.actor.model.modules.messages.encrypted.PlainMessage;
 import im.actor.model.modules.messages.entity.DialogHistory;
 import im.actor.model.modules.messages.entity.EntityConverter;
 import im.actor.model.modules.utils.RandomUtils;
@@ -112,12 +122,82 @@ public class MessagesProcessor extends BaseModule {
 
         Peer peer = convert(_peer);
         AbsContent msgContent = convert(content);
-        boolean isOut = myUid() == senderUid;
-
         if (msgContent == null) {
             // Ignore if content is unsupported
             return;
         }
+
+        onMessage(peer, senderUid, date, rid, msgContent);
+    }
+
+    public void onEncryptedMessage(im.actor.model.api.Peer _peer, int senderUid, long date,
+                                   long keyHash, byte[] aesEncryptedKey, byte[] message) {
+        Peer peer = convert(_peer);
+
+        RsaCipher cipher = crypto().createRSAOAEPSHA1Cipher(modules().getAuthModule().getPublicKey(),
+                modules().getAuthModule().getPrivateKey());
+        byte[] aesKey = cipher.decrypt(aesEncryptedKey);
+        if (aesKey == null) {
+            // unable to decrypt message
+            return;
+        }
+
+        byte[] key = substring(aesKey, aesKey.length - 16 - 32, 32);
+        byte[] iv = substring(aesKey, aesKey.length - 16, 16);
+
+        AesCipher aesCipher = crypto().createAESCBCPKS7Cipher(key, iv);
+
+        try {
+            byte[] decryptedRawMessage = aesCipher.decrypt(message);
+
+            int len = readInt(decryptedRawMessage, 0);
+            byte[] res = substring(decryptedRawMessage, 4, len);
+
+            EncryptedPackage encryptedPackage = Bser.parse(new EncryptedPackage(), res);
+            if (encryptedPackage.getV2Message() != null) {
+                // Process V2
+            } else {
+                if (encryptedPackage.getV1MessageType() != 1) {
+                    return;
+                }
+
+                EncryptedMessageV1 messageV1 = Bser.parse(new EncryptedMessageV1(), encryptedPackage.getV1Message());
+                if (messageV1.getContent() instanceof EncryptedTextContentV1) {
+                    EncryptedTextContentV1 text = (EncryptedTextContentV1) messageV1.getContent();
+                    onMessage(peer, senderUid, date, messageV1.getRid(), new TextContent(text.getText()));
+                } else if (messageV1.getContent() instanceof EncryptedDocumentV1) {
+                    EncryptedDocumentV1 document = (EncryptedDocumentV1) messageV1.getContent();
+                    AbsContent content;
+                    String name = document.getName();
+                    String mimeType = document.getMimeType();
+                    FastThumb fastThumb = EntityConverter.convert(document.getFastThumb());
+                    FileRemoteSource fileRemoteSource = new FileRemoteSource(new FileReference(
+                            document.getFileLocation().getFileId(),
+                            document.getFileLocation().getAccessHash(),
+                            document.getFileLocation().getFileSize(),
+                            document.getName()));
+
+                    if (document.getExtension() instanceof EncryptedDocumentV1ExPhoto) {
+                        EncryptedDocumentV1ExPhoto photo = (EncryptedDocumentV1ExPhoto) document.getExtension();
+                        content = new PhotoContent(fileRemoteSource, mimeType, name, fastThumb,
+                                photo.getWidth(), photo.getHeight());
+                    } else if (document.getExtension() instanceof EncryptedDocumentV1VExideo) {
+                        EncryptedDocumentV1VExideo video = (EncryptedDocumentV1VExideo) document.getExtension();
+                        content = new VideoContent(fileRemoteSource, mimeType, name, fastThumb,
+                                video.getDuration(), video.getWidth(), video.getHeight());
+                    } else {
+                        content = new DocumentContent(fileRemoteSource, mimeType, name, fastThumb);
+                    }
+                    onMessage(peer, senderUid, date, messageV1.getRid(), content);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onMessage(Peer peer, int senderUid, long date, long rid, AbsContent msgContent) {
+        boolean isOut = myUid() == senderUid;
 
         // Sending message to conversation
         Message message = new Message(rid, date, date, senderUid,
@@ -140,42 +220,6 @@ public class MessagesProcessor extends BaseModule {
 
             // Send information to OwnReadActor about out message
             ownReadActor().send(new OwnReadActor.NewOutMessage(peer, rid, date, false));
-        }
-    }
-
-    public void onEncryptedMessage(im.actor.model.api.Peer peer, int senderUid, long date,
-                                   long keyHash, byte[] aesEncryptedKey, byte[] message) {
-        RsaCipher cipher = crypto().createRSAOAEPSHA1Cipher(modules().getAuthModule().getPublicKey(),
-                modules().getAuthModule().getPrivateKey());
-        byte[] aesKey = cipher.decrypt(aesEncryptedKey);
-        if (aesKey == null) {
-            // unable to decrypt message
-            return;
-        }
-
-        byte[] key = substring(aesKey, aesKey.length - 16 - 32, 32);
-        byte[] iv = substring(aesKey, aesKey.length - 16, 16);
-
-        AesCipher aesCipher = crypto().createAESCBCPKS7Cipher(key, iv);
-
-        try {
-            byte[] decryptedRawMessage = aesCipher.decrypt(message);
-
-            int len = readInt(decryptedRawMessage, 0);
-            byte[] res = substring(decryptedRawMessage, 4, len);
-
-            MessageContainer container = MessageContainer.fromBytes(res);
-            if (container.getMessageType() == 1) {
-                PlainMessage plainMessage = PlainMessage.fromBytes(container.getBody());
-                if (plainMessage.getMessageType() == 1) {
-                    EncryptedTextMessage encryptedTextMessage =
-                            EncryptedTextMessage.fromBytes(plainMessage.getBody());
-                    onMessage(peer, senderUid, date, plainMessage.getRid(),
-                            new TextMessage(encryptedTextMessage.getText(), null));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

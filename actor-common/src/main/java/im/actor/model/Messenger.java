@@ -9,13 +9,12 @@ import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.debug.TraceInterface;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.entity.Dialog;
-import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
 import im.actor.model.entity.content.FastThumb;
-import im.actor.model.files.FileReference;
 import im.actor.model.i18n.I18nEngine;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
@@ -244,20 +243,20 @@ public class Messenger {
 
     public void sendPhoto(Peer peer, String fileName,
                           int w, int h, FastThumb fastThumb,
-                          FileReference fileReference) {
+                          im.actor.model.files.FileReference fileReference) {
         modules.getMessagesModule().sendPhoto(peer, fileName, w, h, fastThumb, fileReference);
     }
 
     public void sendVideo(Peer peer, String fileName, int w, int h, int duration,
-                          FastThumb fastThumb, FileReference fileReference) {
+                          FastThumb fastThumb, im.actor.model.files.FileReference fileReference) {
         modules.getMessagesModule().sendVideo(peer, fileName, w, h, duration, fastThumb, fileReference);
     }
 
-    public void sendDocument(Peer peer, String fileName, String mimeType, FileReference fileReference) {
+    public void sendDocument(Peer peer, String fileName, String mimeType, im.actor.model.files.FileReference fileReference) {
         sendDocument(peer, fileName, mimeType, fileReference, null);
     }
 
-    public void sendDocument(Peer peer, String fileName, String mimeType, FileReference fileReference,
+    public void sendDocument(Peer peer, String fileName, String mimeType, im.actor.model.files.FileReference fileReference,
                              FastThumb fastThumb) {
         modules.getMessagesModule().sendDocument(peer, fileName, mimeType, fastThumb, fileReference);
     }
@@ -320,16 +319,16 @@ public class Messenger {
 
     // File operations
 
-    public FileVM bindFile(FileLocation fileLocation, boolean isAutoStart, FileVMCallback callback) {
-        return new FileVM(fileLocation, isAutoStart, modules, callback);
+    public FileVM bindFile(FileReference fileReference, boolean isAutoStart, FileVMCallback callback) {
+        return new FileVM(fileReference, isAutoStart, modules, callback);
     }
 
     public UploadFileVM bindUpload(long rid, UploadFileVMCallback callback) {
         return new UploadFileVM(rid, callback, modules);
     }
 
-    public void bindRawFile(FileLocation fileLocation, boolean isAutoStart, DownloadCallback callback) {
-        modules.getFilesModule().bindFile(fileLocation, isAutoStart, callback);
+    public void bindRawFile(FileReference fileReference, boolean isAutoStart, DownloadCallback callback) {
+        modules.getFilesModule().bindFile(fileReference, isAutoStart, callback);
     }
 
     public void unbindRawFile(long fileId, boolean isAutoCancel, DownloadCallback callback) {
@@ -348,7 +347,7 @@ public class Messenger {
         modules.getFilesModule().cancelDownloading(fileId);
     }
 
-    public void startDownloading(FileLocation location) {
+    public void startDownloading(FileReference location) {
         modules.getFilesModule().startDownloading(location);
     }
 

@@ -16,12 +16,11 @@ import im.actor.messenger.app.fragment.chat.MessagesFragment;
 import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.FileTypes;
-import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.content.DocumentContent;
 import im.actor.model.entity.content.FileLocalSource;
 import im.actor.model.entity.content.FileRemoteSource;
-import im.actor.model.files.FileReference;
 import im.actor.model.modules.file.DownloadCallback;
 import im.actor.model.modules.file.UploadCallback;
 import im.actor.model.viewmodel.FileVM;
@@ -218,8 +217,8 @@ public class DocHolder extends MessageHolder {
 
             if (document.getSource() instanceof FileRemoteSource) {
                 FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
-                boolean autoDownload = remoteSource.getFileLocation().getFileSize() <= 1024 * 1024;// < 1MB
-                downloadFileVM = messenger().bindFile(remoteSource.getFileLocation(),
+                boolean autoDownload = remoteSource.getFileReference().getFileSize() <= 1024 * 1024;// < 1MB
+                downloadFileVM = messenger().bindFile(remoteSource.getFileReference(),
                         autoDownload, new DownloadVMCallback());
             } else if (document.getSource() instanceof FileLocalSource) {
                 uploadFileVM = messenger().bindUpload(message.getRid(), new UploadVMCallback());
@@ -233,7 +232,7 @@ public class DocHolder extends MessageHolder {
 
         if (document.getSource() instanceof FileRemoteSource) {
             FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
-            final FileLocation location = remoteSource.getFileLocation();
+            final FileReference location = remoteSource.getFileReference();
             messenger().requestState(location.getFileId(), new DownloadCallback() {
                 @Override
                 public void onNotDownloaded() {
@@ -246,7 +245,7 @@ public class DocHolder extends MessageHolder {
                 }
 
                 @Override
-                public void onDownloaded(FileReference reference) {
+                public void onDownloaded(im.actor.model.files.FileReference reference) {
                     // TODO: Open file
                 }
             });
@@ -323,7 +322,7 @@ public class DocHolder extends MessageHolder {
         }
 
         @Override
-        public void onDownloaded(FileReference reference) {
+        public void onDownloaded(im.actor.model.files.FileReference reference) {
             status.setText(R.string.chat_doc_open);
             showView(status);
 

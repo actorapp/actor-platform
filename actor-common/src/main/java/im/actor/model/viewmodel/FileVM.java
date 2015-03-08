@@ -1,7 +1,6 @@
 package im.actor.model.viewmodel;
 
-import im.actor.model.entity.FileLocation;
-import im.actor.model.files.FileReference;
+import im.actor.model.entity.FileReference;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.file.DownloadCallback;
 import im.actor.model.mvvm.AsyncVM;
@@ -11,11 +10,11 @@ import im.actor.model.mvvm.AsyncVM;
  */
 public class FileVM extends AsyncVM {
     private Modules modules;
-    private FileLocation location;
+    private FileReference location;
     private DownloadCallback callback;
     private FileVMCallback vmCallback;
 
-    public FileVM(FileLocation location, boolean isAutostart, Modules modules,
+    public FileVM(FileReference location, boolean isAutostart, Modules modules,
                   FileVMCallback vmCallback) {
         this.modules = modules;
         this.location = location;
@@ -32,7 +31,7 @@ public class FileVM extends AsyncVM {
             }
 
             @Override
-            public void onDownloaded(FileReference reference) {
+            public void onDownloaded(im.actor.model.files.FileReference reference) {
                 post(new OnDownloaded(reference));
             }
         };
@@ -73,13 +72,13 @@ public class FileVM extends AsyncVM {
     }
 
     private class OnDownloaded {
-        private FileReference fileReference;
+        private im.actor.model.files.FileReference fileReference;
 
-        private OnDownloaded(FileReference fileReference) {
+        private OnDownloaded(im.actor.model.files.FileReference fileReference) {
             this.fileReference = fileReference;
         }
 
-        public FileReference getFileReference() {
+        public im.actor.model.files.FileReference getFileReference() {
             return fileReference;
         }
     }

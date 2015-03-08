@@ -1,5 +1,6 @@
-inclue ':actor-common', ':actor-java-threads', ':actor-java'
+include ':actor-common', ':actor-java-threads', ':actor-java', ':actor-bc'
 
 project(':actor-common').projectDir = new File(settingsDir, "../actor-common")
 project(':actor-java').projectDir = new File(settingsDir, "../actor-java")
 project(':actor-java-threads').projectDir = new File(settingsDir, "../actor-java-threads")
+project(':actor-bc').projectDir = new File(settingsDir, "../actor-bc")

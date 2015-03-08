@@ -5,8 +5,7 @@ import java.io.IOException;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
-import im.actor.model.entity.FileLocation;
-import im.actor.model.files.FileReference;
+import im.actor.model.entity.FileReference;
 import im.actor.model.modules.file.DownloadCallback;
 import im.actor.model.modules.file.DownloadManager;
 import im.actor.model.modules.file.Downloaded;
@@ -67,8 +66,8 @@ public class Files extends BaseModule {
         return downloadedEngine;
     }
 
-    public void bindFile(FileLocation fileLocation, boolean isAutostart, DownloadCallback callback) {
-        downloadManager.send(new DownloadManager.BindDownload(fileLocation, isAutostart, callback));
+    public void bindFile(FileReference fileReference, boolean isAutostart, DownloadCallback callback) {
+        downloadManager.send(new DownloadManager.BindDownload(fileReference, isAutostart, callback));
     }
 
     public void unbindFile(long fileId, DownloadCallback callback, boolean cancel) {
@@ -98,7 +97,7 @@ public class Files extends BaseModule {
             }
 
             @Override
-            public void onDownloaded(final FileReference reference) {
+            public void onDownloaded(final im.actor.model.files.FileReference reference) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -109,7 +108,7 @@ public class Files extends BaseModule {
         }));
     }
 
-    public void startDownloading(FileLocation location) {
+    public void startDownloading(FileReference location) {
         downloadManager.send(new DownloadManager.StartDownload(location));
     }
 

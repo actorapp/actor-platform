@@ -322,6 +322,7 @@ dependencies {
     compile project(':actor-common')
     compile project(':actor-java')
     compile project(':actor-java-base')
+    compile project(':actor-bc')
 
     // DroidKit
     compile 'com.droidkit:actors:0.6.1'
