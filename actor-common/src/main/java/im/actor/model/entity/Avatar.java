@@ -1,11 +1,11 @@
 package im.actor.model.entity;
 
+import java.io.IOException;
+
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
-
-import java.io.IOException;
 
 /**
  * Created by ex3ndr on 09.02.15.
@@ -49,9 +49,12 @@ public class Avatar extends BserObject {
 
         Avatar avatar = (Avatar) o;
 
-        if (fullImage != null ? !fullImage.equals(avatar.fullImage) : avatar.fullImage != null) return false;
-        if (largeImage != null ? !largeImage.equals(avatar.largeImage) : avatar.largeImage != null) return false;
-        if (smallImage != null ? !smallImage.equals(avatar.smallImage) : avatar.smallImage != null) return false;
+        if (fullImage != null ? !fullImage.equals(avatar.fullImage) : avatar.fullImage != null)
+            return false;
+        if (largeImage != null ? !largeImage.equals(avatar.largeImage) : avatar.largeImage != null)
+            return false;
+        if (smallImage != null ? !smallImage.equals(avatar.smallImage) : avatar.smallImage != null)
+            return false;
 
         return true;
     }

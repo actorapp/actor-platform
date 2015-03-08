@@ -1,18 +1,17 @@
 package im.actor.model;
 
-import im.actor.model.entity.FileLocation;
-import im.actor.model.files.FileReference;
+import im.actor.model.entity.FileReference;
 
 /**
  * Created by ex3ndr on 26.02.15.
  */
 public interface FileSystemProvider {
 
-    public FileReference createTempFile();
+    public im.actor.model.files.FileReference createTempFile();
 
-    public FileReference commitTempFile(FileReference sourceFile, FileLocation fileLocation);
+    public im.actor.model.files.FileReference commitTempFile(im.actor.model.files.FileReference sourceFile, FileReference fileReference);
 
     public boolean isFsPersistent();
 
-    public FileReference fileFromDescriptor(String descriptor);
+    public im.actor.model.files.FileReference fileFromDescriptor(String descriptor);
 }

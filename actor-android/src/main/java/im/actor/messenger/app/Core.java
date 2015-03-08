@@ -31,6 +31,7 @@ import im.actor.model.android.AndroidLog;
 import im.actor.model.android.AndroidMainThread;
 import im.actor.model.android.AndroidNotifications;
 import im.actor.model.android.AndroidPhoneBook;
+import im.actor.model.crypto.bouncycastle.BouncyCastleProvider;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
 import im.actor.model.jvm.JavaLocale;
@@ -132,6 +133,7 @@ public class Core {
         builder.setEnableContactsLogging(true);
         builder.setApiConfiguration(new ApiConfiguration("Actor Android v0.1", 1, "??", "Android Device",
                 new byte[32]));
+        builder.setCryptoProvider(new BouncyCastleProvider());
 
         this.messenger = new im.actor.model.Messenger(builder.build());
 

@@ -19,12 +19,12 @@ public class AvatarImage extends BserObject {
 
     private int width;
     private int height;
-    private FileLocation fileLocation;
+    private FileReference fileReference;
 
-    public AvatarImage(int width, int height, FileLocation fileLocation) {
+    public AvatarImage(int width, int height, FileReference fileReference) {
         this.width = width;
         this.height = height;
-        this.fileLocation = fileLocation;
+        this.fileReference = fileReference;
     }
 
     private AvatarImage() {
@@ -39,8 +39,8 @@ public class AvatarImage extends BserObject {
         return height;
     }
 
-    public FileLocation getFileLocation() {
-        return fileLocation;
+    public FileReference getFileReference() {
+        return fileReference;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class AvatarImage extends BserObject {
 
         if (height != that.height) return false;
         if (width != that.width) return false;
-        if (!fileLocation.equals(that.fileLocation)) return false;
+        if (!fileReference.equals(that.fileReference)) return false;
 
         return true;
     }
@@ -61,7 +61,7 @@ public class AvatarImage extends BserObject {
     public int hashCode() {
         int result = width;
         result = 31 * result + height;
-        result = 31 * result + fileLocation.hashCode();
+        result = 31 * result + fileReference.hashCode();
         return result;
     }
 
@@ -69,13 +69,13 @@ public class AvatarImage extends BserObject {
     public void parse(BserValues values) throws IOException {
         width = values.getInt(1);
         height = values.getInt(2);
-        fileLocation = FileLocation.fromBytes(values.getBytes(3));
+        fileReference = FileReference.fromBytes(values.getBytes(3));
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, width);
         writer.writeInt(2, height);
-        writer.writeObject(3, fileLocation);
+        writer.writeObject(3, fileReference);
     }
 }

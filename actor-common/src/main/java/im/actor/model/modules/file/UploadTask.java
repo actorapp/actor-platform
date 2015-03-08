@@ -10,8 +10,7 @@ import im.actor.model.api.rpc.ResponseCompleteUpload;
 import im.actor.model.api.rpc.ResponseStartUpload;
 import im.actor.model.api.rpc.ResponseVoid;
 import im.actor.model.droidkit.actors.ActorRef;
-import im.actor.model.entity.FileLocation;
-import im.actor.model.files.FileReference;
+import im.actor.model.entity.FileReference;
 import im.actor.model.files.InputFile;
 import im.actor.model.files.OutputFile;
 import im.actor.model.log.Log;
@@ -34,10 +33,10 @@ public class UploadTask extends ModuleActor {
     private String fileName;
     private String descriptor;
 
-    private FileReference srcReference;
+    private im.actor.model.files.FileReference srcReference;
     private InputFile inputFile;
 
-    private FileReference destReference;
+    private im.actor.model.files.FileReference destReference;
     private OutputFile outputFile;
 
     private ActorRef manager;
@@ -141,9 +140,9 @@ public class UploadTask extends ModuleActor {
                 public void onResult(ResponseCompleteUpload response) {
                     Log.d(TAG, "Upload completed...");
 
-                    FileLocation location = EntityConverter.convert(response.getLocation(), fileName, srcReference.getSize());
+                    FileReference location = EntityConverter.convert(response.getLocation(), fileName, srcReference.getSize());
 
-                    FileReference reference = config().getFileSystemProvider().commitTempFile(destReference, location);
+                    im.actor.model.files.FileReference reference = config().getFileSystemProvider().commitTempFile(destReference, location);
 
                     reportComplete(location, reference);
                 }
@@ -225,7 +224,7 @@ public class UploadTask extends ModuleActor {
         manager.send(new UploadManager.UploadTaskProgress(rid, progress));
     }
 
-    private void reportComplete(FileLocation location, FileReference reference) {
+    private void reportComplete(FileReference location, im.actor.model.files.FileReference reference) {
         if (isCompleted) {
             return;
         }

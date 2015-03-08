@@ -10,7 +10,30 @@ public class DataInput {
     private int offset;
     private int maxOffset;
 
+    public DataInput(byte[] data) {
+        if (data == null) {
+            throw new IllegalArgumentException("data can't be null");
+        }
+
+        this.data = data;
+        this.offset = 0;
+        this.maxOffset = data.length;
+    }
+
     public DataInput(byte[] data, int offset, int len) {
+        if (data == null) {
+            throw new IllegalArgumentException("data can't be null");
+        }
+        if (offset < 0) {
+            throw new IllegalArgumentException("Offset can't be negative");
+        }
+        if (len < 0) {
+            throw new IllegalArgumentException("Length can't be negative");
+        }
+        if (data.length < offset + len) {
+            throw new IllegalArgumentException("Inconsistent lengths");
+        }
+
         this.data = data;
         this.offset = offset;
         this.maxOffset = offset + len;
@@ -23,11 +46,8 @@ public class DataInput {
         return data[offset++] & 0xFF;
     }
 
-    public int readByteSilent() throws IOException {
-        if (offset == maxOffset) {
-            return -1;
-        }
-        return data[offset++] & 0xFF;
+    public boolean isEOF() {
+        return offset >= maxOffset;
     }
 
     public int readInt() throws IOException {
@@ -68,7 +88,7 @@ public class DataInput {
     }
 
     public long readUInt() throws IOException {
-        if (offset + 8 > maxOffset) {
+        if (offset + 4 > maxOffset) {
             throw new IOException();
         }
 
@@ -81,6 +101,15 @@ public class DataInput {
     }
 
     public byte[] readBytes(int count) throws IOException {
+
+        if (count < 0) {
+            throw new IllegalArgumentException("Count can't be negative");
+        }
+
+        if (count > Limits.MAX_BLOCK_SIZE) {
+            throw new IllegalArgumentException("Unable to read more than 1 MB");
+        }
+
         if (offset + count > maxOffset) {
             throw new IOException("Too many to read, max len: " + maxOffset + ", required len: " + (offset + count));
         }
@@ -90,6 +119,14 @@ public class DataInput {
             res[i] = data[offset++];
         }
         return res;
+    }
+
+    public long readVarInt32() throws IOException {
+        long varInt = readVarInt();
+        if (varInt > Integer.MAX_VALUE || varInt < Integer.MIN_VALUE) {
+            throw new IOException("Too big VarInt32");
+        }
+        return varInt;
     }
 
     public long readVarInt() throws IOException {
@@ -119,13 +156,26 @@ public class DataInput {
     }
 
     public byte[] readProtoBytes() throws IOException {
-        int len = (int) readVarInt();
-        return readBytes(len);
+        long len = readVarInt();
+        if (len < 0) {
+            throw new IOException();
+        }
+        if (len > Limits.MAX_BLOCK_SIZE) {
+            throw new IOException();
+        }
+        return readBytes((int) len);
     }
 
     public long[] readProtoLongs() throws IOException {
-        int len = (int) readVarInt();
-        long[] res = new long[len];
+        long len = readVarInt();
+        if (len < 0) {
+            throw new IOException();
+        }
+        if (len > Limits.MAX_PROTO_REPEATED) {
+            throw new IOException();
+        }
+
+        long[] res = new long[(int) len];
         for (int i = 0; i < res.length; i++) {
             res[i] = readLong();
         }

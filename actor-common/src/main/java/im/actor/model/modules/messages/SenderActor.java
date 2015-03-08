@@ -14,7 +14,7 @@ import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestSendMessage;
 import im.actor.model.api.rpc.ResponseSeqDate;
 import im.actor.model.api.updates.UpdateMessageSent;
-import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
@@ -161,7 +161,7 @@ public class SenderActor extends ModuleActor {
         modules().getFilesModule().requestUpload(rid, descriptor, fileName, self());
     }
 
-    private void onFileUploaded(long rid, FileLocation fileLocation) {
+    private void onFileUploaded(long rid, FileReference fileReference) {
         PendingMessage msg = findPending(rid);
         if (msg == null) {
             return;
@@ -172,17 +172,17 @@ public class SenderActor extends ModuleActor {
         AbsContent nContent;
         if (msg.getContent() instanceof PhotoContent) {
             PhotoContent basePhotoContent = (PhotoContent) msg.getContent();
-            nContent = new PhotoContent(new FileRemoteSource(fileLocation), basePhotoContent.getMimetype(),
+            nContent = new PhotoContent(new FileRemoteSource(fileReference), basePhotoContent.getMimetype(),
                     basePhotoContent.getName(), basePhotoContent.getFastThumb(), basePhotoContent.getW(),
                     basePhotoContent.getH());
         } else if (msg.getContent() instanceof VideoContent) {
             VideoContent baseVideoContent = (VideoContent) msg.getContent();
-            nContent = new VideoContent(new FileRemoteSource(fileLocation), baseVideoContent.getMimetype(),
+            nContent = new VideoContent(new FileRemoteSource(fileReference), baseVideoContent.getMimetype(),
                     baseVideoContent.getName(), baseVideoContent.getFastThumb(), baseVideoContent.getDuration(),
                     baseVideoContent.getW(), baseVideoContent.getH());
         } else if (msg.getContent() instanceof DocumentContent) {
             DocumentContent baseDocContent = (DocumentContent) msg.getContent();
-            nContent = new DocumentContent(new FileRemoteSource(fileLocation), baseDocContent.getMimetype(),
+            nContent = new DocumentContent(new FileRemoteSource(fileReference), baseDocContent.getMimetype(),
                     baseDocContent.getName(), baseDocContent.getFastThumb());
         } else {
             return;
@@ -238,11 +238,11 @@ public class SenderActor extends ModuleActor {
                         documentContent.getFastThumb().getImage());
             }
 
-            message = new DocumentMessage(source.getFileLocation().getFileId(),
-                    source.getFileLocation().getAccessHash(),
-                    source.getFileLocation().getFileSize(),
+            message = new DocumentMessage(source.getFileReference().getFileId(),
+                    source.getFileReference().getAccessHash(),
+                    source.getFileReference().getFileSize(),
                     null, null, null,
-                    source.getFileLocation().getFileName(),
+                    source.getFileReference().getFileName(),
                     documentContent.getMimetype(),
                     fastThumb, documentEx);
         } else {
@@ -320,7 +320,7 @@ public class SenderActor extends ModuleActor {
                     sendDocument.getFileSize(), sendDocument.getFastThumb(), sendDocument.getDescriptor());
         } else if (message instanceof UploadManager.UploadCompleted) {
             UploadManager.UploadCompleted uploadCompleted = (UploadManager.UploadCompleted) message;
-            onFileUploaded(uploadCompleted.getRid(), uploadCompleted.getFileLocation());
+            onFileUploaded(uploadCompleted.getRid(), uploadCompleted.getFileReference());
         } else if (message instanceof UploadManager.UploadError) {
             UploadManager.UploadError uploadError = (UploadManager.UploadError) message;
             onFileUploadError(uploadError.getRid());

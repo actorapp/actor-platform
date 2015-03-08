@@ -4,8 +4,7 @@ import im.actor.model.FileSystemProvider;
 import im.actor.model.api.rpc.RequestGetFile;
 import im.actor.model.api.rpc.ResponseGetFile;
 import im.actor.model.droidkit.actors.ActorRef;
-import im.actor.model.entity.FileLocation;
-import im.actor.model.files.FileReference;
+import im.actor.model.entity.FileReference;
 import im.actor.model.files.OutputFile;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
@@ -22,11 +21,11 @@ public class DownloadTask extends ModuleActor {
 
     private final String TAG;
 
-    private FileLocation fileLocation;
+    private FileReference fileReference;
     private ActorRef manager;
     private FileSystemProvider fileSystemProvider;
 
-    private FileReference destReference;
+    private im.actor.model.files.FileReference destReference;
     private OutputFile outputFile;
 
     private boolean isCompleted;
@@ -37,10 +36,10 @@ public class DownloadTask extends ModuleActor {
     private int currentDownloads = 0;
     private int downloaded = 0;
 
-    public DownloadTask(FileLocation fileLocation, ActorRef manager, Modules messenger) {
+    public DownloadTask(FileReference fileReference, ActorRef manager, Modules messenger) {
         super(messenger);
-        this.TAG = "DownloadTask{" + fileLocation.getFileId() + "}";
-        this.fileLocation = fileLocation;
+        this.TAG = "DownloadTask{" + fileReference.getFileId() + "}";
+        this.fileReference = fileReference;
         this.manager = manager;
     }
 
@@ -63,7 +62,7 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        outputFile = destReference.openWrite(fileLocation.getFileSize());
+        outputFile = destReference.openWrite(fileReference.getFileSize());
         if (outputFile == null) {
             reportError();
             Log.d(TAG, "Unable to write wile");
@@ -74,8 +73,8 @@ public class DownloadTask extends ModuleActor {
     }
 
     private void startDownload() {
-        blocksCount = fileLocation.getFileSize() / blockSize;
-        if (fileLocation.getFileSize() % blockSize != 0) {
+        blocksCount = fileReference.getFileSize() / blockSize;
+        if (fileReference.getFileSize() % blockSize != 0) {
             blocksCount++;
         }
 
@@ -94,7 +93,7 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        FileReference reference = fileSystemProvider.commitTempFile(destReference, fileLocation);
+        im.actor.model.files.FileReference reference = fileSystemProvider.commitTempFile(destReference, fileReference);
         if (reference == null) {
             reportError();
             return;
@@ -128,8 +127,8 @@ public class DownloadTask extends ModuleActor {
     }
 
     private void downloadPart(final int blockIndex, final int fileOffset) {
-        request(new RequestGetFile(new im.actor.model.api.FileLocation(fileLocation.getFileId(),
-                fileLocation.getAccessHash()), fileOffset, blockSize), new RpcCallback<ResponseGetFile>() {
+        request(new RequestGetFile(new im.actor.model.api.FileLocation(fileReference.getFileId(),
+                fileReference.getAccessHash()), fileOffset, blockSize), new RpcCallback<ResponseGetFile>() {
             @Override
             public void onResult(ResponseGetFile response) {
                 downloaded++;
@@ -157,21 +156,21 @@ public class DownloadTask extends ModuleActor {
             return;
         }
         isCompleted = true;
-        manager.send(new DownloadManager.OnDownloadedError(fileLocation.getFileId()));
+        manager.send(new DownloadManager.OnDownloadedError(fileReference.getFileId()));
     }
 
     private void reportProgress(float progress) {
         if (isCompleted) {
             return;
         }
-        manager.send(new DownloadManager.OnDownloadProgress(fileLocation.getFileId(), progress));
+        manager.send(new DownloadManager.OnDownloadProgress(fileReference.getFileId(), progress));
     }
 
-    private void reportComplete(FileReference reference) {
+    private void reportComplete(im.actor.model.files.FileReference reference) {
         if (isCompleted) {
             return;
         }
         isCompleted = true;
-        manager.send(new DownloadManager.OnDownloaded(fileLocation.getFileId(), reference));
+        manager.send(new DownloadManager.OnDownloaded(fileReference.getFileId(), reference));
     }
 }

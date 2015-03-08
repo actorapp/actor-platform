@@ -7,23 +7,31 @@ import java.util.List;
  * Created by ex3ndr on 17.10.14.
  */
 public class BserWriter {
-    private static final int TYPE_VARINT = 0;
-    private static final int TYPE_32BIT = 5;
-    private static final int TYPE_64BIT = 1;
-    private static final int TYPE_LENGTH_DELIMITED = 2;
 
     private DataOutput stream;
 
     public BserWriter(DataOutput stream) {
+        if (stream == null) {
+            throw new IllegalArgumentException("Stream can not be null");
+        }
+
         this.stream = stream;
     }
 
-
     public void writeBytes(int fieldNumber, byte[] value) throws IOException {
+        if (value == null) {
+            throw new IllegalArgumentException("Value can not be null");
+        }
+        if (value.length > Limits.MAX_BLOCK_SIZE) {
+            throw new IllegalArgumentException("Unable to write more than 1 MB");
+        }
         writeBytesField(fieldNumber, value);
     }
 
     public void writeString(int fieldNumber, String value) throws IOException {
+        if (value == null) {
+            throw new IllegalArgumentException("Value can not be null");
+        }
         writeBytesField(fieldNumber, value.getBytes());
     }
 
@@ -52,31 +60,71 @@ public class BserWriter {
     }
 
     public void writeRepeatedLong(int fieldNumber, List<Long> values) throws IOException {
-        for (long l : values) {
+        if (values == null) {
+            throw new IllegalArgumentException("Values can not be null");
+        }
+        if (values.size() > Limits.MAX_PROTO_REPEATED) {
+            throw new IllegalArgumentException("Too many values");
+        }
+        for (Long l : values) {
+            if (l == null) {
+                throw new IllegalArgumentException("Value can not be null");
+            }
             writeVar64Field(fieldNumber, l);
         }
     }
 
     public void writeRepeatedInt(int fieldNumber, List<Integer> values) throws IOException {
-        for (long l : values) {
+        if (values == null) {
+            throw new IllegalArgumentException("Values can not be null");
+        }
+        if (values.size() > Limits.MAX_PROTO_REPEATED) {
+            throw new IllegalArgumentException("Too many values");
+        }
+        for (Integer l : values) {
+            if (l == null) {
+                throw new IllegalArgumentException("Value can not be null");
+            }
             writeVar32Field(fieldNumber, l);
         }
     }
 
     public void writeRepeatedBool(int fieldNumber, List<Boolean> values) throws IOException {
+        if (values == null) {
+            throw new IllegalArgumentException("Values can not be null");
+        }
+        if (values.size() > Limits.MAX_PROTO_REPEATED) {
+            throw new IllegalArgumentException("Too many values");
+        }
         for (Boolean l : values) {
+            if (l == null) {
+                throw new IllegalArgumentException("Value can not be null");
+            }
             writeBool(fieldNumber, l);
         }
     }
 
     public <T extends BserObject> void writeRepeatedObj(int fieldNumber, List<T> values) throws IOException {
+        if (values == null) {
+            throw new IllegalArgumentException("Values can not be null");
+        }
+        if (values.size() > Limits.MAX_PROTO_REPEATED) {
+            throw new IllegalArgumentException("Too many values");
+        }
         for (T l : values) {
+            if (l == null) {
+                throw new IllegalArgumentException("Value can not be null");
+            }
             writeObject(fieldNumber, l);
         }
     }
 
     public void writeObject(int fieldNumber, BserObject value) throws IOException {
-        writeTag(fieldNumber, TYPE_LENGTH_DELIMITED);
+        if (value == null) {
+            throw new IllegalArgumentException("Value can not be null");
+        }
+
+        writeTag(fieldNumber, WireTypes.TYPE_LENGTH_DELIMITED);
         DataOutput outputStream = new DataOutput();
         BserWriter writer = new BserWriter(outputStream);
         value.serialize(writer);
@@ -84,31 +132,39 @@ public class BserWriter {
     }
 
     public void writeRaw(byte[] raw) throws IOException {
+        if (raw == null) {
+            throw new IllegalArgumentException("Raw can not be null");
+        }
+
         stream.writeBytes(raw, 0, raw.length);
     }
 
     private void writeTag(int fieldNumber, int wireType) throws IOException {
-        byte tag = (byte) (fieldNumber << 3 | wireType);
-        stream.writeByte(tag);
+        if (fieldNumber <= 0) {
+            throw new IllegalArgumentException("fieldNumber can't be less or eq to zero");
+        }
+
+        long tag = ((long) (fieldNumber << 3) | wireType);
+        stream.writeVarInt(tag);
     }
 
     private void writeVarIntField(int fieldNumber, long value) throws IOException {
-        writeTag(fieldNumber, TYPE_VARINT);
+        writeTag(fieldNumber, WireTypes.TYPE_VARINT);
         writeVarInt(value);
     }
 
     private void writeBytesField(int fieldNumber, byte[] value) throws IOException {
-        writeTag(fieldNumber, TYPE_LENGTH_DELIMITED);
+        writeTag(fieldNumber, WireTypes.TYPE_LENGTH_DELIMITED);
         writeBytes(value);
     }
 
     private void writeVar64Field(int fieldNumber, long value) throws IOException {
-        writeTag(fieldNumber, TYPE_64BIT);
+        writeTag(fieldNumber, WireTypes.TYPE_64BIT);
         writeLong(value);
     }
 
     private void writeVar32Field(int fieldNumber, long value) throws IOException {
-        writeTag(fieldNumber, TYPE_32BIT);
+        writeTag(fieldNumber, WireTypes.TYPE_32BIT);
         writeInt(value);
     }
 

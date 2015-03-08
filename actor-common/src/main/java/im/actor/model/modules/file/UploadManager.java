@@ -6,8 +6,7 @@ import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.droidkit.actors.messages.PoisonPill;
-import im.actor.model.entity.FileLocation;
-import im.actor.model.files.FileReference;
+import im.actor.model.entity.FileReference;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
@@ -168,7 +167,7 @@ public class UploadManager extends ModuleActor {
         }
     }
 
-    public void onUploadTaskComplete(long rid, FileLocation fileLocation, FileReference reference) {
+    public void onUploadTaskComplete(long rid, FileReference fileReference, im.actor.model.files.FileReference reference) {
         Log.d(TAG, "Upload #" + rid + " complete");
 
         QueueItem queueItem = findItem(rid);
@@ -184,14 +183,14 @@ public class UploadManager extends ModuleActor {
         queueItem.taskRef.send(PoisonPill.INSTANCE);
 
         // Saving reference to uploaded file
-        modules().getFilesModule().getDownloadedEngine().addOrUpdateItem(new Downloaded(fileLocation.getFileId(),
-                fileLocation.getFileSize(), reference.getDescriptor()));
+        modules().getFilesModule().getDownloadedEngine().addOrUpdateItem(new Downloaded(fileReference.getFileId(),
+                fileReference.getFileSize(), reference.getDescriptor()));
 
         for (UploadCallback fileCallback : queueItem.callbacks) {
             fileCallback.onUploaded();
         }
 
-        queueItem.requestActor.send(new UploadCompleted(rid, fileLocation));
+        queueItem.requestActor.send(new UploadCompleted(rid, fileReference));
     }
 
     private void checkQueue() {
@@ -408,10 +407,10 @@ public class UploadManager extends ModuleActor {
 
     public static class UploadTaskComplete {
         private long rid;
-        private FileLocation location;
-        private FileReference reference;
+        private FileReference location;
+        private im.actor.model.files.FileReference reference;
 
-        public UploadTaskComplete(long rid, FileLocation location, FileReference reference) {
+        public UploadTaskComplete(long rid, FileReference location, im.actor.model.files.FileReference reference) {
             this.rid = rid;
             this.location = location;
             this.reference = reference;
@@ -421,30 +420,30 @@ public class UploadManager extends ModuleActor {
             return rid;
         }
 
-        public FileReference getReference() {
+        public im.actor.model.files.FileReference getReference() {
             return reference;
         }
 
-        public FileLocation getLocation() {
+        public FileReference getLocation() {
             return location;
         }
     }
 
     public static class UploadCompleted {
         private long rid;
-        private FileLocation fileLocation;
+        private FileReference fileReference;
 
-        public UploadCompleted(long rid, FileLocation fileLocation) {
+        public UploadCompleted(long rid, FileReference fileReference) {
             this.rid = rid;
-            this.fileLocation = fileLocation;
+            this.fileReference = fileReference;
         }
 
         public long getRid() {
             return rid;
         }
 
-        public FileLocation getFileLocation() {
-            return fileLocation;
+        public FileReference getFileReference() {
+            return fileReference;
         }
     }
 

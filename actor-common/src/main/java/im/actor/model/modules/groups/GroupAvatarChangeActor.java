@@ -2,7 +2,7 @@ package im.actor.model.modules.groups;
 
 import java.util.HashMap;
 
-import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.FileReference;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.modules.utils.RandomUtils;
@@ -29,7 +29,7 @@ public class GroupAvatarChangeActor extends ModuleActor {
         modules().getFilesModule().requestUpload(rid, descriptor, "avatar.jpg", self());
     }
 
-    public void uploadCompleted(final long rid, FileLocation fileLocation) {
+    public void uploadCompleted(final long rid, FileReference fileReference) {
         
     }
 }
