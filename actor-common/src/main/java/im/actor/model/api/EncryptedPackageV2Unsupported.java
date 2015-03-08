@@ -4,56 +4,41 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class FileExPhoto extends BserObject {
+public class EncryptedPackageV2Unsupported extends EncryptedPackageV2 {
 
-    private int w;
-    private int h;
+    private int key;
+    private byte[] content;
 
-    public FileExPhoto(int w, int h) {
-        this.w = w;
-        this.h = h;
+    public EncryptedPackageV2Unsupported(int key, byte[] content) {
+        this.key = key;
+        this.content = content;
     }
 
-    public FileExPhoto() {
-
-    }
-
-    public int getW() {
-        return this.w;
-    }
-
-    public int getH() {
-        return this.h;
+    @Override
+    public int getHeader() {
+        return this.key;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.w = values.getInt(1);
-        this.h = values.getInt(2);
+        throw new IOException("Parsing is unsupported");
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.w);
-        writer.writeInt(2, this.h);
-    }
-
-    @Override
-    public String toString() {
-        String res = "struct FileExPhoto{";
-        res += "w=" + this.w;
-        res += ", h=" + this.h;
-        res += "}";
-        return res;
+        writer.writeInt(1, key);
+        writer.writeBytes(2, content);
     }
 
 }

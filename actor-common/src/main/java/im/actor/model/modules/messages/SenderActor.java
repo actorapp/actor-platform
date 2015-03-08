@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.model.api.FileExPhoto;
-import im.actor.model.api.FileExVideo;
-import im.actor.model.api.FileMessage;
-import im.actor.model.api.MessageContent;
+import im.actor.model.api.DocumentEx;
+import im.actor.model.api.DocumentExPhoto;
+import im.actor.model.api.DocumentExVideo;
+import im.actor.model.api.DocumentMessage;
 import im.actor.model.api.OutPeer;
 import im.actor.model.api.TextMessage;
 import im.actor.model.api.base.SeqUpdate;
@@ -212,25 +212,22 @@ public class SenderActor extends ModuleActor {
             return;
         }
 
-        MessageContent reqContent;
+        im.actor.model.api.Message message;
         if (content instanceof TextContent) {
-            reqContent = new MessageContent(0x01,
-                    new TextMessage(((TextContent) content).getText(), 0, new byte[0]).toByteArray());
+            message = new TextMessage(((TextContent) content).getText(), null);
         } else if (content instanceof DocumentContent) {
             DocumentContent documentContent = (DocumentContent) content;
+
             FileRemoteSource source = (FileRemoteSource) documentContent.getSource();
 
-            int extType = 0;
-            byte[] ext = null;
+            DocumentEx documentEx = null;
 
             if (content instanceof PhotoContent) {
                 PhotoContent photoContent = (PhotoContent) content;
-                extType = 1;
-                ext = new FileExPhoto(photoContent.getW(), photoContent.getH()).toByteArray();
+                documentEx = new DocumentExPhoto(photoContent.getW(), photoContent.getH());
             } else if (content instanceof VideoContent) {
                 VideoContent videoContent = (VideoContent) content;
-                extType = 2;
-                ext = new FileExVideo(videoContent.getW(), videoContent.getH(), videoContent.getDuration()).toByteArray();
+                documentEx = new DocumentExVideo(videoContent.getW(), videoContent.getH(), videoContent.getDuration());
             }
 
             im.actor.model.api.FastThumb fastThumb = null;
@@ -241,19 +238,18 @@ public class SenderActor extends ModuleActor {
                         documentContent.getFastThumb().getImage());
             }
 
-            reqContent = new MessageContent(0x03,
-                    new FileMessage(source.getFileLocation().getFileId(),
-                            source.getFileLocation().getAccessHash(),
-                            source.getFileLocation().getFileSize(),
-                            source.getFileLocation().getFileName(),
-                            documentContent.getMimetype(),
-                            fastThumb,
-                            extType, ext).toByteArray());
+            message = new DocumentMessage(source.getFileLocation().getFileId(),
+                    source.getFileLocation().getAccessHash(),
+                    source.getFileLocation().getFileSize(),
+                    null, null, null,
+                    source.getFileLocation().getFileName(),
+                    documentContent.getMimetype(),
+                    fastThumb, documentEx);
         } else {
             return;
         }
 
-        request(new RequestSendMessage(outPeer, rid, reqContent),
+        request(new RequestSendMessage(outPeer, rid, message),
                 new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {

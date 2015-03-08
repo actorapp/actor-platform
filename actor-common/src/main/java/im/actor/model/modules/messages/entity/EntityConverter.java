@@ -1,18 +1,21 @@
 package im.actor.model.modules.messages.entity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.model.api.FileExPhoto;
-import im.actor.model.api.FileExVideo;
+import im.actor.model.api.DocumentExPhoto;
+import im.actor.model.api.DocumentExVideo;
+import im.actor.model.api.DocumentMessage;
 import im.actor.model.api.Member;
+import im.actor.model.api.ServiceEx;
 import im.actor.model.api.ServiceExChangedAvatar;
 import im.actor.model.api.ServiceExChangedTitle;
+import im.actor.model.api.ServiceExGroupCreated;
 import im.actor.model.api.ServiceExUserAdded;
 import im.actor.model.api.ServiceExUserKicked;
+import im.actor.model.api.ServiceExUserLeft;
 import im.actor.model.api.ServiceMessage;
-import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.api.TextMessage;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.AvatarImage;
 import im.actor.model.entity.ContactRecord;
@@ -134,67 +137,55 @@ public class EntityConverter {
         return new Peer(convert(peer.getType()), peer.getId());
     }
 
-    public static AbsContent convert(im.actor.model.api.MessageContent content) {
-        try {
-            if (content.getType() == 0x01) {
-                im.actor.model.api.TextMessage textMessage = Bser.parse(new im.actor.model.api.TextMessage(),
-                        content.getContent());
-                return new TextContent(textMessage.getText());
-            } else if (content.getType() == 0x02) {
-                ServiceMessage serviceMessage = Bser.parse(new ServiceMessage(), content.getContent());
-                if (serviceMessage.getExtType() == 0x04) {
-                    // TODO: pass title
-                    return new ServiceGroupCreated("???");
-                } else if (serviceMessage.getExtType() == 0x05) {
-                    ServiceExChangedTitle title = Bser.parse(new ServiceExChangedTitle(), serviceMessage.getExt());
-                    return new ServiceGroupTitleChanged(title.getTitle());
-                } else if (serviceMessage.getExtType() == 0x06) {
-                    ServiceExChangedAvatar title = Bser.parse(new ServiceExChangedAvatar(), serviceMessage.getExt());
-                    return new ServiceGroupAvatarChanged(convert(title.getAvatar()));
-                } else if (serviceMessage.getExtType() == 0x01) {
-                    ServiceExUserAdded added = Bser.parse(new ServiceExUserAdded(), serviceMessage.getExt());
-                    return new ServiceGroupUserAdded(added.getAddedUid());
-                } else if (serviceMessage.getExtType() == 0x02) {
-                    ServiceExUserKicked added = Bser.parse(new ServiceExUserKicked(), serviceMessage.getExt());
-                    return new ServiceGroupUserKicked(added.getKickedUid());
-                } else if (serviceMessage.getExtType() == 0x03) {
-                    return new ServiceGroupUserLeave();
-                } else {
-                    return new ServiceContent(serviceMessage.getText());
-                }
-            } else if (content.getType() == 0x03) {
-                im.actor.model.api.FileMessage fileMessage = Bser.parse(new im.actor.model.api.FileMessage(),
-                        content.getContent());
-                String mimeType = fileMessage.getMimeType();
-                String name = fileMessage.getName();
-                im.actor.model.entity.content.FastThumb fastThumb = convert(fileMessage.getThumb());
-                FileLocation fileLocation = new FileLocation(fileMessage.getFileId(),
-                        fileMessage.getAccessHash(),
-                        fileMessage.getFileSize(),
-                        fileMessage.getName());
-                FileRemoteSource source = new FileRemoteSource(fileLocation);
+    public static AbsContent convert(im.actor.model.api.Message content) {
+        if (content instanceof TextMessage) {
+            TextMessage message = (TextMessage) content;
+            return new TextContent(message.getText());
+        } else if (content instanceof ServiceMessage) {
+            ServiceMessage message = (ServiceMessage) content;
+            ServiceEx ex = message.getExt();
+            if (ex instanceof ServiceExChangedAvatar) {
+                ServiceExChangedAvatar avatar = (ServiceExChangedAvatar) ex;
+                return new ServiceGroupAvatarChanged(convert(avatar.getAvatar()));
+            } else if (ex instanceof ServiceExChangedTitle) {
+                ServiceExChangedTitle title = (ServiceExChangedTitle) ex;
+                return new ServiceGroupTitleChanged(title.getTitle());
+            } else if (ex instanceof ServiceExUserAdded) {
+                ServiceExUserAdded userAdded = (ServiceExUserAdded) ex;
+                return new ServiceGroupUserAdded(userAdded.getAddedUid());
+            } else if (ex instanceof ServiceExUserKicked) {
+                ServiceExUserKicked exUserKicked = (ServiceExUserKicked) ex;
+                return new ServiceGroupUserKicked(exUserKicked.getKickedUid());
+            } else if (ex instanceof ServiceExUserLeft) {
+                return new ServiceGroupUserLeave();
+            } else if (ex instanceof ServiceExGroupCreated) {
+                // TODO: Fix
+                return new ServiceGroupCreated("Group created");
+            } else {
+                return new ServiceContent(message.getText());
+            }
+        } else if (content instanceof DocumentMessage) {
+            DocumentMessage documentMessage = (DocumentMessage) content;
 
-                if (fileMessage.getExtType() == 0x01) {
-                    try {
-                        FileExPhoto photo = Bser.parse(new FileExPhoto(), fileMessage.getExt());
-                        return new PhotoContent(source, mimeType, name, fastThumb, photo.getW(), photo.getH());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else if (fileMessage.getExtType() == 0x02) {
-                    try {
-                        FileExVideo video = Bser.parse(new FileExVideo(), fileMessage.getExt());
-                        return new VideoContent(source, mimeType, name, fastThumb,
-                                video.getDuration(), video.getW(), video.getH());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+            String mimeType = documentMessage.getMimeType();
+            String name = documentMessage.getName();
+            im.actor.model.entity.content.FastThumb fastThumb = convert(documentMessage.getThumb());
+            FileLocation fileLocation = new FileLocation(documentMessage.getFileId(),
+                    documentMessage.getAccessHash(),
+                    documentMessage.getFileSize(),
+                    documentMessage.getName());
+            FileRemoteSource source = new FileRemoteSource(fileLocation);
 
+            if (documentMessage.getExt() instanceof DocumentExPhoto) {
+                DocumentExPhoto photo = (DocumentExPhoto) documentMessage.getExt();
+                return new PhotoContent(source, mimeType, name, fastThumb, photo.getW(), photo.getH());
+            } else if (documentMessage.getExt() instanceof DocumentExVideo) {
+                DocumentExVideo video = (DocumentExVideo) documentMessage.getExt();
+                return new VideoContent(source, mimeType, name, fastThumb,
+                        video.getDuration(), video.getW(), video.getH());
+            } else {
                 return new DocumentContent(source, mimeType, name, fastThumb);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }

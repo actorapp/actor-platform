@@ -8,9 +8,11 @@ package im.actor.model.api.rpc;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -27,9 +29,9 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
 
     private OutPeer peer;
     private long rid;
-    private MessageContent message;
+    private Message message;
 
-    public RequestSendMessage(OutPeer peer, long rid, MessageContent message) {
+    public RequestSendMessage(OutPeer peer, long rid, Message message) {
         this.peer = peer;
         this.rid = rid;
         this.message = message;
@@ -47,7 +49,7 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
         return this.rid;
     }
 
-    public MessageContent getMessage() {
+    public Message getMessage() {
         return this.message;
     }
 
@@ -55,7 +57,7 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new OutPeer());
         this.rid = values.getLong(3);
-        this.message = values.getObj(4, new MessageContent());
+        this.message = Message.fromBytes(values.getBytes(4));
     }
 
     @Override
@@ -68,7 +70,8 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
         if (this.message == null) {
             throw new IOException();
         }
-        writer.writeObject(4, this.message);
+
+        writer.writeBytes(4, this.message.toByteArray());
     }
 
     @Override

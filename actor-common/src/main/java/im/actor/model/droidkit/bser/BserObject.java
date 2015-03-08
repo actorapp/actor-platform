@@ -1,7 +1,5 @@
 package im.actor.model.droidkit.bser;
 
-import im.actor.model.util.DataOutput;
-
 import java.io.IOException;
 
 /**

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.droidkit.bser.util.SparseArray;
-import im.actor.model.util.DataInput;
 
 /**
  * Created by ex3ndr on 17.10.14.
@@ -333,5 +332,60 @@ public class BserValues {
             }
         }
         return res;
+    }
+
+    public void writeTo(BserWriter writer) {
+        for (int i = 0; i < fields.size(); i++) {
+            int key = fields.keyAt(i);
+            Object field = fields.get(key);
+            if (field instanceof Integer) {
+                try {
+                    writer.writeInt(key, (Integer) field);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (field instanceof Long) {
+                try {
+                    writer.writeLong(key, (Long) field);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (field instanceof byte[]) {
+                try {
+                    writer.writeBytes(key, (byte[]) field);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (field instanceof List) {
+                for (Object obj : (List) field) {
+                    if (obj instanceof Integer) {
+                        try {
+                            writer.writeInt(key, (Integer) obj);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (obj instanceof Long) {
+                        try {
+                            writer.writeLong(key, (Long) obj);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (obj instanceof byte[]) {
+                        try {
+                            writer.writeBytes(key, (byte[]) obj);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public byte[] toByteArray() {
+        DataOutput output = new DataOutput();
+        BserWriter writer = new BserWriter(output);
+        writeTo(writer);
+        return output.toByteArray();
     }
 }

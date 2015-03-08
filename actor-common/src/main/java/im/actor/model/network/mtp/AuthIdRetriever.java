@@ -6,8 +6,8 @@ import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.CreateConnectionCallback;
 import im.actor.model.network.Endpoints;
 import im.actor.model.Networking;
-import im.actor.model.util.DataInput;
-import im.actor.model.util.DataOutput;
+import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
 
 /**
  * Created by ex3ndr on 07.02.15.

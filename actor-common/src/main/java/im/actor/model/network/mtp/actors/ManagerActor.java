@@ -9,8 +9,8 @@ import im.actor.model.network.CreateConnectionCallback;
 import im.actor.model.network.Endpoints;
 import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.ProtoMessage;
-import im.actor.model.util.DataInput;
-import im.actor.model.util.DataOutput;
+import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.util.ExponentialBackoff;
 
 import java.io.IOException;
