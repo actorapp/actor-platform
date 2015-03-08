@@ -9,6 +9,7 @@ import java.util.List;
 public class SchemeStruct extends SchemeContainer implements SchemeRecord {
 
     private String name;
+    private SchemeTraitRef traitRef;
 
     public SchemeStruct(String name) {
         this.name = name;
@@ -16,6 +17,14 @@ public class SchemeStruct extends SchemeContainer implements SchemeRecord {
 
     public String getName() {
         return name;
+    }
+
+    public SchemeTraitRef getTraitRef() {
+        return traitRef;
+    }
+
+    public void setTraitRef(SchemeTraitRef traitRef) {
+        this.traitRef = traitRef;
     }
 
     @Override

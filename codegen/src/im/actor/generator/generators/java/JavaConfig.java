@@ -16,14 +16,16 @@ public class JavaConfig {
     public static final String PATH = String.join("/", PACKAGE.split("\\."));
     public static final String[] IMPORTS = new String[]{
             "im.actor.model.droidkit.bser.Bser",
+            "im.actor.model.droidkit.bser.BserParser",
             "im.actor.model.droidkit.bser.BserObject",
             "im.actor.model.droidkit.bser.BserValues",
             "im.actor.model.droidkit.bser.BserWriter",
+            "im.actor.model.droidkit.bser.DataInput",
             "static im.actor.model.droidkit.bser.Utils.*",
             "java.io.IOException",
             "im.actor.model.network.parser.*",
             "java.util.List",
-            "java.util.ArrayList"
+            "java.util.ArrayList",
     };
 
     public static String getEnumName(String e) {
@@ -148,7 +150,7 @@ public class JavaConfig {
         } else if (type instanceof SchemeEnumType) {
             return getEnumName(((SchemeEnumType) type).getName());
         } else if (type instanceof SchemeTraitType) {
-            return "byte[]";
+            return getStructName(((SchemeTraitType) type).getTraitName());
         } else {
             throw new IOException();
         }

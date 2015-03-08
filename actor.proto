@@ -628,14 +628,6 @@ message UpdateContactsRemoved {
 //For encrypted messages used status change by RandomId and for plain messages used by maximum
 //date of read/delivered message.
 
-// Content of message
-// type type of content. 1 => TextMessage, 2 => ServiceMessage, 3 => FileMessage
-// content serialized content of message
-message MessageContent {
-    required int32 type = 1;
-    required bytes content = 2;
-}
-
 // Text message
 // text the text
 // extType type of extension. Now there are no extensions.
@@ -703,7 +695,7 @@ message ServiceExEmailContactRegistered {
 // thumb optional thumb of file. JPEG less that 90x90 with 60-70 quality.
 // extType Extension type
 // ext Extension
-message FileMessage {
+message DocumentMessage {
     required int64 fileId = 1;
     required int64 accessHash = 2;
     required int32 fileSize = 3;
@@ -720,7 +712,7 @@ message FileMessage {
 // File photo extension
 // w image width
 // h image height
-message FileExPhoto {
+message DocumentExPhoto {
     required int32 w = 1;
     required int32 h = 2;
 }
@@ -729,7 +721,7 @@ message FileExPhoto {
 // w video width
 // h video height
 // duration video duration
-message FileExVideo {
+message DocumentExVideo {
     required int32 w = 1;
     required int32 h = 2;
     required int32 duration = 3;
@@ -737,7 +729,7 @@ message FileExVideo {
 
 // File voice extension
 // duration voice duration
-message FileExVoice {
+message DocumentExVoice {
     required int32 duration = 1;
 }
 
@@ -784,7 +776,7 @@ message RequestSendEncryptedMessage {
 message RequestSendMessage {
     required OutPeer peer = 1;
     required int64 rid = 3;
-    required MessageContent message = 4;
+    required bytes message = 4;
 }
 
 // API#0x74
@@ -881,7 +873,7 @@ message UpdateMessage {
     required int32 senderUid = 2;
     required int64 date = 3;
     required int64 rid = 4;
-    required MessageContent message = 5;
+    required bytes message = 5;
 }
 
 // API#0x04
@@ -1252,7 +1244,7 @@ message HistoryMessage {
     required int32 senderUid = 1;
     required int64 rid = 2;
     required int64 date = 3;
-    required MessageContent message = 5;
+    required bytes message = 5;
     optional MessageState state = 6;
 }
 
@@ -1289,7 +1281,7 @@ message Dialog {
     required int32 senderUid = 5;
     required int64 rid = 6;
     required int64 date = 7;
-    required MessageContent message = 8;
+    required bytes message = 8;
     optional MessageState state = 9;
 }
 
@@ -1418,12 +1410,12 @@ message EncryptedDocumentV1 {
     optional bytes extension = 6;
 }
 
-message EncryptedDocumentV1Photo {
+message EncryptedDocumentV1ExPhoto {
     required int32 width = 1;
     required int32 height = 2;
 }
 
-message EncryptedDocumentV1Video {
+message EncryptedDocumentV1VExideo {
     required int32 width = 1;
     required int32 height = 2;
     required int32 duration = 3;
@@ -1443,7 +1435,6 @@ message EncryptedFileLocationV1 {
 // content Content of message
 message EncryptedMessageV2 {
     required int64 rid = 1;
-    required int32 contentType = 2;
     required bytes content = 3;
 }
 
