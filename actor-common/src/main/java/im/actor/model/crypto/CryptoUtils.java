@@ -19,6 +19,9 @@ public class CryptoUtils {
         return provider.generateRSA1024KeyPair();
     }
 
+    public static byte[] MD5(byte[] data) {
+        return provider.MD5(data);
+    }
 
     /**
      * Calculating SHA256

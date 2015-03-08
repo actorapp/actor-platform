@@ -69,6 +69,19 @@ public class DataOutput {
     }
 
     public void writeBytes(byte[] v, int ofs, int len) {
+        if (len > Limits.MAX_BLOCK_SIZE) {
+            throw new IllegalArgumentException("Unable to write more than 1 MB");
+        }
+        if (len < 0) {
+            throw new IllegalArgumentException("Length can't be negative");
+        }
+        if (ofs < 0) {
+            throw new IllegalArgumentException("Offset can't be negative");
+        }
+        if (ofs + len > v.length) {
+            throw new IllegalArgumentException("Inconsistent sizes");
+        }
+
         if (data.length < offset + v.length) {
             expand(offset + v.length);
         }
@@ -78,6 +91,9 @@ public class DataOutput {
     }
 
     public void writeProtoLongs(long[] values) throws IOException {
+        if (values.length > Limits.MAX_PROTO_REPEATED) {
+            throw new IllegalArgumentException("Values can't be more than " + Limits.MAX_PROTO_REPEATED);
+        }
         writeVarInt(values.length);
         for (long l : values) {
             writeLong(l);

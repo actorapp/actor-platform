@@ -267,7 +267,7 @@ public class Main {
             graphics.setForegroundColor(Terminal.Color.WHITE);
             String title = dialog.getDialogTitle();
             if (dialog.getDialogAvatar() != null) {
-                title = dialog.getDialogAvatar().getSmallImage().getFileLocation().getFileId() +
+                title = dialog.getDialogAvatar().getSmallImage().getFileReference().getFileId() +
                         "# " + title;
             }
             graphics.drawString(2, 1, trim(title, 25), ScreenCharacterStyle.Bold);

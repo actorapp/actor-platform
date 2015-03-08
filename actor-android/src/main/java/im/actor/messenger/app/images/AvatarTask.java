@@ -25,6 +25,6 @@ public class AvatarTask extends AbsTask {
 
     @Override
     public String getKey() {
-        return "avatar:@file=" + avatar.getSmallImage().getFileLocation().getFileId() + "@size=" + size;
+        return "avatar:@file=" + avatar.getSmallImage().getFileReference().getFileId() + "@size=" + size;
     }
 }

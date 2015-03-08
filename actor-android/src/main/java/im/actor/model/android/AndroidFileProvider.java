@@ -6,8 +6,7 @@ import java.io.File;
 import java.util.Random;
 
 import im.actor.model.FileSystemProvider;
-import im.actor.model.entity.FileLocation;
-import im.actor.model.files.FileReference;
+import im.actor.model.entity.FileReference;
 
 /**
  * Created by ex3ndr on 26.02.15.
@@ -53,7 +52,7 @@ public class AndroidFileProvider implements FileSystemProvider {
         return new File(dest, "temp_" + random.nextLong()).getAbsolutePath();
     }
 
-    private String buildResultFile(FileLocation fileLocation) {
+    private String buildResultFile(FileReference fileReference) {
         File externalFile = context.getExternalFilesDir(null);
         if (externalFile == null) {
             return null;
@@ -62,23 +61,23 @@ public class AndroidFileProvider implements FileSystemProvider {
         File dest = new File(externalPath + "/actor/files/");
         dest.mkdirs();
 
-        String baseFileName = fileLocation.getFileName();
-        if (fileLocation.getFileName().contains(".")) {
+        String baseFileName = fileReference.getFileName();
+        if (fileReference.getFileName().contains(".")) {
             String prefix = baseFileName.substring(baseFileName.lastIndexOf('.'));
             String ext = baseFileName.substring(prefix.length() + 1);
 
-            File res = new File(dest, prefix + "_" + fileLocation.getFileId() + "." + ext);
+            File res = new File(dest, prefix + "_" + fileReference.getFileId() + "." + ext);
             int index = 0;
             while (res.exists()) {
-                res = new File(dest, prefix + "_" + fileLocation.getFileId() + "_" + index + "." + ext);
+                res = new File(dest, prefix + "_" + fileReference.getFileId() + "_" + index + "." + ext);
                 index++;
             }
             return res.getAbsolutePath();
         } else {
-            File res = new File(dest, baseFileName + "_" + fileLocation.getFileId());
+            File res = new File(dest, baseFileName + "_" + fileReference.getFileId());
             int index = 0;
             while (res.exists()) {
-                res = new File(dest, baseFileName + "_" + fileLocation.getFileId() + "_" + index);
+                res = new File(dest, baseFileName + "_" + fileReference.getFileId() + "_" + index);
                 index++;
             }
             return res.getAbsolutePath();
@@ -86,7 +85,7 @@ public class AndroidFileProvider implements FileSystemProvider {
     }
 
     @Override
-    public synchronized FileReference createTempFile() {
+    public synchronized im.actor.model.files.FileReference createTempFile() {
         checkTempDirs();
 
         String destFile = buildTempFile();
@@ -97,8 +96,8 @@ public class AndroidFileProvider implements FileSystemProvider {
     }
 
     @Override
-    public synchronized FileReference commitTempFile(FileReference sourceFile, FileLocation fileLocation) {
-        String fileName = buildResultFile(fileLocation);
+    public synchronized im.actor.model.files.FileReference commitTempFile(im.actor.model.files.FileReference sourceFile, FileReference fileReference) {
+        String fileName = buildResultFile(fileReference);
         if (fileName == null) {
             return null;
         }
@@ -115,7 +114,7 @@ public class AndroidFileProvider implements FileSystemProvider {
     }
 
     @Override
-    public synchronized FileReference fileFromDescriptor(String descriptor) {
+    public synchronized im.actor.model.files.FileReference fileFromDescriptor(String descriptor) {
         checkTempDirs();
 
         return new AndroidFileReference(descriptor);

@@ -7,8 +7,7 @@ import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.droidkit.actors.messages.PoisonPill;
-import im.actor.model.entity.FileLocation;
-import im.actor.model.files.FileReference;
+import im.actor.model.entity.FileReference;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
@@ -45,7 +44,7 @@ public class DownloadManager extends ModuleActor {
         Downloaded downloaded1 = downloaded.getValue(fileId);
         if (downloaded1 != null) {
             FileSystemProvider provider = modules().getConfiguration().getFileSystemProvider();
-            FileReference reference = provider.fileFromDescriptor(downloaded1.getDescriptor());
+            im.actor.model.files.FileReference reference = provider.fileFromDescriptor(downloaded1.getDescriptor());
             if (reference.isExist() && reference.getSize() == downloaded1.getFileSize()) {
                 Log.d(TAG, "- Downloaded");
                 callback.onDownloaded(modules().getConfiguration().getFileSystemProvider()
@@ -71,12 +70,12 @@ public class DownloadManager extends ModuleActor {
         }
     }
 
-    public void bindDownload(final FileLocation fileLocation, boolean autoStart, DownloadCallback callback) {
-        Log.d(TAG, "Binding file #" + fileLocation.getFileId());
-        Downloaded downloaded1 = downloaded.getValue(fileLocation.getFileId());
+    public void bindDownload(final FileReference fileReference, boolean autoStart, DownloadCallback callback) {
+        Log.d(TAG, "Binding file #" + fileReference.getFileId());
+        Downloaded downloaded1 = downloaded.getValue(fileReference.getFileId());
         if (downloaded1 != null) {
             FileSystemProvider provider = modules().getConfiguration().getFileSystemProvider();
-            FileReference reference = provider.fileFromDescriptor(downloaded1.getDescriptor());
+            im.actor.model.files.FileReference reference = provider.fileFromDescriptor(downloaded1.getDescriptor());
             if (reference.isExist() && reference.getSize() == downloaded1.getFileSize()) {
                 Log.d(TAG, "- Downloaded");
                 callback.onDownloaded(modules().getConfiguration().getFileSystemProvider()
@@ -88,11 +87,11 @@ public class DownloadManager extends ModuleActor {
             }
         }
 
-        QueueItem queueItem = findItem(fileLocation.getFileId());
+        QueueItem queueItem = findItem(fileReference.getFileId());
         if (queueItem == null) {
             Log.d(TAG, "- Adding to queue");
 
-            queueItem = new QueueItem(fileLocation);
+            queueItem = new QueueItem(fileReference);
             queueItem.callbacks.add(callback);
 
             if (autoStart) {
@@ -107,7 +106,7 @@ public class DownloadManager extends ModuleActor {
         } else {
             Log.d(TAG, "- Promoting in queue");
 
-            promote(fileLocation.getFileId());
+            promote(fileReference.getFileId());
 
             if (!queueItem.callbacks.contains(callback)) {
                 queueItem.callbacks.add(callback);
@@ -127,12 +126,12 @@ public class DownloadManager extends ModuleActor {
         checkQueue();
     }
 
-    public void startDownload(FileLocation fileLocation) {
-        Log.d(TAG, "Starting download #" + fileLocation.getFileId());
-        QueueItem queueItem = findItem(fileLocation.getFileId());
+    public void startDownload(FileReference fileReference) {
+        Log.d(TAG, "Starting download #" + fileReference.getFileId());
+        QueueItem queueItem = findItem(fileReference.getFileId());
         if (queueItem == null) {
             Log.d(TAG, "- Adding to queue");
-            queueItem = new QueueItem(fileLocation);
+            queueItem = new QueueItem(fileReference);
             queueItem.isStopped = false;
             queue.add(0, queueItem);
         } else {
@@ -143,7 +142,7 @@ public class DownloadManager extends ModuleActor {
                     callback.onDownloading(0);
                 }
             }
-            promote(fileLocation.getFileId());
+            promote(fileReference.getFileId());
         }
 
         checkQueue();
@@ -235,7 +234,7 @@ public class DownloadManager extends ModuleActor {
             return;
         }
 
-        Log.d(TAG, "- Starting download file #" + pendingQueue.fileLocation.getFileId());
+        Log.d(TAG, "- Starting download file #" + pendingQueue.fileReference.getFileId());
 
         pendingQueue.isStarted = true;
 
@@ -243,7 +242,7 @@ public class DownloadManager extends ModuleActor {
         pendingQueue.taskRef = system().actorOf(Props.create(DownloadTask.class, new ActorCreator<DownloadTask>() {
             @Override
             public DownloadTask create() {
-                return new DownloadTask(finalPendingQueue.fileLocation, self(), modules());
+                return new DownloadTask(finalPendingQueue.fileReference, self(), modules());
             }
         }), "actor/download/task_" + RandomUtils.nextRid());
     }
@@ -266,7 +265,7 @@ public class DownloadManager extends ModuleActor {
         }
     }
 
-    public void onDownloaded(long fileId, FileReference reference) {
+    public void onDownloaded(long fileId, im.actor.model.files.FileReference reference) {
         Log.d(TAG, "onDownloaded file #" + fileId);
         QueueItem queueItem = findItem(fileId);
         if (queueItem == null) {
@@ -277,8 +276,8 @@ public class DownloadManager extends ModuleActor {
             return;
         }
 
-        downloaded.addOrUpdateItem(new Downloaded(queueItem.fileLocation.getFileId(),
-                queueItem.fileLocation.getFileSize(), reference.getDescriptor()));
+        downloaded.addOrUpdateItem(new Downloaded(queueItem.fileReference.getFileId(),
+                queueItem.fileReference.getFileSize(), reference.getDescriptor()));
 
         queue.remove(queueItem);
         queueItem.taskRef.send(PoisonPill.INSTANCE);
@@ -310,7 +309,7 @@ public class DownloadManager extends ModuleActor {
 
     private QueueItem findItem(long id) {
         for (QueueItem q : queue) {
-            if (q.fileLocation.getFileId() == id) {
+            if (q.fileReference.getFileId() == id) {
                 return q;
             }
         }
@@ -319,7 +318,7 @@ public class DownloadManager extends ModuleActor {
 
     private void promote(long id) {
         for (QueueItem q : queue) {
-            if (q.fileLocation.getFileId() == id) {
+            if (q.fileReference.getFileId() == id) {
                 if (!q.isStarted) {
                     queue.remove(q);
                     queue.add(0, q);
@@ -330,7 +329,7 @@ public class DownloadManager extends ModuleActor {
     }
 
     private class QueueItem {
-        private FileLocation fileLocation;
+        private FileReference fileReference;
         private boolean isStopped;
 
         private ArrayList<DownloadCallback> callbacks = new ArrayList<DownloadCallback>();
@@ -340,8 +339,8 @@ public class DownloadManager extends ModuleActor {
 
         private ActorRef taskRef;
 
-        private QueueItem(FileLocation fileLocation) {
-            this.fileLocation = fileLocation;
+        private QueueItem(FileReference fileReference) {
+            this.fileReference = fileReference;
         }
     }
 
@@ -351,7 +350,7 @@ public class DownloadManager extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof BindDownload) {
             BindDownload requestDownload = (BindDownload) message;
-            bindDownload(requestDownload.getFileLocation(),
+            bindDownload(requestDownload.getFileReference(),
                     requestDownload.isAutostart(),
                     requestDownload.getCallback());
         } else if (message instanceof CancelDownload) {
@@ -362,7 +361,7 @@ public class DownloadManager extends ModuleActor {
             unbindDownload(unbindDownload.getFileId(), unbindDownload.isAutocancel(), unbindDownload.getCallback());
         } else if (message instanceof StartDownload) {
             StartDownload startDownload = (StartDownload) message;
-            startDownload(startDownload.getFileLocation());
+            startDownload(startDownload.getFileReference());
         } else if (message instanceof OnDownloadProgress) {
             OnDownloadProgress downloadProgress = (OnDownloadProgress) message;
             onDownloadProgress(downloadProgress.getFileId(), downloadProgress.getProgress());
@@ -399,18 +398,18 @@ public class DownloadManager extends ModuleActor {
     }
 
     public static class BindDownload {
-        private FileLocation fileLocation;
+        private FileReference fileReference;
         private boolean isAutostart;
         private DownloadCallback callback;
 
-        public BindDownload(FileLocation fileLocation, boolean isAutostart, DownloadCallback callback) {
-            this.fileLocation = fileLocation;
+        public BindDownload(FileReference fileReference, boolean isAutostart, DownloadCallback callback) {
+            this.fileReference = fileReference;
             this.isAutostart = isAutostart;
             this.callback = callback;
         }
 
-        public FileLocation getFileLocation() {
-            return fileLocation;
+        public FileReference getFileReference() {
+            return fileReference;
         }
 
         public boolean isAutostart() {
@@ -423,14 +422,14 @@ public class DownloadManager extends ModuleActor {
     }
 
     public static class StartDownload {
-        private FileLocation fileLocation;
+        private FileReference fileReference;
 
-        public StartDownload(FileLocation fileLocation) {
-            this.fileLocation = fileLocation;
+        public StartDownload(FileReference fileReference) {
+            this.fileReference = fileReference;
         }
 
-        public FileLocation getFileLocation() {
-            return fileLocation;
+        public FileReference getFileReference() {
+            return fileReference;
         }
     }
 
@@ -490,9 +489,9 @@ public class DownloadManager extends ModuleActor {
 
     public static class OnDownloaded {
         private long fileId;
-        private FileReference reference;
+        private im.actor.model.files.FileReference reference;
 
-        public OnDownloaded(long fileId, FileReference reference) {
+        public OnDownloaded(long fileId, im.actor.model.files.FileReference reference) {
             this.fileId = fileId;
             this.reference = reference;
         }
@@ -501,7 +500,7 @@ public class DownloadManager extends ModuleActor {
             return fileId;
         }
 
-        public FileReference getReference() {
+        public im.actor.model.files.FileReference getReference() {
             return reference;
         }
     }

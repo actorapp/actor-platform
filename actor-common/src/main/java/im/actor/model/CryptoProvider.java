@@ -18,6 +18,8 @@ public interface CryptoProvider {
 
     public AesCipher createAESCBCPKS7Cipher(byte[] key, byte[] iv);
 
+    public byte[] MD5(byte[] data);
+
     public byte[] SHA256(byte[] data);
 
     public byte[] SHA512(byte[] data);

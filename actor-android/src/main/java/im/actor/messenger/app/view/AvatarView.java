@@ -27,7 +27,7 @@ import im.actor.messenger.app.images.FileKeys;
 import im.actor.messenger.util.Logger;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Avatar;
-import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.FileReference;
 
 /**
  * Created by ex3ndr on 18.09.14.
@@ -98,9 +98,9 @@ public class AvatarView extends View implements ReceiverCallback {
     }
 
     public void bindFastAvatar(int size, Avatar avatar) {
-        FileLocation fileLocation = avatar.getSmallImage().getFileLocation();
+        FileReference fileReference = avatar.getSmallImage().getFileReference();
         DiskCache diskCache = Core.core().getImageLoader().getInternalDiskCache();
-        String avatarKey = FileKeys.avatarKey(fileLocation.getFileId());
+        String avatarKey = FileKeys.avatarKey(fileReference.getFileId());
         String file = diskCache.lockFile(avatarKey);
         if (file != null) {
             try {

@@ -2,7 +2,6 @@ package im.actor.model;
 
 import java.util.ArrayList;
 
-import im.actor.model.crypto.bouncycastle.BouncyCastleProvider;
 import im.actor.model.network.ConnectionEndpoint;
 
 /**
@@ -25,7 +24,7 @@ public class ConfigurationBuilder {
 
     private PhoneBookProvider phoneBookProvider;
 
-    private CryptoProvider cryptoProvider = new BouncyCastleProvider();
+    private CryptoProvider cryptoProvider;
 
     private FileSystemProvider fileSystemProvider;
 

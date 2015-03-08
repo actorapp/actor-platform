@@ -13,7 +13,7 @@ import im.actor.messenger.app.activity.GroupInfoActivity;
 import im.actor.messenger.app.activity.PickUserActivity;
 import im.actor.messenger.app.activity.ProfileActivity;
 import im.actor.messenger.app.activity.TakePhotoActivity;
-import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Peer;
 
 /**
@@ -119,7 +119,7 @@ public class Intents {
 ////        }
 //    }
 
-    private static Uri getAvatarUri(FileLocation location) {
+    private static Uri getAvatarUri(FileReference location) {
         return Uri.parse("content://im.actor.avatar/" + location.getFileId());
     }
 
@@ -156,13 +156,13 @@ public class Intents {
 //                .setType("image/jpeg");
 //    }
 
-    public static Intent shareAvatar(FileLocation location) {
+    public static Intent shareAvatar(FileReference location) {
         return new Intent(Intent.ACTION_SEND)
                 .putExtra(Intent.EXTRA_STREAM, getAvatarUri(location))
                 .setType("image/jpeg");
     }
 
-    public static Intent openAvatar(FileLocation location) {
+    public static Intent openAvatar(FileReference location) {
         if (BuildConfig.ENABLE_CHROME) {
             return shareAvatar(location);
         } else {
@@ -171,7 +171,7 @@ public class Intents {
         }
     }
 
-    public static Intent setAsAvatar(FileLocation location) {
+    public static Intent setAsAvatar(FileReference location) {
         Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
         intent.setDataAndType(getAvatarUri(location), "image/jpg");
         intent.putExtra("mimeType", "image/jpg");

@@ -6,7 +6,7 @@ import im.actor.model.api.rpc.RequestRemoveAvatar;
 import im.actor.model.api.rpc.ResponseEditAvatar;
 import im.actor.model.api.rpc.ResponseSeq;
 import im.actor.model.api.updates.UpdateUserAvatarChanged;
-import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.FileReference;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.file.UploadManager;
 import im.actor.model.modules.updates.internal.ExecuteAfter;
@@ -39,12 +39,12 @@ public class OwnAvatarChangeActor extends ModuleActor {
         modules().getFilesModule().requestUpload(currentChangeTask, descriptor, "avatar.jpg", self());
     }
 
-    public void uploadCompleted(final long rid, FileLocation fileLocation) {
+    public void uploadCompleted(final long rid, FileReference fileReference) {
         if (rid != currentChangeTask) {
             return;
         }
-        request(new RequestEditAvatar(new im.actor.model.api.FileLocation(fileLocation.getFileId(),
-                fileLocation.getAccessHash())), new RpcCallback<ResponseEditAvatar>() {
+        request(new RequestEditAvatar(new im.actor.model.api.FileLocation(fileReference.getFileId(),
+                fileReference.getAccessHash())), new RpcCallback<ResponseEditAvatar>() {
             @Override
             public void onResult(ResponseEditAvatar response) {
 
@@ -122,7 +122,7 @@ public class OwnAvatarChangeActor extends ModuleActor {
             changeAvatar(changeAvatar.getDescriptor());
         } else if (message instanceof UploadManager.UploadCompleted) {
             UploadManager.UploadCompleted uploadCompleted = (UploadManager.UploadCompleted) message;
-            uploadCompleted(uploadCompleted.getRid(), uploadCompleted.getFileLocation());
+            uploadCompleted(uploadCompleted.getRid(), uploadCompleted.getFileReference());
         } else if (message instanceof UploadManager.UploadError) {
             UploadManager.UploadError uploadError = (UploadManager.UploadError) message;
             uploadError(uploadError.getRid());

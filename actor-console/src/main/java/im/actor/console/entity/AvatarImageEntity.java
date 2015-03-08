@@ -6,7 +6,7 @@ import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.entity.AvatarImage;
-import im.actor.model.entity.FileLocation;
+import im.actor.model.entity.FileReference;
 
 /**
  * Created by ex3ndr on 09.02.15.
@@ -22,9 +22,9 @@ public class AvatarImageEntity extends BserObject {
     public AvatarImageEntity(AvatarImage avatarImage) {
         w = avatarImage.getWidth();
         h = avatarImage.getHeight();
-        fileId = avatarImage.getFileLocation().getFileId();
-        accessHash = avatarImage.getFileLocation().getAccessHash();
-        fileSize = avatarImage.getFileLocation().getFileSize();
+        fileId = avatarImage.getFileReference().getFileId();
+        accessHash = avatarImage.getFileReference().getAccessHash();
+        fileSize = avatarImage.getFileReference().getFileSize();
     }
 
     public AvatarImageEntity(int w, int h, long fileId, long accessHash, int fileSize) {
@@ -60,7 +60,7 @@ public class AvatarImageEntity extends BserObject {
     }
 
     public AvatarImage getImage() {
-        return new AvatarImage(w, h, new FileLocation(fileId, accessHash, fileSize, ""));
+        return new AvatarImage(w, h, new FileReference(fileId, accessHash, fileSize, ""));
     }
 
     @Override
