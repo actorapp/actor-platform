@@ -4,16 +4,18 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class TextMessage extends BserObject {
+public class TextMessage extends Message {
 
     private String text;
     private int extType;
@@ -27,6 +29,10 @@ public class TextMessage extends BserObject {
 
     public TextMessage() {
 
+    }
+
+    public int getHeader() {
+        return 1;
     }
 
     public String getText() {
@@ -45,7 +51,9 @@ public class TextMessage extends BserObject {
     public void parse(BserValues values) throws IOException {
         this.text = values.getString(1);
         this.extType = values.getInt(2);
-        this.ext = values.optBytes(3);
+        if (values.optBytes(3) != null) {
+            this.ext = TextMessageEx.fromBytes(values.getInt(2), values.getBytes(3));
+        }
     }
 
     @Override
@@ -56,6 +64,7 @@ public class TextMessage extends BserObject {
         writer.writeString(1, this.text);
         writer.writeInt(2, this.extType);
         if (this.ext != null) {
+            writer.writeInt(2, this.ext.getHeader());
             writer.writeBytes(3, this.ext);
         }
     }

@@ -4,29 +4,33 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class FileExVideo extends BserObject {
+public class DocumentExPhoto extends DocumentEx {
 
     private int w;
     private int h;
-    private int duration;
 
-    public FileExVideo(int w, int h, int duration) {
+    public DocumentExPhoto(int w, int h) {
         this.w = w;
         this.h = h;
-        this.duration = duration;
     }
 
-    public FileExVideo() {
+    public DocumentExPhoto() {
 
+    }
+
+    public int getHeader() {
+        return 1;
     }
 
     public int getW() {
@@ -37,30 +41,23 @@ public class FileExVideo extends BserObject {
         return this.h;
     }
 
-    public int getDuration() {
-        return this.duration;
-    }
-
     @Override
     public void parse(BserValues values) throws IOException {
         this.w = values.getInt(1);
         this.h = values.getInt(2);
-        this.duration = values.getInt(3);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.w);
         writer.writeInt(2, this.h);
-        writer.writeInt(3, this.duration);
     }
 
     @Override
     public String toString() {
-        String res = "struct FileExVideo{";
+        String res = "struct DocumentExPhoto{";
         res += "w=" + this.w;
         res += ", h=" + this.h;
-        res += ", duration=" + this.duration;
         res += "}";
         return res;
     }

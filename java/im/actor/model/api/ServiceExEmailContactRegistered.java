@@ -4,16 +4,18 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ServiceExEmailContactRegistered extends BserObject {
+public class ServiceExEmailContactRegistered extends ServiceEx {
 
     private int uid;
 
@@ -23,6 +25,10 @@ public class ServiceExEmailContactRegistered extends BserObject {
 
     public ServiceExEmailContactRegistered() {
 
+    }
+
+    public int getHeader() {
+        return 7;
     }
 
     public int getUid() {

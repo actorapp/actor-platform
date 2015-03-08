@@ -2404,44 +2404,9 @@
           "content": "Model"
         },
         {
-          "type": "struct",
-          "content": {
-            "name": "MessageContent",
-            "doc": [
-              "Content of message",
-              {
-                "type": "reference",
-                "argument": "type",
-                "category": "full",
-                "description": "  type of content. 1 => TextMessage, 2 => ServiceMessage, 3 => FileMessage"
-              },
-              {
-                "type": "reference",
-                "argument": "content",
-                "category": "compact",
-                "description": "  serialized content of message"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "type"
-              },
-              {
-                "type": {
-                  "type": "trait",
-                  "childType": "Message"
-                },
-                "id": 2,
-                "name": "content"
-              }
-            ]
-          }
-        },
-        {
           "type": "trait",
           "content": {
+            "isContainer": "true",
             "name": "Message",
             "attributes": []
           }
@@ -2489,12 +2454,22 @@
               {
                 "type": {
                   "type": "opt",
-                  "childType": "bytes"
+                  "childType": {
+                    "type": "trait",
+                    "childType": "TextMessageEx"
+                  }
                 },
                 "id": 3,
                 "name": "ext"
               }
             ]
+          }
+        },
+        {
+          "type": "trait",
+          "content": {
+            "name": "TextMessageEx",
+            "attributes": []
           }
         },
         {
@@ -2542,7 +2517,7 @@
                   "type": "opt",
                   "childType": {
                     "type": "trait",
-                    "childType": "ServiceExtension"
+                    "childType": "ServiceEx"
                   }
                 },
                 "id": 3,
@@ -2554,7 +2529,7 @@
         {
           "type": "trait",
           "content": {
-            "name": "ServiceExtension",
+            "name": "ServiceEx",
             "attributes": []
           }
         },
@@ -2572,7 +2547,7 @@
               }
             ],
             "trait": {
-              "name": "ServiceExtension",
+              "name": "ServiceEx",
               "key": 1
             },
             "attributes": [
@@ -2598,7 +2573,7 @@
               }
             ],
             "trait": {
-              "name": "ServiceExtension",
+              "name": "ServiceEx",
               "key": 2
             },
             "attributes": [
@@ -2618,7 +2593,7 @@
               "Service message about user left group"
             ],
             "trait": {
-              "name": "ServiceExtension",
+              "name": "ServiceEx",
               "key": 3
             },
             "attributes": []
@@ -2632,7 +2607,7 @@
               "Service message about group creating"
             ],
             "trait": {
-              "name": "ServiceExtension",
+              "name": "ServiceEx",
               "key": 4
             },
             "attributes": []
@@ -2652,7 +2627,7 @@
               }
             ],
             "trait": {
-              "name": "ServiceExtension",
+              "name": "ServiceEx",
               "key": 5
             },
             "attributes": [
@@ -2678,7 +2653,7 @@
               }
             ],
             "trait": {
-              "name": "ServiceExtension",
+              "name": "ServiceEx",
               "key": 6
             },
             "attributes": [
@@ -2710,7 +2685,7 @@
               }
             ],
             "trait": {
-              "name": "ServiceExtension",
+              "name": "ServiceEx",
               "key": 7
             },
             "attributes": [
@@ -2725,7 +2700,7 @@
         {
           "type": "struct",
           "content": {
-            "name": "FileMessage",
+            "name": "DocumentMessage",
             "doc": [
               "File message",
               {
@@ -2853,7 +2828,10 @@
               {
                 "type": {
                   "type": "opt",
-                  "childType": "bytes"
+                  "childType": {
+                    "type": "trait",
+                    "childType": "DocumentEx"
+                  }
                 },
                 "id": 8,
                 "name": "ext"
@@ -2864,14 +2842,14 @@
         {
           "type": "trait",
           "content": {
-            "name": "FileExtension",
+            "name": "DocumentEx",
             "attributes": []
           }
         },
         {
           "type": "struct",
           "content": {
-            "name": "FileExPhoto",
+            "name": "DocumentExPhoto",
             "doc": [
               "File photo extension",
               {
@@ -2888,7 +2866,7 @@
               }
             ],
             "trait": {
-              "name": "FileExtension",
+              "name": "DocumentEx",
               "key": 1
             },
             "attributes": [
@@ -2908,7 +2886,7 @@
         {
           "type": "struct",
           "content": {
-            "name": "FileExVideo",
+            "name": "DocumentExVideo",
             "doc": [
               "File video extension",
               {
@@ -2931,7 +2909,7 @@
               }
             ],
             "trait": {
-              "name": "FileExtension",
+              "name": "DocumentEx",
               "key": 2
             },
             "attributes": [
@@ -2956,7 +2934,7 @@
         {
           "type": "struct",
           "content": {
-            "name": "FileExVoice",
+            "name": "DocumentExVoice",
             "doc": [
               "File voice extension",
               {
@@ -2967,7 +2945,7 @@
               }
             ],
             "trait": {
-              "name": "FileExtension",
+              "name": "DocumentEx",
               "key": 3
             },
             "attributes": [
@@ -3218,8 +3196,8 @@
               },
               {
                 "type": {
-                  "type": "struct",
-                  "childType": "MessageContent"
+                  "type": "trait",
+                  "childType": "Message"
                 },
                 "id": 4,
                 "name": "message"
@@ -3665,8 +3643,8 @@
               },
               {
                 "type": {
-                  "type": "struct",
-                  "childType": "MessageContent"
+                  "type": "trait",
+                  "childType": "Message"
                 },
                 "id": 5,
                 "name": "message"
@@ -5385,8 +5363,8 @@
               },
               {
                 "type": {
-                  "type": "struct",
-                  "childType": "MessageContent"
+                  "type": "trait",
+                  "childType": "Message"
                 },
                 "id": 5,
                 "name": "message"
@@ -5596,8 +5574,8 @@
               },
               {
                 "type": {
-                  "type": "struct",
-                  "childType": "MessageContent"
+                  "type": "trait",
+                  "childType": "Message"
                 },
                 "id": 8,
                 "name": "message"
@@ -6203,7 +6181,10 @@
               {
                 "type": {
                   "type": "opt",
-                  "childType": "bytes"
+                  "childType": {
+                    "type": "trait",
+                    "childType": "EncryptedDocumentV1Ex"
+                  }
                 },
                 "id": 6,
                 "name": "extension"
@@ -6214,16 +6195,16 @@
         {
           "type": "trait",
           "content": {
-            "name": "EncryptedDocumentV1Extension",
+            "name": "EncryptedDocumentV1Ex",
             "attributes": []
           }
         },
         {
           "type": "struct",
           "content": {
-            "name": "EncryptedDocumentV1Photo",
+            "name": "EncryptedDocumentV1ExPhoto",
             "trait": {
-              "name": "EncryptedDocumentV1Extension",
+              "name": "EncryptedDocumentV1Ex",
               "key": 1
             },
             "attributes": [
@@ -6243,9 +6224,9 @@
         {
           "type": "struct",
           "content": {
-            "name": "EncryptedDocumentV1Video",
+            "name": "EncryptedDocumentV1VExideo",
             "trait": {
-              "name": "EncryptedDocumentV1Extension",
+              "name": "EncryptedDocumentV1Ex",
               "key": 2
             },
             "attributes": [
@@ -6370,11 +6351,6 @@
                 "type": "int64",
                 "id": 1,
                 "name": "rid"
-              },
-              {
-                "type": "int32",
-                "id": 2,
-                "name": "contentType"
               },
               {
                 "type": {

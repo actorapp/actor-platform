@@ -5,12 +5,18 @@ package im.actor.generator.scheme;
  */
 public class SchemeTrait implements SchemeRecord {
     private String name;
+    private boolean isContainer;
 
-    public SchemeTrait(String name) {
+    public SchemeTrait(String name, boolean isContainer) {
         this.name = name;
+        this.isContainer = isContainer;
     }
 
     public String getName() {
         return name;
+    }
+
+    public boolean isContainer() {
+        return isContainer;
     }
 }

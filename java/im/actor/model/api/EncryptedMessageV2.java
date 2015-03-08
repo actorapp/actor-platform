@@ -4,24 +4,24 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class EncryptedMessageV2 extends BserObject {
+public class EncryptedMessageV2 extends EncryptedPackageV2 {
 
     private long rid;
-    private int contentType;
-    private byte[] content;
+    private Message content;
 
-    public EncryptedMessageV2(long rid, int contentType, byte[] content) {
+    public EncryptedMessageV2(long rid, Message content) {
         this.rid = rid;
-        this.contentType = contentType;
         this.content = content;
     }
 
@@ -29,30 +29,32 @@ public class EncryptedMessageV2 extends BserObject {
 
     }
 
+    public int getHeader() {
+        return 1;
+    }
+
     public long getRid() {
         return this.rid;
     }
 
-    public int getContentType() {
-        return this.contentType;
-    }
-
-    public byte[] getContent() {
+    public Message getContent() {
         return this.content;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.rid = values.getLong(1);
-        this.contentType = values.getInt(2);
-        this.content = values.getBytes(3);
+        this.content = Message.fromBytes(values.getBytes(3));
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeLong(1, this.rid);
-        writer.writeInt(2, this.contentType);
-        writer.writeBytes(3, this.content);
+        if (this.content == null) {
+            throw new IOException();
+        }
+
+        writer.writeBytes(3, this.content.toByteArray());
     }
 
     @Override

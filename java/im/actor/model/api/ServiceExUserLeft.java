@@ -4,20 +4,26 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ServiceExUserLeft extends BserObject {
+public class ServiceExUserLeft extends ServiceEx {
 
 
     public ServiceExUserLeft() {
 
+    }
+
+    public int getHeader() {
+        return 3;
     }
 
     @Override

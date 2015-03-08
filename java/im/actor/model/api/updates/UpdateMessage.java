@@ -4,9 +4,11 @@ package im.actor.model.api.updates;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -25,9 +27,9 @@ public class UpdateMessage extends Update {
     private int senderUid;
     private long date;
     private long rid;
-    private MessageContent message;
+    private Message message;
 
-    public UpdateMessage(Peer peer, int senderUid, long date, long rid, MessageContent message) {
+    public UpdateMessage(Peer peer, int senderUid, long date, long rid, Message message) {
         this.peer = peer;
         this.senderUid = senderUid;
         this.date = date;
@@ -55,7 +57,7 @@ public class UpdateMessage extends Update {
         return this.rid;
     }
 
-    public MessageContent getMessage() {
+    public Message getMessage() {
         return this.message;
     }
 
@@ -65,7 +67,7 @@ public class UpdateMessage extends Update {
         this.senderUid = values.getInt(2);
         this.date = values.getLong(3);
         this.rid = values.getLong(4);
-        this.message = values.getObj(5, new MessageContent());
+        this.message = Message.fromBytes(values.getBytes(5));
     }
 
     @Override
@@ -80,7 +82,8 @@ public class UpdateMessage extends Update {
         if (this.message == null) {
             throw new IOException();
         }
-        writer.writeObject(5, this.message);
+
+        writer.writeBytes(5, this.message.toByteArray());
     }
 
     @Override

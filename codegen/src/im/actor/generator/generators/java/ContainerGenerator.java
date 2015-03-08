@@ -4,13 +4,16 @@ import im.actor.generator.FileGenerator;
 import im.actor.generator.scheme.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by ex3ndr on 15.11.14.
  */
 public class ContainerGenerator {
+
+
     public static void generateFields(FileGenerator generator, SchemeDefinition definition, SchemeContainer container) throws IOException {
-        for (SchemeAttribute attribute : container.getAttributes()) {
+        for (SchemeAttribute attribute : container.getFilteredAttributes()) {
             generator.append("private ");
             generator.append(JavaConfig.convertType(definition, attribute.getType()));
             generator.appendLn(" " + attribute.getName() + ";");
@@ -19,7 +22,7 @@ public class ContainerGenerator {
 
     public static void generateConstructorArgs(FileGenerator generator, SchemeDefinition definition, SchemeContainer container) throws IOException {
         boolean isFirst = true;
-        for (SchemeAttribute attribute : container.getAttributes()) {
+        for (SchemeAttribute attribute : container.getFilteredAttributes()) {
             if (isFirst) {
                 isFirst = false;
             } else {
@@ -32,7 +35,7 @@ public class ContainerGenerator {
 
     public static void generateConstructorArgsValues(FileGenerator generator, SchemeContainer container) throws IOException {
         boolean isFirst = true;
-        for (SchemeAttribute attribute : container.getAttributes()) {
+        for (SchemeAttribute attribute : container.getFilteredAttributes()) {
             if (isFirst) {
                 isFirst = false;
             } else {
@@ -48,7 +51,7 @@ public class ContainerGenerator {
         ContainerGenerator.generateConstructorArgs(generator, definition, container);
         generator.appendLn(") {");
         generator.increaseDepth();
-        for (SchemeAttribute attribute : container.getAttributes()) {
+        for (SchemeAttribute attribute : container.getFilteredAttributes()) {
             generator.appendLn("this." + attribute.getName() + " = " + attribute.getName() + ";");
         }
         generator.decreaseDepth();
@@ -58,7 +61,7 @@ public class ContainerGenerator {
     }
 
     public static void generateGetters(FileGenerator generator, SchemeDefinition definition, SchemeContainer container) throws IOException {
-        for (SchemeAttribute attribute : container.getAttributes()) {
+        for (SchemeAttribute attribute : container.getFilteredAttributes()) {
             String type = JavaConfig.convertType(definition, attribute.getType());
             String getter = type.equals("boolean") || type.equals("Boolean") ? JavaConfig.getBoolGetterName(attribute.getName()) :
                     JavaConfig.getGetterName(attribute.getName());
@@ -95,7 +98,7 @@ public class ContainerGenerator {
         }
         generator.appendLn("{\";");
         boolean isFirst = true;
-        for (SchemeAttribute attribute : container.getAttributes()) {
+        for (SchemeAttribute attribute : container.getFilteredAttributes()) {
             ParameterCategory category = container.getParameterCategory(attribute.getName());
             if (category == ParameterCategory.HIDDEN ||
                     category == ParameterCategory.DANGER) {
@@ -213,7 +216,7 @@ public class ContainerGenerator {
         generator.appendLn("@Override");
         generator.appendLn("public void parse(BserValues values) throws IOException {");
         generator.increaseDepth();
-        for (SchemeAttribute attribute : container.getAttributes()) {
+        for (SchemeAttribute attribute : container.getFilteredAttributes()) {
             generateSerialization(generator, attribute.getId(), attribute.getName(), attribute.getType(), definition);
         }
         generator.decreaseDepth();
@@ -279,7 +282,19 @@ public class ContainerGenerator {
                 generator.decreaseDepth();
                 generator.appendLn("}");
             } else if (childType instanceof SchemeTraitType) {
-                generator.appendLn("this." + attributeName + " = values.optBytes(" + attributeId + ");");
+
+                generator.appendLn("if (values.optBytes(" + attributeId + ") != null) {");
+                generator.increaseDepth();
+                String traitName = ((SchemeTraitType) childType).getTraitName();
+                SchemeTrait trait = definition.getTrait(traitName);
+                if (trait.isContainer()) {
+                    generator.appendLn("this." + attributeName + " = " + JavaConfig.getStructName(traitName) + ".fromBytes(values.getBytes(" + attributeId + "));");
+                } else {
+                    generator.appendLn("this." + attributeName + " = " + JavaConfig.getStructName(traitName) + ".fromBytes(values.getInt(" + (attributeId - 1) + "), values.getBytes(" + attributeId + "));");
+                }
+                generator.decreaseDepth();
+                generator.appendLn("}");
+
             } else {
                 throw new IOException();
             }
@@ -318,7 +333,13 @@ public class ContainerGenerator {
                 throw new IOException();
             }
         } else if (type instanceof SchemeTraitType) {
-            generator.appendLn("this." + attributeName + " = values.getBytes(" + attributeId + ");");
+            String traitName = ((SchemeTraitType) type).getTraitName();
+            SchemeTrait trait = definition.getTrait(traitName);
+            if (trait.isContainer()) {
+                generator.appendLn("this." + attributeName + " = " + JavaConfig.getStructName(traitName) + ".fromBytes(values.getBytes(" + attributeId + "));");
+            } else {
+                generator.appendLn("this." + attributeName + " = " + JavaConfig.getStructName(traitName) + ".fromBytes(values.getInt(" + (attributeId - 1) + "), values.getBytes(" + attributeId + "));");
+            }
         } else {
             throw new IOException();
         }
@@ -329,7 +350,7 @@ public class ContainerGenerator {
         generator.appendLn("@Override");
         generator.appendLn("public void serialize(BserWriter writer) throws IOException {");
         generator.increaseDepth();
-        for (SchemeAttribute attribute : container.getAttributes()) {
+        for (SchemeAttribute attribute : container.getFilteredAttributes()) {
             generateDeserialization(generator, attribute.getId(), attribute.getName(), attribute.getType(), definition);
         }
         generator.decreaseDepth();
@@ -447,7 +468,16 @@ public class ContainerGenerator {
             } else if (childType instanceof SchemeTraitType) {
                 generator.appendLn("if (this." + attributeName + " != null) {");
                 generator.increaseDepth();
-                generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ");");
+
+                String traitName = ((SchemeTraitType) childType).getTraitName();
+                SchemeTrait trait = definition.getTrait(traitName);
+                if (trait.isContainer()) {
+                    generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ".toByteArray());");
+                } else {
+                    generator.appendLn("writer.writeInt(" + (attributeId - 1) + ", this." + attributeName + ".getHeader());");
+                    generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ");");
+                }
+
                 generator.decreaseDepth();
                 generator.appendLn("}");
             } else {
@@ -479,7 +509,20 @@ public class ContainerGenerator {
                 throw new IOException();
             }
         } else if (type instanceof SchemeTraitType) {
-            generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ");");
+            String traitName = ((SchemeTraitType) type).getTraitName();
+            SchemeTrait trait = definition.getTrait(traitName);
+            generator.appendLn("if (this." + attributeName + " == null) {");
+            generator.increaseDepth();
+            generator.appendLn("throw new IOException();");
+            generator.decreaseDepth();
+            generator.appendLn("}");
+            generator.appendLn();
+            if (trait.isContainer()) {
+                generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ".toByteArray());");
+            } else {
+                generator.appendLn("writer.writeInt(" + (attributeId - 1) + ", this." + attributeName + ".getHeader());");
+                generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ");");
+            }
         } else {
             throw new IOException();
         }
