@@ -31,7 +31,7 @@ public class DataInput {
             throw new IllegalArgumentException("Length can't be negative");
         }
         if (data.length < offset + len) {
-            throw new IllegalArgumentException("Inconsistent lengths");
+            throw new IllegalArgumentException("Inconsistent lengths, total: " + data.length + ", offset: " + offset + ", len: " + len);
         }
 
         this.data = data;
