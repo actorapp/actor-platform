@@ -1,7 +1,7 @@
 package im.actor.model.network.mtp.entity;
 
-import im.actor.model.util.DataInput;
-import im.actor.model.util.DataOutput;
+import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
 
 import java.io.IOException;
 import java.util.Arrays;

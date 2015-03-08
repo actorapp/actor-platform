@@ -17,8 +17,8 @@ import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
-import im.actor.model.util.DataInput;
-import im.actor.model.util.DataOutput;
+import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
 
 /**
  * Created by ex3ndr on 25.02.15.

@@ -1,4 +1,4 @@
-package im.actor.model.util;
+package im.actor.model.droidkit.bser;
 
 import java.io.IOException;
 

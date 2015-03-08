@@ -4,37 +4,43 @@ package im.actor.model.api;
  */
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.droidkit.bser.DataInput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class FileExVideo extends BserObject {
+public class EncryptedDocumentV1VExideo extends EncryptedDocumentV1Ex {
 
-    private int w;
-    private int h;
+    private int width;
+    private int height;
     private int duration;
 
-    public FileExVideo(int w, int h, int duration) {
-        this.w = w;
-        this.h = h;
+    public EncryptedDocumentV1VExideo(int width, int height, int duration) {
+        this.width = width;
+        this.height = height;
         this.duration = duration;
     }
 
-    public FileExVideo() {
+    public EncryptedDocumentV1VExideo() {
 
     }
 
-    public int getW() {
-        return this.w;
+    public int getHeader() {
+        return 2;
     }
 
-    public int getH() {
-        return this.h;
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
     }
 
     public int getDuration() {
@@ -43,24 +49,21 @@ public class FileExVideo extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.w = values.getInt(1);
-        this.h = values.getInt(2);
+        this.width = values.getInt(1);
+        this.height = values.getInt(2);
         this.duration = values.getInt(3);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.w);
-        writer.writeInt(2, this.h);
+        writer.writeInt(1, this.width);
+        writer.writeInt(2, this.height);
         writer.writeInt(3, this.duration);
     }
 
     @Override
     public String toString() {
-        String res = "struct FileExVideo{";
-        res += "w=" + this.w;
-        res += ", h=" + this.h;
-        res += ", duration=" + this.duration;
+        String res = "struct EncryptedDocumentV1VExideo{";
         res += "}";
         return res;
     }
