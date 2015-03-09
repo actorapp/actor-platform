@@ -13,7 +13,7 @@ import org.bouncycastle.asn1.x500.X500Name;
  *      signature               BIT STRING
  *  }
  * </pre>
- * @deprecated use org.org.bouncycastle.asn1.x509.Certificate
+ * @deprecated use org.org.org.bouncycastle.asn1.x509.Certificate
  */
 public class X509CertificateStructure
     extends ASN1Object

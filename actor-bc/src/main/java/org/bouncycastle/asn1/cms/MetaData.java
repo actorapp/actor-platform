@@ -8,7 +8,7 @@ import org.bouncycastle.asn1.*;
  * <p>
  * <pre>
  * MetaData ::= SEQUENCE {
- *   hashProtected        BOOLEAN,
+ *   hashProtected        TAG_BOOLEAN,
  *   fileName             UTF8String OPTIONAL,
  *   mediaType            IA5String OPTIONAL,
  *   otherMetaData        Attributes OPTIONAL

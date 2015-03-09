@@ -127,7 +127,7 @@ public class DERExternal
     }
 
     /* (non-Javadoc)
-     * @see org.org.bouncycastle.asn1.ASN1Primitive#encode(org.org.bouncycastle.asn1.DEROutputStream)
+     * @see org.org.org.bouncycastle.asn1.ASN1Primitive#encode(org.org.org.bouncycastle.asn1.DEROutputStream)
      */
     void encode(ASN1OutputStream out)
         throws IOException
@@ -151,7 +151,7 @@ public class DERExternal
     }
 
     /* (non-Javadoc)
-     * @see org.org.bouncycastle.asn1.ASN1Primitive#asn1Equals(org.org.bouncycastle.asn1.ASN1Primitive)
+     * @see org.org.org.bouncycastle.asn1.ASN1Primitive#asn1Equals(org.org.org.bouncycastle.asn1.ASN1Primitive)
      */
     boolean asn1Equals(ASN1Primitive o)
     {

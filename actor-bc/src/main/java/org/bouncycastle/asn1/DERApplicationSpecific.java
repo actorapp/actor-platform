@@ -192,7 +192,7 @@ public class DERApplicationSpecific
     }
 
     /* (non-Javadoc)
-     * @see org.org.bouncycastle.asn1.ASN1Primitive#encode(org.org.bouncycastle.asn1.DEROutputStream)
+     * @see org.org.org.bouncycastle.asn1.ASN1Primitive#encode(org.org.org.bouncycastle.asn1.DEROutputStream)
      */
     void encode(ASN1OutputStream out) throws IOException
     {

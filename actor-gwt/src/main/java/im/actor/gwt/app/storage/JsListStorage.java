@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import im.actor.gwt.app.base64.Base64Utils;
-import im.actor.model.util.DataInput;
-import im.actor.model.util.DataOutput;
+import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
 
 /**
  * Created by ex3ndr on 22.02.15.

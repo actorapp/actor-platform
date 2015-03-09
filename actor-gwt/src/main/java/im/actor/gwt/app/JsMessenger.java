@@ -26,6 +26,7 @@ import im.actor.model.Configuration;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.crypto.bouncycastle.BouncyCastleProvider;
 import im.actor.model.entity.Dialog;
 import im.actor.model.log.Log;
 
@@ -56,7 +57,7 @@ public class JsMessenger implements Exportable {
                 .setThreading(new JsThreading())
                 .setLog(new JsLog())
                 .setMainThread(mainThread)
-                .setUploadFilePersist(false)
+                .setCryptoProvider(new BouncyCastleProvider())
                 .setLocale(new JsLocaleProvider())
                 .setPhoneBookProvider(new JsPhoneBookProvider()).build();
         messenger = new Messenger(configuration);

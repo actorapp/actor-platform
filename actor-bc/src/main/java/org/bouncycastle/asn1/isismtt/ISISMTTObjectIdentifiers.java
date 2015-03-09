@@ -116,7 +116,7 @@ public interface ISISMTTObjectIdentifiers
      * of certificates, which MAY optionally be provided by certificate
      * repositories.
      * <pre>
-     *    RetrieveIfAllowed ::= BOOLEAN
+     *    RetrieveIfAllowed ::= TAG_BOOLEAN
      * </pre>
      * <p>
      * OID: 1.3.36.8.3.9
@@ -201,7 +201,7 @@ public interface ISISMTTObjectIdentifiers
      * usability of the PKC too. Attribute certificates with restricting content
      * MUST always be included in the signed document.
      * <pre>
-     *    LiabilityLimitationFlagSyntax ::= BOOLEAN
+     *    LiabilityLimitationFlagSyntax ::= TAG_BOOLEAN
      * </pre>
      * <p>
      * OID: 0.2.262.1.10.12.0

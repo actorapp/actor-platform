@@ -371,7 +371,7 @@ public class X509Extensions
      *
      *     Extension         ::=   SEQUENCE {
      *        extnId            EXTENSION.&amp;id ({ExtensionSet}),
-     *        critical          BOOLEAN DEFAULT FALSE,
+     *        critical          TAG_BOOLEAN DEFAULT FALSE,
      *        extnValue         OCTET STRING }
      * </pre>
      */

@@ -1631,7 +1631,7 @@ public abstract class ECPoint
         }
 
         /* (non-Javadoc)
-         * @see org.org.bouncycastle.math.ec.ECPoint#add(org.org.bouncycastle.math.ec.ECPoint)
+         * @see org.org.org.bouncycastle.math.ec.ECPoint#add(org.org.org.bouncycastle.math.ec.ECPoint)
          */
         public ECPoint add(ECPoint b)
         {
@@ -1830,7 +1830,7 @@ public abstract class ECPoint
         }
 
         /* (non-Javadoc)
-         * @see org.org.bouncycastle.math.ec.ECPoint#subtract(org.org.bouncycastle.math.ec.ECPoint)
+         * @see org.org.org.bouncycastle.math.ec.ECPoint#subtract(org.org.org.bouncycastle.math.ec.ECPoint)
          */
         public ECPoint subtract(ECPoint b)
         {

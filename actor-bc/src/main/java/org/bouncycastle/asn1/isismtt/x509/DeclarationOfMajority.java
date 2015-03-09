@@ -11,7 +11,7 @@ import org.bouncycastle.asn1.*;
  *             notYoungerThan [0] IMPLICIT INTEGER,
  *             fullAgeAtCountry [1] IMPLICIT SEQUENCE
  *             {
- *               fullAge BOOLEAN DEFAULT TRUE,
+ *               fullAge TAG_BOOLEAN DEFAULT TRUE,
  *               country PrintableString (SIZE(2))
  *             }
  *             dateOfBirth [2] IMPLICIT GeneralizedTime
@@ -98,7 +98,7 @@ public class DeclarationOfMajority
      *             notYoungerThan [0] IMPLICIT INTEGER,
      *             fullAgeAtCountry [1] IMPLICIT SEQUENCE
      *             {
-     *               fullAge BOOLEAN DEFAULT TRUE,
+     *               fullAge TAG_BOOLEAN DEFAULT TRUE,
      *               country PrintableString (SIZE(2))
      *             }
      *             dateOfBirth [2] IMPLICIT GeneralizedTime

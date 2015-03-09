@@ -86,7 +86,7 @@ public class PKIArchiveOptions
      *      -- the actual value of the private key
      *      keyGenParameters     [1] KeyGenParameters,
      *      -- parameters which allow the private key to be re-generated
-     *      archiveRemGenPrivKey [2] BOOLEAN }
+     *      archiveRemGenPrivKey [2] TAG_BOOLEAN }
      *      -- set to TRUE if sender wishes receiver to archive the private
      *      -- key of a key pair that the receiver generates in response to
      *      -- this request; set to FALSE if no archival is desired.
