@@ -8,9 +8,9 @@ import org.bouncycastle.asn1.x509.PolicyInformation;
  *     PathProcInput ::= SEQUENCE {
  *         acceptablePolicySet          SEQUENCE SIZE (1..MAX) OF
  *                                         PolicyInformation,
- *         inhibitPolicyMapping         BOOLEAN DEFAULT FALSE,
- *         explicitPolicyReqd           [0] BOOLEAN DEFAULT FALSE ,
- *         inhibitAnyPolicy             [1] BOOLEAN DEFAULT FALSE
+ *         inhibitPolicyMapping         TAG_BOOLEAN DEFAULT FALSE,
+ *         explicitPolicyReqd           [0] TAG_BOOLEAN DEFAULT FALSE ,
+ *         inhibitAnyPolicy             [1] TAG_BOOLEAN DEFAULT FALSE
  *     }
  * </pre>
  */

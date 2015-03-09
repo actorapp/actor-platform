@@ -119,7 +119,7 @@ public class BasicConstraints
      * Produce an object suitable for an ASN1OutputStream.
      * <pre>
      * BasicConstraints := SEQUENCE {
-     *    cA                  BOOLEAN DEFAULT FALSE,
+     *    cA                  TAG_BOOLEAN DEFAULT FALSE,
      *    pathLenConstraint   INTEGER (0..MAX) OPTIONAL
      * }
      * </pre>

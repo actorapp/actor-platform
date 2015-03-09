@@ -144,7 +144,7 @@ public class AuthEnvelopedData
      * <ul>
      * <li> null &rarr; null
      * <li> {@link AuthEnvelopedData} object
-     * <li> {@link ASN1Sequence org.org.bouncycastle.asn1.ASN1Sequence} input formats with AuthEnvelopedData structure inside
+     * <li> {@link ASN1Sequence org.org.org.bouncycastle.asn1.ASN1Sequence} input formats with AuthEnvelopedData structure inside
      * </ul>
      *
      * @param obj The object we want converted.

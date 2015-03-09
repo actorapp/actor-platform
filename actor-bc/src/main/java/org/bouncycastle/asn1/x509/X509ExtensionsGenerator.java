@@ -11,7 +11,7 @@ import java.util.Vector;
 
 /**
  * Generator for X.509 extensions
- * @deprecated use org.org.bouncycastle.asn1.x509.ExtensionsGenerator
+ * @deprecated use org.org.org.bouncycastle.asn1.x509.ExtensionsGenerator
  */
 public class X509ExtensionsGenerator
 {

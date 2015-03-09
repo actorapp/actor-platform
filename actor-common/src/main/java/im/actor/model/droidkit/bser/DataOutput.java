@@ -48,6 +48,12 @@ public class DataOutput {
     }
 
     public void writeByte(int v) {
+        if (v < 0) {
+            throw new IllegalArgumentException("Value can't be negative");
+        }
+        if (v > 255) {
+            throw new IllegalArgumentException("Value can't be more than 255");
+        }
         if (data.length <= offset + 1) {
             expand(offset + 1);
         }
@@ -56,11 +62,11 @@ public class DataOutput {
 
     public void writeVarInt(long v) {
         while ((v & 0xffffffffffffff80l) != 0l) {
-            writeByte((byte) ((v & 0x7f) | 0x80));
+            writeByte((int) ((v & 0x7f) | 0x80));
             v >>>= 7;
         }
 
-        writeByte((byte) (v & 0x7f));
+        writeByte((int) (v & 0x7f));
     }
 
     public void writeProtoBytes(byte[] v, int ofs, int len) {
@@ -115,5 +121,24 @@ public class DataOutput {
             res[i] = data[i];
         }
         return res;
+    }
+
+    public void writeASN1Length(int length) {
+        if (length > 127) {
+            int size = 1;
+            int val = length;
+
+            while ((val >>>= 8) != 0) {
+                size++;
+            }
+
+            writeByte((size | 0x80) & 0xFF);
+
+            for (int i = (size - 1) * 8; i >= 0; i -= 8) {
+                writeByte((length >> i) & 0xFF);
+            }
+        } else {
+            writeByte(length & 0xFF);
+        }
     }
 }

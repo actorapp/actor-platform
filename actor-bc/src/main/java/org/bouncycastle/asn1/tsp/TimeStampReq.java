@@ -133,7 +133,7 @@ public class TimeStampReq
      *    --time-stamped
      *  reqPolicy             TSAPolicyId              OPTIONAL,
      *  nonce                 INTEGER                  OPTIONAL,
-     *  certReq               BOOLEAN                  DEFAULT FALSE,
+     *  certReq               TAG_BOOLEAN                  DEFAULT FALSE,
      *  extensions            [0] IMPLICIT Extensions  OPTIONAL
      * }
      * </pre>

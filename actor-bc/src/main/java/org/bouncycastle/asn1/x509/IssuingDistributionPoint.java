@@ -6,11 +6,11 @@ import org.bouncycastle.asn1.*;
  * <pre>
  * IssuingDistributionPoint ::= SEQUENCE { 
  *   distributionPoint          [0] DistributionPointName OPTIONAL, 
- *   onlyContainsUserCerts      [1] BOOLEAN DEFAULT FALSE, 
- *   onlyContainsCACerts        [2] BOOLEAN DEFAULT FALSE, 
+ *   onlyContainsUserCerts      [1] TAG_BOOLEAN DEFAULT FALSE,
+ *   onlyContainsCACerts        [2] TAG_BOOLEAN DEFAULT FALSE,
  *   onlySomeReasons            [3] ReasonFlags OPTIONAL, 
- *   indirectCRL                [4] BOOLEAN DEFAULT FALSE,
- *   onlyContainsAttributeCerts [5] BOOLEAN DEFAULT FALSE }
+ *   indirectCRL                [4] TAG_BOOLEAN DEFAULT FALSE,
+ *   onlyContainsAttributeCerts [5] TAG_BOOLEAN DEFAULT FALSE }
  * </pre>
  */
 public class IssuingDistributionPoint
