@@ -21,6 +21,7 @@ task cleanGenSources(type: Delete) {
 
 task copyGenSources(type: Copy, dependsOn: ['cleanGenSources']) {
     from fileTree("${projectDir}/../actor-common/src/main/java/")
+    from fileTree("${projectDir}/../actor-bc/src/main/java/")
     into "${projectDir}/src/gen/java/"
 }
 

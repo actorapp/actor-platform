@@ -104,7 +104,7 @@ public class JsStorage implements Storage {
 
     @Override
     public ListEngine<Message> createMessagesEngine(Peer peer) {
-        return new JsListEngine<Message>("msg" + peer.getUid(), storage) {
+        return new JsListEngine<Message>("msg" + peer.getUnuqueId(), storage) {
             @Override
             protected byte[] serialize(Message item) {
                 return item.toByteArray();

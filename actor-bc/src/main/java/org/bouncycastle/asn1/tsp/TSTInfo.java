@@ -174,7 +174,7 @@ public class TSTInfo
      *         -- up to 160 bits.
      *        genTime                      GeneralizedTime,
      *        accuracy                     Accuracy                 OPTIONAL,
-     *        ordering                     BOOLEAN             DEFAULT FALSE,
+     *        ordering                     TAG_BOOLEAN             DEFAULT FALSE,
      *        nonce                        INTEGER                  OPTIONAL,
      *          -- MUST be present if the similar field was present
      *          -- in TimeStampReq.  In that case it MUST have the same value.

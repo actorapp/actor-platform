@@ -78,4 +78,23 @@ public class CryptoUtils {
         }
         return new String(hexChars);
     }
+
+    private static int fromHexShort(char a) {
+        if (a >= '0' && a <= '9') {
+            return a - '0';
+        }
+        if (a >= 'a' && a <= 'f') {
+            return 10 + (a - 'a');
+        }
+
+        throw new RuntimeException();
+    }
+
+    public static byte[] fromHex(String hex) {
+        byte[] res = new byte[hex.length() / 2];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = (byte) ((fromHexShort(hex.charAt(i * 2)) << 4) + fromHexShort(hex.charAt(i * 2 + 1)));
+        }
+        return res;
+    }
 }

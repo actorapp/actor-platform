@@ -21,7 +21,7 @@ import java.util.Vector;
  *                                   type  OBJECT IDENTIFIER,
  *                                   value ANY }
  * </pre>
- * @deprecated use org.org.bouncycastle.asn1.x500.X500Name.
+ * @deprecated use org.org.org.bouncycastle.asn1.x500.X500Name.
  */
 public class X509Name
     extends ASN1Object

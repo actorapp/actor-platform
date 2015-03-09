@@ -6,7 +6,7 @@ import java.math.BigInteger;
 import java.util.Enumeration;
 
 /**
- * @deprecated use org.org.bouncycastle.asn1.pkcs.RSAPublicKey
+ * @deprecated use org.org.org.bouncycastle.asn1.pkcs.RSAPublicKey
  */
 public class RSAPublicKeyStructure
     extends ASN1Object
