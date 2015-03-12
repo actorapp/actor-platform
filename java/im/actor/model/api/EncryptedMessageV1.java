@@ -51,7 +51,7 @@ public class EncryptedMessageV1 extends BserObject {
         }
 
         writer.writeInt(2, this.content.getHeader());
-        writer.writeBytes(3, this.content);
+        writer.writeBytes(3, this.content.toByteArray());
     }
 
     @Override

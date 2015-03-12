@@ -5512,7 +5512,7 @@
         <property role="w4tQU" value="true" />
         <ref role="w4$XZ" node="5NX0N0RP2U1" resolve="EncryptedContentV1" />
         <node concept="2m7Kf5" id="5NX0N0RP0fP" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
+          <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="text" />
           <node concept="2m5ndX" id="5NX0N0RP0fT" role="2m7DVh" />
         </node>

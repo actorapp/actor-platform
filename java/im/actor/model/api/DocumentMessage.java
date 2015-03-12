@@ -26,10 +26,9 @@ public class DocumentMessage extends Message {
     private String name;
     private String mimeType;
     private FastThumb thumb;
-    private int extType;
-    private byte[] ext;
+    private DocumentEx ext;
 
-    public DocumentMessage(long fileId, long accessHash, int fileSize, EncryptionType encryptionType, byte[] encryptionKey, Integer plainFileSize, String name, String mimeType, FastThumb thumb, int extType, byte[] ext) {
+    public DocumentMessage(long fileId, long accessHash, int fileSize, EncryptionType encryptionType, byte[] encryptionKey, Integer plainFileSize, String name, String mimeType, FastThumb thumb, DocumentEx ext) {
         this.fileId = fileId;
         this.accessHash = accessHash;
         this.fileSize = fileSize;
@@ -39,7 +38,6 @@ public class DocumentMessage extends Message {
         this.name = name;
         this.mimeType = mimeType;
         this.thumb = thumb;
-        this.extType = extType;
         this.ext = ext;
     }
 
@@ -87,11 +85,7 @@ public class DocumentMessage extends Message {
         return this.thumb;
     }
 
-    public int getExtType() {
-        return this.extType;
-    }
-
-    public byte[] getExt() {
+    public DocumentEx getExt() {
         return this.ext;
     }
 
@@ -109,7 +103,6 @@ public class DocumentMessage extends Message {
         this.name = values.getString(4);
         this.mimeType = values.getString(5);
         this.thumb = values.optObj(6, new FastThumb());
-        this.extType = values.getInt(7);
         if (values.optBytes(8) != null) {
             this.ext = DocumentEx.fromBytes(values.getInt(7), values.getBytes(8));
         }
@@ -140,10 +133,9 @@ public class DocumentMessage extends Message {
         if (this.thumb != null) {
             writer.writeObject(6, this.thumb);
         }
-        writer.writeInt(7, this.extType);
         if (this.ext != null) {
             writer.writeInt(7, this.ext.getHeader());
-            writer.writeBytes(8, this.ext);
+            writer.writeBytes(8, this.ext.toByteArray());
         }
     }
 
@@ -155,7 +147,6 @@ public class DocumentMessage extends Message {
         res += ", name=" + this.name;
         res += ", mimeType=" + this.mimeType;
         res += ", thumb=" + (this.thumb != null ? "set":"empty");
-        res += ", extType=" + this.extType;
         res += ", ext=" + (this.ext != null ? "set":"empty");
         res += "}";
         return res;

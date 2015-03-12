@@ -18,12 +18,10 @@ import java.util.ArrayList;
 public class TextMessage extends Message {
 
     private String text;
-    private int extType;
-    private byte[] ext;
+    private TextMessageEx ext;
 
-    public TextMessage(String text, int extType, byte[] ext) {
+    public TextMessage(String text, TextMessageEx ext) {
         this.text = text;
-        this.extType = extType;
         this.ext = ext;
     }
 
@@ -39,18 +37,13 @@ public class TextMessage extends Message {
         return this.text;
     }
 
-    public int getExtType() {
-        return this.extType;
-    }
-
-    public byte[] getExt() {
+    public TextMessageEx getExt() {
         return this.ext;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.text = values.getString(1);
-        this.extType = values.getInt(2);
         if (values.optBytes(3) != null) {
             this.ext = TextMessageEx.fromBytes(values.getInt(2), values.getBytes(3));
         }
@@ -62,10 +55,9 @@ public class TextMessage extends Message {
             throw new IOException();
         }
         writer.writeString(1, this.text);
-        writer.writeInt(2, this.extType);
         if (this.ext != null) {
             writer.writeInt(2, this.ext.getHeader());
-            writer.writeBytes(3, this.ext);
+            writer.writeBytes(3, this.ext.toByteArray());
         }
     }
 
@@ -73,7 +65,6 @@ public class TextMessage extends Message {
     public String toString() {
         String res = "struct TextMessage{";
         res += "text=" + this.text;
-        res += ", extType=" + this.extType;
         res += ", ext=" + this.ext;
         res += "}";
         return res;
