@@ -27,7 +27,7 @@ trait ServiceSpecHelpers {
 
   def getSmsHash(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem): String = withoutLogs {
     val api.auth.ResponseSendAuthCode(smsHash, _) =
-      Await.result(service.handleSendAuthCode(api.ClientData(authId, None), phoneNumber, 1, "apiKey"), 1.second).toOption.get._1
+      Await.result(service.handleSendAuthCode(phoneNumber, 1, "apiKey")(api.ClientData(authId, None)), 1.second).toOption.get._1
     smsHash
   }
 
@@ -35,7 +35,6 @@ trait ServiceSpecHelpers {
     val smsHash = getSmsHash(authId, phoneNumber)(service, system)
 
     val (rsp, _) = Await.result(service.handleSignUp(
-      clientData = api.ClientData(authId, None),
       phoneNumber = phoneNumber,
       smsHash = smsHash,
       smsCode = "0000",
@@ -46,7 +45,7 @@ trait ServiceSpecHelpers {
       appId = 42,
       appKey = "appKey",
       isSilent = false
-    ), 1.second).toOption.get
+    )(api.ClientData(authId, None)), 1.second).toOption.get
 
     rsp.user
   }
@@ -59,7 +58,7 @@ trait ServiceSpecHelpers {
   }
 
   protected def withoutLogs[A](f: => A)(implicit system: ActorSystem): A = {
-    val logger =  org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]
+    val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]
     val logLevel = logger.getLevel()
     logger.setLevel(ch.qos.logback.classic.Level.OFF)
 

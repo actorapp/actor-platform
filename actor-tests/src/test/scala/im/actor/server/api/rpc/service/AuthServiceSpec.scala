@@ -50,8 +50,10 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
       val authId = createAuthId(service.db)
       val phoneNumber = buildPhone()
 
+      implicit val clientData = api.ClientData(authId, None)
+
       def e1 = {
-        service.handleSendAuthCode(api.ClientData(authId, None), phoneNumber, 1, "apiKey") must beOkLike {
+        service.handleSendAuthCode(phoneNumber, 1, "apiKey") must beOkLike {
           case (api.auth.ResponseSendAuthCode(_, false), Vector()) => ok
         }.await
       }
@@ -62,9 +64,10 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
       val phoneNumber = buildPhone()
       val smsHash = getSmsHash(authId, phoneNumber)
 
+      implicit val clientData = api.ClientData(authId, None)
+
       def e1 = {
         service.handleSignUp(
-          clientData = api.ClientData(authId, None),
           rawPhoneNumber = phoneNumber,
           smsHash = smsHash,
           smsCode = "0000",
@@ -85,11 +88,12 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
       val authId = createAuthId(service.db)
       val phoneNumber = buildPhone()
 
+      implicit val clientData = api.ClientData(authId, None)
+
       def unoccupied = {
         val smsHash = getSmsHash(authId, phoneNumber)
 
         service.handleSignIn(
-          clientData = api.ClientData(authId, None),
           rawPhoneNumber = phoneNumber,
           smsHash = smsHash,
           smsCode = "0000",
@@ -109,7 +113,6 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
         val smsHash = getSmsHash(authId, phoneNumber)
 
         service.handleSignIn(
-          clientData = api.ClientData(authId, None),
           rawPhoneNumber = phoneNumber,
           smsHash = smsHash,
           smsCode = "0000",
