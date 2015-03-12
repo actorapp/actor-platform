@@ -37,7 +37,7 @@ public class EncryptedTextContentV1 extends EncryptedContentV1 {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.text = values.getString(2);
+        this.text = values.getString(1);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class EncryptedTextContentV1 extends EncryptedContentV1 {
         if (this.text == null) {
             throw new IOException();
         }
-        writer.writeString(2, this.text);
+        writer.writeString(1, this.text);
     }
 
     @Override
