@@ -16,7 +16,7 @@ trait EncryptionServiceImpl extends EncryptionService {
   implicit val actorSystem: ActorSystem
   val db: Database
 
-  override def handleGetPublicKeys(clientData: ClientData, keys: Vector[PublicKeyRequest]): Future[HandlerResult[ResponseGetPublicKeys]] = {
+  override def handleGetPublicKeys(keys: Vector[PublicKeyRequest])(implicit clientData: ClientData): Future[HandlerResult[ResponseGetPublicKeys]] = {
     // TODO: #perf fix thos dirty unperformant code
     val keysSet = keys.toSet
     val keysMap = keys.map(k => k.userId * k.keyHash -> k.accessHash).toMap

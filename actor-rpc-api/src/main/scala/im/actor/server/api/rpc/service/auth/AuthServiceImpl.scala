@@ -26,12 +26,12 @@ trait AuthServiceImpl extends AuthService with Helpers {
   val db: Database
   implicit val actorSystem: ActorSystem
 
-  override def handleGetAuthSessions(clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] =
+  override def handleGetAuthSessions(implicit clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] =
     throw new NotImplementedError()
 
   override def handleSendAuthCode(
-    clientData: ClientData, rawPhoneNumber: Long, appId: Int, apiKey: String
-  ): Future[HandlerResult[ResponseSendAuthCode]] = {
+    rawPhoneNumber: Long, appId: Int, apiKey: String
+  )(implicit clientData: ClientData): Future[HandlerResult[ResponseSendAuthCode]] = {
     util.PhoneNumber.normalizeLong(rawPhoneNumber) match {
       case None =>
         Future.successful(Error(Errors.PhoneNumberInvalid))
@@ -62,15 +62,14 @@ trait AuthServiceImpl extends AuthService with Helpers {
   }
 
   override def handleSendAuthCall(
-    clientData: ClientData, phoneNumber: Long, smsHash: String, appId: Int, apiKey: String
-  ): Future[HandlerResult[ResponseVoid]] =
+    phoneNumber: Long, smsHash: String, appId: Int, apiKey: String
+  )(implicit clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
-  override def handleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+  override def handleSignOut(implicit clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
   override def handleSignIn(
-    clientData: ClientData,
     rawPhoneNumber: Long,
     smsHash:     String,
     smsCode:     String,
@@ -79,14 +78,13 @@ trait AuthServiceImpl extends AuthService with Helpers {
     deviceTitle: String,
     appId:       Int,
     appKey:      String
-  ): Future[HandlerResult[ResponseAuth]] =
+  )(implicit clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
     handleSign(In,
-      clientData, rawPhoneNumber, smsHash, smsCode,
+      rawPhoneNumber, smsHash, smsCode,
       publicKey, deviceHash, deviceTitle, appId, appKey
     )
 
   override def handleSignUp(
-    clientData:     ClientData,
     rawPhoneNumber: Long,
     smsHash:        String,
     smsCode:        String,
@@ -97,15 +95,14 @@ trait AuthServiceImpl extends AuthService with Helpers {
     appId:          Int,
     appKey:         String,
     isSilent:       Boolean
-  ): Future[HandlerResult[ResponseAuth]] =
+  )(implicit clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
     handleSign(Up(name, isSilent),
-      clientData, rawPhoneNumber, smsHash, smsCode,
+      rawPhoneNumber, smsHash, smsCode,
       publicKey, deviceHash, deviceTitle, appId, appKey
     )
 
   private def handleSign(
     signType:       SignType,
-    clientData:     ClientData,
     rawPhoneNumber: Long,
     smsHash:        String,
     smsCode:        String,
@@ -114,7 +111,7 @@ trait AuthServiceImpl extends AuthService with Helpers {
     deviceTitle:    String,
     appId:          Int,
     appKey:         String
-  ): Future[HandlerResult[ResponseAuth]] = {
+  )(implicit clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
     util.PhoneNumber.normalizeWithCountry(rawPhoneNumber) match {
       case None => Future.successful(Error(Errors.PhoneNumberInvalid))
       case Some((normPhoneNumber, countryCode)) =>
@@ -211,10 +208,10 @@ trait AuthServiceImpl extends AuthService with Helpers {
     }
   }
 
-  override def handleTerminateAllSessions(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+  override def handleTerminateAllSessions(implicit clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
-  override def handleTerminateSession(clientData: ClientData, id: Int): Future[HandlerResult[ResponseVoid]] =
+  override def handleTerminateSession(id: Int)(implicit clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
   private def signIn(authId: Long, userId: Int, pkData: Array[Byte], pkHash: Long, countryCode: String) = {
