@@ -61,6 +61,13 @@ J2OBJC_FIELD_SETTER(BSDataOutput, data_, IOSByteArray *)
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) (v & (jint) 0xFF);
 }
 
+- (void)writeByteWithByte:(jbyte)v {
+  if (((IOSByteArray *) nil_chk(data_))->size_ <= offset_ + 1) {
+    BSDataOutput_expandWithInt_(self, offset_ + 1);
+  }
+  *IOSByteArray_GetRef(data_, offset_++) = v;
+}
+
 - (void)writeByteWithInt:(jint)v {
   if (v < 0) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Value can't be negative"];

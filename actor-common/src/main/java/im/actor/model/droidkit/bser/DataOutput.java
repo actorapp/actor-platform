@@ -47,6 +47,13 @@ public class DataOutput {
         data[offset++] = (byte) (v & 0xFF);
     }
 
+    public void writeByte(byte v) {
+        if (data.length <= offset + 1) {
+            expand(offset + 1);
+        }
+        data[offset++] = v;
+    }
+
     public void writeByte(int v) {
         if (v < 0) {
             throw new IllegalArgumentException("Value can't be negative");

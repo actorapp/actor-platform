@@ -170,34 +170,18 @@ public class BserWriter {
 
 
     private void writeVarInt(long value) throws IOException {
-        while ((value & 0xffffffffffffff80l) != 0l) {
-            stream.writeByte((byte) ((value & 0x7f) | 0x80));
-            value >>>= 7;
-        }
-
-        stream.writeByte((byte) (value & 0x7f));
+        stream.writeVarInt(value);
     }
 
     private void writeLong(long v) throws IOException {
-        stream.writeByte((byte) (v & 0xFF));
-        stream.writeByte((byte) ((v >> 8) & 0xFF));
-        stream.writeByte((byte) ((v >> 16) & 0xFF));
-        stream.writeByte((byte) ((v >> 24) & 0xFF));
-        stream.writeByte((byte) ((v >> 32) & 0xFF));
-        stream.writeByte((byte) ((v >> 40) & 0xFF));
-        stream.writeByte((byte) ((v >> 48) & 0xFF));
-        stream.writeByte((byte) ((v >> 56) & 0xFF));
+        stream.writeLong(v);
     }
 
     private void writeInt(long v) throws IOException {
-        stream.writeByte((byte) (v & 0xFF));
-        stream.writeByte((byte) ((v >> 8) & 0xFF));
-        stream.writeByte((byte) ((v >> 16) & 0xFF));
-        stream.writeByte((byte) ((v >> 24) & 0xFF));
+        stream.writeInt((int) v);
     }
 
     private void writeBytes(byte[] data) throws IOException {
-        writeVarInt(data.length);
-        stream.writeBytes(data, 0, data.length);
+        stream.writeProtoBytes(data, 0, data.length);
     }
 }
