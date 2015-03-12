@@ -8,18 +8,18 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
-#include "im/actor/model/entity/FileLocation.h"
+#include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/content/FileRemoteSource.h"
 #include "java/io/IOException.h"
 
 @interface AMFileRemoteSource () {
  @public
-  AMFileLocation *fileLocation_;
+  AMFileReference *fileReference_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(AMFileRemoteSource, fileLocation_, AMFileLocation *)
+J2OBJC_FIELD_SETTER(AMFileRemoteSource, fileReference_, AMFileReference *)
 
 @implementation AMFileRemoteSource
 
@@ -27,9 +27,9 @@ J2OBJC_FIELD_SETTER(AMFileRemoteSource, fileLocation_, AMFileLocation *)
   return AMFileRemoteSource_fromValuesWithBSBserValues_(reader);
 }
 
-- (instancetype)initWithAMFileLocation:(AMFileLocation *)fileLocation {
+- (instancetype)initWithAMFileReference:(AMFileReference *)fileReference {
   if (self = [super init]) {
-    self->fileLocation_ = fileLocation;
+    self->fileReference_ = fileReference;
   }
   return self;
 }
@@ -38,31 +38,31 @@ J2OBJC_FIELD_SETTER(AMFileRemoteSource, fileLocation_, AMFileLocation *)
   return [super init];
 }
 
-- (AMFileLocation *)getFileLocation {
-  return fileLocation_;
+- (AMFileReference *)getFileReference {
+  return fileReference_;
 }
 
 - (jint)getSize {
-  return [((AMFileLocation *) nil_chk(fileLocation_)) getFileSize];
+  return [((AMFileReference *) nil_chk(fileReference_)) getFileSize];
 }
 
 - (NSString *)getFileName {
-  return [((AMFileLocation *) nil_chk(fileLocation_)) getFileName];
+  return [((AMFileReference *) nil_chk(fileReference_)) getFileName];
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
-  fileLocation_ = AMFileLocation_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
+  fileReference_ = AMFileReference_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
-  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withBSBserObject:fileLocation_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withBSBserObject:fileReference_];
 }
 
 - (void)copyAllFieldsTo:(AMFileRemoteSource *)other {
   [super copyAllFieldsTo:other];
-  other->fileLocation_ = fileLocation_;
+  other->fileReference_ = fileReference_;
 }
 
 @end

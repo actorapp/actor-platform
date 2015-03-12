@@ -10,7 +10,7 @@
 @class AMAvatar;
 @class AMAvatarImage;
 @class AMFastThumb;
-@class AMFileLocation;
+@class AMFileReference;
 @class AMGroup;
 @class AMMessageStateEnum;
 @class AMPeer;
@@ -22,7 +22,7 @@
 @class ImActorModelApiFastThumb;
 @class ImActorModelApiFileLocation;
 @class ImActorModelApiGroup;
-@class ImActorModelApiMessageContent;
+@class ImActorModelApiMessage;
 @class ImActorModelApiMessageStateEnum;
 @class ImActorModelApiPeer;
 @class ImActorModelApiPeerTypeEnum;
@@ -42,9 +42,9 @@
 
 + (AMAvatarImage *)convertWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)avatarImage;
 
-+ (AMFileLocation *)convertWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)location
-                                              withNSString:(NSString *)fileName
-                                                   withInt:(jint)size;
++ (AMFileReference *)convertWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)location
+                                               withNSString:(NSString *)fileName
+                                                    withInt:(jint)size;
 
 + (AMSexEnum *)convertWithImActorModelApiSexEnum:(ImActorModelApiSexEnum *)sex;
 
@@ -59,7 +59,7 @@
 
 + (AMPeer *)convertWithImActorModelApiPeer:(ImActorModelApiPeer *)peer;
 
-+ (AMAbsContent *)convertWithImActorModelApiMessageContent:(ImActorModelApiMessageContent *)content;
++ (AMAbsContent *)convertWithImActorModelApiMessage:(ImActorModelApiMessage *)content;
 
 + (AMFastThumb *)convertWithImActorModelApiFastThumb:(ImActorModelApiFastThumb *)fastThumb;
 
@@ -77,7 +77,7 @@ FOUNDATION_EXPORT AMAvatar *ImActorModelModulesMessagesEntityEntityConverter_con
 
 FOUNDATION_EXPORT AMAvatarImage *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *avatarImage);
 
-FOUNDATION_EXPORT AMFileLocation *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_(ImActorModelApiFileLocation *location, NSString *fileName, jint size);
+FOUNDATION_EXPORT AMFileReference *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_(ImActorModelApiFileLocation *location, NSString *fileName, jint size);
 
 FOUNDATION_EXPORT AMSexEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiSexEnum_(ImActorModelApiSexEnum *sex);
 
@@ -91,7 +91,7 @@ FOUNDATION_EXPORT AMPeerTypeEnum *ImActorModelModulesMessagesEntityEntityConvert
 
 FOUNDATION_EXPORT AMPeer *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(ImActorModelApiPeer *peer);
 
-FOUNDATION_EXPORT AMAbsContent *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessageContent_(ImActorModelApiMessageContent *content);
+FOUNDATION_EXPORT AMAbsContent *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessage_(ImActorModelApiMessage *content);
 
 FOUNDATION_EXPORT AMFastThumb *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFastThumb_(ImActorModelApiFastThumb *fastThumb);
 CF_EXTERN_C_END

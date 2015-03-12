@@ -21,7 +21,7 @@
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/droidkit/actors/mailbox/Envelope.h"
-#include "im/actor/model/entity/FileLocation.h"
+#include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/content/FastThumb.h"
 #include "im/actor/model/files/FileReference.h"
@@ -66,8 +66,7 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 NSString * AMMessenger_TAG_ = @"CORE_INIT";
 
 - (instancetype)initWithConfig:(AMConfiguration *)configuration {
-  if (self = [super init]) {
-  AMLog_setLogWithAMLogCallback_([((AMConfiguration *) nil_chk(configuration)) getLog]);
+  [super init]AMLog_setLogWithAMLogCallback_([((AMConfiguration *) nil_chk(configuration)) getLog]);
   jlong start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
   DKEnvironment_setThreadingWithAMThreading_([configuration getThreading]);
   AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage1 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
@@ -87,8 +86,6 @@ NSString * AMMessenger_TAG_ = @"CORE_INIT";
   [self->modules_ run];
   AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage6 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
   start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
-  }
-  return self;
 }
 
 - (AMAuthStateEnum *)getAuthState {
@@ -317,10 +314,10 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileRefer
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) loadMoreHistoryWithAMPeer:peer];
 }
 
-- (AMFileVM *)bindFileWithAMFileLocation:(AMFileLocation *)fileLocation
-                             withBoolean:(jboolean)isAutoStart
-                    withAMFileVMCallback:(id<AMFileVMCallback>)callback {
-  return [[AMFileVM alloc] initWithAMFileLocation:fileLocation withBoolean:isAutoStart withImActorModelModulesModules:modules_ withAMFileVMCallback:callback];
+- (AMFileVM *)bindFileWithAMFileReference:(AMFileReference *)fileReference
+                              withBoolean:(jboolean)isAutoStart
+                     withAMFileVMCallback:(id<AMFileVMCallback>)callback {
+  return [[AMFileVM alloc] initWithAMFileReference:fileReference withBoolean:isAutoStart withImActorModelModulesModules:modules_ withAMFileVMCallback:callback];
 }
 
 - (AMUploadFileVM *)bindUploadWithLong:(jlong)rid
@@ -328,10 +325,10 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileRefer
   return [[AMUploadFileVM alloc] initWithLong:rid withAMUploadFileVMCallback:callback withImActorModelModulesModules:modules_];
 }
 
-- (void)bindRawFileWithAMFileLocation:(AMFileLocation *)fileLocation
-                          withBoolean:(jboolean)isAutoStart
+- (void)bindRawFileWithAMFileReference:(AMFileReference *)fileReference
+                           withBoolean:(jboolean)isAutoStart
 withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
-  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) bindFileWithAMFileLocation:fileLocation withBoolean:isAutoStart withImActorModelModulesFileDownloadCallback:callback];
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) bindFileWithAMFileReference:fileReference withBoolean:isAutoStart withImActorModelModulesFileDownloadCallback:callback];
 }
 
 - (void)unbindRawFileWithLong:(jlong)fileId
@@ -354,8 +351,8 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) cancelDownloadingWithLong:fileId];
 }
 
-- (void)startDownloadingWithAMFileLocation:(AMFileLocation *)location {
-  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) startDownloadingWithAMFileLocation:location];
+- (void)startDownloadingWithAMFileReference:(AMFileReference *)location {
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) startDownloadingWithAMFileReference:location];
 }
 
 - (void)resumeUploadWithLong:(jlong)rid {

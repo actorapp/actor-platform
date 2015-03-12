@@ -11,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcResponseSeqDate () {
@@ -73,6 +74,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 
 - (NSString *)description {
   NSString *res = @"response SeqDate{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"seq=", self->seq_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", state=", BSUtils_byteArrayToStringWithByteArray_(self->state_)));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
   res = JreStrcat("$C", res, '}');
   return res;
 }

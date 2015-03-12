@@ -11,14 +11,16 @@
 @class ImActorModelApiAvatar;
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/api/ServiceEx.h"
 
-@interface ImActorModelApiServiceExChangedAvatar : BSBserObject {
+@interface ImActorModelApiServiceExChangedAvatar : ImActorModelApiServiceEx {
 }
 
 - (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
 
 - (instancetype)init;
+
+- (jint)getHeader;
 
 - (ImActorModelApiAvatar *)getAvatar;
 

@@ -6,6 +6,7 @@
 #ifndef _AMConfigurationBuilder_H_
 #define _AMConfigurationBuilder_H_
 
+@class AMApiConfiguration;
 @class AMConfiguration;
 @class JavaUtilArrayList;
 @protocol AMCryptoProvider;
@@ -23,6 +24,8 @@
 
 @interface AMConfigurationBuilder : NSObject {
 }
+
+- (AMConfigurationBuilder *)setApiConfigurationWithAMApiConfiguration:(AMApiConfiguration *)apiConfiguration;
 
 - (AMConfigurationBuilder *)setNotificationProviderWithAMNotificationProvider:(id<AMNotificationProvider>)notificationProvider;
 

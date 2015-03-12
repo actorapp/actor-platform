@@ -6,8 +6,8 @@
 #ifndef _MTDrop_H_
 #define _MTDrop_H_
 
-@class AMDataInput;
-@class AMDataOutput;
+@class BSDataInput;
+@class BSDataOutput;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
@@ -20,7 +20,7 @@
   NSString *message_;
 }
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithLong:(jlong)messageId
                 withNSString:(NSString *)message;
@@ -31,9 +31,9 @@
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
 - (NSString *)description;
 

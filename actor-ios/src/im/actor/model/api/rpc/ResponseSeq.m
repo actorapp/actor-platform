@@ -11,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcResponseSeq () {
@@ -64,6 +65,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeq, state_, IOSByteArray *)
 
 - (NSString *)description {
   NSString *res = @"response Seq{";
+  res = JreStrcat("$$", res, JreStrcat("$I", @"seq=", self->seq_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", state=", BSUtils_byteArrayToStringWithByteArray_(self->state_)));
   res = JreStrcat("$C", res, '}');
   return res;
 }

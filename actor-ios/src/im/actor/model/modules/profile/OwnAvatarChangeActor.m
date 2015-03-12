@@ -16,7 +16,7 @@
 #include "im/actor/model/api/updates/UpdateUserAvatarChanged.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
-#include "im/actor/model/entity/FileLocation.h"
+#include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Profile.h"
@@ -96,11 +96,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesProfileOwnAvatarChangeActor_$2, this$0_, 
 }
 
 - (void)uploadCompletedWithLong:(jlong)rid
-             withAMFileLocation:(AMFileLocation *)fileLocation {
+            withAMFileReference:(AMFileReference *)fileReference {
   if (rid != currentChangeTask_) {
     return;
   }
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestEditAvatar alloc] initWithImActorModelApiFileLocation:[[ImActorModelApiFileLocation alloc] initWithLong:[((AMFileLocation *) nil_chk(fileLocation)) getFileId] withLong:[fileLocation getAccessHash]]] withAMRpcCallback:[[ImActorModelModulesProfileOwnAvatarChangeActor_$1 alloc] initWithImActorModelModulesProfileOwnAvatarChangeActor:self withLong:rid]];
+  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestEditAvatar alloc] initWithImActorModelApiFileLocation:[[ImActorModelApiFileLocation alloc] initWithLong:[((AMFileReference *) nil_chk(fileReference)) getFileId] withLong:[fileReference getAccessHash]]] withAMRpcCallback:[[ImActorModelModulesProfileOwnAvatarChangeActor_$1 alloc] initWithImActorModelModulesProfileOwnAvatarChangeActor:self withLong:rid]];
 }
 
 - (void)avatarChangedWithLong:(jlong)rid {
@@ -135,7 +135,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesProfileOwnAvatarChangeActor_$2, this$0_, 
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_UploadCompleted class]]) {
     ImActorModelModulesFileUploadManager_UploadCompleted *uploadCompleted = (ImActorModelModulesFileUploadManager_UploadCompleted *) check_class_cast(message, [ImActorModelModulesFileUploadManager_UploadCompleted class]);
-    [self uploadCompletedWithLong:[((ImActorModelModulesFileUploadManager_UploadCompleted *) nil_chk(uploadCompleted)) getRid] withAMFileLocation:[uploadCompleted getFileLocation]];
+    [self uploadCompletedWithLong:[((ImActorModelModulesFileUploadManager_UploadCompleted *) nil_chk(uploadCompleted)) getRid] withAMFileReference:[uploadCompleted getFileReference]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_UploadError class]]) {
     ImActorModelModulesFileUploadManager_UploadError *uploadError = (ImActorModelModulesFileUploadManager_UploadError *) check_class_cast(message, [ImActorModelModulesFileUploadManager_UploadError class]);

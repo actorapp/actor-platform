@@ -8,7 +8,7 @@
 
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiMessageContent;
+@class ImActorModelApiMessage;
 @class ImActorModelApiMessageStateEnum;
 
 #include "J2ObjC_header.h"
@@ -20,7 +20,7 @@
 - (instancetype)initWithInt:(jint)senderUid
                    withLong:(jlong)rid
                    withLong:(jlong)date
-withImActorModelApiMessageContent:(ImActorModelApiMessageContent *)message
+ withImActorModelApiMessage:(ImActorModelApiMessage *)message
 withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state;
 
 - (instancetype)init;
@@ -31,7 +31,7 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state;
 
 - (jlong)getDate;
 
-- (ImActorModelApiMessageContent *)getMessage;
+- (ImActorModelApiMessage *)getMessage;
 
 - (ImActorModelApiMessageStateEnum *)getState;
 

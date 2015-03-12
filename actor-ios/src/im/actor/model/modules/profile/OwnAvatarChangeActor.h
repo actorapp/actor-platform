@@ -6,7 +6,7 @@
 #ifndef _ImActorModelModulesProfileOwnAvatarChangeActor_H_
 #define _ImActorModelModulesProfileOwnAvatarChangeActor_H_
 
-@class AMFileLocation;
+@class AMFileReference;
 @class AMRpcException;
 @class ImActorModelApiRpcResponseEditAvatar;
 @class ImActorModelApiRpcResponseSeq;
@@ -25,7 +25,7 @@
 - (void)changeAvatarWithNSString:(NSString *)descriptor;
 
 - (void)uploadCompletedWithLong:(jlong)rid
-             withAMFileLocation:(AMFileLocation *)fileLocation;
+            withAMFileReference:(AMFileReference *)fileReference;
 
 - (void)avatarChangedWithLong:(jlong)rid;
 

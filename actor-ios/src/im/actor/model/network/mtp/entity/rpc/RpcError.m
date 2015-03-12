@@ -6,15 +6,15 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcError.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 @implementation MTRpcError
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (instancetype)initWithInt:(jint)errorCode
@@ -36,16 +36,16 @@
   return MTRpcError_HEADER;
 }
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
-  [((AMDataOutput *) nil_chk(bs)) writeIntWithInt:errorCode_];
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:errorCode_];
   [bs writeProtoStringWithNSString:errorTag_];
   [bs writeProtoStringWithNSString:userMessage_];
   [bs writeProtoBoolWithBoolean:canTryAgain_];
   [bs writeProtoBytesWithByteArray:relatedData_ withInt:0 withInt:((IOSByteArray *) nil_chk(relatedData_))->size_];
 }
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  errorCode_ = [((AMDataInput *) nil_chk(bs)) readInt];
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  errorCode_ = [((BSDataInput *) nil_chk(bs)) readInt];
   errorTag_ = [bs readProtoString];
   userMessage_ = [bs readProtoString];
   canTryAgain_ = [bs readProtoBool];

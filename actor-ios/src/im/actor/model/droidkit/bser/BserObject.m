@@ -9,7 +9,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
-#include "im/actor/model/util/DataOutput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "java/io/IOException.h"
 #include "java/lang/RuntimeException.h"
 
@@ -23,8 +23,8 @@
 }
 
 - (IOSByteArray *)toByteArray {
-  AMDataOutput *outputStream = [[AMDataOutput alloc] init];
-  BSBserWriter *writer = [[BSBserWriter alloc] initWithAMDataOutput:outputStream];
+  BSDataOutput *outputStream = [[BSDataOutput alloc] init];
+  BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:outputStream];
   @try {
     [self serializeWithBSBserWriter:writer];
   }

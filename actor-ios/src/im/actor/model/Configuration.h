@@ -6,6 +6,7 @@
 #ifndef _AMConfiguration_H_
 #define _AMConfiguration_H_
 
+@class AMApiConfiguration;
 @class IOSObjectArray;
 @protocol AMCryptoProvider;
 @protocol AMFileSystemProvider;
@@ -34,8 +35,11 @@
                 withAMCryptoProvider:(id<AMCryptoProvider>)cryptoProvider
             withAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider
           withAMNotificationProvider:(id<AMNotificationProvider>)notificationProvider
+              withAMApiConfiguration:(AMApiConfiguration *)apiConfiguration
                          withBoolean:(jboolean)enableContactsLogging
                          withBoolean:(jboolean)enableNetworkLogging;
+
+- (AMApiConfiguration *)getApiConfiguration;
 
 - (id<AMNotificationProvider>)getNotificationProvider;
 

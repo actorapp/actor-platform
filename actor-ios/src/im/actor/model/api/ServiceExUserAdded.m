@@ -29,6 +29,10 @@
   return [super init];
 }
 
+- (jint)getHeader {
+  return 1;
+}
+
 - (jint)getAddedUid {
   return self->addedUid_;
 }

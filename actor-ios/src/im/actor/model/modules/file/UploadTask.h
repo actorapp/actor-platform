@@ -6,7 +6,7 @@
 #ifndef _ImActorModelModulesFileUploadTask_H_
 #define _ImActorModelModulesFileUploadTask_H_
 
-@class AMFileLocation;
+@class AMFileReference;
 @class AMRpcException;
 @class DKActorRef;
 @class IOSByteArray;

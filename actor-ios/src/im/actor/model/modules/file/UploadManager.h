@@ -6,7 +6,7 @@
 #ifndef _ImActorModelModulesFileUploadManager_H_
 #define _ImActorModelModulesFileUploadManager_H_
 
-@class AMFileLocation;
+@class AMFileReference;
 @class DKActorRef;
 @class ImActorModelModulesFileUploadManager_QueueItem;
 @class ImActorModelModulesFileUploadTask;
@@ -52,7 +52,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
                            withFloat:(jfloat)progress;
 
 - (void)onUploadTaskCompleteWithLong:(jlong)rid
-                  withAMFileLocation:(AMFileLocation *)fileLocation
+                 withAMFileReference:(AMFileReference *)fileReference
   withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference;
 
 - (void)onReceiveWithId:(id)message;
@@ -198,14 +198,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_UploadTaskProgre
 }
 
 - (instancetype)initWithLong:(jlong)rid
-          withAMFileLocation:(AMFileLocation *)location
+         withAMFileReference:(AMFileReference *)location
 withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference;
 
 - (jlong)getRid;
 
 - (id<ImActorModelFilesFileReference>)getReference;
 
-- (AMFileLocation *)getLocation;
+- (AMFileReference *)getLocation;
 
 @end
 
@@ -220,11 +220,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_UploadTaskComple
 }
 
 - (instancetype)initWithLong:(jlong)rid
-          withAMFileLocation:(AMFileLocation *)fileLocation;
+         withAMFileReference:(AMFileReference *)fileReference;
 
 - (jlong)getRid;
 
-- (AMFileLocation *)getFileLocation;
+- (AMFileReference *)getFileReference;
 
 @end
 

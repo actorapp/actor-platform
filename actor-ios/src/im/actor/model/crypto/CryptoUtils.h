@@ -8,6 +8,7 @@
 
 @class IOSByteArray;
 @class IOSCharArray;
+@class ImActorModelCryptoCryptoKeyPair;
 @protocol AMCryptoProvider;
 
 #include "J2ObjC_header.h"
@@ -17,9 +18,21 @@
 
 + (void)init__WithAMCryptoProvider:(id<AMCryptoProvider>)provider OBJC_METHOD_FAMILY_NONE;
 
++ (ImActorModelCryptoCryptoKeyPair *)generateRSA1024KeyPair;
+
++ (IOSByteArray *)MD5WithByteArray:(IOSByteArray *)data;
+
 + (IOSByteArray *)SHA256WithByteArray:(IOSByteArray *)data;
 
++ (IOSByteArray *)SHA512WithByteArray:(IOSByteArray *)data;
+
++ (jint)randomIntWithInt:(jint)maxValue;
+
++ (IOSByteArray *)randomBytesWithInt:(jint)len;
+
 + (NSString *)hexWithByteArray:(IOSByteArray *)bytes;
+
++ (IOSByteArray *)fromHexWithNSString:(NSString *)hex;
 
 - (instancetype)init;
 
@@ -32,9 +45,21 @@ CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT void ImActorModelCryptoCryptoUtils_init__WithAMCryptoProvider_(id<AMCryptoProvider> provider);
 
+FOUNDATION_EXPORT ImActorModelCryptoCryptoKeyPair *ImActorModelCryptoCryptoUtils_generateRSA1024KeyPair();
+
+FOUNDATION_EXPORT IOSByteArray *ImActorModelCryptoCryptoUtils_MD5WithByteArray_(IOSByteArray *data);
+
 FOUNDATION_EXPORT IOSByteArray *ImActorModelCryptoCryptoUtils_SHA256WithByteArray_(IOSByteArray *data);
 
+FOUNDATION_EXPORT IOSByteArray *ImActorModelCryptoCryptoUtils_SHA512WithByteArray_(IOSByteArray *data);
+
+FOUNDATION_EXPORT jint ImActorModelCryptoCryptoUtils_randomIntWithInt_(jint maxValue);
+
+FOUNDATION_EXPORT IOSByteArray *ImActorModelCryptoCryptoUtils_randomBytesWithInt_(jint len);
+
 FOUNDATION_EXPORT NSString *ImActorModelCryptoCryptoUtils_hexWithByteArray_(IOSByteArray *bytes);
+
+FOUNDATION_EXPORT IOSByteArray *ImActorModelCryptoCryptoUtils_fromHexWithNSString_(NSString *hex);
 
 FOUNDATION_EXPORT IOSCharArray *ImActorModelCryptoCryptoUtils_hexArray_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelCryptoCryptoUtils, hexArray_, IOSCharArray *)

@@ -4,7 +4,7 @@
 //
 
 #include "J2ObjC_source.h"
-#include "im/actor/model/entity/FileLocation.h"
+#include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/files/FileReference.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
@@ -15,14 +15,14 @@
 @interface AMFileVM () {
  @public
   ImActorModelModulesModules *modules_;
-  AMFileLocation *location_;
+  AMFileReference *location_;
   id<ImActorModelModulesFileDownloadCallback> callback_;
   id<AMFileVMCallback> vmCallback_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(AMFileVM, modules_, ImActorModelModulesModules *)
-J2OBJC_FIELD_SETTER(AMFileVM, location_, AMFileLocation *)
+J2OBJC_FIELD_SETTER(AMFileVM, location_, AMFileReference *)
 J2OBJC_FIELD_SETTER(AMFileVM, callback_, id<ImActorModelModulesFileDownloadCallback>)
 J2OBJC_FIELD_SETTER(AMFileVM, vmCallback_, id<AMFileVMCallback>)
 
@@ -54,16 +54,16 @@ J2OBJC_FIELD_SETTER(AMFileVM_$1, this$0_, AMFileVM *)
 
 @implementation AMFileVM
 
-- (instancetype)initWithAMFileLocation:(AMFileLocation *)location
-                           withBoolean:(jboolean)isAutostart
-        withImActorModelModulesModules:(ImActorModelModulesModules *)modules
-                  withAMFileVMCallback:(id<AMFileVMCallback>)vmCallback {
+- (instancetype)initWithAMFileReference:(AMFileReference *)location
+                            withBoolean:(jboolean)isAutostart
+         withImActorModelModulesModules:(ImActorModelModulesModules *)modules
+                   withAMFileVMCallback:(id<AMFileVMCallback>)vmCallback {
   if (self = [super init]) {
     self->modules_ = modules;
     self->location_ = location;
     self->vmCallback_ = vmCallback;
     self->callback_ = [[AMFileVM_$1 alloc] initWithAMFileVM:self];
-    [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getFilesModule])) bindFileWithAMFileLocation:location withBoolean:isAutostart withImActorModelModulesFileDownloadCallback:callback_];
+    [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getFilesModule])) bindFileWithAMFileReference:location withBoolean:isAutostart withImActorModelModulesFileDownloadCallback:callback_];
   }
   return self;
 }
@@ -82,7 +82,7 @@ J2OBJC_FIELD_SETTER(AMFileVM_$1, this$0_, AMFileVM *)
 
 - (void)detach {
   [super detach];
-  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindFileWithLong:[((AMFileLocation *) nil_chk(location_)) getFileId] withImActorModelModulesFileDownloadCallback:callback_ withBoolean:NO];
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindFileWithLong:[((AMFileReference *) nil_chk(location_)) getFileId] withImActorModelModulesFileDownloadCallback:callback_ withBoolean:NO];
 }
 
 - (void)copyAllFieldsTo:(AMFileVM *)other {

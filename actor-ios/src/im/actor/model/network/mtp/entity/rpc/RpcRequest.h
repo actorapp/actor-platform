@@ -6,8 +6,8 @@
 #ifndef _MTRpcRequest_H_
 #define _MTRpcRequest_H_
 
-@class AMDataInput;
-@class AMDataOutput;
+@class BSDataInput;
+@class BSDataOutput;
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
@@ -21,7 +21,7 @@
   IOSByteArray *payload_;
 }
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithInt:(jint)requestType
               withByteArray:(IOSByteArray *)payload;
@@ -32,9 +32,9 @@
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
 - (NSString *)description;
 

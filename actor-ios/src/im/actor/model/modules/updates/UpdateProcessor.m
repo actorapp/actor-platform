@@ -8,7 +8,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/Group.h"
-#include "im/actor/model/api/MessageContent.h"
+#include "im/actor/model/api/Message.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/PeerType.h"
 #include "im/actor/model/api/TypingType.h"
@@ -199,7 +199,7 @@ NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessage class]]) {
     ImActorModelApiUpdatesUpdateMessage *message = (ImActorModelApiUpdatesUpdateMessage *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessage class]);
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessage *) nil_chk(message)) getPeer] withInt:[message getSenderUid] withLong:[message getDate] withLong:[message getRid] withImActorModelApiMessageContent:[message getMessage]];
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessage *) nil_chk(message)) getPeer] withInt:[message getSenderUid] withLong:[message getDate] withLong:[message getRid] withImActorModelApiMessage:[message getMessage]];
     [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onMessageWithImActorModelApiPeer:[message getPeer] withInt:[message getSenderUid]];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessageRead class]]) {
@@ -224,7 +224,8 @@ NSString * ImActorModelModulesUpdatesUpdateProcessor_TAG_ = @"Updates";
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateEncryptedMessage class]]) {
     ImActorModelApiUpdatesUpdateEncryptedMessage *encryptedMessage = (ImActorModelApiUpdatesUpdateEncryptedMessage *) check_class_cast(update, [ImActorModelApiUpdatesUpdateEncryptedMessage class]);
-    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onMessageWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateEncryptedMessage *) nil_chk(encryptedMessage)) getPeer] withInt:[encryptedMessage getSenderUid]];
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onEncryptedMessageWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateEncryptedMessage *) nil_chk(encryptedMessage)) getPeer] withInt:[encryptedMessage getSenderUid] withLong:[encryptedMessage getDate] withLong:[encryptedMessage getKeyHash] withByteArray:[encryptedMessage getAesEncryptedKey] withByteArray:[encryptedMessage getMessage]];
+    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onMessageWithImActorModelApiPeer:[encryptedMessage getPeer] withInt:[encryptedMessage getSenderUid]];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateEncryptedRead class]]) {
     ImActorModelApiUpdatesUpdateEncryptedRead *encryptedRead = (ImActorModelApiUpdatesUpdateEncryptedRead *) check_class_cast(update, [ImActorModelApiUpdatesUpdateEncryptedRead class]);

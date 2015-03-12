@@ -6,15 +6,15 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcRequest.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 @implementation MTRpcRequest
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (instancetype)initWithInt:(jint)requestType
@@ -38,13 +38,13 @@
   return MTRpcRequest_HEADER;
 }
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
-  [((AMDataOutput *) nil_chk(bs)) writeIntWithInt:requestType_];
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:requestType_];
   [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  requestType_ = [((AMDataInput *) nil_chk(bs)) readInt];
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  requestType_ = [((BSDataInput *) nil_chk(bs)) readInt];
   payload_ = [bs readProtoBytes];
 }
 

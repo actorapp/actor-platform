@@ -32,6 +32,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
   return [super init];
 }
 
+- (jint)getHeader {
+  return 6;
+}
+
 - (ImActorModelApiAvatar *)getAvatar {
   return self->avatar_;
 }

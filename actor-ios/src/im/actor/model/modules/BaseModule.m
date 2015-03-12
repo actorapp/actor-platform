@@ -5,6 +5,7 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/CryptoProvider.h"
 #include "im/actor/model/MainThread.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/entity/Peer.h"
@@ -83,6 +84,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModule
 
 - (id<AMPreferencesStorage>)preferences {
   return [((ImActorModelModulesModules *) nil_chk(modules__)) getPreferences];
+}
+
+- (id<AMCryptoProvider>)crypto {
+  return [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getCryptoProvider];
 }
 
 - (jint)myUid {

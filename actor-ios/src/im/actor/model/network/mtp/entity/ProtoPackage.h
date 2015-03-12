@@ -6,8 +6,8 @@
 #ifndef _MTProtoPackage_H_
 #define _MTProtoPackage_H_
 
-@class AMDataInput;
-@class AMDataOutput;
+@class BSDataInput;
+@class BSDataOutput;
 @class MTProtoMessage;
 
 #include "J2ObjC_header.h"
@@ -16,7 +16,7 @@
 @interface MTProtoPackage : MTProtoObject {
 }
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithLong:(jlong)authId
                     withLong:(jlong)sessionId
@@ -28,9 +28,9 @@
 
 - (MTProtoMessage *)getPayload;
 
-- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs;
 
-- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs;
+- (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs;
 
 - (NSString *)description;
 

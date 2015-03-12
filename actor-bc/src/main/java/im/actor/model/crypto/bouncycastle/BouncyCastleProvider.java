@@ -4,9 +4,7 @@ import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-import org.bouncycastle.asn1.pkcs.RSAPublicKey;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.digests.MD5Digest;
 import org.bouncycastle.crypto.digests.SHA256Digest;
@@ -25,6 +23,7 @@ import im.actor.model.crypto.AesCipher;
 import im.actor.model.crypto.CryptoKeyPair;
 import im.actor.model.crypto.RsaCipher;
 import im.actor.model.crypto.RsaEncryptCipher;
+import im.actor.model.crypto.encoding.X509RsaPublicKey;
 
 /**
  * Created by ex3ndr on 27.02.15.
@@ -53,17 +52,9 @@ public class BouncyCastleProvider implements CryptoProvider {
         AsymmetricCipherKeyPair res = generator.generateKeyPair();
 
         // Building x.509 public key
-        byte[] publicKey;
-        try {
-            RSAKeyParameters rsaPublicKey = (RSAKeyParameters) res.getPublic();
-            SubjectPublicKeyInfo info =
-                    new SubjectPublicKeyInfo(new AlgorithmIdentifier(PKCSObjectIdentifiers.rsaEncryption, DERNull.INSTANCE),
-                            new RSAPublicKey(rsaPublicKey.getModulus(), rsaPublicKey.getExponent()));
-            publicKey = info.getEncoded(ASN1Encoding.DER);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        RSAKeyParameters rsaPublicKey = (RSAKeyParameters) res.getPublic();
+        byte[] publicKey = new X509RsaPublicKey(rsaPublicKey.getModulus(),
+                rsaPublicKey.getExponent()).serialize();
 
         // Building PKCS#8 key
         RSAPrivateCrtKeyParameters parameter = (RSAPrivateCrtKeyParameters) res.getPrivate();

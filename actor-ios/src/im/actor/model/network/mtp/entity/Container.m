@@ -6,10 +6,10 @@
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/Container.h"
 #include "im/actor/model/network/mtp/entity/ProtoMessage.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 @interface MTContainer () {
@@ -22,8 +22,8 @@ J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
 
 @implementation MTContainer
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (instancetype)initWithMTProtoMessageArray:(IOSObjectArray *)messages {
@@ -41,29 +41,29 @@ J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
   return MTContainer_HEADER;
 }
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   if (messages_ != nil && messages_->size_ > 0) {
-    [((AMDataOutput *) nil_chk(bs)) writeVarIntWithLong:messages_->size_];
+    [((BSDataOutput *) nil_chk(bs)) writeVarIntWithLong:messages_->size_];
     {
       IOSObjectArray *a__ = messages_;
       MTProtoMessage * const *b__ = a__->buffer_;
       MTProtoMessage * const *e__ = b__ + a__->size_;
       while (b__ < e__) {
         MTProtoMessage *m = *b__++;
-        [((MTProtoMessage *) nil_chk(m)) writeObjectWithAMDataOutput:bs];
+        [((MTProtoMessage *) nil_chk(m)) writeObjectWithBSDataOutput:bs];
       }
     }
   }
   else {
-    [((AMDataOutput *) nil_chk(bs)) writeVarIntWithLong:0];
+    [((BSDataOutput *) nil_chk(bs)) writeVarIntWithLong:0];
   }
 }
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  jint size = (jint) [((AMDataInput *) nil_chk(bs)) readVarInt];
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  jint size = (jint) [((BSDataInput *) nil_chk(bs)) readVarInt];
   messages_ = [IOSObjectArray newArrayWithLength:size type:MTProtoMessage_class_()];
   for (jint i = 0; i < size; ++i) {
-    IOSObjectArray_SetAndConsume(messages_, i, [[MTProtoMessage alloc] initWithAMDataInput:bs]);
+    IOSObjectArray_SetAndConsume(messages_, i, [[MTProtoMessage alloc] initWithBSDataInput:bs]);
   }
 }
 

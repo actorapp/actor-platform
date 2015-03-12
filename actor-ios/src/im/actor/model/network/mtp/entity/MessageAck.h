@@ -6,8 +6,8 @@
 #ifndef _MTMessageAck_H_
 #define _MTMessageAck_H_
 
-@class AMDataInput;
-@class AMDataOutput;
+@class BSDataInput;
+@class BSDataOutput;
 @class IOSLongArray;
 @class IOSObjectArray;
 
@@ -21,7 +21,7 @@
   IOSLongArray *messagesIds_;
 }
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithJavaLangLongArray:(IOSObjectArray *)_messagesIds;
 
@@ -29,9 +29,9 @@
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
 - (NSString *)description;
 

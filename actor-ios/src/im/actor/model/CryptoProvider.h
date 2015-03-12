@@ -7,12 +7,34 @@
 #define _AMCryptoProvider_H_
 
 @class IOSByteArray;
+@class ImActorModelCryptoCryptoKeyPair;
+@protocol ImActorModelCryptoAesCipher;
+@protocol ImActorModelCryptoRsaCipher;
+@protocol ImActorModelCryptoRsaEncryptCipher;
 
 #include "J2ObjC_header.h"
 
 @protocol AMCryptoProvider < NSObject, JavaObject >
 
+- (ImActorModelCryptoCryptoKeyPair *)generateRSA1024KeyPair;
+
+- (id<ImActorModelCryptoRsaEncryptCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey;
+
+- (id<ImActorModelCryptoRsaCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey
+                                                          withByteArray:(IOSByteArray *)privateKey;
+
+- (id<ImActorModelCryptoAesCipher>)createAESCBCPKS7CipherWithByteArray:(IOSByteArray *)key
+                                                         withByteArray:(IOSByteArray *)iv;
+
+- (IOSByteArray *)MD5WithByteArray:(IOSByteArray *)data;
+
 - (IOSByteArray *)SHA256WithByteArray:(IOSByteArray *)data;
+
+- (IOSByteArray *)SHA512WithByteArray:(IOSByteArray *)data;
+
+- (IOSByteArray *)randomBytesWithInt:(jint)length;
+
+- (jint)randomIntWithInt:(jint)maxValue;
 
 @end
 

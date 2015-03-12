@@ -6,7 +6,7 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/api/MessageContent.h"
+#include "im/actor/model/api/Message.h"
 #include "im/actor/model/api/OutPeer.h"
 #include "im/actor/model/api/rpc/RequestSendMessage.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
@@ -19,12 +19,12 @@
  @public
   ImActorModelApiOutPeer *peer_;
   jlong rid_;
-  ImActorModelApiMessageContent *message_;
+  ImActorModelApiMessage *message_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, peer_, ImActorModelApiOutPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModelApiMessageContent *)
+J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModelApiMessage *)
 
 @implementation ImActorModelApiRpcRequestSendMessage
 
@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
 
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                                       withLong:(jlong)rid
-             withImActorModelApiMessageContent:(ImActorModelApiMessageContent *)message {
+                    withImActorModelApiMessage:(ImActorModelApiMessage *)message {
   if (self = [super init]) {
     self->peer_ = peer;
     self->rid_ = rid;
@@ -55,14 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
   return self->rid_;
 }
 
-- (ImActorModelApiMessageContent *)getMessage {
+- (ImActorModelApiMessage *)getMessage {
   return self->message_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiOutPeer alloc] init]];
   self->rid_ = [values getLongWithInt:3];
-  self->message_ = [values getObjWithInt:4 withBSBserObject:[[ImActorModelApiMessageContent alloc] init]];
+  self->message_ = ImActorModelApiMessage_fromBytesWithByteArray_([values getBytesWithInt:4]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -74,7 +74,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
   if (self->message_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [writer writeObjectWithInt:4 withBSBserObject:self->message_];
+  [writer writeBytesWithInt:4 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) toByteArray]];
 }
 
 - (NSString *)description {

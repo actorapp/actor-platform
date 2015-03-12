@@ -6,7 +6,7 @@
 #ifndef _ImActorModelModulesFileDownloadTask_H_
 #define _ImActorModelModulesFileDownloadTask_H_
 
-@class AMFileLocation;
+@class AMFileReference;
 @class AMRpcException;
 @class DKActorRef;
 @class ImActorModelApiRpcResponseGetFile;
@@ -24,9 +24,9 @@
 @interface ImActorModelModulesFileDownloadTask : ImActorModelModulesUtilsModuleActor {
 }
 
-- (instancetype)initWithAMFileLocation:(AMFileLocation *)fileLocation
-                        withDKActorRef:(DKActorRef *)manager
-        withImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
+- (instancetype)initWithAMFileReference:(AMFileReference *)fileReference
+                         withDKActorRef:(DKActorRef *)manager
+         withImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)preStart;
 

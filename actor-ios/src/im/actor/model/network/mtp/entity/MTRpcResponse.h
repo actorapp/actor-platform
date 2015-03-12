@@ -6,8 +6,8 @@
 #ifndef _MTMTRpcResponse_H_
 #define _MTMTRpcResponse_H_
 
-@class AMDataInput;
-@class AMDataOutput;
+@class BSDataInput;
+@class BSDataOutput;
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
@@ -18,7 +18,7 @@
 @interface MTMTRpcResponse : MTProtoStruct {
 }
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (jlong)getMessageId;
 
@@ -26,9 +26,9 @@
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
 - (NSString *)description;
 

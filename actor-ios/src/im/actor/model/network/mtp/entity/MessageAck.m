@@ -7,17 +7,17 @@
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/MessageAck.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 #include "java/lang/Long.h"
 #include "java/util/Arrays.h"
 
 @implementation MTMessageAck
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (instancetype)initWithJavaLangLongArray:(IOSObjectArray *)_messagesIds {
@@ -41,12 +41,12 @@
   return MTMessageAck_HEADER;
 }
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
-  [((AMDataOutput *) nil_chk(bs)) writeProtoLongsWithLongArray:messagesIds_];
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  [((BSDataOutput *) nil_chk(bs)) writeProtoLongsWithLongArray:messagesIds_];
 }
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  messagesIds_ = [((AMDataInput *) nil_chk(bs)) readProtoLongs];
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  messagesIds_ = [((BSDataInput *) nil_chk(bs)) readProtoLongs];
 }
 
 - (NSString *)description {

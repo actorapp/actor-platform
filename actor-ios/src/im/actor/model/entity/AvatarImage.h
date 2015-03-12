@@ -6,7 +6,7 @@
 #ifndef _AMAvatarImage_H_
 #define _AMAvatarImage_H_
 
-@class AMFileLocation;
+@class AMFileReference;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
@@ -21,13 +21,13 @@
 
 - (instancetype)initWithInt:(jint)width
                     withInt:(jint)height
-         withAMFileLocation:(AMFileLocation *)fileLocation;
+        withAMFileReference:(AMFileReference *)fileReference;
 
 - (jint)getWidth;
 
 - (jint)getHeight;
 
-- (AMFileLocation *)getFileLocation;
+- (AMFileReference *)getFileReference;
 
 - (jboolean)isEqual:(id)o;
 

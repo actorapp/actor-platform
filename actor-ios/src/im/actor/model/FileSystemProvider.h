@@ -6,7 +6,7 @@
 #ifndef _AMFileSystemProvider_H_
 #define _AMFileSystemProvider_H_
 
-@class AMFileLocation;
+@class AMFileReference;
 @protocol ImActorModelFilesFileReference;
 
 #include "J2ObjC_header.h"
@@ -16,7 +16,7 @@
 - (id<ImActorModelFilesFileReference>)createTempFile;
 
 - (id<ImActorModelFilesFileReference>)commitTempFileWithImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)sourceFile
-                                                                    withAMFileLocation:(AMFileLocation *)fileLocation;
+                                                                   withAMFileReference:(AMFileReference *)fileReference;
 
 - (jboolean)isFsPersistent;
 
