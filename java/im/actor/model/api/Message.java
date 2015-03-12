@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public abstract class Message extends BserObject {
     public static Message fromBytes(byte[] src) throws IOException {
         DataInput input = new DataInput(src, 0, src.length);
-        int key = input.readInt();
+        int key = input.readVarInt32();
         byte[] content = input.readProtoBytes();
         switch(key) { 
             case 1: return Bser.parse(new TextMessage(), content);

@@ -475,7 +475,7 @@ public class ContainerGenerator {
                     generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ".toByteArray());");
                 } else {
                     generator.appendLn("writer.writeInt(" + (attributeId - 1) + ", this." + attributeName + ".getHeader());");
-                    generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ");");
+                    generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ".toByteArray());");
                 }
 
                 generator.decreaseDepth();
@@ -521,7 +521,7 @@ public class ContainerGenerator {
                 generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ".toByteArray());");
             } else {
                 generator.appendLn("writer.writeInt(" + (attributeId - 1) + ", this." + attributeName + ".getHeader());");
-                generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ");");
+                generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ".toByteArray());");
             }
         } else {
             throw new IOException();

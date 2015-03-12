@@ -21,15 +21,13 @@ public class EncryptedDocumentV1 extends EncryptedContentV1 {
     private String mimeType;
     private EncryptedFileLocationV1 fileLocation;
     private FastThumb fastThumb;
-    private Integer extType;
-    private byte[] extension;
+    private EncryptedDocumentV1Ex extension;
 
-    public EncryptedDocumentV1(String name, String mimeType, EncryptedFileLocationV1 fileLocation, FastThumb fastThumb, Integer extType, byte[] extension) {
+    public EncryptedDocumentV1(String name, String mimeType, EncryptedFileLocationV1 fileLocation, FastThumb fastThumb, EncryptedDocumentV1Ex extension) {
         this.name = name;
         this.mimeType = mimeType;
         this.fileLocation = fileLocation;
         this.fastThumb = fastThumb;
-        this.extType = extType;
         this.extension = extension;
     }
 
@@ -57,11 +55,7 @@ public class EncryptedDocumentV1 extends EncryptedContentV1 {
         return this.fastThumb;
     }
 
-    public Integer getExtType() {
-        return this.extType;
-    }
-
-    public byte[] getExtension() {
+    public EncryptedDocumentV1Ex getExtension() {
         return this.extension;
     }
 
@@ -71,7 +65,6 @@ public class EncryptedDocumentV1 extends EncryptedContentV1 {
         this.mimeType = values.getString(2);
         this.fileLocation = values.getObj(3, new EncryptedFileLocationV1());
         this.fastThumb = values.optObj(4, new FastThumb());
-        this.extType = values.optInt(5);
         if (values.optBytes(6) != null) {
             this.extension = EncryptedDocumentV1Ex.fromBytes(values.getInt(5), values.getBytes(6));
         }
@@ -94,12 +87,9 @@ public class EncryptedDocumentV1 extends EncryptedContentV1 {
         if (this.fastThumb != null) {
             writer.writeObject(4, this.fastThumb);
         }
-        if (this.extType != null) {
-            writer.writeInt(5, this.extType);
-        }
         if (this.extension != null) {
             writer.writeInt(5, this.extension.getHeader());
-            writer.writeBytes(6, this.extension);
+            writer.writeBytes(6, this.extension.toByteArray());
         }
     }
 
