@@ -18,13 +18,6 @@
 
 - (instancetype)initWithImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseArray *)fields;
 
-- (jint)optIntWithInt:(jint)id_;
-
-- (jint)getIntWithInt:(jint)id_;
-
-- (jint)getIntWithInt:(jint)id_
-              withInt:(jint)defValue;
-
 - (jlong)optLongWithInt:(jint)id_;
 
 - (jlong)getLongWithInt:(jint)id_;
@@ -32,19 +25,12 @@
 - (jlong)getLongWithInt:(jint)id_
                withLong:(jlong)defValue;
 
-- (NSString *)optStringWithInt:(jint)id_;
+- (jint)optIntWithInt:(jint)id_;
 
-- (NSString *)getStringWithInt:(jint)id_;
+- (jint)getIntWithInt:(jint)id_;
 
-- (NSString *)getStringWithInt:(jint)id_
-                  withNSString:(NSString *)defValue;
-
-- (IOSByteArray *)optBytesWithInt:(jint)id_;
-
-- (IOSByteArray *)getBytesWithInt:(jint)id_;
-
-- (IOSByteArray *)getBytesWithInt:(jint)id_
-                    withByteArray:(IOSByteArray *)defValue;
+- (jint)getIntWithInt:(jint)id_
+              withInt:(jint)defValue;
 
 - (jdouble)optDoubleWithInt:(jint)id_;
 
@@ -60,21 +46,35 @@
 - (jboolean)getBoolWithInt:(jint)id_
                withBoolean:(jboolean)defValue;
 
-- (id)getObjWithInt:(jint)id_
-   withBSBserObject:(BSBserObject *)obj;
+- (IOSByteArray *)optBytesWithInt:(jint)id_;
+
+- (IOSByteArray *)getBytesWithInt:(jint)id_;
+
+- (IOSByteArray *)getBytesWithInt:(jint)id_
+                    withByteArray:(IOSByteArray *)defValue;
+
+- (NSString *)optStringWithInt:(jint)id_;
+
+- (NSString *)getStringWithInt:(jint)id_;
+
+- (NSString *)getStringWithInt:(jint)id_
+                  withNSString:(NSString *)defValue;
 
 - (id)optObjWithInt:(jint)id_
    withBSBserObject:(BSBserObject *)obj;
 
-- (id<JavaUtilList>)getRepeatedIntWithInt:(jint)id_;
+- (id)getObjWithInt:(jint)id_
+   withBSBserObject:(BSBserObject *)obj;
+
+- (jint)getRepeatedCountWithInt:(jint)id_;
 
 - (id<JavaUtilList>)getRepeatedLongWithInt:(jint)id_;
 
-- (id<JavaUtilList>)getRepeatedStringWithInt:(jint)id_;
+- (id<JavaUtilList>)getRepeatedIntWithInt:(jint)id_;
 
 - (id<JavaUtilList>)getRepeatedBytesWithInt:(jint)id_;
 
-- (jint)getRepeatedCountWithInt:(jint)id_;
+- (id<JavaUtilList>)getRepeatedStringWithInt:(jint)id_;
 
 - (id<JavaUtilList>)getRepeatedObjWithInt:(jint)id_
                          withJavaUtilList:(id<JavaUtilList>)objs;

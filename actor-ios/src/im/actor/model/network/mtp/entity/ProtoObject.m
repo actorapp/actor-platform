@@ -6,9 +6,9 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/ProtoObject.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
@@ -16,9 +16,9 @@
 
 @implementation MTProtoObject
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   if (self = [super init]) {
-    (void) [self readObjectWithAMDataInput:stream];
+    (void) [self readObjectWithBSDataInput:stream];
   }
   return self;
 }
@@ -28,9 +28,9 @@
 }
 
 - (IOSByteArray *)toByteArray {
-  AMDataOutput *outputStream = [[AMDataOutput alloc] init];
+  BSDataOutput *outputStream = [[BSDataOutput alloc] init];
   @try {
-    [self writeObjectWithAMDataOutput:outputStream];
+    [self writeObjectWithBSDataOutput:outputStream];
   }
   @catch (JavaIoIOException *e) {
     [((JavaIoIOException *) nil_chk(e)) printStackTrace];

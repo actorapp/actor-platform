@@ -5,11 +5,11 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/ProtoMessage.h"
 #include "im/actor/model/network/mtp/entity/ProtoObject.h"
 #include "im/actor/model/network/mtp/entity/ProtoPackage.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 @interface MTProtoPackage () {
@@ -24,8 +24,8 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 
 @implementation MTProtoPackage
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (instancetype)initWithLong:(jlong)authId
@@ -51,16 +51,16 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
   return payload_;
 }
 
-- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs {
-  [((AMDataOutput *) nil_chk(bs)) writeLongWithLong:authId_];
+- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs {
+  [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:authId_];
   [bs writeLongWithLong:sessionId_];
-  [((MTProtoMessage *) nil_chk(payload_)) writeObjectWithAMDataOutput:bs];
+  [((MTProtoMessage *) nil_chk(payload_)) writeObjectWithBSDataOutput:bs];
 }
 
-- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs {
-  authId_ = [((AMDataInput *) nil_chk(bs)) readLong];
+- (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs {
+  authId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   sessionId_ = [bs readLong];
-  payload_ = [[MTProtoMessage alloc] initWithAMDataInput:bs];
+  payload_ = [[MTProtoMessage alloc] initWithBSDataInput:bs];
   return self;
 }
 

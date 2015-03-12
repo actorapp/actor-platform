@@ -10,12 +10,14 @@
 @class BSBserWriter;
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/api/ServiceEx.h"
 
-@interface ImActorModelApiServiceExUserLeft : BSBserObject {
+@interface ImActorModelApiServiceExUserLeft : ImActorModelApiServiceEx {
 }
 
 - (instancetype)init;
+
+- (jint)getHeader;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 

@@ -4,9 +4,10 @@
 //
 
 #include "IOSClass.h"
+#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/HistoryMessage.h"
-#include "im/actor/model/api/MessageContent.h"
+#include "im/actor/model/api/Message.h"
 #include "im/actor/model/api/MessageState.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -17,12 +18,12 @@
   jint senderUid_;
   jlong rid_;
   jlong date_;
-  ImActorModelApiMessageContent *message_;
+  ImActorModelApiMessage *message_;
   ImActorModelApiMessageStateEnum *state_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiHistoryMessage, message_, ImActorModelApiMessageContent *)
+J2OBJC_FIELD_SETTER(ImActorModelApiHistoryMessage, message_, ImActorModelApiMessage *)
 J2OBJC_FIELD_SETTER(ImActorModelApiHistoryMessage, state_, ImActorModelApiMessageStateEnum *)
 
 @implementation ImActorModelApiHistoryMessage
@@ -30,7 +31,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiHistoryMessage, state_, ImActorModelApiMessag
 - (instancetype)initWithInt:(jint)senderUid
                    withLong:(jlong)rid
                    withLong:(jlong)date
-withImActorModelApiMessageContent:(ImActorModelApiMessageContent *)message
+ withImActorModelApiMessage:(ImActorModelApiMessage *)message
 withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   if (self = [super init]) {
     self->senderUid_ = senderUid;
@@ -58,7 +59,7 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   return self->date_;
 }
 
-- (ImActorModelApiMessageContent *)getMessage {
+- (ImActorModelApiMessage *)getMessage {
   return self->message_;
 }
 
@@ -70,7 +71,7 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   self->senderUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:2];
   self->date_ = [values getLongWithInt:3];
-  self->message_ = [values getObjWithInt:5 withBSBserObject:[[ImActorModelApiMessageContent alloc] init]];
+  self->message_ = ImActorModelApiMessage_fromBytesWithByteArray_([values getBytesWithInt:5]);
   jint val_state = [values getIntWithInt:6 withInt:0];
   if (val_state != 0) {
     self->state_ = ImActorModelApiMessageStateEnum_parseWithInt_(val_state);
@@ -84,7 +85,7 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   if (self->message_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [writer writeObjectWithInt:5 withBSBserObject:self->message_];
+  [writer writeBytesWithInt:5 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) toByteArray]];
   if (self->state_ != nil) {
     [writer writeIntWithInt:6 withInt:[self->state_ getValue]];
   }

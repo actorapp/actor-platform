@@ -13,6 +13,8 @@
 #include "im/actor/model/crypto/CryptoUtils.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/Contact.h"
 #include "im/actor/model/entity/User.h"
@@ -27,8 +29,6 @@
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/storage/ListEngine.h"
 #include "im/actor/model/storage/PreferencesStorage.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "im/actor/model/viewmodel/UserVM.h"
 #include "java/io/IOException.h"
 #include "java/lang/Boolean.h"
@@ -122,7 +122,7 @@ NSString * ImActorModelModulesContactsContactsSyncActor_TAG_ = @"ContactsServerS
   IOSByteArray *data = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:@"contact_list"];
   if (data != nil) {
     @try {
-      AMDataInput *dataInput = [[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:data->size_];
+      BSDataInput *dataInput = [[BSDataInput alloc] initWithByteArray:data withInt:0 withInt:data->size_];
       jint count = [dataInput readInt];
       for (jint i = 0; i < count; i++) {
         [((JavaUtilArrayList *) nil_chk(contacts_)) addWithId:JavaLangInteger_valueOfWithInt_([dataInput readInt])];
@@ -349,7 +349,7 @@ void ImActorModelModulesContactsContactsSyncActor_saveList(ImActorModelModulesCo
   if (self->ENABLE_LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsContactsSyncActor_TAG_, @"Saving contacts ids to storage");
   }
-  AMDataOutput *dataOutput = [[AMDataOutput alloc] init];
+  BSDataOutput *dataOutput = [[BSDataOutput alloc] init];
   [dataOutput writeIntWithInt:[((JavaUtilArrayList *) nil_chk(self->contacts_)) size]];
   for (JavaLangInteger *boxed__ in self->contacts_) {
     jint l = [((JavaLangInteger *) nil_chk(boxed__)) intValue];

@@ -6,13 +6,13 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Networking.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/network/Connection.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
 #include "im/actor/model/network/Endpoints.h"
 #include "im/actor/model/network/mtp/AuthIdRetriever.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/lang/Exception.h"
 #include "java/lang/RuntimeException.h"
 
@@ -75,12 +75,12 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
     return;
   }
   @try {
-    AMDataInput *dataInput = [[AMDataInput alloc] initWithByteArray:data withInt:offset withInt:len];
+    BSDataInput *dataInput = [[BSDataInput alloc] initWithByteArray:data withInt:offset withInt:len];
     jlong pAuthId = [dataInput readLong];
     jlong pSessionId = [dataInput readLong];
     jlong messageId = [dataInput readLong];
     IOSByteArray *payload = [dataInput readProtoBytes];
-    AMDataInput *msg = [[AMDataInput alloc] initWithByteArray:payload withInt:0 withInt:((IOSByteArray *) nil_chk(payload))->size_];
+    BSDataInput *msg = [[BSDataInput alloc] initWithByteArray:payload withInt:0 withInt:((IOSByteArray *) nil_chk(payload))->size_];
     jint header = [msg readByte];
     jlong authId = [msg readLong];
     if (!IOSBooleanArray_Get(val$isFinished_, 0)) {
@@ -130,7 +130,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
   }
   AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_get_TAG_(), @"Connection created");
   @try {
-    AMDataOutput *output = [[AMDataOutput alloc] init];
+    BSDataOutput *output = [[BSDataOutput alloc] init];
     [output writeLongWithLong:0];
     [output writeLongWithLong:0];
     [output writeLongWithLong:0];

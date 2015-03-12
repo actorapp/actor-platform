@@ -6,8 +6,8 @@
 #ifndef _MTRpcFloodWait_H_
 #define _MTRpcFloodWait_H_
 
-@class AMDataInput;
-@class AMDataOutput;
+@class BSDataInput;
+@class BSDataOutput;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
@@ -17,7 +17,7 @@
 @interface MTRpcFloodWait : MTProtoStruct {
 }
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithInt:(jint)delay;
 
@@ -25,9 +25,9 @@
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
 @end
 

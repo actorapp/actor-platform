@@ -6,8 +6,8 @@
 #ifndef _MTProtoMessage_H_
 #define _MTProtoMessage_H_
 
-@class AMDataInput;
-@class AMDataOutput;
+@class BSDataInput;
+@class BSDataOutput;
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
@@ -23,11 +23,11 @@
 
 - (IOSByteArray *)getPayload;
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
-- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs;
 
-- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs;
+- (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs;
 
 - (NSString *)description;
 

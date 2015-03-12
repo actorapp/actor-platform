@@ -5,9 +5,9 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcInternalError.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 @interface MTRpcInternalError () {
@@ -19,8 +19,8 @@
 
 @implementation MTRpcInternalError
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (instancetype)initWithBoolean:(jboolean)canTryAgain
@@ -44,13 +44,13 @@
   return MTRpcInternalError_HEADER;
 }
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
-  [((AMDataOutput *) nil_chk(bs)) writeProtoBoolWithBoolean:canTryAgain_];
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  [((BSDataOutput *) nil_chk(bs)) writeProtoBoolWithBoolean:canTryAgain_];
   [bs writeIntWithInt:tryAgainDelay_];
 }
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  canTryAgain_ = [((AMDataInput *) nil_chk(bs)) readProtoBool];
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  canTryAgain_ = [((BSDataInput *) nil_chk(bs)) readProtoBool];
   tryAgainDelay_ = [bs readInt];
 }
 

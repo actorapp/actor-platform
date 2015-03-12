@@ -6,8 +6,8 @@
 #ifndef _MTMTPush_H_
 #define _MTMTPush_H_
 
-@class AMDataInput;
-@class AMDataOutput;
+@class BSDataInput;
+@class BSDataOutput;
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
@@ -18,15 +18,15 @@
 @interface MTMTPush : MTProtoStruct {
 }
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (IOSByteArray *)getPayload;
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
 - (NSString *)description;
 

@@ -6,7 +6,7 @@
 #ifndef _AMFileVM_H_
 #define _AMFileVM_H_
 
-@class AMFileLocation;
+@class AMFileReference;
 @class ImActorModelModulesModules;
 @protocol AMFileVMCallback;
 @protocol ImActorModelFilesFileReference;
@@ -18,10 +18,10 @@
 @interface AMFileVM : AMAsyncVM {
 }
 
-- (instancetype)initWithAMFileLocation:(AMFileLocation *)location
-                           withBoolean:(jboolean)isAutostart
-        withImActorModelModulesModules:(ImActorModelModulesModules *)modules
-                  withAMFileVMCallback:(id<AMFileVMCallback>)vmCallback;
+- (instancetype)initWithAMFileReference:(AMFileReference *)location
+                            withBoolean:(jboolean)isAutostart
+         withImActorModelModulesModules:(ImActorModelModulesModules *)modules
+                   withAMFileVMCallback:(id<AMFileVMCallback>)vmCallback;
 
 - (void)onObjectReceivedWithId:(id)obj;
 

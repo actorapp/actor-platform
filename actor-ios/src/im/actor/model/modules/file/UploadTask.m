@@ -16,7 +16,7 @@
 #include "im/actor/model/api/rpc/ResponseStartUpload.h"
 #include "im/actor/model/api/rpc/ResponseVoid.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
-#include "im/actor/model/entity/FileLocation.h"
+#include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/files/FileReference.h"
 #include "im/actor/model/files/InputFile.h"
 #include "im/actor/model/files/OutputFile.h"
@@ -34,7 +34,7 @@ __attribute__((unused)) static void ImActorModelModulesFileUploadTask_checkQueue
 __attribute__((unused)) static void ImActorModelModulesFileUploadTask_uploadPartWithInt_withInt_withByteArray_(ImActorModelModulesFileUploadTask *self, jint blockIndex, jint offset, IOSByteArray *data);
 __attribute__((unused)) static void ImActorModelModulesFileUploadTask_reportError(ImActorModelModulesFileUploadTask *self);
 __attribute__((unused)) static void ImActorModelModulesFileUploadTask_reportProgressWithFloat_(ImActorModelModulesFileUploadTask *self, jfloat progress);
-__attribute__((unused)) static void ImActorModelModulesFileUploadTask_reportCompleteWithAMFileLocation_withImActorModelFilesFileReference_(ImActorModelModulesFileUploadTask *self, AMFileLocation *location, id<ImActorModelFilesFileReference> reference);
+__attribute__((unused)) static void ImActorModelModulesFileUploadTask_reportCompleteWithAMFileReference_withImActorModelFilesFileReference_(ImActorModelModulesFileUploadTask *self, AMFileReference *location, id<ImActorModelFilesFileReference> reference);
 
 @interface ImActorModelModulesFileUploadTask () {
  @public
@@ -69,8 +69,8 @@ __attribute__((unused)) static void ImActorModelModulesFileUploadTask_reportComp
 
 - (void)reportProgressWithFloat:(jfloat)progress;
 
-- (void)reportCompleteWithAMFileLocation:(AMFileLocation *)location
-      withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference;
+- (void)reportCompleteWithAMFileReference:(AMFileReference *)location
+       withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference;
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, TAG_, NSString *)
@@ -181,9 +181,9 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesFileUploadTask_reportProgressWithFloat_(self, progress);
 }
 
-- (void)reportCompleteWithAMFileLocation:(AMFileLocation *)location
-      withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference {
-  ImActorModelModulesFileUploadTask_reportCompleteWithAMFileLocation_withImActorModelFilesFileReference_(self, location, reference);
+- (void)reportCompleteWithAMFileReference:(AMFileReference *)location
+       withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference {
+  ImActorModelModulesFileUploadTask_reportCompleteWithAMFileReference_withImActorModelFilesFileReference_(self, location, reference);
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesFileUploadTask *)other {
@@ -281,12 +281,12 @@ void ImActorModelModulesFileUploadTask_reportProgressWithFloat_(ImActorModelModu
   [((DKActorRef *) nil_chk(self->manager_)) sendWithId:[[ImActorModelModulesFileUploadManager_UploadTaskProgress alloc] initWithLong:self->rid_ withFloat:progress]];
 }
 
-void ImActorModelModulesFileUploadTask_reportCompleteWithAMFileLocation_withImActorModelFilesFileReference_(ImActorModelModulesFileUploadTask *self, AMFileLocation *location, id<ImActorModelFilesFileReference> reference) {
+void ImActorModelModulesFileUploadTask_reportCompleteWithAMFileReference_withImActorModelFilesFileReference_(ImActorModelModulesFileUploadTask *self, AMFileReference *location, id<ImActorModelFilesFileReference> reference) {
   if (self->isCompleted_) {
     return;
   }
   self->isCompleted_ = YES;
-  [((DKActorRef *) nil_chk(self->manager_)) sendWithId:[[ImActorModelModulesFileUploadManager_UploadTaskComplete alloc] initWithLong:self->rid_ withAMFileLocation:location withImActorModelFilesFileReference:reference]];
+  [((DKActorRef *) nil_chk(self->manager_)) sendWithId:[[ImActorModelModulesFileUploadManager_UploadTaskComplete alloc] initWithLong:self->rid_ withAMFileReference:location withImActorModelFilesFileReference:reference]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadTask)
@@ -322,9 +322,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadTask_$1)
 
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseCompleteUpload *)response {
   AMLog_dWithNSString_withNSString_(this$0_->TAG_, @"Upload completed...");
-  AMFileLocation *location = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_([((ImActorModelApiRpcResponseCompleteUpload *) nil_chk(response)) getLocation], this$0_->fileName_, [((id<ImActorModelFilesFileReference>) nil_chk(this$0_->srcReference_)) getSize]);
-  id<ImActorModelFilesFileReference> reference = [((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([this$0_ config])) getFileSystemProvider])) commitTempFileWithImActorModelFilesFileReference:this$0_->destReference_ withAMFileLocation:location];
-  ImActorModelModulesFileUploadTask_reportCompleteWithAMFileLocation_withImActorModelFilesFileReference_(this$0_, location, reference);
+  AMFileReference *location = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_([((ImActorModelApiRpcResponseCompleteUpload *) nil_chk(response)) getLocation], this$0_->fileName_, [((id<ImActorModelFilesFileReference>) nil_chk(this$0_->srcReference_)) getSize]);
+  id<ImActorModelFilesFileReference> reference = [((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([this$0_ config])) getFileSystemProvider])) commitTempFileWithImActorModelFilesFileReference:this$0_->destReference_ withAMFileReference:location];
+  ImActorModelModulesFileUploadTask_reportCompleteWithAMFileReference_withImActorModelFilesFileReference_(this$0_, location, reference);
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {

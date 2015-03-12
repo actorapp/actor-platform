@@ -6,6 +6,7 @@
 #ifndef _ImActorModelModulesAuth_H_
 #define _ImActorModelModulesAuth_H_
 
+@class AMApiConfiguration;
 @class AMAuthStateEnum;
 @class AMRpcException;
 @class IOSByteArray;
@@ -21,14 +22,16 @@
 #include "im/actor/model/network/RpcCallback.h"
 #include "java/lang/Runnable.h"
 
-#define ImActorModelModulesAuth_APP_ID 1
-
 @interface ImActorModelModulesAuth : ImActorModelModulesBaseModule {
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (void)run;
+
+- (IOSByteArray *)getPublicKey;
+
+- (IOSByteArray *)getPrivateKey;
 
 - (jint)myUid;
 
@@ -52,11 +55,6 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth)
 
 CF_EXTERN_C_BEGIN
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, APP_ID, jint)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_APP_KEY_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, APP_KEY_, NSString *)
-
 FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_DEVICE_HASH_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_DEVICE_HASH_, NSString *)
 
@@ -74,6 +72,12 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_SMS_HASH_, NSString *)
 
 FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_SMS_CODE_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_SMS_CODE_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_PUBLIC_KEY_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_PUBLIC_KEY_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_PRIVATE_KEY_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_PRIVATE_KEY_, NSString *)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth)

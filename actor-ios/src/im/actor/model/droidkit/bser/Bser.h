@@ -6,8 +6,8 @@
 #ifndef _BSBser_H_
 #define _BSBser_H_
 
-@class AMDataInput;
 @class BSBserObject;
+@class BSDataInput;
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
@@ -16,7 +16,7 @@
 }
 
 + (id)parseWithBSBserObject:(BSBserObject *)res
-            withAMDataInput:(AMDataInput *)inputStream;
+            withBSDataInput:(BSDataInput *)inputStream;
 
 + (id)parseWithBSBserObject:(BSBserObject *)res
               withByteArray:(IOSByteArray *)data;
@@ -27,7 +27,7 @@ J2OBJC_EMPTY_STATIC_INIT(BSBser)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT id BSBser_parseWithBSBserObject_withAMDataInput_(BSBserObject *res, AMDataInput *inputStream);
+FOUNDATION_EXPORT id BSBser_parseWithBSBserObject_withBSDataInput_(BSBserObject *res, BSDataInput *inputStream);
 
 FOUNDATION_EXPORT id BSBser_parseWithBSBserObject_withByteArray_(BSBserObject *res, IOSByteArray *data);
 CF_EXTERN_C_END

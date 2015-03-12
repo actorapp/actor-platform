@@ -6,8 +6,8 @@
 #ifndef _MTUnsentMessage_H_
 #define _MTUnsentMessage_H_
 
-@class AMDataInput;
-@class AMDataOutput;
+@class BSDataInput;
+@class BSDataOutput;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
@@ -20,7 +20,7 @@
 - (instancetype)initWithLong:(jlong)messageId
                      withInt:(jint)len;
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (jlong)getMessageId;
 
@@ -28,9 +28,9 @@
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
 - (NSString *)description;
 

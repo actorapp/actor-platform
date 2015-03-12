@@ -9,7 +9,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiMessageContent;
+@class ImActorModelApiMessage;
 @class ImActorModelApiPeer;
 
 #include "J2ObjC_header.h"
@@ -26,7 +26,7 @@
                                     withInt:(jint)senderUid
                                    withLong:(jlong)date
                                    withLong:(jlong)rid
-          withImActorModelApiMessageContent:(ImActorModelApiMessageContent *)message;
+                 withImActorModelApiMessage:(ImActorModelApiMessage *)message;
 
 - (instancetype)init;
 
@@ -38,7 +38,7 @@
 
 - (jlong)getRid;
 
-- (ImActorModelApiMessageContent *)getMessage;
+- (ImActorModelApiMessage *)getMessage;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 

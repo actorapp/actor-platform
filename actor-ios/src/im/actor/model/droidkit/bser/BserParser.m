@@ -7,9 +7,9 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/BserParser.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/WireTypes.h"
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
-#include "im/actor/model/util/DataInput.h"
 #include "java/io/IOException.h"
 #include "java/lang/Long.h"
 #include "java/util/ArrayList.h"
@@ -22,12 +22,13 @@ __attribute__((unused)) static void BSBserParser_putWithInt_withId_withImActorMo
 + (void)putWithInt:(jint)id_
             withId:(id)res
 withImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseArray *)hashMap;
+- (instancetype)init;
 @end
 
 @implementation BSBserParser
 
-+ (ImActorModelDroidkitBserUtilSparseArray *)deserializeWithAMDataInput:(AMDataInput *)is {
-  return BSBserParser_deserializeWithAMDataInput_(is);
++ (ImActorModelDroidkitBserUtilSparseArray *)deserializeWithBSDataInput:(BSDataInput *)is {
+  return BSBserParser_deserializeWithBSDataInput_(is);
 }
 
 + (void)putWithInt:(jint)id_
@@ -42,11 +43,11 @@ withImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseA
 
 @end
 
-ImActorModelDroidkitBserUtilSparseArray *BSBserParser_deserializeWithAMDataInput_(AMDataInput *is) {
+ImActorModelDroidkitBserUtilSparseArray *BSBserParser_deserializeWithBSDataInput_(BSDataInput *is) {
   BSBserParser_init();
   ImActorModelDroidkitBserUtilSparseArray *hashMap = [[ImActorModelDroidkitBserUtilSparseArray alloc] init];
-  jint currentTag;
-  while ((currentTag = [((AMDataInput *) nil_chk(is)) readByteSilent]) > 0) {
+  while (![((BSDataInput *) nil_chk(is)) isEOF]) {
+    jint currentTag = (jint) [is readVarInt32];
     jint id_ = RShift32(currentTag, 3);
     jint type = currentTag & (jint) 0x7;
     if (type == BSWireTypes_TYPE_VARINT) {

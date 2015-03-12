@@ -29,6 +29,10 @@
   return [super init];
 }
 
+- (jint)getHeader {
+  return 2;
+}
+
 - (jint)getKickedUid {
   return self->kickedUid_;
 }

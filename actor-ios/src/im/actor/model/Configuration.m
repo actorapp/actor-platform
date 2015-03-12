@@ -5,6 +5,7 @@
 
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/ApiConfiguration.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/CryptoProvider.h"
 #include "im/actor/model/FileSystemProvider.h"
@@ -32,6 +33,7 @@
   jboolean enableNetworkLogging_;
   id<AMFileSystemProvider> fileSystemProvider_;
   id<AMNotificationProvider> notificationProvider_;
+  AMApiConfiguration *apiConfiguration_;
 }
 @end
 
@@ -46,6 +48,7 @@ J2OBJC_FIELD_SETTER(AMConfiguration, phoneBookProvider_, id<AMPhoneBookProvider>
 J2OBJC_FIELD_SETTER(AMConfiguration, cryptoProvider_, id<AMCryptoProvider>)
 J2OBJC_FIELD_SETTER(AMConfiguration, fileSystemProvider_, id<AMFileSystemProvider>)
 J2OBJC_FIELD_SETTER(AMConfiguration, notificationProvider_, id<AMNotificationProvider>)
+J2OBJC_FIELD_SETTER(AMConfiguration, apiConfiguration_, AMApiConfiguration *)
 
 @implementation AMConfiguration
 
@@ -60,6 +63,7 @@ J2OBJC_FIELD_SETTER(AMConfiguration, notificationProvider_, id<AMNotificationPro
                 withAMCryptoProvider:(id<AMCryptoProvider>)cryptoProvider
             withAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider
           withAMNotificationProvider:(id<AMNotificationProvider>)notificationProvider
+              withAMApiConfiguration:(AMApiConfiguration *)apiConfiguration
                          withBoolean:(jboolean)enableContactsLogging
                          withBoolean:(jboolean)enableNetworkLogging {
   if (self = [super init]) {
@@ -78,8 +82,13 @@ J2OBJC_FIELD_SETTER(AMConfiguration, notificationProvider_, id<AMNotificationPro
     self->enableContactsLogging_ = enableContactsLogging;
     self->enableNetworkLogging_ = enableNetworkLogging;
     self->notificationProvider_ = notificationProvider;
+    self->apiConfiguration_ = apiConfiguration;
   }
   return self;
+}
+
+- (AMApiConfiguration *)getApiConfiguration {
+  return apiConfiguration_;
 }
 
 - (id<AMNotificationProvider>)getNotificationProvider {
@@ -149,6 +158,7 @@ J2OBJC_FIELD_SETTER(AMConfiguration, notificationProvider_, id<AMNotificationPro
   other->enableNetworkLogging_ = enableNetworkLogging_;
   other->fileSystemProvider_ = fileSystemProvider_;
   other->notificationProvider_ = notificationProvider_;
+  other->apiConfiguration_ = apiConfiguration_;
 }
 
 @end

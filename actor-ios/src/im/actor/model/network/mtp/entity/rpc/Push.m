@@ -6,15 +6,15 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/rpc/Push.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 @implementation MTPush
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (instancetype)initWithInt:(jint)updateType
@@ -30,13 +30,13 @@
   return 0;
 }
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
-  [((AMDataOutput *) nil_chk(bs)) writeIntWithInt:updateType_];
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:updateType_];
   [bs writeProtoBytesWithByteArray:body_ withInt:0 withInt:((IOSByteArray *) nil_chk(body_))->size_];
 }
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  updateType_ = [((AMDataInput *) nil_chk(bs)) readInt];
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  updateType_ = [((BSDataInput *) nil_chk(bs)) readInt];
   body_ = [bs readProtoBytes];
 }
 

@@ -13,6 +13,8 @@
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/droidkit/actors/Props.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/network/Connection.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
@@ -23,8 +25,6 @@
 #include "im/actor/model/network/mtp/actors/SenderActor.h"
 #include "im/actor/model/network/mtp/entity/ProtoMessage.h"
 #include "im/actor/model/util/AtomicIntegerCompat.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "im/actor/model/util/ExponentialBackoff.h"
 #include "java/io/IOException.h"
 
@@ -355,7 +355,7 @@ void MTManagerActor_checkConnection(MTManagerActor *self) {
 }
 
 void MTManagerActor_onInMessageWithByteArray_withInt_withInt_(MTManagerActor *self, IOSByteArray *data, jint offset, jint len) {
-  AMDataInput *bis = [[AMDataInput alloc] initWithByteArray:data withInt:offset withInt:len];
+  BSDataInput *bis = [[BSDataInput alloc] initWithByteArray:data withInt:offset withInt:len];
   @try {
     jlong authId = [bis readLong];
     jlong sessionId = [bis readLong];
@@ -383,7 +383,7 @@ void MTManagerActor_onOutMessageWithByteArray_withInt_withInt_(MTManagerActor *s
     self->currentConnectionId_ = 0;
   }
   if (self->currentConnection_ != nil) {
-    AMDataOutput *bos = [[AMDataOutput alloc] init];
+    BSDataOutput *bos = [[BSDataOutput alloc] init];
     [bos writeLongWithLong:self->authId_];
     [bos writeLongWithLong:self->sessionId_];
     [bos writeBytesWithByteArray:data withInt:offset withInt:len];

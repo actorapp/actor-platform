@@ -9,6 +9,7 @@
 #include "im/actor/model/droidkit/bser/BserParser.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "im/actor/model/entity/content/AbsContent.h"
 #include "im/actor/model/entity/content/DocumentContent.h"
@@ -23,7 +24,6 @@
 #include "im/actor/model/entity/content/ServiceUserRegistered.h"
 #include "im/actor/model/entity/content/TextContent.h"
 #include "im/actor/model/entity/content/VideoContent.h"
-#include "im/actor/model/util/DataInput.h"
 #include "java/io/IOException.h"
 #include "java/lang/IllegalArgumentException.h"
 
@@ -55,7 +55,7 @@
 
 AMAbsContent *AMAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data) {
   AMAbsContent_init();
-  BSBserValues *reader = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithAMDataInput_([[AMDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_])];
+  BSBserValues *reader = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithBSDataInput_([[BSDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_])];
   AMAbsContent_ContentTypeEnum *type = AMAbsContent_typeFromValueWithInt_([reader getIntWithInt:1]);
   switch ([type ordinal]) {
     case AMAbsContent_ContentType_TEXT:

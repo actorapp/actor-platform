@@ -6,10 +6,16 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/CryptoProvider.h"
+#include "im/actor/model/crypto/CryptoKeyPair.h"
 #include "im/actor/model/crypto/CryptoUtils.h"
+#include "java/lang/RuntimeException.h"
+
+__attribute__((unused)) static jint ImActorModelCryptoCryptoUtils_fromHexShortWithChar_(jchar a);
 
 @interface ImActorModelCryptoCryptoUtils () {
 }
+
++ (jint)fromHexShortWithChar:(jchar)a;
 @end
 
 BOOL ImActorModelCryptoCryptoUtils_initialized = NO;
@@ -23,12 +29,40 @@ id<AMCryptoProvider> ImActorModelCryptoCryptoUtils_provider_;
   ImActorModelCryptoCryptoUtils_init__WithAMCryptoProvider_(provider);
 }
 
++ (ImActorModelCryptoCryptoKeyPair *)generateRSA1024KeyPair {
+  return ImActorModelCryptoCryptoUtils_generateRSA1024KeyPair();
+}
+
++ (IOSByteArray *)MD5WithByteArray:(IOSByteArray *)data {
+  return ImActorModelCryptoCryptoUtils_MD5WithByteArray_(data);
+}
+
 + (IOSByteArray *)SHA256WithByteArray:(IOSByteArray *)data {
   return ImActorModelCryptoCryptoUtils_SHA256WithByteArray_(data);
 }
 
++ (IOSByteArray *)SHA512WithByteArray:(IOSByteArray *)data {
+  return ImActorModelCryptoCryptoUtils_SHA512WithByteArray_(data);
+}
+
++ (jint)randomIntWithInt:(jint)maxValue {
+  return ImActorModelCryptoCryptoUtils_randomIntWithInt_(maxValue);
+}
+
++ (IOSByteArray *)randomBytesWithInt:(jint)len {
+  return ImActorModelCryptoCryptoUtils_randomBytesWithInt_(len);
+}
+
 + (NSString *)hexWithByteArray:(IOSByteArray *)bytes {
   return ImActorModelCryptoCryptoUtils_hexWithByteArray_(bytes);
+}
+
++ (jint)fromHexShortWithChar:(jchar)a {
+  return ImActorModelCryptoCryptoUtils_fromHexShortWithChar_(a);
+}
+
++ (IOSByteArray *)fromHexWithNSString:(NSString *)hex {
+  return ImActorModelCryptoCryptoUtils_fromHexWithNSString_(hex);
 }
 
 - (instancetype)init {
@@ -49,9 +83,34 @@ void ImActorModelCryptoCryptoUtils_init__WithAMCryptoProvider_(id<AMCryptoProvid
   ImActorModelCryptoCryptoUtils_provider_ = provider;
 }
 
+ImActorModelCryptoCryptoKeyPair *ImActorModelCryptoCryptoUtils_generateRSA1024KeyPair() {
+  ImActorModelCryptoCryptoUtils_init();
+  return [((id<AMCryptoProvider>) nil_chk(ImActorModelCryptoCryptoUtils_provider_)) generateRSA1024KeyPair];
+}
+
+IOSByteArray *ImActorModelCryptoCryptoUtils_MD5WithByteArray_(IOSByteArray *data) {
+  ImActorModelCryptoCryptoUtils_init();
+  return [((id<AMCryptoProvider>) nil_chk(ImActorModelCryptoCryptoUtils_provider_)) MD5WithByteArray:data];
+}
+
 IOSByteArray *ImActorModelCryptoCryptoUtils_SHA256WithByteArray_(IOSByteArray *data) {
   ImActorModelCryptoCryptoUtils_init();
   return [((id<AMCryptoProvider>) nil_chk(ImActorModelCryptoCryptoUtils_provider_)) SHA256WithByteArray:data];
+}
+
+IOSByteArray *ImActorModelCryptoCryptoUtils_SHA512WithByteArray_(IOSByteArray *data) {
+  ImActorModelCryptoCryptoUtils_init();
+  return [((id<AMCryptoProvider>) nil_chk(ImActorModelCryptoCryptoUtils_provider_)) SHA512WithByteArray:data];
+}
+
+jint ImActorModelCryptoCryptoUtils_randomIntWithInt_(jint maxValue) {
+  ImActorModelCryptoCryptoUtils_init();
+  return [((id<AMCryptoProvider>) nil_chk(ImActorModelCryptoCryptoUtils_provider_)) randomIntWithInt:maxValue];
+}
+
+IOSByteArray *ImActorModelCryptoCryptoUtils_randomBytesWithInt_(jint len) {
+  ImActorModelCryptoCryptoUtils_init();
+  return [((id<AMCryptoProvider>) nil_chk(ImActorModelCryptoCryptoUtils_provider_)) randomBytesWithInt:len];
 }
 
 NSString *ImActorModelCryptoCryptoUtils_hexWithByteArray_(IOSByteArray *bytes) {
@@ -63,6 +122,26 @@ NSString *ImActorModelCryptoCryptoUtils_hexWithByteArray_(IOSByteArray *bytes) {
     *IOSCharArray_GetRef(hexChars, j * 2 + 1) = IOSCharArray_Get(ImActorModelCryptoCryptoUtils_hexArray_, v & (jint) 0x0F);
   }
   return [NSString stringWithCharacters:hexChars];
+}
+
+jint ImActorModelCryptoCryptoUtils_fromHexShortWithChar_(jchar a) {
+  ImActorModelCryptoCryptoUtils_init();
+  if (a >= '0' && a <= '9') {
+    return a - '0';
+  }
+  if (a >= 'a' && a <= 'f') {
+    return 10 + (a - 'a');
+  }
+  @throw [[JavaLangRuntimeException alloc] init];
+}
+
+IOSByteArray *ImActorModelCryptoCryptoUtils_fromHexWithNSString_(NSString *hex) {
+  ImActorModelCryptoCryptoUtils_init();
+  IOSByteArray *res = [IOSByteArray newArrayWithLength:((jint) [((NSString *) nil_chk(hex)) length]) / 2];
+  for (jint i = 0; i < res->size_; i++) {
+    *IOSByteArray_GetRef(res, i) = (jbyte) ((LShift32(ImActorModelCryptoCryptoUtils_fromHexShortWithChar_([hex charAtWithInt:i * 2]), 4)) + ImActorModelCryptoCryptoUtils_fromHexShortWithChar_([hex charAtWithInt:i * 2 + 1]));
+  }
+  return res;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoCryptoUtils)
