@@ -26,11 +26,11 @@ trait AuthServiceImpl extends AuthService with Helpers {
   val db: Database
   implicit val actorSystem: ActorSystem
 
-  override def handleGetAuthSessions(authId: Long, optUserId: Option[Int]): Future[HandlerResult[ResponseGetAuthSessions]] =
+  override def handleGetAuthSessions(clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] =
     throw new NotImplementedError()
 
   override def handleSendAuthCode(
-    authId: Long, optUserId: Option[Int], rawPhoneNumber: Long, appId: Int, apiKey: String
+    clientData: ClientData, rawPhoneNumber: Long, appId: Int, apiKey: String
   ): Future[HandlerResult[ResponseSendAuthCode]] = {
     util.PhoneNumber.normalizeLong(rawPhoneNumber) match {
       case None =>
@@ -54,7 +54,7 @@ trait AuthServiceImpl extends AuthService with Helpers {
           persist.UserPhone.exists(normPhoneNumber) map (res :+ _)
         }.map {
           case number :: smsHash :: smsCode :: isRegistered :: HNil =>
-            sendSmsCode(authId, number, smsCode)
+            sendSmsCode(clientData.authId, number, smsCode)
             Ok(ResponseSendAuthCode(smsHash, isRegistered), Vector.empty)
         }
         db.run(action.transactionally)
@@ -62,15 +62,15 @@ trait AuthServiceImpl extends AuthService with Helpers {
   }
 
   override def handleSendAuthCall(
-    authId: Long, optUserId: Option[Int], phoneNumber: Long, smsHash: String, appId: Int, apiKey: String
+    clientData: ClientData, phoneNumber: Long, smsHash: String, appId: Int, apiKey: String
   ): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
-  override def handleSignOut(authId: Long, optUserId: Option[Int]): Future[HandlerResult[ResponseVoid]] =
+  override def handleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
   override def handleSignIn(
-    authId: Long, optUserId: Option[Int],
+    clientData: ClientData,
     rawPhoneNumber: Long,
     smsHash:     String,
     smsCode:     String,
@@ -81,13 +81,12 @@ trait AuthServiceImpl extends AuthService with Helpers {
     appKey:      String
   ): Future[HandlerResult[ResponseAuth]] =
     handleSign(In,
-      authId, optUserId, rawPhoneNumber, smsHash, smsCode,
+      clientData, rawPhoneNumber, smsHash, smsCode,
       publicKey, deviceHash, deviceTitle, appId, appKey
     )
 
   override def handleSignUp(
-    authId:         Long,
-    optUserId:      Option[Int],
+    clientData:     ClientData,
     rawPhoneNumber: Long,
     smsHash:        String,
     smsCode:        String,
@@ -100,14 +99,13 @@ trait AuthServiceImpl extends AuthService with Helpers {
     isSilent:       Boolean
   ): Future[HandlerResult[ResponseAuth]] =
     handleSign(Up(name, isSilent),
-      authId, optUserId, rawPhoneNumber, smsHash, smsCode,
+      clientData, rawPhoneNumber, smsHash, smsCode,
       publicKey, deviceHash, deviceTitle, appId, appKey
     )
 
   private def handleSign(
     signType:       SignType,
-    authId:         Long,
-    optUserId:      Option[Int],
+    clientData:     ClientData,
     rawPhoneNumber: Long,
     smsHash:        String,
     smsCode:        String,
@@ -147,8 +145,8 @@ trait AuthServiceImpl extends AuthService with Helpers {
                           _ <- persist.User.create(user)
                           _ <- persist.UserPhone.create(phoneId, userId, nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
                           pkHash = keyHash(publicKey)
-                          _ <- persist.UserPublicKey.create(models.UserPublicKey(userId, pkHash, publicKey, authId))
-                          _ <- persist.AuthId.setUserId(authId, userId)
+                          _ <- persist.UserPublicKey.create(models.UserPublicKey(userId, pkHash, publicKey, clientData.authId))
+                          _ <- persist.AuthId.setUserId(clientData.authId, userId)
                           _ <- persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
                         } yield {
                           \/-(user :: pkHash :: HNil)
@@ -157,7 +155,7 @@ trait AuthServiceImpl extends AuthService with Helpers {
                       // Phone already exists, fall back to SignIn
                       case Some(phone) =>
                         withValidPublicKey(rawPublicKey) { publicKey =>
-                          signIn(authId, phone.userId, publicKey, keyHash(publicKey), countryCode)
+                          signIn(clientData.authId, phone.userId, publicKey, keyHash(publicKey), countryCode)
                         }
                     }
                   )
@@ -167,7 +165,7 @@ trait AuthServiceImpl extends AuthService with Helpers {
                       case None => DBIO.successful(Error(Errors.PhoneNumberUnoccupied))
                       case Some(phone) =>
                         persist.AuthSmsCode.deleteByPhoneNumber(normPhoneNumber).andThen(
-                          signIn(authId, phone.userId, publicKey, keyHash(publicKey), countryCode)
+                          signIn(clientData.authId, phone.userId, publicKey, keyHash(publicKey), countryCode)
                         )
                     }
                   }
@@ -178,7 +176,7 @@ trait AuthServiceImpl extends AuthService with Helpers {
               val authSession = models.AuthSession(
                 userId = user.id,
                 id = nextIntId(rnd),
-                authId = authId,
+                authId = clientData.authId,
                 appId = appId,
                 appTitle = models.AuthSession.appTitleOf(appId),
                 publicKeyHash = pkHash,
@@ -194,7 +192,7 @@ trait AuthServiceImpl extends AuthService with Helpers {
               persist.AuthSession.create(authSession) andThen util.User.struct(
                 user,
                 None,
-                authId
+                clientData.authId
               ) map { userStruct =>
                 Ok(
                   ResponseAuth(
@@ -213,10 +211,10 @@ trait AuthServiceImpl extends AuthService with Helpers {
     }
   }
 
-  override def handleTerminateAllSessions(authId: Long, optUserId: Option[Int]): Future[HandlerResult[ResponseVoid]] =
+  override def handleTerminateAllSessions(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
-  override def handleTerminateSession(authId: Long, optUserId: Option[Int], id: Int): Future[HandlerResult[ResponseVoid]] =
+  override def handleTerminateSession(clientData: ClientData, id: Int): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
   private def signIn(authId: Long, userId: Int, pkData: Array[Byte], pkHash: Long, countryCode: String) = {

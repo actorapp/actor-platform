@@ -16,7 +16,7 @@ trait EncryptionServiceImpl extends EncryptionService {
   implicit val actorSystem: ActorSystem
   val db: Database
 
-  override def handleGetPublicKeys(authId: Long, optUserId: Option[Int], keys: Vector[PublicKeyRequest]): Future[HandlerResult[ResponseGetPublicKeys]] = {
+  override def handleGetPublicKeys(clientData: ClientData, keys: Vector[PublicKeyRequest]): Future[HandlerResult[ResponseGetPublicKeys]] = {
     // TODO: #perf fix thos dirty unperformant code
     val keysSet = keys.toSet
     val keysMap = keys.map(k => k.userId * k.keyHash -> k.accessHash).toMap
@@ -27,7 +27,7 @@ trait EncryptionServiceImpl extends EncryptionService {
     } yield {
       val items = pkeys.filter { k =>
         val hkey = k.userId * k.hash
-        val ahash = util.ACL.userAccessHash(authId, k.userId, saltsMap.get(k.userId).get) // FIXME: make it safe
+        val ahash = util.ACL.userAccessHash(clientData.authId, k.userId, saltsMap.get(k.userId).get) // FIXME: make it safe
         keysMap(hkey) == ahash
       }
       val pubKeys = items.map { key =>

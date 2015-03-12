@@ -41,8 +41,7 @@ class EncryptionServiceSpec extends ActorSpecification with SqlSpecHelpers with 
       val user2pk = Await.result(service.db.run(persist.UserPublicKey.find(user2.id, authId2).head), 1.second)
 
       service.handleGetPublicKeys(
-        authId = authId,
-        optUserId = Some(user.id),
+        clientData = api.ClientData(authId, Some(user.id)),
         keys = Vector(
           api.encryption.PublicKeyRequest(
             user2.id,
