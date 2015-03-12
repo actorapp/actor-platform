@@ -27,7 +27,7 @@
 - (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs {
   jbyte header = [self getHeader];
   if (header != 0) {
-    [((BSDataOutput *) nil_chk(bs)) writeByteWithInt:header];
+    [((BSDataOutput *) nil_chk(bs)) writeByteWithByte:header];
   }
   [self writeBodyWithBSDataOutput:bs];
 }

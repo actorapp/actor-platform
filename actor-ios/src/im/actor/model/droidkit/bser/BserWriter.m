@@ -281,34 +281,19 @@ void BSBserWriter_writeVar32FieldWithInt_withLong_(BSBserWriter *self, jint fiel
 }
 
 void BSBserWriter_writeVarIntWithLong_(BSBserWriter *self, jlong value) {
-  while ((value & (jlong) 0xffffffffffffff80l) != 0l) {
-    [((BSDataOutput *) nil_chk(self->stream_)) writeByteWithInt:(jbyte) ((value & (jint) 0x7f) | (jint) 0x80)];
-    URShiftAssignLong(&value, 7);
-  }
-  [((BSDataOutput *) nil_chk(self->stream_)) writeByteWithInt:(jbyte) (value & (jint) 0x7f)];
+  [((BSDataOutput *) nil_chk(self->stream_)) writeVarIntWithLong:value];
 }
 
 void BSBserWriter_writeLongWithLong_(BSBserWriter *self, jlong v) {
-  [((BSDataOutput *) nil_chk(self->stream_)) writeByteWithInt:(jbyte) (v & (jint) 0xFF)];
-  [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 8)) & (jint) 0xFF)];
-  [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 16)) & (jint) 0xFF)];
-  [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 24)) & (jint) 0xFF)];
-  [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 32)) & (jint) 0xFF)];
-  [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 40)) & (jint) 0xFF)];
-  [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 48)) & (jint) 0xFF)];
-  [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 56)) & (jint) 0xFF)];
+  [((BSDataOutput *) nil_chk(self->stream_)) writeLongWithLong:v];
 }
 
 void BSBserWriter_writeIntWithLong_(BSBserWriter *self, jlong v) {
-  [((BSDataOutput *) nil_chk(self->stream_)) writeByteWithInt:(jbyte) (v & (jint) 0xFF)];
-  [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 8)) & (jint) 0xFF)];
-  [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 16)) & (jint) 0xFF)];
-  [self->stream_ writeByteWithInt:(jbyte) ((RShift64(v, 24)) & (jint) 0xFF)];
+  [((BSDataOutput *) nil_chk(self->stream_)) writeIntWithInt:(jint) v];
 }
 
 void BSBserWriter_writeBytesWithByteArray_(BSBserWriter *self, IOSByteArray *data) {
-  BSBserWriter_writeVarIntWithLong_(self, ((IOSByteArray *) nil_chk(data))->size_);
-  [((BSDataOutput *) nil_chk(self->stream_)) writeBytesWithByteArray:data withInt:0 withInt:data->size_];
+  [((BSDataOutput *) nil_chk(self->stream_)) writeProtoBytesWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSBserWriter)

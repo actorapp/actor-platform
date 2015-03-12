@@ -20,6 +20,8 @@
 
 - (void)writeIntWithInt:(jint)v;
 
+- (void)writeByteWithByte:(jbyte)v;
+
 - (void)writeByteWithInt:(jint)v;
 
 - (void)writeVarIntWithLong:(jlong)v;
