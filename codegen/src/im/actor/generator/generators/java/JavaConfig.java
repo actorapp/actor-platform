@@ -143,7 +143,7 @@ public class JavaConfig {
             } else if (childType instanceof SchemeEnumType) {
                 return getEnumName(((SchemeEnumType) childType).getName());
             } else if (childType instanceof SchemeTraitType) {
-                return "byte[]";
+                return getStructName(((SchemeTraitType) childType).getTraitName());
             } else {
                 throw new IOException();
             }

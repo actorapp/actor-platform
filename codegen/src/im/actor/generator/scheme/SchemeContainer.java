@@ -25,6 +25,23 @@ public abstract class SchemeContainer {
                 if (attributes.get(i + 1).getType() instanceof SchemeTraitType) {
                     continue;
                 }
+                if (attributes.get(i + 1).getType() instanceof SchemeOptionalType &&
+                        ((SchemeOptionalType) attributes.get(i + 1).getType()).getType() instanceof SchemeTraitType) {
+                    continue;
+                }
+            }
+            if (a.getType() instanceof SchemeOptionalType) {
+                SchemeType t = ((SchemeOptionalType) a.getType()).getType();
+                if (t instanceof SchemePrimitiveType && ((SchemePrimitiveType) t).getName().equals("int32") &&
+                        i < attributes.size() - 1) {
+                    if (attributes.get(i + 1).getType() instanceof SchemeTraitType) {
+                        continue;
+                    }
+                    if (attributes.get(i + 1).getType() instanceof SchemeOptionalType &&
+                            ((SchemeOptionalType) attributes.get(i + 1).getType()).getType() instanceof SchemeTraitType) {
+                        continue;
+                    }
+                }
             }
             res.add(a);
         }

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public abstract class EncryptedPackageV2 extends BserObject {
     public static EncryptedPackageV2 fromBytes(byte[] src) throws IOException {
         DataInput input = new DataInput(src, 0, src.length);
-        int key = input.readInt();
+        int key = input.readVarInt32();
         byte[] content = input.readProtoBytes();
         switch(key) { 
             case 1: return Bser.parse(new EncryptedMessageV2(), content);

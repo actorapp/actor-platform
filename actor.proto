@@ -1398,7 +1398,7 @@ message EncryptedMessageV1 {
 }
 
 message EncryptedTextContentV1 {
-    required string text = 2;
+    required string text = 1;
 }
 
 message EncryptedDocumentV1 {
