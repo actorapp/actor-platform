@@ -6,22 +6,17 @@
 #ifndef _BSBserWriter_H_
 #define _BSBserWriter_H_
 
-@class AMDataOutput;
 @class BSBserObject;
+@class BSDataOutput;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 
-#define BSBserWriter_TYPE_32BIT 5
-#define BSBserWriter_TYPE_64BIT 1
-#define BSBserWriter_TYPE_LENGTH_DELIMITED 2
-#define BSBserWriter_TYPE_VARINT 0
-
 @interface BSBserWriter : NSObject {
 }
 
-- (instancetype)initWithAMDataOutput:(AMDataOutput *)stream;
+- (instancetype)initWithBSDataOutput:(BSDataOutput *)stream;
 
 - (void)writeBytesWithInt:(jint)fieldNumber
             withByteArray:(IOSByteArray *)value;
@@ -62,19 +57,13 @@
 - (void)writeObjectWithInt:(jint)fieldNumber
           withBSBserObject:(BSBserObject *)value;
 
+- (void)writeRawWithByteArray:(IOSByteArray *)raw;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSBserWriter)
 
 CF_EXTERN_C_BEGIN
-
-J2OBJC_STATIC_FIELD_GETTER(BSBserWriter, TYPE_VARINT, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(BSBserWriter, TYPE_32BIT, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(BSBserWriter, TYPE_64BIT, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(BSBserWriter, TYPE_LENGTH_DELIMITED, jint)
 CF_EXTERN_C_END
 
 typedef BSBserWriter ImActorModelDroidkitBserBserWriter;

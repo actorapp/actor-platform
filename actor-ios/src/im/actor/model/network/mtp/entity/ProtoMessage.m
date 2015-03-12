@@ -6,10 +6,10 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/ProtoMessage.h"
 #include "im/actor/model/network/mtp/entity/ProtoObject.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 @interface MTProtoMessage () {
@@ -40,17 +40,17 @@ J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
   return payload_;
 }
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
-- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs {
-  [((AMDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
+- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs {
+  [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
-- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs {
-  messageId_ = [((AMDataInput *) nil_chk(bs)) readLong];
+- (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs {
+  messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   payload_ = [bs readProtoBytes];
   return self;
 }

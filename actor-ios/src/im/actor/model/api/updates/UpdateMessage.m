@@ -6,7 +6,7 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/api/MessageContent.h"
+#include "im/actor/model/api/Message.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/updates/UpdateMessage.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
@@ -21,12 +21,12 @@
   jint senderUid_;
   jlong date_;
   jlong rid_;
-  ImActorModelApiMessageContent *message_;
+  ImActorModelApiMessage *message_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, peer_, ImActorModelApiPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelApiMessageContent *)
+J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelApiMessage *)
 
 @implementation ImActorModelApiUpdatesUpdateMessage
 
@@ -38,7 +38,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
                                     withInt:(jint)senderUid
                                    withLong:(jlong)date
                                    withLong:(jlong)rid
-          withImActorModelApiMessageContent:(ImActorModelApiMessageContent *)message {
+                 withImActorModelApiMessage:(ImActorModelApiMessage *)message {
   if (self = [super init]) {
     self->peer_ = peer;
     self->senderUid_ = senderUid;
@@ -69,7 +69,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
   return self->rid_;
 }
 
-- (ImActorModelApiMessageContent *)getMessage {
+- (ImActorModelApiMessage *)getMessage {
   return self->message_;
 }
 
@@ -78,7 +78,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
   self->senderUid_ = [values getIntWithInt:2];
   self->date_ = [values getLongWithInt:3];
   self->rid_ = [values getLongWithInt:4];
-  self->message_ = [values getObjWithInt:5 withBSBserObject:[[ImActorModelApiMessageContent alloc] init]];
+  self->message_ = ImActorModelApiMessage_fromBytesWithByteArray_([values getBytesWithInt:5]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -92,7 +92,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
   if (self->message_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [writer writeObjectWithInt:5 withBSBserObject:self->message_];
+  [writer writeBytesWithInt:5 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) toByteArray]];
 }
 
 - (NSString *)description {

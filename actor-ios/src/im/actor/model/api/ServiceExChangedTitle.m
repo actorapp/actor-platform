@@ -31,6 +31,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
   return [super init];
 }
 
+- (jint)getHeader {
+  return 5;
+}
+
 - (NSString *)getTitle {
   return self->title_;
 }

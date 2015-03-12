@@ -8,25 +8,24 @@
 
 @class BSBserValues;
 @class BSBserWriter;
-@class IOSByteArray;
+@class ImActorModelApiTextMessageEx;
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/api/Message.h"
 
-@interface ImActorModelApiTextMessage : BSBserObject {
+@interface ImActorModelApiTextMessage : ImActorModelApiMessage {
 }
 
 - (instancetype)initWithNSString:(NSString *)text
-                         withInt:(jint)extType
-                   withByteArray:(IOSByteArray *)ext;
+withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext;
 
 - (instancetype)init;
 
+- (jint)getHeader;
+
 - (NSString *)getText;
 
-- (jint)getExtType;
-
-- (IOSByteArray *)getExt;
+- (ImActorModelApiTextMessageEx *)getExt;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 

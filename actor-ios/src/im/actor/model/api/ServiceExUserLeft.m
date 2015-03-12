@@ -16,6 +16,10 @@
   return [super init];
 }
 
+- (jint)getHeader {
+  return 3;
+}
+
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 

@@ -6,7 +6,9 @@
 #ifndef _ImActorModelModulesGroupsGroupAvatarChangeActor_H_
 #define _ImActorModelModulesGroupsGroupAvatarChangeActor_H_
 
+@class AMFileReference;
 @class ImActorModelModulesModules;
+@class JavaUtilHashMap;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
@@ -15,6 +17,12 @@
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
+
+- (void)changeAvatarWithInt:(jint)gid
+               withNSString:(NSString *)descriptor;
+
+- (void)uploadCompletedWithLong:(jlong)rid
+            withAMFileReference:(AMFileReference *)fileReference;
 
 @end
 

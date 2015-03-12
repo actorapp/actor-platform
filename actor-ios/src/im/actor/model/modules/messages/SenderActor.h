@@ -8,7 +8,7 @@
 
 @class AMAbsContent;
 @class AMFastThumb;
-@class AMFileLocation;
+@class AMFileReference;
 @class AMPeer;
 @class AMRpcException;
 @class ImActorModelApiPeer;

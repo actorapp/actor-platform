@@ -5,10 +5,10 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/ProtoObject.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
@@ -16,24 +16,24 @@
 
 @implementation MTProtoStruct
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (instancetype)init {
   return [super init];
 }
 
-- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs {
+- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs {
   jbyte header = [self getHeader];
   if (header != 0) {
-    [((AMDataOutput *) nil_chk(bs)) writeByteWithInt:header];
+    [((BSDataOutput *) nil_chk(bs)) writeByteWithInt:header];
   }
-  [self writeBodyWithAMDataOutput:bs];
+  [self writeBodyWithBSDataOutput:bs];
 }
 
-- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs {
-  [self readBodyWithAMDataInput:bs];
+- (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs {
+  [self readBodyWithBSDataInput:bs];
   return self;
 }
 

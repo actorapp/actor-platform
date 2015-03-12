@@ -11,19 +11,19 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/AvatarImage.h"
-#include "im/actor/model/entity/FileLocation.h"
+#include "im/actor/model/entity/FileReference.h"
 #include "java/io/IOException.h"
 
 @interface AMAvatarImage () {
  @public
   jint width_;
   jint height_;
-  AMFileLocation *fileLocation_;
+  AMFileReference *fileReference_;
 }
 - (instancetype)init;
 @end
 
-J2OBJC_FIELD_SETTER(AMAvatarImage, fileLocation_, AMFileLocation *)
+J2OBJC_FIELD_SETTER(AMAvatarImage, fileReference_, AMFileReference *)
 
 @implementation AMAvatarImage
 
@@ -33,11 +33,11 @@ J2OBJC_FIELD_SETTER(AMAvatarImage, fileLocation_, AMFileLocation *)
 
 - (instancetype)initWithInt:(jint)width
                     withInt:(jint)height
-         withAMFileLocation:(AMFileLocation *)fileLocation {
+        withAMFileReference:(AMFileReference *)fileReference {
   if (self = [super init]) {
     self->width_ = width;
     self->height_ = height;
-    self->fileLocation_ = fileLocation;
+    self->fileReference_ = fileReference;
   }
   return self;
 }
@@ -54,8 +54,8 @@ J2OBJC_FIELD_SETTER(AMAvatarImage, fileLocation_, AMFileLocation *)
   return height_;
 }
 
-- (AMFileLocation *)getFileLocation {
-  return fileLocation_;
+- (AMFileReference *)getFileReference {
+  return fileReference_;
 }
 
 - (jboolean)isEqual:(id)o {
@@ -64,34 +64,34 @@ J2OBJC_FIELD_SETTER(AMAvatarImage, fileLocation_, AMFileLocation *)
   AMAvatarImage *that = (AMAvatarImage *) check_class_cast(o, [AMAvatarImage class]);
   if (height_ != ((AMAvatarImage *) nil_chk(that))->height_) return NO;
   if (width_ != that->width_) return NO;
-  if (![((AMFileLocation *) nil_chk(fileLocation_)) isEqual:that->fileLocation_]) return NO;
+  if (![((AMFileReference *) nil_chk(fileReference_)) isEqual:that->fileReference_]) return NO;
   return YES;
 }
 
 - (NSUInteger)hash {
   jint result = width_;
   result = 31 * result + height_;
-  result = 31 * result + ((jint) [((AMFileLocation *) nil_chk(fileLocation_)) hash]);
+  result = 31 * result + ((jint) [((AMFileReference *) nil_chk(fileReference_)) hash]);
   return result;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   width_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   height_ = [values getIntWithInt:2];
-  fileLocation_ = AMFileLocation_fromBytesWithByteArray_([values getBytesWithInt:3]);
+  fileReference_ = AMFileReference_fromBytesWithByteArray_([values getBytesWithInt:3]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:width_];
   [writer writeIntWithInt:2 withInt:height_];
-  [writer writeObjectWithInt:3 withBSBserObject:fileLocation_];
+  [writer writeObjectWithInt:3 withBSBserObject:fileReference_];
 }
 
 - (void)copyAllFieldsTo:(AMAvatarImage *)other {
   [super copyAllFieldsTo:other];
   other->width_ = width_;
   other->height_ = height_;
-  other->fileLocation_ = fileLocation_;
+  other->fileReference_ = fileReference_;
 }
 
 @end

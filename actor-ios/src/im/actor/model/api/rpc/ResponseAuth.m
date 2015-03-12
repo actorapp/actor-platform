@@ -79,6 +79,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
 
 - (NSString *)description {
   NSString *res = @"response Auth{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"user=", (self->user_ != nil ? @"set" : @"empty")));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", config=", self->config_));
   res = JreStrcat("$C", res, '}');
   return res;
 }

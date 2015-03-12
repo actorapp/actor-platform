@@ -6,8 +6,8 @@
 #ifndef _MTContainer_H_
 #define _MTContainer_H_
 
-@class AMDataInput;
-@class AMDataOutput;
+@class BSDataInput;
+@class BSDataOutput;
 @class IOSObjectArray;
 
 #include "J2ObjC_header.h"
@@ -18,7 +18,7 @@
 @interface MTContainer : MTProtoStruct {
 }
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithMTProtoMessageArray:(IOSObjectArray *)messages;
 
@@ -26,9 +26,9 @@
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
 - (NSString *)description;
 

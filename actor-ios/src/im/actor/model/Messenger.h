@@ -9,7 +9,7 @@
 @class AMAuthStateEnum;
 @class AMConfiguration;
 @class AMFastThumb;
-@class AMFileLocation;
+@class AMFileReference;
 @class AMFileVM;
 @class AMGroupTypingVM;
 @class AMI18nEngine;
@@ -161,15 +161,15 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileRefer
 
 - (void)loadMoreHistoryWithAMPeer:(AMPeer *)peer;
 
-- (AMFileVM *)bindFileWithAMFileLocation:(AMFileLocation *)fileLocation
-                             withBoolean:(jboolean)isAutoStart
-                    withAMFileVMCallback:(id<AMFileVMCallback>)callback;
+- (AMFileVM *)bindFileWithAMFileReference:(AMFileReference *)fileReference
+                              withBoolean:(jboolean)isAutoStart
+                     withAMFileVMCallback:(id<AMFileVMCallback>)callback;
 
 - (AMUploadFileVM *)bindUploadWithLong:(jlong)rid
             withAMUploadFileVMCallback:(id<AMUploadFileVMCallback>)callback;
 
-- (void)bindRawFileWithAMFileLocation:(AMFileLocation *)fileLocation
-                          withBoolean:(jboolean)isAutoStart
+- (void)bindRawFileWithAMFileReference:(AMFileReference *)fileReference
+                           withBoolean:(jboolean)isAutoStart
 withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
 
 - (void)unbindRawFileWithLong:(jlong)fileId
@@ -184,7 +184,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
 
 - (void)cancelDownloadingWithLong:(jlong)fileId;
 
-- (void)startDownloadingWithAMFileLocation:(AMFileLocation *)location;
+- (void)startDownloadingWithAMFileReference:(AMFileReference *)location;
 
 - (void)resumeUploadWithLong:(jlong)rid;
 

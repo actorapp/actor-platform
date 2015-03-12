@@ -6,8 +6,8 @@
 #ifndef _MTProtoStruct_H_
 #define _MTProtoStruct_H_
 
-@class AMDataInput;
-@class AMDataOutput;
+@class BSDataInput;
+@class BSDataOutput;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoObject.h"
@@ -15,19 +15,19 @@
 @interface MTProtoStruct : MTProtoObject {
 }
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)init;
 
 - (jbyte)getHeader;
 
-- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs;
 
-- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs;
+- (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs;
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs;
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
 @end
 

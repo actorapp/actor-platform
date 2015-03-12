@@ -6,8 +6,10 @@
 #ifndef _ImActorModelModulesUpdatesMessagesProcessor_H_
 #define _ImActorModelModulesUpdatesMessagesProcessor_H_
 
+@class AMAbsContent;
 @class AMPeer;
-@class ImActorModelApiMessageContent;
+@class IOSByteArray;
+@class ImActorModelApiMessage;
 @class ImActorModelApiPeer;
 @class ImActorModelApiRpcResponseLoadDialogs;
 @class ImActorModelApiRpcResponseLoadHistory;
@@ -31,7 +33,21 @@ withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory
                                  withInt:(jint)senderUid
                                 withLong:(jlong)date
                                 withLong:(jlong)rid
-       withImActorModelApiMessageContent:(ImActorModelApiMessageContent *)content;
+              withImActorModelApiMessage:(ImActorModelApiMessage *)content;
+
+- (void)onEncryptedMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
+                                          withInt:(jint)senderUid
+                                         withLong:(jlong)date
+                                         withLong:(jlong)keyHash
+                                    withByteArray:(IOSByteArray *)aesEncryptedKey
+                                    withByteArray:(IOSByteArray *)message;
+
++ (jint)readIntWithByteArray:(IOSByteArray *)bytes
+                     withInt:(jint)offset;
+
++ (IOSByteArray *)substringWithByteArray:(IOSByteArray *)src
+                                 withInt:(jint)start
+                                 withInt:(jint)len;
 
 - (void)onMessageReadWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
                                     withLong:(jlong)startDate
@@ -74,6 +90,10 @@ withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesMessagesProcessor)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT jint ImActorModelModulesUpdatesMessagesProcessor_readIntWithByteArray_withInt_(IOSByteArray *bytes, jint offset);
+
+FOUNDATION_EXPORT IOSByteArray *ImActorModelModulesUpdatesMessagesProcessor_substringWithByteArray_withInt_withInt_(IOSByteArray *src, jint start, jint len);
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesMessagesProcessor)

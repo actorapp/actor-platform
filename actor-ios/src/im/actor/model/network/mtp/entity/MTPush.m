@@ -6,9 +6,9 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/MTPush.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 @interface MTMTPush () {
@@ -21,8 +21,8 @@ J2OBJC_FIELD_SETTER(MTMTPush, payload_, IOSByteArray *)
 
 @implementation MTMTPush
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (IOSByteArray *)getPayload {
@@ -33,12 +33,12 @@ J2OBJC_FIELD_SETTER(MTMTPush, payload_, IOSByteArray *)
   return MTMTPush_HEADER;
 }
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
-  [((AMDataOutput *) nil_chk(bs)) writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  [((BSDataOutput *) nil_chk(bs)) writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  payload_ = [((AMDataInput *) nil_chk(bs)) readProtoBytes];
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  payload_ = [((BSDataInput *) nil_chk(bs)) readProtoBytes];
 }
 
 - (NSString *)description {

@@ -5,9 +5,9 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/UnsentMessage.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 @interface MTUnsentMessage () {
@@ -28,8 +28,8 @@
   return self;
 }
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (jlong)getMessageId {
@@ -44,13 +44,13 @@
   return MTUnsentMessage_HEADER;
 }
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
-  [((AMDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeIntWithInt:len_];
 }
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  messageId_ = [((AMDataInput *) nil_chk(bs)) readLong];
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   len_ = [bs readInt];
 }
 

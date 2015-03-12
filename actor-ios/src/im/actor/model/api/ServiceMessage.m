@@ -6,6 +6,7 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -14,22 +15,19 @@
 @interface ImActorModelApiServiceMessage () {
  @public
   NSString *text_;
-  jint extType_;
-  IOSByteArray *ext_;
+  ImActorModelApiServiceEx *ext_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, text_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceEx *)
 
 @implementation ImActorModelApiServiceMessage
 
 - (instancetype)initWithNSString:(NSString *)text
-                         withInt:(jint)extType
-                   withByteArray:(IOSByteArray *)ext {
+    withImActorModelApiServiceEx:(ImActorModelApiServiceEx *)ext {
   if (self = [super init]) {
     self->text_ = text;
-    self->extType_ = extType;
     self->ext_ = ext;
   }
   return self;
@@ -39,22 +37,23 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, IOSByteArray *)
   return [super init];
 }
 
+- (jint)getHeader {
+  return 2;
+}
+
 - (NSString *)getText {
   return self->text_;
 }
 
-- (jint)getExtType {
-  return self->extType_;
-}
-
-- (IOSByteArray *)getExt {
+- (ImActorModelApiServiceEx *)getExt {
   return self->ext_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
-  self->extType_ = [values getIntWithInt:2];
-  self->ext_ = [values optBytesWithInt:3];
+  if ([values optBytesWithInt:3] != nil) {
+    self->ext_ = ImActorModelApiServiceEx_fromBytesWithInt_withByteArray_([values getIntWithInt:2], [values getBytesWithInt:3]);
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -62,16 +61,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, IOSByteArray *)
     @throw [[JavaIoIOException alloc] init];
   }
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->text_];
-  [writer writeIntWithInt:2 withInt:self->extType_];
   if (self->ext_ != nil) {
-    [writer writeBytesWithInt:3 withByteArray:self->ext_];
+    [writer writeIntWithInt:2 withInt:[self->ext_ getHeader]];
+    [writer writeBytesWithInt:3 withByteArray:[self->ext_ toByteArray]];
   }
 }
 
 - (NSString *)description {
   NSString *res = @"struct ServiceMessage{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"text=", self->text_));
-  res = JreStrcat("$$", res, JreStrcat("$I", @", extType=", self->extType_));
   res = JreStrcat("$$", res, JreStrcat("$$", @", ext=", (self->ext_ != nil ? @"set" : @"empty")));
   res = JreStrcat("$C", res, '}');
   return res;
@@ -80,7 +78,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, IOSByteArray *)
 - (void)copyAllFieldsTo:(ImActorModelApiServiceMessage *)other {
   [super copyAllFieldsTo:other];
   other->text_ = text_;
-  other->extType_ = extType_;
   other->ext_ = ext_;
 }
 

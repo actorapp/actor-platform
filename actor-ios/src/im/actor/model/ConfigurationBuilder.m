@@ -5,6 +5,7 @@
 
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/ApiConfiguration.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/ConfigurationBuilder.h"
 #include "im/actor/model/CryptoProvider.h"
@@ -17,7 +18,6 @@
 #include "im/actor/model/PhoneBookProvider.h"
 #include "im/actor/model/Storage.h"
 #include "im/actor/model/Threading.h"
-#include "im/actor/model/crypto/BouncyCastleProvider.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
 #include "java/lang/Integer.h"
 #include "java/lang/RuntimeException.h"
@@ -38,6 +38,7 @@
   jboolean enableContactsLogging_;
   jboolean enableNetworkLogging_;
   id<AMNotificationProvider> notificationProvider_;
+  AMApiConfiguration *apiConfiguration_;
 }
 @end
 
@@ -52,8 +53,14 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, phoneBookProvider_, id<AMPhoneBookPr
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, cryptoProvider_, id<AMCryptoProvider>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, fileSystemProvider_, id<AMFileSystemProvider>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, notificationProvider_, id<AMNotificationProvider>)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguration *)
 
 @implementation AMConfigurationBuilder
+
+- (AMConfigurationBuilder *)setApiConfigurationWithAMApiConfiguration:(AMApiConfiguration *)apiConfiguration {
+  self->apiConfiguration_ = apiConfiguration;
+  return self;
+}
 
 - (AMConfigurationBuilder *)setNotificationProviderWithAMNotificationProvider:(id<AMNotificationProvider>)notificationProvider {
   self->notificationProvider_ = notificationProvider;
@@ -182,13 +189,15 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, notificationProvider_, id<AMNotifica
   if (cryptoProvider_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Crypto Provider not set"];
   }
-  return [[AMConfiguration alloc] initWithAMNetworking:networking_ withAMConnectionEndpointArray:[endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]] withAMThreading:threading_ withAMMainThread:mainThread_ withAMStorage:enginesFactory_ withAMLogCallback:log_ withAMLocaleProvider:localeProvider_ withAMPhoneBookProvider:phoneBookProvider_ withAMCryptoProvider:cryptoProvider_ withAMFileSystemProvider:fileSystemProvider_ withAMNotificationProvider:notificationProvider_ withBoolean:enableContactsLogging_ withBoolean:enableNetworkLogging_];
+  if (apiConfiguration_ == nil) {
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Api Configuration not set"];
+  }
+  return [[AMConfiguration alloc] initWithAMNetworking:networking_ withAMConnectionEndpointArray:[endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]] withAMThreading:threading_ withAMMainThread:mainThread_ withAMStorage:enginesFactory_ withAMLogCallback:log_ withAMLocaleProvider:localeProvider_ withAMPhoneBookProvider:phoneBookProvider_ withAMCryptoProvider:cryptoProvider_ withAMFileSystemProvider:fileSystemProvider_ withAMNotificationProvider:notificationProvider_ withAMApiConfiguration:apiConfiguration_ withBoolean:enableContactsLogging_ withBoolean:enableNetworkLogging_];
 }
 
 - (instancetype)init {
   if (self = [super init]) {
     endpoints_ = [[JavaUtilArrayList alloc] init];
-    cryptoProvider_ = [[ImActorModelCryptoBouncyCastleProvider alloc] init];
     enableContactsLogging_ = NO;
     enableNetworkLogging_ = NO;
   }
@@ -210,6 +219,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, notificationProvider_, id<AMNotifica
   other->enableContactsLogging_ = enableContactsLogging_;
   other->enableNetworkLogging_ = enableNetworkLogging_;
   other->notificationProvider_ = notificationProvider_;
+  other->apiConfiguration_ = apiConfiguration_;
 }
 
 @end

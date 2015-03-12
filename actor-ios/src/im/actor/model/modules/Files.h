@@ -6,7 +6,7 @@
 #ifndef _ImActorModelModulesFiles_H_
 #define _ImActorModelModulesFiles_H_
 
-@class AMFileLocation;
+@class AMFileReference;
 @class DKActorRef;
 @class IOSByteArray;
 @class ImActorModelModulesFileDownloadManager;
@@ -34,8 +34,8 @@
 
 - (id<AMKeyValueEngine>)getDownloadedEngine;
 
-- (void)bindFileWithAMFileLocation:(AMFileLocation *)fileLocation
-                       withBoolean:(jboolean)isAutostart
+- (void)bindFileWithAMFileReference:(AMFileReference *)fileReference
+                        withBoolean:(jboolean)isAutostart
 withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
 
 - (void)unbindFileWithLong:(jlong)fileId
@@ -45,7 +45,7 @@ withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadC
 - (void)requestStateWithLong:(jlong)fileId
 withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
 
-- (void)startDownloadingWithAMFileLocation:(AMFileLocation *)location;
+- (void)startDownloadingWithAMFileReference:(AMFileReference *)location;
 
 - (void)cancelDownloadingWithLong:(jlong)fileId;
 

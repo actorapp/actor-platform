@@ -13,6 +13,7 @@
 @class ImActorModelModulesUpdates;
 @class ImActorModelNetworkParserRequest;
 @class ImActorModelNetworkParserResponse;
+@protocol AMCryptoProvider;
 @protocol AMKeyValueEngine;
 @protocol AMPreferencesStorage;
 @protocol JavaLangRunnable;
@@ -46,6 +47,8 @@
 - (DKActorRef *)conversationHistoryActorWithAMPeer:(AMPeer *)peer;
 
 - (id<AMPreferencesStorage>)preferences;
+
+- (id<AMCryptoProvider>)crypto;
 
 - (jint)myUid;
 

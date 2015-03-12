@@ -6,8 +6,8 @@
 #ifndef _MTProtoObject_H_
 #define _MTProtoObject_H_
 
-@class AMDataInput;
-@class AMDataOutput;
+@class BSDataInput;
+@class BSDataOutput;
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
@@ -15,13 +15,13 @@
 @interface MTProtoObject : NSObject {
 }
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)init;
 
-- (void)writeObjectWithAMDataOutput:(AMDataOutput *)bs;
+- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs;
 
-- (MTProtoObject *)readObjectWithAMDataInput:(AMDataInput *)bs;
+- (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs;
 
 - (IOSByteArray *)toByteArray;
 

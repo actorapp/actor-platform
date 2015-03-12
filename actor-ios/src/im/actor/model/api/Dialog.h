@@ -8,7 +8,7 @@
 
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiMessageContent;
+@class ImActorModelApiMessage;
 @class ImActorModelApiMessageStateEnum;
 @class ImActorModelApiPeer;
 
@@ -24,7 +24,7 @@
                                     withInt:(jint)senderUid
                                    withLong:(jlong)rid
                                    withLong:(jlong)date
-          withImActorModelApiMessageContent:(ImActorModelApiMessageContent *)message
+                 withImActorModelApiMessage:(ImActorModelApiMessage *)message
         withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state;
 
 - (instancetype)init;
@@ -41,7 +41,7 @@
 
 - (jlong)getDate;
 
-- (ImActorModelApiMessageContent *)getMessage;
+- (ImActorModelApiMessage *)getMessage;
 
 - (ImActorModelApiMessageStateEnum *)getState;
 

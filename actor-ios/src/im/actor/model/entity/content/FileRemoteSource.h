@@ -6,7 +6,7 @@
 #ifndef _AMFileRemoteSource_H_
 #define _AMFileRemoteSource_H_
 
-@class AMFileLocation;
+@class AMFileReference;
 @class BSBserValues;
 @class BSBserWriter;
 
@@ -18,9 +18,9 @@
 
 + (AMFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader;
 
-- (instancetype)initWithAMFileLocation:(AMFileLocation *)fileLocation;
+- (instancetype)initWithAMFileReference:(AMFileReference *)fileReference;
 
-- (AMFileLocation *)getFileLocation;
+- (AMFileReference *)getFileReference;
 
 - (jint)getSize;
 

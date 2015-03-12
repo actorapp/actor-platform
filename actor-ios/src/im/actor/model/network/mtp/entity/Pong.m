@@ -5,9 +5,9 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/Pong.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 @interface MTPong () {
@@ -18,8 +18,8 @@
 
 @implementation MTPong
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (instancetype)initWithLong:(jlong)randomId {
@@ -37,12 +37,12 @@
   return MTPong_HEADER;
 }
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
-  [((AMDataOutput *) nil_chk(bs)) writeLongWithLong:randomId_];
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:randomId_];
 }
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  randomId_ = [((AMDataInput *) nil_chk(bs)) readLong];
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  randomId_ = [((BSDataInput *) nil_chk(bs)) readLong];
 }
 
 - (NSString *)description {

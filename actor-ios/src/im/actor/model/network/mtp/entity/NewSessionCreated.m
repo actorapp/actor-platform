@@ -5,15 +5,15 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/NewSessionCreated.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 @implementation MTNewSessionCreated
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (instancetype)initWithLong:(jlong)sessionId
@@ -37,13 +37,13 @@
   return MTNewSessionCreated_HEADER;
 }
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
-  [((AMDataOutput *) nil_chk(bs)) writeLongWithLong:sessionId_];
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:sessionId_];
   [bs writeLongWithLong:messageId_];
 }
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  sessionId_ = [((AMDataInput *) nil_chk(bs)) readLong];
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  sessionId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   messageId_ = [bs readLong];
 }
 

@@ -5,15 +5,15 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/Drop.h"
-#include "im/actor/model/util/DataInput.h"
-#include "im/actor/model/util/DataOutput.h"
 #include "java/io/IOException.h"
 
 @implementation MTDrop
 
-- (instancetype)initWithAMDataInput:(AMDataInput *)stream {
-  return [super initWithAMDataInput:stream];
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream {
+  return [super initWithBSDataInput:stream];
 }
 
 - (instancetype)initWithLong:(jlong)messageId
@@ -37,13 +37,13 @@
   return MTDrop_HEADER;
 }
 
-- (void)writeBodyWithAMDataOutput:(AMDataOutput *)bs {
-  [((AMDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeProtoStringWithNSString:message_];
 }
 
-- (void)readBodyWithAMDataInput:(AMDataInput *)bs {
-  messageId_ = [((AMDataInput *) nil_chk(bs)) readLong];
+- (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   message_ = [bs readProtoString];
 }
 

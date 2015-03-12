@@ -6,7 +6,7 @@
 #ifndef _ImActorModelModulesFileDownloadManager_H_
 #define _ImActorModelModulesFileDownloadManager_H_
 
-@class AMFileLocation;
+@class AMFileReference;
 @class DKActorRef;
 @class ImActorModelModulesFileDownloadManager_QueueItem;
 @class ImActorModelModulesFileDownloadTask;
@@ -32,11 +32,11 @@
 - (void)requestStateWithLong:(jlong)fileId
 withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
 
-- (void)bindDownloadWithAMFileLocation:(AMFileLocation *)fileLocation
-                           withBoolean:(jboolean)autoStart
+- (void)bindDownloadWithAMFileReference:(AMFileReference *)fileReference
+                            withBoolean:(jboolean)autoStart
 withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
 
-- (void)startDownloadWithAMFileLocation:(AMFileLocation *)fileLocation;
+- (void)startDownloadWithAMFileReference:(AMFileReference *)fileReference;
 
 - (void)cancelDownloadWithLong:(jlong)fileId;
 
@@ -102,11 +102,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_RequestState)
 @interface ImActorModelModulesFileDownloadManager_BindDownload : NSObject {
 }
 
-- (instancetype)initWithAMFileLocation:(AMFileLocation *)fileLocation
-                           withBoolean:(jboolean)isAutostart
+- (instancetype)initWithAMFileReference:(AMFileReference *)fileReference
+                            withBoolean:(jboolean)isAutostart
 withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
 
-- (AMFileLocation *)getFileLocation;
+- (AMFileReference *)getFileReference;
 
 - (jboolean)isAutostart;
 
@@ -124,9 +124,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_BindDownload)
 @interface ImActorModelModulesFileDownloadManager_StartDownload : NSObject {
 }
 
-- (instancetype)initWithAMFileLocation:(AMFileLocation *)fileLocation;
+- (instancetype)initWithAMFileReference:(AMFileReference *)fileReference;
 
-- (AMFileLocation *)getFileLocation;
+- (AMFileReference *)getFileReference;
 
 @end
 

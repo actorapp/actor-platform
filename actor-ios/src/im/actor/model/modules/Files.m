@@ -11,7 +11,7 @@
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
-#include "im/actor/model/entity/FileLocation.h"
+#include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/files/FileReference.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
@@ -107,10 +107,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, val$reference_, id<ImActorMo
   return downloadedEngine_;
 }
 
-- (void)bindFileWithAMFileLocation:(AMFileLocation *)fileLocation
-                       withBoolean:(jboolean)isAutostart
+- (void)bindFileWithAMFileReference:(AMFileReference *)fileReference
+                        withBoolean:(jboolean)isAutostart
 withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
-  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:[[ImActorModelModulesFileDownloadManager_BindDownload alloc] initWithAMFileLocation:fileLocation withBoolean:isAutostart withImActorModelModulesFileDownloadCallback:callback]];
+  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:[[ImActorModelModulesFileDownloadManager_BindDownload alloc] initWithAMFileReference:fileReference withBoolean:isAutostart withImActorModelModulesFileDownloadCallback:callback]];
 }
 
 - (void)unbindFileWithLong:(jlong)fileId
@@ -124,8 +124,8 @@ withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadC
   [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:[[ImActorModelModulesFileDownloadManager_RequestState alloc] initWithLong:fileId withImActorModelModulesFileDownloadCallback:[[ImActorModelModulesFiles_$4 alloc] initWithImActorModelModulesFiles:self withImActorModelModulesFileDownloadCallback:callback]]];
 }
 
-- (void)startDownloadingWithAMFileLocation:(AMFileLocation *)location {
-  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:[[ImActorModelModulesFileDownloadManager_StartDownload alloc] initWithAMFileLocation:location]];
+- (void)startDownloadingWithAMFileReference:(AMFileReference *)location {
+  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:[[ImActorModelModulesFileDownloadManager_StartDownload alloc] initWithAMFileReference:location]];
 }
 
 - (void)cancelDownloadingWithLong:(jlong)fileId {
