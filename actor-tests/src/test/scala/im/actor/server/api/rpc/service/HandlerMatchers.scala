@@ -5,8 +5,7 @@ import org.specs2._, matcher._
 import scalaz._, std.either._
 
 trait HandlerMatchers extends DisjunctionMatchers {
-
-  def beOkLike(pattern: PartialFunction[(api.RpcResponse, Vector[(Long, api.Update)]), MatchResult[_]]) =
+  def beOkLike(pattern: PartialFunction[api.RpcResponse, MatchResult[_]]) =
     be_\/-.like(pattern)
 
   def beErrorLike(pattern: PartialFunction[api.RpcError, MatchResult[_]]) =

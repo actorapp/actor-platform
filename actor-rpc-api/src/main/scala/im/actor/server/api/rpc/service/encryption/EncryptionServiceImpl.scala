@@ -33,7 +33,7 @@ trait EncryptionServiceImpl extends EncryptionService {
       val pubKeys = items.map { key =>
         PublicKey(key.userId, key.hash, key.data)
       }
-      Ok(ResponseGetPublicKeys(pubKeys.toVector), Vector.empty)
+      Ok(ResponseGetPublicKeys(pubKeys.toVector))
     }
 
     db.run(action)

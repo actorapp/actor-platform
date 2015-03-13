@@ -51,9 +51,9 @@ class EncryptionServiceSpec extends ActorSpecification with SqlSpecHelpers with 
           )
         )
       ) must beOkLike {
-        case (api.encryption.ResponseGetPublicKeys(Vector(
+        case api.encryption.ResponseGetPublicKeys(Vector(
           pk @ api.encryption.PublicKey(user2.id, user2pk.hash, _)
-        )), Vector()) if pk.key.sameElements(user2pk.data) => ok
+        )) if pk.key.sameElements(user2pk.data) => ok
       }.await
     }
   }
