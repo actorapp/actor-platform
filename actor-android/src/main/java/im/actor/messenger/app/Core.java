@@ -4,14 +4,15 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.database.ContentObserver;
+import android.os.Build;
 import android.provider.ContactsContract;
+import android.util.Base64;
 
 import com.droidkit.images.cache.BitmapClasificator;
 import com.droidkit.images.loading.ImageLoader;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.emoji.EmojiProcessor;
-import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.app.images.AvatarActor;
 import im.actor.messenger.app.images.AvatarTask;
 import im.actor.messenger.app.images.FullAvatarActor;
@@ -22,6 +23,7 @@ import im.actor.messenger.app.images.VideoActor;
 import im.actor.messenger.app.images.VideoPreviewActor;
 import im.actor.messenger.app.images.VideoPreviewTask;
 import im.actor.messenger.app.images.VideoTask;
+import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.storage.provider.AppEngineFactory;
 import im.actor.model.ApiConfiguration;
 import im.actor.model.ConfigurationBuilder;
@@ -113,7 +115,10 @@ public class Core {
         this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
 
 
+
+
         ConfigurationBuilder builder = new ConfigurationBuilder();
+        BouncyCastleProvider bouncyCastleProvider = new BouncyCastleProvider();
         builder.setThreading(new JavaThreading());
         builder.setNetworking(new JavaNetworking());
         builder.setMainThread(new AndroidMainThread());
@@ -131,9 +136,13 @@ public class Core {
             builder.addEndpoint("tcp://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
         }
         builder.setEnableContactsLogging(true);
+
+        byte[] deviceHash = bouncyCastleProvider.SHA256(Base64.encode((AppContext.getContext().getPackageName()+":"+ Build.SERIAL).getBytes(),
+                Base64.DEFAULT));
+
         builder.setApiConfiguration(new ApiConfiguration("Actor Android v0.1", 1, "??", "Android Device",
-                new byte[32]));
-        builder.setCryptoProvider(new BouncyCastleProvider());
+                deviceHash));
+        builder.setCryptoProvider(bouncyCastleProvider);
 
         this.messenger = new im.actor.model.Messenger(builder.build());
 

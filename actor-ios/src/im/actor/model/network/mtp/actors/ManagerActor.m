@@ -374,6 +374,7 @@ void MTManagerActor_onInMessageWithByteArray_withInt_withInt_(MTManagerActor *se
       self->currentConnection_ = nil;
       self->currentConnectionId_ = 0;
     }
+    MTManagerActor_checkConnection(self);
   }
 }
 

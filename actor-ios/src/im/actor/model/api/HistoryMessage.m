@@ -85,7 +85,7 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   if (self->message_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [writer writeBytesWithInt:5 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) toByteArray]];
+  [writer writeBytesWithInt:5 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
   if (self->state_ != nil) {
     [writer writeIntWithInt:6 withInt:[self->state_ getValue]];
   }

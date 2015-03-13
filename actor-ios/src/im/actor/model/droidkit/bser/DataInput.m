@@ -141,9 +141,6 @@ J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
   if (count > BSLimits_MAX_BLOCK_SIZE) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Unable to read more than 1 MB"];
   }
-  if (offset_ + count > maxOffset_) {
-    @throw [[JavaIoIOException alloc] initWithNSString:JreStrcat("$I$I", @"Too many to read, max len: ", maxOffset_, @", required len: ", (offset_ + count))];
-  }
   IOSByteArray *res = [IOSByteArray newArrayWithLength:count];
   for (jint i = 0; i < count; i++) {
     *IOSByteArray_GetRef(res, i) = IOSByteArray_Get(nil_chk(data_), offset_++);
@@ -151,12 +148,12 @@ J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
   return res;
 }
 
-- (jlong)readVarInt32 {
+- (jint)readVarInt32 {
   jlong varInt = [self readVarInt];
   if (varInt > JavaLangInteger_MAX_VALUE || varInt < JavaLangInteger_MIN_VALUE) {
     @throw [[JavaIoIOException alloc] initWithNSString:@"Too big VarInt32"];
   }
-  return varInt;
+  return (jint) varInt;
 }
 
 - (jlong)readVarInt {
