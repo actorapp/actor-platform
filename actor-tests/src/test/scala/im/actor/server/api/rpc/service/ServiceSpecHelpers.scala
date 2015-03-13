@@ -27,14 +27,14 @@ trait ServiceSpecHelpers {
 
   def getSmsHash(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem): String = withoutLogs {
     val api.auth.ResponseSendAuthCode(smsHash, _) =
-      Await.result(service.handleSendAuthCode(phoneNumber, 1, "apiKey")(api.ClientData(authId, None)), 1.second).toOption.get._1
+      Await.result(service.handleSendAuthCode(phoneNumber, 1, "apiKey")(api.ClientData(authId, None)), 1.second).toOption.get
     smsHash
   }
 
   def createUser(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem) = withoutLogs {
     val smsHash = getSmsHash(authId, phoneNumber)(service, system)
 
-    val (rsp, _) = Await.result(service.handleSignUp(
+    val rsp = Await.result(service.handleSignUp(
       phoneNumber = phoneNumber,
       smsHash = smsHash,
       smsCode = "0000",

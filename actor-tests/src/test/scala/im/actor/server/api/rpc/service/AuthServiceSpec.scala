@@ -54,7 +54,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
 
       def e1 = {
         service.handleSendAuthCode(phoneNumber, 1, "apiKey") must beOkLike {
-          case (api.auth.ResponseSendAuthCode(_, false), Vector()) => ok
+          case api.auth.ResponseSendAuthCode(_, false) => ok
         }.await
       }
     }
@@ -79,7 +79,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
           appKey = "appKey",
           isSilent = false
         ) must beOkLike {
-          case (api.auth.ResponseAuth(_, _, _), Vector()) => ok
+          case api.auth.ResponseAuth(_, _, _) => ok
         }.await
       }
     }
@@ -122,7 +122,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
           appId = 1,
           appKey = "appKey"
         ) must beOkLike {
-          case (rsp: api.auth.ResponseAuth, Vector()) =>
+          case rsp: api.auth.ResponseAuth =>
             service.db.run(persist.AuthId.find(authId).head) must be_==(models.AuthId(authId, Some(rsp.user.id))).await and
             (service.db.run(persist.UserPublicKey.find(rsp.user.id, authId).headOption) must beSome[models.UserPublicKey].await)
         }.await
