@@ -17,7 +17,7 @@ package object rpc {
     val InvalidKey = RpcError(400, "INVALID_KEY", "", false, None)
   }
 
-  type OkResp[+A] = (A, Vector[(Long, Update)])
+  type OkResp[+A] = A
 
   object Error {
     def apply(e: RpcError) = -\/(e)
@@ -29,8 +29,8 @@ package object rpc {
   }
 
   object Ok {
-    def apply[A](rsp: A, updates: Vector[(Long, Update)])(implicit ev: A <:< RpcResponse): RpcError \/ (A, Vector[(Long, Update)]) =
-      \/-((rsp, updates))
+    def apply[A](rsp: A)(implicit ev: A <:< RpcResponse): RpcError \/ A =
+      \/-(rsp)
 
     def unapply[T <: OkResp[RpcResponse]](v: _ \/ T)(implicit m: ClassTag[T]) =
       v match {

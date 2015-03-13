@@ -55,7 +55,7 @@ trait AuthServiceImpl extends AuthService with Helpers {
         }.map {
           case number :: smsHash :: smsCode :: isRegistered :: HNil =>
             sendSmsCode(clientData.authId, number, smsCode)
-            Ok(ResponseSendAuthCode(smsHash, isRegistered), Vector.empty)
+            Ok(ResponseSendAuthCode(smsHash, isRegistered))
         }
         db.run(action.transactionally)
     }
@@ -196,8 +196,7 @@ trait AuthServiceImpl extends AuthService with Helpers {
                     pkHash,
                     userStruct,
                     misc.Config(300)
-                  ),
-                  Vector.empty
+                  )
                 )
               }
             case error @ -\/(_) => DBIO.successful(error)
