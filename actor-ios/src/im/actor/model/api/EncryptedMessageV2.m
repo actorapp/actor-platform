@@ -58,7 +58,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedMessageV2, content_, ImActorModelApi
   if (self->content_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [writer writeBytesWithInt:3 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->content_)) toByteArray]];
+  [writer writeBytesWithInt:3 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->content_)) buildContainer]];
 }
 
 - (NSString *)description {

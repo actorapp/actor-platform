@@ -42,7 +42,7 @@
 
 - (IOSByteArray *)readBytesWithInt:(jint)count;
 
-- (jlong)readVarInt32;
+- (jint)readVarInt32;
 
 - (jlong)readVarInt;
 

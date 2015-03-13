@@ -13,7 +13,12 @@
 #include "im/actor/model/api/TextMessage.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserParser.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
@@ -25,6 +30,14 @@
   return ImActorModelApiMessage_fromBytesWithByteArray_(src);
 }
 
+- (IOSByteArray *)buildContainer {
+  BSDataOutput *res = [[BSDataOutput alloc] init];
+  BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:res];
+  [writer writeIntWithInt:1 withInt:[self getHeader]];
+  [writer writeBytesWithInt:2 withByteArray:[self toByteArray]];
+  return [res toByteArray];
+}
+
 - (instancetype)init {
   return [super init];
 }
@@ -33,9 +46,9 @@
 
 ImActorModelApiMessage *ImActorModelApiMessage_fromBytesWithByteArray_(IOSByteArray *src) {
   ImActorModelApiMessage_init();
-  BSDataInput *input = [[BSDataInput alloc] initWithByteArray:src withInt:0 withInt:((IOSByteArray *) nil_chk(src))->size_];
-  jint key = [input readInt];
-  IOSByteArray *content = [input readProtoBytes];
+  BSBserValues *values = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithBSDataInput_([[BSDataInput alloc] initWithByteArray:src withInt:0 withInt:((IOSByteArray *) nil_chk(src))->size_])];
+  jint key = [values getIntWithInt:1];
+  IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     case 1:
     return ((ImActorModelApiTextMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiTextMessage alloc] init], content));

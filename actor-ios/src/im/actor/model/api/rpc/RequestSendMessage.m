@@ -74,7 +74,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
   if (self->message_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [writer writeBytesWithInt:4 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) toByteArray]];
+  [writer writeBytesWithInt:4 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
 }
 
 - (NSString *)description {

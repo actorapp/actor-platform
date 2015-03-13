@@ -12,6 +12,8 @@
 #include "im/actor/model/api/EncryptedTextContentV1.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "java/io/IOException.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
@@ -22,6 +24,14 @@
 + (ImActorModelApiEncryptedContentV1 *)fromBytesWithInt:(jint)key
                                           withByteArray:(IOSByteArray *)content {
   return ImActorModelApiEncryptedContentV1_fromBytesWithInt_withByteArray_(key, content);
+}
+
+- (IOSByteArray *)buildContainer {
+  BSDataOutput *res = [[BSDataOutput alloc] init];
+  BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:res];
+  [writer writeIntWithInt:1 withInt:[self getHeader]];
+  [writer writeBytesWithInt:2 withByteArray:[self toByteArray]];
+  return [res toByteArray];
 }
 
 - (instancetype)init {
