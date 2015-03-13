@@ -9,6 +9,7 @@ import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -54,7 +55,7 @@ public class EncryptedMessageV2 extends EncryptedPackageV2 {
             throw new IOException();
         }
 
-        writer.writeBytes(3, this.content.toByteArray());
+        writer.writeBytes(3, this.content.buildContainer());
     }
 
     @Override

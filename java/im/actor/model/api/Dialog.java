@@ -9,6 +9,7 @@ import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -103,7 +104,7 @@ public class Dialog extends BserObject {
             throw new IOException();
         }
 
-        writer.writeBytes(8, this.message.toByteArray());
+        writer.writeBytes(8, this.message.buildContainer());
         if (this.state != null) {
             writer.writeInt(9, this.state.getValue());
         }

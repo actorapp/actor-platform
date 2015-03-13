@@ -21,6 +21,7 @@ public class JavaConfig {
             "im.actor.model.droidkit.bser.BserValues",
             "im.actor.model.droidkit.bser.BserWriter",
             "im.actor.model.droidkit.bser.DataInput",
+            "im.actor.model.droidkit.bser.DataOutput",
             "static im.actor.model.droidkit.bser.Utils.*",
             "java.io.IOException",
             "im.actor.model.network.parser.*",

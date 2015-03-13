@@ -472,7 +472,7 @@ public class ContainerGenerator {
                 String traitName = ((SchemeTraitType) childType).getTraitName();
                 SchemeTrait trait = definition.getTrait(traitName);
                 if (trait.isContainer()) {
-                    generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ".toByteArray());");
+                    generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ".buildContainer());");
                 } else {
                     generator.appendLn("writer.writeInt(" + (attributeId - 1) + ", this." + attributeName + ".getHeader());");
                     generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ".toByteArray());");
@@ -518,7 +518,7 @@ public class ContainerGenerator {
             generator.appendLn("}");
             generator.appendLn();
             if (trait.isContainer()) {
-                generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ".toByteArray());");
+                generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ".buildContainer());");
             } else {
                 generator.appendLn("writer.writeInt(" + (attributeId - 1) + ", this." + attributeName + ".getHeader());");
                 generator.appendLn("writer.writeBytes(" + attributeId + ", this." + attributeName + ".toByteArray());");
