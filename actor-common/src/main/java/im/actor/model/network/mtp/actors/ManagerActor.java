@@ -1,7 +1,16 @@
 package im.actor.model.network.mtp.actors;
 
-import im.actor.model.droidkit.actors.*;
-import im.actor.model.util.AtomicIntegerCompat;
+import java.io.IOException;
+
+import im.actor.model.droidkit.actors.Actor;
+import im.actor.model.droidkit.actors.ActorCreator;
+import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.ActorSelection;
+import im.actor.model.droidkit.actors.ActorSystem;
+import im.actor.model.droidkit.actors.Environment;
+import im.actor.model.droidkit.actors.Props;
+import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.log.Log;
 import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
@@ -9,11 +18,8 @@ import im.actor.model.network.CreateConnectionCallback;
 import im.actor.model.network.Endpoints;
 import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.ProtoMessage;
-import im.actor.model.droidkit.bser.DataInput;
-import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.util.AtomicIntegerCompat;
 import im.actor.model.util.ExponentialBackoff;
-
-import java.io.IOException;
 
 /**
  * Created by ex3ndr on 02.09.14.
@@ -224,6 +230,7 @@ public class ManagerActor extends Actor {
                 currentConnection = null;
                 currentConnectionId = 0;
             }
+            checkConnection();
         }
     }
 

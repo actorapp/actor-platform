@@ -9,6 +9,7 @@ import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -24,4 +25,13 @@ public abstract class EncryptedDocumentV1Ex extends BserObject {
         }
     }
     public abstract int getHeader();
+
+    public byte[] buildContainer() throws IOException {
+        DataOutput res = new DataOutput();
+        BserWriter writer = new BserWriter(res);
+        writer.writeInt(1, getHeader());
+        writer.writeBytes(2, toByteArray());
+        return res.toByteArray();
+    }
+
 }

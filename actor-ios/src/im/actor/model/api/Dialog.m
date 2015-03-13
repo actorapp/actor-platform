@@ -117,7 +117,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   if (self->message_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [writer writeBytesWithInt:8 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) toByteArray]];
+  [writer writeBytesWithInt:8 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
   if (self->state_ != nil) {
     [writer writeIntWithInt:9 withInt:[self->state_ getValue]];
   }

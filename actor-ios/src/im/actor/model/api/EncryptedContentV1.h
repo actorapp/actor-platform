@@ -19,6 +19,8 @@
 
 - (jint)getHeader;
 
+- (IOSByteArray *)buildContainer;
+
 - (instancetype)init;
 
 @end
