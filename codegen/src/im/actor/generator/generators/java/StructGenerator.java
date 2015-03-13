@@ -57,6 +57,18 @@ public class StructGenerator {
             generator.appendLn("}");
 
             generator.appendLn("public abstract int getHeader();");
+            generator.appendLn();
+
+            generator.appendLn("public byte[] buildContainer() throws IOException {");
+            generator.increaseDepth();
+            generator.appendLn("DataOutput res = new DataOutput();");
+            generator.appendLn("BserWriter writer = new BserWriter(res);");
+            generator.appendLn("writer.writeInt(1, getHeader());");
+            generator.appendLn("writer.writeBytes(2, toByteArray());");
+            generator.appendLn("return res.toByteArray();");
+            generator.decreaseDepth();
+            generator.appendLn("}");
+            generator.appendLn();
 
             generator.decreaseDepth();
             generator.appendLn("}");
@@ -115,6 +127,9 @@ public class StructGenerator {
             generator.decreaseDepth();
             generator.appendLn("}");
             generator.appendLn();
+
+
+
             generator.decreaseDepth();
             generator.appendLn("}");
             generator.close();

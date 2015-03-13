@@ -9,6 +9,7 @@ import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -83,7 +84,7 @@ public class UpdateMessage extends Update {
             throw new IOException();
         }
 
-        writer.writeBytes(5, this.message.toByteArray());
+        writer.writeBytes(5, this.message.buildContainer());
     }
 
     @Override

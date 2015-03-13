@@ -28,8 +28,6 @@ public class RequestGenerator {
             generator.appendLn("package " + JavaConfig.PACKAGE + ".rpc;");
             generator.appendLn(JavaConfig.NOTICE);
             generator.appendLn();
-            generator.appendLn(JavaConfig.NOTICE);
-            generator.appendLn();
             for (String im : JavaConfig.IMPORTS) {
                 generator.appendLn("import " + im + ";");
             }
