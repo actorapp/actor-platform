@@ -37,9 +37,9 @@ public class StructGenerator {
             if (u.isContainer()) {
                 generator.appendLn("public static " + javaName + " fromBytes(byte[] src) throws IOException {");
                 generator.increaseDepth();
-                generator.appendLn("DataInput input = new DataInput(src, 0, src.length);");
-                generator.appendLn("int key = input.readVarInt32();");
-                generator.appendLn("byte[] content = input.readProtoBytes();");
+                generator.appendLn("BserValues values = new BserValues(BserParser.deserialize(new DataInput(src, 0, src.length)));");
+                generator.appendLn("int key = values.getInt(1);");
+                generator.appendLn("byte[] content = values.getBytes(2);");
             } else {
                 generator.appendLn("public static " + javaName + " fromBytes(int key, byte[] content) throws IOException {");
                 generator.increaseDepth();
