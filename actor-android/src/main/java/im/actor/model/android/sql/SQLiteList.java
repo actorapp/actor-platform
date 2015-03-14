@@ -124,13 +124,28 @@ public class SQLiteList implements ListStorage {
     }
 
     @Override
-    public List<ListEngineRecord> loadBefore(Long sortingKey, int limit) {
+    public List<ListEngineRecord> loadForward(Long sortingKey, int limit) {
         checkTable();
-        return null;
+
+        Cursor cursor;
+        if (sortingKey == null) {
+            cursor = database.query("\"" + tableName + "\"",
+                    new String[]{"\"LIST_ID\"", "\"ID\"", "\"SORT_KEY\"", "\"QUERY\"", "\"BYTES\""},
+                    null, null, null, null, "\"SORT_KEY\" DESC", String.valueOf(limit));
+        } else {
+            cursor = database.query("\"" + tableName + "\"",
+                    new String[]{"\"ID\"", "\"SORT_KEY\"", "\"QUERY\"", "\"BYTES\""},
+                    "\"SORT_KEY\" < ?",
+                    new String[]{
+                            String.valueOf(sortingKey)
+                    }, null, null, "\"SORT_KEY\" DESC", String.valueOf(limit));
+        }
+
+        return loadSlice(cursor);
     }
 
     @Override
-    public List<ListEngineRecord> loadAfter(Long sortingKey, int limit) {
+    public List<ListEngineRecord> loadBackward(Long sortingKey, int limit) {
         checkTable();
 
         Cursor cursor;
@@ -140,7 +155,7 @@ public class SQLiteList implements ListStorage {
                     null, null, null, null, "\"SORT_KEY\" ASC", String.valueOf(limit));
         } else {
             cursor = database.query("\"" + tableName + "\"",
-                    new String[]{"\"ID\",\"SORT_KEY\"", "\"QUERY\", \"BYTES\""},
+                    new String[]{"\"ID\"", "\"SORT_KEY\"", "\"QUERY\"", "\"BYTES\""},
                     "\"SORT_KEY\" > ?",
                     new String[]{
                             String.valueOf(sortingKey)
@@ -151,15 +166,49 @@ public class SQLiteList implements ListStorage {
     }
 
     @Override
-    public List<ListEngineRecord> loadBefore(String query, Long sortingKey, int limit) {
+    public List<ListEngineRecord> loadForward(String query, Long sortingKey, int limit) {
         checkTable();
-        return null;
+        Cursor cursor;
+        if (sortingKey == null) {
+            cursor = database.query("\"" + tableName + "\"", new String[]{"\"LIST_ID\"", "\"ID\"", "\"SORT_KEY\"", "\"QUERY\"", "\"BYTES\""},
+                    "\"QUERY\" LIKE ? OR \"QUERY\" LIKE ?", new String[]{
+                            query + "%",
+                            "% " + query + "%"
+                    }, null, null, "SORT_KEY DESC", String.valueOf(limit));
+        } else {
+            cursor = database.query("\"" + tableName + "\"",
+                    new String[]{"\"ID\"", "\"SORT_KEY\"", "\"QUERY\"", "\"BYTES\""},
+                    "(\"QUERY\" LIKE ? OR \"QUERY\" LIKE ?) AND \"SORT_KEY\" < ?",
+                    new String[]{
+                            query + "%",
+                            "% " + query + "%",
+                            String.valueOf(sortingKey)
+                    }, null, null, "\"SORT_KEY\" DESC", String.valueOf(limit));
+        }
+        return loadSlice(cursor);
     }
 
     @Override
-    public List<ListEngineRecord> loadAfter(String query, Long sortingKey, int limit) {
+    public List<ListEngineRecord> loadBackward(String query, Long sortingKey, int limit) {
         checkTable();
-        return null;
+        Cursor cursor;
+        if (sortingKey == null) {
+            cursor = database.query("\"" + tableName + "\"", new String[]{"\"LIST_ID\"", "\"ID\"", "\"SORT_KEY\"", "\"QUERY\"", "\"BYTES\""},
+                    "\"QUERY\" LIKE ? OR \"QUERY\" LIKE ?", new String[]{
+                            query + "%",
+                            "% " + query + "%"
+                    }, null, null, "SORT_KEY ASC", String.valueOf(limit));
+        } else {
+            cursor = database.query("\"" + tableName + "\"",
+                    new String[]{"\"ID\"", "\"SORT_KEY\"", "\"QUERY\"", "\"BYTES\""},
+                    "(\"QUERY\" LIKE ? OR \"QUERY\" LIKE ?) AND \"SORT_KEY\" > ?",
+                    new String[]{
+                            query + "%",
+                            "% " + query + "%",
+                            String.valueOf(sortingKey)
+                    }, null, null, "\"SORT_KEY\" ASC", String.valueOf(limit));
+        }
+        return loadSlice(cursor);
     }
 
     @Override

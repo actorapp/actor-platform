@@ -3,18 +3,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light"
-    android:orientation="vertical">
+    android:background="@color/bg_light">
 
-    <im.actor.messenger.app.fragment.contacts.ContactsStickListView
-        android:id="@+id/contactsList"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/collection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:drawSelectorOnTop="true"
-        android:listSelector="@drawable/selector"
-        android:scrollingCache="false" />
+        android:scrollbars="vertical" />
 
     <TextView
         android:id="@+id/notingFound"

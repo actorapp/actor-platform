@@ -5,137 +5,137 @@ package im.actor.model.mvvm;
 */
 class DisplayWindow {
 
-    private boolean isTailLoading = false;
-    private boolean isHeadLoading = false;
+    private boolean isForwardLoading = false;
+    private boolean isBackwardLoading = false;
 
     private boolean isInited = false;
 
-    private boolean isHeadLoaded = false;
-    private Long currentHead;
+    private boolean isBackwardLoaded = false;
+    private Long currentBackwardHead;
 
-    private boolean isTailLoaded = false;
-    private Long currentTail;
+    private boolean isForwardCompleted = false;
+    private Long currentForwardHead;
 
-    public synchronized Object getCurrentHead() {
-        return currentHead;
+    public synchronized Long getCurrentBackwardHead() {
+        return currentBackwardHead;
     }
 
-    public synchronized Object getCurrentTail() {
-        return currentTail;
+    public synchronized Long getCurrentForwardHead() {
+        return currentForwardHead;
     }
 
     public synchronized boolean isInited() {
         return isInited;
     }
 
-    public boolean isTailLoaded() {
-        return isTailLoaded;
+    public boolean isForwardCompleted() {
+        return isForwardCompleted;
     }
 
-    public boolean isHeadLoaded() {
-        return isHeadLoaded;
+    public boolean isBackwardLoaded() {
+        return isBackwardLoaded;
     }
 
-    public synchronized boolean startTailLoading() {
+    public synchronized boolean startForwardLoading() {
         if (!isInited) {
             return false;
         }
-        if (isTailLoaded) {
+        if (isForwardCompleted) {
             return false;
         }
-        if (isTailLoading) {
+        if (isForwardLoading) {
             return false;
         }
-        isTailLoading = true;
+        isForwardLoading = true;
         return true;
     }
 
-    public synchronized void endTileLoading() {
-        isTailLoading = false;
+    public synchronized void completeForwardLoading() {
+        isForwardLoading = false;
     }
 
-    public synchronized void onTailCompleted() {
-        isTailLoaded = true;
-        currentTail = null;
+    public synchronized void onForwardCompleted() {
+        isForwardCompleted = true;
+        currentForwardHead = null;
     }
 
-    public synchronized void onTailSliceLoaded(Long tail) {
-        currentTail = tail;
+    public synchronized void onForwardSliceLoaded(Long tail) {
+        currentForwardHead = tail;
     }
 
     public synchronized boolean startHeadLoading() {
         if (!isInited) {
             return false;
         }
-        if (isHeadLoaded) {
+        if (isBackwardLoaded) {
             return false;
         }
-        if (isHeadLoading) {
+        if (isBackwardLoading) {
             return false;
         }
-        isHeadLoading = true;
+        isBackwardLoading = true;
         return true;
     }
 
-    public synchronized void endHeadLoading() {
-        isHeadLoading = false;
+    public synchronized void endBackwardLoading() {
+        isBackwardLoading = false;
     }
 
-    public synchronized void onHeadCompleted() {
-        isHeadLoaded = true;
-        currentHead = null;
+    public synchronized void onBackwardCompleted() {
+        isBackwardLoaded = true;
+        currentBackwardHead = null;
     }
 
-    public synchronized void onHeadSliceLoaded(Long head) {
-        currentHead = head;
+    public synchronized void onBackwardSliceLoaded(Long head) {
+        currentBackwardHead = head;
     }
 
     public synchronized void startInitCenter() {
         isInited = false;
 
-        isTailLoaded = false;
-        isTailLoading = false;
-        isHeadLoading = false;
-        isHeadLoaded = false;
-        currentHead = null;
-        currentTail = null;
+        isForwardCompleted = false;
+        isForwardLoading = false;
+        isBackwardLoading = false;
+        isBackwardLoaded = false;
+        currentBackwardHead = null;
+        currentForwardHead = null;
     }
 
-    public synchronized void stopInitCenter(Long tail, Long head) {
+    public synchronized void completeInitCenter(Long forwardHead, Long backwardHead) {
         isInited = true;
-        currentTail = tail;
-        currentHead = head;
+        currentForwardHead = forwardHead;
+        currentBackwardHead = backwardHead;
     }
 
     public synchronized void startInitForward() {
         isInited = false;
 
-        isTailLoaded = false;
-        isTailLoading = false;
-        isHeadLoading = false;
-        isHeadLoaded = true;
-        currentHead = null;
-        currentTail = null;
+        isForwardCompleted = false;
+        isForwardLoading = false;
+        isBackwardLoading = false;
+        isBackwardLoaded = true;
+        currentBackwardHead = null;
+        currentForwardHead = null;
     }
 
-    public synchronized void stopInitForward(Long tail) {
+    public synchronized void completeInitForward(Long tail) {
         isInited = true;
-        currentTail = tail;
+        currentForwardHead = tail;
     }
 
     public synchronized void startInitBackward() {
         isInited = false;
 
-        isTailLoaded = true;
-        isTailLoading = false;
-        isHeadLoading = false;
-        isHeadLoaded = false;
-        currentHead = null;
-        currentTail = null;
+        isForwardCompleted = true;
+        isForwardLoading = false;
+        isBackwardLoading = false;
+        isBackwardLoaded = false;
+        currentBackwardHead = null;
+        currentForwardHead = null;
     }
 
-    public synchronized void stopInitBackward(Long head) {
+    public synchronized void completeInitBackward(Long head) {
         isInited = true;
-        currentHead = head;
+        currentBackwardHead = head;
     }
 }

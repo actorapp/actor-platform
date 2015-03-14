@@ -82,4 +82,9 @@ public class Contact extends BserObject implements ListEngineItem {
     public long getEngineSort() {
         return sortKey;
     }
+
+    @Override
+    public String getEngineSearch() {
+        return name;
+    }
 }

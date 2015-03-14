@@ -2,6 +2,8 @@ package im.actor.messenger.app.fragment.contacts;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,16 +11,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ListView;
-
-import com.droidkit.engine.list.view.EngineUiList;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.HelpActivity;
 import im.actor.messenger.app.base.BaseFragment;
-import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Contact;
+import im.actor.model.mvvm.BindedDisplayList;
+
+import static im.actor.messenger.app.Core.messenger;
 
 /**
  * Created by ex3ndr on 23.09.14.
@@ -26,19 +26,35 @@ import im.actor.model.entity.Contact;
 public abstract class BaseContactFragment extends BaseFragment {
 
     private ContactsAdapter adapter;
-    private ListView listView;
+    private BindedDisplayList<Contact> contactDisplayList;
+
     private View emptyView;
-    private EngineUiList<Contact> engineUiList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View res = inflater.inflate(R.layout.fragment_base_contacts, container, false);
         emptyView = res.findViewById(R.id.notingFound);
         emptyView.setVisibility(View.GONE);
-        listView = (ListView) res.findViewById(R.id.contactsList);
-        View header = new View(getActivity());
-        header.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
-        listView.addHeaderView(header, null, false);
+
+        RecyclerView recyclerView = (RecyclerView) res.findViewById(R.id.collection);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(10);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        linearLayoutManager.setReverseLayout(false);
+        linearLayoutManager.setSmoothScrollbarEnabled(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        contactDisplayList = messenger().getContactsGlobalList();
+        adapter = new ContactsAdapter(contactDisplayList, getActivity(), false);
+
+        recyclerView.setAdapter(adapter);
+
+//        View header = new View(getActivity());
+//        header.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+//        listView.addHeaderView(header, null, false);
+
 //        engineUiList = new EngineUiList<Contact>(ListEngines.getContactsListEngine());
 //        adapter = new ContactsAdapter(engineUiList, getActivity(), false, new OnItemClickedListener<Contact>() {
 //            @Override
@@ -71,6 +87,15 @@ public abstract class BaseContactFragment extends BaseFragment {
         return res;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (adapter != null) {
+            adapter.resume();
+        }
+    }
+
     protected abstract void onUserSelected(int uid);
 
     @Override
@@ -88,7 +113,11 @@ public abstract class BaseContactFragment extends BaseFragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                engineUiList.filter(newText);
+                if (newText.trim().length() == 0) {
+                    contactDisplayList.initTop(false);
+                } else {
+                    contactDisplayList.initSearch(newText.trim(), false);
+                }
                 adapter.setQuery(newText.toLowerCase());
                 return true;
             }
@@ -106,17 +135,25 @@ public abstract class BaseContactFragment extends BaseFragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (adapter != null) {
+            adapter.pause();
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (adapter != null) {
-            adapter.dispose();
+            adapter.pause();
             adapter = null;
         }
-        if (engineUiList != null) {
-            engineUiList.release();
-            engineUiList = null;
-        }
-        listView = null;
+//        if (engineUiList != null) {
+//            engineUiList.release();
+//            engineUiList = null;
+//        }
+//        listView = null;
         emptyView = null;
     }
 }

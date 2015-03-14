@@ -1,6 +1,7 @@
 package im.actor.model.android;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
 
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngineItem;
@@ -50,6 +51,27 @@ public abstract class BindedListAdapter<V extends BserObject & ListEngineItem,
     protected V getItem(int position) {
         return displayList.getItem(position);
     }
+
+    @Override
+    public final T onCreateViewHolder(ViewGroup viewGroup, int i) {
+        return onCreateViewHolder(viewGroup, i, getItem(i));
+    }
+
+    @Override
+    public final void onBindViewHolder(T dialogHolder, int i) {
+        if (i > getItemCount() - 20) {
+            displayList.loadMoreForward();
+        }
+        if (i < 20) {
+            displayList.loadMoreBackward();
+        }
+
+        onBindViewHolder(dialogHolder, i, getItem(i));
+    }
+
+    public abstract void onBindViewHolder(T dialogHolder, int index, V item);
+
+    public abstract T onCreateViewHolder(ViewGroup viewGroup, int index, V item);
 
     public void pause() {
         displayList.removeListener(listener);
