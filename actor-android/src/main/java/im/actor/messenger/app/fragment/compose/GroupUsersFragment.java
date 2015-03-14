@@ -31,7 +31,6 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.fragment.contacts.ContactsAdapter;
-import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.util.BoxUtil;
 import im.actor.messenger.util.Screen;
 import im.actor.model.concurrency.CommandCallback;
@@ -105,21 +104,21 @@ public class GroupUsersFragment extends BaseFragment implements UiListListener {
         header.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
         listView.addHeaderView(header, null, false);
         // engineUiList = new EngineUiList<Contact>(ListEngines.getContactsListEngine());
-        adapter = new ContactsAdapter(engineUiList, getActivity(), true, new OnItemClickedListener<Contact>() {
-            @Override
-            public void onClicked(Contact contact) {
-                if (selectedUsers.contains(contact.getUid())) {
-                    selectedUsers.remove((Integer) contact.getUid());
-                    adapter.unselect(contact.getUid());
-                } else {
-                    selectedUsers.add(contact.getUid());
-                    adapter.select(contact.getUid());
-                }
-                getActivity().invalidateOptionsMenu();
-                updateEditText();
-            }
-        }, null);
-        listView.setAdapter(adapter);
+//        adapter = new ContactsAdapter(engineUiList, getActivity(), true, new OnItemClickedListener<Contact>() {
+//            @Override
+//            public void onClicked(Contact contact) {
+//                if (selectedUsers.contains(contact.getUid())) {
+//                    selectedUsers.remove((Integer) contact.getUid());
+//                    adapter.unselect(contact.getUid());
+//                } else {
+//                    selectedUsers.add(contact.getUid());
+//                    adapter.select(contact.getUid());
+//                }
+//                getActivity().invalidateOptionsMenu();
+//                updateEditText();
+//            }
+//        }, null);
+//        listView.setAdapter(adapter);
         engineUiList.getUiList().addListener(this);
         return res;
     }
@@ -231,7 +230,7 @@ public class GroupUsersFragment extends BaseFragment implements UiListListener {
         super.onDestroyView();
         engineUiList.getUiList().removeListener(this);
         if (adapter != null) {
-            adapter.dispose();
+            adapter.pause();
             adapter = null;
         }
         listView = null;

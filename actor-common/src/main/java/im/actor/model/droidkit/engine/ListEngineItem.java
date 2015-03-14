@@ -7,4 +7,6 @@ public interface ListEngineItem {
     public long getEngineId();
 
     public long getEngineSort();
+
+    public String getEngineSearch();
 }

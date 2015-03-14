@@ -51,6 +51,16 @@ class DisplayModifications {
         };
     }
 
+    public static <T extends ListEngineItem> DisplayList.Modification<T> replace(final List<T> items) {
+        return new DisplayList.Modification<T>() {
+            @Override
+            public void modify(List<T> sourceList) {
+                sourceList.clear();
+                sourceList.addAll(items);
+            }
+        };
+    }
+
     public static <T extends ListEngineItem> DisplayList.Modification<T> remove(final long dstId) {
         return new DisplayList.Modification<T>() {
             @Override

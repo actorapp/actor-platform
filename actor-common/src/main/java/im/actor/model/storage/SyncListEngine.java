@@ -3,6 +3,7 @@ package im.actor.model.storage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserCreator;
@@ -24,6 +25,7 @@ public class SyncListEngine<T extends BserObject & ListEngineItem>
     private final BserCreator<T> creator;
     private final ObjectCache<Long, T> cache = new ObjectCache<Long, T>();
     private final Object LOCK = new Object();
+    private CopyOnWriteArrayList<ListEngineDisplayListener<T>> listeners = new CopyOnWriteArrayList<ListEngineDisplayListener<T>>();
 
     public SyncListEngine(ListStorage storage, BserCreator<T> creator) {
         this.storage = storage;
@@ -38,7 +40,11 @@ public class SyncListEngine<T extends BserObject & ListEngineItem>
             // Update memory cache
             cache.onObjectUpdated(item.getEngineId(), item);
             storage.updateOrAdd(new ListEngineRecord(item.getEngineId(),
-                    item.getEngineSort(), null, item.toByteArray()));
+                    item.getEngineSort(), item.getEngineSearch(), item.toByteArray()));
+
+            for (ListEngineDisplayListener<T> l : listeners) {
+                l.addOrUpdate(item);
+            }
         }
     }
 
@@ -51,9 +57,13 @@ public class SyncListEngine<T extends BserObject & ListEngineItem>
                 cache.onObjectUpdated(i.getEngineId(), i);
 
                 updated.add(new ListEngineRecord(i.getEngineId(), i.getEngineSort(),
-                        null, i.toByteArray()));
+                        i.getEngineSearch(), i.toByteArray()));
             }
             storage.updateOrAdd(updated);
+
+            for (ListEngineDisplayListener<T> l : listeners) {
+                l.addOrUpdate(items);
+            }
         }
     }
 
@@ -69,9 +79,13 @@ public class SyncListEngine<T extends BserObject & ListEngineItem>
                 cache.onObjectUpdated(i.getEngineId(), i);
 
                 updated.add(new ListEngineRecord(i.getEngineId(), i.getEngineSort(),
-                        null, i.toByteArray()));
+                        i.getEngineSearch(), i.toByteArray()));
             }
             storage.updateOrAdd(updated);
+
+            for (ListEngineDisplayListener<T> l : listeners) {
+                l.onItemsReplaced(items);
+            }
         }
     }
 
@@ -80,6 +94,10 @@ public class SyncListEngine<T extends BserObject & ListEngineItem>
         synchronized (LOCK) {
             cache.removeObject(key);
             storage.delete(key);
+
+            for (ListEngineDisplayListener<T> l : listeners) {
+                l.onItemRemoved(key);
+            }
         }
     }
 
@@ -90,6 +108,10 @@ public class SyncListEngine<T extends BserObject & ListEngineItem>
                 cache.removeObject(key);
             }
             storage.delete(keys);
+
+            for (ListEngineDisplayListener<T> l : listeners) {
+                l.onItemsRemoved(keys);
+            }
         }
     }
 
@@ -98,6 +120,10 @@ public class SyncListEngine<T extends BserObject & ListEngineItem>
         synchronized (LOCK) {
             cache.clear();
             storage.clear();
+
+            for (ListEngineDisplayListener<T> l : listeners) {
+                l.onListClear();
+            }
         }
     }
 
@@ -128,7 +154,7 @@ public class SyncListEngine<T extends BserObject & ListEngineItem>
     @Override
     public T getHeadValue() {
         synchronized (LOCK) {
-            List<ListEngineRecord> records = storage.loadAfter(0L, 1);
+            List<ListEngineRecord> records = storage.loadForward(0L, 1);
             if (records.size() != 1) {
                 return null;
             }
@@ -155,82 +181,84 @@ public class SyncListEngine<T extends BserObject & ListEngineItem>
 
     @Override
     public void subscribe(ListEngineDisplayListener<T> listener) {
-
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
     }
 
     @Override
     public void unsubscribe(ListEngineDisplayListener<T> listener) {
-
+        listeners.remove(listener);
     }
 
     @Override
-    public void loadTop(int limit, ListEngineCallback<T> callback) {
+    public void loadForward(int limit, ListEngineCallback<T> callback) {
         ArrayList<T> res;
         synchronized (LOCK) {
-            res = convertList(storage.loadAfter(0L, limit));
+            res = convertList(storage.loadForward(null, limit));
         }
         callCallback(callback, res);
     }
 
     @Override
-    public void loadTop(long afterSortKey, int limit, ListEngineCallback<T> callback) {
+    public void loadForward(long afterSortKey, int limit, ListEngineCallback<T> callback) {
         ArrayList<T> res;
         synchronized (LOCK) {
-            res = convertList(storage.loadAfter(afterSortKey, limit));
+            res = convertList(storage.loadForward(afterSortKey, limit));
         }
         callCallback(callback, res);
     }
 
     @Override
-    public void loadTop(String query, int limit, ListEngineCallback<T> callback) {
+    public void loadForward(String query, int limit, ListEngineCallback<T> callback) {
         ArrayList<T> res;
         synchronized (LOCK) {
-            res = convertList(storage.loadAfter(query, 0L, limit));
+            res = convertList(storage.loadForward(query, null, limit));
         }
         callCallback(callback, res);
     }
 
     @Override
-    public void loadTop(String query, long afterSortKey, int limit, ListEngineCallback<T> callback) {
+    public void loadForward(String query, long afterSortKey, int limit, ListEngineCallback<T> callback) {
         ArrayList<T> res;
         synchronized (LOCK) {
-            res = convertList(storage.loadAfter(query, afterSortKey, limit));
+            res = convertList(storage.loadForward(query, afterSortKey, limit));
         }
         callCallback(callback, res);
     }
 
     @Override
-    public void loadBottom(int limit, ListEngineCallback<T> callback) {
+    public void loadBackward(int limit, ListEngineCallback<T> callback) {
         ArrayList<T> res;
         synchronized (LOCK) {
-            res = convertList(storage.loadBefore(0L, limit));
+            res = convertList(storage.loadBackward(null, limit));
         }
         callCallback(callback, res);
     }
 
     @Override
-    public void loadBottom(long beforeSortKey, int limit, ListEngineCallback<T> callback) {
+    public void loadBackward(long beforeSortKey, int limit, ListEngineCallback<T> callback) {
         ArrayList<T> res;
         synchronized (LOCK) {
-            res = convertList(storage.loadBefore(beforeSortKey, limit));
+            res = convertList(storage.loadBackward(beforeSortKey, limit));
         }
         callCallback(callback, res);
     }
 
     @Override
-    public void loadBottom(String query, int limit, ListEngineCallback<T> callback) {
+    public void loadBackward(String query, int limit, ListEngineCallback<T> callback) {
         ArrayList<T> res;
         synchronized (LOCK) {
-            res = convertList(storage.loadBefore(query, 0L, limit));
+            res = convertList(storage.loadBackward(query, null, limit));
         }
         callCallback(callback, res);
     }
 
     @Override
-    public void loadBottom(String query, long beforeSortKey, int limit, ListEngineCallback<T> callback) {
+    public void loadBackward(String query, long beforeSortKey, int limit, ListEngineCallback<T> callback) {
         ArrayList<T> res;
         synchronized (LOCK) {
-            res = convertList(storage.loadBefore(query, beforeSortKey, limit));
+            res = convertList(storage.loadBackward(query, beforeSortKey, limit));
         }
         callCallback(callback, res);
     }

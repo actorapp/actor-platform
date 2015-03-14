@@ -13,25 +13,30 @@ public class DialogsAdapter extends BindedListAdapter<Dialog, DialogHolder> {
 
     private final Context context;
 
-    private final OnItemClickedListener<Dialog> itemClicked;
-    private final OnItemClickedListener<Dialog> itemLongClicked;
+    private OnItemClickedListener<Dialog> itemClicked;
+    private OnItemClickedListener<Dialog> itemLongClicked;
 
-    public DialogsAdapter(BindedDisplayList<Dialog> displayList, Context context,
-                          OnItemClickedListener<Dialog> itemClicked, OnItemClickedListener<Dialog> itemLongClicked) {
+    public DialogsAdapter(BindedDisplayList<Dialog> displayList, Context context) {
         super(displayList);
         this.context = context;
+    }
+
+    public void setItemClicked(OnItemClickedListener<Dialog> itemClicked) {
         this.itemClicked = itemClicked;
+    }
+
+    public void setItemLongClicked(OnItemClickedListener<Dialog> itemLongClicked) {
         this.itemLongClicked = itemLongClicked;
     }
 
     @Override
-    public DialogHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public DialogHolder onCreateViewHolder(ViewGroup viewGroup, int index, Dialog item) {
         return new DialogHolder(context, new FrameLayout(context));
     }
 
     @Override
-    public void onBindViewHolder(DialogHolder dialogHolder, int i) {
-        dialogHolder.bind(getItem(i));
+    public void onBindViewHolder(DialogHolder dialogHolder, int index, Dialog item) {
+        dialogHolder.bind(item);
     }
 
     @Override

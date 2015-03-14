@@ -103,12 +103,12 @@ public class ContactsFragment extends BaseFragment implements Listener<ListState
 //            }
 //        });
 //        listView.setAdapter(adapter);
-        listView.setRecyclerListener(new AbsListView.RecyclerListener() {
-            @Override
-            public void onMovedToScrapHeap(View view) {
-                adapter.onMovedToScrapHeap(view);
-            }
-        });
+//        listView.setRecyclerListener(new AbsListView.RecyclerListener() {
+//            @Override
+//            public void onMovedToScrapHeap(View view) {
+//                adapter.onMovedToScrapHeap(view);
+//            }
+//        });
 
         noContacts = res.findViewById(R.id.noContacts);
 
@@ -195,25 +195,28 @@ public class ContactsFragment extends BaseFragment implements Listener<ListState
     @Override
     public void onResume() {
         super.onResume();
-        emptyContactsImage.setImageResource(R.drawable.contacts_empty_large);
+        if (adapter != null) {
+            adapter.resume();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        emptyContactsImage.setImageBitmap(null);
+        if (adapter != null) {
+            adapter.pause();
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (adapter != null) {
-            adapter.dispose();
+            adapter.pause();
             adapter = null;
         }
         listView = null;
         noContacts = null;
         emptyContactsImage = null;
     }
-
 }

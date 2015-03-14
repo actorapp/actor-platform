@@ -3,29 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/collectionContainer"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/collection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <!--<ListView-->
-        <!--android:id="@+id/list"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:divider="@null"-->
-        <!--android:dividerHeight="0dp"-->
-        <!--android:drawSelectorOnTop="true"-->
-        <!--android:listSelector="@drawable/selector" />-->
-
-        <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:background="@color/bg_grey" />-->
-
-    </LinearLayout>
+        android:scrollbars="vertical" />
 
     <FrameLayout
         android:id="@+id/loadingProgress"

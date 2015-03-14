@@ -15,23 +15,23 @@ public interface ListEngineDisplayExt<T extends BserObject & ListEngineItem> ext
 
     // Load top
 
-    public void loadTop(int limit, ListEngineCallback<T> callback);
+    public void loadForward(int limit, ListEngineCallback<T> callback);
 
-    public void loadTop(long afterSortKey, int limit, ListEngineCallback<T> callback);
+    public void loadForward(long afterSortKey, int limit, ListEngineCallback<T> callback);
 
-    public void loadTop(String query, int limit, ListEngineCallback<T> callback);
+    public void loadForward(String query, int limit, ListEngineCallback<T> callback);
 
-    public void loadTop(String query, long afterSortKey, int limit, ListEngineCallback<T> callback);
+    public void loadForward(String query, long afterSortKey, int limit, ListEngineCallback<T> callback);
 
     // Load bottom
 
-    public void loadBottom(int limit, ListEngineCallback<T> callback);
+    public void loadBackward(int limit, ListEngineCallback<T> callback);
 
-    public void loadBottom(long beforeSortKey, int limit, ListEngineCallback<T> callback);
+    public void loadBackward(long beforeSortKey, int limit, ListEngineCallback<T> callback);
 
-    public void loadBottom(String query, int limit, ListEngineCallback<T> callback);
+    public void loadBackward(String query, int limit, ListEngineCallback<T> callback);
 
-    public void loadBottom(String query, long beforeSortKey, int limit, ListEngineCallback<T> callback);
+    public void loadBackward(String query, long beforeSortKey, int limit, ListEngineCallback<T> callback);
 
     // Load center
 

@@ -164,4 +164,9 @@ public class Dialog extends BserObject implements ListEngineItem {
     public long getEngineSort() {
         return sortDate;
     }
+
+    @Override
+    public String getEngineSearch() {
+        return dialogTitle;
+    }
 }
