@@ -9,8 +9,6 @@ import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
 import im.actor.util.testing._
 
-import org.specs2._
-
 import scala.util.Random
 
 import scodec.bits._

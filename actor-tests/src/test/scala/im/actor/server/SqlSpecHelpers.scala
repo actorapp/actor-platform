@@ -6,9 +6,7 @@ import org.specs2.specification._
 import slick.driver.PostgresDriver.api.Database
 
 trait SqlSpecHelpers extends FlywayInit with DbInit {
-  final val sqlConfig = ConfigFactory.load().getConfig("actor-server.sql")
-
-  //initDb(sqlConfig)
+  final val sqlConfig = ConfigFactory.load().getConfig("actor-server.persist.sql")
 
   def migrateAndInitDb(): Database = {
     val flyway = initFlyway(sqlConfig)
