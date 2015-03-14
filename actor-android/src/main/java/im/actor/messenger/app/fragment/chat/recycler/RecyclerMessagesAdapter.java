@@ -68,7 +68,7 @@ public class RecyclerMessagesAdapter extends RecyclerView.Adapter<BaseHolder> {
         if (position == 0) {
             return 0;
         } else {
-            return getItem(position - 1).getListId();
+            return getItem(position - 1).getEngineId();
         }
     }
 

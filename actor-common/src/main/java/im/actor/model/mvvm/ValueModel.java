@@ -35,11 +35,13 @@ public class ValueModel<T> {
 
     // We expect that subscribe will be called only on UI Thread
     public void subscribe(ValueChangedListener<T> listener) {
+        MVVMEngine.checkMainThread();
         subscribe(listener, true);
     }
 
     // We expect that subscribe will be called only on UI Thread
     public void subscribe(ValueChangedListener<T> listener, boolean notify) {
+        MVVMEngine.checkMainThread();
         if (listeners.contains(listener)) {
             return;
         }
@@ -51,6 +53,7 @@ public class ValueModel<T> {
 
     // We expect that subscribe will be called only on UI Thread
     public void unsubscribe(ValueChangedListener<T> listener) {
+        MVVMEngine.checkMainThread();
         listeners.remove(listener);
     }
 

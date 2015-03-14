@@ -16,7 +16,7 @@ import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Formatter;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.GroupMember;
-import im.actor.model.mvvm.DoubleValueChangedListener;
+import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupTypingVM;
@@ -91,7 +91,7 @@ public class ActorBinder {
     }
 
     public void bind(final TextView textView, final GroupVM value) {
-        bind(value.getPresence(), value.getMembers(), new DoubleValueChangedListener<Integer, HashSet<GroupMember>>() {
+        bind(value.getPresence(), value.getMembers(), new ValueDoubleChangedListener<Integer, HashSet<GroupMember>>() {
             @Override
             public void onChanged(Integer online,
                                   ValueModel<Integer> onlineModel,
@@ -120,7 +120,7 @@ public class ActorBinder {
 
     public void bind(final AvatarView avatarView, final int id, final float size,
                      final ValueModel<Avatar> avatar, final ValueModel<String> name) {
-        bind(avatar, name, new DoubleValueChangedListener<Avatar, String>() {
+        bind(avatar, name, new ValueDoubleChangedListener<Avatar, String>() {
             @Override
             public void onChanged(Avatar val, ValueModel<Avatar> valueModel, String val2, ValueModel<String> valueModel2) {
                 avatarView.setEmptyDrawable(new AvatarDrawable(val2, id, size, AppContext.getContext()));
@@ -157,7 +157,7 @@ public class ActorBinder {
     }
 
     public <T, V> void bind(final ValueModel<T> value1, final ValueModel<V> value2,
-                            final DoubleValueChangedListener<T, V> listener) {
+                            final ValueDoubleChangedListener<T, V> listener) {
 
         bind(value1, false, new ValueChangedListener<T>() {
             @Override

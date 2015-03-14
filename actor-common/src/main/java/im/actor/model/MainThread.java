@@ -5,4 +5,8 @@ package im.actor.model;
  */
 public interface MainThread {
     public void runOnUiThread(Runnable runnable);
+
+    public boolean isMainThread();
+
+    public boolean isSingleThread();
 }

@@ -8,6 +8,7 @@ import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.debug.TraceInterface;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
+import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
@@ -20,9 +21,9 @@ import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.file.DownloadCallback;
 import im.actor.model.modules.file.UploadCallback;
+import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.mvvm.MVVMEngine;
-import im.actor.model.storage.ListEngine;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.GroupTypingVM;
@@ -423,5 +424,11 @@ public class Messenger {
 
     public void removeAvatar() {
         modules.getProfile().removeAvatar();
+    }
+
+    // Display lists
+
+    public BindedDisplayList<Dialog> getDialogsGlobalList() {
+        return modules.getDisplayLists().getDialogsGlobalList();
     }
 }

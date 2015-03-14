@@ -3,10 +3,11 @@ package im.actor.model.entity;
 import java.io.IOException;
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserCreator;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
-import im.actor.model.storage.ListEngineItem;
+import im.actor.model.droidkit.engine.ListEngineItem;
 
 /**
  * Created by ex3ndr on 09.02.15.
@@ -16,6 +17,13 @@ public class Dialog extends BserObject implements ListEngineItem {
     public static Dialog fromBytes(byte[] date) throws IOException {
         return Bser.parse(new Dialog(), date);
     }
+
+    public static BserCreator<Dialog> CREATOR = new BserCreator<Dialog>() {
+        @Override
+        public Dialog createInstance() {
+            return new Dialog();
+        }
+    };
 
     private Peer peer;
     private String dialogTitle;
@@ -56,16 +64,6 @@ public class Dialog extends BserObject implements ListEngineItem {
 
     public Peer getPeer() {
         return peer;
-    }
-
-    @Override
-    public long getListId() {
-        return peer.getUnuqueId();
-    }
-
-    @Override
-    public long getListSortKey() {
-        return sortDate;
     }
 
     public String getDialogTitle() {
@@ -155,5 +153,15 @@ public class Dialog extends BserObject implements ListEngineItem {
         writer.writeString(10, text);
         writer.writeInt(11, status.getValue());
         writer.writeInt(12, relatedUid);
+    }
+
+    @Override
+    public long getEngineId() {
+        return peer.getUnuqueId();
+    }
+
+    @Override
+    public long getEngineSort() {
+        return sortDate;
     }
 }

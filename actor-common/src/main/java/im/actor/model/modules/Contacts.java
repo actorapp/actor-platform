@@ -15,6 +15,7 @@ import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
+import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.entity.Contact;
 import im.actor.model.modules.contacts.BookImportActor;
 import im.actor.model.modules.contacts.ContactsSyncActor;
@@ -22,7 +23,7 @@ import im.actor.model.modules.updates.internal.UsersFounded;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
-import im.actor.model.storage.ListEngine;
+import im.actor.model.storage.SyncListEngine;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
@@ -38,7 +39,11 @@ public class Contacts extends BaseModule {
 
     public Contacts(final Modules modules) {
         super(modules);
-        contacts = modules.getConfiguration().getStorage().createContactsEngine();
+
+        contacts = new SyncListEngine<Contact>(
+                modules.getConfiguration().getStorage().createList(STORAGE_CONTACTS),
+                Contact.CREATOR);
+
         bookImportActor = system().actorOf(Props.create(BookImportActor.class, new ActorCreator<BookImportActor>() {
             @Override
             public BookImportActor create() {

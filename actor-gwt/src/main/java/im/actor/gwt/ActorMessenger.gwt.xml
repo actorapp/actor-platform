@@ -20,6 +20,6 @@
     <entry-point class='im.actor.gwt.app.ActorMessenger' />
 
     <!--Uncomment for building single JS library -->
-    <!--<add-linker name="sso"/>-->
+    <!--<add-linker tableName="sso"/>-->
     <!--<collapse-all-properties />-->
 </module>

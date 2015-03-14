@@ -32,7 +32,7 @@ import im.actor.messenger.app.Core;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
-import im.actor.model.mvvm.DoubleValueChangedListener;
+import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.AvatarUploadState;
@@ -144,7 +144,7 @@ public class ViewAvatarActivity extends BaseActivity {
 
     private void bindImage() {
         if (peer.getPeerType() == PeerType.PRIVATE && peer.getPeerId() == myUid()) {
-            bind(getAvatar(), messenger().getOwnAvatarVM().getUploadState(), new DoubleValueChangedListener<Avatar, AvatarUploadState>() {
+            bind(getAvatar(), messenger().getOwnAvatarVM().getUploadState(), new ValueDoubleChangedListener<Avatar, AvatarUploadState>() {
                 @Override
                 public void onChanged(Avatar val, ValueModel<Avatar> valueModel, AvatarUploadState val2, ValueModel<AvatarUploadState> valueModel2) {
                     performBind(val, val2);

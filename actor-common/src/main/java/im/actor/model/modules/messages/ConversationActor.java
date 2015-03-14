@@ -6,6 +6,7 @@ import java.util.List;
 
 import im.actor.model.annotation.Verified;
 import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
@@ -14,7 +15,6 @@ import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.OutUnreadMessage;
 import im.actor.model.modules.messages.entity.OutUnreadMessagesStorage;
 import im.actor.model.modules.utils.ModuleActor;
-import im.actor.model.storage.ListEngine;
 
 /**
  * Actor for managing any Conversation
@@ -61,7 +61,7 @@ public class ConversationActor extends ModuleActor {
     @Verified
     private void onInMessage(Message message) {
         // Ignore if we already have this message
-        if (messages.getValue(message.getListId()) != null) {
+        if (messages.getValue(message.getEngineId()) != null) {
             return;
         }
 
@@ -264,7 +264,7 @@ public class ConversationActor extends ModuleActor {
         // Processing all new messages
         for (Message historyMessage : history) {
             // Ignore already present messages
-            if (messages.getValue(historyMessage.getListId()) != null) {
+            if (messages.getValue(historyMessage.getEngineId()) != null) {
                 continue;
             }
 

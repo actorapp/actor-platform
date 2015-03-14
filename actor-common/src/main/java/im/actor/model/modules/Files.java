@@ -12,7 +12,7 @@ import im.actor.model.modules.file.Downloaded;
 import im.actor.model.modules.file.UploadCallback;
 import im.actor.model.modules.file.UploadManager;
 import im.actor.model.modules.utils.BaseKeyValueEngine;
-import im.actor.model.storage.KeyValueEngine;
+import im.actor.model.droidkit.engine.KeyValueEngine;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
@@ -29,7 +29,7 @@ public class Files extends BaseModule {
         super(modules);
 
         downloadedEngine = new BaseKeyValueEngine<Downloaded>(
-                modules.getConfiguration().getStorage().createDownloadsEngine()) {
+                modules.getConfiguration().getStorage().createKeyValue(STORAGE_DOWNLOADS)) {
             @Override
             protected byte[] serialize(Downloaded value) {
                 return value.toByteArray();

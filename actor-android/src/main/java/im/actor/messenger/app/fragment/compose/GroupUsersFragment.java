@@ -32,7 +32,6 @@ import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.fragment.contacts.ContactsAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.messenger.storage.ListEngines;
 import im.actor.messenger.util.BoxUtil;
 import im.actor.messenger.util.Screen;
 import im.actor.model.concurrency.CommandCallback;
@@ -105,7 +104,7 @@ public class GroupUsersFragment extends BaseFragment implements UiListListener {
         View header = new View(getActivity());
         header.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
         listView.addHeaderView(header, null, false);
-        engineUiList = new EngineUiList<Contact>(ListEngines.getContactsListEngine());
+        // engineUiList = new EngineUiList<Contact>(ListEngines.getContactsListEngine());
         adapter = new ContactsAdapter(engineUiList, getActivity(), true, new OnItemClickedListener<Contact>() {
             @Override
             public void onClicked(Contact contact) {
