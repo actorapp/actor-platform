@@ -14,6 +14,8 @@ import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
+import im.actor.model.droidkit.engine.ListEngine;
+import im.actor.model.droidkit.engine.ListStorage;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
@@ -33,7 +35,6 @@ import im.actor.model.modules.messages.SenderActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
-import im.actor.model.storage.ListEngine;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
@@ -56,7 +57,8 @@ public class Messages extends BaseModule {
 
     public Messages(final Modules messenger) {
         super(messenger);
-        this.dialogs = messenger.getConfiguration().getStorage().createDialogsEngine();
+
+        this.dialogs = storage().createDialogsList(storage().createList(STORAGE_DIALOGS));
     }
 
     public void run() {
@@ -155,7 +157,8 @@ public class Messages extends BaseModule {
     public ListEngine<Message> getConversationEngine(Peer peer) {
         synchronized (conversationEngines) {
             if (!conversationEngines.containsKey(peer)) {
-                conversationEngines.put(peer, modules().getConfiguration().getStorage().createMessagesEngine(peer));
+                ListStorage storage = storage().createList(STORAGE_CHAT_PREFIX + peer.getUnuqueId());
+                conversationEngines.put(peer, storage().createMessagesList(peer, storage));
             }
             return conversationEngines.get(peer);
         }
@@ -375,5 +378,23 @@ public class Messages extends BaseModule {
                 });
             }
         };
+    }
+
+    private class ConversationHolder {
+        private ActorRef conversationActor;
+        private ActorRef historyActor;
+
+        private ConversationHolder(ActorRef conversationActor, ActorRef historyActor) {
+            this.conversationActor = conversationActor;
+            this.historyActor = historyActor;
+        }
+
+        public ActorRef getConversationActor() {
+            return conversationActor;
+        }
+
+        public ActorRef getHistoryActor() {
+            return historyActor;
+        }
     }
 }

@@ -22,8 +22,6 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.messenger.storage.ListEngines;
 import im.actor.messenger.util.Screen;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Contact;
@@ -92,19 +90,19 @@ public class ContactsFragment extends BaseFragment implements Listener<ListState
 //            }
 //        });
 
-        adapter = new ContactsAdapter(ListEngines.getContactsUiListEngine(), getActivity(), false,
-                new OnItemClickedListener<Contact>() {
-                    @Override
-                    public void onClicked(Contact item) {
-                        onClick(item);
-                    }
-                }, new OnItemClickedListener<Contact>() {
-            @Override
-            public void onClicked(Contact item) {
-                onLongClick(item);
-            }
-        });
-        listView.setAdapter(adapter);
+//        adapter = new ContactsAdapter(ListEngines.getContactsUiListEngine(), getActivity(), false,
+//                new OnItemClickedListener<Contact>() {
+//                    @Override
+//                    public void onClicked(Contact item) {
+//                        onClick(item);
+//                    }
+//                }, new OnItemClickedListener<Contact>() {
+//            @Override
+//            public void onClicked(Contact item) {
+//                onLongClick(item);
+//            }
+//        });
+//        listView.setAdapter(adapter);
         listView.setRecyclerListener(new AbsListView.RecyclerListener() {
             @Override
             public void onMovedToScrapHeap(View view) {

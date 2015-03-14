@@ -1,7 +1,5 @@
 package com.droidkit.engine.list;
 
-import android.util.Log;
-
 import com.droidkit.actors.*;
 import com.droidkit.actors.typed.TypedCreator;
 import com.droidkit.engine.Engines;
