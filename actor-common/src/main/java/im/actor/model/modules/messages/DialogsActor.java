@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.annotation.Verified;
+import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.ContentDescription;
 import im.actor.model.entity.ContentType;
@@ -18,7 +19,6 @@ import im.actor.model.entity.content.AbsContent;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.DialogHistory;
 import im.actor.model.modules.utils.ModuleActor;
-import im.actor.model.storage.ListEngine;
 
 import static im.actor.model.util.JavaUtil.equalsE;
 

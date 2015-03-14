@@ -18,7 +18,7 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.SearchHighlight;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.messenger.storage.scheme.GlobalSearch;
+import im.actor.messenger.storage.GlobalSearch;
 import im.actor.messenger.util.Screen;
 
 /**

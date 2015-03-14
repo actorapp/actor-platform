@@ -11,7 +11,7 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Avatar;
-import im.actor.model.mvvm.DoubleValueChangedListener;
+import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupTypingVM;
@@ -63,7 +63,7 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     public <T, V> void bind(final ValueModel<T> value1, final ValueModel<V> value2,
-                            final DoubleValueChangedListener<T, V> listener) {
+                            final ValueDoubleChangedListener<T, V> listener) {
         BINDER.bind(value1, value2, listener);
     }
 

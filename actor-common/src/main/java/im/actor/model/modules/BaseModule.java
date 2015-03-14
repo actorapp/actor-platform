@@ -1,6 +1,7 @@
 package im.actor.model.modules;
 
 import im.actor.model.CryptoProvider;
+import im.actor.model.Storage;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Peer;
@@ -9,13 +10,22 @@ import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
-import im.actor.model.storage.KeyValueEngine;
+import im.actor.model.droidkit.engine.KeyValueEngine;
 import im.actor.model.storage.PreferencesStorage;
 
 /**
  * Created by ex3ndr on 16.02.15.
  */
 public class BaseModule {
+
+    public static final String STORAGE_DIALOGS = "dialogs";
+    public static final String STORAGE_USERS = "users";
+    public static final String STORAGE_GROUPS = "groups";
+    public static final String STORAGE_DOWNLOADS = "downloads";
+    public static final String STORAGE_CONTACTS = "contacts";
+
+    public static final String STORAGE_CHAT_PREFIX = "chat_";
+
     private Modules modules;
 
     public BaseModule(Modules modules) {
@@ -68,6 +78,10 @@ public class BaseModule {
 
     public CryptoProvider crypto() {
         return modules.getConfiguration().getCryptoProvider();
+    }
+
+    public Storage storage() {
+        return modules.getConfiguration().getStorage();
     }
 
     public int myUid() {

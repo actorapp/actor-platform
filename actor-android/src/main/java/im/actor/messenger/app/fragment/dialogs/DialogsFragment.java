@@ -3,7 +3,6 @@ package im.actor.messenger.app.fragment.dialogs;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.droidkit.engine.uilist.UiListStateListener;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
@@ -15,7 +14,7 @@ import im.actor.model.viewmodel.GroupVM;
 import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
 
-public class DialogsFragment extends BaseDialogFragment implements UiListStateListener {
+public class DialogsFragment extends BaseDialogFragment {
 
     @Override
     protected boolean supportLongClick() {

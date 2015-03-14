@@ -1,11 +1,12 @@
 package im.actor.model;
 
+import im.actor.model.droidkit.engine.KeyValueStorage;
+import im.actor.model.droidkit.engine.ListEngine;
+import im.actor.model.droidkit.engine.ListStorage;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
-import im.actor.model.storage.KeyValueStorage;
-import im.actor.model.storage.ListEngine;
 import im.actor.model.storage.PreferencesStorage;
 
 /**
@@ -13,17 +14,19 @@ import im.actor.model.storage.PreferencesStorage;
  */
 public interface Storage {
 
+    // Storage
+
     public PreferencesStorage createPreferencesStorage();
 
-    public KeyValueStorage createUsersEngine();
+    public KeyValueStorage createKeyValue(String name);
 
-    public KeyValueStorage createGroupsEngine();
+    public ListStorage createList(String name);
 
-    public KeyValueStorage createDownloadsEngine();
+    // Engines
 
-    public ListEngine<Contact> createContactsEngine();
+    public ListEngine<Contact> createContactsList(ListStorage storage);
 
-    public ListEngine<Dialog> createDialogsEngine();
+    public ListEngine<Dialog> createDialogsList(ListStorage storage);
 
-    public ListEngine<Message> createMessagesEngine(Peer peer);
+    public ListEngine<Message> createMessagesList(Peer peer, ListStorage storage);
 }

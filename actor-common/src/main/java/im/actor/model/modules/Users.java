@@ -15,7 +15,7 @@ import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
-import im.actor.model.storage.KeyValueEngine;
+import im.actor.model.droidkit.engine.KeyValueEngine;
 import im.actor.model.viewmodel.UserVM;
 
 /**
@@ -27,7 +27,7 @@ public class Users extends BaseModule {
 
     public Users(Modules messenger) {
         super(messenger);
-        this.collection = new MVVMCollection<User, UserVM>(messenger.getConfiguration().getStorage().createUsersEngine()) {
+        this.collection = new MVVMCollection<User, UserVM>(messenger.getConfiguration().getStorage().createKeyValue(STORAGE_USERS)) {
             @Override
             protected UserVM createNew(User raw) {
                 return new UserVM(raw, modules());

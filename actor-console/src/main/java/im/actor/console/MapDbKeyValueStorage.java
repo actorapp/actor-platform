@@ -5,8 +5,8 @@ import org.mapdb.DB;
 import java.util.Base64;
 import java.util.List;
 
-import im.actor.model.storage.KeyValueRecord;
-import im.actor.model.storage.KeyValueStorage;
+import im.actor.model.droidkit.engine.KeyValueRecord;
+import im.actor.model.droidkit.engine.KeyValueStorage;
 
 /**
  * Created by ex3ndr on 09.02.15.

@@ -24,7 +24,6 @@ import im.actor.messenger.app.images.VideoPreviewActor;
 import im.actor.messenger.app.images.VideoPreviewTask;
 import im.actor.messenger.app.images.VideoTask;
 import im.actor.messenger.app.view.Formatter;
-import im.actor.messenger.storage.provider.AppEngineFactory;
 import im.actor.model.ApiConfiguration;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
@@ -33,6 +32,7 @@ import im.actor.model.android.AndroidLog;
 import im.actor.model.android.AndroidMainThread;
 import im.actor.model.android.AndroidNotifications;
 import im.actor.model.android.AndroidPhoneBook;
+import im.actor.model.android.AndroidStorage;
 import im.actor.model.crypto.bouncycastle.BouncyCastleProvider;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
@@ -115,15 +115,13 @@ public class Core {
         this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
 
 
-
-
         ConfigurationBuilder builder = new ConfigurationBuilder();
         BouncyCastleProvider bouncyCastleProvider = new BouncyCastleProvider();
         builder.setThreading(new JavaThreading());
         builder.setNetworking(new JavaNetworking());
         builder.setMainThread(new AndroidMainThread());
         builder.setLog(new AndroidLog());
-        builder.setStorage(new AppEngineFactory());
+        builder.setStorage(new AndroidStorage());
         builder.setLocale(new JavaLocale("En"));
         builder.setPhoneBookProvider(new AndroidPhoneBook());
         // builder.setCryptoProvider(new AndroidCryptoProvider());
@@ -137,7 +135,7 @@ public class Core {
         }
         builder.setEnableContactsLogging(true);
 
-        byte[] deviceHash = bouncyCastleProvider.SHA256(Base64.encode((AppContext.getContext().getPackageName()+":"+ Build.SERIAL).getBytes(),
+        byte[] deviceHash = bouncyCastleProvider.SHA256(Base64.encode((AppContext.getContext().getPackageName() + ":" + Build.SERIAL).getBytes(),
                 Base64.DEFAULT));
 
         builder.setApiConfiguration(new ApiConfiguration("Actor Android v0.1", 1, "??", "Android Device",

@@ -3,10 +3,11 @@ package im.actor.model.entity;
 import java.io.IOException;
 
 import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.droidkit.bser.BserCreator;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
-import im.actor.model.storage.ListEngineItem;
+import im.actor.model.droidkit.engine.ListEngineItem;
 
 /**
  * Created by ex3ndr on 25.02.15.
@@ -16,6 +17,13 @@ public class Contact extends BserObject implements ListEngineItem {
     public static Contact fromBytes(byte[] data) throws IOException {
         return Bser.parse(new Contact(), data);
     }
+
+    public static final BserCreator<Contact> CREATOR = new BserCreator<Contact>() {
+        @Override
+        public Contact createInstance() {
+            return new Contact();
+        }
+    };
 
     private int uid;
     private long sortKey;
@@ -65,14 +73,13 @@ public class Contact extends BserObject implements ListEngineItem {
         }
     }
 
-
     @Override
-    public long getListId() {
+    public long getEngineId() {
         return uid;
     }
 
     @Override
-    public long getListSortKey() {
+    public long getEngineSort() {
         return sortKey;
     }
 }

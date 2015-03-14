@@ -34,7 +34,7 @@ import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
-import im.actor.model.storage.KeyValueEngine;
+import im.actor.model.droidkit.engine.KeyValueEngine;
 import im.actor.model.viewmodel.GroupVM;
 
 /**
@@ -47,7 +47,7 @@ public class Groups extends BaseModule {
 
     public Groups(Modules modules) {
         super(modules);
-        collection = new MVVMCollection<Group, GroupVM>(modules.getConfiguration().getStorage().createGroupsEngine()) {
+        collection = new MVVMCollection<Group, GroupVM>(modules.getConfiguration().getStorage().createKeyValue(STORAGE_GROUPS)) {
             @Override
             protected GroupVM createNew(Group raw) {
                 return new GroupVM(raw);

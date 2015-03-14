@@ -4,7 +4,7 @@ import com.droidkit.engine.list.FilterableDataAdapter;
 import com.droidkit.engine.list.DataAdapter;
 import com.droidkit.engine.list.ListEngine;
 import com.droidkit.engine.list.storage.SQLiteStorageAdapter;
-import im.actor.messenger.storage.SQLiteProvider;
+import im.actor.model.android.sql.SQLiteProvider;
 
 /**
  * Created by ex3ndr on 15.09.14.

@@ -71,7 +71,7 @@ public class TextHolder extends MessageHolder {
 
     @Override
     protected void bindData(Message message, boolean isUpdated) {
-        Log.d("TextHolder", "bindData " + hashCode() + " #" + message.getListId() + " " + isUpdated);
+        Log.d("TextHolder", "bindData " + hashCode() + " #" + message.getEngineId() + " " + isUpdated);
         if (message.getSenderId() == myUid()) {
             messageBubbleContainer.makeOutboundBubble();
             messageBubble.setBackgroundResource(R.drawable.bubble_text_out);

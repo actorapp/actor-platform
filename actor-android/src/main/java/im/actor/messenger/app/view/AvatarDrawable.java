@@ -11,7 +11,7 @@ import android.text.TextPaint;
 import android.util.TypedValue;
 
 import im.actor.messenger.R;
-import im.actor.messenger.storage.scheme.GlobalSearch;
+import im.actor.messenger.storage.GlobalSearch;
 import im.actor.model.entity.Dialog;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;

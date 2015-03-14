@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import im.actor.model.storage.KeyValueEngine;
-import im.actor.model.storage.KeyValueItem;
-import im.actor.model.storage.KeyValueRecord;
-import im.actor.model.storage.KeyValueStorage;
+import im.actor.model.droidkit.engine.KeyValueEngine;
+import im.actor.model.droidkit.engine.KeyValueItem;
+import im.actor.model.droidkit.engine.KeyValueRecord;
+import im.actor.model.droidkit.engine.KeyValueStorage;
 
 /**
  * Created by ex3ndr on 25.02.15.

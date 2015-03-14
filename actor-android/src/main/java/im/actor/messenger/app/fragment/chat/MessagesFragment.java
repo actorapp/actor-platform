@@ -33,7 +33,6 @@ import im.actor.messenger.app.base.BaseFragment;
 import im.actor.messenger.app.fragment.chat.recycler.RecyclerMessagesAdapter;
 import im.actor.messenger.app.view.BackgroundView;
 import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.storage.ListEngines;
 import im.actor.messenger.util.Screen;
 import im.actor.messenger.util.VisibleViewItem;
 import im.actor.model.entity.Message;
@@ -111,7 +110,7 @@ public class MessagesFragment extends BaseFragment {
         // Building model
 
         peer = Peer.fromUniqueId(getArguments().getLong("CHAT_PEER"));
-        listEngine = ListEngines.getMessagesList(peer);
+        // listEngine = ListEngines.getMessagesList(peer);
 
         // Building view
 
@@ -392,7 +391,7 @@ public class MessagesFragment extends BaseFragment {
 
                             @Override
                             public int compare(Message lhs, Message rhs) {
-                                return compare(lhs.getListSortKey(), rhs.getListSortKey());
+                                return compare(lhs.getEngineSort(), rhs.getEngineSort());
                             }
                         });
 

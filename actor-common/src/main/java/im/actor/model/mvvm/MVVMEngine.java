@@ -16,6 +16,15 @@ public class MVVMEngine {
         return mainThread;
     }
 
+    public static void checkMainThread() {
+        if (mainThread.isSingleThread()) {
+            return;
+        }
+        if (!mainThread.isMainThread()) {
+            throw new RuntimeException("Unable to perform operation not from Main Thread");
+        }
+    }
+
     public static void runOnUiThread(Runnable runnable) {
         mainThread.runOnUiThread(runnable);
     }

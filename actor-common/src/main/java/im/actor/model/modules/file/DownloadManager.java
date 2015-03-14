@@ -12,7 +12,7 @@ import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.modules.utils.RandomUtils;
-import im.actor.model.storage.KeyValueEngine;
+import im.actor.model.droidkit.engine.KeyValueEngine;
 
 /**
  * Created by ex3ndr on 26.02.15.
