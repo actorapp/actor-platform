@@ -10,6 +10,7 @@ object Dependencies {
 
   object Compile {
     val akkaActor       = "com.typesafe.akka"             %% "akka-actor"                    % V.akka
+    val akkaContrib     = "com.typesafe.akka"             %% "akka-contrib"                  % V.akka
     val akkaKernel      = "com.typesafe.akka"             %% "akka-kernel"                   % V.akka
     val akkaStream      = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
     val akkaHttp        = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
@@ -49,17 +50,22 @@ object Dependencies {
     val commonsCodec    = "commons-codec"                 % "commons-codec"                  % "1.10"
   }
 
-  object Test {
+  object Testing {
     val akkaTestkit     = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka % "test"
+
+    val akkaPersistenceInmem =
+      "com.github.dnvriend" %% "akka-persistence-inmemory" % "1.0.0" % "test"
+
     val scalacheck      = "org.scalacheck"                %% "scalacheck"                    % "1.12.2" % "test"
     val specs2          = "org.specs2"                    %% "specs2-core"                   % "3.0" % "test"
     val slickTestkit    = "com.typesafe.slick"            %% "slick-testkit"                 % V.slick % "test"
 
     val jfairy          = "io.codearte.jfairy"            %  "jfairy"                        % "0.3.1" % "test"
 
-    val utilTesting     = "im.actor"                      %% "actor-util-testing"            % "0.0.1-SNAPSHOT" % "test"
+    val utilTesting     = "im.actor"                      %% "actor-util-testing"            % "0.0.2-SNAPSHOT" % "test"
   }
-  import Compile._, Test._
+
+  import Compile._, Testing._
 
   val common = Seq(logbackClassic, scalaLogging)
 
@@ -67,18 +73,20 @@ object Dependencies {
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
   )
 
-  val api = common ++ Seq(akkaSlf4j, akkaActor, akkaStream, commonsCodec)
+  val api = common ++ Seq(akkaSlf4j, akkaActor, akkaStream, commonsCodec, protobuf, scalazCore)
 
   val rpcApi = common ++ Seq(
-    akkaSlf4j, akkaActor, bcprov, libPhoneNumber, protobuf, shapeless
+    akkaSlf4j, akkaActor, bcprov, libPhoneNumber, shapeless
   )
 
   val internalServices = common ++ Seq(akkaActor, akkaStream, scodecBits)
 
   val session = common ++ Seq(
-    akkaSlf4j, akkaActor, akkaKernel, akkaStream, scodecCore, scalazCore,
-    akkaTestkit, specs2, utilTesting
+    akkaSlf4j, akkaActor, akkaKernel, akkaStream, scodecCore,
+    akkaTestkit, specs2
   )
+
+  val push = common ++ Seq(akkaContrib)
 
   val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP, jodaTime, jodaConvert)
 
@@ -92,5 +100,7 @@ object Dependencies {
     scalazCore, scalazConcurrent
   )
 
-  val tests = common ++ Seq(akkaTestkit, jfairy, scalacheck, specs2, slickTestkit, utilTesting)
+  val tests = common ++ Seq(
+    jfairy, scalacheck, specs2, slickTestkit, utilTesting, akkaPersistenceInmem
+  )
 }
