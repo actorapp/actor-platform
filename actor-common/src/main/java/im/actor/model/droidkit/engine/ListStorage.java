@@ -23,13 +23,13 @@ public interface ListStorage {
 
     public ListEngineRecord loadItem(long key);
 
-    public List<ListEngineRecord> loadBefore(Long sortingKey, int limit);
+    public List<ListEngineRecord> loadBackward(Long sortingKey, int limit);
 
-    public List<ListEngineRecord> loadAfter(Long sortingKey, int limit);
+    public List<ListEngineRecord> loadForward(Long sortingKey, int limit);
 
-    public List<ListEngineRecord> loadBefore(String query, Long sortingKey, int limit);
+    public List<ListEngineRecord> loadBackward(String query, Long sortingKey, int limit);
 
-    public List<ListEngineRecord> loadAfter(String query, Long sortingKey, int limit);
+    public List<ListEngineRecord> loadForward(String query, Long sortingKey, int limit);
 
     public int getCount();
 }

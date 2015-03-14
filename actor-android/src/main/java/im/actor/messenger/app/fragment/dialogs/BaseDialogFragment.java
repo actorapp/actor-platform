@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragment;
@@ -19,7 +18,7 @@ import static im.actor.messenger.app.Core.messenger;
 /**
  * Created by ex3ndr on 22.11.14.
  */
-public class BaseDialogFragment extends BaseFragment {
+public abstract class BaseDialogFragment extends BaseFragment {
 
     private ImageView dialogsEmptyImage;
 
@@ -40,31 +39,33 @@ public class BaseDialogFragment extends BaseFragment {
         noMessages = res.findViewById(R.id.noMessages);
         dialogsEmptyImage = (ImageView) res.findViewById(R.id.emptyDialogsImage);
 
-        adapter = new DialogsAdapter(messenger().getDialogsGlobalList(), getActivity(), new OnItemClickedListener<Dialog>() {
+        adapter = new DialogsAdapter(messenger().getDialogsGlobalList(), getActivity());
+        adapter.setItemClicked(new OnItemClickedListener<Dialog>() {
             @Override
             public void onClicked(Dialog item) {
                 onItemClick(item);
             }
-        }, supportLongClick() ? new OnItemClickedListener<Dialog>() {
-            @Override
-            public void onClicked(final Dialog dialog) {
-                onItemLongClick(dialog);
-            }
-        } : null);
+        });
+        if (supportLongClick()) {
+            adapter.setItemLongClicked(new OnItemClickedListener<Dialog>() {
+                @Override
+                public void onClicked(Dialog item) {
+                    onItemLongClick(item);
+                }
+            });
+        }
 
-        RecyclerView messagesView = new RecyclerView(getActivity());
-        messagesView.setVerticalScrollBarEnabled(true);
-        messagesView.setHorizontalScrollBarEnabled(false);
+        RecyclerView messagesView = (RecyclerView) res.findViewById(R.id.collection);
         messagesView.setHasFixedSize(true);
+        messagesView.setItemViewCacheSize(10);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         linearLayoutManager.setReverseLayout(false);
+        linearLayoutManager.setSmoothScrollbarEnabled(true);
         messagesView.setLayoutManager(linearLayoutManager);
-        messagesView.setAdapter(adapter);
 
-        ((LinearLayout) res.findViewById(R.id.collectionContainer)).addView(
-                messagesView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        );
+        messagesView.setAdapter(adapter);
 
 //        FrameLayout footer = new FrameLayout(getActivity());
 //        footer.setBackgroundColor(getResources().getColor(R.color.bg_grey));

@@ -9,6 +9,7 @@ import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.debug.TraceInterface;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.droidkit.engine.ListEngine;
+import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
@@ -430,5 +431,9 @@ public class Messenger {
 
     public BindedDisplayList<Dialog> getDialogsGlobalList() {
         return modules.getDisplayLists().getDialogsGlobalList();
+    }
+
+    public BindedDisplayList<Contact> getContactsGlobalList() {
+        return modules.getDisplayLists().getContactsGlobalList();
     }
 }
