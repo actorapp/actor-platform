@@ -1,5 +1,5 @@
 actor-server {
-  sql {
+  persist.sql {
     url = "jdbc:postgresql://localhost:5432/actor-test"
     user = "postgres"
     password = ""

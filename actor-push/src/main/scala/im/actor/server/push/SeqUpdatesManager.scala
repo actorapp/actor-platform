@@ -1,0 +1,123 @@
+package im.actor.server.push
+
+import akka.actor._
+import akka.contrib.pattern.ClusterSharding
+import akka.contrib.pattern.ShardRegion
+
+import akka.persistence._
+
+import im.actor.api.{ rpc => api }
+import java.util.concurrent.TimeUnit
+
+import scala.concurrent._, duration._
+
+object SeqUpdatesManager {
+  sealed trait Message
+
+  @SerialVersionUID(1L)
+  case class PushUpdate(upd: api.Update) extends Message
+
+  @SerialVersionUID(1L)
+  case class PushUpdateGetSeq(upd: api.Update) extends Message
+
+  @SerialVersionUID(1L)
+  case class Envelope(authId: Long, payload: Message)
+
+  @SerialVersionUID(1L)
+  case class Seq(value: Int)
+
+  @SerialVersionUID(1L)
+  private[push] case object Stop
+
+  sealed trait PersistentEvent
+
+  @SerialVersionUID(1L)
+  private[push] case class SeqChanged(value: Int) extends PersistentEvent
+
+  private[push] val noop1: Any => Unit = _ => ()
+
+  private[this] val idExtractor: ShardRegion.IdExtractor = {
+    case env @ Envelope(authId, payload) => (authId.toString, env)
+  }
+
+  private[this] val shardResolver: ShardRegion.ShardResolver = msg => msg match {
+    case Envelope(authId, _) => (authId % 32).toString // TODO: configurable
+  }
+
+  private[this] def startRegion(props: Option[Props])(implicit system: ActorSystem): ActorRef = ClusterSharding(system).start(
+    typeName = "SeqUpdatesManager",
+    entryProps = props,
+    idExtractor = idExtractor,
+    shardResolver = shardResolver
+  )
+
+  def startRegion()(implicit system: ActorSystem): ActorRef = startRegion(Some(Props[SeqUpdatesManager]))
+
+  def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
+}
+
+class SeqUpdatesManager extends PersistentActor {
+  import SeqUpdatesManager._
+  import ShardRegion.Passivate
+
+  context.setReceiveTimeout(
+    context.system.settings.config.getDuration("push.seq-updates-manager.receive-timeout", TimeUnit.SECONDS).seconds
+  )
+
+  override def persistenceId: String = self.path.parent.name + "-" + self.path.name
+
+  private[this] val IncrementOnStart: Int = 1000
+  require(IncrementOnStart > 1) // it is needed to prevent divizion by zero in pushUpdate
+
+  private[this] var seq: Int = 0
+
+  override def receiveCommand: Receive = {
+    case Envelope(authId: Long, PushUpdate(upd)) =>
+      pushUpdate(upd)
+    case Envelope(authId: Long, PushUpdateGetSeq(upd)) =>
+      val replyTo = sender()
+
+      pushUpdate(upd, { newSeq =>
+        replyTo ! Seq(newSeq)
+      })
+    case ReceiveTimeout => context.parent ! Passivate(stopMessage = Stop)
+    case Stop => context.stop(self)
+  }
+
+  override def receiveRecover: Receive = {
+    case SeqChanged(value) =>
+      println(s"SeqChanged $value")
+      seq = value
+    case RecoveryCompleted =>
+      recoveryCompleted()
+  }
+
+  private def recoveryCompleted(): Unit = {
+    seq += IncrementOnStart
+
+    persist(SeqChanged(seq))(noop1)
+  }
+
+  private def pushUpdate(upd: api.Update): Unit = {
+    pushUpdate(upd, noop1)
+  }
+
+  private def pushUpdate(upd: api.Update, cb: Int => Unit): Unit = {
+    def push(): Unit = {
+      // TODO: push it
+    }
+
+    seq += 1
+
+    if (seq % (IncrementOnStart / 2) == 0) {
+      persist(SeqChanged(seq)) {
+        case SeqChanged(newSeq) =>
+          push()
+          cb(newSeq)
+      }
+    } else {
+      push()
+      cb(seq)
+    }
+  }
+}
