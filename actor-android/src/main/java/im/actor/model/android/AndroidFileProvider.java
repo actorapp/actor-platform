@@ -7,6 +7,7 @@ import java.util.Random;
 
 import im.actor.model.FileSystemProvider;
 import im.actor.model.entity.FileReference;
+import im.actor.model.files.FileSystemReference;
 
 /**
  * Created by ex3ndr on 26.02.15.
@@ -85,18 +86,18 @@ public class AndroidFileProvider implements FileSystemProvider {
     }
 
     @Override
-    public synchronized im.actor.model.files.FileReference createTempFile() {
+    public synchronized FileSystemReference createTempFile() {
         checkTempDirs();
 
         String destFile = buildTempFile();
         if (destFile == null) {
             return null;
         }
-        return new AndroidFileReference(destFile);
+        return new AndroidFileSystemReference(destFile);
     }
 
     @Override
-    public synchronized im.actor.model.files.FileReference commitTempFile(im.actor.model.files.FileReference sourceFile, FileReference fileReference) {
+    public synchronized FileSystemReference commitTempFile(FileSystemReference sourceFile, FileReference fileReference) {
         String fileName = buildResultFile(fileReference);
         if (fileName == null) {
             return null;
@@ -105,7 +106,7 @@ public class AndroidFileProvider implements FileSystemProvider {
         if (!new File(sourceFile.getDescriptor()).renameTo(new File(fileName))) {
             return null;
         }
-        return new AndroidFileReference(fileName);
+        return new AndroidFileSystemReference(fileName);
     }
 
     @Override
@@ -114,9 +115,9 @@ public class AndroidFileProvider implements FileSystemProvider {
     }
 
     @Override
-    public synchronized im.actor.model.files.FileReference fileFromDescriptor(String descriptor) {
+    public synchronized FileSystemReference fileFromDescriptor(String descriptor) {
         checkTempDirs();
 
-        return new AndroidFileReference(descriptor);
+        return new AndroidFileSystemReference(descriptor);
     }
 }

@@ -12,8 +12,8 @@
 @class ImActorModelApiRpcResponseGetFile;
 @class ImActorModelModulesModules;
 @protocol AMFileSystemProvider;
-@protocol ImActorModelFilesFileReference;
-@protocol ImActorModelFilesOutputFile;
+@protocol AMFileSystemReference;
+@protocol AMOutputFile;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"

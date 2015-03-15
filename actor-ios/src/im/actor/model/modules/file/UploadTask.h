@@ -16,9 +16,9 @@
 @class ImActorModelApiUploadConfig;
 @class ImActorModelModulesModules;
 @class JavaUtilZipCRC32;
-@protocol ImActorModelFilesFileReference;
-@protocol ImActorModelFilesInputFile;
-@protocol ImActorModelFilesOutputFile;
+@protocol AMFileSystemReference;
+@protocol AMInputFile;
+@protocol AMOutputFile;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"

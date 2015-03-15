@@ -5,7 +5,7 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/FileReference.h"
-#include "im/actor/model/files/FileReference.h"
+#include "im/actor/model/files/FileSystemReference.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/file/DownloadCallback.h"
@@ -36,13 +36,13 @@ J2OBJC_FIELD_SETTER(AMFileVM, vmCallback_, id<AMFileVMCallback>)
 
 @interface AMFileVM_OnDownloaded () {
  @public
-  id<ImActorModelFilesFileReference> fileReference_;
+  id<AMFileSystemReference> fileSystemReference_;
 }
 - (instancetype)initWithAMFileVM:(AMFileVM *)outer$
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference;
+       withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
 @end
 
-J2OBJC_FIELD_SETTER(AMFileVM_OnDownloaded, fileReference_, id<ImActorModelFilesFileReference>)
+J2OBJC_FIELD_SETTER(AMFileVM_OnDownloaded, fileSystemReference_, id<AMFileSystemReference>)
 
 @interface AMFileVM_$1 () {
  @public
@@ -76,7 +76,7 @@ J2OBJC_FIELD_SETTER(AMFileVM_$1, this$0_, AMFileVM *)
     [((id<AMFileVMCallback>) nil_chk(vmCallback_)) onDownloadingWithFloat:[((AMFileVM_OnDownloading *) nil_chk(((AMFileVM_OnDownloading *) check_class_cast(obj, [AMFileVM_OnDownloading class])))) getProgress]];
   }
   else if ([obj isKindOfClass:[AMFileVM_OnDownloaded class]]) {
-    [((id<AMFileVMCallback>) nil_chk(vmCallback_)) onDownloadedWithImActorModelFilesFileReference:[((AMFileVM_OnDownloaded *) nil_chk(((AMFileVM_OnDownloaded *) check_class_cast(obj, [AMFileVM_OnDownloaded class])))) getFileReference]];
+    [((id<AMFileVMCallback>) nil_chk(vmCallback_)) onDownloadedWithAMFileSystemReference:[((AMFileVM_OnDownloaded *) nil_chk(((AMFileVM_OnDownloaded *) check_class_cast(obj, [AMFileVM_OnDownloaded class])))) getFileSystemReference]];
   }
 }
 
@@ -133,20 +133,20 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileVM_OnDownloading)
 @implementation AMFileVM_OnDownloaded
 
 - (instancetype)initWithAMFileVM:(AMFileVM *)outer$
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference {
+       withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference {
   if (self = [super init]) {
-    self->fileReference_ = fileReference;
+    self->fileSystemReference_ = fileSystemReference;
   }
   return self;
 }
 
-- (id<ImActorModelFilesFileReference>)getFileReference {
-  return fileReference_;
+- (id<AMFileSystemReference>)getFileSystemReference {
+  return fileSystemReference_;
 }
 
 - (void)copyAllFieldsTo:(AMFileVM_OnDownloaded *)other {
   [super copyAllFieldsTo:other];
-  other->fileReference_ = fileReference_;
+  other->fileSystemReference_ = fileSystemReference_;
 }
 
 @end
@@ -163,8 +163,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileVM_OnDownloaded)
   [this$0_ postWithId:[[AMFileVM_OnDownloading alloc] initWithAMFileVM:this$0_ withFloat:progress]];
 }
 
-- (void)onDownloadedWithImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference {
-  [this$0_ postWithId:[[AMFileVM_OnDownloaded alloc] initWithAMFileVM:this$0_ withImActorModelFilesFileReference:reference]];
+- (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference {
+  [this$0_ postWithId:[[AMFileVM_OnDownloaded alloc] initWithAMFileVM:this$0_ withAMFileSystemReference:reference]];
 }
 
 - (instancetype)initWithAMFileVM:(AMFileVM *)outer$ {

@@ -3,14 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/ListEngineRecord.java
 //
 
-#ifndef _ImActorModelDroidkitEngineListEngineRecord_H_
-#define _ImActorModelDroidkitEngineListEngineRecord_H_
+#ifndef _DKListEngineRecord_H_
+#define _DKListEngineRecord_H_
 
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitEngineListEngineRecord : NSObject {
+@interface DKListEngineRecord : NSObject {
 }
 
 - (instancetype)initWithLong:(jlong)key
@@ -28,11 +28,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineListEngineRecord)
+J2OBJC_EMPTY_STATIC_INIT(DKListEngineRecord)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineListEngineRecord)
+typedef DKListEngineRecord ImActorModelDroidkitEngineListEngineRecord;
 
-#endif // _ImActorModelDroidkitEngineListEngineRecord_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKListEngineRecord)
+
+#endif // _DKListEngineRecord_H_

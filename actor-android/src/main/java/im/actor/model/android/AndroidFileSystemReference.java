@@ -4,17 +4,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import im.actor.model.files.FileReference;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.files.InputFile;
 import im.actor.model.files.OutputFile;
 
 /**
  * Created by ex3ndr on 26.02.15.
  */
-public class AndroidFileReference implements FileReference {
+public class AndroidFileSystemReference implements FileSystemReference {
     private String fileName;
 
-    public AndroidFileReference(String fileName) {
+    public AndroidFileSystemReference(String fileName) {
         this.fileName = fileName;
     }
 

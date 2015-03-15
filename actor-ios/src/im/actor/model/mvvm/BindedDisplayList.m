@@ -23,12 +23,12 @@
 #include "java/util/Comparator.h"
 #include "java/util/List.h"
 
-__attribute__((unused)) static id<ImActorModelDroidkitEngineListEngineCallback> AMBindedDisplayList_coverWithImActorModelDroidkitEngineListEngineCallback_withInt_(AMBindedDisplayList *self, id<ImActorModelDroidkitEngineListEngineCallback> callback, jint generation);
+__attribute__((unused)) static id<DKListEngineCallback> AMBindedDisplayList_coverWithDKListEngineCallback_withInt_(AMBindedDisplayList *self, id<DKListEngineCallback> callback, jint generation);
 
 @interface AMBindedDisplayList () {
  @public
   jint pageSize_;
-  id<ImActorModelDroidkitEngineListEngineDisplayExt> listEngine_;
+  id<DKListEngineDisplayExt> listEngine_;
   AMDisplayWindow *window_;
   AMBindedDisplayList_EngineListener *engineListener_;
   jint currentGeneration_;
@@ -38,11 +38,11 @@ __attribute__((unused)) static id<ImActorModelDroidkitEngineListEngineCallback> 
   NSString *query_;
 }
 
-- (id<ImActorModelDroidkitEngineListEngineCallback>)coverWithImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback
-                                                                                                  withInt:(jint)generation;
+- (id<DKListEngineCallback>)coverWithDKListEngineCallback:(id<DKListEngineCallback>)callback
+                                                  withInt:(jint)generation;
 @end
 
-J2OBJC_FIELD_SETTER(AMBindedDisplayList, listEngine_, id<ImActorModelDroidkitEngineListEngineDisplayExt>)
+J2OBJC_FIELD_SETTER(AMBindedDisplayList, listEngine_, id<DKListEngineDisplayExt>)
 J2OBJC_FIELD_SETTER(AMBindedDisplayList, window_, AMDisplayWindow *)
 J2OBJC_FIELD_SETTER(AMBindedDisplayList, engineListener_, AMBindedDisplayList_EngineListener *)
 J2OBJC_FIELD_SETTER(AMBindedDisplayList, stateModel_, AMValueModel *)
@@ -118,12 +118,12 @@ J2OBJC_FIELD_SETTER(AMBindedDisplayList_$7, this$0_, AMBindedDisplayList *)
  @public
   AMBindedDisplayList *this$0_;
   jint val$generation_;
-  id<ImActorModelDroidkitEngineListEngineCallback> val$callback_;
+  id<DKListEngineCallback> val$callback_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(AMBindedDisplayList_$8, this$0_, AMBindedDisplayList *)
-J2OBJC_FIELD_SETTER(AMBindedDisplayList_$8, val$callback_, id<ImActorModelDroidkitEngineListEngineCallback>)
+J2OBJC_FIELD_SETTER(AMBindedDisplayList_$8, val$callback_, id<DKListEngineCallback>)
 
 @interface AMBindedDisplayList_$8_$1 () {
  @public
@@ -143,8 +143,8 @@ BOOL AMBindedDisplayList_initialized = NO;
 
 id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
 
-- (instancetype)initWithImActorModelDroidkitEngineListEngineDisplayExt:(id<ImActorModelDroidkitEngineListEngineDisplayExt>)listEngine
-                                                           withBoolean:(jboolean)isGlobalList {
+- (instancetype)initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>)listEngine
+                                   withBoolean:(jboolean)isGlobalList {
   if (self = [super initWithAMDisplayList_Hook:[[AMBindedDisplayList_$1 alloc] init]]) {
     pageSize_ = AMBindedDisplayList_DEFAULT_PAGE_SIZE;
     currentGeneration_ = 0;
@@ -153,7 +153,7 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
     self->listEngine_ = listEngine;
     self->window_ = [[AMDisplayWindow alloc] init];
     self->stateModel_ = [[AMValueModel alloc] initWithNSString:@"display_list.state" withId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
-    [((id<ImActorModelDroidkitEngineListEngineDisplayExt>) nil_chk(listEngine)) subscribeWithImActorModelDroidkitEngineListEngineDisplayListener:engineListener_];
+    [((id<DKListEngineDisplayExt>) nil_chk(listEngine)) subscribeWithDKListEngineDisplayListener:engineListener_];
   }
   return self;
 }
@@ -183,7 +183,7 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitForward];
-  [((id<ImActorModelDroidkitEngineListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithInt:pageSize_ withImActorModelDroidkitEngineListEngineCallback:AMBindedDisplayList_coverWithImActorModelDroidkitEngineListEngineCallback_withInt_(self, [[AMBindedDisplayList_$2 alloc] initWithAMBindedDisplayList:self], currentGeneration_)];
+  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithInt:pageSize_ withDKListEngineCallback:AMBindedDisplayList_coverWithDKListEngineCallback_withInt_(self, [[AMBindedDisplayList_$2 alloc] initWithAMBindedDisplayList:self], currentGeneration_)];
 }
 
 - (void)initBottomWithBoolean:(jboolean)refresh {
@@ -201,7 +201,7 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitBackward];
-  [((id<ImActorModelDroidkitEngineListEngineDisplayExt>) nil_chk(listEngine_)) loadBackwardWithInt:pageSize_ withImActorModelDroidkitEngineListEngineCallback:AMBindedDisplayList_coverWithImActorModelDroidkitEngineListEngineCallback_withInt_(self, [[AMBindedDisplayList_$3 alloc] initWithAMBindedDisplayList:self], currentGeneration_)];
+  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadBackwardWithInt:pageSize_ withDKListEngineCallback:AMBindedDisplayList_coverWithDKListEngineCallback_withInt_(self, [[AMBindedDisplayList_$3 alloc] initWithAMBindedDisplayList:self], currentGeneration_)];
 }
 
 - (void)initCenterWithLong:(jlong)centerSortKey
@@ -217,7 +217,7 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitCenter];
-  [((id<ImActorModelDroidkitEngineListEngineDisplayExt>) nil_chk(listEngine_)) loadCenterWithLong:centerSortKey withInt:pageSize_ withImActorModelDroidkitEngineListEngineCallback:AMBindedDisplayList_coverWithImActorModelDroidkitEngineListEngineCallback_withInt_(self, [[AMBindedDisplayList_$4 alloc] initWithAMBindedDisplayList:self], currentGeneration_)];
+  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadCenterWithLong:centerSortKey withInt:pageSize_ withDKListEngineCallback:AMBindedDisplayList_coverWithDKListEngineCallback_withInt_(self, [[AMBindedDisplayList_$4 alloc] initWithAMBindedDisplayList:self], currentGeneration_)];
 }
 
 - (void)initSearchWithNSString:(NSString *)query
@@ -240,7 +240,7 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitForward];
-  [((id<ImActorModelDroidkitEngineListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithNSString:query withInt:pageSize_ withImActorModelDroidkitEngineListEngineCallback:AMBindedDisplayList_coverWithImActorModelDroidkitEngineListEngineCallback_withInt_(self, [[AMBindedDisplayList_$5 alloc] initWithAMBindedDisplayList:self], currentGeneration_)];
+  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithNSString:query withInt:pageSize_ withDKListEngineCallback:AMBindedDisplayList_coverWithDKListEngineCallback_withInt_(self, [[AMBindedDisplayList_$5 alloc] initWithAMBindedDisplayList:self], currentGeneration_)];
 }
 
 - (void)loadMoreForward {
@@ -248,12 +248,12 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
   if (![((AMDisplayWindow *) nil_chk(window_)) startForwardLoading]) {
     return;
   }
-  id<ImActorModelDroidkitEngineListEngineCallback> callback = AMBindedDisplayList_coverWithImActorModelDroidkitEngineListEngineCallback_withInt_(self, [[AMBindedDisplayList_$6 alloc] initWithAMBindedDisplayList:self], currentGeneration_);
+  id<DKListEngineCallback> callback = AMBindedDisplayList_coverWithDKListEngineCallback_withInt_(self, [[AMBindedDisplayList_$6 alloc] initWithAMBindedDisplayList:self], currentGeneration_);
   if (mode_ != AMBindedDisplayList_ListModeEnum_get_SEARCH()) {
-    [((id<ImActorModelDroidkitEngineListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithLong:[((JavaLangLong *) nil_chk([window_ getCurrentForwardHead])) longLongValue] withInt:pageSize_ withImActorModelDroidkitEngineListEngineCallback:callback];
+    [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithLong:[((JavaLangLong *) nil_chk([window_ getCurrentForwardHead])) longLongValue] withInt:pageSize_ withDKListEngineCallback:callback];
   }
   else {
-    [((id<ImActorModelDroidkitEngineListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithNSString:query_ withLong:[((JavaLangLong *) nil_chk([window_ getCurrentForwardHead])) longLongValue] withInt:pageSize_ withImActorModelDroidkitEngineListEngineCallback:callback];
+    [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithNSString:query_ withLong:[((JavaLangLong *) nil_chk([window_ getCurrentForwardHead])) longLongValue] withInt:pageSize_ withDKListEngineCallback:callback];
   }
 }
 
@@ -262,12 +262,12 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
   if (![((AMDisplayWindow *) nil_chk(window_)) startHeadLoading]) {
     return;
   }
-  id<ImActorModelDroidkitEngineListEngineCallback> callback = AMBindedDisplayList_coverWithImActorModelDroidkitEngineListEngineCallback_withInt_(self, [[AMBindedDisplayList_$7 alloc] initWithAMBindedDisplayList:self], currentGeneration_);
+  id<DKListEngineCallback> callback = AMBindedDisplayList_coverWithDKListEngineCallback_withInt_(self, [[AMBindedDisplayList_$7 alloc] initWithAMBindedDisplayList:self], currentGeneration_);
   if (mode_ != AMBindedDisplayList_ListModeEnum_get_SEARCH()) {
-    [((id<ImActorModelDroidkitEngineListEngineDisplayExt>) nil_chk(listEngine_)) loadBackwardWithLong:[((JavaLangLong *) nil_chk([window_ getCurrentBackwardHead])) longLongValue] withInt:pageSize_ withImActorModelDroidkitEngineListEngineCallback:callback];
+    [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadBackwardWithLong:[((JavaLangLong *) nil_chk([window_ getCurrentBackwardHead])) longLongValue] withInt:pageSize_ withDKListEngineCallback:callback];
   }
   else {
-    [((id<ImActorModelDroidkitEngineListEngineDisplayExt>) nil_chk(listEngine_)) loadBackwardWithNSString:query_ withLong:[((JavaLangLong *) nil_chk([window_ getCurrentBackwardHead])) longLongValue] withInt:pageSize_ withImActorModelDroidkitEngineListEngineCallback:callback];
+    [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadBackwardWithNSString:query_ withLong:[((JavaLangLong *) nil_chk([window_ getCurrentBackwardHead])) longLongValue] withInt:pageSize_ withDKListEngineCallback:callback];
   }
 }
 
@@ -276,12 +276,12 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
   if (isGlobalList__) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Global DisplayList can't be disposed"];
   }
-  [((id<ImActorModelDroidkitEngineListEngineDisplayExt>) nil_chk(listEngine_)) unsubscribeWithImActorModelDroidkitEngineListEngineDisplayListener:engineListener_];
+  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) unsubscribeWithDKListEngineDisplayListener:engineListener_];
 }
 
-- (id<ImActorModelDroidkitEngineListEngineCallback>)coverWithImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback
-                                                                                                  withInt:(jint)generation {
-  return AMBindedDisplayList_coverWithImActorModelDroidkitEngineListEngineCallback_withInt_(self, callback, generation);
+- (id<DKListEngineCallback>)coverWithDKListEngineCallback:(id<DKListEngineCallback>)callback
+                                                  withInt:(jint)generation {
+  return AMBindedDisplayList_coverWithDKListEngineCallback_withInt_(self, callback, generation);
 }
 
 - (void)copyAllFieldsTo:(AMBindedDisplayList *)other {
@@ -306,18 +306,18 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
 
 @end
 
-id<ImActorModelDroidkitEngineListEngineCallback> AMBindedDisplayList_coverWithImActorModelDroidkitEngineListEngineCallback_withInt_(AMBindedDisplayList *self, id<ImActorModelDroidkitEngineListEngineCallback> callback, jint generation) {
-  return [[AMBindedDisplayList_$8 alloc] initWithAMBindedDisplayList:self withInt:generation withImActorModelDroidkitEngineListEngineCallback:callback];
+id<DKListEngineCallback> AMBindedDisplayList_coverWithDKListEngineCallback_withInt_(AMBindedDisplayList *self, id<DKListEngineCallback> callback, jint generation) {
+  return [[AMBindedDisplayList_$8 alloc] initWithAMBindedDisplayList:self withInt:generation withDKListEngineCallback:callback];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList)
 
 @implementation AMBindedDisplayList_ListEngineComparator
 
-- (jint)compareWithId:(id<ImActorModelDroidkitEngineListEngineItem>)o1
-               withId:(id<ImActorModelDroidkitEngineListEngineItem>)o2 {
-  jlong lKey = [((id<ImActorModelDroidkitEngineListEngineItem>) nil_chk(o1)) getEngineSort];
-  jlong rKey = [((id<ImActorModelDroidkitEngineListEngineItem>) nil_chk(o2)) getEngineSort];
+- (jint)compareWithId:(id<DKListEngineItem>)o1
+               withId:(id<DKListEngineItem>)o2 {
+  jlong lKey = [((id<DKListEngineItem>) nil_chk(o1)) getEngineSort];
+  jlong rKey = [((id<DKListEngineItem>) nil_chk(o2)) getEngineSort];
   if (lKey > rKey) {
     return -1;
   }
@@ -347,8 +347,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_ListEngineComparator)
   [this$0_ editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>) check_protocol_cast(AMDisplayModifications_removeWithLongArray_(ids), @protocol(AMDisplayList_Modification))];
 }
 
-- (void)addOrUpdateWithId:(BSBserObject<ImActorModelDroidkitEngineListEngineItem> *)item {
-  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithImActorModelDroidkitEngineListEngineItem_(item)];
+- (void)addOrUpdateWithId:(BSBserObject<DKListEngineItem> *)item {
+  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithDKListEngineItem_(item)];
 }
 
 - (void)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items {
@@ -681,7 +681,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$7)
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$
                                     withInt:(jint)capture$0
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)capture$1 {
+                   withDKListEngineCallback:(id<DKListEngineCallback>)capture$1 {
   this$0_ = outer$;
   val$generation_ = capture$0;
   val$callback_ = capture$1;
@@ -705,7 +705,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$8)
   if (this$0_->val$generation_ != this$0_->this$0_->currentGeneration_) {
     return;
   }
-  [((id<ImActorModelDroidkitEngineListEngineCallback>) nil_chk(this$0_->val$callback_)) onLoadedWithJavaUtilList:val$items_ withLong:val$topSortKey_ withLong:val$bottomSortKey_];
+  [((id<DKListEngineCallback>) nil_chk(this$0_->val$callback_)) onLoadedWithJavaUtilList:val$items_ withLong:val$topSortKey_ withLong:val$bottomSortKey_];
 }
 
 - (instancetype)initWithAMBindedDisplayList_$8:(AMBindedDisplayList_$8 *)outer$

@@ -15,8 +15,8 @@
 @class ImActorModelNetworkParserResponse;
 @protocol AMCryptoProvider;
 @protocol AMStorageProvider;
-@protocol ImActorModelDroidkitEngineKeyValueEngine;
-@protocol ImActorModelDroidkitEnginePreferencesStorage;
+@protocol DKKeyValueEngine;
+@protocol DKPreferencesStorage;
 @protocol JavaLangRunnable;
 
 #include "J2ObjC_header.h"
@@ -47,7 +47,7 @@
 
 - (DKActorRef *)conversationHistoryActorWithAMPeer:(AMPeer *)peer;
 
-- (id<ImActorModelDroidkitEnginePreferencesStorage>)preferences;
+- (id<DKPreferencesStorage>)preferences;
 
 - (id<AMCryptoProvider>)crypto;
 
@@ -60,9 +60,9 @@
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request;
 
-- (id<ImActorModelDroidkitEngineKeyValueEngine>)users;
+- (id<DKKeyValueEngine>)users;
 
-- (id<ImActorModelDroidkitEngineKeyValueEngine>)groups;
+- (id<DKKeyValueEngine>)groups;
 
 @end
 

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/crypto/asn1/ASN1BitString.java
 //
 
-#ifndef _ImActorModelCryptoAsn1ASN1BitString_H_
-#define _ImActorModelCryptoAsn1ASN1BitString_H_
+#ifndef _BCASN1BitString_H_
+#define _BCASN1BitString_H_
 
 @class BSDataInput;
 @class BSDataOutput;
@@ -13,10 +13,10 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/crypto/asn1/ASN1Primitive.h"
 
-@interface ImActorModelCryptoAsn1ASN1BitString : ImActorModelCryptoAsn1ASN1Primitive {
+@interface BCASN1BitString : BCASN1Primitive {
 }
 
-+ (ImActorModelCryptoAsn1ASN1BitString *)readBitStringWithBSDataInput:(BSDataInput *)dataInput;
++ (BCASN1BitString *)readBitStringWithBSDataInput:(BSDataInput *)dataInput;
 
 - (instancetype)initWithInt:(jint)paddingBit
               withByteArray:(IOSByteArray *)content;
@@ -29,13 +29,15 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelCryptoAsn1ASN1BitString)
+J2OBJC_EMPTY_STATIC_INIT(BCASN1BitString)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelCryptoAsn1ASN1BitString *ImActorModelCryptoAsn1ASN1BitString_readBitStringWithBSDataInput_(BSDataInput *dataInput);
+FOUNDATION_EXPORT BCASN1BitString *BCASN1BitString_readBitStringWithBSDataInput_(BSDataInput *dataInput);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelCryptoAsn1ASN1BitString)
+typedef BCASN1BitString ImActorModelCryptoAsn1ASN1BitString;
 
-#endif // _ImActorModelCryptoAsn1ASN1BitString_H_
+J2OBJC_TYPE_LITERAL_HEADER(BCASN1BitString)
+
+#endif // _BCASN1BitString_H_

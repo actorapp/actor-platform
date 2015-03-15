@@ -20,103 +20,103 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-__attribute__((unused)) static void ImActorModelDroidkitEngineAsyncStorageActor_callCallbackWithImActorModelDroidkitEngineListEngineCallback_withJavaUtilList_(ImActorModelDroidkitEngineAsyncStorageActor *self, id<ImActorModelDroidkitEngineListEngineCallback> callback, id<JavaUtilList> res);
-__attribute__((unused)) static JavaUtilArrayList *ImActorModelDroidkitEngineAsyncStorageActor_convertListWithJavaUtilList_(ImActorModelDroidkitEngineAsyncStorageActor *self, id<JavaUtilList> records);
+__attribute__((unused)) static void DKAsyncStorageActor_callCallbackWithDKListEngineCallback_withJavaUtilList_(DKAsyncStorageActor *self, id<DKListEngineCallback> callback, id<JavaUtilList> res);
+__attribute__((unused)) static JavaUtilArrayList *DKAsyncStorageActor_convertListWithJavaUtilList_(DKAsyncStorageActor *self, id<JavaUtilList> records);
 
-@interface ImActorModelDroidkitEngineAsyncStorageActor () {
+@interface DKAsyncStorageActor () {
  @public
-  id<ImActorModelDroidkitEngineListStorage> storage_;
+  id<DKListStorage> storage_;
   id<BSBserCreator> creator_;
 }
 
-- (void)callCallbackWithImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback
-                                                    withJavaUtilList:(id<JavaUtilList>)res;
+- (void)callCallbackWithDKListEngineCallback:(id<DKListEngineCallback>)callback
+                            withJavaUtilList:(id<JavaUtilList>)res;
 
 - (JavaUtilArrayList *)convertListWithJavaUtilList:(id<JavaUtilList>)records;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor, storage_, id<ImActorModelDroidkitEngineListStorage>)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor, creator_, id<BSBserCreator>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor, storage_, id<DKListStorage>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor, creator_, id<BSBserCreator>)
 
-@interface ImActorModelDroidkitEngineAsyncStorageActor_AddOrUpdate () {
+@interface DKAsyncStorageActor_AddOrUpdate () {
  @public
   id<JavaUtilList> items_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_AddOrUpdate, items_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_AddOrUpdate, items_, id<JavaUtilList>)
 
-@interface ImActorModelDroidkitEngineAsyncStorageActor_Replace () {
+@interface DKAsyncStorageActor_Replace () {
  @public
   id<JavaUtilList> items_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_Replace, items_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_Replace, items_, id<JavaUtilList>)
 
-@interface ImActorModelDroidkitEngineAsyncStorageActor_Remove () {
+@interface DKAsyncStorageActor_Remove () {
  @public
   IOSLongArray *keys_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_Remove, keys_, IOSLongArray *)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_Remove, keys_, IOSLongArray *)
 
-@interface ImActorModelDroidkitEngineAsyncStorageActor_LoadItem () {
+@interface DKAsyncStorageActor_LoadItem () {
  @public
   jlong key_;
-  id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback> callback_;
+  id<DKAsyncStorageActor_LoadItemCallback> callback_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_LoadItem, callback_, id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadItem, callback_, id<DKAsyncStorageActor_LoadItemCallback>)
 
-@interface ImActorModelDroidkitEngineAsyncStorageActor_LoadCount () {
+@interface DKAsyncStorageActor_LoadCount () {
  @public
-  id<ImActorModelDroidkitEngineAsyncStorageActor_LoadCountCallback> callback_;
+  id<DKAsyncStorageActor_LoadCountCallback> callback_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_LoadCount, callback_, id<ImActorModelDroidkitEngineAsyncStorageActor_LoadCountCallback>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadCount, callback_, id<DKAsyncStorageActor_LoadCountCallback>)
 
-@interface ImActorModelDroidkitEngineAsyncStorageActor_LoadHead () {
+@interface DKAsyncStorageActor_LoadHead () {
  @public
-  id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback> callback_;
+  id<DKAsyncStorageActor_LoadItemCallback> callback_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_LoadHead, callback_, id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadHead, callback_, id<DKAsyncStorageActor_LoadItemCallback>)
 
-@interface ImActorModelDroidkitEngineAsyncStorageActor_LoadForward () {
- @public
-  NSString *query_;
-  JavaLangLong *topSortKey_;
-  jint limit_;
-  id<ImActorModelDroidkitEngineListEngineCallback> callback_;
-}
-@end
-
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_LoadForward, query_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_LoadForward, topSortKey_, JavaLangLong *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_LoadForward, callback_, id<ImActorModelDroidkitEngineListEngineCallback>)
-
-@interface ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward () {
+@interface DKAsyncStorageActor_LoadForward () {
  @public
   NSString *query_;
   JavaLangLong *topSortKey_;
   jint limit_;
-  id<ImActorModelDroidkitEngineListEngineCallback> callback_;
+  id<DKListEngineCallback> callback_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward, query_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward, topSortKey_, JavaLangLong *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward, callback_, id<ImActorModelDroidkitEngineListEngineCallback>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadForward, query_, NSString *)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadForward, topSortKey_, JavaLangLong *)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadForward, callback_, id<DKListEngineCallback>)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageActor
+@interface DKAsyncStorageActor_LoadBackward () {
+ @public
+  NSString *query_;
+  JavaLangLong *topSortKey_;
+  jint limit_;
+  id<DKListEngineCallback> callback_;
+}
+@end
 
-- (instancetype)initWithImActorModelDroidkitEngineListStorage:(id<ImActorModelDroidkitEngineListStorage>)storage
-                                            withBSBserCreator:(id<BSBserCreator>)creator {
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadBackward, query_, NSString *)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadBackward, topSortKey_, JavaLangLong *)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadBackward, callback_, id<DKListEngineCallback>)
+
+@implementation DKAsyncStorageActor
+
+- (instancetype)initWithDKListStorage:(id<DKListStorage>)storage
+                    withBSBserCreator:(id<BSBserCreator>)creator {
   if (self = [super init]) {
     self->storage_ = storage;
     self->creator_ = creator;
@@ -126,149 +126,149 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward, ca
 
 - (void)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items {
   if ([((id<JavaUtilList>) nil_chk(items)) size] == 1) {
-    BSBserObject<ImActorModelDroidkitEngineListEngineItem> *item = [items getWithInt:0];
-    [((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) updateOrAddWithImActorModelDroidkitEngineListEngineRecord:[[ImActorModelDroidkitEngineListEngineRecord alloc] initWithLong:[((BSBserObject<ImActorModelDroidkitEngineListEngineItem> *) nil_chk(item)) getEngineId] withLong:[item getEngineSort] withNSString:[item getEngineSearch] withByteArray:[item toByteArray]]];
+    BSBserObject<DKListEngineItem> *item = [items getWithInt:0];
+    [((id<DKListStorage>) nil_chk(storage_)) updateOrAddWithDKListEngineRecord:[[DKListEngineRecord alloc] initWithLong:[((BSBserObject<DKListEngineItem> *) nil_chk(item)) getEngineId] withLong:[item getEngineSort] withNSString:[item getEngineSearch] withByteArray:[item toByteArray]]];
   }
   else if ([items size] > 0) {
     id<JavaUtilList> updated = [[JavaUtilArrayList alloc] init];
-    for (BSBserObject<ImActorModelDroidkitEngineListEngineItem> * __strong i in items) {
-      [updated addWithId:[[ImActorModelDroidkitEngineListEngineRecord alloc] initWithLong:[((BSBserObject<ImActorModelDroidkitEngineListEngineItem> *) nil_chk(i)) getEngineId] withLong:[i getEngineSort] withNSString:[i getEngineSearch] withByteArray:[i toByteArray]]];
+    for (BSBserObject<DKListEngineItem> * __strong i in items) {
+      [updated addWithId:[[DKListEngineRecord alloc] initWithLong:[((BSBserObject<DKListEngineItem> *) nil_chk(i)) getEngineId] withLong:[i getEngineSort] withNSString:[i getEngineSearch] withByteArray:[i toByteArray]]];
     }
-    [((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) updateOrAddWithJavaUtilList:updated];
+    [((id<DKListStorage>) nil_chk(storage_)) updateOrAddWithJavaUtilList:updated];
   }
 }
 
 - (void)replaceWithJavaUtilList:(id<JavaUtilList>)items {
   id<JavaUtilList> updated = [[JavaUtilArrayList alloc] init];
-  for (BSBserObject<ImActorModelDroidkitEngineListEngineItem> * __strong i in nil_chk(items)) {
-    [updated addWithId:[[ImActorModelDroidkitEngineListEngineRecord alloc] initWithLong:[((BSBserObject<ImActorModelDroidkitEngineListEngineItem> *) nil_chk(i)) getEngineId] withLong:[i getEngineSort] withNSString:[i getEngineSearch] withByteArray:[i toByteArray]]];
+  for (BSBserObject<DKListEngineItem> * __strong i in nil_chk(items)) {
+    [updated addWithId:[[DKListEngineRecord alloc] initWithLong:[((BSBserObject<DKListEngineItem> *) nil_chk(i)) getEngineId] withLong:[i getEngineSort] withNSString:[i getEngineSearch] withByteArray:[i toByteArray]]];
   }
-  [((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) clear];
+  [((id<DKListStorage>) nil_chk(storage_)) clear];
   [storage_ updateOrAddWithJavaUtilList:updated];
 }
 
 - (void)removeWithLongArray:(IOSLongArray *)keys {
   if (((IOSLongArray *) nil_chk(keys))->size_ == 1) {
-    [((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) delete__WithLong:IOSLongArray_Get(keys, 0)];
+    [((id<DKListStorage>) nil_chk(storage_)) delete__WithLong:IOSLongArray_Get(keys, 0)];
   }
   else if (keys->size_ > 0) {
-    [((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) delete__WithLongArray:keys];
+    [((id<DKListStorage>) nil_chk(storage_)) delete__WithLongArray:keys];
   }
 }
 
 - (void)clear {
-  [((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) clear];
+  [((id<DKListStorage>) nil_chk(storage_)) clear];
 }
 
 - (void)loadItemWithLong:(jlong)key
-withImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback:(id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>)callback {
-  ImActorModelDroidkitEngineListEngineRecord *record = [((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) loadItemWithLong:key];
+withDKAsyncStorageActor_LoadItemCallback:(id<DKAsyncStorageActor_LoadItemCallback>)callback {
+  DKListEngineRecord *record = [((id<DKListStorage>) nil_chk(storage_)) loadItemWithLong:key];
   if (record != nil) {
     @try {
-      BSBserObject<ImActorModelDroidkitEngineListEngineItem> *res = ((BSBserObject<ImActorModelDroidkitEngineListEngineItem> *) BSBser_parseWithBSBserObject_withByteArray_([((id<BSBserCreator>) nil_chk(creator_)) createInstance], [record getData]));
-      [((id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:res];
+      BSBserObject<DKListEngineItem> *res = ((BSBserObject<DKListEngineItem> *) BSBser_parseWithBSBserObject_withByteArray_([((id<BSBserCreator>) nil_chk(creator_)) createInstance], [record getData]));
+      [((id<DKAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:res];
     }
     @catch (JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
-      [((id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:nil];
+      [((id<DKAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:nil];
     }
   }
   else {
-    [((id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:nil];
+    [((id<DKAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:nil];
   }
 }
 
-- (void)loadHeadWithImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback:(id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>)callback {
-  id<JavaUtilList> records = [((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) loadForwardWithJavaLangLong:nil withInt:1];
+- (void)loadHeadWithDKAsyncStorageActor_LoadItemCallback:(id<DKAsyncStorageActor_LoadItemCallback>)callback {
+  id<JavaUtilList> records = [((id<DKListStorage>) nil_chk(storage_)) loadForwardWithJavaLangLong:nil withInt:1];
   if ([((id<JavaUtilList>) nil_chk(records)) size] != 1) {
-    [((id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:nil];
+    [((id<DKAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:nil];
     return;
   }
-  ImActorModelDroidkitEngineListEngineRecord *record = [records getWithInt:0];
+  DKListEngineRecord *record = [records getWithInt:0];
   @try {
-    [((id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:BSBser_parseWithBSBserObject_withByteArray_([((id<BSBserCreator>) nil_chk(creator_)) createInstance], [((ImActorModelDroidkitEngineListEngineRecord *) nil_chk(record)) getData])];
+    [((id<DKAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:BSBser_parseWithBSBserObject_withByteArray_([((id<BSBserCreator>) nil_chk(creator_)) createInstance], [((DKListEngineRecord *) nil_chk(record)) getData])];
   }
   @catch (JavaIoIOException *e) {
     [((JavaIoIOException *) nil_chk(e)) printStackTrace];
-    [((id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:nil];
+    [((id<DKAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:nil];
   }
 }
 
-- (void)loadCountWithImActorModelDroidkitEngineAsyncStorageActor_LoadCountCallback:(id<ImActorModelDroidkitEngineAsyncStorageActor_LoadCountCallback>)callback {
-  [((id<ImActorModelDroidkitEngineAsyncStorageActor_LoadCountCallback>) nil_chk(callback)) onLoadedWithInt:[((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) getCount]];
+- (void)loadCountWithDKAsyncStorageActor_LoadCountCallback:(id<DKAsyncStorageActor_LoadCountCallback>)callback {
+  [((id<DKAsyncStorageActor_LoadCountCallback>) nil_chk(callback)) onLoadedWithInt:[((id<DKListStorage>) nil_chk(storage_)) getCount]];
 }
 
 - (void)loadForwardWithNSString:(NSString *)query
                withJavaLangLong:(JavaLangLong *)topSortKey
                         withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback {
+       withDKListEngineCallback:(id<DKListEngineCallback>)callback {
   JavaUtilArrayList *res;
   if (query == nil) {
-    res = ImActorModelDroidkitEngineAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) loadForwardWithJavaLangLong:topSortKey withInt:limit]);
+    res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorage>) nil_chk(storage_)) loadForwardWithJavaLangLong:topSortKey withInt:limit]);
   }
   else {
-    res = ImActorModelDroidkitEngineAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) loadForwardWithNSString:query withJavaLangLong:topSortKey withInt:limit]);
+    res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorage>) nil_chk(storage_)) loadForwardWithNSString:query withJavaLangLong:topSortKey withInt:limit]);
   }
-  ImActorModelDroidkitEngineAsyncStorageActor_callCallbackWithImActorModelDroidkitEngineListEngineCallback_withJavaUtilList_(self, callback, res);
+  DKAsyncStorageActor_callCallbackWithDKListEngineCallback_withJavaUtilList_(self, callback, res);
 }
 
 - (void)loadBackwardWithNSString:(NSString *)query
                 withJavaLangLong:(JavaLangLong *)topSortKey
                          withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback {
+        withDKListEngineCallback:(id<DKListEngineCallback>)callback {
   JavaUtilArrayList *res;
   if (query == nil) {
-    res = ImActorModelDroidkitEngineAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) loadBackwardWithJavaLangLong:topSortKey withInt:limit]);
+    res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorage>) nil_chk(storage_)) loadBackwardWithJavaLangLong:topSortKey withInt:limit]);
   }
   else {
-    res = ImActorModelDroidkitEngineAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<ImActorModelDroidkitEngineListStorage>) nil_chk(storage_)) loadBackwardWithNSString:query withJavaLangLong:topSortKey withInt:limit]);
+    res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorage>) nil_chk(storage_)) loadBackwardWithNSString:query withJavaLangLong:topSortKey withInt:limit]);
   }
-  ImActorModelDroidkitEngineAsyncStorageActor_callCallbackWithImActorModelDroidkitEngineListEngineCallback_withJavaUtilList_(self, callback, res);
+  DKAsyncStorageActor_callCallbackWithDKListEngineCallback_withJavaUtilList_(self, callback, res);
 }
 
-- (void)callCallbackWithImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback
-                                                    withJavaUtilList:(id<JavaUtilList>)res {
-  ImActorModelDroidkitEngineAsyncStorageActor_callCallbackWithImActorModelDroidkitEngineListEngineCallback_withJavaUtilList_(self, callback, res);
+- (void)callCallbackWithDKListEngineCallback:(id<DKListEngineCallback>)callback
+                            withJavaUtilList:(id<JavaUtilList>)res {
+  DKAsyncStorageActor_callCallbackWithDKListEngineCallback_withJavaUtilList_(self, callback, res);
 }
 
 - (JavaUtilArrayList *)convertListWithJavaUtilList:(id<JavaUtilList>)records {
-  return ImActorModelDroidkitEngineAsyncStorageActor_convertListWithJavaUtilList_(self, records);
+  return DKAsyncStorageActor_convertListWithJavaUtilList_(self, records);
 }
 
 - (void)onReceiveWithId:(id)message {
-  if ([message isKindOfClass:[ImActorModelDroidkitEngineAsyncStorageActor_AddOrUpdate class]]) {
-    [self addOrUpdateWithJavaUtilList:[((ImActorModelDroidkitEngineAsyncStorageActor_AddOrUpdate *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_AddOrUpdate *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_AddOrUpdate class])))) getItems]];
+  if ([message isKindOfClass:[DKAsyncStorageActor_AddOrUpdate class]]) {
+    [self addOrUpdateWithJavaUtilList:[((DKAsyncStorageActor_AddOrUpdate *) nil_chk(((DKAsyncStorageActor_AddOrUpdate *) check_class_cast(message, [DKAsyncStorageActor_AddOrUpdate class])))) getItems]];
   }
-  else if ([message isKindOfClass:[ImActorModelDroidkitEngineAsyncStorageActor_Remove class]]) {
-    [self removeWithLongArray:[((ImActorModelDroidkitEngineAsyncStorageActor_Remove *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_Remove *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_Remove class])))) getKeys]];
+  else if ([message isKindOfClass:[DKAsyncStorageActor_Remove class]]) {
+    [self removeWithLongArray:[((DKAsyncStorageActor_Remove *) nil_chk(((DKAsyncStorageActor_Remove *) check_class_cast(message, [DKAsyncStorageActor_Remove class])))) getKeys]];
   }
-  else if ([message isKindOfClass:[ImActorModelDroidkitEngineAsyncStorageActor_Clear class]]) {
+  else if ([message isKindOfClass:[DKAsyncStorageActor_Clear class]]) {
     [self clear];
   }
-  else if ([message isKindOfClass:[ImActorModelDroidkitEngineAsyncStorageActor_Replace class]]) {
-    [self replaceWithJavaUtilList:[((ImActorModelDroidkitEngineAsyncStorageActor_Replace *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_Replace *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_Replace class])))) getItems]];
+  else if ([message isKindOfClass:[DKAsyncStorageActor_Replace class]]) {
+    [self replaceWithJavaUtilList:[((DKAsyncStorageActor_Replace *) nil_chk(((DKAsyncStorageActor_Replace *) check_class_cast(message, [DKAsyncStorageActor_Replace class])))) getItems]];
   }
-  else if ([message isKindOfClass:[ImActorModelDroidkitEngineAsyncStorageActor_LoadItem class]]) {
-    [self loadItemWithLong:[((ImActorModelDroidkitEngineAsyncStorageActor_LoadItem *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_LoadItem *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_LoadItem class])))) getKey] withImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback:[((ImActorModelDroidkitEngineAsyncStorageActor_LoadItem *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_LoadItem *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_LoadItem class])))) getCallback]];
+  else if ([message isKindOfClass:[DKAsyncStorageActor_LoadItem class]]) {
+    [self loadItemWithLong:[((DKAsyncStorageActor_LoadItem *) nil_chk(((DKAsyncStorageActor_LoadItem *) check_class_cast(message, [DKAsyncStorageActor_LoadItem class])))) getKey] withDKAsyncStorageActor_LoadItemCallback:[((DKAsyncStorageActor_LoadItem *) nil_chk(((DKAsyncStorageActor_LoadItem *) check_class_cast(message, [DKAsyncStorageActor_LoadItem class])))) getCallback]];
   }
-  else if ([message isKindOfClass:[ImActorModelDroidkitEngineAsyncStorageActor_LoadCount class]]) {
-    [self loadCountWithImActorModelDroidkitEngineAsyncStorageActor_LoadCountCallback:[((ImActorModelDroidkitEngineAsyncStorageActor_LoadCount *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_LoadCount *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_LoadCount class])))) getCallback]];
+  else if ([message isKindOfClass:[DKAsyncStorageActor_LoadCount class]]) {
+    [self loadCountWithDKAsyncStorageActor_LoadCountCallback:[((DKAsyncStorageActor_LoadCount *) nil_chk(((DKAsyncStorageActor_LoadCount *) check_class_cast(message, [DKAsyncStorageActor_LoadCount class])))) getCallback]];
   }
-  else if ([message isKindOfClass:[ImActorModelDroidkitEngineAsyncStorageActor_LoadHead class]]) {
-    [self loadHeadWithImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback:[((ImActorModelDroidkitEngineAsyncStorageActor_LoadHead *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_LoadHead *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_LoadHead class])))) getCallback]];
+  else if ([message isKindOfClass:[DKAsyncStorageActor_LoadHead class]]) {
+    [self loadHeadWithDKAsyncStorageActor_LoadItemCallback:[((DKAsyncStorageActor_LoadHead *) nil_chk(((DKAsyncStorageActor_LoadHead *) check_class_cast(message, [DKAsyncStorageActor_LoadHead class])))) getCallback]];
   }
-  else if ([message isKindOfClass:[ImActorModelDroidkitEngineAsyncStorageActor_LoadForward class]]) {
-    [self loadForwardWithNSString:[((ImActorModelDroidkitEngineAsyncStorageActor_LoadForward *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_LoadForward *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_LoadForward class])))) getQuery] withJavaLangLong:[((ImActorModelDroidkitEngineAsyncStorageActor_LoadForward *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_LoadForward *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_LoadForward class])))) getTopSortKey] withInt:[((ImActorModelDroidkitEngineAsyncStorageActor_LoadForward *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_LoadForward *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_LoadForward class])))) getLimit] withImActorModelDroidkitEngineListEngineCallback:[((ImActorModelDroidkitEngineAsyncStorageActor_LoadForward *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_LoadForward *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_LoadForward class])))) getCallback]];
+  else if ([message isKindOfClass:[DKAsyncStorageActor_LoadForward class]]) {
+    [self loadForwardWithNSString:[((DKAsyncStorageActor_LoadForward *) nil_chk(((DKAsyncStorageActor_LoadForward *) check_class_cast(message, [DKAsyncStorageActor_LoadForward class])))) getQuery] withJavaLangLong:[((DKAsyncStorageActor_LoadForward *) nil_chk(((DKAsyncStorageActor_LoadForward *) check_class_cast(message, [DKAsyncStorageActor_LoadForward class])))) getTopSortKey] withInt:[((DKAsyncStorageActor_LoadForward *) nil_chk(((DKAsyncStorageActor_LoadForward *) check_class_cast(message, [DKAsyncStorageActor_LoadForward class])))) getLimit] withDKListEngineCallback:[((DKAsyncStorageActor_LoadForward *) nil_chk(((DKAsyncStorageActor_LoadForward *) check_class_cast(message, [DKAsyncStorageActor_LoadForward class])))) getCallback]];
   }
-  else if ([message isKindOfClass:[ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward class]]) {
-    [self loadBackwardWithNSString:[((ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward class])))) getQuery] withJavaLangLong:[((ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward class])))) getTopSortKey] withInt:[((ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward class])))) getLimit] withImActorModelDroidkitEngineListEngineCallback:[((ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward *) nil_chk(((ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward *) check_class_cast(message, [ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward class])))) getCallback]];
+  else if ([message isKindOfClass:[DKAsyncStorageActor_LoadBackward class]]) {
+    [self loadBackwardWithNSString:[((DKAsyncStorageActor_LoadBackward *) nil_chk(((DKAsyncStorageActor_LoadBackward *) check_class_cast(message, [DKAsyncStorageActor_LoadBackward class])))) getQuery] withJavaLangLong:[((DKAsyncStorageActor_LoadBackward *) nil_chk(((DKAsyncStorageActor_LoadBackward *) check_class_cast(message, [DKAsyncStorageActor_LoadBackward class])))) getTopSortKey] withInt:[((DKAsyncStorageActor_LoadBackward *) nil_chk(((DKAsyncStorageActor_LoadBackward *) check_class_cast(message, [DKAsyncStorageActor_LoadBackward class])))) getLimit] withDKListEngineCallback:[((DKAsyncStorageActor_LoadBackward *) nil_chk(((DKAsyncStorageActor_LoadBackward *) check_class_cast(message, [DKAsyncStorageActor_LoadBackward class])))) getCallback]];
   }
   else {
     [self dropWithId:message];
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageActor *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageActor *)other {
   [super copyAllFieldsTo:other];
   other->storage_ = storage_;
   other->creator_ = creator_;
@@ -276,15 +276,15 @@ withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineL
 
 @end
 
-void ImActorModelDroidkitEngineAsyncStorageActor_callCallbackWithImActorModelDroidkitEngineListEngineCallback_withJavaUtilList_(ImActorModelDroidkitEngineAsyncStorageActor *self, id<ImActorModelDroidkitEngineListEngineCallback> callback, id<JavaUtilList> res) {
+void DKAsyncStorageActor_callCallbackWithDKListEngineCallback_withJavaUtilList_(DKAsyncStorageActor *self, id<DKListEngineCallback> callback, id<JavaUtilList> res) {
   if ([((id<JavaUtilList>) nil_chk(res)) size] == 0) {
-    [((id<ImActorModelDroidkitEngineListEngineCallback>) nil_chk(callback)) onLoadedWithJavaUtilList:res withLong:0 withLong:0];
+    [((id<DKListEngineCallback>) nil_chk(callback)) onLoadedWithJavaUtilList:res withLong:0 withLong:0];
   }
   else {
     jlong topSort, bottomSort;
-    topSort = bottomSort = [((BSBserObject<ImActorModelDroidkitEngineListEngineItem> *) nil_chk([res getWithInt:0])) getEngineSort];
-    for (BSBserObject<ImActorModelDroidkitEngineListEngineItem> * __strong t in res) {
-      jlong sort = [((BSBserObject<ImActorModelDroidkitEngineListEngineItem> *) nil_chk(t)) getEngineSort];
+    topSort = bottomSort = [((BSBserObject<DKListEngineItem> *) nil_chk([res getWithInt:0])) getEngineSort];
+    for (BSBserObject<DKListEngineItem> * __strong t in res) {
+      jlong sort = [((BSBserObject<DKListEngineItem> *) nil_chk(t)) getEngineSort];
       if (topSort < sort) {
         topSort = sort;
       }
@@ -292,15 +292,15 @@ void ImActorModelDroidkitEngineAsyncStorageActor_callCallbackWithImActorModelDro
         bottomSort = sort;
       }
     }
-    [((id<ImActorModelDroidkitEngineListEngineCallback>) nil_chk(callback)) onLoadedWithJavaUtilList:res withLong:topSort withLong:bottomSort];
+    [((id<DKListEngineCallback>) nil_chk(callback)) onLoadedWithJavaUtilList:res withLong:topSort withLong:bottomSort];
   }
 }
 
-JavaUtilArrayList *ImActorModelDroidkitEngineAsyncStorageActor_convertListWithJavaUtilList_(ImActorModelDroidkitEngineAsyncStorageActor *self, id<JavaUtilList> records) {
+JavaUtilArrayList *DKAsyncStorageActor_convertListWithJavaUtilList_(DKAsyncStorageActor *self, id<JavaUtilList> records) {
   JavaUtilArrayList *res = [[JavaUtilArrayList alloc] init];
-  for (ImActorModelDroidkitEngineListEngineRecord * __strong record in nil_chk(records)) {
+  for (DKListEngineRecord * __strong record in nil_chk(records)) {
     @try {
-      BSBserObject<ImActorModelDroidkitEngineListEngineItem> *loaded = ((BSBserObject<ImActorModelDroidkitEngineListEngineItem> *) BSBser_parseWithBSBserObject_withByteArray_([((id<BSBserCreator>) nil_chk(self->creator_)) createInstance], [((ImActorModelDroidkitEngineListEngineRecord *) nil_chk(record)) getData]));
+      BSBserObject<DKListEngineItem> *loaded = ((BSBserObject<DKListEngineItem> *) BSBser_parseWithBSBserObject_withByteArray_([((id<BSBserCreator>) nil_chk(self->creator_)) createInstance], [((DKListEngineRecord *) nil_chk(record)) getData]));
       [res addWithId:loaded];
     }
     @catch (JavaIoIOException *e) {
@@ -310,31 +310,9 @@ JavaUtilArrayList *ImActorModelDroidkitEngineAsyncStorageActor_convertListWithJa
   return res;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageActor)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageActor_AddOrUpdate
-
-- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)items {
-  if (self = [super init]) {
-    self->items_ = items;
-  }
-  return self;
-}
-
-- (id<JavaUtilList>)getItems {
-  return items_;
-}
-
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageActor_AddOrUpdate *)other {
-  [super copyAllFieldsTo:other];
-  other->items_ = items_;
-}
-
-@end
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_AddOrUpdate)
-
-@implementation ImActorModelDroidkitEngineAsyncStorageActor_Replace
+@implementation DKAsyncStorageActor_AddOrUpdate
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)items {
   if (self = [super init]) {
@@ -347,16 +325,38 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_Add
   return items_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageActor_Replace *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageActor_AddOrUpdate *)other {
   [super copyAllFieldsTo:other];
   other->items_ = items_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_Replace)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_AddOrUpdate)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageActor_Remove
+@implementation DKAsyncStorageActor_Replace
+
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)items {
+  if (self = [super init]) {
+    self->items_ = items;
+  }
+  return self;
+}
+
+- (id<JavaUtilList>)getItems {
+  return items_;
+}
+
+- (void)copyAllFieldsTo:(DKAsyncStorageActor_Replace *)other {
+  [super copyAllFieldsTo:other];
+  other->items_ = items_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_Replace)
+
+@implementation DKAsyncStorageActor_Remove
 
 - (instancetype)initWithLongArray:(IOSLongArray *)keys {
   if (self = [super init]) {
@@ -369,16 +369,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_Rep
   return keys_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageActor_Remove *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageActor_Remove *)other {
   [super copyAllFieldsTo:other];
   other->keys_ = keys_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_Remove)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_Remove)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageActor_Clear
+@implementation DKAsyncStorageActor_Clear
 
 - (instancetype)init {
   return [super init];
@@ -386,12 +386,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_Rem
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_Clear)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_Clear)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageActor_LoadItem
+@implementation DKAsyncStorageActor_LoadItem
 
 - (instancetype)initWithLong:(jlong)key
-withImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback:(id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>)callback {
+withDKAsyncStorageActor_LoadItemCallback:(id<DKAsyncStorageActor_LoadItemCallback>)callback {
   if (self = [super init]) {
     self->key_ = key;
     self->callback_ = callback;
@@ -403,11 +403,11 @@ withImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback:(id<ImActorMode
   return key_;
 }
 
-- (id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>)getCallback {
+- (id<DKAsyncStorageActor_LoadItemCallback>)getCallback {
   return callback_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageActor_LoadItem *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageActor_LoadItem *)other {
   [super copyAllFieldsTo:other];
   other->key_ = key_;
   other->callback_ = callback_;
@@ -415,58 +415,58 @@ withImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback:(id<ImActorMode
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_LoadItem)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_LoadItem)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageActor_LoadCount
+@implementation DKAsyncStorageActor_LoadCount
 
-- (instancetype)initWithImActorModelDroidkitEngineAsyncStorageActor_LoadCountCallback:(id<ImActorModelDroidkitEngineAsyncStorageActor_LoadCountCallback>)callback {
+- (instancetype)initWithDKAsyncStorageActor_LoadCountCallback:(id<DKAsyncStorageActor_LoadCountCallback>)callback {
   if (self = [super init]) {
     self->callback_ = callback;
   }
   return self;
 }
 
-- (id<ImActorModelDroidkitEngineAsyncStorageActor_LoadCountCallback>)getCallback {
+- (id<DKAsyncStorageActor_LoadCountCallback>)getCallback {
   return callback_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageActor_LoadCount *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageActor_LoadCount *)other {
   [super copyAllFieldsTo:other];
   other->callback_ = callback_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_LoadCount)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_LoadCount)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageActor_LoadHead
+@implementation DKAsyncStorageActor_LoadHead
 
-- (instancetype)initWithImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback:(id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>)callback {
+- (instancetype)initWithDKAsyncStorageActor_LoadItemCallback:(id<DKAsyncStorageActor_LoadItemCallback>)callback {
   if (self = [super init]) {
     self->callback_ = callback;
   }
   return self;
 }
 
-- (id<ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback>)getCallback {
+- (id<DKAsyncStorageActor_LoadItemCallback>)getCallback {
   return callback_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageActor_LoadHead *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageActor_LoadHead *)other {
   [super copyAllFieldsTo:other];
   other->callback_ = callback_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_LoadHead)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_LoadHead)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageActor_LoadForward
+@implementation DKAsyncStorageActor_LoadForward
 
 - (instancetype)initWithNSString:(NSString *)query
                 withJavaLangLong:(JavaLangLong *)topSortKey
                          withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback {
+        withDKListEngineCallback:(id<DKListEngineCallback>)callback {
   if (self = [super init]) {
     self->query_ = query;
     self->topSortKey_ = topSortKey;
@@ -488,11 +488,11 @@ withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineL
   return limit_;
 }
 
-- (id<ImActorModelDroidkitEngineListEngineCallback>)getCallback {
+- (id<DKListEngineCallback>)getCallback {
   return callback_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageActor_LoadForward *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageActor_LoadForward *)other {
   [super copyAllFieldsTo:other];
   other->query_ = query_;
   other->topSortKey_ = topSortKey_;
@@ -502,14 +502,14 @@ withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineL
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_LoadForward)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_LoadForward)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward
+@implementation DKAsyncStorageActor_LoadBackward
 
 - (instancetype)initWithNSString:(NSString *)query
                 withJavaLangLong:(JavaLangLong *)topSortKey
                          withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback {
+        withDKListEngineCallback:(id<DKListEngineCallback>)callback {
   if (self = [super init]) {
     self->query_ = query;
     self->topSortKey_ = topSortKey;
@@ -531,11 +531,11 @@ withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineL
   return limit_;
 }
 
-- (id<ImActorModelDroidkitEngineListEngineCallback>)getCallback {
+- (id<DKListEngineCallback>)getCallback {
   return callback_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageActor_LoadBackward *)other {
   [super copyAllFieldsTo:other];
   other->query_ = query_;
   other->topSortKey_ = topSortKey_;
@@ -545,8 +545,8 @@ withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineL
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_LoadBackward)
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_LoadItemCallback)
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageActor_LoadCountCallback)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_LoadCountCallback)

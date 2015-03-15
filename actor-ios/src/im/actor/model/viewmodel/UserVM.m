@@ -166,7 +166,7 @@ JavaUtilArrayList *AMUserVM_buildPhonesWithJavaUtilList_(AMUserVM *self, id<Java
 }
 
 void AMUserVM_notifyChange(AMUserVM *self) {
-  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) runOnUiThreadWithJavaLangRunnable:[[AMUserVM_$1 alloc] initWithAMUserVM:self]];
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) runOnUiThread:[[AMUserVM_$1 alloc] initWithAMUserVM:self]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserVM)

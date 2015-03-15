@@ -26,10 +26,10 @@
 @class ImActorModelModulesModules;
 @class JavaLangException;
 @protocol AMCommand;
+@protocol AMFileSystemReference;
 @protocol AMFileVMCallback;
 @protocol AMUploadFileVMCallback;
-@protocol ImActorModelDroidkitEngineListEngine;
-@protocol ImActorModelFilesFileReference;
+@protocol DKListEngine;
 @protocol ImActorModelModulesFileDownloadCallback;
 @protocol ImActorModelModulesFileUploadCallback;
 
@@ -39,7 +39,7 @@
 @interface AMMessenger : NSObject {
 }
 
-- (instancetype)initWithConfig:(AMConfiguration *)configuration;
+- (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration;
 
 - (AMAuthStateEnum *)getAuthState;
 
@@ -65,9 +65,9 @@
 
 - (AMMVVMCollection *)getGroups;
 
-- (id<ImActorModelDroidkitEngineListEngine>)getDialogs;
+- (id<DKListEngine>)getDialogs;
 
-- (id<ImActorModelDroidkitEngineListEngine>)getMessagesWithAMPeer:(AMPeer *)peer;
+- (id<DKListEngine>)getMessagesWithAMPeer:(AMPeer *)peer;
 
 - (AMUserTypingVM *)getTyping:(jint)uid;
 
@@ -108,7 +108,7 @@
                     withInt:(jint)w
                     withInt:(jint)h
             withAMFastThumb:(AMFastThumb *)fastThumb
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference;
+  withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
 
 - (void)sendVideoWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)fileName
@@ -116,17 +116,17 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileRefer
                     withInt:(jint)h
                     withInt:(jint)duration
             withAMFastThumb:(AMFastThumb *)fastThumb
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference;
+  withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
 
 - (void)sendDocumentWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)fileName
                   withNSString:(NSString *)mimeType
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference;
+     withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
 
 - (void)sendDocumentWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)fileName
                   withNSString:(NSString *)mimeType
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference
+     withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference
                withAMFastThumb:(AMFastThumb *)fastThumb;
 
 - (id<AMCommand>)editMyNameWithNSString:(NSString *)newName;

@@ -17,6 +17,7 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
 import im.actor.model.entity.content.FastThumb;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.i18n.I18nEngine;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
@@ -246,22 +247,22 @@ public class Messenger {
 
     public void sendPhoto(Peer peer, String fileName,
                           int w, int h, FastThumb fastThumb,
-                          im.actor.model.files.FileReference fileReference) {
-        modules.getMessagesModule().sendPhoto(peer, fileName, w, h, fastThumb, fileReference);
+                          FileSystemReference fileSystemReference) {
+        modules.getMessagesModule().sendPhoto(peer, fileName, w, h, fastThumb, fileSystemReference);
     }
 
     public void sendVideo(Peer peer, String fileName, int w, int h, int duration,
-                          FastThumb fastThumb, im.actor.model.files.FileReference fileReference) {
-        modules.getMessagesModule().sendVideo(peer, fileName, w, h, duration, fastThumb, fileReference);
+                          FastThumb fastThumb, FileSystemReference fileSystemReference) {
+        modules.getMessagesModule().sendVideo(peer, fileName, w, h, duration, fastThumb, fileSystemReference);
     }
 
-    public void sendDocument(Peer peer, String fileName, String mimeType, im.actor.model.files.FileReference fileReference) {
-        sendDocument(peer, fileName, mimeType, fileReference, null);
+    public void sendDocument(Peer peer, String fileName, String mimeType, FileSystemReference fileSystemReference) {
+        sendDocument(peer, fileName, mimeType, fileSystemReference, null);
     }
 
-    public void sendDocument(Peer peer, String fileName, String mimeType, im.actor.model.files.FileReference fileReference,
+    public void sendDocument(Peer peer, String fileName, String mimeType, FileSystemReference fileSystemReference,
                              FastThumb fastThumb) {
-        modules.getMessagesModule().sendDocument(peer, fileName, mimeType, fastThumb, fileReference);
+        modules.getMessagesModule().sendDocument(peer, fileName, mimeType, fastThumb, fileSystemReference);
     }
 
     public Command<Boolean> editMyName(final String newName) {

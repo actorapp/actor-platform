@@ -3,29 +3,29 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/AsyncStorageInt.java
 //
 
-#ifndef _ImActorModelDroidkitEngineAsyncStorageInt_H_
-#define _ImActorModelDroidkitEngineAsyncStorageInt_H_
+#ifndef _DKAsyncStorageInt_H_
+#define _DKAsyncStorageInt_H_
 
 @class BSBserObject;
 @class DKActorRef;
+@class DKAsyncStorageActor;
 @class IOSLongArray;
-@class ImActorModelDroidkitEngineAsyncStorageActor;
 @class JavaLangLong;
 @protocol BSBserCreator;
-@protocol ImActorModelDroidkitEngineListEngineCallback;
-@protocol ImActorModelDroidkitEngineListEngineItem;
-@protocol ImActorModelDroidkitEngineListStorage;
+@protocol DKListEngineCallback;
+@protocol DKListEngineItem;
+@protocol DKListStorage;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/engine/AsyncStorageActor.h"
 
-@interface ImActorModelDroidkitEngineAsyncStorageInt : NSObject {
+@interface DKAsyncStorageInt : NSObject {
 }
 
-- (instancetype)initWithImActorModelDroidkitEngineListStorage:(id<ImActorModelDroidkitEngineListStorage>)storage
-                                            withBSBserCreator:(id<BSBserCreator>)creator;
+- (instancetype)initWithDKListStorage:(id<DKListStorage>)storage
+                    withBSBserCreator:(id<BSBserCreator>)creator;
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)items;
 
@@ -44,82 +44,84 @@
 - (void)loadForwardWithNSString:(NSString *)query
                withJavaLangLong:(JavaLangLong *)afterSortKey
                         withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+       withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadBackwardWithNSString:(NSString *)query
                 withJavaLangLong:(JavaLangLong *)beforeSortKey
                          withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+        withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadCenterWithLong:(jlong)centerSortKey
                    withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+  withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineAsyncStorageInt)
+J2OBJC_EMPTY_STATIC_INIT(DKAsyncStorageInt)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT jint ImActorModelDroidkitEngineAsyncStorageInt_NEXT_ID_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitEngineAsyncStorageInt, NEXT_ID_, jint)
-J2OBJC_STATIC_FIELD_REF_GETTER(ImActorModelDroidkitEngineAsyncStorageInt, NEXT_ID_, jint)
+FOUNDATION_EXPORT jint DKAsyncStorageInt_NEXT_ID_;
+J2OBJC_STATIC_FIELD_GETTER(DKAsyncStorageInt, NEXT_ID_, jint)
+J2OBJC_STATIC_FIELD_REF_GETTER(DKAsyncStorageInt, NEXT_ID_, jint)
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineAsyncStorageInt)
+typedef DKAsyncStorageInt ImActorModelDroidkitEngineAsyncStorageInt;
 
-@interface ImActorModelDroidkitEngineAsyncStorageInt_$1 : NSObject < DKActorCreator > {
+J2OBJC_TYPE_LITERAL_HEADER(DKAsyncStorageInt)
+
+@interface DKAsyncStorageInt_$1 : NSObject < DKActorCreator > {
 }
 
-- (ImActorModelDroidkitEngineAsyncStorageActor *)create;
+- (DKAsyncStorageActor *)create;
 
-- (instancetype)initWithImActorModelDroidkitEngineListStorage:(id<ImActorModelDroidkitEngineListStorage>)capture$0
-                                            withBSBserCreator:(id<BSBserCreator>)capture$1;
+- (instancetype)initWithDKListStorage:(id<DKListStorage>)capture$0
+                    withBSBserCreator:(id<BSBserCreator>)capture$1;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineAsyncStorageInt_$1)
+J2OBJC_EMPTY_STATIC_INIT(DKAsyncStorageInt_$1)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineAsyncStorageInt_$1)
+J2OBJC_TYPE_LITERAL_HEADER(DKAsyncStorageInt_$1)
 
-@interface ImActorModelDroidkitEngineAsyncStorageInt_$2 : NSObject < ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback > {
+@interface DKAsyncStorageInt_$2 : NSObject < DKAsyncStorageActor_LoadItemCallback > {
 }
 
-- (void)onLoadedWithBSBserObject:(BSBserObject<ImActorModelDroidkitEngineListEngineItem> *)item;
+- (void)onLoadedWithBSBserObject:(BSBserObject<DKListEngineItem> *)item;
 
 - (instancetype)initWithId:(id)capture$0
           withJavaUtilList:(id<JavaUtilList>)capture$1;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineAsyncStorageInt_$2)
+J2OBJC_EMPTY_STATIC_INIT(DKAsyncStorageInt_$2)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineAsyncStorageInt_$2)
+J2OBJC_TYPE_LITERAL_HEADER(DKAsyncStorageInt_$2)
 
-@interface ImActorModelDroidkitEngineAsyncStorageInt_$3 : NSObject < ImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback > {
+@interface DKAsyncStorageInt_$3 : NSObject < DKAsyncStorageActor_LoadItemCallback > {
 }
 
-- (void)onLoadedWithBSBserObject:(BSBserObject<ImActorModelDroidkitEngineListEngineItem> *)item;
+- (void)onLoadedWithBSBserObject:(BSBserObject<DKListEngineItem> *)item;
 
 - (instancetype)initWithId:(id)capture$0
           withJavaUtilList:(id<JavaUtilList>)capture$1;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineAsyncStorageInt_$3)
+J2OBJC_EMPTY_STATIC_INIT(DKAsyncStorageInt_$3)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineAsyncStorageInt_$3)
+J2OBJC_TYPE_LITERAL_HEADER(DKAsyncStorageInt_$3)
 
-@interface ImActorModelDroidkitEngineAsyncStorageInt_$4 : NSObject < ImActorModelDroidkitEngineAsyncStorageActor_LoadCountCallback > {
+@interface DKAsyncStorageInt_$4 : NSObject < DKAsyncStorageActor_LoadCountCallback > {
 }
 
 - (void)onLoadedWithInt:(jint)count;
@@ -129,11 +131,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineAsyncStorageInt_$3)
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineAsyncStorageInt_$4)
+J2OBJC_EMPTY_STATIC_INIT(DKAsyncStorageInt_$4)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineAsyncStorageInt_$4)
+J2OBJC_TYPE_LITERAL_HEADER(DKAsyncStorageInt_$4)
 
-#endif // _ImActorModelDroidkitEngineAsyncStorageInt_H_
+#endif // _DKAsyncStorageInt_H_

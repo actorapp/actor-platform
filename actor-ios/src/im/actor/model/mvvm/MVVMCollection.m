@@ -28,7 +28,7 @@ __attribute__((unused)) static void AMMVVMCollection_notifyClear(AMMVVMCollectio
 @interface AMMVVMCollection () {
  @public
   JavaUtilHashMap *values_;
-  id<ImActorModelDroidkitEngineKeyValueStorage> collectionStorage_;
+  id<DKKeyValueStorage> collectionStorage_;
   AMMVVMCollection_ProxyKeyValueEngine *proxyKeyValueEngine_;
 }
 
@@ -40,7 +40,7 @@ __attribute__((unused)) static void AMMVVMCollection_notifyClear(AMMVVMCollectio
 @end
 
 J2OBJC_FIELD_SETTER(AMMVVMCollection, values_, JavaUtilHashMap *)
-J2OBJC_FIELD_SETTER(AMMVVMCollection, collectionStorage_, id<ImActorModelDroidkitEngineKeyValueStorage>)
+J2OBJC_FIELD_SETTER(AMMVVMCollection, collectionStorage_, id<DKKeyValueStorage>)
 J2OBJC_FIELD_SETTER(AMMVVMCollection, proxyKeyValueEngine_, AMMVVMCollection_ProxyKeyValueEngine *)
 
 @interface AMMVVMCollection_ProxyKeyValueEngine () {
@@ -83,7 +83,7 @@ J2OBJC_FIELD_SETTER(AMMVVMCollection_$3, this$0_, AMMVVMCollection *)
 
 @implementation AMMVVMCollection
 
-- (instancetype)initWithImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)collectionStorage {
+- (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)collectionStorage {
   if (self = [super init]) {
     values_ = [[JavaUtilHashMap alloc] init];
     self->collectionStorage_ = collectionStorage;
@@ -92,15 +92,15 @@ J2OBJC_FIELD_SETTER(AMMVVMCollection_$3, this$0_, AMMVVMCollection *)
   return self;
 }
 
-- (id<ImActorModelDroidkitEngineKeyValueEngine>)getEngine {
+- (id<DKKeyValueEngine>)getEngine {
   return proxyKeyValueEngine_;
 }
 
 - (id)getWithLong:(jlong)id_ {
   if ([((JavaUtilHashMap *) nil_chk(values_)) getWithId:JavaLangLong_valueOfWithLong_(id_)] == nil) {
-    id<ImActorModelDroidkitEngineKeyValueItem> res = [((AMMVVMCollection_ProxyKeyValueEngine *) nil_chk(proxyKeyValueEngine_)) getValueWithLong:id_];
+    id<DKKeyValueItem> res = [((AMMVVMCollection_ProxyKeyValueEngine *) nil_chk(proxyKeyValueEngine_)) getValueWithLong:id_];
     if (res != nil) {
-      (void) [values_ putWithId:JavaLangLong_valueOfWithLong_(id_) withId:[self createNewWithImActorModelDroidkitEngineKeyValueItem:res]];
+      (void) [values_ putWithId:JavaLangLong_valueOfWithLong_(id_) withId:[self createNewWithDKKeyValueItem:res]];
     }
     else {
       @throw [[JavaLangRuntimeException alloc] initWithNSString:JreStrcat("$J", @"Unable to find user #", id_)];
@@ -146,28 +146,28 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
 
 @implementation AMMVVMCollection_ProxyKeyValueEngine
 
-- (void)addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:(id<ImActorModelDroidkitEngineKeyValueItem>)item {
+- (void)addOrUpdateItemWithDKKeyValueItem:(id<DKKeyValueItem>)item {
   @synchronized(self) {
-    (void) [((JavaUtilHashMap *) nil_chk(cache_)) putWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelDroidkitEngineKeyValueItem>) nil_chk(item)) getEngineId]) withId:item];
+    (void) [((JavaUtilHashMap *) nil_chk(cache_)) putWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(item)) getEngineId]) withId:item];
     JavaUtilArrayList *res = [[JavaUtilArrayList alloc] init];
     [res addWithId:item];
     AMMVVMCollection_notifyChangeWithJavaUtilList_(this$0_, res);
-    IOSByteArray *data = [this$0_ serializeWithImActorModelDroidkitEngineKeyValueItem:item];
-    [((id<ImActorModelDroidkitEngineKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) addOrUpdateItemWithLong:[item getEngineId] withByteArray:data];
+    IOSByteArray *data = [this$0_ serializeWithDKKeyValueItem:item];
+    [((id<DKKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) addOrUpdateItemWithLong:[item getEngineId] withByteArray:data];
   }
 }
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values {
   @synchronized(self) {
-    for (id<ImActorModelDroidkitEngineKeyValueItem> __strong t in nil_chk(values)) {
-      (void) [((JavaUtilHashMap *) nil_chk(cache_)) putWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelDroidkitEngineKeyValueItem>) nil_chk(t)) getEngineId]) withId:t];
+    for (id<DKKeyValueItem> __strong t in nil_chk(values)) {
+      (void) [((JavaUtilHashMap *) nil_chk(cache_)) putWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(t)) getEngineId]) withId:t];
     }
     AMMVVMCollection_notifyChangeWithJavaUtilList_(this$0_, values);
     JavaUtilArrayList *records = [[JavaUtilArrayList alloc] init];
-    for (id<ImActorModelDroidkitEngineKeyValueItem> __strong v in values) {
-      [records addWithId:[[ImActorModelDroidkitEngineKeyValueRecord alloc] initWithLong:[((id<ImActorModelDroidkitEngineKeyValueItem>) nil_chk(v)) getEngineId] withByteArray:[this$0_ serializeWithImActorModelDroidkitEngineKeyValueItem:v]]];
+    for (id<DKKeyValueItem> __strong v in values) {
+      [records addWithId:[[DKKeyValueRecord alloc] initWithLong:[((id<DKKeyValueItem>) nil_chk(v)) getEngineId] withByteArray:[this$0_ serializeWithDKKeyValueItem:v]]];
     }
-    [((id<ImActorModelDroidkitEngineKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) addOrUpdateItemsWithJavaUtilList:records];
+    [((id<DKKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) addOrUpdateItemsWithJavaUtilList:records];
   }
 }
 
@@ -175,7 +175,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
   @synchronized(self) {
     (void) [((JavaUtilHashMap *) nil_chk(cache_)) removeWithId:JavaLangLong_valueOfWithLong_(id_)];
     AMMVVMCollection_notifyRemoveWithLongArray_(this$0_, [IOSLongArray newArrayWithLongs:(jlong[]){ id_ } count:1]);
-    [((id<ImActorModelDroidkitEngineKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) removeItemWithLong:id_];
+    [((id<DKKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) removeItemWithLong:id_];
   }
 }
 
@@ -191,7 +191,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
       }
     }
     AMMVVMCollection_notifyRemoveWithLongArray_(this$0_, ids);
-    [((id<ImActorModelDroidkitEngineKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) removeItemsWithLongArray:ids];
+    [((id<DKKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) removeItemsWithLongArray:ids];
   }
 }
 
@@ -199,7 +199,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
   @synchronized(self) {
     [((JavaUtilHashMap *) nil_chk(cache_)) clear];
     AMMVVMCollection_notifyClear(this$0_);
-    [((id<ImActorModelDroidkitEngineKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) clear];
+    [((id<DKKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) clear];
   }
 }
 
@@ -208,10 +208,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
     if ([((JavaUtilHashMap *) nil_chk(cache_)) containsKeyWithId:JavaLangLong_valueOfWithLong_(id_)]) {
       return [cache_ getWithId:JavaLangLong_valueOfWithLong_(id_)];
     }
-    IOSByteArray *data = [((id<ImActorModelDroidkitEngineKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) getValueWithLong:id_];
+    IOSByteArray *data = [((id<DKKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) getValueWithLong:id_];
     if (data != nil) {
-      id<ImActorModelDroidkitEngineKeyValueItem> res = [this$0_ deserializeWithByteArray:data];
-      (void) [cache_ putWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelDroidkitEngineKeyValueItem>) nil_chk(res)) getEngineId]) withId:res];
+      id<DKKeyValueItem> res = [this$0_ deserializeWithByteArray:data];
+      (void) [cache_ putWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(res)) getEngineId]) withId:res];
       return res;
     }
     else {
@@ -241,8 +241,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_ProxyKeyValueEngine)
 @implementation AMMVVMCollection_$1
 
 - (void)run {
-  for (id<ImActorModelDroidkitEngineKeyValueItem> __strong i in nil_chk(val$items_)) {
-    if ([((JavaUtilHashMap *) nil_chk(this$0_->values_)) containsKeyWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelDroidkitEngineKeyValueItem>) nil_chk(i)) getEngineId])]) {
+  for (id<DKKeyValueItem> __strong i in nil_chk(val$items_)) {
+    if ([((JavaUtilHashMap *) nil_chk(this$0_->values_)) containsKeyWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(i)) getEngineId])]) {
       [((AMBaseValueModel *) nil_chk([this$0_->values_ getWithId:JavaLangLong_valueOfWithLong_([i getEngineId])])) updateWithId:i];
     }
   }

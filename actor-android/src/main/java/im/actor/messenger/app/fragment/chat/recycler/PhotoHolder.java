@@ -22,7 +22,7 @@ import im.actor.model.entity.content.FileLocalSource;
 import im.actor.model.entity.content.FileRemoteSource;
 import im.actor.model.entity.content.PhotoContent;
 import im.actor.model.entity.content.VideoContent;
-import im.actor.model.files.FileReference;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
 
@@ -264,7 +264,7 @@ public class PhotoHolder extends MessageHolder {
         }
 
         @Override
-        public void onDownloaded(FileReference reference) {
+        public void onDownloaded(FileSystemReference reference) {
             progressValue.setText(100 + "");
             progressView.setValue(100);
 

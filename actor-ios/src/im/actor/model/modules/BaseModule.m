@@ -62,7 +62,7 @@ NSString * ImActorModelModulesBaseModule_STORAGE_CURSOR_ = @"chat_cursor";
 }
 
 - (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
-  [((id<AMMainThreadProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThreadProvider])) runOnUiThreadWithJavaLangRunnable:runnable];
+  [((id<AMMainThreadProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThreadProvider])) runOnUiThread:runnable];
 }
 
 - (DKActorRef *)sendActor {
@@ -93,7 +93,7 @@ NSString * ImActorModelModulesBaseModule_STORAGE_CURSOR_ = @"chat_cursor";
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationHistoryActorWithAMPeer:peer];
 }
 
-- (id<ImActorModelDroidkitEnginePreferencesStorage>)preferences {
+- (id<DKPreferencesStorage>)preferences {
   return [((ImActorModelModulesModules *) nil_chk(modules__)) getPreferences];
 }
 
@@ -118,11 +118,11 @@ NSString * ImActorModelModulesBaseModule_STORAGE_CURSOR_ = @"chat_cursor";
   [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:[[ImActorModelModulesBaseModule_$1 alloc] init]];
 }
 
-- (id<ImActorModelDroidkitEngineKeyValueEngine>)users {
+- (id<DKKeyValueEngine>)users {
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsers];
 }
 
-- (id<ImActorModelDroidkitEngineKeyValueEngine>)groups {
+- (id<DKKeyValueEngine>)groups {
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getGroupsModule])) getGroups];
 }
 

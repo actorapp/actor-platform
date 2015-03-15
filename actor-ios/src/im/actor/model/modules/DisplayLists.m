@@ -49,22 +49,22 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, contactsGlobalList_, AMBind
 
 - (AMBindedDisplayList *)buildNewDialogsListWithBoolean:(jboolean)disableDispose {
   AMMVVMEngine_checkMainThread();
-  id<ImActorModelDroidkitEngineListEngine> dialogsEngine = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsEngine];
-  if (!([ImActorModelDroidkitEngineListEngineDisplayExt_class_() isInstance:dialogsEngine])) {
+  id<DKListEngine> dialogsEngine = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsEngine];
+  if (!([DKListEngineDisplayExt_class_() isInstance:dialogsEngine])) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Dialogs ListEngine must implement ListEngineDisplayExt for using global list"];
   }
-  AMBindedDisplayList *displayList = [[AMBindedDisplayList alloc] initWithImActorModelDroidkitEngineListEngineDisplayExt:(id<ImActorModelDroidkitEngineListEngineDisplayExt>) check_protocol_cast(dialogsEngine, @protocol(ImActorModelDroidkitEngineListEngineDisplayExt)) withBoolean:disableDispose];
+  AMBindedDisplayList *displayList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(dialogsEngine, @protocol(DKListEngineDisplayExt)) withBoolean:disableDispose];
   [displayList initTopWithBoolean:NO];
   return displayList;
 }
 
 - (AMBindedDisplayList *)buildNewContactListWithBoolean:(jboolean)disableDispose {
   AMMVVMEngine_checkMainThread();
-  id<ImActorModelDroidkitEngineListEngine> contactsEngine = [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContacts];
-  if (!([ImActorModelDroidkitEngineListEngineDisplayExt_class_() isInstance:contactsEngine])) {
+  id<DKListEngine> contactsEngine = [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContacts];
+  if (!([DKListEngineDisplayExt_class_() isInstance:contactsEngine])) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Contacts ListEngine must implement ListEngineDisplayExt for using global list"];
   }
-  AMBindedDisplayList *contactList = [[AMBindedDisplayList alloc] initWithImActorModelDroidkitEngineListEngineDisplayExt:(id<ImActorModelDroidkitEngineListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(ImActorModelDroidkitEngineListEngineDisplayExt)) withBoolean:disableDispose];
+  AMBindedDisplayList *contactList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)) withBoolean:disableDispose];
   [contactList initTopWithBoolean:NO];
   return contactList;
 }

@@ -15,20 +15,20 @@
 #include "org/bouncycastle/crypto/engines/RSAEngine.h"
 #include "org/bouncycastle/crypto/params/RSAKeyParameters.h"
 
-@interface ImActorModelCryptoBouncycastleBcRsaEncryptCipher () {
+@interface BCBcRsaEncryptCipher () {
  @public
   id<OrgBouncycastleCryptoAsymmetricBlockCipher> cipher_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelCryptoBouncycastleBcRsaEncryptCipher, cipher_, id<OrgBouncycastleCryptoAsymmetricBlockCipher>)
+J2OBJC_FIELD_SETTER(BCBcRsaEncryptCipher, cipher_, id<OrgBouncycastleCryptoAsymmetricBlockCipher>)
 
-@implementation ImActorModelCryptoBouncycastleBcRsaEncryptCipher
+@implementation BCBcRsaEncryptCipher
 
 - (instancetype)initWithByteArray:(IOSByteArray *)publicKey {
   if (self = [super init]) {
     @try {
-      ImActorModelCryptoEncodingX509RsaPublicKey *key = [[ImActorModelCryptoEncodingX509RsaPublicKey alloc] initWithByteArray:publicKey];
+      BCX509RsaPublicKey *key = [[BCX509RsaPublicKey alloc] initWithByteArray:publicKey];
       OrgBouncycastleCryptoParamsRSAKeyParameters *param = [[OrgBouncycastleCryptoParamsRSAKeyParameters alloc] initWithBoolean:NO withJavaMathBigInteger:[key getModulus] withJavaMathBigInteger:[key getExponent]];
       cipher_ = [[OrgBouncycastleCryptoEncodingsOAEPEncoding alloc] initWithOrgBouncycastleCryptoAsymmetricBlockCipher:[[OrgBouncycastleCryptoEnginesRSAEngine alloc] init] withOrgBouncycastleCryptoDigest:[[OrgBouncycastleCryptoDigestsSHA1Digest alloc] init]];
       [cipher_ init__WithBoolean:YES withOrgBouncycastleCryptoCipherParameters:param];
@@ -55,11 +55,11 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoBouncycastleBcRsaEncryptCipher, cipher_, i
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelCryptoBouncycastleBcRsaEncryptCipher *)other {
+- (void)copyAllFieldsTo:(BCBcRsaEncryptCipher *)other {
   [super copyAllFieldsTo:other];
   other->cipher_ = cipher_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoBouncycastleBcRsaEncryptCipher)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCBcRsaEncryptCipher)

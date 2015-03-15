@@ -7,4 +7,4 @@
 #include "im/actor/model/droidkit/engine/ListEngineCallback.h"
 #include "java/util/List.h"
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineListEngineCallback)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(DKListEngineCallback)

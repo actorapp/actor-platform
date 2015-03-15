@@ -23,87 +23,87 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-@interface ImActorModelDroidkitEngineAsyncStorageInt () {
+@interface DKAsyncStorageInt () {
  @public
   DKActorRef *storageActor_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageInt, storageActor_, DKActorRef *)
+J2OBJC_FIELD_SETTER(DKAsyncStorageInt, storageActor_, DKActorRef *)
 
-@interface ImActorModelDroidkitEngineAsyncStorageInt_$1 () {
+@interface DKAsyncStorageInt_$1 () {
  @public
-  id<ImActorModelDroidkitEngineListStorage> val$storage_;
+  id<DKListStorage> val$storage_;
   id<BSBserCreator> val$creator_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageInt_$1, val$storage_, id<ImActorModelDroidkitEngineListStorage>)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageInt_$1, val$creator_, id<BSBserCreator>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$1, val$storage_, id<DKListStorage>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$1, val$creator_, id<BSBserCreator>)
 
-@interface ImActorModelDroidkitEngineAsyncStorageInt_$2 () {
+@interface DKAsyncStorageInt_$2 () {
  @public
   id val$lock_;
   id<JavaUtilList> val$resultList_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageInt_$2, val$lock_, id)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageInt_$2, val$resultList_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$2, val$lock_, id)
+J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$2, val$resultList_, id<JavaUtilList>)
 
-@interface ImActorModelDroidkitEngineAsyncStorageInt_$3 () {
+@interface DKAsyncStorageInt_$3 () {
  @public
   id val$lock_;
   id<JavaUtilList> val$resultList_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageInt_$3, val$lock_, id)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageInt_$3, val$resultList_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$3, val$lock_, id)
+J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$3, val$resultList_, id<JavaUtilList>)
 
-@interface ImActorModelDroidkitEngineAsyncStorageInt_$4 () {
+@interface DKAsyncStorageInt_$4 () {
  @public
   id val$lock_;
   id<JavaUtilList> val$resultList_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageInt_$4, val$lock_, id)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineAsyncStorageInt_$4, val$resultList_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$4, val$lock_, id)
+J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$4, val$resultList_, id<JavaUtilList>)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageInt
+@implementation DKAsyncStorageInt
 
-jint ImActorModelDroidkitEngineAsyncStorageInt_NEXT_ID_ = 0;
+jint DKAsyncStorageInt_NEXT_ID_ = 0;
 
-- (instancetype)initWithImActorModelDroidkitEngineListStorage:(id<ImActorModelDroidkitEngineListStorage>)storage
-                                            withBSBserCreator:(id<BSBserCreator>)creator {
+- (instancetype)initWithDKListStorage:(id<DKListStorage>)storage
+                    withBSBserCreator:(id<BSBserCreator>)creator {
   if (self = [super init]) {
-    storageActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelDroidkitEngineAsyncStorageActor_class_(), [[ImActorModelDroidkitEngineAsyncStorageInt_$1 alloc] initWithImActorModelDroidkitEngineListStorage:storage withBSBserCreator:creator]) withNSString:JreStrcat("$I", @"list_engine/", ImActorModelDroidkitEngineAsyncStorageInt_NEXT_ID_++)];
+    storageActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(DKAsyncStorageActor_class_(), [[DKAsyncStorageInt_$1 alloc] initWithDKListStorage:storage withBSBserCreator:creator]) withNSString:JreStrcat("$I", @"list_engine/", DKAsyncStorageInt_NEXT_ID_++)];
   }
   return self;
 }
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)items {
-  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[ImActorModelDroidkitEngineAsyncStorageActor_AddOrUpdate alloc] initWithJavaUtilList:items]];
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_AddOrUpdate alloc] initWithJavaUtilList:items]];
 }
 
 - (void)replaceItemsWithJavaUtilList:(id<JavaUtilList>)items {
-  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[ImActorModelDroidkitEngineAsyncStorageActor_Replace alloc] initWithJavaUtilList:items]];
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_Replace alloc] initWithJavaUtilList:items]];
 }
 
 - (void)removeWithLongArray:(IOSLongArray *)keys {
-  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[ImActorModelDroidkitEngineAsyncStorageActor_Remove alloc] initWithLongArray:keys]];
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_Remove alloc] initWithLongArray:keys]];
 }
 
 - (void)clear {
-  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[ImActorModelDroidkitEngineAsyncStorageActor_Clear alloc] init]];
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_Clear alloc] init]];
 }
 
 - (id)getValueWithLong:(jlong)value {
   id lock = [[NSObject alloc] init];
   id<JavaUtilList> resultList = [[JavaUtilArrayList alloc] init];
   @synchronized(lock) {
-    [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[ImActorModelDroidkitEngineAsyncStorageActor_LoadItem alloc] initWithLong:value withImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback:[[ImActorModelDroidkitEngineAsyncStorageInt_$2 alloc] initWithId:lock withJavaUtilList:resultList]]];
+    [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_LoadItem alloc] initWithLong:value withDKAsyncStorageActor_LoadItemCallback:[[DKAsyncStorageInt_$2 alloc] initWithId:lock withJavaUtilList:resultList]]];
     @try {
       [lock wait];
     }
@@ -123,7 +123,7 @@ jint ImActorModelDroidkitEngineAsyncStorageInt_NEXT_ID_ = 0;
   id lock = [[NSObject alloc] init];
   id<JavaUtilList> resultList = [[JavaUtilArrayList alloc] init];
   @synchronized(lock) {
-    [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[ImActorModelDroidkitEngineAsyncStorageActor_LoadHead alloc] initWithImActorModelDroidkitEngineAsyncStorageActor_LoadItemCallback:[[ImActorModelDroidkitEngineAsyncStorageInt_$3 alloc] initWithId:lock withJavaUtilList:resultList]]];
+    [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_LoadHead alloc] initWithDKAsyncStorageActor_LoadItemCallback:[[DKAsyncStorageInt_$3 alloc] initWithId:lock withJavaUtilList:resultList]]];
     @try {
       [lock wait];
     }
@@ -143,7 +143,7 @@ jint ImActorModelDroidkitEngineAsyncStorageInt_NEXT_ID_ = 0;
   id lock = [[NSObject alloc] init];
   id<JavaUtilList> resultList = [[JavaUtilArrayList alloc] init];
   @synchronized(lock) {
-    [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[ImActorModelDroidkitEngineAsyncStorageActor_LoadCount alloc] initWithImActorModelDroidkitEngineAsyncStorageActor_LoadCountCallback:[[ImActorModelDroidkitEngineAsyncStorageInt_$4 alloc] initWithId:lock withJavaUtilList:resultList]]];
+    [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_LoadCount alloc] initWithDKAsyncStorageActor_LoadCountCallback:[[DKAsyncStorageInt_$4 alloc] initWithId:lock withJavaUtilList:resultList]]];
     @try {
       [lock wait];
     }
@@ -162,46 +162,46 @@ jint ImActorModelDroidkitEngineAsyncStorageInt_NEXT_ID_ = 0;
 - (void)loadForwardWithNSString:(NSString *)query
                withJavaLangLong:(JavaLangLong *)afterSortKey
                         withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback {
-  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[ImActorModelDroidkitEngineAsyncStorageActor_LoadForward alloc] initWithNSString:query withJavaLangLong:afterSortKey withInt:limit withImActorModelDroidkitEngineListEngineCallback:callback]];
+       withDKListEngineCallback:(id<DKListEngineCallback>)callback {
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_LoadForward alloc] initWithNSString:query withJavaLangLong:afterSortKey withInt:limit withDKListEngineCallback:callback]];
 }
 
 - (void)loadBackwardWithNSString:(NSString *)query
                 withJavaLangLong:(JavaLangLong *)beforeSortKey
                          withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback {
-  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[ImActorModelDroidkitEngineAsyncStorageActor_LoadBackward alloc] initWithNSString:query withJavaLangLong:beforeSortKey withInt:limit withImActorModelDroidkitEngineListEngineCallback:callback]];
+        withDKListEngineCallback:(id<DKListEngineCallback>)callback {
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_LoadBackward alloc] initWithNSString:query withJavaLangLong:beforeSortKey withInt:limit withDKListEngineCallback:callback]];
 }
 
 - (void)loadCenterWithLong:(jlong)centerSortKey
                    withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback {
+  withDKListEngineCallback:(id<DKListEngineCallback>)callback {
   @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Unsupported"];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageInt *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageInt *)other {
   [super copyAllFieldsTo:other];
   other->storageActor_ = storageActor_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageInt)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageInt_$1
+@implementation DKAsyncStorageInt_$1
 
-- (ImActorModelDroidkitEngineAsyncStorageActor *)create {
-  return [[ImActorModelDroidkitEngineAsyncStorageActor alloc] initWithImActorModelDroidkitEngineListStorage:val$storage_ withBSBserCreator:val$creator_];
+- (DKAsyncStorageActor *)create {
+  return [[DKAsyncStorageActor alloc] initWithDKListStorage:val$storage_ withBSBserCreator:val$creator_];
 }
 
-- (instancetype)initWithImActorModelDroidkitEngineListStorage:(id<ImActorModelDroidkitEngineListStorage>)capture$0
-                                            withBSBserCreator:(id<BSBserCreator>)capture$1 {
+- (instancetype)initWithDKListStorage:(id<DKListStorage>)capture$0
+                    withBSBserCreator:(id<BSBserCreator>)capture$1 {
   val$storage_ = capture$0;
   val$creator_ = capture$1;
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageInt_$1 *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageInt_$1 *)other {
   [super copyAllFieldsTo:other];
   other->val$storage_ = val$storage_;
   other->val$creator_ = val$creator_;
@@ -209,11 +209,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageInt)
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageInt_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt_$1)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageInt_$2
+@implementation DKAsyncStorageInt_$2
 
-- (void)onLoadedWithBSBserObject:(BSBserObject<ImActorModelDroidkitEngineListEngineItem> *)item {
+- (void)onLoadedWithBSBserObject:(BSBserObject<DKListEngineItem> *)item {
   @synchronized(val$lock_) {
     if (item != nil) {
       [((id<JavaUtilList>) nil_chk(val$resultList_)) addWithId:item];
@@ -229,7 +229,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageInt_$1)
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageInt_$2 *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageInt_$2 *)other {
   [super copyAllFieldsTo:other];
   other->val$lock_ = val$lock_;
   other->val$resultList_ = val$resultList_;
@@ -237,11 +237,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageInt_$1)
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageInt_$2)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt_$2)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageInt_$3
+@implementation DKAsyncStorageInt_$3
 
-- (void)onLoadedWithBSBserObject:(BSBserObject<ImActorModelDroidkitEngineListEngineItem> *)item {
+- (void)onLoadedWithBSBserObject:(BSBserObject<DKListEngineItem> *)item {
   @synchronized(val$lock_) {
     if (item != nil) {
       [((id<JavaUtilList>) nil_chk(val$resultList_)) addWithId:item];
@@ -257,7 +257,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageInt_$2)
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageInt_$3 *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageInt_$3 *)other {
   [super copyAllFieldsTo:other];
   other->val$lock_ = val$lock_;
   other->val$resultList_ = val$resultList_;
@@ -265,9 +265,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageInt_$2)
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageInt_$3)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt_$3)
 
-@implementation ImActorModelDroidkitEngineAsyncStorageInt_$4
+@implementation DKAsyncStorageInt_$4
 
 - (void)onLoadedWithInt:(jint)count {
   @synchronized(val$lock_) {
@@ -283,7 +283,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageInt_$3)
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineAsyncStorageInt_$4 *)other {
+- (void)copyAllFieldsTo:(DKAsyncStorageInt_$4 *)other {
   [super copyAllFieldsTo:other];
   other->val$lock_ = val$lock_;
   other->val$resultList_ = val$resultList_;
@@ -291,4 +291,4 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageInt_$3)
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineAsyncStorageInt_$4)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt_$4)

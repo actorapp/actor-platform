@@ -3,14 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/crypto/CryptoKeyPair.java
 //
 
-#ifndef _ImActorModelCryptoCryptoKeyPair_H_
-#define _ImActorModelCryptoCryptoKeyPair_H_
+#ifndef _AMCryptoKeyPair_H_
+#define _AMCryptoKeyPair_H_
 
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelCryptoCryptoKeyPair : NSObject {
+@interface AMCryptoKeyPair : NSObject {
 }
 
 - (instancetype)initWithByteArray:(IOSByteArray *)publicKey
@@ -22,11 +22,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelCryptoCryptoKeyPair)
+J2OBJC_EMPTY_STATIC_INIT(AMCryptoKeyPair)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelCryptoCryptoKeyPair)
+typedef AMCryptoKeyPair ImActorModelCryptoCryptoKeyPair;
 
-#endif // _ImActorModelCryptoCryptoKeyPair_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMCryptoKeyPair)
+
+#endif // _AMCryptoKeyPair_H_

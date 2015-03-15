@@ -5,8 +5,9 @@ import com.droidkit.images.loading.ImageLoader;
 import com.droidkit.images.loading.actors.base.BasicTaskActor;
 import com.droidkit.images.ops.ImageLoading;
 
-import im.actor.model.android.AndroidFileReference;
+import im.actor.model.android.AndroidFileSystemReference;
 import im.actor.model.entity.FileReference;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.modules.file.DownloadCallback;
 
 import static im.actor.messenger.app.Core.messenger;
@@ -29,11 +30,11 @@ public class AvatarActor extends BasicTaskActor<AvatarTask> {
         messenger().bindRawFile(location, true, fileCallback);
     }
 
-    private void onDownloaded(im.actor.model.files.FileReference reference) {
+    private void onDownloaded(FileSystemReference reference) {
         if (isCompleted()) {
             return;
         }
-        AndroidFileReference fileDescriptor = (AndroidFileReference) reference;
+        AndroidFileSystemReference fileDescriptor = (AndroidFileSystemReference) reference;
         try {
             completeTask(ImageLoading.loadBitmap(fileDescriptor.getDescriptor()));
         } catch (ImageLoadException e) {
@@ -69,19 +70,19 @@ public class AvatarActor extends BasicTaskActor<AvatarTask> {
         }
 
         @Override
-        public void onDownloaded(im.actor.model.files.FileReference reference) {
+        public void onDownloaded(FileSystemReference reference) {
             self().send(new OnDownloaded(reference));
         }
     }
 
     private class OnDownloaded {
-        private im.actor.model.files.FileReference reference;
+        private FileSystemReference reference;
 
-        private OnDownloaded(im.actor.model.files.FileReference reference) {
+        private OnDownloaded(FileSystemReference reference) {
             this.reference = reference;
         }
 
-        public im.actor.model.files.FileReference getReference() {
+        public FileSystemReference getReference() {
             return reference;
         }
     }

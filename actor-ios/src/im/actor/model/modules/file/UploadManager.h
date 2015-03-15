@@ -12,7 +12,7 @@
 @class ImActorModelModulesFileUploadTask;
 @class ImActorModelModulesModules;
 @class JavaUtilArrayList;
-@protocol ImActorModelFilesFileReference;
+@protocol AMFileSystemReference;
 @protocol ImActorModelModulesFileUploadCallback;
 
 #include "J2ObjC_header.h"
@@ -53,7 +53,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
 
 - (void)onUploadTaskCompleteWithLong:(jlong)rid
                  withAMFileReference:(AMFileReference *)fileReference
-  withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference;
+           withAMFileSystemReference:(id<AMFileSystemReference>)reference;
 
 - (void)onReceiveWithId:(id)message;
 
@@ -199,11 +199,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_UploadTaskProgre
 
 - (instancetype)initWithLong:(jlong)rid
          withAMFileReference:(AMFileReference *)location
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference;
+   withAMFileSystemReference:(id<AMFileSystemReference>)reference;
 
 - (jlong)getRid;
 
-- (id<ImActorModelFilesFileReference>)getReference;
+- (id<AMFileSystemReference>)getReference;
 
 - (AMFileReference *)getLocation;
 

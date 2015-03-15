@@ -8,6 +8,7 @@ import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.droidkit.actors.messages.PoisonPill;
 import im.actor.model.entity.FileReference;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
@@ -44,7 +45,7 @@ public class DownloadManager extends ModuleActor {
         Downloaded downloaded1 = downloaded.getValue(fileId);
         if (downloaded1 != null) {
             FileSystemProvider provider = modules().getConfiguration().getFileSystemProvider();
-            im.actor.model.files.FileReference reference = provider.fileFromDescriptor(downloaded1.getDescriptor());
+            FileSystemReference reference = provider.fileFromDescriptor(downloaded1.getDescriptor());
             if (reference.isExist() && reference.getSize() == downloaded1.getFileSize()) {
                 Log.d(TAG, "- Downloaded");
                 callback.onDownloaded(modules().getConfiguration().getFileSystemProvider()
@@ -75,7 +76,7 @@ public class DownloadManager extends ModuleActor {
         Downloaded downloaded1 = downloaded.getValue(fileReference.getFileId());
         if (downloaded1 != null) {
             FileSystemProvider provider = modules().getConfiguration().getFileSystemProvider();
-            im.actor.model.files.FileReference reference = provider.fileFromDescriptor(downloaded1.getDescriptor());
+            FileSystemReference reference = provider.fileFromDescriptor(downloaded1.getDescriptor());
             if (reference.isExist() && reference.getSize() == downloaded1.getFileSize()) {
                 Log.d(TAG, "- Downloaded");
                 callback.onDownloaded(modules().getConfiguration().getFileSystemProvider()
@@ -265,7 +266,7 @@ public class DownloadManager extends ModuleActor {
         }
     }
 
-    public void onDownloaded(long fileId, im.actor.model.files.FileReference reference) {
+    public void onDownloaded(long fileId, FileSystemReference reference) {
         Log.d(TAG, "onDownloaded file #" + fileId);
         QueueItem queueItem = findItem(fileId);
         if (queueItem == null) {
@@ -489,9 +490,9 @@ public class DownloadManager extends ModuleActor {
 
     public static class OnDownloaded {
         private long fileId;
-        private im.actor.model.files.FileReference reference;
+        private FileSystemReference reference;
 
-        public OnDownloaded(long fileId, im.actor.model.files.FileReference reference) {
+        public OnDownloaded(long fileId, FileSystemReference reference) {
             this.fileId = fileId;
             this.reference = reference;
         }
@@ -500,7 +501,7 @@ public class DownloadManager extends ModuleActor {
             return fileId;
         }
 
-        public im.actor.model.files.FileReference getReference() {
+        public FileSystemReference getReference() {
             return reference;
         }
     }

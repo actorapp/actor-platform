@@ -57,62 +57,62 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
 
 @implementation AMConfigurationBuilder
 
-- (AMConfigurationBuilder *)setApiConfigurationWithAMApiConfiguration:(AMApiConfiguration *)apiConfiguration {
+- (AMConfigurationBuilder *)setApiConfiguration:(id<AMApiConfiguration>)apiConfiguration {
   self->apiConfiguration_ = apiConfiguration;
   return self;
 }
 
-- (AMConfigurationBuilder *)setNotificationProviderWithAMNotificationProvider:(id<AMNotificationProvider>)notificationProvider {
+- (AMConfigurationBuilder *)setNotificationProvider:(id<AMNotificationProvider>)notificationProvider {
   self->notificationProvider_ = notificationProvider;
   return self;
 }
 
-- (AMConfigurationBuilder *)setFileSystemProviderWithAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider {
+- (AMConfigurationBuilder *)setFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider {
   self->fileSystemProvider_ = fileSystemProvider;
   return self;
 }
 
-- (AMConfigurationBuilder *)setEnableContactsLoggingWithBoolean:(jboolean)enableContactsLogging {
+- (AMConfigurationBuilder *)setEnableContactsLogging:(jboolean)enableContactsLogging {
   self->enableContactsLogging_ = enableContactsLogging;
   return self;
 }
 
-- (AMConfigurationBuilder *)setEnableNetworkLoggingWithBoolean:(jboolean)enableNetworkLogging {
+- (AMConfigurationBuilder *)setEnableNetworkLogging:(jboolean)enableNetworkLogging {
   self->enableNetworkLogging_ = enableNetworkLogging;
   return self;
 }
 
-- (AMConfigurationBuilder *)setCryptoProviderWithAMCryptoProvider:(id<AMCryptoProvider>)cryptoProvider {
+- (AMConfigurationBuilder *)setCryptoProvider:(id<AMCryptoProvider>)cryptoProvider {
   self->cryptoProvider_ = cryptoProvider;
   return self;
 }
 
-- (AMConfigurationBuilder *)setPhoneBookProviderWithAMPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider {
+- (AMConfigurationBuilder *)setPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider {
   self->phoneBookProvider_ = phoneBookProvider;
   return self;
 }
 
-- (AMConfigurationBuilder *)setLogWithAMLogProvider:(id<AMLogProvider>)log {
+- (AMConfigurationBuilder *)setLogProvider:(id<AMLogProvider>)log {
   self->log_ = log;
   return self;
 }
 
-- (AMConfigurationBuilder *)setNetworkProviderWithAMNetworkProvider:(id<AMNetworkProvider>)networkProvider {
+- (AMConfigurationBuilder *)setNetworkProvider:(id<AMNetworkProvider>)networkProvider {
   self->networkProvider_ = networkProvider;
   return self;
 }
 
-- (AMConfigurationBuilder *)setThreadingProviderWithAMThreadingProvider:(id<AMThreadingProvider>)threadingProvider {
+- (AMConfigurationBuilder *)setThreadingProvider:(id<AMThreadingProvider>)threadingProvider {
   self->threadingProvider_ = threadingProvider;
   return self;
 }
 
-- (AMConfigurationBuilder *)setStorageWithAMStorageProvider:(id<AMStorageProvider>)storageProvider {
+- (AMConfigurationBuilder *)setStorageProvider:(id<AMStorageProvider>)storageProvider {
   self->enginesFactory_ = storageProvider;
   return self;
 }
 
-- (AMConfigurationBuilder *)setLocale:(id<AMLocaleProvider>)localeProvider {
+- (AMConfigurationBuilder *)setLocaleProvider:(id<AMLocaleProvider>)localeProvider {
   self->localeProvider_ = localeProvider;
   return self;
 }
@@ -159,7 +159,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
   return self;
 }
 
-- (AMConfigurationBuilder *)setMainThreadProviderWithAMMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider {
+- (AMConfigurationBuilder *)setMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider {
   self->mainThreadProvider_ = mainThreadProvider;
   return self;
 }

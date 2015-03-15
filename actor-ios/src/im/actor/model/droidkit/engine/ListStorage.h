@@ -3,19 +3,19 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/ListStorage.java
 //
 
-#ifndef _ImActorModelDroidkitEngineListStorage_H_
-#define _ImActorModelDroidkitEngineListStorage_H_
+#ifndef _DKListStorage_H_
+#define _DKListStorage_H_
 
+@class DKListEngineRecord;
 @class IOSLongArray;
-@class ImActorModelDroidkitEngineListEngineRecord;
 @class JavaLangLong;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitEngineListStorage < NSObject, JavaObject >
+@protocol DKListStorage < NSObject, JavaObject >
 
-- (void)updateOrAddWithImActorModelDroidkitEngineListEngineRecord:(ImActorModelDroidkitEngineListEngineRecord *)valueContainer;
+- (void)updateOrAddWithDKListEngineRecord:(DKListEngineRecord *)valueContainer;
 
 - (void)updateOrAddWithJavaUtilList:(id<JavaUtilList>)items;
 
@@ -25,7 +25,7 @@
 
 - (void)clear;
 
-- (ImActorModelDroidkitEngineListEngineRecord *)loadItemWithLong:(jlong)key;
+- (DKListEngineRecord *)loadItemWithLong:(jlong)key;
 
 - (id<JavaUtilList>)loadBackwardWithJavaLangLong:(JavaLangLong *)sortingKey
                                          withInt:(jint)limit;
@@ -45,8 +45,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineListStorage)
+J2OBJC_EMPTY_STATIC_INIT(DKListStorage)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineListStorage)
+#define ImActorModelDroidkitEngineListStorage DKListStorage
 
-#endif // _ImActorModelDroidkitEngineListStorage_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKListStorage)
+
+#endif // _DKListStorage_H_

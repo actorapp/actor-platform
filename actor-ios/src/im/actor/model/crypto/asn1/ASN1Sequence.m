@@ -16,18 +16,18 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-@interface ImActorModelCryptoAsn1ASN1Sequence () {
+@interface BCASN1Sequence () {
  @public
   JavaUtilArrayList *sequence_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelCryptoAsn1ASN1Sequence, sequence_, JavaUtilArrayList *)
+J2OBJC_FIELD_SETTER(BCASN1Sequence, sequence_, JavaUtilArrayList *)
 
-@implementation ImActorModelCryptoAsn1ASN1Sequence
+@implementation BCASN1Sequence
 
-+ (ImActorModelCryptoAsn1ASN1Sequence *)readSequenceWithBSDataInput:(BSDataInput *)dataInput {
-  return ImActorModelCryptoAsn1ASN1Sequence_readSequenceWithBSDataInput_(dataInput);
++ (BCASN1Sequence *)readSequenceWithBSDataInput:(BSDataInput *)dataInput {
+  return BCASN1Sequence_readSequenceWithBSDataInput_(dataInput);
 }
 
 - (instancetype)init {
@@ -44,15 +44,15 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoAsn1ASN1Sequence, sequence_, JavaUtilArray
   return self;
 }
 
-- (instancetype)initWithImActorModelCryptoAsn1ASN1PrimitiveArray:(IOSObjectArray *)sequence {
+- (instancetype)initWithBCASN1PrimitiveArray:(IOSObjectArray *)sequence {
   if (self = [super init]) {
     self->sequence_ = [[JavaUtilArrayList alloc] init];
     {
       IOSObjectArray *a__ = sequence;
-      ImActorModelCryptoAsn1ASN1Primitive * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
-      ImActorModelCryptoAsn1ASN1Primitive * const *e__ = b__ + a__->size_;
+      BCASN1Primitive * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
+      BCASN1Primitive * const *e__ = b__ + a__->size_;
       while (b__ < e__) {
-        ImActorModelCryptoAsn1ASN1Primitive *p = *b__++;
+        BCASN1Primitive *p = *b__++;
         [self->sequence_ addWithId:p];
       }
     }
@@ -60,7 +60,7 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoAsn1ASN1Sequence, sequence_, JavaUtilArray
   return self;
 }
 
-- (void)addWithImActorModelCryptoAsn1ASN1Primitive:(ImActorModelCryptoAsn1ASN1Primitive *)item {
+- (void)addWithBCASN1Primitive:(BCASN1Primitive *)item {
   [((JavaUtilArrayList *) nil_chk(sequence_)) addWithId:item];
 }
 
@@ -72,35 +72,35 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoAsn1ASN1Sequence, sequence_, JavaUtilArray
   return [((JavaUtilArrayList *) nil_chk(sequence_)) size];
 }
 
-- (ImActorModelCryptoAsn1ASN1Primitive *)getWithInt:(jint)index {
+- (BCASN1Primitive *)getWithInt:(jint)index {
   return [((JavaUtilArrayList *) nil_chk(sequence_)) getWithInt:index];
 }
 
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
-  [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:ImActorModelCryptoAsn1ASN1Primitive_TAG_SEQUENCE | ImActorModelCryptoAsn1ASN1Primitive_TAG_CONSTRUCTED];
+  [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_SEQUENCE | BCASN1Primitive_TAG_CONSTRUCTED];
   BSDataOutput *content = [[BSDataOutput alloc] init];
-  for (ImActorModelCryptoAsn1ASN1Primitive * __strong primitive in nil_chk(sequence_)) {
-    [((ImActorModelCryptoAsn1ASN1Primitive *) nil_chk(primitive)) serializeWithBSDataOutput:content];
+  for (BCASN1Primitive * __strong primitive in nil_chk(sequence_)) {
+    [((BCASN1Primitive *) nil_chk(primitive)) serializeWithBSDataOutput:content];
   }
   IOSByteArray *contentV = [content toByteArray];
   [dataOutput writeASN1LengthWithInt:((IOSByteArray *) nil_chk(contentV))->size_];
   [dataOutput writeBytesWithByteArray:contentV withInt:0 withInt:contentV->size_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelCryptoAsn1ASN1Sequence *)other {
+- (void)copyAllFieldsTo:(BCASN1Sequence *)other {
   [super copyAllFieldsTo:other];
   other->sequence_ = sequence_;
 }
 
 @end
 
-ImActorModelCryptoAsn1ASN1Sequence *ImActorModelCryptoAsn1ASN1Sequence_readSequenceWithBSDataInput_(BSDataInput *dataInput) {
-  ImActorModelCryptoAsn1ASN1Sequence_init();
-  ImActorModelCryptoAsn1ASN1Sequence *sequence = [[ImActorModelCryptoAsn1ASN1Sequence alloc] init];
+BCASN1Sequence *BCASN1Sequence_readSequenceWithBSDataInput_(BSDataInput *dataInput) {
+  BCASN1Sequence_init();
+  BCASN1Sequence *sequence = [[BCASN1Sequence alloc] init];
   while (![((BSDataInput *) nil_chk(dataInput)) isEOF]) {
-    [sequence addWithImActorModelCryptoAsn1ASN1Primitive:ImActorModelCryptoAsn1ASN1_readObjectWithBSDataInput_(dataInput)];
+    [sequence addWithBCASN1Primitive:BCASN1_readObjectWithBSDataInput_(dataInput)];
   }
   return sequence;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoAsn1ASN1Sequence)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCASN1Sequence)

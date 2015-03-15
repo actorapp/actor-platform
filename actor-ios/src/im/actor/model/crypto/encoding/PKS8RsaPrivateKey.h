@@ -3,15 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/crypto/encoding/PKS8RsaPrivateKey.java
 //
 
-#ifndef _ImActorModelCryptoEncodingPKS8RsaPrivateKey_H_
-#define _ImActorModelCryptoEncodingPKS8RsaPrivateKey_H_
+#ifndef _BCPKS8RsaPrivateKey_H_
+#define _BCPKS8RsaPrivateKey_H_
 
 @class IOSByteArray;
 @class JavaMathBigInteger;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelCryptoEncodingPKS8RsaPrivateKey : NSObject {
+@interface BCPKS8RsaPrivateKey : NSObject {
 }
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)modulus
@@ -27,14 +27,16 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelCryptoEncodingPKS8RsaPrivateKey)
+J2OBJC_EMPTY_STATIC_INIT(BCPKS8RsaPrivateKey)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT NSString *ImActorModelCryptoEncodingPKS8RsaPrivateKey_ALGO_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelCryptoEncodingPKS8RsaPrivateKey, ALGO_, NSString *)
+FOUNDATION_EXPORT NSString *BCPKS8RsaPrivateKey_ALGO_;
+J2OBJC_STATIC_FIELD_GETTER(BCPKS8RsaPrivateKey, ALGO_, NSString *)
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelCryptoEncodingPKS8RsaPrivateKey)
+typedef BCPKS8RsaPrivateKey ImActorModelCryptoEncodingPKS8RsaPrivateKey;
 
-#endif // _ImActorModelCryptoEncodingPKS8RsaPrivateKey_H_
+J2OBJC_TYPE_LITERAL_HEADER(BCPKS8RsaPrivateKey)
+
+#endif // _BCPKS8RsaPrivateKey_H_

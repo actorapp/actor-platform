@@ -14,7 +14,7 @@
 #include "im/actor/model/droidkit/actors/messages/PoisonPill.h"
 #include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 #include "im/actor/model/entity/FileReference.h"
-#include "im/actor/model/files/FileReference.h"
+#include "im/actor/model/files/FileSystemReference.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
@@ -33,7 +33,7 @@ __attribute__((unused)) static void ImActorModelModulesFileDownloadManager_promo
 @interface ImActorModelModulesFileDownloadManager () {
  @public
   JavaUtilArrayList *queue_;
-  id<ImActorModelDroidkitEngineKeyValueEngine> downloaded_;
+  id<DKKeyValueEngine> downloaded_;
 }
 
 - (void)checkQueue;
@@ -44,7 +44,7 @@ __attribute__((unused)) static void ImActorModelModulesFileDownloadManager_promo
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager, queue_, JavaUtilArrayList *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager, downloaded_, id<ImActorModelDroidkitEngineKeyValueEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager, downloaded_, id<DKKeyValueEngine>)
 
 @interface ImActorModelModulesFileDownloadManager_QueueItem () {
  @public
@@ -117,11 +117,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_UnbindDownload, callb
 @interface ImActorModelModulesFileDownloadManager_OnDownloaded () {
  @public
   jlong fileId_;
-  id<ImActorModelFilesFileReference> reference_;
+  id<AMFileSystemReference> reference_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_OnDownloaded, reference_, id<ImActorModelFilesFileReference>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager_OnDownloaded, reference_, id<AMFileSystemReference>)
 
 @interface ImActorModelModulesFileDownloadManager_OnDownloadedError () {
  @public
@@ -158,13 +158,13 @@ NSString * ImActorModelModulesFileDownloadManager_TAG_ = @"DownloadManager";
 - (void)requestStateWithLong:(jlong)fileId
 withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$J", @"Requesting state file #", fileId));
-  ImActorModelModulesFileDownloaded *downloaded1 = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk(downloaded_)) getValueWithLong:fileId];
+  ImActorModelModulesFileDownloaded *downloaded1 = [((id<DKKeyValueEngine>) nil_chk(downloaded_)) getValueWithLong:fileId];
   if (downloaded1 != nil) {
     id<AMFileSystemProvider> provider = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider];
-    id<ImActorModelFilesFileReference> reference = [((id<AMFileSystemProvider>) nil_chk(provider)) fileFromDescriptorWithNSString:[downloaded1 getDescriptor]];
-    if ([((id<ImActorModelFilesFileReference>) nil_chk(reference)) isExist] && [reference getSize] == [downloaded1 getFileSize]) {
+    id<AMFileSystemReference> reference = [((id<AMFileSystemProvider>) nil_chk(provider)) fileFromDescriptor:[downloaded1 getDescriptor]];
+    if ([((id<AMFileSystemReference>) nil_chk(reference)) isExist] && [reference getSize] == [downloaded1 getFileSize]) {
       AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- Downloaded");
-      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadedWithImActorModelFilesFileReference:[((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider])) fileFromDescriptorWithNSString:[downloaded1 getDescriptor]]];
+      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadedWithAMFileSystemReference:[((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider])) fileFromDescriptor:[downloaded1 getDescriptor]]];
       return;
     }
     else {
@@ -193,13 +193,13 @@ withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadC
                             withBoolean:(jboolean)autoStart
 withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$J", @"Binding file #", [((AMFileReference *) nil_chk(fileReference)) getFileId]));
-  ImActorModelModulesFileDownloaded *downloaded1 = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk(downloaded_)) getValueWithLong:[fileReference getFileId]];
+  ImActorModelModulesFileDownloaded *downloaded1 = [((id<DKKeyValueEngine>) nil_chk(downloaded_)) getValueWithLong:[fileReference getFileId]];
   if (downloaded1 != nil) {
     id<AMFileSystemProvider> provider = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider];
-    id<ImActorModelFilesFileReference> reference = [((id<AMFileSystemProvider>) nil_chk(provider)) fileFromDescriptorWithNSString:[downloaded1 getDescriptor]];
-    if ([((id<ImActorModelFilesFileReference>) nil_chk(reference)) isExist] && [reference getSize] == [downloaded1 getFileSize]) {
+    id<AMFileSystemReference> reference = [((id<AMFileSystemProvider>) nil_chk(provider)) fileFromDescriptor:[downloaded1 getDescriptor]];
+    if ([((id<AMFileSystemReference>) nil_chk(reference)) isExist] && [reference getSize] == [downloaded1 getFileSize]) {
       AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- Downloaded");
-      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadedWithImActorModelFilesFileReference:[((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider])) fileFromDescriptorWithNSString:[downloaded1 getDescriptor]]];
+      [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadedWithAMFileSystemReference:[((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider])) fileFromDescriptor:[downloaded1 getDescriptor]]];
       return;
     }
     else {
@@ -343,7 +343,7 @@ withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadC
 }
 
 - (void)onDownloadedWithLong:(jlong)fileId
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference {
+   withAMFileSystemReference:(id<AMFileSystemReference>)reference {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$J", @"onDownloaded file #", fileId));
   ImActorModelModulesFileDownloadManager_QueueItem *queueItem = ImActorModelModulesFileDownloadManager_findItemWithLong_(self, fileId);
   if (queueItem == nil) {
@@ -352,11 +352,11 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference
   if (!((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(queueItem))->isStarted_) {
     return;
   }
-  [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk(downloaded_)) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:[[ImActorModelModulesFileDownloaded alloc] initWithLong:[((AMFileReference *) nil_chk(queueItem->fileReference_)) getFileId] withInt:[queueItem->fileReference_ getFileSize] withNSString:[((id<ImActorModelFilesFileReference>) nil_chk(reference)) getDescriptor]]];
+  [((id<DKKeyValueEngine>) nil_chk(downloaded_)) addOrUpdateItemWithDKKeyValueItem:[[ImActorModelModulesFileDownloaded alloc] initWithLong:[((AMFileReference *) nil_chk(queueItem->fileReference_)) getFileId] withInt:[queueItem->fileReference_ getFileSize] withNSString:[((id<AMFileSystemReference>) nil_chk(reference)) getDescriptor]]];
   [((JavaUtilArrayList *) nil_chk(queue_)) removeWithId:queueItem];
   [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
   for (id<ImActorModelModulesFileDownloadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
-    [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(fileCallback)) onDownloadedWithImActorModelFilesFileReference:reference];
+    [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(fileCallback)) onDownloadedWithAMFileSystemReference:reference];
   }
 }
 
@@ -408,7 +408,7 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileDownloadManager_OnDownloaded class]]) {
     ImActorModelModulesFileDownloadManager_OnDownloaded *onDownloaded = (ImActorModelModulesFileDownloadManager_OnDownloaded *) check_class_cast(message, [ImActorModelModulesFileDownloadManager_OnDownloaded class]);
-    [self onDownloadedWithLong:[((ImActorModelModulesFileDownloadManager_OnDownloaded *) nil_chk(onDownloaded)) getFileId] withImActorModelFilesFileReference:[onDownloaded getReference]];
+    [self onDownloadedWithLong:[((ImActorModelModulesFileDownloadManager_OnDownloaded *) nil_chk(onDownloaded)) getFileId] withAMFileSystemReference:[onDownloaded getReference]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileDownloadManager_OnDownloadedError class]]) {
     ImActorModelModulesFileDownloadManager_OnDownloadedError *error = (ImActorModelModulesFileDownloadManager_OnDownloadedError *) check_class_cast(message, [ImActorModelModulesFileDownloadManager_OnDownloadedError class]);
@@ -685,7 +685,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_OnDownlo
 @implementation ImActorModelModulesFileDownloadManager_OnDownloaded
 
 - (instancetype)initWithLong:(jlong)fileId
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference {
+   withAMFileSystemReference:(id<AMFileSystemReference>)reference {
   if (self = [super init]) {
     self->fileId_ = fileId;
     self->reference_ = reference;
@@ -697,7 +697,7 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference
   return fileId_;
 }
 
-- (id<ImActorModelFilesFileReference>)getReference {
+- (id<AMFileSystemReference>)getReference {
   return reference_;
 }
 

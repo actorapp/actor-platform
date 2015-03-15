@@ -37,7 +37,7 @@
   AMI18nEngine *i18nEngine_;
   AMActorApi *actorApi_;
   ImActorModelModulesAuth *auth_;
-  id<ImActorModelDroidkitEnginePreferencesStorage> preferences_;
+  id<DKPreferencesStorage> preferences_;
   ImActorModelModulesUsers *users_;
   ImActorModelModulesGroups *groups_;
   ImActorModelModulesUpdates *updates_;
@@ -57,7 +57,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules, configuration_, AMConfiguration 
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, i18nEngine_, AMI18nEngine *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, actorApi_, AMActorApi *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, auth_, ImActorModelModulesAuth *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesModules, preferences_, id<ImActorModelDroidkitEnginePreferencesStorage>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesModules, preferences_, id<DKPreferencesStorage>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, users_, ImActorModelModulesUsers *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, groups_, ImActorModelModulesGroups *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, updates_, ImActorModelModulesUpdates *)
@@ -90,7 +90,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
     self->preferences_ = [((id<AMStorageProvider>) nil_chk([configuration getStorageProvider])) createPreferencesStorage];
     AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.2 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
     start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
-    self->actorApi_ = [[AMActorApi alloc] initWithAMEndpoints:[[AMEndpoints alloc] initWithAMConnectionEndpointArray:[configuration getEndpoints]] withAMAuthKeyStorage:[[ImActorModelModulesUtilsPreferenceApiStorage alloc] initWithImActorModelDroidkitEnginePreferencesStorage:preferences_] withAMActorApiCallback:[[ImActorModelModulesModules_$1 alloc] initWithImActorModelModulesModules:self] withAMNetworkProvider:[configuration getNetworkProvider]];
+    self->actorApi_ = [[AMActorApi alloc] initWithAMEndpoints:[[AMEndpoints alloc] initWithAMConnectionEndpointArray:[configuration getEndpoints]] withAMAuthKeyStorage:[[ImActorModelModulesUtilsPreferenceApiStorage alloc] initWithDKPreferencesStorage:preferences_] withAMActorApiCallback:[[ImActorModelModulesModules_$1 alloc] initWithImActorModelModulesModules:self] withAMNetworkProvider:[configuration getNetworkProvider]];
     AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.3 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
     start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
     self->auth_ = [[ImActorModelModulesAuth alloc] initWithImActorModelModulesModules:self];
@@ -158,7 +158,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   return displayLists_;
 }
 
-- (id<ImActorModelDroidkitEnginePreferencesStorage>)getPreferences {
+- (id<DKPreferencesStorage>)getPreferences {
   return preferences_;
 }
 

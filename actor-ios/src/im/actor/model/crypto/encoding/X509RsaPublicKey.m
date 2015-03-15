@@ -18,19 +18,19 @@
 #include "java/io/IOException.h"
 #include "java/math/BigInteger.h"
 
-@interface ImActorModelCryptoEncodingX509RsaPublicKey () {
+@interface BCX509RsaPublicKey () {
  @public
   JavaMathBigInteger *modulus_;
   JavaMathBigInteger *exponent_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelCryptoEncodingX509RsaPublicKey, modulus_, JavaMathBigInteger *)
-J2OBJC_FIELD_SETTER(ImActorModelCryptoEncodingX509RsaPublicKey, exponent_, JavaMathBigInteger *)
+J2OBJC_FIELD_SETTER(BCX509RsaPublicKey, modulus_, JavaMathBigInteger *)
+J2OBJC_FIELD_SETTER(BCX509RsaPublicKey, exponent_, JavaMathBigInteger *)
 
-@implementation ImActorModelCryptoEncodingX509RsaPublicKey
+@implementation BCX509RsaPublicKey
 
-NSString * ImActorModelCryptoEncodingX509RsaPublicKey_ALGO_TYPE_ = @"1.2.840.113549.1.1.1";
+NSString * BCX509RsaPublicKey_ALGO_TYPE_ = @"1.2.840.113549.1.1.1";
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)modulus
                     withJavaMathBigInteger:(JavaMathBigInteger *)exponent {
@@ -43,47 +43,47 @@ NSString * ImActorModelCryptoEncodingX509RsaPublicKey_ALGO_TYPE_ = @"1.2.840.113
 
 - (instancetype)initWithByteArray:(IOSByteArray *)data {
   if (self = [super init]) {
-    ImActorModelCryptoAsn1ASN1Primitive *root = ImActorModelCryptoAsn1ASN1_readObjectWithByteArray_(data);
-    if (!([root isKindOfClass:[ImActorModelCryptoAsn1ASN1Sequence class]])) {
+    BCASN1Primitive *root = BCASN1_readObjectWithByteArray_(data);
+    if (!([root isKindOfClass:[BCASN1Sequence class]])) {
       @throw [[JavaIoIOException alloc] initWithNSString:@"Incorrect type of sequence"];
     }
-    ImActorModelCryptoAsn1ASN1Sequence *rootSequence = (ImActorModelCryptoAsn1ASN1Sequence *) check_class_cast(ImActorModelCryptoAsn1ASN1_readObjectWithByteArray_(data), [ImActorModelCryptoAsn1ASN1Sequence class]);
-    if ([((ImActorModelCryptoAsn1ASN1Sequence *) nil_chk(rootSequence)) size] != 2) {
+    BCASN1Sequence *rootSequence = (BCASN1Sequence *) check_class_cast(BCASN1_readObjectWithByteArray_(data), [BCASN1Sequence class]);
+    if ([((BCASN1Sequence *) nil_chk(rootSequence)) size] != 2) {
       @throw [[JavaIoIOException alloc] initWithNSString:@"Incorrect type of sequence"];
     }
-    if (!([[rootSequence getWithInt:0] isKindOfClass:[ImActorModelCryptoAsn1ASN1Sequence class]])) {
+    if (!([[rootSequence getWithInt:0] isKindOfClass:[BCASN1Sequence class]])) {
       @throw [[JavaIoIOException alloc] initWithNSString:@"Incorrect type of sequence"];
     }
-    if (!([[rootSequence getWithInt:1] isKindOfClass:[ImActorModelCryptoAsn1ASN1BitString class]])) {
+    if (!([[rootSequence getWithInt:1] isKindOfClass:[BCASN1BitString class]])) {
       @throw [[JavaIoIOException alloc] initWithNSString:@"Incorrect type of sequence"];
     }
-    ImActorModelCryptoAsn1ASN1Sequence *algoHeader = (ImActorModelCryptoAsn1ASN1Sequence *) check_class_cast([rootSequence getWithInt:0], [ImActorModelCryptoAsn1ASN1Sequence class]);
-    if (!([[((ImActorModelCryptoAsn1ASN1Sequence *) nil_chk(algoHeader)) getWithInt:0] isKindOfClass:[ImActorModelCryptoAsn1ASN1ObjectIdentifier class]])) {
+    BCASN1Sequence *algoHeader = (BCASN1Sequence *) check_class_cast([rootSequence getWithInt:0], [BCASN1Sequence class]);
+    if (!([[((BCASN1Sequence *) nil_chk(algoHeader)) getWithInt:0] isKindOfClass:[BCASN1ObjectIdentifier class]])) {
       @throw [[JavaIoIOException alloc] initWithNSString:@"Incorrect type of sequence"];
     }
-    ImActorModelCryptoAsn1ASN1ObjectIdentifier *algo = (ImActorModelCryptoAsn1ASN1ObjectIdentifier *) check_class_cast([algoHeader getWithInt:0], [ImActorModelCryptoAsn1ASN1ObjectIdentifier class]);
-    if (![((NSString *) nil_chk([((ImActorModelCryptoAsn1ASN1ObjectIdentifier *) nil_chk(algo)) getIdentifier])) isEqual:ImActorModelCryptoEncodingX509RsaPublicKey_ALGO_TYPE_]) {
+    BCASN1ObjectIdentifier *algo = (BCASN1ObjectIdentifier *) check_class_cast([algoHeader getWithInt:0], [BCASN1ObjectIdentifier class]);
+    if (![((NSString *) nil_chk([((BCASN1ObjectIdentifier *) nil_chk(algo)) getIdentifier])) isEqual:BCX509RsaPublicKey_ALGO_TYPE_]) {
       @throw [[JavaIoIOException alloc] initWithNSString:JreStrcat("$$", @"Incorrect type of header: ", [algo getIdentifier])];
     }
-    ImActorModelCryptoAsn1ASN1BitString *bitString = (ImActorModelCryptoAsn1ASN1BitString *) check_class_cast([rootSequence getWithInt:1], [ImActorModelCryptoAsn1ASN1BitString class]);
-    ImActorModelCryptoAsn1ASN1Primitive *keyRoot = ImActorModelCryptoAsn1ASN1_readObjectWithByteArray_([((ImActorModelCryptoAsn1ASN1BitString *) nil_chk(bitString)) getContent]);
-    if (!([keyRoot isKindOfClass:[ImActorModelCryptoAsn1ASN1Sequence class]])) {
+    BCASN1BitString *bitString = (BCASN1BitString *) check_class_cast([rootSequence getWithInt:1], [BCASN1BitString class]);
+    BCASN1Primitive *keyRoot = BCASN1_readObjectWithByteArray_([((BCASN1BitString *) nil_chk(bitString)) getContent]);
+    if (!([keyRoot isKindOfClass:[BCASN1Sequence class]])) {
       @throw [[JavaIoIOException alloc] initWithNSString:@"Incorrect type of sequence"];
     }
-    ImActorModelCryptoAsn1ASN1Sequence *keySequence = (ImActorModelCryptoAsn1ASN1Sequence *) check_class_cast(keyRoot, [ImActorModelCryptoAsn1ASN1Sequence class]);
-    if ([((ImActorModelCryptoAsn1ASN1Sequence *) nil_chk(keySequence)) size] != 2) {
+    BCASN1Sequence *keySequence = (BCASN1Sequence *) check_class_cast(keyRoot, [BCASN1Sequence class]);
+    if ([((BCASN1Sequence *) nil_chk(keySequence)) size] != 2) {
       @throw [[JavaIoIOException alloc] initWithNSString:@"Incorrect type of sequence"];
     }
-    if (!([[keySequence getWithInt:0] isKindOfClass:[ImActorModelCryptoAsn1ASN1Integer class]])) {
+    if (!([[keySequence getWithInt:0] isKindOfClass:[BCASN1Integer class]])) {
       @throw [[JavaIoIOException alloc] initWithNSString:@"Incorrect type of sequence"];
     }
-    if (!([[keySequence getWithInt:1] isKindOfClass:[ImActorModelCryptoAsn1ASN1Integer class]])) {
+    if (!([[keySequence getWithInt:1] isKindOfClass:[BCASN1Integer class]])) {
       @throw [[JavaIoIOException alloc] initWithNSString:@"Incorrect type of sequence"];
     }
-    ImActorModelCryptoAsn1ASN1Integer *modulus = (ImActorModelCryptoAsn1ASN1Integer *) check_class_cast([keySequence getWithInt:0], [ImActorModelCryptoAsn1ASN1Integer class]);
-    ImActorModelCryptoAsn1ASN1Integer *exponent = (ImActorModelCryptoAsn1ASN1Integer *) check_class_cast([keySequence getWithInt:1], [ImActorModelCryptoAsn1ASN1Integer class]);
-    self->modulus_ = [[JavaMathBigInteger alloc] initWithInt:1 withByteArray:[((ImActorModelCryptoAsn1ASN1Integer *) nil_chk(modulus)) getData]];
-    self->exponent_ = [[JavaMathBigInteger alloc] initWithInt:1 withByteArray:[((ImActorModelCryptoAsn1ASN1Integer *) nil_chk(exponent)) getData]];
+    BCASN1Integer *modulus = (BCASN1Integer *) check_class_cast([keySequence getWithInt:0], [BCASN1Integer class]);
+    BCASN1Integer *exponent = (BCASN1Integer *) check_class_cast([keySequence getWithInt:1], [BCASN1Integer class]);
+    self->modulus_ = [[JavaMathBigInteger alloc] initWithInt:1 withByteArray:[((BCASN1Integer *) nil_chk(modulus)) getData]];
+    self->exponent_ = [[JavaMathBigInteger alloc] initWithInt:1 withByteArray:[((BCASN1Integer *) nil_chk(exponent)) getData]];
   }
   return self;
 }
@@ -97,10 +97,10 @@ NSString * ImActorModelCryptoEncodingX509RsaPublicKey_ALGO_TYPE_ = @"1.2.840.113
 }
 
 - (IOSByteArray *)serialize {
-  return [((ImActorModelCryptoAsn1ASN1Sequence *) [[ImActorModelCryptoAsn1ASN1Sequence alloc] initWithImActorModelCryptoAsn1ASN1PrimitiveArray:[IOSObjectArray newArrayWithObjects:(id[]){ [[ImActorModelCryptoAsn1ASN1Sequence alloc] initWithImActorModelCryptoAsn1ASN1PrimitiveArray:[IOSObjectArray newArrayWithObjects:(id[]){ [[ImActorModelCryptoAsn1ASN1ObjectIdentifier alloc] initWithNSString:ImActorModelCryptoEncodingX509RsaPublicKey_ALGO_TYPE_], [[ImActorModelCryptoAsn1ASN1Null alloc] init] } count:2 type:ImActorModelCryptoAsn1ASN1Primitive_class_()]], [[ImActorModelCryptoAsn1ASN1BitString alloc] initWithInt:0 withByteArray:[((ImActorModelCryptoAsn1ASN1Sequence *) [[ImActorModelCryptoAsn1ASN1Sequence alloc] initWithImActorModelCryptoAsn1ASN1PrimitiveArray:[IOSObjectArray newArrayWithObjects:(id[]){ [[ImActorModelCryptoAsn1ASN1Integer alloc] initWithJavaMathBigInteger:modulus_], [[ImActorModelCryptoAsn1ASN1Integer alloc] initWithJavaMathBigInteger:exponent_] } count:2 type:ImActorModelCryptoAsn1ASN1Primitive_class_()]]) serialize]] } count:2 type:ImActorModelCryptoAsn1ASN1Primitive_class_()]]) serialize];
+  return [((BCASN1Sequence *) [[BCASN1Sequence alloc] initWithBCASN1PrimitiveArray:[IOSObjectArray newArrayWithObjects:(id[]){ [[BCASN1Sequence alloc] initWithBCASN1PrimitiveArray:[IOSObjectArray newArrayWithObjects:(id[]){ [[BCASN1ObjectIdentifier alloc] initWithNSString:BCX509RsaPublicKey_ALGO_TYPE_], [[BCASN1Null alloc] init] } count:2 type:BCASN1Primitive_class_()]], [[BCASN1BitString alloc] initWithInt:0 withByteArray:[((BCASN1Sequence *) [[BCASN1Sequence alloc] initWithBCASN1PrimitiveArray:[IOSObjectArray newArrayWithObjects:(id[]){ [[BCASN1Integer alloc] initWithJavaMathBigInteger:modulus_], [[BCASN1Integer alloc] initWithJavaMathBigInteger:exponent_] } count:2 type:BCASN1Primitive_class_()]]) serialize]] } count:2 type:BCASN1Primitive_class_()]]) serialize];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelCryptoEncodingX509RsaPublicKey *)other {
+- (void)copyAllFieldsTo:(BCX509RsaPublicKey *)other {
   [super copyAllFieldsTo:other];
   other->modulus_ = modulus_;
   other->exponent_ = exponent_;
@@ -108,4 +108,4 @@ NSString * ImActorModelCryptoEncodingX509RsaPublicKey_ALGO_TYPE_ = @"1.2.840.113
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoEncodingX509RsaPublicKey)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCX509RsaPublicKey)

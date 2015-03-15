@@ -9,7 +9,7 @@
 @class AMContentDescription;
 @class AMPeer;
 @class DKActorRef;
-@class ImActorModelDroidkitEngineSyncKeyValue;
+@class DKSyncKeyValue;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesNotificationsNotificationsActor;
 
@@ -22,7 +22,7 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (ImActorModelDroidkitEngineSyncKeyValue *)getNotificationsStorage;
+- (DKSyncKeyValue *)getNotificationsStorage;
 
 - (void)onOwnReadWithAMPeer:(AMPeer *)peer
                    withLong:(jlong)fromDate;

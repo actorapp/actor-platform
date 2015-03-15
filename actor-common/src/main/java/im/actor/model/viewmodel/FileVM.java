@@ -1,6 +1,7 @@
 package im.actor.model.viewmodel;
 
 import im.actor.model.entity.FileReference;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.file.DownloadCallback;
 import im.actor.model.mvvm.AsyncVM;
@@ -31,7 +32,7 @@ public class FileVM extends AsyncVM {
             }
 
             @Override
-            public void onDownloaded(im.actor.model.files.FileReference reference) {
+            public void onDownloaded(FileSystemReference reference) {
                 post(new OnDownloaded(reference));
             }
         };
@@ -45,7 +46,7 @@ public class FileVM extends AsyncVM {
         } else if (obj instanceof OnDownloading) {
             vmCallback.onDownloading(((OnDownloading) obj).getProgress());
         } else if (obj instanceof OnDownloaded) {
-            vmCallback.onDownloaded(((OnDownloaded) obj).getFileReference());
+            vmCallback.onDownloaded(((OnDownloaded) obj).getFileSystemReference());
         }
     }
 
@@ -72,14 +73,14 @@ public class FileVM extends AsyncVM {
     }
 
     private class OnDownloaded {
-        private im.actor.model.files.FileReference fileReference;
+        private FileSystemReference fileSystemReference;
 
-        private OnDownloaded(im.actor.model.files.FileReference fileReference) {
-            this.fileReference = fileReference;
+        private OnDownloaded(FileSystemReference fileSystemReference) {
+            this.fileSystemReference = fileSystemReference;
         }
 
-        public im.actor.model.files.FileReference getFileReference() {
-            return fileReference;
+        public FileSystemReference getFileSystemReference() {
+            return fileSystemReference;
         }
     }
 }

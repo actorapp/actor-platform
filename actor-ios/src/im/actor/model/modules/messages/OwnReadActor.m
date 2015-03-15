@@ -31,14 +31,14 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
 @interface ImActorModelModulesMessagesOwnReadActor () {
  @public
   ImActorModelModulesMessagesEntityUnreadMessagesStorage *messagesStorage_;
-  ImActorModelDroidkitEngineSyncKeyValue *syncKeyValue_;
+  DKSyncKeyValue *syncKeyValue_;
 }
 
 - (void)saveStorage;
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, messagesStorage_, ImActorModelModulesMessagesEntityUnreadMessagesStorage *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, ImActorModelDroidkitEngineSyncKeyValue *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, DKSyncKeyValue *)
 
 @implementation ImActorModelModulesMessagesOwnReadActor
 
@@ -52,7 +52,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, ImAc
 - (void)preStart {
   [super preStart];
   messagesStorage_ = [[ImActorModelModulesMessagesEntityUnreadMessagesStorage alloc] init];
-  IOSByteArray *st = [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(syncKeyValue_)) getWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_OWN_READ];
+  IOSByteArray *st = [((DKSyncKeyValue *) nil_chk(syncKeyValue_)) getWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_OWN_READ];
   if (st != nil) {
     @try {
       messagesStorage_ = ImActorModelModulesMessagesEntityUnreadMessagesStorage_fromBytesWithByteArray_(st);
@@ -260,7 +260,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, ImAc
 @end
 
 void ImActorModelModulesMessagesOwnReadActor_saveStorage(ImActorModelModulesMessagesOwnReadActor *self) {
-  [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(self->syncKeyValue_)) putWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_OWN_READ withByteArray:[((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) toByteArray]];
+  [((DKSyncKeyValue *) nil_chk(self->syncKeyValue_)) putWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_OWN_READ withByteArray:[((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) toByteArray]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor)

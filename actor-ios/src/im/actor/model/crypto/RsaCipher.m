@@ -7,4 +7,4 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/RsaCipher.h"
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelCryptoRsaCipher)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMRsaCipher)

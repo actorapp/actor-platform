@@ -3,18 +3,18 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/KeyValueEngine.java
 //
 
-#ifndef _ImActorModelDroidkitEngineKeyValueEngine_H_
-#define _ImActorModelDroidkitEngineKeyValueEngine_H_
+#ifndef _DKKeyValueEngine_H_
+#define _DKKeyValueEngine_H_
 
 @class IOSLongArray;
-@protocol ImActorModelDroidkitEngineKeyValueItem;
+@protocol DKKeyValueItem;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitEngineKeyValueEngine < NSObject, JavaObject >
+@protocol DKKeyValueEngine < NSObject, JavaObject >
 
-- (void)addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:(id<ImActorModelDroidkitEngineKeyValueItem>)item;
+- (void)addOrUpdateItemWithDKKeyValueItem:(id<DKKeyValueItem>)item;
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
 
@@ -28,8 +28,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineKeyValueEngine)
+J2OBJC_EMPTY_STATIC_INIT(DKKeyValueEngine)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineKeyValueEngine)
+#define ImActorModelDroidkitEngineKeyValueEngine DKKeyValueEngine
 
-#endif // _ImActorModelDroidkitEngineKeyValueEngine_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKKeyValueEngine)
+
+#endif // _DKKeyValueEngine_H_

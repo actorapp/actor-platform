@@ -7,20 +7,19 @@
 #define _AMFileSystemProvider_H_
 
 @class AMFileReference;
-@protocol ImActorModelFilesFileReference;
+@protocol AMFileSystemReference;
 
 #include "J2ObjC_header.h"
 
 @protocol AMFileSystemProvider < NSObject, JavaObject >
 
-- (id<ImActorModelFilesFileReference>)createTempFile;
+- (id<AMFileSystemReference>)createTempFile;
 
-- (id<ImActorModelFilesFileReference>)commitTempFileWithImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)sourceFile
-                                                                   withAMFileReference:(AMFileReference *)fileReference;
+- (id<AMFileSystemReference>)commitTempFile:(id<AMFileSystemReference>)sourceFile withReference:(AMFileReference *)fileReference;
 
 - (jboolean)isFsPersistent;
 
-- (id<ImActorModelFilesFileReference>)fileFromDescriptorWithNSString:(NSString *)descriptor;
+- (id<AMFileSystemReference>)fileFromDescriptor:(NSString *)descriptor;
 
 @end
 

@@ -8,13 +8,13 @@
 #include "java/util/HashMap.h"
 #include "java/util/HashSet.h"
 
-@interface ImActorModelDroidkitEngineObjectCache () {
+@interface DKObjectCache () {
  @public
   jboolean lockLoading_;
 }
 @end
 
-@implementation ImActorModelDroidkitEngineObjectCache
+@implementation DKObjectCache
 
 - (void)onObjectLoadedWithId:(id)key
                       withId:(id)value {
@@ -81,7 +81,7 @@
   return self;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineObjectCache *)other {
+- (void)copyAllFieldsTo:(DKObjectCache *)other {
   [super copyAllFieldsTo:other];
   other->memoryCache_ = memoryCache_;
   other->removedItems_ = removedItems_;
@@ -90,4 +90,4 @@
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineObjectCache)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKObjectCache)

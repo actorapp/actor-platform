@@ -16,21 +16,21 @@
 #include "org/bouncycastle/crypto/params/AsymmetricKeyParameter.h"
 #include "org/bouncycastle/crypto/params/RSAKeyParameters.h"
 
-@interface ImActorModelCryptoBouncycastleBcRsaCipher () {
+@interface BCBcRsaCipher () {
  @public
   id<OrgBouncycastleCryptoAsymmetricBlockCipher> cipher_BcRsaCipher_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelCryptoBouncycastleBcRsaCipher, cipher_BcRsaCipher_, id<OrgBouncycastleCryptoAsymmetricBlockCipher>)
+J2OBJC_FIELD_SETTER(BCBcRsaCipher, cipher_BcRsaCipher_, id<OrgBouncycastleCryptoAsymmetricBlockCipher>)
 
-@implementation ImActorModelCryptoBouncycastleBcRsaCipher
+@implementation BCBcRsaCipher
 
 - (instancetype)initWithByteArray:(IOSByteArray *)publicKey
                     withByteArray:(IOSByteArray *)privateKey {
   if (self = [super initWithByteArray:publicKey]) {
     @try {
-      ImActorModelCryptoEncodingPKS8RsaPrivateKey *pks8RsaPrivateKey = [[ImActorModelCryptoEncodingPKS8RsaPrivateKey alloc] initWithByteArray:privateKey];
+      BCPKS8RsaPrivateKey *pks8RsaPrivateKey = [[BCPKS8RsaPrivateKey alloc] initWithByteArray:privateKey];
       OrgBouncycastleCryptoParamsAsymmetricKeyParameter *keyParameter = [[OrgBouncycastleCryptoParamsRSAKeyParameters alloc] initWithBoolean:YES withJavaMathBigInteger:[pks8RsaPrivateKey getModulus] withJavaMathBigInteger:[pks8RsaPrivateKey getExponent]];
       cipher_BcRsaCipher_ = [[OrgBouncycastleCryptoEncodingsOAEPEncoding alloc] initWithOrgBouncycastleCryptoAsymmetricBlockCipher:[[OrgBouncycastleCryptoEnginesRSAEngine alloc] init] withOrgBouncycastleCryptoDigest:[[OrgBouncycastleCryptoDigestsSHA1Digest alloc] init]];
       [cipher_BcRsaCipher_ init__WithBoolean:NO withOrgBouncycastleCryptoCipherParameters:keyParameter];
@@ -57,11 +57,11 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoBouncycastleBcRsaCipher, cipher_BcRsaCiphe
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelCryptoBouncycastleBcRsaCipher *)other {
+- (void)copyAllFieldsTo:(BCBcRsaCipher *)other {
   [super copyAllFieldsTo:other];
   other->cipher_BcRsaCipher_ = cipher_BcRsaCipher_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoBouncycastleBcRsaCipher)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCBcRsaCipher)

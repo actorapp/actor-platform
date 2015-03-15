@@ -6,25 +6,25 @@
 #ifndef _AMCryptoProvider_H_
 #define _AMCryptoProvider_H_
 
+@class AMCryptoKeyPair;
 @class IOSByteArray;
-@class ImActorModelCryptoCryptoKeyPair;
-@protocol ImActorModelCryptoAesCipher;
-@protocol ImActorModelCryptoRsaCipher;
-@protocol ImActorModelCryptoRsaEncryptCipher;
+@protocol AMAesCipher;
+@protocol AMRsaCipher;
+@protocol AMRsaEncryptCipher;
 
 #include "J2ObjC_header.h"
 
 @protocol AMCryptoProvider < NSObject, JavaObject >
 
-- (ImActorModelCryptoCryptoKeyPair *)generateRSA1024KeyPair;
+- (AMCryptoKeyPair *)generateRSA1024KeyPair;
 
-- (id<ImActorModelCryptoRsaEncryptCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey;
+- (id<AMRsaEncryptCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey;
 
-- (id<ImActorModelCryptoRsaCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey
-                                                          withByteArray:(IOSByteArray *)privateKey;
+- (id<AMRsaCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey
+                                          withByteArray:(IOSByteArray *)privateKey;
 
-- (id<ImActorModelCryptoAesCipher>)createAESCBCPKS7CipherWithByteArray:(IOSByteArray *)key
-                                                         withByteArray:(IOSByteArray *)iv;
+- (id<AMAesCipher>)createAESCBCPKS7CipherWithByteArray:(IOSByteArray *)key
+                                         withByteArray:(IOSByteArray *)iv;
 
 - (IOSByteArray *)MD5WithByteArray:(IOSByteArray *)data;
 
