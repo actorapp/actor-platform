@@ -1,10 +1,5 @@
 package im.actor.model.crypto.bouncycastle;
 
-import org.bouncycastle.asn1.ASN1Encoding;
-import org.bouncycastle.asn1.DERNull;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.digests.MD5Digest;
 import org.bouncycastle.crypto.digests.SHA256Digest;
@@ -14,7 +9,6 @@ import org.bouncycastle.crypto.params.RSAKeyGenerationParameters;
 import org.bouncycastle.crypto.params.RSAKeyParameters;
 import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
@@ -23,6 +17,7 @@ import im.actor.model.crypto.AesCipher;
 import im.actor.model.crypto.CryptoKeyPair;
 import im.actor.model.crypto.RsaCipher;
 import im.actor.model.crypto.RsaEncryptCipher;
+import im.actor.model.crypto.encoding.PKS8RsaPrivateKey;
 import im.actor.model.crypto.encoding.X509RsaPublicKey;
 
 /**
@@ -58,20 +53,7 @@ public class BouncyCastleProvider implements CryptoProvider {
 
         // Building PKCS#8 key
         RSAPrivateCrtKeyParameters parameter = (RSAPrivateCrtKeyParameters) res.getPrivate();
-
-        org.bouncycastle.asn1.pkcs.RSAPrivateKey pksPrivateKey =
-                new org.bouncycastle.asn1.pkcs.RSAPrivateKey(parameter.getModulus(), ZERO, parameter.getExponent(),
-                        ZERO, ZERO, ZERO, ZERO, ZERO);
-
-        byte[] privateKey;
-        try {
-            PrivateKeyInfo info = new PrivateKeyInfo(new AlgorithmIdentifier(PKCSObjectIdentifiers.rsaEncryption, DERNull.INSTANCE),
-                    pksPrivateKey.toASN1Primitive());
-            privateKey = info.getEncoded(ASN1Encoding.DER);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        byte[] privateKey = new PKS8RsaPrivateKey(parameter.getModulus(), parameter.getExponent()).serialize();
 
         return new CryptoKeyPair(publicKey, privateKey);
     }

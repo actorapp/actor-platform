@@ -23,6 +23,10 @@
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)data;
 
+- (instancetype)init;
+
+- (instancetype)initWithInt:(jint)val;
+
 - (IOSByteArray *)getData;
 
 - (JavaMathBigInteger *)asBigInteger;

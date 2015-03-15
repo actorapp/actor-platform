@@ -6,18 +6,15 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/bouncycastle/BcRsaCipher.h"
+#include "im/actor/model/crypto/encoding/PKS8RsaPrivateKey.h"
 #include "java/lang/Exception.h"
 #include "java/math/BigInteger.h"
-#include "org/bouncycastle/asn1/ASN1Sequence.h"
-#include "org/bouncycastle/asn1/pkcs/PrivateKeyInfo.h"
 #include "org/bouncycastle/crypto/AsymmetricBlockCipher.h"
 #include "org/bouncycastle/crypto/digests/SHA1Digest.h"
 #include "org/bouncycastle/crypto/encodings/OAEPEncoding.h"
 #include "org/bouncycastle/crypto/engines/RSAEngine.h"
 #include "org/bouncycastle/crypto/params/AsymmetricKeyParameter.h"
 #include "org/bouncycastle/crypto/params/RSAKeyParameters.h"
-#include "org/bouncycastle/crypto/params/RSAPrivateCrtKeyParameters.h"
-#include "org/bouncycastle/crypto/util/PrivateKeyFactory.h"
 
 @interface ImActorModelCryptoBouncycastleBcRsaCipher () {
  @public
@@ -33,9 +30,8 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoBouncycastleBcRsaCipher, cipher_BcRsaCiphe
                     withByteArray:(IOSByteArray *)privateKey {
   if (self = [super initWithByteArray:publicKey]) {
     @try {
-      OrgBouncycastleAsn1PkcsPrivateKeyInfo *info = [[OrgBouncycastleAsn1PkcsPrivateKeyInfo alloc] initWithOrgBouncycastleAsn1ASN1Sequence:OrgBouncycastleAsn1ASN1Sequence_getInstanceWithId_(privateKey)];
-      OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *privateCrtKeyParameters = (OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *) check_class_cast(OrgBouncycastleCryptoUtilPrivateKeyFactory_createKeyWithOrgBouncycastleAsn1PkcsPrivateKeyInfo_(info), [OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters class]);
-      OrgBouncycastleCryptoParamsAsymmetricKeyParameter *keyParameter = [[OrgBouncycastleCryptoParamsRSAKeyParameters alloc] initWithBoolean:YES withJavaMathBigInteger:[((OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *) nil_chk(privateCrtKeyParameters)) getModulus] withJavaMathBigInteger:[privateCrtKeyParameters getExponent]];
+      ImActorModelCryptoEncodingPKS8RsaPrivateKey *pks8RsaPrivateKey = [[ImActorModelCryptoEncodingPKS8RsaPrivateKey alloc] initWithByteArray:privateKey];
+      OrgBouncycastleCryptoParamsAsymmetricKeyParameter *keyParameter = [[OrgBouncycastleCryptoParamsRSAKeyParameters alloc] initWithBoolean:YES withJavaMathBigInteger:[pks8RsaPrivateKey getModulus] withJavaMathBigInteger:[pks8RsaPrivateKey getExponent]];
       cipher_BcRsaCipher_ = [[OrgBouncycastleCryptoEncodingsOAEPEncoding alloc] initWithOrgBouncycastleCryptoAsymmetricBlockCipher:[[OrgBouncycastleCryptoEnginesRSAEngine alloc] init] withOrgBouncycastleCryptoDigest:[[OrgBouncycastleCryptoDigestsSHA1Digest alloc] init]];
       [cipher_BcRsaCipher_ init__WithBoolean:NO withOrgBouncycastleCryptoCipherParameters:keyParameter];
     }
