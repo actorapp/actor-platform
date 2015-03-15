@@ -13,18 +13,10 @@
 #include "im/actor/model/crypto/bouncycastle/BcRsaCipher.h"
 #include "im/actor/model/crypto/bouncycastle/BcRsaEncryptCipher.h"
 #include "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
+#include "im/actor/model/crypto/encoding/PKS8RsaPrivateKey.h"
 #include "im/actor/model/crypto/encoding/X509RsaPublicKey.h"
-#include "java/io/IOException.h"
 #include "java/math/BigInteger.h"
 #include "java/security/SecureRandom.h"
-#include "org/bouncycastle/asn1/ASN1Encoding.h"
-#include "org/bouncycastle/asn1/ASN1ObjectIdentifier.h"
-#include "org/bouncycastle/asn1/ASN1Primitive.h"
-#include "org/bouncycastle/asn1/DERNull.h"
-#include "org/bouncycastle/asn1/pkcs/PKCSObjectIdentifiers.h"
-#include "org/bouncycastle/asn1/pkcs/PrivateKeyInfo.h"
-#include "org/bouncycastle/asn1/pkcs/RSAPrivateKey.h"
-#include "org/bouncycastle/asn1/x509/AlgorithmIdentifier.h"
 #include "org/bouncycastle/crypto/AsymmetricCipherKeyPair.h"
 #include "org/bouncycastle/crypto/digests/MD5Digest.h"
 #include "org/bouncycastle/crypto/digests/SHA256Digest.h"
@@ -54,16 +46,7 @@ JavaSecuritySecureRandom * ImActorModelCryptoBouncycastleBouncyCastleProvider_RA
   OrgBouncycastleCryptoParamsRSAKeyParameters *rsaPublicKey = (OrgBouncycastleCryptoParamsRSAKeyParameters *) check_class_cast([((OrgBouncycastleCryptoAsymmetricCipherKeyPair *) nil_chk(res)) getPublic], [OrgBouncycastleCryptoParamsRSAKeyParameters class]);
   IOSByteArray *publicKey = [((ImActorModelCryptoEncodingX509RsaPublicKey *) [[ImActorModelCryptoEncodingX509RsaPublicKey alloc] initWithJavaMathBigInteger:[((OrgBouncycastleCryptoParamsRSAKeyParameters *) nil_chk(rsaPublicKey)) getModulus] withJavaMathBigInteger:[rsaPublicKey getExponent]]) serialize];
   OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *parameter = (OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *) check_class_cast([res getPrivate], [OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters class]);
-  OrgBouncycastleAsn1PkcsRSAPrivateKey *pksPrivateKey = [[OrgBouncycastleAsn1PkcsRSAPrivateKey alloc] initWithJavaMathBigInteger:[((OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *) nil_chk(parameter)) getModulus] withJavaMathBigInteger:ImActorModelCryptoBouncycastleBouncyCastleProvider_ZERO_ withJavaMathBigInteger:[parameter getExponent] withJavaMathBigInteger:ImActorModelCryptoBouncycastleBouncyCastleProvider_ZERO_ withJavaMathBigInteger:ImActorModelCryptoBouncycastleBouncyCastleProvider_ZERO_ withJavaMathBigInteger:ImActorModelCryptoBouncycastleBouncyCastleProvider_ZERO_ withJavaMathBigInteger:ImActorModelCryptoBouncycastleBouncyCastleProvider_ZERO_ withJavaMathBigInteger:ImActorModelCryptoBouncycastleBouncyCastleProvider_ZERO_];
-  IOSByteArray *privateKey;
-  @try {
-    OrgBouncycastleAsn1PkcsPrivateKeyInfo *info = [[OrgBouncycastleAsn1PkcsPrivateKeyInfo alloc] initWithOrgBouncycastleAsn1X509AlgorithmIdentifier:[[OrgBouncycastleAsn1X509AlgorithmIdentifier alloc] initWithOrgBouncycastleAsn1ASN1ObjectIdentifier:OrgBouncycastleAsn1PkcsPKCSObjectIdentifiers_get_rsaEncryption_() withOrgBouncycastleAsn1ASN1Encodable:OrgBouncycastleAsn1DERNull_get_INSTANCE_()] withOrgBouncycastleAsn1ASN1Encodable:[pksPrivateKey toASN1Primitive]];
-    privateKey = [info getEncodedWithNSString:OrgBouncycastleAsn1ASN1Encoding_get_DER_()];
-  }
-  @catch (JavaIoIOException *e) {
-    [((JavaIoIOException *) nil_chk(e)) printStackTrace];
-    return nil;
-  }
+  IOSByteArray *privateKey = [((ImActorModelCryptoEncodingPKS8RsaPrivateKey *) [[ImActorModelCryptoEncodingPKS8RsaPrivateKey alloc] initWithJavaMathBigInteger:[((OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *) nil_chk(parameter)) getModulus] withJavaMathBigInteger:[parameter getExponent]]) serialize];
   return [[ImActorModelCryptoCryptoKeyPair alloc] initWithByteArray:publicKey withByteArray:privateKey];
 }
 
