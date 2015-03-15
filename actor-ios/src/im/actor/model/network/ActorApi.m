@@ -13,6 +13,7 @@
 #include "im/actor/model/network/RpcCallback.h"
 #include "im/actor/model/network/api/ApiBroker.h"
 #include "im/actor/model/network/parser/Request.h"
+#include "java/lang/RuntimeException.h"
 
 @interface AMActorApi () {
  @public
@@ -36,6 +37,9 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
+  if (request == nil) {
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Request can't be null"];
+  }
   [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:[[ImActorModelNetworkApiApiBroker_PerformRequest alloc] initWithImActorModelNetworkParserRequest:request withAMRpcCallback:callback]];
 }
 

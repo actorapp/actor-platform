@@ -18,6 +18,9 @@ public class ActorApi {
     }
 
     public <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
+        if (request == null) {
+            throw new RuntimeException("Request can't be null");
+        }
         this.apiBroker.send(new ApiBroker.PerformRequest(request, callback));
     }
 }
