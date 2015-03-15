@@ -11,7 +11,7 @@ import im.actor.model.network.RpcException;
 import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
 import im.actor.model.droidkit.engine.KeyValueEngine;
-import im.actor.model.storage.PreferencesStorage;
+import im.actor.model.droidkit.engine.PreferencesStorage;
 
 /**
  * Created by ex3ndr on 16.02.15.

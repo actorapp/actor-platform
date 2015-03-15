@@ -1,4 +1,4 @@
-package im.actor.model.storage;
+package im.actor.model.droidkit.engine;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -6,7 +6,7 @@ import java.util.HashSet;
 /**
  * Created by ex3ndr on 21.09.14.
  */
-public class ObjectCache<K, V> {
+class ObjectCache<K, V> {
     protected final HashMap<K, V> memoryCache = new HashMap<K, V>();
     protected final HashSet<K> removedItems = new HashSet<K>();
     private boolean lockLoading = false;

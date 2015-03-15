@@ -46,7 +46,7 @@ public abstract class BaseContactFragment extends BaseFragment {
         linearLayoutManager.setSmoothScrollbarEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        contactDisplayList = messenger().getContactsGlobalList();
+        contactDisplayList = messenger().buildContactDisplayList();
         adapter = new ContactsAdapter(contactDisplayList, getActivity(), false);
 
         recyclerView.setAdapter(adapter);
@@ -90,10 +90,7 @@ public abstract class BaseContactFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        if (adapter != null) {
-            adapter.resume();
-        }
+        adapter.resume();
     }
 
     protected abstract void onUserSelected(int uid);
@@ -137,23 +134,20 @@ public abstract class BaseContactFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (adapter != null) {
-            adapter.pause();
-        }
+        adapter.pause();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (adapter != null) {
-            adapter.pause();
+            adapter.dispose();
             adapter = null;
         }
-//        if (engineUiList != null) {
-//            engineUiList.release();
-//            engineUiList = null;
-//        }
-//        listView = null;
+        if (contactDisplayList != null) {
+            contactDisplayList.dispose();
+            contactDisplayList = null;
+        }
         emptyView = null;
     }
 }

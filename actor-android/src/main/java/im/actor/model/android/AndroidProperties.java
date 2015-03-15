@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Base64;
 
 import im.actor.messenger.app.AppContext;
-import im.actor.model.storage.PreferencesStorage;
+import im.actor.model.droidkit.engine.PreferencesStorage;
 
 /**
  * Created by ex3ndr on 15.02.15.

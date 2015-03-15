@@ -7,7 +7,7 @@ import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
-import im.actor.model.storage.PreferencesStorage;
+import im.actor.model.droidkit.engine.PreferencesStorage;
 
 /**
  * Created by ex3ndr on 08.02.15.

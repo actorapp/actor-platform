@@ -73,11 +73,16 @@ public abstract class BindedListAdapter<V extends BserObject & ListEngineItem,
 
     public abstract T onCreateViewHolder(ViewGroup viewGroup, int index, V item);
 
+    public void resume() {
+        displayList.addListener(listener);
+        notifyDataSetChanged();
+    }
+
     public void pause() {
         displayList.removeListener(listener);
     }
 
-    public void resume() {
-        displayList.addListener(listener);
+    public void dispose() {
+        pause();
     }
 }
