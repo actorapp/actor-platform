@@ -11,11 +11,11 @@
 #include "im/actor/model/crypto/asn1/ASN1Integer.h"
 #include "im/actor/model/crypto/asn1/ASN1Null.h"
 #include "im/actor/model/crypto/asn1/ASN1ObjectIdentifier.h"
+#include "im/actor/model/crypto/asn1/ASN1OctetString.h"
 #include "im/actor/model/crypto/asn1/ASN1Primitive.h"
 #include "im/actor/model/crypto/asn1/ASN1Sequence.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "java/io/IOException.h"
-#include "org/bouncycastle/asn1/BERTags.h"
 
 @implementation ImActorModelCryptoAsn1ASN1
 
@@ -53,12 +53,12 @@ ImActorModelCryptoAsn1ASN1Primitive *ImActorModelCryptoAsn1ASN1_readObjectWithBS
   ImActorModelCryptoAsn1ASN1_init();
   jint tag = [((BSDataInput *) nil_chk(dataInput)) readASN1Tag];
   jint tagNumber = [dataInput readASN1TagNumberWithInt:tag];
-  jboolean isConstructed = (tag & OrgBouncycastleAsn1BERTags_CONSTRUCTED) != 0;
+  jboolean isConstructed = (tag & ImActorModelCryptoAsn1ASN1Primitive_TAG_CONSTRUCTED) != 0;
   jint length = [dataInput readASN1Length];
-  if ((tag & OrgBouncycastleAsn1BERTags_APPLICATION) != 0) {
+  if ((tag & ImActorModelCryptoAsn1ASN1Primitive_TAG_APPLICATION) != 0) {
     @throw [[JavaIoIOException alloc] init];
   }
-  if ((tag & OrgBouncycastleAsn1BERTags_TAGGED) != 0) {
+  if ((tag & ImActorModelCryptoAsn1ASN1Primitive_TAG_TAGGED) != 0) {
     @throw [[JavaIoIOException alloc] init];
   }
   BSDataInput *objDataInput;
@@ -80,6 +80,8 @@ ImActorModelCryptoAsn1ASN1Primitive *ImActorModelCryptoAsn1ASN1_readObjectWithBS
     return [[ImActorModelCryptoAsn1ASN1Null alloc] init];
     case ImActorModelCryptoAsn1ASN1Primitive_TAG_BIT_STRING:
     return ImActorModelCryptoAsn1ASN1BitString_readBitStringWithBSDataInput_(objDataInput);
+    case ImActorModelCryptoAsn1ASN1Primitive_TAG_OCTET_STRING:
+    return ImActorModelCryptoAsn1ASN1OctetString_readOctetStringWithBSDataInput_(objDataInput);
     default:
     @throw [[JavaIoIOException alloc] initWithNSString:JreStrcat("$I", @"Unsupported tag number #", tagNumber)];
   }

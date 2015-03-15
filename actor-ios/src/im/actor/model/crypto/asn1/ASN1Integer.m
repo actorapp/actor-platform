@@ -41,6 +41,20 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoAsn1ASN1Integer, data_, IOSByteArray *)
   return self;
 }
 
+- (instancetype)init {
+  if (self = [super init]) {
+    self->data_ = [((JavaMathBigInteger *) nil_chk(JavaMathBigInteger_get_ZERO_())) toByteArray];
+  }
+  return self;
+}
+
+- (instancetype)initWithInt:(jint)val {
+  if (self = [super init]) {
+    self->data_ = [((JavaMathBigInteger *) [[JavaMathBigInteger alloc] initWithNSString:JreStrcat("I", val)]) toByteArray];
+  }
+  return self;
+}
+
 - (IOSByteArray *)getData {
   return data_;
 }

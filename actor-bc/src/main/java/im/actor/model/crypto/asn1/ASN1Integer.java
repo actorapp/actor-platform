@@ -25,6 +25,14 @@ public class ASN1Integer extends ASN1Primitive {
         this.data = data.toByteArray();
     }
 
+    public ASN1Integer() {
+        this.data = BigInteger.ZERO.toByteArray();
+    }
+
+    public ASN1Integer(int val) {
+        this.data = new BigInteger("" + val).toByteArray();
+    }
+
     public byte[] getData() {
         return data;
     }
