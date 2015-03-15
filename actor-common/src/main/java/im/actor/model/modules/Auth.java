@@ -2,7 +2,7 @@ package im.actor.model.modules;
 
 import im.actor.model.ApiConfiguration;
 import im.actor.model.AuthState;
-import im.actor.model.MainThread;
+import im.actor.model.MainThreadProvider;
 import im.actor.model.api.rpc.RequestSendAuthCode;
 import im.actor.model.api.rpc.RequestSignIn;
 import im.actor.model.api.rpc.RequestSignUp;
@@ -34,7 +34,7 @@ public class Auth extends BaseModule {
     private static final String KEY_PRIVATE_KEY = "auth_key_private";
 
     private AuthState state;
-    private MainThread mainThread;
+    private MainThreadProvider mainThreadProvider;
 
     private byte[] publicKey;
     private byte[] privateKey;
@@ -47,14 +47,14 @@ public class Auth extends BaseModule {
     public Auth(Modules modules) {
         super(modules);
 
-        long start = modules.getConfiguration().getThreading().getActorTime();
-        this.mainThread = modules.getConfiguration().getMainThread();
-        Log.d("CORE_INIT", "Loading stage5.3.1 in " + (modules.getConfiguration().getThreading().getActorTime() - start) + " ms");
-        start = modules.getConfiguration().getThreading().getActorTime();
+        long start = modules.getConfiguration().getThreadingProvider().getActorTime();
+        this.mainThreadProvider = modules.getConfiguration().getMainThreadProvider();
+        Log.d("CORE_INIT", "Loading stage5.3.1 in " + (modules.getConfiguration().getThreadingProvider().getActorTime() - start) + " ms");
+        start = modules.getConfiguration().getThreadingProvider().getActorTime();
 
         this.myUid = preferences().getInt(KEY_AUTH_UID, 0);
-        Log.d("CORE_INIT", "Loading stage5.3.2 in " + (modules.getConfiguration().getThreading().getActorTime() - start) + " ms");
-        start = modules.getConfiguration().getThreading().getActorTime();
+        Log.d("CORE_INIT", "Loading stage5.3.2 in " + (modules.getConfiguration().getThreadingProvider().getActorTime() - start) + " ms");
+        start = modules.getConfiguration().getThreadingProvider().getActorTime();
 
         // Keep device hash always stable across launch
         deviceHash = preferences().getBytes(KEY_DEVICE_HASH);
@@ -78,8 +78,8 @@ public class Auth extends BaseModule {
 
         apiConfiguration = modules.getConfiguration().getApiConfiguration();
 
-        Log.d("CORE_INIT", "Loading stage5.3.3 in " + (modules.getConfiguration().getThreading().getActorTime() - start) + " ms");
-        start = modules.getConfiguration().getThreading().getActorTime();
+        Log.d("CORE_INIT", "Loading stage5.3.3 in " + (modules.getConfiguration().getThreadingProvider().getActorTime() - start) + " ms");
+        start = modules.getConfiguration().getThreadingProvider().getActorTime();
     }
 
     public void run() {

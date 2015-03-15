@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 
-import im.actor.model.Networking;
+import im.actor.model.NetworkProvider;
 import im.actor.model.api.parser.RpcParser;
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorCreator;
@@ -41,11 +41,11 @@ import im.actor.model.util.AtomicLongCompat;
 public class ApiBroker extends Actor {
 
     public static ActorRef get(final Endpoints endpoints, final AuthKeyStorage keyStorage, final ActorApiCallback callback,
-                               final Networking networking) {
+                               final NetworkProvider networkProvider) {
         return ActorSystem.system().actorOf(Props.create(ApiBroker.class, new ActorCreator<ApiBroker>() {
             @Override
             public ApiBroker create() {
-                return new ApiBroker(endpoints, keyStorage, callback, networking);
+                return new ApiBroker(endpoints, keyStorage, callback, networkProvider);
             }
         }), "api/broker");
     }
@@ -62,14 +62,14 @@ public class ApiBroker extends Actor {
 
     private MTProto proto;
 
-    private Networking networking;
+    private NetworkProvider networkProvider;
 
     public ApiBroker(Endpoints endpoints, AuthKeyStorage keyStorage, ActorApiCallback callback,
-                     Networking networking) {
+                     NetworkProvider networkProvider) {
         this.endpoints = endpoints;
         this.keyStorage = keyStorage;
         this.callback = callback;
-        this.networking = networking;
+        this.networkProvider = networkProvider;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class ApiBroker extends Actor {
     private void requestAuthId() {
         Log.d(TAG, "Creating auth key...");
 
-        AuthIdRetriever.requestAuthId(endpoints, networking, new AuthIdRetriever.AuthIdCallback() {
+        AuthIdRetriever.requestAuthId(endpoints, networkProvider, new AuthIdRetriever.AuthIdCallback() {
             @Override
             public void onSuccess(long authId) {
                 Log.d(TAG, "Key created");
@@ -145,7 +145,7 @@ public class ApiBroker extends Actor {
             public void onSessionCreated() {
                 callback.onNewSessionCreated();
             }
-        }, networking);
+        }, networkProvider);
 
         for (RequestHolder holder : requests.values()) {
             holder.protoId = proto.sendRpcMessage(holder.message);

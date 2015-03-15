@@ -181,7 +181,7 @@ public class ManagerActor extends Actor {
 
             final int id = NEXT_CONNECTION.getAndIncrement();
 
-            mtProto.getNetworking().createConnection(id, endpoints.fetchEndpoint(), new ConnectionCallback() {
+            mtProto.getNetworkProvider().createConnection(id, endpoints.fetchEndpoint(), new ConnectionCallback() {
                 @Override
                 public void onMessage(byte[] data, int offset, int len) {
                     self().send(new InMessage(data, offset, len));

@@ -10,7 +10,7 @@
 @class IOSBooleanArray;
 @class IOSByteArray;
 @protocol AMConnection;
-@protocol AMNetworking;
+@protocol AMNetworkProvider;
 @protocol MTAuthIdRetriever_AuthIdCallback;
 
 #include "J2ObjC_header.h"
@@ -21,7 +21,7 @@
 }
 
 + (void)requestAuthIdWithAMEndpoints:(AMEndpoints *)endpoints
-                    withAMNetworking:(id<AMNetworking>)networking
+               withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
 withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callback;
 
 - (instancetype)init;
@@ -32,7 +32,7 @@ J2OBJC_EMPTY_STATIC_INIT(MTAuthIdRetriever)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworking_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<AMNetworking> networking, id<MTAuthIdRetriever_AuthIdCallback> callback);
+FOUNDATION_EXPORT void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<AMNetworkProvider> networkProvider, id<MTAuthIdRetriever_AuthIdCallback> callback);
 
 FOUNDATION_EXPORT NSString *MTAuthIdRetriever_TAG_;
 J2OBJC_STATIC_FIELD_GETTER(MTAuthIdRetriever, TAG_, NSString *)

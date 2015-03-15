@@ -4,9 +4,10 @@
 //
 
 #include "J2ObjC_source.h"
-#include "im/actor/model/MainThread.h"
+#include "im/actor/model/MainThreadProvider.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
 #include "java/lang/Runnable.h"
+#include "java/lang/RuntimeException.h"
 
 @interface AMMVVMEngine () {
 }
@@ -14,14 +15,18 @@
 
 @implementation AMMVVMEngine
 
-id<AMMainThread> AMMVVMEngine_mainThread_;
+id<AMMainThreadProvider> AMMVVMEngine_mainThreadProvider_;
 
-+ (void)init__WithAMMainThread:(id<AMMainThread>)mainThread {
-  AMMVVMEngine_init__WithAMMainThread_(mainThread);
++ (void)init__WithAMMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider {
+  AMMVVMEngine_init__WithAMMainThreadProvider_(mainThreadProvider);
 }
 
-+ (id<AMMainThread>)getMainThread {
-  return AMMVVMEngine_getMainThread();
++ (id<AMMainThreadProvider>)getMainThreadProvider {
+  return AMMVVMEngine_getMainThreadProvider();
+}
+
++ (void)checkMainThread {
+  AMMVVMEngine_checkMainThread();
 }
 
 + (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
@@ -34,19 +39,29 @@ id<AMMainThread> AMMVVMEngine_mainThread_;
 
 @end
 
-void AMMVVMEngine_init__WithAMMainThread_(id<AMMainThread> mainThread) {
+void AMMVVMEngine_init__WithAMMainThreadProvider_(id<AMMainThreadProvider> mainThreadProvider) {
   AMMVVMEngine_init();
-  AMMVVMEngine_mainThread_ = mainThread;
+  AMMVVMEngine_mainThreadProvider_ = mainThreadProvider;
 }
 
-id<AMMainThread> AMMVVMEngine_getMainThread() {
+id<AMMainThreadProvider> AMMVVMEngine_getMainThreadProvider() {
   AMMVVMEngine_init();
-  return AMMVVMEngine_mainThread_;
+  return AMMVVMEngine_mainThreadProvider_;
+}
+
+void AMMVVMEngine_checkMainThread() {
+  AMMVVMEngine_init();
+  if ([((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) isSingleThread]) {
+    return;
+  }
+  if (![AMMVVMEngine_mainThreadProvider_ isMainThread]) {
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Unable to perform operation not from Main Thread"];
+  }
 }
 
 void AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(id<JavaLangRunnable> runnable) {
   AMMVVMEngine_init();
-  [((id<AMMainThread>) nil_chk(AMMVVMEngine_mainThread_)) runOnUiThread:runnable];
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) runOnUiThreadWithJavaLangRunnable:runnable];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMEngine)

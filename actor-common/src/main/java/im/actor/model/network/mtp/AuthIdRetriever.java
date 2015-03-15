@@ -5,7 +5,7 @@ import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.CreateConnectionCallback;
 import im.actor.model.network.Endpoints;
-import im.actor.model.Networking;
+import im.actor.model.NetworkProvider;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 
@@ -16,13 +16,13 @@ public class AuthIdRetriever {
 
     private static final String TAG = "AuthId";
 
-    public static void requestAuthId(Endpoints endpoints, Networking networking, final AuthIdCallback callback) {
+    public static void requestAuthId(Endpoints endpoints, NetworkProvider networkProvider, final AuthIdCallback callback) {
         Log.d(TAG, "Requesting AuthId");
 
         final boolean[] isFinished = new boolean[1];
         isFinished[0] = false;
 
-        networking.createConnection(0, endpoints.fetchEndpoint(), new ConnectionCallback() {
+        networkProvider.createConnection(0, endpoints.fetchEndpoint(), new ConnectionCallback() {
             @Override
             public void onMessage(byte[] data, int offset, int len) {
                 if (isFinished[0]) {

@@ -20,14 +20,18 @@
 @class ImActorModelModulesUpdates;
 @class ImActorModelNetworkParserRequest;
 @class ImActorModelNetworkParserResponse;
-@protocol AMKeyValueEngine;
-@protocol AMListEngine;
-@protocol AMPreferencesStorage;
+@protocol ImActorModelDroidkitEngineKeyValueEngine;
+@protocol ImActorModelDroidkitEngineListEngine;
+@protocol ImActorModelDroidkitEnginePreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/network/RpcCallback.h"
 #include "java/lang/Runnable.h"
+
+#define ImActorModelModulesUtilsModuleActor_CURSOR_OWN_READ 2LL
+#define ImActorModelModulesUtilsModuleActor_CURSOR_READ 1LL
+#define ImActorModelModulesUtilsModuleActor_CURSOR_RECEIVED 0LL
 
 @interface ImActorModelModulesUtilsModuleActor : DKActor {
 }
@@ -38,9 +42,9 @@
 
 - (ImActorModelApiPeer *)buildApiPeerWithAMPeer:(AMPeer *)peer;
 
-- (id<AMKeyValueEngine>)users;
+- (id<ImActorModelDroidkitEngineKeyValueEngine>)users;
 
-- (id<AMKeyValueEngine>)groups;
+- (id<ImActorModelDroidkitEngineKeyValueEngine>)groups;
 
 - (AMGroup *)getGroupWithInt:(jint)gid;
 
@@ -50,13 +54,13 @@
 
 - (AMGroupVM *)getGroupVMWithInt:(jint)gid;
 
-- (id<AMPreferencesStorage>)preferences;
+- (id<ImActorModelDroidkitEnginePreferencesStorage>)preferences;
 
 - (AMConfiguration *)config;
 
 - (ImActorModelModulesUpdates *)updates;
 
-- (id<AMListEngine>)messagesWithAMPeer:(AMPeer *)peer;
+- (id<ImActorModelDroidkitEngineListEngine>)messagesWithAMPeer:(AMPeer *)peer;
 
 - (jint)myUid;
 
@@ -74,6 +78,12 @@
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUtilsModuleActor)
 
 CF_EXTERN_C_BEGIN
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUtilsModuleActor, CURSOR_RECEIVED, jlong)
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUtilsModuleActor, CURSOR_READ, jlong)
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUtilsModuleActor, CURSOR_OWN_READ, jlong)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor)

@@ -12,10 +12,11 @@
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserCreator.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/storage/ListEngineItem.h"
+#include "im/actor/model/droidkit/engine/ListEngineItem.h"
 
-@interface AMContact : BSBserObject < AMListEngineItem > {
+@interface AMContact : BSBserObject < ImActorModelDroidkitEngineListEngineItem > {
 }
 
 + (AMContact *)fromBytesWithByteArray:(IOSByteArray *)data;
@@ -35,21 +36,43 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (jlong)getListId;
+- (jlong)getEngineId;
 
-- (jlong)getListSortKey;
+- (jlong)getEngineSort;
+
+- (NSString *)getEngineSearch;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(AMContact)
+FOUNDATION_EXPORT BOOL AMContact_initialized;
+J2OBJC_STATIC_INIT(AMContact)
 
 CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT AMContact *AMContact_fromBytesWithByteArray_(IOSByteArray *data);
+
+FOUNDATION_EXPORT id<BSBserCreator> AMContact_CREATOR_;
+J2OBJC_STATIC_FIELD_GETTER(AMContact, CREATOR_, id<BSBserCreator>)
 CF_EXTERN_C_END
 
 typedef AMContact ImActorModelEntityContact;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMContact)
+
+@interface AMContact_$1 : NSObject < BSBserCreator > {
+}
+
+- (AMContact *)createInstance;
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMContact_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMContact_$1)
 
 #endif // _AMContact_H_

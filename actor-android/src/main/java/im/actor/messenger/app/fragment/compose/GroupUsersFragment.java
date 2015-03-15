@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.base.BaseFragment;
+import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.contacts.ContactsAdapter;
 import im.actor.messenger.util.BoxUtil;
 import im.actor.messenger.util.Screen;

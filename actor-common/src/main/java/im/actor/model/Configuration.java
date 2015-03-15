@@ -7,16 +7,16 @@ import im.actor.model.network.ConnectionEndpoint;
  */
 public class Configuration {
 
-    private final Networking networking;
+    private final NetworkProvider networkProvider;
 
     private final ConnectionEndpoint[] endpoints;
 
-    private final Threading threading;
-    private final MainThread mainThread;
+    private final ThreadingProvider threadingProvider;
+    private final MainThreadProvider mainThreadProvider;
 
-    private final Storage storage;
+    private final StorageProvider storageProvider;
 
-    private final LogCallback log;
+    private final LogProvider log;
 
     private LocaleProvider localeProvider;
 
@@ -33,9 +33,9 @@ public class Configuration {
 
     private ApiConfiguration apiConfiguration;
 
-    public Configuration(Networking networking, ConnectionEndpoint[] endpoints,
-                         Threading threading, MainThread mainThread, Storage storage,
-                         LogCallback log,
+    public Configuration(NetworkProvider networkProvider, ConnectionEndpoint[] endpoints,
+                         ThreadingProvider threadingProvider, MainThreadProvider mainThreadProvider, StorageProvider storageProvider,
+                         LogProvider log,
                          LocaleProvider localeProvider,
                          PhoneBookProvider phoneBookProvider,
                          CryptoProvider cryptoProvider,
@@ -44,11 +44,11 @@ public class Configuration {
                          ApiConfiguration apiConfiguration,
                          boolean enableContactsLogging,
                          boolean enableNetworkLogging) {
-        this.networking = networking;
+        this.networkProvider = networkProvider;
         this.endpoints = endpoints;
-        this.threading = threading;
-        this.mainThread = mainThread;
-        this.storage = storage;
+        this.threadingProvider = threadingProvider;
+        this.mainThreadProvider = mainThreadProvider;
+        this.storageProvider = storageProvider;
         this.log = log;
         this.localeProvider = localeProvider;
         this.phoneBookProvider = phoneBookProvider;
@@ -84,27 +84,27 @@ public class Configuration {
         return phoneBookProvider;
     }
 
-    public Networking getNetworking() {
-        return networking;
+    public NetworkProvider getNetworkProvider() {
+        return networkProvider;
     }
 
     public ConnectionEndpoint[] getEndpoints() {
         return endpoints;
     }
 
-    public Threading getThreading() {
-        return threading;
+    public ThreadingProvider getThreadingProvider() {
+        return threadingProvider;
     }
 
-    public MainThread getMainThread() {
-        return mainThread;
+    public MainThreadProvider getMainThreadProvider() {
+        return mainThreadProvider;
     }
 
-    public Storage getStorage() {
-        return storage;
+    public StorageProvider getStorageProvider() {
+        return storageProvider;
     }
 
-    public LogCallback getLog() {
+    public LogProvider getLog() {
         return log;
     }
 

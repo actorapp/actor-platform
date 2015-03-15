@@ -12,7 +12,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
-#define ImActorModelModulesTypingOwnTypingActor_TYPING_DELAY 1000LL
+#define ImActorModelModulesTypingOwnTypingActor_TYPING_DELAY 3000LL
 
 @interface ImActorModelModulesTypingOwnTypingActor : ImActorModelModulesUtilsModuleActor {
 }

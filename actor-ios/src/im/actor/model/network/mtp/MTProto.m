@@ -5,7 +5,7 @@
 
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/Networking.h"
+#include "im/actor/model/NetworkProvider.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/network/Endpoints.h"
 #include "im/actor/model/network/mtp/MTProto.h"
@@ -23,7 +23,7 @@
   jlong sessionId_;
   AMEndpoints *endpoints_;
   id<MTMTProtoCallback> callback_;
-  id<AMNetworking> networking_;
+  id<AMNetworkProvider> networkProvider_;
   DKActorRef *receiver_;
   DKActorRef *manager_;
   DKActorRef *sender_;
@@ -33,7 +33,7 @@
 
 J2OBJC_FIELD_SETTER(MTMTProto, endpoints_, AMEndpoints *)
 J2OBJC_FIELD_SETTER(MTMTProto, callback_, id<MTMTProtoCallback>)
-J2OBJC_FIELD_SETTER(MTMTProto, networking_, id<AMNetworking>)
+J2OBJC_FIELD_SETTER(MTMTProto, networkProvider_, id<AMNetworkProvider>)
 J2OBJC_FIELD_SETTER(MTMTProto, receiver_, DKActorRef *)
 J2OBJC_FIELD_SETTER(MTMTProto, manager_, DKActorRef *)
 J2OBJC_FIELD_SETTER(MTMTProto, sender_, DKActorRef *)
@@ -45,14 +45,14 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
                     withLong:(jlong)sessionId
              withAMEndpoints:(AMEndpoints *)endpoints
        withMTMTProtoCallback:(id<MTMTProtoCallback>)callback
-            withAMNetworking:(id<AMNetworking>)networking {
+       withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider {
   if (self = [super init]) {
     actorPath_ = @"mtproto";
     self->authId_ = authId;
     self->sessionId_ = sessionId;
     self->endpoints_ = endpoints;
     self->callback_ = callback;
-    self->networking_ = networking;
+    self->networkProvider_ = networkProvider;
     self->manager_ = MTManagerActor_managerWithMTMTProto_(self);
     self->sender_ = MTSenderActor_senderActorWithMTMTProto_(self);
     self->receiver_ = MTReceiverActor_receiverWithMTMTProto_(self);
@@ -60,8 +60,8 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
   return self;
 }
 
-- (id<AMNetworking>)getNetworking {
-  return networking_;
+- (id<AMNetworkProvider>)getNetworkProvider {
+  return networkProvider_;
 }
 
 - (id<MTMTProtoCallback>)getCallback {
@@ -100,7 +100,7 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
   other->sessionId_ = sessionId_;
   other->endpoints_ = endpoints_;
   other->callback_ = callback_;
-  other->networking_ = networking_;
+  other->networkProvider_ = networkProvider_;
   other->receiver_ = receiver_;
   other->manager_ = manager_;
   other->sender_ = sender_;

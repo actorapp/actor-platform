@@ -7,6 +7,7 @@
 #include "im/actor/model/api/Group.h"
 #include "im/actor/model/api/Member.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/Group.h"
 #include "im/actor/model/entity/Message.h"
@@ -24,7 +25,6 @@
 #include "im/actor/model/modules/messages/DialogsActor.h"
 #include "im/actor/model/modules/messages/entity/EntityConverter.h"
 #include "im/actor/model/modules/updates/GroupsProcessor.h"
-#include "im/actor/model/storage/KeyValueEngine.h"
 #include "im/actor/model/util/JavaUtil.h"
 #include "java/lang/Integer.h"
 #include "java/util/ArrayList.h"
@@ -48,7 +48,7 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                               withBoolean:(jboolean)forced {
   JavaUtilArrayList *batch = [[JavaUtilArrayList alloc] init];
   for (ImActorModelApiGroup * __strong group in nil_chk(updated)) {
-    AMGroup *saved = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:[((ImActorModelApiGroup *) nil_chk(group)) getId]];
+    AMGroup *saved = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) getValueWithLong:[((ImActorModelApiGroup *) nil_chk(group)) getId]];
     if (saved == nil) {
       [batch addWithId:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(group)];
     }
@@ -61,7 +61,7 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
     }
   }
   if ([batch size] > 0) {
-    [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemsWithJavaUtilList:batch];
+    [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemsWithJavaUtilList:batch];
   }
 }
 
@@ -70,9 +70,9 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                      withInt:(jint)inviterId
                     withLong:(jlong)date
                  withBoolean:(jboolean)isSilent {
-  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
-    [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:[((AMGroup *) nil_chk([group changeMemberWithBoolean:YES])) addMemberWithInt:[self myUid] withInt:inviterId withLong:date withBoolean:inviterId == [self myUid]]];
+    [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:[((AMGroup *) nil_chk([group changeMemberWithBoolean:YES])) addMemberWithInt:[self myUid] withInt:inviterId withLong:date withBoolean:inviterId == [self myUid]]];
     if (!isSilent) {
       if (inviterId == [self myUid]) {
         AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:inviterId withAMMessageStateEnum:AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:[[AMServiceGroupCreated alloc] initWithNSString:[group getTitle]]];
@@ -91,13 +91,13 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                    withInt:(jint)uid
                   withLong:(jlong)date
                withBoolean:(jboolean)isSilent {
-  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
     if (uid == [self myUid]) {
-      [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:[((AMGroup *) nil_chk([group clearMembers])) changeMemberWithBoolean:NO]];
+      [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:[((AMGroup *) nil_chk([group clearMembers])) changeMemberWithBoolean:NO]];
     }
     else {
-      [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:[group removeMemberWithInt:uid]];
+      [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:[group removeMemberWithInt:uid]];
     }
     if (!isSilent) {
       AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:[[AMServiceGroupUserLeave alloc] init]];
@@ -112,13 +112,13 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                     withInt:(jint)kicker
                    withLong:(jlong)date
                 withBoolean:(jboolean)isSilent {
-  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
     if (uid == [self myUid]) {
-      [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:[((AMGroup *) nil_chk([group clearMembers])) changeMemberWithBoolean:NO]];
+      [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:[((AMGroup *) nil_chk([group clearMembers])) changeMemberWithBoolean:NO]];
     }
     else {
-      [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:[group removeMemberWithInt:uid]];
+      [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:[group removeMemberWithInt:uid]];
     }
     if (!isSilent) {
       AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:kicker withAMMessageStateEnum:kicker == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:[[AMServiceGroupUserKicked alloc] initWithInt:uid]];
@@ -133,9 +133,9 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                    withInt:(jint)adder
                   withLong:(jlong)date
                withBoolean:(jboolean)isSilent {
-  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
-    [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:[group addMemberWithInt:uid withInt:adder withLong:date withBoolean:NO]];
+    [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:[group addMemberWithInt:uid withInt:adder withLong:date withBoolean:NO]];
     if (!isSilent) {
       AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:adder withAMMessageStateEnum:adder == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:[[AMServiceGroupUserAdded alloc] initWithInt:uid]];
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
@@ -149,11 +149,11 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                  withNSString:(NSString *)title
                      withLong:(jlong)date
                   withBoolean:(jboolean)isSilent {
-  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
     if (![((NSString *) nil_chk([group getTitle])) isEqual:title]) {
       AMGroup *upd = [group editTitleWithNSString:title];
-      [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:upd];
+      [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:upd];
       ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, upd);
     }
     if (!isSilent) {
@@ -169,11 +169,11 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                   withAMAvatar:(AMAvatar *)avatar
                       withLong:(jlong)date
                    withBoolean:(jboolean)isSilent {
-  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
     if (!AMJavaUtil_equalsEWithId_withId_([group getAvatar], avatar)) {
       AMGroup *upd = [group editAvatarWithAMAvatar:avatar];
-      [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:upd];
+      [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:upd];
       ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, upd);
     }
     if (!isSilent) {
@@ -185,19 +185,19 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
 
 - (void)onMembersUpdatedWithInt:(jint)groupId
                withJavaUtilList:(id<JavaUtilList>)members {
-  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
     group = [group clearMembers];
     for (ImActorModelApiMember * __strong m in nil_chk(members)) {
       group = [group addMemberWithInt:[((ImActorModelApiMember *) nil_chk(m)) getUid] withInt:[m getInviterUid] withLong:[m getDate] withBoolean:[m getUid] == [((AMGroup *) nil_chk(group)) getAdminId]];
     }
-    [((id<AMKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithAMKeyValueItem:group];
+    [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:group];
   }
 }
 
 - (jboolean)hasGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)gids {
   for (JavaLangInteger * __strong uid in nil_chk(gids)) {
-    if ([((id<AMKeyValueEngine>) nil_chk([self groups])) getValueWithLong:[((JavaLangInteger *) nil_chk(uid)) intValue]] == nil) {
+    if ([((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) getValueWithLong:[((JavaLangInteger *) nil_chk(uid)) intValue]] == nil) {
       return NO;
     }
   }

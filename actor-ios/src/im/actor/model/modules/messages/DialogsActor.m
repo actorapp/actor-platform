@@ -5,6 +5,7 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/engine/ListEngine.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/ContentDescription.h"
 #include "im/actor/model/entity/ContentType.h"
@@ -22,7 +23,6 @@
 #include "im/actor/model/modules/messages/DialogsActor.h"
 #include "im/actor/model/modules/messages/entity/DialogHistory.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/storage/ListEngine.h"
 #include "im/actor/model/util/JavaUtil.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
@@ -41,7 +41,7 @@ __attribute__((unused)) static ImActorModelModulesMessagesDialogsActor_PeerDesc 
 
 @interface ImActorModelModulesMessagesDialogsActor () {
  @public
-  id<AMListEngine> dialogs_;
+  id<ImActorModelDroidkitEngineListEngine> dialogs_;
 }
 
 - (void)onMessageWithAMPeer:(AMPeer *)peer
@@ -76,7 +76,7 @@ __attribute__((unused)) static ImActorModelModulesMessagesDialogsActor_PeerDesc 
 - (ImActorModelModulesMessagesDialogsActor_PeerDesc *)buildPeerDescWithAMPeer:(AMPeer *)peer;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor, dialogs_, id<AMListEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor, dialogs_, id<ImActorModelDroidkitEngineListEngine>)
 
 @interface ImActorModelModulesMessagesDialogsActor_PeerDesc () {
  @public
@@ -323,7 +323,7 @@ void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_w
     ImActorModelModulesMessagesDialogsActor_onChatClearWithAMPeer_(self, peer);
   }
   else {
-    AMDialog *dialog = [((id<AMListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
+    AMDialog *dialog = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
     AMContentDescription *contentDescription = AMContentDescription_fromContentWithAMAbsContent_([message getContent]);
     AMDialogBuilder *builder = [((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) [[AMDialogBuilder alloc] init]) setRidWithLong:[message getRid]])) setTimeWithLong:[message getDate]])) setMessageTypeWithAMContentTypeEnum:[((AMContentDescription *) nil_chk(contentDescription)) getContentType]])) setTextWithNSString:[contentDescription getText]])) setRelatedUidWithInt:[contentDescription getRelatedUser]])) setStatusWithAMMessageStateEnum:[message getMessageState]])) setSenderIdWithInt:[message getSenderId]];
     if (dialog != nil) {
@@ -341,74 +341,74 @@ void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_w
       }
       (void) [((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk(builder)) setPeerWithAMPeer:peer])) setDialogTitleWithNSString:[((ImActorModelModulesMessagesDialogsActor_PeerDesc *) nil_chk(peerDesc)) getTitle]])) setDialogAvatarWithAMAvatar:[peerDesc getAvatar]])) setUnreadCountWithInt:0])) setSortKeyWithLong:[message getSortDate]];
     }
-    [self->dialogs_ addOrUpdateItemWithAMListEngineItem:[((AMDialogBuilder *) nil_chk(builder)) createDialog]];
+    [self->dialogs_ addOrUpdateItemWithBSBserObject:[((AMDialogBuilder *) nil_chk(builder)) createDialog]];
   }
 }
 
 void ImActorModelModulesMessagesDialogsActor_onUserChangedWithAMUser_(ImActorModelModulesMessagesDialogsActor *self, AMUser *user) {
-  AMDialog *dialog = [((id<AMListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk([((AMUser *) nil_chk(user)) peer])) getUnuqueId]];
+  AMDialog *dialog = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk([((AMUser *) nil_chk(user)) peer])) getUnuqueId]];
   if (dialog != nil) {
     if ([((NSString *) nil_chk([dialog getDialogTitle])) isEqual:[user getName]] && AMJavaUtil_equalsEWithId_withId_([dialog getDialogAvatar], [user getAvatar])) {
       return;
     }
-    [self->dialogs_ addOrUpdateItemWithAMListEngineItem:[dialog editPeerInfoWithNSString:[user getName] withAMAvatar:[user getAvatar]]];
+    [self->dialogs_ addOrUpdateItemWithBSBserObject:[dialog editPeerInfoWithNSString:[user getName] withAMAvatar:[user getAvatar]]];
   }
 }
 
 void ImActorModelModulesMessagesDialogsActor_onGroupChangedWithAMGroup_(ImActorModelModulesMessagesDialogsActor *self, AMGroup *group) {
-  AMDialog *dialog = [((id<AMListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk([((AMGroup *) nil_chk(group)) peer])) getUnuqueId]];
+  AMDialog *dialog = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk([((AMGroup *) nil_chk(group)) peer])) getUnuqueId]];
   if (dialog != nil) {
     if ([((NSString *) nil_chk([dialog getDialogTitle])) isEqual:[group getTitle]] && AMJavaUtil_equalsEWithId_withId_([dialog getDialogAvatar], [group getAvatar])) {
       return;
     }
-    [self->dialogs_ addOrUpdateItemWithAMListEngineItem:[dialog editPeerInfoWithNSString:[group getTitle] withAMAvatar:[group getAvatar]]];
+    [self->dialogs_ addOrUpdateItemWithBSBserObject:[dialog editPeerInfoWithNSString:[group getTitle] withAMAvatar:[group getAvatar]]];
   }
 }
 
 void ImActorModelModulesMessagesDialogsActor_onChatDeletedWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer) {
-  [((id<AMListEngine>) nil_chk(self->dialogs_)) removeItemWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
+  [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->dialogs_)) removeItemWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
 }
 
 void ImActorModelModulesMessagesDialogsActor_onChatClearWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer) {
-  AMDialog *dialog = [((id<AMListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
+  AMDialog *dialog = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
   if (dialog != nil) {
-    [self->dialogs_ addOrUpdateItemWithAMListEngineItem:[((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) [[AMDialogBuilder alloc] initWithAMDialog:dialog]) setMessageTypeWithAMContentTypeEnum:AMContentTypeEnum_get_EMPTY()])) setTextWithNSString:@""])) setTimeWithLong:0])) setUnreadCountWithInt:0])) setRidWithLong:0])) setSenderIdWithInt:0])) setStatusWithAMMessageStateEnum:AMMessageStateEnum_get_UNKNOWN()])) createDialog]];
+    [self->dialogs_ addOrUpdateItemWithBSBserObject:[((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) [[AMDialogBuilder alloc] initWithAMDialog:dialog]) setMessageTypeWithAMContentTypeEnum:AMContentTypeEnum_get_EMPTY()])) setTextWithNSString:@""])) setTimeWithLong:0])) setUnreadCountWithInt:0])) setRidWithLong:0])) setSenderIdWithInt:0])) setStatusWithAMMessageStateEnum:AMMessageStateEnum_get_UNKNOWN()])) createDialog]];
   }
 }
 
 void ImActorModelModulesMessagesDialogsActor_onMessageStatusChangedWithAMPeer_withLong_withAMMessageStateEnum_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jlong rid, AMMessageStateEnum *state) {
-  AMDialog *dialog = [((id<AMListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
+  AMDialog *dialog = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
   if (dialog != nil && [dialog getRid] == rid) {
-    [self->dialogs_ addOrUpdateItemWithAMListEngineItem:[((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) [[AMDialogBuilder alloc] initWithAMDialog:dialog]) setStatusWithAMMessageStateEnum:state])) createDialog]];
+    [self->dialogs_ addOrUpdateItemWithBSBserObject:[((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) [[AMDialogBuilder alloc] initWithAMDialog:dialog]) setStatusWithAMMessageStateEnum:state])) createDialog]];
   }
 }
 
 void ImActorModelModulesMessagesDialogsActor_onMessageSentWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jlong rid, jlong date) {
-  AMDialog *dialog = [((id<AMListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
+  AMDialog *dialog = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
   if (dialog != nil && [dialog getRid] == rid) {
-    [self->dialogs_ addOrUpdateItemWithAMListEngineItem:[((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) [[AMDialogBuilder alloc] initWithAMDialog:dialog]) setStatusWithAMMessageStateEnum:AMMessageStateEnum_get_SENT()])) setTimeWithLong:date])) createDialog]];
+    [self->dialogs_ addOrUpdateItemWithBSBserObject:[((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) [[AMDialogBuilder alloc] initWithAMDialog:dialog]) setStatusWithAMMessageStateEnum:AMMessageStateEnum_get_SENT()])) setTimeWithLong:date])) createDialog]];
   }
 }
 
 void ImActorModelModulesMessagesDialogsActor_onMessageContentChangedWithAMPeer_withLong_withAMAbsContent_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jlong rid, AMAbsContent *content) {
-  AMDialog *dialog = [((id<AMListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
+  AMDialog *dialog = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
   if (dialog != nil && [dialog getRid] == rid) {
     AMContentDescription *description_ = AMContentDescription_fromContentWithAMAbsContent_(content);
-    [self->dialogs_ addOrUpdateItemWithAMListEngineItem:[((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) [[AMDialogBuilder alloc] initWithAMDialog:dialog]) setTextWithNSString:[((AMContentDescription *) nil_chk(description_)) getText]])) setRelatedUidWithInt:[description_ getRelatedUser]])) setMessageTypeWithAMContentTypeEnum:[description_ getContentType]])) createDialog]];
+    [self->dialogs_ addOrUpdateItemWithBSBserObject:[((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) [[AMDialogBuilder alloc] initWithAMDialog:dialog]) setTextWithNSString:[((AMContentDescription *) nil_chk(description_)) getText]])) setRelatedUidWithInt:[description_ getRelatedUser]])) setMessageTypeWithAMContentTypeEnum:[description_ getContentType]])) createDialog]];
   }
 }
 
 void ImActorModelModulesMessagesDialogsActor_onCounterChangedWithAMPeer_withInt_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jint count) {
-  AMDialog *dialog = [((id<AMListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
+  AMDialog *dialog = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
   if (dialog != nil) {
-    [self->dialogs_ addOrUpdateItemWithAMListEngineItem:[((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) [[AMDialogBuilder alloc] initWithAMDialog:dialog]) setUnreadCountWithInt:count])) createDialog]];
+    [self->dialogs_ addOrUpdateItemWithBSBserObject:[((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) [[AMDialogBuilder alloc] initWithAMDialog:dialog]) setUnreadCountWithInt:count])) createDialog]];
   }
 }
 
 void ImActorModelModulesMessagesDialogsActor_onHistoryLoadedWithJavaUtilList_(ImActorModelModulesMessagesDialogsActor *self, id<JavaUtilList> history) {
   JavaUtilArrayList *updated = [[JavaUtilArrayList alloc] init];
   for (ImActorModelModulesMessagesEntityDialogHistory * __strong dialogHistory in nil_chk(history)) {
-    if ([((id<AMListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk([((ImActorModelModulesMessagesEntityDialogHistory *) nil_chk(dialogHistory)) getPeer])) getUnuqueId]] != nil) {
+    if ([((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->dialogs_)) getValueWithLong:[((AMPeer *) nil_chk([((ImActorModelModulesMessagesEntityDialogHistory *) nil_chk(dialogHistory)) getPeer])) getUnuqueId]] != nil) {
       continue;
     }
     ImActorModelModulesMessagesDialogsActor_PeerDesc *peerDesc = ImActorModelModulesMessagesDialogsActor_buildPeerDescWithAMPeer_(self, [dialogHistory getPeer]);
@@ -418,7 +418,7 @@ void ImActorModelModulesMessagesDialogsActor_onHistoryLoadedWithJavaUtilList_(Im
     AMContentDescription *description_ = AMContentDescription_fromContentWithAMAbsContent_([dialogHistory getContent]);
     [updated addWithId:[[AMDialog alloc] initWithAMPeer:[dialogHistory getPeer] withLong:[dialogHistory getSortDate] withNSString:[((ImActorModelModulesMessagesDialogsActor_PeerDesc *) nil_chk(peerDesc)) getTitle] withAMAvatar:[peerDesc getAvatar] withInt:[dialogHistory getUnreadCount] withLong:[dialogHistory getRid] withAMContentTypeEnum:[((AMContentDescription *) nil_chk(description_)) getContentType] withNSString:[description_ getText] withAMMessageStateEnum:[dialogHistory getStatus] withInt:[dialogHistory getSenderId] withLong:[dialogHistory getDate] withInt:[description_ getRelatedUser]]];
   }
-  [((id<AMListEngine>) nil_chk(self->dialogs_)) addOrUpdateItemsWithJavaUtilList:updated];
+  [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->dialogs_)) addOrUpdateItemsWithJavaUtilList:updated];
 }
 
 ImActorModelModulesMessagesDialogsActor_PeerDesc *ImActorModelModulesMessagesDialogsActor_buildPeerDescWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer) {

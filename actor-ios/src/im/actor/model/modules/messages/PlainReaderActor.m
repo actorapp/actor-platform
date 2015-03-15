@@ -14,10 +14,6 @@
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/network/RpcException.h"
 
-@interface ImActorModelModulesMessagesPlainReaderActor () {
-}
-@end
-
 @interface ImActorModelModulesMessagesPlainReaderActor_MarkRead () {
  @public
   AMPeer *peer_;
@@ -40,10 +36,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainReaderActor_$1, val$peer_, A
 
 @implementation ImActorModelModulesMessagesPlainReaderActor
 
-NSString * ImActorModelModulesMessagesPlainReaderActor_PREFERENCE_ = @"read_plain_storage";
-
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  return [super initWithNSString:ImActorModelModulesMessagesPlainReaderActor_PREFERENCE_ withImActorModelModulesModules:messenger];
+  return [super initWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_READ withImActorModelModulesModules:messenger];
 }
 
 - (void)performWithAMPeer:(AMPeer *)peer

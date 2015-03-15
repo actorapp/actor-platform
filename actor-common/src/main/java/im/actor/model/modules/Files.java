@@ -29,7 +29,7 @@ public class Files extends BaseModule {
         super(modules);
 
         downloadedEngine = new BaseKeyValueEngine<Downloaded>(
-                modules.getConfiguration().getStorage().createKeyValue(STORAGE_DOWNLOADS)) {
+                modules.getConfiguration().getStorageProvider().createKeyValue(STORAGE_DOWNLOADS)) {
             @Override
             protected byte[] serialize(Downloaded value) {
                 return value.toByteArray();

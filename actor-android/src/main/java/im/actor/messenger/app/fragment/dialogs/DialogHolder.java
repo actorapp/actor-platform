@@ -19,11 +19,13 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.app.view.MessageTextFormatter;
+import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.ContentType;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
+import im.actor.model.log.Log;
 
 import static im.actor.messenger.app.Core.myUid;
 
@@ -62,7 +64,8 @@ public class DialogHolder extends RecyclerView.ViewHolder {
 
     private final Context context;
 
-    public DialogHolder(Context context, FrameLayout fl) {
+    public DialogHolder(Context context, FrameLayout fl, final OnItemClickedListener<Dialog> onClickListener,
+                        final OnItemClickedListener<Dialog> onLongClickListener) {
         super(fl);
 
         this.context = context;
@@ -174,30 +177,30 @@ public class DialogHolder extends RecyclerView.ViewHolder {
             fl.addView(counter);
         }
 
-//        fl.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (bindedItem != null) {
-//                    itemClicked.onClicked(bindedItem);
-//                }
-//            }
-//        });
-//        if (itemLongClicked != null) {
-//            fl.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View v) {
-//                    if (bindedItem != null) {
-//                        itemLongClicked.onClicked(bindedItem);
-//                        return true;
-//                    } else {
-//                        return false;
-//                    }
-//                }
-//            });
-//        }
+        fl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bindedItem != null) {
+                    onClickListener.onClicked(bindedItem);
+                }
+            }
+        });
+        if (onLongClickListener != null) {
+            fl.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (bindedItem != null) {
+                        onLongClickListener.onClicked(bindedItem);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+        }
     }
 
-    public void bind(Dialog data) {
+    public void bind(Dialog data, boolean isLast) {
 
         binded = data.getPeer().getUnuqueId();
 
@@ -211,6 +214,7 @@ public class DialogHolder extends RecyclerView.ViewHolder {
         avatar.unbind();
         avatar.setEmptyDrawable(AvatarDrawable.create(data, 24, context));
         if (data.getDialogAvatar() != null && data.getDialogAvatar().getSmallImage() != null) {
+            Log.d("DialogHolder", "Bind avatar: " + data.getEngineId() + " @ " + data.getDialogAvatar().getSmallImage().getFileReference().getFileId());
             avatar.bindAvatar(54, data.getDialogAvatar());
         }
 
@@ -223,18 +227,12 @@ public class DialogHolder extends RecyclerView.ViewHolder {
 
         title.setText(data.getDialogTitle());
 
-        int right = 0;
         int left = 0;
-
-//            if (!NotificationSettings.getInstance().convValue(DialogUids.getDialogUid(data)).getValue()) {
-//                right = R.drawable.dialogs_mute;
-//            }
-
         if (data.getPeer().getPeerType() == PeerType.GROUP) {
             left = R.drawable.dialogs_group;
         }
 
-        title.setCompoundDrawablesWithIntrinsicBounds(left, 0, right, 0);
+        title.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
 
         if (data.getDate() > 0) {
             time.setVisibility(View.VISIBLE);
@@ -350,11 +348,11 @@ public class DialogHolder extends RecyclerView.ViewHolder {
             state.setVisibility(View.VISIBLE);
         }
 
-//        if (position == getCount() - 1) {
-//            separator.setVisibility(View.GONE);
-//        } else {
-//            separator.setVisibility(View.VISIBLE);
-//        }
+        if (isLast) {
+            separator.setVisibility(View.GONE);
+        } else {
+            separator.setVisibility(View.VISIBLE);
+        }
     }
 
     public void unbind() {

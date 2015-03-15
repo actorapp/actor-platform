@@ -31,12 +31,12 @@ public class DialogsAdapter extends BindedListAdapter<Dialog, DialogHolder> {
 
     @Override
     public DialogHolder onCreateViewHolder(ViewGroup viewGroup, int index, Dialog item) {
-        return new DialogHolder(context, new FrameLayout(context));
+        return new DialogHolder(context, new FrameLayout(context), itemClicked, itemLongClicked);
     }
 
     @Override
     public void onBindViewHolder(DialogHolder dialogHolder, int index, Dialog item) {
-        dialogHolder.bind(item);
+        dialogHolder.bind(item, index == getItemCount() - 1);
     }
 
     @Override

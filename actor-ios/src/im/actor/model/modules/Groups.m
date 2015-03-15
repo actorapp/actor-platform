@@ -7,7 +7,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
-#include "im/actor/model/Storage.h"
+#include "im/actor/model/StorageProvider.h"
 #include "im/actor/model/api/Group.h"
 #include "im/actor/model/api/GroupOutPeer.h"
 #include "im/actor/model/api/Member.h"
@@ -29,8 +29,11 @@
 #include "im/actor/model/api/updates/UpdateUserLocalNameChanged.h"
 #include "im/actor/model/concurrency/Command.h"
 #include "im/actor/model/concurrency/CommandCallback.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
+#include "im/actor/model/droidkit/engine/KeyValueStorage.h"
 #include "im/actor/model/entity/Group.h"
 #include "im/actor/model/entity/User.h"
+#include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Groups.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Updates.h"
@@ -39,8 +42,6 @@
 #include "im/actor/model/mvvm/MVVMCollection.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/RpcInternalException.h"
-#include "im/actor/model/storage/KeyValueEngine.h"
-#include "im/actor/model/storage/KeyValueStorage.h"
 #include "im/actor/model/viewmodel/GroupVM.h"
 #include "java/io/IOException.h"
 #include "java/lang/Boolean.h"
@@ -49,12 +50,12 @@
 
 @interface ImActorModelModulesGroups () {
  @public
-  id<AMKeyValueEngine> groups_;
+  id<ImActorModelDroidkitEngineKeyValueEngine> groups_;
   AMMVVMCollection *collection_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesGroups, groups_, id<AMKeyValueEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesGroups, groups_, id<ImActorModelDroidkitEngineKeyValueEngine>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesGroups, collection_, AMMVVMCollection *)
 
 @interface ImActorModelModulesGroups_$2 () {
@@ -274,13 +275,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesGroups_$6_$2_$2, this$0_, ImActorModelMod
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super initWithImActorModelModulesModules:modules]) {
-    collection_ = [[ImActorModelModulesGroups_$1 alloc] initWithAMKeyValueStorage:[((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getStorage])) createGroupsEngine]];
+    collection_ = [[ImActorModelModulesGroups_$1 alloc] initWithImActorModelDroidkitEngineKeyValueStorage:[((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getStorageProvider])) createKeyValueWithNSString:ImActorModelModulesBaseModule_get_STORAGE_GROUPS_()]];
     groups_ = [collection_ getEngine];
   }
   return self;
 }
 
-- (id<AMKeyValueEngine>)getGroups {
+- (id<ImActorModelDroidkitEngineKeyValueEngine>)getGroups {
   return groups_;
 }
 
@@ -324,11 +325,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups)
 
 @implementation ImActorModelModulesGroups_$1
 
-- (AMGroupVM *)createNewWithAMKeyValueItem:(AMGroup *)raw {
+- (AMGroupVM *)createNewWithImActorModelDroidkitEngineKeyValueItem:(AMGroup *)raw {
   return [[AMGroupVM alloc] initWithAMGroup:raw];
 }
 
-- (IOSByteArray *)serializeWithAMKeyValueItem:(AMGroup *)raw {
+- (IOSByteArray *)serializeWithImActorModelDroidkitEngineKeyValueItem:(AMGroup *)raw {
   return [((AMGroup *) nil_chk(raw)) toByteArray];
 }
 
@@ -342,8 +343,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups)
   }
 }
 
-- (instancetype)initWithAMKeyValueStorage:(id<AMKeyValueStorage>)arg$0 {
-  return [super initWithAMKeyValueStorage:arg$0];
+- (instancetype)initWithImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)arg$0 {
+  return [super initWithImActorModelDroidkitEngineKeyValueStorage:arg$0];
 }
 
 @end
@@ -360,7 +361,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$1)
     jint const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       jint u = *b__++;
-      AMUser *user = [((id<AMKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:u];
+      AMUser *user = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:u];
       if (user != nil) {
         [peers addWithId:[[ImActorModelApiUserOutPeer alloc] initWithInt:u withLong:[user getAccessHash]]];
       }
@@ -460,7 +461,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$2_$1_$1)
 @implementation ImActorModelModulesGroups_$3
 
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
-  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([this$0_ getGroups])) getValueWithLong:val$gid_];
+  AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ getGroups])) getValueWithLong:val$gid_];
   if (group == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$3_$1 alloc] initWithAMCommandCallback:callback]];
     return;
@@ -584,7 +585,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$3_$2_$2)
 @implementation ImActorModelModulesGroups_$4
 
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
-  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([this$0_ getGroups])) getValueWithLong:val$gid_];
+  AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ getGroups])) getValueWithLong:val$gid_];
   if (group == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$4_$1 alloc] initWithAMCommandCallback:callback]];
     return;
@@ -705,8 +706,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$4_$2_$2)
 @implementation ImActorModelModulesGroups_$5
 
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
-  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([this$0_ getGroups])) getValueWithLong:val$gid_];
-  AMUser *user = [((id<AMKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:val$uid_];
+  AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ getGroups])) getValueWithLong:val$gid_];
+  AMUser *user = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:val$uid_];
   if (group == nil || user == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$5_$1 alloc] initWithAMCommandCallback:callback]];
     return;
@@ -830,8 +831,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$5_$2_$2)
 @implementation ImActorModelModulesGroups_$6
 
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
-  AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([this$0_ getGroups])) getValueWithLong:val$gid_];
-  AMUser *user = [((id<AMKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:val$uid_];
+  AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ getGroups])) getValueWithLong:val$gid_];
+  AMUser *user = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:val$uid_];
   if (group == nil || user == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$6_$1 alloc] initWithAMCommandCallback:callback]];
     return;

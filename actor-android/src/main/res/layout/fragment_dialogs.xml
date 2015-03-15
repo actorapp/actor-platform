@@ -10,7 +10,7 @@
         android:scrollbars="vertical" />
 
     <FrameLayout
-        android:id="@+id/loadingProgress"
+        android:id="@+id/loadingCollection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_grey">
@@ -20,7 +20,7 @@
     </FrameLayout>
 
     <FrameLayout
-        android:id="@+id/noMessages"
+        android:id="@+id/emptyCollection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_light"
@@ -33,7 +33,6 @@
             android:background="@color/primary" />
 
         <ImageView
-            android:id="@+id/emptyDialogsImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"

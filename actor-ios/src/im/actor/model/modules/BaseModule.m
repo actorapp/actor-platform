@@ -6,8 +6,11 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/CryptoProvider.h"
-#include "im/actor/model/MainThread.h"
+#include "im/actor/model/MainThreadProvider.h"
+#include "im/actor/model/StorageProvider.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
+#include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/BaseModule.h"
@@ -21,8 +24,6 @@
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/parser/Request.h"
 #include "im/actor/model/network/parser/Response.h"
-#include "im/actor/model/storage/KeyValueEngine.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
 #include "java/lang/Runnable.h"
 
 @interface ImActorModelModulesBaseModule () {
@@ -34,6 +35,16 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModulesModules *)
 
 @implementation ImActorModelModulesBaseModule
+
+NSString * ImActorModelModulesBaseModule_STORAGE_DIALOGS_ = @"dialogs";
+NSString * ImActorModelModulesBaseModule_STORAGE_USERS_ = @"users";
+NSString * ImActorModelModulesBaseModule_STORAGE_GROUPS_ = @"groups";
+NSString * ImActorModelModulesBaseModule_STORAGE_DOWNLOADS_ = @"downloads";
+NSString * ImActorModelModulesBaseModule_STORAGE_CONTACTS_ = @"contacts";
+NSString * ImActorModelModulesBaseModule_STORAGE_NOTIFICATIONS_ = @"notifications";
+NSString * ImActorModelModulesBaseModule_STORAGE_CHAT_PREFIX_ = @"chat_";
+NSString * ImActorModelModulesBaseModule_STORAGE_PENDING_ = @"chat_pending";
+NSString * ImActorModelModulesBaseModule_STORAGE_CURSOR_ = @"chat_cursor";
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super init]) {
@@ -51,7 +62,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModule
 }
 
 - (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
-  [((id<AMMainThread>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThread])) runOnUiThread:runnable];
+  [((id<AMMainThreadProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThreadProvider])) runOnUiThreadWithJavaLangRunnable:runnable];
 }
 
 - (DKActorRef *)sendActor {
@@ -82,12 +93,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModule
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationHistoryActorWithAMPeer:peer];
 }
 
-- (id<AMPreferencesStorage>)preferences {
+- (id<ImActorModelDroidkitEnginePreferencesStorage>)preferences {
   return [((ImActorModelModulesModules *) nil_chk(modules__)) getPreferences];
 }
 
 - (id<AMCryptoProvider>)crypto {
   return [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getCryptoProvider];
+}
+
+- (id<AMStorageProvider>)storage {
+  return [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getStorageProvider];
 }
 
 - (jint)myUid {
@@ -103,11 +118,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModule
   [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:[[ImActorModelModulesBaseModule_$1 alloc] init]];
 }
 
-- (id<AMKeyValueEngine>)users {
+- (id<ImActorModelDroidkitEngineKeyValueEngine>)users {
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsers];
 }
 
-- (id<AMKeyValueEngine>)groups {
+- (id<ImActorModelDroidkitEngineKeyValueEngine>)groups {
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getGroupsModule])) getGroups];
 }
 

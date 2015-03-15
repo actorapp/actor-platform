@@ -15,8 +15,8 @@
 @class ImActorModelApiRpcResponseSeqDate;
 @class ImActorModelModulesModules;
 @protocol AMCommandCallback;
-@protocol AMKeyValueEngine;
-@protocol AMKeyValueStorage;
+@protocol ImActorModelDroidkitEngineKeyValueEngine;
+@protocol ImActorModelDroidkitEngineKeyValueStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/concurrency/Command.h"
@@ -30,7 +30,7 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (id<AMKeyValueEngine>)getGroups;
+- (id<ImActorModelDroidkitEngineKeyValueEngine>)getGroups;
 
 - (AMMVVMCollection *)getGroupsCollection;
 
@@ -60,13 +60,13 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups)
 @interface ImActorModelModulesGroups_$1 : AMMVVMCollection {
 }
 
-- (AMGroupVM *)createNewWithAMKeyValueItem:(AMGroup *)raw;
+- (AMGroupVM *)createNewWithImActorModelDroidkitEngineKeyValueItem:(AMGroup *)raw;
 
-- (IOSByteArray *)serializeWithAMKeyValueItem:(AMGroup *)raw;
+- (IOSByteArray *)serializeWithImActorModelDroidkitEngineKeyValueItem:(AMGroup *)raw;
 
 - (AMGroup *)deserializeWithByteArray:(IOSByteArray *)raw;
 
-- (instancetype)initWithAMKeyValueStorage:(id<AMKeyValueStorage>)arg$0;
+- (instancetype)initWithImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)arg$0;
 
 @end
 

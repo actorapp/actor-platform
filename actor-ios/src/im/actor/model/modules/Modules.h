@@ -11,6 +11,7 @@
 @class AMI18nEngine;
 @class ImActorModelModulesAuth;
 @class ImActorModelModulesContacts;
+@class ImActorModelModulesDisplayLists;
 @class ImActorModelModulesFiles;
 @class ImActorModelModulesGroups;
 @class ImActorModelModulesMessages;
@@ -21,7 +22,7 @@
 @class ImActorModelModulesTyping;
 @class ImActorModelModulesUpdates;
 @class ImActorModelModulesUsers;
-@protocol AMPreferencesStorage;
+@protocol ImActorModelDroidkitEnginePreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/ActorApiCallback.h"
@@ -35,7 +36,9 @@
 
 - (void)onLoggedIn;
 
-- (id<AMPreferencesStorage>)getPreferences;
+- (ImActorModelModulesDisplayLists *)getDisplayLists;
+
+- (id<ImActorModelDroidkitEnginePreferencesStorage>)getPreferences;
 
 - (AMConfiguration *)getConfiguration;
 

@@ -14,7 +14,7 @@
 @class ImActorModelModulesContactsContactsSyncActor;
 @class ImActorModelModulesModules;
 @protocol AMCommandCallback;
-@protocol AMListEngine;
+@protocol ImActorModelDroidkitEngineListEngine;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/concurrency/Command.h"
@@ -28,7 +28,7 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (id<AMListEngine>)getContacts;
+- (id<ImActorModelDroidkitEngineListEngine>)getContacts;
 
 - (void)onPhoneBookChanged;
 

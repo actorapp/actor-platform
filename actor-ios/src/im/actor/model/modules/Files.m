@@ -7,12 +7,15 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
-#include "im/actor/model/Storage.h"
+#include "im/actor/model/StorageProvider.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
+#include "im/actor/model/droidkit/engine/KeyValueStorage.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/files/FileReference.h"
+#include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/file/DownloadCallback.h"
@@ -20,19 +23,17 @@
 #include "im/actor/model/modules/file/Downloaded.h"
 #include "im/actor/model/modules/file/UploadCallback.h"
 #include "im/actor/model/modules/file/UploadManager.h"
-#include "im/actor/model/storage/KeyValueEngine.h"
-#include "im/actor/model/storage/KeyValueStorage.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelModulesFiles () {
  @public
-  id<AMKeyValueEngine> downloadedEngine_;
+  id<ImActorModelDroidkitEngineKeyValueEngine> downloadedEngine_;
   DKActorRef *downloadManager_;
   DKActorRef *uploadManager_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesFiles, downloadedEngine_, id<AMKeyValueEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFiles, downloadedEngine_, id<ImActorModelDroidkitEngineKeyValueEngine>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles, downloadManager_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles, uploadManager_, DKActorRef *)
 
@@ -93,7 +94,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, val$reference_, id<ImActorMo
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super initWithImActorModelModulesModules:modules]) {
-    downloadedEngine_ = [[ImActorModelModulesFiles_$1 alloc] initWithAMKeyValueStorage:[((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getStorage])) createDownloadsEngine]];
+    downloadedEngine_ = [[ImActorModelModulesFiles_$1 alloc] initWithImActorModelDroidkitEngineKeyValueStorage:[((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getStorageProvider])) createKeyValueWithNSString:ImActorModelModulesBaseModule_get_STORAGE_DOWNLOADS_()]];
   }
   return self;
 }
@@ -103,7 +104,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, val$reference_, id<ImActorMo
   uploadManager_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileUploadManager_class_(), [[ImActorModelModulesFiles_$3 alloc] initWithImActorModelModulesFiles:self]) withNSString:@"actor/upload/manager"];
 }
 
-- (id<AMKeyValueEngine>)getDownloadedEngine {
+- (id<ImActorModelDroidkitEngineKeyValueEngine>)getDownloadedEngine {
   return downloadedEngine_;
 }
 
@@ -167,7 +168,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
 }
 
 - (NSString *)getDownloadedDescriptorWithLong:(jlong)fileId {
-  ImActorModelModulesFileDownloaded *downloaded = [((id<AMKeyValueEngine>) nil_chk(downloadedEngine_)) getValueWithLong:fileId];
+  ImActorModelModulesFileDownloaded *downloaded = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk(downloadedEngine_)) getValueWithLong:fileId];
   if (downloaded == nil) {
     return nil;
   }
@@ -189,7 +190,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles)
 
 @implementation ImActorModelModulesFiles_$1
 
-- (IOSByteArray *)serializeWithAMKeyValueItem:(ImActorModelModulesFileDownloaded *)value {
+- (IOSByteArray *)serializeWithImActorModelDroidkitEngineKeyValueItem:(ImActorModelModulesFileDownloaded *)value {
   return [((ImActorModelModulesFileDownloaded *) nil_chk(value)) toByteArray];
 }
 
@@ -203,8 +204,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles)
   }
 }
 
-- (instancetype)initWithAMKeyValueStorage:(id<AMKeyValueStorage>)arg$0 {
-  return [super initWithAMKeyValueStorage:arg$0];
+- (instancetype)initWithImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)arg$0 {
+  return [super initWithImActorModelDroidkitEngineKeyValueStorage:arg$0];
 }
 
 @end

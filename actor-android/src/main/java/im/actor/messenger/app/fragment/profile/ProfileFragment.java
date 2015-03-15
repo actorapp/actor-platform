@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
-import im.actor.messenger.app.base.BaseFragment;
+import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.Screen;

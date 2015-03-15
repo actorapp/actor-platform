@@ -12,6 +12,7 @@
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
 #include "im/actor/model/droidkit/actors/messages/PoisonPill.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/files/FileReference.h"
 #include "im/actor/model/log/Log.h"
@@ -23,7 +24,6 @@
 #include "im/actor/model/modules/file/Downloaded.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/modules/utils/RandomUtils.h"
-#include "im/actor/model/storage/KeyValueEngine.h"
 #include "java/util/ArrayList.h"
 
 __attribute__((unused)) static void ImActorModelModulesFileDownloadManager_checkQueue(ImActorModelModulesFileDownloadManager *self);
@@ -33,7 +33,7 @@ __attribute__((unused)) static void ImActorModelModulesFileDownloadManager_promo
 @interface ImActorModelModulesFileDownloadManager () {
  @public
   JavaUtilArrayList *queue_;
-  id<AMKeyValueEngine> downloaded_;
+  id<ImActorModelDroidkitEngineKeyValueEngine> downloaded_;
 }
 
 - (void)checkQueue;
@@ -44,7 +44,7 @@ __attribute__((unused)) static void ImActorModelModulesFileDownloadManager_promo
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager, queue_, JavaUtilArrayList *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager, downloaded_, id<AMKeyValueEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadManager, downloaded_, id<ImActorModelDroidkitEngineKeyValueEngine>)
 
 @interface ImActorModelModulesFileDownloadManager_QueueItem () {
  @public
@@ -158,7 +158,7 @@ NSString * ImActorModelModulesFileDownloadManager_TAG_ = @"DownloadManager";
 - (void)requestStateWithLong:(jlong)fileId
 withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$J", @"Requesting state file #", fileId));
-  ImActorModelModulesFileDownloaded *downloaded1 = [((id<AMKeyValueEngine>) nil_chk(downloaded_)) getValueWithLong:fileId];
+  ImActorModelModulesFileDownloaded *downloaded1 = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk(downloaded_)) getValueWithLong:fileId];
   if (downloaded1 != nil) {
     id<AMFileSystemProvider> provider = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider];
     id<ImActorModelFilesFileReference> reference = [((id<AMFileSystemProvider>) nil_chk(provider)) fileFromDescriptorWithNSString:[downloaded1 getDescriptor]];
@@ -193,7 +193,7 @@ withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadC
                             withBoolean:(jboolean)autoStart
 withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$J", @"Binding file #", [((AMFileReference *) nil_chk(fileReference)) getFileId]));
-  ImActorModelModulesFileDownloaded *downloaded1 = [((id<AMKeyValueEngine>) nil_chk(downloaded_)) getValueWithLong:[fileReference getFileId]];
+  ImActorModelModulesFileDownloaded *downloaded1 = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk(downloaded_)) getValueWithLong:[fileReference getFileId]];
   if (downloaded1 != nil) {
     id<AMFileSystemProvider> provider = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider];
     id<ImActorModelFilesFileReference> reference = [((id<AMFileSystemProvider>) nil_chk(provider)) fileFromDescriptorWithNSString:[downloaded1 getDescriptor]];
@@ -352,7 +352,7 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference
   if (!((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(queueItem))->isStarted_) {
     return;
   }
-  [((id<AMKeyValueEngine>) nil_chk(downloaded_)) addOrUpdateItemWithAMKeyValueItem:[[ImActorModelModulesFileDownloaded alloc] initWithLong:[((AMFileReference *) nil_chk(queueItem->fileReference_)) getFileId] withInt:[queueItem->fileReference_ getFileSize] withNSString:[((id<ImActorModelFilesFileReference>) nil_chk(reference)) getDescriptor]]];
+  [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk(downloaded_)) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:[[ImActorModelModulesFileDownloaded alloc] initWithLong:[((AMFileReference *) nil_chk(queueItem->fileReference_)) getFileId] withInt:[queueItem->fileReference_ getFileSize] withNSString:[((id<ImActorModelFilesFileReference>) nil_chk(reference)) getDescriptor]]];
   [((JavaUtilArrayList *) nil_chk(queue_)) removeWithId:queueItem];
   [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
   for (id<ImActorModelModulesFileDownloadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {

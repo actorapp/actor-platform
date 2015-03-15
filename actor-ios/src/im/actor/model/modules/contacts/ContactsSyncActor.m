@@ -15,6 +15,8 @@
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/droidkit/engine/ListEngine.h"
+#include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/Contact.h"
 #include "im/actor/model/entity/User.h"
@@ -27,8 +29,6 @@
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/mvvm/ValueModel.h"
 #include "im/actor/model/network/RpcException.h"
-#include "im/actor/model/storage/ListEngine.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
 #include "im/actor/model/viewmodel/UserVM.h"
 #include "java/io/IOException.h"
 #include "java/lang/Boolean.h"
@@ -119,7 +119,7 @@ NSString * ImActorModelModulesContactsContactsSyncActor_TAG_ = @"ContactsServerS
   if (ENABLE_LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsContactsSyncActor_TAG_, @"Loading contacts ids from storage...");
   }
-  IOSByteArray *data = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:@"contact_list"];
+  IOSByteArray *data = [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:@"contact_list"];
   if (data != nil) {
     @try {
       BSDataInput *dataInput = [[BSDataInput alloc] initWithByteArray:data withInt:0 withInt:data->size_];
@@ -342,7 +342,7 @@ void ImActorModelModulesContactsContactsSyncActor_updateEngineList(ImActorModelM
     AMContact *contact = [[AMContact alloc] initWithInt:[((AMUser *) nil_chk(userModel)) getUid] withLong:(jlong) index-- withAMAvatar:[userModel getAvatar] withNSString:[userModel getName]];
     [registeredContacts addWithId:contact];
   }
-  [((id<AMListEngine>) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContacts])) replaceItemsWithJavaUtilList:registeredContacts];
+  [((id<ImActorModelDroidkitEngineListEngine>) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContacts])) replaceItemsWithJavaUtilList:registeredContacts];
 }
 
 void ImActorModelModulesContactsContactsSyncActor_saveList(ImActorModelModulesContactsContactsSyncActor *self) {
@@ -355,7 +355,7 @@ void ImActorModelModulesContactsContactsSyncActor_saveList(ImActorModelModulesCo
     jint l = [((JavaLangInteger *) nil_chk(boxed__)) intValue];
     [dataOutput writeIntWithInt:l];
   }
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:@"contact_list" withByteArray:[dataOutput toByteArray]];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:@"contact_list" withByteArray:[dataOutput toByteArray]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsContactsSyncActor)

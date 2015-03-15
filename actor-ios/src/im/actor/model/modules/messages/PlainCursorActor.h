@@ -7,6 +7,7 @@
 #define _ImActorModelModulesMessagesPlainCursorActor_H_
 
 @class AMPeer;
+@class ImActorModelDroidkitEngineSyncKeyValue;
 @class ImActorModelModulesMessagesEntityPlainCursorsStorage;
 @class ImActorModelModulesModules;
 @class JavaUtilHashSet;
@@ -17,8 +18,8 @@
 @interface ImActorModelModulesMessagesPlainCursorActor : ImActorModelModulesUtilsModuleActor {
 }
 
-- (instancetype)initWithNSString:(NSString *)preferenceName
-  withImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
+- (instancetype)initWithLong:(jlong)cursorId
+withImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)preStart;
 

@@ -4,7 +4,7 @@
 //
 
 #include "J2ObjC_source.h"
-#include "im/actor/model/LogCallback.h"
+#include "im/actor/model/LogProvider.h"
 #include "im/actor/model/log/Log.h"
 #include "java/lang/Throwable.h"
 
@@ -14,14 +14,14 @@
 
 @implementation AMLog
 
-id<AMLogCallback> AMLog_log_;
+id<AMLogProvider> AMLog_log_;
 
-+ (id<AMLogCallback>)getLog {
++ (id<AMLogProvider>)getLog {
   return AMLog_getLog();
 }
 
-+ (void)setLogWithAMLogCallback:(id<AMLogCallback>)log {
-  AMLog_setLogWithAMLogCallback_(log);
++ (void)setLogWithAMLogProvider:(id<AMLogProvider>)log {
+  AMLog_setLogWithAMLogProvider_(log);
 }
 
 + (void)wWithNSString:(NSString *)tag
@@ -50,12 +50,12 @@ withJavaLangThrowable:(JavaLangThrowable *)throwable {
 
 @end
 
-id<AMLogCallback> AMLog_getLog() {
+id<AMLogProvider> AMLog_getLog() {
   AMLog_init();
   return AMLog_log_;
 }
 
-void AMLog_setLogWithAMLogCallback_(id<AMLogCallback> log) {
+void AMLog_setLogWithAMLogProvider_(id<AMLogProvider> log) {
   AMLog_init();
   AMLog_log_ = log;
 }
@@ -63,28 +63,28 @@ void AMLog_setLogWithAMLogCallback_(id<AMLogCallback> log) {
 void AMLog_wWithNSString_withNSString_(NSString *tag, NSString *message) {
   AMLog_init();
   if (AMLog_log_ != nil) {
-    [AMLog_log_ w:tag withMessage:message];
+    [AMLog_log_ wWithNSString:tag withNSString:message];
   }
 }
 
 void AMLog_eWithNSString_withJavaLangThrowable_(NSString *tag, JavaLangThrowable *throwable) {
   AMLog_init();
   if (AMLog_log_ != nil) {
-    [AMLog_log_ v:tag withError:throwable];
+    [AMLog_log_ eWithNSString:tag withJavaLangThrowable:throwable];
   }
 }
 
 void AMLog_dWithNSString_withNSString_(NSString *tag, NSString *message) {
   AMLog_init();
   if (AMLog_log_ != nil) {
-    [AMLog_log_ d:tag withMessage:message];
+    [AMLog_log_ dWithNSString:tag withNSString:message];
   }
 }
 
 void AMLog_vWithNSString_withNSString_(NSString *tag, NSString *message) {
   AMLog_init();
   if (AMLog_log_ != nil) {
-    [AMLog_log_ v:tag withMessage:message];
+    [AMLog_log_ vWithNSString:tag withNSString:message];
   }
 }
 
