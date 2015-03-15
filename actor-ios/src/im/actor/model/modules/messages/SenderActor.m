@@ -198,7 +198,7 @@ NSString * ImActorModelModulesMessagesSenderActor_PREFERENCES_ = @"sender_pendin
 
 - (void)preStart {
   pendingMessages_ = [[ImActorModelModulesMessagesEntityPendingMessagesStorage alloc] init];
-  IOSByteArray *p = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:ImActorModelModulesMessagesSenderActor_PREFERENCES_];
+  IOSByteArray *p = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytes:ImActorModelModulesMessagesSenderActor_PREFERENCES_];
   if (p != nil) {
     @try {
       pendingMessages_ = ImActorModelModulesMessagesEntityPendingMessagesStorage_fromBytesWithByteArray_(p);
@@ -482,7 +482,7 @@ void ImActorModelModulesMessagesSenderActor_onErrorWithAMPeer_withLong_(ImActorM
 }
 
 void ImActorModelModulesMessagesSenderActor_savePending(ImActorModelModulesMessagesSenderActor *self) {
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:ImActorModelModulesMessagesSenderActor_PREFERENCES_ withByteArray:[((ImActorModelModulesMessagesEntityPendingMessagesStorage *) nil_chk(self->pendingMessages_)) toByteArray]];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytes:ImActorModelModulesMessagesSenderActor_PREFERENCES_ withValue:[((ImActorModelModulesMessagesEntityPendingMessagesStorage *) nil_chk(self->pendingMessages_)) toByteArray]];
 }
 
 ImActorModelModulesMessagesEntityPendingMessage *ImActorModelModulesMessagesSenderActor_findPendingWithLong_(ImActorModelModulesMessagesSenderActor *self, jlong rid) {

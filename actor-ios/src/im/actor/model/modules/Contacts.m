@@ -216,15 +216,15 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesContacts_$5_$2_$2, this$0_, ImActorModelM
 }
 
 - (void)markContactWithInt:(jint)uid {
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$I", @"contact_", uid) withBoolean:YES];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBool:JreStrcat("$I", @"contact_", uid) withValue:YES];
 }
 
 - (void)markNonContactWithInt:(jint)uid {
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$I", @"contact_", uid) withBoolean:NO];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBool:JreStrcat("$I", @"contact_", uid) withValue:NO];
 }
 
 - (jboolean)isUserContactWithInt:(jint)uid {
-  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$I", @"contact_", uid) withBoolean:NO];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:JreStrcat("$I", @"contact_", uid) withDefault:NO];
 }
 
 - (id<AMCommand>)findUsersWithNSString:(NSString *)query {

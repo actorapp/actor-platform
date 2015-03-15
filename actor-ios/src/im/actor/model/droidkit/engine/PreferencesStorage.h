@@ -12,33 +12,25 @@
 
 @protocol DKPreferencesStorage < NSObject, JavaObject >
 
-- (void)putLongWithNSString:(NSString *)key
-                   withLong:(jlong)v;
+- (void)putLong:(NSString *)key withValue:(jlong)v;
 
-- (jlong)getLongWithNSString:(NSString *)key
-                    withLong:(jlong)def;
+- (jlong)getLong:(NSString *)key withDefault:(jlong)def;
 
-- (void)putIntWithNSString:(NSString *)key
-                   withInt:(jint)v;
+- (void)putInt:(NSString *)key withValue:(jint)v;
 
-- (jint)getIntWithNSString:(NSString *)key
-                   withInt:(jint)def;
+- (jint)getInt:(NSString *)key withDefault:(jint)def;
 
-- (void)putBoolWithNSString:(NSString *)key
-                withBoolean:(jboolean)v;
+- (void)putBool:(NSString *)key withValue:(jboolean)v;
 
-- (jboolean)getBoolWithNSString:(NSString *)key
-                    withBoolean:(jboolean)def;
+- (jboolean)getBool:(NSString *)key withDefault:(jboolean)def;
 
-- (void)putBytesWithNSString:(NSString *)key
-               withByteArray:(IOSByteArray *)v;
+- (void)putBytes:(NSString *)key withValue:(IOSByteArray*)v;
 
-- (IOSByteArray *)getBytesWithNSString:(NSString *)key;
+- (IOSByteArray *)getBytes:(NSString *)key;
 
-- (void)putStringWithNSString:(NSString *)key
-                 withNSString:(NSString *)v;
+- (void)putString:(NSString *)key withValue:(NSString*)v;
 
-- (NSString *)getStringWithNSString:(NSString *)key;
+- (NSString *)getString:(NSString *)key;
 
 @end
 

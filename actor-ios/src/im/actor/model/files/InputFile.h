@@ -12,7 +12,7 @@
 
 @protocol AMInputFile < NSObject, JavaObject >
 
-- (jboolean)readAtOffset:(jint)fileOffset withData:(IOSByteArray *)data withDataOffset:(jint)offset withDataLen:(jint)len;
+- (jboolean)readAtOffset:(jint)fileOffset toArray:(IOSByteArray *)data withArrayOffset:(jint)offset withArrayLen:(jint)len;
 
 - (jboolean)close;
 
