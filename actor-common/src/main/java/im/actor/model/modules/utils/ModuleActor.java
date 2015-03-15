@@ -25,6 +25,11 @@ import im.actor.model.viewmodel.UserVM;
  * Created by ex3ndr on 08.02.15.
  */
 public class ModuleActor extends Actor {
+
+    protected static final long CURSOR_RECEIVED = 0;
+    protected static final long CURSOR_READ = 1;
+    protected static final long CURSOR_OWN_READ = 2;
+
     private Modules modules;
 
     public ModuleActor(Modules modules) {

@@ -198,6 +198,7 @@ public class DialogHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Dialog data) {
+
         binded = data.getPeer().getUnuqueId();
 
 //        if (getEngine().getListState().getValue().getState() == ListState.State.LOADED) {
@@ -214,7 +215,7 @@ public class DialogHolder extends RecyclerView.ViewHolder {
         }
 
         if (data.getUnreadCount() > 0) {
-            counter.setText("" + data.getUnreadCount());
+            counter.setText(Integer.toString(data.getUnreadCount()));
             counter.setVisibility(View.VISIBLE);
         } else {
             counter.setVisibility(View.GONE);
@@ -270,6 +271,7 @@ public class DialogHolder extends RecyclerView.ViewHolder {
         } else {
             bindedText = "";
         }
+        //bindedText = "???";
 
         if (privateTypingListener != null) {
             // TypingModel.privateChatTyping(bindedUid).removeUiSubscriber(privateTypingListener);

@@ -16,6 +16,7 @@ import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.droidkit.engine.ListStorage;
+import im.actor.model.droidkit.engine.SyncKeyValue;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
@@ -55,9 +56,14 @@ public class Messages extends BaseModule {
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
     private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<Peer, ActorRef>();
 
+    private final SyncKeyValue conversationPending;
+    private final SyncKeyValue cursorStorage;
+
     public Messages(final Modules messenger) {
         super(messenger);
 
+        this.conversationPending = new SyncKeyValue(storage().createKeyValue(STORAGE_PENDING));
+        this.cursorStorage = new SyncKeyValue(storage().createKeyValue(STORAGE_CURSOR));
         this.dialogs = storage().createDialogsList(storage().createList(STORAGE_DIALOGS));
     }
 
@@ -114,6 +120,14 @@ public class Messages extends BaseModule {
 
     public ActorRef getOwnReadActor() {
         return ownReadActor;
+    }
+
+    public SyncKeyValue getConversationPending() {
+        return conversationPending;
+    }
+
+    public SyncKeyValue getCursorStorage() {
+        return cursorStorage;
     }
 
     private void assumeConvActor(final Peer peer) {
