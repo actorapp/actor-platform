@@ -6,6 +6,7 @@ import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.entity.FileReference;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.modules.file.DownloadCallback;
 import im.actor.model.modules.file.DownloadManager;
 import im.actor.model.modules.file.Downloaded;
@@ -97,7 +98,7 @@ public class Files extends BaseModule {
             }
 
             @Override
-            public void onDownloaded(final im.actor.model.files.FileReference reference) {
+            public void onDownloaded(final FileSystemReference reference) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

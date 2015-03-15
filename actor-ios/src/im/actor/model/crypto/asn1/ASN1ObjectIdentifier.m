@@ -15,18 +15,18 @@
 #include "java/lang/Integer.h"
 #include "java/lang/Long.h"
 
-@interface ImActorModelCryptoAsn1ASN1ObjectIdentifier () {
+@interface BCASN1ObjectIdentifier () {
  @public
   NSString *identifier_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelCryptoAsn1ASN1ObjectIdentifier, identifier_, NSString *)
+J2OBJC_FIELD_SETTER(BCASN1ObjectIdentifier, identifier_, NSString *)
 
-@implementation ImActorModelCryptoAsn1ASN1ObjectIdentifier
+@implementation BCASN1ObjectIdentifier
 
-+ (ImActorModelCryptoAsn1ASN1ObjectIdentifier *)readObjectIdentifierWithBSDataInput:(BSDataInput *)dataInput {
-  return ImActorModelCryptoAsn1ASN1ObjectIdentifier_readObjectIdentifierWithBSDataInput_(dataInput);
++ (BCASN1ObjectIdentifier *)readObjectIdentifierWithBSDataInput:(BSDataInput *)dataInput {
+  return BCASN1ObjectIdentifier_readObjectIdentifierWithBSDataInput_(dataInput);
 }
 
 - (instancetype)initWithNSString:(NSString *)identifier {
@@ -41,7 +41,7 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoAsn1ASN1ObjectIdentifier, identifier_, NSS
 }
 
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
-  [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:ImActorModelCryptoAsn1ASN1Primitive_TAG_OBJECT_IDENTIFIER];
+  [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_OBJECT_IDENTIFIER];
   BSDataOutput *content = [[BSDataOutput alloc] init];
   IOSObjectArray *items = [((NSString *) nil_chk(identifier_)) split:@"\\."];
   jint val1 = JavaLangInteger_parseIntWithNSString_(IOSObjectArray_Get(nil_chk(items), 0));
@@ -63,15 +63,15 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoAsn1ASN1ObjectIdentifier, identifier_, NSS
   [dataOutput writeBytesWithByteArray:contentV withInt:0 withInt:contentV->size_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelCryptoAsn1ASN1ObjectIdentifier *)other {
+- (void)copyAllFieldsTo:(BCASN1ObjectIdentifier *)other {
   [super copyAllFieldsTo:other];
   other->identifier_ = identifier_;
 }
 
 @end
 
-ImActorModelCryptoAsn1ASN1ObjectIdentifier *ImActorModelCryptoAsn1ASN1ObjectIdentifier_readObjectIdentifierWithBSDataInput_(BSDataInput *dataInput) {
-  ImActorModelCryptoAsn1ASN1ObjectIdentifier_init();
+BCASN1ObjectIdentifier *BCASN1ObjectIdentifier_readObjectIdentifierWithBSDataInput_(BSDataInput *dataInput) {
+  BCASN1ObjectIdentifier_init();
   NSString *res;
   jint firstByte = [((BSDataInput *) nil_chk(dataInput)) readByte];
   jlong firstValue = firstByte & (jint) 0x7F;
@@ -97,7 +97,7 @@ ImActorModelCryptoAsn1ASN1ObjectIdentifier *ImActorModelCryptoAsn1ASN1ObjectIden
       LShiftAssignLong(&value, 7);
     }
   }
-  return [[ImActorModelCryptoAsn1ASN1ObjectIdentifier alloc] initWithNSString:res];
+  return [[BCASN1ObjectIdentifier alloc] initWithNSString:res];
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoAsn1ASN1ObjectIdentifier)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCASN1ObjectIdentifier)

@@ -7,7 +7,7 @@
 #define _ImActorModelModulesMessagesPlainCursorActor_H_
 
 @class AMPeer;
-@class ImActorModelDroidkitEngineSyncKeyValue;
+@class DKSyncKeyValue;
 @class ImActorModelModulesMessagesEntityPlainCursorsStorage;
 @class ImActorModelModulesModules;
 @class JavaUtilHashSet;

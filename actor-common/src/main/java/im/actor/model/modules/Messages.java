@@ -24,7 +24,7 @@ import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.User;
 import im.actor.model.entity.content.FastThumb;
-import im.actor.model.files.FileReference;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.ConversationHistoryActor;
 import im.actor.model.modules.messages.DialogsActor;
@@ -203,22 +203,22 @@ public class Messages extends BaseModule {
     }
 
     public void sendPhoto(Peer peer, String fileName, int w, int h, FastThumb fastThumb,
-                          FileReference fileReference) {
+                          FileSystemReference fileSystemReference) {
         sendMessageActor.send(new SenderActor.SendPhoto(peer, fastThumb,
-                fileReference.getDescriptor(),
-                fileName, fileReference.getSize(), w, h));
+                fileSystemReference.getDescriptor(),
+                fileName, fileSystemReference.getSize(), w, h));
     }
 
     public void sendVideo(Peer peer, String fileName, int w, int h, int duration,
-                          FastThumb fastThumb, FileReference fileReference) {
+                          FastThumb fastThumb, FileSystemReference fileSystemReference) {
         sendMessageActor.send(new SenderActor.SendVideo(peer, fileName, w, h, duration,
-                fastThumb, fileReference.getDescriptor(), fileReference.getSize()));
+                fastThumb, fileSystemReference.getDescriptor(), fileSystemReference.getSize()));
     }
 
     public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
-                             FileReference fileReference) {
+                             FileSystemReference fileSystemReference) {
         sendMessageActor.send(new SenderActor.SendDocument(peer, fileName, mimeType,
-                fileReference.getSize(), fileReference.getDescriptor(), fastThumb));
+                fileSystemReference.getSize(), fileSystemReference.getDescriptor(), fastThumb));
     }
 
     public void onInMessageShown(Peer peer, long rid, long sortDate, boolean isEncrypted) {

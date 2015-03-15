@@ -3,60 +3,62 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/ListEngineDisplayExt.java
 //
 
-#ifndef _ImActorModelDroidkitEngineListEngineDisplayExt_H_
-#define _ImActorModelDroidkitEngineListEngineDisplayExt_H_
+#ifndef _DKListEngineDisplayExt_H_
+#define _DKListEngineDisplayExt_H_
 
-@protocol ImActorModelDroidkitEngineListEngineCallback;
-@protocol ImActorModelDroidkitEngineListEngineDisplayListener;
+@protocol DKListEngineCallback;
+@protocol DKListEngineDisplayListener;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/engine/ListEngine.h"
 
-@protocol ImActorModelDroidkitEngineListEngineDisplayExt < ImActorModelDroidkitEngineListEngine, NSObject, JavaObject >
-- (void)subscribeWithImActorModelDroidkitEngineListEngineDisplayListener:(id<ImActorModelDroidkitEngineListEngineDisplayListener>)listener;
+@protocol DKListEngineDisplayExt < DKListEngine, NSObject, JavaObject >
+- (void)subscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener;
 
-- (void)unsubscribeWithImActorModelDroidkitEngineListEngineDisplayListener:(id<ImActorModelDroidkitEngineListEngineDisplayListener>)listener;
+- (void)unsubscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener;
 
 - (void)loadForwardWithInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+  withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadForwardWithLong:(jlong)afterSortKey
                     withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+   withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadForwardWithNSString:(NSString *)query
                         withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+       withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadForwardWithNSString:(NSString *)query
                        withLong:(jlong)afterSortKey
                         withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+       withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadBackwardWithInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+   withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadBackwardWithLong:(jlong)beforeSortKey
                      withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+    withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadBackwardWithNSString:(NSString *)query
                          withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+        withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadBackwardWithNSString:(NSString *)query
                         withLong:(jlong)beforeSortKey
                          withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+        withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadCenterWithLong:(jlong)centerSortKey
                    withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+  withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineListEngineDisplayExt)
+J2OBJC_EMPTY_STATIC_INIT(DKListEngineDisplayExt)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineListEngineDisplayExt)
+#define ImActorModelDroidkitEngineListEngineDisplayExt DKListEngineDisplayExt
 
-#endif // _ImActorModelDroidkitEngineListEngineDisplayExt_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKListEngineDisplayExt)
+
+#endif // _DKListEngineDisplayExt_H_

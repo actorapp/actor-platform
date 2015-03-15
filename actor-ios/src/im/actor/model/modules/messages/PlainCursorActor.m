@@ -30,7 +30,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesPlainCursorActor_
   ImActorModelModulesMessagesEntityPlainCursorsStorage *plainCursorsStorage_;
   JavaUtilHashSet *inProgress_;
   jlong cursorId_;
-  ImActorModelDroidkitEngineSyncKeyValue *keyValue_;
+  DKSyncKeyValue *keyValue_;
 }
 
 - (void)saveCursorState;
@@ -38,7 +38,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesPlainCursorActor_
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainCursorActor, plainCursorsStorage_, ImActorModelModulesMessagesEntityPlainCursorsStorage *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainCursorActor, inProgress_, JavaUtilHashSet *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainCursorActor, keyValue_, ImActorModelDroidkitEngineSyncKeyValue *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainCursorActor, keyValue_, DKSyncKeyValue *)
 
 @interface ImActorModelModulesMessagesPlainCursorActor_OnCompleted () {
  @public
@@ -66,7 +66,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
 - (void)preStart {
   [super preStart];
   plainCursorsStorage_ = [[ImActorModelModulesMessagesEntityPlainCursorsStorage alloc] init];
-  IOSByteArray *data = [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(keyValue_)) getWithLong:cursorId_];
+  IOSByteArray *data = [((DKSyncKeyValue *) nil_chk(keyValue_)) getWithLong:cursorId_];
   if (data != nil) {
     @try {
       plainCursorsStorage_ = ImActorModelModulesMessagesEntityPlainCursorsStorage_fromBytesWithByteArray_(data);
@@ -153,7 +153,7 @@ void ImActorModelModulesMessagesPlainCursorActor_onMovedWithAMPeer_withLong_(ImA
 }
 
 void ImActorModelModulesMessagesPlainCursorActor_saveCursorState(ImActorModelModulesMessagesPlainCursorActor *self) {
-  [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(self->keyValue_)) putWithLong:self->cursorId_ withByteArray:[((ImActorModelModulesMessagesEntityPlainCursorsStorage *) nil_chk(self->plainCursorsStorage_)) toByteArray]];
+  [((DKSyncKeyValue *) nil_chk(self->keyValue_)) putWithLong:self->cursorId_ withByteArray:[((ImActorModelModulesMessagesEntityPlainCursorsStorage *) nil_chk(self->plainCursorsStorage_)) toByteArray]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesPlainCursorActor)

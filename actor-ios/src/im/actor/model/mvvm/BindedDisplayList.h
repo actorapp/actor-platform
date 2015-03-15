@@ -12,8 +12,8 @@
 @class AMValueModel;
 @class BSBserObject;
 @class IOSLongArray;
-@protocol ImActorModelDroidkitEngineListEngineDisplayExt;
-@protocol ImActorModelDroidkitEngineListEngineItem;
+@protocol DKListEngineDisplayExt;
+@protocol DKListEngineItem;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -29,8 +29,8 @@
 @interface AMBindedDisplayList : AMDisplayList {
 }
 
-- (instancetype)initWithImActorModelDroidkitEngineListEngineDisplayExt:(id<ImActorModelDroidkitEngineListEngineDisplayExt>)listEngine
-                                                           withBoolean:(jboolean)isGlobalList;
+- (instancetype)initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>)listEngine
+                                   withBoolean:(jboolean)isGlobalList;
 
 - (jint)getPageSize;
 
@@ -74,8 +74,8 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList)
 @interface AMBindedDisplayList_ListEngineComparator : NSObject < JavaUtilComparator > {
 }
 
-- (jint)compareWithId:(id<ImActorModelDroidkitEngineListEngineItem>)o1
-               withId:(id<ImActorModelDroidkitEngineListEngineItem>)o2;
+- (jint)compareWithId:(id<DKListEngineItem>)o1
+               withId:(id<DKListEngineItem>)o2;
 
 @end
 
@@ -86,14 +86,14 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_ListEngineComparator)
 
-@interface AMBindedDisplayList_EngineListener : NSObject < ImActorModelDroidkitEngineListEngineDisplayListener > {
+@interface AMBindedDisplayList_EngineListener : NSObject < DKListEngineDisplayListener > {
 }
 
 - (void)onItemRemovedWithLong:(jlong)id_;
 
 - (void)onItemsRemovedWithLongArray:(IOSLongArray *)ids;
 
-- (void)addOrUpdateWithId:(BSBserObject<ImActorModelDroidkitEngineListEngineItem> *)item;
+- (void)addOrUpdateWithId:(BSBserObject<DKListEngineItem> *)item;
 
 - (void)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items;
 
@@ -205,7 +205,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$1)
 
-@interface AMBindedDisplayList_$2 : NSObject < ImActorModelDroidkitEngineListEngineCallback > {
+@interface AMBindedDisplayList_$2 : NSObject < DKListEngineCallback > {
 }
 
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
@@ -223,7 +223,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$2)
 
-@interface AMBindedDisplayList_$3 : NSObject < ImActorModelDroidkitEngineListEngineCallback > {
+@interface AMBindedDisplayList_$3 : NSObject < DKListEngineCallback > {
 }
 
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
@@ -241,7 +241,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$3)
 
-@interface AMBindedDisplayList_$4 : NSObject < ImActorModelDroidkitEngineListEngineCallback > {
+@interface AMBindedDisplayList_$4 : NSObject < DKListEngineCallback > {
 }
 
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
@@ -259,7 +259,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$4)
 
-@interface AMBindedDisplayList_$5 : NSObject < ImActorModelDroidkitEngineListEngineCallback > {
+@interface AMBindedDisplayList_$5 : NSObject < DKListEngineCallback > {
 }
 
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
@@ -277,7 +277,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$5)
 
-@interface AMBindedDisplayList_$6 : NSObject < ImActorModelDroidkitEngineListEngineCallback > {
+@interface AMBindedDisplayList_$6 : NSObject < DKListEngineCallback > {
 }
 
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
@@ -295,7 +295,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$6)
 
-@interface AMBindedDisplayList_$7 : NSObject < ImActorModelDroidkitEngineListEngineCallback > {
+@interface AMBindedDisplayList_$7 : NSObject < DKListEngineCallback > {
 }
 
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
@@ -313,7 +313,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7)
 
-@interface AMBindedDisplayList_$8 : NSObject < ImActorModelDroidkitEngineListEngineCallback > {
+@interface AMBindedDisplayList_$8 : NSObject < DKListEngineCallback > {
 }
 
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
@@ -322,7 +322,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7)
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$
                                     withInt:(jint)capture$0
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)capture$1;
+                   withDKListEngineCallback:(id<DKListEngineCallback>)capture$1;
 
 @end
 

@@ -3,35 +3,35 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/crypto/bouncycastle/BouncyCastleProvider.java
 //
 
-#ifndef _ImActorModelCryptoBouncycastleBouncyCastleProvider_H_
-#define _ImActorModelCryptoBouncycastleBouncyCastleProvider_H_
+#ifndef _BCBouncyCastleProvider_H_
+#define _BCBouncyCastleProvider_H_
 
+@class AMCryptoKeyPair;
 @class IOSByteArray;
-@class ImActorModelCryptoCryptoKeyPair;
 @class JavaMathBigInteger;
 @class JavaSecuritySecureRandom;
-@protocol ImActorModelCryptoAesCipher;
-@protocol ImActorModelCryptoRsaCipher;
-@protocol ImActorModelCryptoRsaEncryptCipher;
+@protocol AMAesCipher;
+@protocol AMRsaCipher;
+@protocol AMRsaEncryptCipher;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/CryptoProvider.h"
 
-#define ImActorModelCryptoBouncycastleBouncyCastleProvider_RSA_1024_STREIGHT 1024
-#define ImActorModelCryptoBouncycastleBouncyCastleProvider_RSA_CERTAINITY 80
+#define BCBouncyCastleProvider_RSA_1024_STREIGHT 1024
+#define BCBouncyCastleProvider_RSA_CERTAINITY 80
 
-@interface ImActorModelCryptoBouncycastleBouncyCastleProvider : NSObject < AMCryptoProvider > {
+@interface BCBouncyCastleProvider : NSObject < AMCryptoProvider > {
 }
 
-- (ImActorModelCryptoCryptoKeyPair *)generateRSA1024KeyPair;
+- (AMCryptoKeyPair *)generateRSA1024KeyPair;
 
-- (id<ImActorModelCryptoRsaEncryptCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)key;
+- (id<AMRsaEncryptCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)key;
 
-- (id<ImActorModelCryptoRsaCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey
-                                                          withByteArray:(IOSByteArray *)privateKey;
+- (id<AMRsaCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey
+                                          withByteArray:(IOSByteArray *)privateKey;
 
-- (id<ImActorModelCryptoAesCipher>)createAESCBCPKS7CipherWithByteArray:(IOSByteArray *)key
-                                                         withByteArray:(IOSByteArray *)iv;
+- (id<AMAesCipher>)createAESCBCPKS7CipherWithByteArray:(IOSByteArray *)key
+                                         withByteArray:(IOSByteArray *)iv;
 
 - (IOSByteArray *)MD5WithByteArray:(IOSByteArray *)data;
 
@@ -47,25 +47,27 @@
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelCryptoBouncycastleBouncyCastleProvider_initialized;
-J2OBJC_STATIC_INIT(ImActorModelCryptoBouncycastleBouncyCastleProvider)
+FOUNDATION_EXPORT BOOL BCBouncyCastleProvider_initialized;
+J2OBJC_STATIC_INIT(BCBouncyCastleProvider)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT JavaMathBigInteger *ImActorModelCryptoBouncycastleBouncyCastleProvider_RSA_EXPONENT_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelCryptoBouncycastleBouncyCastleProvider, RSA_EXPONENT_, JavaMathBigInteger *)
+FOUNDATION_EXPORT JavaMathBigInteger *BCBouncyCastleProvider_RSA_EXPONENT_;
+J2OBJC_STATIC_FIELD_GETTER(BCBouncyCastleProvider, RSA_EXPONENT_, JavaMathBigInteger *)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelCryptoBouncycastleBouncyCastleProvider, RSA_CERTAINITY, jint)
+J2OBJC_STATIC_FIELD_GETTER(BCBouncyCastleProvider, RSA_CERTAINITY, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelCryptoBouncycastleBouncyCastleProvider, RSA_1024_STREIGHT, jint)
+J2OBJC_STATIC_FIELD_GETTER(BCBouncyCastleProvider, RSA_1024_STREIGHT, jint)
 
-FOUNDATION_EXPORT JavaMathBigInteger *ImActorModelCryptoBouncycastleBouncyCastleProvider_ZERO_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelCryptoBouncycastleBouncyCastleProvider, ZERO_, JavaMathBigInteger *)
+FOUNDATION_EXPORT JavaMathBigInteger *BCBouncyCastleProvider_ZERO_;
+J2OBJC_STATIC_FIELD_GETTER(BCBouncyCastleProvider, ZERO_, JavaMathBigInteger *)
 
-FOUNDATION_EXPORT JavaSecuritySecureRandom *ImActorModelCryptoBouncycastleBouncyCastleProvider_RANDOM_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelCryptoBouncycastleBouncyCastleProvider, RANDOM_, JavaSecuritySecureRandom *)
+FOUNDATION_EXPORT JavaSecuritySecureRandom *BCBouncyCastleProvider_RANDOM_;
+J2OBJC_STATIC_FIELD_GETTER(BCBouncyCastleProvider, RANDOM_, JavaSecuritySecureRandom *)
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelCryptoBouncycastleBouncyCastleProvider)
+typedef BCBouncyCastleProvider ImActorModelCryptoBouncycastleBouncyCastleProvider;
 
-#endif // _ImActorModelCryptoBouncycastleBouncyCastleProvider_H_
+J2OBJC_TYPE_LITERAL_HEADER(BCBouncyCastleProvider)
+
+#endif // _BCBouncyCastleProvider_H_

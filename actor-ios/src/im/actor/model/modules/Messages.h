@@ -10,9 +10,9 @@
 @class AMPeer;
 @class AMRpcException;
 @class DKActorRef;
+@class DKSyncKeyValue;
 @class ImActorModelApiPeer;
 @class ImActorModelApiRpcResponseSeq;
-@class ImActorModelDroidkitEngineSyncKeyValue;
 @class ImActorModelModulesMessagesConversationActor;
 @class ImActorModelModulesMessagesConversationHistoryActor;
 @class ImActorModelModulesMessagesDialogsActor;
@@ -24,8 +24,8 @@
 @class ImActorModelModulesModules;
 @class JavaUtilHashMap;
 @protocol AMCommandCallback;
-@protocol ImActorModelDroidkitEngineListEngine;
-@protocol ImActorModelFilesFileReference;
+@protocol AMFileSystemReference;
+@protocol DKListEngine;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/concurrency/Command.h"
@@ -49,9 +49,9 @@
 
 - (DKActorRef *)getOwnReadActor;
 
-- (ImActorModelDroidkitEngineSyncKeyValue *)getConversationPending;
+- (DKSyncKeyValue *)getConversationPending;
 
-- (ImActorModelDroidkitEngineSyncKeyValue *)getCursorStorage;
+- (DKSyncKeyValue *)getCursorStorage;
 
 - (DKActorRef *)getConversationHistoryActorWithAMPeer:(AMPeer *)peer;
 
@@ -59,13 +59,13 @@
 
 - (void)onConversationOpenWithAMPeer:(AMPeer *)peer;
 
-- (id<ImActorModelDroidkitEngineListEngine>)getConversationEngineWithAMPeer:(AMPeer *)peer;
+- (id<DKListEngine>)getConversationEngineWithAMPeer:(AMPeer *)peer;
 
 - (DKActorRef *)getDialogsActor;
 
 - (DKActorRef *)getDialogsHistoryActor;
 
-- (id<ImActorModelDroidkitEngineListEngine>)getDialogsEngine;
+- (id<DKListEngine>)getDialogsEngine;
 
 - (void)loadMoreDialogs;
 
@@ -79,7 +79,7 @@
                     withInt:(jint)w
                     withInt:(jint)h
             withAMFastThumb:(AMFastThumb *)fastThumb
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference;
+  withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
 
 - (void)sendVideoWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)fileName
@@ -87,13 +87,13 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileRefer
                     withInt:(jint)h
                     withInt:(jint)duration
             withAMFastThumb:(AMFastThumb *)fastThumb
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference;
+  withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
 
 - (void)sendDocumentWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)fileName
                   withNSString:(NSString *)mimeType
                withAMFastThumb:(AMFastThumb *)fastThumb
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference;
+     withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
 
 - (void)onInMessageShownWithAMPeer:(AMPeer *)peer
                           withLong:(jlong)rid

@@ -102,7 +102,7 @@ J2OBJC_FIELD_SETTER(AMValueModel_$1, val$value_, id)
 @end
 
 void AMValueModel_notifyWithId_(AMValueModel *self, id value) {
-  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) runOnUiThreadWithJavaLangRunnable:[[AMValueModel_$1 alloc] initWithAMValueModel:self withId:value]];
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) runOnUiThread:[[AMValueModel_$1 alloc] initWithAMValueModel:self withId:value]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMValueModel)

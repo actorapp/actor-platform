@@ -61,7 +61,7 @@ void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMT
   AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_TAG_, @"Requesting AuthId");
   IOSBooleanArray *isFinished = [IOSBooleanArray newArrayWithLength:1];
   *IOSBooleanArray_GetRef(isFinished, 0) = NO;
-  [((id<AMNetworkProvider>) nil_chk(networkProvider)) createConnectionWithInt:0 withAMConnectionEndpoint:[((AMEndpoints *) nil_chk(endpoints)) fetchEndpoint] withAMConnectionCallback:[[MTAuthIdRetriever_$1 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback] withAMCreateConnectionCallback:[[MTAuthIdRetriever_$2 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback]];
+  [((id<AMNetworkProvider>) nil_chk(networkProvider)) createConnection:0 withEndpoint:[((AMEndpoints *) nil_chk(endpoints)) fetchEndpoint] withCallback:[[MTAuthIdRetriever_$1 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback] withCreateCallback:[[MTAuthIdRetriever_$2 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever)

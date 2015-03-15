@@ -17,7 +17,7 @@
 #include "org/bouncycastle/crypto/params/KeyParameter.h"
 #include "org/bouncycastle/crypto/params/ParametersWithIV.h"
 
-@interface ImActorModelCryptoBouncycastleBcAesCipher () {
+@interface BCBcAesCipher () {
  @public
   IOSByteArray *key_;
   IOSByteArray *iv_;
@@ -27,13 +27,13 @@
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelCryptoBouncycastleBcAesCipher, key_, IOSByteArray *)
-J2OBJC_FIELD_SETTER(ImActorModelCryptoBouncycastleBcAesCipher, iv_, IOSByteArray *)
-J2OBJC_FIELD_SETTER(ImActorModelCryptoBouncycastleBcAesCipher, params_, id<OrgBouncycastleCryptoCipherParameters>)
-J2OBJC_FIELD_SETTER(ImActorModelCryptoBouncycastleBcAesCipher, encryptionCipher_, OrgBouncycastleCryptoBufferedBlockCipher *)
-J2OBJC_FIELD_SETTER(ImActorModelCryptoBouncycastleBcAesCipher, decryptionCipher_, OrgBouncycastleCryptoBufferedBlockCipher *)
+J2OBJC_FIELD_SETTER(BCBcAesCipher, key_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(BCBcAesCipher, iv_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(BCBcAesCipher, params_, id<OrgBouncycastleCryptoCipherParameters>)
+J2OBJC_FIELD_SETTER(BCBcAesCipher, encryptionCipher_, OrgBouncycastleCryptoBufferedBlockCipher *)
+J2OBJC_FIELD_SETTER(BCBcAesCipher, decryptionCipher_, OrgBouncycastleCryptoBufferedBlockCipher *)
 
-@implementation ImActorModelCryptoBouncycastleBcAesCipher
+@implementation BCBcAesCipher
 
 - (instancetype)initWithByteArray:(IOSByteArray *)key
                     withByteArray:(IOSByteArray *)iv {
@@ -97,7 +97,7 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoBouncycastleBcAesCipher, decryptionCipher_
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelCryptoBouncycastleBcAesCipher *)other {
+- (void)copyAllFieldsTo:(BCBcAesCipher *)other {
   [super copyAllFieldsTo:other];
   other->key_ = key_;
   other->iv_ = iv_;
@@ -108,4 +108,4 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoBouncycastleBcAesCipher, decryptionCipher_
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoBouncycastleBcAesCipher)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCBcAesCipher)

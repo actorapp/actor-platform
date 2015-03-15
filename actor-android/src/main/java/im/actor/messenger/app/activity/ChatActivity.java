@@ -56,7 +56,7 @@ import im.actor.messenger.app.AppContext;
 import im.actor.messenger.util.RandomUtil;
 import im.actor.messenger.util.io.IOUtils;
 import im.actor.model.Messenger;
-import im.actor.model.android.AndroidFileReference;
+import im.actor.model.android.AndroidFileSystemReference;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.FastThumb;
@@ -558,7 +558,7 @@ public class ChatActivity extends BaseActivity {
 
             FastThumb thumb = new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), smallThumbData);
 
-            messenger.sendVideo(peer, name, width, height, duration, thumb, new AndroidFileReference(fileName));
+            messenger.sendVideo(peer, name, width, height, duration, thumb, new AndroidFileSystemReference(fileName));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -581,7 +581,7 @@ public class ChatActivity extends BaseActivity {
 //                    new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), data),
 //                    new AndroidFileReference(resultFileName));
             messenger.sendDocument(peer, new File(name).getName(), "?/?",
-                    new AndroidFileReference(resultFileName),
+                    new AndroidFileSystemReference(resultFileName),
                     new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), data));
         } catch (ImageLoadException e) {
             e.printStackTrace();

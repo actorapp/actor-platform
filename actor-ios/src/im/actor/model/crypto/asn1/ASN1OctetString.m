@@ -12,18 +12,18 @@
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelCryptoAsn1ASN1OctetString () {
+@interface BCASN1OctetString () {
  @public
   IOSByteArray *data_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelCryptoAsn1ASN1OctetString, data_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(BCASN1OctetString, data_, IOSByteArray *)
 
-@implementation ImActorModelCryptoAsn1ASN1OctetString
+@implementation BCASN1OctetString
 
-+ (ImActorModelCryptoAsn1ASN1OctetString *)readOctetStringWithBSDataInput:(BSDataInput *)dataInput {
-  return ImActorModelCryptoAsn1ASN1OctetString_readOctetStringWithBSDataInput_(dataInput);
++ (BCASN1OctetString *)readOctetStringWithBSDataInput:(BSDataInput *)dataInput {
+  return BCASN1OctetString_readOctetStringWithBSDataInput_(dataInput);
 }
 
 - (instancetype)initWithByteArray:(IOSByteArray *)data {
@@ -38,21 +38,21 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoAsn1ASN1OctetString, data_, IOSByteArray *
 }
 
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
-  [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:ImActorModelCryptoAsn1ASN1Primitive_TAG_OCTET_STRING];
+  [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_OCTET_STRING];
   [dataOutput writeASN1LengthWithInt:((IOSByteArray *) nil_chk(data_))->size_];
   [dataOutput writeBytesWithByteArray:data_ withInt:0 withInt:data_->size_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelCryptoAsn1ASN1OctetString *)other {
+- (void)copyAllFieldsTo:(BCASN1OctetString *)other {
   [super copyAllFieldsTo:other];
   other->data_ = data_;
 }
 
 @end
 
-ImActorModelCryptoAsn1ASN1OctetString *ImActorModelCryptoAsn1ASN1OctetString_readOctetStringWithBSDataInput_(BSDataInput *dataInput) {
-  ImActorModelCryptoAsn1ASN1OctetString_init();
-  return [[ImActorModelCryptoAsn1ASN1OctetString alloc] initWithByteArray:[dataInput readBytesWithInt:[((BSDataInput *) nil_chk(dataInput)) getRemaining]]];
+BCASN1OctetString *BCASN1OctetString_readOctetStringWithBSDataInput_(BSDataInput *dataInput) {
+  BCASN1OctetString_init();
+  return [[BCASN1OctetString alloc] initWithByteArray:[dataInput readBytesWithInt:[((BSDataInput *) nil_chk(dataInput)) getRemaining]]];
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoAsn1ASN1OctetString)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCASN1OctetString)

@@ -30,7 +30,7 @@ __attribute__((unused)) static void ImActorModelModulesNotificationsNotification
 
 @interface ImActorModelModulesNotificationsNotificationsActor () {
  @public
-  ImActorModelDroidkitEngineSyncKeyValue *storage_;
+  DKSyncKeyValue *storage_;
   ImActorModelModulesNotificationsPendingStorage *pendingStorage_;
   AMPeer *visiblePeer_;
   jboolean isAppVisible_;
@@ -42,7 +42,7 @@ __attribute__((unused)) static void ImActorModelModulesNotificationsNotification
 - (void)saveStorage;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, storage_, ImActorModelDroidkitEngineSyncKeyValue *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, storage_, DKSyncKeyValue *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, pendingStorage_, ImActorModelModulesNotificationsPendingStorage *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, visiblePeer_, AMPeer *)
 
@@ -98,7 +98,7 @@ NSString * ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAG
 
 - (void)preStart {
   pendingStorage_ = [[ImActorModelModulesNotificationsPendingStorage alloc] init];
-  IOSByteArray *storage = [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(self->storage_)) getWithLong:0];
+  IOSByteArray *storage = [((DKSyncKeyValue *) nil_chk(self->storage_)) getWithLong:0];
   if (storage != nil) {
     @try {
       pendingStorage_ = ImActorModelModulesNotificationsPendingStorage_fromBytesWithByteArray_(storage);
@@ -270,7 +270,7 @@ id<JavaUtilList> ImActorModelModulesNotificationsNotificationsActor_getNotificat
 }
 
 void ImActorModelModulesNotificationsNotificationsActor_saveStorage(ImActorModelModulesNotificationsNotificationsActor *self) {
-  [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(self->storage_)) putWithLong:0 withByteArray:[((ImActorModelModulesNotificationsPendingStorage *) nil_chk(self->pendingStorage_)) toByteArray]];
+  [((DKSyncKeyValue *) nil_chk(self->storage_)) putWithLong:0 withByteArray:[((ImActorModelModulesNotificationsPendingStorage *) nil_chk(self->pendingStorage_)) toByteArray]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsActor)

@@ -32,7 +32,7 @@
 #include "im/actor/model/entity/PeerType.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/entity/content/FastThumb.h"
-#include "im/actor/model/files/FileReference.h"
+#include "im/actor/model/files/FileSystemReference.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
@@ -54,7 +54,7 @@ __attribute__((unused)) static void ImActorModelModulesMessages_assumeConvActorW
 
 @interface ImActorModelModulesMessages () {
  @public
-  id<ImActorModelDroidkitEngineListEngine> dialogs_;
+  id<DKListEngine> dialogs_;
   DKActorRef *dialogsActor_;
   DKActorRef *dialogsHistoryActor_;
   DKActorRef *ownReadActor_;
@@ -64,14 +64,14 @@ __attribute__((unused)) static void ImActorModelModulesMessages_assumeConvActorW
   JavaUtilHashMap *conversationEngines_;
   JavaUtilHashMap *conversationActors_;
   JavaUtilHashMap *conversationHistoryActors_;
-  ImActorModelDroidkitEngineSyncKeyValue *conversationPending_;
-  ImActorModelDroidkitEngineSyncKeyValue *cursorStorage_;
+  DKSyncKeyValue *conversationPending_;
+  DKSyncKeyValue *cursorStorage_;
 }
 
 - (void)assumeConvActorWithAMPeer:(AMPeer *)peer;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogs_, id<ImActorModelDroidkitEngineListEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogs_, id<DKListEngine>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogsActor_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogsHistoryActor_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, ownReadActor_, DKActorRef *)
@@ -81,8 +81,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, sendMessageActor_, DKActorRef *
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationEngines_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationActors_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationHistoryActors_, JavaUtilHashMap *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationPending_, ImActorModelDroidkitEngineSyncKeyValue *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, cursorStorage_, ImActorModelDroidkitEngineSyncKeyValue *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationPending_, DKSyncKeyValue *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, cursorStorage_, DKSyncKeyValue *)
 
 @interface ImActorModelModulesMessages_ConversationHolder () {
  @public
@@ -300,9 +300,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4_$2, val$e_, AMRpcExceptio
     conversationEngines_ = [[JavaUtilHashMap alloc] init];
     conversationActors_ = [[JavaUtilHashMap alloc] init];
     conversationHistoryActors_ = [[JavaUtilHashMap alloc] init];
-    self->conversationPending_ = [[ImActorModelDroidkitEngineSyncKeyValue alloc] initWithImActorModelDroidkitEngineKeyValueStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createKeyValueWithNSString:ImActorModelModulesBaseModule_get_STORAGE_PENDING_()]];
-    self->cursorStorage_ = [[ImActorModelDroidkitEngineSyncKeyValue alloc] initWithImActorModelDroidkitEngineKeyValueStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createKeyValueWithNSString:ImActorModelModulesBaseModule_get_STORAGE_CURSOR_()]];
-    self->dialogs_ = [((id<AMStorageProvider>) nil_chk([self storage])) createDialogsListWithImActorModelDroidkitEngineListStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createListWithNSString:ImActorModelModulesBaseModule_get_STORAGE_DIALOGS_()]];
+    self->conversationPending_ = [[DKSyncKeyValue alloc] initWithDKKeyValueStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createKeyValue:ImActorModelModulesBaseModule_get_STORAGE_PENDING_()]];
+    self->cursorStorage_ = [[DKSyncKeyValue alloc] initWithDKKeyValueStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createKeyValue:ImActorModelModulesBaseModule_get_STORAGE_CURSOR_()]];
+    self->dialogs_ = [((id<AMStorageProvider>) nil_chk([self storage])) createDialogsListWithDKListStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createList:ImActorModelModulesBaseModule_get_STORAGE_DIALOGS_()]];
   }
   return self;
 }
@@ -332,11 +332,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4_$2, val$e_, AMRpcExceptio
   return ownReadActor_;
 }
 
-- (ImActorModelDroidkitEngineSyncKeyValue *)getConversationPending {
+- (DKSyncKeyValue *)getConversationPending {
   return conversationPending_;
 }
 
-- (ImActorModelDroidkitEngineSyncKeyValue *)getCursorStorage {
+- (DKSyncKeyValue *)getCursorStorage {
   return cursorStorage_;
 }
 
@@ -362,11 +362,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4_$2, val$e_, AMRpcExceptio
   ImActorModelModulesMessages_assumeConvActorWithAMPeer_(self, peer);
 }
 
-- (id<ImActorModelDroidkitEngineListEngine>)getConversationEngineWithAMPeer:(AMPeer *)peer {
+- (id<DKListEngine>)getConversationEngineWithAMPeer:(AMPeer *)peer {
   @synchronized(conversationEngines_) {
     if (![((JavaUtilHashMap *) nil_chk(conversationEngines_)) containsKeyWithId:peer]) {
-      id<ImActorModelDroidkitEngineListStorage> storage = [((id<AMStorageProvider>) nil_chk([self storage])) createListWithNSString:JreStrcat("$J", ImActorModelModulesBaseModule_get_STORAGE_CHAT_PREFIX_(), [((AMPeer *) nil_chk(peer)) getUnuqueId])];
-      (void) [conversationEngines_ putWithId:peer withId:[((id<AMStorageProvider>) nil_chk([self storage])) createMessagesListWithAMPeer:peer withImActorModelDroidkitEngineListStorage:storage]];
+      id<DKListStorage> storage = [((id<AMStorageProvider>) nil_chk([self storage])) createList:JreStrcat("$J", ImActorModelModulesBaseModule_get_STORAGE_CHAT_PREFIX_(), [((AMPeer *) nil_chk(peer)) getUnuqueId])];
+      (void) [conversationEngines_ putWithId:peer withId:[((id<AMStorageProvider>) nil_chk([self storage])) createMessagesListWithAMPeer:peer withDKListStorage:storage]];
     }
     return [conversationEngines_ getWithId:peer];
   }
@@ -380,7 +380,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4_$2, val$e_, AMRpcExceptio
   return dialogsHistoryActor_;
 }
 
-- (id<ImActorModelDroidkitEngineListEngine>)getDialogsEngine {
+- (id<DKListEngine>)getDialogsEngine {
   return dialogs_;
 }
 
@@ -402,8 +402,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4_$2, val$e_, AMRpcExceptio
                     withInt:(jint)w
                     withInt:(jint)h
             withAMFastThumb:(AMFastThumb *)fastThumb
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference {
-  [((DKActorRef *) nil_chk(sendMessageActor_)) sendWithId:[[ImActorModelModulesMessagesSenderActor_SendPhoto alloc] initWithAMPeer:peer withAMFastThumb:fastThumb withNSString:[((id<ImActorModelFilesFileReference>) nil_chk(fileReference)) getDescriptor] withNSString:fileName withInt:[fileReference getSize] withInt:w withInt:h]];
+  withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference {
+  [((DKActorRef *) nil_chk(sendMessageActor_)) sendWithId:[[ImActorModelModulesMessagesSenderActor_SendPhoto alloc] initWithAMPeer:peer withAMFastThumb:fastThumb withNSString:[((id<AMFileSystemReference>) nil_chk(fileSystemReference)) getDescriptor] withNSString:fileName withInt:[fileSystemReference getSize] withInt:w withInt:h]];
 }
 
 - (void)sendVideoWithAMPeer:(AMPeer *)peer
@@ -412,16 +412,16 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileRefer
                     withInt:(jint)h
                     withInt:(jint)duration
             withAMFastThumb:(AMFastThumb *)fastThumb
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference {
-  [((DKActorRef *) nil_chk(sendMessageActor_)) sendWithId:[[ImActorModelModulesMessagesSenderActor_SendVideo alloc] initWithAMPeer:peer withNSString:fileName withInt:w withInt:h withInt:duration withAMFastThumb:fastThumb withNSString:[((id<ImActorModelFilesFileReference>) nil_chk(fileReference)) getDescriptor] withInt:[fileReference getSize]]];
+  withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference {
+  [((DKActorRef *) nil_chk(sendMessageActor_)) sendWithId:[[ImActorModelModulesMessagesSenderActor_SendVideo alloc] initWithAMPeer:peer withNSString:fileName withInt:w withInt:h withInt:duration withAMFastThumb:fastThumb withNSString:[((id<AMFileSystemReference>) nil_chk(fileSystemReference)) getDescriptor] withInt:[fileSystemReference getSize]]];
 }
 
 - (void)sendDocumentWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)fileName
                   withNSString:(NSString *)mimeType
                withAMFastThumb:(AMFastThumb *)fastThumb
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference {
-  [((DKActorRef *) nil_chk(sendMessageActor_)) sendWithId:[[ImActorModelModulesMessagesSenderActor_SendDocument alloc] initWithAMPeer:peer withNSString:fileName withNSString:mimeType withInt:[((id<ImActorModelFilesFileReference>) nil_chk(fileReference)) getSize] withNSString:[fileReference getDescriptor] withAMFastThumb:fastThumb]];
+     withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference {
+  [((DKActorRef *) nil_chk(sendMessageActor_)) sendWithId:[[ImActorModelModulesMessagesSenderActor_SendDocument alloc] initWithAMPeer:peer withNSString:fileName withNSString:mimeType withInt:[((id<AMFileSystemReference>) nil_chk(fileSystemReference)) getSize] withNSString:[fileSystemReference getDescriptor] withAMFastThumb:fastThumb]];
 }
 
 - (void)onInMessageShownWithAMPeer:(AMPeer *)peer
@@ -433,20 +433,20 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileRefer
 
 - (void)saveReadStateWithAMPeer:(AMPeer *)peer
                        withLong:(jlong)lastReadDate {
-  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:JreStrcat("$J", @"read_state_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withLong:lastReadDate];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:JreStrcat("$J", @"read_state_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withLong:lastReadDate];
 }
 
 - (jlong)loadReadStateWithAMPeer:(AMPeer *)peer {
-  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:JreStrcat("$J", @"read_state_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withLong:0];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:JreStrcat("$J", @"read_state_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withLong:0];
 }
 
 - (void)saveDraftWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)draft {
-  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putStringWithNSString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withNSString:[((NSString *) nil_chk(draft)) trim]];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putStringWithNSString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withNSString:[((NSString *) nil_chk(draft)) trim]];
 }
 
 - (NSString *)loadDraftWithAMPeer:(AMPeer *)peer {
-  NSString *res = [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getStringWithNSString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId])];
+  NSString *res = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getStringWithNSString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId])];
   if (res == nil) {
     return @"";
   }
@@ -694,7 +694,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$8)
   ImActorModelApiOutPeer *outPeer;
   ImActorModelApiPeer *apiPeer;
   if ([((AMPeer *) nil_chk(val$peer_)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
-    AMUser *user = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:[val$peer_ getPeerId]];
+    AMUser *user = [((id<DKKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:[val$peer_ getPeerId]];
     if (user == nil) {
       [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesMessages_$9_$1 alloc] initWithAMCommandCallback:callback]];
       return;
@@ -703,7 +703,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$8)
     apiPeer = [[ImActorModelApiPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[user getUid]];
   }
   else if ([val$peer_ getPeerType] == AMPeerTypeEnum_get_GROUP()) {
-    AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ groups])) getValueWithLong:[val$peer_ getPeerId]];
+    AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([this$0_ groups])) getValueWithLong:[val$peer_ getPeerId]];
     if (group == nil) {
       [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesMessages_$9_$2 alloc] initWithAMCommandCallback:callback]];
       return;
@@ -875,7 +875,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$9_$4_$2)
   ImActorModelApiOutPeer *outPeer;
   ImActorModelApiPeer *apiPeer;
   if ([((AMPeer *) nil_chk(val$peer_)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
-    AMUser *user = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:[val$peer_ getPeerId]];
+    AMUser *user = [((id<DKKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:[val$peer_ getPeerId]];
     if (user == nil) {
       [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesMessages_$10_$1 alloc] initWithAMCommandCallback:callback]];
       return;
@@ -884,7 +884,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$9_$4_$2)
     apiPeer = [[ImActorModelApiPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[user getUid]];
   }
   else if ([val$peer_ getPeerType] == AMPeerTypeEnum_get_GROUP()) {
-    AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ groups])) getValueWithLong:[val$peer_ getPeerId]];
+    AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([this$0_ groups])) getValueWithLong:[val$peer_ getPeerId]];
     if (group == nil) {
       [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesMessages_$10_$2 alloc] initWithAMCommandCallback:callback]];
       return;

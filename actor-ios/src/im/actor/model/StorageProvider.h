@@ -7,27 +7,27 @@
 #define _AMStorageProvider_H_
 
 @class AMPeer;
-@protocol ImActorModelDroidkitEngineKeyValueStorage;
-@protocol ImActorModelDroidkitEngineListEngine;
-@protocol ImActorModelDroidkitEngineListStorage;
-@protocol ImActorModelDroidkitEnginePreferencesStorage;
+@protocol DKKeyValueStorage;
+@protocol DKListEngine;
+@protocol DKListStorage;
+@protocol DKPreferencesStorage;
 
 #include "J2ObjC_header.h"
 
 @protocol AMStorageProvider < NSObject, JavaObject >
 
-- (id<ImActorModelDroidkitEnginePreferencesStorage>)createPreferencesStorage;
+- (id<DKPreferencesStorage>)createPreferencesStorage;
 
-- (id<ImActorModelDroidkitEngineKeyValueStorage>)createKeyValueWithNSString:(NSString *)name;
+- (id<DKKeyValueStorage>)createKeyValue:(NSString *)name;
 
-- (id<ImActorModelDroidkitEngineListStorage>)createListWithNSString:(NSString *)name;
+- (id<DKListStorage>)createList:(NSString *)name;
 
-- (id<ImActorModelDroidkitEngineListEngine>)createContactsListWithImActorModelDroidkitEngineListStorage:(id<ImActorModelDroidkitEngineListStorage>)storage;
+- (id<DKListEngine>)createContactsListWithDKListStorage:(id<DKListStorage>)storage;
 
-- (id<ImActorModelDroidkitEngineListEngine>)createDialogsListWithImActorModelDroidkitEngineListStorage:(id<ImActorModelDroidkitEngineListStorage>)storage;
+- (id<DKListEngine>)createDialogsListWithDKListStorage:(id<DKListStorage>)storage;
 
-- (id<ImActorModelDroidkitEngineListEngine>)createMessagesListWithAMPeer:(AMPeer *)peer
-                               withImActorModelDroidkitEngineListStorage:(id<ImActorModelDroidkitEngineListStorage>)storage;
+- (id<DKListEngine>)createMessagesListWithAMPeer:(AMPeer *)peer
+                               withDKListStorage:(id<DKListStorage>)storage;
 
 @end
 

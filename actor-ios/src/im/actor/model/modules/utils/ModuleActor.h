@@ -20,9 +20,9 @@
 @class ImActorModelModulesUpdates;
 @class ImActorModelNetworkParserRequest;
 @class ImActorModelNetworkParserResponse;
-@protocol ImActorModelDroidkitEngineKeyValueEngine;
-@protocol ImActorModelDroidkitEngineListEngine;
-@protocol ImActorModelDroidkitEnginePreferencesStorage;
+@protocol DKKeyValueEngine;
+@protocol DKListEngine;
+@protocol DKPreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
@@ -42,9 +42,9 @@
 
 - (ImActorModelApiPeer *)buildApiPeerWithAMPeer:(AMPeer *)peer;
 
-- (id<ImActorModelDroidkitEngineKeyValueEngine>)users;
+- (id<DKKeyValueEngine>)users;
 
-- (id<ImActorModelDroidkitEngineKeyValueEngine>)groups;
+- (id<DKKeyValueEngine>)groups;
 
 - (AMGroup *)getGroupWithInt:(jint)gid;
 
@@ -54,13 +54,13 @@
 
 - (AMGroupVM *)getGroupVMWithInt:(jint)gid;
 
-- (id<ImActorModelDroidkitEnginePreferencesStorage>)preferences;
+- (id<DKPreferencesStorage>)preferences;
 
 - (AMConfiguration *)config;
 
 - (ImActorModelModulesUpdates *)updates;
 
-- (id<ImActorModelDroidkitEngineListEngine>)messagesWithAMPeer:(AMPeer *)peer;
+- (id<DKListEngine>)messagesWithAMPeer:(AMPeer *)peer;
 
 - (jint)myUid;
 

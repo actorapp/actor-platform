@@ -3,19 +3,21 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/KeyValueItem.java
 //
 
-#ifndef _ImActorModelDroidkitEngineKeyValueItem_H_
-#define _ImActorModelDroidkitEngineKeyValueItem_H_
+#ifndef _DKKeyValueItem_H_
+#define _DKKeyValueItem_H_
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitEngineKeyValueItem < NSObject, JavaObject >
+@protocol DKKeyValueItem < NSObject, JavaObject >
 
 - (jlong)getEngineId;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineKeyValueItem)
+J2OBJC_EMPTY_STATIC_INIT(DKKeyValueItem)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineKeyValueItem)
+#define ImActorModelDroidkitEngineKeyValueItem DKKeyValueItem
 
-#endif // _ImActorModelDroidkitEngineKeyValueItem_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKKeyValueItem)
+
+#endif // _DKKeyValueItem_H_

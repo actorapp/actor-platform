@@ -3,15 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/crypto/asn1/ASN1Null.java
 //
 
-#ifndef _ImActorModelCryptoAsn1ASN1Null_H_
-#define _ImActorModelCryptoAsn1ASN1Null_H_
+#ifndef _BCASN1Null_H_
+#define _BCASN1Null_H_
 
 @class BSDataOutput;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/crypto/asn1/ASN1Primitive.h"
 
-@interface ImActorModelCryptoAsn1ASN1Null : ImActorModelCryptoAsn1ASN1Primitive {
+@interface BCASN1Null : BCASN1Primitive {
 }
 
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput;
@@ -20,11 +20,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelCryptoAsn1ASN1Null)
+J2OBJC_EMPTY_STATIC_INIT(BCASN1Null)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelCryptoAsn1ASN1Null)
+typedef BCASN1Null ImActorModelCryptoAsn1ASN1Null;
 
-#endif // _ImActorModelCryptoAsn1ASN1Null_H_
+J2OBJC_TYPE_LITERAL_HEADER(BCASN1Null)
+
+#endif // _BCASN1Null_H_

@@ -350,7 +350,7 @@ void MTManagerActor_checkConnection(MTManagerActor *self) {
     AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Trying to create connection...");
     self->isCheckingConnections_ = YES;
     jint id_ = [((AMAtomicIntegerCompat *) nil_chk(MTManagerActor_NEXT_CONNECTION_)) getAndIncrement];
-    [((id<AMNetworkProvider>) nil_chk([((MTMTProto *) nil_chk(self->mtProto_)) getNetworkProvider])) createConnectionWithInt:id_ withAMConnectionEndpoint:[((AMEndpoints *) nil_chk(self->endpoints_)) fetchEndpoint] withAMConnectionCallback:[[MTManagerActor_$2 alloc] initWithMTManagerActor:self withInt:id_] withAMCreateConnectionCallback:[[MTManagerActor_$3 alloc] initWithMTManagerActor:self withInt:id_]];
+    [((id<AMNetworkProvider>) nil_chk([((MTMTProto *) nil_chk(self->mtProto_)) getNetworkProvider])) createConnection:id_ withEndpoint:[((AMEndpoints *) nil_chk(self->endpoints_)) fetchEndpoint] withCallback:[[MTManagerActor_$2 alloc] initWithMTManagerActor:self withInt:id_] withCreateCallback:[[MTManagerActor_$3 alloc] initWithMTManagerActor:self withInt:id_]];
   }
 }
 

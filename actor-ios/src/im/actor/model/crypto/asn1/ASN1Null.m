@@ -8,10 +8,10 @@
 #include "im/actor/model/crypto/asn1/ASN1Primitive.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 
-@implementation ImActorModelCryptoAsn1ASN1Null
+@implementation BCASN1Null
 
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
-  [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:ImActorModelCryptoAsn1ASN1Primitive_TAG_NULL];
+  [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_NULL];
   [dataOutput writeByteWithInt:0];
 }
 
@@ -21,4 +21,4 @@
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoAsn1ASN1Null)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCASN1Null)

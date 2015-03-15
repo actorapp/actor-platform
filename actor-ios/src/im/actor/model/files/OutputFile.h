@@ -3,26 +3,25 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/files/OutputFile.java
 //
 
-#ifndef _ImActorModelFilesOutputFile_H_
-#define _ImActorModelFilesOutputFile_H_
+#ifndef _AMOutputFile_H_
+#define _AMOutputFile_H_
 
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelFilesOutputFile < NSObject, JavaObject >
+@protocol AMOutputFile < NSObject, JavaObject >
 
-- (jboolean)writeWithInt:(jint)fileOffset
-           withByteArray:(IOSByteArray *)data
-                 withInt:(jint)dataOffset
-                 withInt:(jint)dataLen;
+- (jboolean)writeWithOffset:(jint)fileOffset withData:(IOSByteArray *)data withDataOffset:(jint)dataOffset withDataLen:(jint)dataLen;
 
 - (jboolean)close;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelFilesOutputFile)
+J2OBJC_EMPTY_STATIC_INIT(AMOutputFile)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelFilesOutputFile)
+#define ImActorModelFilesOutputFile AMOutputFile
 
-#endif // _ImActorModelFilesOutputFile_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMOutputFile)
+
+#endif // _AMOutputFile_H_

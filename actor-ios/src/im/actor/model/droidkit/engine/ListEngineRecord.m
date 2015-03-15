@@ -7,7 +7,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/ListEngineRecord.h"
 
-@interface ImActorModelDroidkitEngineListEngineRecord () {
+@interface DKListEngineRecord () {
  @public
   jlong key_;
   jlong order_;
@@ -16,10 +16,10 @@
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineListEngineRecord, query_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineListEngineRecord, data_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(DKListEngineRecord, query_, NSString *)
+J2OBJC_FIELD_SETTER(DKListEngineRecord, data_, IOSByteArray *)
 
-@implementation ImActorModelDroidkitEngineListEngineRecord
+@implementation DKListEngineRecord
 
 - (instancetype)initWithLong:(jlong)key
                     withLong:(jlong)order
@@ -50,7 +50,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineListEngineRecord, data_, IOSByteAr
   return data_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineListEngineRecord *)other {
+- (void)copyAllFieldsTo:(DKListEngineRecord *)other {
   [super copyAllFieldsTo:other];
   other->key_ = key_;
   other->order_ = order_;
@@ -60,4 +60,4 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineListEngineRecord, data_, IOSByteAr
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineListEngineRecord)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKListEngineRecord)

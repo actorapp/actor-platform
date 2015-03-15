@@ -3,19 +3,19 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/ListEngine.java
 //
 
-#ifndef _ImActorModelDroidkitEngineListEngine_H_
-#define _ImActorModelDroidkitEngineListEngine_H_
+#ifndef _DKListEngine_H_
+#define _DKListEngine_H_
 
 @class BSBserObject;
 @class IOSLongArray;
-@protocol ImActorModelDroidkitEngineListEngineItem;
+@protocol DKListEngineItem;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitEngineListEngine < NSObject, JavaObject >
+@protocol DKListEngine < NSObject, JavaObject >
 
-- (void)addOrUpdateItemWithBSBserObject:(BSBserObject<ImActorModelDroidkitEngineListEngineItem> *)item;
+- (void)addOrUpdateItemWithBSBserObject:(BSBserObject<DKListEngineItem> *)item;
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)items;
 
@@ -35,8 +35,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineListEngine)
+J2OBJC_EMPTY_STATIC_INIT(DKListEngine)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineListEngine)
+#define ImActorModelDroidkitEngineListEngine DKListEngine
 
-#endif // _ImActorModelDroidkitEngineListEngine_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKListEngine)
+
+#endif // _DKListEngine_H_

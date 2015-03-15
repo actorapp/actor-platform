@@ -8,17 +8,17 @@
 #include "im/actor/model/droidkit/engine/KeyValueStorage.h"
 #include "im/actor/model/droidkit/engine/SyncKeyValue.h"
 
-@interface ImActorModelDroidkitEngineSyncKeyValue () {
+@interface DKSyncKeyValue () {
  @public
-  id<ImActorModelDroidkitEngineKeyValueStorage> storage_;
+  id<DKKeyValueStorage> storage_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineSyncKeyValue, storage_, id<ImActorModelDroidkitEngineKeyValueStorage>)
+J2OBJC_FIELD_SETTER(DKSyncKeyValue, storage_, id<DKKeyValueStorage>)
 
-@implementation ImActorModelDroidkitEngineSyncKeyValue
+@implementation DKSyncKeyValue
 
-- (instancetype)initWithImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)storage {
+- (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)storage {
   if (self = [super init]) {
     self->storage_ = storage;
   }
@@ -28,27 +28,27 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineSyncKeyValue, storage_, id<ImActor
 - (void)putWithLong:(jlong)key
       withByteArray:(IOSByteArray *)data {
   @synchronized(self) {
-    [((id<ImActorModelDroidkitEngineKeyValueStorage>) nil_chk(storage_)) addOrUpdateItemWithLong:key withByteArray:data];
+    [((id<DKKeyValueStorage>) nil_chk(storage_)) addOrUpdateItemWithLong:key withByteArray:data];
   }
 }
 
 - (void)delete__WithLong:(jlong)key {
   @synchronized(self) {
-    [((id<ImActorModelDroidkitEngineKeyValueStorage>) nil_chk(storage_)) removeItemWithLong:key];
+    [((id<DKKeyValueStorage>) nil_chk(storage_)) removeItemWithLong:key];
   }
 }
 
 - (IOSByteArray *)getWithLong:(jlong)key {
   @synchronized(self) {
-    return [((id<ImActorModelDroidkitEngineKeyValueStorage>) nil_chk(storage_)) getValueWithLong:key];
+    return [((id<DKKeyValueStorage>) nil_chk(storage_)) getValueWithLong:key];
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineSyncKeyValue *)other {
+- (void)copyAllFieldsTo:(DKSyncKeyValue *)other {
   [super copyAllFieldsTo:other];
   other->storage_ = storage_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineSyncKeyValue)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKSyncKeyValue)

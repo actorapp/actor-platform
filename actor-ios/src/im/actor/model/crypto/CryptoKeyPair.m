@@ -7,17 +7,17 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/CryptoKeyPair.h"
 
-@interface ImActorModelCryptoCryptoKeyPair () {
+@interface AMCryptoKeyPair () {
  @public
   IOSByteArray *publicKey_;
   IOSByteArray *privateKey_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelCryptoCryptoKeyPair, publicKey_, IOSByteArray *)
-J2OBJC_FIELD_SETTER(ImActorModelCryptoCryptoKeyPair, privateKey_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(AMCryptoKeyPair, publicKey_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(AMCryptoKeyPair, privateKey_, IOSByteArray *)
 
-@implementation ImActorModelCryptoCryptoKeyPair
+@implementation AMCryptoKeyPair
 
 - (instancetype)initWithByteArray:(IOSByteArray *)publicKey
                     withByteArray:(IOSByteArray *)privateKey {
@@ -36,7 +36,7 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoCryptoKeyPair, privateKey_, IOSByteArray *
   return privateKey_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelCryptoCryptoKeyPair *)other {
+- (void)copyAllFieldsTo:(AMCryptoKeyPair *)other {
   [super copyAllFieldsTo:other];
   other->publicKey_ = publicKey_;
   other->privateKey_ = privateKey_;
@@ -44,4 +44,4 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoCryptoKeyPair, privateKey_, IOSByteArray *
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoCryptoKeyPair)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMCryptoKeyPair)

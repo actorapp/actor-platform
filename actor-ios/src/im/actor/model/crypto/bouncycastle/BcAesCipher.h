@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/crypto/bouncycastle/BcAesCipher.java
 //
 
-#ifndef _ImActorModelCryptoBouncycastleBcAesCipher_H_
-#define _ImActorModelCryptoBouncycastleBcAesCipher_H_
+#ifndef _BCBcAesCipher_H_
+#define _BCBcAesCipher_H_
 
 @class IOSByteArray;
 @class OrgBouncycastleCryptoBufferedBlockCipher;
@@ -13,7 +13,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/crypto/AesCipher.h"
 
-@interface ImActorModelCryptoBouncycastleBcAesCipher : NSObject < ImActorModelCryptoAesCipher > {
+@interface BCBcAesCipher : NSObject < AMAesCipher > {
 }
 
 - (instancetype)initWithByteArray:(IOSByteArray *)key
@@ -29,11 +29,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelCryptoBouncycastleBcAesCipher)
+J2OBJC_EMPTY_STATIC_INIT(BCBcAesCipher)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelCryptoBouncycastleBcAesCipher)
+typedef BCBcAesCipher ImActorModelCryptoBouncycastleBcAesCipher;
 
-#endif // _ImActorModelCryptoBouncycastleBcAesCipher_H_
+J2OBJC_TYPE_LITERAL_HEADER(BCBcAesCipher)
+
+#endif // _BCBcAesCipher_H_

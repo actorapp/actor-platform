@@ -262,19 +262,19 @@ void ImActorModelModulesContactsBookImportActor_performImportWithJavaUtilArrayLi
 }
 
 jboolean ImActorModelModulesContactsBookImportActor_isImportedWithLong_(ImActorModelModulesContactsBookImportActor *self, jlong phone) {
-  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$J", @"book_phone_", phone) withBoolean:NO];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$J", @"book_phone_", phone) withBoolean:NO];
 }
 
 jboolean ImActorModelModulesContactsBookImportActor_isImportedWithNSString_(ImActorModelModulesContactsBookImportActor *self, NSString *email) {
-  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$$", @"book_email_", [((NSString *) nil_chk(email)) lowercaseString]) withBoolean:NO];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$$", @"book_email_", [((NSString *) nil_chk(email)) lowercaseString]) withBoolean:NO];
 }
 
 void ImActorModelModulesContactsBookImportActor_markImportedWithLong_(ImActorModelModulesContactsBookImportActor *self, jlong phone) {
-  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$J", @"book_phone_", phone) withBoolean:YES];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$J", @"book_phone_", phone) withBoolean:YES];
 }
 
 void ImActorModelModulesContactsBookImportActor_markImportedWithNSString_(ImActorModelModulesContactsBookImportActor *self, NSString *email) {
-  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$$", @"book_email_", [((NSString *) nil_chk(email)) lowercaseString]) withBoolean:YES];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$$", @"book_email_", [((NSString *) nil_chk(email)) lowercaseString]) withBoolean:YES];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsBookImportActor)

@@ -3,21 +3,23 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/crypto/RsaCipher.java
 //
 
-#ifndef _ImActorModelCryptoRsaCipher_H_
-#define _ImActorModelCryptoRsaCipher_H_
+#ifndef _AMRsaCipher_H_
+#define _AMRsaCipher_H_
 
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/crypto/RsaEncryptCipher.h"
 
-@protocol ImActorModelCryptoRsaCipher < ImActorModelCryptoRsaEncryptCipher, NSObject, JavaObject >
+@protocol AMRsaCipher < AMRsaEncryptCipher, NSObject, JavaObject >
 - (IOSByteArray *)decryptWithByteArray:(IOSByteArray *)sourceData;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelCryptoRsaCipher)
+J2OBJC_EMPTY_STATIC_INIT(AMRsaCipher)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelCryptoRsaCipher)
+#define ImActorModelCryptoRsaCipher AMRsaCipher
 
-#endif // _ImActorModelCryptoRsaCipher_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMRsaCipher)
+
+#endif // _AMRsaCipher_H_

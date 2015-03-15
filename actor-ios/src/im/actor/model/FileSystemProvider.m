@@ -6,6 +6,6 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/FileSystemProvider.h"
 #include "im/actor/model/entity/FileReference.h"
-#include "im/actor/model/files/FileReference.h"
+#include "im/actor/model/files/FileSystemReference.h"
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMFileSystemProvider)

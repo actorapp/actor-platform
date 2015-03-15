@@ -3,15 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/ObjectCache.java
 //
 
-#ifndef _ImActorModelDroidkitEngineObjectCache_H_
-#define _ImActorModelDroidkitEngineObjectCache_H_
+#ifndef _DKObjectCache_H_
+#define _DKObjectCache_H_
 
 @class JavaUtilHashMap;
 @class JavaUtilHashSet;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitEngineObjectCache : NSObject {
+@interface DKObjectCache : NSObject {
  @public
   JavaUtilHashMap *memoryCache_;
   JavaUtilHashSet *removedItems_;
@@ -37,14 +37,16 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineObjectCache)
+J2OBJC_EMPTY_STATIC_INIT(DKObjectCache)
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineObjectCache, memoryCache_, JavaUtilHashMap *)
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineObjectCache, removedItems_, JavaUtilHashSet *)
+J2OBJC_FIELD_SETTER(DKObjectCache, memoryCache_, JavaUtilHashMap *)
+J2OBJC_FIELD_SETTER(DKObjectCache, removedItems_, JavaUtilHashSet *)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineObjectCache)
+typedef DKObjectCache ImActorModelDroidkitEngineObjectCache;
 
-#endif // _ImActorModelDroidkitEngineObjectCache_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKObjectCache)
+
+#endif // _DKObjectCache_H_

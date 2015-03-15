@@ -5,6 +5,7 @@ import im.actor.model.api.rpc.RequestGetFile;
 import im.actor.model.api.rpc.ResponseGetFile;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.FileReference;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.files.OutputFile;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
@@ -25,7 +26,7 @@ public class DownloadTask extends ModuleActor {
     private ActorRef manager;
     private FileSystemProvider fileSystemProvider;
 
-    private im.actor.model.files.FileReference destReference;
+    private FileSystemReference destReference;
     private OutputFile outputFile;
 
     private boolean isCompleted;
@@ -93,7 +94,7 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        im.actor.model.files.FileReference reference = fileSystemProvider.commitTempFile(destReference, fileReference);
+        FileSystemReference reference = fileSystemProvider.commitTempFile(destReference, fileReference);
         if (reference == null) {
             reportError();
             return;
@@ -166,7 +167,7 @@ public class DownloadTask extends ModuleActor {
         manager.send(new DownloadManager.OnDownloadProgress(fileReference.getFileId(), progress));
     }
 
-    private void reportComplete(im.actor.model.files.FileReference reference) {
+    private void reportComplete(FileSystemReference reference) {
         if (isCompleted) {
             return;
         }

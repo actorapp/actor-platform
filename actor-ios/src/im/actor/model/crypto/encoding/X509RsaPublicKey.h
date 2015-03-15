@@ -3,15 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/crypto/encoding/X509RsaPublicKey.java
 //
 
-#ifndef _ImActorModelCryptoEncodingX509RsaPublicKey_H_
-#define _ImActorModelCryptoEncodingX509RsaPublicKey_H_
+#ifndef _BCX509RsaPublicKey_H_
+#define _BCX509RsaPublicKey_H_
 
 @class IOSByteArray;
 @class JavaMathBigInteger;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelCryptoEncodingX509RsaPublicKey : NSObject {
+@interface BCX509RsaPublicKey : NSObject {
 }
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)modulus
@@ -27,14 +27,16 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelCryptoEncodingX509RsaPublicKey)
+J2OBJC_EMPTY_STATIC_INIT(BCX509RsaPublicKey)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT NSString *ImActorModelCryptoEncodingX509RsaPublicKey_ALGO_TYPE_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelCryptoEncodingX509RsaPublicKey, ALGO_TYPE_, NSString *)
+FOUNDATION_EXPORT NSString *BCX509RsaPublicKey_ALGO_TYPE_;
+J2OBJC_STATIC_FIELD_GETTER(BCX509RsaPublicKey, ALGO_TYPE_, NSString *)
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelCryptoEncodingX509RsaPublicKey)
+typedef BCX509RsaPublicKey ImActorModelCryptoEncodingX509RsaPublicKey;
 
-#endif // _ImActorModelCryptoEncodingX509RsaPublicKey_H_
+J2OBJC_TYPE_LITERAL_HEADER(BCX509RsaPublicKey)
+
+#endif // _BCX509RsaPublicKey_H_

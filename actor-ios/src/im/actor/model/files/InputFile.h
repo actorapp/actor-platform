@@ -3,26 +3,25 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/files/InputFile.java
 //
 
-#ifndef _ImActorModelFilesInputFile_H_
-#define _ImActorModelFilesInputFile_H_
+#ifndef _AMInputFile_H_
+#define _AMInputFile_H_
 
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelFilesInputFile < NSObject, JavaObject >
+@protocol AMInputFile < NSObject, JavaObject >
 
-- (jboolean)readWithInt:(jint)fileOffset
-          withByteArray:(IOSByteArray *)data
-                withInt:(jint)offset
-                withInt:(jint)len;
+- (jboolean)readAtOffset:(jint)fileOffset withData:(IOSByteArray *)data withDataOffset:(jint)offset withDataLen:(jint)len;
 
 - (jboolean)close;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelFilesInputFile)
+J2OBJC_EMPTY_STATIC_INIT(AMInputFile)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelFilesInputFile)
+#define ImActorModelFilesInputFile AMInputFile
 
-#endif // _ImActorModelFilesInputFile_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMInputFile)
+
+#endif // _AMInputFile_H_

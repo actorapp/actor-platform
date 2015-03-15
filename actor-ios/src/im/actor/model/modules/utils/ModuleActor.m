@@ -111,20 +111,20 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
   }
 }
 
-- (id<ImActorModelDroidkitEngineKeyValueEngine>)users {
+- (id<DKKeyValueEngine>)users {
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsers];
 }
 
-- (id<ImActorModelDroidkitEngineKeyValueEngine>)groups {
+- (id<DKKeyValueEngine>)groups {
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getGroupsModule])) getGroups];
 }
 
 - (AMGroup *)getGroupWithInt:(jint)gid {
-  return [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self groups])) getValueWithLong:gid];
+  return [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:gid];
 }
 
 - (AMUser *)getUserWithInt:(jint)uid {
-  return [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
+  return [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
 }
 
 - (AMUserVM *)getUserVMWithInt:(jint)uid {
@@ -135,7 +135,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
   return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getGroupsModule])) getGroupsCollection])) getWithLong:gid];
 }
 
-- (id<ImActorModelDroidkitEnginePreferencesStorage>)preferences {
+- (id<DKPreferencesStorage>)preferences {
   return [((ImActorModelModulesModules *) nil_chk(modules__)) getPreferences];
 }
 
@@ -147,7 +147,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
   return [((ImActorModelModulesModules *) nil_chk(modules__)) getUpdatesModule];
 }
 
-- (id<ImActorModelDroidkitEngineListEngine>)messagesWithAMPeer:(AMPeer *)peer {
+- (id<DKListEngine>)messagesWithAMPeer:(AMPeer *)peer {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getMessagesModule])) getConversationEngineWithAMPeer:peer];
 }
 

@@ -6,7 +6,7 @@
 #ifndef _ImActorModelModulesUtilsPreferenceApiStorage_H_
 #define _ImActorModelModulesUtilsPreferenceApiStorage_H_
 
-@protocol ImActorModelDroidkitEnginePreferencesStorage;
+@protocol DKPreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/AuthKeyStorage.h"
@@ -14,7 +14,7 @@
 @interface ImActorModelModulesUtilsPreferenceApiStorage : NSObject < AMAuthKeyStorage > {
 }
 
-- (instancetype)initWithImActorModelDroidkitEnginePreferencesStorage:(id<ImActorModelDroidkitEnginePreferencesStorage>)preferencesStorage;
+- (instancetype)initWithDKPreferencesStorage:(id<DKPreferencesStorage>)preferencesStorage;
 
 - (jlong)getAuthKey;
 

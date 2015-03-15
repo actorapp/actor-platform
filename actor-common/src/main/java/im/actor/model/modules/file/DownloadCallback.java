@@ -1,6 +1,6 @@
 package im.actor.model.modules.file;
 
-import im.actor.model.files.FileReference;
+import im.actor.model.files.FileSystemReference;
 
 /**
  * Created by ex3ndr on 26.02.15.
@@ -10,5 +10,5 @@ public interface DownloadCallback {
 
     public void onDownloading(float progress);
 
-    public void onDownloaded(FileReference reference);
+    public void onDownloaded(FileSystemReference reference);
 }

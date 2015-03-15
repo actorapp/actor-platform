@@ -3,31 +3,31 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/AsyncListEngine.java
 //
 
-#ifndef _ImActorModelDroidkitEngineAsyncListEngine_H_
-#define _ImActorModelDroidkitEngineAsyncListEngine_H_
+#ifndef _DKAsyncListEngine_H_
+#define _DKAsyncListEngine_H_
 
 @class BSBserObject;
+@class DKAsyncStorageInt;
+@class DKObjectCache;
 @class IOSLongArray;
-@class ImActorModelDroidkitEngineAsyncStorageInt;
-@class ImActorModelDroidkitEngineObjectCache;
 @class JavaUtilConcurrentCopyOnWriteArrayList;
 @protocol BSBserCreator;
-@protocol ImActorModelDroidkitEngineListEngineDisplayListener;
-@protocol ImActorModelDroidkitEngineListEngineItem;
-@protocol ImActorModelDroidkitEngineListStorage;
+@protocol DKListEngineDisplayListener;
+@protocol DKListEngineItem;
+@protocol DKListStorage;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/engine/ListEngineCallback.h"
 #include "im/actor/model/droidkit/engine/ListEngineDisplayExt.h"
 
-@interface ImActorModelDroidkitEngineAsyncListEngine : NSObject < ImActorModelDroidkitEngineListEngineDisplayExt > {
+@interface DKAsyncListEngine : NSObject < DKListEngineDisplayExt > {
 }
 
-- (instancetype)initWithImActorModelDroidkitEngineListStorage:(id<ImActorModelDroidkitEngineListStorage>)storage
-                                            withBSBserCreator:(id<BSBserCreator>)creator;
+- (instancetype)initWithDKListStorage:(id<DKListStorage>)storage
+                    withBSBserCreator:(id<BSBserCreator>)creator;
 
-- (void)addOrUpdateItemWithBSBserObject:(BSBserObject<ImActorModelDroidkitEngineListEngineItem> *)item;
+- (void)addOrUpdateItemWithBSBserObject:(BSBserObject<DKListEngineItem> *)item;
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)items;
 
@@ -45,72 +45,74 @@
 
 - (jint)getCount;
 
-- (void)subscribeWithImActorModelDroidkitEngineListEngineDisplayListener:(id<ImActorModelDroidkitEngineListEngineDisplayListener>)listener;
+- (void)subscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener;
 
-- (void)unsubscribeWithImActorModelDroidkitEngineListEngineDisplayListener:(id<ImActorModelDroidkitEngineListEngineDisplayListener>)listener;
+- (void)unsubscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener;
 
 - (void)loadForwardWithInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+  withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadForwardWithLong:(jlong)afterSortKey
                     withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+   withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadForwardWithNSString:(NSString *)query
                         withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+       withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadForwardWithNSString:(NSString *)query
                        withLong:(jlong)afterSortKey
                         withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+       withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadBackwardWithInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+   withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadBackwardWithLong:(jlong)beforeSortKey
                      withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+    withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadBackwardWithNSString:(NSString *)query
                          withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+        withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadBackwardWithNSString:(NSString *)query
                         withLong:(jlong)beforeSortKey
                          withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+        withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 - (void)loadCenterWithLong:(jlong)centerSortKey
                    withInt:(jint)limit
-withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)callback;
+  withDKListEngineCallback:(id<DKListEngineCallback>)callback;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineAsyncListEngine)
+J2OBJC_EMPTY_STATIC_INIT(DKAsyncListEngine)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineAsyncListEngine)
+typedef DKAsyncListEngine ImActorModelDroidkitEngineAsyncListEngine;
 
-@interface ImActorModelDroidkitEngineAsyncListEngine_$1 : NSObject < ImActorModelDroidkitEngineListEngineCallback > {
+J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine)
+
+@interface DKAsyncListEngine_$1 : NSObject < DKListEngineCallback > {
 }
 
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey;
 
-- (instancetype)initWithImActorModelDroidkitEngineAsyncListEngine:(ImActorModelDroidkitEngineAsyncListEngine *)outer$
-                 withImActorModelDroidkitEngineListEngineCallback:(id<ImActorModelDroidkitEngineListEngineCallback>)capture$0;
+- (instancetype)initWithDKAsyncListEngine:(DKAsyncListEngine *)outer$
+                 withDKListEngineCallback:(id<DKListEngineCallback>)capture$0;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineAsyncListEngine_$1)
+J2OBJC_EMPTY_STATIC_INIT(DKAsyncListEngine_$1)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineAsyncListEngine_$1)
+J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
 
-#endif // _ImActorModelDroidkitEngineAsyncListEngine_H_
+#endif // _DKAsyncListEngine_H_

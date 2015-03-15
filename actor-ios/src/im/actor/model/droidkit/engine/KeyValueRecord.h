@@ -3,14 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/KeyValueRecord.java
 //
 
-#ifndef _ImActorModelDroidkitEngineKeyValueRecord_H_
-#define _ImActorModelDroidkitEngineKeyValueRecord_H_
+#ifndef _DKKeyValueRecord_H_
+#define _DKKeyValueRecord_H_
 
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitEngineKeyValueRecord : NSObject {
+@interface DKKeyValueRecord : NSObject {
 }
 
 - (instancetype)initWithLong:(jlong)id_
@@ -22,11 +22,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineKeyValueRecord)
+J2OBJC_EMPTY_STATIC_INIT(DKKeyValueRecord)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineKeyValueRecord)
+typedef DKKeyValueRecord ImActorModelDroidkitEngineKeyValueRecord;
 
-#endif // _ImActorModelDroidkitEngineKeyValueRecord_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKKeyValueRecord)
+
+#endif // _DKKeyValueRecord_H_

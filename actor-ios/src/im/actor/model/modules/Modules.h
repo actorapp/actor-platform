@@ -22,7 +22,7 @@
 @class ImActorModelModulesTyping;
 @class ImActorModelModulesUpdates;
 @class ImActorModelModulesUsers;
-@protocol ImActorModelDroidkitEnginePreferencesStorage;
+@protocol DKPreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/ActorApiCallback.h"
@@ -38,7 +38,7 @@
 
 - (ImActorModelModulesDisplayLists *)getDisplayLists;
 
-- (id<ImActorModelDroidkitEnginePreferencesStorage>)getPreferences;
+- (id<DKPreferencesStorage>)getPreferences;
 
 - (AMConfiguration *)getConfiguration;
 

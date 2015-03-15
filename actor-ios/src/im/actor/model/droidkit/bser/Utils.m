@@ -82,7 +82,7 @@ NSString *BSUtils_byteArrayToStringWithByteArray_(IOSByteArray *data) {
     return @"null";
   }
   else {
-    return ImActorModelCryptoCryptoUtils_hexWithByteArray_(data);
+    return AMCryptoUtils_hexWithByteArray_(data);
   }
 }
 
@@ -92,7 +92,7 @@ NSString *BSUtils_byteArrayToStringCompactWithByteArray_(IOSByteArray *data) {
     return @"null";
   }
   else {
-    return ImActorModelCryptoCryptoUtils_hexWithByteArray_(ImActorModelCryptoCryptoUtils_MD5WithByteArray_(data));
+    return AMCryptoUtils_hexWithByteArray_(AMCryptoUtils_MD5WithByteArray_(data));
   }
 }
 

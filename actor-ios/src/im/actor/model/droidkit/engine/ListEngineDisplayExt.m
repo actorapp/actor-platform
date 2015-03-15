@@ -8,4 +8,4 @@
 #include "im/actor/model/droidkit/engine/ListEngineDisplayExt.h"
 #include "im/actor/model/droidkit/engine/ListEngineDisplayListener.h"
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineListEngineDisplayExt)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(DKListEngineDisplayExt)

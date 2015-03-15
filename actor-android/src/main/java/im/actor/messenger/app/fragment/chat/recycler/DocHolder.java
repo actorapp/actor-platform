@@ -21,6 +21,7 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.content.DocumentContent;
 import im.actor.model.entity.content.FileLocalSource;
 import im.actor.model.entity.content.FileRemoteSource;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.modules.file.DownloadCallback;
 import im.actor.model.modules.file.UploadCallback;
 import im.actor.model.viewmodel.FileVM;
@@ -245,7 +246,7 @@ public class DocHolder extends MessageHolder {
                 }
 
                 @Override
-                public void onDownloaded(im.actor.model.files.FileReference reference) {
+                public void onDownloaded(FileSystemReference reference) {
                     // TODO: Open file
                 }
             });
@@ -322,7 +323,7 @@ public class DocHolder extends MessageHolder {
         }
 
         @Override
-        public void onDownloaded(im.actor.model.files.FileReference reference) {
+        public void onDownloaded(FileSystemReference reference) {
             status.setText(R.string.chat_doc_open);
             showView(status);
 

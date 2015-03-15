@@ -15,7 +15,7 @@
 
 @interface AMDisplayModifications_$1 () {
  @public
-  id<ImActorModelDroidkitEngineListEngineItem> val$item_;
+  id<DKListEngineItem> val$item_;
 }
 @end
 
@@ -53,8 +53,8 @@ J2OBJC_FIELD_SETTER(AMDisplayModifications_$5, val$dstIds_, IOSLongArray *)
 
 @implementation AMDisplayModifications
 
-+ (id<AMDisplayList_Modification>)addOrUpdateWithImActorModelDroidkitEngineListEngineItem:(id<ImActorModelDroidkitEngineListEngineItem>)item {
-  return AMDisplayModifications_addOrUpdateWithImActorModelDroidkitEngineListEngineItem_(item);
++ (id<AMDisplayList_Modification>)addOrUpdateWithDKListEngineItem:(id<DKListEngineItem>)item {
+  return AMDisplayModifications_addOrUpdateWithDKListEngineItem_(item);
 }
 
 + (id<AMDisplayList_Modification>)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items {
@@ -83,9 +83,9 @@ J2OBJC_FIELD_SETTER(AMDisplayModifications_$5, val$dstIds_, IOSLongArray *)
 
 @end
 
-id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithImActorModelDroidkitEngineListEngineItem_(id<ImActorModelDroidkitEngineListEngineItem> item) {
+id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithDKListEngineItem_(id<DKListEngineItem> item) {
   AMDisplayModifications_init();
-  return [[AMDisplayModifications_$1 alloc] initWithImActorModelDroidkitEngineListEngineItem:item];
+  return [[AMDisplayModifications_$1 alloc] initWithDKListEngineItem:item];
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithJavaUtilList_(id<JavaUtilList> items) {
@@ -118,18 +118,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications)
 @implementation AMDisplayModifications_$1
 
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  jlong dstId = [((id<ImActorModelDroidkitEngineListEngineItem>) nil_chk(val$item_)) getEngineId];
+  jlong dstId = [((id<DKListEngineItem>) nil_chk(val$item_)) getEngineId];
   id<JavaUtilIterator> iterator = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
   while ([((id<JavaUtilIterator>) nil_chk(iterator)) hasNext]) {
-    id<ImActorModelDroidkitEngineListEngineItem> src = [iterator next];
-    if ([((id<ImActorModelDroidkitEngineListEngineItem>) nil_chk(src)) getEngineId] == dstId) {
+    id<DKListEngineItem> src = [iterator next];
+    if ([((id<DKListEngineItem>) nil_chk(src)) getEngineId] == dstId) {
       [iterator remove];
     }
   }
   [sourceList addWithId:val$item_];
 }
 
-- (instancetype)initWithImActorModelDroidkitEngineListEngineItem:(id<ImActorModelDroidkitEngineListEngineItem>)capture$0 {
+- (instancetype)initWithDKListEngineItem:(id<DKListEngineItem>)capture$0 {
   val$item_ = capture$0;
   return [super init];
 }
@@ -147,13 +147,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$1)
 
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
   JavaUtilHashSet *keys = [[JavaUtilHashSet alloc] init];
-  for (id<ImActorModelDroidkitEngineListEngineItem> __strong i in nil_chk(val$items_)) {
-    [keys addWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelDroidkitEngineListEngineItem>) nil_chk(i)) getEngineId])];
+  for (id<DKListEngineItem> __strong i in nil_chk(val$items_)) {
+    [keys addWithId:JavaLangLong_valueOfWithLong_([((id<DKListEngineItem>) nil_chk(i)) getEngineId])];
   }
   id<JavaUtilIterator> iterator = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
   while ([((id<JavaUtilIterator>) nil_chk(iterator)) hasNext]) {
-    id<ImActorModelDroidkitEngineListEngineItem> src = [iterator next];
-    if ([keys containsWithId:JavaLangLong_valueOfWithLong_([((id<ImActorModelDroidkitEngineListEngineItem>) nil_chk(src)) getEngineId])]) {
+    id<DKListEngineItem> src = [iterator next];
+    if ([keys containsWithId:JavaLangLong_valueOfWithLong_([((id<DKListEngineItem>) nil_chk(src)) getEngineId])]) {
       [iterator remove];
     }
   }
@@ -200,8 +200,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$3)
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
   id<JavaUtilIterator> iterator = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
   while ([((id<JavaUtilIterator>) nil_chk(iterator)) hasNext]) {
-    id<ImActorModelDroidkitEngineListEngineItem> src = [iterator next];
-    if ([((id<ImActorModelDroidkitEngineListEngineItem>) nil_chk(src)) getEngineId] == val$dstId_) {
+    id<DKListEngineItem> src = [iterator next];
+    if ([((id<DKListEngineItem>) nil_chk(src)) getEngineId] == val$dstId_) {
       [iterator remove];
     }
   }
@@ -226,8 +226,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$4)
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
   id<JavaUtilIterator> it = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
   while ([((id<JavaUtilIterator>) nil_chk(it)) hasNext]) {
-    id<ImActorModelDroidkitEngineListEngineItem> value = [it next];
-    jlong srcId = [((id<ImActorModelDroidkitEngineListEngineItem>) nil_chk(value)) getEngineId];
+    id<DKListEngineItem> value = [it next];
+    jlong srcId = [((id<DKListEngineItem>) nil_chk(value)) getEngineId];
     {
       IOSLongArray *a__ = val$dstIds_;
       jlong const *b__ = ((IOSLongArray *) nil_chk(a__))->buffer_;
