@@ -57,7 +57,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
 
 @implementation AMConfigurationBuilder
 
-- (AMConfigurationBuilder *)setApiConfiguration:(id<AMApiConfiguration>)apiConfiguration {
+- (AMConfigurationBuilder *)setApiConfiguration:(AMApiConfiguration *)apiConfiguration {
   self->apiConfiguration_ = apiConfiguration;
   return self;
 }

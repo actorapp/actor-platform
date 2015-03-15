@@ -75,9 +75,9 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 
 - (void)preStart {
   [super preStart];
-  historyMaxDate_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:KEY_LOADED_DATE_ withLong:JavaLangLong_MAX_VALUE];
-  historyLoaded_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:KEY_LOADED_ withBoolean:NO];
-  if (![((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:KEY_LOADED_INIT_ withBoolean:NO]) {
+  historyMaxDate_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLong:KEY_LOADED_DATE_ withDefault:JavaLangLong_MAX_VALUE];
+  historyLoaded_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:KEY_LOADED_ withDefault:NO];
+  if (![((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:KEY_LOADED_INIT_ withDefault:NO]) {
     [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesMessagesConversationHistoryActor_LoadMore alloc] init]];
   }
 }
@@ -137,9 +137,9 @@ void ImActorModelModulesMessagesConversationHistoryActor_onLoadedMoreWithInt_wit
     self->historyLoaded_ = NO;
     self->historyMaxDate_ = maxLoadedDate;
   }
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:self->KEY_LOADED_DATE_ withLong:maxLoadedDate];
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:self->KEY_LOADED_ withBoolean:self->historyLoaded_];
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:self->KEY_LOADED_INIT_ withBoolean:YES];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLong:self->KEY_LOADED_DATE_ withValue:maxLoadedDate];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBool:self->KEY_LOADED_ withValue:self->historyLoaded_];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBool:self->KEY_LOADED_INIT_ withValue:YES];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryActor)
