@@ -31,6 +31,7 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "im/actor/model/viewmodel/GroupVM.h"
 #include "im/actor/model/viewmodel/UserVM.h"
+#include "java/lang/RuntimeException.h"
 
 @interface ImActorModelModulesUtilsModuleActor () {
  @public
@@ -95,7 +96,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor_$2_$2, val$e_, AMRpcExce
     return [[ImActorModelApiOutPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_GROUP() withInt:[((AMGroup *) nil_chk(group)) getGroupId] withLong:[group getAccessHash]];
   }
   else {
-    return nil;
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:JreStrcat("$@", @"Unknown peer: ", peer)];
   }
 }
 
