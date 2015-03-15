@@ -25,7 +25,7 @@
 @interface AMConfigurationBuilder : NSObject {
 }
 
-- (AMConfigurationBuilder *)setApiConfiguration:(id<AMApiConfiguration>)apiConfiguration;
+- (AMConfigurationBuilder *)setApiConfiguration:(AMApiConfiguration *)apiConfiguration;
 
 - (AMConfigurationBuilder *)setNotificationProvider:(id<AMNotificationProvider>)notificationProvider;
 

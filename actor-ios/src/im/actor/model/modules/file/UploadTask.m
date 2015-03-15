@@ -241,7 +241,7 @@ void ImActorModelModulesFileUploadTask_checkQueue(ImActorModelModulesFileUploadT
       size = [self->srcReference_ getSize] - blockIndex * self->blockSize_;
     }
     IOSByteArray *data = [IOSByteArray newArrayWithLength:size];
-    if (![((id<AMInputFile>) nil_chk(self->inputFile_)) readAtOffset:fileOffset withData:data withDataOffset:0 withDataLen:size]) {
+    if (![((id<AMInputFile>) nil_chk(self->inputFile_)) readAtOffset:fileOffset toArray:data withArrayOffset:0 withArrayLen:size]) {
       AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$I$", @"read #", blockIndex, @" error"));
       ImActorModelModulesFileUploadTask_reportError(self);
       return;

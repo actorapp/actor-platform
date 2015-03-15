@@ -178,22 +178,22 @@ NSString * ImActorModelModulesAuth_KEY_PRIVATE_KEY_ = @"auth_key_private";
     self->mainThreadProvider_ = [((AMConfiguration *) nil_chk([modules getConfiguration])) getMainThreadProvider];
     AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.3.1 in ", ([((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreadingProvider])) getActorTime] - start), @" ms"));
     start = [((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreadingProvider])) getActorTime];
-    self->myUid__ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getIntWithNSString:ImActorModelModulesAuth_KEY_AUTH_UID_ withInt:0];
+    self->myUid__ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getInt:ImActorModelModulesAuth_KEY_AUTH_UID_ withDefault:0];
     AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.3.2 in ", ([((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreadingProvider])) getActorTime] - start), @" ms"));
     start = [((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreadingProvider])) getActorTime];
-    deviceHash_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:ImActorModelModulesAuth_KEY_DEVICE_HASH_];
+    deviceHash_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytes:ImActorModelModulesAuth_KEY_DEVICE_HASH_];
     if (deviceHash_ == nil) {
       deviceHash_ = [((AMApiConfiguration *) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getApiConfiguration])) getDeviceHash];
-      [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:ImActorModelModulesAuth_KEY_DEVICE_HASH_ withByteArray:deviceHash_];
+      [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytes:ImActorModelModulesAuth_KEY_DEVICE_HASH_ withValue:deviceHash_];
     }
-    publicKey_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:ImActorModelModulesAuth_KEY_PUBLIC_KEY_];
-    privateKey_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:ImActorModelModulesAuth_KEY_PRIVATE_KEY_];
+    publicKey_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytes:ImActorModelModulesAuth_KEY_PUBLIC_KEY_];
+    privateKey_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytes:ImActorModelModulesAuth_KEY_PRIVATE_KEY_];
     if (publicKey_ == nil || privateKey_ == nil) {
       AMCryptoKeyPair *keyPair = AMCryptoUtils_generateRSA1024KeyPair();
       publicKey_ = [((AMCryptoKeyPair *) nil_chk(keyPair)) getPublicKey];
       privateKey_ = [keyPair getPrivateKey];
-      [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:ImActorModelModulesAuth_KEY_PUBLIC_KEY_ withByteArray:publicKey_];
-      [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:ImActorModelModulesAuth_KEY_PRIVATE_KEY_ withByteArray:privateKey_];
+      [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytes:ImActorModelModulesAuth_KEY_PUBLIC_KEY_ withValue:publicKey_];
+      [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytes:ImActorModelModulesAuth_KEY_PRIVATE_KEY_ withValue:privateKey_];
     }
     apiConfiguration_ = [((AMConfiguration *) nil_chk([modules getConfiguration])) getApiConfiguration];
     AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.3.3 in ", ([((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreadingProvider])) getActorTime] - start), @" ms"));
@@ -203,7 +203,7 @@ NSString * ImActorModelModulesAuth_KEY_PRIVATE_KEY_ = @"auth_key_private";
 }
 
 - (void)run {
-  if ([((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesAuth_KEY_AUTH_ withBoolean:NO]) {
+  if ([((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:ImActorModelModulesAuth_KEY_AUTH_ withDefault:NO]) {
     state_ = AMAuthStateEnum_get_LOGGED_IN();
     [((ImActorModelModulesModules *) nil_chk([self modules])) onLoggedIn];
   }
@@ -247,7 +247,7 @@ NSString * ImActorModelModulesAuth_KEY_PRIVATE_KEY_ = @"auth_key_private";
 }
 
 - (jlong)getPhone {
-  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:ImActorModelModulesAuth_KEY_PHONE_ withLong:0];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLong:ImActorModelModulesAuth_KEY_PHONE_ withDefault:0];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesAuth *)other {
@@ -291,8 +291,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$1)
 @implementation ImActorModelModulesAuth_$1_$1
 
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSendAuthCode *)response {
-  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putLongWithNSString:ImActorModelModulesAuth_get_KEY_PHONE_() withLong:this$0_->val$phone_];
-  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putStringWithNSString:ImActorModelModulesAuth_get_KEY_SMS_HASH_() withNSString:[((ImActorModelApiRpcResponseSendAuthCode *) nil_chk(response)) getSmsHash]];
+  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putLong:ImActorModelModulesAuth_get_KEY_PHONE_() withValue:this$0_->val$phone_];
+  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putString:ImActorModelModulesAuth_get_KEY_SMS_HASH_() withValue:[((ImActorModelApiRpcResponseSendAuthCode *) nil_chk(response)) getSmsHash]];
   this$0_->this$0_->state_ = AMAuthStateEnum_get_CODE_VALIDATION();
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesAuth_$1_$1_$1 alloc] initWithImActorModelModulesAuth_$1_$1:self]];
 }
@@ -364,7 +364,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$1_$1_$2)
 @implementation ImActorModelModulesAuth_$2
 
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
-  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSignIn alloc] initWithLong:[((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getLongWithNSString:ImActorModelModulesAuth_get_KEY_PHONE_() withLong:0] withNSString:[((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getStringWithNSString:ImActorModelModulesAuth_get_KEY_SMS_HASH_()] withNSString:JreStrcat("I", val$code_) withByteArray:this$0_->publicKey_ withByteArray:this$0_->deviceHash_ withNSString:[((AMApiConfiguration *) nil_chk(this$0_->apiConfiguration_)) getAppTitle] withInt:[this$0_->apiConfiguration_ getAppId] withNSString:[this$0_->apiConfiguration_ getAppKey]] withAMRpcCallback:[[ImActorModelModulesAuth_$2_$1 alloc] initWithImActorModelModulesAuth_$2:self withAMCommandCallback:callback]];
+  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSignIn alloc] initWithLong:[((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getLong:ImActorModelModulesAuth_get_KEY_PHONE_() withDefault:0] withNSString:[((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getString:ImActorModelModulesAuth_get_KEY_SMS_HASH_()] withNSString:JreStrcat("I", val$code_) withByteArray:this$0_->publicKey_ withByteArray:this$0_->deviceHash_ withNSString:[((AMApiConfiguration *) nil_chk(this$0_->apiConfiguration_)) getAppTitle] withInt:[this$0_->apiConfiguration_ getAppId] withNSString:[this$0_->apiConfiguration_ getAppKey]] withAMRpcCallback:[[ImActorModelModulesAuth_$2_$1 alloc] initWithImActorModelModulesAuth_$2:self withAMCommandCallback:callback]];
 }
 
 - (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
@@ -387,10 +387,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2)
 @implementation ImActorModelModulesAuth_$2_$1
 
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseAuth *)response {
-  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putBoolWithNSString:ImActorModelModulesAuth_get_KEY_AUTH_() withBoolean:YES];
+  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putBool:ImActorModelModulesAuth_get_KEY_AUTH_() withValue:YES];
   this$0_->this$0_->state_ = AMAuthStateEnum_get_LOGGED_IN();
   this$0_->this$0_->myUid__ = [((ImActorModelApiUser *) nil_chk([((ImActorModelApiRpcResponseAuth *) nil_chk(response)) getUser])) getId];
-  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putIntWithNSString:ImActorModelModulesAuth_get_KEY_AUTH_UID_() withInt:this$0_->this$0_->myUid__];
+  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putInt:ImActorModelModulesAuth_get_KEY_AUTH_UID_() withValue:this$0_->this$0_->myUid__];
   [((ImActorModelModulesModules *) nil_chk([this$0_->this$0_ modules])) onLoggedIn];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalLoggedIn alloc] initWithImActorModelApiRpcResponseAuth:response withJavaLangRunnable:[[ImActorModelModulesAuth_$2_$1_$1 alloc] initWithImActorModelModulesAuth_$2_$1:self]]];
 }
@@ -466,7 +466,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2_$1_$2)
 @implementation ImActorModelModulesAuth_$3
 
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
-  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSignUp alloc] initWithLong:[((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getLongWithNSString:ImActorModelModulesAuth_get_KEY_PHONE_() withLong:0] withNSString:[((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getStringWithNSString:ImActorModelModulesAuth_get_KEY_SMS_HASH_()] withNSString:JreStrcat("I", [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getIntWithNSString:ImActorModelModulesAuth_get_KEY_SMS_CODE_() withInt:0]) withNSString:val$firstName_ withByteArray:this$0_->publicKey_ withByteArray:this$0_->deviceHash_ withNSString:[((AMApiConfiguration *) nil_chk(this$0_->apiConfiguration_)) getAppTitle] withInt:[this$0_->apiConfiguration_ getAppId] withNSString:[this$0_->apiConfiguration_ getAppKey] withBoolean:val$isSilent_] withAMRpcCallback:[[ImActorModelModulesAuth_$3_$1 alloc] initWithImActorModelModulesAuth_$3:self withAMCommandCallback:callback]];
+  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSignUp alloc] initWithLong:[((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getLong:ImActorModelModulesAuth_get_KEY_PHONE_() withDefault:0] withNSString:[((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getString:ImActorModelModulesAuth_get_KEY_SMS_HASH_()] withNSString:JreStrcat("I", [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getInt:ImActorModelModulesAuth_get_KEY_SMS_CODE_() withDefault:0]) withNSString:val$firstName_ withByteArray:this$0_->publicKey_ withByteArray:this$0_->deviceHash_ withNSString:[((AMApiConfiguration *) nil_chk(this$0_->apiConfiguration_)) getAppTitle] withInt:[this$0_->apiConfiguration_ getAppId] withNSString:[this$0_->apiConfiguration_ getAppKey] withBoolean:val$isSilent_] withAMRpcCallback:[[ImActorModelModulesAuth_$3_$1 alloc] initWithImActorModelModulesAuth_$3:self withAMCommandCallback:callback]];
 }
 
 - (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
@@ -492,10 +492,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$3)
 @implementation ImActorModelModulesAuth_$3_$1
 
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseAuth *)response {
-  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putBoolWithNSString:ImActorModelModulesAuth_get_KEY_AUTH_() withBoolean:YES];
+  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putBool:ImActorModelModulesAuth_get_KEY_AUTH_() withValue:YES];
   this$0_->this$0_->state_ = AMAuthStateEnum_get_LOGGED_IN();
   this$0_->this$0_->myUid__ = [((ImActorModelApiUser *) nil_chk([((ImActorModelApiRpcResponseAuth *) nil_chk(response)) getUser])) getId];
-  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putIntWithNSString:ImActorModelModulesAuth_get_KEY_AUTH_UID_() withInt:this$0_->this$0_->myUid__];
+  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putInt:ImActorModelModulesAuth_get_KEY_AUTH_UID_() withValue:this$0_->this$0_->myUid__];
   [((ImActorModelModulesModules *) nil_chk([this$0_->this$0_ modules])) onLoggedIn];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalLoggedIn alloc] initWithImActorModelApiRpcResponseAuth:response withJavaLangRunnable:[[ImActorModelModulesAuth_$3_$1_$1 alloc] initWithImActorModelModulesAuth_$3_$1:self]]];
 }

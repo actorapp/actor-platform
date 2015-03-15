@@ -433,20 +433,20 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4_$2, val$e_, AMRpcExceptio
 
 - (void)saveReadStateWithAMPeer:(AMPeer *)peer
                        withLong:(jlong)lastReadDate {
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:JreStrcat("$J", @"read_state_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withLong:lastReadDate];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLong:JreStrcat("$J", @"read_state_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withValue:lastReadDate];
 }
 
 - (jlong)loadReadStateWithAMPeer:(AMPeer *)peer {
-  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:JreStrcat("$J", @"read_state_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withLong:0];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLong:JreStrcat("$J", @"read_state_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withDefault:0];
 }
 
 - (void)saveDraftWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)draft {
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putStringWithNSString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withNSString:[((NSString *) nil_chk(draft)) trim]];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withValue:[((NSString *) nil_chk(draft)) trim]];
 }
 
 - (NSString *)loadDraftWithAMPeer:(AMPeer *)peer {
-  NSString *res = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getStringWithNSString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId])];
+  NSString *res = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId])];
   if (res == nil) {
     return @"";
   }

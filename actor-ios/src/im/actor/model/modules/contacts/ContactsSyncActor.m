@@ -119,7 +119,7 @@ NSString * ImActorModelModulesContactsContactsSyncActor_TAG_ = @"ContactsServerS
   if (ENABLE_LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsContactsSyncActor_TAG_, @"Loading contacts ids from storage...");
   }
-  IOSByteArray *data = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:@"contact_list"];
+  IOSByteArray *data = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytes:@"contact_list"];
   if (data != nil) {
     @try {
       BSDataInput *dataInput = [[BSDataInput alloc] initWithByteArray:data withInt:0 withInt:data->size_];
@@ -355,7 +355,7 @@ void ImActorModelModulesContactsContactsSyncActor_saveList(ImActorModelModulesCo
     jint l = [((JavaLangInteger *) nil_chk(boxed__)) intValue];
     [dataOutput writeIntWithInt:l];
   }
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:@"contact_list" withByteArray:[dataOutput toByteArray]];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytes:@"contact_list" withValue:[dataOutput toByteArray]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsContactsSyncActor)
