@@ -19,6 +19,8 @@ object Dependencies {
     val akkaSlf4j       = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
     val akkaStreamWS    = "pt"                            %% "akka-stream-websocket"         % "0.1-SNAPSHOT"
 
+    val eaioUuid        = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
+
     val sprayJson       = "io.spray"                      %% "spray-json"                    % "1.3.1"
 
     val postgresJdbc    = "org.postgresql"                %  "postgresql"                    % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
@@ -92,7 +94,7 @@ object Dependencies {
 
   val codecs = common ++ Seq(scalazCore, scodecBits, scodecCore)
 
-  val models = common ++ Seq(scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert)
+  val models = common ++ Seq(eaioUuid, scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert)
 
   val frontend = common ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream, akkaStreamWS,

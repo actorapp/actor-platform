@@ -1,7 +1,7 @@
 package im.actor.server.persist
 
-import slick.driver.PostgresDriver.api._
 import im.actor.server.models
+import slick.driver.PostgresDriver.api._
 
 object SexColumnType {
   implicit val sexColumnType =
