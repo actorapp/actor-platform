@@ -50,7 +50,7 @@ public class ModuleActor extends Actor {
             }
             return new OutPeer(im.actor.model.api.PeerType.GROUP, group.getGroupId(), group.getAccessHash());
         } else {
-            return null;
+            throw new RuntimeException("Unknown peer: " + peer);
         }
     }
 
