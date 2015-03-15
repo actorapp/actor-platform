@@ -9,15 +9,15 @@
 
 @interface ImActorModelModulesUtilsPreferenceApiStorage () {
  @public
-  id<ImActorModelDroidkitEnginePreferencesStorage> preferencesStorage_;
+  id<DKPreferencesStorage> preferencesStorage_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsPreferenceApiStorage, preferencesStorage_, id<ImActorModelDroidkitEnginePreferencesStorage>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsPreferenceApiStorage, preferencesStorage_, id<DKPreferencesStorage>)
 
 @implementation ImActorModelModulesUtilsPreferenceApiStorage
 
-- (instancetype)initWithImActorModelDroidkitEnginePreferencesStorage:(id<ImActorModelDroidkitEnginePreferencesStorage>)preferencesStorage {
+- (instancetype)initWithDKPreferencesStorage:(id<DKPreferencesStorage>)preferencesStorage {
   if (self = [super init]) {
     self->preferencesStorage_ = preferencesStorage;
   }
@@ -25,11 +25,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsPreferenceApiStorage, preferencesSto
 }
 
 - (jlong)getAuthKey {
-  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk(preferencesStorage_)) getLongWithNSString:@"auth_id" withLong:0];
+  return [((id<DKPreferencesStorage>) nil_chk(preferencesStorage_)) getLongWithNSString:@"auth_id" withLong:0];
 }
 
 - (void)saveAuthKeyWithLong:(jlong)key {
-  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk(preferencesStorage_)) putLongWithNSString:@"auth_id" withLong:key];
+  [((id<DKPreferencesStorage>) nil_chk(preferencesStorage_)) putLongWithNSString:@"auth_id" withLong:key];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUtilsPreferenceApiStorage *)other {

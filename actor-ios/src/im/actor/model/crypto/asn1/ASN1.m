@@ -17,20 +17,20 @@
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelCryptoAsn1ASN1
+@implementation BCASN1
 
-+ (ImActorModelCryptoAsn1ASN1Primitive *)readObjectWithByteArray:(IOSByteArray *)sourceData {
-  return ImActorModelCryptoAsn1ASN1_readObjectWithByteArray_(sourceData);
++ (BCASN1Primitive *)readObjectWithByteArray:(IOSByteArray *)sourceData {
+  return BCASN1_readObjectWithByteArray_(sourceData);
 }
 
-+ (ImActorModelCryptoAsn1ASN1Primitive *)readObjectWithByteArray:(IOSByteArray *)sourceData
-                                                         withInt:(jint)offset
-                                                         withInt:(jint)len {
-  return ImActorModelCryptoAsn1ASN1_readObjectWithByteArray_withInt_withInt_(sourceData, offset, len);
++ (BCASN1Primitive *)readObjectWithByteArray:(IOSByteArray *)sourceData
+                                     withInt:(jint)offset
+                                     withInt:(jint)len {
+  return BCASN1_readObjectWithByteArray_withInt_withInt_(sourceData, offset, len);
 }
 
-+ (ImActorModelCryptoAsn1ASN1Primitive *)readObjectWithBSDataInput:(BSDataInput *)dataInput {
-  return ImActorModelCryptoAsn1ASN1_readObjectWithBSDataInput_(dataInput);
++ (BCASN1Primitive *)readObjectWithBSDataInput:(BSDataInput *)dataInput {
+  return BCASN1_readObjectWithBSDataInput_(dataInput);
 }
 
 - (instancetype)init {
@@ -39,26 +39,26 @@
 
 @end
 
-ImActorModelCryptoAsn1ASN1Primitive *ImActorModelCryptoAsn1ASN1_readObjectWithByteArray_(IOSByteArray *sourceData) {
-  ImActorModelCryptoAsn1ASN1_init();
-  return ImActorModelCryptoAsn1ASN1_readObjectWithByteArray_withInt_withInt_(sourceData, 0, ((IOSByteArray *) nil_chk(sourceData))->size_);
+BCASN1Primitive *BCASN1_readObjectWithByteArray_(IOSByteArray *sourceData) {
+  BCASN1_init();
+  return BCASN1_readObjectWithByteArray_withInt_withInt_(sourceData, 0, ((IOSByteArray *) nil_chk(sourceData))->size_);
 }
 
-ImActorModelCryptoAsn1ASN1Primitive *ImActorModelCryptoAsn1ASN1_readObjectWithByteArray_withInt_withInt_(IOSByteArray *sourceData, jint offset, jint len) {
-  ImActorModelCryptoAsn1ASN1_init();
-  return ImActorModelCryptoAsn1ASN1_readObjectWithBSDataInput_([[BSDataInput alloc] initWithByteArray:sourceData withInt:offset withInt:len]);
+BCASN1Primitive *BCASN1_readObjectWithByteArray_withInt_withInt_(IOSByteArray *sourceData, jint offset, jint len) {
+  BCASN1_init();
+  return BCASN1_readObjectWithBSDataInput_([[BSDataInput alloc] initWithByteArray:sourceData withInt:offset withInt:len]);
 }
 
-ImActorModelCryptoAsn1ASN1Primitive *ImActorModelCryptoAsn1ASN1_readObjectWithBSDataInput_(BSDataInput *dataInput) {
-  ImActorModelCryptoAsn1ASN1_init();
+BCASN1Primitive *BCASN1_readObjectWithBSDataInput_(BSDataInput *dataInput) {
+  BCASN1_init();
   jint tag = [((BSDataInput *) nil_chk(dataInput)) readASN1Tag];
   jint tagNumber = [dataInput readASN1TagNumberWithInt:tag];
-  jboolean isConstructed = (tag & ImActorModelCryptoAsn1ASN1Primitive_TAG_CONSTRUCTED) != 0;
+  jboolean isConstructed = (tag & BCASN1Primitive_TAG_CONSTRUCTED) != 0;
   jint length = [dataInput readASN1Length];
-  if ((tag & ImActorModelCryptoAsn1ASN1Primitive_TAG_APPLICATION) != 0) {
+  if ((tag & BCASN1Primitive_TAG_APPLICATION) != 0) {
     @throw [[JavaIoIOException alloc] init];
   }
-  if ((tag & ImActorModelCryptoAsn1ASN1Primitive_TAG_TAGGED) != 0) {
+  if ((tag & BCASN1Primitive_TAG_TAGGED) != 0) {
     @throw [[JavaIoIOException alloc] init];
   }
   BSDataInput *objDataInput;
@@ -70,21 +70,21 @@ ImActorModelCryptoAsn1ASN1Primitive *ImActorModelCryptoAsn1ASN1_readObjectWithBS
     objDataInput = dataInput;
   }
   switch (tagNumber) {
-    case ImActorModelCryptoAsn1ASN1Primitive_TAG_SEQUENCE:
-    return ImActorModelCryptoAsn1ASN1Sequence_readSequenceWithBSDataInput_(objDataInput);
-    case ImActorModelCryptoAsn1ASN1Primitive_TAG_INTEGER:
-    return ImActorModelCryptoAsn1ASN1Integer_readIntegerWithBSDataInput_(objDataInput);
-    case ImActorModelCryptoAsn1ASN1Primitive_TAG_OBJECT_IDENTIFIER:
-    return ImActorModelCryptoAsn1ASN1ObjectIdentifier_readObjectIdentifierWithBSDataInput_(objDataInput);
-    case ImActorModelCryptoAsn1ASN1Primitive_TAG_NULL:
-    return [[ImActorModelCryptoAsn1ASN1Null alloc] init];
-    case ImActorModelCryptoAsn1ASN1Primitive_TAG_BIT_STRING:
-    return ImActorModelCryptoAsn1ASN1BitString_readBitStringWithBSDataInput_(objDataInput);
-    case ImActorModelCryptoAsn1ASN1Primitive_TAG_OCTET_STRING:
-    return ImActorModelCryptoAsn1ASN1OctetString_readOctetStringWithBSDataInput_(objDataInput);
+    case BCASN1Primitive_TAG_SEQUENCE:
+    return BCASN1Sequence_readSequenceWithBSDataInput_(objDataInput);
+    case BCASN1Primitive_TAG_INTEGER:
+    return BCASN1Integer_readIntegerWithBSDataInput_(objDataInput);
+    case BCASN1Primitive_TAG_OBJECT_IDENTIFIER:
+    return BCASN1ObjectIdentifier_readObjectIdentifierWithBSDataInput_(objDataInput);
+    case BCASN1Primitive_TAG_NULL:
+    return [[BCASN1Null alloc] init];
+    case BCASN1Primitive_TAG_BIT_STRING:
+    return BCASN1BitString_readBitStringWithBSDataInput_(objDataInput);
+    case BCASN1Primitive_TAG_OCTET_STRING:
+    return BCASN1OctetString_readOctetStringWithBSDataInput_(objDataInput);
     default:
     @throw [[JavaIoIOException alloc] initWithNSString:JreStrcat("$I", @"Unsupported tag number #", tagNumber)];
   }
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoAsn1ASN1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCASN1)

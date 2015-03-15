@@ -7,7 +7,7 @@
 #define _AMDisplayModifications_H_
 
 @class IOSLongArray;
-@protocol ImActorModelDroidkitEngineListEngineItem;
+@protocol DKListEngineItem;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -16,7 +16,7 @@
 @interface AMDisplayModifications : NSObject {
 }
 
-+ (id<AMDisplayList_Modification>)addOrUpdateWithImActorModelDroidkitEngineListEngineItem:(id<ImActorModelDroidkitEngineListEngineItem>)item;
++ (id<AMDisplayList_Modification>)addOrUpdateWithDKListEngineItem:(id<DKListEngineItem>)item;
 
 + (id<AMDisplayList_Modification>)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items;
 
@@ -36,7 +36,7 @@ J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithImActorModelDroidkitEngineListEngineItem_(id<ImActorModelDroidkitEngineListEngineItem> item);
+FOUNDATION_EXPORT id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithDKListEngineItem_(id<DKListEngineItem> item);
 
 FOUNDATION_EXPORT id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithJavaUtilList_(id<JavaUtilList> items);
 
@@ -58,7 +58,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications)
 
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
 
-- (instancetype)initWithImActorModelDroidkitEngineListEngineItem:(id<ImActorModelDroidkitEngineListEngineItem>)capture$0;
+- (instancetype)initWithDKListEngineItem:(id<DKListEngineItem>)capture$0;
 
 @end
 

@@ -7,4 +7,4 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEnginePreferencesStorage)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(DKPreferencesStorage)

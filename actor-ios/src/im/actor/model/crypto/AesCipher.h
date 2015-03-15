@@ -3,14 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/crypto/AesCipher.java
 //
 
-#ifndef _ImActorModelCryptoAesCipher_H_
-#define _ImActorModelCryptoAesCipher_H_
+#ifndef _AMAesCipher_H_
+#define _AMAesCipher_H_
 
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelCryptoAesCipher < NSObject, JavaObject >
+@protocol AMAesCipher < NSObject, JavaObject >
 
 - (IOSByteArray *)encryptWithByteArray:(IOSByteArray *)source;
 
@@ -18,8 +18,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelCryptoAesCipher)
+J2OBJC_EMPTY_STATIC_INIT(AMAesCipher)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelCryptoAesCipher)
+#define ImActorModelCryptoAesCipher AMAesCipher
 
-#endif // _ImActorModelCryptoAesCipher_H_
+J2OBJC_TYPE_LITERAL_HEADER(AMAesCipher)
+
+#endif // _AMAesCipher_H_

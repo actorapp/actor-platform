@@ -31,12 +31,12 @@
 
 @interface ImActorModelModulesUsers () {
  @public
-  id<ImActorModelDroidkitEngineKeyValueEngine> users_;
+  id<DKKeyValueEngine> users_;
   AMMVVMCollection *collection_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUsers, users_, id<ImActorModelDroidkitEngineKeyValueEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers, users_, id<DKKeyValueEngine>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUsers, collection_, AMMVVMCollection *)
 
 @interface ImActorModelModulesUsers_$1 () {
@@ -134,7 +134,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$3_$2_$2, this$0_, ImActorModelModu
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   if (self = [super initWithImActorModelModulesModules:messenger]) {
-    self->collection_ = [[ImActorModelModulesUsers_$1 alloc] initWithImActorModelModulesUsers:self withImActorModelDroidkitEngineKeyValueStorage:[((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getStorageProvider])) createKeyValueWithNSString:ImActorModelModulesBaseModule_get_STORAGE_USERS_()]];
+    self->collection_ = [[ImActorModelModulesUsers_$1 alloc] initWithImActorModelModulesUsers:self withDKKeyValueStorage:[((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getStorageProvider])) createKeyValue:ImActorModelModulesBaseModule_get_STORAGE_USERS_()]];
     self->users_ = [collection_ getEngine];
   }
   return self;
@@ -144,7 +144,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$3_$2_$2, this$0_, ImActorModelModu
   return collection_;
 }
 
-- (id<ImActorModelDroidkitEngineKeyValueEngine>)getUsers {
+- (id<DKKeyValueEngine>)getUsers {
   return users_;
 }
 
@@ -169,11 +169,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers)
 
 @implementation ImActorModelModulesUsers_$1
 
-- (AMUserVM *)createNewWithImActorModelDroidkitEngineKeyValueItem:(AMUser *)raw {
+- (AMUserVM *)createNewWithDKKeyValueItem:(AMUser *)raw {
   return [[AMUserVM alloc] initWithAMUser:raw withImActorModelModulesModules:[this$0_ modules]];
 }
 
-- (IOSByteArray *)serializeWithImActorModelDroidkitEngineKeyValueItem:(AMUser *)raw {
+- (IOSByteArray *)serializeWithDKKeyValueItem:(AMUser *)raw {
   return [((AMUser *) nil_chk(raw)) toByteArray];
 }
 
@@ -188,9 +188,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers)
 }
 
 - (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
-   withImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)arg$0 {
+                           withDKKeyValueStorage:(id<DKKeyValueStorage>)arg$0 {
   this$0_ = outer$;
-  return [super initWithImActorModelDroidkitEngineKeyValueStorage:arg$0];
+  return [super initWithDKKeyValueStorage:arg$0];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesUsers_$1 *)other {
@@ -300,7 +300,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$1_$2)
 @implementation ImActorModelModulesUsers_$3
 
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
-  AMUser *user = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ getUsers])) getValueWithLong:val$uid_];
+  AMUser *user = [((id<DKKeyValueEngine>) nil_chk([this$0_ getUsers])) getValueWithLong:val$uid_];
   if (user == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesUsers_$3_$1 alloc] initWithAMCommandCallback:callback]];
     return;

@@ -3,18 +3,18 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/SyncKeyValue.java
 //
 
-#ifndef _ImActorModelDroidkitEngineSyncKeyValue_H_
-#define _ImActorModelDroidkitEngineSyncKeyValue_H_
+#ifndef _DKSyncKeyValue_H_
+#define _DKSyncKeyValue_H_
 
 @class IOSByteArray;
-@protocol ImActorModelDroidkitEngineKeyValueStorage;
+@protocol DKKeyValueStorage;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitEngineSyncKeyValue : NSObject {
+@interface DKSyncKeyValue : NSObject {
 }
 
-- (instancetype)initWithImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)storage;
+- (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)storage;
 
 - (void)putWithLong:(jlong)key
       withByteArray:(IOSByteArray *)data;
@@ -25,11 +25,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineSyncKeyValue)
+J2OBJC_EMPTY_STATIC_INIT(DKSyncKeyValue)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineSyncKeyValue)
+typedef DKSyncKeyValue ImActorModelDroidkitEngineSyncKeyValue;
 
-#endif // _ImActorModelDroidkitEngineSyncKeyValue_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKSyncKeyValue)
+
+#endif // _DKSyncKeyValue_H_

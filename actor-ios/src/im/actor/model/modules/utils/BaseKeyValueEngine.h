@@ -9,23 +9,23 @@
 @class IOSByteArray;
 @class IOSLongArray;
 @class JavaUtilHashMap;
-@protocol ImActorModelDroidkitEngineKeyValueItem;
-@protocol ImActorModelDroidkitEngineKeyValueStorage;
+@protocol DKKeyValueItem;
+@protocol DKKeyValueStorage;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 
-@interface ImActorModelModulesUtilsBaseKeyValueEngine : NSObject < ImActorModelDroidkitEngineKeyValueEngine > {
+@interface ImActorModelModulesUtilsBaseKeyValueEngine : NSObject < DKKeyValueEngine > {
 }
 
-- (instancetype)initWithImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)storage;
+- (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)storage;
 
-- (IOSByteArray *)serializeWithImActorModelDroidkitEngineKeyValueItem:(id<ImActorModelDroidkitEngineKeyValueItem>)value;
+- (IOSByteArray *)serializeWithDKKeyValueItem:(id<DKKeyValueItem>)value;
 
 - (id)deserializeWithByteArray:(IOSByteArray *)data;
 
-- (void)addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:(id<ImActorModelDroidkitEngineKeyValueItem>)item;
+- (void)addOrUpdateItemWithDKKeyValueItem:(id<DKKeyValueItem>)item;
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
 

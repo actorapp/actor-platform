@@ -10,10 +10,10 @@
 @class AMMessage;
 @class AMPeer;
 @class DKActorRef;
-@class ImActorModelDroidkitEngineSyncKeyValue;
+@class DKSyncKeyValue;
 @class ImActorModelModulesMessagesEntityOutUnreadMessagesStorage;
 @class ImActorModelModulesModules;
-@protocol ImActorModelDroidkitEngineListEngine;
+@protocol DKListEngine;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"

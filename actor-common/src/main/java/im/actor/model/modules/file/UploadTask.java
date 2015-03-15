@@ -11,6 +11,7 @@ import im.actor.model.api.rpc.ResponseStartUpload;
 import im.actor.model.api.rpc.ResponseVoid;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.FileReference;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.files.InputFile;
 import im.actor.model.files.OutputFile;
 import im.actor.model.log.Log;
@@ -33,10 +34,10 @@ public class UploadTask extends ModuleActor {
     private String fileName;
     private String descriptor;
 
-    private im.actor.model.files.FileReference srcReference;
+    private FileSystemReference srcReference;
     private InputFile inputFile;
 
-    private im.actor.model.files.FileReference destReference;
+    private FileSystemReference destReference;
     private OutputFile outputFile;
 
     private ActorRef manager;
@@ -142,7 +143,7 @@ public class UploadTask extends ModuleActor {
 
                     FileReference location = EntityConverter.convert(response.getLocation(), fileName, srcReference.getSize());
 
-                    im.actor.model.files.FileReference reference = config().getFileSystemProvider().commitTempFile(destReference, location);
+                    FileSystemReference reference = config().getFileSystemProvider().commitTempFile(destReference, location);
 
                     reportComplete(location, reference);
                 }
@@ -224,7 +225,7 @@ public class UploadTask extends ModuleActor {
         manager.send(new UploadManager.UploadTaskProgress(rid, progress));
     }
 
-    private void reportComplete(FileReference location, im.actor.model.files.FileReference reference) {
+    private void reportComplete(FileReference location, FileSystemReference reference) {
         if (isCompleted) {
             return;
         }

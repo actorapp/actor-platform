@@ -3,14 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/PreferencesStorage.java
 //
 
-#ifndef _ImActorModelDroidkitEnginePreferencesStorage_H_
-#define _ImActorModelDroidkitEnginePreferencesStorage_H_
+#ifndef _DKPreferencesStorage_H_
+#define _DKPreferencesStorage_H_
 
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitEnginePreferencesStorage < NSObject, JavaObject >
+@protocol DKPreferencesStorage < NSObject, JavaObject >
 
 - (void)putLongWithNSString:(NSString *)key
                    withLong:(jlong)v;
@@ -42,8 +42,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEnginePreferencesStorage)
+J2OBJC_EMPTY_STATIC_INIT(DKPreferencesStorage)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEnginePreferencesStorage)
+#define ImActorModelDroidkitEnginePreferencesStorage DKPreferencesStorage
 
-#endif // _ImActorModelDroidkitEnginePreferencesStorage_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKPreferencesStorage)
+
+#endif // _DKPreferencesStorage_H_

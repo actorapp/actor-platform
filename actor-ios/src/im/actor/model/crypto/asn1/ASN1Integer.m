@@ -13,18 +13,18 @@
 #include "java/io/IOException.h"
 #include "java/math/BigInteger.h"
 
-@interface ImActorModelCryptoAsn1ASN1Integer () {
+@interface BCASN1Integer () {
  @public
   IOSByteArray *data_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelCryptoAsn1ASN1Integer, data_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(BCASN1Integer, data_, IOSByteArray *)
 
-@implementation ImActorModelCryptoAsn1ASN1Integer
+@implementation BCASN1Integer
 
-+ (ImActorModelCryptoAsn1ASN1Integer *)readIntegerWithBSDataInput:(BSDataInput *)dataInput {
-  return ImActorModelCryptoAsn1ASN1Integer_readIntegerWithBSDataInput_(dataInput);
++ (BCASN1Integer *)readIntegerWithBSDataInput:(BSDataInput *)dataInput {
+  return BCASN1Integer_readIntegerWithBSDataInput_(dataInput);
 }
 
 - (instancetype)initWithByteArray:(IOSByteArray *)data {
@@ -64,21 +64,21 @@ J2OBJC_FIELD_SETTER(ImActorModelCryptoAsn1ASN1Integer, data_, IOSByteArray *)
 }
 
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
-  [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:ImActorModelCryptoAsn1ASN1Primitive_TAG_INTEGER];
+  [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_INTEGER];
   [dataOutput writeASN1LengthWithInt:((IOSByteArray *) nil_chk(data_))->size_];
   [dataOutput writeBytesWithByteArray:data_ withInt:0 withInt:data_->size_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelCryptoAsn1ASN1Integer *)other {
+- (void)copyAllFieldsTo:(BCASN1Integer *)other {
   [super copyAllFieldsTo:other];
   other->data_ = data_;
 }
 
 @end
 
-ImActorModelCryptoAsn1ASN1Integer *ImActorModelCryptoAsn1ASN1Integer_readIntegerWithBSDataInput_(BSDataInput *dataInput) {
-  ImActorModelCryptoAsn1ASN1Integer_init();
-  return [[ImActorModelCryptoAsn1ASN1Integer alloc] initWithByteArray:[dataInput readBytesWithInt:[((BSDataInput *) nil_chk(dataInput)) getRemaining]]];
+BCASN1Integer *BCASN1Integer_readIntegerWithBSDataInput_(BSDataInput *dataInput) {
+  BCASN1Integer_init();
+  return [[BCASN1Integer alloc] initWithByteArray:[dataInput readBytesWithInt:[((BSDataInput *) nil_chk(dataInput)) getRemaining]]];
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoAsn1ASN1Integer)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCASN1Integer)

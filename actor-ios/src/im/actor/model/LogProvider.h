@@ -12,17 +12,13 @@
 
 @protocol AMLogProvider < NSObject, JavaObject >
 
-- (void)wWithNSString:(NSString *)tag
-         withNSString:(NSString *)message;
+- (void)w:(NSString *)tag withMessage:(NSString *)message;
 
-- (void)eWithNSString:(NSString *)tag
-withJavaLangThrowable:(JavaLangThrowable *)throwable;
+- (void)v:(NSString *)tag withError:(JavaLangThrowable *)throwable;
 
-- (void)dWithNSString:(NSString *)tag
-         withNSString:(NSString *)message;
+- (void)d:(NSString *)tag withMessage:(NSString *)message;
 
-- (void)vWithNSString:(NSString *)tag
-         withNSString:(NSString *)message;
+- (void)v:(NSString *)tag withMessage:(NSString *)message;
 
 @end
 

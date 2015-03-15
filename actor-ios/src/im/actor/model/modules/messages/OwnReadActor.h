@@ -7,7 +7,7 @@
 #define _ImActorModelModulesMessagesOwnReadActor_H_
 
 @class AMPeer;
-@class ImActorModelDroidkitEngineSyncKeyValue;
+@class DKSyncKeyValue;
 @class ImActorModelModulesMessagesEntityUnreadMessagesStorage;
 @class ImActorModelModulesModules;
 @protocol JavaUtilList;

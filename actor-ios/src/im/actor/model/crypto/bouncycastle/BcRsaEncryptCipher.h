@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/crypto/bouncycastle/BcRsaEncryptCipher.java
 //
 
-#ifndef _ImActorModelCryptoBouncycastleBcRsaEncryptCipher_H_
-#define _ImActorModelCryptoBouncycastleBcRsaEncryptCipher_H_
+#ifndef _BCBcRsaEncryptCipher_H_
+#define _BCBcRsaEncryptCipher_H_
 
 @class IOSByteArray;
 @protocol OrgBouncycastleCryptoAsymmetricBlockCipher;
@@ -12,7 +12,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/crypto/RsaEncryptCipher.h"
 
-@interface ImActorModelCryptoBouncycastleBcRsaEncryptCipher : NSObject < ImActorModelCryptoRsaEncryptCipher > {
+@interface BCBcRsaEncryptCipher : NSObject < AMRsaEncryptCipher > {
 }
 
 - (instancetype)initWithByteArray:(IOSByteArray *)publicKey;
@@ -21,11 +21,13 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelCryptoBouncycastleBcRsaEncryptCipher)
+J2OBJC_EMPTY_STATIC_INIT(BCBcRsaEncryptCipher)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelCryptoBouncycastleBcRsaEncryptCipher)
+typedef BCBcRsaEncryptCipher ImActorModelCryptoBouncycastleBcRsaEncryptCipher;
 
-#endif // _ImActorModelCryptoBouncycastleBcRsaEncryptCipher_H_
+J2OBJC_TYPE_LITERAL_HEADER(BCBcRsaEncryptCipher)
+
+#endif // _BCBcRsaEncryptCipher_H_

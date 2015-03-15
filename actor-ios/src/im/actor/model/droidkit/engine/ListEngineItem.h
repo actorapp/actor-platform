@@ -3,12 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/ListEngineItem.java
 //
 
-#ifndef _ImActorModelDroidkitEngineListEngineItem_H_
-#define _ImActorModelDroidkitEngineListEngineItem_H_
+#ifndef _DKListEngineItem_H_
+#define _DKListEngineItem_H_
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitEngineListEngineItem < NSObject, JavaObject >
+@protocol DKListEngineItem < NSObject, JavaObject >
 
 - (jlong)getEngineId;
 
@@ -18,8 +18,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineListEngineItem)
+J2OBJC_EMPTY_STATIC_INIT(DKListEngineItem)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineListEngineItem)
+#define ImActorModelDroidkitEngineListEngineItem DKListEngineItem
 
-#endif // _ImActorModelDroidkitEngineListEngineItem_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKListEngineItem)
+
+#endif // _DKListEngineItem_H_

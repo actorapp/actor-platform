@@ -7,16 +7,16 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/KeyValueRecord.h"
 
-@interface ImActorModelDroidkitEngineKeyValueRecord () {
+@interface DKKeyValueRecord () {
  @public
   jlong id__;
   IOSByteArray *data_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineKeyValueRecord, data_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(DKKeyValueRecord, data_, IOSByteArray *)
 
-@implementation ImActorModelDroidkitEngineKeyValueRecord
+@implementation DKKeyValueRecord
 
 - (instancetype)initWithLong:(jlong)id_
                withByteArray:(IOSByteArray *)data {
@@ -35,7 +35,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineKeyValueRecord, data_, IOSByteArra
   return data_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitEngineKeyValueRecord *)other {
+- (void)copyAllFieldsTo:(DKKeyValueRecord *)other {
   [super copyAllFieldsTo:other];
   other->id__ = id__;
   other->data_ = data_;
@@ -43,4 +43,4 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitEngineKeyValueRecord, data_, IOSByteArra
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitEngineKeyValueRecord)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKKeyValueRecord)

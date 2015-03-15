@@ -7,4 +7,4 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/files/InputFile.h"
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelFilesInputFile)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMInputFile)

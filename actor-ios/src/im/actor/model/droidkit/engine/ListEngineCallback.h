@@ -3,14 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/ListEngineCallback.java
 //
 
-#ifndef _ImActorModelDroidkitEngineListEngineCallback_H_
-#define _ImActorModelDroidkitEngineListEngineCallback_H_
+#ifndef _DKListEngineCallback_H_
+#define _DKListEngineCallback_H_
 
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitEngineListEngineCallback < NSObject, JavaObject >
+@protocol DKListEngineCallback < NSObject, JavaObject >
 
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
                         withLong:(jlong)topSortKey
@@ -18,8 +18,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineListEngineCallback)
+J2OBJC_EMPTY_STATIC_INIT(DKListEngineCallback)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineListEngineCallback)
+#define ImActorModelDroidkitEngineListEngineCallback DKListEngineCallback
 
-#endif // _ImActorModelDroidkitEngineListEngineCallback_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKListEngineCallback)
+
+#endif // _DKListEngineCallback_H_

@@ -14,7 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/engine/KeyValueItem.h"
 
-@interface AMContactRecord : BSBserObject < ImActorModelDroidkitEngineKeyValueItem > {
+@interface AMContactRecord : BSBserObject < DKKeyValueItem > {
 }
 
 + (AMContactRecord *)fromBytesWithByteArray:(IOSByteArray *)data;

@@ -25,33 +25,33 @@
 @interface AMConfigurationBuilder : NSObject {
 }
 
-- (AMConfigurationBuilder *)setApiConfigurationWithAMApiConfiguration:(AMApiConfiguration *)apiConfiguration;
+- (AMConfigurationBuilder *)setApiConfiguration:(id<AMApiConfiguration>)apiConfiguration;
 
-- (AMConfigurationBuilder *)setNotificationProviderWithAMNotificationProvider:(id<AMNotificationProvider>)notificationProvider;
+- (AMConfigurationBuilder *)setNotificationProvider:(id<AMNotificationProvider>)notificationProvider;
 
-- (AMConfigurationBuilder *)setFileSystemProviderWithAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider;
+- (AMConfigurationBuilder *)setFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider;
 
-- (AMConfigurationBuilder *)setEnableContactsLoggingWithBoolean:(jboolean)enableContactsLogging;
+- (AMConfigurationBuilder *)setEnableContactsLogging:(jboolean)enableContactsLogging;
 
-- (AMConfigurationBuilder *)setEnableNetworkLoggingWithBoolean:(jboolean)enableNetworkLogging;
+- (AMConfigurationBuilder *)setEnableNetworkLogging:(jboolean)enableNetworkLogging;
 
-- (AMConfigurationBuilder *)setCryptoProviderWithAMCryptoProvider:(id<AMCryptoProvider>)cryptoProvider;
+- (AMConfigurationBuilder *)setCryptoProvider:(id<AMCryptoProvider>)cryptoProvider;
 
-- (AMConfigurationBuilder *)setPhoneBookProviderWithAMPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider;
+- (AMConfigurationBuilder *)setPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider;
 
-- (AMConfigurationBuilder *)setLogWithAMLogProvider:(id<AMLogProvider>)log;
+- (AMConfigurationBuilder *)setLogProvider:(id<AMLogProvider>)log;
 
-- (AMConfigurationBuilder *)setNetworkProviderWithAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
+- (AMConfigurationBuilder *)setNetworkProvider:(id<AMNetworkProvider>)networkProvider;
 
-- (AMConfigurationBuilder *)setThreadingProviderWithAMThreadingProvider:(id<AMThreadingProvider>)threadingProvider;
+- (AMConfigurationBuilder *)setThreadingProvider:(id<AMThreadingProvider>)threadingProvider;
 
-- (AMConfigurationBuilder *)setStorageWithAMStorageProvider:(id<AMStorageProvider>)storageProvider;
+- (AMConfigurationBuilder *)setStorageProvider:(id<AMStorageProvider>)storageProvider;
 
-- (AMConfigurationBuilder *)setLocale:(id<AMLocaleProvider>)localeProvider;
+- (AMConfigurationBuilder *)setLocaleProvider:(id<AMLocaleProvider>)localeProvider;
 
 - (AMConfigurationBuilder *)addEndpoint:(NSString *)url;
 
-- (AMConfigurationBuilder *)setMainThreadProviderWithAMMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider;
+- (AMConfigurationBuilder *)setMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider;
 
 - (AMConfiguration *)build;
 

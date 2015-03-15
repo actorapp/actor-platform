@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/KeyValueStorage.java
 //
 
-#ifndef _ImActorModelDroidkitEngineKeyValueStorage_H_
-#define _ImActorModelDroidkitEngineKeyValueStorage_H_
+#ifndef _DKKeyValueStorage_H_
+#define _DKKeyValueStorage_H_
 
 @class IOSByteArray;
 @class IOSLongArray;
@@ -12,7 +12,7 @@
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitEngineKeyValueStorage < NSObject, JavaObject >
+@protocol DKKeyValueStorage < NSObject, JavaObject >
 
 - (void)addOrUpdateItemWithLong:(jlong)id_
                   withByteArray:(IOSByteArray *)data;
@@ -29,8 +29,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineKeyValueStorage)
+J2OBJC_EMPTY_STATIC_INIT(DKKeyValueStorage)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineKeyValueStorage)
+#define ImActorModelDroidkitEngineKeyValueStorage DKKeyValueStorage
 
-#endif // _ImActorModelDroidkitEngineKeyValueStorage_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKKeyValueStorage)
+
+#endif // _DKKeyValueStorage_H_

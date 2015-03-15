@@ -6,7 +6,7 @@
 #ifndef _AMFileVMCallback_H_
 #define _AMFileVMCallback_H_
 
-@protocol ImActorModelFilesFileReference;
+@protocol AMFileSystemReference;
 
 #include "J2ObjC_header.h"
 
@@ -16,7 +16,7 @@
 
 - (void)onDownloadingWithFloat:(jfloat)progress;
 
-- (void)onDownloadedWithImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference;
+- (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference;
 
 @end
 

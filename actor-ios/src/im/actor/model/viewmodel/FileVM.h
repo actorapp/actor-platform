@@ -8,8 +8,8 @@
 
 @class AMFileReference;
 @class ImActorModelModulesModules;
+@protocol AMFileSystemReference;
 @protocol AMFileVMCallback;
-@protocol ImActorModelFilesFileReference;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/file/DownloadCallback.h"
@@ -69,7 +69,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMFileVM_OnDownloading)
 @interface AMFileVM_OnDownloaded : NSObject {
 }
 
-- (id<ImActorModelFilesFileReference>)getFileReference;
+- (id<AMFileSystemReference>)getFileSystemReference;
 
 @end
 
@@ -87,7 +87,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMFileVM_OnDownloaded)
 
 - (void)onDownloadingWithFloat:(jfloat)progress;
 
-- (void)onDownloadedWithImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference;
+- (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference;
 
 - (instancetype)initWithAMFileVM:(AMFileVM *)outer$;
 

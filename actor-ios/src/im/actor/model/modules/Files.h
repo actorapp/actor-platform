@@ -13,9 +13,9 @@
 @class ImActorModelModulesFileDownloaded;
 @class ImActorModelModulesFileUploadManager;
 @class ImActorModelModulesModules;
-@protocol ImActorModelDroidkitEngineKeyValueEngine;
-@protocol ImActorModelDroidkitEngineKeyValueStorage;
-@protocol ImActorModelFilesFileReference;
+@protocol AMFileSystemReference;
+@protocol DKKeyValueEngine;
+@protocol DKKeyValueStorage;
 @protocol ImActorModelModulesFileUploadCallback;
 
 #include "J2ObjC_header.h"
@@ -32,7 +32,7 @@
 
 - (void)run;
 
-- (id<ImActorModelDroidkitEngineKeyValueEngine>)getDownloadedEngine;
+- (id<DKKeyValueEngine>)getDownloadedEngine;
 
 - (void)bindFileWithAMFileReference:(AMFileReference *)fileReference
                         withBoolean:(jboolean)isAutostart
@@ -83,11 +83,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles)
 @interface ImActorModelModulesFiles_$1 : ImActorModelModulesUtilsBaseKeyValueEngine {
 }
 
-- (IOSByteArray *)serializeWithImActorModelDroidkitEngineKeyValueItem:(ImActorModelModulesFileDownloaded *)value;
+- (IOSByteArray *)serializeWithDKKeyValueItem:(ImActorModelModulesFileDownloaded *)value;
 
 - (ImActorModelModulesFileDownloaded *)deserializeWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)initWithImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)arg$0;
+- (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)arg$0;
 
 @end
 
@@ -137,7 +137,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$3)
 
 - (void)onDownloadingWithFloat:(jfloat)progress;
 
-- (void)onDownloadedWithImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference;
+- (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference;
 
 - (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$
      withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)capture$0;
@@ -190,7 +190,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$4_$2)
 - (void)run;
 
 - (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$
-                 withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)capture$0;
+                          withAMFileSystemReference:(id<AMFileSystemReference>)capture$0;
 
 @end
 

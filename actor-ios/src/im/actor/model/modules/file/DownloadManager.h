@@ -12,8 +12,8 @@
 @class ImActorModelModulesFileDownloadTask;
 @class ImActorModelModulesModules;
 @class JavaUtilArrayList;
-@protocol ImActorModelDroidkitEngineKeyValueEngine;
-@protocol ImActorModelFilesFileReference;
+@protocol AMFileSystemReference;
+@protocol DKKeyValueEngine;
 @protocol ImActorModelModulesFileDownloadCallback;
 
 #include "J2ObjC_header.h"
@@ -48,7 +48,7 @@ withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadC
                          withFloat:(jfloat)progress;
 
 - (void)onDownloadedWithLong:(jlong)fileId
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference;
+   withAMFileSystemReference:(id<AMFileSystemReference>)reference;
 
 - (void)onDownloadErrorWithLong:(jlong)fileId;
 
@@ -198,11 +198,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_OnDownloadProg
 }
 
 - (instancetype)initWithLong:(jlong)fileId
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference;
+   withAMFileSystemReference:(id<AMFileSystemReference>)reference;
 
 - (jlong)getFileId;
 
-- (id<ImActorModelFilesFileReference>)getReference;
+- (id<AMFileSystemReference>)getReference;
 
 @end
 

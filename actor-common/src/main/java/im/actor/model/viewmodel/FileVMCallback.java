@@ -1,6 +1,6 @@
 package im.actor.model.viewmodel;
 
-import im.actor.model.files.FileReference;
+import im.actor.model.files.FileSystemReference;
 
 /**
  * Created by ex3ndr on 27.02.15.
@@ -10,5 +10,5 @@ public interface FileVMCallback {
 
     public void onDownloading(float progress);
 
-    public void onDownloaded(FileReference reference);
+    public void onDownloaded(FileSystemReference reference);
 }

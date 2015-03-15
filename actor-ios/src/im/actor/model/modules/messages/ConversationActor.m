@@ -43,10 +43,10 @@ __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor
 @interface ImActorModelModulesMessagesConversationActor () {
  @public
   AMPeer *peer_;
-  id<ImActorModelDroidkitEngineListEngine> messages_;
+  id<DKListEngine> messages_;
   ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *messagesStorage_;
   DKActorRef *dialogsActor_;
-  ImActorModelDroidkitEngineSyncKeyValue *pendingKeyValue_;
+  DKSyncKeyValue *pendingKeyValue_;
 }
 
 - (void)onInMessageWithAMMessage:(AMMessage *)message;
@@ -79,10 +79,10 @@ __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, peer_, AMPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, messages_, id<ImActorModelDroidkitEngineListEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, messages_, id<DKListEngine>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, messagesStorage_, ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, dialogsActor_, DKActorRef *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, pendingKeyValue_, ImActorModelDroidkitEngineSyncKeyValue *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, pendingKeyValue_, DKSyncKeyValue *)
 
 @interface ImActorModelModulesMessagesConversationActor_MessageContentUpdated () {
  @public
@@ -160,7 +160,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
 - (void)preStart {
   messages_ = [self messagesWithAMPeer:peer_];
   messagesStorage_ = [[ImActorModelModulesMessagesEntityOutUnreadMessagesStorage alloc] init];
-  IOSByteArray *data = [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(pendingKeyValue_)) getWithLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
+  IOSByteArray *data = [((DKSyncKeyValue *) nil_chk(pendingKeyValue_)) getWithLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   if (data != nil) {
     @try {
       messagesStorage_ = ImActorModelModulesMessagesEntityOutUnreadMessagesStorage_fromBytesWithByteArray_(data);
@@ -283,7 +283,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
 @end
 
 void ImActorModelModulesMessagesConversationActor_onInMessageWithAMMessage_(ImActorModelModulesMessagesConversationActor *self, AMMessage *message) {
-  if ([((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) getValueWithLong:[((AMMessage *) nil_chk(message)) getEngineId]] != nil) {
+  if ([((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:[((AMMessage *) nil_chk(message)) getEngineId]] != nil) {
     return;
   }
   [self->messages_ addOrUpdateItemWithBSBserObject:message];
@@ -295,7 +295,7 @@ void ImActorModelModulesMessagesConversationActor_onInMessageWithAMMessage_(ImAc
 }
 
 void ImActorModelModulesMessagesConversationActor_onMessageContentUpdatedWithLong_withAMAbsContent_(ImActorModelModulesMessagesConversationActor *self, jlong rid, AMAbsContent *content) {
-  AMMessage *message = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
+  AMMessage *message = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
   if (message == nil) {
     return;
   }
@@ -304,7 +304,7 @@ void ImActorModelModulesMessagesConversationActor_onMessageContentUpdatedWithLon
 }
 
 void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid, jlong date) {
-  AMMessage *msg = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
+  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
   if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_PENDING())) {
     for (ImActorModelModulesMessagesEntityOutUnreadMessage * __strong p in nil_chk([((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) getMessages])) {
       if ([((ImActorModelModulesMessagesEntityOutUnreadMessage *) nil_chk(p)) getRid] == rid) {
@@ -320,7 +320,7 @@ void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong
 }
 
 void ImActorModelModulesMessagesConversationActor_onMessageErrorWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid) {
-  AMMessage *msg = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
+  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
   if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_PENDING() || [msg getMessageState] == AMMessageStateEnum_get_SENT())) {
     [self->messages_ addOrUpdateItemWithBSBserObject:[msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_ERROR()]];
     [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[ImActorModelModulesMessagesDialogsActor_MessageStateChanged alloc] initWithAMPeer:self->peer_ withLong:rid withAMMessageStateEnum:AMMessageStateEnum_get_ERROR()]];
@@ -336,7 +336,7 @@ void ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(Im
     while (b__ < e__) {
       ImActorModelModulesMessagesEntityOutUnreadMessage *p = *b__++;
       if ([((ImActorModelModulesMessagesEntityOutUnreadMessage *) nil_chk(p)) getDate] <= date) {
-        AMMessage *msg = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) getValueWithLong:[p getRid]];
+        AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:[p getRid]];
         if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_SENT() || [msg getMessageState] == AMMessageStateEnum_get_RECEIVED())) {
           [self->messages_ addOrUpdateItemWithBSBserObject:[msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_READ()]];
           [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[ImActorModelModulesMessagesDialogsActor_MessageStateChanged alloc] initWithAMPeer:self->peer_ withLong:[p getRid] withAMMessageStateEnum:AMMessageStateEnum_get_READ()]];
@@ -354,7 +354,7 @@ void ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(Im
 void ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong date) {
   for (ImActorModelModulesMessagesEntityOutUnreadMessage * __strong p in nil_chk([((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) getMessages])) {
     if ([((ImActorModelModulesMessagesEntityOutUnreadMessage *) nil_chk(p)) getDate] <= date) {
-      AMMessage *msg = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) getValueWithLong:[p getRid]];
+      AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:[p getRid]];
       if (msg != nil && [msg getMessageState] == AMMessageStateEnum_get_SENT()) {
         [self->messages_ addOrUpdateItemWithBSBserObject:[msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_RECEIVED()]];
         [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[ImActorModelModulesMessagesDialogsActor_MessageStateChanged alloc] initWithAMPeer:self->peer_ withLong:[p getRid] withAMMessageStateEnum:AMMessageStateEnum_get_RECEIVED()]];
@@ -364,7 +364,7 @@ void ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong
 }
 
 void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReceivedWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid) {
-  AMMessage *msg = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
+  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
   if (msg != nil && [msg getMessageState] == AMMessageStateEnum_get_SENT()) {
     [self->messages_ addOrUpdateItemWithBSBserObject:[msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_RECEIVED()]];
     [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[ImActorModelModulesMessagesDialogsActor_MessageStateChanged alloc] initWithAMPeer:self->peer_ withLong:rid withAMMessageStateEnum:AMMessageStateEnum_get_RECEIVED()]];
@@ -372,7 +372,7 @@ void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReceivedWith
 }
 
 void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReadWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid) {
-  AMMessage *msg = [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
+  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
   if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_SENT() || [msg getMessageState] == AMMessageStateEnum_get_RECEIVED())) {
     [self->messages_ addOrUpdateItemWithBSBserObject:[msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_READ()]];
     [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[ImActorModelModulesMessagesDialogsActor_MessageStateChanged alloc] initWithAMPeer:self->peer_ withLong:rid withAMMessageStateEnum:AMMessageStateEnum_get_READ()]];
@@ -384,18 +384,18 @@ void ImActorModelModulesMessagesConversationActor_onMessagesDeletedWithJavaUtilL
   for (jint i = 0; i < rids2->size_; i++) {
     *IOSLongArray_GetRef(rids2, i) = [((JavaLangLong *) nil_chk([rids getWithInt:i])) longLongValue];
   }
-  [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) removeItemsWithLongArray:rids2];
+  [((id<DKListEngine>) nil_chk(self->messages_)) removeItemsWithLongArray:rids2];
   AMMessage *topMessage = [self->messages_ getHeadValue];
   [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[ImActorModelModulesMessagesDialogsActor_MessageDeleted alloc] initWithAMPeer:self->peer_ withAMMessage:topMessage]];
 }
 
 void ImActorModelModulesMessagesConversationActor_onClearConversation(ImActorModelModulesMessagesConversationActor *self) {
-  [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) clear];
+  [((id<DKListEngine>) nil_chk(self->messages_)) clear];
   [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[ImActorModelModulesMessagesDialogsActor_ChatClear alloc] initWithAMPeer:self->peer_]];
 }
 
 void ImActorModelModulesMessagesConversationActor_onDeleteConversation(ImActorModelModulesMessagesConversationActor *self) {
-  [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) clear];
+  [((id<DKListEngine>) nil_chk(self->messages_)) clear];
   [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:[[ImActorModelModulesMessagesDialogsActor_ChatDelete alloc] initWithAMPeer:self->peer_]];
 }
 
@@ -403,7 +403,7 @@ void ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilLis
   JavaUtilArrayList *updated = [[JavaUtilArrayList alloc] init];
   jboolean isPendingChanged = NO;
   for (AMMessage * __strong historyMessage in nil_chk(history)) {
-    if ([((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) getValueWithLong:[((AMMessage *) nil_chk(historyMessage)) getEngineId]] != nil) {
+    if ([((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:[((AMMessage *) nil_chk(historyMessage)) getEngineId]] != nil) {
       continue;
     }
     [updated addWithId:historyMessage];
@@ -416,12 +416,12 @@ void ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilLis
     ImActorModelModulesMessagesConversationActor_savePending(self);
   }
   if ([updated size] > 0) {
-    [((id<ImActorModelDroidkitEngineListEngine>) nil_chk(self->messages_)) addOrUpdateItemsWithJavaUtilList:updated];
+    [((id<DKListEngine>) nil_chk(self->messages_)) addOrUpdateItemsWithJavaUtilList:updated];
   }
 }
 
 void ImActorModelModulesMessagesConversationActor_savePending(ImActorModelModulesMessagesConversationActor *self) {
-  [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(self->pendingKeyValue_)) putWithLong:[((AMPeer *) nil_chk(self->peer_)) getUnuqueId] withByteArray:[((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) toByteArray]];
+  [((DKSyncKeyValue *) nil_chk(self->pendingKeyValue_)) putWithLong:[((AMPeer *) nil_chk(self->peer_)) getUnuqueId] withByteArray:[((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) toByteArray]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor)

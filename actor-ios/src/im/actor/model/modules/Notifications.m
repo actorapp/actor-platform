@@ -21,12 +21,12 @@
 @interface ImActorModelModulesNotifications () {
  @public
   DKActorRef *notificationsActor_;
-  ImActorModelDroidkitEngineSyncKeyValue *notificationsStorage_;
+  DKSyncKeyValue *notificationsStorage_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotifications, notificationsActor_, DKActorRef *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesNotifications, notificationsStorage_, ImActorModelDroidkitEngineSyncKeyValue *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesNotifications, notificationsStorage_, DKSyncKeyValue *)
 
 @interface ImActorModelModulesNotifications_$1 () {
  @public
@@ -40,13 +40,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotifications_$1, val$modules_, ImActorMo
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super initWithImActorModelModulesModules:modules]) {
-    notificationsStorage_ = [[ImActorModelDroidkitEngineSyncKeyValue alloc] initWithImActorModelDroidkitEngineKeyValueStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createKeyValueWithNSString:ImActorModelModulesBaseModule_get_STORAGE_NOTIFICATIONS_()]];
+    notificationsStorage_ = [[DKSyncKeyValue alloc] initWithDKKeyValueStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createKeyValue:ImActorModelModulesBaseModule_get_STORAGE_NOTIFICATIONS_()]];
     self->notificationsActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesNotificationsNotificationsActor_class_(), [[ImActorModelModulesNotifications_$1 alloc] initWithImActorModelModulesModules:modules]) withNSString:@"actor/notifications"];
   }
   return self;
 }
 
-- (ImActorModelDroidkitEngineSyncKeyValue *)getNotificationsStorage {
+- (DKSyncKeyValue *)getNotificationsStorage {
   return notificationsStorage_;
 }
 

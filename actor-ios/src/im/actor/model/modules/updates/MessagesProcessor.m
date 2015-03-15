@@ -139,16 +139,16 @@ withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory
                                     withByteArray:(IOSByteArray *)aesEncryptedKey
                                     withByteArray:(IOSByteArray *)message {
   AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
-  id<ImActorModelCryptoRsaCipher> cipher = [((id<AMCryptoProvider>) nil_chk([self crypto])) createRSAOAEPSHA1CipherWithByteArray:[((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAuthModule])) getPublicKey] withByteArray:[((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAuthModule])) getPrivateKey]];
-  IOSByteArray *aesKey = [((id<ImActorModelCryptoRsaCipher>) nil_chk(cipher)) decryptWithByteArray:aesEncryptedKey];
+  id<AMRsaCipher> cipher = [((id<AMCryptoProvider>) nil_chk([self crypto])) createRSAOAEPSHA1CipherWithByteArray:[((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAuthModule])) getPublicKey] withByteArray:[((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAuthModule])) getPrivateKey]];
+  IOSByteArray *aesKey = [((id<AMRsaCipher>) nil_chk(cipher)) decryptWithByteArray:aesEncryptedKey];
   if (aesKey == nil) {
     return;
   }
   IOSByteArray *key = ImActorModelModulesUpdatesMessagesProcessor_substringWithByteArray_withInt_withInt_(aesKey, ((IOSByteArray *) nil_chk(aesKey))->size_ - 16 - 32, 32);
   IOSByteArray *iv = ImActorModelModulesUpdatesMessagesProcessor_substringWithByteArray_withInt_withInt_(aesKey, aesKey->size_ - 16, 16);
-  id<ImActorModelCryptoAesCipher> aesCipher = [((id<AMCryptoProvider>) nil_chk([self crypto])) createAESCBCPKS7CipherWithByteArray:key withByteArray:iv];
+  id<AMAesCipher> aesCipher = [((id<AMCryptoProvider>) nil_chk([self crypto])) createAESCBCPKS7CipherWithByteArray:key withByteArray:iv];
   @try {
-    IOSByteArray *decryptedRawMessage = [((id<ImActorModelCryptoAesCipher>) nil_chk(aesCipher)) decryptWithByteArray:message];
+    IOSByteArray *decryptedRawMessage = [((id<AMAesCipher>) nil_chk(aesCipher)) decryptWithByteArray:message];
     jint len = ImActorModelModulesUpdatesMessagesProcessor_readIntWithByteArray_withInt_(decryptedRawMessage, 0);
     IOSByteArray *res = ImActorModelModulesUpdatesMessagesProcessor_substringWithByteArray_withInt_withInt_(decryptedRawMessage, 4, len);
     ImActorModelApiEncryptedPackage *encryptedPackage = ((ImActorModelApiEncryptedPackage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiEncryptedPackage alloc] init], res));

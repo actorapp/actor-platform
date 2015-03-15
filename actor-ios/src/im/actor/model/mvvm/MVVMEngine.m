@@ -61,7 +61,7 @@ void AMMVVMEngine_checkMainThread() {
 
 void AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(id<JavaLangRunnable> runnable) {
   AMMVVMEngine_init();
-  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) runOnUiThreadWithJavaLangRunnable:runnable];
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) runOnUiThread:runnable];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMEngine)

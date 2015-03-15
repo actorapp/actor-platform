@@ -25,7 +25,7 @@
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/content/FastThumb.h"
-#include "im/actor/model/files/FileReference.h"
+#include "im/actor/model/files/FileSystemReference.h"
 #include "im/actor/model/i18n/I18nEngine.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Auth.h"
@@ -67,28 +67,31 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 
 NSString * AMMessenger_TAG_ = @"CORE_INIT";
 
-- (instancetype)initWithConfig:(AMConfiguration *)configuration {
-  [super init]AMLog_setLogWithAMLogProvider_([((AMConfiguration *) nil_chk(configuration)) getLog]);
-  jlong start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
-  DKEnvironment_setThreadingProviderWithAMThreadingProvider_([configuration getThreadingProvider]);
-  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage1 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
-  ImActorModelCryptoCryptoUtils_init__WithAMCryptoProvider_([configuration getCryptoProvider]);
-  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage2 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
-  AMMVVMEngine_init__WithAMMainThreadProvider_([configuration getMainThreadProvider]);
-  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage3 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
-  [((DKActorSystem *) nil_chk(DKActorSystem_system())) setTraceInterfaceWithImActorModelDroidkitActorsDebugTraceInterface:[[AMMessenger_$1 alloc] init]];
-  [((DKActorSystem *) nil_chk(DKActorSystem_system())) addDispatcherWithNSString:@"db" withInt:1];
-  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage4 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
-  self->modules_ = [[ImActorModelModulesModules alloc] initWithAMConfiguration:configuration];
-  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage5 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
-  [self->modules_ run];
-  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage6 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
+- (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
+  if (self = [super init]) {
+    AMLog_setLogWithAMLogProvider_([((AMConfiguration *) nil_chk(configuration)) getLog]);
+    jlong start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
+    DKEnvironment_setThreadingProviderWithAMThreadingProvider_([configuration getThreadingProvider]);
+    AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage1 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+    start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
+    AMCryptoUtils_init__WithAMCryptoProvider_([configuration getCryptoProvider]);
+    AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage2 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+    start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
+    AMMVVMEngine_init__WithAMMainThreadProvider_([configuration getMainThreadProvider]);
+    AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage3 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+    start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
+    [((DKActorSystem *) nil_chk(DKActorSystem_system())) setTraceInterfaceWithImActorModelDroidkitActorsDebugTraceInterface:[[AMMessenger_$1 alloc] init]];
+    [((DKActorSystem *) nil_chk(DKActorSystem_system())) addDispatcherWithNSString:@"db" withInt:1];
+    AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage4 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+    start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
+    self->modules_ = [[ImActorModelModulesModules alloc] initWithAMConfiguration:configuration];
+    AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage5 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+    start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
+    [self->modules_ run];
+    AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage6 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+    start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
+  }
+  return self;
 }
 
 - (AMAuthStateEnum *)getAuthState {
@@ -137,11 +140,11 @@ NSString * AMMessenger_TAG_ = @"CORE_INIT";
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) getGroupsCollection];
 }
 
-- (id<ImActorModelDroidkitEngineListEngine>)getDialogs {
+- (id<DKListEngine>)getDialogs {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getDialogsEngine];
 }
 
-- (id<ImActorModelDroidkitEngineListEngine>)getMessagesWithAMPeer:(AMPeer *)peer {
+- (id<DKListEngine>)getMessagesWithAMPeer:(AMPeer *)peer {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getConversationEngineWithAMPeer:peer];
 }
 
@@ -227,8 +230,8 @@ NSString * AMMessenger_TAG_ = @"CORE_INIT";
                     withInt:(jint)w
                     withInt:(jint)h
             withAMFastThumb:(AMFastThumb *)fastThumb
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference {
-  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendPhotoWithAMPeer:peer withNSString:fileName withInt:w withInt:h withAMFastThumb:fastThumb withImActorModelFilesFileReference:fileReference];
+  withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference {
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendPhotoWithAMPeer:peer withNSString:fileName withInt:w withInt:h withAMFastThumb:fastThumb withAMFileSystemReference:fileSystemReference];
 }
 
 - (void)sendVideoWithAMPeer:(AMPeer *)peer
@@ -237,23 +240,23 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileRefer
                     withInt:(jint)h
                     withInt:(jint)duration
             withAMFastThumb:(AMFastThumb *)fastThumb
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference {
-  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendVideoWithAMPeer:peer withNSString:fileName withInt:w withInt:h withInt:duration withAMFastThumb:fastThumb withImActorModelFilesFileReference:fileReference];
+  withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference {
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendVideoWithAMPeer:peer withNSString:fileName withInt:w withInt:h withInt:duration withAMFastThumb:fastThumb withAMFileSystemReference:fileSystemReference];
 }
 
 - (void)sendDocumentWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)fileName
                   withNSString:(NSString *)mimeType
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference {
-  [self sendDocumentWithAMPeer:peer withNSString:fileName withNSString:mimeType withImActorModelFilesFileReference:fileReference withAMFastThumb:nil];
+     withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference {
+  [self sendDocumentWithAMPeer:peer withNSString:fileName withNSString:mimeType withAMFileSystemReference:fileSystemReference withAMFastThumb:nil];
 }
 
 - (void)sendDocumentWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)fileName
                   withNSString:(NSString *)mimeType
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileReference
+     withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference
                withAMFastThumb:(AMFastThumb *)fastThumb {
-  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendDocumentWithAMPeer:peer withNSString:fileName withNSString:mimeType withAMFastThumb:fastThumb withImActorModelFilesFileReference:fileReference];
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendDocumentWithAMPeer:peer withNSString:fileName withNSString:mimeType withAMFastThumb:fastThumb withAMFileSystemReference:fileSystemReference];
 }
 
 - (id<AMCommand>)editMyNameWithNSString:(NSString *)newName {

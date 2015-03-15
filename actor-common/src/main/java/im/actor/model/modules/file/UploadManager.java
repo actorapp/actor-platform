@@ -7,6 +7,7 @@ import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.droidkit.actors.messages.PoisonPill;
 import im.actor.model.entity.FileReference;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
@@ -167,7 +168,7 @@ public class UploadManager extends ModuleActor {
         }
     }
 
-    public void onUploadTaskComplete(long rid, FileReference fileReference, im.actor.model.files.FileReference reference) {
+    public void onUploadTaskComplete(long rid, FileReference fileReference, FileSystemReference reference) {
         Log.d(TAG, "Upload #" + rid + " complete");
 
         QueueItem queueItem = findItem(rid);
@@ -408,9 +409,9 @@ public class UploadManager extends ModuleActor {
     public static class UploadTaskComplete {
         private long rid;
         private FileReference location;
-        private im.actor.model.files.FileReference reference;
+        private FileSystemReference reference;
 
-        public UploadTaskComplete(long rid, FileReference location, im.actor.model.files.FileReference reference) {
+        public UploadTaskComplete(long rid, FileReference location, FileSystemReference reference) {
             this.rid = rid;
             this.location = location;
             this.reference = reference;
@@ -420,7 +421,7 @@ public class UploadManager extends ModuleActor {
             return rid;
         }
 
-        public im.actor.model.files.FileReference getReference() {
+        public FileSystemReference getReference() {
             return reference;
         }
 

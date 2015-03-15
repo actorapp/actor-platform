@@ -11,7 +11,7 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-@implementation ImActorModelCryptoAsn1ASN1Primitive
+@implementation BCASN1Primitive
 
 - (IOSByteArray *)serialize {
   BSDataOutput *res = [[BSDataOutput alloc] init];
@@ -25,4 +25,4 @@
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelCryptoAsn1ASN1Primitive)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCASN1Primitive)

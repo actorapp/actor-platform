@@ -12,7 +12,7 @@
 #include "im/actor/model/droidkit/actors/messages/PoisonPill.h"
 #include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 #include "im/actor/model/entity/FileReference.h"
-#include "im/actor/model/files/FileReference.h"
+#include "im/actor/model/files/FileSystemReference.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
@@ -116,12 +116,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_UnbindUpload, callback_
  @public
   jlong rid_;
   AMFileReference *location_;
-  id<ImActorModelFilesFileReference> reference_;
+  id<AMFileSystemReference> reference_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_UploadTaskComplete, location_, AMFileReference *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_UploadTaskComplete, reference_, id<ImActorModelFilesFileReference>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_UploadTaskComplete, reference_, id<AMFileSystemReference>)
 
 @interface ImActorModelModulesFileUploadManager_UploadCompleted () {
  @public
@@ -322,7 +322,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
 
 - (void)onUploadTaskCompleteWithLong:(jlong)rid
                  withAMFileReference:(AMFileReference *)fileReference
-  withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference {
+           withAMFileSystemReference:(id<AMFileSystemReference>)reference {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$J$", @"Upload #", rid, @" complete"));
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem == nil) {
@@ -333,7 +333,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
   }
   [((JavaUtilArrayList *) nil_chk(queue_)) removeWithId:queueItem];
   [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
-  [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) getDownloadedEngine])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:[[ImActorModelModulesFileDownloaded alloc] initWithLong:[((AMFileReference *) nil_chk(fileReference)) getFileId] withInt:[fileReference getFileSize] withNSString:[((id<ImActorModelFilesFileReference>) nil_chk(reference)) getDescriptor]]];
+  [((id<DKKeyValueEngine>) nil_chk([((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) getDownloadedEngine])) addOrUpdateItemWithDKKeyValueItem:[[ImActorModelModulesFileDownloaded alloc] initWithLong:[((AMFileReference *) nil_chk(fileReference)) getFileId] withInt:[fileReference getFileSize] withNSString:[((id<AMFileSystemReference>) nil_chk(reference)) getDescriptor]]];
   for (id<ImActorModelModulesFileUploadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
     [((id<ImActorModelModulesFileUploadCallback>) nil_chk(fileCallback)) onUploaded];
   }
@@ -367,7 +367,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_UploadTaskComplete class]]) {
     ImActorModelModulesFileUploadManager_UploadTaskComplete *taskComplete = (ImActorModelModulesFileUploadManager_UploadTaskComplete *) check_class_cast(message, [ImActorModelModulesFileUploadManager_UploadTaskComplete class]);
-    [self onUploadTaskCompleteWithLong:[((ImActorModelModulesFileUploadManager_UploadTaskComplete *) nil_chk(taskComplete)) getRid] withAMFileReference:[taskComplete getLocation] withImActorModelFilesFileReference:[taskComplete getReference]];
+    [self onUploadTaskCompleteWithLong:[((ImActorModelModulesFileUploadManager_UploadTaskComplete *) nil_chk(taskComplete)) getRid] withAMFileReference:[taskComplete getLocation] withAMFileSystemReference:[taskComplete getReference]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_BindUpload class]]) {
     ImActorModelModulesFileUploadManager_BindUpload *bindUpload = (ImActorModelModulesFileUploadManager_BindUpload *) check_class_cast(message, [ImActorModelModulesFileUploadManager_BindUpload class]);
@@ -646,7 +646,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UploadTask
 
 - (instancetype)initWithLong:(jlong)rid
          withAMFileReference:(AMFileReference *)location
-withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference {
+   withAMFileSystemReference:(id<AMFileSystemReference>)reference {
   if (self = [super init]) {
     self->rid_ = rid;
     self->location_ = location;
@@ -659,7 +659,7 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference
   return rid_;
 }
 
-- (id<ImActorModelFilesFileReference>)getReference {
+- (id<AMFileSystemReference>)getReference {
   return reference_;
 }
 

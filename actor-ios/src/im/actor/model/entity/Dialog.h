@@ -19,7 +19,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/engine/ListEngineItem.h"
 
-@interface AMDialog : BSBserObject < ImActorModelDroidkitEngineListEngineItem > {
+@interface AMDialog : BSBserObject < DKListEngineItem > {
 }
 
 + (AMDialog *)fromBytesWithByteArray:(IOSByteArray *)date;

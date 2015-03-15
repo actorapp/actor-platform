@@ -3,15 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/droidkit/engine/ListEngineDisplayListener.java
 //
 
-#ifndef _ImActorModelDroidkitEngineListEngineDisplayListener_H_
-#define _ImActorModelDroidkitEngineListEngineDisplayListener_H_
+#ifndef _DKListEngineDisplayListener_H_
+#define _DKListEngineDisplayListener_H_
 
 @class IOSLongArray;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 
-@protocol ImActorModelDroidkitEngineListEngineDisplayListener < NSObject, JavaObject >
+@protocol DKListEngineDisplayListener < NSObject, JavaObject >
 
 - (void)onItemRemovedWithLong:(jlong)id_;
 
@@ -27,8 +27,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitEngineListEngineDisplayListener)
+J2OBJC_EMPTY_STATIC_INIT(DKListEngineDisplayListener)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitEngineListEngineDisplayListener)
+#define ImActorModelDroidkitEngineListEngineDisplayListener DKListEngineDisplayListener
 
-#endif // _ImActorModelDroidkitEngineListEngineDisplayListener_H_
+J2OBJC_TYPE_LITERAL_HEADER(DKListEngineDisplayListener)
+
+#endif // _DKListEngineDisplayListener_H_

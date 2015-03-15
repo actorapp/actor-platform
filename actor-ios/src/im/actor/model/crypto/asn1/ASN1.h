@@ -3,41 +3,43 @@
 //  source: /Users/ex3ndr/Develop/actor-model/actor-ios/build/java/im/actor/model/crypto/asn1/ASN1.java
 //
 
-#ifndef _ImActorModelCryptoAsn1ASN1_H_
-#define _ImActorModelCryptoAsn1ASN1_H_
+#ifndef _BCASN1_H_
+#define _BCASN1_H_
 
+@class BCASN1Primitive;
 @class BSDataInput;
 @class IOSByteArray;
-@class ImActorModelCryptoAsn1ASN1Primitive;
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelCryptoAsn1ASN1 : NSObject {
+@interface BCASN1 : NSObject {
 }
 
-+ (ImActorModelCryptoAsn1ASN1Primitive *)readObjectWithByteArray:(IOSByteArray *)sourceData;
++ (BCASN1Primitive *)readObjectWithByteArray:(IOSByteArray *)sourceData;
 
-+ (ImActorModelCryptoAsn1ASN1Primitive *)readObjectWithByteArray:(IOSByteArray *)sourceData
-                                                         withInt:(jint)offset
-                                                         withInt:(jint)len;
++ (BCASN1Primitive *)readObjectWithByteArray:(IOSByteArray *)sourceData
+                                     withInt:(jint)offset
+                                     withInt:(jint)len;
 
-+ (ImActorModelCryptoAsn1ASN1Primitive *)readObjectWithBSDataInput:(BSDataInput *)dataInput;
++ (BCASN1Primitive *)readObjectWithBSDataInput:(BSDataInput *)dataInput;
 
 - (instancetype)init;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelCryptoAsn1ASN1)
+J2OBJC_EMPTY_STATIC_INIT(BCASN1)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelCryptoAsn1ASN1Primitive *ImActorModelCryptoAsn1ASN1_readObjectWithByteArray_(IOSByteArray *sourceData);
+FOUNDATION_EXPORT BCASN1Primitive *BCASN1_readObjectWithByteArray_(IOSByteArray *sourceData);
 
-FOUNDATION_EXPORT ImActorModelCryptoAsn1ASN1Primitive *ImActorModelCryptoAsn1ASN1_readObjectWithByteArray_withInt_withInt_(IOSByteArray *sourceData, jint offset, jint len);
+FOUNDATION_EXPORT BCASN1Primitive *BCASN1_readObjectWithByteArray_withInt_withInt_(IOSByteArray *sourceData, jint offset, jint len);
 
-FOUNDATION_EXPORT ImActorModelCryptoAsn1ASN1Primitive *ImActorModelCryptoAsn1ASN1_readObjectWithBSDataInput_(BSDataInput *dataInput);
+FOUNDATION_EXPORT BCASN1Primitive *BCASN1_readObjectWithBSDataInput_(BSDataInput *dataInput);
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelCryptoAsn1ASN1)
+typedef BCASN1 ImActorModelCryptoAsn1ASN1;
 
-#endif // _ImActorModelCryptoAsn1ASN1_H_
+J2OBJC_TYPE_LITERAL_HEADER(BCASN1)
+
+#endif // _BCASN1_H_

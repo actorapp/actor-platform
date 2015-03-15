@@ -28,52 +28,52 @@ NSString * ImActorModelModulesSettings_KEY_CHAT_SEND_BY_ENTER_ = @"settings_chat
 }
 
 - (jboolean)isConversationTonesEnabled {
-  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_TONES_ withBoolean:YES];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_TONES_ withBoolean:YES];
 }
 
 - (void)changeConversationTonesEnabledWithBoolean:(jboolean)val {
-  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_TONES_ withBoolean:val];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_TONES_ withBoolean:val];
 }
 
 - (jboolean)isNotificationSoundEnabled {
-  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_SOUND_ withBoolean:YES];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_SOUND_ withBoolean:YES];
 }
 
 - (void)changeNotificationSoundEnabledWithBoolean:(jboolean)val {
-  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_SOUND_ withBoolean:val];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_SOUND_ withBoolean:val];
 }
 
 - (jboolean)isVibrationEnabled {
-  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_VIBRATION_ withBoolean:YES];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_VIBRATION_ withBoolean:YES];
 }
 
 - (void)changeNotificationVibrationEnabledWithBoolean:(jboolean)val {
-  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_VIBRATION_ withBoolean:val];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_VIBRATION_ withBoolean:val];
 }
 
 - (jboolean)isShowNotificationsText {
-  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_TEXT_ withBoolean:YES];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_TEXT_ withBoolean:YES];
 }
 
 - (void)changeShowNotificationTextEnabledWithBoolean:(jboolean)val {
-  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_TEXT_ withBoolean:val];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesSettings_KEY_NOTIFICATION_TEXT_ withBoolean:val];
 }
 
 - (jboolean)isSendByEnterEnabled {
-  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesSettings_KEY_CHAT_SEND_BY_ENTER_ withBoolean:YES];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesSettings_KEY_CHAT_SEND_BY_ENTER_ withBoolean:YES];
 }
 
 - (void)changeSendByEnterWithBoolean:(jboolean)val {
-  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesSettings_KEY_CHAT_SEND_BY_ENTER_ withBoolean:val];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesSettings_KEY_CHAT_SEND_BY_ENTER_ withBoolean:val];
 }
 
 - (jboolean)isNotificationsEnabledWithAMPeer:(AMPeer *)peer {
-  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$J", ImActorModelModulesSettings_KEY_NOTIFICATION_CHAT_, [((AMPeer *) nil_chk(peer)) getUnuqueId]) withBoolean:YES];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$J", ImActorModelModulesSettings_KEY_NOTIFICATION_CHAT_, [((AMPeer *) nil_chk(peer)) getUnuqueId]) withBoolean:YES];
 }
 
 - (void)changeNotificationsEnabledWithAMPeer:(AMPeer *)peer
                                  withBoolean:(jboolean)val {
-  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$J", ImActorModelModulesSettings_KEY_NOTIFICATION_CHAT_, [((AMPeer *) nil_chk(peer)) getUnuqueId]) withBoolean:val];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$J", ImActorModelModulesSettings_KEY_NOTIFICATION_CHAT_, [((AMPeer *) nil_chk(peer)) getUnuqueId]) withBoolean:val];
 }
 
 @end

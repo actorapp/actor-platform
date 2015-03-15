@@ -16,7 +16,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/engine/ListEngineItem.h"
 
-@interface AMContact : BSBserObject < ImActorModelDroidkitEngineListEngineItem > {
+@interface AMContact : BSBserObject < DKListEngineItem > {
 }
 
 + (AMContact *)fromBytesWithByteArray:(IOSByteArray *)data;

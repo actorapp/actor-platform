@@ -147,7 +147,7 @@ J2OBJC_FIELD_SETTER(AMGroupVM_$1, this$0_, AMGroupVM *)
 @end
 
 void AMGroupVM_notifyChange(AMGroupVM *self) {
-  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) runOnUiThreadWithJavaLangRunnable:[[AMGroupVM_$1 alloc] initWithAMGroupVM:self]];
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) runOnUiThread:[[AMGroupVM_$1 alloc] initWithAMGroupVM:self]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupVM)

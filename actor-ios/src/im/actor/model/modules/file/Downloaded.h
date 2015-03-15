@@ -14,7 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/engine/KeyValueItem.h"
 
-@interface ImActorModelModulesFileDownloaded : BSBserObject < ImActorModelDroidkitEngineKeyValueItem > {
+@interface ImActorModelModulesFileDownloaded : BSBserObject < DKKeyValueItem > {
 }
 
 + (ImActorModelModulesFileDownloaded *)fromBytesWithByteArray:(IOSByteArray *)data;

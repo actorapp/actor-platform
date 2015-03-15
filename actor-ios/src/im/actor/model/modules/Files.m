@@ -14,7 +14,7 @@
 #include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 #include "im/actor/model/droidkit/engine/KeyValueStorage.h"
 #include "im/actor/model/entity/FileReference.h"
-#include "im/actor/model/files/FileReference.h"
+#include "im/actor/model/files/FileSystemReference.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
@@ -27,13 +27,13 @@
 
 @interface ImActorModelModulesFiles () {
  @public
-  id<ImActorModelDroidkitEngineKeyValueEngine> downloadedEngine_;
+  id<DKKeyValueEngine> downloadedEngine_;
   DKActorRef *downloadManager_;
   DKActorRef *uploadManager_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesFiles, downloadedEngine_, id<ImActorModelDroidkitEngineKeyValueEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFiles, downloadedEngine_, id<DKKeyValueEngine>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles, downloadManager_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles, uploadManager_, DKActorRef *)
 
@@ -83,18 +83,18 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$2, this$0_, ImActorModelModules
 @interface ImActorModelModulesFiles_$4_$3 () {
  @public
   ImActorModelModulesFiles_$4 *this$0_;
-  id<ImActorModelFilesFileReference> val$reference_;
+  id<AMFileSystemReference> val$reference_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, this$0_, ImActorModelModulesFiles_$4 *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, val$reference_, id<ImActorModelFilesFileReference>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, val$reference_, id<AMFileSystemReference>)
 
 @implementation ImActorModelModulesFiles
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super initWithImActorModelModulesModules:modules]) {
-    downloadedEngine_ = [[ImActorModelModulesFiles_$1 alloc] initWithImActorModelDroidkitEngineKeyValueStorage:[((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getStorageProvider])) createKeyValueWithNSString:ImActorModelModulesBaseModule_get_STORAGE_DOWNLOADS_()]];
+    downloadedEngine_ = [[ImActorModelModulesFiles_$1 alloc] initWithDKKeyValueStorage:[((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getStorageProvider])) createKeyValue:ImActorModelModulesBaseModule_get_STORAGE_DOWNLOADS_()]];
   }
   return self;
 }
@@ -104,7 +104,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, val$reference_, id<ImActorMo
   uploadManager_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileUploadManager_class_(), [[ImActorModelModulesFiles_$3 alloc] initWithImActorModelModulesFiles:self]) withNSString:@"actor/upload/manager"];
 }
 
-- (id<ImActorModelDroidkitEngineKeyValueEngine>)getDownloadedEngine {
+- (id<DKKeyValueEngine>)getDownloadedEngine {
   return downloadedEngine_;
 }
 
@@ -168,7 +168,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
 }
 
 - (NSString *)getDownloadedDescriptorWithLong:(jlong)fileId {
-  ImActorModelModulesFileDownloaded *downloaded = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk(downloadedEngine_)) getValueWithLong:fileId];
+  ImActorModelModulesFileDownloaded *downloaded = [((id<DKKeyValueEngine>) nil_chk(downloadedEngine_)) getValueWithLong:fileId];
   if (downloaded == nil) {
     return nil;
   }
@@ -190,7 +190,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles)
 
 @implementation ImActorModelModulesFiles_$1
 
-- (IOSByteArray *)serializeWithImActorModelDroidkitEngineKeyValueItem:(ImActorModelModulesFileDownloaded *)value {
+- (IOSByteArray *)serializeWithDKKeyValueItem:(ImActorModelModulesFileDownloaded *)value {
   return [((ImActorModelModulesFileDownloaded *) nil_chk(value)) toByteArray];
 }
 
@@ -204,8 +204,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles)
   }
 }
 
-- (instancetype)initWithImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)arg$0 {
-  return [super initWithImActorModelDroidkitEngineKeyValueStorage:arg$0];
+- (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)arg$0 {
+  return [super initWithDKKeyValueStorage:arg$0];
 }
 
 @end
@@ -262,8 +262,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$3)
   [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesFiles_$4_$2 alloc] initWithImActorModelModulesFiles_$4:self withFloat:progress]];
 }
 
-- (void)onDownloadedWithImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)reference {
-  [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesFiles_$4_$3 alloc] initWithImActorModelModulesFiles_$4:self withImActorModelFilesFileReference:reference]];
+- (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference {
+  [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesFiles_$4_$3 alloc] initWithImActorModelModulesFiles_$4:self withAMFileSystemReference:reference]];
 }
 
 - (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$
@@ -329,11 +329,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$4_$2)
 @implementation ImActorModelModulesFiles_$4_$3
 
 - (void)run {
-  [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(this$0_->val$callback_)) onDownloadedWithImActorModelFilesFileReference:val$reference_];
+  [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(this$0_->val$callback_)) onDownloadedWithAMFileSystemReference:val$reference_];
 }
 
 - (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$
-                 withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)capture$0 {
+                          withAMFileSystemReference:(id<AMFileSystemReference>)capture$0 {
   this$0_ = outer$;
   val$reference_ = capture$0;
   return [super init];
