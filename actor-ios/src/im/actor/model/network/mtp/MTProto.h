@@ -9,7 +9,7 @@
 @class AMEndpoints;
 @class DKActorRef;
 @class MTProtoStruct;
-@protocol AMNetworking;
+@protocol AMNetworkProvider;
 @protocol MTMTProtoCallback;
 
 #include "J2ObjC_header.h"
@@ -21,9 +21,9 @@
                     withLong:(jlong)sessionId
              withAMEndpoints:(AMEndpoints *)endpoints
        withMTMTProtoCallback:(id<MTMTProtoCallback>)callback
-            withAMNetworking:(id<AMNetworking>)networking;
+       withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
 
-- (id<AMNetworking>)getNetworking;
+- (id<AMNetworkProvider>)getNetworkProvider;
 
 - (id<MTMTProtoCallback>)getCallback;
 

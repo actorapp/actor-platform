@@ -2,7 +2,7 @@ package im.actor.model.network.mtp;
 
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.network.Endpoints;
-import im.actor.model.Networking;
+import im.actor.model.NetworkProvider;
 import im.actor.model.network.mtp.actors.ManagerActor;
 import im.actor.model.network.mtp.actors.ReceiverActor;
 import im.actor.model.network.mtp.actors.SenderActor;
@@ -18,7 +18,7 @@ public class MTProto {
     private final long sessionId;
     private final Endpoints endpoints;
     private final MTProtoCallback callback;
-    private final Networking networking;
+    private final NetworkProvider networkProvider;
 
     private final ActorRef receiver;
     private final ActorRef manager;
@@ -27,19 +27,19 @@ public class MTProto {
     private final String actorPath = "mtproto";
 
     public MTProto(long authId, long sessionId, Endpoints endpoints, MTProtoCallback callback,
-                   Networking networking) {
+                   NetworkProvider networkProvider) {
         this.authId = authId;
         this.sessionId = sessionId;
         this.endpoints = endpoints;
         this.callback = callback;
-        this.networking = networking;
+        this.networkProvider = networkProvider;
         this.manager = ManagerActor.manager(this);
         this.sender = SenderActor.senderActor(this);
         this.receiver = ReceiverActor.receiver(this);
     }
 
-    public Networking getNetworking() {
-        return networking;
+    public NetworkProvider getNetworkProvider() {
+        return networkProvider;
     }
 
     public MTProtoCallback getCallback() {

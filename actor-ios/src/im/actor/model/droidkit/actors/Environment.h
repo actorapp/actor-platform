@@ -12,14 +12,14 @@
 @class DKActorDispatcher;
 @class DKActorSystem;
 @class DKThreadPriorityEnum;
-@protocol AMThreading;
+@protocol AMThreadingProvider;
 
 #include "J2ObjC_header.h"
 
 @interface DKEnvironment : NSObject {
 }
 
-+ (void)setThreadingWithAMThreading:(id<AMThreading>)threading;
++ (void)setThreadingProviderWithAMThreadingProvider:(id<AMThreadingProvider>)threadingProvider;
 
 + (DKActorDispatcher *)createDefaultDispatcherWithNSString:(NSString *)name
                                   withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
@@ -48,7 +48,7 @@ J2OBJC_EMPTY_STATIC_INIT(DKEnvironment)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT void DKEnvironment_setThreadingWithAMThreading_(id<AMThreading> threading);
+FOUNDATION_EXPORT void DKEnvironment_setThreadingProviderWithAMThreadingProvider_(id<AMThreadingProvider> threadingProvider);
 
 FOUNDATION_EXPORT DKActorDispatcher *DKEnvironment_createDefaultDispatcherWithNSString_withDKThreadPriorityEnum_withDKActorSystem_(NSString *name, DKThreadPriorityEnum *priority, DKActorSystem *actorSystem);
 
@@ -64,9 +64,9 @@ FOUNDATION_EXPORT AMAtomicLongCompat *DKEnvironment_createAtomicLongWithLong_(jl
 
 FOUNDATION_EXPORT AMThreadLocalCompat *DKEnvironment_createThreadLocal();
 
-FOUNDATION_EXPORT id<AMThreading> DKEnvironment_threading_;
-J2OBJC_STATIC_FIELD_GETTER(DKEnvironment, threading_, id<AMThreading>)
-J2OBJC_STATIC_FIELD_SETTER(DKEnvironment, threading_, id<AMThreading>)
+FOUNDATION_EXPORT id<AMThreadingProvider> DKEnvironment_threadingProvider_;
+J2OBJC_STATIC_FIELD_GETTER(DKEnvironment, threadingProvider_, id<AMThreadingProvider>)
+J2OBJC_STATIC_FIELD_SETTER(DKEnvironment, threadingProvider_, id<AMThreadingProvider>)
 CF_EXTERN_C_END
 
 typedef DKEnvironment ImActorModelDroidkitActorsEnvironment;

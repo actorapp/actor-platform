@@ -8,6 +8,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/engine/SyncKeyValue.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
@@ -18,7 +19,6 @@
 #include "im/actor/model/modules/messages/entity/UnreadMessage.h"
 #include "im/actor/model/modules/messages/entity/UnreadMessagesStorage.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
 #include "java/io/IOException.h"
 #include "java/lang/Long.h"
 #include "java/lang/Math.h"
@@ -31,23 +31,28 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
 @interface ImActorModelModulesMessagesOwnReadActor () {
  @public
   ImActorModelModulesMessagesEntityUnreadMessagesStorage *messagesStorage_;
+  ImActorModelDroidkitEngineSyncKeyValue *syncKeyValue_;
 }
 
 - (void)saveStorage;
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, messagesStorage_, ImActorModelModulesMessagesEntityUnreadMessagesStorage *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, ImActorModelDroidkitEngineSyncKeyValue *)
 
 @implementation ImActorModelModulesMessagesOwnReadActor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  return [super initWithImActorModelModulesModules:messenger];
+  if (self = [super initWithImActorModelModulesModules:messenger]) {
+    self->syncKeyValue_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getMessagesModule])) getCursorStorage];
+  }
+  return self;
 }
 
 - (void)preStart {
   [super preStart];
   messagesStorage_ = [[ImActorModelModulesMessagesEntityUnreadMessagesStorage alloc] init];
-  IOSByteArray *st = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:@"own_read_storage"];
+  IOSByteArray *st = [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(syncKeyValue_)) getWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_OWN_READ];
   if (st != nil) {
     @try {
       messagesStorage_ = ImActorModelModulesMessagesEntityUnreadMessagesStorage_fromBytesWithByteArray_(st);
@@ -249,12 +254,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, messagesStorage_, I
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesOwnReadActor *)other {
   [super copyAllFieldsTo:other];
   other->messagesStorage_ = messagesStorage_;
+  other->syncKeyValue_ = syncKeyValue_;
 }
 
 @end
 
 void ImActorModelModulesMessagesOwnReadActor_saveStorage(ImActorModelModulesMessagesOwnReadActor *self) {
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:@"own_read_storage" withByteArray:[((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) toByteArray]];
+  [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(self->syncKeyValue_)) putWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_OWN_READ withByteArray:[((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) toByteArray]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor)

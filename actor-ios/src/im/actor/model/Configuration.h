@@ -11,33 +11,33 @@
 @protocol AMCryptoProvider;
 @protocol AMFileSystemProvider;
 @protocol AMLocaleProvider;
-@protocol AMLogCallback;
-@protocol AMMainThread;
-@protocol AMNetworking;
+@protocol AMLogProvider;
+@protocol AMMainThreadProvider;
+@protocol AMNetworkProvider;
 @protocol AMNotificationProvider;
 @protocol AMPhoneBookProvider;
-@protocol AMStorage;
-@protocol AMThreading;
+@protocol AMStorageProvider;
+@protocol AMThreadingProvider;
 
 #include "J2ObjC_header.h"
 
 @interface AMConfiguration : NSObject {
 }
 
-- (instancetype)initWithAMNetworking:(id<AMNetworking>)networking
-       withAMConnectionEndpointArray:(IOSObjectArray *)endpoints
-                     withAMThreading:(id<AMThreading>)threading
-                    withAMMainThread:(id<AMMainThread>)mainThread
-                       withAMStorage:(id<AMStorage>)storage
-                   withAMLogCallback:(id<AMLogCallback>)log
-                withAMLocaleProvider:(id<AMLocaleProvider>)localeProvider
-             withAMPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider
-                withAMCryptoProvider:(id<AMCryptoProvider>)cryptoProvider
-            withAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider
-          withAMNotificationProvider:(id<AMNotificationProvider>)notificationProvider
-              withAMApiConfiguration:(AMApiConfiguration *)apiConfiguration
-                         withBoolean:(jboolean)enableContactsLogging
-                         withBoolean:(jboolean)enableNetworkLogging;
+- (instancetype)initWithAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
+            withAMConnectionEndpointArray:(IOSObjectArray *)endpoints
+                  withAMThreadingProvider:(id<AMThreadingProvider>)threadingProvider
+                 withAMMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider
+                    withAMStorageProvider:(id<AMStorageProvider>)storageProvider
+                        withAMLogProvider:(id<AMLogProvider>)log
+                     withAMLocaleProvider:(id<AMLocaleProvider>)localeProvider
+                  withAMPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider
+                     withAMCryptoProvider:(id<AMCryptoProvider>)cryptoProvider
+                 withAMFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider
+               withAMNotificationProvider:(id<AMNotificationProvider>)notificationProvider
+                   withAMApiConfiguration:(AMApiConfiguration *)apiConfiguration
+                              withBoolean:(jboolean)enableContactsLogging
+                              withBoolean:(jboolean)enableNetworkLogging;
 
 - (AMApiConfiguration *)getApiConfiguration;
 
@@ -51,17 +51,17 @@
 
 - (id<AMPhoneBookProvider>)getPhoneBookProvider;
 
-- (id<AMNetworking>)getNetworking;
+- (id<AMNetworkProvider>)getNetworkProvider;
 
 - (IOSObjectArray *)getEndpoints;
 
-- (id<AMThreading>)getThreading;
+- (id<AMThreadingProvider>)getThreadingProvider;
 
-- (id<AMMainThread>)getMainThread;
+- (id<AMMainThreadProvider>)getMainThreadProvider;
 
-- (id<AMStorage>)getStorage;
+- (id<AMStorageProvider>)getStorageProvider;
 
-- (id<AMLogCallback>)getLog;
+- (id<AMLogProvider>)getLog;
 
 - (id<AMLocaleProvider>)getLocaleProvider;
 

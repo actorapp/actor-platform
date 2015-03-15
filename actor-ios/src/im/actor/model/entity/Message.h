@@ -13,10 +13,11 @@
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserCreator.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/storage/ListEngineItem.h"
+#include "im/actor/model/droidkit/engine/ListEngineItem.h"
 
-@interface AMMessage : BSBserObject < AMListEngineItem > {
+@interface AMMessage : BSBserObject < ImActorModelDroidkitEngineListEngineItem > {
 }
 
 + (AMMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
@@ -46,25 +47,47 @@
 
 - (AMMessage *)changeContentWithAMAbsContent:(AMAbsContent *)content;
 
-- (jlong)getListId;
-
-- (jlong)getListSortKey;
-
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+- (jlong)getEngineId;
+
+- (jlong)getEngineSort;
+
+- (NSString *)getEngineSearch;
+
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(AMMessage)
+FOUNDATION_EXPORT BOOL AMMessage_initialized;
+J2OBJC_STATIC_INIT(AMMessage)
 
 CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT AMMessage *AMMessage_fromBytesWithByteArray_(IOSByteArray *data);
+
+FOUNDATION_EXPORT id<BSBserCreator> AMMessage_CREATOR_;
+J2OBJC_STATIC_FIELD_GETTER(AMMessage, CREATOR_, id<BSBserCreator>)
 CF_EXTERN_C_END
 
 typedef AMMessage ImActorModelEntityMessage;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMMessage)
+
+@interface AMMessage_$1 : NSObject < BSBserCreator > {
+}
+
+- (AMMessage *)createInstance;
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMMessage_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMMessage_$1)
 
 #endif // _AMMessage_H_

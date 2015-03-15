@@ -11,7 +11,7 @@
 @class ImActorModelNetworkParserRequest;
 @protocol AMActorApiCallback;
 @protocol AMAuthKeyStorage;
-@protocol AMNetworking;
+@protocol AMNetworkProvider;
 @protocol AMRpcCallback;
 
 #include "J2ObjC_header.h"
@@ -22,7 +22,7 @@
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
-                   withAMNetworking:(id<AMNetworking>)networking;
+              withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback;

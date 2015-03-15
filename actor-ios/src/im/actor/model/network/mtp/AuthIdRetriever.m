@@ -5,7 +5,7 @@
 
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/Networking.h"
+#include "im/actor/model/NetworkProvider.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/log/Log.h"
@@ -45,9 +45,9 @@ J2OBJC_FIELD_SETTER(MTAuthIdRetriever_$2, val$callback_, id<MTAuthIdRetriever_Au
 NSString * MTAuthIdRetriever_TAG_ = @"AuthId";
 
 + (void)requestAuthIdWithAMEndpoints:(AMEndpoints *)endpoints
-                    withAMNetworking:(id<AMNetworking>)networking
+               withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
 withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callback {
-  MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworking_withMTAuthIdRetriever_AuthIdCallback_(endpoints, networking, callback);
+  MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMTAuthIdRetriever_AuthIdCallback_(endpoints, networkProvider, callback);
 }
 
 - (instancetype)init {
@@ -56,12 +56,12 @@ withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callb
 
 @end
 
-void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworking_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<AMNetworking> networking, id<MTAuthIdRetriever_AuthIdCallback> callback) {
+void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<AMNetworkProvider> networkProvider, id<MTAuthIdRetriever_AuthIdCallback> callback) {
   MTAuthIdRetriever_init();
   AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_TAG_, @"Requesting AuthId");
   IOSBooleanArray *isFinished = [IOSBooleanArray newArrayWithLength:1];
   *IOSBooleanArray_GetRef(isFinished, 0) = NO;
-  [((id<AMNetworking>) nil_chk(networking)) createConnection:0 withEndpoint:[((AMEndpoints *) nil_chk(endpoints)) fetchEndpoint] withCallback:[[MTAuthIdRetriever_$1 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback] withCreateCallback:[[MTAuthIdRetriever_$2 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback]];
+  [((id<AMNetworkProvider>) nil_chk(networkProvider)) createConnectionWithInt:0 withAMConnectionEndpoint:[((AMEndpoints *) nil_chk(endpoints)) fetchEndpoint] withAMConnectionCallback:[[MTAuthIdRetriever_$1 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback] withAMCreateConnectionCallback:[[MTAuthIdRetriever_$2 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever)

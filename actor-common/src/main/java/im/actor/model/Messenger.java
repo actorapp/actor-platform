@@ -46,25 +46,25 @@ public class Messenger {
         // Init Log
         Log.setLog(configuration.getLog());
 
-        long start = configuration.getThreading().getActorTime();
+        long start = configuration.getThreadingProvider().getActorTime();
 
         // Init internal actor system
-        Environment.setThreading(configuration.getThreading());
+        Environment.setThreadingProvider(configuration.getThreadingProvider());
 
-        Log.d(TAG, "Loading stage1 in " + (configuration.getThreading().getActorTime() - start) + " ms");
-        start = configuration.getThreading().getActorTime();
+        Log.d(TAG, "Loading stage1 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
+        start = configuration.getThreadingProvider().getActorTime();
 
         // Init Crypto
         CryptoUtils.init(configuration.getCryptoProvider());
 
-        Log.d(TAG, "Loading stage2 in " + (configuration.getThreading().getActorTime() - start) + " ms");
-        start = configuration.getThreading().getActorTime();
+        Log.d(TAG, "Loading stage2 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
+        start = configuration.getThreadingProvider().getActorTime();
 
         // Init MVVM
-        MVVMEngine.init(configuration.getMainThread());
+        MVVMEngine.init(configuration.getMainThreadProvider());
 
-        Log.d(TAG, "Loading stage3 in " + (configuration.getThreading().getActorTime() - start) + " ms");
-        start = configuration.getThreading().getActorTime();
+        Log.d(TAG, "Loading stage3 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
+        start = configuration.getThreadingProvider().getActorTime();
 
         ActorSystem.system().setTraceInterface(new TraceInterface() {
             @Override
@@ -97,18 +97,18 @@ public class Messenger {
         });
         ActorSystem.system().addDispatcher("db", 1);
 
-        Log.d(TAG, "Loading stage4 in " + (configuration.getThreading().getActorTime() - start) + " ms");
-        start = configuration.getThreading().getActorTime();
+        Log.d(TAG, "Loading stage4 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
+        start = configuration.getThreadingProvider().getActorTime();
 
         this.modules = new Modules(configuration);
 
-        Log.d(TAG, "Loading stage5 in " + (configuration.getThreading().getActorTime() - start) + " ms");
-        start = configuration.getThreading().getActorTime();
+        Log.d(TAG, "Loading stage5 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
+        start = configuration.getThreadingProvider().getActorTime();
 
         this.modules.run();
 
-        Log.d(TAG, "Loading stage6 in " + (configuration.getThreading().getActorTime() - start) + " ms");
-        start = configuration.getThreading().getActorTime();
+        Log.d(TAG, "Loading stage6 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
+        start = configuration.getThreadingProvider().getActorTime();
 
     }
 

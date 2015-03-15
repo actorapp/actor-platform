@@ -7,6 +7,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserCreator.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -42,7 +43,11 @@ J2OBJC_FIELD_SETTER(AMDialog, text_, NSString *)
 J2OBJC_FIELD_SETTER(AMDialog, status_, AMMessageStateEnum *)
 J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
 
+BOOL AMDialog_initialized = NO;
+
 @implementation AMDialog
+
+id<BSBserCreator> AMDialog_CREATOR_;
 
 + (AMDialog *)fromBytesWithByteArray:(IOSByteArray *)date {
   return AMDialog_fromBytesWithByteArray_(date);
@@ -83,14 +88,6 @@ J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
 
 - (AMPeer *)getPeer {
   return peer_;
-}
-
-- (jlong)getListId {
-  return [((AMPeer *) nil_chk(peer_)) getUnuqueId];
-}
-
-- (jlong)getListSortKey {
-  return sortDate_;
 }
 
 - (NSString *)getDialogTitle {
@@ -177,6 +174,18 @@ J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
   [writer writeIntWithInt:12 withInt:relatedUid_];
 }
 
+- (jlong)getEngineId {
+  return [((AMPeer *) nil_chk(peer_)) getUnuqueId];
+}
+
+- (jlong)getEngineSort {
+  return sortDate_;
+}
+
+- (NSString *)getEngineSearch {
+  return dialogTitle_;
+}
+
 - (void)copyAllFieldsTo:(AMDialog *)other {
   [super copyAllFieldsTo:other];
   other->peer_ = peer_;
@@ -193,6 +202,13 @@ J2OBJC_FIELD_SETTER(AMDialog, dialogAvatar_, AMAvatar *)
   other->relatedUid_ = relatedUid_;
 }
 
++ (void)initialize {
+  if (self == [AMDialog class]) {
+    AMDialog_CREATOR_ = [[AMDialog_$1 alloc] init];
+    J2OBJC_SET_INITIALIZED(AMDialog)
+  }
+}
+
 @end
 
 AMDialog *AMDialog_fromBytesWithByteArray_(IOSByteArray *date) {
@@ -201,3 +217,17 @@ AMDialog *AMDialog_fromBytesWithByteArray_(IOSByteArray *date) {
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDialog)
+
+@implementation AMDialog_$1
+
+- (AMDialog *)createInstance {
+  return [[AMDialog alloc] init];
+}
+
+- (instancetype)init {
+  return [super init];
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDialog_$1)

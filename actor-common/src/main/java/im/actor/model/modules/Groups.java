@@ -47,7 +47,7 @@ public class Groups extends BaseModule {
 
     public Groups(Modules modules) {
         super(modules);
-        collection = new MVVMCollection<Group, GroupVM>(modules.getConfiguration().getStorage().createKeyValue(STORAGE_GROUPS)) {
+        collection = new MVVMCollection<Group, GroupVM>(modules.getConfiguration().getStorageProvider().createKeyValue(STORAGE_GROUPS)) {
             @Override
             protected GroupVM createNew(Group raw) {
                 return new GroupVM(raw);

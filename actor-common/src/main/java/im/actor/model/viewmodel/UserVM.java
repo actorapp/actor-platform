@@ -109,7 +109,7 @@ public class UserVM extends BaseValueModel<User> {
     }
 
     private void notifyChange() {
-        MVVMEngine.getMainThread().runOnUiThread(new Runnable() {
+        MVVMEngine.getMainThreadProvider().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 for (ModelChangedListener<UserVM> l : listeners.toArray(new ModelChangedListener[0])) {

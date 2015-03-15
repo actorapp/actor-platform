@@ -5,13 +5,13 @@ import java.util.HashMap;
 import im.actor.model.ApiConfiguration;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.LocaleProvider;
-import im.actor.model.MainThread;
+import im.actor.model.MainThreadProvider;
 import im.actor.model.Messenger;
 import im.actor.model.PhoneBookProvider;
 import im.actor.model.crypto.bouncycastle.BouncyCastleProvider;
 import im.actor.model.jvm.JavaLog;
-import im.actor.model.jvm.JavaNetworking;
-import im.actor.model.jvm.JavaThreading;
+import im.actor.model.jvm.JavaNetworkProvider;
+import im.actor.model.jvm.JavaThreadingProvider;
 import im.actor.model.log.Log;
 import im.actor.model.storage.temp.TempStorage;
 
@@ -32,7 +32,7 @@ public class ConsoleActor {
         }
 
         ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.setNetworking(new JavaNetworking());
+        builder.setNetworkProvider(new JavaNetworkProvider());
         builder.setPhoneBookProvider(new PhoneBookProvider() {
             @Override
             public void loadPhoneBook(Callback callback) {
@@ -41,7 +41,7 @@ public class ConsoleActor {
         });
         builder.setApiConfiguration(new ApiConfiguration("Actor Console",
                 1, "???", "Some console", new byte[0]));
-        builder.setMainThread(new MainThread() {
+        builder.setMainThreadProvider(new MainThreadProvider() {
             @Override
             public void runOnUiThread(Runnable runnable) {
                 runnable.run();
@@ -56,7 +56,7 @@ public class ConsoleActor {
             }
         });
         builder.setLog(new JavaLog());
-        builder.setThreading(new JavaThreading());
+        builder.setThreadingProvider(new JavaThreadingProvider());
         builder.addEndpoint(url);
 
         messenger = new Messenger(builder.build());

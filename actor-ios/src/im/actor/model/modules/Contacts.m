@@ -8,7 +8,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
-#include "im/actor/model/Storage.h"
+#include "im/actor/model/StorageProvider.h"
 #include "im/actor/model/api/base/SeqUpdate.h"
 #include "im/actor/model/api/rpc/RequestAddContact.h"
 #include "im/actor/model/api/rpc/RequestRemoveContact.h"
@@ -22,6 +22,10 @@
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
+#include "im/actor/model/droidkit/engine/ListEngine.h"
+#include "im/actor/model/droidkit/engine/ListStorage.h"
+#include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Contacts.h"
@@ -32,9 +36,6 @@
 #include "im/actor/model/modules/updates/internal/UsersFounded.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/RpcInternalException.h"
-#include "im/actor/model/storage/KeyValueEngine.h"
-#include "im/actor/model/storage/ListEngine.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
 #include "im/actor/model/viewmodel/UserVM.h"
 #include "java/lang/Boolean.h"
 #include "java/lang/Integer.h"
@@ -43,13 +44,13 @@
 
 @interface ImActorModelModulesContacts () {
  @public
-  id<AMListEngine> contacts_;
+  id<ImActorModelDroidkitEngineListEngine> contacts_;
   DKActorRef *bookImportActor_;
   DKActorRef *contactSyncActor_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesContacts, contacts_, id<AMListEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesContacts, contacts_, id<ImActorModelDroidkitEngineListEngine>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesContacts, bookImportActor_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesContacts, contactSyncActor_, DKActorRef *)
 
@@ -195,14 +196,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesContacts_$5_$2_$2, this$0_, ImActorModelM
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super initWithImActorModelModulesModules:modules]) {
-    contacts_ = [((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getStorage])) createContactsEngine];
+    contacts_ = [((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getStorageProvider])) createContactsListWithImActorModelDroidkitEngineListStorage:[((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getStorageProvider])) createListWithNSString:ImActorModelModulesBaseModule_get_STORAGE_CONTACTS_()]];
     bookImportActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesContactsBookImportActor_class_(), [[ImActorModelModulesContacts_$1 alloc] initWithImActorModelModulesModules:modules]) withNSString:@"actor/book_import"];
     contactSyncActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesContactsContactsSyncActor_class_(), [[ImActorModelModulesContacts_$2 alloc] initWithImActorModelModulesModules:modules]) withNSString:@"actor/contacts_sync"];
   }
   return self;
 }
 
-- (id<AMListEngine>)getContacts {
+- (id<ImActorModelDroidkitEngineListEngine>)getContacts {
   return contacts_;
 }
 
@@ -215,15 +216,15 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesContacts_$5_$2_$2, this$0_, ImActorModelM
 }
 
 - (void)markContactWithInt:(jint)uid {
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$I", @"contact_", uid) withBoolean:YES];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$I", @"contact_", uid) withBoolean:YES];
 }
 
 - (void)markNonContactWithInt:(jint)uid {
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$I", @"contact_", uid) withBoolean:NO];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$I", @"contact_", uid) withBoolean:NO];
 }
 
 - (jboolean)isUserContactWithInt:(jint)uid {
-  return [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$I", @"contact_", uid) withBoolean:NO];
+  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$I", @"contact_", uid) withBoolean:NO];
 }
 
 - (id<AMCommand>)findUsersWithNSString:(NSString *)query {
@@ -387,7 +388,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$3_$1_$2)
 @implementation ImActorModelModulesContacts_$4
 
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
-  AMUser *user = [((id<AMKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:val$uid_];
+  AMUser *user = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:val$uid_];
   if (user == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesContacts_$4_$1 alloc] initWithAMCommandCallback:callback]];
     return;
@@ -506,7 +507,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$4_$2_$2)
 @implementation ImActorModelModulesContacts_$5
 
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
-  AMUser *user = [((id<AMKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:val$uid_];
+  AMUser *user = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:val$uid_];
   if (user == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesContacts_$5_$1 alloc] initWithAMCommandCallback:callback]];
     return;

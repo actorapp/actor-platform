@@ -7,6 +7,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserCreator.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -27,7 +28,11 @@
 J2OBJC_FIELD_SETTER(AMContact, avatar_, AMAvatar *)
 J2OBJC_FIELD_SETTER(AMContact, name_, NSString *)
 
+BOOL AMContact_initialized = NO;
+
 @implementation AMContact
+
+id<BSBserCreator> AMContact_CREATOR_;
 
 + (AMContact *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMContact_fromBytesWithByteArray_(data);
@@ -80,12 +85,16 @@ J2OBJC_FIELD_SETTER(AMContact, name_, NSString *)
   }
 }
 
-- (jlong)getListId {
+- (jlong)getEngineId {
   return uid_;
 }
 
-- (jlong)getListSortKey {
+- (jlong)getEngineSort {
   return sortKey_;
+}
+
+- (NSString *)getEngineSearch {
+  return name_;
 }
 
 - (void)copyAllFieldsTo:(AMContact *)other {
@@ -96,6 +105,13 @@ J2OBJC_FIELD_SETTER(AMContact, name_, NSString *)
   other->name_ = name_;
 }
 
++ (void)initialize {
+  if (self == [AMContact class]) {
+    AMContact_CREATOR_ = [[AMContact_$1 alloc] init];
+    J2OBJC_SET_INITIALIZED(AMContact)
+  }
+}
+
 @end
 
 AMContact *AMContact_fromBytesWithByteArray_(IOSByteArray *data) {
@@ -104,3 +120,17 @@ AMContact *AMContact_fromBytesWithByteArray_(IOSByteArray *data) {
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMContact)
+
+@implementation AMContact_$1
+
+- (AMContact *)createInstance {
+  return [[AMContact alloc] init];
+}
+
+- (instancetype)init {
+  return [super init];
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMContact_$1)

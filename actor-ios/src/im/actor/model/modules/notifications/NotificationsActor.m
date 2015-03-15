@@ -9,16 +9,17 @@
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/NotificationProvider.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/engine/SyncKeyValue.h"
 #include "im/actor/model/entity/ContentDescription.h"
 #include "im/actor/model/entity/Notification.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/Modules.h"
+#include "im/actor/model/modules/Notifications.h"
 #include "im/actor/model/modules/Settings.h"
 #include "im/actor/model/modules/notifications/NotificationsActor.h"
 #include "im/actor/model/modules/notifications/PendingNotification.h"
 #include "im/actor/model/modules/notifications/PendingStorage.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
 #include "java/io/IOException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/HashSet.h"
@@ -29,6 +30,7 @@ __attribute__((unused)) static void ImActorModelModulesNotificationsNotification
 
 @interface ImActorModelModulesNotificationsNotificationsActor () {
  @public
+  ImActorModelDroidkitEngineSyncKeyValue *storage_;
   ImActorModelModulesNotificationsPendingStorage *pendingStorage_;
   AMPeer *visiblePeer_;
   jboolean isAppVisible_;
@@ -40,6 +42,7 @@ __attribute__((unused)) static void ImActorModelModulesNotificationsNotification
 - (void)saveStorage;
 @end
 
+J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, storage_, ImActorModelDroidkitEngineSyncKeyValue *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, pendingStorage_, ImActorModelModulesNotificationsPendingStorage *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, visiblePeer_, AMPeer *)
 
@@ -88,13 +91,14 @@ NSString * ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAG
   if (self = [super initWithImActorModelModulesModules:messenger]) {
     isAppVisible_ = NO;
     isDialogsVisible_ = NO;
+    self->storage_ = [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getNotifications])) getNotificationsStorage];
   }
   return self;
 }
 
 - (void)preStart {
   pendingStorage_ = [[ImActorModelModulesNotificationsPendingStorage alloc] init];
-  IOSByteArray *storage = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAGE_];
+  IOSByteArray *storage = [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(self->storage_)) getWithLong:0];
   if (storage != nil) {
     @try {
       pendingStorage_ = ImActorModelModulesNotificationsPendingStorage_fromBytesWithByteArray_(storage);
@@ -252,6 +256,7 @@ NSString * ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAG
 
 - (void)copyAllFieldsTo:(ImActorModelModulesNotificationsNotificationsActor *)other {
   [super copyAllFieldsTo:other];
+  other->storage_ = storage_;
   other->pendingStorage_ = pendingStorage_;
   other->visiblePeer_ = visiblePeer_;
   other->isAppVisible_ = isAppVisible_;
@@ -265,7 +270,7 @@ id<JavaUtilList> ImActorModelModulesNotificationsNotificationsActor_getNotificat
 }
 
 void ImActorModelModulesNotificationsNotificationsActor_saveStorage(ImActorModelModulesNotificationsNotificationsActor *self) {
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAGE_ withByteArray:[((ImActorModelModulesNotificationsPendingStorage *) nil_chk(self->pendingStorage_)) toByteArray]];
+  [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(self->storage_)) putWithLong:0 withByteArray:[((ImActorModelModulesNotificationsPendingStorage *) nil_chk(self->pendingStorage_)) toByteArray]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsActor)

@@ -9,6 +9,7 @@
 #include "im/actor/model/api/rpc/ResponseLoadHistory.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Updates.h"
@@ -16,7 +17,6 @@
 #include "im/actor/model/modules/updates/internal/MessagesHistoryLoaded.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/network/RpcException.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
 #include "java/lang/Long.h"
 
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(ImActorModelModulesMessagesConversationHistoryActor *self);
@@ -75,9 +75,9 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 
 - (void)preStart {
   [super preStart];
-  historyMaxDate_ = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:KEY_LOADED_DATE_ withLong:JavaLangLong_MAX_VALUE];
-  historyLoaded_ = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:KEY_LOADED_ withBoolean:NO];
-  if (![((id<AMPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:KEY_LOADED_INIT_ withBoolean:NO]) {
+  historyMaxDate_ = [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:KEY_LOADED_DATE_ withLong:JavaLangLong_MAX_VALUE];
+  historyLoaded_ = [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:KEY_LOADED_ withBoolean:NO];
+  if (![((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:KEY_LOADED_INIT_ withBoolean:NO]) {
     [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesMessagesConversationHistoryActor_LoadMore alloc] init]];
   }
 }
@@ -137,9 +137,9 @@ void ImActorModelModulesMessagesConversationHistoryActor_onLoadedMoreWithInt_wit
     self->historyLoaded_ = NO;
     self->historyMaxDate_ = maxLoadedDate;
   }
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:self->KEY_LOADED_DATE_ withLong:maxLoadedDate];
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:self->KEY_LOADED_ withBoolean:self->historyLoaded_];
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:self->KEY_LOADED_INIT_ withBoolean:YES];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:self->KEY_LOADED_DATE_ withLong:maxLoadedDate];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:self->KEY_LOADED_ withBoolean:self->historyLoaded_];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:self->KEY_LOADED_INIT_ withBoolean:YES];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryActor)

@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragmentActivity;
-import im.actor.messenger.app.fragment.compose.ComposeFragment;
+import im.actor.messenger.app.fragment.contacts.ComposeFragment;
 
 /**
  * Created by ex3ndr on 20.09.14.

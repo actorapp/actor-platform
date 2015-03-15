@@ -1,13 +1,11 @@
 package im.actor.model.jvm;
 
-import java.util.List;
-
-import im.actor.model.LogCallback;
+import im.actor.model.LogProvider;
 
 /**
  * Created by ex3ndr on 07.02.15.
  */
-public class JavaLog implements LogCallback {
+public class JavaLog implements LogProvider {
     @Override
     public void w(String tag, String message) {
         System.out.println("[W]" + tag + ":" + message);

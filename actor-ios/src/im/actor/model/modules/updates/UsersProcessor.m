@@ -7,6 +7,7 @@
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/modules/BaseModule.h"
@@ -17,7 +18,6 @@
 #include "im/actor/model/modules/messages/DialogsActor.h"
 #include "im/actor/model/modules/messages/entity/EntityConverter.h"
 #include "im/actor/model/modules/updates/UsersProcessor.h"
-#include "im/actor/model/storage/KeyValueEngine.h"
 #include "im/actor/model/util/JavaUtil.h"
 #include "java/lang/Integer.h"
 #include "java/util/ArrayList.h"
@@ -40,7 +40,7 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
                              withBoolean:(jboolean)forced {
   JavaUtilArrayList *batch = [[JavaUtilArrayList alloc] init];
   for (ImActorModelApiUser * __strong u in nil_chk(updated)) {
-    AMUser *saved = [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:[((ImActorModelApiUser *) nil_chk(u)) getId]];
+    AMUser *saved = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self users])) getValueWithLong:[((ImActorModelApiUser *) nil_chk(u)) getId]];
     if (saved == nil) {
       [batch addWithId:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiUser_(u)];
     }
@@ -53,19 +53,19 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
     }
   }
   if ([batch size] > 0) {
-    [((id<AMKeyValueEngine>) nil_chk([self users])) addOrUpdateItemsWithJavaUtilList:batch];
+    [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self users])) addOrUpdateItemsWithJavaUtilList:batch];
   }
 }
 
 - (void)onUserNameChangedWithInt:(jint)uid
                     withNSString:(NSString *)name {
-  AMUser *u = [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
+  AMUser *u = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
   if (u != nil) {
     if ([((NSString *) nil_chk([u getServerName])) isEqual:name]) {
       return;
     }
     u = [u editNameWithNSString:name];
-    [((id<AMKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithAMKeyValueItem:u];
+    [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:u];
     if ([((AMUser *) nil_chk(u)) getLocalName] == nil) {
       ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(self, u);
     }
@@ -74,13 +74,13 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
 
 - (void)onUserLocalNameChangedWithInt:(jint)uid
                          withNSString:(NSString *)name {
-  AMUser *u = [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
+  AMUser *u = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
   if (u != nil) {
     if (AMJavaUtil_equalsEWithId_withId_([u getLocalName], name)) {
       return;
     }
     u = [u editLocalNameWithNSString:name];
-    [((id<AMKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithAMKeyValueItem:u];
+    [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:u];
     ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(self, u);
   }
 }
@@ -88,20 +88,20 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
 - (void)onUserAvatarChangedWithInt:(jint)uid
          withImActorModelApiAvatar:(ImActorModelApiAvatar *)_avatar {
   AMAvatar *avatar = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_(_avatar);
-  AMUser *u = [((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
+  AMUser *u = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
   if (u != nil) {
     if (AMJavaUtil_equalsEWithId_withId_([u getAvatar], avatar)) {
       return;
     }
     u = [u editAvatarWithAMAvatar:avatar];
-    [((id<AMKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithAMKeyValueItem:u];
+    [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self users])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:u];
     ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(self, u);
   }
 }
 
 - (jboolean)hasUsersWithJavaUtilCollection:(id<JavaUtilCollection>)uids {
   for (JavaLangInteger * __strong uid in nil_chk(uids)) {
-    if ([((id<AMKeyValueEngine>) nil_chk([self users])) getValueWithLong:[((JavaLangInteger *) nil_chk(uid)) intValue]] == nil) {
+    if ([((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([self users])) getValueWithLong:[((JavaLangInteger *) nil_chk(uid)) intValue]] == nil) {
       return NO;
     }
   }

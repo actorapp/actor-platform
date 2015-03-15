@@ -5,7 +5,7 @@
 
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/MainThread.h"
+#include "im/actor/model/MainThreadProvider.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/Group.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
@@ -147,7 +147,7 @@ J2OBJC_FIELD_SETTER(AMGroupVM_$1, this$0_, AMGroupVM *)
 @end
 
 void AMGroupVM_notifyChange(AMGroupVM *self) {
-  [((id<AMMainThread>) nil_chk(AMMVVMEngine_getMainThread())) runOnUiThread:[[AMGroupVM_$1 alloc] initWithAMGroupVM:self]];
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) runOnUiThreadWithJavaLangRunnable:[[AMGroupVM_$1 alloc] initWithAMGroupVM:self]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupVM)

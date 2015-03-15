@@ -13,8 +13,8 @@
 @class ImActorModelModulesFileDownloaded;
 @class ImActorModelModulesFileUploadManager;
 @class ImActorModelModulesModules;
-@protocol AMKeyValueEngine;
-@protocol AMKeyValueStorage;
+@protocol ImActorModelDroidkitEngineKeyValueEngine;
+@protocol ImActorModelDroidkitEngineKeyValueStorage;
 @protocol ImActorModelFilesFileReference;
 @protocol ImActorModelModulesFileUploadCallback;
 
@@ -32,7 +32,7 @@
 
 - (void)run;
 
-- (id<AMKeyValueEngine>)getDownloadedEngine;
+- (id<ImActorModelDroidkitEngineKeyValueEngine>)getDownloadedEngine;
 
 - (void)bindFileWithAMFileReference:(AMFileReference *)fileReference
                         withBoolean:(jboolean)isAutostart
@@ -83,11 +83,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles)
 @interface ImActorModelModulesFiles_$1 : ImActorModelModulesUtilsBaseKeyValueEngine {
 }
 
-- (IOSByteArray *)serializeWithAMKeyValueItem:(ImActorModelModulesFileDownloaded *)value;
+- (IOSByteArray *)serializeWithImActorModelDroidkitEngineKeyValueItem:(ImActorModelModulesFileDownloaded *)value;
 
 - (ImActorModelModulesFileDownloaded *)deserializeWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)initWithAMKeyValueStorage:(id<AMKeyValueStorage>)arg$0;
+- (instancetype)initWithImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)arg$0;
 
 @end
 

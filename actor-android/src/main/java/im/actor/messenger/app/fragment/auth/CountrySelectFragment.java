@@ -13,7 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseFragment;
+import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.ViewHolder;
 import im.actor.messenger.util.country.Country;
 import im.actor.messenger.util.country.CountryDb;

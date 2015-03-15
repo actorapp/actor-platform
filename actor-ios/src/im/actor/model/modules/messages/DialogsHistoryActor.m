@@ -8,13 +8,13 @@
 #include "im/actor/model/api/rpc/ResponseLoadDialogs.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/messages/DialogsHistoryActor.h"
 #include "im/actor/model/modules/updates/internal/DialogHistoryLoaded.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/network/RpcException.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
 #include "java/lang/Long.h"
 
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(ImActorModelModulesMessagesDialogsHistoryActor *self);
@@ -62,9 +62,9 @@ NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ = @"d
 }
 
 - (void)preStart {
-  historyMaxDate_ = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ withLong:JavaLangLong_MAX_VALUE];
-  historyLoaded_ = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ withBoolean:NO];
-  if (![((id<AMPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ withBoolean:NO]) {
+  historyMaxDate_ = [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ withLong:JavaLangLong_MAX_VALUE];
+  historyLoaded_ = [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ withBoolean:NO];
+  if (![((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ withBoolean:NO]) {
     [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesMessagesDialogsHistoryActor_LoadMore alloc] init]];
   }
 }
@@ -120,9 +120,9 @@ void ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithInt_withLong
     self->historyLoaded_ = NO;
     self->historyMaxDate_ = maxLoadedDate;
   }
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ withLong:maxLoadedDate];
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ withBoolean:self->historyLoaded_];
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ withBoolean:YES];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ withLong:maxLoadedDate];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ withBoolean:self->historyLoaded_];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ withBoolean:YES];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor)

@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseFragment;
+import im.actor.messenger.app.fragment.BaseFragment;
 
 /**
  * Created by ex3ndr on 30.09.14.

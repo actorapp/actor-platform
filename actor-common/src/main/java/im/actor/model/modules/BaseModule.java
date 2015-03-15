@@ -1,7 +1,7 @@
 package im.actor.model.modules;
 
 import im.actor.model.CryptoProvider;
-import im.actor.model.Storage;
+import im.actor.model.StorageProvider;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Peer;
@@ -44,7 +44,7 @@ public class BaseModule {
     }
 
     public void runOnUiThread(Runnable runnable) {
-        modules.getConfiguration().getMainThread().runOnUiThread(runnable);
+        modules.getConfiguration().getMainThreadProvider().runOnUiThread(runnable);
     }
 
     public ActorRef sendActor() {
@@ -83,8 +83,8 @@ public class BaseModule {
         return modules.getConfiguration().getCryptoProvider();
     }
 
-    public Storage storage() {
-        return modules.getConfiguration().getStorage();
+    public StorageProvider storage() {
+        return modules.getConfiguration().getStorageProvider();
     }
 
     public int myUid() {

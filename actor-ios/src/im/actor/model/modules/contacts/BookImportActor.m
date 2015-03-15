@@ -17,6 +17,7 @@
 #include "im/actor/model/api/updates/UpdateContactsAdded.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/entity/PhoneBookContact.h"
 #include "im/actor/model/entity/PhoneBookEmail.h"
 #include "im/actor/model/entity/PhoneBookPhone.h"
@@ -26,7 +27,6 @@
 #include "im/actor/model/modules/contacts/BookImportActor.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/network/RpcException.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
 #include "java/lang/Integer.h"
 #include "java/lang/Long.h"
 #include "java/util/ArrayList.h"
@@ -262,19 +262,19 @@ void ImActorModelModulesContactsBookImportActor_performImportWithJavaUtilArrayLi
 }
 
 jboolean ImActorModelModulesContactsBookImportActor_isImportedWithLong_(ImActorModelModulesContactsBookImportActor *self, jlong phone) {
-  return [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$J", @"book_phone_", phone) withBoolean:NO];
+  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$J", @"book_phone_", phone) withBoolean:NO];
 }
 
 jboolean ImActorModelModulesContactsBookImportActor_isImportedWithNSString_(ImActorModelModulesContactsBookImportActor *self, NSString *email) {
-  return [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$$", @"book_email_", [((NSString *) nil_chk(email)) lowercaseString]) withBoolean:NO];
+  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBoolWithNSString:JreStrcat("$$", @"book_email_", [((NSString *) nil_chk(email)) lowercaseString]) withBoolean:NO];
 }
 
 void ImActorModelModulesContactsBookImportActor_markImportedWithLong_(ImActorModelModulesContactsBookImportActor *self, jlong phone) {
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$J", @"book_phone_", phone) withBoolean:YES];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$J", @"book_phone_", phone) withBoolean:YES];
 }
 
 void ImActorModelModulesContactsBookImportActor_markImportedWithNSString_(ImActorModelModulesContactsBookImportActor *self, NSString *email) {
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$$", @"book_email_", [((NSString *) nil_chk(email)) lowercaseString]) withBoolean:YES];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBoolWithNSString:JreStrcat("$$", @"book_email_", [((NSString *) nil_chk(email)) lowercaseString]) withBoolean:YES];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsBookImportActor)

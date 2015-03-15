@@ -14,6 +14,7 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
+import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.util.Screen;
 import im.actor.model.entity.Contact;
 
@@ -36,9 +37,12 @@ public class ContactHolder extends RecyclerView.ViewHolder {
     private Context context;
     private boolean isSelectable;
 
-    public ContactHolder(FrameLayout fl, boolean isSelectable, Context context) {
+    private OnItemClickedListener<Contact> onItemClickedListener;
+
+    public ContactHolder(FrameLayout fl, boolean isSelectable, Context context, OnItemClickedListener<Contact> onItemClickedListener) {
         super(fl);
 
+        this.onItemClickedListener = onItemClickedListener;
         this.context = context;
         this.isSelectable = isSelectable;
 
@@ -112,7 +116,7 @@ public class ContactHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public void bind(Contact data) {
+    public void bind(final Contact data) {
         String shortName = getFastName(data.getName());
 
         fastTitle.setVisibility(View.VISIBLE);
@@ -152,22 +156,19 @@ public class ContactHolder extends RecyclerView.ViewHolder {
 //            isSelected.setChecked(selectedUsers.contains(data.getUid()));
 //        }
 
-//        cont.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                onItemClickedListener.onClicked(data);
-//            }
-//        });
-//
-//        if (onItemLongClickedListener != null) {
-//            cont.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View v) {
-//                    onItemLongClickedListener.onClicked(data);
-//                    return true;
-//                }
-//            });
-//        }
+        cont.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickedListener.onClicked(data);
+            }
+        });
+
+        cont.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return onItemClickedListener.onLongClicked(data);
+            }
+        });
     }
 
     public void unbind() {

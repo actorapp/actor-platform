@@ -7,13 +7,13 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/engine/SyncKeyValue.h"
 #include "im/actor/model/entity/Peer.h"
+#include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/messages/PlainCursorActor.h"
 #include "im/actor/model/modules/messages/entity/PlainCursor.h"
 #include "im/actor/model/modules/messages/entity/PlainCursorsStorage.h"
-#include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
 #include "java/io/IOException.h"
 #include "java/lang/Math.h"
 #include "java/util/Collection.h"
@@ -27,17 +27,18 @@ __attribute__((unused)) static void ImActorModelModulesMessagesPlainCursorActor_
 
 @interface ImActorModelModulesMessagesPlainCursorActor () {
  @public
-  NSString *preferenceName_;
   ImActorModelModulesMessagesEntityPlainCursorsStorage *plainCursorsStorage_;
   JavaUtilHashSet *inProgress_;
+  jlong cursorId_;
+  ImActorModelDroidkitEngineSyncKeyValue *keyValue_;
 }
 
 - (void)saveCursorState;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainCursorActor, preferenceName_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainCursorActor, plainCursorsStorage_, ImActorModelModulesMessagesEntityPlainCursorsStorage *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainCursorActor, inProgress_, JavaUtilHashSet *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainCursorActor, keyValue_, ImActorModelDroidkitEngineSyncKeyValue *)
 
 @interface ImActorModelModulesMessagesPlainCursorActor_OnCompleted () {
  @public
@@ -52,11 +53,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainCursorActor_OnCompleted, pee
 
 @implementation ImActorModelModulesMessagesPlainCursorActor
 
-- (instancetype)initWithNSString:(NSString *)preferenceName
-  withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
+- (instancetype)initWithLong:(jlong)cursorId
+withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   if (self = [super initWithImActorModelModulesModules:messenger]) {
     inProgress_ = [[JavaUtilHashSet alloc] init];
-    self->preferenceName_ = preferenceName;
+    self->cursorId_ = cursorId;
+    self->keyValue_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getMessagesModule])) getCursorStorage];
   }
   return self;
 }
@@ -64,7 +66,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainCursorActor_OnCompleted, pee
 - (void)preStart {
   [super preStart];
   plainCursorsStorage_ = [[ImActorModelModulesMessagesEntityPlainCursorsStorage alloc] init];
-  IOSByteArray *data = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:preferenceName_];
+  IOSByteArray *data = [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(keyValue_)) getWithLong:cursorId_];
   if (data != nil) {
     @try {
       plainCursorsStorage_ = ImActorModelModulesMessagesEntityPlainCursorsStorage_fromBytesWithByteArray_(data);
@@ -130,9 +132,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainCursorActor_OnCompleted, pee
 
 - (void)copyAllFieldsTo:(ImActorModelModulesMessagesPlainCursorActor *)other {
   [super copyAllFieldsTo:other];
-  other->preferenceName_ = preferenceName_;
   other->plainCursorsStorage_ = plainCursorsStorage_;
   other->inProgress_ = inProgress_;
+  other->cursorId_ = cursorId_;
+  other->keyValue_ = keyValue_;
 }
 
 @end
@@ -150,7 +153,7 @@ void ImActorModelModulesMessagesPlainCursorActor_onMovedWithAMPeer_withLong_(ImA
 }
 
 void ImActorModelModulesMessagesPlainCursorActor_saveCursorState(ImActorModelModulesMessagesPlainCursorActor *self) {
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:self->preferenceName_ withByteArray:[((ImActorModelModulesMessagesEntityPlainCursorsStorage *) nil_chk(self->plainCursorsStorage_)) toByteArray]];
+  [((ImActorModelDroidkitEngineSyncKeyValue *) nil_chk(self->keyValue_)) putWithLong:self->cursorId_ withByteArray:[((ImActorModelModulesMessagesEntityPlainCursorsStorage *) nil_chk(self->plainCursorsStorage_)) toByteArray]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesPlainCursorActor)

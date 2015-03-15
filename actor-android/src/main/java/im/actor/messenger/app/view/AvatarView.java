@@ -203,24 +203,24 @@ public class AvatarView extends View implements ReceiverCallback {
         canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2, CIRCLE_BORDER_PAINT);
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (receiver != null) {
-            receiver.close();
-            receiver = null;
-        }
-        unbind();
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (receiver == null) {
-            ImageLoader loader = ((ImageLoaderProvider) getContext().getApplicationContext()).getImageLoader();
-            receiver = loader.createReceiver(this);
-        }
-    }
+//    @Override
+//    protected void onDetachedFromWindow() {
+//        super.onDetachedFromWindow();
+//        if (receiver != null) {
+//            receiver.close();
+//            receiver = null;
+//        }
+//        unbind();
+//    }
+//
+//    @Override
+//    protected void onAttachedToWindow() {
+//        super.onAttachedToWindow();
+//        if (receiver == null) {
+//            ImageLoader loader = ((ImageLoaderProvider) getContext().getApplicationContext()).getImageLoader();
+//            receiver = loader.createReceiver(this);
+//        }
+//    }
 
     @Override
     public void onImageLoaded(BitmapReference bitmap) {

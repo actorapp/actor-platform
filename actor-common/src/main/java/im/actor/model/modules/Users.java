@@ -27,7 +27,7 @@ public class Users extends BaseModule {
 
     public Users(Modules messenger) {
         super(messenger);
-        this.collection = new MVVMCollection<User, UserVM>(messenger.getConfiguration().getStorage().createKeyValue(STORAGE_USERS)) {
+        this.collection = new MVVMCollection<User, UserVM>(messenger.getConfiguration().getStorageProvider().createKeyValue(STORAGE_USERS)) {
             @Override
             protected UserVM createNew(User raw) {
                 return new UserVM(raw, modules());

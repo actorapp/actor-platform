@@ -38,6 +38,11 @@ public abstract class BindedListAdapter<V extends BserObject & ListEngineItem,
         }
     }
 
+    public boolean isGlobalList() {
+        return displayList.isGlobalList();
+    }
+
+
     @Override
     public int getItemCount() {
         return displayList.getSize();

@@ -13,8 +13,8 @@
 @class ImActorModelApiRpcResponseSeq;
 @class ImActorModelModulesModules;
 @protocol AMCommandCallback;
-@protocol AMKeyValueEngine;
-@protocol AMKeyValueStorage;
+@protocol ImActorModelDroidkitEngineKeyValueEngine;
+@protocol ImActorModelDroidkitEngineKeyValueStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/concurrency/Command.h"
@@ -30,7 +30,7 @@
 
 - (AMMVVMCollection *)getUsersCollection;
 
-- (id<AMKeyValueEngine>)getUsers;
+- (id<ImActorModelDroidkitEngineKeyValueEngine>)getUsers;
 
 - (id<AMCommand>)editMyNameWithNSString:(NSString *)newName;
 
@@ -49,14 +49,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers)
 @interface ImActorModelModulesUsers_$1 : AMMVVMCollection {
 }
 
-- (AMUserVM *)createNewWithAMKeyValueItem:(AMUser *)raw;
+- (AMUserVM *)createNewWithImActorModelDroidkitEngineKeyValueItem:(AMUser *)raw;
 
-- (IOSByteArray *)serializeWithAMKeyValueItem:(AMUser *)raw;
+- (IOSByteArray *)serializeWithImActorModelDroidkitEngineKeyValueItem:(AMUser *)raw;
 
 - (AMUser *)deserializeWithByteArray:(IOSByteArray *)raw;
 
 - (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
-                           withAMKeyValueStorage:(id<AMKeyValueStorage>)arg$0;
+   withImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)arg$0;
 
 @end
 
