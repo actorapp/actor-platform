@@ -436,4 +436,8 @@ public class Messenger {
     public BindedDisplayList<Contact> getContactsGlobalList() {
         return modules.getDisplayLists().getContactsGlobalList();
     }
+
+    public BindedDisplayList<Contact> buildContactDisplayList() {
+        return modules.getDisplayLists().buildNewContactList(false);
+    }
 }

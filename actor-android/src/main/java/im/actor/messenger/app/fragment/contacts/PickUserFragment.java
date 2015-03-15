@@ -1,8 +1,8 @@
-package im.actor.messenger.app.fragment.pick;
+package im.actor.messenger.app.fragment.contacts;
 
 import android.app.Activity;
 import android.content.Intent;
-import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
+
 import im.actor.messenger.app.Intents;
 
 /**

@@ -15,7 +15,7 @@ import im.actor.model.modules.utils.ModuleActor;
 @Verified
 public class OwnTypingActor extends ModuleActor {
 
-    private static final long TYPING_DELAY = 1000L;
+    private static final long TYPING_DELAY = 3000L;
 
     private long lastTypingTime = 0;
 

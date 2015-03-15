@@ -22,20 +22,20 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
     private int pageSize = DEFAULT_PAGE_SIZE;
 
-    private boolean isInited = false;
-
     private final ListEngineDisplayExt<T> listEngine;
     private final DisplayWindow window;
     private final EngineListener engineListener;
 
     private int currentGeneration = 0;
 
-    private final boolean blockDisposal;
+    private final boolean isGlobalList;
+
+    private ValueModel<State> stateModel;
 
     private ListMode mode;
     private String query;
 
-    public BindedDisplayList(ListEngineDisplayExt<T> listEngine, boolean blockDisposal) {
+    public BindedDisplayList(ListEngineDisplayExt<T> listEngine, boolean isGlobalList) {
         super(new Hook<T>() {
             @Override
             public void beforeDisplay(List<T> list) {
@@ -43,21 +43,21 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
             }
         });
         this.engineListener = new EngineListener();
-        this.blockDisposal = blockDisposal;
+        this.isGlobalList = isGlobalList;
         this.listEngine = listEngine;
         this.window = new DisplayWindow();
+        this.stateModel = new ValueModel<State>("display_list.state", State.LOADING_EMPTY);
 
         listEngine.subscribe(engineListener);
     }
 
+    @Deprecated
     public int getPageSize() {
         return pageSize;
     }
 
+    @Deprecated
     public void setPageSize(int pageSize) {
-        if (isInited) {
-            throw new RuntimeException("Unable to change page size after initialization");
-        }
         this.pageSize = pageSize;
     }
 
@@ -77,6 +77,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
             editList((Modification) DisplayModifications.clear());
         }
 
+        stateModel.change(State.LOADING_EMPTY);
         currentGeneration++;
         window.startInitForward();
         listEngine.loadForward(pageSize, cover(new ListEngineCallback<T>() {
@@ -99,6 +100,10 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     public void initBottom(boolean refresh) {
         MVVMEngine.checkMainThread();
 
+        if (isGlobalList) {
+            throw new RuntimeException("Global DisplayList can't grow from bottom");
+        }
+
         if (mode != null && mode == ListMode.BACKWARD) {
             return;
         }
@@ -108,8 +113,10 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
             editList((Modification) DisplayModifications.clear());
         }
 
+        stateModel.change(State.LOADING_EMPTY);
         currentGeneration++;
         window.startInitBackward();
+
         listEngine.loadBackward(pageSize, cover(new ListEngineCallback<T>() {
             @Override
             public void onLoaded(List<T> items, long topSortKey, long bottomSortKey) {
@@ -126,33 +133,47 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         }, currentGeneration));
     }
 
-//    @MainThread
-//    public void initCenter(long centerSortKey) {
-//        MVVMEngine.checkMainThread();
-//
-//        editList((Modification) DisplayModifications.clear());
-//        currentGeneration++;
-//        window.startInitCenter();
-//        listEngine.loadCenter(centerSortKey, pageSize, cover(new ListEngineCallback<T>() {
-//            @Override
-//            public void onLoaded(List<T> items, long topSortKey, long bottomSortKey) {
-//                MVVMEngine.checkMainThread();
-//
-//                window.completeInitCenter(bottomSortKey, topSortKey);
-//
-//                if (items.size() != 0) {
-//                    editList(DisplayModifications.addOrUpdate(items));
-//                } else {
-//                    window.onForwardCompleted();
-//                    window.onBackwardCompleted();
-//                }
-//            }
-//        }, currentGeneration));
-//    }
+    @MainThread
+    public void initCenter(long centerSortKey, boolean refresh) {
+        MVVMEngine.checkMainThread();
+
+        if (mode != null && mode == ListMode.CENTER) {
+            return;
+        }
+        mode = ListMode.CENTER;
+
+        if (refresh) {
+            editList((Modification) DisplayModifications.clear());
+        }
+
+        stateModel.change(State.LOADING_EMPTY);
+        currentGeneration++;
+        window.startInitCenter();
+
+        listEngine.loadCenter(centerSortKey, pageSize, cover(new ListEngineCallback<T>() {
+            @Override
+            public void onLoaded(List<T> items, long topSortKey, long bottomSortKey) {
+                MVVMEngine.checkMainThread();
+
+                window.completeInitCenter(bottomSortKey, topSortKey);
+
+                if (items.size() != 0) {
+                    editList(DisplayModifications.addOrUpdate(items));
+                } else {
+                    window.onForwardCompleted();
+                    window.onBackwardCompleted();
+                }
+            }
+        }, currentGeneration));
+    }
 
     @MainThread
     public void initSearch(String query, boolean refresh) {
         MVVMEngine.checkMainThread();
+
+        if (isGlobalList) {
+            throw new RuntimeException("Global DisplayList can't perform search");
+        }
 
         if (query == null || query.trim().length() == 0) {
             throw new RuntimeException("Query can't be null or empty");
@@ -168,8 +189,10 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
             editList((Modification) DisplayModifications.clear());
         }
 
+        stateModel.change(State.LOADING_EMPTY);
         currentGeneration++;
         window.startInitForward();
+
         listEngine.loadForward(query, pageSize, cover(new ListEngineCallback<T>() {
             @Override
             public void onLoaded(List<T> items, long topSortKey, long bottomSortKey) {
@@ -253,8 +276,8 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     public void dispose() {
         MVVMEngine.checkMainThread();
 
-        if (blockDisposal) {
-            throw new RuntimeException("This display list can't be disposed");
+        if (isGlobalList) {
+            throw new RuntimeException("Global DisplayList can't be disposed");
         }
 
         listEngine.unsubscribe(engineListener);
@@ -298,37 +321,47 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
         @Override
         public void onItemRemoved(long id) {
+            // TODO: Check if message from window
             editList((Modification) DisplayModifications.remove(id));
         }
 
         @Override
         public void onItemsRemoved(long[] ids) {
+            // TODO: Check if message from window
             editList((Modification) DisplayModifications.remove(ids));
         }
 
         @Override
         public void addOrUpdate(T item) {
+            // TODO: Check if message from window
             editList(DisplayModifications.addOrUpdate(item));
         }
 
         @Override
         public void addOrUpdate(List<T> items) {
+            // TODO: Check if message from window
             editList(DisplayModifications.addOrUpdate(items));
         }
 
         @Override
         public void onItemsReplaced(List<T> items) {
+            // TODO: Check if message from window
             editList((Modification) DisplayModifications.clear());
             editList(DisplayModifications.addOrUpdate(items));
         }
 
         @Override
         public void onListClear() {
+            // TODO: Check if message from window
             editList((Modification) DisplayModifications.clear());
         }
     }
 
     private enum ListMode {
-        FORWARD, BACKWARD, SEARCH
+        FORWARD, BACKWARD, CENTER, SEARCH
+    }
+
+    public enum State {
+        LOADING_EMPTY, LOADED, LOADED_EMPTY
     }
 }

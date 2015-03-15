@@ -50,7 +50,7 @@ public class DisplayLists extends BaseModule {
 
         BindedDisplayList<Dialog> displayList = new BindedDisplayList<Dialog>((ListEngineDisplayExt<Dialog>) dialogsEngine,
                 disableDispose);
-        displayList.initTop(true);
+        displayList.initTop(false);
         return displayList;
     }
 
@@ -64,7 +64,7 @@ public class DisplayLists extends BaseModule {
 
         BindedDisplayList<Contact> contactList = new BindedDisplayList<Contact>((ListEngineDisplayExt<Contact>) contactsEngine,
                 disableDispose);
-        contactList.initTop(true);
+        contactList.initTop(false);
         return contactList;
     }
 }

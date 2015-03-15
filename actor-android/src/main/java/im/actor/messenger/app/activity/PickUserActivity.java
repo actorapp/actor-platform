@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragmentActivity;
-import im.actor.messenger.app.fragment.pick.PickUserFragment;
+import im.actor.messenger.app.fragment.contacts.PickUserFragment;
 
 /**
  * Created by ex3ndr on 08.10.14.
