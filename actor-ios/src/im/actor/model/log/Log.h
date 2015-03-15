@@ -7,16 +7,16 @@
 #define _AMLog_H_
 
 @class JavaLangThrowable;
-@protocol AMLogCallback;
+@protocol AMLogProvider;
 
 #include "J2ObjC_header.h"
 
 @interface AMLog : NSObject {
 }
 
-+ (id<AMLogCallback>)getLog;
++ (id<AMLogProvider>)getLog;
 
-+ (void)setLogWithAMLogCallback:(id<AMLogCallback>)log;
++ (void)setLogWithAMLogProvider:(id<AMLogProvider>)log;
 
 + (void)wWithNSString:(NSString *)tag
          withNSString:(NSString *)message;
@@ -38,9 +38,9 @@ J2OBJC_EMPTY_STATIC_INIT(AMLog)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT id<AMLogCallback> AMLog_getLog();
+FOUNDATION_EXPORT id<AMLogProvider> AMLog_getLog();
 
-FOUNDATION_EXPORT void AMLog_setLogWithAMLogCallback_(id<AMLogCallback> log);
+FOUNDATION_EXPORT void AMLog_setLogWithAMLogProvider_(id<AMLogProvider> log);
 
 FOUNDATION_EXPORT void AMLog_wWithNSString_withNSString_(NSString *tag, NSString *message);
 
@@ -50,9 +50,9 @@ FOUNDATION_EXPORT void AMLog_dWithNSString_withNSString_(NSString *tag, NSString
 
 FOUNDATION_EXPORT void AMLog_vWithNSString_withNSString_(NSString *tag, NSString *message);
 
-FOUNDATION_EXPORT id<AMLogCallback> AMLog_log_;
-J2OBJC_STATIC_FIELD_GETTER(AMLog, log_, id<AMLogCallback>)
-J2OBJC_STATIC_FIELD_SETTER(AMLog, log_, id<AMLogCallback>)
+FOUNDATION_EXPORT id<AMLogProvider> AMLog_log_;
+J2OBJC_STATIC_FIELD_GETTER(AMLog, log_, id<AMLogProvider>)
+J2OBJC_STATIC_FIELD_SETTER(AMLog, log_, id<AMLogProvider>)
 CF_EXTERN_C_END
 
 typedef AMLog ImActorModelLogLog;

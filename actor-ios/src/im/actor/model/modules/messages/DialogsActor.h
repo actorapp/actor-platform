@@ -15,7 +15,7 @@
 @class AMUser;
 @class ImActorModelModulesMessagesDialogsActor_PeerDesc;
 @class ImActorModelModulesModules;
-@protocol AMListEngine;
+@protocol ImActorModelDroidkitEngineListEngine;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"

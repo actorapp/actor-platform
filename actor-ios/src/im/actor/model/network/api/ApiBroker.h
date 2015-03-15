@@ -16,7 +16,7 @@
 @class MTRpcRequest;
 @protocol AMActorApiCallback;
 @protocol AMAuthKeyStorage;
-@protocol AMNetworking;
+@protocol AMNetworkProvider;
 @protocol AMRpcCallback;
 
 #include "J2ObjC_header.h"
@@ -31,12 +31,12 @@
 + (DKActorRef *)getWithAMEndpoints:(AMEndpoints *)endpoints
               withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
             withAMActorApiCallback:(id<AMActorApiCallback>)callback
-                  withAMNetworking:(id<AMNetworking>)networking;
+             withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
 
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
-                   withAMNetworking:(id<AMNetworking>)networking;
+              withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
 
 - (void)preStart;
 
@@ -49,7 +49,7 @@ J2OBJC_STATIC_INIT(ImActorModelNetworkApiApiBroker)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT DKActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworking_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworking> networking);
+FOUNDATION_EXPORT DKActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider);
 
 FOUNDATION_EXPORT NSString *ImActorModelNetworkApiApiBroker_TAG_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkApiApiBroker, TAG_, NSString *)
@@ -200,7 +200,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_RequestHolder)
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)capture$0
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)capture$1
              withAMActorApiCallback:(id<AMActorApiCallback>)capture$2
-                   withAMNetworking:(id<AMNetworking>)capture$3;
+              withAMNetworkProvider:(id<AMNetworkProvider>)capture$3;
 
 @end
 

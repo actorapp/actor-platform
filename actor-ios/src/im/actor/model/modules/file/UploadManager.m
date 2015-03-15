@@ -10,6 +10,7 @@
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
 #include "im/actor/model/droidkit/actors/messages/PoisonPill.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/files/FileReference.h"
 #include "im/actor/model/log/Log.h"
@@ -21,7 +22,6 @@
 #include "im/actor/model/modules/file/UploadTask.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/modules/utils/RandomUtils.h"
-#include "im/actor/model/storage/KeyValueEngine.h"
 #include "java/util/ArrayList.h"
 
 __attribute__((unused)) static void ImActorModelModulesFileUploadManager_checkQueue(ImActorModelModulesFileUploadManager *self);
@@ -333,7 +333,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
   }
   [((JavaUtilArrayList *) nil_chk(queue_)) removeWithId:queueItem];
   [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
-  [((id<AMKeyValueEngine>) nil_chk([((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) getDownloadedEngine])) addOrUpdateItemWithAMKeyValueItem:[[ImActorModelModulesFileDownloaded alloc] initWithLong:[((AMFileReference *) nil_chk(fileReference)) getFileId] withInt:[fileReference getFileSize] withNSString:[((id<ImActorModelFilesFileReference>) nil_chk(reference)) getDescriptor]]];
+  [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) getDownloadedEngine])) addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:[[ImActorModelModulesFileDownloaded alloc] initWithLong:[((AMFileReference *) nil_chk(fileReference)) getFileId] withInt:[fileReference getFileSize] withNSString:[((id<ImActorModelFilesFileReference>) nil_chk(reference)) getDescriptor]]];
   for (id<ImActorModelModulesFileUploadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
     [((id<ImActorModelModulesFileUploadCallback>) nil_chk(fileCallback)) onUploaded];
   }

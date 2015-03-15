@@ -6,7 +6,7 @@
 #ifndef _AMMVVMEngine_H_
 #define _AMMVVMEngine_H_
 
-@protocol AMMainThread;
+@protocol AMMainThreadProvider;
 @protocol JavaLangRunnable;
 
 #include "J2ObjC_header.h"
@@ -14,9 +14,11 @@
 @interface AMMVVMEngine : NSObject {
 }
 
-+ (void)init__WithAMMainThread:(id<AMMainThread>)mainThread OBJC_METHOD_FAMILY_NONE;
++ (void)init__WithAMMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider OBJC_METHOD_FAMILY_NONE;
 
-+ (id<AMMainThread>)getMainThread;
++ (id<AMMainThreadProvider>)getMainThreadProvider;
+
++ (void)checkMainThread;
 
 + (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable;
 
@@ -28,15 +30,17 @@ J2OBJC_EMPTY_STATIC_INIT(AMMVVMEngine)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT void AMMVVMEngine_init__WithAMMainThread_(id<AMMainThread> mainThread);
+FOUNDATION_EXPORT void AMMVVMEngine_init__WithAMMainThreadProvider_(id<AMMainThreadProvider> mainThreadProvider);
 
-FOUNDATION_EXPORT id<AMMainThread> AMMVVMEngine_getMainThread();
+FOUNDATION_EXPORT id<AMMainThreadProvider> AMMVVMEngine_getMainThreadProvider();
+
+FOUNDATION_EXPORT void AMMVVMEngine_checkMainThread();
 
 FOUNDATION_EXPORT void AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(id<JavaLangRunnable> runnable);
 
-FOUNDATION_EXPORT id<AMMainThread> AMMVVMEngine_mainThread_;
-J2OBJC_STATIC_FIELD_GETTER(AMMVVMEngine, mainThread_, id<AMMainThread>)
-J2OBJC_STATIC_FIELD_SETTER(AMMVVMEngine, mainThread_, id<AMMainThread>)
+FOUNDATION_EXPORT id<AMMainThreadProvider> AMMVVMEngine_mainThreadProvider_;
+J2OBJC_STATIC_FIELD_GETTER(AMMVVMEngine, mainThreadProvider_, id<AMMainThreadProvider>)
+J2OBJC_STATIC_FIELD_SETTER(AMMVVMEngine, mainThreadProvider_, id<AMMainThreadProvider>)
 CF_EXTERN_C_END
 
 typedef AMMVVMEngine ImActorModelMvvmMVVMEngine;

@@ -12,6 +12,7 @@
 @class DKActorRef;
 @class ImActorModelApiPeer;
 @class ImActorModelApiRpcResponseSeq;
+@class ImActorModelDroidkitEngineSyncKeyValue;
 @class ImActorModelModulesMessagesConversationActor;
 @class ImActorModelModulesMessagesConversationHistoryActor;
 @class ImActorModelModulesMessagesDialogsActor;
@@ -23,7 +24,7 @@
 @class ImActorModelModulesModules;
 @class JavaUtilHashMap;
 @protocol AMCommandCallback;
-@protocol AMListEngine;
+@protocol ImActorModelDroidkitEngineListEngine;
 @protocol ImActorModelFilesFileReference;
 
 #include "J2ObjC_header.h"
@@ -48,19 +49,23 @@
 
 - (DKActorRef *)getOwnReadActor;
 
+- (ImActorModelDroidkitEngineSyncKeyValue *)getConversationPending;
+
+- (ImActorModelDroidkitEngineSyncKeyValue *)getCursorStorage;
+
 - (DKActorRef *)getConversationHistoryActorWithAMPeer:(AMPeer *)peer;
 
 - (DKActorRef *)getConversationActorWithAMPeer:(AMPeer *)peer;
 
 - (void)onConversationOpenWithAMPeer:(AMPeer *)peer;
 
-- (id<AMListEngine>)getConversationEngineWithAMPeer:(AMPeer *)peer;
+- (id<ImActorModelDroidkitEngineListEngine>)getConversationEngineWithAMPeer:(AMPeer *)peer;
 
 - (DKActorRef *)getDialogsActor;
 
 - (DKActorRef *)getDialogsHistoryActor;
 
-- (id<AMListEngine>)getDialogsEngine;
+- (id<ImActorModelDroidkitEngineListEngine>)getDialogsEngine;
 
 - (void)loadMoreDialogs;
 
@@ -117,6 +122,22 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages)
+
+@interface ImActorModelModulesMessages_ConversationHolder : NSObject {
+}
+
+- (DKActorRef *)getConversationActor;
+
+- (DKActorRef *)getHistoryActor;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessages_ConversationHolder)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_ConversationHolder)
 
 @interface ImActorModelModulesMessages_$1 : NSObject < DKActorCreator > {
 }

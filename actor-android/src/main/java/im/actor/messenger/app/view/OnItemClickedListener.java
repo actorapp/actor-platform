@@ -5,4 +5,6 @@ package im.actor.messenger.app.view;
  */
 public interface OnItemClickedListener<T> {
     public void onClicked(T item);
+
+    public boolean onLongClicked(T item);
 }

@@ -7,6 +7,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
+#include "im/actor/model/droidkit/bser/BserCreator.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -30,7 +31,11 @@
 J2OBJC_FIELD_SETTER(AMMessage, messageState_, AMMessageStateEnum *)
 J2OBJC_FIELD_SETTER(AMMessage, content_, AMAbsContent *)
 
+BOOL AMMessage_initialized = NO;
+
 @implementation AMMessage
+
+id<BSBserCreator> AMMessage_CREATOR_;
 
 + (AMMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMMessage_fromBytesWithByteArray_(data);
@@ -93,14 +98,6 @@ J2OBJC_FIELD_SETTER(AMMessage, content_, AMAbsContent *)
   return [[AMMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date_ withInt:senderId_ withAMMessageStateEnum:messageState_ withAMAbsContent:content];
 }
 
-- (jlong)getListId {
-  return rid_;
-}
-
-- (jlong)getListSortKey {
-  return sortDate_;
-}
-
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   rid_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   sortDate_ = [values getLongWithInt:2];
@@ -119,6 +116,18 @@ J2OBJC_FIELD_SETTER(AMMessage, content_, AMAbsContent *)
   [writer writeObjectWithInt:6 withBSBserObject:content_];
 }
 
+- (jlong)getEngineId {
+  return rid_;
+}
+
+- (jlong)getEngineSort {
+  return sortDate_;
+}
+
+- (NSString *)getEngineSearch {
+  return nil;
+}
+
 - (void)copyAllFieldsTo:(AMMessage *)other {
   [super copyAllFieldsTo:other];
   other->rid_ = rid_;
@@ -129,6 +138,13 @@ J2OBJC_FIELD_SETTER(AMMessage, content_, AMAbsContent *)
   other->content_ = content_;
 }
 
++ (void)initialize {
+  if (self == [AMMessage class]) {
+    AMMessage_CREATOR_ = [[AMMessage_$1 alloc] init];
+    J2OBJC_SET_INITIALIZED(AMMessage)
+  }
+}
+
 @end
 
 AMMessage *AMMessage_fromBytesWithByteArray_(IOSByteArray *data) {
@@ -137,3 +153,17 @@ AMMessage *AMMessage_fromBytesWithByteArray_(IOSByteArray *data) {
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessage)
+
+@implementation AMMessage_$1
+
+- (AMMessage *)createInstance {
+  return [[AMMessage alloc] init];
+}
+
+- (instancetype)init {
+  return [super init];
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessage_$1)

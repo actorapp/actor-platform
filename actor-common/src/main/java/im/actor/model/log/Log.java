@@ -1,19 +1,19 @@
 package im.actor.model.log;
 
-import im.actor.model.LogCallback;
+import im.actor.model.LogProvider;
 
 /**
  * Created by ex3ndr on 06.02.15.
  */
 public class Log {
 
-    private static LogCallback log;
+    private static LogProvider log;
 
-    public static LogCallback getLog() {
+    public static LogProvider getLog() {
         return log;
     }
 
-    public static void setLog(LogCallback log) {
+    public static void setLog(LogProvider log) {
         Log.log = log;
     }
 

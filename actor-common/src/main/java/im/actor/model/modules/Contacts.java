@@ -23,7 +23,6 @@ import im.actor.model.modules.updates.internal.UsersFounded;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
-import im.actor.model.droidkit.engine.AsyncListEngine;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
@@ -40,9 +39,8 @@ public class Contacts extends BaseModule {
     public Contacts(final Modules modules) {
         super(modules);
 
-        contacts = new AsyncListEngine<Contact>(
-                modules.getConfiguration().getStorage().createList(STORAGE_CONTACTS),
-                Contact.CREATOR);
+        contacts = modules.getConfiguration().getStorageProvider()
+                .createContactsList(modules.getConfiguration().getStorageProvider().createList(STORAGE_CONTACTS));
 
         bookImportActor = system().actorOf(Props.create(BookImportActor.class, new ActorCreator<BookImportActor>() {
             @Override

@@ -3,15 +3,13 @@ package com.droidkit.images.loading;
 import com.droidkit.actors.ActorRef;
 import com.droidkit.actors.ActorSystem;
 import com.droidkit.actors.messages.PoisonPill;
+import com.droidkit.images.cache.BitmapReference;
 import com.droidkit.images.loading.actors.ReceiverActor;
-import com.droidkit.images.loading.actors.messages.TaskCancel;
 import com.droidkit.images.loading.actors.messages.ImageError;
 import com.droidkit.images.loading.actors.messages.ImageLoaded;
+import com.droidkit.images.loading.actors.messages.TaskCancel;
 import com.droidkit.images.loading.actors.messages.TaskRequest;
-import com.droidkit.images.cache.BitmapReference;
 import com.droidkit.images.util.UiUtil;
-
-import im.actor.messenger.util.Logger;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,8 +30,6 @@ public class ImageReceiver {
 
     private int currentTask = -1;
     private BitmapReference reference;
-
-    private long requestStart;
 
     private String currentTaskKey;
 
@@ -87,7 +83,6 @@ public class ImageReceiver {
 
         currentTask = TASK_ID.getAndIncrement();
         currentTaskKey = task.getKey();
-        requestStart = System.currentTimeMillis();
         receiver.send(new TaskRequest(currentTask, task));
     }
 
@@ -119,7 +114,6 @@ public class ImageReceiver {
 
     // TODO: hide
     public void onImageLoaded(ImageLoaded loaded) {
-        Logger.d("AvatarView", "Receiver: onImageLoaded");
         if (!UiUtil.isMainThread()) {
             loaded.getReference().release();
             throw new RuntimeException("Operations allowed only on UI thread");
@@ -135,7 +129,6 @@ public class ImageReceiver {
 
     // TODO: hide
     public void onImageError(ImageError error) {
-        Logger.d("AvatarView", "Receiver: onImageError: " + error.getException());
         if (!UiUtil.isMainThread()) {
             throw new RuntimeException("Operations allowed only on UI thread");
         }

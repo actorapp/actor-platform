@@ -7,6 +7,7 @@
 #define _AMMessenger_H_
 
 @class AMAuthStateEnum;
+@class AMBindedDisplayList;
 @class AMConfiguration;
 @class AMFastThumb;
 @class AMFileReference;
@@ -26,8 +27,8 @@
 @class JavaLangException;
 @protocol AMCommand;
 @protocol AMFileVMCallback;
-@protocol AMListEngine;
 @protocol AMUploadFileVMCallback;
+@protocol ImActorModelDroidkitEngineListEngine;
 @protocol ImActorModelFilesFileReference;
 @protocol ImActorModelModulesFileDownloadCallback;
 @protocol ImActorModelModulesFileUploadCallback;
@@ -64,9 +65,9 @@
 
 - (AMMVVMCollection *)getGroups;
 
-- (id<AMListEngine>)getDialogs;
+- (id<ImActorModelDroidkitEngineListEngine>)getDialogs;
 
-- (id<AMListEngine>)getMessagesWithAMPeer:(AMPeer *)peer;
+- (id<ImActorModelDroidkitEngineListEngine>)getMessagesWithAMPeer:(AMPeer *)peer;
 
 - (AMUserTypingVM *)getTyping:(jint)uid;
 
@@ -222,6 +223,12 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
 - (void)changeAvatarWithNSString:(NSString *)descriptor;
 
 - (void)removeAvatar;
+
+- (AMBindedDisplayList *)getDialogsGlobalList;
+
+- (AMBindedDisplayList *)getContactsGlobalList;
+
+- (AMBindedDisplayList *)buildContactDisplayList;
 
 @end
 

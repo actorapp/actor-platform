@@ -13,9 +13,9 @@
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/storage/KeyValueItem.h"
+#include "im/actor/model/droidkit/engine/KeyValueItem.h"
 
-@interface AMReadState : BSBserObject < AMKeyValueItem > {
+@interface AMReadState : BSBserObject < ImActorModelDroidkitEngineKeyValueItem > {
 }
 
 + (AMReadState *)fromBytesWithByteArray:(IOSByteArray *)data;

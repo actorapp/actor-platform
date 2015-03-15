@@ -8,6 +8,7 @@
 
 @class AMContentDescription;
 @class AMPeer;
+@class ImActorModelDroidkitEngineSyncKeyValue;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesNotificationsPendingStorage;
 @protocol JavaUtilList;

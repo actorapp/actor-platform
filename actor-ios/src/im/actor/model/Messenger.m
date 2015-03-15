@@ -9,10 +9,10 @@
 #include "im/actor/model/AuthState.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/CryptoProvider.h"
-#include "im/actor/model/LogCallback.h"
-#include "im/actor/model/MainThread.h"
+#include "im/actor/model/LogProvider.h"
+#include "im/actor/model/MainThreadProvider.h"
 #include "im/actor/model/Messenger.h"
-#include "im/actor/model/Threading.h"
+#include "im/actor/model/ThreadingProvider.h"
 #include "im/actor/model/concurrency/Command.h"
 #include "im/actor/model/crypto/CryptoUtils.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
@@ -21,6 +21,7 @@
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/droidkit/actors/mailbox/Envelope.h"
+#include "im/actor/model/droidkit/engine/ListEngine.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/content/FastThumb.h"
@@ -29,6 +30,7 @@
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/Contacts.h"
+#include "im/actor/model/modules/DisplayLists.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Groups.h"
 #include "im/actor/model/modules/Messages.h"
@@ -41,9 +43,9 @@
 #include "im/actor/model/modules/Users.h"
 #include "im/actor/model/modules/file/DownloadCallback.h"
 #include "im/actor/model/modules/file/UploadCallback.h"
+#include "im/actor/model/mvvm/BindedDisplayList.h"
 #include "im/actor/model/mvvm/MVVMCollection.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
-#include "im/actor/model/storage/ListEngine.h"
 #include "im/actor/model/viewmodel/FileVM.h"
 #include "im/actor/model/viewmodel/FileVMCallback.h"
 #include "im/actor/model/viewmodel/GroupTypingVM.h"
@@ -66,26 +68,27 @@ J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 NSString * AMMessenger_TAG_ = @"CORE_INIT";
 
 - (instancetype)initWithConfig:(AMConfiguration *)configuration {
-  [super init]AMLog_setLogWithAMLogCallback_([((AMConfiguration *) nil_chk(configuration)) getLog]);
-  jlong start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
-  DKEnvironment_setThreadingWithAMThreading_([configuration getThreading]);
-  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage1 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
+  [super init]AMLog_setLogWithAMLogProvider_([((AMConfiguration *) nil_chk(configuration)) getLog]);
+  jlong start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
+  DKEnvironment_setThreadingProviderWithAMThreadingProvider_([configuration getThreadingProvider]);
+  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage1 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
   ImActorModelCryptoCryptoUtils_init__WithAMCryptoProvider_([configuration getCryptoProvider]);
-  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage2 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
-  AMMVVMEngine_init__WithAMMainThread_([configuration getMainThread]);
-  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage3 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
+  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage2 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
+  AMMVVMEngine_init__WithAMMainThreadProvider_([configuration getMainThreadProvider]);
+  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage3 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
   [((DKActorSystem *) nil_chk(DKActorSystem_system())) setTraceInterfaceWithImActorModelDroidkitActorsDebugTraceInterface:[[AMMessenger_$1 alloc] init]];
-  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage4 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
+  [((DKActorSystem *) nil_chk(DKActorSystem_system())) addDispatcherWithNSString:@"db" withInt:1];
+  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage4 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
   self->modules_ = [[ImActorModelModulesModules alloc] initWithAMConfiguration:configuration];
-  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage5 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
+  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage5 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
   [self->modules_ run];
-  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage6 in ", ([((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreading>) nil_chk([configuration getThreading])) getActorTime];
+  AMLog_dWithNSString_withNSString_(AMMessenger_TAG_, JreStrcat("$J$", @"Loading stage6 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+  start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
 }
 
 - (AMAuthStateEnum *)getAuthState {
@@ -134,11 +137,11 @@ NSString * AMMessenger_TAG_ = @"CORE_INIT";
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) getGroupsCollection];
 }
 
-- (id<AMListEngine>)getDialogs {
+- (id<ImActorModelDroidkitEngineListEngine>)getDialogs {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getDialogsEngine];
 }
 
-- (id<AMListEngine>)getMessagesWithAMPeer:(AMPeer *)peer {
+- (id<ImActorModelDroidkitEngineListEngine>)getMessagesWithAMPeer:(AMPeer *)peer {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getConversationEngineWithAMPeer:peer];
 }
 
@@ -426,6 +429,18 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
 
 - (void)removeAvatar {
   [((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getProfile])) removeAvatar];
+}
+
+- (AMBindedDisplayList *)getDialogsGlobalList {
+  return [((ImActorModelModulesDisplayLists *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getDisplayLists])) getDialogsGlobalList];
+}
+
+- (AMBindedDisplayList *)getContactsGlobalList {
+  return [((ImActorModelModulesDisplayLists *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getDisplayLists])) getContactsGlobalList];
+}
+
+- (AMBindedDisplayList *)buildContactDisplayList {
+  return [((ImActorModelModulesDisplayLists *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getDisplayLists])) buildNewContactListWithBoolean:NO];
 }
 
 - (void)copyAllFieldsTo:(AMMessenger *)other {

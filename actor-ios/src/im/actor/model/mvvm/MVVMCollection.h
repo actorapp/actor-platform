@@ -11,26 +11,26 @@
 @class IOSByteArray;
 @class IOSLongArray;
 @class JavaUtilHashMap;
-@protocol AMKeyValueItem;
-@protocol AMKeyValueStorage;
+@protocol ImActorModelDroidkitEngineKeyValueItem;
+@protocol ImActorModelDroidkitEngineKeyValueStorage;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/storage/KeyValueEngine.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 #include "java/lang/Runnable.h"
 
 @interface AMMVVMCollection : NSObject {
 }
 
-- (instancetype)initWithAMKeyValueStorage:(id<AMKeyValueStorage>)collectionStorage;
+- (instancetype)initWithImActorModelDroidkitEngineKeyValueStorage:(id<ImActorModelDroidkitEngineKeyValueStorage>)collectionStorage;
 
-- (id<AMKeyValueEngine>)getEngine;
+- (id<ImActorModelDroidkitEngineKeyValueEngine>)getEngine;
 
 - (id)getWithLong:(jlong)id_;
 
-- (id)createNewWithAMKeyValueItem:(id<AMKeyValueItem>)raw;
+- (id)createNewWithImActorModelDroidkitEngineKeyValueItem:(id<ImActorModelDroidkitEngineKeyValueItem>)raw;
 
-- (IOSByteArray *)serializeWithAMKeyValueItem:(id<AMKeyValueItem>)raw;
+- (IOSByteArray *)serializeWithImActorModelDroidkitEngineKeyValueItem:(id<ImActorModelDroidkitEngineKeyValueItem>)raw;
 
 - (id)deserializeWithByteArray:(IOSByteArray *)raw;
 
@@ -45,10 +45,10 @@ typedef AMMVVMCollection ImActorModelMvvmMVVMCollection;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection)
 
-@interface AMMVVMCollection_ProxyKeyValueEngine : NSObject < AMKeyValueEngine > {
+@interface AMMVVMCollection_ProxyKeyValueEngine : NSObject < ImActorModelDroidkitEngineKeyValueEngine > {
 }
 
-- (void)addOrUpdateItemWithAMKeyValueItem:(id<AMKeyValueItem>)item;
+- (void)addOrUpdateItemWithImActorModelDroidkitEngineKeyValueItem:(id<ImActorModelDroidkitEngineKeyValueItem>)item;
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
 

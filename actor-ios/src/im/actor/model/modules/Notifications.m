@@ -5,11 +5,15 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/StorageProvider.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
+#include "im/actor/model/droidkit/engine/KeyValueStorage.h"
+#include "im/actor/model/droidkit/engine/SyncKeyValue.h"
 #include "im/actor/model/entity/ContentDescription.h"
 #include "im/actor/model/entity/Peer.h"
+#include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Notifications.h"
 #include "im/actor/model/modules/notifications/NotificationsActor.h"
@@ -17,10 +21,12 @@
 @interface ImActorModelModulesNotifications () {
  @public
   DKActorRef *notificationsActor_;
+  ImActorModelDroidkitEngineSyncKeyValue *notificationsStorage_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotifications, notificationsActor_, DKActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesNotifications, notificationsStorage_, ImActorModelDroidkitEngineSyncKeyValue *)
 
 @interface ImActorModelModulesNotifications_$1 () {
  @public
@@ -34,9 +40,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotifications_$1, val$modules_, ImActorMo
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super initWithImActorModelModulesModules:modules]) {
+    notificationsStorage_ = [[ImActorModelDroidkitEngineSyncKeyValue alloc] initWithImActorModelDroidkitEngineKeyValueStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createKeyValueWithNSString:ImActorModelModulesBaseModule_get_STORAGE_NOTIFICATIONS_()]];
     self->notificationsActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesNotificationsNotificationsActor_class_(), [[ImActorModelModulesNotifications_$1 alloc] initWithImActorModelModulesModules:modules]) withNSString:@"actor/notifications"];
   }
   return self;
+}
+
+- (ImActorModelDroidkitEngineSyncKeyValue *)getNotificationsStorage {
+  return notificationsStorage_;
 }
 
 - (void)onOwnReadWithAMPeer:(AMPeer *)peer
@@ -78,6 +89,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotifications_$1, val$modules_, ImActorMo
 - (void)copyAllFieldsTo:(ImActorModelModulesNotifications *)other {
   [super copyAllFieldsTo:other];
   other->notificationsActor_ = notificationsActor_;
+  other->notificationsStorage_ = notificationsStorage_;
 }
 
 @end

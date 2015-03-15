@@ -5,7 +5,7 @@
 
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/MainThread.h"
+#include "im/actor/model/MainThreadProvider.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
 #include "im/actor/model/mvvm/ValueChangedListener.h"
 #include "im/actor/model/mvvm/ValueModel.h"
@@ -63,11 +63,13 @@ J2OBJC_FIELD_SETTER(AMValueModel_$1, val$value_, id)
 }
 
 - (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener {
+  AMMVVMEngine_checkMainThread();
   [self subscribeWithAMValueChangedListener:listener withBoolean:YES];
 }
 
 - (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener
                                 withBoolean:(jboolean)notify {
+  AMMVVMEngine_checkMainThread();
   if ([((JavaUtilArrayList *) nil_chk(listeners_)) containsWithId:listener]) {
     return;
   }
@@ -78,6 +80,7 @@ J2OBJC_FIELD_SETTER(AMValueModel_$1, val$value_, id)
 }
 
 - (void)unsubscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener {
+  AMMVVMEngine_checkMainThread();
   [((JavaUtilArrayList *) nil_chk(listeners_)) removeWithId:listener];
 }
 
@@ -99,7 +102,7 @@ J2OBJC_FIELD_SETTER(AMValueModel_$1, val$value_, id)
 @end
 
 void AMValueModel_notifyWithId_(AMValueModel *self, id value) {
-  [((id<AMMainThread>) nil_chk(AMMVVMEngine_getMainThread())) runOnUiThread:[[AMValueModel_$1 alloc] initWithAMValueModel:self withId:value]];
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) runOnUiThreadWithJavaLangRunnable:[[AMValueModel_$1 alloc] initWithAMValueModel:self withId:value]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMValueModel)

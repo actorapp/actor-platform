@@ -61,6 +61,10 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         this.pageSize = pageSize;
     }
 
+    public boolean isGlobalList() {
+        return isGlobalList;
+    }
+
     // Init methods
 
     @MainThread

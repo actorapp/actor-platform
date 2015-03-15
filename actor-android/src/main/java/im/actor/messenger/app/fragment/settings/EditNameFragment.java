@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.EditNameActivity;
-import im.actor.messenger.app.base.BaseFragment;
+import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.viewmodel.GroupVM;

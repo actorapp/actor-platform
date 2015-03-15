@@ -14,8 +14,9 @@
 @class ImActorModelNetworkParserRequest;
 @class ImActorModelNetworkParserResponse;
 @protocol AMCryptoProvider;
-@protocol AMKeyValueEngine;
-@protocol AMPreferencesStorage;
+@protocol AMStorageProvider;
+@protocol ImActorModelDroidkitEngineKeyValueEngine;
+@protocol ImActorModelDroidkitEnginePreferencesStorage;
 @protocol JavaLangRunnable;
 
 #include "J2ObjC_header.h"
@@ -46,9 +47,11 @@
 
 - (DKActorRef *)conversationHistoryActorWithAMPeer:(AMPeer *)peer;
 
-- (id<AMPreferencesStorage>)preferences;
+- (id<ImActorModelDroidkitEnginePreferencesStorage>)preferences;
 
 - (id<AMCryptoProvider>)crypto;
+
+- (id<AMStorageProvider>)storage;
 
 - (jint)myUid;
 
@@ -57,15 +60,42 @@
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request;
 
-- (id<AMKeyValueEngine>)users;
+- (id<ImActorModelDroidkitEngineKeyValueEngine>)users;
 
-- (id<AMKeyValueEngine>)groups;
+- (id<ImActorModelDroidkitEngineKeyValueEngine>)groups;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesBaseModule)
 
 CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesBaseModule_STORAGE_DIALOGS_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesBaseModule, STORAGE_DIALOGS_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesBaseModule_STORAGE_USERS_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesBaseModule, STORAGE_USERS_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesBaseModule_STORAGE_GROUPS_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesBaseModule, STORAGE_GROUPS_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesBaseModule_STORAGE_DOWNLOADS_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesBaseModule, STORAGE_DOWNLOADS_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesBaseModule_STORAGE_CONTACTS_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesBaseModule, STORAGE_CONTACTS_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesBaseModule_STORAGE_NOTIFICATIONS_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesBaseModule, STORAGE_NOTIFICATIONS_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesBaseModule_STORAGE_CHAT_PREFIX_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesBaseModule, STORAGE_CHAT_PREFIX_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesBaseModule_STORAGE_PENDING_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesBaseModule, STORAGE_PENDING_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesBaseModule, STORAGE_CURSOR_, NSString *)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesBaseModule)

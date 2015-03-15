@@ -15,10 +15,11 @@
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserCreator.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/storage/ListEngineItem.h"
+#include "im/actor/model/droidkit/engine/ListEngineItem.h"
 
-@interface AMDialog : BSBserObject < AMListEngineItem > {
+@interface AMDialog : BSBserObject < ImActorModelDroidkitEngineListEngineItem > {
 }
 
 + (AMDialog *)fromBytesWithByteArray:(IOSByteArray *)date;
@@ -37,10 +38,6 @@
                        withInt:(jint)relatedUid;
 
 - (AMPeer *)getPeer;
-
-- (jlong)getListId;
-
-- (jlong)getListSortKey;
 
 - (NSString *)getDialogTitle;
 
@@ -71,17 +68,44 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+- (jlong)getEngineId;
+
+- (jlong)getEngineSort;
+
+- (NSString *)getEngineSearch;
+
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(AMDialog)
+FOUNDATION_EXPORT BOOL AMDialog_initialized;
+J2OBJC_STATIC_INIT(AMDialog)
 
 CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT AMDialog *AMDialog_fromBytesWithByteArray_(IOSByteArray *date);
+
+FOUNDATION_EXPORT id<BSBserCreator> AMDialog_CREATOR_;
+J2OBJC_STATIC_FIELD_GETTER(AMDialog, CREATOR_, id<BSBserCreator>)
+J2OBJC_STATIC_FIELD_SETTER(AMDialog, CREATOR_, id<BSBserCreator>)
 CF_EXTERN_C_END
 
 typedef AMDialog ImActorModelEntityDialog;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDialog)
+
+@interface AMDialog_$1 : NSObject < BSBserCreator > {
+}
+
+- (AMDialog *)createInstance;
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDialog_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDialog_$1)
 
 #endif // _AMDialog_H_

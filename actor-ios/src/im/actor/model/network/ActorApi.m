@@ -4,7 +4,7 @@
 //
 
 #include "J2ObjC_source.h"
-#include "im/actor/model/Networking.h"
+#include "im/actor/model/NetworkProvider.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/network/ActorApi.h"
 #include "im/actor/model/network/ActorApiCallback.h"
@@ -27,9 +27,9 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
-                   withAMNetworking:(id<AMNetworking>)networking {
+              withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider {
   if (self = [super init]) {
-    self->apiBroker_ = ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworking_(endpoints, keyStorage, callback, networking);
+    self->apiBroker_ = ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(endpoints, keyStorage, callback, networkProvider);
   }
   return self;
 }

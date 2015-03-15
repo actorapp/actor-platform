@@ -12,9 +12,9 @@
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/storage/KeyValueItem.h"
+#include "im/actor/model/droidkit/engine/KeyValueItem.h"
 
-@interface AMContactRecord : BSBserObject < AMKeyValueItem > {
+@interface AMContactRecord : BSBserObject < ImActorModelDroidkitEngineKeyValueItem > {
 }
 
 + (AMContactRecord *)fromBytesWithByteArray:(IOSByteArray *)data;

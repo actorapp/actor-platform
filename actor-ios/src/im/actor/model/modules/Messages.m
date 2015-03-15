@@ -6,8 +6,7 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/Configuration.h"
-#include "im/actor/model/Storage.h"
+#include "im/actor/model/StorageProvider.h"
 #include "im/actor/model/api/OutPeer.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/PeerType.h"
@@ -22,6 +21,12 @@
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
+#include "im/actor/model/droidkit/engine/KeyValueStorage.h"
+#include "im/actor/model/droidkit/engine/ListEngine.h"
+#include "im/actor/model/droidkit/engine/ListStorage.h"
+#include "im/actor/model/droidkit/engine/PreferencesStorage.h"
+#include "im/actor/model/droidkit/engine/SyncKeyValue.h"
 #include "im/actor/model/entity/Group.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/PeerType.h"
@@ -42,9 +47,6 @@
 #include "im/actor/model/modules/messages/SenderActor.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/RpcInternalException.h"
-#include "im/actor/model/storage/KeyValueEngine.h"
-#include "im/actor/model/storage/ListEngine.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
 #include "java/lang/Boolean.h"
 #include "java/util/HashMap.h"
 
@@ -52,7 +54,7 @@ __attribute__((unused)) static void ImActorModelModulesMessages_assumeConvActorW
 
 @interface ImActorModelModulesMessages () {
  @public
-  id<AMListEngine> dialogs_;
+  id<ImActorModelDroidkitEngineListEngine> dialogs_;
   DKActorRef *dialogsActor_;
   DKActorRef *dialogsHistoryActor_;
   DKActorRef *ownReadActor_;
@@ -62,12 +64,14 @@ __attribute__((unused)) static void ImActorModelModulesMessages_assumeConvActorW
   JavaUtilHashMap *conversationEngines_;
   JavaUtilHashMap *conversationActors_;
   JavaUtilHashMap *conversationHistoryActors_;
+  ImActorModelDroidkitEngineSyncKeyValue *conversationPending_;
+  ImActorModelDroidkitEngineSyncKeyValue *cursorStorage_;
 }
 
 - (void)assumeConvActorWithAMPeer:(AMPeer *)peer;
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogs_, id<AMListEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogs_, id<ImActorModelDroidkitEngineListEngine>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogsActor_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, dialogsHistoryActor_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, ownReadActor_, DKActorRef *)
@@ -77,6 +81,21 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, sendMessageActor_, DKActorRef *
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationEngines_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationActors_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationHistoryActors_, JavaUtilHashMap *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationPending_, ImActorModelDroidkitEngineSyncKeyValue *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, cursorStorage_, ImActorModelDroidkitEngineSyncKeyValue *)
+
+@interface ImActorModelModulesMessages_ConversationHolder () {
+ @public
+  DKActorRef *conversationActor_;
+  DKActorRef *historyActor_;
+}
+- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$
+                                     withDKActorRef:(DKActorRef *)conversationActor
+                                     withDKActorRef:(DKActorRef *)historyActor;
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_ConversationHolder, conversationActor_, DKActorRef *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_ConversationHolder, historyActor_, DKActorRef *)
 
 @interface ImActorModelModulesMessages_$1 () {
  @public
@@ -281,7 +300,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4_$2, val$e_, AMRpcExceptio
     conversationEngines_ = [[JavaUtilHashMap alloc] init];
     conversationActors_ = [[JavaUtilHashMap alloc] init];
     conversationHistoryActors_ = [[JavaUtilHashMap alloc] init];
-    self->dialogs_ = [((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) getStorage])) createDialogsEngine];
+    self->conversationPending_ = [[ImActorModelDroidkitEngineSyncKeyValue alloc] initWithImActorModelDroidkitEngineKeyValueStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createKeyValueWithNSString:ImActorModelModulesBaseModule_get_STORAGE_PENDING_()]];
+    self->cursorStorage_ = [[ImActorModelDroidkitEngineSyncKeyValue alloc] initWithImActorModelDroidkitEngineKeyValueStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createKeyValueWithNSString:ImActorModelModulesBaseModule_get_STORAGE_CURSOR_()]];
+    self->dialogs_ = [((id<AMStorageProvider>) nil_chk([self storage])) createDialogsListWithImActorModelDroidkitEngineListStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createListWithNSString:ImActorModelModulesBaseModule_get_STORAGE_DIALOGS_()]];
   }
   return self;
 }
@@ -311,6 +332,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4_$2, val$e_, AMRpcExceptio
   return ownReadActor_;
 }
 
+- (ImActorModelDroidkitEngineSyncKeyValue *)getConversationPending {
+  return conversationPending_;
+}
+
+- (ImActorModelDroidkitEngineSyncKeyValue *)getCursorStorage {
+  return cursorStorage_;
+}
+
 - (void)assumeConvActorWithAMPeer:(AMPeer *)peer {
   ImActorModelModulesMessages_assumeConvActorWithAMPeer_(self, peer);
 }
@@ -333,10 +362,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4_$2, val$e_, AMRpcExceptio
   ImActorModelModulesMessages_assumeConvActorWithAMPeer_(self, peer);
 }
 
-- (id<AMListEngine>)getConversationEngineWithAMPeer:(AMPeer *)peer {
+- (id<ImActorModelDroidkitEngineListEngine>)getConversationEngineWithAMPeer:(AMPeer *)peer {
   @synchronized(conversationEngines_) {
     if (![((JavaUtilHashMap *) nil_chk(conversationEngines_)) containsKeyWithId:peer]) {
-      (void) [conversationEngines_ putWithId:peer withId:[((id<AMStorage>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getStorage])) createMessagesEngineWithAMPeer:peer]];
+      id<ImActorModelDroidkitEngineListStorage> storage = [((id<AMStorageProvider>) nil_chk([self storage])) createListWithNSString:JreStrcat("$J", ImActorModelModulesBaseModule_get_STORAGE_CHAT_PREFIX_(), [((AMPeer *) nil_chk(peer)) getUnuqueId])];
+      (void) [conversationEngines_ putWithId:peer withId:[((id<AMStorageProvider>) nil_chk([self storage])) createMessagesListWithAMPeer:peer withImActorModelDroidkitEngineListStorage:storage]];
     }
     return [conversationEngines_ getWithId:peer];
   }
@@ -350,7 +380,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4_$2, val$e_, AMRpcExceptio
   return dialogsHistoryActor_;
 }
 
-- (id<AMListEngine>)getDialogsEngine {
+- (id<ImActorModelDroidkitEngineListEngine>)getDialogsEngine {
   return dialogs_;
 }
 
@@ -403,20 +433,20 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileRefer
 
 - (void)saveReadStateWithAMPeer:(AMPeer *)peer
                        withLong:(jlong)lastReadDate {
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:JreStrcat("$J", @"read_state_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withLong:lastReadDate];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putLongWithNSString:JreStrcat("$J", @"read_state_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withLong:lastReadDate];
 }
 
 - (jlong)loadReadStateWithAMPeer:(AMPeer *)peer {
-  return [((id<AMPreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:JreStrcat("$J", @"read_state_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withLong:0];
+  return [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getLongWithNSString:JreStrcat("$J", @"read_state_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withLong:0];
 }
 
 - (void)saveDraftWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)draft {
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putStringWithNSString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withNSString:[((NSString *) nil_chk(draft)) trim]];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putStringWithNSString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withNSString:[((NSString *) nil_chk(draft)) trim]];
 }
 
 - (NSString *)loadDraftWithAMPeer:(AMPeer *)peer {
-  NSString *res = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getStringWithNSString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId])];
+  NSString *res = [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getStringWithNSString:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId])];
   if (res == nil) {
     return @"";
   }
@@ -445,6 +475,8 @@ withImActorModelFilesFileReference:(id<ImActorModelFilesFileReference>)fileRefer
   other->conversationEngines_ = conversationEngines_;
   other->conversationActors_ = conversationActors_;
   other->conversationHistoryActors_ = conversationHistoryActors_;
+  other->conversationPending_ = conversationPending_;
+  other->cursorStorage_ = cursorStorage_;
 }
 
 @end
@@ -459,6 +491,36 @@ void ImActorModelModulesMessages_assumeConvActorWithAMPeer_(ImActorModelModulesM
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages)
+
+@implementation ImActorModelModulesMessages_ConversationHolder
+
+- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$
+                                     withDKActorRef:(DKActorRef *)conversationActor
+                                     withDKActorRef:(DKActorRef *)historyActor {
+  if (self = [super init]) {
+    self->conversationActor_ = conversationActor;
+    self->historyActor_ = historyActor;
+  }
+  return self;
+}
+
+- (DKActorRef *)getConversationActor {
+  return conversationActor_;
+}
+
+- (DKActorRef *)getHistoryActor {
+  return historyActor_;
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesMessages_ConversationHolder *)other {
+  [super copyAllFieldsTo:other];
+  other->conversationActor_ = conversationActor_;
+  other->historyActor_ = historyActor_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_ConversationHolder)
 
 @implementation ImActorModelModulesMessages_$1
 
@@ -632,7 +694,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$8)
   ImActorModelApiOutPeer *outPeer;
   ImActorModelApiPeer *apiPeer;
   if ([((AMPeer *) nil_chk(val$peer_)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
-    AMUser *user = [((id<AMKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:[val$peer_ getPeerId]];
+    AMUser *user = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:[val$peer_ getPeerId]];
     if (user == nil) {
       [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesMessages_$9_$1 alloc] initWithAMCommandCallback:callback]];
       return;
@@ -641,7 +703,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$8)
     apiPeer = [[ImActorModelApiPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[user getUid]];
   }
   else if ([val$peer_ getPeerType] == AMPeerTypeEnum_get_GROUP()) {
-    AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([this$0_ groups])) getValueWithLong:[val$peer_ getPeerId]];
+    AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ groups])) getValueWithLong:[val$peer_ getPeerId]];
     if (group == nil) {
       [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesMessages_$9_$2 alloc] initWithAMCommandCallback:callback]];
       return;
@@ -813,7 +875,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$9_$4_$2)
   ImActorModelApiOutPeer *outPeer;
   ImActorModelApiPeer *apiPeer;
   if ([((AMPeer *) nil_chk(val$peer_)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
-    AMUser *user = [((id<AMKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:[val$peer_ getPeerId]];
+    AMUser *user = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:[val$peer_ getPeerId]];
     if (user == nil) {
       [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesMessages_$10_$1 alloc] initWithAMCommandCallback:callback]];
       return;
@@ -822,7 +884,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$9_$4_$2)
     apiPeer = [[ImActorModelApiPeer alloc] initWithImActorModelApiPeerTypeEnum:ImActorModelApiPeerTypeEnum_get_PRIVATE() withInt:[user getUid]];
   }
   else if ([val$peer_ getPeerType] == AMPeerTypeEnum_get_GROUP()) {
-    AMGroup *group = [((id<AMKeyValueEngine>) nil_chk([this$0_ groups])) getValueWithLong:[val$peer_ getPeerId]];
+    AMGroup *group = [((id<ImActorModelDroidkitEngineKeyValueEngine>) nil_chk([this$0_ groups])) getValueWithLong:[val$peer_ getPeerId]];
     if (group == nil) {
       [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesMessages_$10_$2 alloc] initWithAMCommandCallback:callback]];
       return;

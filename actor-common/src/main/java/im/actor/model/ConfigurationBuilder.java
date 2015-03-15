@@ -9,14 +9,14 @@ import im.actor.model.network.ConnectionEndpoint;
  */
 public class ConfigurationBuilder {
 
-    private LogCallback log;
+    private LogProvider log;
 
-    private Networking networking;
+    private NetworkProvider networkProvider;
 
-    private Threading threading;
-    private MainThread mainThread;
+    private ThreadingProvider threadingProvider;
+    private MainThreadProvider mainThreadProvider;
 
-    private Storage enginesFactory;
+    private StorageProvider enginesFactory;
 
     private ArrayList<ConnectionEndpoint> endpoints = new ArrayList<ConnectionEndpoint>();
 
@@ -70,23 +70,23 @@ public class ConfigurationBuilder {
         return this;
     }
 
-    public ConfigurationBuilder setLog(LogCallback log) {
+    public ConfigurationBuilder setLog(LogProvider log) {
         this.log = log;
         return this;
     }
 
-    public ConfigurationBuilder setNetworking(Networking networking) {
-        this.networking = networking;
+    public ConfigurationBuilder setNetworkProvider(NetworkProvider networkProvider) {
+        this.networkProvider = networkProvider;
         return this;
     }
 
-    public ConfigurationBuilder setThreading(Threading threading) {
-        this.threading = threading;
+    public ConfigurationBuilder setThreadingProvider(ThreadingProvider threadingProvider) {
+        this.threadingProvider = threadingProvider;
         return this;
     }
 
-    public ConfigurationBuilder setStorage(Storage storage) {
-        this.enginesFactory = storage;
+    public ConfigurationBuilder setStorage(StorageProvider storageProvider) {
+        this.enginesFactory = storageProvider;
         return this;
     }
 
@@ -135,19 +135,19 @@ public class ConfigurationBuilder {
         return this;
     }
 
-    public ConfigurationBuilder setMainThread(MainThread mainThread) {
-        this.mainThread = mainThread;
+    public ConfigurationBuilder setMainThreadProvider(MainThreadProvider mainThreadProvider) {
+        this.mainThreadProvider = mainThreadProvider;
         return this;
     }
 
     public Configuration build() {
-        if (networking == null) {
+        if (networkProvider == null) {
             throw new RuntimeException("Networking is not set");
         }
-        if (threading == null) {
+        if (threadingProvider == null) {
             throw new RuntimeException("Threading is not set");
         }
-        if (mainThread == null) {
+        if (mainThreadProvider == null) {
             throw new RuntimeException("Main Thread is not set");
         }
         if (enginesFactory == null) {
@@ -168,8 +168,8 @@ public class ConfigurationBuilder {
         if (apiConfiguration == null) {
             throw new RuntimeException("Api Configuration not set");
         }
-        return new Configuration(networking, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
-                threading, mainThread, enginesFactory, log, localeProvider,
+        return new Configuration(networkProvider, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
+                threadingProvider, mainThreadProvider, enginesFactory, log, localeProvider,
                 phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider,
                 apiConfiguration, enableContactsLogging, enableNetworkLogging);
     }

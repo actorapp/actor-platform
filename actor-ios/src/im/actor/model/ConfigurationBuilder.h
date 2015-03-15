@@ -12,13 +12,13 @@
 @protocol AMCryptoProvider;
 @protocol AMFileSystemProvider;
 @protocol AMLocaleProvider;
-@protocol AMLogCallback;
-@protocol AMMainThread;
-@protocol AMNetworking;
+@protocol AMLogProvider;
+@protocol AMMainThreadProvider;
+@protocol AMNetworkProvider;
 @protocol AMNotificationProvider;
 @protocol AMPhoneBookProvider;
-@protocol AMStorage;
-@protocol AMThreading;
+@protocol AMStorageProvider;
+@protocol AMThreadingProvider;
 
 #include "J2ObjC_header.h"
 
@@ -39,19 +39,19 @@
 
 - (AMConfigurationBuilder *)setPhoneBookProviderWithAMPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider;
 
-- (AMConfigurationBuilder *)setLog:(id<AMLogCallback>)log;
+- (AMConfigurationBuilder *)setLogWithAMLogProvider:(id<AMLogProvider>)log;
 
-- (AMConfigurationBuilder *)setNetworking:(id<AMNetworking>)networking;
+- (AMConfigurationBuilder *)setNetworkProviderWithAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
 
-- (AMConfigurationBuilder *)setThreading:(id<AMThreading>)threading;
+- (AMConfigurationBuilder *)setThreadingProviderWithAMThreadingProvider:(id<AMThreadingProvider>)threadingProvider;
 
-- (AMConfigurationBuilder *)setStorage:(id<AMStorage>)storage;
+- (AMConfigurationBuilder *)setStorageWithAMStorageProvider:(id<AMStorageProvider>)storageProvider;
 
 - (AMConfigurationBuilder *)setLocale:(id<AMLocaleProvider>)localeProvider;
 
 - (AMConfigurationBuilder *)addEndpoint:(NSString *)url;
 
-- (AMConfigurationBuilder *)setMainThread:(id<AMMainThread>)mainThread;
+- (AMConfigurationBuilder *)setMainThreadProviderWithAMMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider;
 
 - (AMConfiguration *)build;
 

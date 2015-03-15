@@ -14,7 +14,7 @@
 @class ImActorModelApiRpcResponseSendAuthCode;
 @class ImActorModelModulesModules;
 @protocol AMCommandCallback;
-@protocol AMMainThread;
+@protocol AMMainThreadProvider;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/concurrency/Command.h"

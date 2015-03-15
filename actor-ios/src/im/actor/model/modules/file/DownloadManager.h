@@ -12,7 +12,7 @@
 @class ImActorModelModulesFileDownloadTask;
 @class ImActorModelModulesModules;
 @class JavaUtilArrayList;
-@protocol AMKeyValueEngine;
+@protocol ImActorModelDroidkitEngineKeyValueEngine;
 @protocol ImActorModelFilesFileReference;
 @protocol ImActorModelModulesFileDownloadCallback;
 

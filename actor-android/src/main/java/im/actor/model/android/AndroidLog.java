@@ -2,12 +2,12 @@ package im.actor.model.android;
 
 import android.util.Log;
 
-import im.actor.model.LogCallback;
+import im.actor.model.LogProvider;
 
 /**
  * Created by ex3ndr on 16.02.15.
  */
-public class AndroidLog implements LogCallback {
+public class AndroidLog implements LogProvider {
     @Override
     public void w(String tag, String message) {
         Log.w(tag, message);

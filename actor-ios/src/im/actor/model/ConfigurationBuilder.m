@@ -11,13 +11,13 @@
 #include "im/actor/model/CryptoProvider.h"
 #include "im/actor/model/FileSystemProvider.h"
 #include "im/actor/model/LocaleProvider.h"
-#include "im/actor/model/LogCallback.h"
-#include "im/actor/model/MainThread.h"
-#include "im/actor/model/Networking.h"
+#include "im/actor/model/LogProvider.h"
+#include "im/actor/model/MainThreadProvider.h"
+#include "im/actor/model/NetworkProvider.h"
 #include "im/actor/model/NotificationProvider.h"
 #include "im/actor/model/PhoneBookProvider.h"
-#include "im/actor/model/Storage.h"
-#include "im/actor/model/Threading.h"
+#include "im/actor/model/StorageProvider.h"
+#include "im/actor/model/ThreadingProvider.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
 #include "java/lang/Integer.h"
 #include "java/lang/RuntimeException.h"
@@ -25,11 +25,11 @@
 
 @interface AMConfigurationBuilder () {
  @public
-  id<AMLogCallback> log_;
-  id<AMNetworking> networking_;
-  id<AMThreading> threading_;
-  id<AMMainThread> mainThread_;
-  id<AMStorage> enginesFactory_;
+  id<AMLogProvider> log_;
+  id<AMNetworkProvider> networkProvider_;
+  id<AMThreadingProvider> threadingProvider_;
+  id<AMMainThreadProvider> mainThreadProvider_;
+  id<AMStorageProvider> enginesFactory_;
   JavaUtilArrayList *endpoints_;
   id<AMLocaleProvider> localeProvider_;
   id<AMPhoneBookProvider> phoneBookProvider_;
@@ -42,11 +42,11 @@
 }
 @end
 
-J2OBJC_FIELD_SETTER(AMConfigurationBuilder, log_, id<AMLogCallback>)
-J2OBJC_FIELD_SETTER(AMConfigurationBuilder, networking_, id<AMNetworking>)
-J2OBJC_FIELD_SETTER(AMConfigurationBuilder, threading_, id<AMThreading>)
-J2OBJC_FIELD_SETTER(AMConfigurationBuilder, mainThread_, id<AMMainThread>)
-J2OBJC_FIELD_SETTER(AMConfigurationBuilder, enginesFactory_, id<AMStorage>)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, log_, id<AMLogProvider>)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, networkProvider_, id<AMNetworkProvider>)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, threadingProvider_, id<AMThreadingProvider>)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, mainThreadProvider_, id<AMMainThreadProvider>)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, enginesFactory_, id<AMStorageProvider>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, endpoints_, JavaUtilArrayList *)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, localeProvider_, id<AMLocaleProvider>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, phoneBookProvider_, id<AMPhoneBookProvider>)
@@ -92,23 +92,23 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
   return self;
 }
 
-- (AMConfigurationBuilder *)setLog:(id<AMLogCallback>)log {
+- (AMConfigurationBuilder *)setLogWithAMLogProvider:(id<AMLogProvider>)log {
   self->log_ = log;
   return self;
 }
 
-- (AMConfigurationBuilder *)setNetworking:(id<AMNetworking>)networking {
-  self->networking_ = networking;
+- (AMConfigurationBuilder *)setNetworkProviderWithAMNetworkProvider:(id<AMNetworkProvider>)networkProvider {
+  self->networkProvider_ = networkProvider;
   return self;
 }
 
-- (AMConfigurationBuilder *)setThreading:(id<AMThreading>)threading {
-  self->threading_ = threading;
+- (AMConfigurationBuilder *)setThreadingProviderWithAMThreadingProvider:(id<AMThreadingProvider>)threadingProvider {
+  self->threadingProvider_ = threadingProvider;
   return self;
 }
 
-- (AMConfigurationBuilder *)setStorage:(id<AMStorage>)storage {
-  self->enginesFactory_ = storage;
+- (AMConfigurationBuilder *)setStorageWithAMStorageProvider:(id<AMStorageProvider>)storageProvider {
+  self->enginesFactory_ = storageProvider;
   return self;
 }
 
@@ -159,19 +159,19 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
   return self;
 }
 
-- (AMConfigurationBuilder *)setMainThread:(id<AMMainThread>)mainThread {
-  self->mainThread_ = mainThread;
+- (AMConfigurationBuilder *)setMainThreadProviderWithAMMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider {
+  self->mainThreadProvider_ = mainThreadProvider;
   return self;
 }
 
 - (AMConfiguration *)build {
-  if (networking_ == nil) {
+  if (networkProvider_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Networking is not set"];
   }
-  if (threading_ == nil) {
+  if (threadingProvider_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Threading is not set"];
   }
-  if (mainThread_ == nil) {
+  if (mainThreadProvider_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Main Thread is not set"];
   }
   if (enginesFactory_ == nil) {
@@ -192,7 +192,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
   if (apiConfiguration_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Api Configuration not set"];
   }
-  return [[AMConfiguration alloc] initWithAMNetworking:networking_ withAMConnectionEndpointArray:[endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]] withAMThreading:threading_ withAMMainThread:mainThread_ withAMStorage:enginesFactory_ withAMLogCallback:log_ withAMLocaleProvider:localeProvider_ withAMPhoneBookProvider:phoneBookProvider_ withAMCryptoProvider:cryptoProvider_ withAMFileSystemProvider:fileSystemProvider_ withAMNotificationProvider:notificationProvider_ withAMApiConfiguration:apiConfiguration_ withBoolean:enableContactsLogging_ withBoolean:enableNetworkLogging_];
+  return [[AMConfiguration alloc] initWithAMNetworkProvider:networkProvider_ withAMConnectionEndpointArray:[endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]] withAMThreadingProvider:threadingProvider_ withAMMainThreadProvider:mainThreadProvider_ withAMStorageProvider:enginesFactory_ withAMLogProvider:log_ withAMLocaleProvider:localeProvider_ withAMPhoneBookProvider:phoneBookProvider_ withAMCryptoProvider:cryptoProvider_ withAMFileSystemProvider:fileSystemProvider_ withAMNotificationProvider:notificationProvider_ withAMApiConfiguration:apiConfiguration_ withBoolean:enableContactsLogging_ withBoolean:enableNetworkLogging_];
 }
 
 - (instancetype)init {
@@ -207,9 +207,9 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
 - (void)copyAllFieldsTo:(AMConfigurationBuilder *)other {
   [super copyAllFieldsTo:other];
   other->log_ = log_;
-  other->networking_ = networking_;
-  other->threading_ = threading_;
-  other->mainThread_ = mainThread_;
+  other->networkProvider_ = networkProvider_;
+  other->threadingProvider_ = threadingProvider_;
+  other->mainThreadProvider_ = mainThreadProvider_;
   other->enginesFactory_ = enginesFactory_;
   other->endpoints_ = endpoints_;
   other->localeProvider_ = localeProvider_;

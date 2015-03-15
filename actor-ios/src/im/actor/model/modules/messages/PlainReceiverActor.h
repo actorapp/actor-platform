@@ -30,9 +30,6 @@
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesPlainReceiverActor)
 
 CF_EXTERN_C_BEGIN
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesMessagesPlainReceiverActor_PREFERENCE_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesPlainReceiverActor, PREFERENCE_, NSString *)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesPlainReceiverActor)

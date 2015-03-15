@@ -24,6 +24,7 @@
 #include "im/actor/model/api/updates/UpdateMessageSent.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/Message.h"
 #include "im/actor/model/entity/MessageState.h"
@@ -48,7 +49,6 @@
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/modules/utils/RandomUtils.h"
 #include "im/actor/model/network/RpcException.h"
-#include "im/actor/model/storage/PreferencesStorage.h"
 #include "java/io/IOException.h"
 #include "java/lang/Long.h"
 #include "java/lang/System.h"
@@ -198,7 +198,7 @@ NSString * ImActorModelModulesMessagesSenderActor_PREFERENCES_ = @"sender_pendin
 
 - (void)preStart {
   pendingMessages_ = [[ImActorModelModulesMessagesEntityPendingMessagesStorage alloc] init];
-  IOSByteArray *p = [((id<AMPreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:ImActorModelModulesMessagesSenderActor_PREFERENCES_];
+  IOSByteArray *p = [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) getBytesWithNSString:ImActorModelModulesMessagesSenderActor_PREFERENCES_];
   if (p != nil) {
     @try {
       pendingMessages_ = ImActorModelModulesMessagesEntityPendingMessagesStorage_fromBytesWithByteArray_(p);
@@ -482,7 +482,7 @@ void ImActorModelModulesMessagesSenderActor_onErrorWithAMPeer_withLong_(ImActorM
 }
 
 void ImActorModelModulesMessagesSenderActor_savePending(ImActorModelModulesMessagesSenderActor *self) {
-  [((id<AMPreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:ImActorModelModulesMessagesSenderActor_PREFERENCES_ withByteArray:[((ImActorModelModulesMessagesEntityPendingMessagesStorage *) nil_chk(self->pendingMessages_)) toByteArray]];
+  [((id<ImActorModelDroidkitEnginePreferencesStorage>) nil_chk([self preferences])) putBytesWithNSString:ImActorModelModulesMessagesSenderActor_PREFERENCES_ withByteArray:[((ImActorModelModulesMessagesEntityPendingMessagesStorage *) nil_chk(self->pendingMessages_)) toByteArray]];
 }
 
 ImActorModelModulesMessagesEntityPendingMessage *ImActorModelModulesMessagesSenderActor_findPendingWithLong_(ImActorModelModulesMessagesSenderActor *self, jlong rid) {

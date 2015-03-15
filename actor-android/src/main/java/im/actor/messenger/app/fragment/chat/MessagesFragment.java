@@ -29,7 +29,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseFragment;
+import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.chat.recycler.RecyclerMessagesAdapter;
 import im.actor.messenger.app.view.BackgroundView;
 import im.actor.messenger.app.view.Fonts;

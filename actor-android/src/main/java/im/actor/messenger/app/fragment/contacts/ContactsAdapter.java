@@ -20,22 +20,15 @@ public class ContactsAdapter extends BindedListAdapter<Contact, ContactHolder> {
     private String query = "";
 
     private OnItemClickedListener<Contact> onItemClickedListener;
-    private OnItemClickedListener<Contact> onItemLongClickedListener;
 
     private Context context;
 
-    public ContactsAdapter(BindedDisplayList<Contact> displayList, Context context, boolean selectable) {
+    public ContactsAdapter(BindedDisplayList<Contact> displayList, Context context, boolean selectable,
+                           OnItemClickedListener<Contact> onItemClickedListener) {
         super(displayList);
         this.context = context;
         this.selectable = selectable;
-    }
-
-    public void setOnItemClickedListener(OnItemClickedListener<Contact> onItemClickedListener) {
         this.onItemClickedListener = onItemClickedListener;
-    }
-
-    public void setOnItemLongClickedListener(OnItemClickedListener<Contact> onItemLongClickedListener) {
-        this.onItemLongClickedListener = onItemLongClickedListener;
     }
 
     public void setQuery(String query) {
@@ -58,6 +51,6 @@ public class ContactsAdapter extends BindedListAdapter<Contact, ContactHolder> {
 
     @Override
     public ContactHolder onCreateViewHolder(ViewGroup viewGroup, int index, Contact item) {
-        return new ContactHolder(new FrameLayout(context), selectable, context);
+        return new ContactHolder(new FrameLayout(context), selectable, context, onItemClickedListener);
     }
 }
