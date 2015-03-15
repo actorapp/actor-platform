@@ -17,7 +17,7 @@ import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
-import im.actor.model.storage.PreferencesStorage;
+import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 

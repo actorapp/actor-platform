@@ -1,4 +1,4 @@
-package im.actor.model.storage;
+package im.actor.model.droidkit.engine;
 
 /**
  * Created by ex3ndr on 08.02.15.

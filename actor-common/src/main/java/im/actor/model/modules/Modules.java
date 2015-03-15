@@ -7,7 +7,7 @@ import im.actor.model.modules.utils.PreferenceApiStorage;
 import im.actor.model.network.ActorApi;
 import im.actor.model.network.ActorApiCallback;
 import im.actor.model.network.Endpoints;
-import im.actor.model.storage.PreferencesStorage;
+import im.actor.model.droidkit.engine.PreferencesStorage;
 
 /**
  * Created by ex3ndr on 16.02.15.

@@ -1,6 +1,6 @@
 package im.actor.console;
 
-import im.actor.model.storage.PreferencesStorage;
+import im.actor.model.droidkit.engine.PreferencesStorage;
 import org.mapdb.DB;
 
 /**

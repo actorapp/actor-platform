@@ -11,8 +11,8 @@ import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
-import im.actor.model.storage.PreferencesStorage;
-import im.actor.model.storage.SyncListEngine;
+import im.actor.model.droidkit.engine.PreferencesStorage;
+import im.actor.model.droidkit.engine.AsyncListEngine;
 
 /**
  * Created by ex3ndr on 14.03.15.
@@ -36,16 +36,16 @@ public class AndroidStorage implements Storage {
 
     @Override
     public ListEngine<Contact> createContactsList(ListStorage storage) {
-        return new SyncListEngine<Contact>(storage, Contact.CREATOR);
+        return new AsyncListEngine<Contact>(storage, Contact.CREATOR);
     }
 
     @Override
     public ListEngine<Dialog> createDialogsList(ListStorage storage) {
-        return new SyncListEngine<Dialog>(storage, Dialog.CREATOR);
+        return new AsyncListEngine<Dialog>(storage, Dialog.CREATOR);
     }
 
     @Override
     public ListEngine<Message> createMessagesList(Peer peer, ListStorage storage) {
-        return new SyncListEngine<Message>(storage, Message.CREATOR);
+        return new AsyncListEngine<Message>(storage, Message.CREATOR);
     }
 }
