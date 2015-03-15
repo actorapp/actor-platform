@@ -56,13 +56,14 @@ public abstract class BaseDialogFragment extends BaseFragment {
         }
 
         RecyclerView messagesView = (RecyclerView) res.findViewById(R.id.collection);
-        messagesView.setHasFixedSize(true);
-        messagesView.setItemViewCacheSize(10);
+        // messagesView.setHasFixedSize(false);
+        // messagesView.setItemAnimator(null);
+        // messagesView.setItemViewCacheSize(10);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        linearLayoutManager.setReverseLayout(false);
-        linearLayoutManager.setSmoothScrollbarEnabled(true);
+        // linearLayoutManager.setReverseLayout(false);
+        // linearLayoutManager.setSmoothScrollbarEnabled(true);
         messagesView.setLayoutManager(linearLayoutManager);
 
         messagesView.setAdapter(adapter);

@@ -13,10 +13,8 @@ import im.actor.model.network.RpcException;
  */
 public class PlainReaderActor extends PlainCursorActor {
 
-    private static final String PREFERENCE = "read_plain_storage";
-
     public PlainReaderActor(Modules messenger) {
-        super(PREFERENCE, messenger);
+        super(CURSOR_READ, messenger);
     }
 
     @Override

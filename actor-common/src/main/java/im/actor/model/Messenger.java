@@ -95,6 +95,7 @@ public class Messenger {
                 e.printStackTrace();
             }
         });
+        ActorSystem.system().addDispatcher("db", 1);
 
         Log.d(TAG, "Loading stage4 in " + (configuration.getThreading().getActorTime() - start) + " ms");
         start = configuration.getThreading().getActorTime();

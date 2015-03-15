@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.model.droidkit.engine.SyncKeyValue;
 import im.actor.model.entity.ContentDescription;
 import im.actor.model.entity.Notification;
 import im.actor.model.entity.Peer;
@@ -19,6 +20,7 @@ public class NotificationsActor extends ModuleActor {
     private static final String PREFERENCES_STORAGE = "notifications_pending";
     private static final int MAX_NOTIFICATION_COUNT = 10;
 
+    private SyncKeyValue storage;
     private PendingStorage pendingStorage;
 
     private Peer visiblePeer;
@@ -27,12 +29,13 @@ public class NotificationsActor extends ModuleActor {
 
     public NotificationsActor(Modules messenger) {
         super(messenger);
+        this.storage = messenger.getNotifications().getNotificationsStorage();
     }
 
     @Override
     public void preStart() {
         pendingStorage = new PendingStorage();
-        byte[] storage = preferences().getBytes(PREFERENCES_STORAGE);
+        byte[] storage = this.storage.get(0);
         if (storage != null) {
             try {
                 pendingStorage = PendingStorage.fromBytes(storage);
@@ -150,7 +153,7 @@ public class NotificationsActor extends ModuleActor {
     }
 
     private void saveStorage() {
-        preferences().putBytes(PREFERENCES_STORAGE, pendingStorage.toByteArray());
+        this.storage.put(0, pendingStorage.toByteArray());
     }
 
     // Messages

@@ -23,8 +23,11 @@ public class BaseModule {
     public static final String STORAGE_GROUPS = "groups";
     public static final String STORAGE_DOWNLOADS = "downloads";
     public static final String STORAGE_CONTACTS = "contacts";
+    public static final String STORAGE_NOTIFICATIONS = "notifications";
 
     public static final String STORAGE_CHAT_PREFIX = "chat_";
+    public static final String STORAGE_PENDING = "chat_pending";
+    public static final String STORAGE_CURSOR = "chat_cursor";
 
     private Modules modules;
 

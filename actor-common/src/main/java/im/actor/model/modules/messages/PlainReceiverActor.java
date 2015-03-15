@@ -12,10 +12,9 @@ import im.actor.model.network.RpcException;
  * Created by ex3ndr on 17.02.15.
  */
 public class PlainReceiverActor extends PlainCursorActor {
-    private static final String PREFERENCE = "plain_receiver_storage";
 
     public PlainReceiverActor(Modules messenger) {
-        super(PREFERENCE, messenger);
+        super(CURSOR_RECEIVED, messenger);
     }
 
     @Override
