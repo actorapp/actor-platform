@@ -7,6 +7,7 @@ import java.util.List;
 import im.actor.model.annotation.Verified;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.engine.ListEngine;
+import im.actor.model.droidkit.engine.SyncKeyValue;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
@@ -31,20 +32,19 @@ public class ConversationActor extends ModuleActor {
     private ListEngine<Message> messages;
     private OutUnreadMessagesStorage messagesStorage;
     private ActorRef dialogsActor;
-
-    private final String PENDING_KEY;
+    private SyncKeyValue pendingKeyValue;
 
     public ConversationActor(Peer peer, Modules messenger) {
         super(messenger);
-        PENDING_KEY = "conv_pending_" + peer.getUnuqueId();
         this.peer = peer;
+        this.pendingKeyValue = messenger.getMessagesModule().getConversationPending();
     }
 
     @Override
     public void preStart() {
         messages = messages(peer);
         messagesStorage = new OutUnreadMessagesStorage();
-        byte[] data = preferences().getBytes(PENDING_KEY);
+        byte[] data = pendingKeyValue.get(peer.getUnuqueId());
         if (data != null) {
             try {
                 messagesStorage = OutUnreadMessagesStorage.fromBytes(data);
@@ -53,7 +53,6 @@ public class ConversationActor extends ModuleActor {
             }
         }
         dialogsActor = modules().getMessagesModule().getDialogsActor();
-
     }
 
     // Messages receive/update
@@ -294,7 +293,7 @@ public class ConversationActor extends ModuleActor {
 
     @Verified
     private void savePending() {
-        preferences().putBytes(PENDING_KEY, messagesStorage.toByteArray());
+        pendingKeyValue.put(peer.getUnuqueId(), messagesStorage.toByteArray());
     }
 
     // Messages

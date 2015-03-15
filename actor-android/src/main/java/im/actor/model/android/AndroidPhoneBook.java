@@ -27,6 +27,8 @@ import im.actor.model.entity.PhoneBookPhone;
  */
 public class AndroidPhoneBook implements PhoneBookProvider {
 
+    private static final int PRELOAD_DELAY = 3000;
+    private static final int READ_ITEM_DELAY = 100;
     private static final boolean DISABLE_PHONE_BOOK = false;
     private static final String TAG = "PhoneBookLoader";
     private static PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
@@ -37,7 +39,7 @@ public class AndroidPhoneBook implements PhoneBookProvider {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(PRELOAD_DELAY);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -81,6 +83,14 @@ public class AndroidPhoneBook implements PhoneBookProvider {
         int idIndex = cur.getColumnIndex(ContactsContract.Contacts._ID);
         int nameIndex = cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
         while (cur.moveToNext()) {
+            if (READ_ITEM_DELAY > 0) {
+                try {
+                    Thread.sleep(READ_ITEM_DELAY);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
             long id = cur.getLong(idIndex);
             String name = cur.getString(nameIndex);
             if (name == null || name.trim().length() == 0)
@@ -115,6 +125,14 @@ public class AndroidPhoneBook implements PhoneBookProvider {
         final int idNumberIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
         while (cur.moveToNext()) {
+            if (READ_ITEM_DELAY > 0) {
+                try {
+                    Thread.sleep(READ_ITEM_DELAY);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
             long contactId = cur.getLong(idContactIndex);
             long phoneId = cur.getLong(idPhoneIndex);
             String rawPhone = cur.getString(idNumberIndex);
@@ -169,6 +187,14 @@ public class AndroidPhoneBook implements PhoneBookProvider {
         final int idEmailIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
 
         while (cur.moveToNext()) {
+            if (READ_ITEM_DELAY > 0) {
+                try {
+                    Thread.sleep(READ_ITEM_DELAY);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
             long contactId = cur.getLong(idEmailContactIndex);
             long emailId = cur.getLong(idEmailIdIndex);
             String rawEmail = cur.getString(idEmailIndex);

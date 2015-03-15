@@ -3,6 +3,7 @@ package im.actor.model.modules;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
+import im.actor.model.droidkit.engine.SyncKeyValue;
 import im.actor.model.entity.ContentDescription;
 import im.actor.model.entity.Peer;
 import im.actor.model.modules.notifications.NotificationsActor;
@@ -14,15 +15,22 @@ import static im.actor.model.droidkit.actors.ActorSystem.system;
  */
 public class Notifications extends BaseModule {
     private ActorRef notificationsActor;
+    private SyncKeyValue notificationsStorage;
 
     public Notifications(final Modules modules) {
         super(modules);
+        notificationsStorage = new SyncKeyValue(storage().createKeyValue(STORAGE_NOTIFICATIONS));
+
         this.notificationsActor = system().actorOf(Props.create(NotificationsActor.class, new ActorCreator<NotificationsActor>() {
             @Override
             public NotificationsActor create() {
                 return new NotificationsActor(modules);
             }
         }), "actor/notifications");
+    }
+
+    public SyncKeyValue getNotificationsStorage() {
+        return notificationsStorage;
     }
 
     public void onOwnRead(Peer peer, long fromDate) {

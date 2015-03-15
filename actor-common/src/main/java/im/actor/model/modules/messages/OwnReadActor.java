@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import im.actor.model.droidkit.engine.SyncKeyValue;
 import im.actor.model.entity.Peer;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.UnreadMessage;
@@ -17,9 +18,11 @@ import im.actor.model.modules.utils.ModuleActor;
 public class OwnReadActor extends ModuleActor {
 
     private UnreadMessagesStorage messagesStorage;
+    private SyncKeyValue syncKeyValue;
 
     public OwnReadActor(Modules messenger) {
         super(messenger);
+        this.syncKeyValue = messenger.getMessagesModule().getCursorStorage();
     }
 
     @Override
@@ -27,7 +30,7 @@ public class OwnReadActor extends ModuleActor {
         super.preStart();
 
         messagesStorage = new UnreadMessagesStorage();
-        byte[] st = preferences().getBytes("own_read_storage");
+        byte[] st = syncKeyValue.get(CURSOR_OWN_READ);
         if (st != null) {
             try {
                 messagesStorage = UnreadMessagesStorage.fromBytes(st);
@@ -204,7 +207,7 @@ public class OwnReadActor extends ModuleActor {
     }
 
     private void saveStorage() {
-        preferences().putBytes("own_read_storage", messagesStorage.toByteArray());
+        syncKeyValue.put(CURSOR_OWN_READ, messagesStorage.toByteArray());
     }
 
     // Messages

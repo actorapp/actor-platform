@@ -3,6 +3,7 @@ package im.actor.model.modules.messages;
 import java.io.IOException;
 import java.util.HashSet;
 
+import im.actor.model.droidkit.engine.SyncKeyValue;
 import im.actor.model.entity.Peer;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.PlainCursor;
@@ -14,14 +15,17 @@ import im.actor.model.modules.utils.ModuleActor;
  */
 public abstract class PlainCursorActor extends ModuleActor {
 
-    private final String preferenceName;
+
 
     private PlainCursorsStorage plainCursorsStorage;
     private HashSet<Peer> inProgress = new HashSet<Peer>();
+    private long cursorId;
+    private SyncKeyValue keyValue;
 
-    public PlainCursorActor(String preferenceName, Modules messenger) {
+    public PlainCursorActor(long cursorId, Modules messenger) {
         super(messenger);
-        this.preferenceName = preferenceName;
+        this.cursorId = cursorId;
+        this.keyValue = messenger.getMessagesModule().getCursorStorage();
     }
 
     @Override
@@ -29,7 +33,7 @@ public abstract class PlainCursorActor extends ModuleActor {
         super.preStart();
 
         plainCursorsStorage = new PlainCursorsStorage();
-        byte[] data = preferences().getBytes(preferenceName);
+        byte[] data = keyValue.get(cursorId);
         if (data != null) {
             try {
                 plainCursorsStorage = PlainCursorsStorage.fromBytes(data);
@@ -96,7 +100,7 @@ public abstract class PlainCursorActor extends ModuleActor {
 
 
     private void saveCursorState() {
-        preferences().putBytes(preferenceName, plainCursorsStorage.toByteArray());
+        keyValue.put(cursorId, plainCursorsStorage.toByteArray());
     }
 
     @Override
