@@ -21,7 +21,6 @@
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/droidkit/actors/mailbox/Envelope.h"
-#include "im/actor/model/droidkit/engine/ListEngine.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/content/FastThumb.h"
@@ -133,27 +132,31 @@ NSString * AMMessenger_TAG_ = @"CORE_INIT";
 }
 
 - (AMMVVMCollection *)getUsers {
-  return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) getUsersCollection];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule] == nil) {
+    return nil;
+  }
+  return [((ImActorModelModulesUsers *) nil_chk([modules_ getUsersModule])) getUsersCollection];
 }
 
 - (AMMVVMCollection *)getGroups {
-  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) getGroupsCollection];
-}
-
-- (id<DKListEngine>)getDialogs {
-  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getDialogsEngine];
-}
-
-- (id<DKListEngine>)getMessagesWithAMPeer:(AMPeer *)peer {
-  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getConversationEngineWithAMPeer:peer];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule] == nil) {
+    return nil;
+  }
+  return [((ImActorModelModulesGroups *) nil_chk([modules_ getGroupsModule])) getGroupsCollection];
 }
 
 - (AMUserTypingVM *)getTyping:(jint)uid {
-  return [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) getTypingWithInt:uid];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule] == nil) {
+    return nil;
+  }
+  return [((ImActorModelModulesTyping *) nil_chk([modules_ getTypingModule])) getTypingWithInt:uid];
 }
 
 - (AMGroupTypingVM *)getGroupTyping:(jint)gid {
-  return [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) getGroupTypingWithInt:gid];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule] == nil) {
+    return nil;
+  }
+  return [((ImActorModelModulesTyping *) nil_chk([modules_ getTypingModule])) getGroupTypingWithInt:gid];
 }
 
 - (void)onAppVisible {
@@ -171,25 +174,35 @@ NSString * AMMessenger_TAG_ = @"CORE_INIT";
 }
 
 - (void)onConversationOpen:(AMPeer *)peer {
-  [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) subscribeWithAMPeer:peer];
-  [((ImActorModelModulesNotifications *) nil_chk([modules_ getNotifications])) onConversationOpenWithAMPeer:peer];
-  [((ImActorModelModulesMessages *) nil_chk([modules_ getMessagesModule])) onConversationOpenWithAMPeer:peer];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule] != nil) {
+    [((ImActorModelModulesPresence *) nil_chk([modules_ getPresenceModule])) subscribeWithAMPeer:peer];
+    [((ImActorModelModulesNotifications *) nil_chk([modules_ getNotifications])) onConversationOpenWithAMPeer:peer];
+    [((ImActorModelModulesMessages *) nil_chk([modules_ getMessagesModule])) onConversationOpenWithAMPeer:peer];
+  }
 }
 
 - (void)onConversationClosed:(AMPeer *)peer {
-  [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getNotifications])) onConversationCloseWithAMPeer:peer];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule] != nil) {
+    [((ImActorModelModulesNotifications *) nil_chk([modules_ getNotifications])) onConversationCloseWithAMPeer:peer];
+  }
 }
 
 - (void)onDialogsOpen {
-  [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getNotifications])) onDialogsOpen];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getNotifications] != nil) {
+    [((ImActorModelModulesNotifications *) nil_chk([modules_ getNotifications])) onDialogsOpen];
+  }
 }
 
 - (void)onDialogsClosed {
-  [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getNotifications])) onDialogsClosed];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getNotifications] != nil) {
+    [((ImActorModelModulesNotifications *) nil_chk([modules_ getNotifications])) onDialogsClosed];
+  }
 }
 
 - (void)onProfileOpen:(jint)uid {
-  [((ImActorModelModulesPresence *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule])) subscribeWithAMPeer:AMPeer_userWithInt_(uid)];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule] != nil) {
+    [((ImActorModelModulesPresence *) nil_chk([modules_ getPresenceModule])) subscribeWithAMPeer:AMPeer_userWithInt_(uid)];
+  }
 }
 
 - (void)onProfileClosed:(jint)uid {
@@ -435,7 +448,12 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
 }
 
 - (AMBindedDisplayList *)getDialogsGlobalList {
-  return [((ImActorModelModulesDisplayLists *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getDisplayLists])) getDialogsGlobalList];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getDisplayLists] != nil) {
+    return [((ImActorModelModulesDisplayLists *) nil_chk([modules_ getDisplayLists])) getDialogsGlobalList];
+  }
+  else {
+    return nil;
+  }
 }
 
 - (AMBindedDisplayList *)getContactsGlobalList {

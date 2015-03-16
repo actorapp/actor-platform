@@ -26,7 +26,7 @@ class AsyncStorageInt<T extends BserObject & ListEngineItem> {
             public AsyncStorageActor<T> create() {
                 return new AsyncStorageActor<T>(storage, creator);
             }
-        }), "list_engine/" + NEXT_ID++);
+        }).changeDispatcher("db"), "list_engine/" + NEXT_ID++);
     }
 
     public void addOrUpdateItems(List<T> items) {

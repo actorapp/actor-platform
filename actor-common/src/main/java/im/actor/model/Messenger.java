@@ -8,12 +8,10 @@ import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.debug.TraceInterface;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
-import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
-import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
 import im.actor.model.entity.content.FastThumb;
@@ -152,26 +150,30 @@ public class Messenger {
     }
 
     public MVVMCollection<User, UserVM> getUsers() {
+        if (modules.getUsersModule() == null) {
+            return null;
+        }
         return modules.getUsersModule().getUsersCollection();
     }
 
     public MVVMCollection<Group, GroupVM> getGroups() {
+        if (modules.getGroupsModule() == null) {
+            return null;
+        }
         return modules.getGroupsModule().getGroupsCollection();
     }
 
-    public ListEngine<Dialog> getDialogs() {
-        return modules.getMessagesModule().getDialogsEngine();
-    }
-
-    public ListEngine<Message> getMessages(Peer peer) {
-        return modules.getMessagesModule().getConversationEngine(peer);
-    }
-
     public UserTypingVM getTyping(int uid) {
+        if (modules.getTypingModule() == null) {
+            return null;
+        }
         return modules.getTypingModule().getTyping(uid);
     }
 
     public GroupTypingVM getGroupTyping(int gid) {
+        if (modules.getTypingModule() == null) {
+            return null;
+        }
         return modules.getTypingModule().getGroupTyping(gid);
     }
 
@@ -190,25 +192,35 @@ public class Messenger {
     }
 
     public void onConversationOpen(Peer peer) {
-        modules.getPresenceModule().subscribe(peer);
-        modules.getNotifications().onConversationOpen(peer);
-        modules.getMessagesModule().onConversationOpen(peer);
+        if (modules.getPresenceModule() != null) {
+            modules.getPresenceModule().subscribe(peer);
+            modules.getNotifications().onConversationOpen(peer);
+            modules.getMessagesModule().onConversationOpen(peer);
+        }
     }
 
     public void onConversationClosed(Peer peer) {
-        modules.getNotifications().onConversationClose(peer);
+        if (modules.getPresenceModule() != null) {
+            modules.getNotifications().onConversationClose(peer);
+        }
     }
 
     public void onDialogsOpen() {
-        modules.getNotifications().onDialogsOpen();
+        if (modules.getNotifications() != null) {
+            modules.getNotifications().onDialogsOpen();
+        }
     }
 
     public void onDialogsClosed() {
-        modules.getNotifications().onDialogsClosed();
+        if (modules.getNotifications() != null) {
+            modules.getNotifications().onDialogsClosed();
+        }
     }
 
     public void onProfileOpen(int uid) {
-        modules.getPresenceModule().subscribe(Peer.user(uid));
+        if (modules.getPresenceModule() != null) {
+            modules.getPresenceModule().subscribe(Peer.user(uid));
+        }
     }
 
     public void onProfileClosed(int uid) {
@@ -432,7 +444,11 @@ public class Messenger {
     // Display lists
 
     public BindedDisplayList<Dialog> getDialogsGlobalList() {
-        return modules.getDisplayLists().getDialogsGlobalList();
+        if (modules.getDisplayLists() != null) {
+            return modules.getDisplayLists().getDialogsGlobalList();
+        } else {
+            return null;
+        }
     }
 
     public BindedDisplayList<Contact> getContactsGlobalList() {
