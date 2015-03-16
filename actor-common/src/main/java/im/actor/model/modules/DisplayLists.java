@@ -12,6 +12,9 @@ import im.actor.model.mvvm.MVVMEngine;
  */
 public class DisplayLists extends BaseModule {
 
+    private static final int LOAD_GAP = 20;
+    private static final int LOAD_PAGE = 20;
+
     private BindedDisplayList<Dialog> dialogGlobalList;
 
     private BindedDisplayList<Contact> contactsGlobalList;
@@ -49,7 +52,7 @@ public class DisplayLists extends BaseModule {
         }
 
         BindedDisplayList<Dialog> displayList = new BindedDisplayList<Dialog>((ListEngineDisplayExt<Dialog>) dialogsEngine,
-                disableDispose);
+                disableDispose, LOAD_PAGE, LOAD_GAP);
         displayList.initTop(false);
         return displayList;
     }
@@ -63,7 +66,7 @@ public class DisplayLists extends BaseModule {
         }
 
         BindedDisplayList<Contact> contactList = new BindedDisplayList<Contact>((ListEngineDisplayExt<Contact>) contactsEngine,
-                disableDispose);
+                disableDispose, LOAD_PAGE, LOAD_GAP);
         contactList.initTop(false);
         return contactList;
     }

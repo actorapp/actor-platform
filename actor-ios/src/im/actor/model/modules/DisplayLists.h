@@ -12,6 +12,9 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
 
+#define ImActorModelModulesDisplayLists_LOAD_GAP 20
+#define ImActorModelModulesDisplayLists_LOAD_PAGE 20
+
 @interface ImActorModelModulesDisplayLists : ImActorModelModulesBaseModule {
 }
 
@@ -30,6 +33,10 @@
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesDisplayLists)
 
 CF_EXTERN_C_BEGIN
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesDisplayLists, LOAD_GAP, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesDisplayLists, LOAD_PAGE, jint)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists)

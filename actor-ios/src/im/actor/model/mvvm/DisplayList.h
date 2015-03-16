@@ -36,6 +36,9 @@
 
 - (void)editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)mod;
 
+- (void)editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)mod
+                          withJavaLangRunnable:(id<JavaLangRunnable>)executeAfter;
+
 - (void)addListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener;
 
 - (void)removeListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener;
@@ -78,9 +81,10 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_Hook)
 @interface AMDisplayList_ListSwitcher : DKActor {
 }
 
-- (void)onEditListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification;
+- (void)onEditListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification
+                            withJavaLangRunnable:(id<JavaLangRunnable>)runnable;
 
-- (void)onListSwitchedWithAMDisplayList_ModificationArray:(IOSObjectArray *)modifications;
+- (void)onListSwitchedWithAMDisplayList_ModificationHolderArray:(IOSObjectArray *)modifications;
 
 - (void)onReceiveWithId:(id)message;
 
@@ -99,7 +103,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ListSwitcher)
 - (void)run;
 
 - (instancetype)initWithAMDisplayList_ListSwitcher:(AMDisplayList_ListSwitcher *)outer$
-               withAMDisplayList_ModificationArray:(IOSObjectArray *)capture$0;
+         withAMDisplayList_ModificationHolderArray:(IOSObjectArray *)capture$0;
 
 @end
 
@@ -133,6 +137,18 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_EditList)
+
+@interface AMDisplayList_ModificationHolder : NSObject {
+}
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_ModificationHolder)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ModificationHolder)
 
 @protocol AMDisplayList_Listener < NSObject, JavaObject >
 
