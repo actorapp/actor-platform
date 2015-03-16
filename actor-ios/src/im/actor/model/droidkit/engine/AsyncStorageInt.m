@@ -78,7 +78,7 @@ jint DKAsyncStorageInt_NEXT_ID_ = 0;
 - (instancetype)initWithDKListStorage:(id<DKListStorage>)storage
                     withBSBserCreator:(id<BSBserCreator>)creator {
   if (self = [super init]) {
-    storageActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(DKAsyncStorageActor_class_(), [[DKAsyncStorageInt_$1 alloc] initWithDKListStorage:storage withBSBserCreator:creator]) withNSString:JreStrcat("$I", @"list_engine/", DKAsyncStorageInt_NEXT_ID_++)];
+    storageActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:[((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(DKAsyncStorageActor_class_(), [[DKAsyncStorageInt_$1 alloc] initWithDKListStorage:storage withBSBserCreator:creator]))) changeDispatcherWithNSString:@"db"] withNSString:JreStrcat("$I", @"list_engine/", DKAsyncStorageInt_NEXT_ID_++)];
   }
   return self;
 }

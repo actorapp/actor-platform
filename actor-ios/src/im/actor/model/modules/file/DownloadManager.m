@@ -358,6 +358,7 @@ withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadC
   for (id<ImActorModelModulesFileDownloadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
     [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(fileCallback)) onDownloadedWithAMFileSystemReference:reference];
   }
+  ImActorModelModulesFileDownloadManager_checkQueue(self);
 }
 
 - (void)onDownloadErrorWithLong:(jlong)fileId {
@@ -375,6 +376,7 @@ withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadC
   for (id<ImActorModelModulesFileDownloadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
     [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(fileCallback)) onNotDownloaded];
   }
+  ImActorModelModulesFileDownloadManager_checkQueue(self);
 }
 
 - (ImActorModelModulesFileDownloadManager_QueueItem *)findItemWithLong:(jlong)id_ {

@@ -286,6 +286,8 @@ public class DownloadManager extends ModuleActor {
         for (DownloadCallback fileCallback : queueItem.callbacks) {
             fileCallback.onDownloaded(reference);
         }
+
+        checkQueue();
     }
 
     public void onDownloadError(long fileId) {
@@ -306,6 +308,8 @@ public class DownloadManager extends ModuleActor {
         for (DownloadCallback fileCallback : queueItem.callbacks) {
             fileCallback.onNotDownloaded();
         }
+
+        checkQueue();
     }
 
     private QueueItem findItem(long id) {
