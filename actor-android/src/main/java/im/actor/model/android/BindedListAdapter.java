@@ -64,13 +64,7 @@ public abstract class BindedListAdapter<V extends BserObject & ListEngineItem,
 
     @Override
     public final void onBindViewHolder(T dialogHolder, int i) {
-        if (i > getItemCount() - 20) {
-            displayList.loadMoreForward();
-        }
-        if (i < 20) {
-            displayList.loadMoreBackward();
-        }
-
+        displayList.touch(i);
         onBindViewHolder(dialogHolder, i, getItem(i));
     }
 

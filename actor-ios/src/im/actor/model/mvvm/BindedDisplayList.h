@@ -24,19 +24,19 @@
 #include "java/lang/Runnable.h"
 #include "java/util/Comparator.h"
 
-#define AMBindedDisplayList_DEFAULT_PAGE_SIZE 5
+#define AMBindedDisplayList_DEFAULT_PAGE_SIZE 20
 
 @interface AMBindedDisplayList : AMDisplayList {
 }
 
 - (instancetype)initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>)listEngine
-                                   withBoolean:(jboolean)isGlobalList;
-
-- (jint)getPageSize;
-
-- (void)setPageSizeWithInt:(jint)pageSize;
+                                   withBoolean:(jboolean)isGlobalList
+                                       withInt:(jint)pageSize
+                                       withInt:(jint)loadGap;
 
 - (jboolean)isGlobalList;
+
+- (void)touchWithInt:(jint)index;
 
 - (void)initTopWithBoolean:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
 
@@ -47,10 +47,6 @@
 
 - (void)initSearchWithNSString:(NSString *)query
                    withBoolean:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
-
-- (void)loadMoreForward;
-
-- (void)loadMoreBackward;
 
 - (void)dispose;
 
@@ -284,7 +280,8 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$5)
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey;
 
-- (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$;
+- (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$
+                                    withInt:(jint)capture$0;
 
 @end
 
@@ -295,6 +292,22 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$6)
 
+@interface AMBindedDisplayList_$6_$1 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithAMBindedDisplayList_$6:(AMBindedDisplayList_$6 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$6_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$6_$1)
+
 @interface AMBindedDisplayList_$7 : NSObject < DKListEngineCallback > {
 }
 
@@ -302,7 +315,8 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$6)
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey;
 
-- (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$;
+- (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$
+                                    withInt:(jint)capture$0;
 
 @end
 
@@ -312,6 +326,22 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7)
+
+@interface AMBindedDisplayList_$7_$1 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithAMBindedDisplayList_$7:(AMBindedDisplayList_$7 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$7_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
 
 @interface AMBindedDisplayList_$8 : NSObject < DKListEngineCallback > {
 }
