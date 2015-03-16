@@ -29,7 +29,6 @@
 @protocol AMFileSystemReference;
 @protocol AMFileVMCallback;
 @protocol AMUploadFileVMCallback;
-@protocol DKListEngine;
 @protocol ImActorModelModulesFileDownloadCallback;
 @protocol ImActorModelModulesFileUploadCallback;
 
@@ -64,10 +63,6 @@
 - (AMMVVMCollection *)getUsers;
 
 - (AMMVVMCollection *)getGroups;
-
-- (id<DKListEngine>)getDialogs;
-
-- (id<DKListEngine>)getMessagesWithAMPeer:(AMPeer *)peer;
 
 - (AMUserTypingVM *)getTyping:(jint)uid;
 
