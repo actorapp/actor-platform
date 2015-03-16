@@ -12,11 +12,12 @@
 #include "im/actor/model/droidkit/actors/Props.h"
 #include "im/actor/model/mvvm/DisplayList.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
+#include "java/lang/Runnable.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 #include "java/util/concurrent/CopyOnWriteArrayList.h"
 
-__attribute__((unused)) static void AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationArray_(AMDisplayList_ListSwitcher *self, IOSObjectArray *modifications);
+__attribute__((unused)) static void AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_(AMDisplayList_ListSwitcher *self, IOSObjectArray *modifications);
 
 @interface AMDisplayList () {
  @public
@@ -42,7 +43,7 @@ J2OBJC_FIELD_SETTER(AMDisplayList, listeners_, JavaUtilConcurrentCopyOnWriteArra
 }
 - (instancetype)initWithAMDisplayList:(AMDisplayList *)displayList;
 
-- (void)requestListSwitchWithAMDisplayList_ModificationArray:(IOSObjectArray *)modifications;
+- (void)requestListSwitchWithAMDisplayList_ModificationHolderArray:(IOSObjectArray *)modifications;
 @end
 
 J2OBJC_FIELD_SETTER(AMDisplayList_ListSwitcher, pending_, JavaUtilArrayList *)
@@ -62,7 +63,7 @@ J2OBJC_FIELD_SETTER(AMDisplayList_ListSwitcher_$1, val$modifications_, IOSObject
  @public
   IOSObjectArray *modifications_;
 }
-- (instancetype)initWithAMDisplayList_ModificationArray:(IOSObjectArray *)modifications;
+- (instancetype)initWithAMDisplayList_ModificationHolderArray:(IOSObjectArray *)modifications;
 @end
 
 J2OBJC_FIELD_SETTER(AMDisplayList_ListSwitched, modifications_, IOSObjectArray *)
@@ -70,11 +71,26 @@ J2OBJC_FIELD_SETTER(AMDisplayList_ListSwitched, modifications_, IOSObjectArray *
 @interface AMDisplayList_EditList () {
  @public
   id<AMDisplayList_Modification> modification_;
+  id<JavaLangRunnable> executeAfter_;
 }
-- (instancetype)initWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification;
+- (instancetype)initWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification
+                              withJavaLangRunnable:(id<JavaLangRunnable>)executeAfter;
 @end
 
 J2OBJC_FIELD_SETTER(AMDisplayList_EditList, modification_, id<AMDisplayList_Modification>)
+J2OBJC_FIELD_SETTER(AMDisplayList_EditList, executeAfter_, id<JavaLangRunnable>)
+
+@interface AMDisplayList_ModificationHolder () {
+ @public
+  id<AMDisplayList_Modification> modification_;
+  id<JavaLangRunnable> executeAfter_;
+}
+- (instancetype)initWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification
+                              withJavaLangRunnable:(id<JavaLangRunnable>)executeAfter;
+@end
+
+J2OBJC_FIELD_SETTER(AMDisplayList_ModificationHolder, modification_, id<AMDisplayList_Modification>)
+J2OBJC_FIELD_SETTER(AMDisplayList_ModificationHolder, executeAfter_, id<JavaLangRunnable>)
 
 @interface AMDisplayList_$1 () {
  @public
@@ -130,7 +146,12 @@ jint AMDisplayList_NEXT_ID_ = 0;
 }
 
 - (void)editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)mod {
-  [((DKActorRef *) nil_chk(self->executor_)) sendWithId:[[AMDisplayList_EditList alloc] initWithAMDisplayList_Modification:mod]];
+  [self editListWithAMDisplayList_Modification:mod withJavaLangRunnable:nil];
+}
+
+- (void)editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)mod
+                          withJavaLangRunnable:(id<JavaLangRunnable>)executeAfter {
+  [((DKActorRef *) nil_chk(self->executor_)) sendWithId:[[AMDisplayList_EditList alloc] initWithAMDisplayList_Modification:mod withJavaLangRunnable:executeAfter]];
 }
 
 - (void)addListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener {
@@ -173,9 +194,11 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMDisplayList_Hook)
   return self;
 }
 
-- (void)onEditListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification {
+- (void)onEditListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification
+                            withJavaLangRunnable:(id<JavaLangRunnable>)runnable {
+  AMDisplayList_ModificationHolder *holder = [[AMDisplayList_ModificationHolder alloc] initWithAMDisplayList_Modification:modification withJavaLangRunnable:runnable];
   if (isLocked_) {
-    [((JavaUtilArrayList *) nil_chk(pending_)) addWithId:modification];
+    [((JavaUtilArrayList *) nil_chk(pending_)) addWithId:holder];
     return;
   }
   JavaUtilArrayList *backgroundList = IOSObjectArray_Get(nil_chk(((AMDisplayList *) nil_chk(displayList_))->lists_), (displayList_->currentList_ + 1) % 2);
@@ -183,42 +206,50 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMDisplayList_Hook)
   if (displayList_->hook_ != nil) {
     [displayList_->hook_ beforeDisplayWithJavaUtilList:backgroundList];
   }
-  AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationArray_(self, [IOSObjectArray newArrayWithObjects:(id[]){ modification } count:1 type:AMDisplayList_Modification_class_()]);
+  AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_(self, [IOSObjectArray newArrayWithObjects:(id[]){ holder } count:1 type:AMDisplayList_ModificationHolder_class_()]);
 }
 
-- (void)requestListSwitchWithAMDisplayList_ModificationArray:(IOSObjectArray *)modifications {
-  AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationArray_(self, modifications);
+- (void)requestListSwitchWithAMDisplayList_ModificationHolderArray:(IOSObjectArray *)modifications {
+  AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_(self, modifications);
 }
 
-- (void)onListSwitchedWithAMDisplayList_ModificationArray:(IOSObjectArray *)modifications {
+- (void)onListSwitchedWithAMDisplayList_ModificationHolderArray:(IOSObjectArray *)modifications {
   isLocked_ = NO;
   JavaUtilArrayList *backgroundList = IOSObjectArray_Get(nil_chk(((AMDisplayList *) nil_chk(displayList_))->lists_), (displayList_->currentList_ + 1) % 2);
   {
     IOSObjectArray *a__ = modifications;
-    id<AMDisplayList_Modification> const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
-    id<AMDisplayList_Modification> const *e__ = b__ + a__->size_;
+    AMDisplayList_ModificationHolder * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
+    AMDisplayList_ModificationHolder * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
-      id<AMDisplayList_Modification> m = *b__++;
-      [((id<AMDisplayList_Modification>) nil_chk(m)) modifyWithJavaUtilList:backgroundList];
+      AMDisplayList_ModificationHolder *m = *b__++;
+      [((id<AMDisplayList_Modification>) nil_chk(((AMDisplayList_ModificationHolder *) nil_chk(m))->modification_)) modifyWithJavaUtilList:backgroundList];
     }
   }
   if ([((JavaUtilArrayList *) nil_chk(pending_)) size] > 0) {
-    for (id<AMDisplayList_Modification> __strong m in pending_) {
-      [((id<AMDisplayList_Modification>) nil_chk(m)) modifyWithJavaUtilList:backgroundList];
-    }
+    IOSObjectArray *dest = [pending_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[pending_ size] type:AMDisplayList_ModificationHolder_class_()]];
     [pending_ clear];
+    {
+      IOSObjectArray *a__ = dest;
+      AMDisplayList_ModificationHolder * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
+      AMDisplayList_ModificationHolder * const *e__ = b__ + a__->size_;
+      while (b__ < e__) {
+        AMDisplayList_ModificationHolder *m = *b__++;
+        [((id<AMDisplayList_Modification>) nil_chk(((AMDisplayList_ModificationHolder *) nil_chk(m))->modification_)) modifyWithJavaUtilList:backgroundList];
+      }
+    }
     if (displayList_->hook_ != nil) {
       [displayList_->hook_ beforeDisplayWithJavaUtilList:backgroundList];
     }
+    AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_(self, dest);
   }
 }
 
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[AMDisplayList_ListSwitched class]]) {
-    [self onListSwitchedWithAMDisplayList_ModificationArray:((AMDisplayList_ListSwitched *) nil_chk(((AMDisplayList_ListSwitched *) check_class_cast(message, [AMDisplayList_ListSwitched class]))))->modifications_];
+    [self onListSwitchedWithAMDisplayList_ModificationHolderArray:((AMDisplayList_ListSwitched *) nil_chk(((AMDisplayList_ListSwitched *) check_class_cast(message, [AMDisplayList_ListSwitched class]))))->modifications_];
   }
   else if ([message isKindOfClass:[AMDisplayList_EditList class]]) {
-    [self onEditListWithAMDisplayList_Modification:((AMDisplayList_EditList *) nil_chk(((AMDisplayList_EditList *) check_class_cast(message, [AMDisplayList_EditList class]))))->modification_];
+    [self onEditListWithAMDisplayList_Modification:((AMDisplayList_EditList *) nil_chk(((AMDisplayList_EditList *) check_class_cast(message, [AMDisplayList_EditList class]))))->modification_ withJavaLangRunnable:((AMDisplayList_EditList *) nil_chk(((AMDisplayList_EditList *) check_class_cast(message, [AMDisplayList_EditList class]))))->executeAfter_];
   }
   else {
     [self dropWithId:message];
@@ -234,9 +265,9 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMDisplayList_Hook)
 
 @end
 
-void AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationArray_(AMDisplayList_ListSwitcher *self, IOSObjectArray *modifications) {
+void AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_(AMDisplayList_ListSwitcher *self, IOSObjectArray *modifications) {
   self->isLocked_ = YES;
-  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_([[AMDisplayList_ListSwitcher_$1 alloc] initWithAMDisplayList_ListSwitcher:self withAMDisplayList_ModificationArray:modifications]);
+  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_([[AMDisplayList_ListSwitcher_$1 alloc] initWithAMDisplayList_ListSwitcher:self withAMDisplayList_ModificationHolderArray:modifications]);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList_ListSwitcher)
@@ -248,11 +279,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList_ListSwitcher)
   for (id<AMDisplayList_Listener> __strong l in nil_chk(this$0_->displayList_->listeners_)) {
     [((id<AMDisplayList_Listener>) nil_chk(l)) onCollectionChanged];
   }
-  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[AMDisplayList_ListSwitched alloc] initWithAMDisplayList_ModificationArray:val$modifications_]];
+  {
+    IOSObjectArray *a__ = val$modifications_;
+    AMDisplayList_ModificationHolder * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
+    AMDisplayList_ModificationHolder * const *e__ = b__ + a__->size_;
+    while (b__ < e__) {
+      AMDisplayList_ModificationHolder *m = *b__++;
+      if (((AMDisplayList_ModificationHolder *) nil_chk(m))->executeAfter_ != nil) {
+        [m->executeAfter_ run];
+      }
+    }
+  }
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[AMDisplayList_ListSwitched alloc] initWithAMDisplayList_ModificationHolderArray:val$modifications_]];
 }
 
 - (instancetype)initWithAMDisplayList_ListSwitcher:(AMDisplayList_ListSwitcher *)outer$
-               withAMDisplayList_ModificationArray:(IOSObjectArray *)capture$0 {
+         withAMDisplayList_ModificationHolderArray:(IOSObjectArray *)capture$0 {
   this$0_ = outer$;
   val$modifications_ = capture$0;
   return [super init];
@@ -270,7 +312,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList_ListSwitcher_$1)
 
 @implementation AMDisplayList_ListSwitched
 
-- (instancetype)initWithAMDisplayList_ModificationArray:(IOSObjectArray *)modifications {
+- (instancetype)initWithAMDisplayList_ModificationHolderArray:(IOSObjectArray *)modifications {
   if (self = [super init]) {
     self->modifications_ = modifications;
   }
@@ -288,9 +330,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList_ListSwitched)
 
 @implementation AMDisplayList_EditList
 
-- (instancetype)initWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification {
+- (instancetype)initWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification
+                              withJavaLangRunnable:(id<JavaLangRunnable>)executeAfter {
   if (self = [super init]) {
     self->modification_ = modification;
+    self->executeAfter_ = executeAfter;
   }
   return self;
 }
@@ -298,11 +342,33 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList_ListSwitched)
 - (void)copyAllFieldsTo:(AMDisplayList_EditList *)other {
   [super copyAllFieldsTo:other];
   other->modification_ = modification_;
+  other->executeAfter_ = executeAfter_;
 }
 
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList_EditList)
+
+@implementation AMDisplayList_ModificationHolder
+
+- (instancetype)initWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification
+                              withJavaLangRunnable:(id<JavaLangRunnable>)executeAfter {
+  if (self = [super init]) {
+    self->modification_ = modification;
+    self->executeAfter_ = executeAfter;
+  }
+  return self;
+}
+
+- (void)copyAllFieldsTo:(AMDisplayList_ModificationHolder *)other {
+  [super copyAllFieldsTo:other];
+  other->modification_ = modification_;
+  other->executeAfter_ = executeAfter_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList_ModificationHolder)
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMDisplayList_Listener)
 

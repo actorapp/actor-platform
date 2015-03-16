@@ -16,34 +16,41 @@ import im.actor.model.droidkit.engine.ListEngineItem;
  */
 public class BindedDisplayList<T extends BserObject & ListEngineItem> extends DisplayList<T> {
 
-    private static final int DEFAULT_PAGE_SIZE = 5;
+    public static final int DEFAULT_PAGE_SIZE = 20;
 
     private static final Comparator<ListEngineItem> COMPARATOR = new ListEngineComparator();
 
-    private int pageSize = DEFAULT_PAGE_SIZE;
 
     private final ListEngineDisplayExt<T> listEngine;
     private final DisplayWindow window;
-    private final EngineListener engineListener;
+    private final EngineListener engineListener = new EngineListener();
 
     private int currentGeneration = 0;
 
     private final boolean isGlobalList;
+    private final int pageSize;
+    private final int loadGap;
 
     private ValueModel<State> stateModel;
 
     private ListMode mode;
     private String query;
+    private boolean isLoadMoreForwardRequested = false;
+    private boolean isLoadMoreBackwardRequested = false;
 
-    public BindedDisplayList(ListEngineDisplayExt<T> listEngine, boolean isGlobalList) {
+    public BindedDisplayList(ListEngineDisplayExt<T> listEngine, boolean isGlobalList,
+                             int pageSize, int loadGap) {
         super(new Hook<T>() {
             @Override
             public void beforeDisplay(List<T> list) {
                 Collections.sort(list, COMPARATOR);
             }
         });
-        this.engineListener = new EngineListener();
+
         this.isGlobalList = isGlobalList;
+        this.pageSize = pageSize;
+        this.loadGap = loadGap;
+
         this.listEngine = listEngine;
         this.window = new DisplayWindow();
         this.stateModel = new ValueModel<State>("display_list.state", State.LOADING_EMPTY);
@@ -51,18 +58,21 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         listEngine.subscribe(engineListener);
     }
 
-    @Deprecated
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    @Deprecated
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
     public boolean isGlobalList() {
         return isGlobalList;
+    }
+
+    @MainThread
+    public void touch(int index) {
+        MVVMEngine.checkMainThread();
+
+        if (index > getSize() - loadGap) {
+            loadMoreForward();
+        }
+
+        if (index < loadGap) {
+            loadMoreBackward();
+        }
     }
 
     // Init methods
@@ -118,6 +128,8 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         }
 
         stateModel.change(State.LOADING_EMPTY);
+        isLoadMoreBackwardRequested = false;
+        isLoadMoreBackwardRequested = false;
         currentGeneration++;
         window.startInitBackward();
 
@@ -151,6 +163,8 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         }
 
         stateModel.change(State.LOADING_EMPTY);
+        isLoadMoreBackwardRequested = false;
+        isLoadMoreBackwardRequested = false;
         currentGeneration++;
         window.startInitCenter();
 
@@ -194,6 +208,8 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         }
 
         stateModel.change(State.LOADING_EMPTY);
+        isLoadMoreBackwardRequested = false;
+        isLoadMoreBackwardRequested = false;
         currentGeneration++;
         window.startInitForward();
 
@@ -216,13 +232,19 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     // Load more
 
     @MainThread
-    public void loadMoreForward() {
+    private void loadMoreForward() {
         MVVMEngine.checkMainThread();
+
+        if (isLoadMoreForwardRequested) {
+            return;
+        }
+        isLoadMoreForwardRequested = true;
 
         if (!window.startForwardLoading()) {
             return;
         }
 
+        final int gen = currentGeneration;
         ListEngineCallback<T> callback = cover(new ListEngineCallback<T>() {
             @Override
             public void onLoaded(List<T> items, long topSortKey, long bottomSortKey) {
@@ -236,7 +258,14 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                     window.onForwardSliceLoaded(bottomSortKey);
                 }
 
-                editList(DisplayModifications.addOrUpdate(items));
+                editList(DisplayModifications.addOrUpdate(items), new Runnable() {
+                    @Override
+                    public void run() {
+                        if (gen == currentGeneration) {
+                            isLoadMoreForwardRequested = false;
+                        }
+                    }
+                });
             }
         }, currentGeneration);
 
@@ -248,13 +277,19 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     }
 
     @MainThread
-    public void loadMoreBackward() {
+    private void loadMoreBackward() {
         MVVMEngine.checkMainThread();
+
+        if (isLoadMoreBackwardRequested) {
+            return;
+        }
+        isLoadMoreBackwardRequested = true;
 
         if (!window.startHeadLoading()) {
             return;
         }
 
+        final int gen = currentGeneration;
         ListEngineCallback<T> callback = cover(new ListEngineCallback<T>() {
             @Override
             public void onLoaded(List<T> items, long topSortKey, long bottomSortKey) {
@@ -266,6 +301,15 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                     window.onBackwardSliceLoaded(bottomSortKey);
                 }
                 window.endBackwardLoading();
+
+                editList(DisplayModifications.addOrUpdate(items), new Runnable() {
+                    @Override
+                    public void run() {
+                        if (gen == currentGeneration) {
+                            isLoadMoreBackwardRequested = false;
+                        }
+                    }
+                });
             }
         }, currentGeneration);
 

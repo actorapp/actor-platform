@@ -64,7 +64,11 @@ public class DisplayList<T> {
     }
 
     public void editList(Modification<T> mod) {
-        this.executor.send(new EditList<T>(mod));
+        editList(mod, null);
+    }
+
+    public void editList(Modification<T> mod, Runnable executeAfter) {
+        this.executor.send(new EditList<T>(mod, executeAfter));
     }
 
     public void addListener(Listener listener) {
@@ -90,7 +94,7 @@ public class DisplayList<T> {
     // Update actor
 
     private static class ListSwitcher<T> extends Actor {
-        private ArrayList<Modification<T>> pending = new ArrayList<Modification<T>>();
+        private ArrayList<ModificationHolder<T>> pending = new ArrayList<ModificationHolder<T>>();
         private boolean isLocked;
         private DisplayList<T> displayList;
 
@@ -98,9 +102,10 @@ public class DisplayList<T> {
             this.displayList = displayList;
         }
 
-        public void onEditList(final Modification<T> modification) {
+        public void onEditList(final Modification<T> modification, final Runnable runnable) {
+            ModificationHolder<T> holder = new ModificationHolder<T>(modification, runnable);
             if (isLocked) {
-                pending.add(modification);
+                pending.add(holder);
                 return;
             }
 
@@ -111,10 +116,10 @@ public class DisplayList<T> {
                 displayList.hook.beforeDisplay(backgroundList);
             }
 
-            requestListSwitch(new Modification[]{modification});
+            requestListSwitch(new ModificationHolder[]{holder});
         }
 
-        private void requestListSwitch(final Modification<T>[] modifications) {
+        private void requestListSwitch(final ModificationHolder<T>[] modifications) {
             isLocked = true;
             MVVMEngine.runOnUiThread(new Runnable() {
                 @Override
@@ -126,28 +131,38 @@ public class DisplayList<T> {
                         l.onCollectionChanged();
                     }
 
+                    for (ModificationHolder m : modifications) {
+                        if (m.executeAfter != null) {
+                            m.executeAfter.run();
+                        }
+                    }
+
                     self().send(new ListSwitched<T>(modifications));
                 }
             });
         }
 
-        public void onListSwitched(Modification<T>[] modifications) {
+        public void onListSwitched(ModificationHolder<T>[] modifications) {
             isLocked = false;
 
             ArrayList<T> backgroundList = displayList.lists[(displayList.currentList + 1) % 2];
-            for (Modification m : modifications) {
-                m.modify(backgroundList);
+            for (ModificationHolder m : modifications) {
+                m.modification.modify(backgroundList);
             }
 
             if (pending.size() > 0) {
-                for (Modification m : pending) {
-                    m.modify(backgroundList);
-                }
+                ModificationHolder[] dest = pending.toArray(new ModificationHolder[pending.size()]);
                 pending.clear();
+
+                for (ModificationHolder m : dest) {
+                    m.modification.modify(backgroundList);
+                }
 
                 if (displayList.hook != null) {
                     displayList.hook.beforeDisplay(backgroundList);
                 }
+
+                requestListSwitch(dest);
             }
         }
 
@@ -156,7 +171,7 @@ public class DisplayList<T> {
             if (message instanceof ListSwitched) {
                 onListSwitched(((ListSwitched) message).modifications);
             } else if (message instanceof EditList) {
-                onEditList(((EditList) message).modification);
+                onEditList(((EditList) message).modification, ((EditList) message).executeAfter);
             } else {
                 drop(message);
             }
@@ -164,18 +179,30 @@ public class DisplayList<T> {
     }
 
     private static class ListSwitched<T> {
-        private Modification<T>[] modifications;
+        private ModificationHolder<T>[] modifications;
 
-        private ListSwitched(Modification<T>[] modifications) {
+        private ListSwitched(ModificationHolder<T>[] modifications) {
             this.modifications = modifications;
         }
     }
 
     private static class EditList<T> {
         private Modification<T> modification;
+        private Runnable executeAfter;
 
-        private EditList(Modification<T> modification) {
+        private EditList(Modification<T> modification, Runnable executeAfter) {
             this.modification = modification;
+            this.executeAfter = executeAfter;
+        }
+    }
+
+    private static class ModificationHolder<T> {
+        private Modification<T> modification;
+        private Runnable executeAfter;
+
+        private ModificationHolder(Modification<T> modification, Runnable executeAfter) {
+            this.modification = modification;
+            this.executeAfter = executeAfter;
         }
     }
 
