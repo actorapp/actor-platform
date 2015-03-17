@@ -695,11 +695,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$5)
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeForwardLoading];
   if ([items size] == 0) {
     [this$0_->window_ onForwardCompleted];
+    AMLog_dWithNSString_withNSString_(AMBindedDisplayList_get_TAG_(), @"isLoadMoreForwardRequested = false: sync");
+    this$0_->isLoadMoreForwardRequested_ = NO;
   }
   else {
     [this$0_->window_ onForwardSliceLoadedWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
+    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithJavaUtilList_(items) withJavaLangRunnable:[[AMBindedDisplayList_$6_$1 alloc] initWithAMBindedDisplayList_$6:self]];
   }
-  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithJavaUtilList_(items) withJavaLangRunnable:[[AMBindedDisplayList_$6_$1 alloc] initWithAMBindedDisplayList_$6:self]];
 }
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$
@@ -723,6 +725,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$6)
 
 - (void)run {
   if (this$0_->val$gen_ == this$0_->this$0_->currentGeneration_) {
+    AMLog_dWithNSString_withNSString_(AMBindedDisplayList_get_TAG_(), @"isLoadMoreForwardRequested = false");
     this$0_->this$0_->isLoadMoreForwardRequested_ = NO;
   }
 }
