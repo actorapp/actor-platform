@@ -221,6 +221,8 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
 
 - (AMBindedDisplayList *)getDialogsGlobalList;
 
+- (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer;
+
 - (AMBindedDisplayList *)getContactsGlobalList;
 
 - (AMBindedDisplayList *)buildContactDisplayList;
