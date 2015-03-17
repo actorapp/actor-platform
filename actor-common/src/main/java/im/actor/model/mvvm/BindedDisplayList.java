@@ -10,7 +10,6 @@ import im.actor.model.droidkit.engine.ListEngineCallback;
 import im.actor.model.droidkit.engine.ListEngineDisplayExt;
 import im.actor.model.droidkit.engine.ListEngineDisplayListener;
 import im.actor.model.droidkit.engine.ListEngineItem;
-import im.actor.model.log.Log;
 
 /**
  * Created by ex3ndr on 14.03.15.
@@ -82,17 +81,17 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     public void initTop(boolean refresh) {
         MVVMEngine.checkMainThread();
 
-        Log.d(TAG, "initTop(:" + refresh + ")");
+        // Log.d(TAG, "initTop(:" + refresh + ")");
 
         if (mode != null && mode == ListMode.FORWARD) {
-            Log.d(TAG, "Already loaded forward: exiting");
+            // Log.d(TAG, "Already loaded forward: exiting");
             return;
         }
         mode = ListMode.FORWARD;
         query = null;
 
         if (refresh) {
-            Log.d(TAG, "Clearing list");
+            // Log.d(TAG, "Clearing list");
             editList((Modification) DisplayModifications.clear());
         }
 
@@ -100,13 +99,13 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         currentGeneration++;
         window.startInitForward();
 
-        Log.d(TAG, "Starting load generation " + currentGeneration);
+        // Log.d(TAG, "Starting load generation " + currentGeneration);
         listEngine.loadForward(pageSize, cover(new ListEngineCallback<T>() {
             @Override
             public void onLoaded(List<T> items, long topSortKey, long bottomSortKey) {
                 MVVMEngine.checkMainThread();
 
-                Log.d(TAG, "Loaded initial data at generation " + currentGeneration + " items " + items.size());
+                // Log.d(TAG, "Loaded initial data at generation " + currentGeneration + " items " + items.size());
 
                 window.completeInitForward(bottomSortKey);
 
@@ -244,32 +243,32 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     private void loadMoreForward() {
         MVVMEngine.checkMainThread();
 
-        Log.d(TAG, "Requesting loading more...");
+        // Log.d(TAG, "Requesting loading more...");
 
         if (isLoadMoreForwardRequested) {
-            Log.d(TAG, "Already requested");
+            // Log.d(TAG, "Already requested");
             return;
         }
-        isLoadMoreForwardRequested = true;
 
         if (!window.startForwardLoading()) {
-            Log.d(TAG, "Already started forward loading");
+            // Log.d(TAG, "Unable to start forward loading");
             return;
         }
 
+        isLoadMoreForwardRequested = true;
         final int gen = currentGeneration;
         ListEngineCallback<T> callback = cover(new ListEngineCallback<T>() {
             @Override
             public void onLoaded(List<T> items, long topSortKey, long bottomSortKey) {
                 MVVMEngine.checkMainThread();
 
-                Log.d(TAG, "Loaded more at generation " + gen + " with items " + items.size());
+                // Log.d(TAG, "Loaded more at generation " + gen + " with items " + items.size());
 
                 window.completeForwardLoading();
 
                 if (items.size() == 0) {
                     window.onForwardCompleted();
-                    Log.d(TAG, "isLoadMoreForwardRequested = false: sync");
+                    // Log.d(TAG, "isLoadMoreForwardRequested = false: sync");
                     isLoadMoreForwardRequested = false;
                 } else {
                     window.onForwardSliceLoaded(bottomSortKey);
@@ -277,7 +276,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                         @Override
                         public void run() {
                             if (gen == currentGeneration) {
-                                Log.d(TAG, "isLoadMoreForwardRequested = false");
+                                // Log.d(TAG, "isLoadMoreForwardRequested = false");
                                 isLoadMoreForwardRequested = false;
                             }
                         }
@@ -287,10 +286,10 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         }, currentGeneration);
 
         if (mode != ListMode.SEARCH) {
-            Log.d(TAG, "Loading more search...");
+            // Log.d(TAG, "Loading more...");
             listEngine.loadForward(window.getCurrentForwardHead(), pageSize, callback);
         } else {
-            Log.d(TAG, "Loading more...");
+            // Log.d(TAG, "Loading more search...");
             listEngine.loadForward(query, window.getCurrentForwardHead(), pageSize, callback);
         }
     }
@@ -302,12 +301,12 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         if (isLoadMoreBackwardRequested) {
             return;
         }
-        isLoadMoreBackwardRequested = true;
 
         if (!window.startBackwardLoading()) {
             return;
         }
 
+        isLoadMoreBackwardRequested = true;
         final int gen = currentGeneration;
         ListEngineCallback<T> callback = cover(new ListEngineCallback<T>() {
             @Override
