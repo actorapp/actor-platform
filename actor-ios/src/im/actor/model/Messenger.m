@@ -456,12 +456,31 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
   }
 }
 
+- (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer {
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getDisplayLists] != nil) {
+    return [((ImActorModelModulesDisplayLists *) nil_chk([modules_ getDisplayLists])) getMessagesGlobalListWithAMPeer:peer];
+  }
+  else {
+    return nil;
+  }
+}
+
 - (AMBindedDisplayList *)getContactsGlobalList {
-  return [((ImActorModelModulesDisplayLists *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getDisplayLists])) getContactsGlobalList];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getDisplayLists] != nil) {
+    return [((ImActorModelModulesDisplayLists *) nil_chk([modules_ getDisplayLists])) getContactsGlobalList];
+  }
+  else {
+    return nil;
+  }
 }
 
 - (AMBindedDisplayList *)buildContactDisplayList {
-  return [((ImActorModelModulesDisplayLists *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getDisplayLists])) buildNewContactListWithBoolean:NO];
+  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getDisplayLists] != nil) {
+    return [((ImActorModelModulesDisplayLists *) nil_chk([modules_ getDisplayLists])) buildNewContactListWithBoolean:NO];
+  }
+  else {
+    return nil;
+  }
 }
 
 - (void)copyAllFieldsTo:(AMMessenger *)other {

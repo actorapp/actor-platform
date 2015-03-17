@@ -12,6 +12,7 @@ import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
+import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
 import im.actor.model.entity.content.FastThumb;
@@ -451,11 +452,27 @@ public class Messenger {
         }
     }
 
+    public BindedDisplayList<Message> getMessagesGlobalList(Peer peer) {
+        if (modules.getDisplayLists() != null) {
+            return modules.getDisplayLists().getMessagesGlobalList(peer);
+        } else {
+            return null;
+        }
+    }
+
     public BindedDisplayList<Contact> getContactsGlobalList() {
-        return modules.getDisplayLists().getContactsGlobalList();
+        if (modules.getDisplayLists() != null) {
+            return modules.getDisplayLists().getContactsGlobalList();
+        } else {
+            return null;
+        }
     }
 
     public BindedDisplayList<Contact> buildContactDisplayList() {
-        return modules.getDisplayLists().buildNewContactList(false);
+        if (modules.getDisplayLists() != null) {
+            return modules.getDisplayLists().buildNewContactList(false);
+        } else {
+            return null;
+        }
     }
 }

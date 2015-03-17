@@ -147,6 +147,8 @@ public class UploadManager extends ModuleActor {
         }
 
         queueItem.requestActor.send(new UploadError(rid));
+
+        checkQueue();
     }
 
     public void onUploadTaskProgress(long rid, float progress) {
@@ -192,6 +194,8 @@ public class UploadManager extends ModuleActor {
         }
 
         queueItem.requestActor.send(new UploadCompleted(rid, fileReference));
+
+        checkQueue();
     }
 
     private void checkQueue() {
