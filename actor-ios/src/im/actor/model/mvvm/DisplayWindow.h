@@ -31,7 +31,7 @@
 
 - (void)onForwardSliceLoadedWithJavaLangLong:(JavaLangLong *)tail;
 
-- (jboolean)startHeadLoading;
+- (jboolean)startBackwardLoading;
 
 - (void)endBackwardLoading;
 
