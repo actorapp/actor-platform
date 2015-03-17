@@ -24,8 +24,6 @@
 #include "java/lang/Runnable.h"
 #include "java/util/Comparator.h"
 
-#define AMBindedDisplayList_DEFAULT_PAGE_SIZE 20
-
 @interface AMBindedDisplayList : AMDisplayList {
 }
 
@@ -57,7 +55,8 @@ J2OBJC_STATIC_INIT(AMBindedDisplayList)
 
 CF_EXTERN_C_BEGIN
 
-J2OBJC_STATIC_FIELD_GETTER(AMBindedDisplayList, DEFAULT_PAGE_SIZE, jint)
+FOUNDATION_EXPORT NSString *AMBindedDisplayList_TAG_;
+J2OBJC_STATIC_FIELD_GETTER(AMBindedDisplayList, TAG_, NSString *)
 
 FOUNDATION_EXPORT id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
 J2OBJC_STATIC_FIELD_GETTER(AMBindedDisplayList, COMPARATOR_, id<JavaUtilComparator>)

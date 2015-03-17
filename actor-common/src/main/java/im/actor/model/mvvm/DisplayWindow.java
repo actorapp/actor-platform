@@ -63,7 +63,7 @@ class DisplayWindow {
         currentForwardHead = tail;
     }
 
-    public synchronized boolean startHeadLoading() {
+    public synchronized boolean startBackwardLoading() {
         if (!isInited) {
             return false;
         }

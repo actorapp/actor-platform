@@ -55,7 +55,7 @@ public class DisplayLists extends BaseModule {
         if (!chatsGlobalLists.containsKey(peer)) {
             chatsGlobalLists.put(peer, buildNewChatList(peer, true));
         }
-        
+
         return chatsGlobalLists.get(peer);
     }
 
