@@ -85,7 +85,7 @@ J2OBJC_FIELD_SETTER(AMDisplayWindow, currentForwardHead_, JavaLangLong *)
   }
 }
 
-- (jboolean)startHeadLoading {
+- (jboolean)startBackwardLoading {
   @synchronized(self) {
     if (!isInited__) {
       return NO;
