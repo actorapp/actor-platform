@@ -10,7 +10,6 @@
 #include "im/actor/model/droidkit/engine/ListEngineCallback.h"
 #include "im/actor/model/droidkit/engine/ListEngineDisplayExt.h"
 #include "im/actor/model/droidkit/engine/ListEngineItem.h"
-#include "im/actor/model/log/Log.h"
 #include "im/actor/model/mvvm/BindedDisplayList.h"
 #include "im/actor/model/mvvm/DisplayList.h"
 #include "im/actor/model/mvvm/DisplayModifications.h"
@@ -208,21 +207,17 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
 
 - (void)initTopWithBoolean:(jboolean)refresh {
   AMMVVMEngine_checkMainThread();
-  AMLog_dWithNSString_withNSString_(AMBindedDisplayList_TAG_, JreStrcat("$ZC", @"initTop(:", refresh, ')'));
   if (mode_ != nil && mode_ == AMBindedDisplayList_ListModeEnum_get_FORWARD()) {
-    AMLog_dWithNSString_withNSString_(AMBindedDisplayList_TAG_, @"Already loaded forward: exiting");
     return;
   }
   mode_ = AMBindedDisplayList_ListModeEnum_get_FORWARD();
   query_ = nil;
   if (refresh) {
-    AMLog_dWithNSString_withNSString_(AMBindedDisplayList_TAG_, @"Clearing list");
     [self editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>) check_protocol_cast(AMDisplayModifications_clear(), @protocol(AMDisplayList_Modification))];
   }
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitForward];
-  AMLog_dWithNSString_withNSString_(AMBindedDisplayList_TAG_, JreStrcat("$I", @"Starting load generation ", currentGeneration_));
   [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithInt:pageSize_ withDKListEngineCallback:AMBindedDisplayList_coverWithDKListEngineCallback_withInt_(self, [[AMBindedDisplayList_$2 alloc] initWithAMBindedDisplayList:self], currentGeneration_)];
 }
 
@@ -337,24 +332,19 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
 
 void AMBindedDisplayList_loadMoreForward(AMBindedDisplayList *self) {
   AMMVVMEngine_checkMainThread();
-  AMLog_dWithNSString_withNSString_(AMBindedDisplayList_TAG_, @"Requesting loading more...");
   if (self->isLoadMoreForwardRequested_) {
-    AMLog_dWithNSString_withNSString_(AMBindedDisplayList_TAG_, @"Already requested");
+    return;
+  }
+  if (![((AMDisplayWindow *) nil_chk(self->window_)) startForwardLoading]) {
     return;
   }
   self->isLoadMoreForwardRequested_ = YES;
-  if (![((AMDisplayWindow *) nil_chk(self->window_)) startForwardLoading]) {
-    AMLog_dWithNSString_withNSString_(AMBindedDisplayList_TAG_, @"Already started forward loading");
-    return;
-  }
   jint gen = self->currentGeneration_;
   id<DKListEngineCallback> callback = AMBindedDisplayList_coverWithDKListEngineCallback_withInt_(self, [[AMBindedDisplayList_$6 alloc] initWithAMBindedDisplayList:self withInt:gen], self->currentGeneration_);
   if (self->mode_ != AMBindedDisplayList_ListModeEnum_get_SEARCH()) {
-    AMLog_dWithNSString_withNSString_(AMBindedDisplayList_TAG_, @"Loading more search...");
     [((id<DKListEngineDisplayExt>) nil_chk(self->listEngine_)) loadForwardWithLong:[((JavaLangLong *) nil_chk([self->window_ getCurrentForwardHead])) longLongValue] withInt:self->pageSize_ withDKListEngineCallback:callback];
   }
   else {
-    AMLog_dWithNSString_withNSString_(AMBindedDisplayList_TAG_, @"Loading more...");
     [((id<DKListEngineDisplayExt>) nil_chk(self->listEngine_)) loadForwardWithNSString:self->query_ withLong:[((JavaLangLong *) nil_chk([self->window_ getCurrentForwardHead])) longLongValue] withInt:self->pageSize_ withDKListEngineCallback:callback];
   }
 }
@@ -364,10 +354,10 @@ void AMBindedDisplayList_loadMoreBackward(AMBindedDisplayList *self) {
   if (self->isLoadMoreBackwardRequested_) {
     return;
   }
-  self->isLoadMoreBackwardRequested_ = YES;
   if (![((AMDisplayWindow *) nil_chk(self->window_)) startBackwardLoading]) {
     return;
   }
+  self->isLoadMoreBackwardRequested_ = YES;
   jint gen = self->currentGeneration_;
   id<DKListEngineCallback> callback = AMBindedDisplayList_coverWithDKListEngineCallback_withInt_(self, [[AMBindedDisplayList_$7 alloc] initWithAMBindedDisplayList:self withInt:gen], self->currentGeneration_);
   if (self->mode_ != AMBindedDisplayList_ListModeEnum_get_SEARCH()) {
@@ -575,9 +565,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$1)
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   AMMVVMEngine_checkMainThread();
-  AMLog_dWithNSString_withNSString_(AMBindedDisplayList_get_TAG_(), JreStrcat("$I$I", @"Loaded initial data at generation ", this$0_->currentGeneration_, @" items ", [((id<JavaUtilList>) nil_chk(items)) size]));
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitForwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
-  if ([items size] != 0) {
+  if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
     [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_replaceWithJavaUtilList_(items)];
   }
   else {
@@ -691,16 +680,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$5)
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   AMMVVMEngine_checkMainThread();
-  AMLog_dWithNSString_withNSString_(AMBindedDisplayList_get_TAG_(), JreStrcat("$I$I", @"Loaded more at generation ", val$gen_, @" with items ", [((id<JavaUtilList>) nil_chk(items)) size]));
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeForwardLoading];
-  if ([items size] == 0) {
+  if ([((id<JavaUtilList>) nil_chk(items)) size] == 0) {
     [this$0_->window_ onForwardCompleted];
-    AMLog_dWithNSString_withNSString_(AMBindedDisplayList_get_TAG_(), @"isLoadMoreForwardRequested = false: sync");
     this$0_->isLoadMoreForwardRequested_ = NO;
   }
   else {
     [this$0_->window_ onForwardSliceLoadedWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
-    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithJavaUtilList_(items) withJavaLangRunnable:[[AMBindedDisplayList_$6_$1 alloc] initWithAMBindedDisplayList_$6:self]];
+    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOnlyWithJavaUtilList_(items) withJavaLangRunnable:[[AMBindedDisplayList_$6_$1 alloc] initWithAMBindedDisplayList_$6:self]];
   }
 }
 
@@ -725,7 +712,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$6)
 
 - (void)run {
   if (this$0_->val$gen_ == this$0_->this$0_->currentGeneration_) {
-    AMLog_dWithNSString_withNSString_(AMBindedDisplayList_get_TAG_(), @"isLoadMoreForwardRequested = false");
     this$0_->this$0_->isLoadMoreForwardRequested_ = NO;
   }
 }
@@ -757,7 +743,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$6_$1)
   }
   else {
     [this$0_->window_ onBackwardSliceLoadedWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
-    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithJavaUtilList_(items) withJavaLangRunnable:[[AMBindedDisplayList_$7_$1 alloc] initWithAMBindedDisplayList_$7:self]];
+    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOnlyWithJavaUtilList_(items) withJavaLangRunnable:[[AMBindedDisplayList_$7_$1 alloc] initWithAMBindedDisplayList_$7:self]];
   }
 }
 
