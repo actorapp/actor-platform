@@ -269,18 +269,20 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
                 if (items.size() == 0) {
                     window.onForwardCompleted();
+                    Log.d(TAG, "isLoadMoreForwardRequested = false: sync");
+                    isLoadMoreForwardRequested = false;
                 } else {
                     window.onForwardSliceLoaded(bottomSortKey);
-                }
-
-                editList(DisplayModifications.addOrUpdate(items), new Runnable() {
-                    @Override
-                    public void run() {
-                        if (gen == currentGeneration) {
-                            isLoadMoreForwardRequested = false;
+                    editList(DisplayModifications.addOrUpdate(items), new Runnable() {
+                        @Override
+                        public void run() {
+                            if (gen == currentGeneration) {
+                                Log.d(TAG, "isLoadMoreForwardRequested = false");
+                                isLoadMoreForwardRequested = false;
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }, currentGeneration);
 
