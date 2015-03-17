@@ -20,6 +20,8 @@
 
 + (id<AMDisplayList_Modification>)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items;
 
++ (id<AMDisplayList_Modification>)addOnlyWithJavaUtilList:(id<JavaUtilList>)items;
+
 + (id<AMDisplayList_Modification>)replaceWithJavaUtilList:(id<JavaUtilList>)items;
 
 + (id<AMDisplayList_Modification>)removeWithLong:(jlong)dstId;
@@ -39,6 +41,8 @@ CF_EXTERN_C_BEGIN
 FOUNDATION_EXPORT id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithDKListEngineItem_(id<DKListEngineItem> item);
 
 FOUNDATION_EXPORT id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithJavaUtilList_(id<JavaUtilList> items);
+
+FOUNDATION_EXPORT id<AMDisplayList_Modification> AMDisplayModifications_addOnlyWithJavaUtilList_(id<JavaUtilList> items);
 
 FOUNDATION_EXPORT id<AMDisplayList_Modification> AMDisplayModifications_replaceWithJavaUtilList_(id<JavaUtilList> items);
 
@@ -106,7 +110,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$3)
 
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
 
-- (instancetype)initWithLong:(jlong)capture$0;
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0;
 
 @end
 
@@ -122,7 +126,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$4)
 
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
 
-- (instancetype)initWithLongArray:(IOSLongArray *)capture$0;
+- (instancetype)initWithLong:(jlong)capture$0;
 
 @end
 
@@ -138,7 +142,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$5)
 
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
 
-- (instancetype)init;
+- (instancetype)initWithLongArray:(IOSLongArray *)capture$0;
 
 @end
 
@@ -148,5 +152,21 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$6)
+
+@interface AMDisplayModifications_$7 : NSObject < AMDisplayList_Modification > {
+}
+
+- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$7)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$7)
 
 #endif // _AMDisplayModifications_H_
