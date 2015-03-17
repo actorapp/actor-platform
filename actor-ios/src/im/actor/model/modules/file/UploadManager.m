@@ -302,6 +302,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
     [((id<ImActorModelModulesFileUploadCallback>) nil_chk(callback)) onNotUploading];
   }
   [((DKActorRef *) nil_chk(queueItem->requestActor_)) sendWithId:[[ImActorModelModulesFileUploadManager_UploadError alloc] initWithLong:rid]];
+  ImActorModelModulesFileUploadManager_checkQueue(self);
 }
 
 - (void)onUploadTaskProgressWithLong:(jlong)rid
@@ -338,6 +339,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
     [((id<ImActorModelModulesFileUploadCallback>) nil_chk(fileCallback)) onUploaded];
   }
   [((DKActorRef *) nil_chk(queueItem->requestActor_)) sendWithId:[[ImActorModelModulesFileUploadManager_UploadCompleted alloc] initWithLong:rid withAMFileReference:fileReference]];
+  ImActorModelModulesFileUploadManager_checkQueue(self);
 }
 
 - (void)checkQueue {

@@ -7,7 +7,9 @@
 #define _ImActorModelModulesDisplayLists_H_
 
 @class AMBindedDisplayList;
+@class AMPeer;
 @class ImActorModelModulesModules;
+@class JavaUtilHashMap;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
@@ -24,9 +26,14 @@
 
 - (AMBindedDisplayList *)getDialogsGlobalList;
 
-- (AMBindedDisplayList *)buildNewDialogsListWithBoolean:(jboolean)disableDispose;
+- (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer;
 
-- (AMBindedDisplayList *)buildNewContactListWithBoolean:(jboolean)disableDispose;
+- (AMBindedDisplayList *)buildNewDialogsListWithBoolean:(jboolean)isGlobalList;
+
+- (AMBindedDisplayList *)buildNewContactListWithBoolean:(jboolean)isGlobalList;
+
+- (AMBindedDisplayList *)buildNewChatListWithAMPeer:(AMPeer *)peer
+                                        withBoolean:(jboolean)isGlobalList;
 
 @end
 

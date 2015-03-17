@@ -1,9 +1,13 @@
 package im.actor.model.modules;
 
+import java.util.HashMap;
+
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.droidkit.engine.ListEngineDisplayExt;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.MVVMEngine;
 
@@ -18,6 +22,8 @@ public class DisplayLists extends BaseModule {
     private BindedDisplayList<Dialog> dialogGlobalList;
 
     private BindedDisplayList<Contact> contactsGlobalList;
+
+    private HashMap<Peer, BindedDisplayList<Message>> chatsGlobalLists = new HashMap<Peer, BindedDisplayList<Message>>();
 
     public DisplayLists(Modules modules) {
         super(modules);
@@ -43,7 +49,17 @@ public class DisplayLists extends BaseModule {
         return dialogGlobalList;
     }
 
-    public BindedDisplayList<Dialog> buildNewDialogsList(boolean disableDispose) {
+    public BindedDisplayList<Message> getMessagesGlobalList(Peer peer) {
+        MVVMEngine.checkMainThread();
+
+        if (!chatsGlobalLists.containsKey(peer)) {
+            chatsGlobalLists.put(peer, buildNewChatList(peer, true));
+        }
+        
+        return chatsGlobalLists.get(peer);
+    }
+
+    public BindedDisplayList<Dialog> buildNewDialogsList(boolean isGlobalList) {
         MVVMEngine.checkMainThread();
 
         ListEngine<Dialog> dialogsEngine = modules().getMessagesModule().getDialogsEngine();
@@ -52,12 +68,12 @@ public class DisplayLists extends BaseModule {
         }
 
         BindedDisplayList<Dialog> displayList = new BindedDisplayList<Dialog>((ListEngineDisplayExt<Dialog>) dialogsEngine,
-                disableDispose, LOAD_PAGE, LOAD_GAP);
+                isGlobalList, LOAD_PAGE, LOAD_GAP);
         displayList.initTop(false);
         return displayList;
     }
 
-    public BindedDisplayList<Contact> buildNewContactList(boolean disableDispose) {
+    public BindedDisplayList<Contact> buildNewContactList(boolean isGlobalList) {
         MVVMEngine.checkMainThread();
 
         ListEngine<Contact> contactsEngine = modules().getContactsModule().getContacts();
@@ -66,8 +82,22 @@ public class DisplayLists extends BaseModule {
         }
 
         BindedDisplayList<Contact> contactList = new BindedDisplayList<Contact>((ListEngineDisplayExt<Contact>) contactsEngine,
-                disableDispose, LOAD_PAGE, LOAD_GAP);
+                isGlobalList, LOAD_PAGE, LOAD_GAP);
         contactList.initTop(false);
         return contactList;
+    }
+
+    public BindedDisplayList<Message> buildNewChatList(Peer peer, boolean isGlobalList) {
+        MVVMEngine.checkMainThread();
+
+        ListEngine<Message> messagesEngine = modules().getMessagesModule().getConversationEngine(peer);
+        if (!(messagesEngine instanceof ListEngineDisplayExt)) {
+            throw new RuntimeException("Conversation ListEngine must implement ListEngineDisplayExt for using global list");
+        }
+
+        BindedDisplayList<Message> chatList = new BindedDisplayList<Message>((ListEngineDisplayExt<Message>) messagesEngine,
+                isGlobalList, LOAD_PAGE, LOAD_GAP);
+        chatList.initTop(false);
+        return chatList;
     }
 }

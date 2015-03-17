@@ -6,6 +6,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/ListEngine.h"
 #include "im/actor/model/droidkit/engine/ListEngineDisplayExt.h"
+#include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Contacts.h"
 #include "im/actor/model/modules/DisplayLists.h"
@@ -14,21 +15,27 @@
 #include "im/actor/model/mvvm/BindedDisplayList.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
 #include "java/lang/RuntimeException.h"
+#include "java/util/HashMap.h"
 
 @interface ImActorModelModulesDisplayLists () {
  @public
   AMBindedDisplayList *dialogGlobalList_;
   AMBindedDisplayList *contactsGlobalList_;
+  JavaUtilHashMap *chatsGlobalLists_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, dialogGlobalList_, AMBindedDisplayList *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, contactsGlobalList_, AMBindedDisplayList *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, chatsGlobalLists_, JavaUtilHashMap *)
 
 @implementation ImActorModelModulesDisplayLists
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  return [super initWithImActorModelModulesModules:modules];
+  if (self = [super initWithImActorModelModulesModules:modules]) {
+    chatsGlobalLists_ = [[JavaUtilHashMap alloc] init];
+  }
+  return self;
 }
 
 - (AMBindedDisplayList *)getContactsGlobalList {
@@ -47,32 +54,53 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, contactsGlobalList_, AMBind
   return dialogGlobalList_;
 }
 
-- (AMBindedDisplayList *)buildNewDialogsListWithBoolean:(jboolean)disableDispose {
+- (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer {
+  AMMVVMEngine_checkMainThread();
+  if (![((JavaUtilHashMap *) nil_chk(chatsGlobalLists_)) containsKeyWithId:peer]) {
+    (void) [chatsGlobalLists_ putWithId:peer withId:[self buildNewChatListWithAMPeer:peer withBoolean:YES]];
+  }
+  return [chatsGlobalLists_ getWithId:peer];
+}
+
+- (AMBindedDisplayList *)buildNewDialogsListWithBoolean:(jboolean)isGlobalList {
   AMMVVMEngine_checkMainThread();
   id<DKListEngine> dialogsEngine = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsEngine];
   if (!([DKListEngineDisplayExt_class_() isInstance:dialogsEngine])) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Dialogs ListEngine must implement ListEngineDisplayExt for using global list"];
   }
-  AMBindedDisplayList *displayList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(dialogsEngine, @protocol(DKListEngineDisplayExt)) withBoolean:disableDispose withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP];
+  AMBindedDisplayList *displayList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(dialogsEngine, @protocol(DKListEngineDisplayExt)) withBoolean:isGlobalList withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP];
   [displayList initTopWithBoolean:NO];
   return displayList;
 }
 
-- (AMBindedDisplayList *)buildNewContactListWithBoolean:(jboolean)disableDispose {
+- (AMBindedDisplayList *)buildNewContactListWithBoolean:(jboolean)isGlobalList {
   AMMVVMEngine_checkMainThread();
   id<DKListEngine> contactsEngine = [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContacts];
   if (!([DKListEngineDisplayExt_class_() isInstance:contactsEngine])) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Contacts ListEngine must implement ListEngineDisplayExt for using global list"];
   }
-  AMBindedDisplayList *contactList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)) withBoolean:disableDispose withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP];
+  AMBindedDisplayList *contactList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)) withBoolean:isGlobalList withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP];
   [contactList initTopWithBoolean:NO];
   return contactList;
+}
+
+- (AMBindedDisplayList *)buildNewChatListWithAMPeer:(AMPeer *)peer
+                                        withBoolean:(jboolean)isGlobalList {
+  AMMVVMEngine_checkMainThread();
+  id<DKListEngine> messagesEngine = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationEngineWithAMPeer:peer];
+  if (!([DKListEngineDisplayExt_class_() isInstance:messagesEngine])) {
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Conversation ListEngine must implement ListEngineDisplayExt for using global list"];
+  }
+  AMBindedDisplayList *chatList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(messagesEngine, @protocol(DKListEngineDisplayExt)) withBoolean:isGlobalList withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP];
+  [chatList initTopWithBoolean:NO];
+  return chatList;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesDisplayLists *)other {
   [super copyAllFieldsTo:other];
   other->dialogGlobalList_ = dialogGlobalList_;
   other->contactsGlobalList_ = contactsGlobalList_;
+  other->chatsGlobalLists_ = chatsGlobalLists_;
 }
 
 @end
