@@ -1,5 +1,6 @@
 package im.actor.model.mvvm;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +48,27 @@ class DisplayModifications {
                 }
 
                 sourceList.addAll(items);
+            }
+        };
+    }
+
+    public static <T extends ListEngineItem> DisplayList.Modification<T> addOnly(final List<T> items) {
+        return new DisplayList.Modification<T>() {
+            @Override
+            public void modify(List<T> sourceList) {
+
+                ArrayList<T> toAdd = new ArrayList<T>();
+                outer:
+                for (T t : items) {
+                    for (T srcT : sourceList) {
+                        if (srcT.getEngineId() == t.getEngineId()) {
+                            continue outer;
+                        }
+                    }
+                    toAdd.add(t);
+                }
+
+                sourceList.addAll(toAdd);
             }
         };
     }

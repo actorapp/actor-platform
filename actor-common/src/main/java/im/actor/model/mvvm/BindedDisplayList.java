@@ -272,7 +272,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                     isLoadMoreForwardRequested = false;
                 } else {
                     window.onForwardSliceLoaded(bottomSortKey);
-                    editList(DisplayModifications.addOrUpdate(items), new Runnable() {
+                    editList(DisplayModifications.addOnly(items), new Runnable() {
                         @Override
                         public void run() {
                             if (gen == currentGeneration) {
@@ -321,7 +321,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                     isLoadMoreBackwardRequested = false;
                 } else {
                     window.onBackwardSliceLoaded(bottomSortKey);
-                    editList(DisplayModifications.addOrUpdate(items), new Runnable() {
+                    editList(DisplayModifications.addOnly(items), new Runnable() {
                         @Override
                         public void run() {
                             if (gen == currentGeneration) {
