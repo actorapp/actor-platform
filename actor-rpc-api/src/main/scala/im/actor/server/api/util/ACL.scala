@@ -6,6 +6,7 @@ import java.security.MessageDigest
 import im.actor.server.models
 import scala.util.Try
 
+// TODO: rename ACL to something more suitable for its functionality
 object ACL {
   def secretKey()(implicit s: ActorSystem) =
     s.settings.config.getString("secret")

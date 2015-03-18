@@ -24,7 +24,7 @@ class RpcApiService extends Actor with ActorLogging {
       requestCodec.decode(requestBytes).require map {
         case Request(rpcRequest) =>
         case _ =>
-          Future.successful(Errors.UnsupportedRequest)
+          Future.successful(CommonErrors.UnsupportedRequest)
       }
   }
 }

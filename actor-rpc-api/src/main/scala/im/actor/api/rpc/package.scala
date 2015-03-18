@@ -1,20 +1,24 @@
 package im.actor.api
 
+import scala.reflect._
+
+import scalaz._, std.either._, syntax.monad._
+import slick.dbio.{ DBIO, DBIOAction }
+
+import im.actor.api.rpc._
+
 package object rpc {
-  import im.actor.api.rpc._
-  import scala.reflect._
-  import scalaz._, std.either._
 
-  object Errors {
-    val Internal = RpcError(500, "INTERNAL_SERVER_ERROR", "", false, None)
+  import slick.dbio.Effect
+  import slick.dbio.NoStream
 
+  object CommonErrors {
+    val InvalidAccessHash = RpcError(403, "INVALID_ACCESS_HASH", "", false, None)
     val UnsupportedRequest = RpcError(400, "REQUEST_NOT_SUPPORTED", "Operation not supported.", false, None)
-    val PhoneNumberInvalid = RpcError(400, "PHONE_NUMBER_INVALID", "Invalid phone number.", false, None)
-    val PhoneNumberUnoccupied = RpcError(400, "PHONE_NUMBER_UNOCCUPIED", "", false, None)
-    val PhoneCodeEmpty = RpcError(400, "PHONE_CODE_EMPTY", "", false, None)
-    val PhoneCodeExpired = RpcError(400, "PHONE_CODE_EXPIRED", "", false, None)
-    val PhoneCodeInvalid = RpcError(400, "PHONE_CODE_INVALID", "", false, None)
-    val InvalidKey = RpcError(400, "INVALID_KEY", "", false, None)
+    val UserNotAuthorized = RpcError(403, "USER_NOT_AUTHORIZED", "", false, None)
+    val UserNotFound = RpcError(404, "USER_NOT_FOUND", "", false, None)
+    val UserPhoneNotFound = RpcError(404, "USER_PHONE_NOT_FOUND", "", false, None)
+    val Internal = RpcError(500, "INTERNAL_SERVER_ERROR", "", false, None)
   }
 
   type OkResp[+A] = A
@@ -38,4 +42,52 @@ package object rpc {
         case -\/(_) => None
       }
   }
+
+  sealed trait MaybeAuthorized[+A] {
+    private def flatten[B](xs: MaybeAuthorized[MaybeAuthorized[B]]): MaybeAuthorized[B] =
+      xs match {
+        case Authorized(Authorized(x)) => Authorized(x)
+        case Authorized(NotAuthorized) => NotAuthorized
+        case NotAuthorized             => NotAuthorized
+      }
+
+    def flatMap[B](f: A => MaybeAuthorized[B]): MaybeAuthorized[B] = flatten(map(f))
+
+    def map[B](f: A => B): MaybeAuthorized[B] =
+      this match {
+        case Authorized(a) => Authorized(f(a))
+        case NotAuthorized => NotAuthorized
+      }
+
+    def getOrElse[B >: A](default: => B): B =
+      this match {
+        case Authorized(a) => a
+        case NotAuthorized => default
+      }
+  }
+  final case class Authorized[+A](a: A) extends MaybeAuthorized[A]
+  final case object NotAuthorized extends MaybeAuthorized[Nothing]
+
+  case object MaybeAuthorized extends MaybeAuthorizedInstances
+
+  trait MaybeAuthorizedInstances {
+    implicit val maybeAuthorizedInstance = new Functor[MaybeAuthorized] with Monad[MaybeAuthorized] {
+      def point[A](a: => A): MaybeAuthorized[A] = Authorized(a)
+
+      def bind[A, B](fa: MaybeAuthorized[A])(f: A => MaybeAuthorized[B]): MaybeAuthorized[B] = fa.flatMap(f)
+
+      override def map[A, B](fa: MaybeAuthorized[A])(f: A => B): MaybeAuthorized[B] = fa.map(f)
+    }
+  }
+
+  def requireAuth(implicit clientData: ClientData): MaybeAuthorized[Int] =
+    clientData.optUserId match {
+      case Some(userId) => Authorized(userId)
+      case None         => NotAuthorized
+    }
+
+  def toDBIOAction[R](
+    authorizedAction: MaybeAuthorized[DBIOAction[RpcError \/ R, NoStream, Nothing]]
+  ): DBIOAction[RpcError \/ R, NoStream, Nothing] =
+    authorizedAction.getOrElse(DBIO.successful(-\/(RpcError(403, "USER_NOT_AUTHORIZED", "", false, None))))
 }
