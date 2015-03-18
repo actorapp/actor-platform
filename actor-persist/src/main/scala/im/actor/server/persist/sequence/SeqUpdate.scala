@@ -27,4 +27,8 @@ object SeqUpdate {
   def create(update: models.sequence.SeqUpdate) = {
     updates += update
   }
+
+  def create(newUpdates: Seq[models.sequence.SeqUpdate]) = {
+    updates ++= newUpdates
+  }
 }

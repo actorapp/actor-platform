@@ -47,4 +47,7 @@ object UserContact {
     val contact = models.contact.UserContact(ownerUserId, contactUserId, phoneNumber, name, accessSalt, false)
     contacts.insertOrUpdate(contact)
   }
+
+  def delete(ownerUserId: Int, contactUserId: Int) =
+    byPKNotDeleted(ownerUserId, contactUserId).map(_.isDeleted).update(true)
 }
