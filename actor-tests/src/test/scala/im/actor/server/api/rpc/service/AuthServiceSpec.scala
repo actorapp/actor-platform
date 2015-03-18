@@ -47,7 +47,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
     implicit val ec = system.dispatcher
 
     object sendAuthCode {
-      val authId = createAuthId(service.db)
+      val authId = createAuthId()(service.db)
       val phoneNumber = buildPhone()
 
       implicit val clientData = api.ClientData(authId, None)
@@ -60,7 +60,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
     }
 
     case class signUp()  {
-      val authId = createAuthId(service.db)
+      val authId = createAuthId()(service.db)
       val phoneNumber = buildPhone()
       val smsHash = getSmsHash(authId, phoneNumber)
 
@@ -85,7 +85,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
     }
 
     case class signIn() {
-      val authId = createAuthId(service.db)
+      val authId = createAuthId()(service.db)
       val phoneNumber = buildPhone()
 
       implicit val clientData = api.ClientData(authId, None)
@@ -103,7 +103,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
           appId = 1,
           appKey = "appKey"
         ) must beErrorLike {
-          case api.Errors.PhoneNumberUnoccupied => ok
+          case service.Errors.PhoneNumberUnoccupied => ok
         }.await
       }
 

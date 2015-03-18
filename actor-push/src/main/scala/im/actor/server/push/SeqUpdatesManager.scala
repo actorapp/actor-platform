@@ -1,35 +1,36 @@
 package im.actor.server.push
 
-import akka.actor._
-import akka.contrib.pattern.ClusterSharding
-import akka.contrib.pattern.ShardRegion
-
-import akka.persistence._
-
-import im.actor.api.{ rpc => api }
 import java.util.concurrent.TimeUnit
 
 import scala.concurrent._, duration._
+
+import akka.actor._
+import akka.contrib.pattern.ClusterSharding
+import akka.contrib.pattern.ShardRegion
+import akka.pattern.ask
+import akka.persistence._
+import akka.util.Timeout
+import im.actor.api.{ rpc => api }
 
 object SeqUpdatesManager {
   sealed trait Message
 
   @SerialVersionUID(1L)
-  case class PushUpdate(upd: api.Update) extends Message
+  private[push] case class PushUpdate(upd: api.Update) extends Message
 
   @SerialVersionUID(1L)
-  case class PushUpdateGetSeq(upd: api.Update) extends Message
+  private[push] case class PushUpdateGetSeq(upd: api.Update) extends Message
 
   @SerialVersionUID(1L)
-  case class Envelope(authId: Long, payload: Message)
+  private[push] case class Envelope(authId: Long, payload: Message)
 
   @SerialVersionUID(1L)
-  case class Seq(value: Int)
+  private[push] case class Seq(value: Int)
 
   @SerialVersionUID(1L)
   private[push] case object Stop
 
-  sealed trait PersistentEvent
+  private[push] sealed trait PersistentEvent
 
   @SerialVersionUID(1L)
   private[push] case class SeqChanged(value: Int) extends PersistentEvent
@@ -54,6 +55,14 @@ object SeqUpdatesManager {
   def startRegion()(implicit system: ActorSystem): ActorRef = startRegion(Some(Props[SeqUpdatesManager]))
 
   def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
+
+  def pushUpdate(region: ActorRef, authId: Long, upd: api.Update): Unit = {
+    region ! Envelope(authId, PushUpdate(upd))
+  }
+
+  def pushUpdateGetSeq(region: ActorRef, authId: Long, upd: api.Update)(implicit timeout: Timeout): Future[Seq] = {
+    region.ask(Envelope(authId, PushUpdateGetSeq(upd))).mapTo[Seq]
+  }
 }
 
 class SeqUpdatesManager extends PersistentActor {

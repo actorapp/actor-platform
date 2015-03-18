@@ -26,6 +26,15 @@ trait AuthServiceImpl extends AuthService with Helpers {
   val db: Database
   implicit val actorSystem: ActorSystem
 
+  object Errors {
+    val PhoneNumberInvalid = RpcError(400, "PHONE_NUMBER_INVALID", "Invalid phone number.", false, None)
+    val PhoneNumberUnoccupied = RpcError(400, "PHONE_NUMBER_UNOCCUPIED", "", false, None)
+    val PhoneCodeEmpty = RpcError(400, "PHONE_CODE_EMPTY", "", false, None)
+    val PhoneCodeExpired = RpcError(400, "PHONE_CODE_EXPIRED", "", false, None)
+    val PhoneCodeInvalid = RpcError(400, "PHONE_CODE_INVALID", "", false, None)
+    val InvalidKey = RpcError(400, "INVALID_KEY", "", false, None)
+  }
+
   override def handleGetAuthSessions(implicit clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] =
     throw new NotImplementedError()
 
@@ -215,7 +224,7 @@ trait AuthServiceImpl extends AuthService with Helpers {
 
   private def signIn(authId: Long, userId: Int, pkData: Array[Byte], pkHash: Long, countryCode: String) = {
     persist.User.find(userId).headOption.flatMap {
-      case None => DBIO.successful(Error(Errors.Internal))
+      case None => DBIO.successful(Error(CommonErrors.Internal))
       case Some(user) =>
         (for {
           _ <- persist.User.setCountryCode(userId = userId, countryCode = countryCode)
