@@ -1,11 +1,15 @@
 package im.actor.server.api.rpc.service.contacts
 
+import java.security.MessageDigest
+
+import scala.collection.immutable
 import scala.concurrent._
 import scala.concurrent.duration._
 
 import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
+import scodec.bits.BitVector
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
@@ -30,8 +34,41 @@ class ContactsServiceImpl(
     val ContactAlreadyExists = RpcError(400, "CONTACT_ALREADY_EXISTS", "Contact already exists.", false, None)
   }
 
+  private[service] def hashIds(ids: Seq[Int]): String = {
+    val md = MessageDigest.getInstance("SHA-256")
+    val uids = ids.to[immutable.SortedSet].mkString(",")
+    BitVector(md.digest(uids.getBytes)).toHex
+  }
+
   override def handleImportContacts(phones: Vector[PhoneToImport], emails: Vector[EmailToImport])(implicit clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] = throw new NotImplementedError()
-  override def handleGetContacts(contactsHash: String)(implicit clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] = throw new NotImplementedError()
+  override def handleGetContacts(contactsHash: String)(implicit clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] = {
+    val authorizedAction = requireAuth.map { clientUserId =>
+      val action = persist.contact.UserContact.findContactIdsAll(clientUserId).map(hashIds).flatMap { hash =>
+        if (contactsHash == hash) {
+          DBIO.successful(Ok(ResponseGetContacts(Vector.empty[users.User], isNotChanged = true)))
+        } else {
+          for {
+            userIdsNames <- persist.contact.UserContact.findContactIdsWithLocalNames(clientUserId)
+            userIds = userIdsNames.map(_._1).toSet
+            users <- persist.User.findByIds(userIds)
+            namesMap = immutable.Map(userIdsNames: _*)
+            // TODO: #perf optimize (so much requests!)
+            userStructs <- DBIO.sequence(users.map( user =>
+              util.User.struct(user, namesMap.get(user.id).getOrElse(None), clientData.authId)))
+          } yield {
+            Ok(ResponseGetContacts(
+              users = userStructs.toVector,
+              isNotChanged = false
+            ))
+          }
+        }
+      }
+
+      action.transactionally
+    }
+
+    db.run(toDBIOAction(authorizedAction))
+  }
   override def handleRemoveContact(userId: Int, accessHash: Long)(implicit clientData: ClientData): Future[HandlerResult[ResponseSeq]] = throw new NotImplementedError()
   override def handleAddContact(userId: Int, accessHash: Long)(implicit clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth.map { clientUserId =>

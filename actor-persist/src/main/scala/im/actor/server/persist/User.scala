@@ -32,4 +32,7 @@ object User {
   // TODO: #perf will it create prepared statement for each ids length?
   def findSalts(ids: Set[Int]) =
     users.filter(_.id inSet ids).map(u => (u.id, u.accessSalt)).result
+
+  def findByIds(ids: Set[Int]) =
+    users.filter(_.id inSet ids).result
 }
