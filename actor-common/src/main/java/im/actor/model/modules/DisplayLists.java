@@ -16,7 +16,7 @@ import im.actor.model.mvvm.MVVMEngine;
  */
 public class DisplayLists extends BaseModule {
 
-    private static final int LOAD_GAP = 20;
+    private static final int LOAD_GAP = 5;
     private static final int LOAD_PAGE = 20;
 
     private BindedDisplayList<Dialog> dialogGlobalList;

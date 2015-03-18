@@ -162,13 +162,21 @@ withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadC
   if (downloaded1 != nil) {
     id<AMFileSystemProvider> provider = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider];
     id<AMFileSystemReference> reference = [((id<AMFileSystemProvider>) nil_chk(provider)) fileFromDescriptor:[downloaded1 getDescriptor]];
-    if ([((id<AMFileSystemReference>) nil_chk(reference)) isExist] && [reference getSize] == [downloaded1 getFileSize]) {
+    jboolean isExist = [((id<AMFileSystemReference>) nil_chk(reference)) isExist];
+    jint fileSize = [reference getSize];
+    if (isExist && fileSize == [downloaded1 getFileSize]) {
       AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- Downloaded");
       [((id<ImActorModelModulesFileDownloadCallback>) nil_chk(callback)) onDownloadedWithAMFileSystemReference:[((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider])) fileFromDescriptor:[downloaded1 getDescriptor]]];
       return;
     }
     else {
       AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- File is corrupted");
+      if (!isExist) {
+        AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, @"- File not found");
+      }
+      if (fileSize != [downloaded1 getFileSize]) {
+        AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$I$I", @"- Incorrect file size. Expected: ", [downloaded1 getFileSize], @", got: ", fileSize));
+      }
       [downloaded_ removeItemWithLong:[downloaded1 getFileId]];
     }
   }
