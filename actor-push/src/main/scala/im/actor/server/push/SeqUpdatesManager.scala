@@ -1,35 +1,40 @@
 package im.actor.server.push
 
-import akka.actor._
-import akka.contrib.pattern.ClusterSharding
-import akka.contrib.pattern.ShardRegion
-
-import akka.persistence._
-
-import im.actor.api.{ rpc => api }
 import java.util.concurrent.TimeUnit
 
 import scala.concurrent._, duration._
+
+import akka.actor._
+import akka.contrib.pattern.ClusterSharding
+import akka.contrib.pattern.ShardRegion
+import akka.pattern.ask
+import akka.persistence._
+import akka.util.Timeout
+import slick.dbio.DBIO
+
+import im.actor.api.{ rpc => api }
+import im.actor.server.models
+import im.actor.server.persist
 
 object SeqUpdatesManager {
   sealed trait Message
 
   @SerialVersionUID(1L)
-  case class PushUpdate(upd: api.Update) extends Message
+  private[push] case class PushUpdate(upd: api.Update) extends Message
 
   @SerialVersionUID(1L)
-  case class PushUpdateGetSeq(upd: api.Update) extends Message
+  private[push] case class PushUpdateGetSeq(upd: api.Update) extends Message
 
   @SerialVersionUID(1L)
-  case class Envelope(authId: Long, payload: Message)
+  private[push] case class Envelope(authId: Long, payload: Message)
 
   @SerialVersionUID(1L)
-  case class Seq(value: Int)
+  private[push] case class Seq(value: Int)
 
   @SerialVersionUID(1L)
   private[push] case object Stop
 
-  sealed trait PersistentEvent
+  private[push] sealed trait PersistentEvent
 
   @SerialVersionUID(1L)
   private[push] case class SeqChanged(value: Int) extends PersistentEvent
@@ -51,9 +56,43 @@ object SeqUpdatesManager {
     shardResolver = shardResolver
   )
 
+  val PushGetSeqTimeout = Timeout(5.seconds) // TODO: configurable
+
   def startRegion()(implicit system: ActorSystem): ActorRef = startRegion(Some(Props[SeqUpdatesManager]))
 
   def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
+
+  def pushUpdate(region: ActorRef, authId: Long, upd: api.Update): Unit = {
+    region ! Envelope(authId, PushUpdate(upd))
+  }
+
+  def pushUpdateGetSeq(region: ActorRef, authId: Long, upd: api.Update): Future[Seq] = {
+    region.ask(Envelope(authId, PushUpdateGetSeq(upd)))(PushGetSeqTimeout).mapTo[Seq]
+  }
+
+  def broadcastUserUpdate(region: ActorRef, clientUserId: Int, update: api.Update)(
+    implicit
+    clientData: api.ClientData, ec: ExecutionContext
+  ) = {
+    val header = update.header
+    val serializedData = update.toByteArray
+
+    for {
+      otherAuthIds <- persist.AuthId.findByUserId(clientUserId).map(_.view.filter(_.id != clientData.authId))
+      _ <- DBIO.sequence(
+        otherAuthIds.map { authId =>
+          persist.sequence.SeqUpdate.create(models.sequence.SeqUpdate(authId.id, header, serializedData))
+        }
+      )
+      ownUpdate = models.sequence.SeqUpdate(clientData.authId, header, serializedData)
+      _ <- persist.sequence.SeqUpdate.create(ownUpdate)
+      ownSeq <- DBIO.from(pushUpdateGetSeq(region, clientData.authId, update).map(_.value))
+    } yield {
+      otherAuthIds foreach (authId => pushUpdate(region, authId.id, update))
+
+      (ownSeq, ownUpdate.ref.toByteArray)
+    }
+  }
 }
 
 class SeqUpdatesManager extends PersistentActor {
@@ -81,7 +120,7 @@ class SeqUpdatesManager extends PersistentActor {
         replyTo ! Seq(newSeq)
       })
     case ReceiveTimeout => context.parent ! Passivate(stopMessage = Stop)
-    case Stop => context.stop(self)
+    case Stop           => context.stop(self)
   }
 
   override def receiveRecover: Receive = {
