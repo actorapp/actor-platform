@@ -15,7 +15,9 @@ class ContactsServiceSpec extends BaseServiceSpec {
     respond with isChanged = true and actual users if hash was emptySHA1 ${s.getcontacts.changed}
     respond with isChanged = false if not changed ${s.getcontacts.notChanged}
   ContactsService
-    AddContact hamdler should add contact ${s.addremove.add()}
+    AddContact handler should add contact ${s.addremove.add()}
+    remove contact ${s.addremove.remove}
+    add after remove ${s.addremove.addAfterRemove}
   """
 
   object s {
@@ -65,14 +67,36 @@ class ContactsServiceSpec extends BaseServiceSpec {
 
       val (user2, _, _) = createUser()
       val user2Model = getUserModel(user2.id)
+      val user2AccessHash = util.ACL.userAccessHash(authId, user2.id, user2Model.accessSalt)
 
       implicit val clientData = api.ClientData(authId, Some(user.id))
 
-      def add(firstRun: Boolean = true) = {
-        service.handleAddContact(user2.id, util.ACL.userAccessHash(authId, user2.id, user2Model.accessSalt)) must beOkLike {
-          case api.misc.ResponseSeq(1001, state) if !state.isEmpty => ok
-        }.await(timeout = 4.seconds)
+      def add(firstRun: Boolean = true, expectedUpdSeq: Int = 1001) = {
+        service.handleAddContact(user2.id, user2AccessHash) must beOkLike {
+          case api.misc.ResponseSeq(seq, state) if seq == expectedUpdSeq => ok
+        }.await
+
+        val expectedUsers = Vector(Await.result(
+          db.run(util.User.struct(user2Model, None, clientData.authId)),
+          3.seconds
+        ))
+
+        service.handleGetContacts(service.hashIds(Seq.empty)) must beOk(
+          api.contacts.ResponseGetContacts(expectedUsers, false)
+        ).await
       }
+
+      def remove = {
+        service.handleRemoveContact(user2.id, user2AccessHash) must beOkLike {
+          case api.misc.ResponseSeq(1003, state) => ok
+        }.await
+
+        service.handleGetContacts(service.hashIds(Seq.empty)) must beOk(
+          api.contacts.ResponseGetContacts(Vector.empty, false)
+        ).await
+      }
+
+      def addAfterRemove = add(firstRun = false, expectedUpdSeq = 1004)
     }
   }
 }

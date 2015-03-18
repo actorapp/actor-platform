@@ -13,7 +13,7 @@ import scodec.bits.BitVector
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc._, contacts._, misc._
+import im.actor.api.rpc._, contacts._, misc._, users.UpdateUserLocalNameChanged
 import im.actor.server.api.util
 import im.actor.server.models
 import im.actor.server.persist
@@ -32,6 +32,7 @@ class ContactsServiceImpl(
   object Errors {
     val CantAddSelf = RpcError(401, "OWN_USER_ID", "User id cannot be equal to self.", false, None)
     val ContactAlreadyExists = RpcError(400, "CONTACT_ALREADY_EXISTS", "Contact already exists.", false, None)
+    val ContactNotFound = RpcError(404, "CONTACT_NOT_FOUND", "Contact not found.", false, None)
   }
 
   private[service] def hashIds(ids: Seq[Int]): String = {
@@ -69,7 +70,27 @@ class ContactsServiceImpl(
 
     db.run(toDBIOAction(authorizedAction))
   }
-  override def handleRemoveContact(userId: Int, accessHash: Long)(implicit clientData: ClientData): Future[HandlerResult[ResponseSeq]] = throw new NotImplementedError()
+  override def handleRemoveContact(userId: Int, accessHash: Long)(implicit clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    val authorizedAction = requireAuth.map { clientUserId =>
+      persist.contact.UserContact.find(ownerUserId = clientUserId, contactUserId = userId).flatMap {
+        case Some(contact) =>
+          if (accessHash == util.ACL.userAccessHash(clientData.authId, userId, contact.accessSalt)) {
+            for {
+              _ <- persist.contact.UserContact.delete(clientUserId, userId)
+              _ <- broadcastUserUpdate(seqUpdManagerRegion, clientUserId, UpdateUserLocalNameChanged(userId, None))
+              seqstate <- broadcastUserUpdate(seqUpdManagerRegion, clientUserId, UpdateContactsRemoved(Vector(userId)))
+            } yield {
+              Ok(ResponseSeq(seqstate._1, seqstate._2))
+            }
+          } else {
+            DBIO.successful(Error(CommonErrors.InvalidAccessHash))
+          }
+        case None => DBIO.successful(Error(Errors.ContactNotFound))
+      }
+    }
+
+    db.run(toDBIOAction(authorizedAction))
+  }
   override def handleAddContact(userId: Int, accessHash: Long)(implicit clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth.map { clientUserId =>
       val action = (for {
@@ -100,26 +121,16 @@ class ContactsServiceImpl(
   }
   override def handleSearchContacts(request: String)(implicit clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] = throw new NotImplementedError()
 
-  private def addContactSendUpdate(currentUserId: Int, userId: Int, phoneNumber: Long, name: Option[String], accessSalt: String)(implicit clientData: ClientData, timeout: Timeout) = {
-    val update = UpdateContactsAdded(Vector(userId))
-    val header = UpdateContactsAdded.header
-    val serializedData = update.toByteArray
-
+  private def addContactSendUpdate(
+    clientUserId: Int,
+    userId: Int,
+    phoneNumber: Long,
+    name: Option[String],
+    accessSalt: String
+  )(implicit clientData: ClientData) = {
     for {
-      _ <- persist.contact.UserContact.createOrRestore(currentUserId, userId, phoneNumber, name, accessSalt)
-      otherAuthIds <- persist.AuthId.findByUserId(currentUserId).map(_.view.filter(_.id != clientData.authId))
-      _ <- DBIO.sequence(
-        otherAuthIds.map { authId =>
-          persist.sequence.SeqUpdate.create(models.sequence.SeqUpdate(authId.id, header, serializedData))
-        }
-      )
-      ownUpdate = models.sequence.SeqUpdate(clientData.authId, header, serializedData)
-      _ <- persist.sequence.SeqUpdate.create(ownUpdate)
-      ownSeq <- DBIO.from(pushUpdateGetSeq(seqUpdManagerRegion, clientData.authId, update).map(_.value))
-    } yield {
-      otherAuthIds foreach (authId => pushUpdate(seqUpdManagerRegion, authId.id, update))
-
-      (ownSeq, ownUpdate.ref.toByteArray)
-    }
+      _ <- persist.contact.UserContact.createOrRestore(clientUserId, userId, phoneNumber, name, accessSalt)
+      seqstate <- broadcastUserUpdate(seqUpdManagerRegion, clientUserId, UpdateContactsAdded(Vector(userId)))
+    } yield seqstate
   }
 }
