@@ -197,7 +197,7 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
 
 - (void)touchWithInt:(jint)index {
   AMMVVMEngine_checkMainThread();
-  if (index > [self getSize] - loadGap_) {
+  if (index >= [self getSize] - loadGap_) {
     AMBindedDisplayList_loadMoreForward(self);
   }
   if (index < loadGap_) {

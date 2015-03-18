@@ -14,7 +14,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-#define ImActorModelModulesDisplayLists_LOAD_GAP 20
+#define ImActorModelModulesDisplayLists_LOAD_GAP 5
 #define ImActorModelModulesDisplayLists_LOAD_PAGE 20
 
 @interface ImActorModelModulesDisplayLists : ImActorModelModulesBaseModule {

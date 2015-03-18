@@ -66,7 +66,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     public void touch(int index) {
         MVVMEngine.checkMainThread();
 
-        if (index > getSize() - loadGap) {
+        if (index >= getSize() - loadGap) {
             loadMoreForward();
         }
 
