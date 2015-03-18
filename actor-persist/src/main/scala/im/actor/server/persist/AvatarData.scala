@@ -40,12 +40,18 @@ object AvatarData {
   def create(data: models.AvatarData) =
     adatas += data
 
+  def byType(typ: models.AvatarData.TypeVal) =
+    adatas.filter(d => d.entityType === typ)
+
   def byTypeAndId(typ: models.AvatarData.TypeVal, id: Long) =
-    adatas.filter(d => d.entityType === typ && d.entityId === id)
+    byType(typ).filter(d => d.entityId === id)
 
   def find(typ: models.AvatarData.TypeVal, id: Long) =
     byTypeAndId(typ, id).result
 
   def findByUserId(userId: Int) =
     byTypeAndId(models.AvatarData.OfUser, userId.toLong).result
+
+  def findByUserIds(userIds: Set[Int]) =
+    byType(models.AvatarData.OfUser).filter(d => d.entityId inSet userIds.map(_.toLong)).result
 }

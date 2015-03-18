@@ -25,14 +25,23 @@ object UserContact {
   def byPK(ownerUserId: Int, contactUserId: Int) =
     contacts.filter(c => c.ownerUserId === ownerUserId && c.contactUserId === contactUserId)
 
+  def byOwnerUserIdNotDeleted(ownerUserId: Int) =
+    contacts.filter(c => c.ownerUserId === ownerUserId && c.isDeleted === false)
+
   def byPKNotDeleted(ownerUserId: Int, contactUserId: Int) =
-    contacts.filter(c => c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === true)
+    contacts.filter(c => c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === false)
 
   def byPKDeleted(ownerUserId: Int, contactUserId: Int) =
     contacts.filter(c => c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === true)
 
   def find(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).result.headOption
+
+  def findContactIdsAll(ownerUserId: Int) =
+    contacts.filter(c => c.ownerUserId === ownerUserId).map(_.contactUserId).result
+
+  def findContactIdsWithLocalNames(ownerUserId: Int) =
+    byOwnerUserIdNotDeleted(ownerUserId).map(c => (c.contactUserId, c.name)).result
 
   def createOrRestore(ownerUserId: Int, contactUserId: Int, phoneNumber: Long, name: Option[String], accessSalt: String) = {
     val contact = models.contact.UserContact(ownerUserId, contactUserId, phoneNumber, name, accessSalt, false)
