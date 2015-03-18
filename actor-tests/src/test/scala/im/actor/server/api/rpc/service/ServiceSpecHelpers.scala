@@ -1,24 +1,37 @@
 package im.actor.server.api.rpc.service
 
-import akka.actor.ActorSystem
-
-import im.actor.api.{ rpc => api }
-import im.actor.server.persist
-
-import eu.codearte.jfairy.Fairy
-
 import scala.concurrent._, duration._
 
+import akka.actor.ActorSystem
+import akka.util.Timeout
+import eu.codearte.jfairy.Fairy
 import slick.driver.PostgresDriver.api._
 
-trait ServiceSpecHelpers {
+import im.actor.api.{ rpc => api }
+import im.actor.server.models
+import im.actor.server.persist
+
+trait PersistenceHelpers {
+  implicit val timeout = Timeout(5.seconds)
+
+  def getUserModel(userId: Int)(implicit db: Database) = Await.result(db.run(persist.User.find(userId).head), timeout.duration)
+}
+
+trait UserStructExtensions {
+  implicit class ExtUser(user: api.users.User) {
+    def asModel()(implicit db: Database): models.User =
+      Await.result(db.run(persist.User.find(user.id).head), 3.seconds)
+  }
+}
+
+trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   val fairy = Fairy.create()
 
   def buildPhone(): Long = {
     75550000000L + scala.util.Random.nextInt(999999)
   }
 
-  def createAuthId(db: Database): Long = {
+  def createAuthId()(implicit db: Database): Long = {
     val authId = scala.util.Random.nextLong
 
     Await.result(db.run(persist.AuthId.create(authId, None)), 1.second)
@@ -29,6 +42,12 @@ trait ServiceSpecHelpers {
     val api.auth.ResponseSendAuthCode(smsHash, _) =
       Await.result(service.handleSendAuthCode(phoneNumber, 1, "apiKey")(api.ClientData(authId, None)), 1.second).toOption.get
     smsHash
+  }
+
+  def createUser()(implicit service: api.auth.AuthService, db: Database, system: ActorSystem): (api.users.User, Long, Long) = withoutLogs {
+    val authId = createAuthId()
+    val phoneNumber = buildPhone()
+    (createUser(authId, phoneNumber), authId, phoneNumber)
   }
 
   def createUser(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem) = withoutLogs {
@@ -50,7 +69,7 @@ trait ServiceSpecHelpers {
     rsp.user
   }
 
-  def buildAuthService(system: ActorSystem, database: Database) = new auth.AuthServiceImpl {
+  def buildAuthService()(implicit system: ActorSystem, database: Database) = new auth.AuthServiceImpl {
     override implicit val ec = system.dispatcher
     override implicit val actorSystem = system
 
