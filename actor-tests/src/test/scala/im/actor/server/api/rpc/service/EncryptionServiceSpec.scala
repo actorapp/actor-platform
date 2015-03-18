@@ -22,16 +22,16 @@ class EncryptionServiceSpec extends ActorSpecification with SqlSpecHelpers with 
       val db = migrateAndInitDb()
     }
 
-    implicit val authService = buildAuthService(system, service.db)
-
+    implicit val db = service.db
+    implicit val authService = buildAuthService()
     implicit val ec = system.dispatcher
 
-    val authId = createAuthId(service.db)
+    val authId = createAuthId()
     val phoneNumber = buildPhone()
 
     val user = createUser(authId, phoneNumber)
 
-    val authId2 = createAuthId(service.db)
+    val authId2 = createAuthId()
     val phoneNumber2 = buildPhone()
 
     val user2 = createUser(authId2, phoneNumber2)

@@ -24,8 +24,7 @@ object Build extends sbt.Build {
   lazy val compilerWarnings = Seq(
     "-Ywarn-dead-code",
     "-Ywarn-infer-any",
-    "-Ywarn-numeric-widen",
-    "-Ywarn-unused"
+    "-Ywarn-numeric-widen"
   )
 
   lazy val defaultSettings =
@@ -108,7 +107,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.rpcApi
     )
-  ).dependsOn(actorApi, actorCodecs, actorPersist)
+  ).dependsOn(actorApi, actorCodecs, actorPersist, actorPush)
 
   lazy val actorFrontend = Project(
     id = "actor-frontend",

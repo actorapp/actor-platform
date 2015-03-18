@@ -20,9 +20,15 @@ object AuthId {
   def create(authId: Long, userId: Option[Int]) =
     authIds += models.AuthId(authId, userId)
 
+  def byAuthIdNotDeleted(authId: Long) =
+    authIds.filter(a => a.id === authId && a.deletedAt.isEmpty)
+
   def setUserId(authId: Long, userId: Int) =
-    authIds.filter(_.id === authId).map(_.userId).update(Some(userId))
+    byAuthIdNotDeleted(authId).map(_.userId).update(Some(userId))
 
   def find(authId: Long) =
-    authIds.filter(_.id === authId).result
+    byAuthIdNotDeleted(authId).result
+
+  def findByUserId(userId: Int) =
+    authIds.filter(a => a.userId === userId && a.deletedAt.isEmpty).result
 }
