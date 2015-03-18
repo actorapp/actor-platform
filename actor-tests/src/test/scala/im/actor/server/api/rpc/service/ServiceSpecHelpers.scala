@@ -1,16 +1,15 @@
 package im.actor.server.api.rpc.service
 
-import akka.actor.ActorSystem
-import akka.util.Timeout
-
-import im.actor.api.{ rpc => api }
-import im.actor.server.persist
-
-import eu.codearte.jfairy.Fairy
-
 import scala.concurrent._, duration._
 
+import akka.actor.ActorSystem
+import akka.util.Timeout
+import eu.codearte.jfairy.Fairy
 import slick.driver.PostgresDriver.api._
+
+import im.actor.api.{ rpc => api }
+import im.actor.server.models
+import im.actor.server.persist
 
 trait PersistenceHelpers {
   implicit val timeout = Timeout(5.seconds)
@@ -18,7 +17,14 @@ trait PersistenceHelpers {
   def getUserModel(userId: Int)(implicit db: Database) = Await.result(db.run(persist.User.find(userId).head), timeout.duration)
 }
 
-trait ServiceSpecHelpers extends PersistenceHelpers {
+trait UserStructExtensions {
+  implicit class ExtUser(user: api.users.User) {
+    def asModel()(implicit db: Database): models.User =
+      Await.result(db.run(persist.User.find(user.id).head), 3.seconds)
+  }
+}
+
+trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   val fairy = Fairy.create()
 
   def buildPhone(): Long = {

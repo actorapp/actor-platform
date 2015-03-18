@@ -2,13 +2,18 @@ package im.actor.server.api.rpc.service
 
 import scala.concurrent._, duration._
 
+import slick.dbio.DBIO
+
 import im.actor.api.{ rpc => api }
 import im.actor.server.api.util
 import im.actor.server.persist
 import im.actor.server.push.SeqUpdatesManager
 
 class ContactsServiceSpec extends BaseServiceSpec {
-  def is = sequential^s2"""
+  def is = sequential ^ s2"""
+  GetContacts handler should
+    respond with isChanged = true and actual users if hash was emptySHA1 ${s.getcontacts.changed}
+    respond with isChanged = false if not changed ${s.getcontacts.notChanged}
   ContactsService
     AddContact hamdler should add contact ${s.addremove.add()}
   """
@@ -21,8 +26,39 @@ class ContactsServiceSpec extends BaseServiceSpec {
     implicit val authService = buildAuthService()
     implicit val ec = system.dispatcher
 
-    object addremove {
+    def addContact(userId: Int, userAccessSalt: String)(implicit clientData: api.ClientData) = {
+      Await.result(service.handleAddContact(userId, util.ACL.userAccessHash(clientData.authId, userId, userAccessSalt)), 3.seconds)
+    }
 
+    object getcontacts {
+      val (user, authId, _) = createUser()
+      implicit val clientData = api.ClientData(authId, Some(user.id))
+
+      val userModels = for (i <- 1 to 3) yield {
+        val user = createUser()._1.asModel()
+        addContact(user.id, user.accessSalt)
+        user
+      }
+
+
+      def changed = {
+        val expectedUsers = Await.result(db.run(DBIO.sequence(userModels map { user =>
+          util.User.struct(user, None, clientData.authId)
+        })), 3.seconds)
+
+        service.handleGetContacts(service.hashIds(Seq.empty)) must beOk(
+          api.contacts.ResponseGetContacts(expectedUsers.toVector, false)
+        ).await
+      }
+
+      def notChanged = {
+        service.handleGetContacts(service.hashIds(userModels.map(_.id))) must beOk(
+          api.contacts.ResponseGetContacts(Vector.empty, true)
+        ).await
+      }
+    }
+
+    object addremove {
       val authId = createAuthId()
       val phoneNumber = buildPhone()
       val user = createUser(authId, phoneNumber)
