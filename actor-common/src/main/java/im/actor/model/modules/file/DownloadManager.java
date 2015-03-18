@@ -85,13 +85,21 @@ public class DownloadManager extends ModuleActor {
         if (downloaded1 != null) {
             FileSystemProvider provider = modules().getConfiguration().getFileSystemProvider();
             FileSystemReference reference = provider.fileFromDescriptor(downloaded1.getDescriptor());
-            if (reference.isExist() && reference.getSize() == downloaded1.getFileSize()) {
+            boolean isExist = reference.isExist();
+            int fileSize = reference.getSize();
+            if (isExist && fileSize == downloaded1.getFileSize()) {
                 Log.d(TAG, "- Downloaded");
                 callback.onDownloaded(modules().getConfiguration().getFileSystemProvider()
                         .fileFromDescriptor(downloaded1.getDescriptor()));
                 return;
             } else {
                 Log.d(TAG, "- File is corrupted");
+                if (!isExist) {
+                    Log.d(TAG, "- File not found");
+                }
+                if (fileSize != downloaded1.getFileSize()) {
+                    Log.d(TAG, "- Incorrect file size. Expected: " + downloaded1.getFileSize() + ", got: " + fileSize);
+                }
                 downloaded.removeItem(downloaded1.getFileId());
             }
         }
