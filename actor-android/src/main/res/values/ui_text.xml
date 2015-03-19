@@ -133,11 +133,6 @@
     <string name="dialogs_menu_group_leave">Exit group</string>
     <string name="dialogs_menu_group_delete">Delete group</string>
 
-    <string name="dialogs_video">Video</string>
-    <string name="dialogs_photo">Photo</string>
-    <string name="dialogs_document">Document</string>
-    <string name="dialogs_audio">Audio</string>
-
     <!-- Contacts -->
     <string name="contacts_title">Contacts</string>
     <string name="contacts_empty_short">No contacts yet</string>
@@ -295,71 +290,6 @@
     <string name="security_terminate_message">Are you sure want to logout on all other devices? All data will be lost on that devices.</string>
     <string name="security_authorized_header">Authorized devices and services</string>
     <string name="security_authorized_loading">Loading…</string>
-
-    <!-- Service messages -->
-    <string name="service_you">You</string>
-    <string name="service_your">You</string>
-
-    <string name="service_registered">Joined Actor</string>
-    <string name="service_registered_male">@string/service_registered</string>
-    <string name="service_registered_female">@string/service_registered</string>
-
-    <string name="service_registered_full">{0} joined Actor Network</string>
-    <string name="service_registered_full_male">@string/service_registered_full</string>
-    <string name="service_registered_full_female">@string/service_registered_full</string>
-
-    <string name="service_new_device">Added new device</string>
-    <string name="service_new_device_male">@string/service_new_device</string>
-    <string name="service_new_device_female">@string/service_new_device</string>
-
-    <string name="service_new_device_full">{0} added new device to it\'s account</string>
-    <string name="service_new_device_full_male">@string/service_new_device_full</string>
-    <string name="service_new_device_full_female">@string/service_new_device_full</string>
-
-    <string name="service_created">{0} created the group</string>
-    <string name="service_created_you">@string/service_created</string>
-    <string name="service_created_male">@string/service_created</string>
-    <string name="service_created_female">@string/service_created</string>
-
-    <string name="service_created_full">{0} created the group "{1}"</string>
-    <string name="service_created_full_you">@string/service_created</string>
-    <string name="service_created_full_male">@string/service_created</string>
-    <string name="service_created_full_female">@string/service_created</string>
-
-    <string name="service_leave">{0} left group</string>
-    <string name="service_leave_you">@string/service_leave</string>
-    <string name="service_leave_male">@string/service_leave</string>
-    <string name="service_leave_female">@string/service_leave</string>
-
-    <string name="service_add">{0} added {1}</string>
-    <string name="service_add_you">@string/service_add</string>
-    <string name="service_add_male">@string/service_add</string>
-    <string name="service_add_female">@string/service_add</string>
-
-    <string name="service_kicked">{0} kicked {1}</string>
-    <string name="service_kicked_you">@string/service_kicked</string>
-    <string name="service_kicked_male">@string/service_kicked</string>
-    <string name="service_kicked_female">@string/service_kicked</string>
-
-    <string name="service_changed_title">{0} changed the group name</string>
-    <string name="service_changed_title_you">@string/service_changed_title</string>
-    <string name="service_changed_title_male">@string/service_changed_title</string>
-    <string name="service_changed_title_female">@string/service_changed_title</string>
-
-    <string name="service_changed_title_full">{0} changed the group name to {1}</string>
-    <string name="service_changed_title_full_you">@string/service_changed_title_full</string>
-    <string name="service_changed_title_full_male">@string/service_changed_title_full</string>
-    <string name="service_changed_title_full_female">@string/service_changed_title_full</string>
-
-    <string name="service_changed_avatar">{0} changed the group photo</string>
-    <string name="service_changed_avatar_you">@string/service_changed_avatar</string>
-    <string name="service_changed_avatar_male">@string/service_changed_avatar</string>
-    <string name="service_changed_avatar_female">@string/service_changed_avatar</string>
-
-    <string name="service_removed_avatar">{0} removed the group photo</string>
-    <string name="service_removed_avatar_you">@string/service_removed_avatar</string>
-    <string name="service_removed_avatar_male">@string/service_removed_avatar</string>
-    <string name="service_removed_avatar_female">@string/service_removed_avatar</string>
 
     <!-- Alerts -->
     <string name="alert_delete_messages_text">Are you sure want to delete {0} messages?</string>

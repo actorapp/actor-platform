@@ -4,19 +4,32 @@ import java.util.Date;
 import java.util.HashMap;
 
 import im.actor.model.LocaleProvider;
+import im.actor.model.entity.ContentType;
 import im.actor.model.entity.Sex;
+import im.actor.model.entity.User;
+import im.actor.model.entity.content.ServiceContent;
+import im.actor.model.entity.content.ServiceGroupAvatarChanged;
+import im.actor.model.entity.content.ServiceGroupCreated;
+import im.actor.model.entity.content.ServiceGroupTitleChanged;
+import im.actor.model.entity.content.ServiceGroupUserAdded;
+import im.actor.model.entity.content.ServiceGroupUserKicked;
+import im.actor.model.entity.content.ServiceGroupUserLeave;
+import im.actor.model.entity.content.ServiceUserRegistered;
+import im.actor.model.modules.Modules;
 import im.actor.model.viewmodel.UserPresence;
 
 /**
  * Created by ex3ndr on 22.02.15.
  */
 public class I18nEngine {
+    private final Modules modules;
     private final HashMap<String, String> locale;
     private final boolean is24Hours;
     private final String[] MONTHS_SHORT;
     private final String[] MONTHS;
 
-    public I18nEngine(LocaleProvider provider) {
+    public I18nEngine(LocaleProvider provider, Modules modules) {
+        this.modules = modules;
         this.locale = provider.loadLocale();
         this.is24Hours = provider.is24Hours();
         MONTHS_SHORT = new String[]{
@@ -241,5 +254,137 @@ public class I18nEngine {
 
     public String formatGroupOnline(int count) {
         return locale.get("GroupOnline").replace("{count}", "" + count);
+    }
+
+    public String formatContentDialogText(int senderId, ContentType contentType, String text, int relatedUid) {
+        switch (contentType) {
+            case TEXT:
+                return text;
+            case DOCUMENT:
+                if (text == null || text.length() == 0) {
+                    return locale.get("ContentDocument");
+                }
+                return text;// File name
+            case DOCUMENT_PHOTO:
+                return locale.get("ContentPhoto");
+            case DOCUMENT_VIDEO:
+                return locale.get("ContentVideo");
+            case SERVICE:
+                return text;// Should be service message
+            case SERVICE_REGISTERED:
+                return getTemplateNamed(senderId, "ServiceRegistered");
+            case SERVICE_CREATED:
+                return getTemplateNamed(senderId, "ServiceGroupCreated");
+            case SERVICE_ADD:
+                return getTemplateNamed(senderId, "ServiceGroupAdded")
+                        .replace("{name_added}", getSubjectName(relatedUid));
+            case SERVICE_LEAVE:
+                return getTemplateNamed(senderId, "ServiceGroupLeaved");
+            case SERVICE_KICK:
+                return getTemplateNamed(senderId, "ServiceGroupKicked")
+                        .replace("{name_kicked}", getSubjectName(relatedUid));
+            case SERVICE_AVATAR:
+                return getTemplateNamed(senderId, "ServiceGroupAvatarChanged");
+            case SERVICE_AVATAR_REMOVED:
+                return getTemplateNamed(senderId, "ServiceGroupAvatarRemoved");
+            case SERVICE_TITLE:
+                return getTemplateNamed(senderId, "ServiceGroupTitle");
+            case EMPTY:
+                return "";
+            default:
+            case UNKNOWN_CONTENT:
+                return locale.get("ContentUnsupported");
+        }
+    }
+
+    public boolean isLargeDialogMessage(ContentType contentType) {
+        switch (contentType) {
+            case SERVICE:
+            case SERVICE_AVATAR:
+            case SERVICE_AVATAR_REMOVED:
+            case SERVICE_CREATED:
+            case SERVICE_TITLE:
+            case SERVICE_LEAVE:
+            case SERVICE_REGISTERED:
+            case SERVICE_KICK:
+            case SERVICE_ADD:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public String formatFullServiceMessage(int senderId, ServiceContent content) {
+        if (content instanceof ServiceUserRegistered) {
+            return getTemplate(senderId, "ServiceRegisteredFull");
+        } else if (content instanceof ServiceGroupCreated) {
+            return getTemplateNamed(senderId, "ServiceGroupCreatedFull")
+                    .replace("{title}",
+                            ((ServiceGroupCreated) content).getGroupTitle());
+        } else if (content instanceof ServiceGroupUserAdded) {
+            return getTemplateNamed(senderId, "ServiceGroupAdded")
+                    .replace("{name_added}",
+                            getSubjectName(((ServiceGroupUserAdded) content).getAddedUid()));
+        } else if (content instanceof ServiceGroupUserKicked) {
+            return getTemplateNamed(senderId, "ServiceGroupKicked")
+                    .replace("{name_added}",
+                            getSubjectName(((ServiceGroupUserKicked) content).getKickedUid()));
+        } else if (content instanceof ServiceGroupUserLeave) {
+            return getTemplateNamed(senderId, "ServiceGroupLeaved");
+        } else if (content instanceof ServiceGroupTitleChanged) {
+            return getTemplateNamed(senderId, "ServiceGroupTitleFull")
+                    .replace("{title}",
+                            ((ServiceGroupTitleChanged) content).getNewTitle());
+        } else if (content instanceof ServiceGroupAvatarChanged) {
+            if (((ServiceGroupAvatarChanged) content).getNewAvatar() != null) {
+                return getTemplateNamed(senderId, "ServiceGroupAvatarChanged");
+            } else {
+                return getTemplateNamed(senderId, "ServiceGroupAvatarRemoved");
+            }
+        }
+
+        return content.getCompatText();
+    }
+
+    public String formatPerformerName(int uid) {
+        if (uid == modules.getAuthModule().myUid()) {
+            return locale.get("You");
+        } else {
+            return getUser(uid).getName();
+        }
+    }
+
+    public String getSubjectName(int uid) {
+        if (uid == modules.getAuthModule().myUid()) {
+            return locale.get("Thee");
+        } else {
+            return getUser(uid).getName();
+        }
+    }
+
+    private String getTemplateNamed(int senderId, String baseString) {
+        return getTemplate(senderId, baseString).replace("{name}",
+                formatPerformerName(senderId));
+    }
+
+    private String getTemplate(int senderId, String baseString) {
+        if (senderId == modules.getAuthModule().myUid()) {
+            if (locale.containsKey(baseString + "You")) {
+                return locale.get(baseString + "You");
+            }
+        }
+        if (locale.containsKey(baseString + "Male") && locale.containsKey(baseString + "Female")) {
+            User u = getUser(senderId);
+            if (u.getSex() == Sex.MALE) {
+                return locale.get(baseString + "Male");
+            } else if (u.getSex() == Sex.FEMALE) {
+                return locale.get(baseString + "Female");
+            }
+        }
+        return locale.get(baseString);
+    }
+
+    private User getUser(int uid) {
+        return modules.getUsersModule().getUsers().getValue(uid);
     }
 }

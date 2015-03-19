@@ -133,11 +133,6 @@
     <string name="dialogs_menu_group_leave">Выйти из группы</string>
     <string name="dialogs_menu_group_delete">Удалить группу</string>
 
-    <string name="dialogs_video">Видео</string>
-    <string name="dialogs_photo">Фото</string>
-    <string name="dialogs_document">Документ</string>
-    <string name="dialogs_audio">Аудио</string>
-
     <!-- Contacts -->
     <string name="contacts_title">Контакты</string>
     <string name="contacts_empty_short">Еще нет контактов</string>
@@ -296,71 +291,6 @@
     <string name="security_terminate_message">Вы уверены, что хотите уничтожить сессии на всех устройствах? Все данные будут удалены.</string>
     <string name="security_authorized_header">Авторизованные устройства и сервисы</string>
     <string name="security_authorized_loading">Загрузка…</string>
-
-    <!-- Service -->
-    <string name="service_you">Вы</string>
-    <string name="service_your">Вас</string>
-
-    <string name="service_registered">Зарегистрировался(-а) в Акторе</string>
-    <string name="service_registered_male">Зарегистрировался в Акторе</string>
-    <string name="service_registered_female">Зарегистрировалась в Акторе</string>
-
-    <string name="service_registered_full">{0} зарегистрировался(-а) в Акторе</string>
-    <string name="service_registered_full_male">{0} зарегистрировался в Акторе</string>
-    <string name="service_registered_full_female">{0} зарегистрировалась в Акторе</string>
-
-    <string name="service_new_device">Добавил(-а) новое устройство</string>
-    <string name="service_new_device_male">Добавил новое устройство</string>
-    <string name="service_new_device_female">Добавила новое устройство</string>
-
-    <string name="service_new_device_full">{0} добавил(-а) новое устройство</string>
-    <string name="service_new_device_full_male">{0} добавил новое устройство</string>
-    <string name="service_new_device_full_female">{0} добавила новое устройство</string>
-
-    <string name="service_created">{0} создал(-а) группу</string>
-    <string name="service_created_you">{0} создали группу</string>
-    <string name="service_created_male">{0} создал группу</string>
-    <string name="service_created_female">{0} создалa группу</string>
-
-    <string name="service_created_full">{0} создал(-а) группу "{1}"</string>
-    <string name="service_created_full_you">{0} создали группу "{1}"</string>
-    <string name="service_created_full_male">{0} создал группу "{1}"</string>
-    <string name="service_created_full_female">{0} создалa группу "{1}"</string>
-
-    <string name="service_leave">{0} покинул(-а) группу</string>
-    <string name="service_leave_you">{0} покинули группу</string>
-    <string name="service_leave_male">{0} покинул группу</string>
-    <string name="service_leave_female">{0} покинула группу</string>
-
-    <string name="service_add">{0} добавил(-а) {1}</string>
-    <string name="service_add_you">{0} добавили {1}</string>
-    <string name="service_add_male">{0} добавил {1}</string>
-    <string name="service_add_female">{0} добавила {1}</string>
-
-    <string name="service_kicked">{0} исключил(-а) {1}</string>
-    <string name="service_kicked_you">{0} исключили {1}</string>
-    <string name="service_kicked_male">{0} исключил {1}</string>
-    <string name="service_kicked_female">{0} исключила {1}</string>
-
-    <string name="service_changed_title">{0} изменил(-а) тему группы</string>
-    <string name="service_changed_title_you">{0} изменили тему группы</string>
-    <string name="service_changed_title_male">{0} изменил тему группы</string>
-    <string name="service_changed_title_female">{0} изменила тему группы</string>
-
-    <string name="service_changed_title_full">{0} изменил(-а) тему группы на {1}</string>
-    <string name="service_changed_title_full_you">{0} изменили тему группы на {1}</string>
-    <string name="service_changed_title_full_male">{0} изменил тему группы на {1}</string>
-    <string name="service_changed_title_full_female">{0} изменила тему группы на {1}</string>
-
-    <string name="service_changed_avatar">{0} изменил(-а) фото группы</string>
-    <string name="service_changed_avatar_you">{0} изменили фото группы</string>
-    <string name="service_changed_avatar_male">{0} изменил фото группы</string>
-    <string name="service_changed_avatar_female">{0} изменила фото группы</string>
-
-    <string name="service_removed_avatar">{0} удалил(-а) фото группы</string>
-    <string name="service_removed_avatar_you">{0} удалили фото группы</string>
-    <string name="service_removed_avatar_male">{0} удалил фото группы</string>
-    <string name="service_removed_avatar_female">{0} удалила фото группы</string>
 
     <!-- Alerts -->
     <string name="alert_delete_messages_text">Вы уверены, что хотите удалить {0} сообщений?</string>
