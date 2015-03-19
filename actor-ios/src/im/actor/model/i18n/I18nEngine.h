@@ -6,6 +6,8 @@
 #ifndef _AMI18nEngine_H_
 #define _AMI18nEngine_H_
 
+@class AMSexEnum;
+@class AMUserPresence;
 @class IOSObjectArray;
 @class JavaUtilHashMap;
 @protocol AMLocaleProvider;
@@ -18,6 +20,27 @@
 - (instancetype)initWithAMLocaleProvider:(id<AMLocaleProvider>)provider;
 
 - (NSString *)formatShortDateWithLong:(jlong)date;
+
+- (NSString *)formatTyping;
+
+- (NSString *)formatTypingWithNSString:(NSString *)name;
+
+- (NSString *)formatTypingWithInt:(jint)count;
+
+- (NSString *)formatFileSizeWithInt:(jint)bytes;
+
+- (NSString *)formatTimeWithLong:(jlong)date;
+
+- (NSString *)formatDateWithLong:(jlong)date;
+
+- (NSString *)formatPresenceWithAMUserPresence:(AMUserPresence *)value
+                                 withAMSexEnum:(AMSexEnum *)sex;
+
+- (NSString *)formatDurationWithInt:(jint)duration;
+
+- (NSString *)formatGroupMembersWithInt:(jint)count;
+
+- (NSString *)formatGroupOnlineWithInt:(jint)count;
 
 @end
 

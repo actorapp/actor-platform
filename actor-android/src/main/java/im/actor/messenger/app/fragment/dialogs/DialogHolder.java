@@ -17,7 +17,6 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.app.view.MessageTextFormatter;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
@@ -27,7 +26,9 @@ import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 import im.actor.model.log.Log;
 
+import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.myUid;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 14.03.15.
@@ -236,7 +237,7 @@ public class DialogHolder extends RecyclerView.ViewHolder {
 
         if (data.getDate() > 0) {
             time.setVisibility(View.VISIBLE);
-            time.setText(Formatter.formatShortDate(data.getDate()));
+            time.setText(messenger().getFormatter().formatShortDate(data.getDate()));
         } else {
             time.setVisibility(View.GONE);
         }
@@ -290,7 +291,7 @@ public class DialogHolder extends RecyclerView.ViewHolder {
                 @Override
                 public void onChanged(Boolean value) {
                     if (value) {
-                        text.setText(R.string.typing_private);
+                        text.setText(messenger().getFormatter().formatTyping());
                         text.setTextColor(context.getResources().getColor(R.color.primary));
                     } else {
                         text.setText(bindedText);
@@ -305,7 +306,11 @@ public class DialogHolder extends RecyclerView.ViewHolder {
                 @Override
                 public void onChanged(int[] value) {
                     if (value.length != 0) {
-                        text.setText(Formatter.formatTyping(value));
+                        if (value.length == 1) {
+                            text.setText(messenger().getFormatter().formatTyping(users().get(value[0]).getName().get()));
+                        } else {
+                            text.setText(messenger().getFormatter().formatTyping(value.length));
+                        }
                         text.setTextColor(context.getResources().getColor(R.color.primary));
                     } else {
                         text.setText(bindedText);

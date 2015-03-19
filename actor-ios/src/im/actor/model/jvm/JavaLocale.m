@@ -46,6 +46,10 @@ J2OBJC_FIELD_SETTER(AMJavaLocale, items_, JavaUtilHashMap *)
   return items_;
 }
 
+- (jboolean)is24Hours {
+  return YES;
+}
+
 - (void)copyAllFieldsTo:(AMJavaLocale *)other {
   [super copyAllFieldsTo:other];
   other->items_ = items_;
