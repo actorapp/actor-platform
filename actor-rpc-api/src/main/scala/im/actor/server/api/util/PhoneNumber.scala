@@ -24,7 +24,7 @@ object PhoneNumber {
     Try(phoneUtil.parse(s"+$number", defaultCountry)) match {
       case Success(p) =>
         val phoneNumber = p.getCountryCode * Math.pow(10L, (sizeOf(p.getNationalNumber) + 1).toDouble).longValue + p.getNationalNumber
-        Some(phoneNumber, phoneUtil.getRegionCodeForCountryCode(p.getCountryCode))
+        Some((phoneNumber, phoneUtil.getRegionCodeForCountryCode(p.getCountryCode)))
       case _ => None
     }
   }

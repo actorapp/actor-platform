@@ -23,7 +23,7 @@ object Avatar {
 
   def avatarImage(idhashsizewh: Option[(Long, Long, Int, Int, Int)]): Option[files.AvatarImage] =
     idhashsizewh flatMap {
-      case (id, hash, size, w, h) => avatarImage(Some(id, hash, size), w, h)
+      case (id, hash, size, w, h) => avatarImage(Some((id, hash, size)), w, h)
     }
 
 }
