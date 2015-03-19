@@ -6,17 +6,36 @@
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/LocaleProvider.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
+#include "im/actor/model/entity/Avatar.h"
+#include "im/actor/model/entity/ContentType.h"
 #include "im/actor/model/entity/Sex.h"
+#include "im/actor/model/entity/User.h"
+#include "im/actor/model/entity/content/ServiceContent.h"
+#include "im/actor/model/entity/content/ServiceGroupAvatarChanged.h"
+#include "im/actor/model/entity/content/ServiceGroupCreated.h"
+#include "im/actor/model/entity/content/ServiceGroupTitleChanged.h"
+#include "im/actor/model/entity/content/ServiceGroupUserAdded.h"
+#include "im/actor/model/entity/content/ServiceGroupUserKicked.h"
+#include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
+#include "im/actor/model/entity/content/ServiceUserRegistered.h"
 #include "im/actor/model/i18n/I18nEngine.h"
+#include "im/actor/model/modules/Auth.h"
+#include "im/actor/model/modules/Modules.h"
+#include "im/actor/model/modules/Users.h"
 #include "im/actor/model/viewmodel/UserPresence.h"
 #include "java/util/Date.h"
 #include "java/util/HashMap.h"
 
 __attribute__((unused)) static NSString *AMI18nEngine_formatTwoDigitWithInt_(AMI18nEngine *self, jint v);
 __attribute__((unused)) static jboolean AMI18nEngine_areSameDaysWithLong_withLong_(jlong a, jlong b);
+__attribute__((unused)) static NSString *AMI18nEngine_getTemplateNamedWithInt_withNSString_(AMI18nEngine *self, jint senderId, NSString *baseString);
+__attribute__((unused)) static NSString *AMI18nEngine_getTemplateWithInt_withNSString_(AMI18nEngine *self, jint senderId, NSString *baseString);
+__attribute__((unused)) static AMUser *AMI18nEngine_getUserWithInt_(AMI18nEngine *self, jint uid);
 
 @interface AMI18nEngine () {
  @public
+  ImActorModelModulesModules *modules_;
   JavaUtilHashMap *locale_;
   jboolean is24Hours_;
   IOSObjectArray *MONTHS_SHORT_;
@@ -27,16 +46,27 @@ __attribute__((unused)) static jboolean AMI18nEngine_areSameDaysWithLong_withLon
 
 + (jboolean)areSameDaysWithLong:(jlong)a
                        withLong:(jlong)b;
+
+- (NSString *)getTemplateNamedWithInt:(jint)senderId
+                         withNSString:(NSString *)baseString;
+
+- (NSString *)getTemplateWithInt:(jint)senderId
+                    withNSString:(NSString *)baseString;
+
+- (AMUser *)getUserWithInt:(jint)uid;
 @end
 
+J2OBJC_FIELD_SETTER(AMI18nEngine, modules_, ImActorModelModulesModules *)
 J2OBJC_FIELD_SETTER(AMI18nEngine, locale_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(AMI18nEngine, MONTHS_SHORT_, IOSObjectArray *)
 J2OBJC_FIELD_SETTER(AMI18nEngine, MONTHS_, IOSObjectArray *)
 
 @implementation AMI18nEngine
 
-- (instancetype)initWithAMLocaleProvider:(id<AMLocaleProvider>)provider {
+- (instancetype)initWithAMLocaleProvider:(id<AMLocaleProvider>)provider
+          withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super init]) {
+    self->modules_ = modules;
     self->locale_ = [((id<AMLocaleProvider>) nil_chk(provider)) loadLocale];
     self->is24Hours_ = [provider is24Hours];
     MONTHS_SHORT_ = [IOSObjectArray newArrayWithObjects:(id[]){ [((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"JanShort"], [locale_ getWithId:@"FebShort"], [locale_ getWithId:@"MarShort"], [locale_ getWithId:@"AprShort"], [locale_ getWithId:@"MayShort"], [locale_ getWithId:@"JunShort"], [locale_ getWithId:@"JulShort"], [locale_ getWithId:@"AugShort"], [locale_ getWithId:@"SepShort"], [locale_ getWithId:@"OctShort"], [locale_ getWithId:@"NovShort"], [locale_ getWithId:@"DecShort"] } count:12 type:NSString_class_()];
@@ -210,8 +240,131 @@ J2OBJC_FIELD_SETTER(AMI18nEngine, MONTHS_, IOSObjectArray *)
   return [((NSString *) nil_chk([((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"GroupOnline"])) replace:@"{count}" withSequence:JreStrcat("I", count)];
 }
 
+- (NSString *)formatContentDialogTextWithInt:(jint)senderId
+                       withAMContentTypeEnum:(AMContentTypeEnum *)contentType
+                                withNSString:(NSString *)text
+                                     withInt:(jint)relatedUid {
+  switch ([contentType ordinal]) {
+    case AMContentType_TEXT:
+    return text;
+    case AMContentType_DOCUMENT:
+    if (text == nil || ((jint) [text length]) == 0) {
+      return [((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"ContentDocument"];
+    }
+    return text;
+    case AMContentType_DOCUMENT_PHOTO:
+    return [((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"ContentPhoto"];
+    case AMContentType_DOCUMENT_VIDEO:
+    return [((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"ContentVideo"];
+    case AMContentType_SERVICE:
+    return text;
+    case AMContentType_SERVICE_REGISTERED:
+    return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceRegistered");
+    case AMContentType_SERVICE_CREATED:
+    return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupCreated");
+    case AMContentType_SERVICE_ADD:
+    return [((NSString *) nil_chk(AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupAdded"))) replace:@"{name_added}" withSequence:[self getSubjectNameWithInt:relatedUid]];
+    case AMContentType_SERVICE_LEAVE:
+    return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupLeaved");
+    case AMContentType_SERVICE_KICK:
+    return [((NSString *) nil_chk(AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupKicked"))) replace:@"{name_kicked}" withSequence:[self getSubjectNameWithInt:relatedUid]];
+    case AMContentType_SERVICE_AVATAR:
+    return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupAvatarChanged");
+    case AMContentType_SERVICE_AVATAR_REMOVED:
+    return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupAvatarRemoved");
+    case AMContentType_SERVICE_TITLE:
+    return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupTitle");
+    case AMContentType_EMPTY:
+    return @"";
+    default:
+    case AMContentType_UNKNOWN_CONTENT:
+    return [((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"ContentUnsupported"];
+  }
+}
+
+- (jboolean)isLargeDialogMessageWithAMContentTypeEnum:(AMContentTypeEnum *)contentType {
+  switch ([contentType ordinal]) {
+    case AMContentType_SERVICE:
+    case AMContentType_SERVICE_AVATAR:
+    case AMContentType_SERVICE_AVATAR_REMOVED:
+    case AMContentType_SERVICE_CREATED:
+    case AMContentType_SERVICE_TITLE:
+    case AMContentType_SERVICE_LEAVE:
+    case AMContentType_SERVICE_REGISTERED:
+    case AMContentType_SERVICE_KICK:
+    case AMContentType_SERVICE_ADD:
+    return YES;
+    default:
+    return NO;
+  }
+}
+
+- (NSString *)formatFullServiceMessageWithInt:(jint)senderId
+                         withAMServiceContent:(AMServiceContent *)content {
+  if ([content isKindOfClass:[AMServiceUserRegistered class]]) {
+    return AMI18nEngine_getTemplateWithInt_withNSString_(self, senderId, @"ServiceRegisteredFull");
+  }
+  else if ([content isKindOfClass:[AMServiceGroupCreated class]]) {
+    return [((NSString *) nil_chk(AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupCreatedFull"))) replace:@"{title}" withSequence:[((AMServiceGroupCreated *) nil_chk(((AMServiceGroupCreated *) check_class_cast(content, [AMServiceGroupCreated class])))) getGroupTitle]];
+  }
+  else if ([content isKindOfClass:[AMServiceGroupUserAdded class]]) {
+    return [((NSString *) nil_chk(AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupAdded"))) replace:@"{name_added}" withSequence:[self getSubjectNameWithInt:[((AMServiceGroupUserAdded *) nil_chk(((AMServiceGroupUserAdded *) check_class_cast(content, [AMServiceGroupUserAdded class])))) getAddedUid]]];
+  }
+  else if ([content isKindOfClass:[AMServiceGroupUserKicked class]]) {
+    return [((NSString *) nil_chk(AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupKicked"))) replace:@"{name_added}" withSequence:[self getSubjectNameWithInt:[((AMServiceGroupUserKicked *) nil_chk(((AMServiceGroupUserKicked *) check_class_cast(content, [AMServiceGroupUserKicked class])))) getKickedUid]]];
+  }
+  else if ([content isKindOfClass:[AMServiceGroupUserLeave class]]) {
+    return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupLeaved");
+  }
+  else if ([content isKindOfClass:[AMServiceGroupTitleChanged class]]) {
+    return [((NSString *) nil_chk(AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupTitleFull"))) replace:@"{title}" withSequence:[((AMServiceGroupTitleChanged *) nil_chk(((AMServiceGroupTitleChanged *) check_class_cast(content, [AMServiceGroupTitleChanged class])))) getNewTitle]];
+  }
+  else if ([content isKindOfClass:[AMServiceGroupAvatarChanged class]]) {
+    if ([((AMServiceGroupAvatarChanged *) nil_chk(((AMServiceGroupAvatarChanged *) check_class_cast(content, [AMServiceGroupAvatarChanged class])))) getNewAvatar] != nil) {
+      return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupAvatarChanged");
+    }
+    else {
+      return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupAvatarRemoved");
+    }
+  }
+  return [((AMServiceContent *) nil_chk(content)) getCompatText];
+}
+
+- (NSString *)formatPerformerNameWithInt:(jint)uid {
+  if (uid == [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) myUid]) {
+    return [((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"You"];
+  }
+  else {
+    return [((AMUser *) nil_chk(AMI18nEngine_getUserWithInt_(self, uid))) getName];
+  }
+}
+
+- (NSString *)getSubjectNameWithInt:(jint)uid {
+  if (uid == [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) myUid]) {
+    return [((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"Thee"];
+  }
+  else {
+    return [((AMUser *) nil_chk(AMI18nEngine_getUserWithInt_(self, uid))) getName];
+  }
+}
+
+- (NSString *)getTemplateNamedWithInt:(jint)senderId
+                         withNSString:(NSString *)baseString {
+  return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, baseString);
+}
+
+- (NSString *)getTemplateWithInt:(jint)senderId
+                    withNSString:(NSString *)baseString {
+  return AMI18nEngine_getTemplateWithInt_withNSString_(self, senderId, baseString);
+}
+
+- (AMUser *)getUserWithInt:(jint)uid {
+  return AMI18nEngine_getUserWithInt_(self, uid);
+}
+
 - (void)copyAllFieldsTo:(AMI18nEngine *)other {
   [super copyAllFieldsTo:other];
+  other->modules_ = modules_;
   other->locale_ = locale_;
   other->is24Hours_ = is24Hours_;
   other->MONTHS_SHORT_ = MONTHS_SHORT_;
@@ -247,6 +400,32 @@ jboolean AMI18nEngine_areSameDaysWithLong_withLong_(jlong a, jlong b) {
   jint m2 = [date2 getMonth];
   jint d2 = [date2 getDate];
   return y1 == y2 && m1 == m2 && d1 == d2;
+}
+
+NSString *AMI18nEngine_getTemplateNamedWithInt_withNSString_(AMI18nEngine *self, jint senderId, NSString *baseString) {
+  return [((NSString *) nil_chk(AMI18nEngine_getTemplateWithInt_withNSString_(self, senderId, baseString))) replace:@"{name}" withSequence:[self formatPerformerNameWithInt:senderId]];
+}
+
+NSString *AMI18nEngine_getTemplateWithInt_withNSString_(AMI18nEngine *self, jint senderId, NSString *baseString) {
+  if (senderId == [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(self->modules_)) getAuthModule])) myUid]) {
+    if ([((JavaUtilHashMap *) nil_chk(self->locale_)) containsKeyWithId:JreStrcat("$$", baseString, @"You")]) {
+      return [self->locale_ getWithId:JreStrcat("$$", baseString, @"You")];
+    }
+  }
+  if ([((JavaUtilHashMap *) nil_chk(self->locale_)) containsKeyWithId:JreStrcat("$$", baseString, @"Male")] && [self->locale_ containsKeyWithId:JreStrcat("$$", baseString, @"Female")]) {
+    AMUser *u = AMI18nEngine_getUserWithInt_(self, senderId);
+    if ([((AMUser *) nil_chk(u)) getSex] == AMSexEnum_get_MALE()) {
+      return [self->locale_ getWithId:JreStrcat("$$", baseString, @"Male")];
+    }
+    else if ([u getSex] == AMSexEnum_get_FEMALE()) {
+      return [self->locale_ getWithId:JreStrcat("$$", baseString, @"Female")];
+    }
+  }
+  return [self->locale_ getWithId:baseString];
+}
+
+AMUser *AMI18nEngine_getUserWithInt_(AMI18nEngine *self, jint uid) {
+  return [((id<DKKeyValueEngine>) nil_chk([((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(self->modules_)) getUsersModule])) getUsers])) getValueWithLong:uid];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMI18nEngine)

@@ -17,11 +17,9 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.app.view.MessageTextFormatter;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.Screen;
-import im.actor.model.entity.ContentType;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 import im.actor.model.log.Log;
@@ -242,35 +240,18 @@ public class DialogHolder extends RecyclerView.ViewHolder {
             time.setVisibility(View.GONE);
         }
 
-        boolean isGroup = data.getPeer().getPeerType() == PeerType.GROUP;
-        if (data.getMessageType() == ContentType.TEXT) {
-            bindedText = MessageTextFormatter.textMessage(data.getSenderId(), isGroup, data.getText());
-        } else if (data.getMessageType() == ContentType.DOCUMENT_PHOTO) {
-            bindedText = MessageTextFormatter.photoMessage(data.getSenderId(), isGroup);
-        } else if (data.getMessageType() == ContentType.DOCUMENT_VIDEO) {
-            bindedText = MessageTextFormatter.videoMessage(data.getSenderId(), isGroup);
-        } else if (data.getMessageType() == ContentType.DOCUMENT) {
-            bindedText = MessageTextFormatter.documentMessage(data.getSenderId(), isGroup);
-        } else if (data.getMessageType() == ContentType.SERVICE_REGISTERED) {
-            bindedText = MessageTextFormatter.joinedActor(data.getSenderId());
-        } else if (data.getMessageType() == ContentType.SERVICE_CREATED) {
-            bindedText = MessageTextFormatter.groupCreated(data.getSenderId());
-        } else if (data.getMessageType() == ContentType.SERVICE_LEAVE) {
-            bindedText = MessageTextFormatter.groupLeave(data.getSenderId());
-        } else if (data.getMessageType() == ContentType.SERVICE_ADD) {
-            bindedText = MessageTextFormatter.groupAdd(data.getSenderId(), data.getRelatedUid());
-        } else if (data.getMessageType() == ContentType.SERVICE_KICK) {
-            bindedText = MessageTextFormatter.groupKicked(data.getSenderId(), data.getRelatedUid());
-        } else if (data.getMessageType() == ContentType.SERVICE_TITLE) {
-            bindedText = MessageTextFormatter.groupChangeTitle(data.getSenderId());
-        } else if (data.getMessageType() == ContentType.SERVICE_AVATAR) {
-            bindedText = MessageTextFormatter.groupChangeAvatar(data.getSenderId());
-        } else if (data.getMessageType() == ContentType.SERVICE_AVATAR_REMOVED) {
-            bindedText = MessageTextFormatter.groupRemoveAvatar(data.getSenderId());
+        String contentText = messenger().getFormatter().formatContentDialogText(data.getSenderId(),
+                data.getMessageType(), data.getText(), data.getRelatedUid());
+
+        if (messenger().getFormatter().isLargeDialogMessage(data.getMessageType())) {
+            bindedText = contentText;
         } else {
-            bindedText = "";
+            if (data.getPeer().getPeerType() == PeerType.GROUP) {
+                bindedText = messenger().getFormatter().formatPerformerName(data.getSenderId()) + ": " + contentText;
+            } else {
+                bindedText = contentText;
+            }
         }
-        //bindedText = "???";
 
         if (privateTypingListener != null) {
             // TypingModel.privateChatTyping(bindedUid).removeUiSubscriber(privateTypingListener);

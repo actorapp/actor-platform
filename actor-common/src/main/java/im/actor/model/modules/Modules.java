@@ -35,7 +35,7 @@ public class Modules {
     public Modules(Configuration configuration) {
         this.configuration = configuration;
         long start = configuration.getThreadingProvider().getActorTime();
-        this.i18nEngine = new I18nEngine(configuration.getLocaleProvider());
+        this.i18nEngine = new I18nEngine(configuration.getLocaleProvider(), this);
         Log.d("CORE_INIT", "Loading stage5.1 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
         this.preferences = configuration.getStorageProvider().createPreferencesStorage();
         Log.d("CORE_INIT", "Loading stage5.2 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");

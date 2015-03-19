@@ -6,9 +6,13 @@
 #ifndef _AMI18nEngine_H_
 #define _AMI18nEngine_H_
 
+@class AMContentTypeEnum;
+@class AMServiceContent;
 @class AMSexEnum;
+@class AMUser;
 @class AMUserPresence;
 @class IOSObjectArray;
+@class ImActorModelModulesModules;
 @class JavaUtilHashMap;
 @protocol AMLocaleProvider;
 
@@ -17,7 +21,8 @@
 @interface AMI18nEngine : NSObject {
 }
 
-- (instancetype)initWithAMLocaleProvider:(id<AMLocaleProvider>)provider;
+- (instancetype)initWithAMLocaleProvider:(id<AMLocaleProvider>)provider
+          withImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (NSString *)formatShortDateWithLong:(jlong)date;
 
@@ -41,6 +46,20 @@
 - (NSString *)formatGroupMembersWithInt:(jint)count;
 
 - (NSString *)formatGroupOnlineWithInt:(jint)count;
+
+- (NSString *)formatContentDialogTextWithInt:(jint)senderId
+                       withAMContentTypeEnum:(AMContentTypeEnum *)contentType
+                                withNSString:(NSString *)text
+                                     withInt:(jint)relatedUid;
+
+- (jboolean)isLargeDialogMessageWithAMContentTypeEnum:(AMContentTypeEnum *)contentType;
+
+- (NSString *)formatFullServiceMessageWithInt:(jint)senderId
+                         withAMServiceContent:(AMServiceContent *)content;
+
+- (NSString *)formatPerformerNameWithInt:(jint)uid;
+
+- (NSString *)getSubjectNameWithInt:(jint)uid;
 
 @end
 
