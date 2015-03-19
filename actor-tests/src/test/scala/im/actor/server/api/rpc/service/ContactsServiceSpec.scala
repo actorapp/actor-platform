@@ -42,7 +42,6 @@ class ContactsServiceSpec extends BaseServiceSpec {
         user
       }
 
-
       def changed = {
         val expectedUsers = Await.result(db.run(DBIO.sequence(userModels map { user =>
           util.User.struct(user, None, clientData.authId)
