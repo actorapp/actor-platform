@@ -30,7 +30,7 @@ class SessionSpec extends ActorSpecification {
     val session = system.actorOf(Session.props(), s"Session-$authId-$sessionId")
     val probe = TestProbe()
 
-    def e1 = {
+    def e1() = {
       sendEnvelope(authId, sessionId, session, HandleMessageBox(BitVector.empty.toByteArray))
 
       probe watch session
@@ -39,7 +39,7 @@ class SessionSpec extends ActorSpecification {
       probe.expectTerminated(session)
     }
 
-    def e2 = {
+    def e2() = {
       val messageId = Random.nextLong()
 
       sendMessageBox(authId, sessionId, session, messageId, RpcRequestBox(BitVector.empty))
@@ -47,7 +47,7 @@ class SessionSpec extends ActorSpecification {
       expectNewSession(authId, sessionId, messageId)
     }
 
-    def e3 = {
+    def e3() = {
       val messageId = Random.nextLong()
 
       sendMessageBox(authId, sessionId, session, messageId, RpcRequestBox(BitVector.empty))
