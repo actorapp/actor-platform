@@ -41,20 +41,20 @@ class ContactsServiceImpl(
     BitVector(md.digest(uids.getBytes)).toHex
   }
 
-  override def handleImportContacts(phones: Vector[PhoneToImport], emails: Vector[EmailToImport])(implicit clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] = throw new NotImplementedError()
-  override def handleGetContacts(contactsHash: String)(implicit clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] = {
-    val authorizedAction = requireAuth.map { clientUserId =>
-      val action = persist.contact.UserContact.findContactIdsAll(clientUserId).map(hashIds).flatMap { hash =>
+  override def jhandleImportContacts(phones: Vector[PhoneToImport], emails: Vector[EmailToImport], clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] = throw new NotImplementedError()
+  override def jhandleGetContacts(contactsHash: String, clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client =>
+      val action = persist.contact.UserContact.findContactIdsAll(client.userId).map(hashIds).flatMap { hash =>
         if (contactsHash == hash) {
           DBIO.successful(Ok(ResponseGetContacts(Vector.empty[users.User], isNotChanged = true)))
         } else {
           for {
-            userIdsNames <- persist.contact.UserContact.findContactIdsWithLocalNames(clientUserId)
+            userIdsNames <- persist.contact.UserContact.findContactIdsWithLocalNames(client.userId)
             userIds = userIdsNames.map(_._1).toSet
             users <- persist.User.findByIds(userIds)
             namesMap = immutable.Map(userIdsNames: _*)
             // TODO: #perf optimize (so much requests!)
-            userStructs <- DBIO.sequence(users.map( user =>
+            userStructs <- DBIO.sequence(users.map(user =>
               util.User.struct(user, namesMap.get(user.id).getOrElse(None), clientData.authId)))
           } yield {
             Ok(ResponseGetContacts(
@@ -70,15 +70,15 @@ class ContactsServiceImpl(
 
     db.run(toDBIOAction(authorizedAction))
   }
-  override def handleRemoveContact(userId: Int, accessHash: Long)(implicit clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth.map { clientUserId =>
-      persist.contact.UserContact.find(ownerUserId = clientUserId, contactUserId = userId).flatMap {
+  override def jhandleRemoveContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client =>
+      persist.contact.UserContact.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
         case Some(contact) =>
           if (accessHash == util.ACL.userAccessHash(clientData.authId, userId, contact.accessSalt)) {
             for {
-              _ <- persist.contact.UserContact.delete(clientUserId, userId)
-              _ <- broadcastClientUpdate(seqUpdManagerRegion, clientUserId, UpdateUserLocalNameChanged(userId, None))
-              seqstate <- broadcastClientUpdate(seqUpdManagerRegion, clientUserId, UpdateContactsRemoved(Vector(userId)))
+              _ <- persist.contact.UserContact.delete(client.userId, userId)
+              _ <- broadcastClientUpdate(seqUpdManagerRegion, UpdateUserLocalNameChanged(userId, None))
+              seqstate <- broadcastClientUpdate(seqUpdManagerRegion, UpdateContactsRemoved(Vector(userId)))
             } yield {
               Ok(ResponseSeq(seqstate._1, seqstate._2))
             }
@@ -91,8 +91,8 @@ class ContactsServiceImpl(
 
     db.run(toDBIOAction(authorizedAction))
   }
-  override def handleAddContact(userId: Int, accessHash: Long)(implicit clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth.map { clientUserId =>
+  override def jhandleAddContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client =>
       val action = (for {
         optUser <- persist.User.find(userId).headOption
         optNumber <- optUser.map(user => persist.UserPhone.findByUserId(user.id).headOption).getOrElse(DBIO.successful(None))
@@ -101,9 +101,9 @@ class ContactsServiceImpl(
       }).flatMap {
         case (Some(user), Some(userPhoneNumber)) =>
           if (accessHash == util.ACL.userAccessHash(clientData.authId, user.id, user.accessSalt)) {
-            persist.contact.UserContact.find(ownerUserId = clientUserId, contactUserId = userId).flatMap {
+            persist.contact.UserContact.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
               case None =>
-                addContactSendUpdate(clientUserId, user.id, userPhoneNumber, None, user.accessSalt) map {
+                addContactSendUpdate(client.userId, user.id, userPhoneNumber, None, user.accessSalt) map {
                   case (seq, state) => Ok(ResponseSeq(seq, state))
                 }
               case Some(contact) =>
@@ -119,7 +119,7 @@ class ContactsServiceImpl(
 
     db.run(toDBIOAction(authorizedAction))
   }
-  override def handleSearchContacts(request: String)(implicit clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] = throw new NotImplementedError()
+  override def jhandleSearchContacts(request: String, clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] = throw new NotImplementedError()
 
   private def addContactSendUpdate(
     clientUserId: Int,
@@ -127,10 +127,12 @@ class ContactsServiceImpl(
     phoneNumber: Long,
     name: Option[String],
     accessSalt: String
-  )(implicit clientData: ClientData) = {
+  )(
+    implicit client: AuthorizedClientData
+  ) = {
     for {
       _ <- persist.contact.UserContact.createOrRestore(clientUserId, userId, phoneNumber, name, accessSalt)
-      seqstate <- broadcastClientUpdate(seqUpdManagerRegion, clientUserId, UpdateContactsAdded(Vector(userId)))
+      seqstate <- broadcastClientUpdate(seqUpdManagerRegion, UpdateContactsAdded(Vector(userId)))
     } yield seqstate
   }
 }

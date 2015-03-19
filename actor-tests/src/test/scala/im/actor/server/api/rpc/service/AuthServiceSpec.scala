@@ -68,7 +68,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
 
       def e1 = {
         service.handleSignUp(
-          rawPhoneNumber = phoneNumber,
+          phoneNumber = phoneNumber,
           smsHash = smsHash,
           smsCode = "0000",
           name = "Wayne Brain",
@@ -94,7 +94,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
         val smsHash = getSmsHash(authId, phoneNumber)
 
         service.handleSignIn(
-          rawPhoneNumber = phoneNumber,
+          phoneNumber = phoneNumber,
           smsHash = smsHash,
           smsCode = "0000",
           publicKey = Array(1, 2, 3),
@@ -113,7 +113,7 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
         val smsHash = getSmsHash(authId, phoneNumber)
 
         service.handleSignIn(
-          rawPhoneNumber = phoneNumber,
+          phoneNumber = phoneNumber,
           smsHash = smsHash,
           smsCode = "0000",
           publicKey = Array(1, 2, 3),

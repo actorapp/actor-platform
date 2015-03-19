@@ -18,7 +18,7 @@ trait PeerHelpers {
     outPeer: OutPeer
   )(
     f: => DBIO[RpcError \/ R]
-  )(implicit clientData: ClientData, ec: ExecutionContext, s: ActorSystem): DBIO[RpcError \/ R] = {
+  )(implicit client: AuthorizedClientData, ec: ExecutionContext, s: ActorSystem): DBIO[RpcError \/ R] = {
     outPeer.`type` match {
       case PeerType.Private =>
         (for {
@@ -32,7 +32,7 @@ trait PeerHelpers {
     }
   }
 
-  private def validUser(optUser: Option[models.User])(implicit clientData: ClientData, s: ActorSystem) = {
+  private def validUser(optUser: Option[models.User])(implicit s: ActorSystem) = {
     optUser match {
       case Some(user) =>
         DBIO.successful(\/-(user))
@@ -40,8 +40,8 @@ trait PeerHelpers {
     }
   }
 
-  private def validUserAccessHash(accessHash: Long, user: models.User)(implicit clientData: ClientData, s: ActorSystem) = {
-    if (accessHash == util.ACL.userAccessHash(clientData.authId, user)) {
+  private def validUserAccessHash(accessHash: Long, user: models.User)(implicit client: BaseClientData, s: ActorSystem) = {
+    if (accessHash == util.ACL.userAccessHash(client.authId, user)) {
       \/-(user)
     } else {
       Error(CommonErrors.InvalidAccessHash)

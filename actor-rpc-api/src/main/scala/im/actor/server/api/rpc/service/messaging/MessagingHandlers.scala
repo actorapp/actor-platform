@@ -8,7 +8,6 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._, messaging._, misc._, peers._, Implicits._
 
-
 private[messaging] trait MessagingHandlers extends PeerHelpers {
   self: MessagingServiceImpl =>
 
@@ -16,9 +15,9 @@ private[messaging] trait MessagingHandlers extends PeerHelpers {
 
   override implicit val ec = actorSystem.dispatcher
 
-  override def handleSendMessage(outPeer: OutPeer, randomId: Long, message: MessageContent)(implicit clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
-    val authorizedAction = requireAuth.map { clientUserId =>
-      val action = withOutPeer(clientUserId, outPeer) {
+  override def jhandleSendMessage(outPeer: OutPeer, randomId: Long, message: MessageContent, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client =>
+      val action = withOutPeer(client.userId, outPeer) {
         // TODO: record social relation
         val dateTime = new DateTime
         val dateMillis = dateTime.getMillis
@@ -27,15 +26,15 @@ private[messaging] trait MessagingHandlers extends PeerHelpers {
           case PeerType.Private =>
             val ownUpdate = UpdateMessage(
               peer = outPeer.asPeer,
-              senderUserId = clientUserId,
+              senderUserId = client.userId,
               date = dateMillis,
               randomId = randomId,
               message = message
             )
 
             val outUpdate = UpdateMessage(
-              peer = Peer(PeerType.Private, clientUserId),
-              senderUserId = clientUserId,
+              peer = Peer(PeerType.Private, client.userId),
+              senderUserId = client.userId,
               date = dateMillis,
               randomId = randomId,
               message = message
@@ -44,7 +43,7 @@ private[messaging] trait MessagingHandlers extends PeerHelpers {
             // TODO: write history messages
 
             for {
-              _ <- broadcastClientUpdate(seqUpdManagerRegion, clientUserId, ownUpdate)
+              _ <- broadcastClientUpdate(seqUpdManagerRegion, ownUpdate)
               _ <- broadcastUserUpdate(seqUpdManagerRegion, outPeer.id, outUpdate)
               seqstate <- sendClientUpdate(seqUpdManagerRegion, UpdateMessageSent(outPeer.asPeer, randomId, dateMillis))
             } yield {
@@ -59,11 +58,12 @@ private[messaging] trait MessagingHandlers extends PeerHelpers {
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def handleSendEncryptedMessage(
+  override def jhandleSendEncryptedMessage(
     peer: im.actor.api.rpc.peers.OutPeer,
     randomId: Long,
     encryptedMessage: Array[Byte],
     keys: Vector[im.actor.api.rpc.messaging.EncryptedAesKey],
-    ownKeys: Vector[im.actor.api.rpc.messaging.EncryptedAesKey]
-  )(implicit clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[misc.ResponseSeqDate]] = throw new NotImplementedError()
+    ownKeys: Vector[im.actor.api.rpc.messaging.EncryptedAesKey],
+    clientData: im.actor.api.rpc.ClientData
+  ): Future[HandlerResult[misc.ResponseSeqDate]] = throw new NotImplementedError()
 }
