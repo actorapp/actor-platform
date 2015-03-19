@@ -6,18 +6,27 @@
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/LocaleProvider.h"
+#include "im/actor/model/entity/Sex.h"
 #include "im/actor/model/i18n/I18nEngine.h"
+#include "im/actor/model/viewmodel/UserPresence.h"
 #include "java/util/Date.h"
 #include "java/util/HashMap.h"
+
+__attribute__((unused)) static NSString *AMI18nEngine_formatTwoDigitWithInt_(AMI18nEngine *self, jint v);
+__attribute__((unused)) static jboolean AMI18nEngine_areSameDaysWithLong_withLong_(jlong a, jlong b);
 
 @interface AMI18nEngine () {
  @public
   JavaUtilHashMap *locale_;
+  jboolean is24Hours_;
   IOSObjectArray *MONTHS_SHORT_;
   IOSObjectArray *MONTHS_;
 }
 
 - (NSString *)formatTwoDigitWithInt:(jint)v;
+
++ (jboolean)areSameDaysWithLong:(jlong)a
+                       withLong:(jlong)b;
 @end
 
 J2OBJC_FIELD_SETTER(AMI18nEngine, locale_, JavaUtilHashMap *)
@@ -29,6 +38,7 @@ J2OBJC_FIELD_SETTER(AMI18nEngine, MONTHS_, IOSObjectArray *)
 - (instancetype)initWithAMLocaleProvider:(id<AMLocaleProvider>)provider {
   if (self = [super init]) {
     self->locale_ = [((id<AMLocaleProvider>) nil_chk(provider)) loadLocale];
+    self->is24Hours_ = [provider is24Hours];
     MONTHS_SHORT_ = [IOSObjectArray newArrayWithObjects:(id[]){ [((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"JanShort"], [locale_ getWithId:@"FebShort"], [locale_ getWithId:@"MarShort"], [locale_ getWithId:@"AprShort"], [locale_ getWithId:@"MayShort"], [locale_ getWithId:@"JunShort"], [locale_ getWithId:@"JulShort"], [locale_ getWithId:@"AugShort"], [locale_ getWithId:@"SepShort"], [locale_ getWithId:@"OctShort"], [locale_ getWithId:@"NovShort"], [locale_ getWithId:@"DecShort"] } count:12 type:NSString_class_()];
     MONTHS_ = [IOSObjectArray newArrayWithObjects:(id[]){ [locale_ getWithId:@"JanFull"], [locale_ getWithId:@"FebFull"], [locale_ getWithId:@"MarFull"], [locale_ getWithId:@"AprFull"], [locale_ getWithId:@"MayFull"], [locale_ getWithId:@"JunFull"], [locale_ getWithId:@"JulFull"], [locale_ getWithId:@"AugFull"], [locale_ getWithId:@"SepFull"], [locale_ getWithId:@"OctFull"], [locale_ getWithId:@"NovFull"], [locale_ getWithId:@"DecFull"] } count:12 type:NSString_class_()];
   }
@@ -36,15 +46,12 @@ J2OBJC_FIELD_SETTER(AMI18nEngine, MONTHS_, IOSObjectArray *)
 }
 
 - (NSString *)formatTwoDigitWithInt:(jint)v {
-  if (v < 0) {
-    return JreStrcat("I", v);
-  }
-  else if (v < 10) {
-    return JreStrcat("CI", '0', v);
-  }
-  else {
-    return JreStrcat("I", v);
-  }
+  return AMI18nEngine_formatTwoDigitWithInt_(self, v);
+}
+
++ (jboolean)areSameDaysWithLong:(jlong)a
+                       withLong:(jlong)b {
+  return AMI18nEngine_areSameDaysWithLong_withLong_(a, b);
 }
 
 - (NSString *)formatShortDateWithLong:(jlong)date {
@@ -69,13 +76,177 @@ J2OBJC_FIELD_SETTER(AMI18nEngine, MONTHS_, IOSObjectArray *)
   }
 }
 
+- (NSString *)formatTyping {
+  return [((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"Typing"];
+}
+
+- (NSString *)formatTypingWithNSString:(NSString *)name {
+  return [((NSString *) nil_chk([((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"TypingUser"])) replace:@"{user}" withSequence:name];
+}
+
+- (NSString *)formatTypingWithInt:(jint)count {
+  return [((NSString *) nil_chk([((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"TypingMultiple"])) replace:@"{count}" withSequence:NSString_valueOfWithInt_(count)];
+}
+
+- (NSString *)formatFileSizeWithInt:(jint)bytes {
+  if (bytes < 0) {
+    bytes = 0;
+  }
+  if (bytes < 1024) {
+    return [((NSString *) nil_chk([((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"FileB"])) replace:@"{bytes}" withSequence:JreStrcat("I", bytes)];
+  }
+  else if (bytes < 1024 * 1024) {
+    return [((NSString *) nil_chk([((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"FileKb"])) replace:@"{kbytes}" withSequence:JreStrcat("I", (bytes / 1024))];
+  }
+  else if (bytes < 1024 * 1024 * 1024) {
+    return [((NSString *) nil_chk([((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"FileMb"])) replace:@"{mbytes}" withSequence:JreStrcat("I", (bytes / (1024 * 1024)))];
+  }
+  else {
+    return [((NSString *) nil_chk([((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"FileGb"])) replace:@"{gbytes}" withSequence:JreStrcat("I", (bytes / (1024 * 1024 * 1024)))];
+  }
+}
+
+- (NSString *)formatTimeWithLong:(jlong)date {
+  JavaUtilDate *dateVal = [[JavaUtilDate alloc] initWithLong:date];
+  if (is24Hours_) {
+    return JreStrcat("IC$", [dateVal getHours], ':', AMI18nEngine_formatTwoDigitWithInt_(self, [dateVal getMinutes]));
+  }
+  else {
+    jint hours = [dateVal getHours];
+    if (hours > 12) {
+      return JreStrcat("IC$$", (hours - 12), ':', AMI18nEngine_formatTwoDigitWithInt_(self, [dateVal getMinutes]), @" PM");
+    }
+    else {
+      return JreStrcat("IC$$", hours, ':', AMI18nEngine_formatTwoDigitWithInt_(self, [dateVal getMinutes]), @" AM");
+    }
+  }
+}
+
+- (NSString *)formatDateWithLong:(jlong)date {
+  JavaUtilDate *dateVal = [[JavaUtilDate alloc] initWithLong:date];
+  return JreStrcat("ICIC$", [dateVal getDate], '/', ([dateVal getMonth] + 1), '/', AMI18nEngine_formatTwoDigitWithInt_(self, [dateVal getYear]));
+}
+
+- (NSString *)formatPresenceWithAMUserPresence:(AMUserPresence *)value
+                                 withAMSexEnum:(AMSexEnum *)sex {
+  if (value == nil) {
+    return nil;
+  }
+  if ([((AMUserPresence *) nil_chk(value)) getState] == AMUserPresence_StateEnum_get_OFFLINE()) {
+    jint delta = (jint) ([((JavaUtilDate *) [[JavaUtilDate alloc] init]) getTime] / 1000LL - [value getLastSeen]);
+    if (delta < 60) {
+      if ([((JavaUtilHashMap *) nil_chk(locale_)) containsKeyWithId:@"OnlineNowMale"] && [locale_ containsKeyWithId:@"OnlineNowFemale"]) {
+        return sex == AMSexEnum_get_UNKNOWN() ? [locale_ getWithId:@"OnlineNow"] : sex == AMSexEnum_get_MALE() ? [locale_ getWithId:@"OnlineNowMale"] : [locale_ getWithId:@"OnlineNowFemale"];
+      }
+      else {
+        return [locale_ getWithId:@"OnlineNow"];
+      }
+    }
+    else if (delta < 24 * 60 * 60) {
+      NSString *time = [self formatTimeWithLong:[value getLastSeen] * 1000LL];
+      if (AMI18nEngine_areSameDaysWithLong_withLong_([value getLastSeen] * 1000LL, [((JavaUtilDate *) [[JavaUtilDate alloc] init]) getTime])) {
+        if ([((JavaUtilHashMap *) nil_chk(locale_)) containsKeyWithId:@"OnlineLastSeenTodayMale"] && [locale_ containsKeyWithId:@"OnlineLastSeenTodayMale"]) {
+          return [(sex == AMSexEnum_get_UNKNOWN() ? [locale_ getWithId:@"OnlineLastSeenToday"] : sex == AMSexEnum_get_MALE() ? [locale_ getWithId:@"OnlineLastSeenTodayMale"] : [locale_ getWithId:@"OnlineLastSeenTodayFemale"]) replace:@"{time}" withSequence:time];
+        }
+        else {
+          return [((NSString *) nil_chk([locale_ getWithId:@"OnlineLastSeenToday"])) replace:@"{time}" withSequence:time];
+        }
+      }
+      else {
+        if ([((JavaUtilHashMap *) nil_chk(locale_)) containsKeyWithId:@"OnlineLastSeenYesterdayMale"] && [locale_ containsKeyWithId:@"OnlineLastSeenYesterdayMale"]) {
+          return [(sex == AMSexEnum_get_UNKNOWN() ? [locale_ getWithId:@"OnlineLastSeenYesterday"] : sex == AMSexEnum_get_MALE() ? [locale_ getWithId:@"OnlineLastSeenYesterdayMale"] : [locale_ getWithId:@"OnlineLastSeenYesterdayFemale"]) replace:@"{time}" withSequence:time];
+        }
+        else {
+          return [((NSString *) nil_chk([locale_ getWithId:@"OnlineLastSeenYesterday"])) replace:@"{time}" withSequence:time];
+        }
+      }
+    }
+    else if (delta < 14 * 24 * 60 * 60) {
+      NSString *time = [self formatTimeWithLong:[value getLastSeen] * 1000LL];
+      NSString *date = [self formatDateWithLong:[value getLastSeen] * 1000LL];
+      if ([((JavaUtilHashMap *) nil_chk(locale_)) containsKeyWithId:@"OnlineLastSeenDateTimeMale"] && [locale_ containsKeyWithId:@"OnlineLastSeenDateTimeMale"]) {
+        return [((NSString *) nil_chk([(sex == AMSexEnum_get_UNKNOWN() ? [locale_ getWithId:@"OnlineLastSeenDateTime"] : sex == AMSexEnum_get_MALE() ? [locale_ getWithId:@"OnlineLastSeenDateTimeMale"] : [locale_ getWithId:@"OnlineLastSeenDateTimeFemale"]) replace:@"{time}" withSequence:time])) replace:@"{date}" withSequence:date];
+      }
+      else {
+        return [((NSString *) nil_chk([((NSString *) nil_chk([locale_ getWithId:@"OnlineLastSeenDateTime"])) replace:@"{time}" withSequence:time])) replace:@"{date}" withSequence:date];
+      }
+    }
+    else if (delta < 6 * 30 * 24 * 60 * 60) {
+      NSString *date = [self formatDateWithLong:[value getLastSeen] * 1000LL];
+      if ([((JavaUtilHashMap *) nil_chk(locale_)) containsKeyWithId:@"OnlineLastSeenDateMale"] && [locale_ containsKeyWithId:@"OnlineLastSeenDateMale"]) {
+        return [(sex == AMSexEnum_get_UNKNOWN() ? [locale_ getWithId:@"OnlineLastSeenDate"] : sex == AMSexEnum_get_MALE() ? [locale_ getWithId:@"OnlineLastSeenDateMale"] : [locale_ getWithId:@"OnlineLastSeenDateFemale"]) replace:@"{date}" withSequence:date];
+      }
+      else {
+        return [((NSString *) nil_chk([locale_ getWithId:@"OnlineLastSeenDate"])) replace:@"{date}" withSequence:date];
+      }
+    }
+    else {
+      return [((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"OnlineOff"];
+    }
+  }
+  else if ([value getState] == AMUserPresence_StateEnum_get_ONLINE()) {
+    return [((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"OnlineOn"];
+  }
+  return nil;
+}
+
+- (NSString *)formatDurationWithInt:(jint)duration {
+  if (duration < 60) {
+    return JreStrcat("$C$", AMI18nEngine_formatTwoDigitWithInt_(self, 0), ':', AMI18nEngine_formatTwoDigitWithInt_(self, duration));
+  }
+  else if (duration < 60 * 60) {
+    return JreStrcat("$C$", AMI18nEngine_formatTwoDigitWithInt_(self, duration / 60), ':', AMI18nEngine_formatTwoDigitWithInt_(self, duration % 60));
+  }
+  else {
+    return JreStrcat("$C$C$", AMI18nEngine_formatTwoDigitWithInt_(self, duration / 3600), ':', AMI18nEngine_formatTwoDigitWithInt_(self, duration / 60), ':', AMI18nEngine_formatTwoDigitWithInt_(self, duration % 60));
+  }
+}
+
+- (NSString *)formatGroupMembersWithInt:(jint)count {
+  return [((NSString *) nil_chk([((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"GroupMembers"])) replace:@"{count}" withSequence:JreStrcat("I", count)];
+}
+
+- (NSString *)formatGroupOnlineWithInt:(jint)count {
+  return [((NSString *) nil_chk([((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"GroupOnline"])) replace:@"{count}" withSequence:JreStrcat("I", count)];
+}
+
 - (void)copyAllFieldsTo:(AMI18nEngine *)other {
   [super copyAllFieldsTo:other];
   other->locale_ = locale_;
+  other->is24Hours_ = is24Hours_;
   other->MONTHS_SHORT_ = MONTHS_SHORT_;
   other->MONTHS_ = MONTHS_;
 }
 
 @end
+
+NSString *AMI18nEngine_formatTwoDigitWithInt_(AMI18nEngine *self, jint v) {
+  if (v < 0) {
+    return @"00";
+  }
+  else if (v < 10) {
+    return JreStrcat("CI", '0', v);
+  }
+  else if (v < 100) {
+    return JreStrcat("I", v);
+  }
+  else {
+    NSString *res = JreStrcat("I", v);
+    return [res substring:((jint) [res length]) - 2];
+  }
+}
+
+jboolean AMI18nEngine_areSameDaysWithLong_withLong_(jlong a, jlong b) {
+  AMI18nEngine_init();
+  JavaUtilDate *date1 = [[JavaUtilDate alloc] initWithLong:a];
+  jint y1 = [date1 getYear];
+  jint m1 = [date1 getMonth];
+  jint d1 = [date1 getDate];
+  JavaUtilDate *date2 = [[JavaUtilDate alloc] initWithLong:b];
+  jint y2 = [date2 getYear];
+  jint m2 = [date2 getMonth];
+  jint d2 = [date2 getDate];
+  return y1 == y2 && m1 == m2 && d1 == d2;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMI18nEngine)

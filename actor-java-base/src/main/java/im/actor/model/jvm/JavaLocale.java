@@ -38,4 +38,9 @@ public class JavaLocale implements LocaleProvider {
     public HashMap<String, String> loadLocale() {
         return items;
     }
+
+    @Override
+    public boolean is24Hours() {
+        return true;
+    }
 }

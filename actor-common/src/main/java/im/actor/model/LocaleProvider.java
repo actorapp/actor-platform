@@ -7,4 +7,6 @@ import java.util.HashMap;
  */
 public interface LocaleProvider {
     public HashMap<String, String> loadLocale();
+
+    public boolean is24Hours();
 }

@@ -165,9 +165,6 @@
     <string name="chat_attach_take_photo">Снять фото</string>
     <string name="chat_attach_gallery">Галерея</string>
 
-    <string name="chat_group_members">{0} участников</string>
-    <string name="chat_group_members_online">{0} в сети</string>
-
     <string name="chat_message_hint">Ваше сообщение…</string>
 
     <string name="chat_new_messages">Новые сообщения</string>
@@ -365,49 +362,6 @@
     <string name="service_removed_avatar_male">{0} удалил фото группы</string>
     <string name="service_removed_avatar_female">{0} удалила фото группы</string>
 
-
-    <!-- Online -->
-    <string name="online_on">в сети</string>
-    <string name="online_off">не в сети</string>
-
-    <string name="online_ls_now">был(-а) только что</string>
-    <string name="online_ls_now_male">был только что</string>
-    <string name="online_ls_now_female">была только что</string>
-
-    <string name="online_ls_today">был(-а) сегодня в {0}</string>
-    <string name="online_ls_today_male">был сегодня в {0}</string>
-    <string name="online_ls_today_female">была сегодня в {0}</string>
-
-    <string name="online_ls_yesterday">был(-а) вчера в {0}</string>
-    <string name="online_ls_yesterday_male">был вчера в {0}</string>
-    <string name="online_ls_yesterday_female">была вчера в {0}</string>
-
-    <string name="online_ls_date">был(-а) {0}</string>
-    <string name="online_ls_date_male">был {0}</string>
-    <string name="online_ls_date_female">была {0}</string>
-
-    <string name="online_ls_date_time">был(-а) {0} в {1}</string>
-    <string name="online_ls_date_time_male">был {0} в {1}</string>
-    <string name="online_ls_date_time_female">была {0} в {1}</string>
-
-    <!-- Time -->
-    <string name="time_short_yesterday">ВЧЕРА</string>
-    <string name="time_short_now">СЕЙЧАС</string>
-    <string name="time_short_minutes">{0} МИН</string>
-    <string name="time_short_hours">{0} ЧАС</string>
-    <string name="time_short_jan">ЯНВ</string>
-    <string name="time_short_feb">ФЕВ</string>
-    <string name="time_short_mar">МАР</string>
-    <string name="time_short_apr">АПР</string>
-    <string name="time_short_may">МАЙ</string>
-    <string name="time_short_jun">ИЮН</string>
-    <string name="time_short_jul">ИЮЛ</string>
-    <string name="time_short_aug">АВГ</string>
-    <string name="time_short_sep">СЕН</string>
-    <string name="time_short_oct">ОКТ</string>
-    <string name="time_short_nov">НОЯ</string>
-    <string name="time_short_dec">ДЕК</string>
-
     <!-- Alerts -->
     <string name="alert_delete_messages_text">Вы уверены, что хотите удалить {0} сообщений?</string>
     <string name="alert_delete_messages_yes">Удалить</string>
@@ -417,8 +371,6 @@
 
     <string name="alert_remove_contact_text">Вы уверены, что хотите удалить {0} из контактов?</string>
     <string name="alert_remove_contact_yes">Удалить</string>
-
-
 
     <string name="alert_group_add_text">Вы уверены, что хотите добавить {0} в группу?</string>
     <string name="alert_group_add_yes">Добавить</string>

@@ -11,7 +11,6 @@ import com.droidkit.progress.CircularView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
-import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.app.view.PhotoPreview;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.Screen;
@@ -26,10 +25,10 @@ import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
 
-import static im.actor.messenger.app.view.ViewUtils.goneView;
-import static im.actor.messenger.app.view.ViewUtils.showView;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.myUid;
+import static im.actor.messenger.app.view.ViewUtils.goneView;
+import static im.actor.messenger.app.view.ViewUtils.showView;
 
 /**
  * Created by ex3ndr on 27.02.15.
@@ -149,7 +148,7 @@ public class PhotoHolder extends MessageHolder {
                 w = ((VideoContent) message.getContent()).getW();
                 h = ((VideoContent) message.getContent()).getH();
                 duration.setVisibility(View.VISIBLE);
-                duration.setText(Formatter.duration(((VideoContent) message.getContent()).getDuration()));
+                duration.setText(messenger().getFormatter().formatDuration(((VideoContent) message.getContent()).getDuration()));
             } else {
                 throw new RuntimeException("Unsupported content");
             }

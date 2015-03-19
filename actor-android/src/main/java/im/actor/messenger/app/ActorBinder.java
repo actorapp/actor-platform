@@ -9,21 +9,22 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import im.actor.messenger.R;
 import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.CoverAvatarView;
-import im.actor.messenger.app.view.Formatter;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.GroupMember;
-import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueChangedListener;
+import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupTypingVM;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserPresence;
 import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
+
+import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 19.02.15.
@@ -49,7 +50,11 @@ public class ActorBinder {
                     container.setVisibility(View.INVISIBLE);
                     titleContainer.setVisibility(View.VISIBLE);
                 } else {
-                    textView.setText(Formatter.formatTyping(val));
+                    if (val.length == 1) {
+                        textView.setText(messenger().getFormatter().formatTyping(users().get(val[0]).getName().get()));
+                    } else {
+                        textView.setText(messenger().getFormatter().formatTyping(val.length));
+                    }
                     container.setVisibility(View.VISIBLE);
                     titleContainer.setVisibility(View.INVISIBLE);
                 }
@@ -63,7 +68,7 @@ public class ActorBinder {
             @Override
             public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
                 if (val) {
-                    textView.setText(R.string.typing_private);
+                    textView.setText(messenger().getFormatter().formatTyping());
                     container.setVisibility(View.VISIBLE);
                     titleContainer.setVisibility(View.INVISIBLE);
                 } else {
@@ -78,7 +83,7 @@ public class ActorBinder {
         bind(user.getPresence(), new ValueChangedListener<UserPresence>() {
             @Override
             public void onChanged(UserPresence val, ValueModel<UserPresence> valueModel) {
-                String s = Formatter.formatPresence(val, user.getSex());
+                String s = messenger().getFormatter().formatPresence(val, user.getSex());
                 if (s != null) {
                     container.setVisibility(View.VISIBLE);
                     textView.setText(s);
@@ -99,19 +104,16 @@ public class ActorBinder {
                                   ValueModel<HashSet<GroupMember>> membersModel) {
                 if (online <= 0) {
                     SpannableStringBuilder builder = new SpannableStringBuilder(
-                            AppContext.getContext().getString(R.string.chat_group_members)
-                                    .replace("{0}", members.size() + ""));
+                            messenger().getFormatter().formatGroupMembers(members.size()));
                     builder.setSpan(new ForegroundColorSpan(0xB7ffffff), 0, builder.length(),
                             Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     textView.setText(builder);
                 } else {
                     SpannableStringBuilder builder = new SpannableStringBuilder(
-                            AppContext.getContext().getString(R.string.chat_group_members)
-                                    .replace("{0}", members.size() + "") + ", ");
+                            messenger().getFormatter().formatGroupMembers(members.size()) + ", ");
                     builder.setSpan(new ForegroundColorSpan(0xB7ffffff), 0, builder.length(),
                             Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                    builder.append(AppContext.getContext()
-                            .getString(R.string.chat_group_members_online).replace("{0}", online + ""));
+                    builder.append(messenger().getFormatter().formatGroupOnline(online));
                     textView.setText(builder);
                 }
             }
