@@ -81,9 +81,9 @@ package object rpc extends {
     }
   }
 
-  def requireAuth(implicit clientData: ClientData): MaybeAuthorized[Int] =
+  def requireAuth(implicit clientData: ClientData): MaybeAuthorized[AuthorizedClientData] =
     clientData.optUserId match {
-      case Some(userId) => Authorized(userId)
+      case Some(userId) => Authorized(AuthorizedClientData(clientData.authId, userId))
       case None         => NotAuthorized
     }
 
