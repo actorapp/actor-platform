@@ -70,10 +70,40 @@ object SeqUpdatesManager {
     region.ask(Envelope(authId, PushUpdateGetSeq(upd)))(PushGetSeqTimeout).mapTo[Seq]
   }
 
-  def broadcastUserUpdate(region: ActorRef, clientUserId: Int, update: api.Update)(
+  def sendClientUpdate(region: ActorRef, update: api.Update)(
+    implicit clientData: api.ClientData, ec: ExecutionContext
+  ): DBIO[(Int, Array[Byte])] = {
+    val header = update.header
+    val serializedData = update.toByteArray
+    val seqUpdate = models.sequence.SeqUpdate(clientData.authId, header, serializedData)
+
+    for {
+      _ <- persist.sequence.SeqUpdate.create(seqUpdate)
+      seq <- DBIO.from(pushUpdateGetSeq(region, clientData.authId, update).map(_.value))
+    } yield (seq, seqUpdate.ref.toByteArray)
+  }
+
+  def broadcastUserUpdate(
+    region: ActorRef,
+    userId: Int,
+    update: api.Update
+  )(implicit ec: ExecutionContext): DBIO[Unit] = {
+    val header = update.header
+    val serializedData = update.toByteArray
+
+    for {
+      authIds <- persist.AuthId.findByUserId(userId)
+      _ <- DBIO.sequence(authIds.map( authId =>
+        persist.sequence.SeqUpdate.create(models.sequence.SeqUpdate(authId.id, header, serializedData))))
+    } yield {
+      authIds foreach (a => pushUpdate(region, a.id, update))
+    }
+  }
+
+  def broadcastClientUpdate(region: ActorRef, clientUserId: Int, update: api.Update)(
     implicit
     clientData: api.ClientData, ec: ExecutionContext
-  ) = {
+  ): DBIO[(Int, Array[Byte])] = {
     val header = update.header
     val serializedData = update.toByteArray
 

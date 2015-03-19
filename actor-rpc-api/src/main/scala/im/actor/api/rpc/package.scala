@@ -7,10 +7,11 @@ import slick.dbio.{ DBIO, DBIOAction }
 
 import im.actor.api.rpc._
 
-package object rpc {
-
+package object rpc extends {
   import slick.dbio.Effect
   import slick.dbio.NoStream
+
+  object Implicits extends PeersImplicits with MessagingImplicits
 
   object CommonErrors {
     val InvalidAccessHash = RpcError(403, "INVALID_ACCESS_HASH", "", false, None)

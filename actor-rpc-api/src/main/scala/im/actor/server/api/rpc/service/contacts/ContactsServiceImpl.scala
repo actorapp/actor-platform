@@ -77,8 +77,8 @@ class ContactsServiceImpl(
           if (accessHash == util.ACL.userAccessHash(clientData.authId, userId, contact.accessSalt)) {
             for {
               _ <- persist.contact.UserContact.delete(clientUserId, userId)
-              _ <- broadcastUserUpdate(seqUpdManagerRegion, clientUserId, UpdateUserLocalNameChanged(userId, None))
-              seqstate <- broadcastUserUpdate(seqUpdManagerRegion, clientUserId, UpdateContactsRemoved(Vector(userId)))
+              _ <- broadcastClientUpdate(seqUpdManagerRegion, clientUserId, UpdateUserLocalNameChanged(userId, None))
+              seqstate <- broadcastClientUpdate(seqUpdManagerRegion, clientUserId, UpdateContactsRemoved(Vector(userId)))
             } yield {
               Ok(ResponseSeq(seqstate._1, seqstate._2))
             }
@@ -130,7 +130,7 @@ class ContactsServiceImpl(
   )(implicit clientData: ClientData) = {
     for {
       _ <- persist.contact.UserContact.createOrRestore(clientUserId, userId, phoneNumber, name, accessSalt)
-      seqstate <- broadcastUserUpdate(seqUpdManagerRegion, clientUserId, UpdateContactsAdded(Vector(userId)))
+      seqstate <- broadcastClientUpdate(seqUpdManagerRegion, clientUserId, UpdateContactsAdded(Vector(userId)))
     } yield seqstate
   }
 }
