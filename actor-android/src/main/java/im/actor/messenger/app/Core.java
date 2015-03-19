@@ -23,7 +23,6 @@ import im.actor.messenger.app.images.VideoActor;
 import im.actor.messenger.app.images.VideoPreviewActor;
 import im.actor.messenger.app.images.VideoPreviewTask;
 import im.actor.messenger.app.images.VideoTask;
-import im.actor.messenger.app.view.Formatter;
 import im.actor.model.ApiConfiguration;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
@@ -72,7 +71,6 @@ public class Core {
 
         // Helpers
         AppContext.setContext(application);
-        Formatter.init(application);
 
         // Init actor system
         system().setClassLoader(AppContext.getContext().getClassLoader());

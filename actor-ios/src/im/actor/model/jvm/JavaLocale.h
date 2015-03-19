@@ -18,6 +18,8 @@
 
 - (JavaUtilHashMap *)loadLocale;
 
+- (jboolean)is24Hours;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMJavaLocale)

@@ -13,7 +13,6 @@ import com.droidkit.progress.CircularView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.MessagesFragment;
-import im.actor.messenger.app.view.Formatter;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.FileTypes;
 import im.actor.model.entity.FileReference;
@@ -29,9 +28,9 @@ import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.UploadFileVM;
 import im.actor.model.viewmodel.UploadFileVMCallback;
 
+import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
-import static im.actor.messenger.app.Core.messenger;
 
 /**
  * Created by ex3ndr on 27.02.15.
@@ -107,7 +106,7 @@ public class DocHolder extends MessageHolder {
 
         // Content data
         fileName.setText(document.getName());
-        fileSize.setText(Formatter.formatFileSize(document.getSource().getSize())
+        fileSize.setText(messenger().getFormatter().formatFileSize(document.getSource().getSize())
                 + " " + document.getExt().toUpperCase());
 
         //region File icon

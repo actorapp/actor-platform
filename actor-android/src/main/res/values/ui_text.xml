@@ -165,9 +165,6 @@
     <string name="chat_attach_take_photo">Take photo</string>
     <string name="chat_attach_gallery">Gallery</string>
 
-    <string name="chat_group_members">{0} members</string>
-    <string name="chat_group_members_online">{0} online</string>
-
     <string name="chat_message_hint">Your message…</string>
 
     <string name="chat_new_messages">New messages</string>
@@ -364,48 +361,6 @@
     <string name="service_removed_avatar_male">@string/service_removed_avatar</string>
     <string name="service_removed_avatar_female">@string/service_removed_avatar</string>
 
-    <!-- Online -->
-    <string name="online_on">online</string>
-    <string name="online_off">offline</string>
-
-    <string name="online_ls_now">last seen just now</string>
-    <string name="online_ls_now_male">@string/online_ls_now</string>
-    <string name="online_ls_now_female">@string/online_ls_now</string>
-
-    <string name="online_ls_today">last seen today at {0}</string>
-    <string name="online_ls_today_male">@string/online_ls_today</string>
-    <string name="online_ls_today_female">@string/online_ls_today</string>
-
-    <string name="online_ls_yesterday">last seen yesterday at {0}</string>
-    <string name="online_ls_yesterday_male">@string/online_ls_yesterday</string>
-    <string name="online_ls_yesterday_female">@string/online_ls_yesterday</string>
-
-    <string name="online_ls_date">last seen {0}</string>
-    <string name="online_ls_date_male">@string/online_ls_date</string>
-    <string name="online_ls_date_female">@string/online_ls_date</string>
-
-    <string name="online_ls_date_time">last seen {0} at {1}</string>
-    <string name="online_ls_date_time_male">@string/online_ls_date_time</string>
-    <string name="online_ls_date_time_female">@string/online_ls_date_time</string>
-
-    <!-- Time -->
-    <string name="time_short_yesterday">YEST</string>
-    <string name="time_short_now">NOW</string>
-    <string name="time_short_minutes">{0} MIN</string>
-    <string name="time_short_hours">{0} HRS</string>
-    <string name="time_short_jan">JAN</string>
-    <string name="time_short_feb">FEB</string>
-    <string name="time_short_mar">MAR</string>
-    <string name="time_short_apr">APR</string>
-    <string name="time_short_may">MAY</string>
-    <string name="time_short_jun">JUN</string>
-    <string name="time_short_jul">JUL</string>
-    <string name="time_short_aug">AUG</string>
-    <string name="time_short_sep">SEP</string>
-    <string name="time_short_oct">OCT</string>
-    <string name="time_short_nov">NOV</string>
-    <string name="time_short_dec">DEC</string>
-
     <!-- Alerts -->
     <string name="alert_delete_messages_text">Are you sure want to delete {0} messages?</string>
     <string name="alert_delete_messages_yes">Delete</string>
@@ -426,7 +381,6 @@
     <string name="alert_invite_yes">Invite</string>
 
     <!-- Dialogs -->
-
     <string name="alert_leave_group_message">Are you sure want to exit group "%1$s"?</string>
     <string name="alert_leave_group_yes">Exit</string>
 
