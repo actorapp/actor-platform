@@ -35,12 +35,12 @@ trait AuthServiceImpl extends AuthService with Helpers {
     val InvalidKey = RpcError(400, "INVALID_KEY", "", false, None)
   }
 
-  override def handleGetAuthSessions(implicit clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] =
+  override def jhandleGetAuthSessions(clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] =
     throw new NotImplementedError()
 
-  override def handleSendAuthCode(
-    rawPhoneNumber: Long, appId: Int, apiKey: String
-  )(implicit clientData: ClientData): Future[HandlerResult[ResponseSendAuthCode]] = {
+  override def jhandleSendAuthCode(
+    rawPhoneNumber: Long, appId: Int, apiKey: String, clientData: ClientData
+  ): Future[HandlerResult[ResponseSendAuthCode]] = {
     util.PhoneNumber.normalizeLong(rawPhoneNumber) match {
       case None =>
         Future.successful(Error(Errors.PhoneNumberInvalid))
@@ -70,57 +70,64 @@ trait AuthServiceImpl extends AuthService with Helpers {
     }
   }
 
-  override def handleSendAuthCall(
-    phoneNumber: Long, smsHash: String, appId: Int, apiKey: String
-  )(implicit clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+  override def jhandleSendAuthCall(
+    phoneNumber: Long, smsHash: String, appId: Int, apiKey: String, clientData: ClientData
+  ): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
-  override def handleSignOut(implicit clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+  override def jhandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
-  override def handleSignIn(
+  override def jhandleSignIn(
     rawPhoneNumber: Long,
-    smsHash:     String,
-    smsCode:     String,
-    publicKey:   Array[Byte],
-    deviceHash:  Array[Byte],
+    smsHash: String,
+    smsCode: String,
+    publicKey: Array[Byte],
+    deviceHash: Array[Byte],
     deviceTitle: String,
-    appId:       Int,
-    appKey:      String
-  )(implicit clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
-    handleSign(In,
+    appId: Int,
+    appKey: String,
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseAuth]] =
+    handleSign(
+      In,
       rawPhoneNumber, smsHash, smsCode,
-      publicKey, deviceHash, deviceTitle, appId, appKey
+      publicKey, deviceHash, deviceTitle, appId, appKey,
+      clientData
     )
 
-  override def handleSignUp(
+  override def jhandleSignUp(
     rawPhoneNumber: Long,
-    smsHash:        String,
-    smsCode:        String,
-    name:           String,
-    publicKey:      Array[Byte],
-    deviceHash:     Array[Byte],
-    deviceTitle:    String,
-    appId:          Int,
-    appKey:         String,
-    isSilent:       Boolean
-  )(implicit clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
-    handleSign(Up(name, isSilent),
+    smsHash: String,
+    smsCode: String,
+    name: String,
+    publicKey: Array[Byte],
+    deviceHash: Array[Byte],
+    deviceTitle: String,
+    appId: Int,
+    appKey: String,
+    isSilent: Boolean,
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseAuth]] =
+    handleSign(
+      Up(name, isSilent),
       rawPhoneNumber, smsHash, smsCode,
-      publicKey, deviceHash, deviceTitle, appId, appKey
+      publicKey, deviceHash, deviceTitle, appId, appKey,
+      clientData
     )
 
   private def handleSign(
-    signType:       SignType,
+    signType: SignType,
     rawPhoneNumber: Long,
-    smsHash:        String,
-    smsCode:        String,
-    rawPublicKey:   Array[Byte],
-    deviceHash:     Array[Byte],
-    deviceTitle:    String,
-    appId:          Int,
-    appKey:         String
-  )(implicit clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
+    smsHash: String,
+    smsCode: String,
+    rawPublicKey: Array[Byte],
+    deviceHash: Array[Byte],
+    deviceTitle: String,
+    appId: Int,
+    appKey: String,
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseAuth]] = {
     util.PhoneNumber.normalizeWithCountry(rawPhoneNumber) match {
       case None => Future.successful(Error(Errors.PhoneNumberInvalid))
       case Some((normPhoneNumber, countryCode)) =>
@@ -142,22 +149,24 @@ trait AuthServiceImpl extends AuthService with Helpers {
                   persist.AuthSmsCode.deleteByPhoneNumber(normPhoneNumber).andThen(
                     optPhone match {
                       // Phone does not exist, register the user
-                      case None => withValidName(rawName) { name => withValidPublicKey(rawPublicKey) { publicKey =>
-                        val rnd = ThreadLocalRandom.current()
-                        val (userId, phoneId) = (nextIntId(rnd), nextIntId(rnd))
-                        val user = models.User(userId, nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered)
+                      case None => withValidName(rawName) { name =>
+                        withValidPublicKey(rawPublicKey) { publicKey =>
+                          val rnd = ThreadLocalRandom.current()
+                          val (userId, phoneId) = (nextIntId(rnd), nextIntId(rnd))
+                          val user = models.User(userId, nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered)
 
-                        for {
-                          _ <- persist.User.create(user)
-                          _ <- persist.UserPhone.create(phoneId, userId, nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
-                          pkHash = keyHash(publicKey)
-                          _ <- persist.UserPublicKey.create(models.UserPublicKey(userId, pkHash, publicKey, clientData.authId))
-                          _ <- persist.AuthId.setUserId(clientData.authId, userId)
-                          _ <- persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
-                        } yield {
-                          \/-(user :: pkHash :: HNil)
+                          for {
+                            _ <- persist.User.create(user)
+                            _ <- persist.UserPhone.create(phoneId, userId, nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
+                            pkHash = keyHash(publicKey)
+                            _ <- persist.UserPublicKey.create(models.UserPublicKey(userId, pkHash, publicKey, clientData.authId))
+                            _ <- persist.AuthId.setUserId(clientData.authId, userId)
+                            _ <- persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
+                          } yield {
+                            \/-(user :: pkHash :: HNil)
+                          }
                         }
-                      }}
+                      }
                       // Phone already exists, fall back to SignIn
                       case Some(phone) =>
                         withValidPublicKey(rawPublicKey) { publicKey =>
@@ -216,10 +225,10 @@ trait AuthServiceImpl extends AuthService with Helpers {
     }
   }
 
-  override def handleTerminateAllSessions(implicit clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+  override def jhandleTerminateAllSessions(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
-  override def handleTerminateSession(id: Int)(implicit clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+  override def jhandleTerminateSession(id: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
   private def signIn(authId: Long, userId: Int, pkData: Array[Byte], pkHash: Long, countryCode: String) = {

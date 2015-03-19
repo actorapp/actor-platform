@@ -71,15 +71,15 @@ object SeqUpdatesManager {
   }
 
   def sendClientUpdate(region: ActorRef, update: api.Update)(
-    implicit clientData: api.ClientData, ec: ExecutionContext
+    implicit client: api.BaseClientData, ec: ExecutionContext
   ): DBIO[(Int, Array[Byte])] = {
     val header = update.header
     val serializedData = update.toByteArray
-    val seqUpdate = models.sequence.SeqUpdate(clientData.authId, header, serializedData)
+    val seqUpdate = models.sequence.SeqUpdate(client.authId, header, serializedData)
 
     for {
       _ <- persist.sequence.SeqUpdate.create(seqUpdate)
-      seq <- DBIO.from(pushUpdateGetSeq(region, clientData.authId, update).map(_.value))
+      seq <- DBIO.from(pushUpdateGetSeq(region, client.authId, update).map(_.value))
     } yield (seq, seqUpdate.ref.toByteArray)
   }
 
@@ -100,23 +100,23 @@ object SeqUpdatesManager {
     }
   }
 
-  def broadcastClientUpdate(region: ActorRef, clientUserId: Int, update: api.Update)(
+  def broadcastClientUpdate(region: ActorRef, update: api.Update)(
     implicit
-    clientData: api.ClientData, ec: ExecutionContext
+    client: api.AuthorizedClientData, ec: ExecutionContext
   ): DBIO[(Int, Array[Byte])] = {
     val header = update.header
     val serializedData = update.toByteArray
 
     for {
-      otherAuthIds <- persist.AuthId.findByUserId(clientUserId).map(_.view.filter(_.id != clientData.authId))
+      otherAuthIds <- persist.AuthId.findByUserId(client.userId).map(_.view.filter(_.id != client.authId))
       _ <- DBIO.sequence(
         otherAuthIds.map { authId =>
           persist.sequence.SeqUpdate.create(models.sequence.SeqUpdate(authId.id, header, serializedData))
         }
       )
-      ownUpdate = models.sequence.SeqUpdate(clientData.authId, header, serializedData)
+      ownUpdate = models.sequence.SeqUpdate(client.authId, header, serializedData)
       _ <- persist.sequence.SeqUpdate.create(ownUpdate)
-      ownSeq <- DBIO.from(pushUpdateGetSeq(region, clientData.authId, update).map(_.value))
+      ownSeq <- DBIO.from(pushUpdateGetSeq(region, client.authId, update).map(_.value))
     } yield {
       otherAuthIds foreach (authId => pushUpdate(region, authId.id, update))
 
