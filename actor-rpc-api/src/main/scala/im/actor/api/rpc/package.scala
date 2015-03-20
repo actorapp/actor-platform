@@ -1,9 +1,11 @@
 package im.actor.api
 
+import scala.concurrent.Future
 import scala.reflect._
 
 import scalaz._, std.either._
 import slick.dbio.{ DBIO, DBIOAction }
+import slick.driver.PostgresDriver.api._
 
 package object rpc extends {
   import slick.dbio.Effect
@@ -40,6 +42,11 @@ package object rpc extends {
         case \/-(t) => Some(t)
         case -\/(_) => None
       }
+  }
+
+  def authorizedAction[R](clientData: ClientData)(f: AuthorizedClientData => DBIOAction[RpcError \/ R, NoStream, Nothing])(implicit db: Database): Future[RpcError \/ R] = {
+    val authorizedAction = requireAuth(clientData).map(f)
+    db.run(toDBIOAction(authorizedAction))
   }
 
   def requireAuth(implicit clientData: ClientData): MaybeAuthorized[AuthorizedClientData] =
