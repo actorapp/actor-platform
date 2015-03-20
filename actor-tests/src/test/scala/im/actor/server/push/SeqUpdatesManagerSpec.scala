@@ -27,15 +27,15 @@ class SeqUpdatesManagerSpec extends ActorSpecification(
     val update = api.contacts.UpdateContactsAdded(Vector(1, 2, 3))
 
     probe.send(region, Envelope(authId, PushUpdateGetSeq(update)))
-    probe.expectMsg(Seq(1001))
+    probe.expectMsg(1001)
 
     probe.send(region, Envelope(authId, PushUpdateGetSeq(update)))
-    probe.expectMsg(Seq(1002))
+    probe.expectMsg(1002)
 
     probe.expectNoMsg(1.5.seconds)
 
     probe.send(region, Envelope(authId, PushUpdateGetSeq(update)))
-    probe.expectMsg(Seq(2001))
+    probe.expectMsg(2001)
 
     for (a <- 1 to 600)
       probe.send(region, Envelope(authId, PushUpdate(update)))
@@ -43,6 +43,6 @@ class SeqUpdatesManagerSpec extends ActorSpecification(
     probe.expectNoMsg(1.5.seconds)
 
     probe.send(region, Envelope(authId, PushUpdateGetSeq(update)))
-    probe.expectMsg(Seq(3501))
+    probe.expectMsg(3501)
   }
 }

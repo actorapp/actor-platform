@@ -6,7 +6,7 @@ import org.joda.time.DateTime
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc._, messaging._, misc._, peers._, Implicits._
+import im.actor.api.rpc._, im.actor.api.rpc.messaging._, im.actor.api.rpc.misc._, im.actor.api.rpc.peers._, Implicits._
 
 private[messaging] trait MessagingHandlers extends PeerHelpers {
   self: MessagingServiceImpl =>
@@ -45,7 +45,7 @@ private[messaging] trait MessagingHandlers extends PeerHelpers {
             for {
               _ <- broadcastClientUpdate(seqUpdManagerRegion, ownUpdate)
               _ <- broadcastUserUpdate(seqUpdManagerRegion, outPeer.id, outUpdate)
-              seqstate <- sendClientUpdate(seqUpdManagerRegion, UpdateMessageSent(outPeer.asPeer, randomId, dateMillis))
+              seqstate <- persistAndPushUpdate(seqUpdManagerRegion, client.authId, UpdateMessageSent(outPeer.asPeer, randomId, dateMillis))
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
             }
