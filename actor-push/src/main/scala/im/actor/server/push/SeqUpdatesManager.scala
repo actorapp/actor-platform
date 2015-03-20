@@ -17,7 +17,11 @@ import im.actor.server.models
 import im.actor.server.persist
 
 object SeqUpdatesManager {
+
   sealed trait Message
+
+  @SerialVersionUID(1L)
+  private[push] case object GetSeq extends Message
 
   @SerialVersionUID(1L)
   private[push] case class PushUpdate(upd: api.Update) extends Message
@@ -29,10 +33,10 @@ object SeqUpdatesManager {
   private[push] case class Envelope(authId: Long, payload: Message)
 
   @SerialVersionUID(1L)
-  private[push] case class Seq(value: Int)
-
-  @SerialVersionUID(1L)
   private[push] case object Stop
+
+  type SeqVal = Int
+  type SeqValState = (Int, Array[Byte])
 
   private[push] sealed trait PersistentEvent
 
@@ -42,7 +46,7 @@ object SeqUpdatesManager {
   private[push] val noop1: Any => Unit = _ => ()
 
   private[this] val idExtractor: ShardRegion.IdExtractor = {
-    case env @ Envelope(authId, payload) => (authId.toString, env)
+    case env@Envelope(authId, payload) => (authId.toString, env)
   }
 
   private[this] val shardResolver: ShardRegion.ShardResolver = msg => msg match {
@@ -56,76 +60,73 @@ object SeqUpdatesManager {
     shardResolver = shardResolver
   )
 
-  val PushGetSeqTimeout = Timeout(5.seconds) // TODO: configurable
+  // TODO: configurable
+  val GetSeqTimeout = Timeout(5.seconds)
+  val PushGetSeqTimeout = Timeout(5.seconds)
 
   def startRegion()(implicit system: ActorSystem): ActorRef = startRegion(Some(Props[SeqUpdatesManager]))
 
   def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
 
-  def pushUpdate(region: ActorRef, authId: Long, upd: api.Update): Unit = {
-    region ! Envelope(authId, PushUpdate(upd))
+  def getSeqState(region: ActorRef, authId: Long)(implicit ec: ExecutionContext): DBIO[(SeqVal, Array[Byte])] = {
+    for {
+      seq <- DBIO.from(region.ask(Envelope(authId, GetSeq))(GetSeqTimeout).mapTo[SeqVal])
+      state <- persist.sequence.SeqUpdate.find(authId).headOption.map(optU => optU.map(_.ref.toByteArray).getOrElse(Array.empty[Byte]))
+    } yield (seq, state)
   }
 
-  def pushUpdateGetSeq(region: ActorRef, authId: Long, upd: api.Update): Future[Seq] = {
-    region.ask(Envelope(authId, PushUpdateGetSeq(upd)))(PushGetSeqTimeout).mapTo[Seq]
+  def pushUpdate(region: ActorRef, authId: Long, update: api.Update): Unit = {
+    region ! Envelope(authId, PushUpdate(update))
   }
 
-  def sendClientUpdate(region: ActorRef, update: api.Update)(
-    implicit client: api.BaseClientData, ec: ExecutionContext
-  ): DBIO[(Int, Array[Byte])] = {
+  def persistAndPushUpdate(region: ActorRef, authId: Long, update: api.Update)(implicit ec: ExecutionContext): DBIO[SeqValState] = {
     val header = update.header
     val serializedData = update.toByteArray
-    val seqUpdate = models.sequence.SeqUpdate(client.authId, header, serializedData)
+
+    DBIO.from(pushUpdateGetSeq(region, authId, update)).flatMap(persistAndPushUpdate(region, authId, _, header, serializedData))
+  }
+
+  def persistAndPushUpdate(region: ActorRef, authId: Long, seq: Int, header: Int, serializedData: Array[Byte])(implicit ec: ExecutionContext): DBIO[SeqValState] = {
+    val seqUpdate = models.sequence.SeqUpdate(authId, seq, header, serializedData)
 
     for {
       _ <- persist.sequence.SeqUpdate.create(seqUpdate)
-      seq <- DBIO.from(pushUpdateGetSeq(region, client.authId, update).map(_.value))
     } yield (seq, seqUpdate.ref.toByteArray)
   }
 
-  def broadcastUserUpdate(
-    region: ActorRef,
-    userId: Int,
-    update: api.Update
-  )(implicit ec: ExecutionContext): DBIO[Unit] = {
+  def broadcastUserUpdate(region: ActorRef,
+                          userId: Int,
+                          update: api.Update)(implicit ec: ExecutionContext): DBIO[Seq[SeqValState]] = {
     val header = update.header
     val serializedData = update.toByteArray
 
     for {
-      authIds <- persist.AuthId.findByUserId(userId)
-      _ <- DBIO.sequence(authIds.map( authId =>
-        persist.sequence.SeqUpdate.create(models.sequence.SeqUpdate(authId.id, header, serializedData))))
-    } yield {
-      authIds foreach (a => pushUpdate(region, a.id, update))
-    }
+      authIds <- persist.AuthId.findIdByUserId(userId)
+      seqstates <- DBIO.sequence(authIds map (persistAndPushUpdate(region, _, update)))
+    } yield seqstates
   }
 
   def broadcastClientUpdate(region: ActorRef, update: api.Update)(
     implicit
     client: api.AuthorizedClientData, ec: ExecutionContext
-  ): DBIO[(Int, Array[Byte])] = {
+    ): DBIO[SeqValState] = {
     val header = update.header
     val serializedData = update.toByteArray
 
     for {
-      otherAuthIds <- persist.AuthId.findByUserId(client.userId).map(_.view.filter(_.id != client.authId))
-      _ <- DBIO.sequence(
-        otherAuthIds.map { authId =>
-          persist.sequence.SeqUpdate.create(models.sequence.SeqUpdate(authId.id, header, serializedData))
-        }
-      )
-      ownUpdate = models.sequence.SeqUpdate(client.authId, header, serializedData)
-      _ <- persist.sequence.SeqUpdate.create(ownUpdate)
-      ownSeq <- DBIO.from(pushUpdateGetSeq(region, client.authId, update).map(_.value))
-    } yield {
-      otherAuthIds foreach (authId => pushUpdate(region, authId.id, update))
+      otherAuthIds <- persist.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
+      _ <- DBIO.sequence(otherAuthIds map (authId => persistAndPushUpdate(region, authId, update)))
+      ownseqstate <- persistAndPushUpdate(region, client.authId, update)
+    } yield ownseqstate
+  }
 
-      (ownSeq, ownUpdate.ref.toByteArray)
-    }
+  private def pushUpdateGetSeq(region: ActorRef, authId: Long, update: api.Update): Future[SeqVal] = {
+    region.ask(Envelope(authId, PushUpdateGetSeq(update)))(PushGetSeqTimeout).mapTo[SeqVal]
   }
 }
 
 class SeqUpdatesManager extends PersistentActor {
+
   import SeqUpdatesManager._
   import ShardRegion.Passivate
 
@@ -136,21 +137,24 @@ class SeqUpdatesManager extends PersistentActor {
   override def persistenceId: String = self.path.parent.name + "-" + self.path.name
 
   private[this] val IncrementOnStart: Int = 1000
-  require(IncrementOnStart > 1) // it is needed to prevent divizion by zero in pushUpdate
+  require(IncrementOnStart > 1)
+  // it is needed to prevent divizion by zero in pushUpdate
 
   private[this] var seq: Int = 0
 
   override def receiveCommand: Receive = {
-    case Envelope(authId: Long, PushUpdate(upd)) =>
+    case Envelope(_, GetSeq) =>
+      sender() ! seq
+    case Envelope(_, PushUpdate(upd)) =>
       pushUpdate(upd)
-    case Envelope(authId: Long, PushUpdateGetSeq(upd)) =>
+    case Envelope(_, PushUpdateGetSeq(upd)) =>
       val replyTo = sender()
 
       pushUpdate(upd, { newSeq =>
-        replyTo ! Seq(newSeq)
+        replyTo ! newSeq
       })
     case ReceiveTimeout => context.parent ! Passivate(stopMessage = Stop)
-    case Stop           => context.stop(self)
+    case Stop => context.stop(self)
   }
 
   override def receiveRecover: Receive = {

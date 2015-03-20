@@ -31,4 +31,7 @@ object AuthId {
 
   def findByUserId(userId: Int) =
     authIds.filter(a => a.userId === userId && a.deletedAt.isEmpty).result
+
+  def findIdByUserId(userId: Int) =
+    authIds.filter(a => a.userId === userId && a.deletedAt.isEmpty).map(_.id).result
 }
