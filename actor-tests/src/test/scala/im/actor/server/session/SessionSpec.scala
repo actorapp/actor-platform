@@ -3,17 +3,25 @@ package im.actor.server.session
 import akka.actor._
 import akka.stream.ActorFlowMaterializer
 import akka.testkit.TestProbe
+import org.specs2.Specification
 
+import im.actor.api.rpc.{ RpcResult, RpcOk, Request }
+import im.actor.api.rpc.auth.{ ResponseSendAuthCode, RequestSendAuthCode }
+import im.actor.api.rpc.codecs._
+import im.actor.server.api.rpc.{ RpcResultCodec, RpcOkCodec }
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
 import im.actor.util.testing._
 
+import scala.concurrent.duration._
 import scala.util.Random
 
 import scodec.bits._
 
-class SessionSpec extends ActorSpecification {
+import im.actor.server.SqlSpecHelpers
+
+class SessionSpec extends ActorSpecification with SqlSpecHelpers {
   def is = sequential ^ s2"""
   Session Actor should
     send Drop on message on wrong message box ${sessions().e1}
@@ -24,6 +32,7 @@ class SessionSpec extends ActorSpecification {
   case class sessions() {
     import Session._
     implicit val materializer = ActorFlowMaterializer()
+    implicit val db = migrateAndInitDb()
 
     val authId = Random.nextLong()
     val sessionId = Random.nextLong()
@@ -42,20 +51,36 @@ class SessionSpec extends ActorSpecification {
     def e2() = {
       val messageId = Random.nextLong()
 
-      sendMessageBox(authId, sessionId, session, messageId, RpcRequestBox(BitVector.empty))
+      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+      sendMessageBox(authId, sessionId, session, messageId, RpcRequestBox(encodedRequest))
 
       expectNewSession(authId, sessionId, messageId)
+      probe.receiveOne(1.second)
     }
 
     def e3() = {
       val messageId = Random.nextLong()
 
-      sendMessageBox(authId, sessionId, session, messageId, RpcRequestBox(BitVector.empty))
+      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+      sendMessageBox(authId, sessionId, session, messageId, RpcRequestBox(encodedRequest))
 
       expectNewSession(authId, sessionId, messageId)
-      expectMessageBox(authId, sessionId, 2L, RpcResponseBox(messageId, BitVector.empty))
+      receiveRpcResult() must beLike {
+        case RpcOk(ResponseSendAuthCode(_, false)) => ok
+      }
+    }
 
-      probe.expectNoMsg()
+    private def receiveRpcResult(): RpcResult = {
+      Option(probe.receiveOne(1.second)) match {
+        case Some(MTPackage(authId, sessionId, mbBytes)) =>
+          MessageBoxCodec.decode(mbBytes).require.value.body match {
+            case RpcResponseBox(messageId, rpcResultBytes) =>
+              RpcResultCodec.decode(rpcResultBytes).require.value
+            case msg => throw new Exception(s"Expected RpcResponseBox but got $msg")
+          }
+        case Some(msg) => throw new Exception(s"Expected MTPackage but got $msg")
+        case None => throw new Exception("No rpc response")
+      }
     }
 
     private def expectNewSession(authId: Long, sessionId: Long, messageId: Long) =
