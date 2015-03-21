@@ -11,7 +11,7 @@ object Build extends sbt.Build {
   val ScalaVersion = "2.11.5"
 
   lazy val buildSettings =
-    Defaults.defaultSettings ++
+    Defaults.coreDefaultSettings ++
       Seq(
         organization         := Organization,
         version              := Version,
@@ -146,7 +146,7 @@ object Build extends sbt.Build {
   lazy val actorTests = Project(
     id = "actor-tests",
     base = file("actor-tests"),
-    settings = defaultSettings ++ Seq(
+    settings = defaultSettings ++ Testing.settings ++ Seq(
       libraryDependencies ++= Dependencies.tests
     )
   ).dependsOn(actorApi, actorCodecs, actorPersist, actorPush, actorRpcApi, actorSession)
