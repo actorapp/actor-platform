@@ -24,8 +24,8 @@ class SessionMessageDiscriminator extends FlexiRoute[SessionStream.SessionStream
     override def initialState = State[Any](DemandFromAny(handles: _*)) {
       (ctx, _, element) =>
         element match {
-          case HandleMessageBox(MessageBox(messageId, RpcRequestBox(bodyBytes))) =>
-            ctx.emit(outHandleRpcRequest, HandleRpcRequest(messageId, bodyBytes))
+          case HandleMessageBox(MessageBox(messageId, RpcRequestBox(bodyBytes)), clientData) =>
+            ctx.emit(outHandleRpcRequest, HandleRpcRequest(messageId, bodyBytes, clientData))
           case e: SubscribeToPresences => ctx.emit(outSubscriber, e)
           case unmatched =>
             ctx.emit(outUnmatched, unmatched)

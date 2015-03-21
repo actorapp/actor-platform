@@ -1,22 +1,23 @@
 package im.actor.server.session
 
+import scala.collection.mutable
+
 import akka.actor._
 import akka.stream.FlowMaterializer
-import akka.stream.scaladsl._
 import akka.stream.actor._
-import im.actor.server.api.rpc.RpcApiService
+import akka.stream.scaladsl._
+import scodec._
+import scodec.bits._
+import slick.driver.PostgresDriver.api._
 
+import im.actor.api.rpc.ClientData
+import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
-import im.actor.server.api.service.AuthorizationManager
-
-import scala.collection.mutable
-
-import scodec._
-import scodec.bits._
 
 object Session {
+
   sealed trait SessionMessage
 
   @SerialVersionUID(1L)
@@ -28,20 +29,21 @@ object Session {
   @SerialVersionUID(1L)
   case class SendProtoMessage(message: ProtoMessage) extends SessionMessage
 
-  def props()(implicit materializer: FlowMaterializer) = Props(classOf[Session], materializer)
+  def props()(implicit materializer: FlowMaterializer, database: Database) = Props(classOf[Session], materializer, database)
 }
 
-class Session(implicit materializer: FlowMaterializer) extends Actor with ActorLogging with MessageIdHelper {
-  import AuthorizationManager._
+class Session(implicit materializer: FlowMaterializer, db: Database) extends Actor with ActorLogging with MessageIdHelper {
+
   import Session._
 
   var newSessionSent: Boolean = false
+  var optUserId: Option[Int] = None
   val clients = mutable.Set.empty[ActorRef]
 
   def receive = receiveAnonymous
 
   def receiveAnonymous: Receive = {
-    case env @ Envelope(authId, sessionId, HandleMessageBox(messageBoxBytes)) =>
+    case env@Envelope(authId, sessionId, HandleMessageBox(messageBoxBytes)) =>
       val client = sender()
 
       recordClient(client)
@@ -64,7 +66,7 @@ class Session(implicit materializer: FlowMaterializer) extends Actor with ActorL
         val flow = rpcResponseSource.to(Sink.foreach[ProtoMessage](m => self ! SendProtoMessage(m)))
         flow.run()
 
-        sessionMessagePublisher ! mb
+        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, optUserId))
 
         context become receiveResolved(authId, sessionId, sessionMessagePublisher)
       }
@@ -75,7 +77,7 @@ class Session(implicit materializer: FlowMaterializer) extends Actor with ActorL
   }
 
   def receiveResolved(authId: Long, sessionId: Long, publisher: ActorRef): Receive = {
-    case env @ Envelope(eauthId, esessionId, msg) =>
+    case env@Envelope(eauthId, esessionId, msg) =>
       val client = sender()
 
       recordClient(client)
@@ -96,10 +98,10 @@ class Session(implicit materializer: FlowMaterializer) extends Actor with ActorL
   }
 
   private def handleSessionMessage(
-    authId:    Long,
-    sessionId: Long,
-    client:    ActorRef, msg: SessionMessage, publisher: ActorRef
-  ): Unit = msg match {
+                                    authId: Long,
+                                    sessionId: Long,
+                                    client: ActorRef, msg: SessionMessage, publisher: ActorRef
+                                    ): Unit = msg match {
     case HandleMessageBox(messageBoxBytes) =>
       withValidMessageBox(client, messageBoxBytes)(publisher.tell(_, self))
     case SendProtoMessage(protoMessage) =>
@@ -113,7 +115,7 @@ class Session(implicit materializer: FlowMaterializer) extends Actor with ActorL
   private def withValidMessageBox(client: ActorRef, messageBoxBytes: Array[Byte])(f: MessageBox => Unit): Unit =
     decodeMessageBox(messageBoxBytes) match {
       case Some(mb) => f(mb)
-      case None     =>
+      case None =>
         client ! Drop(0, 0, "Cannot parse message box")
         context stop self
     }
@@ -121,7 +123,7 @@ class Session(implicit materializer: FlowMaterializer) extends Actor with ActorL
   private def decodeMessageBox(messageBoxBytes: Array[Byte]): Option[MessageBox] =
     MessageBoxCodec.decode(BitVector(messageBoxBytes)).toEither match {
       case Right(DecodeResult(mb, _)) => Some(mb)
-      case _                          => None
+      case _ => None
     }
 
   private def boxProtoMessage(message: ProtoMessage): MessageBox = {

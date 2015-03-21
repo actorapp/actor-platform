@@ -1,6 +1,7 @@
 package im.actor.server.session
 
 import akka.actor._
+import akka.event.LoggingReceive
 import akka.stream.actor._
 
 import im.actor.server.api.rpc.RpcApiService
@@ -33,17 +34,22 @@ class RpcRequestHandler(rpcApiService: ActorRef, rpcResponsePublisher: ActorRef)
     override def inFlightInternally: Int = requestQueue.size
   }
 
-  def receive = {
-    case OnNext(HandleRpcRequest(messageId, requestBytes)) =>
+  def receive = LoggingReceive {
+    case OnNext(HandleRpcRequest(messageId, requestBytes, clientData)) =>
       requestQueue += (messageId -> requestBytes)
       assert(requestQueue.size <= MaxRequestQueueSize, s"queued too many: ${requestQueue.size}")
-      rpcApiService ! RpcApiService.HandleRpcRequest(messageId, requestBytes)
+
+      log.debug("Making an rpc request for messageId: {}", messageId)
+      rpcApiService ! RpcApiService.HandleRpcRequest(messageId, requestBytes, clientData)
     case RpcApiService.RpcResponse(messageId, responseBytes) =>
       requestQueue -= messageId
 
+      log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
       rpcResponsePublisher ! RpcResponseBox(messageId, responseBytes)
     case OnError(cause) =>
       log.error(cause, "Received OnError, sending PoisonPill to ResponseManager")
       rpcResponsePublisher ! PoisonPill
+    case unmatched =>
+      log.error("Unmatched msg {}", unmatched)
   }
 }

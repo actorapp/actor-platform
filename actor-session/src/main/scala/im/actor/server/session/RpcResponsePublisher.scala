@@ -22,6 +22,7 @@ class RpcResponsePublisher extends ActorPublisher[RpcResponseBox] with ActorLogg
 
   def receive = {
     case rspBox: RpcResponseBox =>
+      log.debug("RpcResponseBox {}", rspBox)
       if (responseQueue.isEmpty && totalDemand > 0) {
         onNext(rspBox)
       } else {

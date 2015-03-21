@@ -18,13 +18,12 @@ import shapeless._
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-trait AuthServiceImpl extends AuthService with Helpers {
+class AuthServiceImpl(implicit val actorSystem: ActorSystem, val db: Database) extends AuthService with Helpers {
   private trait SignType
   private case class Up(name: String, isSilent: Boolean) extends SignType
   private case object In extends SignType
 
-  val db: Database
-  implicit val actorSystem: ActorSystem
+  override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   object Errors {
     val PhoneNumberInvalid = RpcError(400, "PHONE_NUMBER_INVALID", "Invalid phone number.", false, None)

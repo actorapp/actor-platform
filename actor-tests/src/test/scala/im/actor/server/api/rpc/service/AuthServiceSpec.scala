@@ -37,12 +37,9 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
                      """
 
   object s {
-    implicit val service = new auth.AuthServiceImpl {
-      override implicit val ec: ExecutionContext = system.dispatcher
-      override implicit val actorSystem = system
+    implicit val db = migrateAndInitDb()
 
-      val db = migrateAndInitDb()
-    }
+    implicit val service = new auth.AuthServiceImpl()
 
     implicit val ec = system.dispatcher
 

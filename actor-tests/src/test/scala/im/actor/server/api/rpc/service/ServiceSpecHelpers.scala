@@ -69,12 +69,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     rsp.user
   }
 
-  def buildAuthService()(implicit system: ActorSystem, database: Database) = new auth.AuthServiceImpl {
-    override implicit val ec = system.dispatcher
-    override implicit val actorSystem = system
-
-    val db = database
-  }
+  def buildAuthService()(implicit system: ActorSystem, database: Database) = new auth.AuthServiceImpl()
 
   protected def withoutLogs[A](f: => A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]
