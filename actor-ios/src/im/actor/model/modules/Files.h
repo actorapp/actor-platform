@@ -14,15 +14,15 @@
 @class ImActorModelModulesFileUploadManager;
 @class ImActorModelModulesModules;
 @protocol AMFileSystemReference;
+@protocol AMUploadCallback;
 @protocol DKKeyValueEngine;
 @protocol DKKeyValueStorage;
-@protocol ImActorModelModulesFileUploadCallback;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/modules/BaseModule.h"
-#include "im/actor/model/modules/file/DownloadCallback.h"
 #include "im/actor/model/modules/utils/BaseKeyValueEngine.h"
+#include "im/actor/model/viewmodel/DownloadCallback.h"
 #include "java/lang/Runnable.h"
 
 @interface ImActorModelModulesFiles : ImActorModelModulesBaseModule {
@@ -36,24 +36,24 @@
 
 - (void)bindFileWithAMFileReference:(AMFileReference *)fileReference
                         withBoolean:(jboolean)isAutostart
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+             withAMDownloadCallback:(id<AMDownloadCallback>)callback;
 
 - (void)unbindFileWithLong:(jlong)fileId
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback
+    withAMDownloadCallback:(id<AMDownloadCallback>)callback
                withBoolean:(jboolean)cancel;
 
 - (void)requestStateWithLong:(jlong)fileId
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+      withAMDownloadCallback:(id<AMDownloadCallback>)callback;
 
 - (void)startDownloadingWithAMFileReference:(AMFileReference *)location;
 
 - (void)cancelDownloadingWithLong:(jlong)fileId;
 
 - (void)bindUploadFileWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)uploadCallback;
+          withAMUploadCallback:(id<AMUploadCallback>)uploadCallback;
 
 - (void)unbindUploadFileWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback;
+            withAMUploadCallback:(id<AMUploadCallback>)callback;
 
 - (void)requestUploadWithLong:(jlong)rid
                  withNSString:(NSString *)descriptor
@@ -63,7 +63,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
 - (void)cancelUploadWithLong:(jlong)rid;
 
 - (void)requestUploadStateWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback;
+              withAMUploadCallback:(id<AMUploadCallback>)callback;
 
 - (void)resumeUploadWithLong:(jlong)rid;
 
@@ -130,7 +130,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$3)
 
-@interface ImActorModelModulesFiles_$4 : NSObject < ImActorModelModulesFileDownloadCallback > {
+@interface ImActorModelModulesFiles_$4 : NSObject < AMDownloadCallback > {
 }
 
 - (void)onNotDownloaded;
@@ -140,7 +140,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$3)
 - (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference;
 
 - (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$
-     withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)capture$0;
+                          withAMDownloadCallback:(id<AMDownloadCallback>)capture$0;
 
 @end
 

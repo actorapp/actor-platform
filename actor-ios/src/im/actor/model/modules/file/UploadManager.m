@@ -17,11 +17,11 @@
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/file/Downloaded.h"
-#include "im/actor/model/modules/file/UploadCallback.h"
 #include "im/actor/model/modules/file/UploadManager.h"
 #include "im/actor/model/modules/file/UploadTask.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/modules/utils/RandomUtils.h"
+#include "im/actor/model/viewmodel/UploadCallback.h"
 #include "java/util/ArrayList.h"
 
 __attribute__((unused)) static void ImActorModelModulesFileUploadManager_checkQueue(ImActorModelModulesFileUploadManager *self);
@@ -78,20 +78,20 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_StartUpload, fileName_,
 @interface ImActorModelModulesFileUploadManager_BindUpload () {
  @public
   jlong rid_;
-  id<ImActorModelModulesFileUploadCallback> callback_;
+  id<AMUploadCallback> callback_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_BindUpload, callback_, id<ImActorModelModulesFileUploadCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_BindUpload, callback_, id<AMUploadCallback>)
 
 @interface ImActorModelModulesFileUploadManager_UnbindUpload () {
  @public
   jlong rid_;
-  id<ImActorModelModulesFileUploadCallback> callback_;
+  id<AMUploadCallback> callback_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_UnbindUpload, callback_, id<ImActorModelModulesFileUploadCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_UnbindUpload, callback_, id<AMUploadCallback>)
 
 @interface ImActorModelModulesFileUploadManager_StopUpload () {
  @public
@@ -141,11 +141,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_UploadCompleted, fileRe
 @interface ImActorModelModulesFileUploadManager_RequestState () {
  @public
   jlong rid_;
-  id<ImActorModelModulesFileUploadCallback> callback_;
+  id<AMUploadCallback> callback_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_RequestState, callback_, id<ImActorModelModulesFileUploadCallback>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_RequestState, callback_, id<AMUploadCallback>)
 
 @interface ImActorModelModulesFileUploadManager_PauseUpload () {
  @public
@@ -205,32 +205,32 @@ NSString * ImActorModelModulesFileUploadManager_TAG_ = @"UploadManager";
       queueItem->isStarted_ = NO;
     }
     [((JavaUtilArrayList *) nil_chk(queue_)) removeWithId:queueItem];
-    for (id<ImActorModelModulesFileUploadCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
-      [((id<ImActorModelModulesFileUploadCallback>) nil_chk(callback)) onNotUploading];
+    for (id<AMUploadCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
+      [((id<AMUploadCallback>) nil_chk(callback)) onNotUploading];
     }
   }
   ImActorModelModulesFileUploadManager_checkQueue(self);
 }
 
 - (void)bindUploadWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback {
+      withAMUploadCallback:(id<AMUploadCallback>)callback {
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem == nil) {
-    [((id<ImActorModelModulesFileUploadCallback>) nil_chk(callback)) onNotUploading];
+    [((id<AMUploadCallback>) nil_chk(callback)) onNotUploading];
   }
   else {
     if (queueItem->isStopped_) {
-      [((id<ImActorModelModulesFileUploadCallback>) nil_chk(callback)) onNotUploading];
+      [((id<AMUploadCallback>) nil_chk(callback)) onNotUploading];
     }
     else {
-      [((id<ImActorModelModulesFileUploadCallback>) nil_chk(callback)) onUploadingWithFloat:queueItem->progress_];
+      [((id<AMUploadCallback>) nil_chk(callback)) onUploadingWithFloat:queueItem->progress_];
     }
     [((JavaUtilArrayList *) nil_chk(queueItem->callbacks_)) addWithId:callback];
   }
 }
 
 - (void)unbindUploadWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback {
+        withAMUploadCallback:(id<AMUploadCallback>)callback {
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem != nil) {
     [((JavaUtilArrayList *) nil_chk(queueItem->callbacks_)) removeWithId:callback];
@@ -238,17 +238,17 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
 }
 
 - (void)requestStateWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback {
+        withAMUploadCallback:(id<AMUploadCallback>)callback {
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem == nil) {
-    [((id<ImActorModelModulesFileUploadCallback>) nil_chk(callback)) onNotUploading];
+    [((id<AMUploadCallback>) nil_chk(callback)) onNotUploading];
   }
   else {
     if (queueItem->isStopped_) {
-      [((id<ImActorModelModulesFileUploadCallback>) nil_chk(callback)) onNotUploading];
+      [((id<AMUploadCallback>) nil_chk(callback)) onNotUploading];
     }
     else {
-      [((id<ImActorModelModulesFileUploadCallback>) nil_chk(callback)) onUploadingWithFloat:queueItem->progress_];
+      [((id<AMUploadCallback>) nil_chk(callback)) onUploadingWithFloat:queueItem->progress_];
     }
   }
 }
@@ -263,8 +263,8 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
       queueItem->isStopped_ = NO;
     }
     queueItem->progress_ = 0;
-    for (id<ImActorModelModulesFileUploadCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
-      [((id<ImActorModelModulesFileUploadCallback>) nil_chk(callback)) onUploadingWithFloat:0];
+    for (id<AMUploadCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
+      [((id<AMUploadCallback>) nil_chk(callback)) onUploadingWithFloat:0];
     }
     ImActorModelModulesFileUploadManager_checkQueue(self);
   }
@@ -279,8 +279,8 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
       queueItem->isStarted_ = NO;
     }
     queueItem->isStopped_ = YES;
-    for (id<ImActorModelModulesFileUploadCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
-      [((id<ImActorModelModulesFileUploadCallback>) nil_chk(callback)) onNotUploading];
+    for (id<AMUploadCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
+      [((id<AMUploadCallback>) nil_chk(callback)) onNotUploading];
     }
   }
 }
@@ -298,8 +298,8 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
   [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
   queueItem->isStopped_ = YES;
   queueItem->isStarted_ = NO;
-  for (id<ImActorModelModulesFileUploadCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
-    [((id<ImActorModelModulesFileUploadCallback>) nil_chk(callback)) onNotUploading];
+  for (id<AMUploadCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
+    [((id<AMUploadCallback>) nil_chk(callback)) onNotUploading];
   }
   [((DKActorRef *) nil_chk(queueItem->requestActor_)) sendWithId:[[ImActorModelModulesFileUploadManager_UploadError alloc] initWithLong:rid]];
   ImActorModelModulesFileUploadManager_checkQueue(self);
@@ -316,8 +316,8 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
     return;
   }
   queueItem->progress_ = progress;
-  for (id<ImActorModelModulesFileUploadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
-    [((id<ImActorModelModulesFileUploadCallback>) nil_chk(fileCallback)) onUploadingWithFloat:progress];
+  for (id<AMUploadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
+    [((id<AMUploadCallback>) nil_chk(fileCallback)) onUploadingWithFloat:progress];
   }
 }
 
@@ -335,8 +335,8 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
   [((JavaUtilArrayList *) nil_chk(queue_)) removeWithId:queueItem];
   [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
   [((id<DKKeyValueEngine>) nil_chk([((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) getDownloadedEngine])) addOrUpdateItemWithDKKeyValueItem:[[ImActorModelModulesFileDownloaded alloc] initWithLong:[((AMFileReference *) nil_chk(fileReference)) getFileId] withInt:[fileReference getFileSize] withNSString:[((id<AMFileSystemReference>) nil_chk(reference)) getDescriptor]]];
-  for (id<ImActorModelModulesFileUploadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
-    [((id<ImActorModelModulesFileUploadCallback>) nil_chk(fileCallback)) onUploaded];
+  for (id<AMUploadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
+    [((id<AMUploadCallback>) nil_chk(fileCallback)) onUploaded];
   }
   [((DKActorRef *) nil_chk(queueItem->requestActor_)) sendWithId:[[ImActorModelModulesFileUploadManager_UploadCompleted alloc] initWithLong:rid withAMFileReference:fileReference]];
   ImActorModelModulesFileUploadManager_checkQueue(self);
@@ -373,15 +373,15 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_BindUpload class]]) {
     ImActorModelModulesFileUploadManager_BindUpload *bindUpload = (ImActorModelModulesFileUploadManager_BindUpload *) check_class_cast(message, [ImActorModelModulesFileUploadManager_BindUpload class]);
-    [self bindUploadWithLong:[((ImActorModelModulesFileUploadManager_BindUpload *) nil_chk(bindUpload)) getRid] withImActorModelModulesFileUploadCallback:[bindUpload getCallback]];
+    [self bindUploadWithLong:[((ImActorModelModulesFileUploadManager_BindUpload *) nil_chk(bindUpload)) getRid] withAMUploadCallback:[bindUpload getCallback]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_UnbindUpload class]]) {
     ImActorModelModulesFileUploadManager_UnbindUpload *unbindUpload = (ImActorModelModulesFileUploadManager_UnbindUpload *) check_class_cast(message, [ImActorModelModulesFileUploadManager_UnbindUpload class]);
-    [self unbindUploadWithLong:[((ImActorModelModulesFileUploadManager_UnbindUpload *) nil_chk(unbindUpload)) getRid] withImActorModelModulesFileUploadCallback:[unbindUpload getCallback]];
+    [self unbindUploadWithLong:[((ImActorModelModulesFileUploadManager_UnbindUpload *) nil_chk(unbindUpload)) getRid] withAMUploadCallback:[unbindUpload getCallback]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_RequestState class]]) {
     ImActorModelModulesFileUploadManager_RequestState *requestState = (ImActorModelModulesFileUploadManager_RequestState *) check_class_cast(message, [ImActorModelModulesFileUploadManager_RequestState class]);
-    [self requestStateWithLong:[((ImActorModelModulesFileUploadManager_RequestState *) nil_chk(requestState)) getRid] withImActorModelModulesFileUploadCallback:[requestState getCallback]];
+    [self requestStateWithLong:[((ImActorModelModulesFileUploadManager_RequestState *) nil_chk(requestState)) getRid] withAMUploadCallback:[requestState getCallback]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_PauseUpload class]]) {
     ImActorModelModulesFileUploadManager_PauseUpload *pauseUpload = (ImActorModelModulesFileUploadManager_PauseUpload *) check_class_cast(message, [ImActorModelModulesFileUploadManager_PauseUpload class]);
@@ -516,7 +516,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_StartUploa
 @implementation ImActorModelModulesFileUploadManager_BindUpload
 
 - (instancetype)initWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback {
+        withAMUploadCallback:(id<AMUploadCallback>)callback {
   if (self = [super init]) {
     self->rid_ = rid;
     self->callback_ = callback;
@@ -528,7 +528,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
   return rid_;
 }
 
-- (id<ImActorModelModulesFileUploadCallback>)getCallback {
+- (id<AMUploadCallback>)getCallback {
   return callback_;
 }
 
@@ -545,7 +545,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_BindUpload
 @implementation ImActorModelModulesFileUploadManager_UnbindUpload
 
 - (instancetype)initWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback {
+        withAMUploadCallback:(id<AMUploadCallback>)callback {
   if (self = [super init]) {
     self->rid_ = rid;
     self->callback_ = callback;
@@ -557,7 +557,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
   return rid_;
 }
 
-- (id<ImActorModelModulesFileUploadCallback>)getCallback {
+- (id<AMUploadCallback>)getCallback {
   return callback_;
 }
 
@@ -734,7 +734,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UploadErro
 @implementation ImActorModelModulesFileUploadManager_RequestState
 
 - (instancetype)initWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback {
+        withAMUploadCallback:(id<AMUploadCallback>)callback {
   if (self = [super init]) {
     self->rid_ = rid;
     self->callback_ = callback;
@@ -746,7 +746,7 @@ withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallb
   return rid_;
 }
 
-- (id<ImActorModelModulesFileUploadCallback>)getCallback {
+- (id<AMUploadCallback>)getCallback {
   return callback_;
 }
 

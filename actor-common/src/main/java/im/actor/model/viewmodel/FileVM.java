@@ -3,7 +3,6 @@ package im.actor.model.viewmodel;
 import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.file.DownloadCallback;
 import im.actor.model.mvvm.AsyncVM;
 
 /**

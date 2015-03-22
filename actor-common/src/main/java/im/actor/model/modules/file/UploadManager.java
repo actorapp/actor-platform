@@ -12,6 +12,7 @@ import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.modules.utils.RandomUtils;
+import im.actor.model.viewmodel.UploadCallback;
 
 /**
  * Created by ex3ndr on 03.03.15.
