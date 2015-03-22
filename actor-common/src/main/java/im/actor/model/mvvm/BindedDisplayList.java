@@ -30,6 +30,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     private final boolean isGlobalList;
     private final int pageSize;
     private final int loadGap;
+    private final BindHook<T> bindHook;
 
     private ValueModel<State> stateModel;
 
@@ -39,7 +40,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     private boolean isLoadMoreBackwardRequested = false;
 
     public BindedDisplayList(ListEngineDisplayExt<T> listEngine, boolean isGlobalList,
-                             int pageSize, int loadGap) {
+                             int pageSize, int loadGap, BindHook<T> bindHook) {
         super(new Hook<T>() {
             @Override
             public void beforeDisplay(List<T> list) {
@@ -47,6 +48,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
             }
         });
 
+        this.bindHook = bindHook;
         this.isGlobalList = isGlobalList;
         this.pageSize = pageSize;
         this.loadGap = loadGap;
@@ -67,11 +69,21 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         MVVMEngine.checkMainThread();
 
         if (index >= getSize() - loadGap) {
-            loadMoreForward();
+            if (window.isForwardCompleted()) {
+                if (bindHook != null) {
+                    bindHook.onScrolledToEnd();
+                }
+            } else {
+                loadMoreForward();
+            }
         }
 
         if (index < loadGap) {
             loadMoreBackward();
+        }
+
+        if (bindHook != null) {
+            bindHook.onItemTouched(getItem(index));
         }
     }
 
@@ -431,5 +443,11 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
     public enum State {
         LOADING_EMPTY, LOADED, LOADED_EMPTY
+    }
+
+    public interface BindHook<T> {
+        void onScrolledToEnd();
+
+        void onItemTouched(T item);
     }
 }

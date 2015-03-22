@@ -111,9 +111,11 @@ public class ManagerActor extends Actor {
 
         if (currentConnection != null) {
             currentConnection.close();
+            Log.d(TAG, "Set connection #" + 0);
             currentConnectionId = 0;
         }
 
+        Log.d(TAG, "Set connection #" + id);
         currentConnectionId = id;
         currentConnection = connection;
 
@@ -137,6 +139,7 @@ public class ManagerActor extends Actor {
         Log.w(TAG, "Connection #" + id + " dies");
 
         if (currentConnectionId == id) {
+            Log.d(TAG, "Set connection #" + 0);
             currentConnectionId = 0;
             currentConnection = null;
             requestCheckConnection();
@@ -229,6 +232,7 @@ public class ManagerActor extends Actor {
                 currentConnection.close();
                 currentConnection = null;
                 currentConnectionId = 0;
+                Log.d(TAG, "Set connection #" + 0);
             }
             checkConnection();
         }
@@ -240,7 +244,9 @@ public class ManagerActor extends Actor {
         // Cleanup bad connection
         if (currentConnection != null && currentConnection.isClosed()) {
             currentConnection = null;
+            Log.d(TAG, "Set connection #" + 0);
             currentConnectionId = 0;
+            checkConnection();
         }
 
         if (currentConnection != null) {

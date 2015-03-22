@@ -67,8 +67,23 @@ public class DisplayLists extends BaseModule {
             throw new RuntimeException("Dialogs ListEngine must implement ListEngineDisplayExt for using global list");
         }
 
+        BindedDisplayList.BindHook<Dialog> hook = null;
+        if (isGlobalList) {
+            hook = new BindedDisplayList.BindHook<Dialog>() {
+
+                @Override
+                public void onScrolledToEnd() {
+                    modules().getMessagesModule().loadMoreDialogs();
+                }
+
+                @Override
+                public void onItemTouched(Dialog item) {
+
+                }
+            };
+        }
         BindedDisplayList<Dialog> displayList = new BindedDisplayList<Dialog>((ListEngineDisplayExt<Dialog>) dialogsEngine,
-                isGlobalList, LOAD_PAGE, LOAD_GAP);
+                isGlobalList, LOAD_PAGE, LOAD_GAP, hook);
         displayList.initTop(false);
         return displayList;
     }
@@ -82,12 +97,12 @@ public class DisplayLists extends BaseModule {
         }
 
         BindedDisplayList<Contact> contactList = new BindedDisplayList<Contact>((ListEngineDisplayExt<Contact>) contactsEngine,
-                isGlobalList, LOAD_PAGE, LOAD_GAP);
+                isGlobalList, LOAD_PAGE, LOAD_GAP, null);
         contactList.initTop(false);
         return contactList;
     }
 
-    public BindedDisplayList<Message> buildNewChatList(Peer peer, boolean isGlobalList) {
+    public BindedDisplayList<Message> buildNewChatList(final Peer peer, boolean isGlobalList) {
         MVVMEngine.checkMainThread();
 
         ListEngine<Message> messagesEngine = modules().getMessagesModule().getConversationEngine(peer);
@@ -95,8 +110,24 @@ public class DisplayLists extends BaseModule {
             throw new RuntimeException("Conversation ListEngine must implement ListEngineDisplayExt for using global list");
         }
 
+        BindedDisplayList.BindHook<Message> hook = null;
+        if (isGlobalList) {
+            hook = new BindedDisplayList.BindHook<Message>() {
+
+                @Override
+                public void onScrolledToEnd() {
+                    modules().getMessagesModule().loadMoreHistory(peer);
+                }
+
+                @Override
+                public void onItemTouched(Message item) {
+
+                }
+            };
+        }
+
         BindedDisplayList<Message> chatList = new BindedDisplayList<Message>((ListEngineDisplayExt<Message>) messagesEngine,
-                isGlobalList, LOAD_PAGE, LOAD_GAP);
+                isGlobalList, LOAD_PAGE, LOAD_GAP, hook);
         chatList.initTop(false);
         return chatList;
     }
