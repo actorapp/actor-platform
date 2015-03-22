@@ -1,34 +1,38 @@
 package im.actor.server.session
 
 import akka.actor.ActorRef
+import akka.stream.{ FanOutShape3, FanOutShape }
 import akka.stream.scaladsl._
 import im.actor.server.mtproto.protocol._
 import scodec.bits._
+import SessionStream._
+import FanOutShape._
 
-class SessionMessageDiscriminator extends FlexiRoute[SessionStream.SessionStreamMessage] {
+class SessionMessageDiscriminatorShape(_init: Init[SessionStreamMessage] = Name[SessionStreamMessage]("SessionMessageDiscriminator"))
+  extends FanOutShape[SessionStreamMessage](_init) {
+  val outRpc = newOutlet[HandleRpcRequest]("outRpc")
+  val outSubscribe = newOutlet[SubscribeToPresences]("outSubscribe")
+  val outUnmatched = newOutlet[SessionStreamMessage]("outUnmatched")
+
+  protected override def construct(i: Init[SessionStreamMessage]) = new SessionMessageDiscriminatorShape(i)
+}
+
+class SessionMessageDiscriminator
+  extends FlexiRoute[SessionStreamMessage, SessionMessageDiscriminatorShape](
+    new SessionMessageDiscriminatorShape, OperationAttributes.name("SessionMessageDiscriminator")) {
   import FlexiRoute._
   import SessionStream._
 
-  val outHandleRpcRequest = createOutputPort[HandleRpcRequest]()
-  val outSubscriber = createOutputPort[SubscribeToPresences]()
-  val outUnmatched = createOutputPort[SessionStreamMessage]
-
-  val handles = Vector(outHandleRpcRequest, outSubscriber, outUnmatched)
-
-  override def createRouteLogic() = new RouteLogic[SessionStreamMessage] {
-    override def outputHandles(outputCount: Int) = {
-      require(outputCount == 3, s"Must have three connected outputs, was $outputCount")
-      handles
-    }
-
-    override def initialState = State[Any](DemandFromAny(handles: _*)) {
+  override def createRouteLogic(p: PortT) = new RouteLogic[SessionStreamMessage] {
+    override def initialState = State[Any](DemandFromAny(p.outlets)) {
       (ctx, _, element) =>
         element match {
           case HandleMessageBox(MessageBox(messageId, RpcRequestBox(bodyBytes)), clientData) =>
-            ctx.emit(outHandleRpcRequest, HandleRpcRequest(messageId, bodyBytes, clientData))
-          case e: SubscribeToPresences => ctx.emit(outSubscriber, e)
+            ctx.emit(p.outRpc)(HandleRpcRequest(messageId, bodyBytes, clientData))
+          case e: SubscribeToPresences =>
+            ctx.emit(p.outSubscribe)(e)
           case unmatched =>
-            ctx.emit(outUnmatched, unmatched)
+            ctx.emit(p.outUnmatched)(unmatched)
         }
 
         SameState
