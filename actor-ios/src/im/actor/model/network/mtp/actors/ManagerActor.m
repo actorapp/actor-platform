@@ -314,7 +314,7 @@ void MTManagerActor_onConnectionDieWithInt_(MTManagerActor *self, jint id_) {
     MTManagerActor_requestCheckConnection(self);
   }
   else {
-    AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$", @"Unable to unregister connection #", id_, @": connection not found"));
+    AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$I", @"Unable to unregister connection #", id_, @": connection not found, expected: #", self->currentConnectionId_));
   }
 }
 

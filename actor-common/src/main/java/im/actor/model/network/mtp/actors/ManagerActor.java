@@ -141,7 +141,7 @@ public class ManagerActor extends Actor {
             currentConnection = null;
             requestCheckConnection();
         } else {
-            Log.w(TAG, "Unable to unregister connection #" + id + ": connection not found");
+            Log.w(TAG, "Unable to unregister connection #" + id + ": connection not found, expected: #"+currentConnectionId);
         }
     }
 
