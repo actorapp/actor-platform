@@ -1,6 +1,7 @@
 package im.actor.server.api.service
 
 import akka.actor._
+import akka.stream.FlowShape
 import akka.stream.actor.ActorPublisher
 import akka.util.{ ByteString, Timeout }
 import akka.stream.scaladsl._
@@ -23,37 +24,43 @@ object MTProto {
   val apiMajorVersions: Set[Byte] = Set(1)
 
   def flow(maxBufferSize: Int)
-          (implicit db: Database, system: ActorSystem, timeout: Timeout): Flow[ByteString, ByteString] = {
+          (implicit db: Database, system: ActorSystem, timeout: Timeout) = {
     val authManager = system.actorOf(AuthorizationManager.props(db))
-    val auth = Source(ActorPublisher[MTTransport](authManager))
-    val (watchManager, watch) = SourceWatchManager[MTTransport](authManager)
+    val authSource = Source(ActorPublisher[MTTransport](authManager))
+    val (watchManager, watchSource) = SourceWatchManager[MTTransport](authManager)
 
-    val mtproto = Flow[ByteString]
+    val mtprotoFlow = Flow[ByteString]
       .transform(() => MTProto.parse(maxBufferSize))
       .mapAsyncUnordered(MTProto.handlePackage(_, authManager))
-    val mapResp = Flow[MTTransport]
+    val mapRespFlow = Flow[MTTransport]
       .transform(() => MTProto.mapResponse())
-    val complete = Sink.onComplete {
+    val completeSink = Sink.onComplete {
       case _ =>
         watchManager ! PoisonPill
         authManager ! PoisonPill
     }
-    Flow[ByteString, ByteString]() { implicit b =>
-      import FlowGraphImplicits._
 
-      val in = UndefinedSource[ByteString]
-      val out = UndefinedSink[ByteString]
-      val bcast = Broadcast[ByteString]
-      val merge = Merge[MTTransport]
+    Flow() { implicit builder =>
+      import FlowGraph.Implicits._
 
-      in ~> mtproto ~> merge
-      auth          ~> merge
-      watch         ~> merge
-                       merge ~> mapResp ~> bcast
-                                           bcast ~> out
-                                           bcast ~> complete
+      val bcast = builder.add(Broadcast[ByteString](2))
+      val merge = builder.add(Merge[MTTransport](3))
 
-      (in, out)
+      val mtproto = builder.add(mtprotoFlow)
+      val auth = builder.add(authSource)
+      val watch = builder.add(watchSource)
+      val mapResp = builder.add(mapRespFlow)
+      val complete = builder.add(completeSink)
+
+      // @formatter:off
+
+      mtproto ~> merge
+      auth    ~> merge
+      watch   ~> merge
+                 merge ~> mapResp ~> bcast
+                                     bcast.out(0) ~> complete
+
+      (mtproto.inlet, bcast.out(1))
     }
   }
 

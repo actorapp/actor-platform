@@ -22,23 +22,23 @@ private[session] object SessionStream {
   @SerialVersionUID(1L)
   case class HandleRpcRequest(messageId: Long, requestBytes: BitVector, clientData: ClientData) extends SessionStreamMessage
 
-  def graph(source: Source[SessionStreamMessage], rpcApiService: ActorRef, rpcResponsePublisher: ActorRef)(implicit system: ActorSystem): FlowGraph =
-    FlowGraph { implicit builder =>
-      import FlowGraphImplicits._
+  def graph(in: Source[SessionStreamMessage, _], rpcApiService: ActorRef, rpcResponsePublisher: ActorRef)(implicit system: ActorSystem): RunnableFlow[_] =
+    FlowGraph.closed() { implicit builder =>
+      import FlowGraph.Implicits._
 
-      val discriminator = new SessionMessageDiscriminator
+      val discriminator = builder.add(new SessionMessageDiscriminator)
 
-      val rpcRequestHandler = system.actorOf(RpcRequestHandler.props(rpcApiService, rpcResponsePublisher))
+      val rpcRequestHandlerActor = system.actorOf(RpcRequestHandler.props(rpcApiService, rpcResponsePublisher))
 
-      val rpcRequestSink = Sink(ActorSubscriber[HandleRpcRequest](rpcRequestHandler))
+      val rpcRequestHandler = builder.add(Sink(ActorSubscriber[HandleRpcRequest](rpcRequestHandlerActor)))
 
-      // format: OFF
+      // @formatter:off
 
-      source ~> discriminator.in
-                discriminator.outUnmatched ~> Sink.ignore
-                discriminator.outSubscriber ~> Sink.ignore
-                discriminator.outHandleRpcRequest ~> rpcRequestSink
+      in ~> discriminator.in
+            discriminator.outRpc ~> rpcRequestHandler
+            discriminator.outSubscribe ~> Sink.ignore
+            discriminator.outUnmatched ~> Sink.ignore
 
-      // format: ON
+      // @formatter:on
     }
 }

@@ -18,7 +18,7 @@ class SourceWatchManager[T](actorRef: ActorRef) extends Actor with ActorLogging 
 }
 
 object SourceWatchManager {
-  def apply[T](actorRef: ActorRef)(implicit system: ActorSystem): (ActorRef, Source[T]) = {
+  def apply[T](actorRef: ActorRef)(implicit system: ActorSystem): (ActorRef, Source[T, Unit]) = {
     val actor = system.actorOf(Props(new SourceWatchManager[T](actorRef)))
     (actor, Source(ActorPublisher[T](actor)))
   }
