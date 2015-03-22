@@ -26,11 +26,11 @@
 @class ImActorModelModulesModules;
 @class JavaLangException;
 @protocol AMCommand;
+@protocol AMDownloadCallback;
 @protocol AMFileSystemReference;
 @protocol AMFileVMCallback;
+@protocol AMUploadCallback;
 @protocol AMUploadFileVMCallback;
-@protocol ImActorModelModulesFileDownloadCallback;
-@protocol ImActorModelModulesFileUploadCallback;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/debug/TraceInterface.h"
@@ -164,19 +164,19 @@
 - (AMUploadFileVM *)bindUploadWithLong:(jlong)rid
             withAMUploadFileVMCallback:(id<AMUploadFileVMCallback>)callback;
 
-- (void)bindRawFileWithAMFileReference:(AMFileReference *)fileReference
-                           withBoolean:(jboolean)isAutoStart
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+- (void)bindRawFileWith:(AMFileReference *)fileReference withAutoStart:(jboolean)isAutoStart withCallback:(id<AMDownloadCallback>)callback;
 
-- (void)unbindRawFileWithLong:(jlong)fileId
-                  withBoolean:(jboolean)isAutoCancel
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+- (void)unbindRawFile:(jlong)fileId withAutoCancel:(jboolean)isAutoCancel withCallback:(id<AMDownloadCallback>)callback;
+
+- (void)bindRawUploadFile:(jlong)rid withCallback:(id<AMUploadCallback>)callback;
+
+- (void)unbindRawUploadFile:(jlong)rid withCallback:(id<AMUploadCallback>)callback;
 
 - (void)requestStateWithLong:(jlong)fileId
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+      withAMDownloadCallback:(id<AMDownloadCallback>)callback;
 
 - (void)requestUploadStateWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback;
+              withAMUploadCallback:(id<AMUploadCallback>)callback;
 
 - (void)cancelDownloadingWithLong:(jlong)fileId;
 

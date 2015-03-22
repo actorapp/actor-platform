@@ -13,7 +13,7 @@
 @class ImActorModelModulesModules;
 @class JavaUtilArrayList;
 @protocol AMFileSystemReference;
-@protocol ImActorModelModulesFileUploadCallback;
+@protocol AMUploadCallback;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
@@ -34,13 +34,13 @@
 - (void)stopUploadWithLong:(jlong)rid;
 
 - (void)bindUploadWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback;
+      withAMUploadCallback:(id<AMUploadCallback>)callback;
 
 - (void)unbindUploadWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback;
+        withAMUploadCallback:(id<AMUploadCallback>)callback;
 
 - (void)requestStateWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback;
+        withAMUploadCallback:(id<AMUploadCallback>)callback;
 
 - (void)resumeUploadWithLong:(jlong)rid;
 
@@ -109,11 +109,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_StartUpload)
 }
 
 - (instancetype)initWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback;
+        withAMUploadCallback:(id<AMUploadCallback>)callback;
 
 - (jlong)getRid;
 
-- (id<ImActorModelModulesFileUploadCallback>)getCallback;
+- (id<AMUploadCallback>)getCallback;
 
 @end
 
@@ -128,11 +128,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_BindUpload)
 }
 
 - (instancetype)initWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback;
+        withAMUploadCallback:(id<AMUploadCallback>)callback;
 
 - (jlong)getRid;
 
-- (id<ImActorModelModulesFileUploadCallback>)getCallback;
+- (id<AMUploadCallback>)getCallback;
 
 @end
 
@@ -255,11 +255,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_UploadError)
 }
 
 - (instancetype)initWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback;
+        withAMUploadCallback:(id<AMUploadCallback>)callback;
 
 - (jlong)getRid;
 
-- (id<ImActorModelModulesFileUploadCallback>)getCallback;
+- (id<AMUploadCallback>)getCallback;
 
 @end
 

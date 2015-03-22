@@ -20,8 +20,8 @@ import im.actor.model.files.FileSystemReference;
 import im.actor.model.i18n.I18nEngine;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.file.DownloadCallback;
-import im.actor.model.modules.file.UploadCallback;
+import im.actor.model.viewmodel.DownloadCallback;
+import im.actor.model.viewmodel.UploadCallback;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.mvvm.MVVMEngine;
@@ -350,6 +350,14 @@ public class Messenger {
 
     public void unbindRawFile(long fileId, boolean isAutoCancel, DownloadCallback callback) {
         modules.getFilesModule().unbindFile(fileId, callback, isAutoCancel);
+    }
+
+    public void bindRawUploadFile(long rid, UploadCallback callback) {
+        modules.getFilesModule().bindUploadFile(rid, callback);
+    }
+
+    public void unbindRawUploadFile(long rid, UploadCallback callback) {
+        modules.getFilesModule().unbindUploadFile(rid, callback);
     }
 
     public void requestState(long fileId, final DownloadCallback callback) {

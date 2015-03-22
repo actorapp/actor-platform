@@ -40,15 +40,15 @@
 #include "im/actor/model/modules/Settings.h"
 #include "im/actor/model/modules/Typing.h"
 #include "im/actor/model/modules/Users.h"
-#include "im/actor/model/modules/file/DownloadCallback.h"
-#include "im/actor/model/modules/file/UploadCallback.h"
 #include "im/actor/model/mvvm/BindedDisplayList.h"
 #include "im/actor/model/mvvm/MVVMCollection.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
+#include "im/actor/model/viewmodel/DownloadCallback.h"
 #include "im/actor/model/viewmodel/FileVM.h"
 #include "im/actor/model/viewmodel/FileVMCallback.h"
 #include "im/actor/model/viewmodel/GroupTypingVM.h"
 #include "im/actor/model/viewmodel/OwnAvatarVM.h"
+#include "im/actor/model/viewmodel/UploadCallback.h"
 #include "im/actor/model/viewmodel/UploadFileVM.h"
 #include "im/actor/model/viewmodel/UploadFileVMCallback.h"
 #include "im/actor/model/viewmodel/UserTypingVM.h"
@@ -344,26 +344,30 @@ NSString * AMMessenger_TAG_ = @"CORE_INIT";
   return [[AMUploadFileVM alloc] initWithLong:rid withAMUploadFileVMCallback:callback withImActorModelModulesModules:modules_];
 }
 
-- (void)bindRawFileWithAMFileReference:(AMFileReference *)fileReference
-                           withBoolean:(jboolean)isAutoStart
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
-  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) bindFileWithAMFileReference:fileReference withBoolean:isAutoStart withImActorModelModulesFileDownloadCallback:callback];
+- (void)bindRawFileWith:(AMFileReference *)fileReference withAutoStart:(jboolean)isAutoStart withCallback:(id<AMDownloadCallback>)callback {
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) bindFileWithAMFileReference:fileReference withBoolean:isAutoStart withAMDownloadCallback:callback];
 }
 
-- (void)unbindRawFileWithLong:(jlong)fileId
-                  withBoolean:(jboolean)isAutoCancel
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
-  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindFileWithLong:fileId withImActorModelModulesFileDownloadCallback:callback withBoolean:isAutoCancel];
+- (void)unbindRawFile:(jlong)fileId withAutoCancel:(jboolean)isAutoCancel withCallback:(id<AMDownloadCallback>)callback {
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindFileWithLong:fileId withAMDownloadCallback:callback withBoolean:isAutoCancel];
+}
+
+- (void)bindRawUploadFile:(jlong)rid withCallback:(id<AMUploadCallback>)callback {
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) bindUploadFileWithLong:rid withAMUploadCallback:callback];
+}
+
+- (void)unbindRawUploadFile:(jlong)rid withCallback:(id<AMUploadCallback>)callback {
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindUploadFileWithLong:rid withAMUploadCallback:callback];
 }
 
 - (void)requestStateWithLong:(jlong)fileId
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback {
-  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) requestStateWithLong:fileId withImActorModelModulesFileDownloadCallback:callback];
+      withAMDownloadCallback:(id<AMDownloadCallback>)callback {
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) requestStateWithLong:fileId withAMDownloadCallback:callback];
 }
 
 - (void)requestUploadStateWithLong:(jlong)rid
-withImActorModelModulesFileUploadCallback:(id<ImActorModelModulesFileUploadCallback>)callback {
-  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) requestUploadStateWithLong:rid withImActorModelModulesFileUploadCallback:callback];
+              withAMUploadCallback:(id<AMUploadCallback>)callback {
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) requestUploadStateWithLong:rid withAMUploadCallback:callback];
 }
 
 - (void)cancelDownloadingWithLong:(jlong)fileId {
