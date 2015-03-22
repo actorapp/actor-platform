@@ -1,21 +1,20 @@
 package im.actor.server.api.frontend
 
-import akka.actor._
-import akka.util.Timeout
-import akka.event.Logging
-import akka.stream.scaladsl._
-import akka.stream.FlowMaterializer
-import im.actor.server.api.service.MTProto
-import scala.util.{ Success, Failure }
-import slick.driver.PostgresDriver.api.Database
-import com.typesafe.config.Config
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
+import akka.actor._
+import akka.event.Logging
+import akka.stream.FlowMaterializer
+import akka.stream.scaladsl._
+import akka.util.Timeout
+import com.typesafe.config.Config
+import slick.driver.PostgresDriver.api.Database
+
+import im.actor.server.api.service.MTProto
+
 object Tcp {
   def start(appConf: Config)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
-    import system.dispatcher
-
     val log = Logging.getLogger(system, this)
     val config = appConf.getConfig("frontend.tcp")
 
@@ -24,21 +23,13 @@ object Tcp {
     val interface = config.getString("interface")
     val port = config.getInt("port")
     val serverAddress = new InetSocketAddress(interface, port)
-    val binding = StreamTcp().bind(serverAddress)
 
-    val handler = ForeachSink[StreamTcp.IncomingConnection] { conn =>
+    val connections = StreamTcp().bind(serverAddress)
+
+    connections runForeach { conn =>
       log.info(s"Client connected from: ${conn.remoteAddress}")
-      conn.handleWith(MTProto.flow(maxBufferSize))
-    }
-
-    val materializedServer = binding.connections.to(handler).run()
-
-    binding.localAddress(materializedServer).onComplete {
-      case Success(address) =>
-        log.debug(s"Server started, listening on: $address")
-      case Failure(e) =>
-        log.error(e, "Server could not bind to serverAddress")
-        system.shutdown()
+      val flow = MTProto.flow(maxBufferSize)
+      conn.handleWith(flow)
     }
   }
 }

@@ -57,7 +57,7 @@ class Session(implicit materializer: FlowMaterializer, db: Database) extends Act
 
         val source = Source(ActorPublisher[SessionStream.SessionStreamMessage](sessionMessagePublisher))
         val graph = SessionStream.graph(
-          source = source, rpcApiService = rpcApiService, rpcResponsePublisher = rpcResponsePublisher
+          in = source, rpcApiService = rpcApiService, rpcResponsePublisher = rpcResponsePublisher
         )(context.system)
 
         graph.run()

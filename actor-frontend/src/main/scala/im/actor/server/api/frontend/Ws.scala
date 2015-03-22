@@ -25,17 +25,15 @@ object Ws {
     val interface = config.getString("interface")
     val port = config.getInt("port")
 
-    val flow = Flow[Frame, Frame]() { implicit b =>
-      import FlowGraphImplicits._
+    val flow = Flow() { implicit builder =>
+      import FlowGraph.Implicits._
 
-      val in = UndefinedSource[Frame]
-      val out = UndefinedSink[Frame]
-      val toBs = Flow[Frame].map { case BinaryFrame(bs) => bs }
-      val fromBs = Flow[ByteString].map(BinaryFrame(_))
+      val toBs = builder.add(Flow[Frame].map { case BinaryFrame(bs) => bs })
+      val fromBs = builder.add(Flow[ByteString].map(BinaryFrame(_)))
 
-      in ~> toBs ~> MTProto.flow(maxBufferSize) ~> fromBs ~> out
+      toBs ~> MTProto.flow(maxBufferSize) ~> fromBs
 
-      (in, out)
+      (toBs.inlet, fromBs.outlet)
     }
 
     val server = system.actorOf(WebSocketServer.props(), "frontend-ws")
