@@ -1,4 +1,4 @@
-package im.actor.model.modules.file;
+package im.actor.model.viewmodel;
 
 /**
  * Created by ex3ndr on 03.03.15.

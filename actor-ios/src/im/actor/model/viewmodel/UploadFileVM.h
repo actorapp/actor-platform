@@ -10,8 +10,8 @@
 @protocol AMUploadFileVMCallback;
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/modules/file/UploadCallback.h"
 #include "im/actor/model/mvvm/AsyncVM.h"
+#include "im/actor/model/viewmodel/UploadCallback.h"
 
 @interface AMUploadFileVM : AMAsyncVM {
 }
@@ -77,7 +77,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMUploadFileVM_Uploaded)
 
-@interface AMUploadFileVM_$1 : NSObject < ImActorModelModulesFileUploadCallback > {
+@interface AMUploadFileVM_$1 : NSObject < AMUploadCallback > {
 }
 
 - (void)onNotUploading;

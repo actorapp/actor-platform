@@ -12,9 +12,9 @@
 @class ImActorModelModulesFileDownloadTask;
 @class ImActorModelModulesModules;
 @class JavaUtilArrayList;
+@protocol AMDownloadCallback;
 @protocol AMFileSystemReference;
 @protocol DKKeyValueEngine;
-@protocol ImActorModelModulesFileDownloadCallback;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
@@ -30,11 +30,11 @@
 - (void)preStart;
 
 - (void)requestStateWithLong:(jlong)fileId
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+      withAMDownloadCallback:(id<AMDownloadCallback>)callback;
 
 - (void)bindDownloadWithAMFileReference:(AMFileReference *)fileReference
                             withBoolean:(jboolean)autoStart
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+                 withAMDownloadCallback:(id<AMDownloadCallback>)callback;
 
 - (void)startDownloadWithAMFileReference:(AMFileReference *)fileReference;
 
@@ -42,7 +42,7 @@ withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadC
 
 - (void)unbindDownloadWithLong:(jlong)fileId
                    withBoolean:(jboolean)autoCancel
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+        withAMDownloadCallback:(id<AMDownloadCallback>)callback;
 
 - (void)onDownloadProgressWithLong:(jlong)fileId
                          withFloat:(jfloat)progress;
@@ -84,11 +84,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_QueueItem)
 }
 
 - (instancetype)initWithLong:(jlong)fileId
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+      withAMDownloadCallback:(id<AMDownloadCallback>)callback;
 
 - (jlong)getFileId;
 
-- (id<ImActorModelModulesFileDownloadCallback>)getCallback;
+- (id<AMDownloadCallback>)getCallback;
 
 @end
 
@@ -104,13 +104,13 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_RequestState)
 
 - (instancetype)initWithAMFileReference:(AMFileReference *)fileReference
                             withBoolean:(jboolean)isAutostart
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+                 withAMDownloadCallback:(id<AMDownloadCallback>)callback;
 
 - (AMFileReference *)getFileReference;
 
 - (jboolean)isAutostart;
 
-- (id<ImActorModelModulesFileDownloadCallback>)getCallback;
+- (id<AMDownloadCallback>)getCallback;
 
 @end
 
@@ -158,11 +158,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_CancelDownload
 
 - (instancetype)initWithLong:(jlong)fileId
                  withBoolean:(jboolean)isAutocancel
-withImActorModelModulesFileDownloadCallback:(id<ImActorModelModulesFileDownloadCallback>)callback;
+      withAMDownloadCallback:(id<AMDownloadCallback>)callback;
 
 - (jlong)getFileId;
 
-- (id<ImActorModelModulesFileDownloadCallback>)getCallback;
+- (id<AMDownloadCallback>)getCallback;
 
 - (jboolean)isAutocancel;
 

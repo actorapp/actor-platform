@@ -8,7 +8,7 @@
 #include "im/actor/model/files/FileSystemReference.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
-#include "im/actor/model/modules/file/DownloadCallback.h"
+#include "im/actor/model/viewmodel/DownloadCallback.h"
 #include "im/actor/model/viewmodel/FileVM.h"
 #include "im/actor/model/viewmodel/FileVMCallback.h"
 
@@ -16,14 +16,14 @@
  @public
   ImActorModelModulesModules *modules_;
   AMFileReference *location_;
-  id<ImActorModelModulesFileDownloadCallback> callback_;
+  id<AMDownloadCallback> callback_;
   id<AMFileVMCallback> vmCallback_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(AMFileVM, modules_, ImActorModelModulesModules *)
 J2OBJC_FIELD_SETTER(AMFileVM, location_, AMFileReference *)
-J2OBJC_FIELD_SETTER(AMFileVM, callback_, id<ImActorModelModulesFileDownloadCallback>)
+J2OBJC_FIELD_SETTER(AMFileVM, callback_, id<AMDownloadCallback>)
 J2OBJC_FIELD_SETTER(AMFileVM, vmCallback_, id<AMFileVMCallback>)
 
 @interface AMFileVM_OnDownloading () {
@@ -63,7 +63,7 @@ J2OBJC_FIELD_SETTER(AMFileVM_$1, this$0_, AMFileVM *)
     self->location_ = location;
     self->vmCallback_ = vmCallback;
     self->callback_ = [[AMFileVM_$1 alloc] initWithAMFileVM:self];
-    [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getFilesModule])) bindFileWithAMFileReference:location withBoolean:isAutostart withImActorModelModulesFileDownloadCallback:callback_];
+    [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getFilesModule])) bindFileWithAMFileReference:location withBoolean:isAutostart withAMDownloadCallback:callback_];
   }
   return self;
 }
@@ -82,7 +82,7 @@ J2OBJC_FIELD_SETTER(AMFileVM_$1, this$0_, AMFileVM *)
 
 - (void)detach {
   [super detach];
-  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindFileWithLong:[((AMFileReference *) nil_chk(location_)) getFileId] withImActorModelModulesFileDownloadCallback:callback_ withBoolean:NO];
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindFileWithLong:[((AMFileReference *) nil_chk(location_)) getFileId] withAMDownloadCallback:callback_ withBoolean:NO];
 }
 
 - (void)copyAllFieldsTo:(AMFileVM *)other {

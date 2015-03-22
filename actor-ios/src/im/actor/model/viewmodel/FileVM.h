@@ -12,8 +12,8 @@
 @protocol AMFileVMCallback;
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/modules/file/DownloadCallback.h"
 #include "im/actor/model/mvvm/AsyncVM.h"
+#include "im/actor/model/viewmodel/DownloadCallback.h"
 
 @interface AMFileVM : AMAsyncVM {
 }
@@ -80,7 +80,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(AMFileVM_OnDownloaded)
 
-@interface AMFileVM_$1 : NSObject < ImActorModelModulesFileDownloadCallback > {
+@interface AMFileVM_$1 : NSObject < AMDownloadCallback > {
 }
 
 - (void)onNotDownloaded;

@@ -6,7 +6,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
-#include "im/actor/model/modules/file/UploadCallback.h"
+#include "im/actor/model/viewmodel/UploadCallback.h"
 #include "im/actor/model/viewmodel/UploadFileVM.h"
 #include "im/actor/model/viewmodel/UploadFileVMCallback.h"
 
@@ -15,13 +15,13 @@
   jlong rid_;
   ImActorModelModulesModules *modules_;
   id<AMUploadFileVMCallback> vmCallback_;
-  id<ImActorModelModulesFileUploadCallback> callback_;
+  id<AMUploadCallback> callback_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(AMUploadFileVM, modules_, ImActorModelModulesModules *)
 J2OBJC_FIELD_SETTER(AMUploadFileVM, vmCallback_, id<AMUploadFileVMCallback>)
-J2OBJC_FIELD_SETTER(AMUploadFileVM, callback_, id<ImActorModelModulesFileUploadCallback>)
+J2OBJC_FIELD_SETTER(AMUploadFileVM, callback_, id<AMUploadCallback>)
 
 @interface AMUploadFileVM_Uploading () {
  @public
@@ -49,7 +49,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
     self->modules_ = modules;
     self->vmCallback_ = vmCallback;
     self->callback_ = [[AMUploadFileVM_$1 alloc] initWithAMUploadFileVM:self];
-    [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getFilesModule])) bindUploadFileWithLong:rid withImActorModelModulesFileUploadCallback:callback_];
+    [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getFilesModule])) bindUploadFileWithLong:rid withAMUploadCallback:callback_];
   }
   return self;
 }
@@ -68,7 +68,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 
 - (void)detach {
   [super detach];
-  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindUploadFileWithLong:rid_ withImActorModelModulesFileUploadCallback:callback_];
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindUploadFileWithLong:rid_ withAMUploadCallback:callback_];
 }
 
 - (void)copyAllFieldsTo:(AMUploadFileVM *)other {

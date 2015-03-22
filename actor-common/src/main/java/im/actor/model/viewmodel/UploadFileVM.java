@@ -1,7 +1,6 @@
 package im.actor.model.viewmodel;
 
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.file.UploadCallback;
 import im.actor.model.mvvm.AsyncVM;
 
 /**

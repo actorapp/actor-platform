@@ -14,6 +14,7 @@ import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.droidkit.engine.KeyValueEngine;
+import im.actor.model.viewmodel.DownloadCallback;
 
 /**
  * Created by ex3ndr on 26.02.15.

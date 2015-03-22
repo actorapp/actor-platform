@@ -8,7 +8,7 @@ import com.droidkit.images.ops.ImageLoading;
 import im.actor.model.android.AndroidFileSystemReference;
 import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
-import im.actor.model.modules.file.DownloadCallback;
+import im.actor.model.viewmodel.DownloadCallback;
 
 import static im.actor.messenger.app.Core.messenger;
 
