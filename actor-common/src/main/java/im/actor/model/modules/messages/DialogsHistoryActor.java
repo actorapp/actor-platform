@@ -2,6 +2,7 @@ package im.actor.model.modules.messages;
 
 import im.actor.model.api.rpc.RequestLoadDialogs;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
+import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.utils.ModuleActor;
@@ -13,7 +14,9 @@ import im.actor.model.network.RpcException;
  */
 public class DialogsHistoryActor extends ModuleActor {
 
-    private static final int LIMIT = 50;
+    private static final String TAG = "DialogsHistoryActor";
+
+    private static final int LIMIT = 5;
 
     private static final String KEY_LOADED_DATE = "dialogs_history_date";
     private static final String KEY_LOADED = "dialogs_history_loaded";
@@ -46,6 +49,8 @@ public class DialogsHistoryActor extends ModuleActor {
         }
         isLoading = true;
 
+        Log.d(TAG, "Loading history... after " + historyMaxDate);
+
         request(new RequestLoadDialogs(historyMaxDate, LIMIT),
                 new RpcCallback<ResponseLoadDialogs>() {
                     @Override
@@ -75,6 +80,8 @@ public class DialogsHistoryActor extends ModuleActor {
         preferences().putLong(KEY_LOADED_DATE, maxLoadedDate);
         preferences().putBool(KEY_LOADED, historyLoaded);
         preferences().putBool(KEY_LOADED_INIT, true);
+
+        Log.d(TAG, "History loaded, time = " + maxLoadedDate);
     }
 
     // Messages
