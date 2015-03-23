@@ -61,7 +61,11 @@ class RpcApiService(implicit db: Database) extends Actor with ActorLogging {
 
             result
               .map(_.fold(err => err, ok => ok))
-              .map(result => RpcResponse(messageId, RpcResultCodec.encode(result).require))
+              .recover({
+              case e: Throwable =>
+                log.error(e, "Failed to handle messageId:{} rpcRequest: {}", messageId, rpcRequest)
+                RpcInternalError(true, 1000) // TODO: configurable delay
+            }).map(result => RpcResponse(messageId, RpcResultCodec.encode(result).require))
               .pipeTo(sender())
           case _ =>
             Future.successful(CommonErrors.UnsupportedRequest)
