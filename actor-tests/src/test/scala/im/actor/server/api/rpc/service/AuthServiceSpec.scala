@@ -8,7 +8,7 @@ import im.actor.util.testing._
 
 import scala.concurrent._
 
-class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with ServiceSpecHelpers with HandlerMatchers {
+class AuthServiceSpec extends BaseServiceSpec {
   def is = sequential^s2"""
 
   AuthService
@@ -37,8 +37,6 @@ class AuthServiceSpec extends ActorSpecification with SqlSpecHelpers with Servic
                      """
 
   object s {
-    implicit val db = migrateAndInitDb()
-
     implicit val service = new auth.AuthServiceImpl()
 
     implicit val ec = system.dispatcher

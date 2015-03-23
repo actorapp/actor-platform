@@ -27,7 +27,7 @@ object Dependencies {
     val slick           = "com.typesafe.slick"            %% "slick"                         % V.slick
     val slickJoda       = "com.github.tototoshi"          %% "slick-joda-mapper"             % "1.3.0-SNAPSHOT"
     val flywayCore      = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
-    val hikariCP        = "com.zaxxer"                    %  "HikariCP"                      % "2.3.2"
+    val hikariCP        = "com.zaxxer"                    %  "HikariCP"                      % "2.3.5"
 
     val bcprov          = "org.bouncycastle"              %  "bcprov-jdk15on"                % "1.50"
 

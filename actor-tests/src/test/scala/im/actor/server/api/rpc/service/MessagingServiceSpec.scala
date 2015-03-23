@@ -18,7 +18,6 @@ class MessagingServiceSpec extends BaseServiceSpec {
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
 
-    implicit val db = migrateAndInitDb()
     implicit val service = new messaging.MessagingServiceImpl(seqUpdManagerRegion)
     implicit val authService = buildAuthService()
     implicit val ec = system.dispatcher
