@@ -32,7 +32,7 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers {
   case class sessions() {
     import Session._
     implicit val materializer = ActorFlowMaterializer()
-    implicit val db = migrateAndInitDb()
+    implicit val (ds, db) = migrateAndInitDb()
 
     val authId = Random.nextLong()
     val sessionId = Random.nextLong()

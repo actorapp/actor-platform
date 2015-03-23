@@ -14,7 +14,9 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
   implicit val executor = system.dispatcher
   implicit val materializer = ActorFlowMaterializer()
-  implicit val db = initDb(serverConfig.getConfig("sql"))
+  val sqlConfig = serverConfig.getConfig("sql")
+  val ds = initDs(sqlConfig)
+  implicit val db = initDb(ds)
 
   def startup() = {
     val flyway = initFlyway(config.getConfig("jdbc"))
@@ -26,5 +28,6 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
 
   def shutdown() = {
     system.shutdown()
+    ds.close()
   }
 }

@@ -1,6 +1,7 @@
 package im.actor.server
 
 import com.typesafe.config._
+import slick.jdbc.JdbcDataSource
 import im.actor.server.db.{ FlywayInit, DbInit }
 import org.specs2.specification._
 import slick.driver.PostgresDriver.api.Database
@@ -8,11 +9,12 @@ import slick.driver.PostgresDriver.api.Database
 trait SqlSpecHelpers extends FlywayInit with DbInit {
   final val sqlConfig = ConfigFactory.load().getConfig("actor-server.persist.sql")
 
-  def migrateAndInitDb(): Database = {
+  def migrateAndInitDb(): (JdbcDataSource, Database) = {
     val flyway = initFlyway(sqlConfig)
     flyway.clean()
     flyway.migrate()
-    initDb(sqlConfig)
+    val ds = initDs(sqlConfig)
+    (ds, initDb(ds))
   }
 
   trait sqlDb extends Scope {

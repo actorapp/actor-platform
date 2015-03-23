@@ -23,7 +23,6 @@ class ContactsServiceSpec extends BaseServiceSpec {
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
 
-    implicit val db = migrateAndInitDb()
     implicit val service = new contacts.ContactsServiceImpl(seqUpdManagerRegion)
     implicit val authService = buildAuthService()
     implicit val ec = system.dispatcher
