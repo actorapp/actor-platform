@@ -3,40 +3,45 @@ package im.actor.server.session
 import scala.collection.mutable
 
 import akka.actor._
+import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.stream.FlowMaterializer
 import akka.stream.actor._
 import akka.stream.scaladsl._
 import scodec._
 import scodec.bits._
-import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.ClientData
-import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
 
 object Session {
 
-  sealed trait SessionMessage
+  import SessionMessage._
 
-  @SerialVersionUID(1L)
-  case class Envelope(authId: Long, sessionId: Long, msg: SessionMessage)
+  private[this] val idExtractor: ShardRegion.IdExtractor = {
+    case env@Envelope(authId, sessionId, payload) => (authId.toString + "-" + sessionId.toString, env)
+  }
 
-  @SerialVersionUID(1L)
-  case class HandleMessageBox(messageBoxBytes: Array[Byte]) extends SessionMessage
+  private[this] val shardResolver: ShardRegion.ShardResolver = msg => msg match {
+    case Envelope(authId, sessionId, _) => (authId % 32).toString // TODO: configurable
+  }
 
-  @SerialVersionUID(1L)
-  case class SendProtoMessage(message: ProtoMessage) extends SessionMessage
+  def startRegion(props: Option[Props])(implicit system: ActorSystem): ActorRef =
+    ClusterSharding(system).start(
+      typeName = "Session",
+      entryProps = props,
+      idExtractor = idExtractor,
+      shardResolver = shardResolver
+    )
 
-  def props()(implicit materializer: FlowMaterializer, database: Database) = Props(classOf[Session], materializer, database)
+  def props(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) = Props(classOf[Session], rpcApiService, materializer)
 }
 
-class Session(implicit materializer: FlowMaterializer, db: Database) extends Actor with ActorLogging with MessageIdHelper {
+class Session(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) extends Actor with ActorLogging with MessageIdHelper {
 
-  import Session._
+  import SessionMessage._
 
-  var newSessionSent: Boolean = false
   var optUserId: Option[Int] = None
   val clients = mutable.Set.empty[ActorRef]
 
@@ -53,7 +58,6 @@ class Session(implicit materializer: FlowMaterializer, db: Database) extends Act
 
         val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props())
         val rpcResponsePublisher = context.actorOf(RpcResponseManager.props())
-        val rpcApiService = context.actorOf(RpcApiService.props()) // TODO: make it adaptive router
 
         val source = Source(ActorPublisher[SessionStream.SessionStreamMessage](sessionMessagePublisher))
         val graph = SessionStream.graph(
@@ -66,14 +70,13 @@ class Session(implicit materializer: FlowMaterializer, db: Database) extends Act
         val flow = rpcResponseSource.to(Sink.foreach[ProtoMessage](m => self ! SendProtoMessage(m)))
         flow.run()
 
-        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, optUserId))
+        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
 
-        context become receiveResolved(authId, sessionId, sessionMessagePublisher)
+        context.become(receiveResolved(authId, sessionId, sessionMessagePublisher))
       }
     case Terminated(client) =>
       clients.remove(client)
-    case unmatched =>
-      log.error("Received unmatched message {}", unmatched)
+    case unmatched => handleUnmatched(unmatched)
   }
 
   def receiveResolved(authId: Long, sessionId: Long, publisher: ActorRef): Receive = {
@@ -90,6 +93,7 @@ class Session(implicit materializer: FlowMaterializer, db: Database) extends Act
       sendProtoMessage(authId, sessionId, protoMessage)
     case Terminated(client) =>
       clients.remove(client)
+    case unmatched => handleUnmatched(unmatched)
   }
 
   private def recordClient(client: ActorRef): Unit = {
@@ -97,15 +101,21 @@ class Session(implicit materializer: FlowMaterializer, db: Database) extends Act
       context watch client
   }
 
-  private def handleSessionMessage(
-                                    authId: Long,
-                                    sessionId: Long,
-                                    client: ActorRef, msg: SessionMessage, publisher: ActorRef
-                                    ): Unit = msg match {
-    case HandleMessageBox(messageBoxBytes) =>
-      withValidMessageBox(client, messageBoxBytes)(publisher.tell(_, self))
-    case SendProtoMessage(protoMessage) =>
-      sendProtoMessage(authId, sessionId, protoMessage)
+  private def handleSessionMessage(authId: Long,
+                                   sessionId: Long,
+                                   client: ActorRef,
+                                   message: SessionMessage,
+                                   publisher: ActorRef): Unit = {
+    log.debug("Session message {}", message)
+    message match {
+      case HandleMessageBox(messageBoxBytes) =>
+        withValidMessageBox(client, messageBoxBytes)(mb => publisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId)))
+      case SendProtoMessage(protoMessage) =>
+        sendProtoMessage(authId, sessionId, protoMessage)
+      case UserAuthorized(userId) =>
+        log.debug("User {} authorized session {}", userId, sessionId)
+        this.optUserId = Some(userId)
+    }
   }
 
   private def sendProtoMessage(authId: Long, sessionId: Long, message: ProtoMessage): Unit = {
@@ -116,8 +126,9 @@ class Session(implicit materializer: FlowMaterializer, db: Database) extends Act
     decodeMessageBox(messageBoxBytes) match {
       case Some(mb) => f(mb)
       case None =>
-        client ! Drop(0, 0, "Cannot parse message box")
-        context stop self
+        log.warning("Failed to parse MessageBox. Droping client.")
+        client ! Drop(0, 0, "Cannot parse MessageBox")
+        context.stop(self)
     }
 
   private def decodeMessageBox(messageBoxBytes: Array[Byte]): Option[MessageBox] =
@@ -138,4 +149,7 @@ class Session(implicit materializer: FlowMaterializer, db: Database) extends Act
   private def sendProtoMessage(authId: Long, sessionId: Long)(client: ActorRef, message: ProtoMessage): Unit = {
     client ! packProtoMessage(authId, sessionId, message)
   }
+
+  private def handleUnmatched(message: Any) =
+    log.error("Received unmatched message {}", message)
 }
