@@ -1,6 +1,6 @@
 package im.actor.server.api.rpc.service
 
-import com.typesafe.config.ConfigFactory
+import akka.stream.ActorFlowMaterializer
 import org.specs2.matcher.ThrownExpectations
 import org.specs2.specification.core.Fragments
 
@@ -14,6 +14,7 @@ trait BaseServiceSpec
     with ServiceSpecHelpers
     with HandlerMatchers {
   implicit lazy val (ds, db) = migrateAndInitDb()
+  implicit val flowMaterializer = ActorFlowMaterializer()
 
   override def map(fragments: => Fragments) =
     super.map(fragments) ^ step(closeDb())
