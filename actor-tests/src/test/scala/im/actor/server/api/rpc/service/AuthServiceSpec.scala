@@ -1,15 +1,12 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.api.{rpc => api}
-import im.actor.server.models
-import im.actor.server.persist
-import im.actor.server.SqlSpecHelpers
-import im.actor.util.testing._
-
-import scala.concurrent._
+import im.actor.api.{ rpc => api }
+import im.actor.server.api.rpc.RpcApiService
+import im.actor.server.{ models, persist }
+import im.actor.server.session.Session
 
 class AuthServiceSpec extends BaseServiceSpec {
-  def is = sequential^s2"""
+  def is = sequential ^ s2"""
 
   AuthService
     SendAuthCode $sendAuthCode
@@ -25,27 +22,30 @@ class AuthServiceSpec extends BaseServiceSpec {
       not fail if number already exists ${s.sendAuthCode.e1}
                        """
 
-  def signUp       = s2"""
+  def signUp = s2"""
     SignUp handler should
       respond ok to a valid request ${s.signUp().e1}
                      """
 
-  def signIn       = s2"""
+  def signIn = s2"""
     SignIn handler should
       respond with PhoneNumberUnoccupied if phone is not registered ${s.signIn().unoccupied}
       respond ok to a valid request ${s.signIn().valid}
                      """
 
   object s {
-    implicit val service = new auth.AuthServiceImpl()
+    val rpcApiService = system.actorOf(RpcApiService.props())
+    val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
 
     implicit val ec = system.dispatcher
+    implicit val service = new auth.AuthServiceImpl(sessionRegion)
 
     object sendAuthCode {
       val authId = createAuthId()(service.db)
+      val sessionId = createSessionId()
       val phoneNumber = buildPhone()
 
-      implicit val clientData = api.ClientData(authId, None)
+      implicit val clientData = api.ClientData(authId, sessionId, None)
 
       def e1 = {
         service.handleSendAuthCode(phoneNumber, 1, "apiKey") must beOkLike {
@@ -54,12 +54,13 @@ class AuthServiceSpec extends BaseServiceSpec {
       }
     }
 
-    case class signUp()  {
+    case class signUp() {
       val authId = createAuthId()(service.db)
+      val sessionId = createSessionId()
       val phoneNumber = buildPhone()
       val smsHash = getSmsHash(authId, phoneNumber)
 
-      implicit val clientData = api.ClientData(authId, None)
+      implicit val clientData = api.ClientData(authId, sessionId, None)
 
       def e1 = {
         service.handleSignUp(
@@ -81,9 +82,10 @@ class AuthServiceSpec extends BaseServiceSpec {
 
     case class signIn() {
       val authId = createAuthId()(service.db)
+      val sessionId = createSessionId()
       val phoneNumber = buildPhone()
 
-      implicit val clientData = api.ClientData(authId, None)
+      implicit val clientData = api.ClientData(authId, sessionId, None)
 
       def unoccupied = {
         val smsHash = getSmsHash(authId, phoneNumber)
@@ -119,9 +121,11 @@ class AuthServiceSpec extends BaseServiceSpec {
         ) must beOkLike {
           case rsp: api.auth.ResponseAuth =>
             service.db.run(persist.AuthId.find(authId).head) must be_==(models.AuthId(authId, Some(rsp.user.id))).await and
-            (service.db.run(persist.UserPublicKey.find(rsp.user.id, authId).headOption) must beSome[models.UserPublicKey].await)
+              (service.db.run(persist.UserPublicKey.find(rsp.user.id, authId).headOption) must beSome[models.UserPublicKey].await)
         }.await
       }
     }
+
   }
+
 }

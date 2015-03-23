@@ -1,21 +1,22 @@
 package im.actor.server.session
 
+import scala.annotation.tailrec
+import scala.collection.immutable
+
 import akka.actor._
 import akka.stream.actor._
-import akka.stream.scaladsl._
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.protocol.MessageBox
-
-import scala.annotation.tailrec
-import scala.collection.immutable
 
 private[session] object SessionMessagePublisher {
   def props() = Props[SessionMessagePublisher]
 }
 
 private[session] class SessionMessagePublisher extends ActorPublisher[SessionStream.SessionStreamMessage] with ActorLogging {
+
   import ActorPublisherMessage._
+
   import SessionStream._
 
   // TODO: MaxQueueSize

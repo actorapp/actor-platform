@@ -1,12 +1,12 @@
 package im.actor.server.api.rpc.service
 
-import scala.concurrent._, duration._
+import scala.concurrent._
+import scala.concurrent.duration._
 
 import slick.dbio.DBIO
 
 import im.actor.api.{ rpc => api }
 import im.actor.server.api.util
-import im.actor.server.persist
 import im.actor.server.push.SeqUpdatesManager
 
 class ContactsServiceSpec extends BaseServiceSpec {
@@ -22,9 +22,11 @@ class ContactsServiceSpec extends BaseServiceSpec {
 
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    val rpcApiService = buildRpcApiService()
+    val sessionRegion = buildSessionRegion(rpcApiService)
 
     implicit val service = new contacts.ContactsServiceImpl(seqUpdManagerRegion)
-    implicit val authService = buildAuthService()
+    implicit val authService = buildAuthService(sessionRegion)
     implicit val ec = system.dispatcher
 
     def addContact(userId: Int, userAccessSalt: String)(implicit clientData: api.ClientData) = {
@@ -33,7 +35,8 @@ class ContactsServiceSpec extends BaseServiceSpec {
 
     object getcontacts {
       val (user, authId, _) = createUser()
-      implicit val clientData = api.ClientData(authId, Some(user.id))
+      val sessionId = createSessionId()
+      implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
 
       val userModels = for (i <- 1 to 3) yield {
         val user = createUser()._1.asModel()
@@ -60,6 +63,7 @@ class ContactsServiceSpec extends BaseServiceSpec {
 
     object addremove {
       val authId = createAuthId()
+      val sessionId = createSessionId()
       val phoneNumber = buildPhone()
       val user = createUser(authId, phoneNumber)
 
@@ -67,7 +71,7 @@ class ContactsServiceSpec extends BaseServiceSpec {
       val user2Model = getUserModel(user2.id)
       val user2AccessHash = util.ACL.userAccessHash(authId, user2.id, user2Model.accessSalt)
 
-      implicit val clientData = api.ClientData(authId, Some(user.id))
+      implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
 
       def add(firstRun: Boolean = true, expectedUpdSeq: Int = 1001) = {
         service.handleAddContact(user2.id, user2AccessHash) must beOkLike {
@@ -96,5 +100,7 @@ class ContactsServiceSpec extends BaseServiceSpec {
 
       def addAfterRemove = add(firstRun = false, expectedUpdSeq = 1004)
     }
+
   }
+
 }

@@ -1,12 +1,8 @@
 package im.actor.server.api.rpc.service
 
-import scala.concurrent._, duration._
-
-import slick.dbio.DBIO
-
-import im.actor.api.{ rpc => api }, api.Implicits._
+import im.actor.api.rpc.Implicits._
+import im.actor.api.{ rpc => api }
 import im.actor.server.api.util
-import im.actor.server.persist
 import im.actor.server.push.SeqUpdatesManager
 
 class MessagingServiceSpec extends BaseServiceSpec {
@@ -17,14 +13,17 @@ class MessagingServiceSpec extends BaseServiceSpec {
 
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    val rpcApiService = buildRpcApiService()
+    val sessionRegion = buildSessionRegion(rpcApiService)
 
     implicit val service = new messaging.MessagingServiceImpl(seqUpdManagerRegion)
-    implicit val authService = buildAuthService()
+    implicit val authService = buildAuthService(sessionRegion)
     implicit val ec = system.dispatcher
 
     object privat {
       val (user, authId, _) = createUser()
-      implicit val clientData = api.ClientData(authId, Some(user.id))
+      val sessionId = createSessionId()
+      implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
 
       val (user2, _, _) = createUser()
       val user2Model = getUserModel(user2.id)
@@ -37,5 +36,7 @@ class MessagingServiceSpec extends BaseServiceSpec {
         }.await
       }
     }
+
   }
+
 }

@@ -1,8 +1,7 @@
 package im.actor.server.api.rpc.service
 
-import scala.concurrent._, duration._
-
-import slick.driver.PostgresDriver.api.Database
+import scala.concurrent._
+import scala.concurrent.duration._
 
 import im.actor.api.{ rpc => api }
 import im.actor.server.api.util
@@ -15,12 +14,15 @@ class EncryptionServiceSpec extends BaseServiceSpec {
   """
 
   object s {
-    implicit val service = new encryption.EncryptionServiceImpl
+    val rpcApiService = buildRpcApiService()
+    val sessionRegion = buildSessionRegion(rpcApiService)
 
-    implicit val authService = buildAuthService()
+    implicit val service = new encryption.EncryptionServiceImpl
+    implicit val authService = buildAuthService(sessionRegion)
     implicit val ec = system.dispatcher
 
     val authId = createAuthId()
+    val sessionId = createSessionId()
     val phoneNumber = buildPhone()
 
     val user = createUser(authId, phoneNumber)
@@ -30,7 +32,7 @@ class EncryptionServiceSpec extends BaseServiceSpec {
 
     val user2 = createUser(authId2, phoneNumber2)
 
-    implicit val clientData = api.ClientData(authId, Some(user.id))
+    implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
 
     def e1 = {
       val user2Model = Await.result(db.run(persist.User.find(user2.id).head), 1.second)
@@ -46,9 +48,10 @@ class EncryptionServiceSpec extends BaseServiceSpec {
         )
       ) must beOkLike {
         case api.encryption.ResponseGetPublicKeys(Vector(
-          pk @ api.encryption.PublicKey(user2.id, user2pk.hash, _)
+        pk@api.encryption.PublicKey(user2.id, user2pk.hash, _)
         )) if pk.key.sameElements(user2pk.data) => ok
       }.await
     }
   }
+
 }

@@ -1,6 +1,14 @@
 package im.actor.server.api.rpc.service.auth
 
-import akka.actor.ActorSystem
+
+import scala.concurrent._, forkjoin.ThreadLocalRandom
+import scalaz._
+
+import akka.actor.{ ActorRef, ActorSystem }
+import org.joda.time.DateTime
+import shapeless._
+import slick.dbio.DBIO
+import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
@@ -8,17 +16,9 @@ import im.actor.api.rpc.misc._
 import im.actor.server.api.util
 import im.actor.server.models
 import im.actor.server.persist
+import im.actor.server.session._
 
-import org.joda.time.DateTime
-
-import scala.concurrent._, forkjoin.ThreadLocalRandom
-
-import scalaz._, std.either._
-import shapeless._
-import slick.dbio.DBIO
-import slick.driver.PostgresDriver.api._
-
-class AuthServiceImpl(implicit val actorSystem: ActorSystem, val db: Database) extends AuthService with Helpers {
+class AuthServiceImpl(sessionRegion: ActorRef)(implicit val actorSystem: ActorSystem, val db: Database) extends AuthService with Helpers {
   private trait SignType
   private case class Up(name: String, isSilent: Boolean) extends SignType
   private case object In extends SignType
@@ -74,8 +74,14 @@ class AuthServiceImpl(implicit val actorSystem: ActorSystem, val db: Database) e
   ): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
-  override def jhandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
-    throw new NotImplementedError()
+  override def jhandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    val action = requireAuth(clientData) map { implicit client =>
+      DBIO.successful(Ok(misc.ResponseVoid))
+    }
+
+    db.run(toDBIOAction(action))
+  }
+
 
   override def jhandleSignIn(
     rawPhoneNumber: Long,
@@ -169,7 +175,7 @@ class AuthServiceImpl(implicit val actorSystem: ActorSystem, val db: Database) e
                       // Phone already exists, fall back to SignIn
                       case Some(phone) =>
                         withValidPublicKey(rawPublicKey) { publicKey =>
-                          signIn(clientData.authId, phone.userId, publicKey, keyHash(publicKey), countryCode)
+                          signIn(clientData.authId, phone.userId, publicKey, keyHash(publicKey), countryCode, clientData)
                         }
                     }
                   )
@@ -179,7 +185,7 @@ class AuthServiceImpl(implicit val actorSystem: ActorSystem, val db: Database) e
                       case None => DBIO.successful(Error(Errors.PhoneNumberUnoccupied))
                       case Some(phone) =>
                         persist.AuthSmsCode.deleteByPhoneNumber(normPhoneNumber).andThen(
-                          signIn(clientData.authId, phone.userId, publicKey, keyHash(publicKey), countryCode)
+                          signIn(clientData.authId, phone.userId, publicKey, keyHash(publicKey), countryCode, clientData)
                         )
                     }
                   }
@@ -219,7 +225,16 @@ class AuthServiceImpl(implicit val actorSystem: ActorSystem, val db: Database) e
             case error @ -\/(_) => DBIO.successful(error)
           }
 
-          db.run(action)
+          for (result <- db.run(action.transactionally))
+            yield {
+              result match {
+                case Ok(r: ResponseAuth) =>
+                  sessionRegion ! SessionMessage.envelope(SessionMessage.UserAuthorized(r.user.id))(clientData)
+                case _ =>
+              }
+
+              result
+            }
         }
     }
   }
@@ -230,7 +245,7 @@ class AuthServiceImpl(implicit val actorSystem: ActorSystem, val db: Database) e
   override def jhandleTerminateSession(id: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     throw new NotImplementedError()
 
-  private def signIn(authId: Long, userId: Int, pkData: Array[Byte], pkHash: Long, countryCode: String) = {
+  private def signIn(authId: Long, userId: Int, pkData: Array[Byte], pkHash: Long, countryCode: String, clientData: ClientData) = {
     persist.User.find(userId).headOption.flatMap {
       case None => DBIO.successful(Error(CommonErrors.Internal))
       case Some(user) =>
