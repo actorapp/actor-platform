@@ -33,7 +33,7 @@ class MessagingServiceSpec extends BaseServiceSpec {
       def sendMessage = {
         service.handleSendMessage(user2Peer, 1L, api.messaging.TextMessage("Hi Shiva", 0, None).toMessageContent) must beOkLike {
           case api.misc.ResponseSeqDate(1002, _, _) => ok
-        }.await
+        }.await(retries = 3)
       }
     }
 
