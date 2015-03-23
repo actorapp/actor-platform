@@ -55,7 +55,7 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
 
       probe watch session
 
-      probe.expectMsg(Drop(0, 0, "Cannot parse message box"))
+      probe.expectMsg(Drop(0, 0, "Cannot parse MessageBox"))
       probe.expectTerminated(session)
     }
 
