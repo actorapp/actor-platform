@@ -1,28 +1,22 @@
 package im.actor.server.api.rpc.service
 
+import scala.concurrent._, duration._
+
+import slick.driver.PostgresDriver.api.Database
+
 import im.actor.api.{ rpc => api }
 import im.actor.server.api.util
 import im.actor.server.persist
-import im.actor.server.SqlSpecHelpers
-import im.actor.util.testing._
 
-import scala.concurrent._, duration._
-
-class EncryptionServiceSpec extends ActorSpecification with SqlSpecHelpers with ServiceSpecHelpers with HandlerMatchers {
+class EncryptionServiceSpec extends BaseServiceSpec {
   def is = s2"""
   EncryptionService
     GetPublicKeys handler should return public keys ${s.e1}
   """
 
   object s {
-    implicit val service = new encryption.EncryptionServiceImpl {
-      override implicit val ec = system.dispatcher
-      override implicit val actorSystem = system
+    implicit val service = new encryption.EncryptionServiceImpl
 
-      val db = migrateAndInitDb()
-    }
-
-    implicit val db = service.db
     implicit val authService = buildAuthService()
     implicit val ec = system.dispatcher
 
@@ -39,8 +33,8 @@ class EncryptionServiceSpec extends ActorSpecification with SqlSpecHelpers with 
     implicit val clientData = api.ClientData(authId, Some(user.id))
 
     def e1 = {
-      val user2Model = Await.result(service.db.run(persist.User.find(user2.id).head), 1.second)
-      val user2pk = Await.result(service.db.run(persist.UserPublicKey.find(user2.id, authId2).head), 1.second)
+      val user2Model = Await.result(db.run(persist.User.find(user2.id).head), 1.second)
+      val user2pk = Await.result(db.run(persist.UserPublicKey.find(user2.id, authId2).head), 1.second)
 
       service.handleGetPublicKeys(
         keys = Vector(

@@ -12,9 +12,8 @@ import scala.concurrent._
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-trait EncryptionServiceImpl extends EncryptionService {
-  implicit val actorSystem: ActorSystem
-  val db: Database
+class EncryptionServiceImpl(implicit val actorSystem: ActorSystem, db: Database) extends EncryptionService {
+  override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   override def jhandleGetPublicKeys(keys: Vector[PublicKeyRequest], clientData: ClientData): Future[HandlerResult[ResponseGetPublicKeys]] = {
     // TODO: #perf fix thos dirty unperformant code
