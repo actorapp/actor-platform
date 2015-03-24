@@ -1,6 +1,6 @@
 package im.actor.server.session
 
-import scala.collection.mutable
+import scala.collection.immutable
 
 import akka.actor._
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
@@ -42,8 +42,8 @@ class Session(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) 
 
   import SessionMessage._
 
-  var optUserId: Option[Int] = None
-  val clients = mutable.Set.empty[ActorRef]
+  private[this] var optUserId: Option[Int] = None
+  private[this] var clients = immutable.Set.empty[ActorRef]
 
   def receive = receiveAnonymous
 
@@ -75,7 +75,7 @@ class Session(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) 
         context.become(receiveResolved(authId, sessionId, sessionMessagePublisher))
       }
     case Terminated(client) =>
-      clients.remove(client)
+      clients -= client
     case unmatched => handleUnmatched(unmatched)
   }
 
@@ -92,13 +92,15 @@ class Session(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) 
     case SendProtoMessage(protoMessage) =>
       sendProtoMessage(authId, sessionId, protoMessage)
     case Terminated(client) =>
-      clients.remove(client)
+      clients -= client
     case unmatched => handleUnmatched(unmatched)
   }
 
   private def recordClient(client: ActorRef): Unit = {
-    if (clients.add(client) == true)
+    if (!clients.contains(client)) {
+      clients += client
       context watch client
+    }
   }
 
   private def handleSessionMessage(authId: Long,
