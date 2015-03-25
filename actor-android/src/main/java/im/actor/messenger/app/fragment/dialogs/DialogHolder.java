@@ -11,8 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.droidkit.mvvm.ValueChangeListener;
-
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
@@ -20,18 +18,19 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.Screen;
+import im.actor.model.android.view.BindedViewHolder;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
-import im.actor.model.log.Log;
+import im.actor.model.mvvm.ValueChangedListener;
+import im.actor.model.mvvm.ValueModel;
 
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.myUid;
-import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 14.03.15.
  */
-public class DialogHolder extends RecyclerView.ViewHolder {
+public class DialogHolder extends BindedViewHolder {
 
     private final int paddingH = Screen.dp(10);
     private final int paddingV = Screen.dp(9);
@@ -49,8 +48,8 @@ public class DialogHolder extends RecyclerView.ViewHolder {
     private CharSequence bindedText;
     private int bindedUid;
     private int bindedGid;
-    private ValueChangeListener<Boolean> privateTypingListener;
-    private ValueChangeListener<int[]> groupTypingListener;
+    private ValueChangedListener<Boolean> privateTypingListener;
+    private ValueChangedListener<int[]> groupTypingListener;
     private Dialog bindedItem;
 
     private int pendingColor;
@@ -63,8 +62,7 @@ public class DialogHolder extends RecyclerView.ViewHolder {
 
     private final Context context;
 
-    public DialogHolder(Context context, FrameLayout fl, final OnItemClickedListener<Dialog> onClickListener,
-                        final OnItemClickedListener<Dialog> onLongClickListener) {
+    public DialogHolder(Context context, FrameLayout fl, final OnItemClickedListener<Dialog> onClickListener) {
         super(fl);
 
         this.context = context;
@@ -184,36 +182,26 @@ public class DialogHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
-        if (onLongClickListener != null) {
-            fl.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (bindedItem != null) {
-                        onLongClickListener.onClicked(bindedItem);
-                        return true;
-                    } else {
-                        return false;
-                    }
+        fl.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (bindedItem != null) {
+                    return onClickListener.onLongClicked(bindedItem);
                 }
-            });
-        }
+                return false;
+            }
+        });
     }
 
     public void bind(Dialog data, boolean isLast) {
 
-        binded = data.getPeer().getUnuqueId();
-
-//        if (getEngine().getListState().getValue().getState() == ListState.State.LOADED) {
-//            if (position > getCount() - LOAD_GAP) {
-//                messenger().loadMoreDialogs();
-//            }
-//        }
+        this.binded = data.getPeer().getUnuqueId();
 
         this.bindedItem = data;
+
         avatar.unbind();
         avatar.setEmptyDrawable(AvatarDrawable.create(data, 24, context));
         if (data.getDialogAvatar() != null && data.getDialogAvatar().getSmallImage() != null) {
-            Log.d("DialogHolder", "Bind avatar: " + data.getEngineId() + " @ " + data.getDialogAvatar().getSmallImage().getFileReference().getFileId());
             avatar.bindAvatar(54, data.getDialogAvatar());
         }
 
@@ -254,24 +242,21 @@ public class DialogHolder extends RecyclerView.ViewHolder {
         }
 
         if (privateTypingListener != null) {
-            // TypingModel.privateChatTyping(bindedUid).removeUiSubscriber(privateTypingListener);
+            messenger().getTyping(bindedUid).unsubscribe(privateTypingListener);
             privateTypingListener = null;
         }
 
         if (groupTypingListener != null) {
-            // TypingModel.groupChatTyping(bindedGid).removeUiSubscriber(groupTypingListener);
+            messenger().getGroupTyping(bindedGid).unsubscribe(groupTypingListener);
             groupTypingListener = null;
         }
 
-        text.setText(bindedText);
-        text.setTextColor(context.getResources().getColor(R.color.text_primary));
-
         if (data.getPeer().getPeerType() == PeerType.PRIVATE) {
             bindedUid = data.getPeer().getPeerId();
-            privateTypingListener = new ValueChangeListener<Boolean>() {
+            privateTypingListener = new ValueChangedListener<Boolean>() {
                 @Override
-                public void onChanged(Boolean value) {
-                    if (value) {
+                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                    if (val) {
                         text.setText(messenger().getFormatter().formatTyping());
                         text.setTextColor(context.getResources().getColor(R.color.primary));
                     } else {
@@ -280,17 +265,17 @@ public class DialogHolder extends RecyclerView.ViewHolder {
                     }
                 }
             };
-            // TypingModel.privateChatTyping(bindedUid).addUiSubscriber(privateTypingListener);
+            messenger().getTyping(bindedUid).subscribe(privateTypingListener);
         } else if (data.getPeer().getPeerType() == PeerType.GROUP) {
             bindedGid = data.getPeer().getPeerId();
-            groupTypingListener = new ValueChangeListener<int[]>() {
+            groupTypingListener = new ValueChangedListener<int[]>() {
                 @Override
-                public void onChanged(int[] value) {
-                    if (value.length != 0) {
-                        if (value.length == 1) {
-                            text.setText(messenger().getFormatter().formatTyping(users().get(value[0]).getName().get()));
+                public void onChanged(int[] val, ValueModel<int[]> valueModel) {
+                    if (val.length != 0) {
+                        if (val.length == 1) {
+                            text.setText(messenger().getFormatter().formatTyping(messenger().getUsers().get(val[0]).getName().get()));
                         } else {
-                            text.setText(messenger().getFormatter().formatTyping(value.length));
+                            text.setText(messenger().getFormatter().formatTyping(val.length));
                         }
                         text.setTextColor(context.getResources().getColor(R.color.primary));
                     } else {
@@ -299,7 +284,7 @@ public class DialogHolder extends RecyclerView.ViewHolder {
                     }
                 }
             };
-            // TypingModel.groupChatTyping(bindedGid).addUiSubscriber(groupTypingListener);
+            messenger().getGroupTyping(bindedGid).subscribe(groupTypingListener);
         } else {
             text.setText(bindedText);
             text.setTextColor(context.getResources().getColor(R.color.text_primary));
@@ -345,12 +330,12 @@ public class DialogHolder extends RecyclerView.ViewHolder {
         this.bindedItem = null;
 
         if (privateTypingListener != null) {
-            // TypingModel.privateChatTyping(bindedUid).removeUiSubscriber(privateTypingListener);
+            messenger().getTyping(bindedUid).unsubscribe(privateTypingListener);
             privateTypingListener = null;
         }
 
         if (groupTypingListener != null) {
-            // TypingModel.groupChatTyping(bindedGid).removeUiSubscriber(groupTypingListener);
+            messenger().getGroupTyping(bindedGid).unsubscribe(groupTypingListener);
             groupTypingListener = null;
         }
     }

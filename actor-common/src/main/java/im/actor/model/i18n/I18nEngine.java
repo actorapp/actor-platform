@@ -1,10 +1,13 @@
 package im.actor.model.i18n;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
 import im.actor.model.LocaleProvider;
 import im.actor.model.entity.ContentType;
+import im.actor.model.entity.Message;
 import im.actor.model.entity.Sex;
 import im.actor.model.entity.User;
 import im.actor.model.entity.content.ServiceContent;
@@ -15,6 +18,7 @@ import im.actor.model.entity.content.ServiceGroupUserAdded;
 import im.actor.model.entity.content.ServiceGroupUserKicked;
 import im.actor.model.entity.content.ServiceGroupUserLeave;
 import im.actor.model.entity.content.ServiceUserRegistered;
+import im.actor.model.entity.content.TextContent;
 import im.actor.model.modules.Modules;
 import im.actor.model.viewmodel.UserPresence;
 
@@ -360,6 +364,42 @@ public class I18nEngine {
         } else {
             return getUser(uid).getName();
         }
+    }
+
+    public String formatMessages(Message[] messages) {
+        String text = "";
+        Arrays.sort(messages, new Comparator<Message>() {
+
+            int compare(long lhs, long rhs) {
+                return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
+            }
+
+            @Override
+            public int compare(Message lhs, Message rhs) {
+                return compare(lhs.getEngineSort(), rhs.getEngineSort());
+            }
+        });
+
+        if (messages.length == 1) {
+            for (Message model : messages) {
+                if (!(model.getContent() instanceof TextContent)) {
+                    continue;
+                }
+                text += ((TextContent) model.getContent()).getText();
+            }
+        } else {
+            for (Message model : messages) {
+                if (!(model.getContent() instanceof TextContent)) {
+                    continue;
+                }
+                if (text.length() > 0) {
+                    text += "\n";
+                }
+                text += modules.getUsersModule().getUsers().getValue(model.getSenderId()).getName() + ": ";
+                text += ((TextContent) model.getContent()).getText();
+            }
+        }
+        return text;
     }
 
     private String getTemplateNamed(int senderId, String baseString) {

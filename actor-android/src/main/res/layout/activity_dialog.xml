@@ -4,6 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:focusable="true" android:focusableInTouchMode="true"
+        android:layout_width="0px" android:layout_height="0px"/>
+
     <FrameLayout
         android:id="@+id/messagesFragment"
         android:layout_width="match_parent"
@@ -25,7 +29,6 @@
         android:layout_gravity="bottom"
         android:background="@color/bg_light"
         android:minHeight="56dp">
-
 
         <EditText
             android:id="@+id/et_message"

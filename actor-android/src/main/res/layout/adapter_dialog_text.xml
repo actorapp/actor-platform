@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<im.actor.messenger.app.fragment.chat.BubbleContainer xmlns:android="http://schemas.android.com/apk/res/android"
+<im.actor.messenger.app.fragment.chat.view.BubbleContainer xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mainContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true">
 
-    <im.actor.messenger.app.fragment.chat.BubbleTextContainer
+    <im.actor.messenger.app.fragment.chat.view.BubbleTextContainer
         android:id="@+id/fl_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,5 +46,5 @@
                 android:layout_marginLeft="2dp" />
         </LinearLayout>
 
-    </im.actor.messenger.app.fragment.chat.BubbleTextContainer>
-</im.actor.messenger.app.fragment.chat.BubbleContainer>
+    </im.actor.messenger.app.fragment.chat.view.BubbleTextContainer>
+</im.actor.messenger.app.fragment.chat.view.BubbleContainer>

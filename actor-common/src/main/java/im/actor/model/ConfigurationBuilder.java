@@ -33,6 +33,8 @@ public class ConfigurationBuilder {
 
     private NotificationProvider notificationProvider;
 
+    private DispatcherProvider dispatcherProvider;
+
     private ApiConfiguration apiConfiguration;
 
     public ConfigurationBuilder setApiConfiguration(ApiConfiguration apiConfiguration) {
@@ -92,6 +94,11 @@ public class ConfigurationBuilder {
 
     public ConfigurationBuilder setLocale(LocaleProvider localeProvider) {
         this.localeProvider = localeProvider;
+        return this;
+    }
+
+    public ConfigurationBuilder setDispatcherProvider(DispatcherProvider dispatcherProvider) {
+        this.dispatcherProvider = dispatcherProvider;
         return this;
     }
 
@@ -168,9 +175,12 @@ public class ConfigurationBuilder {
         if (apiConfiguration == null) {
             throw new RuntimeException("Api Configuration not set");
         }
+        if (dispatcherProvider == null) {
+            throw new RuntimeException("Dispatcher Provider not set");
+        }
         return new Configuration(networkProvider, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
                 threadingProvider, mainThreadProvider, enginesFactory, log, localeProvider,
                 phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider,
-                apiConfiguration, enableContactsLogging, enableNetworkLogging);
+                dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging);
     }
 }

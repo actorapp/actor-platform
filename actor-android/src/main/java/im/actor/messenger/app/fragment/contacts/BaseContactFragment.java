@@ -23,7 +23,7 @@ import im.actor.messenger.app.fragment.DisplayListFragment;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.util.Screen;
-import im.actor.model.android.BindedListAdapter;
+import im.actor.model.android.view.BindedListAdapter;
 import im.actor.model.entity.Contact;
 import im.actor.model.mvvm.BindedDisplayList;
 

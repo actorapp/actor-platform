@@ -25,7 +25,7 @@ import im.actor.messenger.app.images.VideoPreviewTask;
 import im.actor.messenger.app.images.VideoTask;
 import im.actor.model.ApiConfiguration;
 import im.actor.model.ConfigurationBuilder;
-import im.actor.model.Messenger;
+import im.actor.model.android.AndroidCallbackDispatcher;
 import im.actor.model.android.AndroidFileProvider;
 import im.actor.model.android.AndroidLog;
 import im.actor.model.android.AndroidMainThreadProvider;
@@ -65,7 +65,7 @@ public class Core {
 
     private ImageLoader imageLoader;
     private EmojiProcessor emojiProcessor;
-    private im.actor.model.Messenger messenger;
+    private im.actor.model.android.AndroidMessenger messenger;
 
     private Core(Application application) {
 
@@ -125,6 +125,7 @@ public class Core {
         // builder.setCryptoProvider(new AndroidCryptoProvider());
         builder.setFileSystemProvider(new AndroidFileProvider(application));
         builder.setNotificationProvider(new AndroidNotifications());
+        builder.setDispatcherProvider(new AndroidCallbackDispatcher());
 
         if (BuildConfig.API_SSL) {
             builder.addEndpoint("tls://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
@@ -132,6 +133,7 @@ public class Core {
             builder.addEndpoint("tcp://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
         }
         builder.setEnableContactsLogging(true);
+        builder.setEnableNetworkLogging(true);
 
         byte[] deviceHash = bouncyCastleProvider.SHA256(Base64.encode((AppContext.getContext().getPackageName() + ":" + Build.SERIAL).getBytes(),
                 Base64.DEFAULT));
@@ -140,7 +142,7 @@ public class Core {
                 deviceHash));
         builder.setCryptoProvider(bouncyCastleProvider);
 
-        this.messenger = new im.actor.model.Messenger(builder.build());
+        this.messenger = new im.actor.model.android.AndroidMessenger(builder.build());
 
         // Bind phone book change
         AppContext.getContext()
@@ -166,7 +168,7 @@ public class Core {
         return core().imageLoader;
     }
 
-    public static Messenger messenger() {
+    public static im.actor.model.android.AndroidMessenger messenger() {
         return core().messenger;
     }
 

@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat;
+package im.actor.messenger.app.fragment.chat.view;
 
 import android.content.Context;
 import android.graphics.Rect;

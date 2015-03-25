@@ -43,6 +43,9 @@ import java.util.Map;
  */
 public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final long HEADERS_ID_START = Long.MIN_VALUE;
+    private static final long FOOTERS_ID_END = Long.MAX_VALUE;
+
     private static final int HEADERS_START = Integer.MIN_VALUE;
     private static final int FOOTERS_START = Integer.MIN_VALUE + 10;
     private static final int ITEMS_START = Integer.MIN_VALUE + 20;
@@ -62,6 +65,7 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         mFooterViews = new ArrayList<View>();
         mItemTypesOffset = new HashMap<Class, Integer>();
         setWrappedAdapter(adapter);
+        setHasStableIds(adapter.hasStableIds());
     }
 
     /**
@@ -79,6 +83,21 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
 
     public RecyclerView.Adapter getWrappedAdapter() {
         return mWrappedAdapter;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        int hCount = getHeaderCount();
+        if (position < hCount) {
+            return HEADERS_ID_START + position;
+        } else {
+            int itemCount = mWrappedAdapter.getItemCount();
+            if (position < hCount + itemCount) {
+                return mWrappedAdapter.getItemId(position - hCount);
+            } else {
+                return FOOTERS_ID_END - (position - hCount - itemCount);
+            }
+        }
     }
 
     @Override

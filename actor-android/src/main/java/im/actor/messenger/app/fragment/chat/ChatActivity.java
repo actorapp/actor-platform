@@ -1,4 +1,4 @@
-package im.actor.messenger.app.activity;
+package im.actor.messenger.app.fragment.chat;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,14 +27,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.droidkit.images.common.ImageLoadException;
-import com.droidkit.images.common.ImageMetadata;
-import com.droidkit.images.common.ImageSaveException;
-import com.droidkit.images.ops.ImageLoading;
-import com.droidkit.images.ops.ImageRotating;
-import com.droidkit.images.ops.ImageScaling;
-import com.droidkit.images.sources.FileSource;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -45,21 +35,18 @@ import java.util.ArrayList;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
+import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
-import im.actor.messenger.app.fragment.chat.MessagesFragment;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
-import im.actor.messenger.app.AppContext;
 import im.actor.messenger.util.RandomUtil;
 import im.actor.messenger.util.io.IOUtils;
 import im.actor.model.Messenger;
-import im.actor.model.android.AndroidFileSystemReference;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
-import im.actor.model.entity.content.FastThumb;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
@@ -329,7 +316,7 @@ public class ChatActivity extends BaseActivity {
             bind(barAvatar, user.getId(), 18, user.getAvatar(), user.getName());
             bind(barTitle, user.getName());
             bind(barSubtitle, barSubtitleContainer, user);
-            bind(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
+            bindPrivateTyping(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
         } else if (peer.getPeerType() == PeerType.GROUP) {
             GroupVM group = groups().get(peer.getPeerId());
             if (group == null) {
@@ -342,7 +329,7 @@ public class ChatActivity extends BaseActivity {
             // Subtitle is always visible for Groups
             barSubtitleContainer.setVisibility(View.VISIBLE);
             bind(barSubtitle, group);
-            bind(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
+            bindGroupTyping(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
         }
 
         if (isCompose) {
@@ -350,8 +337,6 @@ public class ChatActivity extends BaseActivity {
             keyboardUtils.setImeVisibility(messageBody, true);
         }
         isCompose = false;
-
-        messenger().onConversationOpen(peer);
 
         isTypingDisabled = true;
         String text = messenger().loadDraft(peer);
@@ -387,9 +372,9 @@ public class ChatActivity extends BaseActivity {
                     sendUri(data.getData());
                 }
             } else if (requestCode == REQUEST_PHOTO) {
-                // sendImage(fileName);
+                messenger().sendPhoto(peer, fileName);
             } else if (requestCode == REQUEST_VIDEO) {
-                // MessageDeliveryActor.messageSender().sendVideo(chatType, chatId, fileName);
+                messenger().sendVideo(peer, fileName);
             } else if (requestCode == REQUEST_DOC) {
                 if (data.getData() != null) {
                     sendUri(data.getData());
@@ -459,9 +444,9 @@ public class ChatActivity extends BaseActivity {
                 }
 
                 if (mimeType.startsWith("video/")) {
-                    sendVideo(picturePath, fileName);
+                    messenger().sendVideo(peer, picturePath, fileName);
                 } else if (mimeType.startsWith("image/")) {
-                    sendImage(picturePath, fileName);
+                    messenger().sendPhoto(peer, picturePath, new File(fileName).getName());
                 } else {
 //                    MessageDeliveryActor.messageSender().sendDocument(chatType, chatId, picturePath,
 //                            fileName);
@@ -545,56 +530,10 @@ public class ChatActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void sendVideo(String fileName, String name) {
-        try {
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            retriever.setDataSource(fileName);
-            int duration = (int) (Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000L);
-            Bitmap img = retriever.getFrameAtTime(0);
-            int width = img.getWidth();
-            int height = img.getHeight();
-            Bitmap smallThumb = ImageScaling.scaleFit(img, 90, 90);
-            byte[] smallThumbData = ImageLoading.saveJpeg(smallThumb, ImageLoading.JPEG_QUALITY_LOW);
-
-            FastThumb thumb = new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), smallThumbData);
-
-            messenger.sendVideo(peer, name, width, height, duration, thumb, new AndroidFileSystemReference(fileName));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void sendImage(String fileName, String name) {
-        try {
-            ImageMetadata metadata = new FileSource(fileName).getImageMetadata();
-            Bitmap bitmap = ImageLoading.loadBitmapOptimizedHQ(fileName);
-            Bitmap optimized = ImageRotating.fixExif(bitmap, metadata.getExifOrientation());
-            Bitmap smallThumb = ImageScaling.scaleFit(optimized, 90, 90);
-            byte[] data = ImageLoading.saveJpeg(smallThumb, ImageLoading.JPEG_QUALITY_LOW);
-            String resultFileName = AppContext.getExternalTempFile("image", "jpg");
-            if (resultFileName == null) {
-                return;
-            }
-            ImageLoading.save(optimized, resultFileName);
-//            messenger.sendPhoto(peer, new File(name).getName(),
-//                    optimized.getWidth(), optimized.getHeight(),
-//                    new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), data),
-//                    new AndroidFileReference(resultFileName));
-            messenger.sendDocument(peer, new File(name).getName(), "?/?",
-                    new AndroidFileSystemReference(resultFileName),
-                    new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), data));
-        } catch (ImageLoadException e) {
-            e.printStackTrace();
-        } catch (ImageSaveException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void onPause() {
         super.onPause();
 
         messenger.saveDraft(peer, messageBody.getText().toString());
-        messenger.onConversationClosed(peer);
     }
 }
