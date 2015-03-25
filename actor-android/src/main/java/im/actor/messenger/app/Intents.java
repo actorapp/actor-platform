@@ -10,7 +10,7 @@ import im.actor.messenger.app.fragment.chat.ChatActivity;
 import im.actor.messenger.app.activity.DocumentsActivity;
 import im.actor.messenger.app.activity.EditNameActivity;
 import im.actor.messenger.app.activity.GroupInfoActivity;
-import im.actor.messenger.app.activity.PickUserActivity;
+import im.actor.messenger.app.fragment.group.PickUserActivity;
 import im.actor.messenger.app.activity.ProfileActivity;
 import im.actor.messenger.app.activity.TakePhotoActivity;
 import im.actor.model.entity.FileReference;

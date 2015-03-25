@@ -1,10 +1,9 @@
-package im.actor.messenger.app.activity;
+package im.actor.messenger.app.fragment.compose;
 
 import android.os.Bundle;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragmentActivity;
-import im.actor.messenger.app.fragment.compose.GroupNameFragment;
 
 /**
  * Created by ex3ndr on 04.10.14.
