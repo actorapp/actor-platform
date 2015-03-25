@@ -25,6 +25,7 @@ import im.actor.model.entity.content.VideoContent;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
+import im.actor.model.viewmodel.UploadFileVMCallback;
 
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.myUid;
@@ -196,7 +197,22 @@ public class PhotoHolder extends MessageHolder {
                 downloadFileVM = messenger().bindFile(((FileRemoteSource) fileMessage.getSource()).getFileReference(),
                         autoDownload, new DownloadVMCallback(fileMessage));
             } else if (fileMessage.getSource() instanceof FileLocalSource) {
-                // TODO: Implement
+                messenger().bindUpload(message.getRid(), new UploadFileVMCallback() {
+                    @Override
+                    public void onNotUploaded() {
+
+                    }
+
+                    @Override
+                    public void onUploading(float progress) {
+
+                    }
+
+                    @Override
+                    public void onUploaded() {
+
+                    }
+                });
             } else {
                 throw new RuntimeException("Unknown file source type: " + fileMessage.getSource());
             }

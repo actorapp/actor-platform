@@ -5,6 +5,7 @@ import android.view.View;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.messenger.app.fragment.chat.view.BubbleContainer;
 import im.actor.messenger.util.TextUtils;
+import im.actor.model.android.view.BindedViewHolder;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
@@ -14,7 +15,7 @@ import static im.actor.messenger.app.Core.myUid;
 /**
  * Created by ex3ndr on 26.02.15.
  */
-public abstract class MessageHolder extends BaseHolder
+public abstract class MessageHolder extends BindedViewHolder
         implements BubbleContainer.OnAvatarClickListener, View.OnClickListener, View.OnLongClickListener {
 
     private MessagesAdapter adapter;

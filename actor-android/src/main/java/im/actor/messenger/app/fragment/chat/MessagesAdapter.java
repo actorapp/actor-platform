@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import java.util.HashMap;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.chat.adapter.BaseHolder;
 import im.actor.messenger.app.fragment.chat.adapter.DocHolder;
 import im.actor.messenger.app.fragment.chat.adapter.MessageHolder;
 import im.actor.messenger.app.fragment.chat.adapter.PhotoHolder;
@@ -27,7 +26,7 @@ import im.actor.model.mvvm.BindedDisplayList;
 /**
  * Created by ex3ndr on 26.02.15.
  */
-public class MessagesAdapter extends BindedListAdapter<Message, BaseHolder> {
+public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
 
     private BaseMessagesFragment messagesFragment;
     private Context context;
@@ -103,7 +102,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, BaseHolder> {
     }
 
     @Override
-    public BaseHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public MessageHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType) {
             case 0:
                 return new TextHolder(this, inflate(R.layout.adapter_dialog_text, viewGroup));
@@ -119,7 +118,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, BaseHolder> {
     }
 
     @Override
-    public void onBindViewHolder(BaseHolder dialogHolder, int index, Message item) {
+    public void onBindViewHolder(MessageHolder dialogHolder, int index, Message item) {
         Message prev = null;
         Message next = null;
         if (index > 1) {
@@ -128,15 +127,11 @@ public class MessagesAdapter extends BindedListAdapter<Message, BaseHolder> {
         if (index < getItemCount() - 1) {
             prev = getItem(index + 1);
         }
-        if (dialogHolder instanceof MessageHolder) {
-            ((MessageHolder) dialogHolder).bindData(item, prev, next);
-        }
+        dialogHolder.bindData(item, prev, next);
     }
 
     @Override
-    public void onViewRecycled(BaseHolder holder) {
-        if (holder instanceof MessageHolder) {
-            ((MessageHolder) holder).unbind();
-        }
+    public void onViewRecycled(MessageHolder holder) {
+        holder.unbind();
     }
 }

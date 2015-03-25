@@ -17,7 +17,6 @@ import im.actor.messenger.util.TextUtils;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.TextContent;
-import im.actor.model.log.Log;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.app.Core.myUid;
@@ -71,7 +70,7 @@ public class TextHolder extends MessageHolder {
 
     @Override
     protected void bindData(Message message, boolean isUpdated) {
-        Log.d("TextHolder", "bindData " + hashCode() + " #" + message.getEngineId() + " " + isUpdated);
+
         if (message.getSenderId() == myUid()) {
             messageBubbleContainer.makeOutboundBubble();
             messageBubble.setBackgroundResource(R.drawable.bubble_text_out);

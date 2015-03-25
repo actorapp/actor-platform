@@ -19,7 +19,7 @@ import java.io.IOException;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.DisplayListFragment;
-import im.actor.messenger.app.fragment.chat.adapter.BaseHolder;
+import im.actor.messenger.app.fragment.chat.adapter.MessageHolder;
 import im.actor.messenger.util.Screen;
 import im.actor.model.android.view.BindedListAdapter;
 import im.actor.model.entity.Message;
@@ -34,7 +34,7 @@ import static im.actor.messenger.app.Core.messenger;
 /**
  * Created by ex3ndr on 25.03.15.
  */
-public abstract class BaseMessagesFragment extends DisplayListFragment<Message, BaseHolder> {
+public abstract class BaseMessagesFragment extends DisplayListFragment<Message, MessageHolder> {
 
     private Peer peer;
     private LinearLayoutManager linearLayoutManager;
@@ -98,7 +98,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     }
 
     @Override
-    protected BindedListAdapter<Message, BaseHolder> onCreateAdapter(BindedDisplayList<Message> displayList, Activity activity) {
+    protected BindedListAdapter<Message, MessageHolder> onCreateAdapter(BindedDisplayList<Message> displayList, Activity activity) {
         messagesAdapter = new MessagesAdapter(displayList, this, activity);
         return messagesAdapter;
     }
@@ -116,6 +116,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
         super.onResume();
         messenger().onConversationOpen(peer);
     }
+
 
     public boolean onClick(Message message) {
         if (actionMode != null) {
