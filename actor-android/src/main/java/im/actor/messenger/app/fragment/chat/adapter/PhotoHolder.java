@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.recycler;
+package im.actor.messenger.app.fragment.chat.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,7 +10,8 @@ import android.widget.TextView;
 import com.droidkit.progress.CircularView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.chat.MessagesFragment;
+import im.actor.messenger.app.fragment.chat.MessagesAdapter;
+import im.actor.messenger.app.fragment.chat.view.FastThumbLoader;
 import im.actor.messenger.app.view.PhotoPreview;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.Screen;
@@ -64,9 +65,9 @@ public class PhotoHolder extends MessageHolder {
     // Binded model
     private FileVM downloadFileVM;
 
-    public PhotoHolder(MessagesFragment fragment, View itemView) {
+    public PhotoHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
-        this.context = fragment.getActivity();
+        this.context = fragment.getMessagesFragment().getActivity();
 
         COLOR_PENDING = context.getResources().getColor(R.color.conv_media_state_pending);
         COLOR_SENT = context.getResources().getColor(R.color.conv_media_state_sent);

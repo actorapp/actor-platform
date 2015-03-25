@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.recycler;
+package im.actor.messenger.app.fragment.chat.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

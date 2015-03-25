@@ -7,7 +7,7 @@ import android.widget.FrameLayout;
 import java.util.HashSet;
 
 import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.model.android.BindedListAdapter;
+import im.actor.model.android.view.BindedListAdapter;
 import im.actor.model.entity.Contact;
 import im.actor.model.mvvm.BindedDisplayList;
 
@@ -50,7 +50,7 @@ public class ContactsAdapter extends BindedListAdapter<Contact, ContactHolder> {
     }
 
     @Override
-    public ContactHolder onCreateViewHolder(ViewGroup viewGroup, int index, Contact item) {
+    public ContactHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         return new ContactHolder(new FrameLayout(context), selectable, context, onItemClickedListener);
     }
 }

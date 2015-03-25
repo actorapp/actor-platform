@@ -33,6 +33,8 @@ public class Configuration {
 
     private ApiConfiguration apiConfiguration;
 
+    private DispatcherProvider dispatcherProvider;
+
     public Configuration(NetworkProvider networkProvider, ConnectionEndpoint[] endpoints,
                          ThreadingProvider threadingProvider, MainThreadProvider mainThreadProvider, StorageProvider storageProvider,
                          LogProvider log,
@@ -41,6 +43,7 @@ public class Configuration {
                          CryptoProvider cryptoProvider,
                          FileSystemProvider fileSystemProvider,
                          NotificationProvider notificationProvider,
+                         DispatcherProvider dispatcherProvider,
                          ApiConfiguration apiConfiguration,
                          boolean enableContactsLogging,
                          boolean enableNetworkLogging) {
@@ -58,6 +61,7 @@ public class Configuration {
         this.enableNetworkLogging = enableNetworkLogging;
         this.notificationProvider = notificationProvider;
         this.apiConfiguration = apiConfiguration;
+        this.dispatcherProvider = dispatcherProvider;
     }
 
     public ApiConfiguration getApiConfiguration() {
@@ -114,5 +118,9 @@ public class Configuration {
 
     public FileSystemProvider getFileSystemProvider() {
         return fileSystemProvider;
+    }
+
+    public DispatcherProvider getDispatcherProvider() {
+        return dispatcherProvider;
     }
 }

@@ -1,7 +1,6 @@
 package im.actor.messenger.app.fragment.contacts;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -16,12 +15,13 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.util.Screen;
+import im.actor.model.android.view.BindedViewHolder;
 import im.actor.model.entity.Contact;
 
 /**
  * Created by ex3ndr on 15.03.15.
  */
-public class ContactHolder extends RecyclerView.ViewHolder {
+public class ContactHolder extends BindedViewHolder {
 
     private int padding = Screen.dp(16);
 

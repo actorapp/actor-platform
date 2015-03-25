@@ -11,12 +11,10 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Avatar;
-import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueChangedListener;
+import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueModel;
-import im.actor.model.viewmodel.GroupTypingVM;
 import im.actor.model.viewmodel.GroupVM;
-import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.app.AppStateBroker.stateBroker;
@@ -50,12 +48,12 @@ public class BaseActivity extends ActionBarActivity {
         BINDER.bind(textView, value);
     }
 
-    public void bind(final TextView textView, final View container, final View titleContainer, final UserTypingVM typing) {
-        BINDER.bind(textView, container, titleContainer, typing);
+    public void bindGroupTyping(final TextView textView, final View container, final View titleContainer, final ValueModel<int[]> typing) {
+        BINDER.bindGroupTyping(textView, container, titleContainer, typing);
     }
 
-    public void bind(final TextView textView, final View container, final View titleContainer, final GroupTypingVM typing) {
-        BINDER.bind(textView, container, titleContainer, typing);
+    public void bindPrivateTyping(final TextView textView, final View container, final View titleContainer, final ValueModel<Boolean> typing) {
+        BINDER.bindPrivateTyping(textView, container, titleContainer, typing);
     }
 
     public <T> void bind(ValueModel<T> value, ValueChangedListener<T> listener) {

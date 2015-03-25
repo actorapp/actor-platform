@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.recycler;
+package im.actor.messenger.app.fragment.chat.adapter;
 
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -9,8 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.chat.BubbleContainer;
-import im.actor.messenger.app.fragment.chat.MessagesFragment;
+import im.actor.messenger.app.fragment.chat.MessagesAdapter;
+import im.actor.messenger.app.fragment.chat.view.BubbleContainer;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.TextUtils;
@@ -41,7 +41,7 @@ public class TextHolder extends MessageHolder {
     private int readColor;
     private int errorColor;
 
-    public TextHolder(MessagesFragment fragment, View itemView) {
+    public TextHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
 
         messageBubbleContainer = (BubbleContainer) itemView;

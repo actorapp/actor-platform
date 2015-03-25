@@ -20,19 +20,20 @@ import im.actor.model.files.FileSystemReference;
 import im.actor.model.i18n.I18nEngine;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
-import im.actor.model.viewmodel.DownloadCallback;
-import im.actor.model.viewmodel.UploadCallback;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.mvvm.MVVMEngine;
+import im.actor.model.mvvm.ValueModel;
+import im.actor.model.viewmodel.ConversationVM;
+import im.actor.model.viewmodel.ConversationVMCallback;
+import im.actor.model.viewmodel.DownloadCallback;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
-import im.actor.model.viewmodel.GroupTypingVM;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.OwnAvatarVM;
+import im.actor.model.viewmodel.UploadCallback;
 import im.actor.model.viewmodel.UploadFileVM;
 import im.actor.model.viewmodel.UploadFileVMCallback;
-import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
 /**
@@ -50,6 +51,7 @@ public class Messenger {
 
         // Init internal actor system
         Environment.setThreadingProvider(configuration.getThreadingProvider());
+        Environment.setDispatcherProvider(configuration.getDispatcherProvider());
 
         Log.d(TAG, "Loading stage1 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
         start = configuration.getThreadingProvider().getActorTime();
@@ -164,18 +166,18 @@ public class Messenger {
         return modules.getGroupsModule().getGroupsCollection();
     }
 
-    public UserTypingVM getTyping(int uid) {
+    public ValueModel<Boolean> getTyping(int uid) {
         if (modules.getTypingModule() == null) {
             return null;
         }
-        return modules.getTypingModule().getTyping(uid);
+        return modules.getTypingModule().getTyping(uid).getTyping();
     }
 
-    public GroupTypingVM getGroupTyping(int gid) {
+    public ValueModel<int[]> getGroupTyping(int gid) {
         if (modules.getTypingModule() == null) {
             return null;
         }
-        return modules.getTypingModule().getGroupTyping(gid);
+        return modules.getTypingModule().getGroupTyping(gid).getActive();
     }
 
     public void onAppVisible() {
@@ -228,10 +230,6 @@ public class Messenger {
 
     }
 
-    public void onInMessageShown(Peer peer, long rid, long sortDate, boolean isEncrypted) {
-        modules.getMessagesModule().onInMessageShown(peer, rid, sortDate, isEncrypted);
-    }
-
     public void onTyping(Peer peer) {
         modules.getTypingModule().onTyping(peer);
     }
@@ -242,8 +240,8 @@ public class Messenger {
         }
     }
 
-    public long loadLastReadSortDate(Peer peer) {
-        return modules.getMessagesModule().loadReadState(peer);
+    public ConversationVM buildConversationVM(Peer peer, ConversationVMCallback callback) {
+        return new ConversationVM(peer, callback, modules);
     }
 
     public void saveDraft(Peer peer, String draft) {
@@ -324,14 +322,6 @@ public class Messenger {
 
     public Command<Boolean> clearChat(Peer peer) {
         return modules.getMessagesModule().clearChat(peer);
-    }
-
-    public void loadMoreDialogs() {
-        modules.getMessagesModule().loadMoreDialogs();
-    }
-
-    public void loadMoreHistory(Peer peer) {
-        modules.getMessagesModule().loadMoreHistory(peer);
     }
 
     // File operations

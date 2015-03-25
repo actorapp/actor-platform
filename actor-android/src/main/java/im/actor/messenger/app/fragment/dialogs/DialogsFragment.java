@@ -16,16 +16,11 @@ import static im.actor.messenger.app.Core.messenger;
 
 public class DialogsFragment extends BaseDialogFragment {
 
-    @Override
-    protected boolean supportLongClick() {
-        return true;
-    }
-
     protected void onItemClick(Dialog item) {
         ((MainActivity) getActivity()).onDialogClicked(item);
     }
 
-    protected void onItemLongClick(final Dialog dialog) {
+    protected boolean onItemLongClick(final Dialog dialog) {
         if (dialog.getPeer().getPeerType() == PeerType.PRIVATE) {
             new MaterialDialog.Builder(getActivity())
                     .items(new CharSequence[]{
@@ -65,6 +60,7 @@ public class DialogsFragment extends BaseDialogFragment {
                         }
                     })
                     .show();
+            return true;
         } else if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
             GroupVM groupVM = groups().get(dialog.getPeer().getPeerId());
             final boolean isMember = groupVM.isMember().get();
@@ -113,6 +109,9 @@ public class DialogsFragment extends BaseDialogFragment {
                         }
                     })
                     .show();
+            return true;
         }
+
+        return false;
     }
 }

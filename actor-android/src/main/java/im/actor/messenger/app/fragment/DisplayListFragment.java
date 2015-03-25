@@ -1,6 +1,7 @@
 package im.actor.messenger.app.fragment;
 
 import android.app.Activity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +10,8 @@ import android.view.ViewGroup;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
-import im.actor.model.android.BindedListAdapter;
+import im.actor.model.android.view.BindedListAdapter;
+import im.actor.model.android.view.BindedViewHolder;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngineItem;
 import im.actor.model.mvvm.BindedDisplayList;
@@ -18,7 +20,7 @@ import im.actor.model.mvvm.BindedDisplayList;
  * Created by ex3ndr on 15.03.15.
  */
 public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
-        V extends RecyclerView.ViewHolder> extends BaseFragment {
+        V extends BindedViewHolder> extends BaseFragment {
 
     private RecyclerView collection;
     private View loadingCollection;
@@ -48,6 +50,14 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
         }
 
         return res;
+    }
+
+    public void setAnimationsEnabled(boolean isEnabled) {
+        if (isEnabled) {
+            collection.setItemAnimator(new DefaultItemAnimator());
+        } else {
+            collection.setItemAnimator(null);
+        }
     }
 
     protected void configureRecyclerView(RecyclerView recyclerView) {
@@ -86,6 +96,10 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
 
     public BindedDisplayList<T> getDisplayList() {
         return displayList;
+    }
+
+    public RecyclerView getCollection() {
+        return collection;
     }
 
     @Override
