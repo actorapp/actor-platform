@@ -25,6 +25,7 @@ import im.actor.model.entity.content.VideoContent;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
+import im.actor.model.viewmodel.UploadFileVM;
 import im.actor.model.viewmodel.UploadFileVMCallback;
 
 import static im.actor.messenger.app.Core.messenger;
@@ -65,6 +66,7 @@ public class PhotoHolder extends MessageHolder {
 
     // Binded model
     private FileVM downloadFileVM;
+    private UploadFileVM uploadFileVM;
 
     public PhotoHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
@@ -180,9 +182,12 @@ public class PhotoHolder extends MessageHolder {
                 downloadFileVM.detach();
                 downloadFileVM = null;
             }
-            needRebind = true;
-        } else {
+            if (uploadFileVM != null) {
+                uploadFileVM.detach();
+                uploadFileVM = null;
+            }
 
+            needRebind = true;
         }
 
         if (needRebind) {
@@ -197,22 +202,8 @@ public class PhotoHolder extends MessageHolder {
                 downloadFileVM = messenger().bindFile(((FileRemoteSource) fileMessage.getSource()).getFileReference(),
                         autoDownload, new DownloadVMCallback(fileMessage));
             } else if (fileMessage.getSource() instanceof FileLocalSource) {
-                messenger().bindUpload(message.getRid(), new UploadFileVMCallback() {
-                    @Override
-                    public void onNotUploaded() {
-
-                    }
-
-                    @Override
-                    public void onUploading(float progress) {
-
-                    }
-
-                    @Override
-                    public void onUploaded() {
-
-                    }
-                });
+                uploadFileVM = messenger().bindUpload(message.getRid(), new UploadVMCallback());
+                imageKitView.requestPhoto(((FileLocalSource) fileMessage.getSource()).getFileDescriptor());
             } else {
                 throw new RuntimeException("Unknown file source type: " + fileMessage.getSource());
             }
@@ -229,9 +220,51 @@ public class PhotoHolder extends MessageHolder {
             downloadFileVM = null;
         }
 
+        if (uploadFileVM != null) {
+            uploadFileVM.detach();
+            uploadFileVM = null;
+        }
+
         // Releasing images
         fastThumbLoader.cancel();
         imageKitView.noRequest();
+    }
+
+    private class UploadVMCallback implements UploadFileVMCallback {
+
+        @Override
+        public void onNotUploaded() {
+            showView(progressContainer);
+
+            progressIcon.setImageResource(R.drawable.conv_media_upload);
+            showView(progressIcon);
+
+            goneView(progressView);
+            goneView(progressValue);
+        }
+
+        @Override
+        public void onUploading(float progress) {
+            showView(progressContainer);
+
+            goneView(progressIcon);
+
+            int val = (int) (100 * progress);
+            progressValue.setText(val + "");
+            progressView.setValue(val);
+            showView(progressView);
+            showView(progressValue);
+        }
+
+        @Override
+        public void onUploaded() {
+            progressValue.setText(100 + "");
+            progressView.setValue(100);
+
+            goneView(progressContainer);
+            goneView(progressView);
+            goneView(progressValue);
+        }
     }
 
     private class DownloadVMCallback implements FileVMCallback {
@@ -281,6 +314,8 @@ public class PhotoHolder extends MessageHolder {
 
         @Override
         public void onDownloaded(FileSystemReference reference) {
+            imageKitView.requestPhoto(reference.getDescriptor());
+
             progressValue.setText(100 + "");
             progressView.setValue(100);
 

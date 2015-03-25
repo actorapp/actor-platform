@@ -123,13 +123,13 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="im.actor.messenger.app.activity.PickUserActivity"
+            android:name=".app.fragment.group.PickUserActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="im.actor.messenger.app.activity.CreateGroupActivity"
+            android:name=".app.fragment.compose.CreateGroupActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateVisible" />

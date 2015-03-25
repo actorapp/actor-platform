@@ -21,7 +21,7 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.activity.ComposeActivity;
-import im.actor.messenger.app.activity.CreateGroupActivity;
+import im.actor.messenger.app.fragment.compose.CreateGroupActivity;
 import im.actor.messenger.app.activity.HelpActivity;
 import im.actor.messenger.app.activity.MainActivity;
 import im.actor.messenger.app.activity.MyProfileActivity;
