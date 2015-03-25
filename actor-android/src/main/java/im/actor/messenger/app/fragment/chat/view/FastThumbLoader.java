@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.recycler;
+package im.actor.messenger.app.fragment.chat.view;
 
 import android.graphics.Bitmap;
 import android.os.Handler;

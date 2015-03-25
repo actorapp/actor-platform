@@ -4,10 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    <im.actor.messenger.app.view.BackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/collection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:cacheColorHint="@color/conv_bg"
-        android:divider="@null"
-        android:dividerHeight="0px" />
+        android:scrollbars="vertical" />
 </FrameLayout>

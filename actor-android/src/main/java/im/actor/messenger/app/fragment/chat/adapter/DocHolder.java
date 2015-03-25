@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.recycler;
+package im.actor.messenger.app.fragment.chat.adapter;
 
 import android.graphics.Bitmap;
 import android.view.MenuItem;
@@ -12,7 +12,7 @@ import com.droidkit.images.ops.ImageLoading;
 import com.droidkit.progress.CircularView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.chat.MessagesFragment;
+import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.util.FileTypes;
 import im.actor.model.entity.FileReference;
@@ -22,9 +22,9 @@ import im.actor.model.entity.content.FileLocalSource;
 import im.actor.model.entity.content.FileRemoteSource;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.DownloadCallback;
-import im.actor.model.viewmodel.UploadCallback;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
+import im.actor.model.viewmodel.UploadCallback;
 import im.actor.model.viewmodel.UploadFileVM;
 import im.actor.model.viewmodel.UploadFileVMCallback;
 
@@ -57,7 +57,7 @@ public class DocHolder extends MessageHolder {
     private UploadFileVM uploadFileVM;
     private DocumentContent document;
 
-    public DocHolder(final MessagesFragment fragment, View itemView) {
+    public DocHolder(final MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
 
         // Basic bubble
@@ -67,7 +67,7 @@ public class DocHolder extends MessageHolder {
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(fragment.getActivity(), v);
+                PopupMenu popup = new PopupMenu(fragment.getMessagesFragment().getActivity(), v);
                 popup.getMenuInflater().inflate(R.menu.doc_popup, popup.getMenu());
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -96,7 +96,7 @@ public class DocHolder extends MessageHolder {
         // Progress views
         downloadIcon = (TintImageView) itemView.findViewById(R.id.downloading);
         progressView = (CircularView) itemView.findViewById(R.id.progressView);
-        progressView.setColor(fragment.getActivity().getResources().getColor(R.color.primary));
+        progressView.setColor(fragment.getMessagesFragment().getActivity().getResources().getColor(R.color.primary));
         progressValue = (TextView) itemView.findViewById(R.id.progressValue);
     }
 

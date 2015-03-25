@@ -1,9 +1,9 @@
-package im.actor.messenger.app.fragment.chat.recycler;
+package im.actor.messenger.app.fragment.chat.adapter;
 
 import android.view.View;
 
-import im.actor.messenger.app.fragment.chat.BubbleContainer;
-import im.actor.messenger.app.fragment.chat.MessagesFragment;
+import im.actor.messenger.app.fragment.chat.MessagesAdapter;
+import im.actor.messenger.app.fragment.chat.view.BubbleContainer;
 import im.actor.messenger.util.TextUtils;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
@@ -17,14 +17,14 @@ import static im.actor.messenger.app.Core.myUid;
 public abstract class MessageHolder extends BaseHolder
         implements BubbleContainer.OnAvatarClickListener, View.OnClickListener, View.OnLongClickListener {
 
-    private MessagesFragment fragment;
+    private MessagesAdapter adapter;
     private BubbleContainer container;
     private boolean isFullSize;
     protected Message currentMessage;
 
-    public MessageHolder(MessagesFragment fragment, View itemView, boolean isFullSize) {
+    public MessageHolder(MessagesAdapter adapter, View itemView, boolean isFullSize) {
         super(itemView);
-        this.fragment = fragment;
+        this.adapter = adapter;
         this.container = (BubbleContainer) itemView;
         this.isFullSize = isFullSize;
 
@@ -37,12 +37,12 @@ public abstract class MessageHolder extends BaseHolder
         }
     }
 
-    public MessagesFragment getFragment() {
-        return fragment;
+    public MessagesAdapter getAdapter() {
+        return adapter;
     }
 
     public Peer getPeer() {
-        return fragment.getPeer();
+        return adapter.getMessagesFragment().getPeer();
     }
 
     public final void bindData(Message message, Message prev, Message next) {
@@ -63,7 +63,7 @@ public abstract class MessageHolder extends BaseHolder
         }
 
         // Unread
-        if (message.getRid() == fragment.getFirstUnread()) {
+        if (message.getRid() == adapter.getFirstUnread()) {
             container.showUnread();
         } else {
             container.hideUnread();
@@ -79,15 +79,10 @@ public abstract class MessageHolder extends BaseHolder
         }
 
         // Updating selection state
-        container.setBubbleSelected(fragment.isSelected(currentMessage.getRid()));
+        container.setBubbleSelected(adapter.isSelected(currentMessage));
 
         // Bind content
         bindData(message, isUpdated);
-
-        // Notify about message view
-        fragment.onItemViewed(message);
-
-
     }
 
     protected abstract void bindData(Message message, boolean isUpdated);
@@ -99,11 +94,16 @@ public abstract class MessageHolder extends BaseHolder
 
     @Override
     public void onClick(View v) {
-
+        if (currentMessage != null) {
+            adapter.getMessagesFragment().onClick(currentMessage);
+        }
     }
 
     @Override
     public boolean onLongClick(View v) {
+        if (currentMessage != null) {
+            return adapter.getMessagesFragment().onLongClick(currentMessage);
+        }
         return false;
     }
 

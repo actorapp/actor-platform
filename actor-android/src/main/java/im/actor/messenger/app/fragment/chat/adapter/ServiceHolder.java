@@ -1,10 +1,10 @@
-package im.actor.messenger.app.fragment.chat.recycler;
+package im.actor.messenger.app.fragment.chat.adapter;
 
 import android.view.View;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.chat.MessagesFragment;
+import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.content.ServiceContent;
 
@@ -17,7 +17,7 @@ public class ServiceHolder extends MessageHolder {
 
     private TextView messageText;
 
-    public ServiceHolder(MessagesFragment fragment, View itemView) {
+    public ServiceHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, true);
 
         messageText = (TextView) itemView.findViewById(R.id.serviceMessage);

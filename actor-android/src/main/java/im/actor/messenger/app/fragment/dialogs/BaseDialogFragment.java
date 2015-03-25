@@ -17,7 +17,7 @@ import im.actor.messenger.app.fragment.DisplayListFragment;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.util.Screen;
-import im.actor.model.android.BindedListAdapter;
+import im.actor.model.android.view.BindedListAdapter;
 import im.actor.model.entity.Dialog;
 import im.actor.model.mvvm.BindedDisplayList;
 
@@ -37,6 +37,8 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
 
         View res = inflate(inflater, container,
                 R.layout.fragment_dialogs, messenger().getDialogsGlobalList());
+
+        setAnimationsEnabled(false);
 
         // Footer
 
@@ -84,15 +86,8 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
     }
 
     @Override
-    protected void configureRecyclerView(RecyclerView recyclerView) {
-        super.configureRecyclerView(recyclerView);
-        recyclerView.setItemAnimator(null);
-    }
-
-    @Override
     protected BindedListAdapter<Dialog, DialogHolder> onCreateAdapter(BindedDisplayList<Dialog> displayList, Activity activity) {
-        DialogsAdapter adapter = new DialogsAdapter(displayList, activity);
-        adapter.setItemClicked(new OnItemClickedListener<Dialog>() {
+        return new DialogsAdapter(displayList, new OnItemClickedListener<Dialog>() {
             @Override
             public void onClicked(Dialog item) {
                 onItemClick(item);
@@ -100,23 +95,9 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
 
             @Override
             public boolean onLongClicked(Dialog item) {
-                return false;
+                return onItemLongClick(item);
             }
-        });
-        if (supportLongClick()) {
-            adapter.setItemLongClicked(new OnItemClickedListener<Dialog>() {
-                @Override
-                public void onClicked(Dialog item) {
-                    onItemLongClick(item);
-                }
-
-                @Override
-                public boolean onLongClicked(Dialog item) {
-                    return false;
-                }
-            });
-        }
-        return adapter;
+        }, activity);
     }
 
     @Override
@@ -125,16 +106,12 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         messenger().onDialogsOpen();
     }
 
-    protected boolean supportLongClick() {
-        return false;
-    }
-
     protected void onItemClick(Dialog item) {
 
     }
 
-    protected void onItemLongClick(final Dialog dialog) {
-
+    protected boolean onItemLongClick(final Dialog dialog) {
+        return false;
     }
 
     @Override

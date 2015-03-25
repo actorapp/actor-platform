@@ -89,7 +89,7 @@
         </activity>
 
         <activity
-            android:name="im.actor.messenger.app.activity.ChatActivity"
+            android:name=".app.fragment.chat.ChatActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/ChatActivityTheme"
             android:windowSoftInputMode="adjustResize" />

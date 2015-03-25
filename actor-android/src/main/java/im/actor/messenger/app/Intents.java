@@ -6,7 +6,7 @@ import android.net.Uri;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.activity.AddContactActivity;
-import im.actor.messenger.app.activity.ChatActivity;
+import im.actor.messenger.app.fragment.chat.ChatActivity;
 import im.actor.messenger.app.activity.DocumentsActivity;
 import im.actor.messenger.app.activity.EditNameActivity;
 import im.actor.messenger.app.activity.GroupInfoActivity;

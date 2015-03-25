@@ -17,10 +17,8 @@ import im.actor.model.entity.GroupMember;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueModel;
-import im.actor.model.viewmodel.GroupTypingVM;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserPresence;
-import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.app.Core.messenger;
@@ -42,8 +40,8 @@ public class ActorBinder {
         });
     }
 
-    public void bind(final TextView textView, final View container, final View titleContainer, final GroupTypingVM typing) {
-        bind(typing.getActive(), new ValueChangedListener<int[]>() {
+    public void bindGroupTyping(final TextView textView, final View container, final View titleContainer, final ValueModel<int[]> typing) {
+        bind(typing, new ValueChangedListener<int[]>() {
             @Override
             public void onChanged(int[] val, ValueModel<int[]> valueModel) {
                 if (val.length == 0) {
@@ -62,9 +60,9 @@ public class ActorBinder {
         });
     }
 
-    public void bind(final TextView textView, final View container, final View titleContainer,
-                     final UserTypingVM typing) {
-        bind(typing.getTyping(), new ValueChangedListener<Boolean>() {
+    public void bindPrivateTyping(final TextView textView, final View container, final View titleContainer,
+                     final ValueModel<Boolean> typing) {
+        bind(typing, new ValueChangedListener<Boolean>() {
             @Override
             public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
                 if (val) {

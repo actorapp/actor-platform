@@ -1,5 +1,6 @@
 package im.actor.model.droidkit.actors;
 
+import im.actor.model.DispatcherProvider;
 import im.actor.model.ThreadingProvider;
 import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
 import im.actor.model.util.AtomicIntegerCompat;
@@ -11,9 +12,21 @@ import im.actor.model.util.ThreadLocalCompat;
  */
 public class Environment {
     private static volatile ThreadingProvider threadingProvider;
+    private static volatile DispatcherProvider dispatcherProvider;
 
     public static void setThreadingProvider(ThreadingProvider threadingProvider) {
         Environment.threadingProvider = threadingProvider;
+    }
+
+    public static void setDispatcherProvider(DispatcherProvider dispatcherProvider) {
+        Environment.dispatcherProvider = dispatcherProvider;
+    }
+
+    public static void dispatchCallback(Runnable runnable) {
+        if (dispatcherProvider == null) {
+            throw new RuntimeException("Environment is not inited!");
+        }
+        dispatcherProvider.dispatch(runnable);
     }
 
     public static ActorDispatcher createDefaultDispatcher(String name, ThreadPriority priority, ActorSystem actorSystem) {

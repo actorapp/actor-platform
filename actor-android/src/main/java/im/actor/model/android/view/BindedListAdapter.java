@@ -1,4 +1,4 @@
-package im.actor.model.android;
+package im.actor.model.android.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
@@ -12,7 +12,7 @@ import im.actor.model.mvvm.DisplayList;
  * Created by ex3ndr on 14.03.15.
  */
 public abstract class BindedListAdapter<V extends BserObject & ListEngineItem,
-        T extends android.support.v7.widget.RecyclerView.ViewHolder>
+        T extends BindedViewHolder>
         extends RecyclerView.Adapter<T> {
 
     private BindedDisplayList<V> displayList;
@@ -58,9 +58,7 @@ public abstract class BindedListAdapter<V extends BserObject & ListEngineItem,
     }
 
     @Override
-    public final T onCreateViewHolder(ViewGroup viewGroup, int i) {
-        return onCreateViewHolder(viewGroup, i, getItem(i));
-    }
+    public abstract T onCreateViewHolder(ViewGroup viewGroup, int viewType);
 
     @Override
     public final void onBindViewHolder(T dialogHolder, int i) {
@@ -70,7 +68,6 @@ public abstract class BindedListAdapter<V extends BserObject & ListEngineItem,
 
     public abstract void onBindViewHolder(T dialogHolder, int index, V item);
 
-    public abstract T onCreateViewHolder(ViewGroup viewGroup, int index, V item);
 
     public void resume() {
         displayList.addListener(listener);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<im.actor.messenger.app.fragment.chat.BubbleContainer xmlns:android="http://schemas.android.com/apk/res/android"
+<im.actor.messenger.app.fragment.chat.view.BubbleContainer xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainContainer"
     android:layout_width="match_parent"
@@ -116,4 +116,4 @@
         </FrameLayout>
 
     </LinearLayout>
-</im.actor.messenger.app.fragment.chat.BubbleContainer>
+</im.actor.messenger.app.fragment.chat.view.BubbleContainer>
