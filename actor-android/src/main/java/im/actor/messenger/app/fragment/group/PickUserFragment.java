@@ -1,9 +1,10 @@
-package im.actor.messenger.app.fragment.contacts;
+package im.actor.messenger.app.fragment.group;
 
 import android.app.Activity;
 import android.content.Intent;
 
 import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
 import im.actor.model.entity.Contact;
 
 /**

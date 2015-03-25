@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.activity.CreateGroupActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.view.AvatarDrawable;
