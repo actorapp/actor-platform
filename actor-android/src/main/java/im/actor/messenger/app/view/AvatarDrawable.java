@@ -11,7 +11,6 @@ import android.text.TextPaint;
 import android.util.TypedValue;
 
 import im.actor.messenger.R;
-import im.actor.messenger.storage.GlobalSearch;
 import im.actor.model.entity.Dialog;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
@@ -37,9 +36,9 @@ public class AvatarDrawable extends Drawable {
 //        return new AvatarDrawable(contact.getName(), contact.getUid(), fontSize, context);
 //    }
 
-    public static AvatarDrawable create(GlobalSearch dialogItem, float fontSize, Context context) {
-        return new AvatarDrawable(dialogItem.getTitle(), dialogItem.getContId(), fontSize, context);
-    }
+//    public static AvatarDrawable create(GlobalSearch dialogItem, float fontSize, Context context) {
+//        return new AvatarDrawable(dialogItem.getTitle(), dialogItem.getContId(), fontSize, context);
+//    }
 
     private int color;
     private String title;

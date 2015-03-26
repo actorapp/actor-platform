@@ -1,7 +1,9 @@
 package im.actor.messenger.app.fragment.chat;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
@@ -170,10 +172,28 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                 }
 
                 @Override
-                public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                public boolean onActionItemClicked(final ActionMode actionMode, MenuItem menuItem) {
                     if (menuItem.getItemId() == R.id.delete) {
-                        // TODO: Implement
-                        actionMode.finish();
+                        Message[] selected = messagesAdapter.getSelected();
+                        final long[] rids = new long[selected.length];
+                        for (int i = 0; i < rids.length; i++) {
+                            rids[i] = selected[i].getRid();
+                        }
+
+                        new AlertDialog.Builder(getActivity())
+                                .setMessage(getString(R.string.alert_delete_messages_text)
+                                        .replace("{0}", "" + rids.length))
+                                .setPositiveButton(R.string.alert_delete_messages_yes,
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                messenger().deleteMessages(peer, rids);
+                                                actionMode.finish();
+                                            }
+                                        })
+                                .setNegativeButton(R.string.dialog_cancel, null)
+                                .show()
+                                .setCanceledOnTouchOutside(true);
                         return true;
                     } else if (menuItem.getItemId() == R.id.copy) {
                         String text = messenger().getFormatter().formatMessages(messagesAdapter.getSelected());

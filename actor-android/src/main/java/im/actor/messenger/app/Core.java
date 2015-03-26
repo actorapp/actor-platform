@@ -8,8 +8,8 @@ import android.os.Build;
 import android.provider.ContactsContract;
 import android.util.Base64;
 
-import com.droidkit.images.cache.BitmapClasificator;
-import com.droidkit.images.loading.ImageLoader;
+import im.actor.images.cache.BitmapClasificator;
+import im.actor.images.loading.ImageLoader;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.emoji.EmojiProcessor;

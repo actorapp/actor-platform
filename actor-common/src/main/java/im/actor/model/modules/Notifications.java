@@ -20,11 +20,13 @@ public class Notifications extends BaseModule {
     public Notifications(final Modules modules) {
         super(modules);
         notificationsStorage = new SyncKeyValue(storage().createKeyValue(STORAGE_NOTIFICATIONS));
+    }
 
+    public void run() {
         this.notificationsActor = system().actorOf(Props.create(NotificationsActor.class, new ActorCreator<NotificationsActor>() {
             @Override
             public NotificationsActor create() {
-                return new NotificationsActor(modules);
+                return new NotificationsActor(modules());
             }
         }), "actor/notifications");
     }

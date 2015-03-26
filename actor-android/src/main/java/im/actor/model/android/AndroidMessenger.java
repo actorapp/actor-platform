@@ -3,11 +3,11 @@ package im.actor.model.android;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 
-import com.droidkit.images.common.ImageMetadata;
-import com.droidkit.images.ops.ImageLoading;
-import com.droidkit.images.ops.ImageRotating;
-import com.droidkit.images.ops.ImageScaling;
-import com.droidkit.images.sources.FileSource;
+import im.actor.images.common.ImageMetadata;
+import im.actor.images.ops.ImageLoading;
+import im.actor.images.ops.ImageRotating;
+import im.actor.images.ops.ImageScaling;
+import im.actor.images.sources.FileSource;
 
 import java.io.File;
 

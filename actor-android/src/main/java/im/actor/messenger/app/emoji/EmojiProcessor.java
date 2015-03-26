@@ -10,9 +10,9 @@ import android.text.Spannable;
 import android.text.TextPaint;
 import android.text.style.ReplacementSpan;
 import android.util.TypedValue;
-import com.droidkit.images.common.ImageMetadata;
-import com.droidkit.images.ops.ImageLoading;
-import com.droidkit.images.sources.FileSource;
+import im.actor.images.common.ImageMetadata;
+import im.actor.images.ops.ImageLoading;
+import im.actor.images.sources.FileSource;
 import im.actor.messenger.util.Logger;
 import im.actor.messenger.util.io.IOUtils;
 

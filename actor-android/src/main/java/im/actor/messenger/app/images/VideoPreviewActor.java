@@ -3,12 +3,12 @@ package im.actor.messenger.app.images;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 
-import com.droidkit.images.common.ImageLoadException;
-import com.droidkit.images.common.ImageSaveException;
-import com.droidkit.images.loading.ImageLoader;
-import com.droidkit.images.loading.actors.base.BasicTaskActor;
-import com.droidkit.images.ops.ImageLoading;
-import com.droidkit.images.ops.ImageScaling;
+import im.actor.images.common.ImageLoadException;
+import im.actor.images.common.ImageSaveException;
+import im.actor.images.loading.ImageLoader;
+import im.actor.images.loading.actors.base.BasicTaskActor;
+import im.actor.images.ops.ImageLoading;
+import im.actor.images.ops.ImageScaling;
 
 import im.actor.model.entity.content.FileSource;
 import im.actor.model.entity.content.VideoContent;
