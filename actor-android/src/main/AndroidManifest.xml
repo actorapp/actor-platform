@@ -62,13 +62,13 @@
         <!-- Auth -->
 
         <activity
-            android:name="im.actor.messenger.app.activity.AuthActivity"
+            android:name=".app.fragment.auth.AuthActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="im.actor.messenger.app.activity.PickCountryActivity"
+            android:name=".app.fragment.auth.PickCountryActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
@@ -97,19 +97,19 @@
         <!-- Profiles -->
 
         <activity
-            android:name="im.actor.messenger.app.activity.ProfileActivity"
+            android:name=".app.fragment.profile.ProfileActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/ProfileActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
-            android:name="im.actor.messenger.app.activity.GroupInfoActivity"
+            android:name=".app.fragment.group.GroupInfoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/ProfileActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
-            android:name="im.actor.messenger.app.activity.MyProfileActivity"
+            android:name=".app.fragment.settings.MyProfileActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/ProfileActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
@@ -117,7 +117,7 @@
         <!-- Compose -->
 
         <activity
-            android:name="im.actor.messenger.app.activity.ComposeActivity"
+            android:name=".app.fragment.compose.ComposeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
@@ -137,25 +137,25 @@
         <!-- Settings -->
 
         <activity
-            android:name="im.actor.messenger.app.activity.NotificationsActivity"
+            android:name=".app.fragment.settings.NotificationsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
-            android:name="im.actor.messenger.app.activity.ChatSettingsActivity"
+            android:name=".app.fragment.settings.ChatSettingsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
-            android:name="im.actor.messenger.app.activity.HelpActivity"
+            android:name=".app.fragment.help.HelpActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
-            android:name=".app.activity.SecuritySettingsActivity"
+            android:name=".app.fragment.settings.SecuritySettingsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
@@ -169,7 +169,7 @@
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
-            android:name="im.actor.messenger.app.activity.DocumentsActivity"
+            android:name=".app.fragment.media.DocumentsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
@@ -177,7 +177,7 @@
         <!-- Actions -->
 
         <activity
-            android:name="im.actor.messenger.app.activity.EditNameActivity"
+            android:name=".app.fragment.settings.EditNameActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />

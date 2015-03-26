@@ -20,14 +20,13 @@ import android.widget.TextView;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.AddContactActivity;
-import im.actor.messenger.app.activity.ComposeActivity;
+import im.actor.messenger.app.fragment.compose.ComposeActivity;
 import im.actor.messenger.app.fragment.compose.CreateGroupActivity;
-import im.actor.messenger.app.activity.HelpActivity;
+import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.activity.MainActivity;
-import im.actor.messenger.app.activity.MyProfileActivity;
+import im.actor.messenger.app.fragment.settings.MyProfileActivity;
 import im.actor.messenger.app.fragment.contacts.ContactsFragment;
 import im.actor.messenger.app.fragment.dialogs.DialogsFragment;
-import im.actor.messenger.app.fragment.search.SearchAdapter;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
@@ -57,7 +56,6 @@ public class MainPhoneController extends MainBaseController {
 
     private SearchView searchView;
     private MenuItem searchMenu;
-    private SearchAdapter searchAdapter;
 
     private PagerSlidingTabStrip barTabs;
 

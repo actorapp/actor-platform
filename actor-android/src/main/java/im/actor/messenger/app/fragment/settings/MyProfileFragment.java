@@ -29,10 +29,7 @@ import java.util.ArrayList;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.ChatSettingsActivity;
-import im.actor.messenger.app.activity.HelpActivity;
-import im.actor.messenger.app.activity.NotificationsActivity;
-import im.actor.messenger.app.activity.SecuritySettingsActivity;
+import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.activity.ViewAvatarActivity;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;

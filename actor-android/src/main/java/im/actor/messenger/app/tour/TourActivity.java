@@ -8,10 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.activity.AuthActivity;
+import im.actor.messenger.app.fragment.auth.AuthActivity;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.util.Screen;
 
