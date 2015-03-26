@@ -9,7 +9,7 @@ import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.DownloadCallback;
 import im.actor.model.modules.file.DownloadManager;
-import im.actor.model.modules.file.Downloaded;
+import im.actor.model.modules.file.entity.Downloaded;
 import im.actor.model.viewmodel.UploadCallback;
 import im.actor.model.modules.file.UploadManager;
 import im.actor.model.modules.utils.BaseKeyValueEngine;

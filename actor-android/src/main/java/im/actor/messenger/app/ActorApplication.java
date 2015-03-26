@@ -4,8 +4,8 @@ import android.app.Application;
 
 import android.content.Intent;
 
-import com.droidkit.images.loading.ImageLoader;
-import com.droidkit.images.loading.ImageLoaderProvider;
+import im.actor.images.loading.ImageLoader;
+import im.actor.images.loading.ImageLoaderProvider;
 import com.splunk.mint.Mint;
 
 import im.actor.messenger.app.service.KeepAliveService;

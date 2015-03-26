@@ -10,16 +10,16 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Interpolator;
 
-import com.droidkit.images.cache.BitmapReference;
-import com.droidkit.images.cache.DiskCache;
-import com.droidkit.images.common.ImageLoadException;
-import com.droidkit.images.loading.ImageLoader;
-import com.droidkit.images.loading.ImageLoaderProvider;
-import com.droidkit.images.loading.ImageReceiver;
-import com.droidkit.images.loading.ReceiverCallback;
-import com.droidkit.images.loading.tasks.RawFileTask;
-import com.droidkit.images.loading.view.ReferenceDrawable;
-import com.droidkit.images.ops.ImageLoading;
+import im.actor.images.cache.BitmapReference;
+import im.actor.images.cache.DiskCache;
+import im.actor.images.common.ImageLoadException;
+import im.actor.images.loading.ImageLoader;
+import im.actor.images.loading.ImageLoaderProvider;
+import im.actor.images.loading.ImageReceiver;
+import im.actor.images.loading.ReceiverCallback;
+import im.actor.images.loading.tasks.RawFileTask;
+import im.actor.images.loading.view.ReferenceDrawable;
+import im.actor.images.ops.ImageLoading;
 
 import im.actor.messenger.app.Core;
 import im.actor.messenger.app.images.AvatarTask;

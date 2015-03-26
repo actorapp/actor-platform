@@ -1,7 +1,7 @@
 package im.actor.messenger.app.images;
 
-import com.droidkit.images.loading.ImageLoader;
-import com.droidkit.images.loading.actors.base.BasicTaskActor;
+import im.actor.images.loading.ImageLoader;
+import im.actor.images.loading.actors.base.BasicTaskActor;
 
 import im.actor.messenger.util.Logger;
 import im.actor.model.entity.content.FileSource;

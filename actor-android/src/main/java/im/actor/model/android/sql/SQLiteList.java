@@ -90,7 +90,7 @@ public class SQLiteList implements ListStorage {
             }
             database.setTransactionSuccessful();
         } finally {
-            database.beginTransaction();
+            database.endTransaction();
         }
     }
 

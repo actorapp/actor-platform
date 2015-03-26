@@ -9,10 +9,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
-import com.droidkit.images.cache.DiskCache;
-import com.droidkit.images.common.ImageLoadException;
-import com.droidkit.images.loading.view.ImageReceiverView;
-import com.droidkit.images.ops.ImageLoading;
+import im.actor.images.cache.DiskCache;
+import im.actor.images.common.ImageLoadException;
+import im.actor.images.loading.view.ImageReceiverView;
+import im.actor.images.ops.ImageLoading;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Core;

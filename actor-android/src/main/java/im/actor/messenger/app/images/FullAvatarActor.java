@@ -1,9 +1,9 @@
 package im.actor.messenger.app.images;
 
-import com.droidkit.images.common.ImageLoadException;
-import com.droidkit.images.loading.ImageLoader;
-import com.droidkit.images.loading.actors.base.BasicTaskActor;
-import com.droidkit.images.ops.ImageLoading;
+import im.actor.images.common.ImageLoadException;
+import im.actor.images.loading.ImageLoader;
+import im.actor.images.loading.actors.base.BasicTaskActor;
+import im.actor.images.ops.ImageLoading;
 
 import im.actor.model.android.AndroidFileSystemReference;
 import im.actor.model.entity.FileReference;
