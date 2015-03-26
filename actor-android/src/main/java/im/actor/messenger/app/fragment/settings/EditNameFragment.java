@@ -8,7 +8,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.activity.EditNameActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.model.concurrency.CommandCallback;

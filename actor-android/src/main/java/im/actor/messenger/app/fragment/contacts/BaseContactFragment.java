@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.activity.HelpActivity;
+import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.fragment.DisplayListFragment;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
@@ -36,20 +36,30 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
     private final boolean useCompactVersion;
     private final boolean userSearch;
+    private final boolean useSelection;
 
-    public BaseContactFragment(boolean useCompactVersion, boolean userSearch) {
+    public BaseContactFragment(boolean useCompactVersion, boolean userSearch, boolean useSelection) {
         this.useCompactVersion = useCompactVersion;
         this.userSearch = userSearch;
+        this.useSelection = useSelection;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View res = inflate(inflater, container, R.layout.fragment_base_contacts, messenger().buildContactDisplayList());
+        return onCreateContactsView(R.layout.fragment_base_contacts, inflater, container, savedInstanceState);
+    }
+
+    protected View onCreateContactsView(int layoutId, LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View res = inflate(inflater, container, layoutId, messenger().buildContactDisplayList());
 
         if (useCompactVersion) {
             View header = new View(getActivity());
             header.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
             addHeaderView(header);
+
+            View footer = new View(getActivity());
+            footer.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+            addFooterView(footer);
         } else {
             TextView header = new TextView(getActivity());
             header.setBackgroundColor(getResources().getColor(R.color.bg_grey));
@@ -84,7 +94,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
     @Override
     protected BindedListAdapter<Contact, ContactHolder> onCreateAdapter(BindedDisplayList<Contact> displayList, Activity activity) {
-        return new ContactsAdapter(displayList, activity, false, new OnItemClickedListener<Contact>() {
+        return new ContactsAdapter(displayList, activity, useSelection, new OnItemClickedListener<Contact>() {
             @Override
             public void onClicked(Contact item) {
                 onItemClicked(item);
@@ -105,6 +115,37 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         return false;
     }
 
+    public void filter(String query) {
+        query = query.trim();
+        if (query.length() == 0) {
+            getDisplayList().initTop(false);
+        } else {
+            getDisplayList().initSearch(query, false);
+        }
+        ((ContactsAdapter) getAdapter()).setQuery(query.toLowerCase());
+    }
+
+
+    public void select(int uid) {
+        ((ContactsAdapter) getAdapter()).select(uid);
+    }
+
+    public void unselect(int uid) {
+        ((ContactsAdapter) getAdapter()).unselect(uid);
+    }
+
+    public Integer[] getSelected() {
+        return ((ContactsAdapter) getAdapter()).getSelected();
+    }
+
+    public int getSelectedCount() {
+        return ((ContactsAdapter) getAdapter()).getSelectedCount();
+    }
+
+    public boolean isSelected(int uid) {
+        return ((ContactsAdapter) getAdapter()).isSelected(uid);
+    }
+
     // Search menu
 
     @Override
@@ -123,13 +164,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                    String normalized = newText.trim();
-                    if (normalized.length() == 0) {
-                        getDisplayList().initTop(false);
-                    } else {
-                        getDisplayList().initSearch(normalized, false);
-                    }
-                    ((ContactsAdapter) getAdapter()).setQuery(normalized.toLowerCase());
+                    filter(newText);
                     return true;
                 }
             });

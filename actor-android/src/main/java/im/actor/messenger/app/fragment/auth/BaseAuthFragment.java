@@ -2,7 +2,6 @@ package im.actor.messenger.app.fragment.auth;
 
 import android.widget.EditText;
 
-import im.actor.messenger.app.activity.AuthActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.model.AuthState;

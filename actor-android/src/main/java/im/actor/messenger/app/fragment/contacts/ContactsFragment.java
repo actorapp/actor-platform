@@ -2,10 +2,6 @@ package im.actor.messenger.app.fragment.contacts;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
@@ -17,98 +13,7 @@ import static im.actor.messenger.app.Core.messenger;
 public class ContactsFragment extends BaseContactFragment {
 
     public ContactsFragment() {
-        super(false, false);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View res = super.onCreateView(inflater, container, savedInstanceState);
-
-//        emptyContactsImage = (ImageView) res.findViewById(R.id.emptyContactsImage);
-//
-//        View progress = res.findViewById(R.id.progress);
-//        progress.setVisibility(View.GONE);
-//
-//        listView = (ListView) res.findViewById(R.id.contactsList);
-//
-//        TextView header = new TextView(getActivity());
-//        header.setBackgroundColor(getResources().getColor(R.color.bg_grey));
-//        header.setText(R.string.contacts_title);
-//        header.setTypeface(Fonts.bold());
-//        header.setPadding(Screen.dp(16), 0, 0, 0);
-//        header.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-//        header.setTextSize(16);
-//        header.setTextColor(getResources().getColor(R.color.text_subheader));
-//
-//        LinearLayout headerCont = new LinearLayout(getActivity());
-//        headerCont.setBackgroundColor(getResources().getColor(R.color.bg_light));
-//        headerCont.setOrientation(LinearLayout.VERTICAL);
-//        headerCont.addView(header, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(48)));
-//
-//        listView.addHeaderView(headerCont, null, false);
-//
-//        FrameLayout footer = new FrameLayout(getActivity());
-//        footer.setBackgroundColor(getResources().getColor(R.color.bg_grey));
-//        footer.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(112)));
-//        ImageView shadow = new ImageView(getActivity());
-//        shadow.setImageResource(R.drawable.card_shadow_bottom);
-//        shadow.setScaleType(ImageView.ScaleType.FIT_XY);
-//        shadow.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
-//        footer.addView(shadow);
-//
-//        listView.addFooterView(footer, null, false);
-
-//        getBinder().bind(progress, ContactsSyncState.getSyncState(), new Processor<View, Boolean>() {
-//            @Override
-//            public void process(View obj, Boolean val) {
-//                if (val) {
-//                    showView(obj);
-//                } else {
-//                    hideView(obj);
-//                }
-//            }
-//        });
-
-//        adapter = new ContactsAdapter(ListEngines.getContactsUiListEngine(), getActivity(), false,
-//                new OnItemClickedListener<Contact>() {
-//                    @Override
-//                    public void onClicked(Contact item) {
-//                        onClick(item);
-//                    }
-//                }, new OnItemClickedListener<Contact>() {
-//            @Override
-//            public void onClicked(Contact item) {
-//                onLongClick(item);
-//            }
-//        });
-//        listView.setAdapter(adapter);
-//        listView.setRecyclerListener(new AbsListView.RecyclerListener() {
-//            @Override
-//            public void onMovedToScrapHeap(View view) {
-//                adapter.onMovedToScrapHeap(view);
-//            }
-//        });
-
-        // noContacts = res.findViewById(R.id.noContacts);
-
-//        res.findViewById(R.id.inviteButton).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String inviteMessage = getResources().getString(R.string.invite_message);
-//                Intent sendIntent = new Intent(Intent.ACTION_SEND);
-//                sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
-//                sendIntent.setType("text/plain");
-//                startActivity(sendIntent);
-//            }
-//        });
-//
-//        // Temp
-//        goneView(noContacts);
-//        showView(listView);
-
-        // getBinder().bind(ContactsFragment.this, ListEngines.getContactsList().getListState(), ContactsFragment.this);
-
-        return res;
+        super(false, false, false);
     }
 
     @Override

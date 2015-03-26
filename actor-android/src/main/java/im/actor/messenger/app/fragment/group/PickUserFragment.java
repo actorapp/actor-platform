@@ -12,7 +12,7 @@ import im.actor.model.entity.Contact;
  */
 public class PickUserFragment extends BaseContactFragment {
     public PickUserFragment() {
-        super(true, true);
+        super(true, true, false);
     }
 
     @Override
