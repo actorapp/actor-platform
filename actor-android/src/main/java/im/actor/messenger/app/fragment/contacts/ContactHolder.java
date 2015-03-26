@@ -14,6 +14,7 @@ import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
+import im.actor.messenger.app.view.SearchHighlight;
 import im.actor.messenger.util.Screen;
 import im.actor.model.android.view.BindedViewHolder;
 import im.actor.model.entity.Contact;
@@ -23,7 +24,7 @@ import im.actor.model.entity.Contact;
  */
 public class ContactHolder extends BindedViewHolder {
 
-    private int padding = Screen.dp(16);
+
 
     private AvatarView avatar;
     private TextView title;
@@ -45,6 +46,8 @@ public class ContactHolder extends BindedViewHolder {
         this.onItemClickedListener = onItemClickedListener;
         this.context = context;
         this.isSelectable = isSelectable;
+
+        int padding = Screen.dp(16);
 
         fl.setBackgroundColor(context.getResources().getColor(R.color.bg_light));
 
@@ -116,7 +119,7 @@ public class ContactHolder extends BindedViewHolder {
         }
     }
 
-    public void bind(final Contact data) {
+    public void bind(final Contact data, String query, boolean selected) {
         String shortName = getFastName(data.getName());
 
         fastTitle.setVisibility(View.VISIBLE);
@@ -146,15 +149,15 @@ public class ContactHolder extends BindedViewHolder {
 
         title.setText(data.getName());
 
-//        if (query.length() > 0) {
-//            title.setText(SearchHighlight.highlightQuery(data.getName(), query, 0xff0277bd));
-//        } else {
-//            title.setText(data.getName());
-//        }
-//
-//        if (selectable) {
-//            isSelected.setChecked(selectedUsers.contains(data.getUid()));
-//        }
+        if (query.length() > 0) {
+            title.setText(SearchHighlight.highlightQuery(data.getName(), query, 0xff0277bd));
+        } else {
+            title.setText(data.getName());
+        }
+
+        if (isSelectable) {
+            isSelected.setChecked(selected);
+        }
 
         cont.setOnClickListener(new View.OnClickListener() {
             @Override

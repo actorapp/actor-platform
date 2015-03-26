@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.droidkit.mvvm.ui.BinderCompatFragment;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.ViewUtils;

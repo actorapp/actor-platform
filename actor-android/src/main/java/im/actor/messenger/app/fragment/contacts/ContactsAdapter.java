@@ -13,15 +13,15 @@ import im.actor.model.mvvm.BindedDisplayList;
 
 public class ContactsAdapter extends BindedListAdapter<Contact, ContactHolder> {
 
+    private final HashSet<Integer> selectedUsers = new HashSet<Integer>();
+
+    private final OnItemClickedListener<Contact> onItemClickedListener;
+
     private boolean selectable;
 
-    private HashSet<Integer> selectedUsers = new HashSet<Integer>();
+    private final Context context;
 
     private String query = "";
-
-    private OnItemClickedListener<Contact> onItemClickedListener;
-
-    private Context context;
 
     public ContactsAdapter(BindedDisplayList<Contact> displayList, Context context, boolean selectable,
                            OnItemClickedListener<Contact> onItemClickedListener) {
@@ -44,9 +44,21 @@ public class ContactsAdapter extends BindedListAdapter<Contact, ContactHolder> {
         selectedUsers.remove(uid);
     }
 
+    public Integer[] getSelected() {
+        return selectedUsers.toArray(new Integer[selectedUsers.size()]);
+    }
+
+    public boolean isSelected(int uid) {
+        return selectedUsers.contains(uid);
+    }
+
+    public int getSelectedCount() {
+        return selectedUsers.size();
+    }
+
     @Override
-    public void onBindViewHolder(ContactHolder dialogHolder, int index, Contact item) {
-        dialogHolder.bind(item);
+    public void onBindViewHolder(ContactHolder contactHolder, int index, Contact item) {
+        contactHolder.bind(item, query, selectedUsers.contains(item.getUid()));
     }
 
     @Override

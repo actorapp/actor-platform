@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.activity.PickCountryActivity;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.util.country.Country;
