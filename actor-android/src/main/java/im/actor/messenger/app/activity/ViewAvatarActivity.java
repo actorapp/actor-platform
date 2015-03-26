@@ -13,12 +13,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.droidkit.images.cache.BitmapReference;
-import com.droidkit.images.common.ImageLoadException;
-import com.droidkit.images.loading.ImageReceiver;
-import com.droidkit.images.loading.ReceiverCallback;
-import com.droidkit.images.loading.tasks.RawFileTask;
-import com.droidkit.images.ops.ImageLoading;
+import im.actor.images.cache.BitmapReference;
+import im.actor.images.common.ImageLoadException;
+import im.actor.images.loading.ImageReceiver;
+import im.actor.images.loading.ReceiverCallback;
+import im.actor.images.loading.tasks.RawFileTask;
+import im.actor.images.ops.ImageLoading;
 import com.soundcloud.android.crop.Crop;
 
 import java.io.File;

@@ -1,6 +1,6 @@
 package im.actor.messenger.app.images;
 
-import com.droidkit.images.loading.AbsTask;
+import im.actor.images.loading.AbsTask;
 
 /**
  * Created by ex3ndr on 20.09.14.

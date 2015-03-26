@@ -5,8 +5,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.droidkit.images.common.ImageLoadException;
-import com.droidkit.images.ops.ImageLoading;
+import im.actor.images.common.ImageLoadException;
+import im.actor.images.ops.ImageLoading;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;

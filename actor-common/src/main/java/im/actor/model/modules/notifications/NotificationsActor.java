@@ -10,6 +10,8 @@ import im.actor.model.entity.ContentDescription;
 import im.actor.model.entity.Notification;
 import im.actor.model.entity.Peer;
 import im.actor.model.modules.Modules;
+import im.actor.model.modules.notifications.entity.PendingNotification;
+import im.actor.model.modules.notifications.entity.PendingStorage;
 import im.actor.model.modules.utils.ModuleActor;
 
 /**

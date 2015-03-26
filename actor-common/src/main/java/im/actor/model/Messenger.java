@@ -248,6 +248,10 @@ public class Messenger {
         modules.getMessagesModule().saveDraft(peer, draft);
     }
 
+    public void deleteMessages(Peer peer, long[] rids) {
+        modules.getMessagesModule().deleteMessages(peer, rids);
+    }
+
     public String loadDraft(Peer peer) {
         return modules.getMessagesModule().loadDraft(peer);
     }

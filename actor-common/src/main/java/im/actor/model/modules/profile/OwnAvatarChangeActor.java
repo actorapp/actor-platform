@@ -98,12 +98,17 @@ public class OwnAvatarChangeActor extends ModuleActor {
         request(new RequestRemoveAvatar(), new RpcCallback<ResponseSeq>() {
             @Override
             public void onResult(ResponseSeq response) {
-
                 updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
                         response.getState(), UpdateUserAvatarChanged.HEADER,
                         new UpdateUserAvatarChanged(myUid(), null).toByteArray()));
 
-                modules().getProfile().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, false));
+                // After update applied turn of uploading state
+                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), new Runnable() {
+                    @Override
+                    public void run() {
+                        modules().getProfile().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, false));
+                    }
+                }));
             }
 
             @Override

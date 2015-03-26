@@ -4,8 +4,8 @@ import android.content.Context;
 import android.graphics.*;
 import android.util.AttributeSet;
 
-import com.droidkit.images.loading.tasks.RawFileTask;
-import com.droidkit.images.loading.view.ImageReceiverView;
+import im.actor.images.loading.tasks.RawFileTask;
+import im.actor.images.loading.view.ImageReceiverView;
 
 import java.lang.reflect.Field;
 

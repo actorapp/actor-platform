@@ -7,8 +7,8 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.droidkit.images.common.ImageLoadException;
-import com.droidkit.images.ops.ImageLoading;
+import im.actor.images.common.ImageLoadException;
+import im.actor.images.ops.ImageLoading;
 import com.droidkit.progress.CircularView;
 
 import im.actor.messenger.R;

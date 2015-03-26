@@ -1,5 +1,6 @@
 package im.actor.model.modules;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import im.actor.model.api.OutPeer;
@@ -29,6 +30,7 @@ import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.ConversationHistoryActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
+import im.actor.model.modules.messages.MessageDeleteActor;
 import im.actor.model.modules.messages.OwnReadActor;
 import im.actor.model.modules.messages.PlainReaderActor;
 import im.actor.model.modules.messages.PlainReceiverActor;
@@ -51,6 +53,7 @@ public class Messages extends BaseModule {
     private ActorRef plainReadActor;
     private ActorRef plainReceiverActor;
     private ActorRef sendMessageActor;
+    private ActorRef deletionsActor;
 
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<Peer, ListEngine<Message>>();
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
@@ -104,6 +107,12 @@ public class Messages extends BaseModule {
                 return new SenderActor(modules());
             }
         }), "actor/sender/small");
+        this.deletionsActor = system().actorOf(Props.create(MessageDeleteActor.class, new ActorCreator<MessageDeleteActor>() {
+            @Override
+            public MessageDeleteActor create() {
+                return new MessageDeleteActor(modules());
+            }
+        }), "actor/deletions");
     }
 
     public ActorRef getSendMessageActor() {
@@ -188,6 +197,16 @@ public class Messages extends BaseModule {
 
     public ListEngine<Dialog> getDialogsEngine() {
         return dialogs;
+    }
+
+    public void deleteMessages(Peer peer, long[] rids) {
+        ActorRef conversationActor = getConversationActor(peer);
+        ArrayList<Long> deleted = new ArrayList<Long>();
+        for (long rid : rids) {
+            deleted.add(rid);
+        }
+        conversationActor.send(new ConversationActor.MessagesDeleted(deleted));
+        deletionsActor.send(new MessageDeleteActor.DeleteMessage(peer, rids));
     }
 
     public void loadMoreDialogs() {
