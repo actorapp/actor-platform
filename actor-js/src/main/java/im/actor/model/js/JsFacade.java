@@ -1,5 +1,6 @@
 package im.actor.model.js;
 
+import im.actor.model.js.angular.AngularValueCallback;
 import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.*;
 import im.actor.model.js.angular.AngularListCallback;
@@ -119,12 +120,29 @@ public class JsFacade implements Exportable {
 
     // Models
 
+    // Dialogs
+
     public void bindDialogs(AngularListCallback<JsDialog> callback) {
         messenger.getDialogsList().subscribe(callback);
     }
 
     public void unbindDialogs(AngularListCallback<JsDialog> callback) {
         messenger.getDialogsList().unsubscribe(callback);
+    }
+
+    // Users
+
+    public JsUser getUser(int uid) {
+        return messenger.getUser(uid).get();
+    }
+
+    public void bindUser(int uid, AngularValueCallback
+            callback) {
+        messenger.getUser(uid).subscribe(callback);
+    }
+
+    public void unbindUser(int uid, AngularValueCallback callback) {
+        messenger.getUser(uid).unsubscribe(callback);
     }
 
     // Actions

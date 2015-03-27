@@ -1,7 +1,40 @@
 package im.actor.model.js.angular;
 
+import com.google.gwt.core.client.JavaScriptObject;
+
+import java.util.ArrayList;
+
 /**
  * Created by ex3ndr on 27.03.15.
  */
-public class AngularValue {
+public class AngularValue<T> {
+
+    private T value;
+    private ArrayList<AngularValueCallback> callbacks = new ArrayList<AngularValueCallback>();
+
+    public AngularValue(T value) {
+        this.value = value;
+    }
+
+    public T get() {
+        return value;
+    }
+
+    public void subscribe(AngularValueCallback callback) {
+        if (!callbacks.contains(callback)) {
+            callbacks.add(callback);
+            callback.onChanged(value);
+        }
+    }
+
+    public void unsubscribe(AngularValueCallback callback) {
+        callbacks.remove(callback);
+    }
+
+    public void changeValue(T value) {
+        this.value = value;
+        for (AngularValueCallback callback : callbacks) {
+            callback.onChanged(value);
+        }
+    }
 }

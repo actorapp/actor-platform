@@ -1,6 +1,7 @@
 package org.bouncycastle.crypto.digests;
 
 
+import im.actor.model.log.Log;
 import org.bouncycastle.util.Memoable;
 import org.bouncycastle.util.Pack;
 
@@ -227,14 +228,14 @@ public class SHA256Digest
             ++t;
         }
 
-        H1 += a;
-        H2 += b;
-        H3 += c;
-        H4 += d;
-        H5 += e;
-        H6 += f;
-        H7 += g;
-        H8 += h;
+        H1 = (H1 + a) & 0xffffffff;
+        H2 = (H2 + b) & 0xffffffff;
+        H3 = (H3 + c) & 0xffffffff;
+        H4 = (H4 + d) & 0xffffffff;
+        H5 = (H5 + e) & 0xffffffff;
+        H6 = (H6 + f) & 0xffffffff;
+        H7 = (H7 + g) & 0xffffffff;
+        H8 = (H8 + h) & 0xffffffff;
 
         //
         // reset the offset and clean out the word buffer.
