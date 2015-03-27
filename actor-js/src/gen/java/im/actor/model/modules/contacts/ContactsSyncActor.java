@@ -1,6 +1,7 @@
 package im.actor.model.modules.contacts;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -88,10 +89,17 @@ public class ContactsSyncActor extends ModuleActor {
             }
             hash += u;
         }
-        String hashValue = CryptoUtils.hex(CryptoUtils.SHA256(hash.getBytes()));
+        byte[] hashData;
+        try {
+            hashData = hash.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return;
+        }
+        String hashValue = CryptoUtils.hex(CryptoUtils.SHA256(hashData));
 
         Log.d(TAG, "Performing sync with uids: " + hash);
-        Log.d(TAG, "Performing sync with hash: " + hashValue);
+        Log.d(TAG, "Performing sync with hash: " + hashValue + ", hashData:" + hashData.length);
 
         request(new RequestGetContacts(hashValue), new RpcCallback<ResponseGetContacts>() {
             @Override

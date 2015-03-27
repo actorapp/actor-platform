@@ -77,6 +77,7 @@ public class ApiBroker extends Actor {
         if (keyStorage.getAuthKey() == 0) {
             self().send(new RequestAuthId());
         } else {
+            Log.d(TAG, "Key loaded: " + keyStorage.getAuthKey());
             self().send(new InitMTProto(keyStorage.getAuthKey()));
         }
     }
@@ -109,7 +110,7 @@ public class ApiBroker extends Actor {
         AuthIdRetriever.requestAuthId(endpoints, networkProvider, new AuthIdRetriever.AuthIdCallback() {
             @Override
             public void onSuccess(long authId) {
-                Log.d(TAG, "Key created");
+                Log.d(TAG, "Key created: " + authId);
                 self().send(new InitMTProto(authId));
             }
 

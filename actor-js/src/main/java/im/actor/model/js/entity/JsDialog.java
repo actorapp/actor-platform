@@ -19,7 +19,7 @@ public class JsDialog extends JavaScriptObject implements Exportable {
                     JsPeer.create(src.getPeer()),
                     src.getDialogTitle(), null, Placeholders.getPlaceholder(src.getPeer().getPeerId()),
                     formatter.formatShortDate(src.getDate()),
-                    "<SENDER>", false,
+                    formatter.formatPerformerName(src.getSenderId()), false,
                     src.getText(), false,
                     Enums.convert(src.getStatus()));
         }
