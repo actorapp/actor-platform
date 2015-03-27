@@ -2,6 +2,7 @@ package im.actor.model.js.providers;
 
 import im.actor.model.crypto.CryptoKeyPair;
 import im.actor.model.crypto.bouncycastle.BouncyCastleProvider;
+import im.actor.model.js.providers.crypto.Rsa;
 
 /**
  * Created by ex3ndr on 27.03.15.
@@ -13,12 +14,6 @@ public class JsCryptoProvider extends BouncyCastleProvider {
 
     @Override
     public CryptoKeyPair generateRSA1024KeyPair() {
-        // return super.generateRSA1024KeyPair();
-        return new CryptoKeyPair(new byte[64], new byte[64]);
-    }
-
-    @Override
-    public byte[] SHA256(byte[] data) {
-        return super.SHA256(data);
+        return Rsa.generate1024RsaKey();
     }
 }

@@ -88,14 +88,14 @@ angular.module('actor.controllers', [])
 				console.log(items);
 				
 				items.forEach(function(item) {
-					if(item.avatar != null){
-						item.pic = '<img class="im_dialog_photo" src="'+item.avatar+'">';
+					if(item.peer.avatar != null){
+						item.pic = '<img class="im_dialog_photo" src="'+item.peer.avatar+'">';
 					}
 					else{
-						console.log(item.peer.id);
+						console.log(item.peer.peer.id);
 						
-						var num = parseInt(''+item.peer.id) % 7;
-						var text = item.title.substr(0,1);
+						var num = parseInt(''+item.peer.peer.id) % 7;
+						var text = item.peer.title.substr(0,1);
 						if(parseInt(text) >= 0 ){
 							text = "#"+text;
 						}

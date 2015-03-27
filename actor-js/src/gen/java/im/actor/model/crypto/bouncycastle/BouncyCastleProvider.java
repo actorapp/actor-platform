@@ -1,5 +1,6 @@
 package im.actor.model.crypto.bouncycastle;
 
+import im.actor.model.log.Log;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.digests.MD5Digest;
 import org.bouncycastle.crypto.digests.SHA256Digest;
@@ -48,7 +49,7 @@ public class BouncyCastleProvider implements CryptoProvider {
                 provider,
                 RSA_1024_STREIGHT,
                 RSA_CERTAINITY));
-
+        Log.d("RSA", "Starting key generation...");
         AsymmetricCipherKeyPair res = generator.generateKeyPair();
 
         // Building x.509 public key

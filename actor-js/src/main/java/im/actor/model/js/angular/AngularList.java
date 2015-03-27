@@ -2,6 +2,7 @@ package im.actor.model.js.angular;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import im.actor.model.Messenger;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngineItem;
 import im.actor.model.i18n.I18nEngine;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
  */
 public class AngularList<T extends JavaScriptObject, V extends BserObject & ListEngineItem> implements JsListEngineCallback<V> {
 
-    private final I18nEngine formatter;
+    private final JsMessenger messenger;
     private final JsListEngine<V> listEngine;
     private final JsEntityConverter<V, T> entityConverter;
 
@@ -26,8 +27,8 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
     private ArrayList<V> values;
     private JsArray<T> jsValues;
 
-    public AngularList(JsListEngine<V> listEngine, JsEntityConverter<V, T> entityConverter, I18nEngine formatter) {
-        this.formatter = formatter;
+    public AngularList(JsListEngine<V> listEngine, JsEntityConverter<V, T> entityConverter, JsMessenger messenger) {
+        this.messenger = messenger;
         this.listEngine = listEngine;
         this.entityConverter = entityConverter;
 
@@ -38,7 +39,7 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
         for (long rid : rids) {
             V item = listEngine.getValue(rid);
             values.add(item);
-            jsValues.push(entityConverter.convert(item, formatter));
+            jsValues.push(entityConverter.convert(item, messenger));
         }
         listEngine.addListener(this);
     }
@@ -70,13 +71,13 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
             for (int i = 0; i < values.size(); i++) {
                 if (values.get(i).getEngineSort() < sortKey) {
                     values.add(i, item);
-                    insert(jsValues, i, entityConverter.convert(item, formatter));
+                    insert(jsValues, i, entityConverter.convert(item, messenger));
                     return;
                 }
             }
 
             values.add(item);
-            jsValues.push(entityConverter.convert(item, formatter));
+            jsValues.push(entityConverter.convert(item, messenger));
         } finally {
             notifySubscribers();
         }
