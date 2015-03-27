@@ -199,16 +199,6 @@
 
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
 
-        <provider
-            android:name="im.actor.messenger.app.providers.MediaProvider"
-            android:authorities="${applicationId}.media"
-            android:exported="true" />
-
-        <provider
-            android:name="im.actor.messenger.app.providers.AvatarProvider"
-            android:authorities="${applicationId}.avatar"
-            android:exported="true" />
-
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d78e94b0dcd206307a64bfe0bbfaaf6b4713aea6" />

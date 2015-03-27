@@ -208,7 +208,7 @@
 
     <string name="group_menu_add">Добавить пользователя</string>
     <string name="group_menu_leave">Покинуть группу</string>
-    <string name="group_menu_change_name">Изменить тему</string>
+    <string name="group_menu_change_theme">Изменить тему</string>
     <string name="group_menu_change_photo">Изменить фото</string>
 
     <string name="group_shared_header">Общее</string>

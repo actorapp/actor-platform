@@ -25,13 +25,7 @@ import im.actor.messenger.app.images.VideoPreviewTask;
 import im.actor.messenger.app.images.VideoTask;
 import im.actor.model.ApiConfiguration;
 import im.actor.model.ConfigurationBuilder;
-import im.actor.model.android.AndroidCallbackDispatcher;
-import im.actor.model.android.AndroidFileProvider;
-import im.actor.model.android.AndroidLog;
-import im.actor.model.android.AndroidMainThreadProvider;
-import im.actor.model.android.AndroidNotifications;
-import im.actor.model.android.AndroidPhoneBook;
-import im.actor.model.android.AndroidStorageProvider;
+import im.actor.model.android.*;
 import im.actor.model.crypto.bouncycastle.BouncyCastleProvider;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
@@ -74,7 +68,6 @@ public class Core {
 
         // Init actor system
         system().setClassLoader(AppContext.getContext().getClassLoader());
-        system().addDispatcher("db", 1);
 
         // Emoji
         // this.emojiProcessor = new EmojiProcessor(application);
@@ -113,19 +106,7 @@ public class Core {
         this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
 
 
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        BouncyCastleProvider bouncyCastleProvider = new BouncyCastleProvider();
-        builder.setThreadingProvider(new JavaThreadingProvider());
-        builder.setNetworkProvider(new JavaNetworkProvider());
-        builder.setMainThreadProvider(new AndroidMainThreadProvider());
-        builder.setLog(new AndroidLog());
-        builder.setStorage(new AndroidStorageProvider());
-        builder.setLocale(new JavaLocale("En"));
-        builder.setPhoneBookProvider(new AndroidPhoneBook());
-        // builder.setCryptoProvider(new AndroidCryptoProvider());
-        builder.setFileSystemProvider(new AndroidFileProvider(application));
-        builder.setNotificationProvider(new AndroidNotifications());
-        builder.setDispatcherProvider(new AndroidCallbackDispatcher());
+        AndroidConfigurationBuilder builder = new AndroidConfigurationBuilder(application);
 
         if (BuildConfig.API_SSL) {
             builder.addEndpoint("tls://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
@@ -135,12 +116,8 @@ public class Core {
         builder.setEnableContactsLogging(true);
         builder.setEnableNetworkLogging(true);
 
-        byte[] deviceHash = bouncyCastleProvider.SHA256(Base64.encode((AppContext.getContext().getPackageName() + ":" + Build.SERIAL).getBytes(),
-                Base64.DEFAULT));
-
         builder.setApiConfiguration(new ApiConfiguration("Actor Android v0.1", 1, "??", "Android Device",
-                deviceHash));
-        builder.setCryptoProvider(bouncyCastleProvider);
+                AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
         this.messenger = new im.actor.model.android.AndroidMessenger(builder.build());
 

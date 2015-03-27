@@ -8,11 +8,12 @@ import java.util.List;
 
 import im.actor.model.droidkit.engine.ListEngineRecord;
 import im.actor.model.droidkit.engine.ListStorage;
+import im.actor.model.droidkit.engine.ListStorageDisplayEx;
 
 /**
  * Created by ex3ndr on 14.03.15.
  */
-public class SQLiteList implements ListStorage {
+public class SQLiteList implements ListStorageDisplayEx {
 
     private SQLiteDatabase database;
     private String tableName;

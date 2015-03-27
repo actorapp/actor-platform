@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.activity.ViewAvatarActivity;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.CoverAvatarView;
@@ -75,26 +76,6 @@ public class ProfileFragment extends BaseFragment {
 
         final TextView lastSeen = (TextView) res.findViewById(R.id.lastSeen);
         bind(lastSeen, lastSeen, user);
-
-        // int docsCount = ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_USER, uid)).getCount();
-
-//        if (docsCount > 0) {
-//            res.findViewById(R.id.filesCont).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    startActivity(Intents.openDocs(DialogType.TYPE_USER, uid, getActivity()));
-//                }
-//            });
-//            ((TextView) res.findViewById(R.id.documentCount)).setText(docsCount + "");
-//        } else {
-//            res.findViewById(R.id.filesCont).setVisibility(View.GONE);
-//            res.findViewById(R.id.sharedDiv).setVisibility(View.GONE);
-//            res.findViewById(R.id.sharedTitle).setVisibility(View.GONE);
-//        }
-
-        res.findViewById(R.id.filesCont).setVisibility(View.GONE);
-        res.findViewById(R.id.sharedDiv).setVisibility(View.GONE);
-        res.findViewById(R.id.sharedTitle).setVisibility(View.GONE);
 
         LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.phoneContainer);
         if (user.getPhones().get().size() == 0) {
@@ -197,7 +178,7 @@ public class ProfileFragment extends BaseFragment {
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // startActivity(ViewAvatarActivity.viewAvatar(uid, getActivity()));
+                startActivity(ViewAvatarActivity.viewAvatar(uid, getActivity()));
             }
         });
 

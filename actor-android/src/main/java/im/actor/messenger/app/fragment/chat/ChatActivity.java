@@ -47,6 +47,8 @@ import im.actor.messenger.util.io.IOUtils;
 import im.actor.model.Messenger;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
+import im.actor.model.mvvm.ValueChangedListener;
+import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
@@ -207,7 +209,17 @@ public class ChatActivity extends BaseActivity {
         });
 
         kicked = findViewById(R.id.kickedFromChat);
-        kicked.setVisibility(View.GONE);
+
+        if (peer.getPeerType() == PeerType.GROUP) {
+            bind(messenger().getGroups().get(peer.getPeerId()).isMember(), new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                    kicked.setVisibility(val ? View.GONE : View.VISIBLE);
+                }
+            });
+        } else {
+            kicked.setVisibility(View.GONE);
+        }
 
         sendButton = (TintImageView) findViewById(R.id.ib_send);
         sendButton.setResource(R.drawable.conv_send);
@@ -382,8 +394,7 @@ public class ChatActivity extends BaseActivity {
                     ArrayList<String> files = data.getStringArrayListExtra("picked");
                     if (files != null) {
                         for (String s : files) {
-//                            MessageDeliveryActor.messageSender().sendDocument(chatType, chatId, s,
-//                                    new File(s).getName());
+                            messenger().sendDocument(peer, s);
                         }
                     }
                 }
@@ -448,8 +459,7 @@ public class ChatActivity extends BaseActivity {
                 } else if (mimeType.startsWith("image/")) {
                     messenger().sendPhoto(peer, picturePath, new File(fileName).getName());
                 } else {
-//                    MessageDeliveryActor.messageSender().sendDocument(chatType, chatId, picturePath,
-//                            fileName);
+                    messenger().sendDocument(peer, picturePath, new File(fileName).getName());
                 }
 
                 return null;

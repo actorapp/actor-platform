@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head>
+    <title>Actor App</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <script type="text/javascript" language="javascript"
+            src="js/angular.js"></script>
+
+    <!--<script type="text/javascript" language="javascript"-->
+    <!--src="js/angular-route.min.js"></script>-->
+
+    <script type="text/javascript" language="javascript"
+            src="ActorMessenger/ActorMessenger.nocache.js"></script>
+
+    <script type="text/javascript" language="javascript">
+        function jsAppLoaded() {
+            messenger = new actor.ActorApp;
+            updateUi(messenger.getAuthState());
+        }
+
+        function progressShow() {
+            $("#loading_progress").removeClass('hide');
+        }
+
+        function progressHide() {
+            $("#loading_progress").addClass('hide');
+        }
+
+        function updateUi(state) {
+            if (state == "start") {
+                $("#login_phone").removeClass('hide');
+                $("#login_code").addClass('hide');
+                $("#main_container").addClass('hide');
+            } else if (state == "code") {
+                $("#login_phone").addClass('hide');
+                $("#login_code").removeClass('hide');
+                $("#main_container").addClass('hide');
+            } else if (state == "signup") {
+                // ???
+            } else if (state == "logged_in") {
+                $("#login_phone").addClass('hide');
+                $("#login_code").addClass('hide');
+                $("#main_container").removeClass('hide');
+                initMainUi();
+            }
+        }
+
+        function sendPhone(){
+            progressShow();
+            var phoneNumber = $("#phone_number").val();
+            messenger.requestSms(phoneNumber, function(state) {
+                progressHide();
+                updateUi(state);
+            }, function(tag, message, canTryAgain, state) {
+                progressHide();
+                alert(message);
+                updateUi(state);
+            });
+        }
+
+        function sendCode(){
+            progressShow();
+            var code = $("#activation_code").val();
+            messenger.sendCode(code, function(state) {
+                progressHide();
+                updateUi(state);
+            }, function(tag, message, canTryAgain, state) {
+                progressHide();
+                alert(message);
+                updateUi(state);
+            });
+        }
+
+        function initMainUi(){
+            mainScope.dialogs = messenger.getDialogs();
+            mainScope.$apply();
+        }
+
+         angular.module('App', [])
+                .controller('DialogsController', ['$scope', function($scope) {
+            mainScope = $scope;
+         }]);
+    </script>
+</head>
+
+<body ng-app="App">
+<div class="container">
+    <div class="page-header">
+        <h1>Actor Demo pages
+            <small class="hide" id="loading_progress">Loading...</small>
+        </h1>
+    </div>
+
+    <div id="login_phone" class="hide">
+        Phone number <input type="text" id="phone_number"><br>
+        <button type="button" class="btn btn-success" onclick="sendPhone()">Sign in</button>
+    </div>
+
+    <div id="login_code" class="hide">
+        Activation code <input type="text" id="activation_code"><br>
+        <button type="button" class="btn btn-success" onclick="sendCode()">Sign in</button>
+    </div>
+
+    <div id="main_container" class="hide">
+        <div class="row">
+            <div class="col-md-4">
+                <div ng-controller="DialogsController">
+                    <ul class="unstyled">
+                        <li ng-repeat="dialog in dialogs.values()">
+                            {{dialog.title}} : {{dialog.text}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>

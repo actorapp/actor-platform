@@ -1,4 +1,4 @@
-include ':actor-common', ':actor-java', ':actor-java-base', ':actor-ios', ':actor-console', ':actor-android', ':actor-gwt', ':actor-bc'
+include ':actor-common', ':actor-jvm', ':actor-common-base', ':actor-cocoa-base', ':actor-android', ':actor-js', ':actor-bc'
 
 //project(':actor-common').projectDir = new File(settingsDir, "actor-common")
 //project(':actor-java').projectDir = new File(settingsDir, "actor-java")

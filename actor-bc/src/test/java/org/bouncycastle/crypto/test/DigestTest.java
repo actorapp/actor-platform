@@ -3,7 +3,7 @@ package org.bouncycastle.crypto.test;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.EncodableDigest;
 import org.bouncycastle.util.Memoable;
-import org.bouncycastle.util.encoders.Hex;
+import org.bouncycastle.util.test.encoders.Hex;
 import org.bouncycastle.util.test.SimpleTest;
 
 public abstract class DigestTest

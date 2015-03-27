@@ -1,0 +1,49 @@
+task cleanBuildSources(type: Delete) {
+    delete "${buildDir}/java/"
+}
+
+task cleanDestSources(type: Delete) {
+    delete "${projectDir}/src/"
+}
+
+// Copy sources from dependency projects
+// actor-common
+// actor-java-threads
+task copySources(type: Copy, dependsOn: ['cleanBuildSources']) {
+    from fileTree("${projectDir}/../actor-common/src/main/java/")
+    from fileTree("${projectDir}/../actor-common-base/src/main/java/")
+    from fileTree("${projectDir}/../actor-bc/src/main/java/")
+
+    into "${buildDir}/java/"
+}
+
+// Translate java to objc
+task j2objc(type: Exec, dependsOn: ['copySources']) {
+
+    Properties properties = new Properties()
+    properties.load(project.file('local.properties').newDataInputStream())
+
+    executable "${properties.get("j2objcDir")}/j2objc"
+
+    args "-use-arc", "--strip-reflection"
+
+    args "-d", "${projectDir}/src/"
+
+    args "-sourcepath", "${buildDir}/java/"
+
+    args "--prefixes", "${projectDir}/prefixes.properties"
+
+    args "--mapping", "${projectDir}/mapping.properties"
+
+    doFirst {
+        def srcFiles = fileTree("${buildDir}/java/")
+
+        srcFiles.each { file ->
+            args file.path
+        }
+    }
+}
+
+task build(dependsOn: ['j2objc']) {
+
+}

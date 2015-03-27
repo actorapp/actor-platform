@@ -1,6 +1,0 @@
-include ':actor-common', ':actor-java-base', ':actor-java', ':actor-bc'
-
-project(':actor-common').projectDir = new File(settingsDir, "../actor-common")
-project(':actor-java').projectDir = new File(settingsDir, "../actor-java")
-project(':actor-java-base').projectDir = new File(settingsDir, "../actor-java-base")
-project(':actor-bc').projectDir = new File(settingsDir, "../actor-bc")

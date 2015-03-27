@@ -11,7 +11,7 @@
 
     <item
         android:id="@+id/editTitle"
-        android:title="@string/group_menu_change_name" />
+        android:title="@string/group_menu_change_theme" />
 
     <item
         android:id="@+id/changePhoto"
