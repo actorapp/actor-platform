@@ -42,8 +42,8 @@ tasks.clean.dependsOn(cleanGenSources)
 tasks.clean.dependsOn(cleanGenResources)
 
 dependencies {
-    compile 'com.google.gwt:gwt-user:2.7.0'
-    compile 'org.timepedia.exporter:gwtexporter:2.4.0'
+    providedCompile 'com.google.gwt:gwt-user:2.7.0'
+    providedCompile 'org.timepedia.exporter:gwtexporter:2.4.0'
     gwt 'org.timepedia.exporter:gwtexporter:2.4.0'
 }
 
@@ -68,4 +68,17 @@ gwt {
 //        disableClassMetadata = true;
 //        disableCastChecking = true;
     }
+}
+
+task explodedWar(type: Copy) {
+    into "$buildDir/exploded"
+    with war
+}
+
+tasks.war.dependsOn(explodedWar)
+
+task buildPackage(type: Zip, dependsOn: ['war']) {
+    from "$buildDir/exploded"
+    exclude "WEB-INF/**"
+    exclude "META-INF/**"
 }
