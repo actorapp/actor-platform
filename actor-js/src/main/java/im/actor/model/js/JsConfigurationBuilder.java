@@ -17,5 +17,6 @@ public class JsConfigurationBuilder extends ConfigurationBuilder {
         setDispatcherProvider(new JsDispatcherProvider());
         setPhoneBookProvider(new JsPhoneBookProvider());
         setStorage(new JsStorageProvider());
+        setNotificationProvider(new JsNotificationsProvider());
     }
 }
