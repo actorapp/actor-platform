@@ -130,6 +130,14 @@ public class JsFacade implements Exportable {
         messenger.getDialogsList().unsubscribe(callback);
     }
 
+    public void bindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
+        messenger.getConversationList(peer.convert()).subscribe(callback);
+    }
+
+    public void unbindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
+        messenger.getConversationList(peer.convert()).subscribe(callback);
+    }
+
     // Users
 
     public JsUser getUser(int uid) {
