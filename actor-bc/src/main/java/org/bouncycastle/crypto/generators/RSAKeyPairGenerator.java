@@ -1,5 +1,6 @@
 package org.bouncycastle.crypto.generators;
 
+import im.actor.model.log.Log;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPairGenerator;
 import org.bouncycastle.crypto.KeyGenerationParameters;
@@ -42,10 +43,14 @@ public class RSAKeyPairGenerator
 
         p = chooseRandomPrime(pBitlength, e);
 
+        int iteration = 0;
         //
         // generate a modulus of the required length
         //
         for (; ; ) {
+            iteration++;
+            Log.d("RSA", "Iteration #" + iteration);
+
             q = chooseRandomPrime(qBitlength, e);
 
             // p and q should not be too close together (or equal!)
@@ -119,7 +124,11 @@ public class RSAKeyPairGenerator
      * @return a prime p, with (p-1) relatively prime to e
      */
     protected BigInteger chooseRandomPrime(int bitlength, BigInteger e) {
+        int iteration = 0;
         for (; ; ) {
+            iteration++;
+            Log.d("RSA", "chooseRandomPrime #" + iteration);
+
             BigInteger p = param.getRandom().generateBigInteger(bitlength, 1);
 
             if (p.mod(e).equals(ONE)) {

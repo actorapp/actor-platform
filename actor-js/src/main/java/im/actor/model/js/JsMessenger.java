@@ -3,10 +3,13 @@ package im.actor.model.js;
 import im.actor.model.Configuration;
 import im.actor.model.Messenger;
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
 import im.actor.model.js.angular.AngularList;
 import im.actor.model.js.angular.AngularModule;
 import im.actor.model.js.angular.AngularValue;
 import im.actor.model.js.entity.JsDialog;
+import im.actor.model.js.entity.JsMessage;
 import im.actor.model.js.entity.JsUser;
 
 /**
@@ -18,11 +21,15 @@ public class JsMessenger extends Messenger {
 
     public JsMessenger(Configuration configuration) {
         super(configuration);
-        this.angularModule = new AngularModule(modules);
+        this.angularModule = new AngularModule(this, modules);
     }
 
     public AngularList<JsDialog, Dialog> getDialogsList() {
         return angularModule.getDialogsList();
+    }
+
+    public AngularList<JsMessage, Message> getConversationList(Peer peer) {
+        return angularModule.getMessagesList(peer);
     }
 
     public AngularValue<JsUser> getUser(int uid) {

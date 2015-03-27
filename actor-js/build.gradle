@@ -19,6 +19,10 @@ task cleanGenSources(type: Delete) {
     delete "${projectDir}/src/gen/java/"
 }
 
+task cleanGenResources(type: Delete) {
+    delete "${projectDir}/src/gen/resources/"
+}
+
 task copyGenSources(type: Copy, dependsOn: ['cleanGenSources']) {
     from fileTree("${projectDir}/../actor-common/src/main/java/")
     from fileTree("${projectDir}/../actor-bc/src/main/java/")
@@ -26,8 +30,16 @@ task copyGenSources(type: Copy, dependsOn: ['cleanGenSources']) {
     into "${projectDir}/src/gen/java/"
 }
 
+task copyGenResources(type: Copy, dependsOn: ['cleanGenSources']) {
+    from fileTree("${projectDir}/../actor-common/src/main/resources/")
+
+    into "${projectDir}/src/gen/resources/"
+}
+
+tasks.compileJava.dependsOn(copyGenResources)
 tasks.compileJava.dependsOn(copyGenSources)
 tasks.clean.dependsOn(cleanGenSources)
+tasks.clean.dependsOn(cleanGenResources)
 
 dependencies {
     compile 'com.google.gwt:gwt-user:2.7.0'
@@ -39,6 +51,9 @@ sourceSets {
     main {
         java {
             srcDirs = ['src/main/java', 'src/gen/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources', 'src/gen/resources']
         }
     }
 }
