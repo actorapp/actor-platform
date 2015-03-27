@@ -64,7 +64,8 @@ gwt {
 
     compiler {
         strict = true;
-        enableClosureCompiler = true;
+        style = "PRETTY"
+        //        enableClosureCompiler = true;
 //        disableClassMetadata = true;
 //        disableCastChecking = true;
     }
