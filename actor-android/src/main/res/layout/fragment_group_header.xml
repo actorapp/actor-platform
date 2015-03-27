@@ -54,68 +54,6 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/sharedTitle"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_vertical|left"
-        android:paddingLeft="72dp"
-        android:text="Shared"
-        android:textColor="@color/primary"
-        android:textSize="16sp" />
-
-    <LinearLayout
-        android:id="@+id/filesCont"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@drawable/selector">
-
-        <im.actor.messenger.app.view.TintImageView
-            android:layout_width="72dp"
-            android:layout_height="48dp"
-            app:src="@drawable/ic_insert_drive_file_white_18dp"
-            app:tintColor="@color/primary" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/profile_shared_files"
-            android:textColor="@color/text_primary"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/documentCount"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingLeft="8dp"
-            android:paddingRight="16dp"
-            android:text="12"
-            android:textColor="@color/text_hint"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/sharedDiv"
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:background="@color/bg_grey">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:layout_gravity="top"
-            android:background="@drawable/card_shadow_bottom" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="bottom"
-            android:background="@drawable/card_shadow_top" />
-    </FrameLayout>
-
-    <TextView
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:gravity="center_vertical|left"

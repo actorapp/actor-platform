@@ -207,7 +207,7 @@
 
     <string name="group_menu_add">Add member</string>
     <string name="group_menu_leave">Leave group</string>
-    <string name="group_menu_change_name">Change name</string>
+    <string name="group_menu_change_theme">Change theme</string>
     <string name="group_menu_change_photo">Change photo</string>
 
     <string name="group_shared_header">Shared</string>

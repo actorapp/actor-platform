@@ -27,6 +27,7 @@ import java.util.HashSet;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.activity.ViewAvatarActivity;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.AvatarDrawable;
@@ -68,6 +69,7 @@ public class GroupInfoFragment extends BaseFragment {
     private ListView listView;
     private GroupUserAdapter groupUserAdapter;
     private CoverAvatarView avatarView;
+    private View notMemberView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,6 +79,16 @@ public class GroupInfoFragment extends BaseFragment {
         groupInfo = groups().get(chatId);
 
         View res = inflater.inflate(R.layout.fragment_group, container, false);
+
+        notMemberView = res.findViewById(R.id.notMember);
+
+        bind(groupInfo.isMember(), new ValueChangedListener<Boolean>() {
+            @Override
+            public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                notMemberView.setVisibility(val ? View.GONE : View.VISIBLE);
+                getActivity().invalidateOptionsMenu();
+            }
+        });
 
         listView = (ListView) res.findViewById(R.id.groupList);
 
@@ -88,7 +100,7 @@ public class GroupInfoFragment extends BaseFragment {
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
+                startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
             }
         });
 
@@ -96,40 +108,18 @@ public class GroupInfoFragment extends BaseFragment {
         bind((TextView) header.findViewById(R.id.title), groupInfo.getName());
 
         // Created by
-        TextView createdBy = (TextView) header.findViewById(R.id.createdBy);
+        final TextView createdBy = (TextView) header.findViewById(R.id.createdBy);
         if (groupInfo.getCreatorId() == myUid()) {
             createdBy.setText(R.string.group_created_by_you);
         } else {
             UserVM admin = users().get(groupInfo.getCreatorId());
-            // TODO: Dynamic binding
-            createdBy.setText(getString(R.string.group_created_by).replace("{0}", admin.getName().get()));
+            bind(admin.getName(), new ValueChangedListener<String>() {
+                @Override
+                public void onChanged(String val, ValueModel<String> valueModel) {
+                    createdBy.setText(getString(R.string.group_created_by).replace("{0}", val));
+                }
+            });
         }
-
-        // Shared
-        header.findViewById(R.id.filesCont).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // startActivity(Intents.openDocs(DialogType.TYPE_GROUP, chatId, getActivity()));
-            }
-        });
-
-        header.findViewById(R.id.sharedTitle).setVisibility(View.GONE);
-        header.findViewById(R.id.sharedDiv).setVisibility(View.GONE);
-        header.findViewById(R.id.filesCont).setVisibility(View.GONE);
-
-//        int docsCount = ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
-//        if (docsCount == 0) {
-//            header.findViewById(R.id.sharedTitle).setVisibility(View.GONE);
-//            header.findViewById(R.id.sharedDiv).setVisibility(View.GONE);
-//            header.findViewById(R.id.filesCont).setVisibility(View.GONE);
-//        } else {
-//            header.findViewById(R.id.sharedTitle).setVisibility(View.VISIBLE);
-//            header.findViewById(R.id.sharedDiv).setVisibility(View.VISIBLE);
-//            header.findViewById(R.id.filesCont).setVisibility(View.VISIBLE);
-//
-//            ((TextView) header.findViewById(R.id.documentCount)).setText(
-//                    ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount() + "");
-//        }
 
         final SwitchCompat isNotificationsEnabled = (SwitchCompat) header.findViewById(R.id.enableNotifications);
         isNotificationsEnabled.setChecked(messenger().isNotificationsEnabled(Peer.group(chatId)));
@@ -270,7 +260,9 @@ public class GroupInfoFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu, menuInflater);
-        menuInflater.inflate(R.menu.group_info, menu);
+        if (groupInfo.isMember().get()) {
+            menuInflater.inflate(R.menu.group_info, menu);
+        }
     }
 
     @Override
@@ -282,7 +274,7 @@ public class GroupInfoFragment extends BaseFragment {
                     .setPositiveButton(R.string.alert_delete_group_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog2, int which) {
-                            // GroupsActor.groupUpdates().leaveChat(chatId);
+                            execute(messenger().leaveGroup(chatId));
                         }
                     })
                     .setNegativeButton(R.string.dialog_cancel, null)
@@ -295,7 +287,7 @@ public class GroupInfoFragment extends BaseFragment {
         } else if (item.getItemId() == R.id.editTitle) {
             startActivity(Intents.editGroupTitle(chatId, getActivity()));
         } else if (item.getItemId() == R.id.changePhoto) {
-            // startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
+            startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
         }
         return super.onOptionsItemSelected(item);
     }

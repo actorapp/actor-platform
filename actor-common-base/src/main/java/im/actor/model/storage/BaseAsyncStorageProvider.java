@@ -1,0 +1,41 @@
+package im.actor.model.storage;
+
+import im.actor.model.StorageProvider;
+import im.actor.model.droidkit.engine.AsyncListEngine;
+import im.actor.model.droidkit.engine.ListEngine;
+import im.actor.model.droidkit.engine.ListStorage;
+import im.actor.model.droidkit.engine.ListStorageDisplayEx;
+import im.actor.model.entity.Contact;
+import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
+
+/**
+ * Created by ex3ndr on 15.03.15.
+ */
+public abstract class BaseAsyncStorageProvider implements StorageProvider {
+
+    @Override
+    public ListEngine<Contact> createContactsList(ListStorage storage) {
+        if (!(storage instanceof ListStorageDisplayEx)) {
+            throw new RuntimeException("Storage MUST implement ListStorageDisplayEx");
+        }
+        return new AsyncListEngine<Contact>((ListStorageDisplayEx) storage, Contact.CREATOR);
+    }
+
+    @Override
+    public ListEngine<Dialog> createDialogsList(ListStorage storage) {
+        if (!(storage instanceof ListStorageDisplayEx)) {
+            throw new RuntimeException("Storage MUST implement ListStorageDisplayEx");
+        }
+        return new AsyncListEngine<Dialog>((ListStorageDisplayEx) storage, Dialog.CREATOR);
+    }
+
+    @Override
+    public ListEngine<Message> createMessagesList(Peer peer, ListStorage storage) {
+        if (!(storage instanceof ListStorageDisplayEx)) {
+            throw new RuntimeException("Storage MUST implement ListStorageDisplayEx");
+        }
+        return new AsyncListEngine<Message>((ListStorageDisplayEx) storage, Message.CREATOR);
+    }
+}
