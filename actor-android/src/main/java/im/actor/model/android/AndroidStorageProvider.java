@@ -6,12 +6,12 @@ import im.actor.model.android.sql.SQLiteProvider;
 import im.actor.model.droidkit.engine.KeyValueStorage;
 import im.actor.model.droidkit.engine.ListStorage;
 import im.actor.model.droidkit.engine.PreferencesStorage;
-import im.actor.model.storage.BaseStorageProvider;
+import im.actor.model.storage.BaseAsyncStorageProvider;
 
 /**
  * Created by ex3ndr on 14.03.15.
  */
-public class AndroidStorageProvider extends BaseStorageProvider {
+public class AndroidStorageProvider extends BaseAsyncStorageProvider {
 
     @Override
     public PreferencesStorage createPreferencesStorage() {

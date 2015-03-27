@@ -5,8 +5,10 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:focusable="true" android:focusableInTouchMode="true"
-        android:layout_width="0px" android:layout_height="0px"/>
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
     <FrameLayout
         android:id="@+id/messagesFragment"
@@ -94,9 +96,9 @@
                 android:background="@drawable/selector"
                 android:clickable="true"
                 android:gravity="center"
-                android:text="You is not part of your chat"
+                android:text="You is not part of this group"
                 android:textAllCaps="true"
-                android:textColor="@color/conv_delete"
+                android:textColor="@color/primary"
                 android:textSize="18sp" />
         </FrameLayout>
 

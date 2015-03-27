@@ -13,37 +13,37 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.soundcloud.android.crop.Crop;
+
+import java.io.File;
+
 import im.actor.images.cache.BitmapReference;
 import im.actor.images.common.ImageLoadException;
 import im.actor.images.loading.ImageReceiver;
 import im.actor.images.loading.ReceiverCallback;
 import im.actor.images.loading.tasks.RawFileTask;
 import im.actor.images.ops.ImageLoading;
-import com.soundcloud.android.crop.Crop;
-
-import java.io.File;
-
 import im.actor.messenger.R;
+import im.actor.messenger.app.AppContext;
+import im.actor.messenger.app.Core;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.images.FullAvatarTask;
-import im.actor.messenger.app.AppContext;
-import im.actor.messenger.app.Core;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
-import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueChangedListener;
+import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.AvatarUploadState;
 import uk.co.senab.photoview.PhotoView;
 
-import static im.actor.messenger.app.view.ViewUtils.goneView;
-import static im.actor.messenger.app.view.ViewUtils.showView;
 import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.myUid;
 import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.view.ViewUtils.goneView;
+import static im.actor.messenger.app.view.ViewUtils.showView;
 
 /**
  * Created by ex3ndr on 29.10.14.
@@ -145,6 +145,13 @@ public class ViewAvatarActivity extends BaseActivity {
     private void bindImage() {
         if (peer.getPeerType() == PeerType.PRIVATE && peer.getPeerId() == myUid()) {
             bind(getAvatar(), messenger().getOwnAvatarVM().getUploadState(), new ValueDoubleChangedListener<Avatar, AvatarUploadState>() {
+                @Override
+                public void onChanged(Avatar val, ValueModel<Avatar> valueModel, AvatarUploadState val2, ValueModel<AvatarUploadState> valueModel2) {
+                    performBind(val, val2);
+                }
+            });
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            bind(getAvatar(), messenger().getGroupAvatarVM(peer.getPeerId()).getUploadState(), new ValueDoubleChangedListener<Avatar, AvatarUploadState>() {
                 @Override
                 public void onChanged(Avatar val, ValueModel<Avatar> valueModel, AvatarUploadState val2, ValueModel<AvatarUploadState> valueModel2) {
                     performBind(val, val2);
@@ -291,6 +298,9 @@ public class ViewAvatarActivity extends BaseActivity {
                     .show();
 
             return true;
+        } else if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -315,7 +325,7 @@ public class ViewAvatarActivity extends BaseActivity {
                     messenger().changeAvatar(avatarPath);
                 }
             } else if (peer.getPeerType() == PeerType.GROUP) {
-                // TODO: Implement
+                messenger().changeGroupAvatar(peer.getPeerId(), avatarPath);
             }
         }
     }
