@@ -16,4 +16,9 @@ public class JsCryptoProvider extends BouncyCastleProvider {
         // return super.generateRSA1024KeyPair();
         return new CryptoKeyPair(new byte[64], new byte[64]);
     }
+
+    @Override
+    public byte[] SHA256(byte[] data) {
+        return super.SHA256(data);
+    }
 }

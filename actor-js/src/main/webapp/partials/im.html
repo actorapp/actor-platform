@@ -1,0 +1,77 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1251"></head><body><div class="main_head_bg"></div>
+
+<div class="im_page">
+	<div class="im_page_head">
+		<div class="im_page_nav">
+			<div class="top_home_link">
+				<i class="icon home_logo"></i><div class="home_title">Actor</div>
+			</div>
+			<div class="top_nav_link active" id="head_chats">
+				Chats
+			</div>
+			<div class="top_nav_link" id="head_contacts">
+				Contscts
+			</div>			
+			<div class="top_nav_link" id="head_settings">
+				Settings
+			</div>			
+		</div>		
+		<div class="top_user_wrap">
+			<img class="top_user_pic" src="./im_files/40PGwIa5MSE.jpg">
+			<div class="top_user_name">Narek Abovyan</div>
+		</div>
+	</div>
+	<div class="im_page_wrap">
+		<div class="im_top_controls">
+
+			<div class="top_left_wrap">
+				<div class="chats_search_wrap">
+					<span class="all_chats_title">All chats</span>
+					<div class="top_btns_wrap">
+						<div class="controls_ico top_search"></div>
+						<div class="controls_ico top_new_chat"></div>						
+					</div>
+				</div>					
+			</div>
+			<div class="top_right_wrap">
+				<div class="chats_title_wrap">
+					<div class="chats_title">
+						<span class="chat_name">Test</span>
+						<span class="chat_members_status">21 members, 4 online</span> 						
+					</div>
+
+					<div class="top_btns_wrap">
+						<div class="controls_ico add_person"></div>
+						<div class="controls_ico volume_off"></div>	
+						<div class="controls_ico more_opt"></div>					
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="im_chats_wrap">
+			<div class="im_dialogs_wrap" ng-controller="AppImDialogsController">
+				<div ng-repeat="dialog in dialogs">
+					<div class="im_dialog_wrap">
+						<div class="im_dialog">
+							<div class="im_dialog_meta">{{dialog.date}}</div>
+							<div class="im_dialog_photo" ng-bind-html="dialog.pic"> 
+							</div>
+							<div class="im_dialog_message_wrap">
+								<div class="im_diaog_peer">{{dialog.title}}</div>
+								<div class="im_dialog_message">{{dialog.text}}</div> 
+							</div>							
+						</div>
+					</div> 
+				</div> 
+			</div>		
+			<div class="im_history_wrap">
+				<div class="im_bottom_panel_wrap">
+					<div class="im_send_panel_wrap">
+						
+					</div>
+				</div>
+			</div>			
+		</div>
+	</div>
+</div> </body></html>
