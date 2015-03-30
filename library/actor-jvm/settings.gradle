@@ -1,0 +1,5 @@
+include ':library:actor-common', ':library:actor-common-base'
+
+project(':library:actor-common').projectDir = new File(settingsDir, "../actor-common")
+project(':library:actor-common-base').projectDir = new File(settingsDir, "../actor-common-base")
+

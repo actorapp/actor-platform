@@ -1,5 +1,1 @@
-include ':actor-common', ':actor-jvm', ':actor-common-base', ':actor-cocoa-base', ':actor-android', ':actor-js', ':actor-bc'
-
-//project(':actor-common').projectDir = new File(settingsDir, "actor-common")
-//project(':actor-java').projectDir = new File(settingsDir, "actor-java")
-//project(':actor-java-threads').projectDir = new File(settingsDir, "actor-java-threads")
+include ':library:actor-common', ':library:actor-common-base', ':library:actor-jvm',  ':library:actor-cocoa-base', ':library:actor-js', ':library:actor-bc',':library:actor-android', ':apps:actor-android'
