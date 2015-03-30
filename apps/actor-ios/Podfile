@@ -1,0 +1,32 @@
+platform :ios, '7.0'
+
+target 'ActorClient' do
+
+# ABPhoneField dependency
+pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
+#pod 'SHSPhoneComponent'
+
+# Model
+pod 'MMMutableMethods', :git => 'https://github.com/k06a/MMMutableMethods', :branch => 'dev', :tag => '0.0.7'
+pod 'J2ObjC', :git => 'https://github.com/actorapp/j2objc'
+pod 'RegexKitLite', :inhibit_warnings => true
+pod 'CocoaAsyncSocket'
+pod 'FMDB'
+
+# UI
+pod 'VENTokenField'
+pod 'AsyncDisplayKit'
+pod 'SVProgressHUD'
+pod 'MBProgressHUD'
+pod 'PSTAlertController'
+pod 'PHFComposeBarView'
+pod 'DZNPhotoPickerController'
+pod 'HockeySDK'
+pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
+
+end
+
+target 'ActorClientTests' do
+
+end
+

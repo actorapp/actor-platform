@@ -1,3 +1,0 @@
-include ':actor-common'
-
-project(':actor-common').projectDir = new File(settingsDir, "../actor-common")
