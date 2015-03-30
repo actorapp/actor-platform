@@ -1,0 +1,383 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.1.3'
+    }
+}
+apply plugin: 'com.android.application'
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+        url "https://mint.splunk.com/gradle/"
+    }
+}
+
+def basicVersion = '1.0'
+def customVersionCode = '10240';
+
+if (project.hasProperty('buildIndex')) {
+    project.version = basicVersion + '.' + project.buildIndex
+    customVersionCode = '' + project.buildIndex
+} else {
+    project.version = 'debug'
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '21.1.2'
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 21
+        versionCode Integer.valueOf(customVersionCode)
+        versionName project.version
+        applicationId "im.actor.messenger"
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    signingConfigs {
+        release {
+
+        }
+    }
+
+    dexOptions {
+        preDexLibraries = false
+        javaMaxHeapSize "4g"
+    }
+
+    buildTypes {
+        def STRING = "String"
+        def BOOLEAN = "boolean"
+        def INT = "int"
+        def TRUE = "true"
+        def FALSE = "false"
+        def VOICE = "ENABLE_VOICE"
+        def CHROME_BUILD = "ENABLE_CHROME"
+        def HOCKEY_APP = "ENABLE_HOCKEY"
+        def GOOGLE_PLAY = "ENABLE_GOOGLE_PLAY"
+        def REPORT_CRASHES = "REPORT_CRASHES"
+        def VERSION_TITLE = "VERSION_TITLE"
+
+        def API_HOST = "API_HOST"
+        def API_PORT = "API_PORT"
+        def API_SSL = "API_SSL"
+        def PORT_SSL = "443";
+        def PORT_PLAIN = "8080";
+        def HOST_RELEASE = "\"mtproto-api.actor.im\"";
+        def HOST_DEV1 = "\"mtproto-api-dev1.actor.im\"";
+        def HOST_DEV2 = "\"mtproto-api-dev2.actor.im\"";
+
+        release {
+            signingConfig signingConfigs.release
+            buildConfigField BOOLEAN, HOCKEY_APP, TRUE
+            buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
+            buildConfigField BOOLEAN, REPORT_CRASHES, TRUE
+            buildConfigField BOOLEAN, CHROME_BUILD, FALSE
+            buildConfigField BOOLEAN, VOICE, FALSE
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Release)\""
+
+            buildConfigField STRING, API_HOST, HOST_RELEASE
+            buildConfigField INT, API_PORT, PORT_SSL
+            buildConfigField BOOLEAN, API_SSL, TRUE
+        }
+
+        mchs {
+            signingConfig signingConfigs.release
+            buildConfigField BOOLEAN, HOCKEY_APP, FALSE
+            buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
+            buildConfigField BOOLEAN, REPORT_CRASHES, TRUE
+            buildConfigField BOOLEAN, CHROME_BUILD, FALSE
+            applicationIdSuffix ".mchs"
+            buildConfigField BOOLEAN, VOICE, FALSE
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (МЧС)\""
+
+            buildConfigField STRING, API_HOST, HOST_RELEASE
+            buildConfigField INT, API_PORT, PORT_SSL
+            buildConfigField BOOLEAN, API_SSL, TRUE
+        }
+
+        dev1 {
+            signingConfig signingConfigs.release
+            buildConfigField BOOLEAN, HOCKEY_APP, TRUE
+            buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
+            buildConfigField BOOLEAN, REPORT_CRASHES, TRUE
+            buildConfigField BOOLEAN, CHROME_BUILD, FALSE
+            applicationIdSuffix ".dev1"
+            buildConfigField BOOLEAN, VOICE, FALSE
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (dev1)\""
+
+            buildConfigField STRING, API_HOST, HOST_DEV1
+            buildConfigField INT, API_PORT, PORT_PLAIN
+            buildConfigField BOOLEAN, API_SSL, FALSE
+        }
+
+        dev1alt {
+            signingConfig signingConfigs.release
+            buildConfigField BOOLEAN, HOCKEY_APP, TRUE
+            buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
+            buildConfigField BOOLEAN, REPORT_CRASHES, TRUE
+            buildConfigField BOOLEAN, CHROME_BUILD, FALSE
+            buildConfigField BOOLEAN, VOICE, FALSE
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (dev1 alt)\""
+
+            buildConfigField STRING, API_HOST, HOST_DEV1
+            buildConfigField INT, API_PORT, PORT_PLAIN
+            buildConfigField BOOLEAN, API_SSL, FALSE
+        }
+
+        dev2 {
+            signingConfig signingConfigs.release
+            buildConfigField BOOLEAN, HOCKEY_APP, TRUE
+            buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
+            buildConfigField BOOLEAN, REPORT_CRASHES, TRUE
+            buildConfigField STRING, API_HOST, HOST_DEV2
+            buildConfigField BOOLEAN, CHROME_BUILD, FALSE
+            applicationIdSuffix ".dev2"
+            buildConfigField BOOLEAN, VOICE, FALSE
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (dev2)\""
+
+            buildConfigField STRING, API_HOST, HOST_DEV2
+            buildConfigField INT, API_PORT, PORT_PLAIN
+            buildConfigField BOOLEAN, API_SSL, FALSE
+        }
+
+        play {
+            signingConfig signingConfigs.release
+            buildConfigField BOOLEAN, HOCKEY_APP, FALSE
+            buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
+            buildConfigField BOOLEAN, REPORT_CRASHES, TRUE
+            buildConfigField BOOLEAN, CHROME_BUILD, FALSE
+            buildConfigField BOOLEAN, VOICE, FALSE
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Google Play)\""
+
+            buildConfigField STRING, API_HOST, HOST_RELEASE
+            buildConfigField INT, API_PORT, PORT_SSL
+            buildConfigField BOOLEAN, API_SSL, TRUE
+        }
+
+        chrome {
+            signingConfig signingConfigs.release
+            buildConfigField BOOLEAN, HOCKEY_APP, FALSE
+            buildConfigField BOOLEAN, GOOGLE_PLAY, FALSE
+            buildConfigField BOOLEAN, REPORT_CRASHES, FALSE
+            buildConfigField BOOLEAN, CHROME_BUILD, TRUE
+            buildConfigField BOOLEAN, VOICE, FALSE
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Chrome)\""
+
+            buildConfigField STRING, API_HOST, HOST_RELEASE
+            buildConfigField INT, API_PORT, PORT_SSL
+            buildConfigField BOOLEAN, API_SSL, TRUE
+        }
+
+        debug {
+            buildConfigField BOOLEAN, HOCKEY_APP, FALSE
+            buildConfigField BOOLEAN, GOOGLE_PLAY, TRUE
+            buildConfigField BOOLEAN, REPORT_CRASHES, FALSE
+            buildConfigField BOOLEAN, CHROME_BUILD, FALSE
+            buildConfigField BOOLEAN, VOICE, FALSE
+            buildConfigField STRING, VERSION_TITLE, "\"Development Build\""
+            applicationIdSuffix ".debug"
+
+            buildConfigField STRING, API_HOST, HOST_RELEASE
+            buildConfigField INT, API_PORT, PORT_SSL
+            buildConfigField BOOLEAN, API_SSL, TRUE
+        }
+
+        applicationVariants.all { variant ->
+            variant.outputs.each { output ->
+                def file = output.outputFile
+                //  Dirty hack
+                if (file.name == "actor-release.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-play.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Play-" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-chrome.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Chrome-" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-dev1.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-dev1alt.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-Alt" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-dev2.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Dev2-" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-mchs.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-MCHS-" + defaultConfig.versionName + ".apk")
+                }
+            }
+        }
+    }
+
+    sourceSets {
+        release {
+            res.srcDirs = ['src/icons/main', 'src/stock']
+            java.srcDirs = ['src/play/java']
+        }
+
+        mchs {
+            res.srcDirs = ['src/icons/mchs', 'src/styles/mchs', 'src/stock']
+            java.srcDirs = ['src/play/java']
+        }
+
+        play {
+            res.srcDirs = ['src/icons/main', 'src/stock']
+            java.srcDirs = ['src/play/java']
+        }
+
+        chrome {
+            res.srcDirs = ['src/icons/main', 'src/chrome-res', 'src/stock']
+            java.srcDirs = ['src/noplay/java']
+        }
+
+        debug {
+            res.srcDirs = ['src/icons/dev', 'src/stock']
+            java.srcDirs = ['src/play/java']
+        }
+
+        dev1 {
+            res.srcDirs = ['src/icons/dev', 'src/stock']
+            java.srcDirs = ['src/play/java']
+        }
+
+        dev1alt {
+            res.srcDirs = ['src/icons/dev', 'src/stock']
+            java.srcDirs = ['src/play/java']
+        }
+
+        dev2 {
+            res.srcDirs = ['src/icons/dev', 'src/stock']
+            java.srcDirs = ['src/play/java']
+        }
+    }
+
+//    if (project.hasProperty('androidStore') &&
+//            project.hasProperty('androidStorePass') &&
+//            project.hasProperty('androidAliasPass') &&
+//            project.hasProperty('androidAlias')) {
+//        android.signingConfigs.release.storeFile = file(androidStore)
+//        android.signingConfigs.release.storePassword = androidStorePass
+//        android.signingConfigs.release.keyAlias = androidAlias
+//        android.signingConfigs.release.keyPassword = androidAliasPass
+//    } else {
+//        Properties properties = new Properties()
+//        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+//
+//        if (!properties.getProperty('androidStore', '').equals('')) {
+//            def androidStore = properties.getProperty('androidStore')
+//            def androidStorePass = properties.getProperty('androidStorePass')
+//            def androidAliasPass = properties.getProperty('androidAliasPass')
+//            def androidAlias = properties.getProperty('androidAlias')
+//
+//            android.signingConfigs.release.storeFile = file(androidStore)
+//            android.signingConfigs.release.storePassword = androidStorePass
+//            android.signingConfigs.release.keyAlias = androidAlias
+//            android.signingConfigs.release.keyPassword = androidAliasPass
+//        } else {
+//            buildTypes.mchs.signingConfig = null
+//            buildTypes.dev1.signingConfig = null
+//            buildTypes.dev2.signingConfig = null
+//            buildTypes.dev1alt.signingConfig = null
+//            buildTypes.play.signingConfig = null
+//            buildTypes.chrome.signingConfig = null
+//        }
+//    }
+
+    buildTypes.mchs.signingConfig = null
+    buildTypes.dev1.signingConfig = null
+    buildTypes.dev2.signingConfig = null
+    buildTypes.dev1alt.signingConfig = null
+    buildTypes.play.signingConfig = null
+    buildTypes.chrome.signingConfig = null
+
+    productFlavors {
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+    dexOptions {
+        incremental true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
+    }
+}
+
+if (project.hasProperty("hockeyKey")) {
+    apply plugin: 'hockeyApp'
+    hockeyapp {
+        apiToken = hockeyKey
+        teamCityLog = true
+    }
+}
+
+dependencies {
+    compile project(':library:actor-android')
+
+    // DroidKit
+    compile 'com.droidkit:actors:0.6.1'
+    compile 'com.droidkit:bser:1.2'
+    compile('com.droidkit:actors-android:0.6.1') {
+        exclude module: 'appcompat-v7'
+    }
+    compile 'com.droidkit:progress:0.5+'
+    compile('com.droidkit:pickers:0.7+') {
+        exclude module: 'play-services'
+        exclude module: 'support-v13'
+    }
+    // Phone parser
+    compile files('libs/libphonenumber-5.9.jar')
+    // UI
+    compile 'com.soundcloud.android:android-crop:0.9.10@aar'
+    compile 'com.facebook.fresco:fresco:0.1.0+'
+    // compile project(':photoviewer')
+    compile('com.github.chrisbanes.photoview:library:1.2.3') {
+        exclude module: 'support-v13'
+    }
+    compile 'com.getbase:floatingactionbutton:1.5.1'
+    compile 'com.afollestad:material-dialogs:0.6.3.4'
+    // Android Support
+    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:support-v13:21.0.3'
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:palette-v7:21.0.3'
+    compile 'com.android.support:recyclerview-v7:21.0.3'
+    releaseCompile 'com.google.android.gms:play-services:6.+'
+    playCompile 'com.google.android.gms:play-services:6.+'
+    debugCompile 'com.google.android.gms:play-services:6.+'
+    dev1Compile 'com.google.android.gms:play-services:6.+'
+    dev1altCompile 'com.google.android.gms:play-services:6.+'
+    dev2Compile 'com.google.android.gms:play-services:6.+'
+    mchsCompile 'com.google.android.gms:play-services:6.+'
+    // Integration
+    compile files('libs/HockeySDK-3.0.2.jar')
+    compile 'com.splunk.mint:mint:4.0.8'
+}
+
+task packageChromeExtension(type: Exec, dependsOn: ['assembleChrome']) {
+    workingDir = "$project.buildDir"
+    commandLine "chromeos-apk", "--name", "ActorMessenger", "$project.buildDir/apk/Actor-Chrome-" + project.version + ".apk"
+}
+
+task writeChromeIcon(type: Copy, dependsOn: ['packageChromeExtension']) {
+    from "src/icons/icon.png"
+    into "$project.buildDir/im.actor.android/"
+}
+
+task chromeZip(type: Zip, dependsOn: ['writeChromeIcon']) {
+    classifier = 'src'
+    from "$project.buildDir/"
+    include "im.actor.android/**"
+    archiveName = "ActorChrome-" + project.version + ".zip"
+}
+
+task dist(dependsOn: ['assembleRelease', 'chromeZip', 'assemblePlay', 'assembleDev1', 'assembleDev1alt', 'assembleDev2', 'assembleMchs']) {
+
+}

@@ -1,0 +1,25 @@
+//
+//  ActorClient-Prefix.pch
+//  ActorClient
+//
+//  Created by Антон Буков on 20.02.15.
+//  Copyright (c) 2015 Actor LLC. All rights reserved.
+//
+
+#ifndef ActorClient_ActorClient_Prefix_pch
+#define ActorClient_ActorClient_Prefix_pch
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+
+    #define MR_SHORTHAND 1
+    #import <DZNPhotoPickerController/DZNPhotoPickerController.h>
+    #import <SVProgressHUD/SVProgressHUD.h>
+    #import <MMMutableMethods/NSObject+MMAnonymousClass.h>
+    #import <MMMutableMethods/MMAnonymousClass.h>
+
+    #define BAR_COLOR [UIColor colorWithRed:80/255. green:133/255. blue:204/255. alpha:1.0]
+#endif
+
+#endif

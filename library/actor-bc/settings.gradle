@@ -1,0 +1,3 @@
+include ':library:actor-common'
+
+project(':library:actor-common').projectDir = new File(settingsDir, "../actor-common")

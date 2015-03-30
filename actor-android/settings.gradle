@@ -1,6 +1,0 @@
-include ':actor-common', ':actor-java-threads', ':actor-java', ':actor-bc'
-
-project(':actor-common').projectDir = new File(settingsDir, "../actor-common")
-project(':actor-common-base').projectDir = new File(settingsDir, "../actor-common-base")
-project(':actor-jvm').projectDir = new File(settingsDir, "../actor-jvm")
-project(':actor-bc').projectDir = new File(settingsDir, "../actor-bc")
