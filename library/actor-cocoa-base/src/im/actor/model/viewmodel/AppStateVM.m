@@ -5,6 +5,7 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/PreferencesStorage.h"
+#include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/mvvm/ValueModel.h"
 #include "im/actor/model/viewmodel/AppState.h"
@@ -39,7 +40,9 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, appState_, AMValueModel *)
 
 - (void)onDialogsChangedWithBoolean:(jboolean)isEmpty {
   @synchronized(self) {
+    AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z", @"onDialogsChanged:", isEmpty));
     if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isDialogsEmpty_)) get])) booleanValue] != isEmpty) {
+      AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z$", @"onDialogsChanged:", isEmpty, @": apply"));
       [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.dialogs.empty" withValue:isEmpty];
       [isDialogsEmpty_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(isEmpty)];
     }

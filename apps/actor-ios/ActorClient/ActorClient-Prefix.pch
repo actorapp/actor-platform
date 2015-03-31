@@ -14,10 +14,11 @@
     #import <Foundation/Foundation.h>
 
     #define MR_SHORTHAND 1
-    #import <DZNPhotoPickerController/DZNPhotoPickerController.h>
     #import <SVProgressHUD/SVProgressHUD.h>
     #import <MMMutableMethods/NSObject+MMAnonymousClass.h>
     #import <MMMutableMethods/MMAnonymousClass.h>
+    #import <DZNPhotoPickerController.h>
+//    #import <DZNPhotoPickerController/DZNPhotoPickerController.h>
 
     #define BAR_COLOR [UIColor colorWithRed:80/255. green:133/255. blue:204/255. alpha:1.0]
 #endif

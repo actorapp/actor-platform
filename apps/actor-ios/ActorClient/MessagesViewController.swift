@@ -104,7 +104,7 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
                 self.avatarView.bind(user.getName().get() as! String, id: user.getId(), avatar: value)
             })
             
-            binder.bind(MSG.getTyping(peer.getPeerId())!.getTyping(), valueModel2: user.getPresence()!, closure:{ (typing:JavaLangBoolean?, presence:AMUserPresence?) -> () in
+            binder.bind(MSG.getTypingWithInt(peer.getPeerId())!, valueModel2: user.getPresence()!, closure:{ (typing:JavaLangBoolean?, presence:AMUserPresence?) -> () in
                 
                 if (typing != nil && typing!.booleanValue()) {
                     self.subtitleView.text = MSG.getFormatter().formatTyping();
@@ -131,7 +131,7 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
             binder.bind(group.getAvatar(), closure: { (value: AMAvatar?) -> () in
                 self.avatarView.bind(group.getName().get() as! String, id: group.getId(), avatar: value)
             })
-            binder.bind(MSG.getGroupTyping(group.getId()).getActive()!, valueModel2: group.getMembers(), valueModel3: group.getPresence(), closure: { (value1:IOSIntArray?, value2:JavaUtilHashSet?, value3:JavaLangInteger?) -> () in
+            binder.bind(MSG.getGroupTypingWithInt(group.getId())!, valueModel2: group.getMembers(), valueModel3: group.getPresence(), closure: { (value1:IOSIntArray?, value2:JavaUtilHashSet?, value3:JavaLangInteger?) -> () in
                 if (value1!.length() > 0) {
                     self.subtitleView.textColor = Resources.PrimaryLightText
                     if (value1!.length() == 1) {
@@ -271,10 +271,6 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
     override func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UITableViewCell {
         
         var message = (item as! AMMessage);
-        
-        if (message.getSenderId() != MSG.myUid()){
-            MSG.onInMessageShown(peer, withRid: message.getRid(), withDate: message.getDate(), withEncrypted: false);
-        }
         
         if (message.getContent() is AMTextContent){
             var cell = tableView.dequeueReusableCellWithIdentifier("bubble_text") as! BubbleTextCell?

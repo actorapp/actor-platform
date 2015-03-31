@@ -8,7 +8,7 @@
 
 import Foundation
 
-@objc class CocoaStorage : AMBaseStorageProvider {
+@objc class CocoaStorage : AMBaseAsyncStorageProvider {
     
     let dbPath: String;
     

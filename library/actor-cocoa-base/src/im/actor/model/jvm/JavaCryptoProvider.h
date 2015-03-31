@@ -6,6 +6,8 @@
 #ifndef _AMJavaCryptoProvider_H_
 #define _AMJavaCryptoProvider_H_
 
+@protocol BCRandomProvider;
+
 #include "J2ObjC_header.h"
 #include "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
 
@@ -13,6 +15,8 @@
 }
 
 - (instancetype)init;
+
+- (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)provider;
 
 @end
 

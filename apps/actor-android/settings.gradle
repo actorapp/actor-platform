@@ -1,6 +1,7 @@
-include ':library:actor-common', ':library:actor-common-base', ':library:actor-jvm', ':library:actor-bc'
+include ':library:actor-common', ':library:actor-common-base', ':library:actor-jvm', ':library:actor-bc', ":library:actor-android-base"
 
 project(':library:actor-common').projectDir = new File(settingsDir, "../../library/actor-common")
 project(':library:actor-common-base').projectDir = new File(settingsDir, "../../library/actor-common-base")
 project(':library:actor-jvm').projectDir = new File(settingsDir, "../../library/actor-jvm")
 project(':library:actor-bc').projectDir = new File(settingsDir, "../../library/actor-bc")
+project(':library:actor-android-base').projectDir = new File(settingsDir, "../../library/actor-android-base")
