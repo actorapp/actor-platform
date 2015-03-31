@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DifferenceUpdate.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DifferenceUpdate.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -21,35 +23,57 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiDifferenceUpdate, update_, IOSByteArray *)
 
+
+#line 19
 @implementation ImActorModelApiDifferenceUpdate
 
+
+#line 24
 - (instancetype)initWithInt:(jint)updateHeader
               withByteArray:(IOSByteArray *)update {
   if (self = [super init]) {
+    
+#line 25
     self->updateHeader_ = updateHeader;
+    
+#line 26
     self->update_ = update;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getUpdateHeader {
+  
+#line 34
   return self->updateHeader_;
 }
 
+
+#line 37
 - (IOSByteArray *)getUpdate {
+  
+#line 38
   return self->update_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->updateHeader_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->update_ = [values getBytesWithInt:2];
 }
 
+
+#line 48
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 49
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->updateHeader_];
   if (self->update_ == nil) {
     @throw [[JavaIoIOException alloc] init];

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/bouncycastle/BcRsaEncryptCipher.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/bouncycastle/BcRsaEncryptCipher.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/bouncycastle/BcRsaEncryptCipher.h"
@@ -27,34 +29,50 @@
 J2OBJC_FIELD_SETTER(BCBcRsaEncryptCipher, cipher_, id<OrgBouncycastleCryptoAsymmetricBlockCipher>)
 J2OBJC_FIELD_SETTER(BCBcRsaEncryptCipher, random_, id<BCRandomProvider>)
 
+
+#line 16
 @implementation BCBcRsaEncryptCipher
 
+
+#line 21
 - (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)random
                            withByteArray:(IOSByteArray *)publicKey {
   if (self = [super init]) {
+    
+#line 22
     self->random_ = random;
+    
+#line 23
     @try {
       BCX509RsaPublicKey *key = [[BCX509RsaPublicKey alloc] initWithByteArray:publicKey];
       OrgBouncycastleCryptoParamsRSAKeyParameters *param = [[OrgBouncycastleCryptoParamsRSAKeyParameters alloc] initWithBoolean:NO withJavaMathBigInteger:[key getModulus] withJavaMathBigInteger:[key getExponent]];
       cipher_ = [[OrgBouncycastleCryptoEncodingsOAEPEncoding alloc] initWithOrgBouncycastleCryptoAsymmetricBlockCipher:[[OrgBouncycastleCryptoEnginesRSAEngine alloc] init] withOrgBouncycastleCryptoDigest:[[OrgBouncycastleCryptoDigestsSHA1Digest alloc] init]];
       [cipher_ init__WithBoolean:YES withOrgBouncycastleCryptoParamsParametersWithRandom:[[OrgBouncycastleCryptoParamsParametersWithRandom alloc] initWithOrgBouncycastleCryptoCipherParameters:param withBCRandomProvider:random]];
     }
-    @catch (JavaLangException *e) {
+    @catch (
+#line 28
+    JavaLangException *e) {
       [((JavaLangException *) nil_chk(e)) printStackTrace];
     }
   }
   return self;
 }
 
+
+#line 34
 - (IOSByteArray *)encryptWithByteArray:(IOSByteArray *)sourceData {
   @synchronized(self) {
+    
+#line 35
     if (cipher_ == nil) {
       return nil;
     }
     @try {
       return [((id<OrgBouncycastleCryptoAsymmetricBlockCipher>) nil_chk(cipher_)) processBlockWithByteArray:sourceData withInt:0 withInt:((IOSByteArray *) nil_chk(sourceData))->size_];
     }
-    @catch (JavaLangException *e) {
+    @catch (
+#line 40
+    JavaLangException *e) {
       [((JavaLangException *) nil_chk(e)) printStackTrace];
       return nil;
     }

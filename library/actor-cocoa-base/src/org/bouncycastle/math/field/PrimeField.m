@@ -3,32 +3,54 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/PrimeField.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/PrimeField.java"
+
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/math/field/PrimeField.h"
 
+
+#line 5
 @implementation OrgBouncycastleMathFieldPrimeField
 
+
+#line 9
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)characteristic {
   if (self = [super init]) {
+    
+#line 11
     self->characteristic_ = characteristic;
   }
   return self;
 }
 
+
+#line 14
 - (JavaMathBigInteger *)getCharacteristic {
+  
+#line 16
   return characteristic_;
 }
 
+
+#line 19
 - (jint)getDimension {
+  
+#line 21
   return 1;
 }
 
 - (jboolean)isEqual:(id)obj {
+  
+#line 26
   if (self == obj) {
+    
+#line 28
     return YES;
   }
   if (!([obj isKindOfClass:[OrgBouncycastleMathFieldPrimeField class]])) {
+    
+#line 32
     return NO;
   }
   OrgBouncycastleMathFieldPrimeField *other = (OrgBouncycastleMathFieldPrimeField *) check_class_cast(obj, [OrgBouncycastleMathFieldPrimeField class]);
@@ -36,6 +58,8 @@
 }
 
 - (NSUInteger)hash {
+  
+#line 40
   return ((jint) [((JavaMathBigInteger *) nil_chk(characteristic_)) hash]);
 }
 

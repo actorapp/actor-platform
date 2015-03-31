@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateConfig.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateConfig.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,32 +24,50 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApiConfig *)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateConfig
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateConfig *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(data);
 }
 
+
+#line 29
 - (instancetype)initWithImActorModelApiConfig:(ImActorModelApiConfig *)config {
   if (self = [super init]) {
+    
+#line 30
     self->config_ = config;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiConfig *)getConfig {
+  
+#line 38
   return self->config_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->config_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiConfig alloc] init]];
 }
 
+
+#line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 48
   if (self->config_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -62,6 +82,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
 }
 
 - (jint)getHeaderKey {
+  
+#line 64
   return ImActorModelApiUpdatesUpdateConfig_HEADER;
 }
 
@@ -74,6 +96,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
 
 ImActorModelApiUpdatesUpdateConfig *ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateConfig_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateConfig *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateConfig alloc] init], data));
 }
 

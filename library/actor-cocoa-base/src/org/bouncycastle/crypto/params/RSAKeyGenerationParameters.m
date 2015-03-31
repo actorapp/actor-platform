@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/RSAKeyGenerationParameters.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/RSAKeyGenerationParameters.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/bouncycastle/RandomProvider.h"
 #include "java/lang/IllegalArgumentException.h"
@@ -18,30 +20,56 @@
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAKeyGenerationParameters, publicExponent_, JavaMathBigInteger *)
 
+
+#line 8
 @implementation OrgBouncycastleCryptoParamsRSAKeyGenerationParameters
 
+
+#line 14
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)publicExponent
                       withBCRandomProvider:(id<BCRandomProvider>)random
                                    withInt:(jint)strength
                                    withInt:(jint)certainty {
-  if (self = [super initWithBCRandomProvider:random withInt:strength]) {
+  if (self =
+#line 20
+  [super initWithBCRandomProvider:random withInt:strength]) {
+    
+#line 22
     if (strength < 12) {
+      
+#line 24
       @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"key strength too small"];
     }
+    
+#line 30
     if (![((JavaMathBigInteger *) nil_chk(publicExponent)) testBitWithInt:0]) {
+      
+#line 32
       @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"public exponent cannot be even"];
     }
+    
+#line 35
     self->publicExponent_ = publicExponent;
+    
+#line 36
     self->certainty_ = certainty;
   }
   return self;
 }
 
+
+#line 39
 - (JavaMathBigInteger *)getPublicExponent {
+  
+#line 41
   return publicExponent_;
 }
 
+
+#line 44
 - (jint)getCertainty {
+  
+#line 46
   return certainty_;
 }
 

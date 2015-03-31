@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcFloodWait.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcFloodWait.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -16,12 +18,20 @@
 }
 @end
 
+
+#line 13
 @implementation MTRpcFloodWait
 
+
+#line 18
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 19
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 22
 - (instancetype)initWithInt:(jint)delay {
   if (self = [super init]) {
     self->delay_ = delay;
@@ -29,18 +39,30 @@
   return self;
 }
 
+
+#line 26
 - (jint)getDelay {
+  
+#line 27
   return delay_;
 }
 
+
+#line 31
 - (jbyte)getHeader {
   return MTRpcFloodWait_HEADER;
 }
 
+
+#line 36
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 37
   [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:delay_];
 }
 
+
+#line 41
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   delay_ = [((BSDataInput *) nil_chk(bs)) readInt];
 }

@@ -3,21 +3,33 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ScaleYPointMap.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ScaleYPointMap.java"
+
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/math/ec/ECFieldElement.h"
 #include "org/bouncycastle/math/ec/ECPoint.h"
 #include "org/bouncycastle/math/ec/ScaleYPointMap.h"
 
+
+#line 3
 @implementation OrgBouncycastleMathEcScaleYPointMap
 
+
+#line 7
 - (instancetype)initWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)scale_ {
   if (self = [super init]) {
+    
+#line 9
     self->scale__ = scale_;
   }
   return self;
 }
 
+
+#line 12
 - (OrgBouncycastleMathEcECPoint *)mapWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p {
+  
+#line 14
   return [((OrgBouncycastleMathEcECPoint *) nil_chk(p)) scaleYWithOrgBouncycastleMathEcECFieldElement:scale__];
 }
 

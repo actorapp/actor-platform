@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetContacts.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetContacts.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -25,33 +27,53 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetContacts, users_, id<JavaUtilList>)
 
+
+#line 20
 @implementation ImActorModelApiRpcResponseGetContacts
 
+
+#line 23
 + (ImActorModelApiRpcResponseGetContacts *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseGetContacts_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users
                          withBoolean:(jboolean)isNotChanged {
   if (self = [super init]) {
+    
+#line 31
     self->users_ = users;
+    
+#line 32
     self->isNotChanged__ = isNotChanged;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (id<JavaUtilList>)getUsers {
+  
+#line 40
   return self->users_;
 }
 
+
+#line 43
 - (jboolean)isNotChanged {
+  
+#line 44
   return self->isNotChanged__;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
@@ -61,7 +83,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetContacts, users_, id<JavaUtilLi
   self->isNotChanged__ = [values getBoolWithInt:2];
 }
 
+
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 59
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
   [writer writeBoolWithInt:2 withBoolean:self->isNotChanged__];
 }
@@ -73,6 +99,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetContacts, users_, id<JavaUtilLi
 }
 
 - (jint)getHeaderKey {
+  
+#line 72
   return ImActorModelApiRpcResponseGetContacts_HEADER;
 }
 
@@ -86,6 +114,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetContacts, users_, id<JavaUtilLi
 
 ImActorModelApiRpcResponseGetContacts *ImActorModelApiRpcResponseGetContacts_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetContacts_init();
+  
+#line 24
   return ((ImActorModelApiRpcResponseGetContacts *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseGetContacts alloc] init], data));
 }
 

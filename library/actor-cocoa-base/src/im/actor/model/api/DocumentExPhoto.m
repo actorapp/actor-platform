@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExPhoto.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExPhoto.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/DocumentExPhoto.h"
@@ -17,39 +19,65 @@
 }
 @end
 
+
+#line 19
 @implementation ImActorModelApiDocumentExPhoto
 
+
+#line 24
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h {
   if (self = [super init]) {
+    
+#line 25
     self->w_ = w;
+    
+#line 26
     self->h_ = h;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getHeader {
+  
+#line 34
   return 1;
 }
 
+
+#line 37
 - (jint)getW {
+  
+#line 38
   return self->w_;
 }
 
+
+#line 41
 - (jint)getH {
+  
+#line 42
   return self->h_;
 }
 
+
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->h_ = [values getIntWithInt:2];
 }
 
+
+#line 52
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 53
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->w_];
   [writer writeIntWithInt:2 withInt:self->h_];
 }

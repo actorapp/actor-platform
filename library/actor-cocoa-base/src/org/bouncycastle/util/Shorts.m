@@ -3,10 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Shorts.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Shorts.java"
+
 #include "J2ObjC_source.h"
 #include "java/lang/Short.h"
 #include "org/bouncycastle/util/Shorts.h"
 
+
+#line 3
 @implementation OrgBouncycastleUtilShorts
 
 + (JavaLangShort *)valueOfWithShort:(jshort)value {
@@ -21,6 +25,8 @@
 
 JavaLangShort *OrgBouncycastleUtilShorts_valueOfWithShort_(jshort value) {
   OrgBouncycastleUtilShorts_init();
+  
+#line 7
   return JavaLangShort_valueOfWithShort_(value);
 }
 

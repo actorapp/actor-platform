@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/util/MTUids.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/util/MTUids.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/network/util/MTUids.h"
@@ -14,10 +16,14 @@
 
 BOOL ImActorModelNetworkUtilMTUids_initialized = NO;
 
+
+#line 9
 @implementation ImActorModelNetworkUtilMTUids
 
 AMAtomicLongCompat * ImActorModelNetworkUtilMTUids_NEXT_ID_;
 
+
+#line 12
 + (jlong)nextId {
   return ImActorModelNetworkUtilMTUids_nextId();
 }
@@ -28,7 +34,9 @@ AMAtomicLongCompat * ImActorModelNetworkUtilMTUids_NEXT_ID_;
 
 + (void)initialize {
   if (self == [ImActorModelNetworkUtilMTUids class]) {
-    ImActorModelNetworkUtilMTUids_NEXT_ID_ = DKEnvironment_createAtomicLongWithLong_(1);
+    ImActorModelNetworkUtilMTUids_NEXT_ID_ = DKEnvironment_createAtomicLongWithLong_(
+#line 10
+    1);
     J2OBJC_SET_INITIALIZED(ImActorModelNetworkUtilMTUids)
   }
 }
@@ -37,6 +45,8 @@ AMAtomicLongCompat * ImActorModelNetworkUtilMTUids_NEXT_ID_;
 
 jlong ImActorModelNetworkUtilMTUids_nextId() {
   ImActorModelNetworkUtilMTUids_init();
+  
+#line 13
   return [((AMAtomicLongCompat *) nil_chk(ImActorModelNetworkUtilMTUids_NEXT_ID_)) getAndIncrement];
 }
 

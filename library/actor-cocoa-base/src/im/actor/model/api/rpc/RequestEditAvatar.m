@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditAvatar.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditAvatar.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,32 +24,50 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditAvatar, fileLocation_, ImActorModelApiFileLocation *)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestEditAvatar
 
+
+#line 23
 + (ImActorModelApiRpcRequestEditAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestEditAvatar_fromBytesWithByteArray_(data);
 }
 
+
+#line 29
 - (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation {
   if (self = [super init]) {
+    
+#line 30
     self->fileLocation_ = fileLocation;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiFileLocation *)getFileLocation {
+  
+#line 38
   return self->fileLocation_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->fileLocation_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiFileLocation alloc] init]];
 }
 
+
+#line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 48
   if (self->fileLocation_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -62,6 +82,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditAvatar, fileLocation_, ImActorM
 }
 
 - (jint)getHeaderKey {
+  
+#line 64
   return ImActorModelApiRpcRequestEditAvatar_HEADER;
 }
 
@@ -74,6 +96,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditAvatar, fileLocation_, ImActorM
 
 ImActorModelApiRpcRequestEditAvatar *ImActorModelApiRpcRequestEditAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditAvatar_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestEditAvatar *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestEditAvatar alloc] init], data));
 }
 

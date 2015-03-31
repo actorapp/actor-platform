@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Peer.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Peer.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Peer.h"
@@ -20,35 +22,57 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiPeer, type_, ImActorModelApiPeerTypeEnum *)
 
+
+#line 19
 @implementation ImActorModelApiPeer
 
+
+#line 24
 - (instancetype)initWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)type
                                             withInt:(jint)id_ {
   if (self = [super init]) {
+    
+#line 25
     self->type_ = type;
+    
+#line 26
     self->id__ = id_;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiPeerTypeEnum *)getType {
+  
+#line 34
   return self->type_;
 }
 
+
+#line 37
 - (jint)getId {
+  
+#line 38
   return self->id__;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->type_ = ImActorModelApiPeerTypeEnum_parseWithInt_([((BSBserValues *) nil_chk(values)) getIntWithInt:1]);
   self->id__ = [values getIntWithInt:2];
 }
 
+
+#line 48
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 49
   if (self->type_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }

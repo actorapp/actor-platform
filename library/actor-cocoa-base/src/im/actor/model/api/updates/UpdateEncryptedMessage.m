@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateEncryptedMessage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateEncryptedMessage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -30,12 +32,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedMessage, peer_, ImActor
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedMessage, aesEncryptedKey_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedMessage, message_, IOSByteArray *)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateEncryptedMessage
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateEncryptedMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateEncryptedMessage_fromBytesWithByteArray_(data);
 }
 
+
+#line 34
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                     withInt:(jint)senderUid
                                    withLong:(jlong)date
@@ -43,44 +51,82 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedMessage, message_, IOSB
                               withByteArray:(IOSByteArray *)aesEncryptedKey
                               withByteArray:(IOSByteArray *)message {
   if (self = [super init]) {
+    
+#line 35
     self->peer_ = peer;
+    
+#line 36
     self->senderUid_ = senderUid;
+    
+#line 37
     self->date_ = date;
+    
+#line 38
     self->keyHash_ = keyHash;
+    
+#line 39
     self->aesEncryptedKey_ = aesEncryptedKey;
+    
+#line 40
     self->message_ = message;
   }
   return self;
 }
 
+
+#line 43
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiPeer *)getPeer {
+  
+#line 48
   return self->peer_;
 }
 
+
+#line 51
 - (jint)getSenderUid {
+  
+#line 52
   return self->senderUid_;
 }
 
+
+#line 55
 - (jlong)getDate {
+  
+#line 56
   return self->date_;
 }
 
+
+#line 59
 - (jlong)getKeyHash {
+  
+#line 60
   return self->keyHash_;
 }
 
+
+#line 63
 - (IOSByteArray *)getAesEncryptedKey {
+  
+#line 64
   return self->aesEncryptedKey_;
 }
 
+
+#line 67
 - (IOSByteArray *)getMessage {
+  
+#line 68
   return self->message_;
 }
 
+
+#line 72
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
   self->senderUid_ = [values getIntWithInt:2];
@@ -90,7 +136,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedMessage, message_, IOSB
   self->message_ = [values getBytesWithInt:5];
 }
 
+
+#line 82
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 83
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -120,6 +170,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedMessage, message_, IOSB
 }
 
 - (jint)getHeaderKey {
+  
+#line 114
   return ImActorModelApiUpdatesUpdateEncryptedMessage_HEADER;
 }
 
@@ -137,6 +189,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedMessage, message_, IOSB
 
 ImActorModelApiUpdatesUpdateEncryptedMessage *ImActorModelApiUpdatesUpdateEncryptedMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateEncryptedMessage_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateEncryptedMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateEncryptedMessage alloc] init], data));
 }
 

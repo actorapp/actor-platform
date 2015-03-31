@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/OutPeer.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/OutPeer.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/OutPeer.h"
@@ -21,42 +23,70 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *)
 
+
+#line 19
 @implementation ImActorModelApiOutPeer
 
+
+#line 25
 - (instancetype)initWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)type
                                             withInt:(jint)id_
                                            withLong:(jlong)accessHash {
   if (self = [super init]) {
+    
+#line 26
     self->type_ = type;
+    
+#line 27
     self->id__ = id_;
+    
+#line 28
     self->accessHash_ = accessHash;
   }
   return self;
 }
 
+
+#line 31
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiPeerTypeEnum *)getType {
+  
+#line 36
   return self->type_;
 }
 
+
+#line 39
 - (jint)getId {
+  
+#line 40
   return self->id__;
 }
 
+
+#line 43
 - (jlong)getAccessHash {
+  
+#line 44
   return self->accessHash_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->type_ = ImActorModelApiPeerTypeEnum_parseWithInt_([((BSBserValues *) nil_chk(values)) getIntWithInt:1]);
   self->id__ = [values getIntWithInt:2];
   self->accessHash_ = [values getLongWithInt:3];
 }
 
+
+#line 55
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 56
   if (self->type_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }

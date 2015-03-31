@@ -3,10 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/MessageState.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/MessageState.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/MessageState.h"
 #include "java/lang/IllegalArgumentException.h"
+
+#line 6
 
 BOOL AMMessageStateEnum_initialized = NO;
 
@@ -14,19 +18,29 @@ AMMessageStateEnum *AMMessageStateEnum_values_[6];
 
 @implementation AMMessageStateEnum
 
+
+#line 16
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
   if (self = [super initWithNSString:__name withInt:__ordinal]) {
+    
+#line 17
     self->value_ = value;
   }
   return self;
 }
 
+
+#line 20
 - (jint)getValue {
+  
+#line 21
   return value_;
 }
 
+
+#line 24
 + (AMMessageStateEnum *)fromValueWithInt:(jint)value {
   return AMMessageStateEnum_fromValueWithInt_(value);
 }
@@ -61,12 +75,24 @@ AMMessageStateEnum *AMMessageStateEnum_valueOfWithNSString_(NSString *name) {
 
 + (void)initialize {
   if (self == [AMMessageStateEnum class]) {
-    AMMessageStateEnum_PENDING = [[AMMessageStateEnum alloc] initWithInt:1 withNSString:@"PENDING" withInt:0];
-    AMMessageStateEnum_SENT = [[AMMessageStateEnum alloc] initWithInt:2 withNSString:@"SENT" withInt:1];
-    AMMessageStateEnum_RECEIVED = [[AMMessageStateEnum alloc] initWithInt:3 withNSString:@"RECEIVED" withInt:2];
-    AMMessageStateEnum_READ = [[AMMessageStateEnum alloc] initWithInt:4 withNSString:@"READ" withInt:3];
-    AMMessageStateEnum_ERROR = [[AMMessageStateEnum alloc] initWithInt:5 withNSString:@"ERROR" withInt:4];
-    AMMessageStateEnum_UNKNOWN = [[AMMessageStateEnum alloc] initWithInt:6 withNSString:@"UNKNOWN" withInt:5];
+    AMMessageStateEnum_PENDING = [[AMMessageStateEnum alloc] initWithInt:
+#line 7
+    1 withNSString:@"PENDING" withInt:0];
+    AMMessageStateEnum_SENT = [[AMMessageStateEnum alloc] initWithInt:
+#line 8
+    2 withNSString:@"SENT" withInt:1];
+    AMMessageStateEnum_RECEIVED = [[AMMessageStateEnum alloc] initWithInt:
+#line 9
+    3 withNSString:@"RECEIVED" withInt:2];
+    AMMessageStateEnum_READ = [[AMMessageStateEnum alloc] initWithInt:
+#line 10
+    4 withNSString:@"READ" withInt:3];
+    AMMessageStateEnum_ERROR = [[AMMessageStateEnum alloc] initWithInt:
+#line 11
+    5 withNSString:@"ERROR" withInt:4];
+    AMMessageStateEnum_UNKNOWN = [[AMMessageStateEnum alloc] initWithInt:
+#line 12
+    6 withNSString:@"UNKNOWN" withInt:5];
     J2OBJC_SET_INITIALIZED(AMMessageStateEnum)
   }
 }
@@ -75,6 +101,8 @@ AMMessageStateEnum *AMMessageStateEnum_valueOfWithNSString_(NSString *name) {
 
 AMMessageStateEnum *AMMessageStateEnum_fromValueWithInt_(jint value) {
   AMMessageStateEnum_init();
+  
+#line 25
   switch (value) {
     case 1:
     return AMMessageStateEnum_PENDING;

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedFileLocationV1.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedFileLocationV1.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,8 +30,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedFileLocationV1, encryptionType_, ImA
 J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedFileLocationV1, encryptedFileSize_, JavaLangInteger *)
 J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedFileLocationV1, encryptionKey_, IOSByteArray *)
 
+
+#line 19
 @implementation ImActorModelApiEncryptedFileLocationV1
 
+
+#line 28
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
                      withInt:(jint)fileSize
@@ -37,44 +43,82 @@ withImActorModelApiEncryptionTypeEnum:(ImActorModelApiEncryptionTypeEnum *)encry
          withJavaLangInteger:(JavaLangInteger *)encryptedFileSize
                withByteArray:(IOSByteArray *)encryptionKey {
   if (self = [super init]) {
+    
+#line 29
     self->fileId_ = fileId;
+    
+#line 30
     self->accessHash_ = accessHash;
+    
+#line 31
     self->fileSize_ = fileSize;
+    
+#line 32
     self->encryptionType_ = encryptionType;
+    
+#line 33
     self->encryptedFileSize_ = encryptedFileSize;
+    
+#line 34
     self->encryptionKey_ = encryptionKey;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (jlong)getFileId {
+  
+#line 42
   return self->fileId_;
 }
 
+
+#line 45
 - (jlong)getAccessHash {
+  
+#line 46
   return self->accessHash_;
 }
 
+
+#line 49
 - (jint)getFileSize {
+  
+#line 50
   return self->fileSize_;
 }
 
+
+#line 53
 - (ImActorModelApiEncryptionTypeEnum *)getEncryptionType {
+  
+#line 54
   return self->encryptionType_;
 }
 
+
+#line 57
 - (JavaLangInteger *)getEncryptedFileSize {
+  
+#line 58
   return self->encryptedFileSize_;
 }
 
+
+#line 61
 - (IOSByteArray *)getEncryptionKey {
+  
+#line 62
   return self->encryptionKey_;
 }
 
+
+#line 66
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->fileId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
@@ -87,7 +131,11 @@ withImActorModelApiEncryptionTypeEnum:(ImActorModelApiEncryptionTypeEnum *)encry
   self->encryptionKey_ = [values optBytesWithInt:6];
 }
 
+
+#line 79
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 80
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->fileId_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   [writer writeIntWithInt:3 withInt:self->fileSize_];

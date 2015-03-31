@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/WTauNafMultiplier.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/WTauNafMultiplier.java"
+
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -33,25 +35,43 @@ __attribute__((unused)) static OrgBouncycastleMathEcECPoint_F2m *OrgBouncycastle
                                                        withOrgBouncycastleMathEcPreCompInfo:(id<OrgBouncycastleMathEcPreCompInfo>)preCompInfo;
 @end
 
+
+#line 9
 @implementation OrgBouncycastleMathEcWTauNafMultiplier
 
-NSString * OrgBouncycastleMathEcWTauNafMultiplier_PRECOMP_NAME_ = @"bc_wtnaf";
+NSString * OrgBouncycastleMathEcWTauNafMultiplier_PRECOMP_NAME_ = 
+#line 12
+@"bc_wtnaf";
 
+
+#line 22
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)point
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k {
+  
+#line 24
   if (!([point isKindOfClass:[OrgBouncycastleMathEcECPoint_F2m class]])) {
+    
+#line 26
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Only ECPoint.F2m can be used in WTauNafMultiplier"];
   }
+  
+#line 30
   OrgBouncycastleMathEcECPoint_F2m *p = (OrgBouncycastleMathEcECPoint_F2m *) check_class_cast(point, [OrgBouncycastleMathEcECPoint_F2m class]);
   OrgBouncycastleMathEcECCurve_F2m *curve = (OrgBouncycastleMathEcECCurve_F2m *) check_class_cast([((OrgBouncycastleMathEcECPoint_F2m *) nil_chk(p)) getCurve], [OrgBouncycastleMathEcECCurve_F2m class]);
   jint m = [((OrgBouncycastleMathEcECCurve_F2m *) nil_chk(curve)) getM];
   jbyte a = [((JavaMathBigInteger *) nil_chk([((OrgBouncycastleMathEcECFieldElement *) nil_chk([curve getA])) toBigInteger])) charValue];
   jbyte mu = [curve getMu];
   IOSObjectArray *s = [curve getSi];
+  
+#line 37
   OrgBouncycastleMathEcZTauElement *rho = OrgBouncycastleMathEcTnaf_partModReductionWithJavaMathBigInteger_withInt_withByte_withJavaMathBigIntegerArray_withByte_withByte_(k, m, a, s, mu, (jbyte) 10);
+  
+#line 39
   return OrgBouncycastleMathEcWTauNafMultiplier_multiplyWTnafWithOrgBouncycastleMathEcECPoint_F2m_withOrgBouncycastleMathEcZTauElement_withOrgBouncycastleMathEcPreCompInfo_withByte_withByte_(self, p, rho, [curve getPreCompInfoWithOrgBouncycastleMathEcECPoint:p withNSString:OrgBouncycastleMathEcWTauNafMultiplier_PRECOMP_NAME_], a, mu);
 }
 
+
+#line 52
 - (OrgBouncycastleMathEcECPoint_F2m *)multiplyWTnafWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)p
                                                    withOrgBouncycastleMathEcZTauElement:(OrgBouncycastleMathEcZTauElement *)lambda
                                                    withOrgBouncycastleMathEcPreCompInfo:(id<OrgBouncycastleMathEcPreCompInfo>)preCompInfo
@@ -60,6 +80,8 @@ NSString * OrgBouncycastleMathEcWTauNafMultiplier_PRECOMP_NAME_ = @"bc_wtnaf";
   return OrgBouncycastleMathEcWTauNafMultiplier_multiplyWTnafWithOrgBouncycastleMathEcECPoint_F2m_withOrgBouncycastleMathEcZTauElement_withOrgBouncycastleMathEcPreCompInfo_withByte_withByte_(self, p, lambda, preCompInfo, a, mu);
 }
 
+
+#line 74
 + (OrgBouncycastleMathEcECPoint_F2m *)multiplyFromWTnafWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)p
                                                                               withByteArray:(IOSByteArray *)u
                                                        withOrgBouncycastleMathEcPreCompInfo:(id<OrgBouncycastleMathEcPreCompInfo>)preCompInfo {
@@ -73,39 +95,71 @@ NSString * OrgBouncycastleMathEcWTauNafMultiplier_PRECOMP_NAME_ = @"bc_wtnaf";
 @end
 
 OrgBouncycastleMathEcECPoint_F2m *OrgBouncycastleMathEcWTauNafMultiplier_multiplyWTnafWithOrgBouncycastleMathEcECPoint_F2m_withOrgBouncycastleMathEcZTauElement_withOrgBouncycastleMathEcPreCompInfo_withByte_withByte_(OrgBouncycastleMathEcWTauNafMultiplier *self, OrgBouncycastleMathEcECPoint_F2m *p, OrgBouncycastleMathEcZTauElement *lambda, id<OrgBouncycastleMathEcPreCompInfo> preCompInfo, jbyte a, jbyte mu) {
+  
+#line 55
   IOSObjectArray *alpha = (a == 0) ? OrgBouncycastleMathEcTnaf_get_alpha0_() : OrgBouncycastleMathEcTnaf_get_alpha1_();
+  
+#line 57
   JavaMathBigInteger *tw = OrgBouncycastleMathEcTnaf_getTwWithByte_withInt_(mu, OrgBouncycastleMathEcTnaf_WIDTH);
-  IOSByteArray *u = OrgBouncycastleMathEcTnaf_tauAdicWNafWithByte_withOrgBouncycastleMathEcZTauElement_withByte_withJavaMathBigInteger_withJavaMathBigInteger_withOrgBouncycastleMathEcZTauElementArray_(mu, lambda, OrgBouncycastleMathEcTnaf_WIDTH, JavaMathBigInteger_valueOfWithLong_(OrgBouncycastleMathEcTnaf_POW_2_WIDTH), tw, alpha);
+  
+#line 59
+  IOSByteArray *u = OrgBouncycastleMathEcTnaf_tauAdicWNafWithByte_withOrgBouncycastleMathEcZTauElement_withByte_withJavaMathBigInteger_withJavaMathBigInteger_withOrgBouncycastleMathEcZTauElementArray_(mu, lambda, OrgBouncycastleMathEcTnaf_WIDTH, JavaMathBigInteger_valueOfWithLong_(
+#line 60
+  OrgBouncycastleMathEcTnaf_POW_2_WIDTH), tw, alpha);
+  
+#line 62
   return OrgBouncycastleMathEcWTauNafMultiplier_multiplyFromWTnafWithOrgBouncycastleMathEcECPoint_F2m_withByteArray_withOrgBouncycastleMathEcPreCompInfo_(p, u, preCompInfo);
 }
 
 OrgBouncycastleMathEcECPoint_F2m *OrgBouncycastleMathEcWTauNafMultiplier_multiplyFromWTnafWithOrgBouncycastleMathEcECPoint_F2m_withByteArray_withOrgBouncycastleMathEcPreCompInfo_(OrgBouncycastleMathEcECPoint_F2m *p, IOSByteArray *u, id<OrgBouncycastleMathEcPreCompInfo> preCompInfo) {
   OrgBouncycastleMathEcWTauNafMultiplier_init();
+  
+#line 76
   OrgBouncycastleMathEcECCurve_F2m *curve = (OrgBouncycastleMathEcECCurve_F2m *) check_class_cast([((OrgBouncycastleMathEcECPoint_F2m *) nil_chk(p)) getCurve], [OrgBouncycastleMathEcECCurve_F2m class]);
   jbyte a = [((JavaMathBigInteger *) nil_chk([((OrgBouncycastleMathEcECFieldElement *) nil_chk([((OrgBouncycastleMathEcECCurve_F2m *) nil_chk(curve)) getA])) toBigInteger])) charValue];
+  
+#line 79
   IOSObjectArray *pu;
   if ((preCompInfo == nil) || !([preCompInfo isKindOfClass:[OrgBouncycastleMathEcWTauNafPreCompInfo class]])) {
+    
+#line 82
     pu = OrgBouncycastleMathEcTnaf_getPreCompWithOrgBouncycastleMathEcECPoint_F2m_withByte_(p, a);
+    
+#line 84
     OrgBouncycastleMathEcWTauNafPreCompInfo *pre = [[OrgBouncycastleMathEcWTauNafPreCompInfo alloc] init];
     [pre setPreCompWithOrgBouncycastleMathEcECPoint_F2mArray:pu];
     [curve setPreCompInfoWithOrgBouncycastleMathEcECPoint:p withNSString:OrgBouncycastleMathEcWTauNafMultiplier_PRECOMP_NAME_ withOrgBouncycastleMathEcPreCompInfo:pre];
   }
   else {
+    
+#line 90
     pu = [((OrgBouncycastleMathEcWTauNafPreCompInfo *) check_class_cast(preCompInfo, [OrgBouncycastleMathEcWTauNafPreCompInfo class])) getPreComp];
   }
+  
+#line 94
   OrgBouncycastleMathEcECPoint_F2m *q = (OrgBouncycastleMathEcECPoint_F2m *) check_class_cast([((OrgBouncycastleMathEcECCurve *) nil_chk([p getCurve])) getInfinity], [OrgBouncycastleMathEcECPoint_F2m class]);
   for (jint i = ((IOSByteArray *) nil_chk(u))->size_ - 1; i >= 0; i--) {
+    
+#line 97
     q = OrgBouncycastleMathEcTnaf_tauWithOrgBouncycastleMathEcECPoint_F2m_(q);
     jbyte ui = IOSByteArray_Get(u, i);
     if (ui != 0) {
+      
+#line 101
       if (ui > 0) {
+        
+#line 103
         q = [((OrgBouncycastleMathEcECPoint_F2m *) nil_chk(q)) addSimpleWithOrgBouncycastleMathEcECPoint_F2m:IOSObjectArray_Get(nil_chk(pu), ui)];
       }
       else {
+        
+#line 107
         q = [((OrgBouncycastleMathEcECPoint_F2m *) nil_chk(q)) subtractSimpleWithOrgBouncycastleMathEcECPoint_F2m:IOSObjectArray_Get(nil_chk(pu), -ui)];
       }
     }
   }
+  
+#line 112
   return q;
 }
 

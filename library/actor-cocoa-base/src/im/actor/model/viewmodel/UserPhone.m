@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserPhone.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserPhone.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/viewmodel/UserPhone.h"
@@ -16,34 +18,58 @@
 
 J2OBJC_FIELD_SETTER(AMUserPhone, title_, NSString *)
 
+
+#line 6
 @implementation AMUserPhone
 
+
+#line 10
 - (instancetype)initWithLong:(jlong)phone
                 withNSString:(NSString *)title {
   if (self = [super init]) {
+    
+#line 11
     self->phone_ = phone;
+    
+#line 12
     self->title_ = title;
   }
   return self;
 }
 
+
+#line 15
 - (jlong)getPhone {
+  
+#line 16
   return phone_;
 }
 
+
+#line 19
 - (NSString *)getTitle {
+  
+#line 20
   return title_;
 }
 
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
+  
+#line 28
   AMUserPhone *userPhone = (AMUserPhone *) check_class_cast(o, [AMUserPhone class]);
+  
+#line 30
   if (phone_ != ((AMUserPhone *) nil_chk(userPhone))->phone_) return NO;
+  
+#line 32
   return YES;
 }
 
 - (NSUInteger)hash {
+  
+#line 37
   return (jint) (phone_ ^ (URShift64(phone_, 32)));
 }
 

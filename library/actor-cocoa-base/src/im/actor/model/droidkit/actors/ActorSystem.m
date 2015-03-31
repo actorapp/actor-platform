@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorSystem.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorSystem.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSelection.h"
@@ -27,22 +29,38 @@ J2OBJC_FIELD_SETTER(DKActorSystem, traceInterface_, id<ImActorModelDroidkitActor
 
 BOOL DKActorSystem_initialized = NO;
 
+
+#line 13
 @implementation DKActorSystem
 
 DKActorSystem * DKActorSystem_mainSystem_;
-NSString * DKActorSystem_DEFAULT_DISPATCHER_ = @"default";
+NSString * DKActorSystem_DEFAULT_DISPATCHER_ = 
+#line 26
+@"default";
 
+
+#line 22
 + (DKActorSystem *)system {
   return DKActorSystem_system();
 }
 
+
+#line 35
 - (instancetype)init {
-  return [self initDKActorSystemWithBoolean:YES];
+  return
+#line 36
+  [self initDKActorSystemWithBoolean:YES];
 }
 
+
+#line 43
 - (instancetype)initDKActorSystemWithBoolean:(jboolean)addDefaultDispatcher {
   if (self = [super init]) {
-    dispatchers_ = [[JavaUtilHashMap alloc] init];
+    dispatchers_ =
+#line 28
+    [[JavaUtilHashMap alloc] init];
+    
+#line 44
     if (addDefaultDispatcher) {
       [self addDispatcherWithNSString:DKActorSystem_DEFAULT_DISPATCHER_];
     }
@@ -51,32 +69,50 @@ NSString * DKActorSystem_DEFAULT_DISPATCHER_ = @"default";
 }
 
 - (instancetype)initWithBoolean:(jboolean)addDefaultDispatcher {
-  return [self initDKActorSystemWithBoolean:addDefaultDispatcher];
+  return [self initDKActorSystemWithBoolean:
+#line 43
+addDefaultDispatcher];
 }
 
+
+#line 55
 - (void)addDispatcherWithNSString:(NSString *)dispatcherId
                           withInt:(jint)threadsCount {
+  
+#line 56
   @synchronized(dispatchers_) {
     if ([((JavaUtilHashMap *) nil_chk(dispatchers_)) containsKeyWithId:dispatcherId]) {
       return;
     }
+    
+#line 61
     DKActorDispatcher *dispatcher = DKEnvironment_createDispatcherWithNSString_withInt_withDKThreadPriorityEnum_withDKActorSystem_(dispatcherId, threadsCount, DKThreadPriorityEnum_get_LOW(), self);
     (void) [dispatchers_ putWithId:dispatcherId withId:dispatcher];
   }
 }
 
+
+#line 71
 - (void)addDispatcherWithNSString:(NSString *)dispatcherId {
+  
+#line 72
   @synchronized(dispatchers_) {
     if ([((JavaUtilHashMap *) nil_chk(dispatchers_)) containsKeyWithId:dispatcherId]) {
       return;
     }
+    
+#line 77
     DKActorDispatcher *dispatcher = DKEnvironment_createDefaultDispatcherWithNSString_withDKThreadPriorityEnum_withDKActorSystem_(dispatcherId, DKThreadPriorityEnum_get_LOW(), self);
     [self addDispatcherWithNSString:dispatcherId withDKActorDispatcher:dispatcher];
   }
 }
 
+
+#line 88
 - (void)addDispatcherWithNSString:(NSString *)dispatcherId
             withDKActorDispatcher:(DKActorDispatcher *)dispatcher {
+  
+#line 89
   @synchronized(dispatchers_) {
     if ([((JavaUtilHashMap *) nil_chk(dispatchers_)) containsKeyWithId:dispatcherId]) {
       return;
@@ -85,13 +121,23 @@ NSString * DKActorSystem_DEFAULT_DISPATCHER_ = @"default";
   }
 }
 
+
+#line 97
 - (DKActorRef *)actorOfWithDKActorSelection:(DKActorSelection *)selection {
+  
+#line 98
   return [self actorOfWithDKProps:[((DKActorSelection *) nil_chk(selection)) getProps] withNSString:[selection getPath]];
 }
 
+
+#line 108
 - (DKActorRef *)actorOfWithDKProps:(DKProps *)props
                       withNSString:(NSString *)path {
+  
+#line 109
   NSString *dispatcherId = [((DKProps *) nil_chk(props)) getDispatcher] == nil ? DKActorSystem_DEFAULT_DISPATCHER_ : [props getDispatcher];
+  
+#line 111
   DKActorDispatcher *mailboxesDispatcher;
   @synchronized(dispatchers_) {
     if (![((JavaUtilHashMap *) nil_chk(dispatchers_)) containsKeyWithId:dispatcherId]) {
@@ -99,14 +145,22 @@ NSString * DKActorSystem_DEFAULT_DISPATCHER_ = @"default";
     }
     mailboxesDispatcher = [dispatchers_ getWithId:dispatcherId];
   }
+  
+#line 119
   return [((DKActorDispatcher *) nil_chk(mailboxesDispatcher)) referenceActorWithNSString:path withDKProps:props];
 }
 
 - (id<ImActorModelDroidkitActorsDebugTraceInterface>)getTraceInterface {
+  
+#line 128
   return traceInterface_;
 }
 
+
+#line 136
 - (void)setTraceInterfaceWithImActorModelDroidkitActorsDebugTraceInterface:(id<ImActorModelDroidkitActorsDebugTraceInterface>)traceInterface {
+  
+#line 137
   self->traceInterface_ = traceInterface;
 }
 
@@ -118,7 +172,9 @@ NSString * DKActorSystem_DEFAULT_DISPATCHER_ = @"default";
 
 + (void)initialize {
   if (self == [DKActorSystem class]) {
-    DKActorSystem_mainSystem_ = [[DKActorSystem alloc] init];
+    DKActorSystem_mainSystem_ =
+#line 15
+    [[DKActorSystem alloc] init];
     J2OBJC_SET_INITIALIZED(DKActorSystem)
   }
 }
@@ -127,6 +183,8 @@ NSString * DKActorSystem_DEFAULT_DISPATCHER_ = @"default";
 
 DKActorSystem *DKActorSystem_system() {
   DKActorSystem_init();
+  
+#line 23
   return DKActorSystem_mainSystem_;
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/KeyValueRecord.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/KeyValueRecord.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/KeyValueRecord.h"
@@ -16,22 +18,38 @@
 
 J2OBJC_FIELD_SETTER(DKKeyValueRecord, data_, IOSByteArray *)
 
+
+#line 6
 @implementation DKKeyValueRecord
 
+
+#line 10
 - (instancetype)initWithLong:(jlong)id_
                withByteArray:(IOSByteArray *)data {
   if (self = [super init]) {
+    
+#line 11
     self->id__ = id_;
+    
+#line 12
     self->data_ = data;
   }
   return self;
 }
 
+
+#line 15
 - (jlong)getId {
+  
+#line 16
   return id__;
 }
 
+
+#line 19
 - (IOSByteArray *)getData {
+  
+#line 20
   return data_;
 }
 

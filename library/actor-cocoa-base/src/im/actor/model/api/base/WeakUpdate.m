@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/WeakUpdate.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/WeakUpdate.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,46 +26,76 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 
+
+#line 20
 @implementation ImActorModelApiBaseWeakUpdate
 
+
+#line 23
 + (ImActorModelApiBaseWeakUpdate *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiBaseWeakUpdate_fromBytesWithByteArray_(data);
 }
 
+
+#line 31
 - (instancetype)initWithLong:(jlong)date
                      withInt:(jint)updateHeader
                withByteArray:(IOSByteArray *)update {
   if (self = [super init]) {
+    
+#line 32
     self->date_ = date;
+    
+#line 33
     self->updateHeader_ = updateHeader;
+    
+#line 34
     self->update_ = update;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (jlong)getDate {
+  
+#line 42
   return self->date_;
 }
 
+
+#line 45
 - (jint)getUpdateHeader {
+  
+#line 46
   return self->updateHeader_;
 }
 
+
+#line 49
 - (IOSByteArray *)getUpdate {
+  
+#line 50
   return self->update_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->date_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->updateHeader_ = [values getIntWithInt:2];
   self->update_ = [values getBytesWithInt:3];
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->date_];
   [writer writeIntWithInt:2 withInt:self->updateHeader_];
   if (self->update_ == nil) {
@@ -82,6 +114,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 }
 
 - (jint)getHeaderKey {
+  
+#line 82
   return ImActorModelApiBaseWeakUpdate_HEADER;
 }
 
@@ -96,6 +130,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 
 ImActorModelApiBaseWeakUpdate *ImActorModelApiBaseWeakUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseWeakUpdate_init();
+  
+#line 24
   return ((ImActorModelApiBaseWeakUpdate *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiBaseWeakUpdate alloc] init], data));
 }
 

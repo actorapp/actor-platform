@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExVideo.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExVideo.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/DocumentExVideo.h"
@@ -20,44 +22,74 @@
 
 @implementation ImActorModelApiDocumentExVideo
 
+
+#line 25
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
                     withInt:(jint)duration {
   if (self = [super init]) {
+    
+#line 26
     self->w_ = w;
+    
+#line 27
     self->h_ = h;
+    
+#line 28
     self->duration_ = duration;
   }
   return self;
 }
 
+
+#line 31
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getHeader {
+  
+#line 36
   return 2;
 }
 
+
+#line 39
 - (jint)getW {
+  
+#line 40
   return self->w_;
 }
 
+
+#line 43
 - (jint)getH {
+  
+#line 44
   return self->h_;
 }
 
+
+#line 47
 - (jint)getDuration {
+  
+#line 48
   return self->duration_;
 }
 
+
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->h_ = [values getIntWithInt:2];
   self->duration_ = [values getIntWithInt:3];
 }
 
+
+#line 59
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 60
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->w_];
   [writer writeIntWithInt:2 withInt:self->h_];
   [writer writeIntWithInt:3 withInt:self->duration_];

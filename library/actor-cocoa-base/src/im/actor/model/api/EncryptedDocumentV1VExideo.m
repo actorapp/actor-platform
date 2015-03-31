@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedDocumentV1VExideo.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedDocumentV1VExideo.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/EncryptedDocumentV1VExideo.h"
@@ -20,44 +22,74 @@
 
 @implementation ImActorModelApiEncryptedDocumentV1VExideo
 
+
+#line 25
 - (instancetype)initWithInt:(jint)width
                     withInt:(jint)height
                     withInt:(jint)duration {
   if (self = [super init]) {
+    
+#line 26
     self->width_ = width;
+    
+#line 27
     self->height_ = height;
+    
+#line 28
     self->duration_ = duration;
   }
   return self;
 }
 
+
+#line 31
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getHeader {
+  
+#line 36
   return 2;
 }
 
+
+#line 39
 - (jint)getWidth {
+  
+#line 40
   return self->width_;
 }
 
+
+#line 43
 - (jint)getHeight {
+  
+#line 44
   return self->height_;
 }
 
+
+#line 47
 - (jint)getDuration {
+  
+#line 48
   return self->duration_;
 }
 
+
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->width_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->height_ = [values getIntWithInt:2];
   self->duration_ = [values getIntWithInt:3];
 }
 
+
+#line 59
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 60
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->width_];
   [writer writeIntWithInt:2 withInt:self->height_];
   [writer writeIntWithInt:3 withInt:self->duration_];

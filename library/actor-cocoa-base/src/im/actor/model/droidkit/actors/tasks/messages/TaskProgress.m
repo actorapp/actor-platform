@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/messages/TaskProgress.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/messages/TaskProgress.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/tasks/messages/TaskProgress.h"
 
@@ -15,27 +17,45 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksMessagesTaskProgress, progress_, id)
 
+
+#line 8
 @implementation ImActorModelDroidkitActorsTasksMessagesTaskProgress
 
+
+#line 12
 - (instancetype)initWithInt:(jint)requestId
                      withId:(id)progress {
   if (self = [super init]) {
+    
+#line 13
     self->requestId_ = requestId;
+    
+#line 14
     self->progress_ = progress;
   }
   return self;
 }
 
+
+#line 17
 - (jint)getRequestId {
+  
+#line 18
   return requestId_;
 }
 
+
+#line 21
 - (id)getProgress {
+  
+#line 22
   return progress_;
 }
 
 - (NSString *)description {
-  return JreStrcat("$IC", @"TaskProgress{requestId=", requestId_, '}');
+  return JreStrcat("$IC", @"TaskProgress{requestId=",
+#line 28
+  requestId_, '}');
 }
 
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksMessagesTaskProgress *)other {

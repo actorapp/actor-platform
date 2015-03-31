@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetPublicKeys.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetPublicKeys.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,27 +26,41 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetPublicKeys, keys_, id<JavaUtilList>)
 
+
+#line 20
 @implementation ImActorModelApiRpcResponseGetPublicKeys
 
+
+#line 23
 + (ImActorModelApiRpcResponseGetPublicKeys *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseGetPublicKeys_fromBytesWithByteArray_(data);
 }
 
+
+#line 29
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)keys {
   if (self = [super init]) {
+    
+#line 30
     self->keys_ = keys;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (id<JavaUtilList>)getKeys {
+  
+#line 38
   return self->keys_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _keys = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
@@ -53,7 +69,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetPublicKeys, keys_, id<JavaUtilL
   self->keys_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_keys];
 }
 
+
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 52
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->keys_];
 }
 
@@ -64,6 +84,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetPublicKeys, keys_, id<JavaUtilL
 }
 
 - (jint)getHeaderKey {
+  
+#line 64
   return ImActorModelApiRpcResponseGetPublicKeys_HEADER;
 }
 
@@ -76,6 +98,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetPublicKeys, keys_, id<JavaUtilL
 
 ImActorModelApiRpcResponseGetPublicKeys *ImActorModelApiRpcResponseGetPublicKeys_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetPublicKeys_init();
+  
+#line 24
   return ((ImActorModelApiRpcResponseGetPublicKeys *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseGetPublicKeys alloc] init], data));
 }
 

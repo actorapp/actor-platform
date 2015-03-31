@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/UnsentMessage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/UnsentMessage.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -17,44 +19,74 @@
 }
 @end
 
+
+#line 11
 @implementation MTUnsentMessage
 
+
+#line 18
 - (instancetype)initWithLong:(jlong)messageId
                      withInt:(jint)len {
   if (self = [super init]) {
+    
+#line 19
     self->messageId_ = messageId;
+    
+#line 20
     self->len_ = len;
   }
   return self;
 }
 
+
+#line 23
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 24
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 27
 - (jlong)getMessageId {
+  
+#line 28
   return messageId_;
 }
 
+
+#line 31
 - (jint)getLen {
+  
+#line 32
   return len_;
 }
 
+
+#line 36
 - (jbyte)getHeader {
   return MTUnsentMessage_HEADER;
 }
 
+
+#line 41
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 42
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeIntWithInt:len_];
 }
 
+
+#line 47
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   len_ = [bs readInt];
 }
 
 - (NSString *)description {
+  
+#line 54
   return JreStrcat("$JC", @"UnsentMessage[", messageId_, ']');
 }
 

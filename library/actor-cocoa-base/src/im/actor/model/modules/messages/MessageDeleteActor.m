@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/MessageDeleteActor.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/MessageDeleteActor.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/OutPeer.h"
@@ -57,30 +59,48 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesMessageDeleteActor_$1, this$0_, I
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesMessageDeleteActor_$1, val$peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesMessageDeleteActor_$1, val$rids_, id<JavaUtilList>)
 
+
+#line 22
 @implementation ImActorModelModulesMessagesMessageDeleteActor
 
+
+#line 27
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self = [super initWithImActorModelModulesModules:modules]) {
+  if (self =
+#line 28
+  [super initWithImActorModelModulesModules:modules]) {
+    
+#line 29
     self->syncKeyValue_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getMessagesModule])) getCursorStorage];
   }
   return self;
 }
 
+
+#line 33
 - (void)preStart {
+  
+#line 34
   [super preStart];
   IOSByteArray *data = [((DKSyncKeyValue *) nil_chk(syncKeyValue_)) getWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_DELETE];
   if (data != nil) {
     @try {
       deleteStorage_ = ImActorModelModulesMessagesEntityDeleteStorage_fromBytesWithByteArray_(data);
     }
-    @catch (JavaIoIOException *e) {
+    @catch (
+#line 39
+    JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
       deleteStorage_ = [[ImActorModelModulesMessagesEntityDeleteStorage alloc] init];
     }
   }
   else {
+    
+#line 44
     deleteStorage_ = [[ImActorModelModulesMessagesEntityDeleteStorage alloc] init];
   }
+  
+#line 47
   for (AMPeer * __strong peer in nil_chk([((JavaUtilHashMap *) nil_chk([((ImActorModelModulesMessagesEntityDeleteStorage *) nil_chk(deleteStorage_)) getPendingDeletions])) keySet])) {
     ImActorModelModulesMessagesEntityDelete *delete_ = [((JavaUtilHashMap *) nil_chk([deleteStorage_ getPendingDeletions])) getWithId:peer];
     if ([((id<JavaUtilList>) nil_chk([((ImActorModelModulesMessagesEntityDelete *) nil_chk(delete_)) getRids])) size] > 0) {
@@ -89,42 +109,66 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesMessageDeleteActor_$1, val$rids_,
   }
 }
 
+
+#line 55
 - (void)saveStorage {
+  
+#line 56
   [((DKSyncKeyValue *) nil_chk(syncKeyValue_)) putWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_DELETE withByteArray:[((ImActorModelModulesMessagesEntityDeleteStorage *) nil_chk(deleteStorage_)) toByteArray]];
 }
 
+
+#line 59
 - (void)performDeleteWithAMPeer:(AMPeer *)peer
                withJavaUtilList:(id<JavaUtilList>)rids {
+  
+#line 60
   ImActorModelApiOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
   [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestDeleteMessage alloc] initWithImActorModelApiOutPeer:outPeer withJavaUtilList:rids] withAMRpcCallback:[[ImActorModelModulesMessagesMessageDeleteActor_$1 alloc] initWithImActorModelModulesMessagesMessageDeleteActor:self withAMPeer:peer withJavaUtilList:rids]];
 }
 
+
+#line 79
 - (void)onDeleteMessageWithAMPeer:(AMPeer *)peer
                  withJavaUtilList:(id<JavaUtilList>)rids {
+  
+#line 81
   if (![((JavaUtilHashMap *) nil_chk([((ImActorModelModulesMessagesEntityDeleteStorage *) nil_chk(deleteStorage_)) getPendingDeletions])) containsKeyWithId:peer]) {
     (void) [((JavaUtilHashMap *) nil_chk([deleteStorage_ getPendingDeletions])) putWithId:peer withId:[[ImActorModelModulesMessagesEntityDelete alloc] initWithAMPeer:peer withJavaUtilList:[[JavaUtilArrayList alloc] init]]];
   }
   [((id<JavaUtilList>) nil_chk([((ImActorModelModulesMessagesEntityDelete *) nil_chk([((JavaUtilHashMap *) nil_chk([deleteStorage_ getPendingDeletions])) getWithId:peer])) getRids])) addAllWithJavaUtilCollection:rids];
   [self saveStorage];
+  
+#line 88
   [self performDeleteWithAMPeer:peer withJavaUtilList:rids];
 }
 
+
+#line 92
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesMessagesMessageDeleteActor_DeleteMessage class]]) {
     ImActorModelModulesMessagesMessageDeleteActor_DeleteMessage *deleteMessage = (ImActorModelModulesMessagesMessageDeleteActor_DeleteMessage *) check_class_cast(message, [ImActorModelModulesMessagesMessageDeleteActor_DeleteMessage class]);
     JavaUtilArrayList *rids = [[JavaUtilArrayList alloc] init];
     {
-      IOSLongArray *a__ = [((ImActorModelModulesMessagesMessageDeleteActor_DeleteMessage *) nil_chk(deleteMessage)) getRids];
+      IOSLongArray *a__ =
+#line 96
+      [((ImActorModelModulesMessagesMessageDeleteActor_DeleteMessage *) nil_chk(deleteMessage)) getRids];
       jlong const *b__ = ((IOSLongArray *) nil_chk(a__))->buffer_;
       jlong const *e__ = b__ + a__->size_;
       while (b__ < e__) {
         jlong l = *b__++;
+        
+#line 97
         [rids addWithId:JavaLangLong_valueOfWithLong_(l)];
       }
     }
+    
+#line 99
     [self onDeleteMessageWithAMPeer:[deleteMessage getPeer] withJavaUtilList:rids];
   }
   else {
+    
+#line 101
     [self dropWithId:message];
   }
 }
@@ -139,22 +183,38 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesMessageDeleteActor_$1, val$rids_,
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesMessageDeleteActor)
 
+
+#line 105
 @implementation ImActorModelModulesMessagesMessageDeleteActor_DeleteMessage
 
+
+#line 109
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                  withLongArray:(IOSLongArray *)rids {
   if (self = [super init]) {
+    
+#line 110
     self->peer_ = peer;
+    
+#line 111
     self->rids_ = rids;
   }
   return self;
 }
 
+
+#line 114
 - (AMPeer *)getPeer {
+  
+#line 115
   return peer_;
 }
 
+
+#line 118
 - (IOSLongArray *)getRids {
+  
+#line 119
   return rids_;
 }
 
@@ -170,13 +230,19 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesMessageDeleteActor_D
 
 @implementation ImActorModelModulesMessagesMessageDeleteActor_$1
 
+
+#line 63
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
+  
+#line 64
   if ([((JavaUtilHashMap *) nil_chk([((ImActorModelModulesMessagesEntityDeleteStorage *) nil_chk(this$0_->deleteStorage_)) getPendingDeletions])) containsKeyWithId:val$peer_]) {
     [((id<JavaUtilList>) nil_chk([((ImActorModelModulesMessagesEntityDelete *) nil_chk([((JavaUtilHashMap *) nil_chk([this$0_->deleteStorage_ getPendingDeletions])) getWithId:val$peer_])) getRids])) removeAllWithJavaUtilCollection:val$rids_];
     [this$0_ saveStorage];
   }
 }
 
+
+#line 73
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
 }
 

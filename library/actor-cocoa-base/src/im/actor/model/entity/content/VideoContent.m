@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/VideoContent.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/VideoContent.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -25,12 +27,16 @@
 - (instancetype)init;
 @end
 
+
+#line 12
 @implementation AMVideoContent
 
 + (AMVideoContent *)videoFromBytesWithByteArray:(IOSByteArray *)data {
   return AMVideoContent_videoFromBytesWithByteArray_(data);
 }
 
+
+#line 22
 - (instancetype)initWithAMFileSource:(AMFileSource *)location
                         withNSString:(NSString *)mimetype
                         withNSString:(NSString *)name
@@ -38,41 +44,69 @@
                              withInt:(jint)duration
                              withInt:(jint)w
                              withInt:(jint)h {
-  if (self = [super initWithAMFileSource:location withNSString:mimetype withNSString:name withAMFastThumb:fastThumb]) {
+  if (self =
+#line 23
+  [super initWithAMFileSource:location withNSString:mimetype withNSString:name withAMFastThumb:fastThumb]) {
+    
+#line 24
     self->duration_ = duration;
+    
+#line 25
     self->w_ = w;
+    
+#line 26
     self->h_ = h;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getDuration {
+  
+#line 34
   return duration_;
 }
 
+
+#line 37
 - (jint)getW {
+  
+#line 38
   return w_;
 }
 
+
+#line 41
 - (jint)getH {
+  
+#line 42
   return h_;
 }
 
+
+#line 46
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_DOCUMENT_VIDEO();
 }
 
+
+#line 51
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  
+#line 52
   [super parseWithBSBserValues:values];
   duration_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
   w_ = [values getIntWithInt:11];
   h_ = [values getIntWithInt:12];
 }
 
+
+#line 59
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:duration_];
@@ -91,6 +125,8 @@
 
 AMVideoContent *AMVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data) {
   AMVideoContent_init();
+  
+#line 15
   return ((AMVideoContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMVideoContent alloc] init], data));
 }
 

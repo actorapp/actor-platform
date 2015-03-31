@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Avatar.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Avatar.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,72 +29,120 @@ J2OBJC_FIELD_SETTER(AMAvatar, smallImage_, AMAvatarImage *)
 J2OBJC_FIELD_SETTER(AMAvatar, largeImage_, AMAvatarImage *)
 J2OBJC_FIELD_SETTER(AMAvatar, fullImage_, AMAvatarImage *)
 
+
+#line 13
 @implementation AMAvatar
 
 + (AMAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMAvatar_fromBytesWithByteArray_(data);
 }
 
+
+#line 23
 - (instancetype)initWithAMAvatarImage:(AMAvatarImage *)smallImage
                     withAMAvatarImage:(AMAvatarImage *)largeImage
                     withAMAvatarImage:(AMAvatarImage *)fullImage {
   if (self = [super init]) {
+    
+#line 24
     self->smallImage_ = smallImage;
+    
+#line 25
     self->largeImage_ = largeImage;
+    
+#line 26
     self->fullImage_ = fullImage;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (AMAvatarImage *)getSmallImage {
+  
+#line 34
   return smallImage_;
 }
 
+
+#line 37
 - (AMAvatarImage *)getLargeImage {
+  
+#line 38
   return largeImage_;
 }
 
+
+#line 41
 - (AMAvatarImage *)getFullImage {
+  
+#line 42
   return fullImage_;
 }
 
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
+  
+#line 50
   AMAvatar *avatar = (AMAvatar *) check_class_cast(o, [AMAvatar class]);
-  if (fullImage_ != nil ? ![fullImage_ isEqual:((AMAvatar *) nil_chk(avatar))->fullImage_] : ((AMAvatar *) nil_chk(avatar))->fullImage_ != nil) return NO;
-  if (largeImage_ != nil ? ![largeImage_ isEqual:((AMAvatar *) nil_chk(avatar))->largeImage_] : ((AMAvatar *) nil_chk(avatar))->largeImage_ != nil) return NO;
-  if (smallImage_ != nil ? ![smallImage_ isEqual:((AMAvatar *) nil_chk(avatar))->smallImage_] : ((AMAvatar *) nil_chk(avatar))->smallImage_ != nil) return NO;
+  
+#line 52
+  if (fullImage_ != nil ? ![fullImage_ isEqual:((AMAvatar *) nil_chk(avatar))->fullImage_] : ((AMAvatar *) nil_chk(avatar))->fullImage_ != nil)
+#line 53
+  return NO;
+  if (largeImage_ != nil ? ![largeImage_ isEqual:((AMAvatar *) nil_chk(avatar))->largeImage_] : ((AMAvatar *) nil_chk(avatar))->largeImage_ != nil)
+#line 55
+  return NO;
+  if (smallImage_ != nil ? ![smallImage_ isEqual:((AMAvatar *) nil_chk(avatar))->smallImage_] : ((AMAvatar *) nil_chk(avatar))->smallImage_ != nil)
+#line 57
+  return NO;
+  
+#line 59
   return YES;
 }
 
 - (NSUInteger)hash {
+  
+#line 64
   jint result = smallImage_ != nil ? ((jint) [smallImage_ hash]) : 0;
   result = 31 * result + (largeImage_ != nil ? ((jint) [largeImage_ hash]) : 0);
   result = 31 * result + (fullImage_ != nil ? ((jint) [fullImage_ hash]) : 0);
   return result;
 }
 
+
+#line 71
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  
+#line 72
   IOSByteArray *small = [((BSBserValues *) nil_chk(values)) optBytesWithInt:1];
   if (small != nil) {
     smallImage_ = AMAvatarImage_fromBytesWithByteArray_(small);
   }
+  
+#line 77
   IOSByteArray *large = [values optBytesWithInt:2];
   if (large != nil) {
     largeImage_ = AMAvatarImage_fromBytesWithByteArray_(large);
   }
+  
+#line 82
   IOSByteArray *full = [values optBytesWithInt:3];
   if (full != nil) {
     fullImage_ = AMAvatarImage_fromBytesWithByteArray_(full);
   }
 }
 
+
+#line 89
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 90
   if (smallImage_ != nil) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:smallImage_];
   }
@@ -115,6 +165,8 @@ J2OBJC_FIELD_SETTER(AMAvatar, fullImage_, AMAvatarImage *)
 
 AMAvatar *AMAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   AMAvatar_init();
+  
+#line 16
   return ((AMAvatar *) BSBser_parseWithBSBserObject_withByteArray_([[AMAvatar alloc] init], data));
 }
 

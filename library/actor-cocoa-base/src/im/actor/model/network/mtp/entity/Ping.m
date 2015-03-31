@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Ping.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Ping.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -16,12 +18,20 @@
 }
 @end
 
+
+#line 9
 @implementation MTPing
 
+
+#line 15
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 16
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 19
 - (instancetype)initWithLong:(jlong)randomId {
   if (self = [super init]) {
     self->randomId_ = randomId;
@@ -29,23 +39,37 @@
   return self;
 }
 
+
+#line 23
 - (jlong)getRandomId {
+  
+#line 24
   return randomId_;
 }
 
+
+#line 28
 - (jbyte)getHeader {
   return MTPing_HEADER;
 }
 
+
+#line 33
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 34
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:randomId_];
 }
 
+
+#line 38
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   randomId_ = [((BSDataInput *) nil_chk(bs)) readLong];
 }
 
 - (NSString *)description {
+  
+#line 44
   return JreStrcat("$JC", @"Ping{", randomId_, '}');
 }
 

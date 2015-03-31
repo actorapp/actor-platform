@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoObject.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoObject.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -14,25 +16,37 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
+
+#line 8
 @implementation MTProtoObject
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   if (self = [super init]) {
+    
+#line 11
     (void) [self readObjectWithBSDataInput:stream];
   }
   return self;
 }
 
+
+#line 14
 - (instancetype)init {
   return [super init];
 }
 
+
+#line 22
 - (IOSByteArray *)toByteArray {
+  
+#line 23
   BSDataOutput *outputStream = [[BSDataOutput alloc] init];
   @try {
     [self writeObjectWithBSDataOutput:outputStream];
   }
-  @catch (JavaIoIOException *e) {
+  @catch (
+#line 26
+  JavaIoIOException *e) {
     [((JavaIoIOException *) nil_chk(e)) printStackTrace];
   }
   return [outputStream toByteArray];

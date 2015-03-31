@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestDetachEmail.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestDetachEmail.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -20,39 +22,63 @@
 }
 @end
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestDetachEmail
 
+
+#line 23
 + (ImActorModelApiRpcRequestDetachEmail *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestDetachEmail_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithInt:(jint)email
                    withLong:(jlong)accessHash {
   if (self = [super init]) {
+    
+#line 31
     self->email_ = email;
+    
+#line 32
     self->accessHash_ = accessHash;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getEmail {
+  
+#line 40
   return self->email_;
 }
 
+
+#line 43
 - (jlong)getAccessHash {
+  
+#line 44
   return self->accessHash_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->email_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->email_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
@@ -64,6 +90,8 @@
 }
 
 - (jint)getHeaderKey {
+  
+#line 68
   return ImActorModelApiRpcRequestDetachEmail_HEADER;
 }
 
@@ -77,6 +105,8 @@
 
 ImActorModelApiRpcRequestDetachEmail *ImActorModelApiRpcRequestDetachEmail_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestDetachEmail_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestDetachEmail *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestDetachEmail alloc] init], data));
 }
 

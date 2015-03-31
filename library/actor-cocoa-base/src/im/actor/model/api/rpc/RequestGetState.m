@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetState.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetState.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -13,29 +15,43 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestGetState
 
+
+#line 23
 + (ImActorModelApiRpcRequestGetState *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestGetState_fromBytesWithByteArray_(data);
 }
 
+
+#line 28
 - (instancetype)init {
   return [super init];
 }
 
+
+#line 33
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
+
+#line 37
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
 - (NSString *)description {
+  
+#line 42
   NSString *res = @"rpc GetState{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
 - (jint)getHeaderKey {
+  
+#line 49
   return ImActorModelApiRpcRequestGetState_HEADER;
 }
 
@@ -43,6 +59,8 @@
 
 ImActorModelApiRpcRequestGetState *ImActorModelApiRpcRequestGetState_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestGetState_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestGetState *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestGetState alloc] init], data));
 }
 

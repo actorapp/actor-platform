@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateEmailTitleChanged.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateEmailTitleChanged.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,39 +24,63 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSString *)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateEmailTitleChanged
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateEmailTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateEmailTitleChanged_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithInt:(jint)emailId
                withNSString:(NSString *)title {
   if (self = [super init]) {
+    
+#line 31
     self->emailId_ = emailId;
+    
+#line 32
     self->title_ = title;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getEmailId {
+  
+#line 40
   return self->emailId_;
 }
 
+
+#line 43
 - (NSString *)getTitle {
+  
+#line 44
   return self->title_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->emailId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->title_ = [values getStringWithInt:2];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->emailId_];
   if (self->title_ == nil) {
     @throw [[JavaIoIOException alloc] init];
@@ -71,6 +97,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSStr
 }
 
 - (jint)getHeaderKey {
+  
+#line 73
   return ImActorModelApiUpdatesUpdateEmailTitleChanged_HEADER;
 }
 
@@ -84,6 +112,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSStr
 
 ImActorModelApiUpdatesUpdateEmailTitleChanged *ImActorModelApiUpdatesUpdateEmailTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateEmailTitleChanged_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateEmailTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateEmailTitleChanged alloc] init], data));
 }
 

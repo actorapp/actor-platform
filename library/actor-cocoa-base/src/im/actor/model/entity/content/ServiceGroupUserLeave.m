@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupUserLeave.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupUserLeave.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -11,20 +13,28 @@
 #include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
 #include "java/io/IOException.h"
 
+
+#line 10
 @implementation AMServiceGroupUserLeave
 
+
+#line 13
 + (AMServiceGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMServiceGroupUserLeave_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)init {
-  return [super initWithNSString:@"User leave"];
+  return
+#line 18
+  [super initWithNSString:@"User leave"];
 }
 
 @end
 
 AMServiceGroupUserLeave *AMServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupUserLeave_init();
+  
+#line 14
   return ((AMServiceGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupUserLeave alloc] init], data));
 }
 

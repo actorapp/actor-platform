@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Phone.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Phone.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Phone.h"
@@ -21,41 +23,71 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiPhone, phoneTitle_, NSString *)
 
+
+#line 19
 @implementation ImActorModelApiPhone
 
+
+#line 26
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
                    withLong:(jlong)phone
                withNSString:(NSString *)phoneTitle {
   if (self = [super init]) {
+    
+#line 27
     self->id__ = id_;
+    
+#line 28
     self->accessHash_ = accessHash;
+    
+#line 29
     self->phone_ = phone;
+    
+#line 30
     self->phoneTitle_ = phoneTitle;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getId {
+  
+#line 38
   return self->id__;
 }
 
+
+#line 41
 - (jlong)getAccessHash {
+  
+#line 42
   return self->accessHash_;
 }
 
+
+#line 45
 - (jlong)getPhone {
+  
+#line 46
   return self->phone_;
 }
 
+
+#line 49
 - (NSString *)getPhoneTitle {
+  
+#line 50
   return self->phoneTitle_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
@@ -63,7 +95,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhone, phoneTitle_, NSString *)
   self->phoneTitle_ = [values getStringWithInt:4];
 }
 
+
+#line 62
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 63
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   [writer writeLongWithInt:3 withLong:self->phone_];

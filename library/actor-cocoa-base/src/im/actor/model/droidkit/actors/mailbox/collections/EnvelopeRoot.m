@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/collections/EnvelopeRoot.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/collections/EnvelopeRoot.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorTime.h"
@@ -48,39 +50,71 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot, qu
 
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult, envelope__, DKEnvelope *)
 
+
+#line 14
 @implementation ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot
 
+
+#line 26
 - (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)queue {
   if (self = [super init]) {
-    usedSlot_ = [[JavaUtilHashSet alloc] init];
-    collections_ = [[JavaUtilHashMap alloc] init];
-    lastTopKey_ = [[JavaUtilHashMap alloc] init];
-    sortedCollection_ = [[JavaUtilTreeMap alloc] init];
+    usedSlot_ =
+#line 18
+    [[JavaUtilHashSet alloc] init];
+    collections_ =
+#line 20
+    [[JavaUtilHashMap alloc] init];
+    lastTopKey_ =
+#line 21
+    [[JavaUtilHashMap alloc] init];
+    sortedCollection_ =
+#line 22
+    [[JavaUtilTreeMap alloc] init];
+    
+#line 27
     self->queue_ = queue;
   }
   return self;
 }
 
+
+#line 30
 - (void)attachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)collection {
   @synchronized(self) {
+    
+#line 31
     jlong key = [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *) nil_chk(collection)) getTopKey];
+    
+#line 33
     if (![((JavaUtilHashMap *) nil_chk(collections_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_([collection getId])]) {
       (void) [collections_ putWithId:JavaLangInteger_valueOfWithInt_([collection getId]) withId:collection];
       (void) [((JavaUtilHashMap *) nil_chk(lastTopKey_)) putWithId:JavaLangInteger_valueOfWithInt_([collection getId]) withId:JavaLangLong_valueOfWithLong_(key)];
+      
+#line 37
       if (key > 0) {
         (void) [((JavaUtilTreeMap *) nil_chk(sortedCollection_)) putWithId:JavaLangLong_valueOfWithLong_(key) withId:collection];
       }
     }
+    
+#line 42
     [((DKMailboxesQueue *) nil_chk(queue_)) notifyQueueChanged];
   }
 }
 
+
+#line 45
 - (void)detachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)collection {
   @synchronized(self) {
+    
+#line 46
     if (![((JavaUtilHashMap *) nil_chk(collections_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *) nil_chk(collection)) getId])]) {
       return;
     }
+    
+#line 50
     (void) [collections_ removeWithId:JavaLangInteger_valueOfWithInt_([collection getId])];
+    
+#line 52
     JavaLangLong *prevKey = [((JavaUtilHashMap *) nil_chk(lastTopKey_)) getWithId:JavaLangInteger_valueOfWithInt_([collection getId])];
     (void) [lastTopKey_ removeWithId:JavaLangInteger_valueOfWithInt_([collection getId])];
     if ([((JavaLangLong *) nil_chk(prevKey)) longLongValue] > 0) {
@@ -89,8 +123,12 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_Fet
   }
 }
 
+
+#line 59
 - (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *)fetchCollectionWithLong:(jlong)time {
   @synchronized(self) {
+    
+#line 60
     id<JavaUtilMap_Entry> res = [((JavaUtilTreeMap *) nil_chk(sortedCollection_)) isEmpty] ? nil : [sortedCollection_ firstEntry];
     if (res != nil) {
       ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *collection = [res getValue];
@@ -103,46 +141,70 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_Fet
           return result;
         }
         else {
+          
+#line 71
           ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *result = ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_delayWithLong_([envelope getDelay]);
           [envelope recycle];
           return result;
         }
       }
       else {
+        
+#line 76
         return nil;
       }
     }
     else {
+      
+#line 79
       return nil;
     }
   }
 }
 
+
+#line 83
 - (void)changedTopKeyWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)collection {
   @synchronized(self) {
+    
+#line 84
     if (![((JavaUtilHashMap *) nil_chk(collections_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *) nil_chk(collection)) getId])]) {
       return;
     }
+    
+#line 88
     jlong key = [collection getTopKey];
+    
+#line 90
     JavaLangLong *prevKey = [((JavaUtilHashMap *) nil_chk(lastTopKey_)) getWithId:JavaLangInteger_valueOfWithInt_([collection getId])];
     (void) [lastTopKey_ removeWithId:JavaLangInteger_valueOfWithInt_([collection getId])];
     if ([((JavaLangLong *) nil_chk(prevKey)) longLongValue] > 0) {
       (void) [((JavaUtilTreeMap *) nil_chk(sortedCollection_)) removeWithId:prevKey];
     }
+    
+#line 96
     (void) [lastTopKey_ putWithId:JavaLangInteger_valueOfWithInt_([collection getId]) withId:JavaLangLong_valueOfWithLong_(key)];
     if (key > 0) {
       (void) [((JavaUtilTreeMap *) nil_chk(sortedCollection_)) putWithId:JavaLangLong_valueOfWithLong_(key) withId:collection];
     }
+    
+#line 101
     [((DKMailboxesQueue *) nil_chk(queue_)) notifyQueueChanged];
   }
 }
 
+
+#line 104
 - (jlong)buildKeyWithLong:(jlong)time {
   @synchronized(self) {
+    
+#line 105
     jlong currentTime = DKActorTime_currentTime();
     if (time < currentTime) {
       time = currentTime;
     }
+    
+#line 111
     id<JavaUtilIterator> iterator = [((JavaUtilHashSet *) nil_chk(usedSlot_)) iterator];
     while ([((id<JavaUtilIterator>) nil_chk(iterator)) hasNext]) {
       jlong t = [((JavaLangLong *) nil_chk([iterator next])) longLongValue];
@@ -150,10 +212,14 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_Fet
         [iterator remove];
       }
     }
+    
+#line 119
     jlong shift = 0;
     while ([usedSlot_ containsWithId:JavaLangLong_valueOfWithLong_(time * ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_MULTIPLE + shift)]) {
       shift++;
     }
+    
+#line 124
     [usedSlot_ addWithId:JavaLangLong_valueOfWithLong_(time * ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_MULTIPLE + shift)];
     return time * ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_MULTIPLE + shift;
   }
@@ -174,6 +240,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMailboxCollectionsEnv
 
 BOOL ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_initialized = NO;
 
+
+#line 128
 @implementation ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult
 
 AMThreadLocalCompat * ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_RESULT_CACHE_;
@@ -182,39 +250,65 @@ AMThreadLocalCompat * ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_F
   return ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_envelopeWithDKEnvelope_(envelope);
 }
 
+
+#line 144
 + (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *)delayWithLong:(jlong)delay {
   return ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_delayWithLong_(delay);
 }
 
+
+#line 159
 - (instancetype)initWithDKEnvelope:(DKEnvelope *)envelope {
   if (self = [super init]) {
+    
+#line 160
     self->envelope__ = envelope;
   }
   return self;
 }
 
+
+#line 163
 - (instancetype)initWithLong:(jlong)delay {
   if (self = [super init]) {
+    
+#line 164
     self->delay__ = delay;
   }
   return self;
 }
 
+
+#line 167
 - (DKEnvelope *)getEnvelope {
+  
+#line 168
   return envelope__;
 }
 
+
+#line 171
 - (jlong)getDelay {
+  
+#line 172
   return delay__;
 }
 
+
+#line 175
 - (void)updateWithDKEnvelope:(DKEnvelope *)envelope
                     withLong:(jlong)delay {
+  
+#line 176
   self->envelope__ = envelope;
   self->delay__ = delay;
 }
 
+
+#line 180
 - (void)recycle {
+  
+#line 181
   [((AMThreadLocalCompat *) nil_chk(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_RESULT_CACHE_)) setWithId:self];
 }
 
@@ -235,27 +329,39 @@ AMThreadLocalCompat * ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_F
 
 ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_envelopeWithDKEnvelope_(DKEnvelope *envelope) {
   ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_init();
+  
+#line 133
   ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *res = [((AMThreadLocalCompat *) nil_chk(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_RESULT_CACHE_)) get];
   if (res != nil) {
     [ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_RESULT_CACHE_ remove];
     [res updateWithDKEnvelope:envelope withLong:0];
   }
   else {
+    
+#line 138
     res = [[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult alloc] initWithDKEnvelope:envelope];
   }
+  
+#line 141
   return res;
 }
 
 ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_delayWithLong_(jlong delay) {
   ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_init();
+  
+#line 145
   ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *res = [((AMThreadLocalCompat *) nil_chk(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_RESULT_CACHE_)) get];
   if (res != nil) {
     [ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_RESULT_CACHE_ remove];
     [res updateWithDKEnvelope:nil withLong:delay];
   }
   else {
+    
+#line 150
     res = [[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult alloc] initWithLong:delay];
   }
+  
+#line 153
   return res;
 }
 

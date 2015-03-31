@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetAuthSessions.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetAuthSessions.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,27 +26,41 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<JavaUtilList>)
 
+
+#line 20
 @implementation ImActorModelApiRpcResponseGetAuthSessions
 
+
+#line 23
 + (ImActorModelApiRpcResponseGetAuthSessions *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseGetAuthSessions_fromBytesWithByteArray_(data);
 }
 
+
+#line 29
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)userAuths {
   if (self = [super init]) {
+    
+#line 30
     self->userAuths_ = userAuths;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (id<JavaUtilList>)getUserAuths {
+  
+#line 38
   return self->userAuths_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _userAuths = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
@@ -53,7 +69,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
   self->userAuths_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_userAuths];
 }
 
+
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 52
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->userAuths_];
 }
 
@@ -64,6 +84,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
 }
 
 - (jint)getHeaderKey {
+  
+#line 64
   return ImActorModelApiRpcResponseGetAuthSessions_HEADER;
 }
 
@@ -76,6 +98,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
 
 ImActorModelApiRpcResponseGetAuthSessions *ImActorModelApiRpcResponseGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetAuthSessions_init();
+  
+#line 24
   return ((ImActorModelApiRpcResponseGetAuthSessions *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseGetAuthSessions alloc] init], data));
 }
 

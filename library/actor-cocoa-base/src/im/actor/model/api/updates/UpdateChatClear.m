@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateChatClear.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateChatClear.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,32 +24,50 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelApiPeer *)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateChatClear
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateChatClear *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateChatClear_fromBytesWithByteArray_(data);
 }
 
+
+#line 29
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer {
   if (self = [super init]) {
+    
+#line 30
     self->peer_ = peer;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiPeer *)getPeer {
+  
+#line 38
   return self->peer_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
 }
 
+
+#line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 48
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -62,6 +82,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
 }
 
 - (jint)getHeaderKey {
+  
+#line 64
   return ImActorModelApiUpdatesUpdateChatClear_HEADER;
 }
 
@@ -74,6 +96,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
 
 ImActorModelApiUpdatesUpdateChatClear *ImActorModelApiUpdatesUpdateChatClear_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateChatClear_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateChatClear *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateChatClear alloc] init], data));
 }
 

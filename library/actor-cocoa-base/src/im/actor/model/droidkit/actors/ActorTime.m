@@ -3,12 +3,16 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorTime.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorTime.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorTime.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
 
 @implementation DKActorTime
 
+
+#line 14
 + (jlong)currentTime {
   return DKActorTime_currentTime();
 }
@@ -21,6 +25,8 @@
 
 jlong DKActorTime_currentTime() {
   DKActorTime_init();
+  
+#line 15
   return DKEnvironment_getActorTime();
 }
 

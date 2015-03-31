@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/JavaCryptoProvider.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/JavaCryptoProvider.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/bouncycastle/RandomProvider.h"
 #include "im/actor/model/jvm/JavaCryptoProvider.h"
@@ -10,10 +12,16 @@
 
 @implementation AMJavaCryptoProvider
 
+
+#line 10
 - (instancetype)init {
-  return [super initWithBCRandomProvider:[[AMJavaRandomProvider alloc] init]];
+  return
+#line 11
+  [super initWithBCRandomProvider:[[AMJavaRandomProvider alloc] init]];
 }
 
+
+#line 14
 - (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)provider {
   return [super initWithBCRandomProvider:provider];
 }

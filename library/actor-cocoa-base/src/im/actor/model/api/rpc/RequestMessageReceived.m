@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestMessageReceived.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestMessageReceived.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,39 +25,63 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageReceived, peer_, ImActorModelApiOutPeer *)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestMessageReceived
 
+
+#line 23
 + (ImActorModelApiRpcRequestMessageReceived *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestMessageReceived_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                                       withLong:(jlong)date {
   if (self = [super init]) {
+    
+#line 31
     self->peer_ = peer;
+    
+#line 32
     self->date_ = date;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiOutPeer *)getPeer {
+  
+#line 40
   return self->peer_;
 }
 
+
+#line 43
 - (jlong)getDate {
+  
+#line 44
   return self->date_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiOutPeer alloc] init]];
   self->date_ = [values getLongWithInt:3];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -72,6 +98,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageReceived, peer_, ImActorMode
 }
 
 - (jint)getHeaderKey {
+  
+#line 73
   return ImActorModelApiRpcRequestMessageReceived_HEADER;
 }
 
@@ -85,6 +113,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageReceived, peer_, ImActorMode
 
 ImActorModelApiRpcRequestMessageReceived *ImActorModelApiRpcRequestMessageReceived_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestMessageReceived_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestMessageReceived *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestMessageReceived alloc] init], data));
 }
 

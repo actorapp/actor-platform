@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserAdded.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserAdded.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/ServiceExUserAdded.h"
@@ -16,32 +18,52 @@
 }
 @end
 
+
+#line 19
 @implementation ImActorModelApiServiceExUserAdded
 
+
+#line 23
 - (instancetype)initWithInt:(jint)addedUid {
   if (self = [super init]) {
+    
+#line 24
     self->addedUid_ = addedUid;
   }
   return self;
 }
 
+
+#line 27
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getHeader {
+  
+#line 32
   return 1;
 }
 
+
+#line 35
 - (jint)getAddedUid {
+  
+#line 36
   return self->addedUid_;
 }
 
+
+#line 40
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->addedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
+
+#line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 46
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->addedUid_];
 }
 

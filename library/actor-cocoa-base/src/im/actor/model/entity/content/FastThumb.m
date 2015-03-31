@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FastThumb.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FastThumb.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,46 +26,74 @@
 
 J2OBJC_FIELD_SETTER(AMFastThumb, image_, IOSByteArray *)
 
+
+#line 13
 @implementation AMFastThumb
 
 + (AMFastThumb *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMFastThumb_fromBytesWithByteArray_(data);
 }
 
+
+#line 23
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
               withByteArray:(IOSByteArray *)image {
   if (self = [super init]) {
+    
+#line 24
     self->w_ = w;
+    
+#line 25
     self->h_ = h;
+    
+#line 26
     self->image_ = image;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getW {
+  
+#line 34
   return w_;
 }
 
+
+#line 37
 - (jint)getH {
+  
+#line 38
   return h_;
 }
 
+
+#line 41
 - (IOSByteArray *)getImage {
+  
+#line 42
   return image_;
 }
 
+
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   h_ = [values getIntWithInt:2];
   image_ = [values getBytesWithInt:3];
 }
 
+
+#line 53
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 54
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:w_];
   [writer writeIntWithInt:2 withInt:h_];
   [writer writeBytesWithInt:3 withByteArray:image_];
@@ -80,6 +110,8 @@ J2OBJC_FIELD_SETTER(AMFastThumb, image_, IOSByteArray *)
 
 AMFastThumb *AMFastThumb_fromBytesWithByteArray_(IOSByteArray *data) {
   AMFastThumb_init();
+  
+#line 16
   return ((AMFastThumb *) BSBser_parseWithBSBserObject_withByteArray_([[AMFastThumb alloc] init], data));
 }
 

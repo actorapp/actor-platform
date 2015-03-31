@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/AvatarImage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/AvatarImage.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/AvatarImage.h"
@@ -22,41 +24,71 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFileLocation *)
 
+
+#line 19
 @implementation ImActorModelApiAvatarImage
 
+
+#line 26
 - (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation
                                             withInt:(jint)width
                                             withInt:(jint)height
                                             withInt:(jint)fileSize {
   if (self = [super init]) {
+    
+#line 27
     self->fileLocation_ = fileLocation;
+    
+#line 28
     self->width_ = width;
+    
+#line 29
     self->height_ = height;
+    
+#line 30
     self->fileSize_ = fileSize;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiFileLocation *)getFileLocation {
+  
+#line 38
   return self->fileLocation_;
 }
 
+
+#line 41
 - (jint)getWidth {
+  
+#line 42
   return self->width_;
 }
 
+
+#line 45
 - (jint)getHeight {
+  
+#line 46
   return self->height_;
 }
 
+
+#line 49
 - (jint)getFileSize {
+  
+#line 50
   return self->fileSize_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->fileLocation_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiFileLocation alloc] init]];
   self->width_ = [values getIntWithInt:2];
@@ -64,7 +96,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
   self->fileSize_ = [values getIntWithInt:4];
 }
 
+
+#line 62
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 63
   if (self->fileLocation_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }

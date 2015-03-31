@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserWriter.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserWriter.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -60,20 +62,32 @@ __attribute__((unused)) static void BSBserWriter_writeBytesWithByteArray_(BSBser
 
 J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
 
+
+#line 9
 @implementation BSBserWriter
 
+
+#line 13
 - (instancetype)initWithBSDataOutput:(BSDataOutput *)stream {
   if (self = [super init]) {
+    
+#line 14
     if (stream == nil) {
       @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Stream can not be null"];
     }
+    
+#line 18
     self->stream_ = stream;
   }
   return self;
 }
 
+
+#line 21
 - (void)writeBytesWithInt:(jint)fieldNumber
             withByteArray:(IOSByteArray *)value {
+  
+#line 22
   if (value == nil) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Value can not be null"];
   }
@@ -83,46 +97,78 @@ J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
   BSBserWriter_writeBytesFieldWithInt_withByteArray_(self, fieldNumber, value);
 }
 
+
+#line 31
 - (void)writeStringWithInt:(jint)fieldNumber
               withNSString:(NSString *)value {
+  
+#line 32
   if (value == nil) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Value can not be null"];
   }
   BSBserWriter_writeBytesFieldWithInt_withByteArray_(self, fieldNumber, [((NSString *) nil_chk(value)) getBytes]);
 }
 
+
+#line 38
 - (void)writeBoolWithInt:(jint)fieldNumber
              withBoolean:(jboolean)value {
+  
+#line 39
   BSBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value ? 1 : 0);
 }
 
+
+#line 42
 - (void)writeIntWithInt:(jint)fieldNumber
                 withInt:(jint)value {
+  
+#line 43
   BSBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value);
 }
 
+
+#line 46
 - (void)writeIntFixedWithInt:(jint)fieldNumber
                      withInt:(jint)value {
+  
+#line 47
   BSBserWriter_writeVar32FieldWithInt_withLong_(self, fieldNumber, value);
 }
 
+
+#line 50
 - (void)writeDoubleWithInt:(jint)fieldNumber
                 withDouble:(jdouble)value {
+  
+#line 51
   BSBserWriter_writeVar64FieldWithInt_withLong_(self, fieldNumber, JavaLangDouble_doubleToLongBitsWithDouble_(value));
 }
 
+
+#line 54
 - (void)writeLongFixedWithInt:(jint)fieldNumber
                      withLong:(jlong)value {
+  
+#line 55
   BSBserWriter_writeVar64FieldWithInt_withLong_(self, fieldNumber, JavaLangDouble_doubleToLongBitsWithDouble_(value));
 }
 
+
+#line 58
 - (void)writeLongWithInt:(jint)fieldNumber
                 withLong:(jlong)value {
+  
+#line 59
   BSBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value);
 }
 
+
+#line 62
 - (void)writeRepeatedLongWithInt:(jint)fieldNumber
                 withJavaUtilList:(id<JavaUtilList>)values {
+  
+#line 63
   if (values == nil) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Values can not be null"];
   }
@@ -137,8 +183,12 @@ J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
   }
 }
 
+
+#line 77
 - (void)writeRepeatedIntWithInt:(jint)fieldNumber
                withJavaUtilList:(id<JavaUtilList>)values {
+  
+#line 78
   if (values == nil) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Values can not be null"];
   }
@@ -153,8 +203,12 @@ J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
   }
 }
 
+
+#line 92
 - (void)writeRepeatedBoolWithInt:(jint)fieldNumber
                 withJavaUtilList:(id<JavaUtilList>)values {
+  
+#line 93
   if (values == nil) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Values can not be null"];
   }
@@ -169,8 +223,12 @@ J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
   }
 }
 
+
+#line 107
 - (void)writeRepeatedObjWithInt:(jint)fieldNumber
                withJavaUtilList:(id<JavaUtilList>)values {
+  
+#line 108
   if (values == nil) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Values can not be null"];
   }
@@ -185,11 +243,17 @@ J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
   }
 }
 
+
+#line 122
 - (void)writeObjectWithInt:(jint)fieldNumber
           withBSBserObject:(BSBserObject *)value {
+  
+#line 123
   if (value == nil) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Value can not be null"];
   }
+  
+#line 127
   BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSWireTypes_TYPE_LENGTH_DELIMITED);
   BSDataOutput *outputStream = [[BSDataOutput alloc] init];
   BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:outputStream];
@@ -197,18 +261,28 @@ J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
   BSBserWriter_writeBytesWithByteArray_(self, [outputStream toByteArray]);
 }
 
+
+#line 134
 - (void)writeRawWithByteArray:(IOSByteArray *)raw {
+  
+#line 135
   if (raw == nil) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Raw can not be null"];
   }
+  
+#line 139
   [((BSDataOutput *) nil_chk(stream_)) writeBytesWithByteArray:raw withInt:0 withInt:((IOSByteArray *) nil_chk(raw))->size_];
 }
 
+
+#line 142
 - (void)writeTagWithInt:(jint)fieldNumber
                 withInt:(jint)wireType {
   BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, wireType);
 }
 
+
+#line 151
 - (void)writeVarIntFieldWithInt:(jint)fieldNumber
                        withLong:(jlong)value {
   BSBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value);
@@ -229,6 +303,8 @@ J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
   BSBserWriter_writeVar32FieldWithInt_withLong_(self, fieldNumber, value);
 }
 
+
+#line 172
 - (void)writeVarIntWithLong:(jlong)value {
   BSBserWriter_writeVarIntWithLong_(self, value);
 }
@@ -253,46 +329,66 @@ J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
 @end
 
 void BSBserWriter_writeTagWithInt_withInt_(BSBserWriter *self, jint fieldNumber, jint wireType) {
+  
+#line 143
   if (fieldNumber <= 0) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"fieldNumber can't be less or eq to zero"];
   }
+  
+#line 147
   jlong tag = ((jlong) (LShift32(fieldNumber, 3)) | wireType);
   [((BSDataOutput *) nil_chk(self->stream_)) writeVarIntWithLong:tag];
 }
 
 void BSBserWriter_writeVarIntFieldWithInt_withLong_(BSBserWriter *self, jint fieldNumber, jlong value) {
+  
+#line 152
   BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSWireTypes_TYPE_VARINT);
   BSBserWriter_writeVarIntWithLong_(self, value);
 }
 
 void BSBserWriter_writeBytesFieldWithInt_withByteArray_(BSBserWriter *self, jint fieldNumber, IOSByteArray *value) {
+  
+#line 157
   BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSWireTypes_TYPE_LENGTH_DELIMITED);
   BSBserWriter_writeBytesWithByteArray_(self, value);
 }
 
 void BSBserWriter_writeVar64FieldWithInt_withLong_(BSBserWriter *self, jint fieldNumber, jlong value) {
+  
+#line 162
   BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSWireTypes_TYPE_64BIT);
   BSBserWriter_writeLongWithLong_(self, value);
 }
 
 void BSBserWriter_writeVar32FieldWithInt_withLong_(BSBserWriter *self, jint fieldNumber, jlong value) {
+  
+#line 167
   BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSWireTypes_TYPE_32BIT);
   BSBserWriter_writeIntWithLong_(self, value);
 }
 
 void BSBserWriter_writeVarIntWithLong_(BSBserWriter *self, jlong value) {
+  
+#line 173
   [((BSDataOutput *) nil_chk(self->stream_)) writeVarIntWithLong:value];
 }
 
 void BSBserWriter_writeLongWithLong_(BSBserWriter *self, jlong v) {
+  
+#line 177
   [((BSDataOutput *) nil_chk(self->stream_)) writeLongWithLong:v];
 }
 
 void BSBserWriter_writeIntWithLong_(BSBserWriter *self, jlong v) {
+  
+#line 181
   [((BSDataOutput *) nil_chk(self->stream_)) writeIntWithInt:(jint) v];
 }
 
 void BSBserWriter_writeBytesWithByteArray_(BSBserWriter *self, IOSByteArray *data) {
+  
+#line 185
   [((BSDataOutput *) nil_chk(self->stream_)) writeProtoBytesWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
 }
 

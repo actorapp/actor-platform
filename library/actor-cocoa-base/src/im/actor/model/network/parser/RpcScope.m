@@ -3,9 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/RpcScope.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/RpcScope.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/parser/RpcScope.h"
 
+
+#line 6
 @implementation ImActorModelNetworkParserRpcScope
 
 - (instancetype)init {

@@ -3,33 +3,55 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/GF2Polynomial.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/GF2Polynomial.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/math/field/GF2Polynomial.h"
 #include "org/bouncycastle/util/Arrays.h"
 
+
+#line 5
 @implementation OrgBouncycastleMathFieldGF2Polynomial
 
+
+#line 9
 - (instancetype)initWithIntArray:(IOSIntArray *)exponents {
   if (self = [super init]) {
+    
+#line 11
     self->exponents_ = OrgBouncycastleUtilArrays_cloneWithIntArray_(exponents);
   }
   return self;
 }
 
+
+#line 14
 - (jint)getDegree {
+  
+#line 16
   return IOSIntArray_Get(exponents_, ((IOSIntArray *) nil_chk(exponents_))->size_ - 1);
 }
 
+
+#line 19
 - (IOSIntArray *)getExponentsPresent {
+  
+#line 21
   return OrgBouncycastleUtilArrays_cloneWithIntArray_(exponents_);
 }
 
 - (jboolean)isEqual:(id)obj {
+  
+#line 26
   if (self == obj) {
+    
+#line 28
     return YES;
   }
   if (!([obj isKindOfClass:[OrgBouncycastleMathFieldGF2Polynomial class]])) {
+    
+#line 32
     return NO;
   }
   OrgBouncycastleMathFieldGF2Polynomial *other = (OrgBouncycastleMathFieldGF2Polynomial *) check_class_cast(obj, [OrgBouncycastleMathFieldGF2Polynomial class]);
@@ -37,6 +59,8 @@
 }
 
 - (NSUInteger)hash {
+  
+#line 40
   return OrgBouncycastleUtilArrays_hashCodeWithIntArray_(exponents_);
 }
 

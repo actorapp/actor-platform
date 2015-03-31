@@ -3,13 +3,21 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/RpcInternalException.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/RpcInternalException.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/RpcInternalException.h"
 
+
+#line 6
 @implementation AMRpcInternalException
 
+
+#line 7
 - (instancetype)init {
-  return [super initWithNSString:@"INTERNAL_ERROR" withInt:500 withNSString:@"Internal server error" withBoolean:YES withByteArray:nil];
+  return
+#line 8
+  [super initWithNSString:@"INTERNAL_ERROR" withInt:500 withNSString:@"Internal server error" withBoolean:YES withByteArray:nil];
 }
 
 @end

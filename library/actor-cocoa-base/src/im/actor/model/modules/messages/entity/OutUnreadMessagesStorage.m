@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/OutUnreadMessagesStorage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/OutUnreadMessagesStorage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,16 +26,24 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityOutUnreadMessagesStorage, messages_, JavaUtilArrayList *)
 
+
+#line 15
 @implementation ImActorModelModulesMessagesEntityOutUnreadMessagesStorage
 
 + (ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesMessagesEntityOutUnreadMessagesStorage_fromBytesWithByteArray_(data);
 }
 
+
+#line 23
 - (JavaUtilArrayList *)getMessages {
+  
+#line 24
   return messages_;
 }
 
+
+#line 28
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [((JavaUtilArrayList *) nil_chk(messages_)) clear];
   jint count = [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1];
@@ -44,13 +54,19 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityOutUnreadMessagesStorage, m
   [messages_ addAllWithJavaUtilCollection:[values getRepeatedObjWithInt:1 withJavaUtilList:tmp]];
 }
 
+
+#line 39
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 40
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:messages_];
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    messages_ = [[JavaUtilArrayList alloc] init];
+    messages_ =
+#line 21
+    [[JavaUtilArrayList alloc] init];
   }
   return self;
 }
@@ -64,6 +80,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityOutUnreadMessagesStorage, m
 
 ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *ImActorModelModulesMessagesEntityOutUnreadMessagesStorage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityOutUnreadMessagesStorage_init();
+  
+#line 18
   return ((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityOutUnreadMessagesStorage alloc] init], data));
 }
 

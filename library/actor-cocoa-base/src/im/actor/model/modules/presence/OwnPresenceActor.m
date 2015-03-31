@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/presence/OwnPresenceActor.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/presence/OwnPresenceActor.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/rpc/RequestSetOnline.h"
 #include "im/actor/model/api/rpc/ResponseVoid.h"
@@ -29,38 +31,62 @@ __attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_
 - (void)performOnline;
 @end
 
+
+#line 14
 @implementation ImActorModelModulesPresenceOwnPresenceActor
 
+
+#line 21
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  if (self = [super initWithImActorModelModulesModules:messenger]) {
-    isVisible_ = NO;
+  if (self =
+#line 22
+  [super initWithImActorModelModulesModules:messenger]) {
+    isVisible_ =
+#line 19
+    NO;
   }
   return self;
 }
 
+
+#line 25
 - (void)onAppVisible {
   ImActorModelModulesPresenceOwnPresenceActor_onAppVisible(self);
 }
 
+
+#line 30
 - (void)onAppHidden {
   ImActorModelModulesPresenceOwnPresenceActor_onAppHidden(self);
 }
 
+
+#line 35
 - (void)performOnline {
   ImActorModelModulesPresenceOwnPresenceActor_performOnline(self);
 }
 
+
+#line 56
 - (void)onReceiveWithId:(id)message {
+  
+#line 57
   if ([message isKindOfClass:[ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible class]]) {
     ImActorModelModulesPresenceOwnPresenceActor_onAppVisible(self);
   }
-  else if ([message isKindOfClass:[ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden class]]) {
+  else
+#line 59
+  if ([message isKindOfClass:[ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden class]]) {
     ImActorModelModulesPresenceOwnPresenceActor_onAppHidden(self);
   }
-  else if ([message isKindOfClass:[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline class]]) {
+  else
+#line 61
+  if ([message isKindOfClass:[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline class]]) {
     ImActorModelModulesPresenceOwnPresenceActor_performOnline(self);
   }
   else {
+    
+#line 64
     [self dropWithId:message];
   }
 }
@@ -73,17 +99,27 @@ __attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_
 @end
 
 void ImActorModelModulesPresenceOwnPresenceActor_onAppVisible(ImActorModelModulesPresenceOwnPresenceActor *self) {
+  
+#line 26
   self->isVisible_ = YES;
   [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc] init]];
 }
 
 void ImActorModelModulesPresenceOwnPresenceActor_onAppHidden(ImActorModelModulesPresenceOwnPresenceActor *self) {
+  
+#line 31
   self->isVisible_ = NO;
   [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc] init]];
 }
 
 void ImActorModelModulesPresenceOwnPresenceActor_performOnline(ImActorModelModulesPresenceOwnPresenceActor *self) {
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSetOnline alloc] initWithBoolean:self->isVisible_ withLong:ImActorModelModulesPresenceOwnPresenceActor_TIMEOUT] withAMRpcCallback:[[ImActorModelModulesPresenceOwnPresenceActor_$1 alloc] init]];
+  
+#line 36
+  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSetOnline alloc] initWithBoolean:self->isVisible_ withLong:ImActorModelModulesPresenceOwnPresenceActor_TIMEOUT] withAMRpcCallback:
+#line 37
+  [[ImActorModelModulesPresenceOwnPresenceActor_$1 alloc] init]];
+  
+#line 48
   if (self->isVisible_) {
     [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc] init] withLong:ImActorModelModulesPresenceOwnPresenceActor_RESEND_TIMEOUT];
   }
@@ -91,6 +127,8 @@ void ImActorModelModulesPresenceOwnPresenceActor_performOnline(ImActorModelModul
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor)
 
+
+#line 68
 @implementation ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible
 
 - (instancetype)init {
@@ -101,6 +139,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor)
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible)
 
+
+#line 72
 @implementation ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden
 
 - (instancetype)init {
@@ -111,6 +151,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_OnA
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden)
 
+
+#line 76
 @implementation ImActorModelModulesPresenceOwnPresenceActor_PerformOnline
 
 - (instancetype)init {
@@ -123,9 +165,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_Per
 
 @implementation ImActorModelModulesPresenceOwnPresenceActor_$1
 
+
+#line 39
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
 }
 
+
+#line 44
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
 }
 

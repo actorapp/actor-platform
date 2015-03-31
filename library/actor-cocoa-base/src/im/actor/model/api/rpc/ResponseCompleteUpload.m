@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseCompleteUpload.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseCompleteUpload.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,32 +24,50 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCompleteUpload, location_, ImActorModelApiFileLocation *)
 
+
+#line 20
 @implementation ImActorModelApiRpcResponseCompleteUpload
 
+
+#line 23
 + (ImActorModelApiRpcResponseCompleteUpload *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseCompleteUpload_fromBytesWithByteArray_(data);
 }
 
+
+#line 29
 - (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)location {
   if (self = [super init]) {
+    
+#line 30
     self->location_ = location;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiFileLocation *)getLocation {
+  
+#line 38
   return self->location_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->location_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiFileLocation alloc] init]];
 }
 
+
+#line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 48
   if (self->location_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -61,6 +81,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCompleteUpload, location_, ImActor
 }
 
 - (jint)getHeaderKey {
+  
+#line 63
   return ImActorModelApiRpcResponseCompleteUpload_HEADER;
 }
 
@@ -73,6 +95,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCompleteUpload, location_, ImActor
 
 ImActorModelApiRpcResponseCompleteUpload *ImActorModelApiRpcResponseCompleteUpload_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseCompleteUpload_init();
+  
+#line 24
   return ((ImActorModelApiRpcResponseCompleteUpload *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseCompleteUpload alloc] init], data));
 }
 

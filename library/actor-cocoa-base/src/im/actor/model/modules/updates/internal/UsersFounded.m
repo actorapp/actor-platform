@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/UsersFounded.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/UsersFounded.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/concurrency/CommandCallback.h"
 #include "im/actor/model/modules/updates/internal/UsersFounded.h"
@@ -18,22 +20,38 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalUsersFounded, users_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalUsersFounded, commandCallback_, id<AMCommandCallback>)
 
+
+#line 12
 @implementation ImActorModelModulesUpdatesInternalUsersFounded
 
+
+#line 16
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users
                withAMCommandCallback:(id<AMCommandCallback>)commandCallback {
   if (self = [super init]) {
+    
+#line 17
     self->users_ = users;
+    
+#line 18
     self->commandCallback_ = commandCallback;
   }
   return self;
 }
 
+
+#line 21
 - (id<JavaUtilList>)getUsers {
+  
+#line 22
   return users_;
 }
 
+
+#line 25
 - (id<AMCommandCallback>)getCommandCallback {
+  
+#line 26
   return commandCallback_;
 }
 

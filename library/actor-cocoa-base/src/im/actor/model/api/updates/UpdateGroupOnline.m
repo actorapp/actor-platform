@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupOnline.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupOnline.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -20,39 +22,63 @@
 }
 @end
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateGroupOnline
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateGroupOnline_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithInt:(jint)groupId
                     withInt:(jint)count {
   if (self = [super init]) {
+    
+#line 31
     self->groupId_ = groupId;
+    
+#line 32
     self->count_ = count;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getGroupId {
+  
+#line 40
   return self->groupId_;
 }
 
+
+#line 43
 - (jint)getCount {
+  
+#line 44
   return self->count_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->count_ = [values getIntWithInt:2];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeIntWithInt:2 withInt:self->count_];
 }
@@ -66,6 +92,8 @@
 }
 
 - (jint)getHeaderKey {
+  
+#line 70
   return ImActorModelApiUpdatesUpdateGroupOnline_HEADER;
 }
 
@@ -79,6 +107,8 @@
 
 ImActorModelApiUpdatesUpdateGroupOnline *ImActorModelApiUpdatesUpdateGroupOnline_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupOnline_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateGroupOnline *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupOnline alloc] init], data));
 }
 

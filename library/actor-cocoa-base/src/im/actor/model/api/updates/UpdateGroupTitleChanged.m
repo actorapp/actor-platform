@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupTitleChanged.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupTitleChanged.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -25,51 +27,89 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSString *)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateGroupTitleChanged
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateGroupTitleChanged_fromBytesWithByteArray_(data);
 }
 
+
+#line 33
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)uid
                withNSString:(NSString *)title
                    withLong:(jlong)date {
   if (self = [super init]) {
+    
+#line 34
     self->groupId_ = groupId;
+    
+#line 35
     self->rid_ = rid;
+    
+#line 36
     self->uid_ = uid;
+    
+#line 37
     self->title_ = title;
+    
+#line 38
     self->date_ = date;
   }
   return self;
 }
 
+
+#line 41
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getGroupId {
+  
+#line 46
   return self->groupId_;
 }
 
+
+#line 49
 - (jlong)getRid {
+  
+#line 50
   return self->rid_;
 }
 
+
+#line 53
 - (jint)getUid {
+  
+#line 54
   return self->uid_;
 }
 
+
+#line 57
 - (NSString *)getTitle {
+  
+#line 58
   return self->title_;
 }
 
+
+#line 61
 - (jlong)getDate {
+  
+#line 62
   return self->date_;
 }
 
+
+#line 66
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:5];
@@ -78,7 +118,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
   self->date_ = [values getLongWithInt:4];
 }
 
+
+#line 75
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 76
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:5 withLong:self->rid_];
   [writer writeIntWithInt:2 withInt:self->uid_];
@@ -101,6 +145,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
 }
 
 - (jint)getHeaderKey {
+  
+#line 100
   return ImActorModelApiUpdatesUpdateGroupTitleChanged_HEADER;
 }
 
@@ -117,6 +163,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
 
 ImActorModelApiUpdatesUpdateGroupTitleChanged *ImActorModelApiUpdatesUpdateGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupTitleChanged_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupTitleChanged alloc] init], data));
 }
 

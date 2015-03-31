@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSubscribeFromGroupOnline.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSubscribeFromGroupOnline.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,27 +26,41 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromGroupOnline, groups_, id<JavaUtilList>)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestSubscribeFromGroupOnline
 
+
+#line 23
 + (ImActorModelApiRpcRequestSubscribeFromGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSubscribeFromGroupOnline_fromBytesWithByteArray_(data);
 }
 
+
+#line 29
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)groups {
   if (self = [super init]) {
+    
+#line 30
     self->groups_ = groups;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (id<JavaUtilList>)getGroups {
+  
+#line 38
   return self->groups_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _groups = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
@@ -53,7 +69,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromGroupOnline, groups_, 
   self->groups_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_groups];
 }
 
+
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 52
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->groups_];
 }
 
@@ -65,6 +85,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromGroupOnline, groups_, 
 }
 
 - (jint)getHeaderKey {
+  
+#line 65
   return ImActorModelApiRpcRequestSubscribeFromGroupOnline_HEADER;
 }
 
@@ -77,6 +99,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromGroupOnline, groups_, 
 
 ImActorModelApiRpcRequestSubscribeFromGroupOnline *ImActorModelApiRpcRequestSubscribeFromGroupOnline_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSubscribeFromGroupOnline_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestSubscribeFromGroupOnline *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestSubscribeFromGroupOnline alloc] init], data));
 }
 

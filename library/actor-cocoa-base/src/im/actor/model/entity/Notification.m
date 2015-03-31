@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Notification.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Notification.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/ContentDescription.h"
 #include "im/actor/model/entity/Notification.h"
@@ -19,28 +21,50 @@
 J2OBJC_FIELD_SETTER(AMNotification, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(AMNotification, contentDescription_, AMContentDescription *)
 
+
+#line 6
 @implementation AMNotification
 
+
+#line 11
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
       withAMContentDescription:(AMContentDescription *)contentDescription {
   if (self = [super init]) {
+    
+#line 12
     self->peer_ = peer;
+    
+#line 13
     self->sender_ = sender;
+    
+#line 14
     self->contentDescription_ = contentDescription;
   }
   return self;
 }
 
+
+#line 17
 - (AMPeer *)getPeer {
+  
+#line 18
   return peer_;
 }
 
+
+#line 21
 - (jint)getSender {
+  
+#line 22
   return sender_;
 }
 
+
+#line 25
 - (AMContentDescription *)getContentDescription {
+  
+#line 26
   return contentDescription_;
 }
 

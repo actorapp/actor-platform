@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/FatSeqUpdate.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/FatSeqUpdate.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -40,12 +42,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, groups_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, phones_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 
+
+#line 20
 @implementation ImActorModelApiBaseFatSeqUpdate
 
+
+#line 23
 + (ImActorModelApiBaseFatSeqUpdate *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiBaseFatSeqUpdate_fromBytesWithByteArray_(data);
 }
 
+
+#line 36
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state
                     withInt:(jint)updateHeader
@@ -55,54 +63,104 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
            withJavaUtilList:(id<JavaUtilList>)phones
            withJavaUtilList:(id<JavaUtilList>)emails {
   if (self = [super init]) {
+    
+#line 37
     self->seq_ = seq;
+    
+#line 38
     self->state_ = state;
+    
+#line 39
     self->updateHeader_ = updateHeader;
+    
+#line 40
     self->update_ = update;
+    
+#line 41
     self->users_ = users;
+    
+#line 42
     self->groups_ = groups;
+    
+#line 43
     self->phones_ = phones;
+    
+#line 44
     self->emails_ = emails;
   }
   return self;
 }
 
+
+#line 47
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getSeq {
+  
+#line 52
   return self->seq_;
 }
 
+
+#line 55
 - (IOSByteArray *)getState {
+  
+#line 56
   return self->state_;
 }
 
+
+#line 59
 - (jint)getUpdateHeader {
+  
+#line 60
   return self->updateHeader_;
 }
 
+
+#line 63
 - (IOSByteArray *)getUpdate {
+  
+#line 64
   return self->update_;
 }
 
+
+#line 67
 - (id<JavaUtilList>)getUsers {
+  
+#line 68
   return self->users_;
 }
 
+
+#line 71
 - (id<JavaUtilList>)getGroups {
+  
+#line 72
   return self->groups_;
 }
 
+
+#line 75
 - (id<JavaUtilList>)getPhones {
+  
+#line 76
   return self->phones_;
 }
 
+
+#line 79
 - (id<JavaUtilList>)getEmails {
+  
+#line 80
   return self->emails_;
 }
 
+
+#line 84
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
@@ -130,7 +188,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
   self->emails_ = [values getRepeatedObjWithInt:8 withJavaUtilList:_emails];
 }
 
+
+#line 112
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 113
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
     @throw [[JavaIoIOException alloc] init];
@@ -160,6 +222,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 }
 
 - (jint)getHeaderKey {
+  
+#line 144
   return ImActorModelApiBaseFatSeqUpdate_HEADER;
 }
 
@@ -179,6 +243,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 
 ImActorModelApiBaseFatSeqUpdate *ImActorModelApiBaseFatSeqUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseFatSeqUpdate_init();
+  
+#line 24
   return ((ImActorModelApiBaseFatSeqUpdate *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiBaseFatSeqUpdate alloc] init], data));
 }
 

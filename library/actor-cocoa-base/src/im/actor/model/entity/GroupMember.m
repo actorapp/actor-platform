@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/GroupMember.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/GroupMember.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,45 +24,75 @@
 }
 @end
 
+
+#line 13
 @implementation AMGroupMember
 
 + (AMGroupMember *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMGroupMember_fromBytesWithByteArray_(data);
 }
 
+
+#line 27
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
                    withLong:(jlong)inviteDate
                 withBoolean:(jboolean)isAdministrator {
   if (self = [super init]) {
+    
+#line 29
     self->uid_ = uid;
+    
+#line 30
     self->inviterUid_ = inviterUid;
+    
+#line 31
     self->inviteDate_ = inviteDate;
+    
+#line 32
     self->isAdministrator__ = isAdministrator;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getUid {
+  
+#line 40
   return uid_;
 }
 
+
+#line 43
 - (jint)getInviterUid {
+  
+#line 44
   return inviterUid_;
 }
 
+
+#line 47
 - (jlong)getInviteDate {
+  
+#line 48
   return inviteDate_;
 }
 
+
+#line 51
 - (jboolean)isAdministrator {
+  
+#line 52
   return isAdministrator__;
 }
 
+
+#line 56
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   inviterUid_ = [values getIntWithInt:2];
@@ -68,7 +100,11 @@
   isAdministrator__ = [values getBoolWithInt:4];
 }
 
+
+#line 64
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 65
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:uid_];
   [writer writeIntWithInt:2 withInt:inviterUid_];
   [writer writeLongWithInt:3 withLong:inviteDate_];
@@ -78,12 +114,20 @@
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
+  
+#line 76
   AMGroupMember *member = (AMGroupMember *) check_class_cast(o, [AMGroupMember class]);
+  
+#line 78
   if (uid_ != ((AMGroupMember *) nil_chk(member))->uid_) return NO;
+  
+#line 80
   return YES;
 }
 
 - (NSUInteger)hash {
+  
+#line 85
   return uid_;
 }
 
@@ -99,6 +143,8 @@
 
 AMGroupMember *AMGroupMember_fromBytesWithByteArray_(IOSByteArray *data) {
   AMGroupMember_init();
+  
+#line 16
   return ((AMGroupMember *) BSBser_parseWithBSBserObject_withByteArray_([[AMGroupMember alloc] init], data));
 }
 

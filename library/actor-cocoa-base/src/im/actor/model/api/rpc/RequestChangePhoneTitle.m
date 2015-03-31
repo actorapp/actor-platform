@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestChangePhoneTitle.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestChangePhoneTitle.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,39 +24,63 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString *)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestChangePhoneTitle
 
+
+#line 23
 + (ImActorModelApiRpcRequestChangePhoneTitle *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestChangePhoneTitle_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithInt:(jint)phoneId
                withNSString:(NSString *)title {
   if (self = [super init]) {
+    
+#line 31
     self->phoneId_ = phoneId;
+    
+#line 32
     self->title_ = title;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getPhoneId {
+  
+#line 40
   return self->phoneId_;
 }
 
+
+#line 43
 - (NSString *)getTitle {
+  
+#line 44
   return self->title_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->phoneId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->title_ = [values getStringWithInt:2];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->phoneId_];
   if (self->title_ == nil) {
     @throw [[JavaIoIOException alloc] init];
@@ -71,6 +97,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
 }
 
 - (jint)getHeaderKey {
+  
+#line 73
   return ImActorModelApiRpcRequestChangePhoneTitle_HEADER;
 }
 
@@ -84,6 +112,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
 
 ImActorModelApiRpcRequestChangePhoneTitle *ImActorModelApiRpcRequestChangePhoneTitle_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestChangePhoneTitle_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestChangePhoneTitle *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestChangePhoneTitle alloc] init], data));
 }
 

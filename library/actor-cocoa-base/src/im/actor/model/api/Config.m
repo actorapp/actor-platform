@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Config.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Config.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Config.h"
@@ -16,28 +18,44 @@
 }
 @end
 
+
+#line 19
 @implementation ImActorModelApiConfig
 
+
+#line 23
 - (instancetype)initWithInt:(jint)maxGroupSize {
   if (self = [super init]) {
+    
+#line 24
     self->maxGroupSize_ = maxGroupSize;
   }
   return self;
 }
 
+
+#line 27
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getMaxGroupSize {
+  
+#line 32
   return self->maxGroupSize_;
 }
 
+
+#line 36
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->maxGroupSize_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
+
+#line 41
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 42
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->maxGroupSize_];
 }
 

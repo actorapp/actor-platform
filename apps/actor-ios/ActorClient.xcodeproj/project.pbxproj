@@ -706,6 +706,7 @@
 		06D1EEC51ACAEBD500AC22ED /* Shorts.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D1EC401ACAEBD400AC22ED /* Shorts.m */; };
 		06D1EEC61ACAEBD500AC22ED /* Strings.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D1EC421ACAEBD400AC22ED /* Strings.m */; };
 		06D1EEC81ACAEC8A00AC22ED /* DispatcherProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D1EEC71ACAEC8A00AC22ED /* DispatcherProvider.swift */; };
+		06D1EECA1ACB381100AC22ED /* CocoaCryptoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D1EEC91ACB381100AC22ED /* CocoaCryptoProvider.swift */; };
 		06D8D8BE1AB430EE00A80E40 /* FMDBExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8D8BD1AB430EE00A80E40 /* FMDBExtensions.swift */; };
 		06D8D8C01AB431D800A80E40 /* FMDBKeyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8D8BF1AB431D800A80E40 /* FMDBKeyValue.swift */; };
 		06D8D8C21AB4390600A80E40 /* Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8D8C11AB4390600A80E40 /* Conversions.swift */; };
@@ -2107,6 +2108,7 @@
 		06D1EC411ACAEBD400AC22ED /* Strings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Strings.h; sourceTree = "<group>"; };
 		06D1EC421ACAEBD400AC22ED /* Strings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Strings.m; sourceTree = "<group>"; };
 		06D1EEC71ACAEC8A00AC22ED /* DispatcherProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatcherProvider.swift; sourceTree = "<group>"; };
+		06D1EEC91ACB381100AC22ED /* CocoaCryptoProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaCryptoProvider.swift; sourceTree = "<group>"; };
 		06D8D8BD1AB430EE00A80E40 /* FMDBExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBExtensions.swift; sourceTree = "<group>"; };
 		06D8D8BF1AB431D800A80E40 /* FMDBKeyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBKeyValue.swift; sourceTree = "<group>"; };
 		06D8D8C11AB4390600A80E40 /* Conversions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conversions.swift; sourceTree = "<group>"; };
@@ -4346,6 +4348,7 @@
 				0671592D1ABC830E00D95719 /* CocoaNetworking.swift */,
 				06B99A141ABF4EB60066CA08 /* CocoaExecution.swift */,
 				06D1EEC71ACAEC8A00AC22ED /* DispatcherProvider.swift */,
+				06D1EEC91ACB381100AC22ED /* CocoaCryptoProvider.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -4594,6 +4597,7 @@
 				067144521AB0947000364820 /* BubbleTextCell.swift in Sources */,
 				06D1EE831ACAEBD500AC22ED /* RSABlindingParameters.m in Sources */,
 				06D1EC601ACAEBD400AC22ED /* EncryptedFileLocationV1.m in Sources */,
+				06D1EECA1ACB381100AC22ED /* CocoaCryptoProvider.swift in Sources */,
 				06D1EE8F1ACAEBD500AC22ED /* ECFieldElement.m in Sources */,
 				06D1ED601ACAEBD500AC22ED /* IncorrectTypeException.m in Sources */,
 				06D1ED4B1ACAEBD400AC22ED /* AskProgressCallback.m in Sources */,

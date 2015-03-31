@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoMessage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoMessage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -21,34 +23,58 @@
 
 J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
 
+
+#line 8
 @implementation MTProtoMessage
 
+
+#line 14
 - (instancetype)initWithLong:(jlong)messageId
                withByteArray:(IOSByteArray *)payload {
   if (self = [super init]) {
+    
+#line 15
     self->messageId_ = messageId;
+    
+#line 16
     self->payload_ = payload;
   }
   return self;
 }
 
+
+#line 19
 - (jlong)getMessageId {
+  
+#line 20
   return messageId_;
 }
 
+
+#line 23
 - (IOSByteArray *)getPayload {
+  
+#line 24
   return payload_;
 }
 
+
+#line 27
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   return [super initWithBSDataInput:stream];
 }
 
+
+#line 32
 - (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 33
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
+
+#line 38
 - (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs {
   messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   payload_ = [bs readProtoBytes];
@@ -56,6 +82,8 @@ J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
 }
 
 - (NSString *)description {
+  
+#line 46
   return JreStrcat("$JC", @"ProtoMessage [#", messageId_, ']');
 }
 

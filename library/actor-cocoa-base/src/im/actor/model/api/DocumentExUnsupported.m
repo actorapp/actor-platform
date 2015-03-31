@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExUnsupported.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExUnsupported.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -20,26 +22,44 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiDocumentExUnsupported, content_, IOSByteArray *)
 
+
+#line 19
 @implementation ImActorModelApiDocumentExUnsupported
 
+
+#line 24
 - (instancetype)initWithInt:(jint)key
               withByteArray:(IOSByteArray *)content {
   if (self = [super init]) {
+    
+#line 25
     self->key_ = key;
+    
+#line 26
     self->content_ = content;
   }
   return self;
 }
 
+
+#line 30
 - (jint)getHeader {
+  
+#line 31
   return self->key_;
 }
 
+
+#line 35
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   @throw [[JavaIoIOException alloc] initWithNSString:@"Parsing is unsupported"];
 }
 
+
+#line 40
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 41
   [((BSBserWriter *) nil_chk(writer)) writeRawWithByteArray:content_];
 }
 

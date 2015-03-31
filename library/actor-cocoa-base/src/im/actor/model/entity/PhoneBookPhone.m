@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PhoneBookPhone.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PhoneBookPhone.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/PhoneBookPhone.h"
 
@@ -13,22 +15,38 @@
 }
 @end
 
+
+#line 6
 @implementation AMPhoneBookPhone
 
+
+#line 10
 - (instancetype)initWithLong:(jlong)id_
                     withLong:(jlong)number {
   if (self = [super init]) {
+    
+#line 11
     self->id__ = id_;
+    
+#line 12
     self->number_ = number;
   }
   return self;
 }
 
+
+#line 15
 - (jlong)getId {
+  
+#line 16
   return id__;
 }
 
+
+#line 19
 - (jlong)getNumber {
+  
+#line 20
   return number_;
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseCreateGroup.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseCreateGroup.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -29,51 +31,89 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, groupPeer_, ImActorMo
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, state_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilList>)
 
+
+#line 20
 @implementation ImActorModelApiRpcResponseCreateGroup
 
+
+#line 23
 + (ImActorModelApiRpcResponseCreateGroup *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseCreateGroup_fromBytesWithByteArray_(data);
 }
 
+
+#line 33
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                             withInt:(jint)seq
                                       withByteArray:(IOSByteArray *)state
                                    withJavaUtilList:(id<JavaUtilList>)users
                                            withLong:(jlong)date {
   if (self = [super init]) {
+    
+#line 34
     self->groupPeer_ = groupPeer;
+    
+#line 35
     self->seq_ = seq;
+    
+#line 36
     self->state_ = state;
+    
+#line 37
     self->users_ = users;
+    
+#line 38
     self->date_ = date;
   }
   return self;
 }
 
+
+#line 41
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiGroupOutPeer *)getGroupPeer {
+  
+#line 46
   return self->groupPeer_;
 }
 
+
+#line 49
 - (jint)getSeq {
+  
+#line 50
   return self->seq_;
 }
 
+
+#line 53
 - (IOSByteArray *)getState {
+  
+#line 54
   return self->state_;
 }
 
+
+#line 57
 - (id<JavaUtilList>)getUsers {
+  
+#line 58
   return self->users_;
 }
 
+
+#line 61
 - (jlong)getDate {
+  
+#line 62
   return self->date_;
 }
 
+
+#line 66
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
   self->seq_ = [values getIntWithInt:3];
@@ -82,7 +122,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
   self->date_ = [values getLongWithInt:6];
 }
 
+
+#line 75
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 76
   if (self->groupPeer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -103,6 +147,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
 }
 
 - (jint)getHeaderKey {
+  
+#line 98
   return ImActorModelApiRpcResponseCreateGroup_HEADER;
 }
 
@@ -119,6 +165,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
 
 ImActorModelApiRpcResponseCreateGroup *ImActorModelApiRpcResponseCreateGroup_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseCreateGroup_init();
+  
+#line 24
   return ((ImActorModelApiRpcResponseCreateGroup *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseCreateGroup alloc] init], data));
 }
 

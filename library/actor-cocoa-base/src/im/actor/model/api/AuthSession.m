@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/AuthSession.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/AuthSession.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/AuthHolder.h"
@@ -33,8 +35,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, authLocation_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, latitude_, JavaLangDouble *)
 J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, longitude_, JavaLangDouble *)
 
+
+#line 19
 @implementation ImActorModelApiAuthSession
 
+
+#line 31
 - (instancetype)initWithInt:(jint)id_
 withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
                     withInt:(jint)appId
@@ -45,59 +51,115 @@ withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
          withJavaLangDouble:(JavaLangDouble *)latitude
          withJavaLangDouble:(JavaLangDouble *)longitude {
   if (self = [super init]) {
+    
+#line 32
     self->id__ = id_;
+    
+#line 33
     self->authHolder_ = authHolder;
+    
+#line 34
     self->appId_ = appId;
+    
+#line 35
     self->appTitle_ = appTitle;
+    
+#line 36
     self->deviceTitle_ = deviceTitle;
+    
+#line 37
     self->authTime_ = authTime;
+    
+#line 38
     self->authLocation_ = authLocation;
+    
+#line 39
     self->latitude_ = latitude;
+    
+#line 40
     self->longitude_ = longitude;
   }
   return self;
 }
 
+
+#line 43
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getId {
+  
+#line 48
   return self->id__;
 }
 
+
+#line 51
 - (ImActorModelApiAuthHolderEnum *)getAuthHolder {
+  
+#line 52
   return self->authHolder_;
 }
 
+
+#line 55
 - (jint)getAppId {
+  
+#line 56
   return self->appId_;
 }
 
+
+#line 59
 - (NSString *)getAppTitle {
+  
+#line 60
   return self->appTitle_;
 }
 
+
+#line 63
 - (NSString *)getDeviceTitle {
+  
+#line 64
   return self->deviceTitle_;
 }
 
+
+#line 67
 - (jint)getAuthTime {
+  
+#line 68
   return self->authTime_;
 }
 
+
+#line 71
 - (NSString *)getAuthLocation {
+  
+#line 72
   return self->authLocation_;
 }
 
+
+#line 75
 - (JavaLangDouble *)getLatitude {
+  
+#line 76
   return self->latitude_;
 }
 
+
+#line 79
 - (JavaLangDouble *)getLongitude {
+  
+#line 80
   return self->longitude_;
 }
 
+
+#line 84
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->authHolder_ = ImActorModelApiAuthHolderEnum_parseWithInt_([values getIntWithInt:2]);
@@ -110,7 +172,11 @@ withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
   self->longitude_ = JavaLangDouble_valueOfWithDouble_([values optDoubleWithInt:9]);
 }
 
+
+#line 97
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 98
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   if (self->authHolder_ == nil) {
     @throw [[JavaIoIOException alloc] init];

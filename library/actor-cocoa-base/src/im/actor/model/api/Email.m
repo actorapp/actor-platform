@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Email.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Email.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Email.h"
@@ -22,41 +24,71 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiEmail, email_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiEmail, emailTitle_, NSString *)
 
+
+#line 19
 @implementation ImActorModelApiEmail
 
+
+#line 26
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
                withNSString:(NSString *)email
                withNSString:(NSString *)emailTitle {
   if (self = [super init]) {
+    
+#line 27
     self->id__ = id_;
+    
+#line 28
     self->accessHash_ = accessHash;
+    
+#line 29
     self->email_ = email;
+    
+#line 30
     self->emailTitle_ = emailTitle;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getId {
+  
+#line 38
   return self->id__;
 }
 
+
+#line 41
 - (jlong)getAccessHash {
+  
+#line 42
   return self->accessHash_;
 }
 
+
+#line 45
 - (NSString *)getEmail {
+  
+#line 46
   return self->email_;
 }
 
+
+#line 49
 - (NSString *)getEmailTitle {
+  
+#line 50
   return self->emailTitle_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
@@ -64,7 +96,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmail, emailTitle_, NSString *)
   self->emailTitle_ = [values getStringWithInt:4];
 }
 
+
+#line 62
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 63
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   if (self->email_ == nil) {

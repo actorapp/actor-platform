@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/modes/CBCBlockCipher.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/modes/CBCBlockCipher.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -45,75 +47,147 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoModesCBCBlockCipher, cbcV_, IOSByteArra
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoModesCBCBlockCipher, cbcNextV_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoModesCBCBlockCipher, cipher_, id<OrgBouncycastleCryptoBlockCipher>)
 
+
+#line 12
 @implementation OrgBouncycastleCryptoModesCBCBlockCipher
 
+
+#line 28
 - (instancetype)initWithOrgBouncycastleCryptoBlockCipher:(id<OrgBouncycastleCryptoBlockCipher>)cipher {
   if (self = [super init]) {
-    cipher_ = nil;
+    cipher_ =
+#line 20
+    nil;
+    
+#line 31
     self->cipher_ = cipher;
+    
+#line 32
     self->blockSize_ = [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher)) getBlockSize];
+    
+#line 34
     self->IV_ = [IOSByteArray newArrayWithLength:blockSize_];
+    
+#line 35
     self->cbcV_ = [IOSByteArray newArrayWithLength:blockSize_];
+    
+#line 36
     self->cbcNextV_ = [IOSByteArray newArrayWithLength:blockSize_];
   }
   return self;
 }
 
+
+#line 44
 - (id<OrgBouncycastleCryptoBlockCipher>)getUnderlyingCipher {
+  
+#line 46
   return cipher_;
 }
 
+
+#line 59
 - (void)init__WithBoolean:(jboolean)encrypting
 withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)params {
+  
+#line 64
   jboolean oldEncrypting = self->encrypting_;
+  
+#line 66
   self->encrypting_ = encrypting;
+  
+#line 68
   if ([params isKindOfClass:[OrgBouncycastleCryptoParamsParametersWithIV class]]) {
+    
+#line 70
     OrgBouncycastleCryptoParamsParametersWithIV *ivParam = (OrgBouncycastleCryptoParamsParametersWithIV *) check_class_cast(params, [OrgBouncycastleCryptoParamsParametersWithIV class]);
     IOSByteArray *iv = [((OrgBouncycastleCryptoParamsParametersWithIV *) nil_chk(ivParam)) getIV];
+    
+#line 73
     if (((IOSByteArray *) nil_chk(iv))->size_ != blockSize_) {
+      
+#line 75
       @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"initialisation vector must be the same length as block size"];
     }
+    
+#line 78
     JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(iv, 0, IV_, 0, iv->size_);
+    
+#line 80
     [self reset];
+    
+#line 83
     if ([ivParam getParameters] != nil) {
+      
+#line 85
       [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher_)) init__WithBoolean:encrypting withOrgBouncycastleCryptoCipherParameters:[ivParam getParameters]];
     }
     else if (oldEncrypting != encrypting) {
+      
+#line 89
       @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"cannot change encrypting state without providing key."];
     }
   }
   else {
+    
+#line 94
     [self reset];
+    
+#line 97
     if (params != nil) {
+      
+#line 99
       [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher_)) init__WithBoolean:encrypting withOrgBouncycastleCryptoCipherParameters:params];
     }
     else if (oldEncrypting != encrypting) {
+      
+#line 103
       @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"cannot change encrypting state without providing key."];
     }
   }
 }
 
+
+#line 113
 - (NSString *)getAlgorithmName {
+  
+#line 115
   return JreStrcat("$$", [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher_)) getAlgorithmName], @"/CBC");
 }
 
+
+#line 123
 - (jint)getBlockSize {
+  
+#line 125
   return [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher_)) getBlockSize];
 }
 
+
+#line 141
 - (jint)processBlockWithByteArray:(IOSByteArray *)inArg
                           withInt:(jint)inOff
                     withByteArray:(IOSByteArray *)outArg
                           withInt:(jint)outOff {
+  
+#line 148
   return (encrypting_) ? OrgBouncycastleCryptoModesCBCBlockCipher_encryptBlockWithByteArray_withInt_withByteArray_withInt_(self, inArg, inOff, outArg, outOff) : OrgBouncycastleCryptoModesCBCBlockCipher_decryptBlockWithByteArray_withInt_withByteArray_withInt_(self, inArg, inOff, outArg, outOff);
 }
 
+
+#line 155
 - (void)reset {
+  
+#line 157
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(IV_, 0, cbcV_, 0, ((IOSByteArray *) nil_chk(IV_))->size_);
   OrgBouncycastleUtilArrays_fillWithByteArray_withByte_(cbcNextV_, (jbyte) 0);
+  
+#line 160
   [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher_)) reset];
 }
 
+
+#line 175
 - (jint)encryptBlockWithByteArray:(IOSByteArray *)inArg
                           withInt:(jint)inOff
                     withByteArray:(IOSByteArray *)outArg
@@ -121,6 +195,8 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
   return OrgBouncycastleCryptoModesCBCBlockCipher_encryptBlockWithByteArray_withInt_withByteArray_withInt_(self, inArg, inOff, outArg, outOff);
 }
 
+
+#line 218
 - (jint)decryptBlockWithByteArray:(IOSByteArray *)inArg
                           withInt:(jint)inOff
                     withByteArray:(IOSByteArray *)outArg
@@ -141,30 +217,62 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
 @end
 
 jint OrgBouncycastleCryptoModesCBCBlockCipher_encryptBlockWithByteArray_withInt_withByteArray_withInt_(OrgBouncycastleCryptoModesCBCBlockCipher *self, IOSByteArray *inArg, jint inOff, IOSByteArray *outArg, jint outOff) {
+  
+#line 182
   if ((inOff + self->blockSize_) > ((IOSByteArray *) nil_chk(inArg))->size_) {
+    
+#line 184
     @throw [[OrgBouncycastleCryptoDataLengthException alloc] initWithNSString:@"input buffer too short"];
   }
+  
+#line 191
   for (jint i = 0; i < self->blockSize_; i++) {
+    
+#line 193
     *IOSByteArray_GetRef(nil_chk(self->cbcV_), i) ^= IOSByteArray_Get(inArg, inOff + i);
   }
+  
+#line 196
   jint length = [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(self->cipher_)) processBlockWithByteArray:self->cbcV_ withInt:0 withByteArray:outArg withInt:outOff];
+  
+#line 201
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(outArg, outOff, self->cbcV_, 0, ((IOSByteArray *) nil_chk(self->cbcV_))->size_);
+  
+#line 203
   return length;
 }
 
 jint OrgBouncycastleCryptoModesCBCBlockCipher_decryptBlockWithByteArray_withInt_withByteArray_withInt_(OrgBouncycastleCryptoModesCBCBlockCipher *self, IOSByteArray *inArg, jint inOff, IOSByteArray *outArg, jint outOff) {
+  
+#line 225
   if ((inOff + self->blockSize_) > ((IOSByteArray *) nil_chk(inArg))->size_) {
+    
+#line 227
     @throw [[OrgBouncycastleCryptoDataLengthException alloc] initWithNSString:@"input buffer too short"];
   }
+  
+#line 230
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(inArg, inOff, self->cbcNextV_, 0, self->blockSize_);
+  
+#line 232
   jint length = [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(self->cipher_)) processBlockWithByteArray:inArg withInt:inOff withByteArray:outArg withInt:outOff];
+  
+#line 237
   for (jint i = 0; i < self->blockSize_; i++) {
+    
+#line 239
     *IOSByteArray_GetRef(nil_chk(outArg), outOff + i) ^= IOSByteArray_Get(nil_chk(self->cbcV_), i);
   }
+  
+#line 245
   IOSByteArray *tmp;
+  
+#line 247
   tmp = self->cbcV_;
   self->cbcV_ = self->cbcNextV_;
   self->cbcNextV_ = tmp;
+  
+#line 251
   return length;
 }
 

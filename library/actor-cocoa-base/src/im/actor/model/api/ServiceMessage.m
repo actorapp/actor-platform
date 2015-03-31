@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceMessage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceMessage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,33 +24,55 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, text_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceEx *)
 
+
+#line 19
 @implementation ImActorModelApiServiceMessage
 
+
+#line 24
 - (instancetype)initWithNSString:(NSString *)text
     withImActorModelApiServiceEx:(ImActorModelApiServiceEx *)ext {
   if (self = [super init]) {
+    
+#line 25
     self->text_ = text;
+    
+#line 26
     self->ext_ = ext;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getHeader {
+  
+#line 34
   return 2;
 }
 
+
+#line 37
 - (NSString *)getText {
+  
+#line 38
   return self->text_;
 }
 
+
+#line 41
 - (ImActorModelApiServiceEx *)getExt {
+  
+#line 42
   return self->ext_;
 }
 
+
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   if ([values optBytesWithInt:3] != nil) {
@@ -56,7 +80,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
   }
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   if (self->text_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }

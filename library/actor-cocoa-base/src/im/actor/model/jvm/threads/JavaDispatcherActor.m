@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/threads/JavaDispatcherActor.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/threads/JavaDispatcherActor.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/ThreadPriority.h"
@@ -20,14 +22,24 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaDispatcherActor_$1, this$0_, ImActorModelJvmThreadsJavaDispatcherActor *)
 
+
+#line 15
 @implementation ImActorModelJvmThreadsJavaDispatcherActor
 
 - (instancetype)initWithNSString:(NSString *)name
                withDKActorSystem:(DKActorSystem *)actorSystem
                          withInt:(jint)threadsCount
         withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority {
-  if (self = [super initWithNSString:name withDKActorSystem:actorSystem]) {
-    [self initDispatcherWithDKAbstractDispatcher:[[ImActorModelJvmThreadsJavaDispatcherThreads alloc] initWithNSString:[self getName] withInt:threadsCount withDKThreadPriorityEnum:priority withDKAbstractDispatchQueue:[[DKMailboxesQueue alloc] init] withDKDispatch:[[ImActorModelJvmThreadsJavaDispatcherActor_$1 alloc] initWithImActorModelJvmThreadsJavaDispatcherActor:self] withBoolean:YES]];
+  if (self =
+#line 18
+  [super initWithNSString:name withDKActorSystem:actorSystem]) {
+    
+#line 19
+    [self initDispatcherWithDKAbstractDispatcher:[[ImActorModelJvmThreadsJavaDispatcherThreads alloc] initWithNSString:[self getName] withInt:threadsCount withDKThreadPriorityEnum:priority withDKAbstractDispatchQueue:[[DKMailboxesQueue alloc] init] withDKDispatch:
+#line 20
+    [[ImActorModelJvmThreadsJavaDispatcherActor_$1 alloc] initWithImActorModelJvmThreadsJavaDispatcherActor:self] withBoolean:
+#line 25
+    YES]];
   }
   return self;
 }
@@ -38,7 +50,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaDispatcherActor)
 
 @implementation ImActorModelJvmThreadsJavaDispatcherActor_$1
 
+
+#line 22
 - (void)dispatchMessageWithId:(DKEnvelope *)message {
+  
+#line 23
   [this$0_ processEnvelopeWithDKEnvelope:message];
 }
 

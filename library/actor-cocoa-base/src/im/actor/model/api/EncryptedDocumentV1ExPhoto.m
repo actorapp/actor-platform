@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedDocumentV1ExPhoto.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedDocumentV1ExPhoto.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/EncryptedDocumentV1ExPhoto.h"
@@ -17,39 +19,65 @@
 }
 @end
 
+
+#line 19
 @implementation ImActorModelApiEncryptedDocumentV1ExPhoto
 
+
+#line 24
 - (instancetype)initWithInt:(jint)width
                     withInt:(jint)height {
   if (self = [super init]) {
+    
+#line 25
     self->width_ = width;
+    
+#line 26
     self->height_ = height;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getHeader {
+  
+#line 34
   return 1;
 }
 
+
+#line 37
 - (jint)getWidth {
+  
+#line 38
   return self->width_;
 }
 
+
+#line 41
 - (jint)getHeight {
+  
+#line 42
   return self->height_;
 }
 
+
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->width_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->height_ = [values getIntWithInt:2];
 }
 
+
+#line 52
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 53
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->width_];
   [writer writeIntWithInt:2 withInt:self->height_];
 }

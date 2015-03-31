@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestUploadPart.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestUploadPart.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -26,46 +28,76 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestUploadPart, config_, ImActorModelApiUploadConfig *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestUploadPart, payload_, IOSByteArray *)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestUploadPart
 
+
+#line 23
 + (ImActorModelApiRpcRequestUploadPart *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestUploadPart_fromBytesWithByteArray_(data);
 }
 
+
+#line 31
 - (instancetype)initWithImActorModelApiUploadConfig:(ImActorModelApiUploadConfig *)config
                                             withInt:(jint)blockIndex
                                       withByteArray:(IOSByteArray *)payload {
   if (self = [super init]) {
+    
+#line 32
     self->config_ = config;
+    
+#line 33
     self->blockIndex_ = blockIndex;
+    
+#line 34
     self->payload_ = payload;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiUploadConfig *)getConfig {
+  
+#line 42
   return self->config_;
 }
 
+
+#line 45
 - (jint)getBlockIndex {
+  
+#line 46
   return self->blockIndex_;
 }
 
+
+#line 49
 - (IOSByteArray *)getPayload {
+  
+#line 50
   return self->payload_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->config_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiUploadConfig alloc] init]];
   self->blockIndex_ = [values getIntWithInt:2];
   self->payload_ = [values getBytesWithInt:3];
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   if (self->config_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -86,6 +118,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestUploadPart, payload_, IOSByteArray 
 }
 
 - (jint)getHeaderKey {
+  
+#line 84
   return ImActorModelApiRpcRequestUploadPart_HEADER;
 }
 
@@ -100,6 +134,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestUploadPart, payload_, IOSByteArray 
 
 ImActorModelApiRpcRequestUploadPart *ImActorModelApiRpcRequestUploadPart_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestUploadPart_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestUploadPart *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestUploadPart alloc] init], data));
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetDifference.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetDifference.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -40,12 +42,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, phones_, id<JavaUti
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, emails_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUtilList>)
 
+
+#line 20
 @implementation ImActorModelApiRpcResponseGetDifference
 
+
+#line 23
 + (ImActorModelApiRpcResponseGetDifference *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(data);
 }
 
+
+#line 36
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state
            withJavaUtilList:(id<JavaUtilList>)users
@@ -55,54 +63,104 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
            withJavaUtilList:(id<JavaUtilList>)updates
                 withBoolean:(jboolean)needMore {
   if (self = [super init]) {
+    
+#line 37
     self->seq_ = seq;
+    
+#line 38
     self->state_ = state;
+    
+#line 39
     self->users_ = users;
+    
+#line 40
     self->groups_ = groups;
+    
+#line 41
     self->phones_ = phones;
+    
+#line 42
     self->emails_ = emails;
+    
+#line 43
     self->updates_ = updates;
+    
+#line 44
     self->needMore__ = needMore;
   }
   return self;
 }
 
+
+#line 47
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getSeq {
+  
+#line 52
   return self->seq_;
 }
 
+
+#line 55
 - (IOSByteArray *)getState {
+  
+#line 56
   return self->state_;
 }
 
+
+#line 59
 - (id<JavaUtilList>)getUsers {
+  
+#line 60
   return self->users_;
 }
 
+
+#line 63
 - (id<JavaUtilList>)getGroups {
+  
+#line 64
   return self->groups_;
 }
 
+
+#line 67
 - (id<JavaUtilList>)getPhones {
+  
+#line 68
   return self->phones_;
 }
 
+
+#line 71
 - (id<JavaUtilList>)getEmails {
+  
+#line 72
   return self->emails_;
 }
 
+
+#line 75
 - (id<JavaUtilList>)getUpdates {
+  
+#line 76
   return self->updates_;
 }
 
+
+#line 79
 - (jboolean)needMore {
+  
+#line 80
   return self->needMore__;
 }
 
+
+#line 84
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
@@ -134,7 +192,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   self->needMore__ = [values getBoolWithInt:5];
 }
 
+
+#line 116
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 117
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
     @throw [[JavaIoIOException alloc] init];
@@ -155,6 +217,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
 }
 
 - (jint)getHeaderKey {
+  
+#line 139
   return ImActorModelApiRpcResponseGetDifference_HEADER;
 }
 
@@ -174,6 +238,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
 
 ImActorModelApiRpcResponseGetDifference *ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetDifference_init();
+  
+#line 24
   return ((ImActorModelApiRpcResponseGetDifference *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseGetDifference alloc] init], data));
 }
 

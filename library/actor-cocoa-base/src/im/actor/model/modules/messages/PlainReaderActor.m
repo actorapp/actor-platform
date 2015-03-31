@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/PlainReaderActor.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/PlainReaderActor.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/OutPeer.h"
 #include "im/actor/model/api/rpc/RequestMessageRead.h"
@@ -34,27 +36,41 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainReaderActor_MarkRead, peer_,
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainReaderActor_$1, this$0_, ImActorModelModulesMessagesPlainReaderActor *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainReaderActor_$1, val$peer_, AMPeer *)
 
+
+#line 14
 @implementation ImActorModelModulesMessagesPlainReaderActor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  return [super initWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_READ withImActorModelModulesModules:messenger];
+  return
+#line 17
+  [super initWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_READ withImActorModelModulesModules:messenger];
 }
 
+
+#line 21
 - (void)performWithAMPeer:(AMPeer *)peer
                  withLong:(jlong)date {
   ImActorModelApiOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
   if (outPeer == nil) {
     return;
   }
+  
+#line 27
   [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestMessageRead alloc] initWithImActorModelApiOutPeer:outPeer withLong:date] withAMRpcCallback:[[ImActorModelModulesMessagesPlainReaderActor_$1 alloc] initWithImActorModelModulesMessagesPlainReaderActor:self withAMPeer:peer withLong:date]];
 }
 
+
+#line 43
 - (void)onReceiveWithId:(id)message {
+  
+#line 44
   if ([message isKindOfClass:[ImActorModelModulesMessagesPlainReaderActor_MarkRead class]]) {
     ImActorModelModulesMessagesPlainReaderActor_MarkRead *markRead = (ImActorModelModulesMessagesPlainReaderActor_MarkRead *) check_class_cast(message, [ImActorModelModulesMessagesPlainReaderActor_MarkRead class]);
     [self moveCursorWithAMPeer:[((ImActorModelModulesMessagesPlainReaderActor_MarkRead *) nil_chk(markRead)) getPeer] withLong:[markRead getDate]];
   }
   else {
+    
+#line 48
     [super onReceiveWithId:message];
   }
 }
@@ -63,22 +79,38 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesPlainReaderActor_$1, val$peer_, A
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesPlainReaderActor)
 
+
+#line 52
 @implementation ImActorModelModulesMessagesPlainReaderActor_MarkRead
 
+
+#line 56
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)date {
   if (self = [super init]) {
+    
+#line 57
     self->peer_ = peer;
+    
+#line 58
     self->date_ = date;
   }
   return self;
 }
 
+
+#line 61
 - (AMPeer *)getPeer {
+  
+#line 62
   return peer_;
 }
 
+
+#line 65
 - (jlong)getDate {
+  
+#line 66
   return date_;
 }
 
@@ -94,10 +126,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesPlainReaderActor_Mar
 
 @implementation ImActorModelModulesMessagesPlainReaderActor_$1
 
+
+#line 29
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
+  
+#line 30
   [this$0_ onCompletedWithAMPeer:val$peer_ withLong:val$date_];
 }
 
+
+#line 34
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   [this$0_ onErrorWithAMPeer:val$peer_ withLong:val$date_];
 }

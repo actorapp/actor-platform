@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExEmailContactRegistered.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExEmailContactRegistered.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/ServiceExEmailContactRegistered.h"
@@ -16,32 +18,52 @@
 }
 @end
 
+
+#line 19
 @implementation ImActorModelApiServiceExEmailContactRegistered
 
+
+#line 23
 - (instancetype)initWithInt:(jint)uid {
   if (self = [super init]) {
+    
+#line 24
     self->uid_ = uid;
   }
   return self;
 }
 
+
+#line 27
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getHeader {
+  
+#line 32
   return 7;
 }
 
+
+#line 35
 - (jint)getUid {
+  
+#line 36
   return self->uid_;
 }
 
+
+#line 40
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
+
+#line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 46
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
 }
 

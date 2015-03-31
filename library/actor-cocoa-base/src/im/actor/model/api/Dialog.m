@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Dialog.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Dialog.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -31,8 +33,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, peer_, ImActorModelApiPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelApiDialog, message_, ImActorModelApiMessage *)
 J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEnum *)
 
+
+#line 19
 @implementation ImActorModelApiDialog
 
+
+#line 30
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                     withInt:(jint)unreadCount
                                    withLong:(jlong)sortDate
@@ -42,54 +48,104 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
                  withImActorModelApiMessage:(ImActorModelApiMessage *)message
         withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   if (self = [super init]) {
+    
+#line 31
     self->peer_ = peer;
+    
+#line 32
     self->unreadCount_ = unreadCount;
+    
+#line 33
     self->sortDate_ = sortDate;
+    
+#line 34
     self->senderUid_ = senderUid;
+    
+#line 35
     self->rid_ = rid;
+    
+#line 36
     self->date_ = date;
+    
+#line 37
     self->message_ = message;
+    
+#line 38
     self->state_ = state;
   }
   return self;
 }
 
+
+#line 41
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiPeer *)getPeer {
+  
+#line 46
   return self->peer_;
 }
 
+
+#line 49
 - (jint)getUnreadCount {
+  
+#line 50
   return self->unreadCount_;
 }
 
+
+#line 53
 - (jlong)getSortDate {
+  
+#line 54
   return self->sortDate_;
 }
 
+
+#line 57
 - (jint)getSenderUid {
+  
+#line 58
   return self->senderUid_;
 }
 
+
+#line 61
 - (jlong)getRid {
+  
+#line 62
   return self->rid_;
 }
 
+
+#line 65
 - (jlong)getDate {
+  
+#line 66
   return self->date_;
 }
 
+
+#line 69
 - (ImActorModelApiMessage *)getMessage {
+  
+#line 70
   return self->message_;
 }
 
+
+#line 73
 - (ImActorModelApiMessageStateEnum *)getState {
+  
+#line 74
   return self->state_;
 }
 
+
+#line 78
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
   self->unreadCount_ = [values getIntWithInt:3];
@@ -104,7 +160,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   }
 }
 
+
+#line 93
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 94
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -117,6 +177,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   if (self->message_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
+  
+#line 107
   [writer writeBytesWithInt:8 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
   if (self->state_ != nil) {
     [writer writeIntWithInt:9 withInt:[self->state_ getValue]];
@@ -124,6 +186,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
 }
 
 - (NSString *)description {
+  
+#line 115
   NSString *res = @"struct Dialog{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
   res = JreStrcat("$$", res, JreStrcat("$I", @", unreadCount=", self->unreadCount_));

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/FixedPointUtil.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/FixedPointUtil.java"
+
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
@@ -12,6 +14,8 @@
 #include "org/bouncycastle/math/ec/FixedPointUtil.h"
 #include "org/bouncycastle/math/ec/PreCompInfo.h"
 
+
+#line 5
 @implementation OrgBouncycastleMathEcFixedPointUtil
 
 NSString * OrgBouncycastleMathEcFixedPointUtil_PRECOMP_NAME_ = @"bc_fixed_point";
@@ -20,10 +24,14 @@ NSString * OrgBouncycastleMathEcFixedPointUtil_PRECOMP_NAME_ = @"bc_fixed_point"
   return OrgBouncycastleMathEcFixedPointUtil_getCombSizeWithOrgBouncycastleMathEcECCurve_(c);
 }
 
+
+#line 15
 + (OrgBouncycastleMathEcFixedPointPreCompInfo *)getFixedPointPreCompInfoWithOrgBouncycastleMathEcPreCompInfo:(id<OrgBouncycastleMathEcPreCompInfo>)preCompInfo {
   return OrgBouncycastleMathEcFixedPointUtil_getFixedPointPreCompInfoWithOrgBouncycastleMathEcPreCompInfo_(preCompInfo);
 }
 
+
+#line 25
 + (OrgBouncycastleMathEcFixedPointPreCompInfo *)precomputeWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                                                    withInt:(jint)minWidth {
   return OrgBouncycastleMathEcFixedPointUtil_precomputeWithOrgBouncycastleMathEcECPoint_withInt_(p, minWidth);
@@ -37,47 +45,87 @@ NSString * OrgBouncycastleMathEcFixedPointUtil_PRECOMP_NAME_ = @"bc_fixed_point"
 
 jint OrgBouncycastleMathEcFixedPointUtil_getCombSizeWithOrgBouncycastleMathEcECCurve_(OrgBouncycastleMathEcECCurve *c) {
   OrgBouncycastleMathEcFixedPointUtil_init();
+  
+#line 11
   JavaMathBigInteger *order = [((OrgBouncycastleMathEcECCurve *) nil_chk(c)) getOrder];
   return order == nil ? [c getFieldSize] + 1 : [order bitLength];
 }
 
 OrgBouncycastleMathEcFixedPointPreCompInfo *OrgBouncycastleMathEcFixedPointUtil_getFixedPointPreCompInfoWithOrgBouncycastleMathEcPreCompInfo_(id<OrgBouncycastleMathEcPreCompInfo> preCompInfo) {
   OrgBouncycastleMathEcFixedPointUtil_init();
+  
+#line 17
   if ((preCompInfo != nil) && ([preCompInfo isKindOfClass:[OrgBouncycastleMathEcFixedPointPreCompInfo class]])) {
+    
+#line 19
     return (OrgBouncycastleMathEcFixedPointPreCompInfo *) check_class_cast(preCompInfo, [OrgBouncycastleMathEcFixedPointPreCompInfo class]);
   }
+  
+#line 22
   return [[OrgBouncycastleMathEcFixedPointPreCompInfo alloc] init];
 }
 
 OrgBouncycastleMathEcFixedPointPreCompInfo *OrgBouncycastleMathEcFixedPointUtil_precomputeWithOrgBouncycastleMathEcECPoint_withInt_(OrgBouncycastleMathEcECPoint *p, jint minWidth) {
   OrgBouncycastleMathEcFixedPointUtil_init();
+  
+#line 27
   OrgBouncycastleMathEcECCurve *c = [((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve];
+  
+#line 29
   jint n = LShift32(1, minWidth);
   OrgBouncycastleMathEcFixedPointPreCompInfo *info = OrgBouncycastleMathEcFixedPointUtil_getFixedPointPreCompInfoWithOrgBouncycastleMathEcPreCompInfo_([((OrgBouncycastleMathEcECCurve *) nil_chk(c)) getPreCompInfoWithOrgBouncycastleMathEcECPoint:p withNSString:OrgBouncycastleMathEcFixedPointUtil_PRECOMP_NAME_]);
   IOSObjectArray *lookupTable = [((OrgBouncycastleMathEcFixedPointPreCompInfo *) nil_chk(info)) getPreComp];
+  
+#line 33
   if (lookupTable == nil || lookupTable->size_ < n) {
+    
+#line 35
     jint bits = OrgBouncycastleMathEcFixedPointUtil_getCombSizeWithOrgBouncycastleMathEcECCurve_(c);
     jint d = (bits + minWidth - 1) / minWidth;
+    
+#line 38
     IOSObjectArray *pow2Table = [IOSObjectArray newArrayWithLength:minWidth type:OrgBouncycastleMathEcECPoint_class_()];
     IOSObjectArray_Set(pow2Table, 0, p);
     for (jint i = 1; i < minWidth; ++i) {
+      
+#line 42
       IOSObjectArray_Set(pow2Table, i, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(pow2Table, i - 1))) timesPow2WithInt:d]);
     }
+    
+#line 45
     [c normalizeAllWithOrgBouncycastleMathEcECPointArray:pow2Table];
+    
+#line 47
     lookupTable = [IOSObjectArray newArrayWithLength:n type:OrgBouncycastleMathEcECPoint_class_()];
     IOSObjectArray_Set(lookupTable, 0, [c getInfinity]);
+    
+#line 50
     for (jint bit = minWidth - 1; bit >= 0; --bit) {
+      
+#line 52
       OrgBouncycastleMathEcECPoint *pow2 = IOSObjectArray_Get(pow2Table, bit);
+      
+#line 54
       jint step = LShift32(1, bit);
       for (jint i = step; i < n; i += (LShift32(step, 1))) {
+        
+#line 57
         IOSObjectArray_Set(lookupTable, i, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(lookupTable, i - step))) addWithOrgBouncycastleMathEcECPoint:pow2]);
       }
     }
+    
+#line 61
     [c normalizeAllWithOrgBouncycastleMathEcECPointArray:lookupTable];
+    
+#line 63
     [info setPreCompWithOrgBouncycastleMathEcECPointArray:lookupTable];
     [info setWidthWithInt:minWidth];
+    
+#line 66
     [c setPreCompInfoWithOrgBouncycastleMathEcECPoint:p withNSString:OrgBouncycastleMathEcFixedPointUtil_PRECOMP_NAME_ withOrgBouncycastleMathEcPreCompInfo:info];
   }
+  
+#line 69
   return info;
 }
 

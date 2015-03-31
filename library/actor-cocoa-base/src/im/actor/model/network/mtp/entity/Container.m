@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Container.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Container.java"
+
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
@@ -20,12 +22,20 @@
 
 J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
 
+
+#line 8
 @implementation MTContainer
 
+
+#line 14
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 15
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 18
 - (instancetype)initWithMTProtoMessageArray:(IOSObjectArray *)messages {
   if (self = [super init]) {
     self->messages_ = messages;
@@ -33,33 +43,53 @@ J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
   return self;
 }
 
+
+#line 22
 - (IOSObjectArray *)getMessages {
+  
+#line 23
   return messages_;
 }
 
+
+#line 27
 - (jbyte)getHeader {
   return MTContainer_HEADER;
 }
 
+
+#line 32
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 33
   if (messages_ != nil && messages_->size_ > 0) {
     [((BSDataOutput *) nil_chk(bs)) writeVarIntWithLong:messages_->size_];
     {
-      IOSObjectArray *a__ = messages_;
+      IOSObjectArray *a__ =
+#line 35
+      messages_;
       MTProtoMessage * const *b__ = a__->buffer_;
       MTProtoMessage * const *e__ = b__ + a__->size_;
       while (b__ < e__) {
         MTProtoMessage *m = *b__++;
+        
+#line 36
         [((MTProtoMessage *) nil_chk(m)) writeObjectWithBSDataOutput:bs];
       }
     }
   }
   else {
+    
+#line 39
     [((BSDataOutput *) nil_chk(bs)) writeVarIntWithLong:0];
   }
 }
 
+
+#line 44
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  
+#line 45
   jint size = (jint) [((BSDataInput *) nil_chk(bs)) readVarInt];
   messages_ = [IOSObjectArray newArrayWithLength:size type:MTProtoMessage_class_()];
   for (jint i = 0; i < size; ++i) {

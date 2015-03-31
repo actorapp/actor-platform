@@ -3,27 +3,43 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/UnknownFieldException.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/UnknownFieldException.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/UnknownFieldException.h"
 #include "java/lang/Throwable.h"
 
+
+#line 6
 @implementation BSUnknownFieldException
 
+
+#line 7
 - (instancetype)init {
   return [super init];
 }
 
+
+#line 10
 - (instancetype)initWithNSString:(NSString *)message {
-  return [super initWithNSString:message];
+  return
+#line 11
+  [super initWithNSString:message];
 }
 
+
+#line 14
 - (instancetype)initWithNSString:(NSString *)message
            withJavaLangThrowable:(JavaLangThrowable *)cause {
   return [super initWithNSString:message withJavaLangThrowable:cause];
 }
 
+
+#line 18
 - (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)cause {
-  return [super initWithJavaLangThrowable:cause];
+  return
+#line 19
+  [super initWithJavaLangThrowable:cause];
 }
 
 @end

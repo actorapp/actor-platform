@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/messages/TaskRequest.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/messages/TaskRequest.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/tasks/messages/TaskRequest.h"
 
@@ -12,21 +14,33 @@
 }
 @end
 
+
+#line 8
 @implementation ImActorModelDroidkitActorsTasksMessagesTaskRequest
 
+
+#line 11
 - (instancetype)initWithInt:(jint)requestId {
   if (self = [super init]) {
+    
+#line 12
     self->requestId_ = requestId;
   }
   return self;
 }
 
+
+#line 15
 - (jint)getRequestId {
+  
+#line 16
   return requestId_;
 }
 
 - (NSString *)description {
-  return JreStrcat("$IC", @"TaskRequest{requestId=", requestId_, '}');
+  return JreStrcat("$IC", @"TaskRequest{requestId=",
+#line 22
+  requestId_, '}');
 }
 
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksMessagesTaskRequest *)other {

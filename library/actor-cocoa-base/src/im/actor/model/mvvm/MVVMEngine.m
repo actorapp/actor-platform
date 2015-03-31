@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/MVVMEngine.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/MVVMEngine.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/MainThreadProvider.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
@@ -13,10 +15,14 @@
 }
 @end
 
+
+#line 8
 @implementation AMMVVMEngine
 
 id<AMMainThreadProvider> AMMVVMEngine_mainThreadProvider_;
 
+
+#line 11
 + (void)init__WithAMMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider {
   AMMVVMEngine_init__WithAMMainThreadProvider_(mainThreadProvider);
 }
@@ -29,6 +35,8 @@ id<AMMainThreadProvider> AMMVVMEngine_mainThreadProvider_;
   AMMVVMEngine_checkMainThread();
 }
 
+
+#line 28
 + (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
   AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(runnable);
 }
@@ -41,16 +49,22 @@ id<AMMainThreadProvider> AMMVVMEngine_mainThreadProvider_;
 
 void AMMVVMEngine_init__WithAMMainThreadProvider_(id<AMMainThreadProvider> mainThreadProvider) {
   AMMVVMEngine_init();
+  
+#line 12
   AMMVVMEngine_mainThreadProvider_ = mainThreadProvider;
 }
 
 id<AMMainThreadProvider> AMMVVMEngine_getMainThreadProvider() {
   AMMVVMEngine_init();
+  
+#line 16
   return AMMVVMEngine_mainThreadProvider_;
 }
 
 void AMMVVMEngine_checkMainThread() {
   AMMVVMEngine_init();
+  
+#line 20
   if ([((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) isSingleThread]) {
     return;
   }
@@ -61,6 +75,8 @@ void AMMVVMEngine_checkMainThread() {
 
 void AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(id<JavaLangRunnable> runnable) {
   AMMVVMEngine_init();
+  
+#line 29
   [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) runOnUiThread:runnable];
 }
 

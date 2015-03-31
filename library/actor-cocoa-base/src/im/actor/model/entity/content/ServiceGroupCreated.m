@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupCreated.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupCreated.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,36 +25,56 @@
 
 J2OBJC_FIELD_SETTER(AMServiceGroupCreated, groupTitle_, NSString *)
 
+
+#line 12
 @implementation AMServiceGroupCreated
 
 + (AMServiceGroupCreated *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMServiceGroupCreated_fromBytesWithByteArray_(data);
 }
 
+
+#line 20
 - (instancetype)initWithNSString:(NSString *)groupTitle {
-  if (self = [super initWithNSString:JreStrcat("$$$", @"Group '", groupTitle, @"' created")]) {
+  if (self =
+#line 21
+  [super initWithNSString:JreStrcat("$$$", @"Group '", groupTitle, @"' created")]) {
+    
+#line 22
     self->groupTitle_ = groupTitle;
   }
   return self;
 }
 
+
+#line 25
 - (instancetype)init {
   return [super init];
 }
 
 - (NSString *)getGroupTitle {
+  
+#line 30
   return groupTitle_;
 }
 
+
+#line 34
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE_CREATED();
 }
 
+
+#line 39
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  
+#line 40
   [super parseWithBSBserValues:values];
   groupTitle_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:10];
 }
 
+
+#line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:groupTitle_];
@@ -67,6 +89,8 @@ J2OBJC_FIELD_SETTER(AMServiceGroupCreated, groupTitle_, NSString *)
 
 AMServiceGroupCreated *AMServiceGroupCreated_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupCreated_init();
+  
+#line 15
   return ((AMServiceGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupCreated alloc] init], data));
 }
 

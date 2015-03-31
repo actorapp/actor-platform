@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Updates.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Updates.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
@@ -28,25 +30,49 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates, updateActor_, DKActorRef *)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdates_$1, this$0_, ImActorModelModulesUpdates *)
 
+
+#line 14
 @implementation ImActorModelModulesUpdates
 
+
+#line 18
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  return [super initWithImActorModelModulesModules:messenger];
+  return
+#line 19
+  [super initWithImActorModelModulesModules:messenger];
 }
 
+
+#line 22
 - (void)run {
-  self->updateActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), [[ImActorModelModulesUpdates_$1 alloc] initWithImActorModelModulesUpdates:self]) withNSString:@"actor/updates"];
+  
+#line 23
+  self->updateActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), [[ImActorModelModulesUpdates_$1 alloc] initWithImActorModelModulesUpdates:self]) withNSString:
+#line 28
+  @"actor/updates"];
 }
 
+
+#line 31
 - (void)onNewSessionCreated {
+  
+#line 32
   [((DKActorRef *) nil_chk(updateActor_)) sendWithId:[[ImActorModelModulesUpdatesSequenceActor_Invalidate alloc] init]];
 }
 
+
+#line 35
 - (void)onPushReceivedWithInt:(jint)seq {
+  
+#line 36
   [((DKActorRef *) nil_chk(updateActor_)) sendWithId:[[ImActorModelModulesUpdatesSequenceActor_PushSeq alloc] initWithInt:seq]];
 }
 
+
+#line 39
 - (void)onUpdateReceivedWithId:(id)update {
+  
+#line 40
   [((DKActorRef *) nil_chk(updateActor_)) sendWithId:update];
 }
 
@@ -61,7 +87,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdates)
 
 @implementation ImActorModelModulesUpdates_$1
 
+
+#line 25
 - (ImActorModelModulesUpdatesSequenceActor *)create {
+  
+#line 26
   return [[ImActorModelModulesUpdatesSequenceActor alloc] initWithImActorModelModulesModules:[this$0_ modules]];
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/GroupTypingVM.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/GroupTypingVM.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/mvvm/ValueModel.h"
@@ -17,21 +19,37 @@
 
 J2OBJC_FIELD_SETTER(AMGroupTypingVM, active_, AMValueModel *)
 
+
+#line 8
 @implementation AMGroupTypingVM
 
+
+#line 12
 - (instancetype)initWithInt:(jint)gid {
   if (self = [super init]) {
+    
+#line 13
     self->gid_ = gid;
+    
+#line 14
     self->active_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"groups.", gid, @".typing") withId:[IOSIntArray newArrayWithLength:0]];
   }
   return self;
 }
 
+
+#line 17
 - (jint)getGid {
+  
+#line 18
   return gid_;
 }
 
+
+#line 21
 - (AMValueModel *)getActive {
+  
+#line 22
   return active_;
 }
 

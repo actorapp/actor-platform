@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/PhoneBookProvider.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/PhoneBookProvider.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/PhoneBookProvider.h"
 #include "java/util/List.h"

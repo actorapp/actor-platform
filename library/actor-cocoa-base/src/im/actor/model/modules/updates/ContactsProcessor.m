@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/ContactsProcessor.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/ContactsProcessor.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
@@ -20,19 +22,33 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesContactsProcessor, contactsSyncActor_, DKActorRef *)
 
+
+#line 13
 @implementation ImActorModelModulesUpdatesContactsProcessor
 
+
+#line 18
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self = [super initWithImActorModelModulesModules:modules]) {
+  if (self =
+#line 19
+  [super initWithImActorModelModulesModules:modules]) {
+    
+#line 20
     contactsSyncActor_ = [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor];
   }
   return self;
 }
 
+
+#line 24
 - (void)onContactsAddedWithIntArray:(IOSIntArray *)uid {
+  
+#line 25
   [((DKActorRef *) nil_chk(contactsSyncActor_)) sendWithId:[[ImActorModelModulesContactsContactsSyncActor_ContactsAdded alloc] initWithIntArray:uid]];
 }
 
+
+#line 29
 - (void)onContactsRemovedWithIntArray:(IOSIntArray *)uid {
   [((DKActorRef *) nil_chk(contactsSyncActor_)) sendWithId:[[ImActorModelModulesContactsContactsSyncActor_ContactsRemoved alloc] initWithIntArray:uid]];
 }

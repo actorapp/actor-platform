@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1OctetString.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1OctetString.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -20,23 +22,35 @@
 
 J2OBJC_FIELD_SETTER(BCASN1OctetString, data_, IOSByteArray *)
 
+
+#line 11
 @implementation BCASN1OctetString
 
 + (BCASN1OctetString *)readOctetStringWithBSDataInput:(BSDataInput *)dataInput {
   return BCASN1OctetString_readOctetStringWithBSDataInput_(dataInput);
 }
 
+
+#line 19
 - (instancetype)initWithByteArray:(IOSByteArray *)data {
   if (self = [super init]) {
+    
+#line 20
     self->data_ = data;
   }
   return self;
 }
 
+
+#line 23
 - (IOSByteArray *)getData {
+  
+#line 24
   return data_;
 }
 
+
+#line 28
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
   [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_OCTET_STRING];
   [dataOutput writeASN1LengthWithInt:((IOSByteArray *) nil_chk(data_))->size_];
@@ -52,6 +66,8 @@ J2OBJC_FIELD_SETTER(BCASN1OctetString, data_, IOSByteArray *)
 
 BCASN1OctetString *BCASN1OctetString_readOctetStringWithBSDataInput_(BSDataInput *dataInput) {
   BCASN1OctetString_init();
+  
+#line 14
   return [[BCASN1OctetString alloc] initWithByteArray:[dataInput readBytesWithInt:[((BSDataInput *) nil_chk(dataInput)) getRemaining]]];
 }
 

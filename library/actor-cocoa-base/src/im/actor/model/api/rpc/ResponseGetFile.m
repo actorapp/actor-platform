@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetFile.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetFile.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -21,32 +23,50 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFile, payload_, IOSByteArray *)
 
+
+#line 20
 @implementation ImActorModelApiRpcResponseGetFile
 
+
+#line 23
 + (ImActorModelApiRpcResponseGetFile *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseGetFile_fromBytesWithByteArray_(data);
 }
 
+
+#line 29
 - (instancetype)initWithByteArray:(IOSByteArray *)payload {
   if (self = [super init]) {
+    
+#line 30
     self->payload_ = payload;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (IOSByteArray *)getPayload {
+  
+#line 38
   return self->payload_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->payload_ = [((BSBserValues *) nil_chk(values)) getBytesWithInt:1];
 }
 
+
+#line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 48
   if (self->payload_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -60,6 +80,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFile, payload_, IOSByteArray *)
 }
 
 - (jint)getHeaderKey {
+  
+#line 63
   return ImActorModelApiRpcResponseGetFile_HEADER;
 }
 
@@ -72,6 +94,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFile, payload_, IOSByteArray *)
 
 ImActorModelApiRpcResponseGetFile *ImActorModelApiRpcResponseGetFile_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetFile_init();
+  
+#line 24
   return ((ImActorModelApiRpcResponseGetFile *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseGetFile alloc] init], data));
 }
 

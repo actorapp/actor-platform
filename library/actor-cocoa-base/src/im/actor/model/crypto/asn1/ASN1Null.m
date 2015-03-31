@@ -3,14 +3,20 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1Null.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1Null.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/asn1/ASN1Null.h"
 #include "im/actor/model/crypto/asn1/ASN1Primitive.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 
+
+#line 8
 @implementation BCASN1Null
 
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
+  
+#line 11
   [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_NULL];
   [dataOutput writeByteWithInt:0];
 }

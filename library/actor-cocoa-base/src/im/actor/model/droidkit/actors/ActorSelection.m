@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorSelection.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorSelection.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorSelection.h"
 #include "im/actor/model/droidkit/actors/Props.h"
@@ -17,22 +19,38 @@
 J2OBJC_FIELD_SETTER(DKActorSelection, props_, DKProps *)
 J2OBJC_FIELD_SETTER(DKActorSelection, path_, NSString *)
 
+
+#line 8
 @implementation DKActorSelection
 
+
+#line 12
 - (instancetype)initWithDKProps:(DKProps *)props
                    withNSString:(NSString *)path {
   if (self = [super init]) {
+    
+#line 13
     self->props_ = props;
+    
+#line 14
     self->path_ = path;
   }
   return self;
 }
 
+
+#line 17
 - (DKProps *)getProps {
+  
+#line 18
   return props_;
 }
 
+
+#line 21
 - (NSString *)getPath {
+  
+#line 22
   return path_;
 }
 

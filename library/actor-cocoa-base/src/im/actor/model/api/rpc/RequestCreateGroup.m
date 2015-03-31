@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestCreateGroup.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestCreateGroup.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,39 +29,65 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, title_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilList>)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestCreateGroup
 
+
+#line 23
 + (ImActorModelApiRpcRequestCreateGroup *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestCreateGroup_fromBytesWithByteArray_(data);
 }
 
+
+#line 31
 - (instancetype)initWithLong:(jlong)rid
                 withNSString:(NSString *)title
             withJavaUtilList:(id<JavaUtilList>)users {
   if (self = [super init]) {
+    
+#line 32
     self->rid_ = rid;
+    
+#line 33
     self->title_ = title;
+    
+#line 34
     self->users_ = users;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (jlong)getRid {
+  
+#line 42
   return self->rid_;
 }
 
+
+#line 45
 - (NSString *)getTitle {
+  
+#line 46
   return self->title_;
 }
 
+
+#line 49
 - (id<JavaUtilList>)getUsers {
+  
+#line 50
   return self->users_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->rid_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->title_ = [values getStringWithInt:2];
@@ -70,7 +98,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
   self->users_ = [values getRepeatedObjWithInt:3 withJavaUtilList:_users];
 }
 
+
+#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 66
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->rid_];
   if (self->title_ == nil) {
     @throw [[JavaIoIOException alloc] init];
@@ -89,6 +121,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
 }
 
 - (jint)getHeaderKey {
+  
+#line 86
   return ImActorModelApiRpcRequestCreateGroup_HEADER;
 }
 
@@ -103,6 +137,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
 
 ImActorModelApiRpcRequestCreateGroup *ImActorModelApiRpcRequestCreateGroup_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestCreateGroup_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestCreateGroup *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestCreateGroup alloc] init], data));
 }
 

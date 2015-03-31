@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/CryptoException.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/CryptoException.java"
+
 #include "J2ObjC_source.h"
 #include "java/lang/Throwable.h"
 #include "org/bouncycastle/crypto/CryptoException.h"
@@ -15,25 +17,43 @@
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoCryptoException, cause_, JavaLangThrowable *)
 
+
+#line 6
 @implementation OrgBouncycastleCryptoCryptoException
 
+
+#line 14
 - (instancetype)init {
   return [super init];
 }
 
+
+#line 23
 - (instancetype)initWithNSString:(NSString *)message {
-  return [super initWithNSString:message];
+  return
+#line 26
+  [super initWithNSString:message];
 }
 
+
+#line 35
 - (instancetype)initWithNSString:(NSString *)message
            withJavaLangThrowable:(JavaLangThrowable *)cause {
-  if (self = [super initWithNSString:message]) {
+  if (self =
+#line 39
+  [super initWithNSString:message]) {
+    
+#line 41
     self->cause_ = cause;
   }
   return self;
 }
 
+
+#line 44
 - (JavaLangThrowable *)getCause {
+  
+#line 46
   return cause_;
 }
 

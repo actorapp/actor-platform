@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcInternalError.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcInternalError.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -17,38 +19,64 @@
 }
 @end
 
+
+#line 12
 @implementation MTRpcInternalError
 
+
+#line 18
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 19
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 22
 - (instancetype)initWithBoolean:(jboolean)canTryAgain
                         withInt:(jint)tryAgainDelay {
   if (self = [super init]) {
     self->canTryAgain_ = canTryAgain;
+    
+#line 24
     self->tryAgainDelay_ = tryAgainDelay;
   }
   return self;
 }
 
+
+#line 27
 - (jboolean)isCanTryAgain {
+  
+#line 28
   return canTryAgain_;
 }
 
+
+#line 31
 - (jint)getTryAgainDelay {
+  
+#line 32
   return tryAgainDelay_;
 }
 
+
+#line 36
 - (jbyte)getHeader {
   return MTRpcInternalError_HEADER;
 }
 
+
+#line 41
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 42
   [((BSDataOutput *) nil_chk(bs)) writeProtoBoolWithBoolean:canTryAgain_];
   [bs writeIntWithInt:tryAgainDelay_];
 }
 
+
+#line 47
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   canTryAgain_ = [((BSDataInput *) nil_chk(bs)) readProtoBool];
   tryAgainDelay_ = [bs readInt];
