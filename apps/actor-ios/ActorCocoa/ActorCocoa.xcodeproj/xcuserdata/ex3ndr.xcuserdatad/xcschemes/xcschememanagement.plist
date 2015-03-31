@@ -4,20 +4,20 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>ActorClient.xcscheme_^#shared#^_</key>
+		<key>ActorCocoa.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>22</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>2537F82C1A966B9D004A02E9</key>
+		<key>06D1E6CE1ACAEAF500AC22ED</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>2537F8481A966B9D004A02E9</key>
+		<key>06D1E6D91ACAEAF500AC22ED</key>
 		<dict>
 			<key>primary</key>
 			<true/>

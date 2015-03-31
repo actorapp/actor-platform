@@ -18,6 +18,7 @@
 #include "im/actor/model/entity/PeerType.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/AppStateModule.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
@@ -434,7 +435,9 @@ void ImActorModelModulesMessagesDialogsActor_onHistoryLoadedWithJavaUtilList_(Im
 }
 
 void ImActorModelModulesMessagesDialogsActor_notifyState(ImActorModelModulesMessagesDialogsActor *self) {
-  [((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) onDialogsUpdateWithBoolean:[((id<DKListEngine>) nil_chk(self->dialogs_)) isEmpty]];
+  jboolean isEmpty = [((id<DKListEngine>) nil_chk(self->dialogs_)) isEmpty];
+  AMLog_dWithNSString_withNSString_(@"NOTIFY_DIALOGS", JreStrcat("$Z", @"isEmpty: ", isEmpty));
+  [((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) onDialogsUpdateWithBoolean:isEmpty];
 }
 
 ImActorModelModulesMessagesDialogsActor_PeerDesc *ImActorModelModulesMessagesDialogsActor_buildPeerDescWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer) {

@@ -45,9 +45,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAppStateModule_$1, this$0_, ImActorModelM
 }
 
 - (void)onDialogsUpdateWithBoolean:(jboolean)isEmpty {
+  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:[[ImActorModelModulesStateListsStatesActor_OnDialogsChanged alloc] initWithBoolean:isEmpty]];
 }
 
 - (void)onContactsUpdateWithBoolean:(jboolean)isEmpty {
+  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:[[ImActorModelModulesStateListsStatesActor_OnContactsChanged alloc] initWithBoolean:isEmpty]];
 }
 
 - (AMAppStateVM *)getAppStateVM {

@@ -141,6 +141,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   [filesModule_ run];
   AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.9 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
   start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [((ImActorModelModulesAppStateModule *) nil_chk(appStateModule_)) run];
   [notifications_ run];
   [messages_ run];
   AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.10 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));

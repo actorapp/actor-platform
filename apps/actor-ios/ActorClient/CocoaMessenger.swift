@@ -31,22 +31,16 @@ get{
         builder.setPhoneBookProvider(CocoaPhoneBookProvider())
         builder.setCryptoProvider(BCBouncyCastleProvider())
         builder.setFileSystemProvider(CocoaFileSystem())
+        builder.setDispatcherProvider(DispatcherProvider())
         builder.setNotificationProvider(iOSNotificationProvider())
         builder.setEnableNetworkLogging(true)
         
         // Connection
         builder.addEndpoint("tcp://mtproto-api.actor.im:8080");
         
-        var value: UInt8 = 0xFF
-        var convHash = IOSByteArray.newArrayWithLength(32)
-        var buf = UnsafeMutablePointer<UInt8>(convHash.buffer());
-        for i in 1..<32 {
-            buf.memory = UInt8(arc4random_uniform(255));
-            buf++;
-//            convHash.buffer()[i] = jbyte(0xFF);
-        }
+        var deviceKey = NSUUID().UUIDString;
         
-        builder.setApiConfiguration(AMApiConfiguration(NSString: "Actor iOS", withInt: 1, withNSString: "???", withNSString: "My Device", withByteArray: convHash))
+        builder.setApiConfiguration(AMApiConfiguration(NSString: "Actor iOS", withInt: 1, withNSString: "???", withNSString: "My Device", withNSString: deviceKey))
 
         holder = CocoaMessenger(AMConfiguration: builder.build());
     }
@@ -54,7 +48,7 @@ get{
     }
 }
 
-@objc class CocoaMessenger : AMMessenger {
+@objc class CocoaMessenger : AMBaseMessenger {
     class func messenger() -> CocoaMessenger { return MSG }
     
     func sendUIImage(image: UIImage, peer: AMPeer) {

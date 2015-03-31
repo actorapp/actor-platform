@@ -5,8 +5,11 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/modules/AppStateModule.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/state/ListsStatesActor.h"
+#include "im/actor/model/modules/utils/ModuleActor.h"
+#include "im/actor/model/viewmodel/AppStateVM.h"
 
 @interface ImActorModelModulesStateListsStatesActor_OnContactsChanged () {
  @public
@@ -27,9 +30,11 @@
 }
 
 - (void)onDialogsChangedWithBoolean:(jboolean)isEmpty {
+  [((AMAppStateVM *) nil_chk([((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) getAppStateVM])) onDialogsChangedWithBoolean:isEmpty];
 }
 
 - (void)onContactsChangedWithBoolean:(jboolean)isEmpty {
+  [((AMAppStateVM *) nil_chk([((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) getAppStateVM])) onContactsChangedWithBoolean:isEmpty];
 }
 
 - (void)onReceiveWithId:(id)message {

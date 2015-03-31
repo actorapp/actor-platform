@@ -37,18 +37,17 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    DZNPhotoEditorViewController *editor = [[DZNPhotoEditorViewController alloc] initWithImage:info[UIImagePickerControllerOriginalImage]];
-    editor.cropMode = DZNPhotoEditorViewControllerCropModeCircular;
-    editor.acceptBlock = ^(DZNPhotoEditorViewController *_editor, NSDictionary *userInfo) {
-        self.avatarImageView.image = userInfo[UIImagePickerControllerEditedImage];
-        if (self.avatarImageView.image)
-            self.avatarImageView.layer.borderWidth = 0.0;
-        _editor.cancelBlock(_editor);
-    };
-    editor.cancelBlock = ^(DZNPhotoEditorViewController *_editor) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    };
-    [picker pushViewController:editor animated:YES];
+//    DZNPhotoEditorViewController *editor = [[DZNPhotoEditorViewController alloc] initWithImage:info[UIImagePickerControllerOriginalImage] cropMode:DZNPhotoEditorViewControllerCropModeSquare];
+//    [editor setAcceptBlock: ^(DZNPhotoEditorViewController *_editor, NSDictionary *userInfo) {
+//        self.avatarImageView.image = userInfo[UIImagePickerControllerEditedImage];
+//        if (self.avatarImageView.image)
+//            self.avatarImageView.layer.borderWidth = 0.0;
+//        _editor.cancelBlock(_editor);
+//    }];
+//    editor.cancelBlock = ^(DZNPhotoEditorViewController *_editor) {
+//        [self dismissViewControllerAnimated:YES completion:nil];
+//    };
+//    [picker pushViewController:editor animated:YES];
 }
 
 //MARK: - Table View
