@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1Sequence.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1Sequence.java"
+
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
@@ -24,35 +26,53 @@
 
 J2OBJC_FIELD_SETTER(BCASN1Sequence, sequence_, JavaUtilArrayList *)
 
+
+#line 13
 @implementation BCASN1Sequence
 
 + (BCASN1Sequence *)readSequenceWithBSDataInput:(BSDataInput *)dataInput {
   return BCASN1Sequence_readSequenceWithBSDataInput_(dataInput);
 }
 
+
+#line 25
 - (instancetype)init {
   if (self = [super init]) {
+    
+#line 26
     self->sequence_ = [[JavaUtilArrayList alloc] init];
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)sequence {
   if (self = [super init]) {
+    
+#line 30
     self->sequence_ = [[JavaUtilArrayList alloc] initWithJavaUtilCollection:sequence];
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)initWithBCASN1PrimitiveArray:(IOSObjectArray *)sequence {
   if (self = [super init]) {
+    
+#line 34
     self->sequence_ = [[JavaUtilArrayList alloc] init];
     {
-      IOSObjectArray *a__ = sequence;
+      IOSObjectArray *a__ =
+#line 35
+      sequence;
       BCASN1Primitive * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
       BCASN1Primitive * const *e__ = b__ + a__->size_;
       while (b__ < e__) {
         BCASN1Primitive *p = *b__++;
+        
+#line 36
         [self->sequence_ addWithId:p];
       }
     }
@@ -60,22 +80,40 @@ J2OBJC_FIELD_SETTER(BCASN1Sequence, sequence_, JavaUtilArrayList *)
   return self;
 }
 
+
+#line 40
 - (void)addWithBCASN1Primitive:(BCASN1Primitive *)item {
+  
+#line 41
   [((JavaUtilArrayList *) nil_chk(sequence_)) addWithId:item];
 }
 
+
+#line 44
 - (JavaUtilArrayList *)getSequence {
+  
+#line 45
   return sequence_;
 }
 
+
+#line 48
 - (jint)size {
+  
+#line 49
   return [((JavaUtilArrayList *) nil_chk(sequence_)) size];
 }
 
+
+#line 52
 - (BCASN1Primitive *)getWithInt:(jint)index {
+  
+#line 53
   return [((JavaUtilArrayList *) nil_chk(sequence_)) getWithInt:index];
 }
 
+
+#line 57
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
   [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_SEQUENCE | BCASN1Primitive_TAG_CONSTRUCTED];
   BSDataOutput *content = [[BSDataOutput alloc] init];
@@ -96,6 +134,8 @@ J2OBJC_FIELD_SETTER(BCASN1Sequence, sequence_, JavaUtilArrayList *)
 
 BCASN1Sequence *BCASN1Sequence_readSequenceWithBSDataInput_(BSDataInput *dataInput) {
   BCASN1Sequence_init();
+  
+#line 16
   BCASN1Sequence *sequence = [[BCASN1Sequence alloc] init];
   while (![((BSDataInput *) nil_chk(dataInput)) isEOF]) {
     [sequence addWithBCASN1Primitive:BCASN1_readObjectWithBSDataInput_(dataInput)];

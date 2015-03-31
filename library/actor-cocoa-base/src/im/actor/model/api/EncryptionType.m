@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptionType.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptionType.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/EncryptionType.h"
@@ -15,25 +17,37 @@
 }
 @end
 
+#line 8
+
 BOOL ImActorModelApiEncryptionTypeEnum_initialized = NO;
 
 ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_values_[4];
 
 @implementation ImActorModelApiEncryptionTypeEnum
 
+
+#line 17
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
   if (self = [super initWithNSString:__name withInt:__ordinal]) {
+    
+#line 18
     self->value_ = value;
   }
   return self;
 }
 
+
+#line 21
 - (jint)getValue {
+  
+#line 22
   return value_;
 }
 
+
+#line 25
 + (ImActorModelApiEncryptionTypeEnum *)parseWithInt:(jint)value {
   return ImActorModelApiEncryptionTypeEnum_parseWithInt_(value);
 }
@@ -68,10 +82,18 @@ ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_valueOfWith
 
 + (void)initialize {
   if (self == [ImActorModelApiEncryptionTypeEnum class]) {
-    ImActorModelApiEncryptionTypeEnum_NONE = [[ImActorModelApiEncryptionTypeEnum alloc] initWithInt:0 withNSString:@"NONE" withInt:0];
-    ImActorModelApiEncryptionTypeEnum_AES = [[ImActorModelApiEncryptionTypeEnum alloc] initWithInt:1 withNSString:@"AES" withInt:1];
-    ImActorModelApiEncryptionTypeEnum_AES_THEN_MAC = [[ImActorModelApiEncryptionTypeEnum alloc] initWithInt:2 withNSString:@"AES_THEN_MAC" withInt:2];
-    ImActorModelApiEncryptionTypeEnum_UNSUPPORTED_VALUE = [[ImActorModelApiEncryptionTypeEnum alloc] initWithInt:-1 withNSString:@"UNSUPPORTED_VALUE" withInt:3];
+    ImActorModelApiEncryptionTypeEnum_NONE = [[ImActorModelApiEncryptionTypeEnum alloc] initWithInt:
+#line 10
+    0 withNSString:@"NONE" withInt:0];
+    ImActorModelApiEncryptionTypeEnum_AES = [[ImActorModelApiEncryptionTypeEnum alloc] initWithInt:
+#line 11
+    1 withNSString:@"AES" withInt:1];
+    ImActorModelApiEncryptionTypeEnum_AES_THEN_MAC = [[ImActorModelApiEncryptionTypeEnum alloc] initWithInt:
+#line 12
+    2 withNSString:@"AES_THEN_MAC" withInt:2];
+    ImActorModelApiEncryptionTypeEnum_UNSUPPORTED_VALUE = [[ImActorModelApiEncryptionTypeEnum alloc] initWithInt:
+#line 13
+    -1 withNSString:@"UNSUPPORTED_VALUE" withInt:3];
     J2OBJC_SET_INITIALIZED(ImActorModelApiEncryptionTypeEnum)
   }
 }
@@ -80,14 +102,24 @@ ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_valueOfWith
 
 ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_parseWithInt_(jint value) {
   ImActorModelApiEncryptionTypeEnum_init();
+  
+#line 26
   switch (value) {
     case 0:
+    
+#line 27
     return ImActorModelApiEncryptionTypeEnum_NONE;
     case 1:
+    
+#line 28
     return ImActorModelApiEncryptionTypeEnum_AES;
     case 2:
+    
+#line 29
     return ImActorModelApiEncryptionTypeEnum_AES_THEN_MAC;
     default:
+    
+#line 30
     return ImActorModelApiEncryptionTypeEnum_UNSUPPORTED_VALUE;
   }
 }

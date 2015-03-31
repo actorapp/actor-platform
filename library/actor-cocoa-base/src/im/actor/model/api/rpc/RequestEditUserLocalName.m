@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditUserLocalName.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditUserLocalName.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,46 +25,76 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString *)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestEditUserLocalName
 
+
+#line 23
 + (ImActorModelApiRpcRequestEditUserLocalName *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestEditUserLocalName_fromBytesWithByteArray_(data);
 }
 
+
+#line 31
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash
                withNSString:(NSString *)name {
   if (self = [super init]) {
+    
+#line 32
     self->uid_ = uid;
+    
+#line 33
     self->accessHash_ = accessHash;
+    
+#line 34
     self->name_ = name;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getUid {
+  
+#line 42
   return self->uid_;
 }
 
+
+#line 45
 - (jlong)getAccessHash {
+  
+#line 46
   return self->accessHash_;
 }
 
+
+#line 49
 - (NSString *)getName {
+  
+#line 50
   return self->name_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
   self->name_ = [values getStringWithInt:3];
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   if (self->name_ == nil) {
@@ -80,6 +112,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
 }
 
 - (jint)getHeaderKey {
+  
+#line 81
   return ImActorModelApiRpcRequestEditUserLocalName_HEADER;
 }
 
@@ -94,6 +128,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
 
 ImActorModelApiRpcRequestEditUserLocalName *ImActorModelApiRpcRequestEditUserLocalName_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditUserLocalName_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestEditUserLocalName *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestEditUserLocalName alloc] init], data));
 }
 

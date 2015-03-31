@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceContent.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceContent.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,36 +24,54 @@
 
 J2OBJC_FIELD_SETTER(AMServiceContent, compatText_, NSString *)
 
+
+#line 12
 @implementation AMServiceContent
 
 + (AMServiceContent *)serviceFromBytesWithByteArray:(IOSByteArray *)data {
   return AMServiceContent_serviceFromBytesWithByteArray_(data);
 }
 
+
+#line 20
 - (instancetype)initWithNSString:(NSString *)compatText {
   if (self = [super init]) {
+    
+#line 21
     self->compatText_ = compatText;
   }
   return self;
 }
 
+
+#line 24
 - (instancetype)init {
   return [super init];
 }
 
 - (NSString *)getCompatText {
+  
+#line 29
   return compatText_;
 }
 
+
+#line 33
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE();
 }
 
+
+#line 38
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  
+#line 39
   [super parseWithBSBserValues:values];
   compatText_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:2];
 }
 
+
+#line 44
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:compatText_];
@@ -66,6 +86,8 @@ J2OBJC_FIELD_SETTER(AMServiceContent, compatText_, NSString *)
 
 AMServiceContent *AMServiceContent_serviceFromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceContent_init();
+  
+#line 15
   return ((AMServiceContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceContent alloc] init], data));
 }
 

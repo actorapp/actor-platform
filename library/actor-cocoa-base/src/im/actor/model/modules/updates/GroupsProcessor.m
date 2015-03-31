@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/GroupsProcessor.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/GroupsProcessor.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Group.h"
 #include "im/actor/model/api/Member.h"
@@ -38,12 +40,18 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
 - (void)onGroupDescChangedWithAMGroup:(AMGroup *)group;
 @end
 
+
+#line 29
 @implementation ImActorModelModulesUpdatesGroupsProcessor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  return [super initWithImActorModelModulesModules:modules];
+  return
+#line 32
+  [super initWithImActorModelModulesModules:modules];
 }
 
+
+#line 36
 - (void)applyGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)updated
                               withBoolean:(jboolean)forced {
   JavaUtilArrayList *batch = [[JavaUtilArrayList alloc] init];
@@ -52,149 +60,271 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
     if (saved == nil) {
       [batch addWithId:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(group)];
     }
-    else if (forced) {
+    else
+#line 42
+    if (forced) {
       AMGroup *upd = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(group);
       [batch addWithId:upd];
-      if (!AMJavaUtil_equalsEWithId_withId_([((AMGroup *) nil_chk(upd)) getAvatar], [saved getAvatar]) || ![((NSString *) nil_chk([upd getTitle])) isEqual:[saved getTitle]]) {
+      
+#line 47
+      if (!AMJavaUtil_equalsEWithId_withId_([((AMGroup *) nil_chk(upd)) getAvatar], [saved getAvatar]) ||
+#line 48
+      ![((NSString *) nil_chk([upd getTitle])) isEqual:[saved getTitle]]) {
         ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, upd);
       }
     }
   }
+  
+#line 54
   if ([batch size] > 0) {
     [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemsWithJavaUtilList:batch];
   }
 }
 
+
+#line 60
 - (void)onGroupInviteWithInt:(jint)groupId
                     withLong:(jlong)rid
                      withInt:(jint)inviterId
                     withLong:(jlong)date
                  withBoolean:(jboolean)isSilent {
+  
+#line 61
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
-    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[((AMGroup *) nil_chk([group changeMemberWithBoolean:YES])) addMemberWithInt:[self myUid] withInt:inviterId withLong:date withBoolean:inviterId == [self myUid]]];
+    
+#line 65
+    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[((AMGroup *) nil_chk([group changeMemberWithBoolean:
+#line 66
+    YES])) addMemberWithInt:
+#line 67
+    [self myUid] withInt:inviterId withLong:date withBoolean:inviterId == [self myUid]]];
+    
+#line 69
     if (!isSilent) {
       if (inviterId == [self myUid]) {
-        AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:inviterId withAMMessageStateEnum:AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:[[AMServiceGroupCreated alloc] initWithNSString:[group getTitle]]];
+        
+#line 72
+        AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:inviterId withAMMessageStateEnum:AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:
+#line 73
+        [[AMServiceGroupCreated alloc] initWithNSString:[group getTitle]]];
         [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
       }
       else {
-        AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:inviterId withAMMessageStateEnum:AMMessageStateEnum_get_SENT() withAMAbsContent:[[AMServiceGroupUserAdded alloc] initWithInt:[self myUid]]];
+        AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:inviterId withAMMessageStateEnum:AMMessageStateEnum_get_SENT() withAMAbsContent:
+#line 78
+        [[AMServiceGroupUserAdded alloc] initWithInt:[self myUid]]];
         [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
       }
     }
   }
 }
 
+
+#line 86
 - (void)onUserLeaveWithInt:(jint)groupId
                   withLong:(jlong)rid
                    withInt:(jint)uid
                   withLong:(jlong)date
                withBoolean:(jboolean)isSilent {
+  
+#line 87
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
+    
+#line 90
     if (uid == [self myUid]) {
-      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[((AMGroup *) nil_chk([group clearMembers])) changeMemberWithBoolean:NO]];
+      
+#line 92
+      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[((AMGroup *) nil_chk([group clearMembers])) changeMemberWithBoolean:
+#line 94
+      NO]];
     }
     else {
-      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[group removeMemberWithInt:uid]];
+      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[group removeMemberWithInt:
+#line 98
+      uid]];
     }
+    
+#line 102
     if (!isSilent) {
-      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:[[AMServiceGroupUserLeave alloc] init]];
+      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:
+#line 104
+      uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:
+#line 105
+      [[AMServiceGroupUserLeave alloc] init]];
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }
 }
 
+
+#line 112
 - (void)onUserKickedWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)uid
                     withInt:(jint)kicker
                    withLong:(jlong)date
                 withBoolean:(jboolean)isSilent {
+  
+#line 113
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
+    
+#line 116
     if (uid == [self myUid]) {
-      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[((AMGroup *) nil_chk([group clearMembers])) changeMemberWithBoolean:NO]];
+      
+#line 118
+      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[((AMGroup *) nil_chk([group clearMembers])) changeMemberWithBoolean:
+#line 120
+      NO]];
     }
     else {
-      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[group removeMemberWithInt:uid]];
+      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[group removeMemberWithInt:
+#line 124
+      uid]];
     }
+    
+#line 128
     if (!isSilent) {
-      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:kicker withAMMessageStateEnum:kicker == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:[[AMServiceGroupUserKicked alloc] initWithInt:uid]];
+      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:kicker withAMMessageStateEnum:
+#line 130
+      kicker == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:
+#line 131
+      [[AMServiceGroupUserKicked alloc] initWithInt:uid]];
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }
 }
 
+
+#line 138
 - (void)onUserAddedWithInt:(jint)groupId
                   withLong:(jlong)rid
                    withInt:(jint)uid
                    withInt:(jint)adder
                   withLong:(jlong)date
                withBoolean:(jboolean)isSilent {
+  
+#line 139
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
-    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[group addMemberWithInt:uid withInt:adder withLong:date withBoolean:NO]];
+    
+#line 143
+    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[group addMemberWithInt:
+#line 144
+    uid withInt:adder withLong:date withBoolean:NO]];
+    
+#line 147
     if (!isSilent) {
-      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:adder withAMMessageStateEnum:adder == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:[[AMServiceGroupUserAdded alloc] initWithInt:uid]];
+      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:adder withAMMessageStateEnum:
+#line 149
+      adder == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:
+#line 150
+      [[AMServiceGroupUserAdded alloc] initWithInt:uid]];
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }
 }
 
+
+#line 157
 - (void)onTitleChangedWithInt:(jint)groupId
                      withLong:(jlong)rid
                       withInt:(jint)uid
                  withNSString:(NSString *)title
                      withLong:(jlong)date
                   withBoolean:(jboolean)isSilent {
+  
+#line 159
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
+    
+#line 166
     if (![((NSString *) nil_chk([group getTitle])) isEqual:title]) {
+      
+#line 168
       AMGroup *upd = [group editTitleWithNSString:title];
+      
+#line 171
       [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:upd];
+      
+#line 174
       ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, upd);
     }
+    
+#line 178
     if (!isSilent) {
-      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:[[AMServiceGroupTitleChanged alloc] initWithNSString:title]];
+      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:
+#line 180
+      uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:
+#line 181
+      [[AMServiceGroupTitleChanged alloc] initWithNSString:title]];
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }
 }
 
+
+#line 188
 - (void)onAvatarChangedWithInt:(jint)groupId
                       withLong:(jlong)rid
                        withInt:(jint)uid
                   withAMAvatar:(AMAvatar *)avatar
                       withLong:(jlong)date
                    withBoolean:(jboolean)isSilent {
+  
+#line 190
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
+    
+#line 197
     if (!AMJavaUtil_equalsEWithId_withId_([group getAvatar], avatar)) {
+      
+#line 199
       AMGroup *upd = [group editAvatarWithAMAvatar:avatar];
+      
+#line 202
       [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:upd];
+      
+#line 205
       ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, upd);
     }
+    
+#line 209
     if (!isSilent) {
-      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:[[AMServiceGroupAvatarChanged alloc] initWithAMAvatar:avatar]];
+      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:
+#line 211
+      uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:
+#line 212
+      [[AMServiceGroupAvatarChanged alloc] initWithAMAvatar:avatar]];
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }
 }
 
+
+#line 219
 - (void)onMembersUpdatedWithInt:(jint)groupId
                withJavaUtilList:(id<JavaUtilList>)members {
+  
+#line 220
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
+    
+#line 225
     group = [group clearMembers];
     for (ImActorModelApiMember * __strong m in nil_chk(members)) {
       group = [group addMemberWithInt:[((ImActorModelApiMember *) nil_chk(m)) getUid] withInt:[m getInviterUid] withLong:[m getDate] withBoolean:[m getUid] == [((AMGroup *) nil_chk(group)) getAdminId]];
     }
+    
+#line 231
     [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:group];
   }
 }
 
+
+#line 236
 - (jboolean)hasGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)gids {
   for (JavaLangInteger * __strong uid in nil_chk(gids)) {
     if ([((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:[((JavaLangInteger *) nil_chk(uid)) intValue]] == nil) {
@@ -204,6 +334,8 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
   return YES;
 }
 
+
+#line 246
 - (void)onGroupDescChangedWithAMGroup:(AMGroup *)group {
   ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, group);
 }
@@ -211,7 +343,11 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
 @end
 
 void ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(ImActorModelModulesUpdatesGroupsProcessor *self, AMGroup *group) {
-  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:[[ImActorModelModulesMessagesDialogsActor_GroupChanged alloc] initWithAMGroup:group]];
+  
+#line 247
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:
+#line 248
+  [[ImActorModelModulesMessagesDialogsActor_GroupChanged alloc] initWithAMGroup:group]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesGroupsProcessor)

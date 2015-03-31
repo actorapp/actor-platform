@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateEmailContactRegistered.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateEmailContactRegistered.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -20,39 +22,63 @@
 }
 @end
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateEmailContactRegistered
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateEmailContactRegistered *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateEmailContactRegistered_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithInt:(jint)emailId
                     withInt:(jint)uid {
   if (self = [super init]) {
+    
+#line 31
     self->emailId_ = emailId;
+    
+#line 32
     self->uid_ = uid;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getEmailId {
+  
+#line 40
   return self->emailId_;
 }
 
+
+#line 43
 - (jint)getUid {
+  
+#line 44
   return self->uid_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->emailId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->uid_ = [values getIntWithInt:2];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->emailId_];
   [writer writeIntWithInt:2 withInt:self->uid_];
 }
@@ -66,6 +92,8 @@
 }
 
 - (jint)getHeaderKey {
+  
+#line 70
   return ImActorModelApiUpdatesUpdateEmailContactRegistered_HEADER;
 }
 
@@ -79,6 +107,8 @@
 
 ImActorModelApiUpdatesUpdateEmailContactRegistered *ImActorModelApiUpdatesUpdateEmailContactRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateEmailContactRegistered_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateEmailContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateEmailContactRegistered alloc] init], data));
 }
 

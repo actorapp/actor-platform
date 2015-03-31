@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoSerializer.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoSerializer.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -29,8 +31,12 @@
 #include "im/actor/model/network/mtp/entity/rpc/RpcRequest.h"
 #include "java/io/IOException.h"
 
+
+#line 8
 @implementation MTProtoSerializer
 
+
+#line 9
 + (MTProtoStruct *)readMessagePayloadWithByteArray:(IOSByteArray *)bs {
   return MTProtoSerializer_readMessagePayloadWithByteArray_(bs);
 }
@@ -39,14 +45,20 @@
   return MTProtoSerializer_readMessagePayloadWithBSDataInput_(bs);
 }
 
+
+#line 46
 + (MTProtoStruct *)readRpcResponsePayloadWithByteArray:(IOSByteArray *)data {
   return MTProtoSerializer_readRpcResponsePayloadWithByteArray_(data);
 }
 
+
+#line 62
 + (MTProtoStruct *)readRpcRequestPayloadWithBSDataInput:(BSDataInput *)bs {
   return MTProtoSerializer_readRpcRequestPayloadWithBSDataInput_(bs);
 }
 
+
+#line 71
 + (MTPush *)readUpdateWithByteArray:(IOSByteArray *)bs {
   return MTProtoSerializer_readUpdateWithByteArray_(bs);
 }
@@ -63,12 +75,18 @@
 
 MTProtoStruct *MTProtoSerializer_readMessagePayloadWithByteArray_(IOSByteArray *bs) {
   MTProtoSerializer_init();
+  
+#line 10
   return MTProtoSerializer_readMessagePayloadWithBSDataInput_([[BSDataInput alloc] initWithByteArray:bs withInt:0 withInt:((IOSByteArray *) nil_chk(bs))->size_]);
 }
 
 MTProtoStruct *MTProtoSerializer_readMessagePayloadWithBSDataInput_(BSDataInput *bs) {
   MTProtoSerializer_init();
+  
+#line 14
   jint header = [((BSDataInput *) nil_chk(bs)) readByte];
+  
+#line 16
   switch (header) {
     case MTPing_HEADER:
     return [[MTPing alloc] initWithBSDataInput:bs];
@@ -95,11 +113,15 @@ MTProtoStruct *MTProtoSerializer_readMessagePayloadWithBSDataInput_(BSDataInput 
     case MTRequestResend_HEADER:
     return [[MTUnsentResponse alloc] initWithBSDataInput:bs];
   }
+  
+#line 43
   @throw [[JavaIoIOException alloc] initWithNSString:JreStrcat("$I", @"Unable to read proto object with header #", header)];
 }
 
 MTProtoStruct *MTProtoSerializer_readRpcResponsePayloadWithByteArray_(IOSByteArray *data) {
   MTProtoSerializer_init();
+  
+#line 47
   BSDataInput *bs = [[BSDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
   jint header = [bs readByte];
   switch (header) {
@@ -117,6 +139,8 @@ MTProtoStruct *MTProtoSerializer_readRpcResponsePayloadWithByteArray_(IOSByteArr
 
 MTProtoStruct *MTProtoSerializer_readRpcRequestPayloadWithBSDataInput_(BSDataInput *bs) {
   MTProtoSerializer_init();
+  
+#line 63
   jint header = [((BSDataInput *) nil_chk(bs)) readByte];
   switch (header) {
     case MTRpcRequest_HEADER:
@@ -127,11 +151,15 @@ MTProtoStruct *MTProtoSerializer_readRpcRequestPayloadWithBSDataInput_(BSDataInp
 
 MTPush *MTProtoSerializer_readUpdateWithByteArray_(IOSByteArray *bs) {
   MTProtoSerializer_init();
+  
+#line 72
   return MTProtoSerializer_readUpdateWithBSDataInput_([[BSDataInput alloc] initWithByteArray:bs withInt:0 withInt:((IOSByteArray *) nil_chk(bs))->size_]);
 }
 
 MTPush *MTProtoSerializer_readUpdateWithBSDataInput_(BSDataInput *bs) {
   MTProtoSerializer_init();
+  
+#line 76
   return [[MTPush alloc] initWithBSDataInput:bs];
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/generators/RSAKeyPairGenerator.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/generators/RSAKeyPairGenerator.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/bouncycastle/RandomProvider.h"
 #include "im/actor/model/log/Log.h"
@@ -25,75 +27,139 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator, param_, 
 
 BOOL OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_initialized = NO;
 
+
+#line 17
 @implementation OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator
 
 JavaMathBigInteger * OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_;
 
+
+#line 23
 - (void)init__WithOrgBouncycastleCryptoKeyGenerationParameters:(OrgBouncycastleCryptoKeyGenerationParameters *)param {
+  
+#line 24
   self->param_ = (OrgBouncycastleCryptoParamsRSAKeyGenerationParameters *) check_class_cast(param, [OrgBouncycastleCryptoParamsRSAKeyGenerationParameters class]);
 }
 
+
+#line 27
 - (OrgBouncycastleCryptoAsymmetricCipherKeyPair *)generateKeyPair {
+  
+#line 28
   JavaMathBigInteger *p, *q, *n, *d, *e, *pSub1, *qSub1, *phi;
+  
+#line 33
   jint strength = [((OrgBouncycastleCryptoParamsRSAKeyGenerationParameters *) nil_chk(param_)) getStrength];
   jint qBitlength = URShift32(strength, 1);
   jint pBitlength = strength - qBitlength;
   jint mindiffbits = strength / 3;
   jint minWeight = URShift32(strength, 2);
+  
+#line 39
   e = [param_ getPublicExponent];
+  
+#line 44
   p = [self chooseRandomPrimeWithInt:pBitlength withJavaMathBigInteger:e];
+  
+#line 46
   jint iteration = 0;
+  
+#line 50
   for (; ; ) {
     iteration++;
     AMLog_dWithNSString_withNSString_(@"RSA", JreStrcat("$I", @"Iteration #", iteration));
+    
+#line 54
     q = [self chooseRandomPrimeWithInt:qBitlength withJavaMathBigInteger:e];
+    
+#line 57
     JavaMathBigInteger *diff = [((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(q)) subtractWithJavaMathBigInteger:p])) abs];
     if ([((JavaMathBigInteger *) nil_chk(diff)) bitLength] < mindiffbits) {
       continue;
     }
+    
+#line 65
     n = [((JavaMathBigInteger *) nil_chk(p)) multiplyWithJavaMathBigInteger:q];
+    
+#line 67
     if ([((JavaMathBigInteger *) nil_chk(n)) bitLength] != strength) {
+      
+#line 72
       p = [p maxWithJavaMathBigInteger:q];
       continue;
     }
+    
+#line 82
     if (OrgBouncycastleMathEcWNafUtil_getNafWeightWithJavaMathBigInteger_(n) < minWeight) {
       p = [self chooseRandomPrimeWithInt:pBitlength withJavaMathBigInteger:e];
       continue;
     }
+    
+#line 87
     break;
   }
+  
+#line 90
   if ([((JavaMathBigInteger *) nil_chk(p)) compareToWithId:q] < 0) {
     phi = p;
     p = q;
     q = phi;
   }
+  
+#line 96
   pSub1 = [((JavaMathBigInteger *) nil_chk(p)) subtractWithJavaMathBigInteger:OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_];
   qSub1 = [((JavaMathBigInteger *) nil_chk(q)) subtractWithJavaMathBigInteger:OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_];
   phi = [((JavaMathBigInteger *) nil_chk(pSub1)) multiplyWithJavaMathBigInteger:qSub1];
+  
+#line 103
   d = [((JavaMathBigInteger *) nil_chk(e)) modInverseWithJavaMathBigInteger:phi];
+  
+#line 108
   JavaMathBigInteger *dP, *dQ, *qInv;
+  
+#line 110
   dP = [((JavaMathBigInteger *) nil_chk(d)) remainderWithJavaMathBigInteger:pSub1];
   dQ = [d remainderWithJavaMathBigInteger:qSub1];
   qInv = [q modInverseWithJavaMathBigInteger:p];
-  return [[OrgBouncycastleCryptoAsymmetricCipherKeyPair alloc] initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter:[[OrgBouncycastleCryptoParamsRSAKeyParameters alloc] initWithBoolean:NO withJavaMathBigInteger:n withJavaMathBigInteger:e] withOrgBouncycastleCryptoParamsAsymmetricKeyParameter:[[OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters alloc] initWithJavaMathBigInteger:n withJavaMathBigInteger:e withJavaMathBigInteger:d withJavaMathBigInteger:p withJavaMathBigInteger:q withJavaMathBigInteger:dP withJavaMathBigInteger:dQ withJavaMathBigInteger:qInv]];
+  
+#line 114
+  return [[OrgBouncycastleCryptoAsymmetricCipherKeyPair alloc] initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter:
+#line 115
+  [[OrgBouncycastleCryptoParamsRSAKeyParameters alloc] initWithBoolean:NO withJavaMathBigInteger:n withJavaMathBigInteger:e] withOrgBouncycastleCryptoParamsAsymmetricKeyParameter:
+#line 116
+  [[OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters alloc] initWithJavaMathBigInteger:n withJavaMathBigInteger:e withJavaMathBigInteger:d withJavaMathBigInteger:p withJavaMathBigInteger:q withJavaMathBigInteger:dP withJavaMathBigInteger:dQ withJavaMathBigInteger:qInv]];
 }
 
+
+#line 126
 - (JavaMathBigInteger *)chooseRandomPrimeWithInt:(jint)bitlength
                           withJavaMathBigInteger:(JavaMathBigInteger *)e {
+  
+#line 127
   jint iteration = 0;
   for (; ; ) {
     iteration++;
     AMLog_dWithNSString_withNSString_(@"RSA", JreStrcat("$I", @"chooseRandomPrime #", iteration));
+    
+#line 132
     JavaMathBigInteger *p = [((id<BCRandomProvider>) nil_chk([((OrgBouncycastleCryptoParamsRSAKeyGenerationParameters *) nil_chk(param_)) getRandom])) generateBigIntegerWithInt:bitlength withInt:1];
+    
+#line 134
     if ([((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(p)) modWithJavaMathBigInteger:e])) isEqual:OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_]) {
       continue;
     }
+    
+#line 138
     if (![p isProbablePrimeWithInt:[param_ getCertainty]]) {
       continue;
     }
+    
+#line 142
     if (![((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(e)) gcdWithJavaMathBigInteger:[p subtractWithJavaMathBigInteger:OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_]])) isEqual:OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_]) {
       continue;
     }
+    
+#line 146
     return p;
   }
 }
@@ -109,7 +175,9 @@ JavaMathBigInteger * OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_;
 
 + (void)initialize {
   if (self == [OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator class]) {
-    OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_ = JavaMathBigInteger_valueOfWithLong_(1);
+    OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_ = JavaMathBigInteger_valueOfWithLong_(
+#line 19
+    1);
     J2OBJC_SET_INITIALIZED(OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator)
   }
 }

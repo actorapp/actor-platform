@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/Configuration.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/Configuration.java"
+
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/ApiConfiguration.h"
@@ -53,8 +55,12 @@ J2OBJC_FIELD_SETTER(AMConfiguration, notificationProvider_, id<AMNotificationPro
 J2OBJC_FIELD_SETTER(AMConfiguration, apiConfiguration_, AMApiConfiguration *)
 J2OBJC_FIELD_SETTER(AMConfiguration, dispatcherProvider_, id<AMDispatcherProvider>)
 
+
+#line 8
 @implementation AMConfiguration
 
+
+#line 38
 - (instancetype)initWithAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
             withAMConnectionEndpointArray:(IOSObjectArray *)endpoints
                   withAMThreadingProvider:(id<AMThreadingProvider>)threadingProvider
@@ -71,84 +77,178 @@ J2OBJC_FIELD_SETTER(AMConfiguration, dispatcherProvider_, id<AMDispatcherProvide
                               withBoolean:(jboolean)enableContactsLogging
                               withBoolean:(jboolean)enableNetworkLogging {
   if (self = [super init]) {
-    enableContactsLogging_ = NO;
-    enableNetworkLogging_ = NO;
+    enableContactsLogging_ =
+#line 27
+    NO;
+    enableNetworkLogging_ =
+#line 28
+    NO;
+    
+#line 50
     self->networkProvider_ = networkProvider;
+    
+#line 51
     self->endpoints_ = endpoints;
+    
+#line 52
     self->threadingProvider_ = threadingProvider;
+    
+#line 53
     self->mainThreadProvider_ = mainThreadProvider;
+    
+#line 54
     self->storageProvider_ = storageProvider;
+    
+#line 55
     self->log_ = log;
+    
+#line 56
     self->localeProvider_ = localeProvider;
+    
+#line 57
     self->phoneBookProvider_ = phoneBookProvider;
+    
+#line 58
     self->cryptoProvider_ = cryptoProvider;
+    
+#line 59
     self->fileSystemProvider_ = fileSystemProvider;
+    
+#line 60
     self->enableContactsLogging_ = enableContactsLogging;
+    
+#line 61
     self->enableNetworkLogging_ = enableNetworkLogging;
+    
+#line 62
     self->notificationProvider_ = notificationProvider;
+    
+#line 63
     self->apiConfiguration_ = apiConfiguration;
+    
+#line 64
     self->dispatcherProvider_ = dispatcherProvider;
   }
   return self;
 }
 
+
+#line 67
 - (AMApiConfiguration *)getApiConfiguration {
+  
+#line 68
   return apiConfiguration_;
 }
 
+
+#line 71
 - (id<AMNotificationProvider>)getNotificationProvider {
+  
+#line 72
   return notificationProvider_;
 }
 
+
+#line 75
 - (jboolean)isEnableContactsLogging {
+  
+#line 76
   return enableContactsLogging_;
 }
 
+
+#line 79
 - (jboolean)isEnableNetworkLogging {
+  
+#line 80
   return enableNetworkLogging_;
 }
 
+
+#line 83
 - (id<AMCryptoProvider>)getCryptoProvider {
+  
+#line 84
   return cryptoProvider_;
 }
 
+
+#line 87
 - (id<AMPhoneBookProvider>)getPhoneBookProvider {
+  
+#line 88
   return phoneBookProvider_;
 }
 
+
+#line 91
 - (id<AMNetworkProvider>)getNetworkProvider {
+  
+#line 92
   return networkProvider_;
 }
 
+
+#line 95
 - (IOSObjectArray *)getEndpoints {
+  
+#line 96
   return endpoints_;
 }
 
+
+#line 99
 - (id<AMThreadingProvider>)getThreadingProvider {
+  
+#line 100
   return threadingProvider_;
 }
 
+
+#line 103
 - (id<AMMainThreadProvider>)getMainThreadProvider {
+  
+#line 104
   return mainThreadProvider_;
 }
 
+
+#line 107
 - (id<AMStorageProvider>)getStorageProvider {
+  
+#line 108
   return storageProvider_;
 }
 
+
+#line 111
 - (id<AMLogProvider>)getLog {
+  
+#line 112
   return log_;
 }
 
+
+#line 115
 - (id<AMLocaleProvider>)getLocaleProvider {
+  
+#line 116
   return localeProvider_;
 }
 
+
+#line 119
 - (id<AMFileSystemProvider>)getFileSystemProvider {
+  
+#line 120
   return fileSystemProvider_;
 }
 
+
+#line 123
 - (id<AMDispatcherProvider>)getDispatcherProvider {
+  
+#line 124
   return dispatcherProvider_;
 }
 

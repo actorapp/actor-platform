@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/paddings/PKCS7Padding.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/paddings/PKCS7Padding.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -11,35 +13,67 @@
 #include "org/bouncycastle/crypto/InvalidCipherTextException.h"
 #include "org/bouncycastle/crypto/paddings/PKCS7Padding.h"
 
+
+#line 9
 @implementation OrgBouncycastleCryptoPaddingsPKCS7Padding
 
+
+#line 17
 - (void)init__WithBCRandomProvider:(id<BCRandomProvider>)random {
 }
 
+
+#line 28
 - (NSString *)getPaddingName {
+  
+#line 30
   return @"PKCS7";
 }
 
+
+#line 37
 - (jint)addPaddingWithByteArray:(IOSByteArray *)inArg
                         withInt:(jint)inOff {
+  
+#line 41
   jbyte code = (jbyte) (((IOSByteArray *) nil_chk(inArg))->size_ - inOff);
+  
+#line 43
   while (inOff < inArg->size_) {
+    
+#line 45
     *IOSByteArray_GetRef(inArg, inOff) = code;
     inOff++;
   }
+  
+#line 49
   return code;
 }
 
 - (jint)padCountWithByteArray:(IOSByteArray *)inArg {
+  
+#line 58
   jint count = IOSByteArray_Get(inArg, ((IOSByteArray *) nil_chk(inArg))->size_ - 1) & (jint) 0xff;
+  
+#line 60
   if (count > inArg->size_ || count == 0) {
+    
+#line 62
     @throw [[OrgBouncycastleCryptoInvalidCipherTextException alloc] initWithNSString:@"pad block corrupted"];
   }
+  
+#line 65
   for (jint i = 1; i <= count; i++) {
+    
+#line 67
     if (IOSByteArray_Get(inArg, inArg->size_ - i) != count) {
+      
+#line 69
       @throw [[OrgBouncycastleCryptoInvalidCipherTextException alloc] initWithNSString:@"pad block corrupted"];
     }
   }
+  
+#line 73
   return count;
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserPhoneRemoved.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserPhoneRemoved.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -20,39 +22,63 @@
 }
 @end
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateUserPhoneRemoved
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateUserPhoneRemoved *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateUserPhoneRemoved_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)phoneId {
   if (self = [super init]) {
+    
+#line 31
     self->uid_ = uid;
+    
+#line 32
     self->phoneId_ = phoneId;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getUid {
+  
+#line 40
   return self->uid_;
 }
 
+
+#line 43
 - (jint)getPhoneId {
+  
+#line 44
   return self->phoneId_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->phoneId_ = [values getIntWithInt:2];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeIntWithInt:2 withInt:self->phoneId_];
 }
@@ -66,6 +92,8 @@
 }
 
 - (jint)getHeaderKey {
+  
+#line 70
   return ImActorModelApiUpdatesUpdateUserPhoneRemoved_HEADER;
 }
 
@@ -79,6 +107,8 @@
 
 ImActorModelApiUpdatesUpdateUserPhoneRemoved *ImActorModelApiUpdatesUpdateUserPhoneRemoved_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserPhoneRemoved_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateUserPhoneRemoved *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserPhoneRemoved alloc] init], data));
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/Bser.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/Bser.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -18,18 +20,26 @@
 - (instancetype)init;
 @end
 
+
+#line 8
 @implementation BSBser
 
+
+#line 9
 + (id)parseWithBSBserObject:(BSBserObject *)res
             withBSDataInput:(BSDataInput *)inputStream {
   return BSBser_parseWithBSBserObject_withBSDataInput_(res, inputStream);
 }
 
+
+#line 15
 + (id)parseWithBSBserObject:(BSBserObject *)res
               withByteArray:(IOSByteArray *)data {
   return BSBser_parseWithBSBserObject_withByteArray_(res, data);
 }
 
+
+#line 19
 - (instancetype)init {
   return [super init];
 }
@@ -38,6 +48,8 @@
 
 id BSBser_parseWithBSBserObject_withBSDataInput_(BSBserObject *res, BSDataInput *inputStream) {
   BSBser_init();
+  
+#line 10
   BSBserValues *reader = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithBSDataInput_(inputStream)];
   [((BSBserObject *) nil_chk(res)) parseWithBSBserValues:reader];
   return res;
@@ -45,6 +57,8 @@ id BSBser_parseWithBSBserObject_withBSDataInput_(BSBserObject *res, BSDataInput 
 
 id BSBser_parseWithBSBserObject_withByteArray_(BSBserObject *res, IOSByteArray *data) {
   BSBser_init();
+  
+#line 16
   return ((BSBserObject *) BSBser_parseWithBSBserObject_withBSDataInput_(res, [[BSDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_]));
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/bouncycastle/BouncyCastleProvider.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/bouncycastle/BouncyCastleProvider.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/AesCipher.h"
@@ -38,34 +40,66 @@ J2OBJC_FIELD_SETTER(BCBouncyCastleProvider, provider_, id<BCRandomProvider>)
 
 BOOL BCBouncyCastleProvider_initialized = NO;
 
+
+#line 26
 @implementation BCBouncyCastleProvider
 
 JavaMathBigInteger * BCBouncyCastleProvider_RSA_EXPONENT_;
 JavaMathBigInteger * BCBouncyCastleProvider_ZERO_;
 
+
+#line 40
 - (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)provider {
   if (self = [super init]) {
+    
+#line 41
     self->provider_ = provider;
   }
   return self;
 }
 
+
+#line 45
 - (AMCryptoKeyPair *)generateRSA1024KeyPair {
+  
+#line 46
   OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator *generator = [[OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator alloc] init];
-  [generator init__WithOrgBouncycastleCryptoKeyGenerationParameters:[[OrgBouncycastleCryptoParamsRSAKeyGenerationParameters alloc] initWithJavaMathBigInteger:BCBouncyCastleProvider_RSA_EXPONENT_ withBCRandomProvider:provider_ withInt:BCBouncyCastleProvider_RSA_1024_STREIGHT withInt:BCBouncyCastleProvider_RSA_CERTAINITY]];
+  [generator init__WithOrgBouncycastleCryptoKeyGenerationParameters:[[OrgBouncycastleCryptoParamsRSAKeyGenerationParameters alloc] initWithJavaMathBigInteger:
+#line 48
+  BCBouncyCastleProvider_RSA_EXPONENT_ withBCRandomProvider:
+#line 49
+  provider_ withInt:
+#line 50
+  BCBouncyCastleProvider_RSA_1024_STREIGHT withInt:
+#line 51
+  BCBouncyCastleProvider_RSA_CERTAINITY]];
   AMLog_dWithNSString_withNSString_(@"RSA", @"Starting key generation...");
   OrgBouncycastleCryptoAsymmetricCipherKeyPair *res = [generator generateKeyPair];
+  
+#line 56
   OrgBouncycastleCryptoParamsRSAKeyParameters *rsaPublicKey = (OrgBouncycastleCryptoParamsRSAKeyParameters *) check_class_cast([((OrgBouncycastleCryptoAsymmetricCipherKeyPair *) nil_chk(res)) getPublic], [OrgBouncycastleCryptoParamsRSAKeyParameters class]);
-  IOSByteArray *publicKey = [((BCX509RsaPublicKey *) [[BCX509RsaPublicKey alloc] initWithJavaMathBigInteger:[((OrgBouncycastleCryptoParamsRSAKeyParameters *) nil_chk(rsaPublicKey)) getModulus] withJavaMathBigInteger:[rsaPublicKey getExponent]]) serialize];
+  IOSByteArray *publicKey = [((BCX509RsaPublicKey *) [[BCX509RsaPublicKey alloc] initWithJavaMathBigInteger:[((OrgBouncycastleCryptoParamsRSAKeyParameters *) nil_chk(rsaPublicKey)) getModulus] withJavaMathBigInteger:
+#line 58
+  [rsaPublicKey getExponent]]) serialize];
+  
+#line 61
   OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *parameter = (OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *) check_class_cast([res getPrivate], [OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters class]);
   IOSByteArray *privateKey = [((BCPKS8RsaPrivateKey *) [[BCPKS8RsaPrivateKey alloc] initWithJavaMathBigInteger:[((OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *) nil_chk(parameter)) getModulus] withJavaMathBigInteger:[parameter getExponent]]) serialize];
+  
+#line 64
   return [[AMCryptoKeyPair alloc] initWithByteArray:publicKey withByteArray:privateKey];
 }
 
+
+#line 68
 - (id<AMRsaEncryptCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)key {
+  
+#line 69
   return [[BCBcRsaEncryptCipher alloc] initWithBCRandomProvider:provider_ withByteArray:key];
 }
 
+
+#line 73
 - (id<AMRsaCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey
                                           withByteArray:(IOSByteArray *)privateKey {
   return [[BCBcRsaCipher alloc] initWithBCRandomProvider:provider_ withByteArray:publicKey withByteArray:privateKey];
@@ -73,10 +107,16 @@ JavaMathBigInteger * BCBouncyCastleProvider_ZERO_;
 
 - (id<AMAesCipher>)createAESCBCPKS7CipherWithByteArray:(IOSByteArray *)key
                                          withByteArray:(IOSByteArray *)iv {
+  
+#line 79
   return [[BCBcAesCipher alloc] initWithByteArray:key withByteArray:iv];
 }
 
+
+#line 83
 - (IOSByteArray *)MD5WithByteArray:(IOSByteArray *)data {
+  
+#line 84
   OrgBouncycastleCryptoDigestsMD5Digest *digest = [[OrgBouncycastleCryptoDigestsMD5Digest alloc] init];
   [digest updateWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
   IOSByteArray *res = [IOSByteArray newArrayWithLength:16];
@@ -84,6 +124,8 @@ JavaMathBigInteger * BCBouncyCastleProvider_ZERO_;
   return res;
 }
 
+
+#line 92
 - (IOSByteArray *)SHA256WithByteArray:(IOSByteArray *)data {
   OrgBouncycastleCryptoDigestsSHA256Digest *digest = [[OrgBouncycastleCryptoDigestsSHA256Digest alloc] init];
   [digest updateWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
@@ -92,7 +134,11 @@ JavaMathBigInteger * BCBouncyCastleProvider_ZERO_;
   return res;
 }
 
+
+#line 101
 - (IOSByteArray *)SHA512WithByteArray:(IOSByteArray *)data {
+  
+#line 102
   OrgBouncycastleCryptoDigestsSHA512Digest *digest = [[OrgBouncycastleCryptoDigestsSHA512Digest alloc] init];
   [digest updateWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
   IOSByteArray *res = [IOSByteArray newArrayWithLength:64];
@@ -100,11 +146,17 @@ JavaMathBigInteger * BCBouncyCastleProvider_ZERO_;
   return res;
 }
 
+
+#line 110
 - (IOSByteArray *)randomBytesWithInt:(jint)length {
   return [((id<BCRandomProvider>) nil_chk(provider_)) randomBytesWithInt:length];
 }
 
+
+#line 115
 - (jint)randomIntWithInt:(jint)maxValue {
+  
+#line 116
   return [((id<BCRandomProvider>) nil_chk(provider_)) randomIntWithInt:maxValue];
 }
 
@@ -115,8 +167,12 @@ JavaMathBigInteger * BCBouncyCastleProvider_ZERO_;
 
 + (void)initialize {
   if (self == [BCBouncyCastleProvider class]) {
-    BCBouncyCastleProvider_RSA_EXPONENT_ = [[JavaMathBigInteger alloc] initWithNSString:@"3"];
-    BCBouncyCastleProvider_ZERO_ = JavaMathBigInteger_valueOfWithLong_(0);
+    BCBouncyCastleProvider_RSA_EXPONENT_ =
+#line 30
+    [[JavaMathBigInteger alloc] initWithNSString:@"3"];
+    BCBouncyCastleProvider_ZERO_ = JavaMathBigInteger_valueOfWithLong_(
+#line 34
+    0);
     J2OBJC_SET_INITIALIZED(BCBouncyCastleProvider)
   }
 }

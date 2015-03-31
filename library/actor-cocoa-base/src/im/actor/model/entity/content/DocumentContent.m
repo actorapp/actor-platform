@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/DocumentContent.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/DocumentContent.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -16,42 +18,70 @@
 #include "im/actor/model/entity/content/FileSource.h"
 #include "java/io/IOException.h"
 
+
+#line 12
 @implementation AMDocumentContent
 
 + (AMDocumentContent *)docFromBytesWithByteArray:(IOSByteArray *)data {
   return AMDocumentContent_docFromBytesWithByteArray_(data);
 }
 
+
+#line 23
 - (instancetype)initWithAMFileSource:(AMFileSource *)source
                         withNSString:(NSString *)mimetype
                         withNSString:(NSString *)name
                      withAMFastThumb:(AMFastThumb *)fastThumb {
   if (self = [super init]) {
+    
+#line 24
     self->source_ = source;
+    
+#line 25
     self->mimetype_ = mimetype;
+    
+#line 26
     self->name_ = name;
+    
+#line 27
     self->fastThumb_ = fastThumb;
   }
   return self;
 }
 
+
+#line 30
 - (instancetype)init {
   return [super init];
 }
 
 - (AMFileSource *)getSource {
+  
+#line 35
   return source_;
 }
 
+
+#line 38
 - (NSString *)getName {
+  
+#line 39
   return name_;
 }
 
+
+#line 42
 - (AMFastThumb *)getFastThumb {
+  
+#line 43
   return fastThumb_;
 }
 
+
+#line 46
 - (NSString *)getExt {
+  
+#line 47
   NSString *ext = @"";
   jint dotIndex = [((NSString *) nil_chk(name_)) lastIndexOf:'.'];
   if (dotIndex >= 0) {
@@ -60,15 +90,25 @@
   return ext;
 }
 
+
+#line 55
 - (NSString *)getMimetype {
+  
+#line 56
   return mimetype_;
 }
 
+
+#line 60
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_DOCUMENT();
 }
 
+
+#line 65
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  
+#line 66
   [super parseWithBSBserValues:values];
   source_ = AMFileSource_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
   mimetype_ = [values getStringWithInt:3];
@@ -79,6 +119,8 @@
   }
 }
 
+
+#line 77
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeBytesWithInt:2 withByteArray:[((AMFileSource *) nil_chk(source_)) toByteArray]];
@@ -101,6 +143,8 @@
 
 AMDocumentContent *AMDocumentContent_docFromBytesWithByteArray_(IOSByteArray *data) {
   AMDocumentContent_init();
+  
+#line 15
   return ((AMDocumentContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMDocumentContent alloc] init], data));
 }
 

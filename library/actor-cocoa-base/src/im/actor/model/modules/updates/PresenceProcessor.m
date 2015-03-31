@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/PresenceProcessor.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/PresenceProcessor.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/modules/Modules.h"
@@ -17,30 +19,52 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesPresenceProcessor, presenceActor_, DKActorRef *)
 
+
+#line 13
 @implementation ImActorModelModulesUpdatesPresenceProcessor
 
+
+#line 17
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self = [super initWithImActorModelModulesModules:modules]) {
+  if (self =
+#line 18
+  [super initWithImActorModelModulesModules:modules]) {
+    
+#line 19
     self->presenceActor_ = ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(modules);
   }
   return self;
 }
 
+
+#line 23
 - (void)onUserOnlineWithInt:(jint)uid {
+  
+#line 24
   [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_UserOnline alloc] initWithInt:uid]];
 }
 
+
+#line 28
 - (void)onUserOfflineWithInt:(jint)uid {
   [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_UserOffline alloc] initWithInt:uid]];
 }
 
+
+#line 33
 - (void)onUserLastSeenWithInt:(jint)uid
                      withLong:(jlong)date {
+  
+#line 34
   [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_UserLastSeen alloc] initWithInt:uid withLong:date]];
 }
 
+
+#line 38
 - (void)onGroupOnlineWithInt:(jint)gid
                      withInt:(jint)count {
+  
+#line 39
   [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_GroupOnline alloc] initWithInt:gid withInt:count]];
 }
 

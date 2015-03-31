@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSendEmailCode.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSendEmailCode.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,39 +25,63 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, email_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSString *)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestSendEmailCode
 
+
+#line 23
 + (ImActorModelApiRpcRequestSendEmailCode *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSendEmailCode_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithNSString:(NSString *)email
                     withNSString:(NSString *)description_ {
   if (self = [super init]) {
+    
+#line 31
     self->email_ = email;
+    
+#line 32
     self->description__ = description_;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (NSString *)getEmail {
+  
+#line 40
   return self->email_;
 }
 
+
+#line 43
 - (NSString *)getDescription {
+  
+#line 44
   return self->description__;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->email_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   self->description__ = [values optStringWithInt:2];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   if (self->email_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -74,6 +100,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 }
 
 - (jint)getHeaderKey {
+  
+#line 75
   return ImActorModelApiRpcRequestSendEmailCode_HEADER;
 }
 
@@ -87,6 +115,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 
 ImActorModelApiRpcRequestSendEmailCode *ImActorModelApiRpcRequestSendEmailCode_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSendEmailCode_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestSendEmailCode *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestSendEmailCode alloc] init], data));
 }
 

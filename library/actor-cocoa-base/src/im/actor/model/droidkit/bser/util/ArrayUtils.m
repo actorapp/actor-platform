@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/util/ArrayUtils.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/util/ArrayUtils.java"
+
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -17,6 +19,8 @@
 
 BOOL ImActorModelDroidkitBserUtilArrayUtils_initialized = NO;
 
+
+#line 27
 @implementation ImActorModelDroidkitBserUtilArrayUtils
 
 IOSObjectArray * ImActorModelDroidkitBserUtilArrayUtils_EMPTY_;
@@ -26,10 +30,14 @@ IOSObjectArray * ImActorModelDroidkitBserUtilArrayUtils_sCache_;
   return [super init];
 }
 
+
+#line 34
 + (jint)idealByteArraySizeWithInt:(jint)need {
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need);
 }
 
+
+#line 42
 + (jint)idealBooleanArraySizeWithInt:(jint)need {
   return ImActorModelDroidkitBserUtilArrayUtils_idealBooleanArraySizeWithInt_(need);
 }
@@ -58,41 +66,57 @@ IOSObjectArray * ImActorModelDroidkitBserUtilArrayUtils_sCache_;
   return ImActorModelDroidkitBserUtilArrayUtils_idealLongArraySizeWithInt_(need);
 }
 
+
+#line 78
 + (jboolean)equalsWithByteArray:(IOSByteArray *)array1
                   withByteArray:(IOSByteArray *)array2
                         withInt:(jint)length {
   return ImActorModelDroidkitBserUtilArrayUtils_equalsWithByteArray_withByteArray_withInt_(array1, array2, length);
 }
 
+
+#line 105
 + (jboolean)containsWithNSObjectArray:(IOSObjectArray *)array
                                withId:(id)value {
   return ImActorModelDroidkitBserUtilArrayUtils_containsWithNSObjectArray_withId_(array, value);
 }
 
+
+#line 113
 + (jint)indexOfWithNSObjectArray:(IOSObjectArray *)array
                           withId:(id)value {
   return ImActorModelDroidkitBserUtilArrayUtils_indexOfWithNSObjectArray_withId_(array, value);
 }
 
+
+#line 127
 + (jboolean)containsAllWithNSObjectArray:(IOSObjectArray *)array
                        withNSObjectArray:(IOSObjectArray *)check {
   return ImActorModelDroidkitBserUtilArrayUtils_containsAllWithNSObjectArray_withNSObjectArray_(array, check);
 }
 
+
+#line 136
 + (jboolean)containsWithIntArray:(IOSIntArray *)array
                          withInt:(jint)value {
   return ImActorModelDroidkitBserUtilArrayUtils_containsWithIntArray_withInt_(array, value);
 }
 
+
+#line 145
 + (jlong)totalWithLongArray:(IOSLongArray *)array {
   return ImActorModelDroidkitBserUtilArrayUtils_totalWithLongArray_(array);
 }
 
+
+#line 153
 + (IOSIntArray *)appendIntWithIntArray:(IOSIntArray *)cur
                                withInt:(jint)val {
   return ImActorModelDroidkitBserUtilArrayUtils_appendIntWithIntArray_withInt_(cur, val);
 }
 
+
+#line 169
 + (IOSIntArray *)removeIntWithIntArray:(IOSIntArray *)cur
                                withInt:(jint)val {
   return ImActorModelDroidkitBserUtilArrayUtils_removeIntWithIntArray_withInt_(cur, val);
@@ -100,8 +124,12 @@ IOSObjectArray * ImActorModelDroidkitBserUtilArrayUtils_sCache_;
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitBserUtilArrayUtils class]) {
-    ImActorModelDroidkitBserUtilArrayUtils_EMPTY_ = [IOSObjectArray newArrayWithLength:0 type:NSObject_class_()];
-    ImActorModelDroidkitBserUtilArrayUtils_sCache_ = [IOSObjectArray newArrayWithLength:ImActorModelDroidkitBserUtilArrayUtils_CACHE_SIZE type:NSObject_class_()];
+    ImActorModelDroidkitBserUtilArrayUtils_EMPTY_ = [IOSObjectArray newArrayWithLength:
+#line 28
+    0 type:NSObject_class_()];
+    ImActorModelDroidkitBserUtilArrayUtils_sCache_ = [IOSObjectArray newArrayWithLength:
+#line 30
+    ImActorModelDroidkitBserUtilArrayUtils_CACHE_SIZE type:NSObject_class_()];
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitBserUtilArrayUtils)
   }
 }
@@ -110,50 +138,76 @@ IOSObjectArray * ImActorModelDroidkitBserUtilArrayUtils_sCache_;
 
 jint ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(jint need) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
-  for (jint i = 4; i < 32; i++) if (need <= (LShift32(1, i)) - 12) return (LShift32(1, i)) - 12;
+  
+#line 35
+  for (jint i = 4; i < 32; i++)
+#line 36
+  if (need <= (LShift32(1, i)) - 12)
+#line 37
+  return (LShift32(1, i)) - 12;
+  
+#line 39
   return need;
 }
 
 jint ImActorModelDroidkitBserUtilArrayUtils_idealBooleanArraySizeWithInt_(jint need) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 43
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need);
 }
 
 jint ImActorModelDroidkitBserUtilArrayUtils_idealShortArraySizeWithInt_(jint need) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 47
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need * 2) / 2;
 }
 
 jint ImActorModelDroidkitBserUtilArrayUtils_idealCharArraySizeWithInt_(jint need) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 51
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need * 2) / 2;
 }
 
 jint ImActorModelDroidkitBserUtilArrayUtils_idealIntArraySizeWithInt_(jint need) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 55
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need * 4) / 4;
 }
 
 jint ImActorModelDroidkitBserUtilArrayUtils_idealFloatArraySizeWithInt_(jint need) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 59
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need * 4) / 4;
 }
 
 jint ImActorModelDroidkitBserUtilArrayUtils_idealObjectArraySizeWithInt_(jint need) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 63
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need * 4) / 4;
 }
 
 jint ImActorModelDroidkitBserUtilArrayUtils_idealLongArraySizeWithInt_(jint need) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 67
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need * 8) / 8;
 }
 
 jboolean ImActorModelDroidkitBserUtilArrayUtils_equalsWithByteArray_withByteArray_withInt_(IOSByteArray *array1, IOSByteArray *array2, jint length) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 79
   if (length < 0) {
     @throw [[JavaLangIllegalArgumentException alloc] init];
   }
+  
+#line 83
   if (array1 == array2) {
     return YES;
   }
@@ -170,16 +224,22 @@ jboolean ImActorModelDroidkitBserUtilArrayUtils_equalsWithByteArray_withByteArra
 
 jboolean ImActorModelDroidkitBserUtilArrayUtils_containsWithNSObjectArray_withId_(IOSObjectArray *array, id value) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 106
   return ImActorModelDroidkitBserUtilArrayUtils_indexOfWithNSObjectArray_withId_(array, value) != -1;
 }
 
 jint ImActorModelDroidkitBserUtilArrayUtils_indexOfWithNSObjectArray_withId_(IOSObjectArray *array, id value) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 114
   for (jint i = 0; i < ((IOSObjectArray *) nil_chk(array))->size_; i++) {
     if (IOSObjectArray_Get(array, i) == nil) {
       if (value == nil) return i;
     }
     else {
+      
+#line 118
       if (value != nil && [nil_chk(IOSObjectArray_Get(array, i)) isEqual:value]) return i;
     }
   }
@@ -189,52 +249,74 @@ jint ImActorModelDroidkitBserUtilArrayUtils_indexOfWithNSObjectArray_withId_(IOS
 jboolean ImActorModelDroidkitBserUtilArrayUtils_containsAllWithNSObjectArray_withNSObjectArray_(IOSObjectArray *array, IOSObjectArray *check) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
   {
-    IOSObjectArray *a__ = check;
+    IOSObjectArray *a__ =
+#line 128
+    check;
     id const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     id const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       id checkItem = *b__++;
+      
+#line 129
       if (!ImActorModelDroidkitBserUtilArrayUtils_containsWithNSObjectArray_withId_(array, checkItem)) {
         return NO;
       }
     }
   }
+  
+#line 133
   return YES;
 }
 
 jboolean ImActorModelDroidkitBserUtilArrayUtils_containsWithIntArray_withInt_(IOSIntArray *array, jint value) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
   {
-    IOSIntArray *a__ = array;
+    IOSIntArray *a__ =
+#line 137
+    array;
     jint const *b__ = ((IOSIntArray *) nil_chk(a__))->buffer_;
     jint const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       jint element = *b__++;
+      
+#line 138
       if (element == value) {
         return YES;
       }
     }
   }
+  
+#line 142
   return NO;
 }
 
 jlong ImActorModelDroidkitBserUtilArrayUtils_totalWithLongArray_(IOSLongArray *array) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 146
   jlong total = 0;
   {
-    IOSLongArray *a__ = array;
+    IOSLongArray *a__ =
+#line 147
+    array;
     jlong const *b__ = ((IOSLongArray *) nil_chk(a__))->buffer_;
     jlong const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       jlong value = *b__++;
+      
+#line 148
       total += value;
     }
   }
+  
+#line 150
   return total;
 }
 
 IOSIntArray *ImActorModelDroidkitBserUtilArrayUtils_appendIntWithIntArray_withInt_(IOSIntArray *cur, jint val) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 154
   if (cur == nil) {
     return [IOSIntArray newArrayWithInts:(jint[]){ val } count:1];
   }
@@ -252,6 +334,8 @@ IOSIntArray *ImActorModelDroidkitBserUtilArrayUtils_appendIntWithIntArray_withIn
 
 IOSIntArray *ImActorModelDroidkitBserUtilArrayUtils_removeIntWithIntArray_withInt_(IOSIntArray *cur, jint val) {
   ImActorModelDroidkitBserUtilArrayUtils_init();
+  
+#line 170
   if (cur == nil) {
     return nil;
   }

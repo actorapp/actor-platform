@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/TextMessageEx.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/TextMessageEx.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -16,14 +18,22 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
+
+#line 19
 @implementation ImActorModelApiTextMessageEx
 
+
+#line 20
 + (ImActorModelApiTextMessageEx *)fromBytesWithInt:(jint)key
                                      withByteArray:(IOSByteArray *)content {
   return ImActorModelApiTextMessageEx_fromBytesWithInt_withByteArray_(key, content);
 }
 
+
+#line 27
 - (IOSByteArray *)buildContainer {
+  
+#line 28
   BSDataOutput *res = [[BSDataOutput alloc] init];
   BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:res];
   [writer writeIntWithInt:1 withInt:[self getHeader]];
@@ -39,8 +49,12 @@
 
 ImActorModelApiTextMessageEx *ImActorModelApiTextMessageEx_fromBytesWithInt_withByteArray_(jint key, IOSByteArray *content) {
   ImActorModelApiTextMessageEx_init();
+  
+#line 21
   switch (key) {
     default:
+    
+#line 22
     return [[ImActorModelApiTextMessageExUnsupported alloc] initWithInt:key withByteArray:content];
   }
 }

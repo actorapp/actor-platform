@@ -3,16 +3,26 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ZTauElement.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ZTauElement.java"
+
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/math/ec/ZTauElement.h"
 
+
+#line 13
 @implementation OrgBouncycastleMathEcZTauElement
 
+
+#line 32
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)u
                     withJavaMathBigInteger:(JavaMathBigInteger *)v {
   if (self = [super init]) {
+    
+#line 34
     self->u_ = u;
+    
+#line 35
     self->v_ = v;
   }
   return self;

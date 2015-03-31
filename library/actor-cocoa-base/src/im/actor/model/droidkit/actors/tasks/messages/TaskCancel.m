@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/messages/TaskCancel.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/messages/TaskCancel.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/tasks/messages/TaskCancel.h"
 
@@ -12,21 +14,33 @@
 }
 @end
 
+
+#line 8
 @implementation ImActorModelDroidkitActorsTasksMessagesTaskCancel
 
+
+#line 11
 - (instancetype)initWithInt:(jint)requestId {
   if (self = [super init]) {
+    
+#line 12
     self->requestId_ = requestId;
   }
   return self;
 }
 
+
+#line 15
 - (jint)getRequestId {
+  
+#line 16
   return requestId_;
 }
 
 - (NSString *)description {
-  return JreStrcat("$IC", @"TaskCancel{requestId=", requestId_, '}');
+  return JreStrcat("$IC", @"TaskCancel{requestId=",
+#line 22
+  requestId_, '}');
 }
 
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksMessagesTaskCancel *)other {

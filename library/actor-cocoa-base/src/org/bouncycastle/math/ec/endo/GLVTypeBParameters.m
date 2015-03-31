@@ -3,13 +3,19 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/endo/GLVTypeBParameters.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/endo/GLVTypeBParameters.java"
+
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/math/ec/endo/GLVTypeBParameters.h"
 
+
+#line 5
 @implementation OrgBouncycastleMathEcEndoGLVTypeBParameters
 
+
+#line 13
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)beta
                     withJavaMathBigInteger:(JavaMathBigInteger *)lambda
                withJavaMathBigIntegerArray:(IOSObjectArray *)v1
@@ -18,42 +24,84 @@
                     withJavaMathBigInteger:(JavaMathBigInteger *)g2
                                    withInt:(jint)bits {
   if (self = [super init]) {
+    
+#line 16
     self->beta_ = beta;
+    
+#line 17
     self->lambda_ = lambda;
+    
+#line 18
     self->v1_ = v1;
+    
+#line 19
     self->v2_ = v2;
+    
+#line 20
     self->g1_ = g1;
+    
+#line 21
     self->g2_ = g2;
+    
+#line 22
     self->bits_ = bits;
   }
   return self;
 }
 
+
+#line 25
 - (JavaMathBigInteger *)getBeta {
+  
+#line 27
   return beta_;
 }
 
+
+#line 30
 - (JavaMathBigInteger *)getLambda {
+  
+#line 32
   return lambda_;
 }
 
+
+#line 35
 - (IOSObjectArray *)getV1 {
+  
+#line 37
   return v1_;
 }
 
+
+#line 40
 - (IOSObjectArray *)getV2 {
+  
+#line 42
   return v2_;
 }
 
+
+#line 45
 - (JavaMathBigInteger *)getG1 {
+  
+#line 47
   return g1_;
 }
 
+
+#line 50
 - (JavaMathBigInteger *)getG2 {
+  
+#line 52
   return g2_;
 }
 
+
+#line 55
 - (jint)getBits {
+  
+#line 57
   return bits_;
 }
 

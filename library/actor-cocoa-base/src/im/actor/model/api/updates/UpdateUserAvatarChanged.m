@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserAvatarChanged.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserAvatarChanged.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,39 +25,63 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImActorModelApiAvatar *)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateUserAvatarChanged
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateUserAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateUserAvatarChanged_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithInt:(jint)uid
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar {
   if (self = [super init]) {
+    
+#line 31
     self->uid_ = uid;
+    
+#line 32
     self->avatar_ = avatar;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getUid {
+  
+#line 40
   return self->uid_;
 }
 
+
+#line 43
 - (ImActorModelApiAvatar *)getAvatar {
+  
+#line 44
   return self->avatar_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->avatar_ = [values optObjWithInt:2 withBSBserObject:[[ImActorModelApiAvatar alloc] init]];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   if (self->avatar_ != nil) {
     [writer writeObjectWithInt:2 withBSBserObject:self->avatar_];
@@ -71,6 +97,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImAc
 }
 
 - (jint)getHeaderKey {
+  
+#line 72
   return ImActorModelApiUpdatesUpdateUserAvatarChanged_HEADER;
 }
 
@@ -84,6 +112,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImAc
 
 ImActorModelApiUpdatesUpdateUserAvatarChanged *ImActorModelApiUpdatesUpdateUserAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserAvatarChanged_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateUserAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserAvatarChanged alloc] init], data));
 }
 

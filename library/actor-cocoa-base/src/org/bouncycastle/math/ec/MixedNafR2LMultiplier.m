@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/MixedNafR2LMultiplier.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/MixedNafR2LMultiplier.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "java/lang/IllegalArgumentException.h"
@@ -12,16 +14,28 @@
 #include "org/bouncycastle/math/ec/MixedNafR2LMultiplier.h"
 #include "org/bouncycastle/math/ec/WNafUtil.h"
 
+
+#line 9
 @implementation OrgBouncycastleMathEcMixedNafR2LMultiplier
 
+
+#line 17
 - (instancetype)init {
-  return [self initOrgBouncycastleMathEcMixedNafR2LMultiplierWithInt:OrgBouncycastleMathEcECCurve_COORD_JACOBIAN withInt:OrgBouncycastleMathEcECCurve_COORD_JACOBIAN_MODIFIED];
+  return
+#line 19
+  [self initOrgBouncycastleMathEcMixedNafR2LMultiplierWithInt:OrgBouncycastleMathEcECCurve_COORD_JACOBIAN withInt:OrgBouncycastleMathEcECCurve_COORD_JACOBIAN_MODIFIED];
 }
 
+
+#line 22
 - (instancetype)initOrgBouncycastleMathEcMixedNafR2LMultiplierWithInt:(jint)additionCoord
                                                               withInt:(jint)doublingCoord {
   if (self = [super init]) {
+    
+#line 24
     self->additionCoord_ = additionCoord;
+    
+#line 25
     self->doublingCoord_ = doublingCoord;
   }
   return self;
@@ -29,41 +43,81 @@
 
 - (instancetype)initWithInt:(jint)additionCoord
                     withInt:(jint)doublingCoord {
-  return [self initOrgBouncycastleMathEcMixedNafR2LMultiplierWithInt:additionCoord withInt:doublingCoord];
+  return [self initOrgBouncycastleMathEcMixedNafR2LMultiplierWithInt:
+#line 22
+additionCoord withInt:doublingCoord];
 }
 
+
+#line 28
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k {
+  
+#line 30
   OrgBouncycastleMathEcECCurve *curveOrig = [((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve];
+  
+#line 32
   OrgBouncycastleMathEcECCurve *curveAdd = [self configureCurveWithOrgBouncycastleMathEcECCurve:curveOrig withInt:additionCoord_];
   OrgBouncycastleMathEcECCurve *curveDouble = [self configureCurveWithOrgBouncycastleMathEcECCurve:curveOrig withInt:doublingCoord_];
+  
+#line 35
   IOSIntArray *naf = OrgBouncycastleMathEcWNafUtil_generateCompactNafWithJavaMathBigInteger_(k);
+  
+#line 37
   OrgBouncycastleMathEcECPoint *Ra = [((OrgBouncycastleMathEcECCurve *) nil_chk(curveAdd)) getInfinity];
   OrgBouncycastleMathEcECPoint *Td = [((OrgBouncycastleMathEcECCurve *) nil_chk(curveDouble)) importPointWithOrgBouncycastleMathEcECPoint:p];
+  
+#line 40
   jint zeroes = 0;
   for (jint i = 0; i < ((IOSIntArray *) nil_chk(naf))->size_; ++i) {
+    
+#line 43
     jint ni = IOSIntArray_Get(naf, i);
     jint digit = RShift32(ni, 16);
     zeroes += ni & (jint) 0xFFFF;
+    
+#line 47
     Td = [((OrgBouncycastleMathEcECPoint *) nil_chk(Td)) timesPow2WithInt:zeroes];
+    
+#line 49
     OrgBouncycastleMathEcECPoint *Tj = [curveAdd importPointWithOrgBouncycastleMathEcECPoint:Td];
     if (digit < 0) {
+      
+#line 52
       Tj = [((OrgBouncycastleMathEcECPoint *) nil_chk(Tj)) negate];
     }
+    
+#line 55
     Ra = [((OrgBouncycastleMathEcECPoint *) nil_chk(Ra)) addWithOrgBouncycastleMathEcECPoint:Tj];
+    
+#line 57
     zeroes = 1;
   }
+  
+#line 60
   return [((OrgBouncycastleMathEcECCurve *) nil_chk(curveOrig)) importPointWithOrgBouncycastleMathEcECPoint:Ra];
 }
 
+
+#line 63
 - (OrgBouncycastleMathEcECCurve *)configureCurveWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)c
                                                                          withInt:(jint)coord {
+  
+#line 65
   if ([((OrgBouncycastleMathEcECCurve *) nil_chk(c)) getCoordinateSystem] == coord) {
+    
+#line 67
     return c;
   }
+  
+#line 70
   if (![c supportsCoordinateSystemWithInt:coord]) {
+    
+#line 72
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:JreStrcat("$I$", @"Coordinate system ", coord, @" not supported by this curve")];
   }
+  
+#line 75
   return [((OrgBouncycastleMathEcECCurve_Config *) nil_chk([((OrgBouncycastleMathEcECCurve_Config *) nil_chk([c configure])) setCoordinateSystemWithInt:coord])) create];
 }
 

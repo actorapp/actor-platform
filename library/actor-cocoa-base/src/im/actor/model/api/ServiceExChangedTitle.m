@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExChangedTitle.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExChangedTitle.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/ServiceExChangedTitle.h"
@@ -20,30 +22,48 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
 
 @implementation ImActorModelApiServiceExChangedTitle
 
+
+#line 23
 - (instancetype)initWithNSString:(NSString *)title {
   if (self = [super init]) {
+    
+#line 24
     self->title_ = title;
   }
   return self;
 }
 
+
+#line 27
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getHeader {
+  
+#line 32
   return 5;
 }
 
+
+#line 35
 - (NSString *)getTitle {
+  
+#line 36
   return self->title_;
 }
 
+
+#line 40
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->title_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
 }
 
+
+#line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 46
   if (self->title_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }

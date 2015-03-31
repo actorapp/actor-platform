@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -17,8 +19,12 @@
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "java/io/IOException.h"
 
+
+#line 10
 @implementation BCASN1
 
+
+#line 11
 + (BCASN1Primitive *)readObjectWithByteArray:(IOSByteArray *)sourceData {
   return BCASN1_readObjectWithByteArray_(sourceData);
 }
@@ -29,6 +35,8 @@
   return BCASN1_readObjectWithByteArray_withInt_withInt_(sourceData, offset, len);
 }
 
+
+#line 19
 + (BCASN1Primitive *)readObjectWithBSDataInput:(BSDataInput *)dataInput {
   return BCASN1_readObjectWithBSDataInput_(dataInput);
 }
@@ -41,34 +49,54 @@
 
 BCASN1Primitive *BCASN1_readObjectWithByteArray_(IOSByteArray *sourceData) {
   BCASN1_init();
+  
+#line 12
   return BCASN1_readObjectWithByteArray_withInt_withInt_(sourceData, 0, ((IOSByteArray *) nil_chk(sourceData))->size_);
 }
 
 BCASN1Primitive *BCASN1_readObjectWithByteArray_withInt_withInt_(IOSByteArray *sourceData, jint offset, jint len) {
   BCASN1_init();
+  
+#line 16
   return BCASN1_readObjectWithBSDataInput_([[BSDataInput alloc] initWithByteArray:sourceData withInt:offset withInt:len]);
 }
 
 BCASN1Primitive *BCASN1_readObjectWithBSDataInput_(BSDataInput *dataInput) {
   BCASN1_init();
+  
+#line 20
   jint tag = [((BSDataInput *) nil_chk(dataInput)) readASN1Tag];
   jint tagNumber = [dataInput readASN1TagNumberWithInt:tag];
   jboolean isConstructed = (tag & BCASN1Primitive_TAG_CONSTRUCTED) != 0;
   jint length = [dataInput readASN1Length];
+  
+#line 27
   if ((tag & BCASN1Primitive_TAG_APPLICATION) != 0) {
+    
+#line 29
     @throw [[JavaIoIOException alloc] init];
   }
+  
+#line 32
   if ((tag & BCASN1Primitive_TAG_TAGGED) != 0) {
+    
+#line 34
     @throw [[JavaIoIOException alloc] init];
   }
+  
+#line 37
   BSDataInput *objDataInput;
   if (length > 0) {
     objDataInput = [[BSDataInput alloc] initWithByteArray:[dataInput getData] withInt:[dataInput getOffset] withInt:length];
     [dataInput skipWithInt:length];
   }
   else {
+    
+#line 42
     objDataInput = dataInput;
   }
+  
+#line 45
   switch (tagNumber) {
     case BCASN1Primitive_TAG_SEQUENCE:
     return BCASN1Sequence_readSequenceWithBSDataInput_(objDataInput);

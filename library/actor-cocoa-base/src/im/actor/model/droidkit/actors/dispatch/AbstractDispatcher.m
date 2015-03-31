@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/dispatch/AbstractDispatcher.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/dispatch/AbstractDispatcher.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/dispatch/AbstractDispatchQueue.h"
 #include "im/actor/model/droidkit/actors/dispatch/AbstractDispatcher.h"
@@ -24,28 +26,46 @@ J2OBJC_FIELD_SETTER(DKAbstractDispatcher, queue_, id)
 
 J2OBJC_FIELD_SETTER(DKAbstractDispatcher_$1, this$0_, DKAbstractDispatcher *)
 
+
+#line 6
 @implementation DKAbstractDispatcher
 
+
+#line 10
 - (instancetype)initWithDKAbstractDispatchQueue:(DKAbstractDispatchQueue *)queue
                                  withDKDispatch:(id<DKDispatch>)dispatch {
   if (self = [super init]) {
+    
+#line 11
     self->queue_ = queue;
+    
+#line 12
     self->dispatch_ = dispatch;
+    
+#line 13
     [((DKAbstractDispatchQueue *) nil_chk(self->queue_)) setListenerWithDKQueueListener:[[DKAbstractDispatcher_$1 alloc] initWithDKAbstractDispatcher:self]];
   }
   return self;
 }
 
 - (id)getQueue {
+  
+#line 27
   return queue_;
 }
 
+
+#line 35
 - (void)dispatchMessageWithId:(id)message {
+  
+#line 36
   if (dispatch_ != nil) {
     [dispatch_ dispatchMessageWithId:message];
   }
 }
 
+
+#line 44
 - (void)notifyDispatcher {
 }
 
@@ -61,7 +81,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAbstractDispatcher)
 
 @implementation DKAbstractDispatcher_$1
 
+
+#line 15
 - (void)onQueueChanged {
+  
+#line 16
   [this$0_ notifyDispatcher];
 }
 

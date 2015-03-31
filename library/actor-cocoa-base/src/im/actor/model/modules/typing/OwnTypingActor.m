@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/typing/OwnTypingActor.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/typing/OwnTypingActor.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/OutPeer.h"
 #include "im/actor/model/api/TypingType.h"
@@ -32,24 +34,40 @@ __attribute__((unused)) static void ImActorModelModulesTypingOwnTypingActor_onTy
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesTypingOwnTypingActor_Typing, peer_, AMPeer *)
 
+
+#line 16
 @implementation ImActorModelModulesTypingOwnTypingActor
 
+
+#line 23
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  if (self = [super initWithImActorModelModulesModules:messenger]) {
-    lastTypingTime_ = 0;
+  if (self =
+#line 24
+  [super initWithImActorModelModulesModules:messenger]) {
+    lastTypingTime_ =
+#line 20
+    0;
   }
   return self;
 }
 
+
+#line 28
 - (void)onTypingWithAMPeer:(AMPeer *)peer {
   ImActorModelModulesTypingOwnTypingActor_onTypingWithAMPeer_(self, peer);
 }
 
+
+#line 45
 - (void)onReceiveWithId:(id)message {
+  
+#line 46
   if ([message isKindOfClass:[ImActorModelModulesTypingOwnTypingActor_Typing class]]) {
     ImActorModelModulesTypingOwnTypingActor_onTypingWithAMPeer_(self, [((ImActorModelModulesTypingOwnTypingActor_Typing *) nil_chk(((ImActorModelModulesTypingOwnTypingActor_Typing *) check_class_cast(message, [ImActorModelModulesTypingOwnTypingActor_Typing class])))) getPeer]);
   }
   else {
+    
+#line 49
     [self dropWithId:message];
   }
 }
@@ -62,29 +80,45 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingOwnTypingActor_Typing, peer_, AMPee
 @end
 
 void ImActorModelModulesTypingOwnTypingActor_onTypingWithAMPeer_(ImActorModelModulesTypingOwnTypingActor *self, AMPeer *peer) {
+  
+#line 29
   if (DKActorTime_currentTime() - self->lastTypingTime_ < ImActorModelModulesTypingOwnTypingActor_TYPING_DELAY) {
     return;
   }
   self->lastTypingTime_ = DKActorTime_currentTime();
+  
+#line 34
   ImActorModelApiOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
   if (outPeer == nil) {
     return;
   }
+  
+#line 39
   [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestTyping alloc] initWithImActorModelApiOutPeer:outPeer withImActorModelApiTypingTypeEnum:ImActorModelApiTypingTypeEnum_get_TEXT()]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingOwnTypingActor)
 
+
+#line 53
 @implementation ImActorModelModulesTypingOwnTypingActor_Typing
 
+
+#line 56
 - (instancetype)initWithAMPeer:(AMPeer *)peer {
   if (self = [super init]) {
+    
+#line 57
     self->peer_ = peer;
   }
   return self;
 }
 
+
+#line 60
 - (AMPeer *)getPeer {
+  
+#line 61
   return peer_;
 }
 

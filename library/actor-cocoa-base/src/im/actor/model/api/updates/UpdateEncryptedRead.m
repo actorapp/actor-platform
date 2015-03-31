@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateEncryptedRead.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateEncryptedRead.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,46 +26,76 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedRead, peer_, ImActorModelApiPeer *)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateEncryptedRead
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateEncryptedRead *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateEncryptedRead_fromBytesWithByteArray_(data);
 }
 
+
+#line 31
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                    withLong:(jlong)rid
                                    withLong:(jlong)readDate {
   if (self = [super init]) {
+    
+#line 32
     self->peer_ = peer;
+    
+#line 33
     self->rid_ = rid;
+    
+#line 34
     self->readDate_ = readDate;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiPeer *)getPeer {
+  
+#line 42
   return self->peer_;
 }
 
+
+#line 45
 - (jlong)getRid {
+  
+#line 46
   return self->rid_;
 }
 
+
+#line 49
 - (jlong)getReadDate {
+  
+#line 50
   return self->readDate_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
   self->rid_ = [values getLongWithInt:2];
   self->readDate_ = [values getLongWithInt:3];
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -82,6 +114,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedRead, peer_, ImActorMod
 }
 
 - (jint)getHeaderKey {
+  
+#line 82
   return ImActorModelApiUpdatesUpdateEncryptedRead_HEADER;
 }
 
@@ -96,6 +130,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEncryptedRead, peer_, ImActorMod
 
 ImActorModelApiUpdatesUpdateEncryptedRead *ImActorModelApiUpdatesUpdateEncryptedRead_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateEncryptedRead_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateEncryptedRead *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateEncryptedRead alloc] init], data));
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1ObjectIdentifier.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1ObjectIdentifier.java"
+
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
@@ -23,32 +25,56 @@
 
 J2OBJC_FIELD_SETTER(BCASN1ObjectIdentifier, identifier_, NSString *)
 
+
+#line 11
 @implementation BCASN1ObjectIdentifier
 
 + (BCASN1ObjectIdentifier *)readObjectIdentifierWithBSDataInput:(BSDataInput *)dataInput {
   return BCASN1ObjectIdentifier_readObjectIdentifierWithBSDataInput_(dataInput);
 }
 
+
+#line 49
 - (instancetype)initWithNSString:(NSString *)identifier {
   if (self = [super init]) {
+    
+#line 50
     self->identifier_ = identifier;
   }
   return self;
 }
 
+
+#line 53
 - (NSString *)getIdentifier {
+  
+#line 54
   return identifier_;
 }
 
+
+#line 58
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
+  
+#line 60
   [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_OBJECT_IDENTIFIER];
+  
+#line 62
   BSDataOutput *content = [[BSDataOutput alloc] init];
+  
+#line 64
   IOSObjectArray *items = [((NSString *) nil_chk(identifier_)) split:@"\\."];
   jint val1 = JavaLangInteger_parseIntWithNSString_(IOSObjectArray_Get(nil_chk(items), 0));
   jint val2 = JavaLangInteger_parseIntWithNSString_(IOSObjectArray_Get(items, 1));
+  
+#line 71
   [content writeByteWithInt:val1 * 40 + val2];
+  
+#line 73
   for (jint i = 2; i < items->size_; i++) {
     jlong value = JavaLangLong_parseLongWithNSString_(IOSObjectArray_Get(items, i));
+    
+#line 76
     IOSByteArray *result = [IOSByteArray newArrayWithLength:9];
     jint pos = 8;
     *IOSByteArray_GetRef(result, pos) = (jbyte) ((jint) value & (jint) 0x7f);
@@ -58,6 +84,8 @@ J2OBJC_FIELD_SETTER(BCASN1ObjectIdentifier, identifier_, NSString *)
     }
     [content writeBytesWithByteArray:result withInt:pos withInt:9 - pos];
   }
+  
+#line 86
   IOSByteArray *contentV = [content toByteArray];
   [dataOutput writeASN1LengthWithInt:((IOSByteArray *) nil_chk(contentV))->size_];
   [dataOutput writeBytesWithByteArray:contentV withInt:0 withInt:contentV->size_];
@@ -72,31 +100,49 @@ J2OBJC_FIELD_SETTER(BCASN1ObjectIdentifier, identifier_, NSString *)
 
 BCASN1ObjectIdentifier *BCASN1ObjectIdentifier_readObjectIdentifierWithBSDataInput_(BSDataInput *dataInput) {
   BCASN1ObjectIdentifier_init();
+  
+#line 14
   NSString *res;
+  
+#line 17
   jint firstByte = [((BSDataInput *) nil_chk(dataInput)) readByte];
   jlong firstValue = firstByte & (jint) 0x7F;
+  
+#line 20
   if (firstValue < 40) {
     res = @"0";
   }
-  else if (firstValue < 80) {
+  else
+#line 22
+  if (firstValue < 80) {
     res = JreStrcat("$J", @"1.", (firstValue - 40));
   }
   else {
+    
+#line 25
     res = JreStrcat("$J", @"2.", (firstValue - 80));
   }
+  
+#line 29
   jlong value = 0;
   while (![dataInput isEOF]) {
     jint b = [dataInput readByte];
     value += (b & (jint) 0x7f);
+    
+#line 35
     if ((b & (jint) 0x80) == 0) {
       res = JreStrcat("$C", res, '.');
       res = JreStrcat("$J", res, value);
       value = 0;
     }
     else {
+      
+#line 40
       LShiftAssignLong(&value, 7);
     }
   }
+  
+#line 44
   return [[BCASN1ObjectIdentifier alloc] initWithNSString:res];
 }
 

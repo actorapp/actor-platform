@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/bouncycastle/BcRsaCipher.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/bouncycastle/BcRsaCipher.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/bouncycastle/BcRsaCipher.h"
@@ -26,34 +28,54 @@
 
 J2OBJC_FIELD_SETTER(BCBcRsaCipher, cipher_BcRsaCipher_, id<OrgBouncycastleCryptoAsymmetricBlockCipher>)
 
+
+#line 17
 @implementation BCBcRsaCipher
 
+
+#line 20
 - (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)random
                            withByteArray:(IOSByteArray *)publicKey
                            withByteArray:(IOSByteArray *)privateKey {
-  if (self = [super initWithBCRandomProvider:random withByteArray:publicKey]) {
+  if (self =
+#line 21
+  [super initWithBCRandomProvider:random withByteArray:publicKey]) {
+    
+#line 23
     @try {
       BCPKS8RsaPrivateKey *pks8RsaPrivateKey = [[BCPKS8RsaPrivateKey alloc] initWithByteArray:privateKey];
-      OrgBouncycastleCryptoParamsAsymmetricKeyParameter *keyParameter = [[OrgBouncycastleCryptoParamsRSAKeyParameters alloc] initWithBoolean:YES withJavaMathBigInteger:[pks8RsaPrivateKey getModulus] withJavaMathBigInteger:[pks8RsaPrivateKey getExponent]];
+      OrgBouncycastleCryptoParamsAsymmetricKeyParameter *keyParameter = [[OrgBouncycastleCryptoParamsRSAKeyParameters alloc] initWithBoolean:YES withJavaMathBigInteger:[pks8RsaPrivateKey getModulus] withJavaMathBigInteger:
+#line 26
+      [pks8RsaPrivateKey getExponent]];
       cipher_BcRsaCipher_ = [[OrgBouncycastleCryptoEncodingsOAEPEncoding alloc] initWithOrgBouncycastleCryptoAsymmetricBlockCipher:[[OrgBouncycastleCryptoEnginesRSAEngine alloc] init] withOrgBouncycastleCryptoDigest:[[OrgBouncycastleCryptoDigestsSHA1Digest alloc] init]];
       [cipher_BcRsaCipher_ init__WithBoolean:NO withOrgBouncycastleCryptoParamsParametersWithRandom:[[OrgBouncycastleCryptoParamsParametersWithRandom alloc] initWithOrgBouncycastleCryptoCipherParameters:keyParameter withBCRandomProvider:random]];
     }
-    @catch (JavaLangException *e) {
+    @catch (
+#line 29
+    JavaLangException *e) {
       [((JavaLangException *) nil_chk(e)) printStackTrace];
     }
   }
   return self;
 }
 
+
+#line 35
 - (IOSByteArray *)decryptWithByteArray:(IOSByteArray *)sourceData {
   @synchronized(self) {
+    
+#line 36
     if (cipher_BcRsaCipher_ == nil) {
       return nil;
     }
+    
+#line 40
     @try {
       return [((id<OrgBouncycastleCryptoAsymmetricBlockCipher>) nil_chk(cipher_BcRsaCipher_)) processBlockWithByteArray:sourceData withInt:0 withInt:((IOSByteArray *) nil_chk(sourceData))->size_];
     }
-    @catch (JavaLangException *e) {
+    @catch (
+#line 42
+    JavaLangException *e) {
       [((JavaLangException *) nil_chk(e)) printStackTrace];
       return nil;
     }

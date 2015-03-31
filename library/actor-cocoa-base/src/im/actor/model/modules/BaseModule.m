@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/BaseModule.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/BaseModule.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/CryptoProvider.h"
@@ -34,6 +36,8 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModulesModules *)
 
+
+#line 19
 @implementation ImActorModelModulesBaseModule
 
 NSString * ImActorModelModulesBaseModule_STORAGE_DIALOGS_ = @"dialogs";
@@ -42,87 +46,169 @@ NSString * ImActorModelModulesBaseModule_STORAGE_GROUPS_ = @"groups";
 NSString * ImActorModelModulesBaseModule_STORAGE_DOWNLOADS_ = @"downloads";
 NSString * ImActorModelModulesBaseModule_STORAGE_CONTACTS_ = @"contacts";
 NSString * ImActorModelModulesBaseModule_STORAGE_NOTIFICATIONS_ = @"notifications";
-NSString * ImActorModelModulesBaseModule_STORAGE_CHAT_PREFIX_ = @"chat_";
-NSString * ImActorModelModulesBaseModule_STORAGE_PENDING_ = @"chat_pending";
-NSString * ImActorModelModulesBaseModule_STORAGE_CURSOR_ = @"chat_cursor";
+NSString * ImActorModelModulesBaseModule_STORAGE_CHAT_PREFIX_ = 
+#line 28
+@"chat_";
+NSString * ImActorModelModulesBaseModule_STORAGE_PENDING_ = 
+#line 29
+@"chat_pending";
+NSString * ImActorModelModulesBaseModule_STORAGE_CURSOR_ = 
+#line 30
+@"chat_cursor";
 
+
+#line 34
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super init]) {
+    
+#line 35
     self->modules__ = modules;
   }
   return self;
 }
 
+
+#line 38
 - (ImActorModelModulesModules *)modules {
+  
+#line 39
   return modules__;
 }
 
+
+#line 42
 - (ImActorModelModulesUpdates *)updates {
+  
+#line 43
   return [((ImActorModelModulesModules *) nil_chk(modules__)) getUpdatesModule];
 }
 
+
+#line 46
 - (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
+  
+#line 47
   [((id<AMMainThreadProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThreadProvider])) runOnUiThread:runnable];
 }
 
+
+#line 50
 - (DKActorRef *)sendActor {
+  
+#line 51
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getSendMessageActor];
 }
 
+
+#line 54
 - (DKActorRef *)dialogsActor {
+  
+#line 55
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor];
 }
 
+
+#line 58
 - (DKActorRef *)dialogsHistoryActor {
+  
+#line 59
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsHistoryActor];
 }
 
+
+#line 62
 - (DKActorRef *)ownReadActor {
+  
+#line 63
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getOwnReadActor];
 }
 
+
+#line 66
 - (DKActorRef *)plainReceiveActor {
+  
+#line 67
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getPlainReceiverActor];
 }
 
+
+#line 70
 - (DKActorRef *)conversationActorWithAMPeer:(AMPeer *)peer {
+  
+#line 71
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationActorWithAMPeer:peer];
 }
 
+
+#line 74
 - (DKActorRef *)conversationHistoryActorWithAMPeer:(AMPeer *)peer {
+  
+#line 75
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationHistoryActorWithAMPeer:peer];
 }
 
+
+#line 78
 - (id<DKPreferencesStorage>)preferences {
+  
+#line 79
   return [((ImActorModelModulesModules *) nil_chk(modules__)) getPreferences];
 }
 
+
+#line 82
 - (id<AMCryptoProvider>)crypto {
+  
+#line 83
   return [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getCryptoProvider];
 }
 
+
+#line 86
 - (id<AMStorageProvider>)storage {
+  
+#line 87
   return [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getStorageProvider];
 }
 
+
+#line 90
 - (jint)myUid {
+  
+#line 91
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getAuthModule])) myUid];
 }
 
+
+#line 94
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
+  
+#line 95
   [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:callback];
 }
 
+
+#line 98
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request {
+  
+#line 99
   [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:[[ImActorModelModulesBaseModule_$1 alloc] init]];
 }
 
+
+#line 112
 - (id<DKKeyValueEngine>)users {
+  
+#line 113
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsers];
 }
 
+
+#line 116
 - (id<DKKeyValueEngine>)groups {
+  
+#line 117
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getGroupsModule])) getGroups];
 }
 
@@ -137,9 +223,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesBaseModule)
 
 @implementation ImActorModelModulesBaseModule_$1
 
+
+#line 101
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
 }
 
+
+#line 106
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
 }
 

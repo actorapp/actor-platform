@@ -3,16 +3,24 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/extensions/RunnableExtension.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/extensions/RunnableExtension.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/extensions/RunnableExtension.h"
 #include "java/lang/Runnable.h"
 
+
+#line 6
 @implementation ImActorModelDroidkitActorsExtensionsRunnableExtension
 
 - (void)preStart {
 }
 
+
+#line 13
 - (jboolean)onReceiveWithId:(id)message {
+  
+#line 14
   if ([JavaLangRunnable_class_() isInstance:message]) {
     [((id<JavaLangRunnable>) nil_chk(((id<JavaLangRunnable>) check_protocol_cast(message, @protocol(JavaLangRunnable))))) run];
     return YES;
@@ -20,6 +28,8 @@
   return NO;
 }
 
+
+#line 22
 - (void)postStop {
 }
 

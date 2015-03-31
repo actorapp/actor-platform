@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/notifications/entity/PendingStorage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/notifications/entity/PendingStorage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,23 +26,35 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingStorage, notifications_, id<JavaUtilList>)
 
+
+#line 15
 @implementation ImActorModelModulesNotificationsEntityPendingStorage
 
 + (ImActorModelModulesNotificationsEntityPendingStorage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesNotificationsEntityPendingStorage_fromBytesWithByteArray_(data);
 }
 
+
+#line 23
 - (instancetype)init {
   if (self = [super init]) {
+    
+#line 24
     notifications_ = [[JavaUtilArrayList alloc] init];
   }
   return self;
 }
 
+
+#line 27
 - (id<JavaUtilList>)getNotifications {
+  
+#line 28
   return notifications_;
 }
 
+
+#line 32
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   jint count = [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1];
   if (count > 0) {
@@ -48,11 +62,15 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingStorage, notifi
     for (jint i = 0; i < count; i++) {
       [stubs addWithId:[[ImActorModelModulesNotificationsEntityPendingNotification alloc] init]];
     }
+    
+#line 40
     notifications_ = [values getRepeatedObjWithInt:1 withJavaUtilList:stubs];
   }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 46
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:notifications_];
 }
 
@@ -65,6 +83,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingStorage, notifi
 
 ImActorModelModulesNotificationsEntityPendingStorage *ImActorModelModulesNotificationsEntityPendingStorage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesNotificationsEntityPendingStorage_init();
+  
+#line 18
   return ((ImActorModelModulesNotificationsEntityPendingStorage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesNotificationsEntityPendingStorage alloc] init], data));
 }
 

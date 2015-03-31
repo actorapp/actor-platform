@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSendEncryptedMessage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSendEncryptedMessage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -33,51 +35,89 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEncryptedMessage, encryptedMess
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEncryptedMessage, keys_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEncryptedMessage, ownKeys_, id<JavaUtilList>)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestSendEncryptedMessage
 
+
+#line 23
 + (ImActorModelApiRpcRequestSendEncryptedMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSendEncryptedMessage_fromBytesWithByteArray_(data);
 }
 
+
+#line 33
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                                       withLong:(jlong)rid
                                  withByteArray:(IOSByteArray *)encryptedMessage
                               withJavaUtilList:(id<JavaUtilList>)keys
                               withJavaUtilList:(id<JavaUtilList>)ownKeys {
   if (self = [super init]) {
+    
+#line 34
     self->peer_ = peer;
+    
+#line 35
     self->rid_ = rid;
+    
+#line 36
     self->encryptedMessage_ = encryptedMessage;
+    
+#line 37
     self->keys_ = keys;
+    
+#line 38
     self->ownKeys_ = ownKeys;
   }
   return self;
 }
 
+
+#line 41
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiOutPeer *)getPeer {
+  
+#line 46
   return self->peer_;
 }
 
+
+#line 49
 - (jlong)getRid {
+  
+#line 50
   return self->rid_;
 }
 
+
+#line 53
 - (IOSByteArray *)getEncryptedMessage {
+  
+#line 54
   return self->encryptedMessage_;
 }
 
+
+#line 57
 - (id<JavaUtilList>)getKeys {
+  
+#line 58
   return self->keys_;
 }
 
+
+#line 61
 - (id<JavaUtilList>)getOwnKeys {
+  
+#line 62
   return self->ownKeys_;
 }
 
+
+#line 66
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiOutPeer alloc] init]];
   self->rid_ = [values getLongWithInt:3];
@@ -94,7 +134,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEncryptedMessage, ownKeys_, id<
   self->ownKeys_ = [values getRepeatedObjWithInt:6 withJavaUtilList:_ownKeys];
 }
 
+
+#line 83
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 84
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -120,6 +164,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEncryptedMessage, ownKeys_, id<
 }
 
 - (jint)getHeaderKey {
+  
+#line 111
   return ImActorModelApiRpcRequestSendEncryptedMessage_HEADER;
 }
 
@@ -136,6 +182,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEncryptedMessage, ownKeys_, id<
 
 ImActorModelApiRpcRequestSendEncryptedMessage *ImActorModelApiRpcRequestSendEncryptedMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSendEncryptedMessage_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestSendEncryptedMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestSendEncryptedMessage alloc] init], data));
 }
 

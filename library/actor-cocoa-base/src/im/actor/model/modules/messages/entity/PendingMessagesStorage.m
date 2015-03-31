@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PendingMessagesStorage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PendingMessagesStorage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,34 +26,50 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessagesStorage, pendingMessages_, JavaUtilArrayList *)
 
+
+#line 14
 @implementation ImActorModelModulesMessagesEntityPendingMessagesStorage
 
 + (ImActorModelModulesMessagesEntityPendingMessagesStorage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesMessagesEntityPendingMessagesStorage_fromBytesWithByteArray_(data);
 }
 
+
+#line 22
 - (JavaUtilArrayList *)getPendingMessages {
+  
+#line 23
   return pendingMessages_;
 }
 
+
+#line 27
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   for (IOSByteArray * __strong data in nil_chk([((BSBserValues *) nil_chk(values)) getRepeatedBytesWithInt:1])) {
     @try {
       [((JavaUtilArrayList *) nil_chk(pendingMessages_)) addWithId:ImActorModelModulesMessagesEntityPendingMessage_fromBytesWithByteArray_(data)];
     }
-    @catch (JavaIoIOException *e) {
+    @catch (
+#line 31
+    JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
     }
   }
 }
 
+
+#line 38
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 39
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:pendingMessages_];
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    pendingMessages_ = [[JavaUtilArrayList alloc] init];
+    pendingMessages_ =
+#line 20
+    [[JavaUtilArrayList alloc] init];
   }
   return self;
 }
@@ -65,6 +83,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessagesStorage, pen
 
 ImActorModelModulesMessagesEntityPendingMessagesStorage *ImActorModelModulesMessagesEntityPendingMessagesStorage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityPendingMessagesStorage_init();
+  
+#line 17
   return ((ImActorModelModulesMessagesEntityPendingMessagesStorage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityPendingMessagesStorage alloc] init], data));
 }
 

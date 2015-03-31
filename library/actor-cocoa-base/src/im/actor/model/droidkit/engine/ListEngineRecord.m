@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/ListEngineRecord.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/ListEngineRecord.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/ListEngineRecord.h"
@@ -19,34 +21,62 @@
 J2OBJC_FIELD_SETTER(DKListEngineRecord, query_, NSString *)
 J2OBJC_FIELD_SETTER(DKListEngineRecord, data_, IOSByteArray *)
 
+
+#line 6
 @implementation DKListEngineRecord
 
+
+#line 13
 - (instancetype)initWithLong:(jlong)key
                     withLong:(jlong)order
                 withNSString:(NSString *)query
                withByteArray:(IOSByteArray *)data {
   if (self = [super init]) {
+    
+#line 14
     self->key_ = key;
+    
+#line 15
     self->order_ = order;
+    
+#line 16
     self->query_ = query;
+    
+#line 17
     self->data_ = data;
   }
   return self;
 }
 
+
+#line 20
 - (jlong)getKey {
+  
+#line 21
   return key_;
 }
 
+
+#line 24
 - (jlong)getOrder {
+  
+#line 25
   return order_;
 }
 
+
+#line 28
 - (NSString *)getQuery {
+  
+#line 29
   return query_;
 }
 
+
+#line 32
 - (IOSByteArray *)getData {
+  
+#line 33
   return data_;
 }
 

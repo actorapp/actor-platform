@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/MTPush.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/MTPush.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -19,29 +21,49 @@
 
 J2OBJC_FIELD_SETTER(MTMTPush, payload_, IOSByteArray *)
 
+
+#line 8
 @implementation MTMTPush
 
+
+#line 14
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 15
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 18
 - (IOSByteArray *)getPayload {
+  
+#line 19
   return payload_;
 }
 
+
+#line 23
 - (jbyte)getHeader {
   return MTMTPush_HEADER;
 }
 
+
+#line 28
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 29
   [((BSDataOutput *) nil_chk(bs)) writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
+
+#line 33
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   payload_ = [((BSDataInput *) nil_chk(bs)) readProtoBytes];
 }
 
 - (NSString *)description {
+  
+#line 39
   return @"UpdateBox";
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1Integer.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1Integer.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -21,49 +23,77 @@
 
 J2OBJC_FIELD_SETTER(BCASN1Integer, data_, IOSByteArray *)
 
+
+#line 12
 @implementation BCASN1Integer
 
 + (BCASN1Integer *)readIntegerWithBSDataInput:(BSDataInput *)dataInput {
   return BCASN1Integer_readIntegerWithBSDataInput_(dataInput);
 }
 
+
+#line 20
 - (instancetype)initWithByteArray:(IOSByteArray *)data {
   if (self = [super init]) {
+    
+#line 21
     self->data_ = data;
   }
   return self;
 }
 
+
+#line 24
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)data {
   if (self = [super init]) {
+    
+#line 25
     self->data_ = [((JavaMathBigInteger *) nil_chk(data)) toByteArray];
   }
   return self;
 }
 
+
+#line 28
 - (instancetype)init {
   if (self = [super init]) {
+    
+#line 29
     self->data_ = [((JavaMathBigInteger *) nil_chk(JavaMathBigInteger_get_ZERO_())) toByteArray];
   }
   return self;
 }
 
+
+#line 32
 - (instancetype)initWithInt:(jint)val {
   if (self = [super init]) {
+    
+#line 33
     self->data_ = [((JavaMathBigInteger *) [[JavaMathBigInteger alloc] initWithNSString:JreStrcat("I", val)]) toByteArray];
   }
   return self;
 }
 
+
+#line 36
 - (IOSByteArray *)getData {
+  
+#line 37
   return data_;
 }
 
+
+#line 40
 - (JavaMathBigInteger *)asBigInteger {
   return [[JavaMathBigInteger alloc] initWithByteArray:data_];
 }
 
+
+#line 46
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
+  
+#line 47
   [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_INTEGER];
   [dataOutput writeASN1LengthWithInt:((IOSByteArray *) nil_chk(data_))->size_];
   [dataOutput writeBytesWithByteArray:data_ withInt:0 withInt:data_->size_];
@@ -78,6 +108,8 @@ J2OBJC_FIELD_SETTER(BCASN1Integer, data_, IOSByteArray *)
 
 BCASN1Integer *BCASN1Integer_readIntegerWithBSDataInput_(BSDataInput *dataInput) {
   BCASN1Integer_init();
+  
+#line 15
   return [[BCASN1Integer alloc] initWithByteArray:[dataInput readBytesWithInt:[((BSDataInput *) nil_chk(dataInput)) getRemaining]]];
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/AskFuture.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/AskFuture.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/tasks/ActorAskImpl.h"
 #include "im/actor/model/droidkit/actors/tasks/AskCallback.h"
@@ -30,62 +32,120 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksAskFuture, askImpl_, ImActorM
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksAskFuture, result__, id)
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksAskFuture, error__, JavaLangThrowable *)
 
+
+#line 11
 @implementation ImActorModelDroidkitActorsTasksAskFuture
 
+
+#line 24
 - (instancetype)initWithImActorModelDroidkitActorsTasksActorAskImpl:(ImActorModelDroidkitActorsTasksActorAskImpl *)askImpl
                                                             withInt:(jint)reqId {
   if (self = [super init]) {
-    callbacks_ = [[JavaUtilLinkedList alloc] init];
-    isCompleted__ = NO;
-    isCanceled__ = NO;
-    isError__ = NO;
-    result__ = nil;
-    error__ = nil;
+    callbacks_ =
+#line 13
+    [[JavaUtilLinkedList alloc] init];
+    isCompleted__ =
+#line 18
+    NO;
+    isCanceled__ =
+#line 19
+    NO;
+    isError__ =
+#line 20
+    NO;
+    result__ =
+#line 21
+    nil;
+    error__ =
+#line 22
+    nil;
+    
+#line 25
     self->askImpl_ = askImpl;
+    
+#line 26
     self->reqId_ = reqId;
   }
   return self;
 }
 
+
+#line 29
 - (void)addListenerWithImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
+  
+#line 30
   [((JavaUtilLinkedList *) nil_chk(callbacks_)) addWithId:callback];
 }
 
+
+#line 33
 - (void)removeListenerWithImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
+  
+#line 34
   [((JavaUtilLinkedList *) nil_chk(callbacks_)) removeWithId:callback];
 }
 
+
+#line 37
 - (jboolean)isCompleted {
+  
+#line 38
   return isCompleted__;
 }
 
+
+#line 41
 - (jboolean)isError {
+  
+#line 42
   return isError__;
 }
 
+
+#line 45
 - (jboolean)isCanceled {
+  
+#line 46
   return isCanceled__;
 }
 
+
+#line 49
 - (JavaLangThrowable *)error {
+  
+#line 50
   return error__;
 }
 
+
+#line 53
 - (id)result {
+  
+#line 54
   return result__;
 }
 
+
+#line 57
 - (void)cancel {
+  
+#line 58
   if (isCompleted__) {
     return;
   }
   isCompleted__ = YES;
   isError__ = NO;
   isCanceled__ = YES;
+  
+#line 69
   [((ImActorModelDroidkitActorsTasksActorAskImpl *) nil_chk(askImpl_)) onTaskCancelledWithInt:reqId_];
 }
 
+
+#line 72
 - (void)onErrorWithJavaLangThrowable:(JavaLangThrowable *)throwable {
+  
+#line 73
   if (isCompleted__) {
     return;
   }
@@ -94,12 +154,18 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksAskFuture, error__, JavaLangT
   isError__ = YES;
   error__ = throwable;
   result__ = nil;
+  
+#line 82
   for (id<ImActorModelDroidkitActorsTasksAskCallback> __strong callback in nil_chk(callbacks_)) {
     [((id<ImActorModelDroidkitActorsTasksAskCallback>) nil_chk(callback)) onErrorWithJavaLangThrowable:throwable];
   }
 }
 
+
+#line 87
 - (void)onResultWithId:(id)res {
+  
+#line 88
   if (isCompleted__) {
     return;
   }
@@ -108,15 +174,23 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksAskFuture, error__, JavaLangT
   isError__ = NO;
   error__ = nil;
   result__ = res;
+  
+#line 97
   for (id<ImActorModelDroidkitActorsTasksAskCallback> __strong callback in nil_chk(callbacks_)) {
     [((id<ImActorModelDroidkitActorsTasksAskCallback>) nil_chk(callback)) onResultWithId:res];
   }
 }
 
+
+#line 102
 - (void)onProgressWithId:(id)res {
+  
+#line 103
   if (isCompleted__) {
     return;
   }
+  
+#line 107
   for (id<ImActorModelDroidkitActorsTasksAskCallback> __strong callback in nil_chk(callbacks_)) {
     if ([ImActorModelDroidkitActorsTasksAskProgressCallback_class_() isInstance:callback]) {
       [((id<ImActorModelDroidkitActorsTasksAskProgressCallback>) nil_chk(((id<ImActorModelDroidkitActorsTasksAskProgressCallback>) check_protocol_cast(callback, @protocol(ImActorModelDroidkitActorsTasksAskProgressCallback))))) onProgressWithId:res];
@@ -124,7 +198,11 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksAskFuture, error__, JavaLangT
   }
 }
 
+
+#line 114
 - (void)onTimeout {
+  
+#line 115
   [self onErrorWithJavaLangThrowable:[[ImActorModelDroidkitActorsTasksAskTimeoutException alloc] init]];
 }
 

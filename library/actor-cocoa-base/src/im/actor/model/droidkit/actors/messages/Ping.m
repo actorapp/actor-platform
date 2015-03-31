@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/Ping.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/Ping.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/messages/Ping.h"
 
@@ -12,21 +14,29 @@
 
 BOOL ImActorModelDroidkitActorsMessagesPing_initialized = NO;
 
+
+#line 6
 @implementation ImActorModelDroidkitActorsMessagesPing
 
 ImActorModelDroidkitActorsMessagesPing * ImActorModelDroidkitActorsMessagesPing_INSTANCE_;
 
+
+#line 9
 - (instancetype)init {
   return [super init];
 }
 
 - (NSString *)description {
+  
+#line 15
   return @"Ping";
 }
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsMessagesPing class]) {
-    ImActorModelDroidkitActorsMessagesPing_INSTANCE_ = [[ImActorModelDroidkitActorsMessagesPing alloc] init];
+    ImActorModelDroidkitActorsMessagesPing_INSTANCE_ =
+#line 7
+    [[ImActorModelDroidkitActorsMessagesPing alloc] init];
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsMessagesPing)
   }
 }

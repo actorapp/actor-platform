@@ -3,12 +3,16 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/AtomicIntegerCompat.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/AtomicIntegerCompat.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/util/AtomicIntegerCompat.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
+
+#line 6
 @implementation AMAtomicIntegerCompat
 
 - (instancetype)init {

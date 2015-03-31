@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/UploadConfig.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/UploadConfig.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -20,28 +22,44 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUploadConfig, serverData_, IOSByteArray *)
 
+
+#line 19
 @implementation ImActorModelApiUploadConfig
 
+
+#line 23
 - (instancetype)initWithByteArray:(IOSByteArray *)serverData {
   if (self = [super init]) {
+    
+#line 24
     self->serverData_ = serverData;
   }
   return self;
 }
 
+
+#line 27
 - (instancetype)init {
   return [super init];
 }
 
 - (IOSByteArray *)getServerData {
+  
+#line 32
   return self->serverData_;
 }
 
+
+#line 36
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->serverData_ = [((BSBserValues *) nil_chk(values)) getBytesWithInt:1];
 }
 
+
+#line 41
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 42
   if (self->serverData_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }

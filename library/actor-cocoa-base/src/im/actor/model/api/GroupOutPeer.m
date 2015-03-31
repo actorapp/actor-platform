@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/GroupOutPeer.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/GroupOutPeer.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/GroupOutPeer.h"
@@ -17,35 +19,57 @@
 }
 @end
 
+
+#line 19
 @implementation ImActorModelApiGroupOutPeer
 
+
+#line 24
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)accessHash {
   if (self = [super init]) {
+    
+#line 25
     self->groupId_ = groupId;
+    
+#line 26
     self->accessHash_ = accessHash;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getGroupId {
+  
+#line 34
   return self->groupId_;
 }
 
+
+#line 37
 - (jlong)getAccessHash {
+  
+#line 38
   return self->accessHash_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
 }
 
+
+#line 48
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 49
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }

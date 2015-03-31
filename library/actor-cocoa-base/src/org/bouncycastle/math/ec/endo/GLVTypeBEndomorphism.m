@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/endo/GLVTypeBEndomorphism.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/endo/GLVTypeBEndomorphism.java"
+
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
@@ -14,44 +16,76 @@
 #include "org/bouncycastle/math/ec/endo/GLVTypeBEndomorphism.h"
 #include "org/bouncycastle/math/ec/endo/GLVTypeBParameters.h"
 
+
+#line 10
 @implementation OrgBouncycastleMathEcEndoGLVTypeBEndomorphism
 
+
+#line 16
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
      withOrgBouncycastleMathEcEndoGLVTypeBParameters:(OrgBouncycastleMathEcEndoGLVTypeBParameters *)parameters {
   if (self = [super init]) {
+    
+#line 18
     self->curve_ = curve;
+    
+#line 19
     self->parameters_ = parameters;
+    
+#line 20
     self->pointMap_ = [[OrgBouncycastleMathEcScaleXPointMap alloc] initWithOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECCurve *) nil_chk(curve)) fromBigIntegerWithJavaMathBigInteger:[((OrgBouncycastleMathEcEndoGLVTypeBParameters *) nil_chk(parameters)) getBeta]]];
   }
   return self;
 }
 
+
+#line 23
 - (IOSObjectArray *)decomposeScalarWithJavaMathBigInteger:(JavaMathBigInteger *)k {
+  
+#line 25
   jint bits = [((OrgBouncycastleMathEcEndoGLVTypeBParameters *) nil_chk(parameters_)) getBits];
   JavaMathBigInteger *b1 = [self calculateBWithJavaMathBigInteger:k withJavaMathBigInteger:[parameters_ getG1] withInt:bits];
   JavaMathBigInteger *b2 = [self calculateBWithJavaMathBigInteger:k withJavaMathBigInteger:[parameters_ getG2] withInt:bits];
+  
+#line 29
   IOSObjectArray *v1 = [parameters_ getV1], *v2 = [parameters_ getV2];
   JavaMathBigInteger *a = [((JavaMathBigInteger *) nil_chk(k)) subtractWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(([((JavaMathBigInteger *) nil_chk(b1)) multiplyWithJavaMathBigInteger:IOSObjectArray_Get(nil_chk(v1), 0)]))) addWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(b2)) multiplyWithJavaMathBigInteger:IOSObjectArray_Get(nil_chk(v2), 0)]]];
   JavaMathBigInteger *b = [((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(([b1 multiplyWithJavaMathBigInteger:IOSObjectArray_Get(v1, 1)]))) addWithJavaMathBigInteger:[b2 multiplyWithJavaMathBigInteger:IOSObjectArray_Get(v2, 1)]])) negate];
+  
+#line 33
   return [IOSObjectArray newArrayWithObjects:(id[]){ a, b } count:2 type:JavaMathBigInteger_class_()];
 }
 
+
+#line 36
 - (id<OrgBouncycastleMathEcECPointMap>)getPointMap {
+  
+#line 38
   return pointMap_;
 }
 
+
+#line 41
 - (jboolean)hasEfficientPointMap {
+  
+#line 43
   return YES;
 }
 
+
+#line 46
 - (JavaMathBigInteger *)calculateBWithJavaMathBigInteger:(JavaMathBigInteger *)k
                                   withJavaMathBigInteger:(JavaMathBigInteger *)g
                                                  withInt:(jint)t {
+  
+#line 48
   jboolean negative = ([((JavaMathBigInteger *) nil_chk(g)) signum] < 0);
   JavaMathBigInteger *b = [((JavaMathBigInteger *) nil_chk(k)) multiplyWithJavaMathBigInteger:[g abs]];
   jboolean extra = [((JavaMathBigInteger *) nil_chk(b)) testBitWithInt:t - 1];
   b = [b shiftRightWithInt:t];
   if (extra) {
+    
+#line 54
     b = [((JavaMathBigInteger *) nil_chk(b)) addWithJavaMathBigInteger:OrgBouncycastleMathEcECConstants_get_ONE_()];
   }
   return negative ? [((JavaMathBigInteger *) nil_chk(b)) negate] : b;

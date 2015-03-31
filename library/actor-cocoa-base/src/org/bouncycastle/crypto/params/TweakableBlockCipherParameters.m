@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/TweakableBlockCipherParameters.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/TweakableBlockCipherParameters.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/crypto/params/KeyParameter.h"
@@ -19,22 +21,36 @@
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsTweakableBlockCipherParameters, tweak_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsTweakableBlockCipherParameters, key_, OrgBouncycastleCryptoParamsKeyParameter *)
 
+
+#line 9
 @implementation OrgBouncycastleCryptoParamsTweakableBlockCipherParameters
 
+
+#line 15
 - (instancetype)initWithOrgBouncycastleCryptoParamsKeyParameter:(OrgBouncycastleCryptoParamsKeyParameter *)key
                                                   withByteArray:(IOSByteArray *)tweak {
   if (self = [super init]) {
+    
+#line 17
     self->key_ = key;
+    
+#line 18
     self->tweak_ = OrgBouncycastleUtilArrays_cloneWithByteArray_(tweak);
   }
   return self;
 }
 
+
+#line 26
 - (OrgBouncycastleCryptoParamsKeyParameter *)getKey {
   return key_;
 }
 
+
+#line 36
 - (IOSByteArray *)getTweak {
+  
+#line 38
   return tweak_;
 }
 

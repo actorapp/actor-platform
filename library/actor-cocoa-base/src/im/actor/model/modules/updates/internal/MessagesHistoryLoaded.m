@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/MessagesHistoryLoaded.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/MessagesHistoryLoaded.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/rpc/ResponseLoadHistory.h"
 #include "im/actor/model/entity/Peer.h"
@@ -18,22 +20,38 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalMessagesHistoryLoaded, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalMessagesHistoryLoaded, loadHistory_, ImActorModelApiRpcResponseLoadHistory *)
 
+
+#line 9
 @implementation ImActorModelModulesUpdatesInternalMessagesHistoryLoaded
 
+
+#line 13
 - (instancetype)initWithAMPeer:(AMPeer *)peer
 withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory *)loadHistory {
   if (self = [super init]) {
+    
+#line 14
     self->peer_ = peer;
+    
+#line 15
     self->loadHistory_ = loadHistory;
   }
   return self;
 }
 
+
+#line 18
 - (AMPeer *)getPeer {
+  
+#line 19
   return peer_;
 }
 
+
+#line 22
 - (ImActorModelApiRpcResponseLoadHistory *)getLoadHistory {
+  
+#line 23
   return loadHistory_;
 }
 

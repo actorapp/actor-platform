@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PhoneBookEmail.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PhoneBookEmail.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/PhoneBookEmail.h"
 
@@ -15,22 +17,38 @@
 
 J2OBJC_FIELD_SETTER(AMPhoneBookEmail, email_, NSString *)
 
+
+#line 6
 @implementation AMPhoneBookEmail
 
+
+#line 10
 - (instancetype)initWithLong:(jlong)id_
                 withNSString:(NSString *)email {
   if (self = [super init]) {
+    
+#line 11
     self->id__ = id_;
+    
+#line 12
     self->email_ = email;
   }
   return self;
 }
 
+
+#line 15
 - (jlong)getId {
+  
+#line 16
   return id__;
 }
 
+
+#line 19
 - (NSString *)getEmail {
+  
+#line 20
   return email_;
 }
 

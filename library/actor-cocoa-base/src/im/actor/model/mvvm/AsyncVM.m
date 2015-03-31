@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/AsyncVM.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/AsyncVM.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/mvvm/AsyncVM.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
@@ -26,13 +28,23 @@
 J2OBJC_FIELD_SETTER(AMAsyncVM_$1, this$0_, AMAsyncVM *)
 J2OBJC_FIELD_SETTER(AMAsyncVM_$1, val$obj_, id)
 
+
+#line 6
 @implementation AMAsyncVM
 
+
+#line 9
 - (void)postWithId:(id)obj {
+  
+#line 10
   AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_([[AMAsyncVM_$1 alloc] initWithAMAsyncVM:self withId:obj]);
 }
 
+
+#line 22
 - (void)detach {
+  
+#line 23
   isDetached_ = YES;
 }
 
@@ -51,7 +63,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAsyncVM)
 
 @implementation AMAsyncVM_$1
 
+
+#line 12
 - (void)run {
+  
+#line 13
   if (!this$0_->isDetached_) {
     [this$0_ onObjectReceivedWithId:val$obj_];
   }

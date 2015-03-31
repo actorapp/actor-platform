@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserContactsChanged.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserContactsChanged.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -25,46 +27,76 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, phones_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, emails_, id<JavaUtilList>)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateUserContactsChanged
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateUserContactsChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateUserContactsChanged_fromBytesWithByteArray_(data);
 }
 
+
+#line 31
 - (instancetype)initWithInt:(jint)uid
            withJavaUtilList:(id<JavaUtilList>)phones
            withJavaUtilList:(id<JavaUtilList>)emails {
   if (self = [super init]) {
+    
+#line 32
     self->uid_ = uid;
+    
+#line 33
     self->phones_ = phones;
+    
+#line 34
     self->emails_ = emails;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getUid {
+  
+#line 42
   return self->uid_;
 }
 
+
+#line 45
 - (id<JavaUtilList>)getPhones {
+  
+#line 46
   return self->phones_;
 }
 
+
+#line 49
 - (id<JavaUtilList>)getEmails {
+  
+#line 50
   return self->emails_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->phones_ = [values getRepeatedIntWithInt:2];
   self->emails_ = [values getRepeatedIntWithInt:3];
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeRepeatedIntWithInt:2 withJavaUtilList:self->phones_];
   [writer writeRepeatedIntWithInt:3 withJavaUtilList:self->emails_];
@@ -80,6 +112,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, emails_, id
 }
 
 - (jint)getHeaderKey {
+  
+#line 79
   return ImActorModelApiUpdatesUpdateUserContactsChanged_HEADER;
 }
 
@@ -94,6 +128,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, emails_, id
 
 ImActorModelApiUpdatesUpdateUserContactsChanged *ImActorModelApiUpdatesUpdateUserContactsChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserContactsChanged_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateUserContactsChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserContactsChanged alloc] init], data));
 }
 

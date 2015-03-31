@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcError.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcError.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -11,12 +13,20 @@
 #include "im/actor/model/network/mtp/entity/rpc/RpcError.h"
 #include "java/io/IOException.h"
 
+
+#line 9
 @implementation MTRpcError
 
+
+#line 19
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 20
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 23
 - (instancetype)initWithInt:(jint)errorCode
                withNSString:(NSString *)errorTag
                withNSString:(NSString *)userMessage
@@ -24,18 +34,32 @@
               withByteArray:(IOSByteArray *)relatedData {
   if (self = [super init]) {
     self->errorCode_ = errorCode;
+    
+#line 25
     self->errorTag_ = errorTag;
+    
+#line 26
     self->userMessage_ = userMessage;
+    
+#line 27
     self->canTryAgain_ = canTryAgain;
+    
+#line 28
     self->relatedData_ = relatedData;
   }
   return self;
 }
 
+
+#line 32
 - (jbyte)getHeader {
+  
+#line 33
   return MTRpcError_HEADER;
 }
 
+
+#line 37
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:errorCode_];
   [bs writeProtoStringWithNSString:errorTag_];
@@ -44,7 +68,11 @@
   [bs writeProtoBytesWithByteArray:relatedData_ withInt:0 withInt:((IOSByteArray *) nil_chk(relatedData_))->size_];
 }
 
+
+#line 46
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  
+#line 47
   errorCode_ = [((BSDataInput *) nil_chk(bs)) readInt];
   errorTag_ = [bs readProtoString];
   userMessage_ = [bs readProtoString];

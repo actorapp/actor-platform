@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserUnknownFields.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserUnknownFields.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/BserUnknownField.h"
@@ -18,23 +20,35 @@
 
 J2OBJC_FIELD_SETTER(BSBserUnknownFields, fields_, JavaUtilArrayList *)
 
+
+#line 8
 @implementation BSBserUnknownFields
 
+
+#line 12
 - (void)addWithInt:(jint)id_
            withInt:(jint)type
      withByteArray:(IOSByteArray *)field {
+  
+#line 13
   [((JavaUtilArrayList *) nil_chk(fields_)) addWithId:[[BSBserUnknownField alloc] initWithInt:id_ withInt:type withByteArray:field]];
 }
 
+
+#line 16
 - (void)addWithInt:(jint)id_
            withInt:(jint)type
           withLong:(jlong)value {
+  
+#line 17
   [((JavaUtilArrayList *) nil_chk(fields_)) addWithId:[[BSBserUnknownField alloc] initWithInt:id_ withInt:type withByteArray:BSUtils_longToBytesWithLong_(value)]];
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    fields_ = [[JavaUtilArrayList alloc] init];
+    fields_ =
+#line 10
+    [[JavaUtilArrayList alloc] init];
   }
   return self;
 }

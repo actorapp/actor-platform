@@ -3,19 +3,31 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/AsymmetricKeyParameter.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/AsymmetricKeyParameter.java"
+
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/crypto/params/AsymmetricKeyParameter.h"
 
+
+#line 5
 @implementation OrgBouncycastleCryptoParamsAsymmetricKeyParameter
 
+
+#line 10
 - (instancetype)initWithBoolean:(jboolean)privateKey {
   if (self = [super init]) {
+    
+#line 13
     self->privateKey_ = privateKey;
   }
   return self;
 }
 
+
+#line 16
 - (jboolean)isPrivate {
+  
+#line 18
   return privateKey_;
 }
 

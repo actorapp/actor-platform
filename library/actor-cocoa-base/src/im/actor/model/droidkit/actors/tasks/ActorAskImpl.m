@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/ActorAskImpl.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/ActorAskImpl.java"
+
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -67,32 +69,52 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl, self__, DKActor
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$container_, ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer *)
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFuture_, ImActorModelDroidkitActorsTasksAskFuture *)
 
+
+#line 15
 @implementation ImActorModelDroidkitActorsTasksActorAskImpl
 
+
+#line 21
 - (instancetype)initWithDKActorRef:(DKActorRef *)self_ {
   if (self = [super init]) {
-    asks_ = [[JavaUtilHashMap alloc] init];
-    nextReqId_ = 1;
+    asks_ =
+#line 17
+    [[JavaUtilHashMap alloc] init];
+    nextReqId_ =
+#line 18
+    1;
+    
+#line 22
     self->self__ = self_;
   }
   return self;
 }
 
+
+#line 25
 - (ImActorModelDroidkitActorsTasksAskFuture *)combineWithImActorModelDroidkitActorsTasksAskFutureArray:(IOSObjectArray *)futures {
+  
+#line 26
   ImActorModelDroidkitActorsTasksAskFuture *resultFuture = [[ImActorModelDroidkitActorsTasksAskFuture alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withInt:0];
   ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer *container = [[ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withInt:((IOSObjectArray *) nil_chk(futures))->size_];
   for (jint i = 0; i < futures->size_; i++) {
     jint index = i;
     IOSObjectArray_Set(nil_chk(container->futures_), index, IOSObjectArray_Get(futures, index));
     IOSObjectArray_SetAndConsume(nil_chk(container->callbacks_), index, [[ImActorModelDroidkitActorsTasksActorAskImpl_$1 alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer:container withInt:index withImActorModelDroidkitActorsTasksAskFuture:resultFuture]);
+    
+#line 66
     [((ImActorModelDroidkitActorsTasksAskFuture *) nil_chk(IOSObjectArray_Get(container->futures_, index))) addListenerWithImActorModelDroidkitActorsTasksAskCallback:IOSObjectArray_Get(container->callbacks_, index)];
   }
   return resultFuture;
 }
 
+
+#line 71
 - (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref
                                                        withLong:(jlong)timeout
                  withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback {
+  
+#line 72
   jint reqId = nextReqId_++;
   ImActorModelDroidkitActorsTasksAskFuture *future = [[ImActorModelDroidkitActorsTasksAskFuture alloc] initWithImActorModelDroidkitActorsTasksActorAskImpl:self withInt:reqId];
   if (callback != nil) {
@@ -107,75 +129,115 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFu
   return future;
 }
 
+
+#line 88
 - (void)preStart {
 }
 
+
+#line 93
 - (jboolean)onReceiveWithId:(id)message {
+  
+#line 94
   if ([message isKindOfClass:[ImActorModelDroidkitActorsMessagesDeadLetter class]]) {
     if (ImActorModelDroidkitActorsTasksActorAskImpl_onDeadLetterWithImActorModelDroidkitActorsMessagesDeadLetter_(self, (ImActorModelDroidkitActorsMessagesDeadLetter *) check_class_cast(message, [ImActorModelDroidkitActorsMessagesDeadLetter class]))) {
       return YES;
     }
   }
-  else if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksMessagesTaskResult class]]) {
+  else
+#line 98
+  if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksMessagesTaskResult class]]) {
     if (ImActorModelDroidkitActorsTasksActorAskImpl_onTaskResultWithImActorModelDroidkitActorsTasksMessagesTaskResult_(self, (ImActorModelDroidkitActorsTasksMessagesTaskResult *) check_class_cast(message, [ImActorModelDroidkitActorsTasksMessagesTaskResult class]))) {
       return YES;
     }
   }
-  else if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksMessagesTaskTimeout class]]) {
+  else
+#line 102
+  if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksMessagesTaskTimeout class]]) {
     if (ImActorModelDroidkitActorsTasksActorAskImpl_onTaskTimeoutWithImActorModelDroidkitActorsTasksMessagesTaskTimeout_(self, (ImActorModelDroidkitActorsTasksMessagesTaskTimeout *) check_class_cast(message, [ImActorModelDroidkitActorsTasksMessagesTaskTimeout class]))) {
       return YES;
     }
   }
-  else if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksMessagesTaskError class]]) {
+  else
+#line 106
+  if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksMessagesTaskError class]]) {
     if (ImActorModelDroidkitActorsTasksActorAskImpl_onTaskErrorWithImActorModelDroidkitActorsTasksMessagesTaskError_(self, (ImActorModelDroidkitActorsTasksMessagesTaskError *) check_class_cast(message, [ImActorModelDroidkitActorsTasksMessagesTaskError class]))) {
       return YES;
     }
   }
-  else if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksMessagesTaskProgress class]]) {
+  else
+#line 110
+  if ([message isKindOfClass:[ImActorModelDroidkitActorsTasksMessagesTaskProgress class]]) {
     if (ImActorModelDroidkitActorsTasksActorAskImpl_onTaskProgressWithImActorModelDroidkitActorsTasksMessagesTaskProgress_(self, (ImActorModelDroidkitActorsTasksMessagesTaskProgress *) check_class_cast(message, [ImActorModelDroidkitActorsTasksMessagesTaskProgress class]))) {
       return YES;
     }
   }
+  
+#line 116
   return NO;
 }
 
+
+#line 120
 - (void)postStop {
   {
-    IOSObjectArray *a__ = [((id<JavaUtilCollection>) nil_chk([((JavaUtilHashMap *) nil_chk(asks_)) values])) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer_class_()]];
+    IOSObjectArray *a__ =
+#line 121
+    [((id<JavaUtilCollection>) nil_chk([((JavaUtilHashMap *) nil_chk(asks_)) values])) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer_class_()]];
     ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = *b__++;
+      
+#line 122
       [((ImActorModelDroidkitActorsTasksAskFuture *) nil_chk(((ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *) nil_chk(container))->future_)) cancel];
     }
   }
 }
 
+
+#line 126
 - (jboolean)onTaskResultWithImActorModelDroidkitActorsTasksMessagesTaskResult:(ImActorModelDroidkitActorsTasksMessagesTaskResult *)result {
   return ImActorModelDroidkitActorsTasksActorAskImpl_onTaskResultWithImActorModelDroidkitActorsTasksMessagesTaskResult_(self, result);
 }
 
+
+#line 137
 - (jboolean)onTaskProgressWithImActorModelDroidkitActorsTasksMessagesTaskProgress:(ImActorModelDroidkitActorsTasksMessagesTaskProgress *)progress {
   return ImActorModelDroidkitActorsTasksActorAskImpl_onTaskProgressWithImActorModelDroidkitActorsTasksMessagesTaskProgress_(self, progress);
 }
 
+
+#line 148
 - (jboolean)onTaskErrorWithImActorModelDroidkitActorsTasksMessagesTaskError:(ImActorModelDroidkitActorsTasksMessagesTaskError *)error {
   return ImActorModelDroidkitActorsTasksActorAskImpl_onTaskErrorWithImActorModelDroidkitActorsTasksMessagesTaskError_(self, error);
 }
 
+
+#line 159
 - (jboolean)onTaskTimeoutWithImActorModelDroidkitActorsTasksMessagesTaskTimeout:(ImActorModelDroidkitActorsTasksMessagesTaskTimeout *)taskTimeout {
   return ImActorModelDroidkitActorsTasksActorAskImpl_onTaskTimeoutWithImActorModelDroidkitActorsTasksMessagesTaskTimeout_(self, taskTimeout);
 }
 
+
+#line 170
 - (jboolean)onTaskCancelledWithInt:(jint)reqId {
+  
+#line 171
   ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [((JavaUtilHashMap *) nil_chk(asks_)) removeWithId:JavaLangInteger_valueOfWithInt_(reqId)];
   if (container != nil) {
+    
+#line 174
     [((DKActorRef *) nil_chk(container->ref_)) sendWithId:[[ImActorModelDroidkitActorsTasksMessagesTaskCancel alloc] initWithInt:reqId] withDKActorRef:self__];
     return YES;
   }
+  
+#line 178
   return NO;
 }
 
+
+#line 181
 - (jboolean)onDeadLetterWithImActorModelDroidkitActorsMessagesDeadLetter:(ImActorModelDroidkitActorsMessagesDeadLetter *)letter {
   return ImActorModelDroidkitActorsTasksActorAskImpl_onDeadLetterWithImActorModelDroidkitActorsMessagesDeadLetter_(self, letter);
 }
@@ -190,42 +252,68 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksActorAskImpl_$1, val$resultFu
 @end
 
 jboolean ImActorModelDroidkitActorsTasksActorAskImpl_onTaskResultWithImActorModelDroidkitActorsTasksMessagesTaskResult_(ImActorModelDroidkitActorsTasksActorAskImpl *self, ImActorModelDroidkitActorsTasksMessagesTaskResult *result) {
+  
+#line 127
   ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [((JavaUtilHashMap *) nil_chk(self->asks_)) removeWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelDroidkitActorsTasksMessagesTaskResult *) nil_chk(result)) getRequestId])];
   if (container != nil) {
+    
+#line 130
     [((ImActorModelDroidkitActorsTasksAskFuture *) nil_chk(container->future_)) onResultWithId:[result getRes]];
     return YES;
   }
+  
+#line 134
   return NO;
 }
 
 jboolean ImActorModelDroidkitActorsTasksActorAskImpl_onTaskProgressWithImActorModelDroidkitActorsTasksMessagesTaskProgress_(ImActorModelDroidkitActorsTasksActorAskImpl *self, ImActorModelDroidkitActorsTasksMessagesTaskProgress *progress) {
+  
+#line 138
   ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [((JavaUtilHashMap *) nil_chk(self->asks_)) getWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelDroidkitActorsTasksMessagesTaskProgress *) nil_chk(progress)) getRequestId])];
   if (container != nil) {
+    
+#line 141
     [((ImActorModelDroidkitActorsTasksAskFuture *) nil_chk(container->future_)) onProgressWithId:[progress getProgress]];
     return YES;
   }
+  
+#line 145
   return NO;
 }
 
 jboolean ImActorModelDroidkitActorsTasksActorAskImpl_onTaskErrorWithImActorModelDroidkitActorsTasksMessagesTaskError_(ImActorModelDroidkitActorsTasksActorAskImpl *self, ImActorModelDroidkitActorsTasksMessagesTaskError *error) {
+  
+#line 149
   ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [((JavaUtilHashMap *) nil_chk(self->asks_)) removeWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelDroidkitActorsTasksMessagesTaskError *) nil_chk(error)) getRequestId])];
   if (container != nil) {
+    
+#line 152
     [((ImActorModelDroidkitActorsTasksAskFuture *) nil_chk(container->future_)) onErrorWithJavaLangThrowable:[error getThrowable]];
     return YES;
   }
+  
+#line 156
   return NO;
 }
 
 jboolean ImActorModelDroidkitActorsTasksActorAskImpl_onTaskTimeoutWithImActorModelDroidkitActorsTasksMessagesTaskTimeout_(ImActorModelDroidkitActorsTasksActorAskImpl *self, ImActorModelDroidkitActorsTasksMessagesTaskTimeout *taskTimeout) {
+  
+#line 160
   ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [((JavaUtilHashMap *) nil_chk(self->asks_)) removeWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelDroidkitActorsTasksMessagesTaskTimeout *) nil_chk(taskTimeout)) getRequestId])];
   if (container != nil) {
+    
+#line 163
     [((ImActorModelDroidkitActorsTasksAskFuture *) nil_chk(container->future_)) onTimeout];
     return YES;
   }
+  
+#line 167
   return NO;
 }
 
 jboolean ImActorModelDroidkitActorsTasksActorAskImpl_onDeadLetterWithImActorModelDroidkitActorsMessagesDeadLetter_(ImActorModelDroidkitActorsTasksActorAskImpl *self, ImActorModelDroidkitActorsMessagesDeadLetter *letter) {
+  
+#line 182
   if ([[((ImActorModelDroidkitActorsMessagesDeadLetter *) nil_chk(letter)) getMessage] isKindOfClass:[ImActorModelDroidkitActorsTasksMessagesTaskRequest class]]) {
     ImActorModelDroidkitActorsTasksMessagesTaskRequest *request = (ImActorModelDroidkitActorsTasksMessagesTaskRequest *) check_class_cast([letter getMessage], [ImActorModelDroidkitActorsTasksMessagesTaskRequest class]);
     ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer *container = [((JavaUtilHashMap *) nil_chk(self->asks_)) getWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelDroidkitActorsTasksMessagesTaskRequest *) nil_chk(request)) getRequestId])];
@@ -234,20 +322,32 @@ jboolean ImActorModelDroidkitActorsTasksActorAskImpl_onDeadLetterWithImActorMode
       return YES;
     }
   }
+  
+#line 194
   return NO;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl)
 
+
+#line 197
 @implementation ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer
 
+
+#line 202
 - (instancetype)initWithImActorModelDroidkitActorsTasksActorAskImpl:(ImActorModelDroidkitActorsTasksActorAskImpl *)outer$
                        withImActorModelDroidkitActorsTasksAskFuture:(ImActorModelDroidkitActorsTasksAskFuture *)future
                                                      withDKActorRef:(DKActorRef *)ref
                                                             withInt:(jint)requestId {
   if (self = [super init]) {
+    
+#line 203
     self->future_ = future;
+    
+#line 204
     self->ref_ = ref;
+    
+#line 205
     self->requestId_ = requestId;
   }
   return self;
@@ -264,15 +364,27 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl)
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl_AskContainer)
 
+
+#line 209
 @implementation ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer
 
+
+#line 216
 - (instancetype)initWithImActorModelDroidkitActorsTasksActorAskImpl:(ImActorModelDroidkitActorsTasksActorAskImpl *)outer$
                                                             withInt:(jint)count {
   if (self = [super init]) {
     isCompleted_ = NO;
+    
+#line 217
     results_ = [IOSObjectArray newArrayWithLength:count type:NSObject_class_()];
+    
+#line 218
     completed_ = [IOSBooleanArray newArrayWithLength:count];
+    
+#line 219
     callbacks_ = [IOSObjectArray newArrayWithLength:count type:ImActorModelDroidkitActorsTasksAskCallback_class_()];
+    
+#line 220
     futures_ = [IOSObjectArray newArrayWithLength:count type:ImActorModelDroidkitActorsTasksAskFuture_class_()];
   }
   return self;
@@ -293,16 +405,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl_Com
 
 @implementation ImActorModelDroidkitActorsTasksActorAskImpl_$1
 
+
+#line 33
 - (void)onResultWithId:(id)result {
+  
+#line 34
   *IOSBooleanArray_GetRef(nil_chk(((ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer *) nil_chk(val$container_))->completed_), val$index_) = YES;
   IOSObjectArray_Set(nil_chk(val$container_->results_), val$index_, result);
   jboolean isCompleted = YES;
   {
-    IOSBooleanArray *a__ = val$container_->completed_;
+    IOSBooleanArray *a__ =
+#line 37
+    val$container_->completed_;
     jboolean const *b__ = a__->buffer_;
     jboolean const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       jboolean c = *b__++;
+      
+#line 38
       if (!c) {
         isCompleted = NO;
         break;
@@ -318,7 +438,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsTasksActorAskImpl_Com
   }
 }
 
+
+#line 54
 - (void)onErrorWithJavaLangThrowable:(JavaLangThrowable *)throwable {
+  
+#line 55
   if (!((ImActorModelDroidkitActorsTasksActorAskImpl_CombineContainer *) nil_chk(val$container_))->isCompleted_) {
     val$container_->isCompleted_ = YES;
     for (jint i = 0; i < ((IOSObjectArray *) nil_chk(val$container_->futures_))->size_; i++) {

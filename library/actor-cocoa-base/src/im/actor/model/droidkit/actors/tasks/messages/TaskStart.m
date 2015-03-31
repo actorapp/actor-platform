@@ -3,9 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/messages/TaskStart.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/messages/TaskStart.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/tasks/messages/TaskStart.h"
 
+
+#line 6
 @implementation ImActorModelDroidkitActorsTasksMessagesTaskStart
 
 - (instancetype)init {

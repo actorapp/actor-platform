@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/NewSessionCreated.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/NewSessionCreated.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -10,44 +12,72 @@
 #include "im/actor/model/network/mtp/entity/NewSessionCreated.h"
 #include "java/io/IOException.h"
 
+
+#line 8
 @implementation MTNewSessionCreated
 
+
+#line 16
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 17
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 20
 - (instancetype)initWithLong:(jlong)sessionId
                     withLong:(jlong)messageId {
   if (self = [super init]) {
     self->sessionId_ = sessionId;
+    
+#line 22
     self->messageId_ = messageId;
   }
   return self;
 }
 
+
+#line 25
 - (jlong)getSessionId {
+  
+#line 26
   return sessionId_;
 }
 
+
+#line 29
 - (jlong)getMessageId {
+  
+#line 30
   return messageId_;
 }
 
+
+#line 34
 - (jbyte)getHeader {
   return MTNewSessionCreated_HEADER;
 }
 
+
+#line 39
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 40
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:sessionId_];
   [bs writeLongWithLong:messageId_];
 }
 
+
+#line 45
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   sessionId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   messageId_ = [bs readLong];
 }
 
 - (NSString *)description {
+  
+#line 52
   return JreStrcat("$JC", @"NewSession {", sessionId_, '}');
 }
 

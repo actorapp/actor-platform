@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/GenericPolynomialExtensionField.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/GenericPolynomialExtensionField.java"
+
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/math/field/FiniteField.h"
@@ -10,42 +12,76 @@
 #include "org/bouncycastle/math/field/Polynomial.h"
 #include "org/bouncycastle/util/Integers.h"
 
+
+#line 7
 @implementation OrgBouncycastleMathFieldGenericPolynomialExtensionField
 
+
+#line 12
 - (instancetype)initWithOrgBouncycastleMathFieldFiniteField:(id<OrgBouncycastleMathFieldFiniteField>)subfield
                      withOrgBouncycastleMathFieldPolynomial:(id<OrgBouncycastleMathFieldPolynomial>)polynomial {
   if (self = [super init]) {
+    
+#line 14
     self->subfield_ = subfield;
+    
+#line 15
     self->minimalPolynomial_ = polynomial;
   }
   return self;
 }
 
+
+#line 18
 - (JavaMathBigInteger *)getCharacteristic {
+  
+#line 20
   return [((id<OrgBouncycastleMathFieldFiniteField>) nil_chk(subfield_)) getCharacteristic];
 }
 
+
+#line 23
 - (jint)getDimension {
+  
+#line 25
   return [((id<OrgBouncycastleMathFieldFiniteField>) nil_chk(subfield_)) getDimension] * [((id<OrgBouncycastleMathFieldPolynomial>) nil_chk(minimalPolynomial_)) getDegree];
 }
 
+
+#line 28
 - (id<OrgBouncycastleMathFieldFiniteField>)getSubfield {
+  
+#line 30
   return subfield_;
 }
 
+
+#line 33
 - (jint)getDegree {
+  
+#line 35
   return [((id<OrgBouncycastleMathFieldPolynomial>) nil_chk(minimalPolynomial_)) getDegree];
 }
 
+
+#line 38
 - (id<OrgBouncycastleMathFieldPolynomial>)getMinimalPolynomial {
+  
+#line 40
   return minimalPolynomial_;
 }
 
 - (jboolean)isEqual:(id)obj {
+  
+#line 45
   if (self == obj) {
+    
+#line 47
     return YES;
   }
   if (!([obj isKindOfClass:[OrgBouncycastleMathFieldGenericPolynomialExtensionField class]])) {
+    
+#line 51
     return NO;
   }
   OrgBouncycastleMathFieldGenericPolynomialExtensionField *other = (OrgBouncycastleMathFieldGenericPolynomialExtensionField *) check_class_cast(obj, [OrgBouncycastleMathFieldGenericPolynomialExtensionField class]);
@@ -53,7 +89,11 @@
 }
 
 - (NSUInteger)hash {
-  return ((jint) [((id<OrgBouncycastleMathFieldFiniteField>) nil_chk(subfield_)) hash]) ^ OrgBouncycastleUtilIntegers_rotateLeftWithInt_withInt_(((jint) [((id<OrgBouncycastleMathFieldPolynomial>) nil_chk(minimalPolynomial_)) hash]), 16);
+  
+#line 59
+  return ((jint) [((id<OrgBouncycastleMathFieldFiniteField>) nil_chk(subfield_)) hash]) ^ OrgBouncycastleUtilIntegers_rotateLeftWithInt_withInt_(
+#line 60
+  ((jint) [((id<OrgBouncycastleMathFieldPolynomial>) nil_chk(minimalPolynomial_)) hash]), 16);
 }
 
 - (void)copyAllFieldsTo:(OrgBouncycastleMathFieldGenericPolynomialExtensionField *)other {

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/concurrency/Future.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/concurrency/Future.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/concurrency/Future.h"
 #include "im/actor/model/droidkit/actors/concurrency/FutureCallback.h"
@@ -25,40 +27,66 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsConcurrencyFuture, callbacks_, Jav
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsConcurrencyFuture, result_, id)
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsConcurrencyFuture, error__, JavaLangThrowable *)
 
+
+#line 9
 @implementation ImActorModelDroidkitActorsConcurrencyFuture
 
+
+#line 19
 - (jboolean)isCompleted {
   @synchronized(self) {
+    
+#line 20
     return isCompleted__;
   }
 }
 
+
+#line 23
 - (jboolean)isError {
   @synchronized(self) {
+    
+#line 24
     return isError__;
   }
 }
 
+
+#line 27
 - (jboolean)isCanceled {
   @synchronized(self) {
+    
+#line 28
     return isCanceled__;
   }
 }
 
+
+#line 31
 - (JavaLangThrowable *)error {
   @synchronized(self) {
+    
+#line 32
     return error__;
   }
 }
 
+
+#line 35
 - (id)get {
   @synchronized(self) {
+    
+#line 36
     return result_;
   }
 }
 
+
+#line 39
 - (jboolean)addListenerWithImActorModelDroidkitActorsConcurrencyFutureCallback:(id<ImActorModelDroidkitActorsConcurrencyFutureCallback>)callback {
   @synchronized(self) {
+    
+#line 40
     [((JavaUtilLinkedList *) nil_chk(callbacks_)) addWithId:callback];
     if (isCompleted__) {
       if (isCanceled__) {
@@ -68,6 +96,8 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsConcurrencyFuture, error__, JavaLa
         [((id<ImActorModelDroidkitActorsConcurrencyFutureCallback>) nil_chk(callback)) onErrorWithJavaLangThrowable:error__];
       }
       else {
+        
+#line 48
         [((id<ImActorModelDroidkitActorsConcurrencyFutureCallback>) nil_chk(callback)) onResultWithId:result_];
       }
     }
@@ -75,14 +105,22 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsConcurrencyFuture, error__, JavaLa
   }
 }
 
+
+#line 54
 - (void)removeListenerWithImActorModelDroidkitActorsConcurrencyFutureCallback:(id<ImActorModelDroidkitActorsConcurrencyFutureCallback>)callback {
   @synchronized(self) {
+    
+#line 55
     [((JavaUtilLinkedList *) nil_chk(callbacks_)) removeWithId:callback];
   }
 }
 
+
+#line 58
 - (void)onCancel {
   @synchronized(self) {
+    
+#line 59
     if (isCompleted__) {
       return;
     }
@@ -92,8 +130,12 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsConcurrencyFuture, error__, JavaLa
   }
 }
 
+
+#line 67
 - (void)onCompletedWithId:(id)res {
   @synchronized(self) {
+    
+#line 68
     if (isCompleted__) {
       return;
     }
@@ -102,14 +144,20 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsConcurrencyFuture, error__, JavaLa
     isError__ = NO;
     error__ = nil;
     result_ = res;
+    
+#line 77
     for (id<ImActorModelDroidkitActorsConcurrencyFutureCallback> __strong callback in nil_chk(callbacks_)) {
       [((id<ImActorModelDroidkitActorsConcurrencyFutureCallback>) nil_chk(callback)) onResultWithId:res];
     }
   }
 }
 
+
+#line 82
 - (void)onErrorWithJavaLangThrowable:(JavaLangThrowable *)throwable {
   @synchronized(self) {
+    
+#line 83
     if (isCompleted__) {
       return;
     }
@@ -118,26 +166,44 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsConcurrencyFuture, error__, JavaLa
     isError__ = YES;
     error__ = throwable;
     result_ = nil;
+    
+#line 92
     for (id<ImActorModelDroidkitActorsConcurrencyFutureCallback> __strong callback in nil_chk(callbacks_)) {
       [((id<ImActorModelDroidkitActorsConcurrencyFutureCallback>) nil_chk(callback)) onErrorWithJavaLangThrowable:throwable];
     }
   }
 }
 
+
+#line 97
 - (void)onTimeout {
   @synchronized(self) {
+    
+#line 98
     [self onErrorWithJavaLangThrowable:[[ImActorModelDroidkitActorsConcurrencyFutureTimeoutException alloc] init]];
   }
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    callbacks_ = [[JavaUtilLinkedList alloc] init];
-    isCompleted__ = NO;
-    isCanceled__ = NO;
-    isError__ = NO;
-    result_ = nil;
-    error__ = nil;
+    callbacks_ =
+#line 11
+    [[JavaUtilLinkedList alloc] init];
+    isCompleted__ =
+#line 13
+    NO;
+    isCanceled__ =
+#line 14
+    NO;
+    isError__ =
+#line 15
+    NO;
+    result_ =
+#line 16
+    nil;
+    error__ =
+#line 17
+    nil;
   }
   return self;
 }

@@ -3,9 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/cocoa/CocoaThreadingProvider.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/cocoa/CocoaThreadingProvider.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/cocoa/CocoaThreadingProvider.h"
 
+
+#line 8
 @implementation AMCocoaThreadingProvider
 
 - (instancetype)init {

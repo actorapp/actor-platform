@@ -3,27 +3,43 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/IncorrectTypeException.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/IncorrectTypeException.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/IncorrectTypeException.h"
 #include "java/lang/Throwable.h"
 
+
+#line 6
 @implementation BSIncorrectTypeException
 
+
+#line 7
 - (instancetype)init {
   return [super init];
 }
 
+
+#line 10
 - (instancetype)initWithNSString:(NSString *)detailMessage {
-  return [super initWithNSString:detailMessage];
+  return
+#line 11
+  [super initWithNSString:detailMessage];
 }
 
+
+#line 14
 - (instancetype)initWithNSString:(NSString *)detailMessage
            withJavaLangThrowable:(JavaLangThrowable *)throwable {
   return [super initWithNSString:detailMessage withJavaLangThrowable:throwable];
 }
 
+
+#line 18
 - (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)throwable {
-  return [super initWithJavaLangThrowable:throwable];
+  return
+#line 19
+  [super initWithJavaLangThrowable:throwable];
 }
 
 @end

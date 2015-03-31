@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/ConfigurationBuilder.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/ConfigurationBuilder.java"
+
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/ApiConfiguration.h"
@@ -58,74 +60,104 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, notificationProvider_, id<AMNotifica
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, dispatcherProvider_, id<AMDispatcherProvider>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguration *)
 
+
+#line 10
 @implementation AMConfigurationBuilder
 
 - (AMConfigurationBuilder *)setApiConfiguration:(AMApiConfiguration *)apiConfiguration {
+  
+#line 41
   self->apiConfiguration_ = apiConfiguration;
   return self;
 }
 
 - (AMConfigurationBuilder *)setNotificationProvider:(id<AMNotificationProvider>)notificationProvider {
+  
+#line 46
   self->notificationProvider_ = notificationProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider {
+  
+#line 51
   self->fileSystemProvider_ = fileSystemProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setEnableContactsLogging:(jboolean)enableContactsLogging {
+  
+#line 56
   self->enableContactsLogging_ = enableContactsLogging;
   return self;
 }
 
 - (AMConfigurationBuilder *)setEnableNetworkLogging:(jboolean)enableNetworkLogging {
+  
+#line 61
   self->enableNetworkLogging_ = enableNetworkLogging;
   return self;
 }
 
 - (AMConfigurationBuilder *)setCryptoProvider:(id<AMCryptoProvider>)cryptoProvider {
+  
+#line 66
   self->cryptoProvider_ = cryptoProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider {
+  
+#line 71
   self->phoneBookProvider_ = phoneBookProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setLogProvider:(id<AMLogProvider>)log {
+  
+#line 76
   self->log_ = log;
   return self;
 }
 
 - (AMConfigurationBuilder *)setNetworkProvider:(id<AMNetworkProvider>)networkProvider {
+  
+#line 81
   self->networkProvider_ = networkProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setThreadingProvider:(id<AMThreadingProvider>)threadingProvider {
+  
+#line 86
   self->threadingProvider_ = threadingProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setStorageProvider:(id<AMStorageProvider>)storageProvider {
+  
+#line 91
   self->enginesFactory_ = storageProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setLocaleProvider:(id<AMLocaleProvider>)localeProvider {
+  
+#line 96
   self->localeProvider_ = localeProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setDispatcherProvider:(id<AMDispatcherProvider>)dispatcherProvider {
+  
+#line 101
   self->dispatcherProvider_ = dispatcherProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)addEndpoint:(NSString *)url {
+  
+#line 107
   NSString *scheme = [((NSString *) nil_chk([url substring:0 endIndex:[((NSString *) nil_chk(url)) indexOfString:@":"]])) lowercaseString];
   NSString *host = [url substring:[url indexOfString:@"://"] + ((jint) [@"://" length])];
   if ([((NSString *) nil_chk(host)) hasSuffix:@"/"]) {
@@ -137,42 +169,58 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
     host = IOSObjectArray_Get(nil_chk(parts), 0);
     port = JavaLangInteger_parseIntWithNSString_(IOSObjectArray_Get(parts, 1));
   }
+  
+#line 119
   if ([((NSString *) nil_chk(scheme)) isEqual:@"ssl"] || [scheme isEqual:@"tls"]) {
     if (port <= 0) {
       port = 443;
     }
     [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:[[AMConnectionEndpoint alloc] initWithNSString:host withInt:port withAMConnectionEndpoint_TypeEnum:AMConnectionEndpoint_TypeEnum_get_TCP_TLS()]];
   }
-  else if ([scheme isEqual:@"tcp"]) {
+  else
+#line 124
+  if ([scheme isEqual:@"tcp"]) {
     if (port <= 0) {
       port = 80;
     }
     [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:[[AMConnectionEndpoint alloc] initWithNSString:host withInt:port withAMConnectionEndpoint_TypeEnum:AMConnectionEndpoint_TypeEnum_get_TCP()]];
   }
-  else if ([scheme isEqual:@"ws"]) {
+  else
+#line 129
+  if ([scheme isEqual:@"ws"]) {
     if (port <= 0) {
       port = 80;
     }
     [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:[[AMConnectionEndpoint alloc] initWithNSString:host withInt:port withAMConnectionEndpoint_TypeEnum:AMConnectionEndpoint_TypeEnum_get_WS()]];
   }
-  else if ([scheme isEqual:@"wss"]) {
+  else
+#line 134
+  if ([scheme isEqual:@"wss"]) {
     if (port <= 0) {
       port = 443;
     }
     [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:[[AMConnectionEndpoint alloc] initWithNSString:host withInt:port withAMConnectionEndpoint_TypeEnum:AMConnectionEndpoint_TypeEnum_get_WS_TLS()]];
   }
   else {
+    
+#line 140
     @throw [[JavaLangRuntimeException alloc] initWithNSString:JreStrcat("$$", @"Unknown scheme type: ", scheme)];
   }
   return self;
 }
 
 - (AMConfigurationBuilder *)setMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider {
+  
+#line 146
   self->mainThreadProvider_ = mainThreadProvider;
   return self;
 }
 
+
+#line 150
 - (AMConfiguration *)build {
+  
+#line 151
   if (networkProvider_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Networking is not set"];
   }
@@ -203,14 +251,26 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
   if (dispatcherProvider_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Dispatcher Provider not set"];
   }
-  return [[AMConfiguration alloc] initWithAMNetworkProvider:networkProvider_ withAMConnectionEndpointArray:[endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]] withAMThreadingProvider:threadingProvider_ withAMMainThreadProvider:mainThreadProvider_ withAMStorageProvider:enginesFactory_ withAMLogProvider:log_ withAMLocaleProvider:localeProvider_ withAMPhoneBookProvider:phoneBookProvider_ withAMCryptoProvider:cryptoProvider_ withAMFileSystemProvider:fileSystemProvider_ withAMNotificationProvider:notificationProvider_ withAMDispatcherProvider:dispatcherProvider_ withAMApiConfiguration:apiConfiguration_ withBoolean:enableContactsLogging_ withBoolean:enableNetworkLogging_];
+  return [[AMConfiguration alloc] initWithAMNetworkProvider:networkProvider_ withAMConnectionEndpointArray:[endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]] withAMThreadingProvider:
+#line 182
+  threadingProvider_ withAMMainThreadProvider:mainThreadProvider_ withAMStorageProvider:enginesFactory_ withAMLogProvider:log_ withAMLocaleProvider:localeProvider_ withAMPhoneBookProvider:
+#line 183
+  phoneBookProvider_ withAMCryptoProvider:cryptoProvider_ withAMFileSystemProvider:fileSystemProvider_ withAMNotificationProvider:notificationProvider_ withAMDispatcherProvider:
+#line 184
+  dispatcherProvider_ withAMApiConfiguration:apiConfiguration_ withBoolean:enableContactsLogging_ withBoolean:enableNetworkLogging_];
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    endpoints_ = [[JavaUtilArrayList alloc] init];
-    enableContactsLogging_ = NO;
-    enableNetworkLogging_ = NO;
+    endpoints_ =
+#line 21
+    [[JavaUtilArrayList alloc] init];
+    enableContactsLogging_ =
+#line 31
+    NO;
+    enableNetworkLogging_ =
+#line 32
+    NO;
   }
   return self;
 }

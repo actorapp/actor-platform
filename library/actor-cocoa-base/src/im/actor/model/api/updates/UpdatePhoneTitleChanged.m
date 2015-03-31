@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdatePhoneTitleChanged.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdatePhoneTitleChanged.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,39 +24,63 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdatePhoneTitleChanged, title_, NSString *)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdatePhoneTitleChanged
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdatePhoneTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdatePhoneTitleChanged_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithInt:(jint)phoneId
                withNSString:(NSString *)title {
   if (self = [super init]) {
+    
+#line 31
     self->phoneId_ = phoneId;
+    
+#line 32
     self->title_ = title;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getPhoneId {
+  
+#line 40
   return self->phoneId_;
 }
 
+
+#line 43
 - (NSString *)getTitle {
+  
+#line 44
   return self->title_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->phoneId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:2];
   self->title_ = [values getStringWithInt:3];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:2 withInt:self->phoneId_];
   if (self->title_ == nil) {
     @throw [[JavaIoIOException alloc] init];
@@ -71,6 +97,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdatePhoneTitleChanged, title_, NSStr
 }
 
 - (jint)getHeaderKey {
+  
+#line 73
   return ImActorModelApiUpdatesUpdatePhoneTitleChanged_HEADER;
 }
 
@@ -84,6 +112,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdatePhoneTitleChanged, title_, NSStr
 
 ImActorModelApiUpdatesUpdatePhoneTitleChanged *ImActorModelApiUpdatesUpdatePhoneTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdatePhoneTitleChanged_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdatePhoneTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdatePhoneTitleChanged alloc] init], data));
 }
 

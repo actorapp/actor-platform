@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Pong.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Pong.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -16,12 +18,20 @@
 }
 @end
 
+
+#line 8
 @implementation MTPong
 
+
+#line 14
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 15
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 18
 - (instancetype)initWithLong:(jlong)randomId {
   if (self = [super init]) {
     self->randomId_ = randomId;
@@ -29,23 +39,37 @@
   return self;
 }
 
+
+#line 22
 - (jlong)getRandomId {
+  
+#line 23
   return randomId_;
 }
 
+
+#line 27
 - (jbyte)getHeader {
   return MTPong_HEADER;
 }
 
+
+#line 32
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 33
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:randomId_];
 }
 
+
+#line 37
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   randomId_ = [((BSDataInput *) nil_chk(bs)) readLong];
 }
 
 - (NSString *)description {
+  
+#line 43
   return JreStrcat("$JC", @"Pong{", randomId_, '}');
 }
 

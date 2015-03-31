@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupUserAdded.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupUserAdded.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -21,37 +23,57 @@
 - (instancetype)init;
 @end
 
+
+#line 12
 @implementation AMServiceGroupUserAdded
 
 + (AMServiceGroupUserAdded *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMServiceGroupUserAdded_fromBytesWithByteArray_(data);
 }
 
+
+#line 20
 - (instancetype)initWithInt:(jint)addedUid {
-  if (self = [super initWithNSString:@"Member added"]) {
+  if (self =
+#line 21
+  [super initWithNSString:@"Member added"]) {
+    
+#line 22
     self->addedUid_ = addedUid;
   }
   return self;
 }
 
+
+#line 25
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getAddedUid {
+  
+#line 30
   return addedUid_;
 }
 
+
+#line 34
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE_ADDED();
 }
 
+
+#line 39
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  
+#line 40
   [super parseWithBSBserValues:values];
   addedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 47
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:addedUid_];
 }
@@ -65,6 +87,8 @@
 
 AMServiceGroupUserAdded *AMServiceGroupUserAdded_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupUserAdded_init();
+  
+#line 15
   return ((AMServiceGroupUserAdded *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupUserAdded alloc] init], data));
 }
 

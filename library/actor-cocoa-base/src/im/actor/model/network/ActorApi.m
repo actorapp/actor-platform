@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/ActorApi.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/ActorApi.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/NetworkProvider.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
@@ -23,20 +25,30 @@
 
 J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
 
+
+#line 12
 @implementation AMActorApi
 
+
+#line 15
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
               withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider {
   if (self = [super init]) {
+    
+#line 17
     self->apiBroker_ = ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(endpoints, keyStorage, callback, networkProvider);
   }
   return self;
 }
 
+
+#line 20
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
+  
+#line 21
   if (request == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Request can't be null"];
   }

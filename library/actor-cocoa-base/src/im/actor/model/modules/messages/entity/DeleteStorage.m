@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/DeleteStorage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/DeleteStorage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,16 +29,24 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDeleteStorage, pendingDeletions_, JavaUtilHashMap *)
 
+
+#line 17
 @implementation ImActorModelModulesMessagesEntityDeleteStorage
 
 + (ImActorModelModulesMessagesEntityDeleteStorage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesMessagesEntityDeleteStorage_fromBytesWithByteArray_(data);
 }
 
+
+#line 25
 - (JavaUtilHashMap *)getPendingDeletions {
+  
+#line 26
   return pendingDeletions_;
 }
 
+
+#line 30
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [((JavaUtilHashMap *) nil_chk(pendingDeletions_)) clear];
   jint count = [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1];
@@ -49,13 +59,19 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDeleteStorage, pendingDelet
   }
 }
 
+
+#line 43
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 44
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:[[JavaUtilArrayList alloc] initWithJavaUtilCollection:[((JavaUtilHashMap *) nil_chk(pendingDeletions_)) values]]];
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    pendingDeletions_ = [[JavaUtilHashMap alloc] init];
+    pendingDeletions_ =
+#line 23
+    [[JavaUtilHashMap alloc] init];
   }
   return self;
 }
@@ -69,6 +85,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDeleteStorage, pendingDelet
 
 ImActorModelModulesMessagesEntityDeleteStorage *ImActorModelModulesMessagesEntityDeleteStorage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityDeleteStorage_init();
+  
+#line 20
   return ((ImActorModelModulesMessagesEntityDeleteStorage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityDeleteStorage alloc] init], data));
 }
 

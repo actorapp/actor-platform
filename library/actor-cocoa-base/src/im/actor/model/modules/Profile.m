@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Profile.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Profile.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
@@ -31,25 +33,49 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesProfile, ownAvatarVM_, AMOwnAvatarVM *)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesProfile_$1, val$modules_, ImActorModelModulesModules *)
 
+
+#line 14
 @implementation ImActorModelModulesProfile
 
+
+#line 18
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self = [super initWithImActorModelModulesModules:modules]) {
+  if (self =
+#line 19
+  [super initWithImActorModelModulesModules:modules]) {
+    
+#line 20
     ownAvatarVM_ = [[AMOwnAvatarVM alloc] init];
-    avatarChangeActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesAvatarOwnAvatarChangeActor_class_(), [[ImActorModelModulesProfile_$1 alloc] initWithImActorModelModulesModules:modules]) withNSString:@"actor/avatar/my"];
+    
+#line 21
+    avatarChangeActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesAvatarOwnAvatarChangeActor_class_(), [[ImActorModelModulesProfile_$1 alloc] initWithImActorModelModulesModules:modules]) withNSString:
+#line 26
+    @"actor/avatar/my"];
   }
   return self;
 }
 
+
+#line 29
 - (AMOwnAvatarVM *)getOwnAvatarVM {
+  
+#line 30
   return ownAvatarVM_;
 }
 
+
+#line 33
 - (void)changeAvatarWithNSString:(NSString *)descriptor {
+  
+#line 34
   [((DKActorRef *) nil_chk(avatarChangeActor_)) sendWithId:[[ImActorModelModulesAvatarOwnAvatarChangeActor_ChangeAvatar alloc] initWithNSString:descriptor]];
 }
 
+
+#line 37
 - (void)removeAvatar {
+  
+#line 38
   [((DKActorRef *) nil_chk(avatarChangeActor_)) sendWithId:[[ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveAvatar alloc] init]];
 }
 
@@ -65,7 +91,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesProfile)
 
 @implementation ImActorModelModulesProfile_$1
 
+
+#line 23
 - (ImActorModelModulesAvatarOwnAvatarChangeActor *)create {
+  
+#line 24
   return [[ImActorModelModulesAvatarOwnAvatarChangeActor alloc] initWithImActorModelModulesModules:val$modules_];
 }
 

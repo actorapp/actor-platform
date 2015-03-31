@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/GroupAvatarVM.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/GroupAvatarVM.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/mvvm/ValueModel.h"
@@ -17,16 +19,28 @@
 
 J2OBJC_FIELD_SETTER(AMGroupAvatarVM, uploadState_, AMValueModel *)
 
+
+#line 8
 @implementation AMGroupAvatarVM
 
+
+#line 11
 - (instancetype)initWithInt:(jint)gid {
   if (self = [super init]) {
-    uploadState_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I", @"avatar.group.", gid) withId:[[AMAvatarUploadState alloc] initWithNSString:nil withBoolean:NO]];
+    
+#line 12
+    uploadState_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I", @"avatar.group.",
+#line 13
+    gid) withId:[[AMAvatarUploadState alloc] initWithNSString:nil withBoolean:NO]];
   }
   return self;
 }
 
+
+#line 16
 - (AMValueModel *)getUploadState {
+  
+#line 17
   return uploadState_;
 }
 

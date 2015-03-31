@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/digests/SHA1Digest.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/digests/SHA1Digest.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "java/lang/System.h"
@@ -40,207 +42,375 @@ __attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA1Digest_gWith
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoDigestsSHA1Digest, X_, IOSIntArray *)
 
+
+#line 12
 @implementation OrgBouncycastleCryptoDigestsSHA1Digest
 
+
+#line 26
 - (instancetype)init {
   if (self = [super init]) {
-    X_ = [IOSIntArray newArrayWithLength:80];
+    X_ = [IOSIntArray newArrayWithLength:
+#line 20
+    80];
+    
+#line 28
     [self reset];
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)initWithOrgBouncycastleCryptoDigestsSHA1Digest:(OrgBouncycastleCryptoDigestsSHA1Digest *)t {
   if (self = [super initWithOrgBouncycastleCryptoDigestsGeneralDigest:t]) {
-    X_ = [IOSIntArray newArrayWithLength:80];
+    X_ = [IOSIntArray newArrayWithLength:
+#line 20
+    80];
+    
+#line 39
     OrgBouncycastleCryptoDigestsSHA1Digest_copyInWithOrgBouncycastleCryptoDigestsSHA1Digest_(self, t);
   }
   return self;
 }
 
+
+#line 42
 - (instancetype)initWithByteArray:(IOSByteArray *)encodedState {
-  if (self = [super initWithByteArray:encodedState]) {
-    X_ = [IOSIntArray newArrayWithLength:80];
+  if (self =
+#line 44
+  [super initWithByteArray:encodedState]) {
+    X_ = [IOSIntArray newArrayWithLength:
+#line 20
+    80];
     H1_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 16);
+    
+#line 47
     H2_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 20);
+    
+#line 48
     H3_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 24);
+    
+#line 49
     H4_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 28);
+    
+#line 50
     H5_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 32);
+    
+#line 52
     xOff_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 36);
+    
+#line 53
     for (jint i = 0; i != xOff_; i++) {
+      
+#line 55
       *IOSIntArray_GetRef(X_, i) = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 40 + (i * 4));
     }
   }
   return self;
 }
 
+
+#line 59
 - (void)copyInWithOrgBouncycastleCryptoDigestsSHA1Digest:(OrgBouncycastleCryptoDigestsSHA1Digest *)t {
   OrgBouncycastleCryptoDigestsSHA1Digest_copyInWithOrgBouncycastleCryptoDigestsSHA1Digest_(self, t);
 }
 
+
+#line 71
 - (NSString *)getAlgorithmName {
+  
+#line 73
   return @"SHA-1";
 }
 
+
+#line 76
 - (jint)getDigestSize {
+  
+#line 78
   return OrgBouncycastleCryptoDigestsSHA1Digest_DIGEST_LENGTH;
 }
 
+
+#line 81
 - (void)processWordWithByteArray:(IOSByteArray *)inArg
                          withInt:(jint)inOff {
+  
+#line 87
   jint n = LShift32(IOSByteArray_Get(nil_chk(inArg), inOff), 24);
   n |= LShift32((IOSByteArray_Get(inArg, ++inOff) & (jint) 0xff), 16);
   n |= LShift32((IOSByteArray_Get(inArg, ++inOff) & (jint) 0xff), 8);
   n |= (IOSByteArray_Get(inArg, ++inOff) & (jint) 0xff);
   *IOSIntArray_GetRef(nil_chk(X_), xOff_) = n;
+  
+#line 93
   if (++xOff_ == 16) {
+    
+#line 95
     [self processBlock];
   }
 }
 
 - (void)processLengthWithLong:(jlong)bitLength {
+  
+#line 102
   if (xOff_ > 14) {
+    
+#line 104
     [self processBlock];
   }
+  
+#line 107
   *IOSIntArray_GetRef(nil_chk(X_), 14) = (jint) (URShift64(bitLength, 32));
   *IOSIntArray_GetRef(X_, 15) = (jint) (bitLength & (jint) 0xffffffff);
 }
 
+
+#line 111
 - (jint)doFinalWithByteArray:(IOSByteArray *)outArg
                      withInt:(jint)outOff {
+  
+#line 115
   [self finish];
+  
+#line 117
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(H1_, outArg, outOff);
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(H2_, outArg, outOff + 4);
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(H3_, outArg, outOff + 8);
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(H4_, outArg, outOff + 12);
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(H5_, outArg, outOff + 16);
+  
+#line 123
   [self reset];
+  
+#line 125
   return OrgBouncycastleCryptoDigestsSHA1Digest_DIGEST_LENGTH;
 }
 
 - (void)reset {
+  
+#line 133
   [super reset];
+  
+#line 135
   H1_ = (jint) 0x67452301;
   H2_ = (jint) 0xefcdab89;
   H3_ = (jint) 0x98badcfe;
   H4_ = (jint) 0x10325476;
   H5_ = (jint) 0xc3d2e1f0;
+  
+#line 141
   xOff_ = 0;
   for (jint i = 0; i != ((IOSIntArray *) nil_chk(X_))->size_; i++) {
+    
+#line 144
     *IOSIntArray_GetRef(X_, i) = 0;
   }
 }
 
+
+#line 156
 - (jint)fWithInt:(jint)u
          withInt:(jint)v
          withInt:(jint)w {
   return OrgBouncycastleCryptoDigestsSHA1Digest_fWithInt_withInt_withInt_(self, u, v, w);
 }
 
+
+#line 164
 - (jint)hWithInt:(jint)u
          withInt:(jint)v
          withInt:(jint)w {
   return OrgBouncycastleCryptoDigestsSHA1Digest_hWithInt_withInt_withInt_(self, u, v, w);
 }
 
+
+#line 172
 - (jint)gWithInt:(jint)u
          withInt:(jint)v
          withInt:(jint)w {
   return OrgBouncycastleCryptoDigestsSHA1Digest_gWithInt_withInt_withInt_(self, u, v, w);
 }
 
+
+#line 180
 - (void)processBlock {
+  
+#line 185
   for (jint i = 16; i < 80; i++) {
+    
+#line 187
     jint t = IOSIntArray_Get(nil_chk(X_), i - 3) ^ IOSIntArray_Get(X_, i - 8) ^ IOSIntArray_Get(X_, i - 14) ^ IOSIntArray_Get(X_, i - 16);
     *IOSIntArray_GetRef(X_, i) = (LShift32(t, 1)) | (URShift32(t, 31));
   }
+  
+#line 194
   jint A = H1_;
   jint B = H2_;
   jint C = H3_;
   jint D = H4_;
   jint E = H5_;
+  
+#line 203
   jint idx = 0;
+  
+#line 205
   for (jint j = 0; j < 4; j++) {
+    
+#line 209
     E += ((LShift32(A, 5)) | (URShift32(A, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_fWithInt_withInt_withInt_(self, B, C, D) + IOSIntArray_Get(nil_chk(X_), idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y1;
     B = (LShift32(B, 30)) | (URShift32(B, 2));
+    
+#line 212
     D += ((LShift32(E, 5)) | (URShift32(E, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_fWithInt_withInt_withInt_(self, A, B, C) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y1;
     A = (LShift32(A, 30)) | (URShift32(A, 2));
+    
+#line 215
     C += ((LShift32(D, 5)) | (URShift32(D, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_fWithInt_withInt_withInt_(self, E, A, B) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y1;
     E = (LShift32(E, 30)) | (URShift32(E, 2));
+    
+#line 218
     B += ((LShift32(C, 5)) | (URShift32(C, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_fWithInt_withInt_withInt_(self, D, E, A) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y1;
     D = (LShift32(D, 30)) | (URShift32(D, 2));
+    
+#line 221
     A += ((LShift32(B, 5)) | (URShift32(B, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_fWithInt_withInt_withInt_(self, C, D, E) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y1;
     C = (LShift32(C, 30)) | (URShift32(C, 2));
   }
+  
+#line 228
   for (jint j = 0; j < 4; j++) {
+    
+#line 232
     E += ((LShift32(A, 5)) | (URShift32(A, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_hWithInt_withInt_withInt_(self, B, C, D) + IOSIntArray_Get(nil_chk(X_), idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y2;
     B = (LShift32(B, 30)) | (URShift32(B, 2));
+    
+#line 235
     D += ((LShift32(E, 5)) | (URShift32(E, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_hWithInt_withInt_withInt_(self, A, B, C) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y2;
     A = (LShift32(A, 30)) | (URShift32(A, 2));
+    
+#line 238
     C += ((LShift32(D, 5)) | (URShift32(D, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_hWithInt_withInt_withInt_(self, E, A, B) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y2;
     E = (LShift32(E, 30)) | (URShift32(E, 2));
+    
+#line 241
     B += ((LShift32(C, 5)) | (URShift32(C, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_hWithInt_withInt_withInt_(self, D, E, A) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y2;
     D = (LShift32(D, 30)) | (URShift32(D, 2));
+    
+#line 244
     A += ((LShift32(B, 5)) | (URShift32(B, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_hWithInt_withInt_withInt_(self, C, D, E) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y2;
     C = (LShift32(C, 30)) | (URShift32(C, 2));
   }
+  
+#line 251
   for (jint j = 0; j < 4; j++) {
+    
+#line 255
     E += ((LShift32(A, 5)) | (URShift32(A, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_gWithInt_withInt_withInt_(self, B, C, D) + IOSIntArray_Get(nil_chk(X_), idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y3;
     B = (LShift32(B, 30)) | (URShift32(B, 2));
+    
+#line 258
     D += ((LShift32(E, 5)) | (URShift32(E, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_gWithInt_withInt_withInt_(self, A, B, C) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y3;
     A = (LShift32(A, 30)) | (URShift32(A, 2));
+    
+#line 261
     C += ((LShift32(D, 5)) | (URShift32(D, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_gWithInt_withInt_withInt_(self, E, A, B) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y3;
     E = (LShift32(E, 30)) | (URShift32(E, 2));
+    
+#line 264
     B += ((LShift32(C, 5)) | (URShift32(C, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_gWithInt_withInt_withInt_(self, D, E, A) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y3;
     D = (LShift32(D, 30)) | (URShift32(D, 2));
+    
+#line 267
     A += ((LShift32(B, 5)) | (URShift32(B, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_gWithInt_withInt_withInt_(self, C, D, E) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y3;
     C = (LShift32(C, 30)) | (URShift32(C, 2));
   }
+  
+#line 274
   for (jint j = 0; j <= 3; j++) {
+    
+#line 278
     E += ((LShift32(A, 5)) | (URShift32(A, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_hWithInt_withInt_withInt_(self, B, C, D) + IOSIntArray_Get(nil_chk(X_), idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y4;
     B = (LShift32(B, 30)) | (URShift32(B, 2));
+    
+#line 281
     D += ((LShift32(E, 5)) | (URShift32(E, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_hWithInt_withInt_withInt_(self, A, B, C) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y4;
     A = (LShift32(A, 30)) | (URShift32(A, 2));
+    
+#line 284
     C += ((LShift32(D, 5)) | (URShift32(D, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_hWithInt_withInt_withInt_(self, E, A, B) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y4;
     E = (LShift32(E, 30)) | (URShift32(E, 2));
+    
+#line 287
     B += ((LShift32(C, 5)) | (URShift32(C, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_hWithInt_withInt_withInt_(self, D, E, A) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y4;
     D = (LShift32(D, 30)) | (URShift32(D, 2));
+    
+#line 290
     A += ((LShift32(B, 5)) | (URShift32(B, 27))) + OrgBouncycastleCryptoDigestsSHA1Digest_hWithInt_withInt_withInt_(self, C, D, E) + IOSIntArray_Get(X_, idx++) + OrgBouncycastleCryptoDigestsSHA1Digest_Y4;
     C = (LShift32(C, 30)) | (URShift32(C, 2));
   }
+  
+#line 295
   H1_ += A;
   H2_ += B;
   H3_ += C;
   H4_ += D;
   H5_ += E;
+  
+#line 304
   xOff_ = 0;
   for (jint i = 0; i < 16; i++) {
+    
+#line 307
     *IOSIntArray_GetRef(nil_chk(X_), i) = 0;
   }
 }
 
+
+#line 311
 - (id<OrgBouncycastleUtilMemoable>)copy__ {
+  
+#line 313
   return [[OrgBouncycastleCryptoDigestsSHA1Digest alloc] initWithOrgBouncycastleCryptoDigestsSHA1Digest:self];
 }
 
+
+#line 316
 - (void)resetWithOrgBouncycastleUtilMemoable:(id<OrgBouncycastleUtilMemoable>)other {
+  
+#line 318
   OrgBouncycastleCryptoDigestsSHA1Digest *d = (OrgBouncycastleCryptoDigestsSHA1Digest *) check_class_cast(other, [OrgBouncycastleCryptoDigestsSHA1Digest class]);
+  
+#line 320
   [super copyInWithOrgBouncycastleCryptoDigestsGeneralDigest:d];
   OrgBouncycastleCryptoDigestsSHA1Digest_copyInWithOrgBouncycastleCryptoDigestsSHA1Digest_(self, d);
 }
 
+
+#line 324
 - (IOSByteArray *)getEncodedState {
   IOSByteArray *state = [IOSByteArray newArrayWithLength:40 + xOff_ * 4];
+  
+#line 328
   [super populateStateWithByteArray:state];
+  
+#line 330
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(H1_, state, 16);
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(H2_, state, 20);
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(H3_, state, 24);
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(H4_, state, 28);
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(H5_, state, 32);
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(xOff_, state, 36);
+  
+#line 337
   for (jint i = 0; i != xOff_; i++) {
+    
+#line 339
     OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(IOSIntArray_Get(nil_chk(X_), i), state, 40 + (i * 4));
   }
+  
+#line 342
   return state;
 }
 
@@ -258,24 +428,34 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoDigestsSHA1Digest, X_, IOSIntArray *)
 @end
 
 void OrgBouncycastleCryptoDigestsSHA1Digest_copyInWithOrgBouncycastleCryptoDigestsSHA1Digest_(OrgBouncycastleCryptoDigestsSHA1Digest *self, OrgBouncycastleCryptoDigestsSHA1Digest *t) {
+  
+#line 61
   self->H1_ = ((OrgBouncycastleCryptoDigestsSHA1Digest *) nil_chk(t))->H1_;
   self->H2_ = t->H2_;
   self->H3_ = t->H3_;
   self->H4_ = t->H4_;
   self->H5_ = t->H5_;
+  
+#line 67
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(t->X_, 0, self->X_, 0, ((IOSIntArray *) nil_chk(t->X_))->size_);
   self->xOff_ = t->xOff_;
 }
 
 jint OrgBouncycastleCryptoDigestsSHA1Digest_fWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsSHA1Digest *self, jint u, jint v, jint w) {
+  
+#line 161
   return ((u & v) | ((~u) & w));
 }
 
 jint OrgBouncycastleCryptoDigestsSHA1Digest_hWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsSHA1Digest *self, jint u, jint v, jint w) {
+  
+#line 169
   return (u ^ v ^ w);
 }
 
 jint OrgBouncycastleCryptoDigestsSHA1Digest_gWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsSHA1Digest *self, jint u, jint v, jint w) {
+  
+#line 177
   return ((u & v) | (u & w) | (v & w));
 }
 

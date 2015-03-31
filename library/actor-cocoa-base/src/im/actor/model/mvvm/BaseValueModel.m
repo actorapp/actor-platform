@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/BaseValueModel.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/BaseValueModel.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/mvvm/BaseValueModel.h"
 
@@ -17,16 +19,26 @@
 
 J2OBJC_FIELD_SETTER(AMBaseValueModel, rawObj_, id)
 
+
+#line 6
 @implementation AMBaseValueModel
 
+
+#line 9
 - (instancetype)initWithId:(id)rawObj {
   if (self = [super init]) {
+    
+#line 10
     self->rawObj_ = rawObj;
   }
   return self;
 }
 
+
+#line 13
 - (void)updateWithId:(id)rawObj {
+  
+#line 14
   self->rawObj_ = rawObj;
   [self updateValuesWithId:rawObj];
 }

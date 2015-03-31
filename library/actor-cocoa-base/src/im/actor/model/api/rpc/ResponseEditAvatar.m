@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseEditAvatar.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseEditAvatar.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -25,46 +27,76 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, avatar_, ImActorModelApiAvatar *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *)
 
+
+#line 20
 @implementation ImActorModelApiRpcResponseEditAvatar
 
+
+#line 23
 + (ImActorModelApiRpcResponseEditAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseEditAvatar_fromBytesWithByteArray_(data);
 }
 
+
+#line 31
 - (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
                                       withInt:(jint)seq
                                 withByteArray:(IOSByteArray *)state {
   if (self = [super init]) {
+    
+#line 32
     self->avatar_ = avatar;
+    
+#line 33
     self->seq_ = seq;
+    
+#line 34
     self->state_ = state;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiAvatar *)getAvatar {
+  
+#line 42
   return self->avatar_;
 }
 
+
+#line 45
 - (jint)getSeq {
+  
+#line 46
   return self->seq_;
 }
 
+
+#line 49
 - (IOSByteArray *)getState {
+  
+#line 50
   return self->state_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->avatar_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiAvatar alloc] init]];
   self->seq_ = [values getIntWithInt:2];
   self->state_ = [values getBytesWithInt:3];
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   if (self->avatar_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -83,6 +115,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *
 }
 
 - (jint)getHeaderKey {
+  
+#line 82
   return ImActorModelApiRpcResponseEditAvatar_HEADER;
 }
 
@@ -97,6 +131,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *
 
 ImActorModelApiRpcResponseEditAvatar *ImActorModelApiRpcResponseEditAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseEditAvatar_init();
+  
+#line 24
   return ((ImActorModelApiRpcResponseEditAvatar *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseEditAvatar alloc] init], data));
 }
 

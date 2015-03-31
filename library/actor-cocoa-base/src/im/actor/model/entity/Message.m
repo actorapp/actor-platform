@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Message.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Message.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -33,14 +35,20 @@ J2OBJC_FIELD_SETTER(AMMessage, content_, AMAbsContent *)
 
 BOOL AMMessage_initialized = NO;
 
+
+#line 16
 @implementation AMMessage
 
 id<BSBserCreator> AMMessage_CREATOR_;
 
+
+#line 18
 + (AMMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMMessage_fromBytesWithByteArray_(data);
 }
 
+
+#line 36
 - (instancetype)initWithLong:(jlong)rid
                     withLong:(jlong)sortDate
                     withLong:(jlong)date
@@ -48,56 +56,106 @@ id<BSBserCreator> AMMessage_CREATOR_;
       withAMMessageStateEnum:(AMMessageStateEnum *)messageState
             withAMAbsContent:(AMAbsContent *)content {
   if (self = [super init]) {
+    
+#line 37
     self->rid_ = rid;
+    
+#line 38
     self->sortDate_ = sortDate;
+    
+#line 39
     self->date_ = date;
+    
+#line 40
     self->senderId_ = senderId;
+    
+#line 41
     self->messageState_ = messageState;
+    
+#line 42
     self->content_ = content;
   }
   return self;
 }
 
+
+#line 45
 - (instancetype)init {
   return [super init];
 }
 
 - (jlong)getRid {
+  
+#line 50
   return rid_;
 }
 
+
+#line 53
 - (jlong)getSortDate {
+  
+#line 54
   return sortDate_;
 }
 
+
+#line 57
 - (jlong)getDate {
+  
+#line 58
   return date_;
 }
 
+
+#line 61
 - (jint)getSenderId {
+  
+#line 62
   return senderId_;
 }
 
+
+#line 65
 - (AMMessageStateEnum *)getMessageState {
+  
+#line 66
   return messageState_;
 }
 
+
+#line 69
 - (AMAbsContent *)getContent {
+  
+#line 70
   return content_;
 }
 
+
+#line 73
 - (AMMessage *)changeStateWithAMMessageStateEnum:(AMMessageStateEnum *)messageState {
+  
+#line 74
   return [[AMMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date_ withInt:senderId_ withAMMessageStateEnum:messageState withAMAbsContent:content_];
 }
 
+
+#line 77
 - (AMMessage *)changeDateWithLong:(jlong)date {
+  
+#line 78
   return [[AMMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date withInt:senderId_ withAMMessageStateEnum:messageState_ withAMAbsContent:content_];
 }
 
+
+#line 81
 - (AMMessage *)changeContentWithAMAbsContent:(AMAbsContent *)content {
+  
+#line 82
   return [[AMMessage alloc] initWithLong:rid_ withLong:sortDate_ withLong:date_ withInt:senderId_ withAMMessageStateEnum:messageState_ withAMAbsContent:content];
 }
 
+
+#line 86
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   rid_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   sortDate_ = [values getLongWithInt:2];
@@ -107,7 +165,11 @@ id<BSBserCreator> AMMessage_CREATOR_;
   content_ = AMAbsContent_contentFromBytesWithByteArray_([values getBytesWithInt:6]);
 }
 
+
+#line 96
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 97
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:rid_];
   [writer writeLongWithInt:2 withLong:sortDate_];
   [writer writeLongWithInt:3 withLong:date_];
@@ -116,14 +178,22 @@ id<BSBserCreator> AMMessage_CREATOR_;
   [writer writeObjectWithInt:6 withBSBserObject:content_];
 }
 
+
+#line 106
 - (jlong)getEngineId {
   return rid_;
 }
 
+
+#line 111
 - (jlong)getEngineSort {
+  
+#line 112
   return sortDate_;
 }
 
+
+#line 116
 - (NSString *)getEngineSearch {
   return nil;
 }
@@ -140,7 +210,9 @@ id<BSBserCreator> AMMessage_CREATOR_;
 
 + (void)initialize {
   if (self == [AMMessage class]) {
-    AMMessage_CREATOR_ = [[AMMessage_$1 alloc] init];
+    AMMessage_CREATOR_ =
+#line 22
+    [[AMMessage_$1 alloc] init];
     J2OBJC_SET_INITIALIZED(AMMessage)
   }
 }
@@ -149,6 +221,8 @@ id<BSBserCreator> AMMessage_CREATOR_;
 
 AMMessage *AMMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   AMMessage_init();
+  
+#line 19
   return ((AMMessage *) BSBser_parseWithBSBserObject_withByteArray_([[AMMessage alloc] init], data));
 }
 
@@ -156,7 +230,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessage)
 
 @implementation AMMessage_$1
 
+
+#line 24
 - (AMMessage *)createInstance {
+  
+#line 25
   return [[AMMessage alloc] init];
 }
 

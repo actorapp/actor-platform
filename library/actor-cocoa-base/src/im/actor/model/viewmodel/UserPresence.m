@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserPresence.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserPresence.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/viewmodel/UserPresence.h"
@@ -17,30 +19,52 @@
 
 J2OBJC_FIELD_SETTER(AMUserPresence, state_, AMUserPresence_StateEnum *)
 
+
+#line 6
 @implementation AMUserPresence
 
+
+#line 10
 - (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state {
   if (self = [super init]) {
+    
+#line 11
     self->state_ = state;
+    
+#line 12
     self->lastSeen_ = 0;
   }
   return self;
 }
 
+
+#line 15
 - (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state
                                         withLong:(jlong)lastSeen {
   if (self = [super init]) {
+    
+#line 16
     self->state_ = state;
+    
+#line 17
     self->lastSeen_ = lastSeen;
   }
   return self;
 }
 
+
+#line 20
 - (AMUserPresence_StateEnum *)getState {
+  
+#line 21
   return state_;
 }
 
+
+#line 24
 - (jlong)getLastSeen {
+  
+#line 25
   return lastSeen_;
 }
 
@@ -53,6 +77,8 @@ J2OBJC_FIELD_SETTER(AMUserPresence, state_, AMUserPresence_StateEnum *)
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserPresence)
+
+#line 28
 
 BOOL AMUserPresence_StateEnum_initialized = NO;
 

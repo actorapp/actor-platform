@@ -3,10 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PeerType.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PeerType.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/PeerType.h"
 #include "java/lang/IllegalArgumentException.h"
+
+#line 6
 
 BOOL AMPeerTypeEnum_initialized = NO;
 

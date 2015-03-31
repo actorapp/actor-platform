@@ -3,10 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Integers.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Integers.java"
+
 #include "J2ObjC_source.h"
 #include "java/lang/Integer.h"
 #include "org/bouncycastle/util/Integers.h"
 
+
+#line 3
 @implementation OrgBouncycastleUtilIntegers
 
 + (jint)rotateLeftWithInt:(jint)i
@@ -31,16 +35,22 @@
 
 jint OrgBouncycastleUtilIntegers_rotateLeftWithInt_withInt_(jint i, jint distance) {
   OrgBouncycastleUtilIntegers_init();
+  
+#line 7
   return JavaLangInteger_rotateLeftWithInt_withInt_(i, distance);
 }
 
 jint OrgBouncycastleUtilIntegers_rotateRightWithInt_withInt_(jint i, jint distance) {
   OrgBouncycastleUtilIntegers_init();
+  
+#line 12
   return JavaLangInteger_rotateRightWithInt_withInt_(i, distance);
 }
 
 JavaLangInteger *OrgBouncycastleUtilIntegers_valueOfWithInt_(jint value) {
   OrgBouncycastleUtilIntegers_init();
+  
+#line 17
   return JavaLangInteger_valueOfWithInt_(value);
 }
 

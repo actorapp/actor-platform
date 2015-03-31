@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/FastThumb.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/FastThumb.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,42 +24,70 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
 
+
+#line 19
 @implementation ImActorModelApiFastThumb
 
+
+#line 25
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
               withByteArray:(IOSByteArray *)thumb {
   if (self = [super init]) {
+    
+#line 26
     self->w_ = w;
+    
+#line 27
     self->h_ = h;
+    
+#line 28
     self->thumb_ = thumb;
   }
   return self;
 }
 
+
+#line 31
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getW {
+  
+#line 36
   return self->w_;
 }
 
+
+#line 39
 - (jint)getH {
+  
+#line 40
   return self->h_;
 }
 
+
+#line 43
 - (IOSByteArray *)getThumb {
+  
+#line 44
   return self->thumb_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->h_ = [values getIntWithInt:2];
   self->thumb_ = [values getBytesWithInt:3];
 }
 
+
+#line 55
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 56
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->w_];
   [writer writeIntWithInt:2 withInt:self->h_];
   if (self->thumb_ == nil) {

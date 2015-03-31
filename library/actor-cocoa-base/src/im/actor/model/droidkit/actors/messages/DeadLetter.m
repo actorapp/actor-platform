@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/DeadLetter.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/DeadLetter.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/messages/DeadLetter.h"
 
@@ -14,16 +16,26 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMessagesDeadLetter, message_, id)
 
+
+#line 6
 @implementation ImActorModelDroidkitActorsMessagesDeadLetter
 
+
+#line 9
 - (instancetype)initWithId:(id)message {
   if (self = [super init]) {
+    
+#line 10
     self->message_ = message;
   }
   return self;
 }
 
+
+#line 13
 - (id)getMessage {
+  
+#line 14
   return message_;
 }
 

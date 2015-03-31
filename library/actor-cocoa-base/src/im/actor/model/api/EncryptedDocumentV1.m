@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedDocumentV1.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedDocumentV1.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -30,51 +32,91 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedDocumentV1, fileLocation_, ImActorMo
 J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedDocumentV1, fastThumb_, ImActorModelApiFastThumb *)
 J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedDocumentV1, extension_, ImActorModelApiEncryptedDocumentV1Ex *)
 
+
+#line 19
 @implementation ImActorModelApiEncryptedDocumentV1
 
+
+#line 27
 - (instancetype)initWithNSString:(NSString *)name
                     withNSString:(NSString *)mimeType
 withImActorModelApiEncryptedFileLocationV1:(ImActorModelApiEncryptedFileLocationV1 *)fileLocation
     withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)fastThumb
 withImActorModelApiEncryptedDocumentV1Ex:(ImActorModelApiEncryptedDocumentV1Ex *)extension {
   if (self = [super init]) {
+    
+#line 28
     self->name_ = name;
+    
+#line 29
     self->mimeType_ = mimeType;
+    
+#line 30
     self->fileLocation_ = fileLocation;
+    
+#line 31
     self->fastThumb_ = fastThumb;
+    
+#line 32
     self->extension_ = extension;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getHeader {
+  
+#line 40
   return 2;
 }
 
+
+#line 43
 - (NSString *)getName {
+  
+#line 44
   return self->name_;
 }
 
+
+#line 47
 - (NSString *)getMimeType {
+  
+#line 48
   return self->mimeType_;
 }
 
+
+#line 51
 - (ImActorModelApiEncryptedFileLocationV1 *)getFileLocation {
+  
+#line 52
   return self->fileLocation_;
 }
 
+
+#line 55
 - (ImActorModelApiFastThumb *)getFastThumb {
+  
+#line 56
   return self->fastThumb_;
 }
 
+
+#line 59
 - (ImActorModelApiEncryptedDocumentV1Ex *)getExtension {
+  
+#line 60
   return self->extension_;
 }
 
+
+#line 64
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->name_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   self->mimeType_ = [values getStringWithInt:2];
@@ -85,7 +127,11 @@ withImActorModelApiEncryptedDocumentV1Ex:(ImActorModelApiEncryptedDocumentV1Ex *
   }
 }
 
+
+#line 75
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 76
   if (self->name_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }

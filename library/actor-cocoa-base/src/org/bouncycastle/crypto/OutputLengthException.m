@@ -3,13 +3,21 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/OutputLengthException.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/OutputLengthException.java"
+
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/crypto/OutputLengthException.h"
 
+
+#line 3
 @implementation OrgBouncycastleCryptoOutputLengthException
 
+
+#line 6
 - (instancetype)initWithNSString:(NSString *)msg {
-  return [super initWithNSString:msg];
+  return
+#line 8
+  [super initWithNSString:msg];
 }
 
 @end

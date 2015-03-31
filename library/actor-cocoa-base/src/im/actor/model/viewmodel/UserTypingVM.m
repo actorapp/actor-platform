@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserTypingVM.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserTypingVM.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/mvvm/ValueModel.h"
 #include "im/actor/model/viewmodel/UserTypingVM.h"
@@ -17,25 +19,45 @@
 
 J2OBJC_FIELD_SETTER(AMUserTypingVM, userTyping_, AMValueModel *)
 
+
+#line 8
 @implementation AMUserTypingVM
 
+
+#line 12
 - (instancetype)initWithInt:(jint)uid {
   if (self = [super init]) {
+    
+#line 13
     self->uid_ = uid;
+    
+#line 14
     self->userTyping_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"user.", uid, @".typing") withId:JavaLangBoolean_valueOfWithBoolean_(NO)];
   }
   return self;
 }
 
+
+#line 17
 - (void)onTypingStart {
+  
+#line 18
   [((AMValueModel *) nil_chk(userTyping_)) changeWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
 
+
+#line 21
 - (void)onTypingEnd {
+  
+#line 22
   [((AMValueModel *) nil_chk(userTyping_)) changeWithId:JavaLangBoolean_valueOfWithBoolean_(NO)];
 }
 
+
+#line 25
 - (AMValueModel *)getTyping {
+  
+#line 26
   return userTyping_;
 }
 

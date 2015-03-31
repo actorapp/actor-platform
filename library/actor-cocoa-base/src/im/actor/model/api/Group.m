@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Group.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Group.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
@@ -31,8 +33,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, title_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiGroup, avatar_, ImActorModelApiAvatar *)
 J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
 
+
+#line 19
 @implementation ImActorModelApiGroup
 
+
+#line 30
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
                withNSString:(NSString *)title
@@ -42,54 +48,104 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
            withJavaUtilList:(id<JavaUtilList>)members
                    withLong:(jlong)createDate {
   if (self = [super init]) {
+    
+#line 31
     self->id__ = id_;
+    
+#line 32
     self->accessHash_ = accessHash;
+    
+#line 33
     self->title_ = title;
+    
+#line 34
     self->avatar_ = avatar;
+    
+#line 35
     self->isMember__ = isMember;
+    
+#line 36
     self->creatorUid_ = creatorUid;
+    
+#line 37
     self->members_ = members;
+    
+#line 38
     self->createDate_ = createDate;
   }
   return self;
 }
 
+
+#line 41
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getId {
+  
+#line 46
   return self->id__;
 }
 
+
+#line 49
 - (jlong)getAccessHash {
+  
+#line 50
   return self->accessHash_;
 }
 
+
+#line 53
 - (NSString *)getTitle {
+  
+#line 54
   return self->title_;
 }
 
+
+#line 57
 - (ImActorModelApiAvatar *)getAvatar {
+  
+#line 58
   return self->avatar_;
 }
 
+
+#line 61
 - (jboolean)isMember {
+  
+#line 62
   return self->isMember__;
 }
 
+
+#line 65
 - (jint)getCreatorUid {
+  
+#line 66
   return self->creatorUid_;
 }
 
+
+#line 69
 - (id<JavaUtilList>)getMembers {
+  
+#line 70
   return self->members_;
 }
 
+
+#line 73
 - (jlong)getCreateDate {
+  
+#line 74
   return self->createDate_;
 }
 
+
+#line 78
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
@@ -105,7 +161,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   self->createDate_ = [values getLongWithInt:10];
 }
 
+
+#line 94
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 95
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   if (self->title_ == nil) {

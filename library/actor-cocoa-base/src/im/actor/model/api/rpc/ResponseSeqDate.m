@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseSeqDate.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseSeqDate.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,46 +26,76 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 
+
+#line 20
 @implementation ImActorModelApiRpcResponseSeqDate
 
+
+#line 23
 + (ImActorModelApiRpcResponseSeqDate *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseSeqDate_fromBytesWithByteArray_(data);
 }
 
+
+#line 31
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state
                    withLong:(jlong)date {
   if (self = [super init]) {
+    
+#line 32
     self->seq_ = seq;
+    
+#line 33
     self->state_ = state;
+    
+#line 34
     self->date_ = date;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getSeq {
+  
+#line 42
   return self->seq_;
 }
 
+
+#line 45
 - (IOSByteArray *)getState {
+  
+#line 46
   return self->state_;
 }
 
+
+#line 49
 - (jlong)getDate {
+  
+#line 50
   return self->date_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
   self->date_ = [values getLongWithInt:3];
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
     @throw [[JavaIoIOException alloc] init];
@@ -82,6 +114,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 }
 
 - (jint)getHeaderKey {
+  
+#line 82
   return ImActorModelApiRpcResponseSeqDate_HEADER;
 }
 
@@ -96,6 +130,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 
 ImActorModelApiRpcResponseSeqDate *ImActorModelApiRpcResponseSeqDate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseSeqDate_init();
+  
+#line 24
   return ((ImActorModelApiRpcResponseSeqDate *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseSeqDate alloc] init], data));
 }
 

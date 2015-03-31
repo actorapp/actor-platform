@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRemoveGroupAvatar.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRemoveGroupAvatar.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,39 +25,63 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImActorModelApiGroupOutPeer *)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestRemoveGroupAvatar
 
+
+#line 23
 + (ImActorModelApiRpcRequestRemoveGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestRemoveGroupAvatar_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid {
   if (self = [super init]) {
+    
+#line 31
     self->groupPeer_ = groupPeer;
+    
+#line 32
     self->rid_ = rid;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiGroupOutPeer *)getGroupPeer {
+  
+#line 40
   return self->groupPeer_;
 }
 
+
+#line 43
 - (jlong)getRid {
+  
+#line 44
   return self->rid_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
   self->rid_ = [values getLongWithInt:4];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   if (self->groupPeer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -72,6 +98,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
 }
 
 - (jint)getHeaderKey {
+  
+#line 73
   return ImActorModelApiRpcRequestRemoveGroupAvatar_HEADER;
 }
 
@@ -85,6 +113,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
 
 ImActorModelApiRpcRequestRemoveGroupAvatar *ImActorModelApiRpcRequestRemoveGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestRemoveGroupAvatar_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestRemoveGroupAvatar *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestRemoveGroupAvatar alloc] init], data));
 }
 

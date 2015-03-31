@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/AuthHolder.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/AuthHolder.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/AuthHolder.h"
@@ -15,25 +17,37 @@
 }
 @end
 
+#line 8
+
 BOOL ImActorModelApiAuthHolderEnum_initialized = NO;
 
 ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_values_[3];
 
 @implementation ImActorModelApiAuthHolderEnum
 
+
+#line 16
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
   if (self = [super initWithNSString:__name withInt:__ordinal]) {
+    
+#line 17
     self->value_ = value;
   }
   return self;
 }
 
+
+#line 20
 - (jint)getValue {
+  
+#line 21
   return value_;
 }
 
+
+#line 24
 + (ImActorModelApiAuthHolderEnum *)parseWithInt:(jint)value {
   return ImActorModelApiAuthHolderEnum_parseWithInt_(value);
 }
@@ -68,9 +82,15 @@ ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_valueOfWithNSString
 
 + (void)initialize {
   if (self == [ImActorModelApiAuthHolderEnum class]) {
-    ImActorModelApiAuthHolderEnum_THISDEVICE = [[ImActorModelApiAuthHolderEnum alloc] initWithInt:1 withNSString:@"THISDEVICE" withInt:0];
-    ImActorModelApiAuthHolderEnum_OTHERDEVICE = [[ImActorModelApiAuthHolderEnum alloc] initWithInt:2 withNSString:@"OTHERDEVICE" withInt:1];
-    ImActorModelApiAuthHolderEnum_UNSUPPORTED_VALUE = [[ImActorModelApiAuthHolderEnum alloc] initWithInt:-1 withNSString:@"UNSUPPORTED_VALUE" withInt:2];
+    ImActorModelApiAuthHolderEnum_THISDEVICE = [[ImActorModelApiAuthHolderEnum alloc] initWithInt:
+#line 10
+    1 withNSString:@"THISDEVICE" withInt:0];
+    ImActorModelApiAuthHolderEnum_OTHERDEVICE = [[ImActorModelApiAuthHolderEnum alloc] initWithInt:
+#line 11
+    2 withNSString:@"OTHERDEVICE" withInt:1];
+    ImActorModelApiAuthHolderEnum_UNSUPPORTED_VALUE = [[ImActorModelApiAuthHolderEnum alloc] initWithInt:
+#line 12
+    -1 withNSString:@"UNSUPPORTED_VALUE" withInt:2];
     J2OBJC_SET_INITIALIZED(ImActorModelApiAuthHolderEnum)
   }
 }
@@ -79,12 +99,20 @@ ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_valueOfWithNSString
 
 ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_parseWithInt_(jint value) {
   ImActorModelApiAuthHolderEnum_init();
+  
+#line 25
   switch (value) {
     case 1:
+    
+#line 26
     return ImActorModelApiAuthHolderEnum_THISDEVICE;
     case 2:
+    
+#line 27
     return ImActorModelApiAuthHolderEnum_OTHERDEVICE;
     default:
+    
+#line 28
     return ImActorModelApiAuthHolderEnum_UNSUPPORTED_VALUE;
   }
 }

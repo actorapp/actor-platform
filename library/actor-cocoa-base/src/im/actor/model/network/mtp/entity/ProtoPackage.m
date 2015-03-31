@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoPackage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoPackage.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -22,42 +24,72 @@
 
 J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 
+
+#line 8
 @implementation MTProtoPackage
 
+
+#line 14
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 15
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 18
 - (instancetype)initWithLong:(jlong)authId
                     withLong:(jlong)sessionId
           withMTProtoMessage:(MTProtoMessage *)payload {
   if (self = [super init]) {
     self->authId_ = authId;
+    
+#line 20
     self->sessionId_ = sessionId;
+    
+#line 21
     self->payload_ = payload;
   }
   return self;
 }
 
+
+#line 24
 - (jlong)getAuthId {
+  
+#line 25
   return authId_;
 }
 
+
+#line 28
 - (jlong)getSessionId {
+  
+#line 29
   return sessionId_;
 }
 
+
+#line 32
 - (MTProtoMessage *)getPayload {
+  
+#line 33
   return payload_;
 }
 
+
+#line 37
 - (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:authId_];
   [bs writeLongWithLong:sessionId_];
   [((MTProtoMessage *) nil_chk(payload_)) writeObjectWithBSDataOutput:bs];
 }
 
+
+#line 44
 - (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs {
+  
+#line 45
   authId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   sessionId_ = [bs readLong];
   payload_ = [[MTProtoMessage alloc] initWithBSDataInput:bs];

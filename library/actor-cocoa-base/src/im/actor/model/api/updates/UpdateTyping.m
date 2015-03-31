@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateTyping.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateTyping.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -26,46 +28,76 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, peer_, ImActorModelApiPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, typingType_, ImActorModelApiTypingTypeEnum *)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateTyping
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateTyping *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateTyping_fromBytesWithByteArray_(data);
 }
 
+
+#line 31
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                     withInt:(jint)uid
           withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)typingType {
   if (self = [super init]) {
+    
+#line 32
     self->peer_ = peer;
+    
+#line 33
     self->uid_ = uid;
+    
+#line 34
     self->typingType_ = typingType;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiPeer *)getPeer {
+  
+#line 42
   return self->peer_;
 }
 
+
+#line 45
 - (jint)getUid {
+  
+#line 46
   return self->uid_;
 }
 
+
+#line 49
 - (ImActorModelApiTypingTypeEnum *)getTypingType {
+  
+#line 50
   return self->typingType_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
   self->uid_ = [values getIntWithInt:2];
   self->typingType_ = ImActorModelApiTypingTypeEnum_parseWithInt_([values getIntWithInt:3]);
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -87,6 +119,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, typingType_, ImActorMode
 }
 
 - (jint)getHeaderKey {
+  
+#line 85
   return ImActorModelApiUpdatesUpdateTyping_HEADER;
 }
 
@@ -101,6 +135,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, typingType_, ImActorMode
 
 ImActorModelApiUpdatesUpdateTyping *ImActorModelApiUpdatesUpdateTyping_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateTyping_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateTyping *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateTyping alloc] init], data));
 }
 

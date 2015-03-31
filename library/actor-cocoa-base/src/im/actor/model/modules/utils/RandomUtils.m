@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/RandomUtils.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/RandomUtils.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/modules/utils/RandomUtils.h"
 #include "java/util/Random.h"
@@ -13,6 +15,8 @@
 
 BOOL ImActorModelModulesUtilsRandomUtils_initialized = NO;
 
+
+#line 8
 @implementation ImActorModelModulesUtilsRandomUtils
 
 JavaUtilRandom * ImActorModelModulesUtilsRandomUtils_RANDOM_;
@@ -27,7 +31,9 @@ JavaUtilRandom * ImActorModelModulesUtilsRandomUtils_RANDOM_;
 
 + (void)initialize {
   if (self == [ImActorModelModulesUtilsRandomUtils class]) {
-    ImActorModelModulesUtilsRandomUtils_RANDOM_ = [[JavaUtilRandom alloc] init];
+    ImActorModelModulesUtilsRandomUtils_RANDOM_ =
+#line 10
+    [[JavaUtilRandom alloc] init];
     J2OBJC_SET_INITIALIZED(ImActorModelModulesUtilsRandomUtils)
   }
 }
@@ -37,6 +43,8 @@ JavaUtilRandom * ImActorModelModulesUtilsRandomUtils_RANDOM_;
 jlong ImActorModelModulesUtilsRandomUtils_nextRid() {
   ImActorModelModulesUtilsRandomUtils_init();
   @synchronized(ImActorModelModulesUtilsRandomUtils_class_()) {
+    
+#line 13
     return [((JavaUtilRandom *) nil_chk(ImActorModelModulesUtilsRandomUtils_RANDOM_)) nextLong];
   }
 }

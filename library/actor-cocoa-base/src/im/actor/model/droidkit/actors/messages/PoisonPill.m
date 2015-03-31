@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/PoisonPill.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/PoisonPill.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/messages/PoisonPill.h"
 
@@ -12,21 +14,29 @@
 
 BOOL ImActorModelDroidkitActorsMessagesPoisonPill_initialized = NO;
 
+
+#line 8
 @implementation ImActorModelDroidkitActorsMessagesPoisonPill
 
 ImActorModelDroidkitActorsMessagesPoisonPill * ImActorModelDroidkitActorsMessagesPoisonPill_INSTANCE_;
 
+
+#line 11
 - (instancetype)init {
   return [super init];
 }
 
 - (NSString *)description {
+  
+#line 16
   return @"PoisonPill";
 }
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsMessagesPoisonPill class]) {
-    ImActorModelDroidkitActorsMessagesPoisonPill_INSTANCE_ = [[ImActorModelDroidkitActorsMessagesPoisonPill alloc] init];
+    ImActorModelDroidkitActorsMessagesPoisonPill_INSTANCE_ =
+#line 9
+    [[ImActorModelDroidkitActorsMessagesPoisonPill alloc] init];
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsMessagesPoisonPill)
   }
 }

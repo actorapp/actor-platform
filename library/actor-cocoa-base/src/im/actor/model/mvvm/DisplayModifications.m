@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/DisplayModifications.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/DisplayModifications.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/ListEngineItem.h"
@@ -60,32 +62,46 @@ J2OBJC_FIELD_SETTER(AMDisplayModifications_$4, val$items_, id<JavaUtilList>)
 
 J2OBJC_FIELD_SETTER(AMDisplayModifications_$6, val$dstIds_, IOSLongArray *)
 
+
+#line 13
 @implementation AMDisplayModifications
 
 + (id<AMDisplayList_Modification>)addOrUpdateWithDKListEngineItem:(id<DKListEngineItem>)item {
   return AMDisplayModifications_addOrUpdateWithDKListEngineItem_(item);
 }
 
+
+#line 34
 + (id<AMDisplayList_Modification>)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items {
   return AMDisplayModifications_addOrUpdateWithJavaUtilList_(items);
 }
 
+
+#line 55
 + (id<AMDisplayList_Modification>)addOnlyWithJavaUtilList:(id<JavaUtilList>)items {
   return AMDisplayModifications_addOnlyWithJavaUtilList_(items);
 }
 
+
+#line 76
 + (id<AMDisplayList_Modification>)replaceWithJavaUtilList:(id<JavaUtilList>)items {
   return AMDisplayModifications_replaceWithJavaUtilList_(items);
 }
 
+
+#line 86
 + (id<AMDisplayList_Modification>)removeWithLong:(jlong)dstId {
   return AMDisplayModifications_removeWithLong_(dstId);
 }
 
+
+#line 101
 + (id<AMDisplayList_Modification>)removeWithLongArray:(IOSLongArray *)dstIds {
   return AMDisplayModifications_removeWithLongArray_(dstIds);
 }
 
+
+#line 120
 + (id<AMDisplayList_Modification>)clear {
   return AMDisplayModifications_clear();
 }
@@ -98,36 +114,50 @@ J2OBJC_FIELD_SETTER(AMDisplayModifications_$6, val$dstIds_, IOSLongArray *)
 
 id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithDKListEngineItem_(id<DKListEngineItem> item) {
   AMDisplayModifications_init();
+  
+#line 16
   return [[AMDisplayModifications_$1 alloc] initWithDKListEngineItem:item];
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithJavaUtilList_(id<JavaUtilList> items) {
   AMDisplayModifications_init();
+  
+#line 35
   return [[AMDisplayModifications_$2 alloc] initWithJavaUtilList:items];
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_addOnlyWithJavaUtilList_(id<JavaUtilList> items) {
   AMDisplayModifications_init();
+  
+#line 56
   return [[AMDisplayModifications_$3 alloc] initWithJavaUtilList:items];
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_replaceWithJavaUtilList_(id<JavaUtilList> items) {
   AMDisplayModifications_init();
+  
+#line 77
   return [[AMDisplayModifications_$4 alloc] initWithJavaUtilList:items];
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_removeWithLong_(jlong dstId) {
   AMDisplayModifications_init();
+  
+#line 87
   return [[AMDisplayModifications_$5 alloc] initWithLong:dstId];
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_removeWithLongArray_(IOSLongArray *dstIds) {
   AMDisplayModifications_init();
+  
+#line 102
   return [[AMDisplayModifications_$6 alloc] initWithLongArray:dstIds];
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_clear() {
   AMDisplayModifications_init();
+  
+#line 121
   return [[AMDisplayModifications_$7 alloc] init];
 }
 
@@ -135,8 +165,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications)
 
 @implementation AMDisplayModifications_$1
 
+
+#line 18
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
+  
+#line 19
   jlong dstId = [((id<DKListEngineItem>) nil_chk(val$item_)) getEngineId];
+  
+#line 21
   id<JavaUtilIterator> iterator = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
   while ([((id<JavaUtilIterator>) nil_chk(iterator)) hasNext]) {
     id<DKListEngineItem> src = [iterator next];
@@ -144,6 +180,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications)
       [iterator remove];
     }
   }
+  
+#line 29
   [sourceList addWithId:val$item_];
 }
 
@@ -163,7 +201,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$1)
 
 @implementation AMDisplayModifications_$2
 
+
+#line 37
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
+  
+#line 38
   JavaUtilHashSet *keys = [[JavaUtilHashSet alloc] init];
   for (id<DKListEngineItem> __strong i in nil_chk(val$items_)) {
     [keys addWithId:JavaLangLong_valueOfWithLong_([((id<DKListEngineItem>) nil_chk(i)) getEngineId])];
@@ -175,6 +217,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$1)
       [iterator remove];
     }
   }
+  
+#line 50
   [sourceList addAllWithJavaUtilCollection:val$items_];
 }
 
@@ -194,10 +238,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$2)
 
 @implementation AMDisplayModifications_$3
 
+
+#line 58
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
+  
+#line 60
   JavaUtilArrayList *toAdd = [[JavaUtilArrayList alloc] init];
+  
+#line 62
   for (id<DKListEngineItem> __strong t in nil_chk(val$items_)) {
     {
+      
+#line 63
       for (id<DKListEngineItem> __strong srcT in nil_chk(sourceList)) {
         if ([((id<DKListEngineItem>) nil_chk(srcT)) getEngineId] == [((id<DKListEngineItem>) nil_chk(t)) getEngineId]) {
           goto continue_outer;
@@ -207,6 +259,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$2)
     }
     continue_outer: ;
   }
+  
+#line 71
   [((id<JavaUtilList>) nil_chk(sourceList)) addAllWithJavaUtilCollection:toAdd];
 }
 
@@ -226,7 +280,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$3)
 
 @implementation AMDisplayModifications_$4
 
+
+#line 79
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
+  
+#line 80
   [((id<JavaUtilList>) nil_chk(sourceList)) clear];
   [sourceList addAllWithJavaUtilCollection:val$items_];
 }
@@ -247,7 +305,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$4)
 
 @implementation AMDisplayModifications_$5
 
+
+#line 89
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
+  
+#line 90
   id<JavaUtilIterator> iterator = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
   while ([((id<JavaUtilIterator>) nil_chk(iterator)) hasNext]) {
     id<DKListEngineItem> src = [iterator next];
@@ -273,7 +335,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$5)
 
 @implementation AMDisplayModifications_$6
 
+
+#line 104
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
+  
+#line 105
   id<JavaUtilIterator> it = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
   while ([((id<JavaUtilIterator>) nil_chk(it)) hasNext]) {
     id<DKListEngineItem> value = [it next];
@@ -284,6 +350,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$5)
       jlong const *e__ = b__ + a__->size_;
       while (b__ < e__) {
         jlong dstId = *b__++;
+        
+#line 110
         if (dstId == srcId) {
           [it remove];
           break;
@@ -309,7 +377,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$6)
 
 @implementation AMDisplayModifications_$7
 
+
+#line 123
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
+  
+#line 124
   [((id<JavaUtilList>) nil_chk(sourceList)) clear];
 }
 

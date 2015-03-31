@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExChangedAvatar.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExChangedAvatar.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
@@ -19,32 +21,52 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModelApiAvatar *)
 
+
+#line 19
 @implementation ImActorModelApiServiceExChangedAvatar
 
+
+#line 23
 - (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar {
   if (self = [super init]) {
+    
+#line 24
     self->avatar_ = avatar;
   }
   return self;
 }
 
+
+#line 27
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getHeader {
+  
+#line 32
   return 6;
 }
 
+
+#line 35
 - (ImActorModelApiAvatar *)getAvatar {
+  
+#line 36
   return self->avatar_;
 }
 
+
+#line 40
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->avatar_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:[[ImActorModelApiAvatar alloc] init]];
 }
 
+
+#line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 46
   if (self->avatar_ != nil) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->avatar_];
   }

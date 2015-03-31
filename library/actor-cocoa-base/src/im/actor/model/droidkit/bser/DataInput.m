@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/DataInput.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/DataInput.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,109 +24,197 @@
 
 J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
 
+
+#line 8
 @implementation BSDataInput
 
+
+#line 13
 - (instancetype)initWithByteArray:(IOSByteArray *)data {
   if (self = [super init]) {
+    
+#line 14
     if (data == nil) {
       @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"data can't be null"];
     }
+    
+#line 18
     self->data_ = data;
+    
+#line 19
     self->offset_ = 0;
+    
+#line 20
     self->maxOffset_ = ((IOSByteArray *) nil_chk(data))->size_;
   }
   return self;
 }
 
+
+#line 23
 - (instancetype)initWithByteArray:(IOSByteArray *)data
                           withInt:(jint)offset
                           withInt:(jint)len {
   if (self = [super init]) {
+    
+#line 24
     if (data == nil) {
       @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"data can't be null"];
     }
+    
+#line 27
     if (offset < 0) {
       @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Offset can't be negative"];
     }
+    
+#line 30
     if (len < 0) {
       @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Length can't be negative"];
     }
+    
+#line 33
     if (((IOSByteArray *) nil_chk(data))->size_ < offset + len) {
       @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:JreStrcat("$I$I$I", @"Inconsistent lengths, total: ", data->size_, @", offset: ", offset, @", len: ", len)];
     }
+    
+#line 37
     self->data_ = data;
+    
+#line 38
     self->offset_ = offset;
+    
+#line 39
     self->maxOffset_ = offset + len;
   }
   return self;
 }
 
+
+#line 42
 - (IOSByteArray *)getData {
+  
+#line 43
   return data_;
 }
 
+
+#line 46
 - (jint)getMaxOffset {
+  
+#line 47
   return maxOffset_;
 }
 
+
+#line 50
 - (jboolean)isEOF {
+  
+#line 51
   return maxOffset_ <= offset_;
 }
 
+
+#line 54
 - (jint)getOffset {
+  
+#line 55
   return offset_;
 }
 
+
+#line 58
 - (jint)getRemaining {
+  
+#line 59
   return maxOffset_ - offset_;
 }
 
+
+#line 62
 - (void)skipWithInt:(jint)size {
+  
+#line 63
   if (offset_ + size > maxOffset_) {
     @throw [[JavaIoIOException alloc] init];
   }
   offset_ += size;
 }
 
+
+#line 69
 - (jint)readByte {
+  
+#line 70
   if (offset_ == maxOffset_) {
     @throw [[JavaIoIOException alloc] init];
   }
   return IOSByteArray_Get(nil_chk(data_), offset_++) & (jint) 0xFF;
 }
 
+
+#line 76
 - (jint)readInt {
+  
+#line 77
   if (offset_ + 4 > maxOffset_) {
     @throw [[JavaIoIOException alloc] init];
   }
-  jint res = (IOSByteArray_Get(nil_chk(data_), offset_ + 3) & (jint) 0xFF) + (LShift32((IOSByteArray_Get(data_, offset_ + 2) & (jint) 0xFF), 8)) + (LShift32((IOSByteArray_Get(data_, offset_ + 1) & (jint) 0xFF), 16)) + (LShift32((IOSByteArray_Get(data_, offset_) & (jint) 0xFF), 24));
+  
+#line 81
+  jint res = (IOSByteArray_Get(nil_chk(data_), offset_ + 3) & (jint) 0xFF) +
+#line 82
+  (LShift32((IOSByteArray_Get(data_, offset_ + 2) & (jint) 0xFF), 8)) +
+#line 83
+  (LShift32((IOSByteArray_Get(data_, offset_ + 1) & (jint) 0xFF), 16)) +
+#line 84
+  (LShift32((IOSByteArray_Get(data_, offset_) & (jint) 0xFF), 24));
   offset_ += 4;
   return res;
 }
 
+
+#line 89
 - (jlong)readLong {
+  
+#line 90
   if (offset_ + 8 > maxOffset_) {
     @throw [[JavaIoIOException alloc] init];
   }
+  
+#line 94
   jlong a1 = IOSByteArray_Get(nil_chk(data_), offset_ + 3) & (jint) 0xFF;
   jlong a2 = IOSByteArray_Get(data_, offset_ + 2) & (jint) 0xFF;
   jlong a3 = IOSByteArray_Get(data_, offset_ + 1) & (jint) 0xFF;
   jlong a4 = IOSByteArray_Get(data_, offset_ + 0) & (jint) 0xFF;
+  
+#line 99
   jlong res1 = (a1) + (LShift64(a2, 8)) + (LShift64(a3, 16)) + (LShift64(a4, 24));
   offset_ += 4;
+  
+#line 102
   jlong b1 = IOSByteArray_Get(data_, offset_ + 3) & (jint) 0xFF;
   jlong b2 = IOSByteArray_Get(data_, offset_ + 2) & (jint) 0xFF;
   jlong b3 = IOSByteArray_Get(data_, offset_ + 1) & (jint) 0xFF;
   jlong b4 = IOSByteArray_Get(data_, offset_ + 0) & (jint) 0xFF;
+  
+#line 107
   jlong res2 = (b1) + (LShift64(b2, 8)) + (LShift64(b3, 16)) + (LShift64(b4, 24));
   offset_ += 4;
+  
+#line 110
   return res2 + (LShift64(res1, 32));
 }
 
+
+#line 113
 - (jlong)readUInt {
+  
+#line 114
   if (offset_ + 4 > maxOffset_) {
     @throw [[JavaIoIOException alloc] init];
   }
+  
+#line 118
   jlong a1 = IOSByteArray_Get(nil_chk(data_), offset_ + 3) & (jint) 0xFF;
   jlong a2 = IOSByteArray_Get(data_, offset_ + 2) & (jint) 0xFF;
   jlong a3 = IOSByteArray_Get(data_, offset_ + 1) & (jint) 0xFF;
@@ -133,13 +223,21 @@ J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
   return (a1) + (LShift64(a2, 8)) + (LShift64(a3, 16)) + (LShift64(a4, 24));
 }
 
+
+#line 126
 - (IOSByteArray *)readBytesWithInt:(jint)count {
+  
+#line 128
   if (count < 0) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Count can't be negative"];
   }
+  
+#line 132
   if (count > BSLimits_MAX_BLOCK_SIZE) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Unable to read more than 1 MB"];
   }
+  
+#line 140
   IOSByteArray *res = [IOSByteArray newArrayWithLength:count];
   for (jint i = 0; i < count; i++) {
     *IOSByteArray_GetRef(res, i) = IOSByteArray_Get(nil_chk(data_), offset_++);
@@ -147,7 +245,11 @@ J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
   return res;
 }
 
+
+#line 147
 - (jint)readVarInt32 {
+  
+#line 148
   jlong varInt = [self readVarInt];
   if (varInt > JavaLangInteger_MAX_VALUE || varInt < JavaLangInteger_MIN_VALUE) {
     @throw [[JavaIoIOException alloc] initWithNSString:@"Too big VarInt32"];
@@ -155,15 +257,25 @@ J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
   return (jint) varInt;
 }
 
+
+#line 155
 - (jlong)readVarInt {
+  
+#line 156
   jlong value = 0;
   jlong i = 0;
   jlong b;
+  
+#line 160
   do {
     if (offset_ == maxOffset_) {
       @throw [[JavaIoIOException alloc] init];
     }
+    
+#line 165
     b = IOSByteArray_Get(nil_chk(data_), offset_++) & (jint) 0xFF;
+    
+#line 167
     if ((b & (jint) 0x80) != 0) {
       value |= LShift64((b & (jint) 0x7F), i);
       i += 7;
@@ -172,14 +284,24 @@ J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
       }
     }
     else {
+      
+#line 174
       break;
     }
   }
-  while (YES);
+  while (
+#line 176
+  YES);
+  
+#line 178
   return value | (LShift64(b, i));
 }
 
+
+#line 181
 - (IOSByteArray *)readProtoBytes {
+  
+#line 182
   jlong len = [self readVarInt];
   if (len < 0) {
     @throw [[JavaIoIOException alloc] init];
@@ -190,7 +312,11 @@ J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
   return [self readBytesWithInt:(jint) len];
 }
 
+
+#line 192
 - (IOSLongArray *)readProtoLongs {
+  
+#line 193
   jlong len = [self readVarInt];
   if (len < 0) {
     @throw [[JavaIoIOException alloc] init];
@@ -198,6 +324,8 @@ J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
   if (len > BSLimits_MAX_PROTO_REPEATED) {
     @throw [[JavaIoIOException alloc] init];
   }
+  
+#line 201
   IOSLongArray *res = [IOSLongArray newArrayWithLength:(jint) len];
   for (jint i = 0; i < res->size_; i++) {
     *IOSLongArray_GetRef(res, i) = [self readLong];
@@ -205,41 +333,69 @@ J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
   return res;
 }
 
+
+#line 208
 - (NSString *)readProtoString {
+  
+#line 209
   IOSByteArray *data = [self readProtoBytes];
   return [NSString stringWithBytes:data charsetName:@"UTF-8"];
 }
 
+
+#line 213
 - (jboolean)readProtoBool {
+  
+#line 214
   return [self readByte] != 0;
 }
 
+
+#line 217
 - (jint)readASN1Length {
+  
+#line 218
   jint length = [self readByte];
   if (length < 0) {
     @throw [[JavaIoIOException alloc] initWithNSString:@"EOF found when length expected"];
   }
+  
+#line 223
   if (length == (jint) 0x80) {
     return -1;
   }
+  
+#line 227
   if (length > 127) {
     jint size = length & (jint) 0x7f;
+    
+#line 231
     if (size > 4) {
       @throw [[JavaIoIOException alloc] initWithNSString:JreStrcat("$I", @"DER length more than 4 bytes: ", size)];
     }
+    
+#line 235
     length = 0;
     for (jint i = 0; i < size; i++) {
       jint next = [self readByte];
       length = (LShift32(length, 8)) + next;
     }
+    
+#line 241
     if (length < 0) {
       @throw [[JavaIoIOException alloc] initWithNSString:@"corrupted stream - negative length found"];
     }
   }
+  
+#line 251
   return length;
 }
 
+
+#line 254
 - (jint)readASN1Tag {
+  
+#line 255
   jint tag = [self readByte];
   if (tag == 0) {
     @throw [[JavaIoIOException alloc] init];
@@ -247,24 +403,42 @@ J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
   return tag;
 }
 
+
+#line 262
 - (jint)readASN1TagNumberWithInt:(jint)tag {
   jint tagNo = tag & (jint) 0x1f;
+  
+#line 269
   if (tagNo == (jint) 0x1f) {
     tagNo = 0;
+    
+#line 272
     jint b = [self readByte];
+    
+#line 276
     if ((b & (jint) 0x7f) == 0) {
+      
+#line 278
       @throw [[JavaIoIOException alloc] initWithNSString:@"corrupted stream - invalid high tag number found"];
     }
+    
+#line 281
     while ((b >= 0) && ((b & (jint) 0x80) != 0)) {
       tagNo |= (b & (jint) 0x7f);
       LShiftAssignInt(&tagNo, 7);
       b = [self readByte];
     }
+    
+#line 287
     if (b < 0) {
       @throw [[JavaIoIOException alloc] initWithNSString:@"EOF found inside tag value."];
     }
+    
+#line 291
     tagNo |= (b & (jint) 0x7f);
   }
+  
+#line 294
   return tagNo;
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EmailToImport.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EmailToImport.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/EmailToImport.h"
@@ -20,35 +22,57 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, email_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
 
+
+#line 19
 @implementation ImActorModelApiEmailToImport
 
+
+#line 24
 - (instancetype)initWithNSString:(NSString *)email
                     withNSString:(NSString *)name {
   if (self = [super init]) {
+    
+#line 25
     self->email_ = email;
+    
+#line 26
     self->name_ = name;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (NSString *)getEmail {
+  
+#line 34
   return self->email_;
 }
 
+
+#line 37
 - (NSString *)getName {
+  
+#line 38
   return self->name_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->email_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   self->name_ = [values optStringWithInt:2];
 }
 
+
+#line 48
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 49
   if (self->email_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }

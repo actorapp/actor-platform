@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/MTProto.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/MTProto.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/NetworkProvider.h"
@@ -39,58 +41,112 @@ J2OBJC_FIELD_SETTER(MTMTProto, manager_, DKActorRef *)
 J2OBJC_FIELD_SETTER(MTMTProto, sender_, DKActorRef *)
 J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
 
+
+#line 16
 @implementation MTMTProto
 
+
+#line 29
 - (instancetype)initWithLong:(jlong)authId
                     withLong:(jlong)sessionId
              withAMEndpoints:(AMEndpoints *)endpoints
        withMTMTProtoCallback:(id<MTMTProtoCallback>)callback
        withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider {
   if (self = [super init]) {
-    actorPath_ = @"mtproto";
+    actorPath_ =
+#line 27
+    @"mtproto";
+    
+#line 31
     self->authId_ = authId;
+    
+#line 32
     self->sessionId_ = sessionId;
+    
+#line 33
     self->endpoints_ = endpoints;
+    
+#line 34
     self->callback_ = callback;
+    
+#line 35
     self->networkProvider_ = networkProvider;
+    
+#line 36
     self->manager_ = MTManagerActor_managerWithMTMTProto_(self);
+    
+#line 37
     self->sender_ = MTSenderActor_senderActorWithMTMTProto_(self);
+    
+#line 38
     self->receiver_ = MTReceiverActor_receiverWithMTMTProto_(self);
   }
   return self;
 }
 
+
+#line 41
 - (id<AMNetworkProvider>)getNetworkProvider {
+  
+#line 42
   return networkProvider_;
 }
 
+
+#line 45
 - (id<MTMTProtoCallback>)getCallback {
+  
+#line 46
   return callback_;
 }
 
+
+#line 49
 - (AMEndpoints *)getEndpoints {
+  
+#line 50
   return endpoints_;
 }
 
+
+#line 53
 - (jlong)getAuthId {
+  
+#line 54
   return authId_;
 }
 
+
+#line 57
 - (jlong)getSessionId {
+  
+#line 58
   return sessionId_;
 }
 
+
+#line 61
 - (NSString *)getActorPath {
+  
+#line 62
   return actorPath_;
 }
 
+
+#line 65
 - (jlong)sendRpcMessageWithMTProtoStruct:(MTProtoStruct *)protoStruct {
+  
+#line 66
   jlong mtId = ImActorModelNetworkUtilMTUids_nextId();
   [((DKActorRef *) nil_chk(sender_)) sendWithId:[[MTSenderActor_SendMessage alloc] initWithLong:mtId withByteArray:[((MTMTRpcRequest *) [[MTMTRpcRequest alloc] initWithByteArray:[((MTProtoStruct *) nil_chk(protoStruct)) toByteArray]]) toByteArray]]];
   return mtId;
 }
 
+
+#line 71
 - (void)cancelRpcWithLong:(jlong)mtId {
+  
+#line 72
   [((DKActorRef *) nil_chk(sender_)) sendWithId:[[MTSenderActor_ForgetMessage alloc] initWithLong:mtId]];
 }
 

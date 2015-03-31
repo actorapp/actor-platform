@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/Push.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/Push.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -11,31 +13,51 @@
 #include "im/actor/model/network/mtp/entity/rpc/Push.h"
 #include "java/io/IOException.h"
 
+
+#line 13
 @implementation MTPush
 
+
+#line 17
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 18
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 21
 - (instancetype)initWithInt:(jint)updateType
               withByteArray:(IOSByteArray *)body {
   if (self = [super init]) {
     self->updateType_ = updateType;
+    
+#line 23
     self->body_ = body;
   }
   return self;
 }
 
+
+#line 27
 - (jbyte)getHeader {
+  
+#line 28
   return 0;
 }
 
+
+#line 32
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:updateType_];
   [bs writeProtoBytesWithByteArray:body_ withInt:0 withInt:((IOSByteArray *) nil_chk(body_))->size_];
 }
 
+
+#line 38
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
+  
+#line 39
   updateType_ = [((BSDataInput *) nil_chk(bs)) readInt];
   body_ = [bs readProtoBytes];
 }

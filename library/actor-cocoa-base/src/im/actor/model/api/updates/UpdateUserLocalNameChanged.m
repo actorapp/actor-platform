@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserLocalNameChanged.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserLocalNameChanged.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,39 +24,63 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_, NSString *)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateUserLocalNameChanged
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateUserLocalNameChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithInt:(jint)uid
                withNSString:(NSString *)localName {
   if (self = [super init]) {
+    
+#line 31
     self->uid_ = uid;
+    
+#line 32
     self->localName_ = localName;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getUid {
+  
+#line 40
   return self->uid_;
 }
 
+
+#line 43
 - (NSString *)getLocalName {
+  
+#line 44
   return self->localName_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->localName_ = [values optStringWithInt:2];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   if (self->localName_ != nil) {
     [writer writeStringWithInt:2 withNSString:self->localName_];
@@ -70,6 +96,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
 }
 
 - (jint)getHeaderKey {
+  
+#line 72
   return ImActorModelApiUpdatesUpdateUserLocalNameChanged_HEADER;
 }
 
@@ -83,6 +111,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
 
 ImActorModelApiUpdatesUpdateUserLocalNameChanged *ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserLocalNameChanged_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserLocalNameChanged alloc] init], data));
 }
 
