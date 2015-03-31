@@ -53,18 +53,18 @@ object Dependencies {
   }
 
   object Testing {
-    val akkaTestkit     = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka % "test"
+    val akkaTestkit     = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka % "test,e2e"
 
     val akkaPersistenceInmem =
       "com.github.dnvriend" %% "akka-persistence-inmemory" % "1.0.0" % "test"
 
     val scalacheck      = "org.scalacheck"                %% "scalacheck"                    % "1.12.2" % "test"
-    val specs2          = "org.specs2"                    %% "specs2-core"                   % "3.0" % "test"
+    val specs2          = "org.specs2"                    %% "specs2-core"                   % "3.0" % "test,e2e"
     val slickTestkit    = "com.typesafe.slick"            %% "slick-testkit"                 % V.slick % "test"
 
     val jfairy          = "io.codearte.jfairy"            %  "jfairy"                        % "0.3.1" % "test"
 
-    val utilTesting     = "im.actor"                      %% "actor-util-testing"            % "0.0.2-SNAPSHOT" % "test"
+    val utilTesting     = "im.actor"                      %% "actor-util-testing"            % "0.0.2-SNAPSHOT" % "test,e2e"
   }
 
   import Compile._, Testing._
@@ -84,8 +84,7 @@ object Dependencies {
   val internalServices = common ++ Seq(akkaActor, akkaStream, scodecBits)
 
   val session = common ++ Seq(
-    akkaSlf4j, akkaActor, akkaKernel, akkaStream, scodecCore,
-    akkaTestkit, specs2
+    akkaSlf4j, akkaActor, akkaKernel, akkaStream, scodecCore
   )
 
   val push = common ++ Seq(akkaContrib)
@@ -103,6 +102,7 @@ object Dependencies {
   )
 
   val tests = common ++ Seq(
-    jfairy, scalacheck, specs2, slickTestkit, utilTesting, akkaPersistenceInmem
+    jfairy, scalacheck, specs2, slickTestkit, utilTesting, akkaPersistenceInmem,
+    akkaTestkit
   )
 }

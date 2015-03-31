@@ -1,34 +1,15 @@
 package im.actor.server.mtproto.codecs
 
-import im.actor.server.mtproto.transport._
-import scodec.bits._
 import scodec._
 import scodec.codecs._
 
+import im.actor.server.mtproto.transport._
+
+@SerialVersionUID(1L)
+case class TransportPackageHeader(index: Int, header: Int, bodyLength: Long)
+
 package object transport {
   val HandshakeCodec = (byte :: byte :: byte :: bytes).as[Handshake]
-
-  object TransportPackageCodec extends Codec[TransportPackage] {
-    def sizeBound = SizeBound.unknown
-
-    private val codec = (int32 :: MTProtoCodec).as[TransportPackage]
-
-    def encode(p: TransportPackage) = {
-      for {
-        body <- codec.encode(p)
-        pkgBody = body ++ CodecUtils.crc32(body)
-        length <- int32.encode((pkgBody.length / byteSize).toInt)
-      }
-      yield length ++ pkgBody
-    }
-
-    def decode(buf: BitVector) = {
-      val pkgCrc = buf.takeRight(int32Bits)
-      val bsCrc = CodecUtils.crc32(buf.dropRight(int32Bits))
-      if (pkgCrc == bsCrc) codec.decode(buf)
-      else Attempt.failure(Err("invalid crc32"))
-    }
-  }
 
   val MTPackageCodec = (int64 :: int64 :: codecs.bits).as[MTPackage]
 
@@ -42,11 +23,17 @@ package object transport {
 
   val InternalErrorCodec = (byte :: int32 :: string).as[InternalError]
 
-  val MTProtoCodec = discriminated[MTProto].by(uint8)
-    .\(MTPackage.header) { case c: MTPackage => c } (MTPackageCodec)
-    .\(Ping.header) { case c: Ping => c } (PingCodec)
-    .\(Pong.header) { case c: Pong => c } (PongCodec)
-    .\(Drop.header) { case c: Drop => c } (DropCodec)
-    .\(Redirect.header) { case c: Redirect => c } (RedirectCodec)
-    .\(InternalError.header) { case c: InternalError => c } (InternalErrorCodec)
+  val PackageIndexCodec = int32
+
+  val transportPackageHeader = (int32 :: uint8 :: varint).as[TransportPackageHeader]
+
+  def mtprotoCodec(header: Int): GenCodec[_, MTProto] =
+    header match {
+      case MTPackage.header => MTPackageCodec.map(_.asInstanceOf[MTProto])
+      case Ping.header => PingCodec.map(_.asInstanceOf[MTProto])
+      case Pong.header => PongCodec.map(_.asInstanceOf[MTProto])
+      case Drop.header => DropCodec.map(_.asInstanceOf[MTProto])
+      case Redirect.header => RedirectCodec.map(_.asInstanceOf[MTProto])
+      case InternalError.header => InternalErrorCodec.map(_.asInstanceOf[MTProto])
+    }
 }
