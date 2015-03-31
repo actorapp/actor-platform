@@ -6,3 +6,7 @@ actor-gwt/src/gen
 actor-gwt/war
 actor-gwt/package
 actor-js/war
+apps/actor-ios/Pods
+apps/actor-ios/ActorClient.xcworkspace
+Podfile.lock
+apps/actor-ios/ActorApp.xcworkspace

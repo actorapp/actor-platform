@@ -8,18 +8,19 @@
 
 import Foundation
 
-class FMDBList : NSObject, DKListStorage {
+class FMDBList : NSObject, DKListStorageDisplayEx {
     
     var db :FMDatabase? = nil;
     var isTableChecked: Bool = false;
     
     let databasePath: String;
     let tableName: String;
-    
+
     let queryCreate: String;
     let queryCreateIndex: String;
     let queryCreateFilter: String;
     
+    let queryCount: String;
     let queryAdd: String;
     let queryItem: String;
 
@@ -45,6 +46,7 @@ class FMDBList : NSObject, DKListStorage {
         self.queryCreateIndex = "CREATE INDEX IF NOT EXISTS IDX_ID_SORT ON " + tableName + " (\"SORT_KEY\");"
         self.queryCreateFilter = "CREATE INDEX IF NOT EXISTS IDX_ID_QUERY_SORT ON " + tableName + " (\"QUERY\", \"SORT_KEY\");"
         
+        self.queryCount = "SELECT COUNT(*) FROM " + tableName + ";";
         self.queryAdd = "REPLACE INTO " + tableName + " (\"ID\",\"QUERY\",\"SORT_KEY\",\"BYTES\") VALUES (?,?,?,?)";
         self.queryItem = "SELECT \"ID\",\"QUERY\",\"SORT_KEY\",\"BYTES\" FROM " + tableName + " WHERE \"ID\" = ?;";
 
@@ -116,7 +118,23 @@ class FMDBList : NSObject, DKListStorage {
     func getCount() -> jint {
         checkTable();
         
-        fatalError("Not implemented")
+        var result = db!.executeQuery(queryCount)
+        if (result == nil) {
+            return 0;
+        }
+        if (result!.next()) {
+            var res = jint(result!.intForColumnIndex(0))
+            result?.close()
+            return res
+        } else {
+            result?.close()
+        }
+        
+        return 0;
+    }
+    
+    func isEmpty() -> Bool {
+        return getCount() == 0;
     }
     
     func clear() {
@@ -201,6 +219,7 @@ class FMDBList : NSObject, DKListStorage {
         result!.close()
         return res;
     }
+    
     
     func loadBackwardWithJavaLangLong(sortingKey: JavaLangLong!, withInt limit: jint) -> JavaUtilList! {
         checkTable();

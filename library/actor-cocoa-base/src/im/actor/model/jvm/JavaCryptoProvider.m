@@ -4,6 +4,7 @@
 //
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/crypto/bouncycastle/RandomProvider.h"
 #include "im/actor/model/jvm/JavaCryptoProvider.h"
 #include "im/actor/model/jvm/JavaRandomProvider.h"
 
@@ -11,6 +12,10 @@
 
 - (instancetype)init {
   return [super initWithBCRandomProvider:[[AMJavaRandomProvider alloc] init]];
+}
+
+- (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)provider {
+  return [super initWithBCRandomProvider:provider];
 }
 
 @end

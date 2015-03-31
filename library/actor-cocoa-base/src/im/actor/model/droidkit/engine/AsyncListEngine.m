@@ -163,7 +163,7 @@ J2OBJC_FIELD_SETTER(DKAsyncListEngine_$1, val$callback_, id<DKListEngineDisplayL
 }
 
 - (jboolean)isEmpty {
-  return [self getCount] > 0;
+  return [self getCount] == 0;
 }
 
 - (jint)getCount {
