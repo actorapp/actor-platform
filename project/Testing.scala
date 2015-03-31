@@ -2,29 +2,28 @@ import sbt._
 import sbt.Keys._
 
 object Testing {
-  lazy val testAll = TaskKey[Unit]("test-all")
 
-  private object Configs {
-    val IntegrationTest = config("it") extend Runtime
-    val EndToEndTest = config("e2e") extend Runtime
-    val all = Seq(IntegrationTest, EndToEndTest)
-  }
+  import BuildKeys._
+  import Configs._
 
-  private lazy val itSettings =
-    inConfig(IntegrationTest)(Defaults.testSettings) ++
-      Seq(
-        fork in IntegrationTest := false,
-        parallelExecution in IntegrationTest := false,
-        scalaSource in IntegrationTest := baseDirectory.value / "src/it/scala")
+  private lazy val testSettings = Seq(
+    fork in Test := false,
+    parallelExecution in Test := false
+  )
 
-  private lazy val e2eSettings =
-    inConfig(Configs.EndToEndTest)(Defaults.testSettings) ++
-      Seq(
-        fork in Configs.EndToEndTest := false,
-        parallelExecution in Configs.EndToEndTest := false,
-        scalaSource in Configs.EndToEndTest := baseDirectory.value / "src/e2e/scala")
+  private lazy val itSettings = inConfig(IntegrationTest)(Defaults.testSettings) ++ Seq(
+    scalaSource in IntegrationTest := baseDirectory.value / "src/it/scala"
+  )
 
-  lazy val settings = itSettings ++ e2eSettings ++ Seq(
-    testAll <<= (test in Configs.EndToEndTest).dependsOn((test in IntegrationTest).dependsOn(test in Test))
+  private lazy val e2eSettings = inConfig(EndToEndTest)(Defaults.testSettings) ++ Seq(
+    scalaSource in EndToEndTest := baseDirectory.value / "src/e2e/scala",
+    fork in EndToEndTest := true
+  )
+
+  lazy val settings = testSettings ++ itSettings ++ e2eSettings ++ Seq(
+    testAll := (),
+    testAll <<= testAll.dependsOn(test in EndToEndTest),
+    testAll <<= testAll.dependsOn(test in IntegrationTest),
+    testAll <<= testAll.dependsOn(test in Test)
   )
 }

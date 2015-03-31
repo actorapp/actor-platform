@@ -1,8 +1,8 @@
-import sbt._
-import sbt.Keys._
 import akka.sbt.AkkaKernelPlugin
-import akka.sbt.AkkaKernelPlugin.{ Dist, outputDirectory, distJvmOptions, distBootClass }
+import akka.sbt.AkkaKernelPlugin.{Dist, distBootClass, distJvmOptions, outputDirectory}
 import im.actor.SbtActorApi
+import sbt.Keys._
+import sbt._
 import spray.revolver.RevolverPlugin._
 
 object Build extends sbt.Build {
@@ -13,11 +13,11 @@ object Build extends sbt.Build {
   lazy val buildSettings =
     Defaults.coreDefaultSettings ++
       Seq(
-        organization         := Organization,
-        version              := Version,
-        scalaVersion         := ScalaVersion,
-        crossPaths           := false,
-        organizationName     := Organization,
+        organization := Organization,
+        version := Version,
+        scalaVersion := ScalaVersion,
+        crossPaths := false,
+        organizationName := Organization,
         organizationHomepage := Some(url("https://actor.im"))
       )
 
@@ -34,8 +34,8 @@ object Build extends sbt.Build {
           if (sys.props("java.specification.version") != "1.8")
             sys.error("Java 8 is required for this project.")
         },
-        resolvers                 ++= Resolvers.seq,
-        scalacOptions in Compile  ++= Seq(
+        resolvers ++= Resolvers.seq,
+        scalacOptions in Compile ++= Seq(
           "-encoding",
           "UTF-8",
           "-deprecation",
@@ -45,36 +45,36 @@ object Build extends sbt.Build {
           "-Xfatal-warnings",
           "-Xlint"
         ) ++ compilerWarnings,
-        javaOptions               ++= Seq("-Dfile.encoding=UTF-8", "-Dscalac.patmat.analysisBudget=off"),
-        javacOptions              ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
-        parallelExecution in Test :=  false,
-        fork              in Test :=  true
+        javaOptions ++= Seq("-Dfile.encoding=UTF-8", "-Dscalac.patmat.analysisBudget=off"),
+        javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
+        parallelExecution in Test := false,
+        fork in Test := true
       )
 
   lazy val root = Project(
     "actor-server",
     file("."),
     settings =
-      defaultSettings               ++
-      AkkaKernelPlugin.distSettings ++
-      Revolver.settings             ++
-      Seq(
-        libraryDependencies                       ++= Dependencies.root,
-        distJvmOptions       in Dist              :=  "-server -Xms256M -Xmx1024M",
-        distBootClass        in Dist              :=  "im.actor.server.ApiKernel",
-        outputDirectory      in Dist              :=  file("target/dist"),
-        Revolver.reStartArgs                      :=  Seq("im.actor.server.Main"),
-        mainClass            in Revolver.reStart  :=  Some("im.actor.server.Main"),
-        autoCompilerPlugins                       :=  true,
-        scalacOptions        in (Compile,doc)     :=  Seq(
-          "-groups",
-          "-implicits",
-          "-diagrams"
-        ) ++ compilerWarnings
-      )
+      defaultSettings ++
+        AkkaKernelPlugin.distSettings ++
+        Revolver.settings ++
+        Seq(
+          libraryDependencies ++= Dependencies.root,
+          distJvmOptions in Dist := "-server -Xms256M -Xmx1024M",
+          distBootClass in Dist := "im.actor.server.ApiKernel",
+          outputDirectory in Dist := file("target/dist"),
+          Revolver.reStartArgs := Seq("im.actor.server.Main"),
+          mainClass in Revolver.reStart := Some("im.actor.server.Main"),
+          autoCompilerPlugins := true,
+          scalacOptions in(Compile, doc) := Seq(
+            "-groups",
+            "-implicits",
+            "-diagrams"
+          ) ++ compilerWarnings
+        )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
-  .dependsOn(actorFrontend)
-  .aggregate(actorApi, actorFrontend, actorModels, actorPersist, actorSession, actorRpcApi, actorTests)
+    .dependsOn(actorFrontend)
+    .aggregate(actorApi, actorFrontend, actorModels, actorPersist, actorSession, actorRpcApi, actorTests)
 
   lazy val actorSession = Project(
     id = "actor-session",
@@ -154,6 +154,7 @@ object Build extends sbt.Build {
     base = file("actor-tests"),
     settings = defaultSettings ++ Testing.settings ++ Seq(
       libraryDependencies ++= Dependencies.tests
-    )
-  ).dependsOn(actorApi, actorCodecs, actorPersist, actorPush, actorRpcApi, actorSession)
+    ))
+    .configs(Configs.all: _*)
+    .dependsOn(actorApi, actorCodecs, actorPersist, actorPush, actorRpcApi, actorSession)
 }

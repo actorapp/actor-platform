@@ -1,3 +1,5 @@
 package im.actor.server.mtproto.transport
 
-trait MTProto
+trait MTProto extends Product with Serializable {
+  val header: Int
+}
