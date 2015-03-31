@@ -3,13 +3,21 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/MemoableResetException.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/MemoableResetException.java"
+
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/util/MemoableResetException.h"
 
+
+#line 10
 @implementation OrgBouncycastleUtilMemoableResetException
 
+
+#line 18
 - (instancetype)initWithNSString:(NSString *)msg {
-  return [super initWithNSString:msg];
+  return
+#line 20
+  [super initWithNSString:msg];
 }
 
 @end

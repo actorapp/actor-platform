@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/MessageState.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/MessageState.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/MessageState.h"
@@ -15,25 +17,37 @@
 }
 @end
 
+#line 8
+
 BOOL ImActorModelApiMessageStateEnum_initialized = NO;
 
 ImActorModelApiMessageStateEnum *ImActorModelApiMessageStateEnum_values_[4];
 
 @implementation ImActorModelApiMessageStateEnum
 
+
+#line 17
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
   if (self = [super initWithNSString:__name withInt:__ordinal]) {
+    
+#line 18
     self->value_ = value;
   }
   return self;
 }
 
+
+#line 21
 - (jint)getValue {
+  
+#line 22
   return value_;
 }
 
+
+#line 25
 + (ImActorModelApiMessageStateEnum *)parseWithInt:(jint)value {
   return ImActorModelApiMessageStateEnum_parseWithInt_(value);
 }
@@ -68,10 +82,18 @@ ImActorModelApiMessageStateEnum *ImActorModelApiMessageStateEnum_valueOfWithNSSt
 
 + (void)initialize {
   if (self == [ImActorModelApiMessageStateEnum class]) {
-    ImActorModelApiMessageStateEnum_SENT = [[ImActorModelApiMessageStateEnum alloc] initWithInt:1 withNSString:@"SENT" withInt:0];
-    ImActorModelApiMessageStateEnum_RECEIVED = [[ImActorModelApiMessageStateEnum alloc] initWithInt:2 withNSString:@"RECEIVED" withInt:1];
-    ImActorModelApiMessageStateEnum_READ = [[ImActorModelApiMessageStateEnum alloc] initWithInt:3 withNSString:@"READ" withInt:2];
-    ImActorModelApiMessageStateEnum_UNSUPPORTED_VALUE = [[ImActorModelApiMessageStateEnum alloc] initWithInt:-1 withNSString:@"UNSUPPORTED_VALUE" withInt:3];
+    ImActorModelApiMessageStateEnum_SENT = [[ImActorModelApiMessageStateEnum alloc] initWithInt:
+#line 10
+    1 withNSString:@"SENT" withInt:0];
+    ImActorModelApiMessageStateEnum_RECEIVED = [[ImActorModelApiMessageStateEnum alloc] initWithInt:
+#line 11
+    2 withNSString:@"RECEIVED" withInt:1];
+    ImActorModelApiMessageStateEnum_READ = [[ImActorModelApiMessageStateEnum alloc] initWithInt:
+#line 12
+    3 withNSString:@"READ" withInt:2];
+    ImActorModelApiMessageStateEnum_UNSUPPORTED_VALUE = [[ImActorModelApiMessageStateEnum alloc] initWithInt:
+#line 13
+    -1 withNSString:@"UNSUPPORTED_VALUE" withInt:3];
     J2OBJC_SET_INITIALIZED(ImActorModelApiMessageStateEnum)
   }
 }
@@ -80,14 +102,24 @@ ImActorModelApiMessageStateEnum *ImActorModelApiMessageStateEnum_valueOfWithNSSt
 
 ImActorModelApiMessageStateEnum *ImActorModelApiMessageStateEnum_parseWithInt_(jint value) {
   ImActorModelApiMessageStateEnum_init();
+  
+#line 26
   switch (value) {
     case 1:
+    
+#line 27
     return ImActorModelApiMessageStateEnum_SENT;
     case 2:
+    
+#line 28
     return ImActorModelApiMessageStateEnum_RECEIVED;
     case 3:
+    
+#line 29
     return ImActorModelApiMessageStateEnum_READ;
     default:
+    
+#line 30
     return ImActorModelApiMessageStateEnum_UNSUPPORTED_VALUE;
   }
 }

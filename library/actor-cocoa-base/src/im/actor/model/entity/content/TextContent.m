@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/TextContent.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/TextContent.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,36 +25,54 @@
 
 J2OBJC_FIELD_SETTER(AMTextContent, text_, NSString *)
 
+
+#line 12
 @implementation AMTextContent
 
 + (AMTextContent *)textFromBytesWithByteArray:(IOSByteArray *)data {
   return AMTextContent_textFromBytesWithByteArray_(data);
 }
 
+
+#line 20
 - (instancetype)initWithNSString:(NSString *)text {
   if (self = [super init]) {
+    
+#line 21
     self->text_ = text;
   }
   return self;
 }
 
+
+#line 24
 - (instancetype)init {
   return [super init];
 }
 
 - (NSString *)getText {
+  
+#line 29
   return text_;
 }
 
+
+#line 33
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_TEXT();
 }
 
+
+#line 38
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  
+#line 39
   [super parseWithBSBserValues:values];
   text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:2];
 }
 
+
+#line 44
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:text_];
@@ -67,6 +87,8 @@ J2OBJC_FIELD_SETTER(AMTextContent, text_, NSString *)
 
 AMTextContent *AMTextContent_textFromBytesWithByteArray_(IOSByteArray *data) {
   AMTextContent_init();
+  
+#line 15
   return ((AMTextContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMTextContent alloc] init], data));
 }
 

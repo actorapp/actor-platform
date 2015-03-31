@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedAesKey.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedAesKey.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -21,35 +23,57 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedAesKey, aesEncryptedKey_, IOSByteArray *)
 
+
+#line 19
 @implementation ImActorModelApiEncryptedAesKey
 
+
+#line 24
 - (instancetype)initWithLong:(jlong)keyHash
                withByteArray:(IOSByteArray *)aesEncryptedKey {
   if (self = [super init]) {
+    
+#line 25
     self->keyHash_ = keyHash;
+    
+#line 26
     self->aesEncryptedKey_ = aesEncryptedKey;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (jlong)getKeyHash {
+  
+#line 34
   return self->keyHash_;
 }
 
+
+#line 37
 - (IOSByteArray *)getAesEncryptedKey {
+  
+#line 38
   return self->aesEncryptedKey_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->keyHash_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->aesEncryptedKey_ = [values getBytesWithInt:2];
 }
 
+
+#line 48
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 49
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->keyHash_];
   if (self->aesEncryptedKey_ == nil) {
     @throw [[JavaIoIOException alloc] init];

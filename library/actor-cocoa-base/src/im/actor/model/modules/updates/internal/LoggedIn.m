@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/LoggedIn.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/LoggedIn.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/rpc/ResponseAuth.h"
 #include "im/actor/model/modules/updates/internal/LoggedIn.h"
@@ -18,22 +20,38 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalLoggedIn, auth_, ImActorModelApiRpcResponseAuth *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalLoggedIn, runnable_, id<JavaLangRunnable>)
 
+
+#line 8
 @implementation ImActorModelModulesUpdatesInternalLoggedIn
 
+
+#line 12
 - (instancetype)initWithImActorModelApiRpcResponseAuth:(ImActorModelApiRpcResponseAuth *)auth
                                   withJavaLangRunnable:(id<JavaLangRunnable>)runnable {
   if (self = [super init]) {
+    
+#line 13
     self->auth_ = auth;
+    
+#line 14
     self->runnable_ = runnable;
   }
   return self;
 }
 
+
+#line 17
 - (ImActorModelApiRpcResponseAuth *)getAuth {
+  
+#line 18
   return auth_;
 }
 
+
+#line 21
 - (id<JavaLangRunnable>)getRunnable {
+  
+#line 22
   return runnable_;
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/MailboxCreator.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/MailboxCreator.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/MailboxCreator.h"
 #include "im/actor/model/droidkit/actors/mailbox/Mailbox.h"

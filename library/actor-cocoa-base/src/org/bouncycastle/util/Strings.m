@@ -3,40 +3,56 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Strings.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Strings.java"
+
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "java/util/Vector.h"
 #include "org/bouncycastle/util/Strings.h"
 
+
+#line 8
 @implementation OrgBouncycastleUtilStrings
 
 + (NSString *)fromUTF8ByteArrayWithByteArray:(IOSByteArray *)bytes {
   return OrgBouncycastleUtilStrings_fromUTF8ByteArrayWithByteArray_(bytes);
 }
 
+
+#line 85
 + (IOSByteArray *)toByteArrayWithCharArray:(IOSCharArray *)chars {
   return OrgBouncycastleUtilStrings_toByteArrayWithCharArray_(chars);
 }
 
+
+#line 97
 + (IOSByteArray *)toByteArrayWithNSString:(NSString *)string {
   return OrgBouncycastleUtilStrings_toByteArrayWithNSString_(string);
 }
 
+
+#line 111
 + (jint)toByteArrayWithNSString:(NSString *)s
                   withByteArray:(IOSByteArray *)buf
                         withInt:(jint)off {
   return OrgBouncycastleUtilStrings_toByteArrayWithNSString_withByteArray_withInt_(s, buf, off);
 }
 
+
+#line 128
 + (NSString *)fromByteArrayWithByteArray:(IOSByteArray *)bytes {
   return OrgBouncycastleUtilStrings_fromByteArrayWithByteArray_(bytes);
 }
 
+
+#line 139
 + (IOSCharArray *)asCharArrayWithByteArray:(IOSByteArray *)bytes {
   return OrgBouncycastleUtilStrings_asCharArrayWithByteArray_(bytes);
 }
 
+
+#line 151
 + (IOSObjectArray *)splitWithNSString:(NSString *)input
                              withChar:(jchar)delimiter {
   return OrgBouncycastleUtilStrings_splitWithNSString_withChar_(input, delimiter);
@@ -50,30 +66,56 @@
 
 NSString *OrgBouncycastleUtilStrings_fromUTF8ByteArrayWithByteArray_(IOSByteArray *bytes) {
   OrgBouncycastleUtilStrings_init();
+  
+#line 12
   jint i = 0;
   jint length = 0;
+  
+#line 15
   while (i < ((IOSByteArray *) nil_chk(bytes))->size_) {
+    
+#line 17
     length++;
     if ((IOSByteArray_Get(bytes, i) & (jint) 0xf0) == (jint) 0xf0) {
+      
+#line 21
       length++;
       i += 4;
     }
     else if ((IOSByteArray_Get(bytes, i) & (jint) 0xe0) == (jint) 0xe0) {
+      
+#line 26
       i += 3;
     }
     else if ((IOSByteArray_Get(bytes, i) & (jint) 0xc0) == (jint) 0xc0) {
+      
+#line 30
       i += 2;
     }
     else {
+      
+#line 34
       i += 1;
     }
   }
+  
+#line 38
   IOSCharArray *cs = [IOSCharArray newArrayWithLength:length];
+  
+#line 40
   i = 0;
   length = 0;
+  
+#line 43
   while (i < bytes->size_) {
+    
+#line 45
     jchar ch;
+    
+#line 47
     if ((IOSByteArray_Get(bytes, i) & (jint) 0xf0) == (jint) 0xf0) {
+      
+#line 49
       jint codePoint = (LShift32((IOSByteArray_Get(bytes, i) & (jint) 0x03), 18)) | (LShift32((IOSByteArray_Get(bytes, i + 1) & (jint) 0x3F), 12)) | (LShift32((IOSByteArray_Get(bytes, i + 2) & (jint) 0x3F), 6)) | (IOSByteArray_Get(bytes, i + 3) & (jint) 0x3F);
       jint U = codePoint - (jint) 0x10000;
       jchar W1 = (jchar) ((jint) 0xD800 | (RShift32(U, 10)));
@@ -83,49 +125,85 @@ NSString *OrgBouncycastleUtilStrings_fromUTF8ByteArrayWithByteArray_(IOSByteArra
       i += 4;
     }
     else if ((IOSByteArray_Get(bytes, i) & (jint) 0xe0) == (jint) 0xe0) {
-      ch = (jchar) ((LShift32((IOSByteArray_Get(bytes, i) & (jint) 0x0f), 12)) | (LShift32((IOSByteArray_Get(bytes, i + 1) & (jint) 0x3f), 6)) | (IOSByteArray_Get(bytes, i + 2) & (jint) 0x3f));
+      
+#line 59
+      ch = (jchar) ((LShift32((IOSByteArray_Get(bytes, i) & (jint) 0x0f), 12)) |
+#line 60
+      (LShift32((IOSByteArray_Get(bytes, i + 1) & (jint) 0x3f), 6)) | (IOSByteArray_Get(bytes, i + 2) & (jint) 0x3f));
       i += 3;
     }
     else if ((IOSByteArray_Get(bytes, i) & (jint) 0xd0) == (jint) 0xd0) {
+      
+#line 65
       ch = (jchar) ((LShift32((IOSByteArray_Get(bytes, i) & (jint) 0x1f), 6)) | (IOSByteArray_Get(bytes, i + 1) & (jint) 0x3f));
       i += 2;
     }
     else if ((IOSByteArray_Get(bytes, i) & (jint) 0xc0) == (jint) 0xc0) {
+      
+#line 70
       ch = (jchar) ((LShift32((IOSByteArray_Get(bytes, i) & (jint) 0x1f), 6)) | (IOSByteArray_Get(bytes, i + 1) & (jint) 0x3f));
       i += 2;
     }
     else {
+      
+#line 75
       ch = (jchar) (IOSByteArray_Get(bytes, i) & (jint) 0xff);
       i += 1;
     }
+    
+#line 79
     *IOSCharArray_GetRef(cs, length++) = ch;
   }
+  
+#line 82
   return [NSString stringWithCharacters:cs];
 }
 
 IOSByteArray *OrgBouncycastleUtilStrings_toByteArrayWithCharArray_(IOSCharArray *chars) {
   OrgBouncycastleUtilStrings_init();
+  
+#line 87
   IOSByteArray *bytes = [IOSByteArray newArrayWithLength:((IOSCharArray *) nil_chk(chars))->size_];
+  
+#line 89
   for (jint i = 0; i != bytes->size_; i++) {
+    
+#line 91
     *IOSByteArray_GetRef(bytes, i) = (jbyte) IOSCharArray_Get(chars, i);
   }
+  
+#line 94
   return bytes;
 }
 
 IOSByteArray *OrgBouncycastleUtilStrings_toByteArrayWithNSString_(NSString *string) {
   OrgBouncycastleUtilStrings_init();
+  
+#line 99
   IOSByteArray *bytes = [IOSByteArray newArrayWithLength:((jint) [((NSString *) nil_chk(string)) length])];
+  
+#line 101
   for (jint i = 0; i != bytes->size_; i++) {
+    
+#line 103
     jchar ch = [string charAtWithInt:i];
+    
+#line 105
     *IOSByteArray_GetRef(bytes, i) = (jbyte) ch;
   }
+  
+#line 108
   return bytes;
 }
 
 jint OrgBouncycastleUtilStrings_toByteArrayWithNSString_withByteArray_withInt_(NSString *s, IOSByteArray *buf, jint off) {
   OrgBouncycastleUtilStrings_init();
+  
+#line 113
   jint count = ((jint) [((NSString *) nil_chk(s)) length]);
   for (jint i = 0; i < count; ++i) {
+    
+#line 116
     jchar c = [s charAtWithInt:i];
     *IOSByteArray_GetRef(nil_chk(buf), off + i) = (jbyte) c;
   }
@@ -134,37 +212,63 @@ jint OrgBouncycastleUtilStrings_toByteArrayWithNSString_withByteArray_withInt_(N
 
 NSString *OrgBouncycastleUtilStrings_fromByteArrayWithByteArray_(IOSByteArray *bytes) {
   OrgBouncycastleUtilStrings_init();
+  
+#line 130
   return [NSString stringWithCharacters:OrgBouncycastleUtilStrings_asCharArrayWithByteArray_(bytes)];
 }
 
 IOSCharArray *OrgBouncycastleUtilStrings_asCharArrayWithByteArray_(IOSByteArray *bytes) {
   OrgBouncycastleUtilStrings_init();
+  
+#line 141
   IOSCharArray *chars = [IOSCharArray newArrayWithLength:((IOSByteArray *) nil_chk(bytes))->size_];
+  
+#line 143
   for (jint i = 0; i != chars->size_; i++) {
+    
+#line 145
     *IOSCharArray_GetRef(chars, i) = (jchar) (IOSByteArray_Get(bytes, i) & (jint) 0xff);
   }
+  
+#line 148
   return chars;
 }
 
 IOSObjectArray *OrgBouncycastleUtilStrings_splitWithNSString_withChar_(NSString *input, jchar delimiter) {
   OrgBouncycastleUtilStrings_init();
+  
+#line 153
   JavaUtilVector *v = [[JavaUtilVector alloc] init];
   jboolean moreTokens = YES;
   NSString *subString;
+  
+#line 157
   while (moreTokens) {
+    
+#line 159
     jint tokenLocation = [((NSString *) nil_chk(input)) indexOf:delimiter];
     if (tokenLocation > 0) {
+      
+#line 162
       subString = [input substring:0 endIndex:tokenLocation];
       [v addElementWithId:subString];
       input = [input substring:tokenLocation + 1];
     }
     else {
+      
+#line 168
       moreTokens = NO;
       [v addElementWithId:input];
     }
   }
+  
+#line 173
   IOSObjectArray *res = [IOSObjectArray newArrayWithLength:[v size] type:NSString_class_()];
+  
+#line 175
   for (jint i = 0; i != res->size_; i++) {
+    
+#line 177
     IOSObjectArray_Set(res, i, (NSString *) check_class_cast([v elementAtWithInt:i], [NSString class]));
   }
   return res;

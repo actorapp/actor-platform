@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateRemovedDevice.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateRemovedDevice.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -20,39 +22,63 @@
 }
 @end
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateRemovedDevice
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateRemovedDevice *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateRemovedDevice_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)keyHash {
   if (self = [super init]) {
+    
+#line 31
     self->uid_ = uid;
+    
+#line 32
     self->keyHash_ = keyHash;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getUid {
+  
+#line 40
   return self->uid_;
 }
 
+
+#line 43
 - (jlong)getKeyHash {
+  
+#line 44
   return self->keyHash_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->keyHash_ = [values getLongWithInt:2];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->keyHash_];
 }
@@ -66,6 +92,8 @@
 }
 
 - (jint)getHeaderKey {
+  
+#line 70
   return ImActorModelApiUpdatesUpdateRemovedDevice_HEADER;
 }
 
@@ -79,6 +107,8 @@
 
 ImActorModelApiUpdatesUpdateRemovedDevice *ImActorModelApiUpdatesUpdateRemovedDevice_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateRemovedDevice_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateRemovedDevice *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateRemovedDevice alloc] init], data));
 }
 

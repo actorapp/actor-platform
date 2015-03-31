@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/CryptoKeyPair.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/CryptoKeyPair.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/CryptoKeyPair.h"
@@ -17,22 +19,38 @@
 J2OBJC_FIELD_SETTER(AMCryptoKeyPair, publicKey_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(AMCryptoKeyPair, privateKey_, IOSByteArray *)
 
+
+#line 6
 @implementation AMCryptoKeyPair
 
+
+#line 10
 - (instancetype)initWithByteArray:(IOSByteArray *)publicKey
                     withByteArray:(IOSByteArray *)privateKey {
   if (self = [super init]) {
+    
+#line 11
     self->publicKey_ = publicKey;
+    
+#line 12
     self->privateKey_ = privateKey;
   }
   return self;
 }
 
+
+#line 15
 - (IOSByteArray *)getPublicKey {
+  
+#line 16
   return publicKey_;
 }
 
+
+#line 19
 - (IOSByteArray *)getPrivateKey {
+  
+#line 20
   return privateKey_;
 }
 

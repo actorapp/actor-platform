@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PlainCursorsStorage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PlainCursorsStorage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -26,40 +28,62 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPlainCursorsStorage, cursors_, JavaUtilHashMap *)
 
+
+#line 17
 @implementation ImActorModelModulesMessagesEntityPlainCursorsStorage
 
 + (ImActorModelModulesMessagesEntityPlainCursorsStorage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesMessagesEntityPlainCursorsStorage_fromBytesWithByteArray_(data);
 }
 
+
+#line 25
 - (ImActorModelModulesMessagesEntityPlainCursor *)getCursorWithAMPeer:(AMPeer *)peer {
+  
+#line 26
   if (![((JavaUtilHashMap *) nil_chk(cursors_)) containsKeyWithId:peer]) {
     (void) [cursors_ putWithId:peer withId:[[ImActorModelModulesMessagesEntityPlainCursor alloc] initWithAMPeer:peer withLong:0 withLong:0]];
   }
   return [cursors_ getWithId:peer];
 }
 
+
+#line 32
 - (void)putCursorWithImActorModelModulesMessagesEntityPlainCursor:(ImActorModelModulesMessagesEntityPlainCursor *)cursor {
+  
+#line 33
   (void) [((JavaUtilHashMap *) nil_chk(cursors_)) putWithId:[((ImActorModelModulesMessagesEntityPlainCursor *) nil_chk(cursor)) getPeer] withId:cursor];
 }
 
+
+#line 36
 - (id<JavaUtilCollection>)getAllCursors {
+  
+#line 37
   return [((JavaUtilHashMap *) nil_chk(cursors_)) values];
 }
 
+
+#line 41
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   for (IOSByteArray * __strong data in nil_chk([((BSBserValues *) nil_chk(values)) getRepeatedBytesWithInt:1])) {
     @try {
       ImActorModelModulesMessagesEntityPlainCursor *plainCursor = ImActorModelModulesMessagesEntityPlainCursor_fromBytesWithByteArray_(data);
       (void) [((JavaUtilHashMap *) nil_chk(cursors_)) putWithId:[((ImActorModelModulesMessagesEntityPlainCursor *) nil_chk(plainCursor)) getPeer] withId:plainCursor];
     }
-    @catch (JavaIoIOException *e) {
+    @catch (
+#line 46
+    JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
     }
   }
 }
 
+
+#line 53
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 54
   for (ImActorModelModulesMessagesEntityPlainCursor * __strong cursor in nil_chk([((JavaUtilHashMap *) nil_chk(cursors_)) values])) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:cursor];
   }
@@ -67,7 +91,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPlainCursorsStorage, cursor
 
 - (instancetype)init {
   if (self = [super init]) {
-    cursors_ = [[JavaUtilHashMap alloc] init];
+    cursors_ =
+#line 23
+    [[JavaUtilHashMap alloc] init];
   }
   return self;
 }
@@ -81,6 +107,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPlainCursorsStorage, cursor
 
 ImActorModelModulesMessagesEntityPlainCursorsStorage *ImActorModelModulesMessagesEntityPlainCursorsStorage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityPlainCursorsStorage_init();
+  
+#line 20
   return ((ImActorModelModulesMessagesEntityPlainCursorsStorage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityPlainCursorsStorage alloc] init], data));
 }
 

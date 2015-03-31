@@ -3,23 +3,37 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/WTauNafPreCompInfo.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/WTauNafPreCompInfo.java"
+
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/math/ec/WTauNafPreCompInfo.h"
 
+
+#line 7
 @implementation OrgBouncycastleMathEcWTauNafPreCompInfo
 
+
+#line 17
 - (IOSObjectArray *)getPreComp {
+  
+#line 19
   return preComp_;
 }
 
+
+#line 22
 - (void)setPreCompWithOrgBouncycastleMathEcECPoint_F2mArray:(IOSObjectArray *)preComp {
+  
+#line 24
   self->preComp_ = preComp;
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    preComp_ = nil;
+    preComp_ =
+#line 15
+    nil;
   }
   return self;
 }

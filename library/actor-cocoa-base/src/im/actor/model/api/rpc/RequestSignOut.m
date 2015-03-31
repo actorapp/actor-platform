@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSignOut.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSignOut.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -13,29 +15,43 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestSignOut
 
+
+#line 23
 + (ImActorModelApiRpcRequestSignOut *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSignOut_fromBytesWithByteArray_(data);
 }
 
+
+#line 28
 - (instancetype)init {
   return [super init];
 }
 
+
+#line 33
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
+
+#line 37
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
 - (NSString *)description {
+  
+#line 42
   NSString *res = @"rpc SignOut{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
 - (jint)getHeaderKey {
+  
+#line 49
   return ImActorModelApiRpcRequestSignOut_HEADER;
 }
 
@@ -43,6 +59,8 @@
 
 ImActorModelApiRpcRequestSignOut *ImActorModelApiRpcRequestSignOut_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSignOut_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestSignOut *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestSignOut alloc] init], data));
 }
 

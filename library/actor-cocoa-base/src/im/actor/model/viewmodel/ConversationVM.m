@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/ConversationVM.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/ConversationVM.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/Message.h"
 #include "im/actor/model/entity/Peer.h"
@@ -40,23 +42,41 @@ J2OBJC_FIELD_SETTER(AMConversationVM_$1, val$modules_, ImActorModelModulesModule
 J2OBJC_FIELD_SETTER(AMConversationVM_$1, val$peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(AMConversationVM_$1, val$callback_, id<AMConversationVMCallback>)
 
+
+#line 13
 @implementation AMConversationVM
 
+
+#line 18
 - (instancetype)initWithAMPeer:(AMPeer *)peer
   withAMConversationVMCallback:(id<AMConversationVMCallback>)callback
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules
 withImActorModelModulesDisplayLists:(ImActorModelModulesDisplayLists *)displayLists {
   if (self = [super init]) {
-    isLoaded_ = NO;
+    isLoaded_ =
+#line 16
+    NO;
+    
+#line 19
     self->displayList_ = [((ImActorModelModulesDisplayLists *) nil_chk(displayLists)) getMessagesGlobalListWithAMPeer:peer];
+    
+#line 20
     self->listener_ = [[AMConversationVM_$1 alloc] initWithAMConversationVM:self withImActorModelModulesModules:modules withAMPeer:peer withAMConversationVMCallback:callback];
+    
+#line 60
     [((AMBindedDisplayList *) nil_chk(self->displayList_)) addListenerWithAMDisplayList_Listener:listener_];
+    
+#line 61
     [self->listener_ onCollectionChanged];
   }
   return self;
 }
 
+
+#line 64
 - (void)release__ {
+  
+#line 65
   [((AMBindedDisplayList *) nil_chk(displayList_)) removeListenerWithAMDisplayList_Listener:listener_];
 }
 
@@ -73,18 +93,32 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConversationVM)
 
 @implementation AMConversationVM_$1
 
+
+#line 22
 - (void)onCollectionChanged {
+  
+#line 23
   if (this$0_->isLoaded_) {
     return;
   }
+  
+#line 27
   if ([((AMBindedDisplayList *) nil_chk(this$0_->displayList_)) getSize] == 0) {
     return;
   }
+  
+#line 31
   this$0_->isLoaded_ = YES;
   jlong lastRead = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(val$modules_)) getMessagesModule])) loadReadStateWithAMPeer:val$peer_];
+  
+#line 34
   if (lastRead == 0) {
+    
+#line 36
     return;
   }
+  
+#line 39
   jint index = -1;
   jlong unread = -1;
   for (jint i = [this$0_->displayList_ getSize] - 1; i >= 0; i--) {
@@ -98,10 +132,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConversationVM)
       break;
     }
   }
+  
+#line 53
   if (index >= 0) {
     [((id<AMConversationVMCallback>) nil_chk(val$callback_)) onLoadedWithLong:unread withInt:index];
   }
   else {
+    
+#line 56
     [((id<AMConversationVMCallback>) nil_chk(val$callback_)) onLoadedWithLong:0 withInt:0];
   }
 }

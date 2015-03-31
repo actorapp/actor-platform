@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/ApiConfiguration.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/ApiConfiguration.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/ApiConfiguration.h"
 
@@ -21,40 +23,74 @@ J2OBJC_FIELD_SETTER(AMApiConfiguration, appKey_, NSString *)
 J2OBJC_FIELD_SETTER(AMApiConfiguration, deviceTitle_, NSString *)
 J2OBJC_FIELD_SETTER(AMApiConfiguration, deviceString_, NSString *)
 
+
+#line 6
 @implementation AMApiConfiguration
 
+
+#line 16
 - (instancetype)initWithNSString:(NSString *)appTitle
                          withInt:(jint)appId
                     withNSString:(NSString *)appKey
                     withNSString:(NSString *)deviceTitle
                     withNSString:(NSString *)deviceString {
   if (self = [super init]) {
+    
+#line 17
     self->appTitle_ = appTitle;
+    
+#line 18
     self->appId_ = appId;
+    
+#line 19
     self->appKey_ = appKey;
+    
+#line 20
     self->deviceTitle_ = deviceTitle;
+    
+#line 21
     self->deviceString_ = deviceString;
   }
   return self;
 }
 
+
+#line 24
 - (NSString *)getAppTitle {
+  
+#line 25
   return appTitle_;
 }
 
+
+#line 28
 - (jint)getAppId {
+  
+#line 29
   return appId_;
 }
 
+
+#line 32
 - (NSString *)getAppKey {
+  
+#line 33
   return appKey_;
 }
 
+
+#line 36
 - (NSString *)getDeviceTitle {
+  
+#line 37
   return deviceTitle_;
 }
 
+
+#line 40
 - (NSString *)getDeviceString {
+  
+#line 41
   return deviceString_;
 }
 

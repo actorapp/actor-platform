@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/SeqUpdateTooLong.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/SeqUpdateTooLong.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -13,29 +15,43 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
+
+#line 20
 @implementation ImActorModelApiBaseSeqUpdateTooLong
 
+
+#line 23
 + (ImActorModelApiBaseSeqUpdateTooLong *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiBaseSeqUpdateTooLong_fromBytesWithByteArray_(data);
 }
 
+
+#line 28
 - (instancetype)init {
   return [super init];
 }
 
+
+#line 33
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
+
+#line 37
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
 - (NSString *)description {
+  
+#line 42
   NSString *res = @"update box SeqUpdateTooLong{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
 - (jint)getHeaderKey {
+  
+#line 49
   return ImActorModelApiBaseSeqUpdateTooLong_HEADER;
 }
 
@@ -43,6 +59,8 @@
 
 ImActorModelApiBaseSeqUpdateTooLong *ImActorModelApiBaseSeqUpdateTooLong_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseSeqUpdateTooLong_init();
+  
+#line 24
   return ((ImActorModelApiBaseSeqUpdateTooLong *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiBaseSeqUpdateTooLong alloc] init], data));
 }
 

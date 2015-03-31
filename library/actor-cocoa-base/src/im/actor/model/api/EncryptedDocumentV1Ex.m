@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedDocumentV1Ex.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedDocumentV1Ex.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -19,14 +21,22 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
+
+#line 19
 @implementation ImActorModelApiEncryptedDocumentV1Ex
 
+
+#line 20
 + (ImActorModelApiEncryptedDocumentV1Ex *)fromBytesWithInt:(jint)key
                                              withByteArray:(IOSByteArray *)content {
   return ImActorModelApiEncryptedDocumentV1Ex_fromBytesWithInt_withByteArray_(key, content);
 }
 
+
+#line 29
 - (IOSByteArray *)buildContainer {
+  
+#line 30
   BSDataOutput *res = [[BSDataOutput alloc] init];
   BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:res];
   [writer writeIntWithInt:1 withInt:[self getHeader]];
@@ -42,12 +52,20 @@
 
 ImActorModelApiEncryptedDocumentV1Ex *ImActorModelApiEncryptedDocumentV1Ex_fromBytesWithInt_withByteArray_(jint key, IOSByteArray *content) {
   ImActorModelApiEncryptedDocumentV1Ex_init();
+  
+#line 21
   switch (key) {
     case 1:
+    
+#line 22
     return ((ImActorModelApiEncryptedDocumentV1ExPhoto *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiEncryptedDocumentV1ExPhoto alloc] init], content));
     case 2:
+    
+#line 23
     return ((ImActorModelApiEncryptedDocumentV1VExideo *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiEncryptedDocumentV1VExideo alloc] init], content));
     default:
+    
+#line 24
     return [[ImActorModelApiEncryptedDocumentV1ExUnsupported alloc] initWithInt:key withByteArray:content];
   }
 }

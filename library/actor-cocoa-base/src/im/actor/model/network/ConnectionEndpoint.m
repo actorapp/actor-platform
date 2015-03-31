@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/ConnectionEndpoint.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/ConnectionEndpoint.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
@@ -19,28 +21,50 @@
 J2OBJC_FIELD_SETTER(AMConnectionEndpoint, host_, NSString *)
 J2OBJC_FIELD_SETTER(AMConnectionEndpoint, type_, AMConnectionEndpoint_TypeEnum *)
 
+
+#line 6
 @implementation AMConnectionEndpoint
 
+
+#line 11
 - (instancetype)initWithNSString:(NSString *)host
                          withInt:(jint)port
 withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type {
   if (self = [super init]) {
+    
+#line 12
     self->host_ = host;
+    
+#line 13
     self->port_ = port;
+    
+#line 14
     self->type_ = type;
   }
   return self;
 }
 
+
+#line 17
 - (AMConnectionEndpoint_TypeEnum *)getType {
+  
+#line 18
   return type_;
 }
 
+
+#line 21
 - (NSString *)getHost {
+  
+#line 22
   return host_;
 }
 
+
+#line 25
 - (jint)getPort {
+  
+#line 26
   return port_;
 }
 
@@ -54,6 +78,8 @@ withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type {
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConnectionEndpoint)
+
+#line 29
 
 BOOL AMConnectionEndpoint_TypeEnum_initialized = NO;
 

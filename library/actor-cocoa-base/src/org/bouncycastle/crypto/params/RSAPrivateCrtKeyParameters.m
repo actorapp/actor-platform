@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/RSAPrivateCrtKeyParameters.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/RSAPrivateCrtKeyParameters.java"
+
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/crypto/params/RSAPrivateCrtKeyParameters.h"
@@ -25,8 +27,12 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters, dP_, 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters, dQ_, JavaMathBigInteger *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters, qInv_, JavaMathBigInteger *)
 
+
+#line 5
 @implementation OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters
 
+
+#line 18
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)modulus
                     withJavaMathBigInteger:(JavaMathBigInteger *)publicExponent
                     withJavaMathBigInteger:(JavaMathBigInteger *)privateExponent
@@ -35,38 +41,76 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters, qInv_
                     withJavaMathBigInteger:(JavaMathBigInteger *)dP
                     withJavaMathBigInteger:(JavaMathBigInteger *)dQ
                     withJavaMathBigInteger:(JavaMathBigInteger *)qInv {
-  if (self = [super initWithBoolean:YES withJavaMathBigInteger:modulus withJavaMathBigInteger:privateExponent]) {
+  if (self =
+#line 28
+  [super initWithBoolean:YES withJavaMathBigInteger:modulus withJavaMathBigInteger:privateExponent]) {
+    
+#line 30
     self->e_ = publicExponent;
+    
+#line 31
     self->p_ = p;
+    
+#line 32
     self->q_ = q;
+    
+#line 33
     self->dP_ = dP;
+    
+#line 34
     self->dQ_ = dQ;
+    
+#line 35
     self->qInv_ = qInv;
   }
   return self;
 }
 
+
+#line 38
 - (JavaMathBigInteger *)getPublicExponent {
+  
+#line 40
   return e_;
 }
 
+
+#line 43
 - (JavaMathBigInteger *)getP {
+  
+#line 45
   return p_;
 }
 
+
+#line 48
 - (JavaMathBigInteger *)getQ {
+  
+#line 50
   return q_;
 }
 
+
+#line 53
 - (JavaMathBigInteger *)getDP {
+  
+#line 55
   return dP_;
 }
 
+
+#line 58
 - (JavaMathBigInteger *)getDQ {
+  
+#line 60
   return dQ_;
 }
 
+
+#line 63
 - (JavaMathBigInteger *)getQInv {
+  
+#line 65
   return qInv_;
 }
 

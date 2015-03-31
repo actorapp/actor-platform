@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupInvite.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupInvite.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,45 +24,77 @@
 }
 @end
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateGroupInvite
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateGroupInvite *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateGroupInvite_fromBytesWithByteArray_(data);
 }
 
+
+#line 32
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)inviteUid
                    withLong:(jlong)date {
   if (self = [super init]) {
+    
+#line 33
     self->groupId_ = groupId;
+    
+#line 34
     self->rid_ = rid;
+    
+#line 35
     self->inviteUid_ = inviteUid;
+    
+#line 36
     self->date_ = date;
   }
   return self;
 }
 
+
+#line 39
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getGroupId {
+  
+#line 44
   return self->groupId_;
 }
 
+
+#line 47
 - (jlong)getRid {
+  
+#line 48
   return self->rid_;
 }
 
+
+#line 51
 - (jint)getInviteUid {
+  
+#line 52
   return self->inviteUid_;
 }
 
+
+#line 55
 - (jlong)getDate {
+  
+#line 56
   return self->date_;
 }
 
+
+#line 60
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:9];
@@ -68,7 +102,11 @@
   self->date_ = [values getLongWithInt:8];
 }
 
+
+#line 68
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 69
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:9 withLong:self->rid_];
   [writer writeIntWithInt:5 withInt:self->inviteUid_];
@@ -86,6 +124,8 @@
 }
 
 - (jint)getHeaderKey {
+  
+#line 88
   return ImActorModelApiUpdatesUpdateGroupInvite_HEADER;
 }
 
@@ -101,6 +141,8 @@
 
 ImActorModelApiUpdatesUpdateGroupInvite *ImActorModelApiUpdatesUpdateGroupInvite_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupInvite_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateGroupInvite *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupInvite alloc] init], data));
 }
 

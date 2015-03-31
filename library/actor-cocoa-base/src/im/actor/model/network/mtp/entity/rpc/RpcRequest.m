@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcRequest.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcRequest.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -11,44 +13,72 @@
 #include "im/actor/model/network/mtp/entity/rpc/RpcRequest.h"
 #include "java/io/IOException.h"
 
+
+#line 9
 @implementation MTRpcRequest
 
+
+#line 17
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 18
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 21
 - (instancetype)initWithInt:(jint)requestType
               withByteArray:(IOSByteArray *)payload {
   if (self = [super init]) {
     self->requestType_ = requestType;
+    
+#line 23
     self->payload_ = payload;
   }
   return self;
 }
 
+
+#line 26
 - (jint)getRequestType {
+  
+#line 27
   return requestType_;
 }
 
+
+#line 30
 - (IOSByteArray *)getPayload {
+  
+#line 31
   return payload_;
 }
 
+
+#line 35
 - (jbyte)getHeader {
   return MTRpcRequest_HEADER;
 }
 
+
+#line 40
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 41
   [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:requestType_];
   [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
+
+#line 46
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   requestType_ = [((BSDataInput *) nil_chk(bs)) readInt];
   payload_ = [bs readProtoBytes];
 }
 
 - (NSString *)description {
+  
+#line 53
   return JreStrcat("$IC", @"RpcRequest[", requestType_, ']');
 }
 

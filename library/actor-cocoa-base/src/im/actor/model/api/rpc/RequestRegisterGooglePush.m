@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRegisterGooglePush.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRegisterGooglePush.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,39 +24,63 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSString *)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestRegisterGooglePush
 
+
+#line 23
 + (ImActorModelApiRpcRequestRegisterGooglePush *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestRegisterGooglePush_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithLong:(jlong)projectId
                 withNSString:(NSString *)token {
   if (self = [super init]) {
+    
+#line 31
     self->projectId_ = projectId;
+    
+#line 32
     self->token_ = token;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jlong)getProjectId {
+  
+#line 40
   return self->projectId_;
 }
 
+
+#line 43
 - (NSString *)getToken {
+  
+#line 44
   return self->token_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->projectId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->token_ = [values getStringWithInt:2];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->projectId_];
   if (self->token_ == nil) {
     @throw [[JavaIoIOException alloc] init];
@@ -69,6 +95,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
 }
 
 - (jint)getHeaderKey {
+  
+#line 71
   return ImActorModelApiRpcRequestRegisterGooglePush_HEADER;
 }
 
@@ -82,6 +110,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
 
 ImActorModelApiRpcRequestRegisterGooglePush *ImActorModelApiRpcRequestRegisterGooglePush_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestRegisterGooglePush_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestRegisterGooglePush *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestRegisterGooglePush alloc] init], data));
 }
 

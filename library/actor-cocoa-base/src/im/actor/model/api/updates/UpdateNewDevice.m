@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateNewDevice.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateNewDevice.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -25,45 +27,77 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateNewDevice, key_, IOSByteArray *)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateNewDevice
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateNewDevice *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateNewDevice_fromBytesWithByteArray_(data);
 }
 
+
+#line 32
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)keyHash
               withByteArray:(IOSByteArray *)key
                    withLong:(jlong)date {
   if (self = [super init]) {
+    
+#line 33
     self->uid_ = uid;
+    
+#line 34
     self->keyHash_ = keyHash;
+    
+#line 35
     self->key_ = key;
+    
+#line 36
     self->date_ = date;
   }
   return self;
 }
 
+
+#line 39
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getUid {
+  
+#line 44
   return self->uid_;
 }
 
+
+#line 47
 - (jlong)getKeyHash {
+  
+#line 48
   return self->keyHash_;
 }
 
+
+#line 51
 - (IOSByteArray *)getKey {
+  
+#line 52
   return self->key_;
 }
 
+
+#line 55
 - (jlong)getDate {
+  
+#line 56
   return self->date_;
 }
 
+
+#line 60
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->keyHash_ = [values getLongWithInt:2];
@@ -71,7 +105,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateNewDevice, key_, IOSByteArray *)
   self->date_ = [values getLongWithInt:4];
 }
 
+
+#line 68
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 69
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->keyHash_];
   if (self->key_ != nil) {
@@ -91,6 +129,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateNewDevice, key_, IOSByteArray *)
 }
 
 - (jint)getHeaderKey {
+  
+#line 90
   return ImActorModelApiUpdatesUpdateNewDevice_HEADER;
 }
 
@@ -106,6 +146,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateNewDevice, key_, IOSByteArray *)
 
 ImActorModelApiUpdatesUpdateNewDevice *ImActorModelApiUpdatesUpdateNewDevice_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateNewDevice_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateNewDevice *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateNewDevice alloc] init], data));
 }
 

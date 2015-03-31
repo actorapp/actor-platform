@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/BaseKeyValueEngine.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/BaseKeyValueEngine.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/KeyValueItem.h"
@@ -27,29 +29,45 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsBaseKeyValueEngine, cache_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsBaseKeyValueEngine, storage_, id<DKKeyValueStorage>)
 
+
+#line 15
 @implementation ImActorModelModulesUtilsBaseKeyValueEngine
 
+
+#line 20
 - (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)storage {
   if (self = [super init]) {
     cache_ = [[JavaUtilHashMap alloc] init];
+    
+#line 21
     self->storage_ = storage;
   }
   return self;
 }
 
+
+#line 29
 - (void)addOrUpdateItemWithDKKeyValueItem:(id<DKKeyValueItem>)item {
   @synchronized(self) {
+    
+#line 30
     (void) [((JavaUtilHashMap *) nil_chk(cache_)) putWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(item)) getEngineId]) withId:item];
     IOSByteArray *data = [self serializeWithDKKeyValueItem:item];
     [((id<DKKeyValueStorage>) nil_chk(storage_)) addOrUpdateItemWithLong:[item getEngineId] withByteArray:data];
   }
 }
 
+
+#line 36
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values {
   @synchronized(self) {
+    
+#line 37
     for (id<DKKeyValueItem> __strong t in nil_chk(values)) {
       (void) [((JavaUtilHashMap *) nil_chk(cache_)) putWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(t)) getEngineId]) withId:t];
     }
+    
+#line 41
     JavaUtilArrayList *records = [[JavaUtilArrayList alloc] init];
     for (id<DKKeyValueItem> __strong v in values) {
       [records addWithId:[[DKKeyValueRecord alloc] initWithLong:[((id<DKKeyValueItem>) nil_chk(v)) getEngineId] withByteArray:[self serializeWithDKKeyValueItem:v]]];
@@ -58,40 +76,62 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsBaseKeyValueEngine, storage_, id<DKK
   }
 }
 
+
+#line 49
 - (void)removeItemWithLong:(jlong)id_ {
   @synchronized(self) {
+    
+#line 50
     (void) [((JavaUtilHashMap *) nil_chk(cache_)) removeWithId:JavaLangLong_valueOfWithLong_(id_)];
     [((id<DKKeyValueStorage>) nil_chk(storage_)) removeItemWithLong:id_];
   }
 }
 
+
+#line 55
 - (void)removeItemsWithLongArray:(IOSLongArray *)ids {
   @synchronized(self) {
     {
-      IOSLongArray *a__ = ids;
+      IOSLongArray *a__ =
+#line 56
+      ids;
       jlong const *b__ = ((IOSLongArray *) nil_chk(a__))->buffer_;
       jlong const *e__ = b__ + a__->size_;
       while (b__ < e__) {
         jlong l = *b__++;
+        
+#line 57
         (void) [((JavaUtilHashMap *) nil_chk(cache_)) removeWithId:JavaLangLong_valueOfWithLong_(l)];
       }
     }
+    
+#line 59
     [((id<DKKeyValueStorage>) nil_chk(storage_)) removeItemsWithLongArray:ids];
   }
 }
 
+
+#line 63
 - (void)clear {
   @synchronized(self) {
+    
+#line 64
     [((JavaUtilHashMap *) nil_chk(cache_)) clear];
     [((id<DKKeyValueStorage>) nil_chk(storage_)) clear];
   }
 }
 
+
+#line 69
 - (id)getValueWithLong:(jlong)id_ {
   @synchronized(self) {
+    
+#line 70
     if ([((JavaUtilHashMap *) nil_chk(cache_)) containsKeyWithId:JavaLangLong_valueOfWithLong_(id_)]) {
       return [cache_ getWithId:JavaLangLong_valueOfWithLong_(id_)];
     }
+    
+#line 74
     IOSByteArray *data = [((id<DKKeyValueStorage>) nil_chk(storage_)) getValueWithLong:id_];
     if (data != nil) {
       id<DKKeyValueItem> res = [self deserializeWithByteArray:data];
@@ -99,6 +139,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsBaseKeyValueEngine, storage_, id<DKK
       return res;
     }
     else {
+      
+#line 80
       return nil;
     }
   }

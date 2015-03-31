@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Peer.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Peer.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,6 +26,8 @@
 
 J2OBJC_FIELD_SETTER(AMPeer, peerType_, AMPeerTypeEnum *)
 
+
+#line 13
 @implementation AMPeer
 
 + (AMPeer *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -34,6 +38,8 @@ J2OBJC_FIELD_SETTER(AMPeer, peerType_, AMPeerTypeEnum *)
   return AMPeer_fromUniqueIdWithLong_(uid);
 }
 
+
+#line 34
 + (AMPeer *)userWithInt:(jint)uid {
   return AMPeer_userWithInt_(uid);
 }
@@ -42,20 +48,30 @@ J2OBJC_FIELD_SETTER(AMPeer, peerType_, AMPeerTypeEnum *)
   return AMPeer_groupWithInt_(gid);
 }
 
+
+#line 45
 - (instancetype)initWithAMPeerTypeEnum:(AMPeerTypeEnum *)peerType
                                withInt:(jint)peerId {
   if (self = [super init]) {
+    
+#line 46
     self->peerType_ = peerType;
+    
+#line 47
     self->peerId_ = peerId;
   }
   return self;
 }
 
+
+#line 50
 - (instancetype)init {
   return [super init];
 }
 
 - (jlong)getUnuqueId {
+  
+#line 55
   jint type;
   switch ([peerType_ ordinal]) {
     default:
@@ -72,30 +88,50 @@ J2OBJC_FIELD_SETTER(AMPeer, peerType_, AMPeerTypeEnum *)
   return peerId_ + (LShift64((jlong) type, 32));
 }
 
+
+#line 71
 - (AMPeerTypeEnum *)getPeerType {
+  
+#line 72
   return peerType_;
 }
 
+
+#line 75
 - (jint)getPeerId {
+  
+#line 76
   return peerId_;
 }
 
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
+  
+#line 84
   AMPeer *peer = (AMPeer *) check_class_cast(o, [AMPeer class]);
+  
+#line 86
   if (peerId_ != ((AMPeer *) nil_chk(peer))->peerId_) return NO;
   if (peerType_ != peer->peerType_) return NO;
+  
+#line 89
   return YES;
 }
 
 - (NSUInteger)hash {
+  
+#line 94
   jint result = ((jint) [((AMPeerTypeEnum *) nil_chk(peerType_)) hash]);
   result = 31 * result + peerId_;
   return result;
 }
 
+
+#line 100
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  
+#line 101
   peerId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   switch ([values getIntWithInt:2]) {
     default:
@@ -111,6 +147,8 @@ J2OBJC_FIELD_SETTER(AMPeer, peerType_, AMPeerTypeEnum *)
   }
 }
 
+
+#line 117
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:peerId_];
   switch ([peerType_ ordinal]) {
@@ -137,13 +175,19 @@ J2OBJC_FIELD_SETTER(AMPeer, peerType_, AMPeerTypeEnum *)
 
 AMPeer *AMPeer_fromBytesWithByteArray_(IOSByteArray *data) {
   AMPeer_init();
+  
+#line 16
   return ((AMPeer *) BSBser_parseWithBSBserObject_withByteArray_([[AMPeer alloc] init], data));
 }
 
 AMPeer *AMPeer_fromUniqueIdWithLong_(jlong uid) {
   AMPeer_init();
+  
+#line 20
   jint id_ = (jint) (uid & (jlong) 0xFFFFFFFFLL);
   jint type = (jint) ((RShift64(uid, 32)) & (jlong) 0xFFFFFFFFLL);
+  
+#line 23
   switch (type) {
     default:
     case 0:
@@ -157,11 +201,15 @@ AMPeer *AMPeer_fromUniqueIdWithLong_(jlong uid) {
 
 AMPeer *AMPeer_userWithInt_(jint uid) {
   AMPeer_init();
+  
+#line 35
   return [[AMPeer alloc] initWithAMPeerTypeEnum:AMPeerTypeEnum_get_PRIVATE() withInt:uid];
 }
 
 AMPeer *AMPeer_groupWithInt_(jint gid) {
   AMPeer_init();
+  
+#line 39
   return [[AMPeer alloc] initWithAMPeerTypeEnum:AMPeerTypeEnum_get_GROUP() withInt:gid];
 }
 

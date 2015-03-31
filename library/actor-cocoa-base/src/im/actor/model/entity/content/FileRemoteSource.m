@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FileRemoteSource.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FileRemoteSource.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -21,41 +23,63 @@
 
 J2OBJC_FIELD_SETTER(AMFileRemoteSource, fileReference_, AMFileReference *)
 
+
+#line 12
 @implementation AMFileRemoteSource
 
 + (AMFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader {
   return AMFileRemoteSource_fromValuesWithBSBserValues_(reader);
 }
 
+
+#line 22
 - (instancetype)initWithAMFileReference:(AMFileReference *)fileReference {
   if (self = [super init]) {
+    
+#line 23
     self->fileReference_ = fileReference;
   }
   return self;
 }
 
+
+#line 26
 - (instancetype)init {
   return [super init];
 }
 
 - (AMFileReference *)getFileReference {
+  
+#line 31
   return fileReference_;
 }
 
+
+#line 35
 - (jint)getSize {
   return [((AMFileReference *) nil_chk(fileReference_)) getFileSize];
 }
 
+
+#line 40
 - (NSString *)getFileName {
+  
+#line 41
   return [((AMFileReference *) nil_chk(fileReference_)) getFileName];
 }
 
+
+#line 45
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   fileReference_ = AMFileReference_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
 }
 
+
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 52
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withBSBserObject:fileReference_];
 }
@@ -69,6 +93,8 @@ J2OBJC_FIELD_SETTER(AMFileRemoteSource, fileReference_, AMFileReference *)
 
 AMFileRemoteSource *AMFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader) {
   AMFileRemoteSource_init();
+  
+#line 15
   AMFileRemoteSource *fileLocalSource = [[AMFileRemoteSource alloc] init];
   [fileLocalSource parseWithBSBserValues:reader];
   return fileLocalSource;

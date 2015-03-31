@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/JavaThreadingProvider.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/JavaThreadingProvider.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/ThreadPriority.h"
@@ -18,46 +20,74 @@
 #include "java/lang/Runtime.h"
 #include "java/lang/System.h"
 
+
+#line 18
 @implementation AMJavaThreadingProvider
 
 - (instancetype)init {
   return [super init];
 }
 
+
+#line 25
 - (jlong)getActorTime {
+  
+#line 26
   return JavaLangSystem_nanoTime() / 1000000;
 }
 
+
+#line 30
 - (jlong)getCurrentTime {
   return JavaLangSystem_currentTimeMillis();
 }
 
+
+#line 35
 - (jint)getCoresCount {
+  
+#line 36
   return [((JavaLangRuntime *) nil_chk(JavaLangRuntime_getRuntime())) availableProcessors];
 }
 
+
+#line 40
 - (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)value {
   return [[ImActorModelJvmThreadsJavaAtomicInteger alloc] initWithInt:value];
 }
 
+
+#line 45
 - (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)value {
+  
+#line 46
   return [[ImActorModelJvmThreadsJavaAtomicLong alloc] initWithLong:value];
 }
 
+
+#line 50
 - (AMThreadLocalCompat *)createThreadLocal {
   return [[ImActorModelJvmThreadsJavaThreadLocal alloc] init];
 }
 
+
+#line 55
 - (DKActorDispatcher *)createDispatcherWithNSString:(NSString *)name
                                             withInt:(jint)threadsCount
                            withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
                                   withDKActorSystem:(DKActorSystem *)actorSystem {
+  
+#line 56
   return [[ImActorModelJvmThreadsJavaDispatcherActor alloc] initWithNSString:name withDKActorSystem:actorSystem withInt:threadsCount withDKThreadPriorityEnum:priority];
 }
 
+
+#line 60
 - (DKActorDispatcher *)createDefaultDispatcherWithNSString:(NSString *)name
                                   withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
                                          withDKActorSystem:(DKActorSystem *)actorSystem {
+  
+#line 61
   return [self createDispatcherWithNSString:name withInt:[self getCoresCount] withDKThreadPriorityEnum:priority withDKActorSystem:actorSystem];
 }
 

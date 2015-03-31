@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Group.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Group.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -36,12 +38,16 @@ J2OBJC_FIELD_SETTER(AMGroup, title_, NSString *)
 J2OBJC_FIELD_SETTER(AMGroup, avatar_, AMAvatar *)
 J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
 
+
+#line 16
 @implementation AMGroup
 
 + (AMGroup *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMGroup_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)accessHash
                withNSString:(NSString *)title
@@ -50,62 +56,120 @@ J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
                     withInt:(jint)adminId
                 withBoolean:(jboolean)isMember {
   if (self = [super init]) {
+    
+#line 32
     self->groupId_ = groupId;
+    
+#line 33
     self->accessHash_ = accessHash;
+    
+#line 34
     self->title_ = title;
+    
+#line 35
     self->avatar_ = avatar;
+    
+#line 36
     self->members_ = members;
+    
+#line 37
     self->adminId_ = adminId;
+    
+#line 38
     self->isMember__ = isMember;
   }
   return self;
 }
 
+
+#line 41
 - (instancetype)init {
   return [super init];
 }
 
 - (AMPeer *)peer {
+  
+#line 46
   return [[AMPeer alloc] initWithAMPeerTypeEnum:AMPeerTypeEnum_get_GROUP() withInt:groupId_];
 }
 
+
+#line 49
 - (jint)getGroupId {
+  
+#line 50
   return groupId_;
 }
 
+
+#line 53
 - (jlong)getAccessHash {
+  
+#line 54
   return accessHash_;
 }
 
+
+#line 57
 - (NSString *)getTitle {
+  
+#line 58
   return title_;
 }
 
+
+#line 61
 - (AMAvatar *)getAvatar {
+  
+#line 62
   return avatar_;
 }
 
+
+#line 65
 - (id<JavaUtilList>)getMembers {
+  
+#line 66
   return members_;
 }
 
+
+#line 69
 - (jint)getAdminId {
+  
+#line 70
   return adminId_;
 }
 
+
+#line 73
 - (jboolean)isMember {
+  
+#line 74
   return isMember__;
 }
 
+
+#line 77
 - (AMGroup *)changeMemberWithBoolean:(jboolean)isMember {
+  
+#line 78
   return [[AMGroup alloc] initWithInt:groupId_ withLong:accessHash_ withNSString:title_ withAMAvatar:avatar_ withJavaUtilList:members_ withInt:adminId_ withBoolean:isMember];
 }
 
+
+#line 81
 - (AMGroup *)clearMembers {
+  
+#line 82
   return [[AMGroup alloc] initWithInt:groupId_ withLong:accessHash_ withNSString:title_ withAMAvatar:avatar_ withJavaUtilList:[[JavaUtilArrayList alloc] init] withInt:adminId_ withBoolean:isMember__];
 }
 
+
+#line 85
 - (AMGroup *)removeMemberWithInt:(jint)uid {
+  
+#line 86
   JavaUtilArrayList *nMembers = [[JavaUtilArrayList alloc] init];
   for (AMGroupMember * __strong member in nil_chk(members_)) {
     if ([((AMGroupMember *) nil_chk(member)) getUid] != uid) {
@@ -115,10 +179,14 @@ J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
   return [[AMGroup alloc] initWithInt:groupId_ withLong:accessHash_ withNSString:title_ withAMAvatar:avatar_ withJavaUtilList:nMembers withInt:adminId_ withBoolean:isMember__];
 }
 
+
+#line 95
 - (AMGroup *)addMemberWithInt:(jint)uid
                       withInt:(jint)inviterUid
                      withLong:(jlong)inviteDate
                   withBoolean:(jboolean)isAdmin {
+  
+#line 96
   JavaUtilArrayList *nMembers = [[JavaUtilArrayList alloc] init];
   for (AMGroupMember * __strong member in nil_chk(members_)) {
     if ([((AMGroupMember *) nil_chk(member)) getUid] != uid) {
@@ -129,14 +197,24 @@ J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
   return [[AMGroup alloc] initWithInt:groupId_ withLong:accessHash_ withNSString:title_ withAMAvatar:avatar_ withJavaUtilList:nMembers withInt:adminId_ withBoolean:isMember__];
 }
 
+
+#line 106
 - (AMGroup *)editTitleWithNSString:(NSString *)title {
+  
+#line 107
   return [[AMGroup alloc] initWithInt:groupId_ withLong:accessHash_ withNSString:title withAMAvatar:avatar_ withJavaUtilList:members_ withInt:adminId_ withBoolean:isMember__];
 }
 
+
+#line 110
 - (AMGroup *)editAvatarWithAMAvatar:(AMAvatar *)avatar {
+  
+#line 111
   return [[AMGroup alloc] initWithInt:groupId_ withLong:accessHash_ withNSString:title_ withAMAvatar:avatar withJavaUtilList:members_ withInt:adminId_ withBoolean:isMember__];
 }
 
+
+#line 115
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   accessHash_ = [values getLongWithInt:2];
@@ -145,6 +223,8 @@ J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
     avatar_ = AMAvatar_fromBytesWithByteArray_([values getBytesWithInt:4]);
   }
   adminId_ = [values getIntWithInt:5];
+  
+#line 124
   jint count = [values getRepeatedCountWithInt:6];
   if (count > 0) {
     JavaUtilArrayList *res = [[JavaUtilArrayList alloc] init];
@@ -154,12 +234,20 @@ J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
     members_ = [values getRepeatedObjWithInt:6 withJavaUtilList:res];
   }
   else {
+    
+#line 132
     members_ = [[JavaUtilArrayList alloc] init];
   }
+  
+#line 135
   isMember__ = [values getBoolWithInt:7];
 }
 
+
+#line 139
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 140
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:groupId_];
   [writer writeLongWithInt:2 withLong:accessHash_];
   [writer writeStringWithInt:3 withNSString:title_];
@@ -171,6 +259,8 @@ J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
   [writer writeBoolWithInt:7 withBoolean:isMember__];
 }
 
+
+#line 152
 - (jlong)getEngineId {
   return groupId_;
 }
@@ -190,6 +280,8 @@ J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
 
 AMGroup *AMGroup_fromBytesWithByteArray_(IOSByteArray *data) {
   AMGroup_init();
+  
+#line 19
   return ((AMGroup *) BSBser_parseWithBSBserObject_withByteArray_([[AMGroup alloc] init], data));
 }
 

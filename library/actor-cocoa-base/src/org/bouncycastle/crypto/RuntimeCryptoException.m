@@ -3,17 +3,27 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/RuntimeCryptoException.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/RuntimeCryptoException.java"
+
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/crypto/RuntimeCryptoException.h"
 
+
+#line 6
 @implementation OrgBouncycastleCryptoRuntimeCryptoException
 
+
+#line 12
 - (instancetype)init {
   return [super init];
 }
 
+
+#line 21
 - (instancetype)initWithNSString:(NSString *)message {
-  return [super initWithNSString:message];
+  return
+#line 24
+  [super initWithNSString:message];
 }
 
 @end

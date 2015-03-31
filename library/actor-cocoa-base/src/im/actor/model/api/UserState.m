@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/UserState.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/UserState.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/UserState.h"
@@ -15,25 +17,37 @@
 }
 @end
 
+#line 8
+
 BOOL ImActorModelApiUserStateEnum_initialized = NO;
 
 ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_values_[4];
 
 @implementation ImActorModelApiUserStateEnum
 
+
+#line 17
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
   if (self = [super initWithNSString:__name withInt:__ordinal]) {
+    
+#line 18
     self->value_ = value;
   }
   return self;
 }
 
+
+#line 21
 - (jint)getValue {
+  
+#line 22
   return value_;
 }
 
+
+#line 25
 + (ImActorModelApiUserStateEnum *)parseWithInt:(jint)value {
   return ImActorModelApiUserStateEnum_parseWithInt_(value);
 }
@@ -68,10 +82,18 @@ ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_valueOfWithNSString_(
 
 + (void)initialize {
   if (self == [ImActorModelApiUserStateEnum class]) {
-    ImActorModelApiUserStateEnum_REGISTERED = [[ImActorModelApiUserStateEnum alloc] initWithInt:1 withNSString:@"REGISTERED" withInt:0];
-    ImActorModelApiUserStateEnum_EMAIL = [[ImActorModelApiUserStateEnum alloc] initWithInt:2 withNSString:@"EMAIL" withInt:1];
-    ImActorModelApiUserStateEnum_DELETED = [[ImActorModelApiUserStateEnum alloc] initWithInt:3 withNSString:@"DELETED" withInt:2];
-    ImActorModelApiUserStateEnum_UNSUPPORTED_VALUE = [[ImActorModelApiUserStateEnum alloc] initWithInt:-1 withNSString:@"UNSUPPORTED_VALUE" withInt:3];
+    ImActorModelApiUserStateEnum_REGISTERED = [[ImActorModelApiUserStateEnum alloc] initWithInt:
+#line 10
+    1 withNSString:@"REGISTERED" withInt:0];
+    ImActorModelApiUserStateEnum_EMAIL = [[ImActorModelApiUserStateEnum alloc] initWithInt:
+#line 11
+    2 withNSString:@"EMAIL" withInt:1];
+    ImActorModelApiUserStateEnum_DELETED = [[ImActorModelApiUserStateEnum alloc] initWithInt:
+#line 12
+    3 withNSString:@"DELETED" withInt:2];
+    ImActorModelApiUserStateEnum_UNSUPPORTED_VALUE = [[ImActorModelApiUserStateEnum alloc] initWithInt:
+#line 13
+    -1 withNSString:@"UNSUPPORTED_VALUE" withInt:3];
     J2OBJC_SET_INITIALIZED(ImActorModelApiUserStateEnum)
   }
 }
@@ -80,14 +102,24 @@ ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_valueOfWithNSString_(
 
 ImActorModelApiUserStateEnum *ImActorModelApiUserStateEnum_parseWithInt_(jint value) {
   ImActorModelApiUserStateEnum_init();
+  
+#line 26
   switch (value) {
     case 1:
+    
+#line 27
     return ImActorModelApiUserStateEnum_REGISTERED;
     case 2:
+    
+#line 28
     return ImActorModelApiUserStateEnum_EMAIL;
     case 3:
+    
+#line 29
     return ImActorModelApiUserStateEnum_DELETED;
     default:
+    
+#line 30
     return ImActorModelApiUserStateEnum_UNSUPPORTED_VALUE;
   }
 }

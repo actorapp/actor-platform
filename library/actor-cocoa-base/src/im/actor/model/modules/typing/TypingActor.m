@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/typing/TypingActor.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/typing/TypingActor.java"
+
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
@@ -96,58 +98,88 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_GroupTyping, type_, ImA
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesTypingTypingActor_$1, val$messenger_, ImActorModelModulesModules *)
 
+
+#line 23
 @implementation ImActorModelModulesTypingTypingActor
 
 + (DKActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   return ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(messenger);
 }
 
+
+#line 52
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  if (self = [super initWithImActorModelModulesModules:messenger]) {
-    typings_ = [[JavaUtilHashSet alloc] init];
-    groupTypings_ = [[JavaUtilHashMap alloc] init];
+  if (self =
+#line 53
+  [super initWithImActorModelModulesModules:messenger]) {
+    typings_ =
+#line 49
+    [[JavaUtilHashSet alloc] init];
+    groupTypings_ =
+#line 50
+    [[JavaUtilHashMap alloc] init];
   }
   return self;
 }
 
+
+#line 57
 - (void)privateTypingWithInt:(jint)uid
 withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
   ImActorModelModulesTypingTypingActor_privateTypingWithInt_withImActorModelApiTypingTypeEnum_(self, uid, type);
 }
 
+
+#line 76
 - (void)stopPrivateTypingWithInt:(jint)uid {
   ImActorModelModulesTypingTypingActor_stopPrivateTypingWithInt_(self, uid);
 }
 
+
+#line 85
 - (void)groupTypingWithInt:(jint)gid
                    withInt:(jint)uid
 withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
   ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withImActorModelApiTypingTypeEnum_(self, gid, uid, type);
 }
 
+
+#line 129
 - (void)stopGroupTypingWithInt:(jint)gid
                        withInt:(jint)uid {
   ImActorModelModulesTypingTypingActor_stopGroupTypingWithInt_withInt_(self, gid, uid);
 }
 
+
+#line 152
 - (void)onReceiveWithId:(id)message {
+  
+#line 153
   if ([message isKindOfClass:[ImActorModelModulesTypingTypingActor_PrivateTyping class]]) {
     ImActorModelModulesTypingTypingActor_PrivateTyping *typing = (ImActorModelModulesTypingTypingActor_PrivateTyping *) check_class_cast(message, [ImActorModelModulesTypingTypingActor_PrivateTyping class]);
     ImActorModelModulesTypingTypingActor_privateTypingWithInt_withImActorModelApiTypingTypeEnum_(self, [((ImActorModelModulesTypingTypingActor_PrivateTyping *) nil_chk(typing)) getUid], [typing getType]);
   }
-  else if ([message isKindOfClass:[ImActorModelModulesTypingTypingActor_GroupTyping class]]) {
+  else
+#line 156
+  if ([message isKindOfClass:[ImActorModelModulesTypingTypingActor_GroupTyping class]]) {
     ImActorModelModulesTypingTypingActor_GroupTyping *typing = (ImActorModelModulesTypingTypingActor_GroupTyping *) check_class_cast(message, [ImActorModelModulesTypingTypingActor_GroupTyping class]);
     ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withImActorModelApiTypingTypeEnum_(self, [((ImActorModelModulesTypingTypingActor_GroupTyping *) nil_chk(typing)) getGid], [typing getUid], [typing getType]);
   }
-  else if ([message isKindOfClass:[ImActorModelModulesTypingTypingActor_StopTyping class]]) {
+  else
+#line 159
+  if ([message isKindOfClass:[ImActorModelModulesTypingTypingActor_StopTyping class]]) {
     ImActorModelModulesTypingTypingActor_StopTyping *typing = (ImActorModelModulesTypingTypingActor_StopTyping *) check_class_cast(message, [ImActorModelModulesTypingTypingActor_StopTyping class]);
     ImActorModelModulesTypingTypingActor_stopPrivateTypingWithInt_(self, [((ImActorModelModulesTypingTypingActor_StopTyping *) nil_chk(typing)) getUid]);
   }
-  else if ([message isKindOfClass:[ImActorModelModulesTypingTypingActor_StopGroupTyping class]]) {
+  else
+#line 162
+  if ([message isKindOfClass:[ImActorModelModulesTypingTypingActor_StopGroupTyping class]]) {
     ImActorModelModulesTypingTypingActor_StopGroupTyping *typing = (ImActorModelModulesTypingTypingActor_StopGroupTyping *) check_class_cast(message, [ImActorModelModulesTypingTypingActor_StopGroupTyping class]);
     ImActorModelModulesTypingTypingActor_stopGroupTypingWithInt_withInt_(self, [((ImActorModelModulesTypingTypingActor_StopGroupTyping *) nil_chk(typing)) getGid], [typing getUid]);
   }
   else {
+    
+#line 166
     [self dropWithId:message];
   }
 }
@@ -162,62 +194,106 @@ withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
 
 DKActorRef *ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
   ImActorModelModulesTypingTypingActor_init();
-  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_withDKMailboxCreator_(ImActorModelModulesTypingTypingActor_class_(), [[ImActorModelModulesTypingTypingActor_$1 alloc] initWithImActorModelModulesModules:messenger], [[ImActorModelModulesTypingTypingActor_$2 alloc] init]) withNSString:@"actor/typing"];
+  
+#line 26
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_withDKMailboxCreator_(ImActorModelModulesTypingTypingActor_class_(), [[ImActorModelModulesTypingTypingActor_$1 alloc] initWithImActorModelModulesModules:messenger],
+#line 31
+  [[ImActorModelModulesTypingTypingActor_$2 alloc] init]) withNSString:
+#line 44
+  @"actor/typing"];
 }
 
 void ImActorModelModulesTypingTypingActor_privateTypingWithInt_withImActorModelApiTypingTypeEnum_(ImActorModelModulesTypingTypingActor *self, jint uid, ImActorModelApiTypingTypeEnum *type) {
+  
+#line 59
   if (type != ImActorModelApiTypingTypeEnum_get_TEXT()) {
     return;
   }
+  
+#line 63
   if ([self getUserWithInt:uid] == nil) {
     return;
   }
+  
+#line 67
   if (![((JavaUtilHashSet *) nil_chk(self->typings_)) containsWithId:JavaLangInteger_valueOfWithInt_(uid)]) {
     [self->typings_ addWithId:JavaLangInteger_valueOfWithInt_(uid)];
+    
+#line 70
     [((AMValueModel *) nil_chk([((AMUserTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getTypingWithInt:uid])) getTyping])) changeWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
   }
   [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopTyping alloc] initWithInt:uid] withLong:ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT];
 }
 
 void ImActorModelModulesTypingTypingActor_stopPrivateTypingWithInt_(ImActorModelModulesTypingTypingActor *self, jint uid) {
+  
+#line 77
   if ([((JavaUtilHashSet *) nil_chk(self->typings_)) containsWithId:JavaLangInteger_valueOfWithInt_(uid)]) {
     [self->typings_ removeWithId:JavaLangInteger_valueOfWithInt_(uid)];
+    
+#line 80
     [((AMValueModel *) nil_chk([((AMUserTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getTypingWithInt:uid])) getTyping])) changeWithId:JavaLangBoolean_valueOfWithBoolean_(NO)];
   }
 }
 
 void ImActorModelModulesTypingTypingActor_groupTypingWithInt_withInt_withImActorModelApiTypingTypeEnum_(ImActorModelModulesTypingTypingActor *self, jint gid, jint uid, ImActorModelApiTypingTypeEnum *type) {
+  
+#line 87
   if (type != ImActorModelApiTypingTypeEnum_get_TEXT()) {
     return;
   }
+  
+#line 91
   if ([self getGroupWithInt:gid] == nil) {
     return;
   }
+  
+#line 95
   if ([self getUserWithInt:uid] == nil) {
     return;
   }
+  
+#line 99
   if (![((JavaUtilHashMap *) nil_chk(self->groupTypings_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_(gid)]) {
     JavaUtilHashSet *set = [[JavaUtilHashSet alloc] init];
     [set addWithId:JavaLangInteger_valueOfWithInt_(uid)];
     (void) [self->groupTypings_ putWithId:JavaLangInteger_valueOfWithInt_(gid) withId:set];
-    [((AMValueModel *) nil_chk([((AMGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:gid])) getActive])) changeWithId:[IOSIntArray newArrayWithInts:(jint[]){ uid } count:1]];
-  }
-  else {
-    JavaUtilHashSet *src = [self->groupTypings_ getWithId:JavaLangInteger_valueOfWithInt_(gid)];
-    if (![((JavaUtilHashSet *) nil_chk(src)) containsWithId:JavaLangInteger_valueOfWithInt_(uid)]) {
-      [src addWithId:JavaLangInteger_valueOfWithInt_(uid)];
-      IOSObjectArray *ids = [src toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[src size] type:JavaLangInteger_class_()]];
-      IOSIntArray *ids2 = [IOSIntArray newArrayWithLength:((IOSObjectArray *) nil_chk(ids))->size_];
-      for (jint i = 0; i < ids->size_; i++) {
-        *IOSIntArray_GetRef(ids2, i) = [((JavaLangInteger *) nil_chk(IOSObjectArray_Get(ids, i))) intValue];
-      }
-      [((AMValueModel *) nil_chk([((AMGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:gid])) getActive])) changeWithId:ids2];
+    
+#line 104
+    [((AMValueModel *) nil_chk([((AMGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:
+#line 105
+    gid])) getActive])) changeWithId:[IOSIntArray newArrayWithInts:(jint[]){
+#line 107
+      uid } count:1]];
     }
+    else {
+      
+#line 109
+      JavaUtilHashSet *src = [self->groupTypings_ getWithId:JavaLangInteger_valueOfWithInt_(gid)];
+      if (![((JavaUtilHashSet *) nil_chk(src)) containsWithId:JavaLangInteger_valueOfWithInt_(uid)]) {
+        [src addWithId:JavaLangInteger_valueOfWithInt_(uid)];
+        IOSObjectArray *ids = [src toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[src size] type:JavaLangInteger_class_()]];
+        IOSIntArray *ids2 = [IOSIntArray newArrayWithLength:((IOSObjectArray *) nil_chk(ids))->size_];
+        for (jint i = 0; i < ids->size_; i++) {
+          *IOSIntArray_GetRef(ids2, i) = [((JavaLangInteger *) nil_chk(IOSObjectArray_Get(ids, i))) intValue];
+        }
+        
+#line 118
+        [((AMValueModel *) nil_chk([((AMGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:
+#line 119
+        gid])) getActive])) changeWithId:
+#line 121
+        ids2];
+      }
+    }
+    
+#line 125
+    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopGroupTyping alloc] initWithInt:gid withInt:uid] withLong:ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT];
   }
-  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopGroupTyping alloc] initWithInt:gid withInt:uid] withLong:ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT];
-}
 
 void ImActorModelModulesTypingTypingActor_stopGroupTypingWithInt_withInt_(ImActorModelModulesTypingTypingActor *self, jint gid, jint uid) {
+  
+#line 130
   if (![((JavaUtilHashMap *) nil_chk(self->groupTypings_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_(gid)]) {
     return;
   }
@@ -229,34 +305,58 @@ void ImActorModelModulesTypingTypingActor_stopGroupTypingWithInt_withInt_(ImActo
     for (jint i = 0; i < ids->size_; i++) {
       *IOSIntArray_GetRef(ids2, i) = [((JavaLangInteger *) nil_chk(IOSObjectArray_Get(ids, i))) intValue];
     }
-    [((AMValueModel *) nil_chk([((AMGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:gid])) getActive])) changeWithId:ids2];
+    
+#line 142
+    [((AMValueModel *) nil_chk([((AMGroupTypingVM *) nil_chk([((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getTypingModule])) getGroupTypingWithInt:
+#line 143
+    gid])) getActive])) changeWithId:
+#line 145
+    ids2];
   }
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor)
 
+
+#line 170
 @implementation ImActorModelModulesTypingTypingActor_StopTyping
 
+
+#line 173
 - (instancetype)initWithInt:(jint)uid {
   if (self = [super init]) {
+    
+#line 174
     self->uid_ = uid;
   }
   return self;
 }
 
+
+#line 177
 - (jint)getUid {
+  
+#line 178
   return uid_;
 }
 
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
+  
+#line 186
   ImActorModelModulesTypingTypingActor_StopTyping *that = (ImActorModelModulesTypingTypingActor_StopTyping *) check_class_cast(o, [ImActorModelModulesTypingTypingActor_StopTyping class]);
+  
+#line 188
   if (uid_ != ((ImActorModelModulesTypingTypingActor_StopTyping *) nil_chk(that))->uid_) return NO;
+  
+#line 190
   return YES;
 }
 
 - (NSUInteger)hash {
+  
+#line 195
   return uid_;
 }
 
@@ -269,35 +369,59 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor)
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_StopTyping)
 
+
+#line 199
 @implementation ImActorModelModulesTypingTypingActor_StopGroupTyping
 
+
+#line 203
 - (instancetype)initWithInt:(jint)gid
                     withInt:(jint)uid {
   if (self = [super init]) {
+    
+#line 204
     self->gid_ = gid;
+    
+#line 205
     self->uid_ = uid;
   }
   return self;
 }
 
+
+#line 208
 - (jint)getGid {
+  
+#line 209
   return gid_;
 }
 
+
+#line 212
 - (jint)getUid {
+  
+#line 213
   return uid_;
 }
 
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
+  
+#line 221
   ImActorModelModulesTypingTypingActor_StopGroupTyping *that = (ImActorModelModulesTypingTypingActor_StopGroupTyping *) check_class_cast(o, [ImActorModelModulesTypingTypingActor_StopGroupTyping class]);
+  
+#line 223
   if (gid_ != ((ImActorModelModulesTypingTypingActor_StopGroupTyping *) nil_chk(that))->gid_) return NO;
   if (uid_ != that->uid_) return NO;
+  
+#line 226
   return YES;
 }
 
 - (NSUInteger)hash {
+  
+#line 231
   jint result = gid_;
   result = 31 * result + uid_;
   return result;
@@ -313,35 +437,59 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_StopTyping
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_StopGroupTyping)
 
+
+#line 237
 @implementation ImActorModelModulesTypingTypingActor_PrivateTyping
 
+
+#line 241
 - (instancetype)initWithInt:(jint)uid
 withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
   if (self = [super init]) {
+    
+#line 242
     self->uid_ = uid;
+    
+#line 243
     self->type_ = type;
   }
   return self;
 }
 
+
+#line 246
 - (jint)getUid {
+  
+#line 247
   return uid_;
 }
 
+
+#line 250
 - (ImActorModelApiTypingTypeEnum *)getType {
+  
+#line 251
   return type_;
 }
 
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
+  
+#line 259
   ImActorModelModulesTypingTypingActor_PrivateTyping *that = (ImActorModelModulesTypingTypingActor_PrivateTyping *) check_class_cast(o, [ImActorModelModulesTypingTypingActor_PrivateTyping class]);
+  
+#line 261
   if (type_ != ((ImActorModelModulesTypingTypingActor_PrivateTyping *) nil_chk(that))->type_) return NO;
   if (uid_ != that->uid_) return NO;
+  
+#line 264
   return YES;
 }
 
 - (NSUInteger)hash {
+  
+#line 269
   jint result = uid_;
   result = 31 * result + [((ImActorModelApiTypingTypeEnum *) nil_chk(type_)) getValue];
   return result;
@@ -357,42 +505,72 @@ withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_PrivateTyping)
 
+
+#line 275
 @implementation ImActorModelModulesTypingTypingActor_GroupTyping
 
+
+#line 280
 - (instancetype)initWithInt:(jint)gid
                     withInt:(jint)uid
 withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
   if (self = [super init]) {
+    
+#line 281
     self->gid_ = gid;
+    
+#line 282
     self->uid_ = uid;
+    
+#line 283
     self->type_ = type;
   }
   return self;
 }
 
+
+#line 286
 - (jint)getGid {
+  
+#line 287
   return gid_;
 }
 
+
+#line 290
 - (jint)getUid {
+  
+#line 291
   return uid_;
 }
 
+
+#line 294
 - (ImActorModelApiTypingTypeEnum *)getType {
+  
+#line 295
   return type_;
 }
 
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
+  
+#line 303
   ImActorModelModulesTypingTypingActor_GroupTyping *that = (ImActorModelModulesTypingTypingActor_GroupTyping *) check_class_cast(o, [ImActorModelModulesTypingTypingActor_GroupTyping class]);
+  
+#line 305
   if (gid_ != ((ImActorModelModulesTypingTypingActor_GroupTyping *) nil_chk(that))->gid_) return NO;
   if (type_ != that->type_) return NO;
   if (uid_ != that->uid_) return NO;
+  
+#line 309
   return YES;
 }
 
 - (NSUInteger)hash {
+  
+#line 314
   jint result = gid_;
   result = 31 * result + uid_;
   result = 31 * result + [((ImActorModelApiTypingTypeEnum *) nil_chk(type_)) getValue];
@@ -412,7 +590,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_GroupTypin
 
 @implementation ImActorModelModulesTypingTypingActor_$1
 
+
+#line 28
 - (ImActorModelModulesTypingTypingActor *)create {
+  
+#line 29
   return [[ImActorModelModulesTypingTypingActor alloc] initWithImActorModelModulesModules:val$messenger_];
 }
 
@@ -432,7 +614,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_$1)
 
 @implementation ImActorModelModulesTypingTypingActor_$2
 
+
+#line 33
 - (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue {
+  
+#line 34
   return [[ImActorModelModulesTypingTypingActor_$2_$1 alloc] initWithDKMailboxesQueue:queue];
 }
 
@@ -446,8 +632,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_$2)
 
 @implementation ImActorModelModulesTypingTypingActor_$2_$1
 
+
+#line 36
 - (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
                            withDKEnvelope:(DKEnvelope *)b {
+  
+#line 37
   if ([nil_chk([((DKEnvelope *) nil_chk(a)) getMessage]) isEqual:[((DKEnvelope *) nil_chk(b)) getMessage]]) {
     return YES;
   }

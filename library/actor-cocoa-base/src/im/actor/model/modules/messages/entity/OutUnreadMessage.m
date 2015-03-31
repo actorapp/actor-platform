@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/OutUnreadMessage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/OutUnreadMessage.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
@@ -17,35 +19,57 @@
 }
 @end
 
+
+#line 12
 @implementation ImActorModelModulesMessagesEntityOutUnreadMessage
 
+
+#line 16
 - (instancetype)initWithLong:(jlong)rid
                     withLong:(jlong)date {
   if (self = [super init]) {
+    
+#line 17
     self->rid_ = rid;
+    
+#line 18
     self->date_ = date;
   }
   return self;
 }
 
+
+#line 21
 - (instancetype)init {
   return [super init];
 }
 
 - (jlong)getDate {
+  
+#line 26
   return date_;
 }
 
+
+#line 29
 - (jlong)getRid {
+  
+#line 30
   return rid_;
 }
 
+
+#line 34
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   rid_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   date_ = [values getLongWithInt:2];
 }
 
+
+#line 40
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 41
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:rid_];
   [writer writeLongWithInt:2 withLong:date_];
 }

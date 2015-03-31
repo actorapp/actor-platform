@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Drop.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Drop.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -10,44 +12,72 @@
 #include "im/actor/model/network/mtp/entity/Drop.h"
 #include "java/io/IOException.h"
 
+
+#line 8
 @implementation MTDrop
 
+
+#line 16
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 17
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 20
 - (instancetype)initWithLong:(jlong)messageId
                 withNSString:(NSString *)message {
   if (self = [super init]) {
     self->messageId_ = messageId;
+    
+#line 22
     self->message_ = message;
   }
   return self;
 }
 
+
+#line 25
 - (jlong)getMessageId {
+  
+#line 26
   return messageId_;
 }
 
+
+#line 29
 - (NSString *)getMessage {
+  
+#line 30
   return message_;
 }
 
+
+#line 34
 - (jbyte)getHeader {
   return MTDrop_HEADER;
 }
 
+
+#line 39
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 40
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeProtoStringWithNSString:message_];
 }
 
+
+#line 45
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   message_ = [bs readProtoString];
 }
 
 - (NSString *)description {
+  
+#line 52
   return JreStrcat("$$C", @"Drop[", message_, ']');
 }
 

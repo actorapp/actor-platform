@@ -3,10 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/ContentType.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/ContentType.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/ContentType.h"
 #include "java/lang/IllegalArgumentException.h"
+
+#line 6
 
 BOOL AMContentTypeEnum_initialized = NO;
 
@@ -14,19 +18,29 @@ AMContentTypeEnum *AMContentTypeEnum_values_[15];
 
 @implementation AMContentTypeEnum
 
+
+#line 24
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
   if (self = [super initWithNSString:__name withInt:__ordinal]) {
+    
+#line 25
     self->value_ = value;
   }
   return self;
 }
 
+
+#line 28
 - (jint)getValue {
+  
+#line 29
   return value_;
 }
 
+
+#line 32
 + (AMContentTypeEnum *)fromValueWithInt:(jint)value {
   return AMContentTypeEnum_fromValueWithInt_(value);
 }
@@ -61,21 +75,51 @@ AMContentTypeEnum *AMContentTypeEnum_valueOfWithNSString_(NSString *name) {
 
 + (void)initialize {
   if (self == [AMContentTypeEnum class]) {
-    AMContentTypeEnum_TEXT = [[AMContentTypeEnum alloc] initWithInt:2 withNSString:@"TEXT" withInt:0];
-    AMContentTypeEnum_EMPTY = [[AMContentTypeEnum alloc] initWithInt:1 withNSString:@"EMPTY" withInt:1];
-    AMContentTypeEnum_DOCUMENT = [[AMContentTypeEnum alloc] initWithInt:3 withNSString:@"DOCUMENT" withInt:2];
-    AMContentTypeEnum_DOCUMENT_PHOTO = [[AMContentTypeEnum alloc] initWithInt:4 withNSString:@"DOCUMENT_PHOTO" withInt:3];
-    AMContentTypeEnum_DOCUMENT_VIDEO = [[AMContentTypeEnum alloc] initWithInt:5 withNSString:@"DOCUMENT_VIDEO" withInt:4];
-    AMContentTypeEnum_SERVICE = [[AMContentTypeEnum alloc] initWithInt:6 withNSString:@"SERVICE" withInt:5];
-    AMContentTypeEnum_SERVICE_ADD = [[AMContentTypeEnum alloc] initWithInt:7 withNSString:@"SERVICE_ADD" withInt:6];
-    AMContentTypeEnum_SERVICE_KICK = [[AMContentTypeEnum alloc] initWithInt:8 withNSString:@"SERVICE_KICK" withInt:7];
-    AMContentTypeEnum_SERVICE_LEAVE = [[AMContentTypeEnum alloc] initWithInt:9 withNSString:@"SERVICE_LEAVE" withInt:8];
-    AMContentTypeEnum_SERVICE_REGISTERED = [[AMContentTypeEnum alloc] initWithInt:10 withNSString:@"SERVICE_REGISTERED" withInt:9];
-    AMContentTypeEnum_SERVICE_CREATED = [[AMContentTypeEnum alloc] initWithInt:11 withNSString:@"SERVICE_CREATED" withInt:10];
-    AMContentTypeEnum_SERVICE_TITLE = [[AMContentTypeEnum alloc] initWithInt:12 withNSString:@"SERVICE_TITLE" withInt:11];
-    AMContentTypeEnum_SERVICE_AVATAR = [[AMContentTypeEnum alloc] initWithInt:13 withNSString:@"SERVICE_AVATAR" withInt:12];
-    AMContentTypeEnum_SERVICE_AVATAR_REMOVED = [[AMContentTypeEnum alloc] initWithInt:14 withNSString:@"SERVICE_AVATAR_REMOVED" withInt:13];
-    AMContentTypeEnum_UNKNOWN_CONTENT = [[AMContentTypeEnum alloc] initWithInt:15 withNSString:@"UNKNOWN_CONTENT" withInt:14];
+    AMContentTypeEnum_TEXT = [[AMContentTypeEnum alloc] initWithInt:
+#line 7
+    2 withNSString:@"TEXT" withInt:0];
+    AMContentTypeEnum_EMPTY = [[AMContentTypeEnum alloc] initWithInt:
+#line 7
+    1 withNSString:@"EMPTY" withInt:1];
+    AMContentTypeEnum_DOCUMENT = [[AMContentTypeEnum alloc] initWithInt:
+#line 8
+    3 withNSString:@"DOCUMENT" withInt:2];
+    AMContentTypeEnum_DOCUMENT_PHOTO = [[AMContentTypeEnum alloc] initWithInt:
+#line 9
+    4 withNSString:@"DOCUMENT_PHOTO" withInt:3];
+    AMContentTypeEnum_DOCUMENT_VIDEO = [[AMContentTypeEnum alloc] initWithInt:
+#line 10
+    5 withNSString:@"DOCUMENT_VIDEO" withInt:4];
+    AMContentTypeEnum_SERVICE = [[AMContentTypeEnum alloc] initWithInt:
+#line 11
+    6 withNSString:@"SERVICE" withInt:5];
+    AMContentTypeEnum_SERVICE_ADD = [[AMContentTypeEnum alloc] initWithInt:
+#line 12
+    7 withNSString:@"SERVICE_ADD" withInt:6];
+    AMContentTypeEnum_SERVICE_KICK = [[AMContentTypeEnum alloc] initWithInt:
+#line 13
+    8 withNSString:@"SERVICE_KICK" withInt:7];
+    AMContentTypeEnum_SERVICE_LEAVE = [[AMContentTypeEnum alloc] initWithInt:
+#line 14
+    9 withNSString:@"SERVICE_LEAVE" withInt:8];
+    AMContentTypeEnum_SERVICE_REGISTERED = [[AMContentTypeEnum alloc] initWithInt:
+#line 15
+    10 withNSString:@"SERVICE_REGISTERED" withInt:9];
+    AMContentTypeEnum_SERVICE_CREATED = [[AMContentTypeEnum alloc] initWithInt:
+#line 16
+    11 withNSString:@"SERVICE_CREATED" withInt:10];
+    AMContentTypeEnum_SERVICE_TITLE = [[AMContentTypeEnum alloc] initWithInt:
+#line 17
+    12 withNSString:@"SERVICE_TITLE" withInt:11];
+    AMContentTypeEnum_SERVICE_AVATAR = [[AMContentTypeEnum alloc] initWithInt:
+#line 18
+    13 withNSString:@"SERVICE_AVATAR" withInt:12];
+    AMContentTypeEnum_SERVICE_AVATAR_REMOVED = [[AMContentTypeEnum alloc] initWithInt:
+#line 19
+    14 withNSString:@"SERVICE_AVATAR_REMOVED" withInt:13];
+    AMContentTypeEnum_UNKNOWN_CONTENT = [[AMContentTypeEnum alloc] initWithInt:
+#line 20
+    15 withNSString:@"UNKNOWN_CONTENT" withInt:14];
     J2OBJC_SET_INITIALIZED(AMContentTypeEnum)
   }
 }
@@ -84,6 +128,8 @@ AMContentTypeEnum *AMContentTypeEnum_valueOfWithNSString_(NSString *name) {
 
 AMContentTypeEnum *AMContentTypeEnum_fromValueWithInt_(jint value) {
   AMContentTypeEnum_init();
+  
+#line 33
   switch (value) {
     default:
     case 1:

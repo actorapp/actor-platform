@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/AppStateVM.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/AppStateVM.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/log/Log.h"
@@ -26,20 +28,36 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, isDialogsEmpty_, AMValueModel *)
 J2OBJC_FIELD_SETTER(AMAppStateVM, isContactsEmpty_, AMValueModel *)
 J2OBJC_FIELD_SETTER(AMAppStateVM, appState_, AMValueModel *)
 
+
+#line 10
 @implementation AMAppStateVM
 
+
+#line 16
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super init]) {
+    
+#line 17
     self->modules_ = modules;
+    
+#line 18
     self->isDialogsEmpty_ = [[AMValueModel alloc] initWithNSString:@"app.dialogs.empty" withId:JavaLangBoolean_valueOfWithBoolean_([((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getPreferences])) getBool:@"app.dialogs.empty" withDefault:YES])];
+    
+#line 19
     self->isContactsEmpty_ = [[AMValueModel alloc] initWithNSString:@"app.contacts.empty" withId:JavaLangBoolean_valueOfWithBoolean_([((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBool:@"app.contacts.empty" withDefault:YES])];
+    
+#line 20
     self->appState_ = [[AMValueModel alloc] initWithNSString:@"app.state" withId:AMAppStateEnum_get_READY()];
   }
   return self;
 }
 
+
+#line 23
 - (void)onDialogsChangedWithBoolean:(jboolean)isEmpty {
   @synchronized(self) {
+    
+#line 24
     AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z", @"onDialogsChanged:", isEmpty));
     if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isDialogsEmpty_)) get])) booleanValue] != isEmpty) {
       AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z$", @"onDialogsChanged:", isEmpty, @": apply"));
@@ -49,8 +67,12 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, appState_, AMValueModel *)
   }
 }
 
+
+#line 32
 - (void)onContactsChangedWithBoolean:(jboolean)isEmpty {
   @synchronized(self) {
+    
+#line 33
     if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isDialogsEmpty_)) get])) booleanValue] != isEmpty) {
       [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.contacts.empty" withValue:isEmpty];
       [isDialogsEmpty_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(isEmpty)];
@@ -58,15 +80,27 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, appState_, AMValueModel *)
   }
 }
 
+
+#line 39
 - (AMValueModel *)getIsDialogsEmpty {
+  
+#line 40
   return isDialogsEmpty_;
 }
 
+
+#line 43
 - (AMValueModel *)getIsContactsEmpty {
+  
+#line 44
   return isContactsEmpty_;
 }
 
+
+#line 47
 - (AMValueModel *)getAppState {
+  
+#line 48
   return appState_;
 }
 

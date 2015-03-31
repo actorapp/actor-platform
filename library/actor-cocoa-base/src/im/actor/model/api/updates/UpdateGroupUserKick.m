@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupUserKick.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupUserKick.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,51 +25,89 @@
 }
 @end
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateGroupUserKick
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateGroupUserKick *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateGroupUserKick_fromBytesWithByteArray_(data);
 }
 
+
+#line 33
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)uid
                     withInt:(jint)kickerUid
                    withLong:(jlong)date {
   if (self = [super init]) {
+    
+#line 34
     self->groupId_ = groupId;
+    
+#line 35
     self->rid_ = rid;
+    
+#line 36
     self->uid_ = uid;
+    
+#line 37
     self->kickerUid_ = kickerUid;
+    
+#line 38
     self->date_ = date;
   }
   return self;
 }
 
+
+#line 41
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getGroupId {
+  
+#line 46
   return self->groupId_;
 }
 
+
+#line 49
 - (jlong)getRid {
+  
+#line 50
   return self->rid_;
 }
 
+
+#line 53
 - (jint)getUid {
+  
+#line 54
   return self->uid_;
 }
 
+
+#line 57
 - (jint)getKickerUid {
+  
+#line 58
   return self->kickerUid_;
 }
 
+
+#line 61
 - (jlong)getDate {
+  
+#line 62
   return self->date_;
 }
 
+
+#line 66
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:5];
@@ -76,7 +116,11 @@
   self->date_ = [values getLongWithInt:4];
 }
 
+
+#line 75
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 76
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:5 withLong:self->rid_];
   [writer writeIntWithInt:2 withInt:self->uid_];
@@ -96,6 +140,8 @@
 }
 
 - (jint)getHeaderKey {
+  
+#line 97
   return ImActorModelApiUpdatesUpdateGroupUserKick_HEADER;
 }
 
@@ -112,6 +158,8 @@
 
 ImActorModelApiUpdatesUpdateGroupUserKick *ImActorModelApiUpdatesUpdateGroupUserKick_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupUserKick_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateGroupUserKick *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupUserKick alloc] init], data));
 }
 

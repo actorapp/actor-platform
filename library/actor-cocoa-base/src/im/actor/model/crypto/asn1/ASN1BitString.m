@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1BitString.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1BitString.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -21,29 +23,47 @@
 
 J2OBJC_FIELD_SETTER(BCASN1BitString, content_, IOSByteArray *)
 
+
+#line 11
 @implementation BCASN1BitString
 
 + (BCASN1BitString *)readBitStringWithBSDataInput:(BSDataInput *)dataInput {
   return BCASN1BitString_readBitStringWithBSDataInput_(dataInput);
 }
 
+
+#line 21
 - (instancetype)initWithInt:(jint)paddingBit
               withByteArray:(IOSByteArray *)content {
   if (self = [super init]) {
+    
+#line 22
     self->paddingBit_ = paddingBit;
+    
+#line 23
     self->content_ = content;
   }
   return self;
 }
 
+
+#line 26
 - (jint)getPaddingBit {
+  
+#line 27
   return paddingBit_;
 }
 
+
+#line 30
 - (IOSByteArray *)getContent {
+  
+#line 31
   return content_;
 }
 
+
+#line 35
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
   [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_BIT_STRING];
   [dataOutput writeASN1LengthWithInt:((IOSByteArray *) nil_chk(content_))->size_ + 1];
@@ -61,6 +81,8 @@ J2OBJC_FIELD_SETTER(BCASN1BitString, content_, IOSByteArray *)
 
 BCASN1BitString *BCASN1BitString_readBitStringWithBSDataInput_(BSDataInput *dataInput) {
   BCASN1BitString_init();
+  
+#line 14
   jint paddingBytes = [((BSDataInput *) nil_chk(dataInput)) readByte];
   return [[BCASN1BitString alloc] initWithInt:paddingBytes withByteArray:[dataInput readBytesWithInt:[dataInput getRemaining]]];
 }

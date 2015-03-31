@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentMessage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentMessage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -38,8 +40,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDocumentMessage, mimeType_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiDocumentMessage, thumb_, ImActorModelApiFastThumb *)
 J2OBJC_FIELD_SETTER(ImActorModelApiDocumentMessage, ext_, ImActorModelApiDocumentEx *)
 
+
+#line 19
 @implementation ImActorModelApiDocumentMessage
 
+
+#line 32
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
                      withInt:(jint)fileSize
@@ -51,68 +57,134 @@ withImActorModelApiEncryptionTypeEnum:(ImActorModelApiEncryptionTypeEnum *)encry
 withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
 withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext {
   if (self = [super init]) {
+    
+#line 33
     self->fileId_ = fileId;
+    
+#line 34
     self->accessHash_ = accessHash;
+    
+#line 35
     self->fileSize_ = fileSize;
+    
+#line 36
     self->encryptionType_ = encryptionType;
+    
+#line 37
     self->encryptionKey_ = encryptionKey;
+    
+#line 38
     self->plainFileSize_ = plainFileSize;
+    
+#line 39
     self->name_ = name;
+    
+#line 40
     self->mimeType_ = mimeType;
+    
+#line 41
     self->thumb_ = thumb;
+    
+#line 42
     self->ext_ = ext;
   }
   return self;
 }
 
+
+#line 45
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getHeader {
+  
+#line 50
   return 3;
 }
 
+
+#line 53
 - (jlong)getFileId {
+  
+#line 54
   return self->fileId_;
 }
 
+
+#line 57
 - (jlong)getAccessHash {
+  
+#line 58
   return self->accessHash_;
 }
 
+
+#line 61
 - (jint)getFileSize {
+  
+#line 62
   return self->fileSize_;
 }
 
+
+#line 65
 - (ImActorModelApiEncryptionTypeEnum *)getEncryptionType {
+  
+#line 66
   return self->encryptionType_;
 }
 
+
+#line 69
 - (IOSByteArray *)getEncryptionKey {
+  
+#line 70
   return self->encryptionKey_;
 }
 
+
+#line 73
 - (JavaLangInteger *)getPlainFileSize {
+  
+#line 74
   return self->plainFileSize_;
 }
 
+
+#line 77
 - (NSString *)getName {
+  
+#line 78
   return self->name_;
 }
 
+
+#line 81
 - (NSString *)getMimeType {
+  
+#line 82
   return self->mimeType_;
 }
 
+
+#line 85
 - (ImActorModelApiFastThumb *)getThumb {
+  
+#line 86
   return self->thumb_;
 }
 
+
+#line 89
 - (ImActorModelApiDocumentEx *)getExt {
+  
+#line 90
   return self->ext_;
 }
 
+
+#line 94
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->fileId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
@@ -131,7 +203,11 @@ withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext {
   }
 }
 
+
+#line 113
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 114
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->fileId_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   [writer writeIntWithInt:3 withInt:self->fileSize_];

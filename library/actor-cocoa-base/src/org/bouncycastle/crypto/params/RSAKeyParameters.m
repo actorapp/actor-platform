@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/RSAKeyParameters.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/RSAKeyParameters.java"
+
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/crypto/params/RSAKeyParameters.h"
@@ -17,23 +19,41 @@
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAKeyParameters, modulus_, JavaMathBigInteger *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAKeyParameters, exponent_, JavaMathBigInteger *)
 
+
+#line 5
 @implementation OrgBouncycastleCryptoParamsRSAKeyParameters
 
+
+#line 11
 - (instancetype)initWithBoolean:(jboolean)isPrivate
          withJavaMathBigInteger:(JavaMathBigInteger *)modulus
          withJavaMathBigInteger:(JavaMathBigInteger *)exponent {
-  if (self = [super initWithBoolean:isPrivate]) {
+  if (self =
+#line 16
+  [super initWithBoolean:isPrivate]) {
+    
+#line 18
     self->modulus_ = modulus;
+    
+#line 19
     self->exponent_ = exponent;
   }
   return self;
 }
 
+
+#line 22
 - (JavaMathBigInteger *)getModulus {
+  
+#line 24
   return modulus_;
 }
 
+
+#line 27
 - (JavaMathBigInteger *)getExponent {
+  
+#line 29
   return exponent_;
 }
 

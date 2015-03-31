@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/PhotoContent.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/PhotoContent.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,47 +25,73 @@
 }
 @end
 
+
+#line 12
 @implementation AMPhotoContent
 
 + (AMPhotoContent *)photoFromBytesWithByteArray:(IOSByteArray *)data {
   return AMPhotoContent_photoFromBytesWithByteArray_(data);
 }
 
+
+#line 21
 - (instancetype)initWithAMFileSource:(AMFileSource *)location
                         withNSString:(NSString *)mimetype
                         withNSString:(NSString *)name
                      withAMFastThumb:(AMFastThumb *)fastThumb
                              withInt:(jint)w
                              withInt:(jint)h {
-  if (self = [super initWithAMFileSource:location withNSString:mimetype withNSString:name withAMFastThumb:fastThumb]) {
+  if (self =
+#line 22
+  [super initWithAMFileSource:location withNSString:mimetype withNSString:name withAMFastThumb:fastThumb]) {
+    
+#line 23
     self->w_ = w;
+    
+#line 24
     self->h_ = h;
   }
   return self;
 }
 
+
+#line 27
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getW {
+  
+#line 32
   return w_;
 }
 
+
+#line 35
 - (jint)getH {
+  
+#line 36
   return h_;
 }
 
+
+#line 40
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_DOCUMENT_PHOTO();
 }
 
+
+#line 45
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  
+#line 46
   [super parseWithBSBserValues:values];
   w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
   h_ = [values getIntWithInt:11];
 }
 
+
+#line 52
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:w_];
@@ -80,6 +108,8 @@
 
 AMPhotoContent *AMPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data) {
   AMPhotoContent_init();
+  
+#line 15
   return ((AMPhotoContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMPhotoContent alloc] init], data));
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupTitleChanged.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupTitleChanged.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,36 +25,56 @@
 
 J2OBJC_FIELD_SETTER(AMServiceGroupTitleChanged, newTitle_, NSString *)
 
+
+#line 12
 @implementation AMServiceGroupTitleChanged
 
 + (AMServiceGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMServiceGroupTitleChanged_fromBytesWithByteArray_(data);
 }
 
+
+#line 20
 - (instancetype)initWithNSString:(NSString *)newTitle {
-  if (self = [super initWithNSString:@"Group theme changed"]) {
+  if (self =
+#line 21
+  [super initWithNSString:@"Group theme changed"]) {
+    
+#line 22
     self->newTitle_ = newTitle;
   }
   return self;
 }
 
+
+#line 25
 - (instancetype)init {
   return [super init];
 }
 
 - (NSString *)getNewTitle {
+  
+#line 30
   return newTitle_;
 }
 
+
+#line 34
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE_TITLE();
 }
 
+
+#line 39
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  
+#line 40
   [super parseWithBSBserValues:values];
   newTitle_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:10];
 }
 
+
+#line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:newTitle_];
@@ -67,6 +89,8 @@ J2OBJC_FIELD_SETTER(AMServiceGroupTitleChanged, newTitle_, NSString *)
 
 AMServiceGroupTitleChanged *AMServiceGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupTitleChanged_init();
+  
+#line 15
   return ((AMServiceGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupTitleChanged alloc] init], data));
 }
 

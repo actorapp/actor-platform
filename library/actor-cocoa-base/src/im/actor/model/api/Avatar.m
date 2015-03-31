@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Avatar.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Avatar.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
@@ -23,42 +25,70 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, smallImage_, ImActorModelApiAvatarIma
 J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, largeImage_, ImActorModelApiAvatarImage *)
 J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImage *)
 
+
+#line 19
 @implementation ImActorModelApiAvatar
 
+
+#line 25
 - (instancetype)initWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)smallImage
                     withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)largeImage
                     withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)fullImage {
   if (self = [super init]) {
+    
+#line 26
     self->smallImage_ = smallImage;
+    
+#line 27
     self->largeImage_ = largeImage;
+    
+#line 28
     self->fullImage_ = fullImage;
   }
   return self;
 }
 
+
+#line 31
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiAvatarImage *)getSmallImage {
+  
+#line 36
   return self->smallImage_;
 }
 
+
+#line 39
 - (ImActorModelApiAvatarImage *)getLargeImage {
+  
+#line 40
   return self->largeImage_;
 }
 
+
+#line 43
 - (ImActorModelApiAvatarImage *)getFullImage {
+  
+#line 44
   return self->fullImage_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->smallImage_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:[[ImActorModelApiAvatarImage alloc] init]];
   self->largeImage_ = [values optObjWithInt:2 withBSBserObject:[[ImActorModelApiAvatarImage alloc] init]];
   self->fullImage_ = [values optObjWithInt:3 withBSBserObject:[[ImActorModelApiAvatarImage alloc] init]];
 }
 
+
+#line 55
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 56
   if (self->smallImage_ != nil) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->smallImage_];
   }

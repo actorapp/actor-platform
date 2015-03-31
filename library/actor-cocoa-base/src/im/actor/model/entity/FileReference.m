@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/FileReference.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/FileReference.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -25,64 +27,106 @@
 
 J2OBJC_FIELD_SETTER(AMFileReference, fileName_, NSString *)
 
+
+#line 13
 @implementation AMFileReference
 
 + (AMFileReference *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMFileReference_fromBytesWithByteArray_(data);
 }
 
+
+#line 24
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
                      withInt:(jint)fileSize
                 withNSString:(NSString *)fileName {
   if (self = [super init]) {
+    
+#line 25
     self->fileId_ = fileId;
+    
+#line 26
     self->accessHash_ = accessHash;
+    
+#line 27
     self->fileSize_ = fileSize;
+    
+#line 28
     self->fileName_ = fileName;
   }
   return self;
 }
 
+
+#line 31
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getFileSize {
+  
+#line 36
   return fileSize_;
 }
 
+
+#line 39
 - (jlong)getFileId {
+  
+#line 40
   return fileId_;
 }
 
+
+#line 43
 - (jlong)getAccessHash {
+  
+#line 44
   return accessHash_;
 }
 
+
+#line 47
 - (NSString *)getFileName {
+  
+#line 48
   return fileName_;
 }
 
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
+  
+#line 56
   AMFileReference *that = (AMFileReference *) check_class_cast(o, [AMFileReference class]);
+  
+#line 58
   if (fileId_ != ((AMFileReference *) nil_chk(that))->fileId_) return NO;
+  
+#line 60
   return YES;
 }
 
 - (NSUInteger)hash {
+  
+#line 65
   return (jint) (fileId_ ^ (URShift64(fileId_, 32)));
 }
 
+
+#line 69
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  
+#line 70
   fileId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   accessHash_ = [values getLongWithInt:2];
   fileSize_ = [values getIntWithInt:3];
   fileName_ = [values getStringWithInt:4];
 }
 
+
+#line 77
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:fileId_];
   [writer writeLongWithInt:2 withLong:accessHash_];
@@ -102,6 +146,8 @@ J2OBJC_FIELD_SETTER(AMFileReference, fileName_, NSString *)
 
 AMFileReference *AMFileReference_fromBytesWithByteArray_(IOSByteArray *data) {
   AMFileReference_init();
+  
+#line 16
   return ((AMFileReference *) BSBser_parseWithBSBserObject_withByteArray_([[AMFileReference alloc] init], data));
 }
 

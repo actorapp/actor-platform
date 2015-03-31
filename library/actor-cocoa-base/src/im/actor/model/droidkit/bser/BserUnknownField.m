@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserUnknownField.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserUnknownField.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/BserUnknownField.h"
@@ -17,28 +19,50 @@
 
 J2OBJC_FIELD_SETTER(BSBserUnknownField, binary_, IOSByteArray *)
 
+
+#line 6
 @implementation BSBserUnknownField
 
+
+#line 11
 - (instancetype)initWithInt:(jint)id_
                     withInt:(jint)type
               withByteArray:(IOSByteArray *)binary {
   if (self = [super init]) {
+    
+#line 12
     self->id__ = id_;
+    
+#line 13
     self->type_ = type;
+    
+#line 14
     self->binary_ = binary;
   }
   return self;
 }
 
+
+#line 17
 - (jint)getId {
+  
+#line 18
   return id__;
 }
 
+
+#line 21
 - (jint)getType {
+  
+#line 22
   return type_;
 }
 
+
+#line 25
 - (IOSByteArray *)getBinary {
+  
+#line 26
   return binary_;
 }
 

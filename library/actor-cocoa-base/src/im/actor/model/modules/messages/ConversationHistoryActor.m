@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/ConversationHistoryActor.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/ConversationHistoryActor.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/OutPeer.h"
 #include "im/actor/model/api/rpc/RequestLoadHistory.h"
@@ -59,21 +61,41 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationHistoryActor, peer_, 
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationHistoryActor_$1, this$0_, ImActorModelModulesMessagesConversationHistoryActor *)
 
+
+#line 15
 @implementation ImActorModelModulesMessagesConversationHistoryActor
 
+
+#line 29
 - (instancetype)initWithAMPeer:(AMPeer *)peer
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self = [super initWithImActorModelModulesModules:modules]) {
-    isLoading_ = NO;
+  if (self =
+#line 30
+  [super initWithImActorModelModulesModules:modules]) {
+    isLoading_ =
+#line 27
+    NO;
+    
+#line 31
     self->peer_ = peer;
+    
+#line 32
     self->KEY_LOADED_DATE_ = JreStrcat("$@$", @"conv_", peer, @"_history_date");
+    
+#line 33
     self->KEY_LOADED_ = JreStrcat("$@$", @"conv_", peer, @"_history_loaded");
+    
+#line 34
     self->KEY_LOADED_INIT_ = JreStrcat("$@$", @"conv_", peer, @"_history_inited");
   }
   return self;
 }
 
+
+#line 38
 - (void)preStart {
+  
+#line 39
   [super preStart];
   historyMaxDate_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLong:KEY_LOADED_DATE_ withDefault:JavaLangLong_MAX_VALUE];
   historyLoaded_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:KEY_LOADED_ withDefault:NO];
@@ -82,24 +104,36 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   }
 }
 
+
+#line 47
 - (void)onLoadMore {
   ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(self);
 }
 
+
+#line 72
 - (void)onLoadedMoreWithInt:(jint)loaded
                    withLong:(jlong)maxLoadedDate {
   ImActorModelModulesMessagesConversationHistoryActor_onLoadedMoreWithInt_withLong_(self, loaded, maxLoadedDate);
 }
 
+
+#line 88
 - (void)onReceiveWithId:(id)message {
+  
+#line 89
   if ([message isKindOfClass:[ImActorModelModulesMessagesConversationHistoryActor_LoadMore class]]) {
     ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(self);
   }
-  else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationHistoryActor_LoadedMore class]]) {
+  else
+#line 91
+  if ([message isKindOfClass:[ImActorModelModulesMessagesConversationHistoryActor_LoadedMore class]]) {
     ImActorModelModulesMessagesConversationHistoryActor_LoadedMore *loadedMore = (ImActorModelModulesMessagesConversationHistoryActor_LoadedMore *) check_class_cast(message, [ImActorModelModulesMessagesConversationHistoryActor_LoadedMore class]);
     ImActorModelModulesMessagesConversationHistoryActor_onLoadedMoreWithInt_withLong_(self, ((ImActorModelModulesMessagesConversationHistoryActor_LoadedMore *) nil_chk(loadedMore))->loaded_, loadedMore->maxLoadedDate_);
   }
   else {
+    
+#line 95
     [self dropWithId:message];
   }
 }
@@ -118,6 +152,8 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 @end
 
 void ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(ImActorModelModulesMessagesConversationHistoryActor *self) {
+  
+#line 48
   if (self->historyLoaded_) {
     return;
   }
@@ -125,18 +161,30 @@ void ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(ImActorModel
     return;
   }
   self->isLoading_ = YES;
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestLoadHistory alloc] initWithImActorModelApiOutPeer:[self buidOutPeerWithAMPeer:self->peer_] withLong:self->historyMaxDate_ withInt:ImActorModelModulesMessagesConversationHistoryActor_LIMIT] withAMRpcCallback:[[ImActorModelModulesMessagesConversationHistoryActor_$1 alloc] initWithImActorModelModulesMessagesConversationHistoryActor:self]];
+  
+#line 56
+  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestLoadHistory alloc] initWithImActorModelApiOutPeer:[self buidOutPeerWithAMPeer:self->peer_] withLong:self->historyMaxDate_ withInt:ImActorModelModulesMessagesConversationHistoryActor_LIMIT] withAMRpcCallback:
+#line 57
+  [[ImActorModelModulesMessagesConversationHistoryActor_$1 alloc] initWithImActorModelModulesMessagesConversationHistoryActor:self]];
 }
 
 void ImActorModelModulesMessagesConversationHistoryActor_onLoadedMoreWithInt_withLong_(ImActorModelModulesMessagesConversationHistoryActor *self, jint loaded, jlong maxLoadedDate) {
+  
+#line 73
   self->isLoading_ = NO;
+  
+#line 75
   if (loaded < ImActorModelModulesMessagesConversationHistoryActor_LIMIT) {
     self->historyLoaded_ = YES;
   }
   else {
+    
+#line 78
     self->historyLoaded_ = NO;
     self->historyMaxDate_ = maxLoadedDate;
   }
+  
+#line 82
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLong:self->KEY_LOADED_DATE_ withValue:maxLoadedDate];
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBool:self->KEY_LOADED_ withValue:self->historyLoaded_];
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBool:self->KEY_LOADED_INIT_ withValue:YES];
@@ -144,6 +192,8 @@ void ImActorModelModulesMessagesConversationHistoryActor_onLoadedMoreWithInt_wit
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryActor)
 
+
+#line 99
 @implementation ImActorModelModulesMessagesConversationHistoryActor_LoadMore
 
 - (instancetype)init {
@@ -154,12 +204,20 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryA
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryActor_LoadMore)
 
+
+#line 103
 @implementation ImActorModelModulesMessagesConversationHistoryActor_LoadedMore
 
+
+#line 107
 - (instancetype)initWithInt:(jint)loaded
                    withLong:(jlong)maxLoadedDate {
   if (self = [super init]) {
+    
+#line 108
     self->loaded_ = loaded;
+    
+#line 109
     self->maxLoadedDate_ = maxLoadedDate;
   }
   return self;
@@ -177,11 +235,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryA
 
 @implementation ImActorModelModulesMessagesConversationHistoryActor_$1
 
+
+#line 59
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseLoadHistory *)response {
+  
+#line 61
   [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalMessagesHistoryLoaded alloc] initWithAMPeer:this$0_->peer_ withImActorModelApiRpcResponseLoadHistory:response]];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
+  
+#line 66
   [((AMRpcException *) nil_chk(e)) printStackTrace];
 }
 

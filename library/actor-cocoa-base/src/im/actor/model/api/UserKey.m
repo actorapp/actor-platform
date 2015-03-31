@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/UserKey.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/UserKey.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/UserKey.h"
@@ -17,35 +19,57 @@
 }
 @end
 
+
+#line 19
 @implementation ImActorModelApiUserKey
 
+
+#line 24
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)keyHash {
   if (self = [super init]) {
+    
+#line 25
     self->uid_ = uid;
+    
+#line 26
     self->keyHash_ = keyHash;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getUid {
+  
+#line 34
   return self->uid_;
 }
 
+
+#line 37
 - (jlong)getKeyHash {
+  
+#line 38
   return self->keyHash_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->keyHash_ = [values getLongWithInt:2];
 }
 
+
+#line 48
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 49
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->keyHash_];
 }

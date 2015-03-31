@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupUserKicked.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupUserKicked.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -21,36 +23,56 @@
 - (instancetype)init;
 @end
 
+
+#line 12
 @implementation AMServiceGroupUserKicked
 
 + (AMServiceGroupUserKicked *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMServiceGroupUserKicked_fromBytesWithByteArray_(data);
 }
 
+
+#line 20
 - (instancetype)initWithInt:(jint)kickedUid {
-  if (self = [super initWithNSString:@"User kicked"]) {
+  if (self =
+#line 21
+  [super initWithNSString:@"User kicked"]) {
+    
+#line 22
     self->kickedUid_ = kickedUid;
   }
   return self;
 }
 
+
+#line 25
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getKickedUid {
+  
+#line 30
   return kickedUid_;
 }
 
+
+#line 34
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE_KICKED();
 }
 
+
+#line 39
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  
+#line 40
   [super parseWithBSBserValues:values];
   kickedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
 }
 
+
+#line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:kickedUid_];
@@ -65,6 +87,8 @@
 
 AMServiceGroupUserKicked *AMServiceGroupUserKicked_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupUserKicked_init();
+  
+#line 15
   return ((AMServiceGroupUserKicked *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupUserKicked alloc] init], data));
 }
 

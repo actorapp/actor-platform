@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/threads/JavaAtomicInteger.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/threads/JavaAtomicInteger.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/jvm/threads/JavaAtomicInteger.h"
 #include "java/util/concurrent/atomic/AtomicInteger.h"
@@ -15,33 +17,53 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaAtomicInteger, atomicInteger_, JavaUtilConcurrentAtomicAtomicInteger *)
 
+
+#line 10
 @implementation ImActorModelJvmThreadsJavaAtomicInteger
 
+
+#line 14
 - (instancetype)initWithInt:(jint)value {
   if (self = [super init]) {
+    
+#line 15
     atomicInteger_ = [[JavaUtilConcurrentAtomicAtomicInteger alloc] initWithInt:value];
   }
   return self;
 }
 
+
+#line 19
 - (jint)get {
+  
+#line 20
   return [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) get];
 }
 
+
+#line 24
 - (jint)incrementAndGet {
   return [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) incrementAndGet];
 }
 
+
+#line 29
 - (jint)getAndIncrement {
+  
+#line 30
   return [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) getAndIncrement];
 }
 
+
+#line 34
 - (void)compareAndSetWithInt:(jint)exp
                      withInt:(jint)v {
   [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) compareAndSetWithInt:exp withInt:v];
 }
 
 - (void)setWithInt:(jint)v {
+  
+#line 40
   [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) setWithInt:v];
 }
 

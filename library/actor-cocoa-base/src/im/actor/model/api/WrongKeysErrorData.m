@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/WrongKeysErrorData.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/WrongKeysErrorData.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/UserKey.h"
@@ -25,35 +27,59 @@ J2OBJC_FIELD_SETTER(ImActorModelApiWrongKeysErrorData, newKeys_, id<JavaUtilList
 J2OBJC_FIELD_SETTER(ImActorModelApiWrongKeysErrorData, removedKeys_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiWrongKeysErrorData, invalidKeys_, id<JavaUtilList>)
 
+
+#line 19
 @implementation ImActorModelApiWrongKeysErrorData
 
+
+#line 25
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)newKeys
                     withJavaUtilList:(id<JavaUtilList>)removedKeys
                     withJavaUtilList:(id<JavaUtilList>)invalidKeys {
   if (self = [super init]) {
+    
+#line 26
     self->newKeys_ = newKeys;
+    
+#line 27
     self->removedKeys_ = removedKeys;
+    
+#line 28
     self->invalidKeys_ = invalidKeys;
   }
   return self;
 }
 
+
+#line 31
 - (instancetype)init {
   return [super init];
 }
 
 - (id<JavaUtilList>)getNewKeys {
+  
+#line 36
   return self->newKeys_;
 }
 
+
+#line 39
 - (id<JavaUtilList>)getRemovedKeys {
+  
+#line 40
   return self->removedKeys_;
 }
 
+
+#line 43
 - (id<JavaUtilList>)getInvalidKeys {
+  
+#line 44
   return self->invalidKeys_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _newKeys = [[JavaUtilArrayList alloc] init];
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
@@ -72,7 +98,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiWrongKeysErrorData, invalidKeys_, id<JavaUtil
   self->invalidKeys_ = [values getRepeatedObjWithInt:3 withJavaUtilList:_invalidKeys];
 }
 
+
+#line 67
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 68
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->newKeys_];
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->removedKeys_];
   [writer writeRepeatedObjWithInt:3 withJavaUtilList:self->invalidKeys_];

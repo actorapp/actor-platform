@@ -45,6 +45,8 @@
 #import "im/actor/model/network/ConnectionEndpoint.h"
 #import "im/actor/model/network/ConnectionCallback.h"
 
+#import "im/actor/model/crypto/CryptoKeyPair.h"
+
 // DroidKit Engine
 
 #import "im/actor/model/droidkit/engine/ListEngine.h"

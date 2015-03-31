@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/dispatch/DispatchResult.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/dispatch/DispatchResult.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
@@ -21,6 +23,8 @@ J2OBJC_FIELD_SETTER(DKDispatchResult, res_, id)
 
 BOOL DKDispatchResult_initialized = NO;
 
+
+#line 9
 @implementation DKDispatchResult
 
 AMThreadLocalCompat * DKDispatchResult_FREE_RESULTS_;
@@ -29,42 +33,72 @@ AMThreadLocalCompat * DKDispatchResult_FREE_RESULTS_;
   return DKDispatchResult_resultWithId_(res);
 }
 
+
+#line 24
 + (DKDispatchResult *)delayWithLong:(jlong)delay {
   return DKDispatchResult_delayWithLong_(delay);
 }
 
+
+#line 40
 - (instancetype)initWithBoolean:(jboolean)isResult
                          withId:(id)res
                        withLong:(jlong)delay {
   if (self = [super init]) {
+    
+#line 41
     self->isResult__ = isResult;
+    
+#line 42
     self->res_ = res;
+    
+#line 43
     self->delay__ = delay;
   }
   return self;
 }
 
+
+#line 46
 - (void)updateWithBoolean:(jboolean)isResult
                    withId:(id)res
                  withLong:(jlong)delay {
+  
+#line 47
   self->isResult__ = isResult;
   self->res_ = res;
   self->delay__ = delay;
 }
 
+
+#line 52
 - (jboolean)isResult {
+  
+#line 53
   return isResult__;
 }
 
+
+#line 56
 - (id)getRes {
+  
+#line 57
   return res_;
 }
 
+
+#line 60
 - (jlong)getDelay {
+  
+#line 61
   return delay__;
 }
 
+
+#line 64
 - (void)recycle {
+  
+#line 65
   [((AMThreadLocalCompat *) nil_chk(DKDispatchResult_FREE_RESULTS_)) setWithId:self];
 }
 
@@ -86,12 +120,16 @@ AMThreadLocalCompat * DKDispatchResult_FREE_RESULTS_;
 
 DKDispatchResult *DKDispatchResult_resultWithId_(id res) {
   DKDispatchResult_init();
+  
+#line 14
   DKDispatchResult *result = [((AMThreadLocalCompat *) nil_chk(DKDispatchResult_FREE_RESULTS_)) get];
   if (result != nil) {
     [DKDispatchResult_FREE_RESULTS_ remove];
     [result updateWithBoolean:YES withId:res withLong:0];
   }
   else {
+    
+#line 19
     result = [[DKDispatchResult alloc] initWithBoolean:YES withId:res withLong:0];
   }
   return result;
@@ -99,12 +137,16 @@ DKDispatchResult *DKDispatchResult_resultWithId_(id res) {
 
 DKDispatchResult *DKDispatchResult_delayWithLong_(jlong delay) {
   DKDispatchResult_init();
+  
+#line 25
   DKDispatchResult *result = [((AMThreadLocalCompat *) nil_chk(DKDispatchResult_FREE_RESULTS_)) get];
   if (result != nil) {
     [DKDispatchResult_FREE_RESULTS_ remove];
     [result updateWithBoolean:NO withId:nil withLong:delay];
   }
   else {
+    
+#line 30
     result = [[DKDispatchResult alloc] initWithBoolean:NO withId:nil withLong:delay];
   }
   return result;

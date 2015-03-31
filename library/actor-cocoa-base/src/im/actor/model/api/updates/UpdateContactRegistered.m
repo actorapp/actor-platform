@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateContactRegistered.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateContactRegistered.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -21,46 +23,76 @@
 }
 @end
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateContactRegistered
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateContactRegistered *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(data);
 }
 
+
+#line 31
 - (instancetype)initWithInt:(jint)uid
                 withBoolean:(jboolean)isSilent
                    withLong:(jlong)date {
   if (self = [super init]) {
+    
+#line 32
     self->uid_ = uid;
+    
+#line 33
     self->isSilent__ = isSilent;
+    
+#line 34
     self->date_ = date;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getUid {
+  
+#line 42
   return self->uid_;
 }
 
+
+#line 45
 - (jboolean)isSilent {
+  
+#line 46
   return self->isSilent__;
 }
 
+
+#line 49
 - (jlong)getDate {
+  
+#line 50
   return self->date_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->isSilent__ = [values getBoolWithInt:2];
   self->date_ = [values getLongWithInt:3];
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeBoolWithInt:2 withBoolean:self->isSilent__];
   [writer writeLongWithInt:3 withLong:self->date_];
@@ -76,6 +108,8 @@
 }
 
 - (jint)getHeaderKey {
+  
+#line 79
   return ImActorModelApiUpdatesUpdateContactRegistered_HEADER;
 }
 
@@ -90,6 +124,8 @@
 
 ImActorModelApiUpdatesUpdateContactRegistered *ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateContactRegistered_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateContactRegistered alloc] init], data));
 }
 

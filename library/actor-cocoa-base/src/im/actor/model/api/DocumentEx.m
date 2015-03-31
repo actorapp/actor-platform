@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentEx.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentEx.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -20,14 +22,22 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
+
+#line 19
 @implementation ImActorModelApiDocumentEx
 
+
+#line 20
 + (ImActorModelApiDocumentEx *)fromBytesWithInt:(jint)key
                                   withByteArray:(IOSByteArray *)content {
   return ImActorModelApiDocumentEx_fromBytesWithInt_withByteArray_(key, content);
 }
 
+
+#line 30
 - (IOSByteArray *)buildContainer {
+  
+#line 31
   BSDataOutput *res = [[BSDataOutput alloc] init];
   BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:res];
   [writer writeIntWithInt:1 withInt:[self getHeader]];
@@ -43,14 +53,24 @@
 
 ImActorModelApiDocumentEx *ImActorModelApiDocumentEx_fromBytesWithInt_withByteArray_(jint key, IOSByteArray *content) {
   ImActorModelApiDocumentEx_init();
+  
+#line 21
   switch (key) {
     case 1:
+    
+#line 22
     return ((ImActorModelApiDocumentExPhoto *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiDocumentExPhoto alloc] init], content));
     case 2:
+    
+#line 23
     return ((ImActorModelApiDocumentExVideo *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiDocumentExVideo alloc] init], content));
     case 3:
+    
+#line 24
     return ((ImActorModelApiDocumentExVoice *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiDocumentExVoice alloc] init], content));
     default:
+    
+#line 25
     return [[ImActorModelApiDocumentExUnsupported alloc] initWithInt:key withByteArray:content];
   }
 }

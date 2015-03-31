@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ECFieldElement.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ECFieldElement.java"
+
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -48,50 +50,84 @@ withOrgBouncycastleMathEcLongArray:(OrgBouncycastleMathEcLongArray *)x;
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECFieldElement_F2m, ks_, IOSIntArray *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECFieldElement_F2m, x_, OrgBouncycastleMathEcLongArray *)
 
+
+#line 12
 @implementation OrgBouncycastleMathEcECFieldElement
 
+
+#line 28
 - (jint)bitLength {
+  
+#line 30
   return [((JavaMathBigInteger *) nil_chk([self toBigInteger])) bitLength];
 }
 
+
+#line 33
 - (jboolean)isOne {
+  
+#line 35
   return [self bitLength] == 1;
 }
 
+
+#line 38
 - (jboolean)isZero {
+  
+#line 40
   return 0 == [((JavaMathBigInteger *) nil_chk([self toBigInteger])) signum];
 }
 
+
+#line 43
 - (OrgBouncycastleMathEcECFieldElement *)multiplyMinusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b
                                                              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
+  
+#line 45
   return [((OrgBouncycastleMathEcECFieldElement *) nil_chk([self multiplyWithOrgBouncycastleMathEcECFieldElement:b])) subtractWithOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(x)) multiplyWithOrgBouncycastleMathEcECFieldElement:y]];
 }
 
+
+#line 48
 - (OrgBouncycastleMathEcECFieldElement *)multiplyPlusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b
                                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
+  
+#line 50
   return [((OrgBouncycastleMathEcECFieldElement *) nil_chk([self multiplyWithOrgBouncycastleMathEcECFieldElement:b])) addWithOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(x)) multiplyWithOrgBouncycastleMathEcECFieldElement:y]];
 }
 
+
+#line 53
 - (OrgBouncycastleMathEcECFieldElement *)squareMinusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                            withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
+  
+#line 55
   return [((OrgBouncycastleMathEcECFieldElement *) nil_chk([self square])) subtractWithOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(x)) multiplyWithOrgBouncycastleMathEcECFieldElement:y]];
 }
 
+
+#line 58
 - (OrgBouncycastleMathEcECFieldElement *)squarePlusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                           withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
   return [((OrgBouncycastleMathEcECFieldElement *) nil_chk([self square])) addWithOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(x)) multiplyWithOrgBouncycastleMathEcECFieldElement:y]];
 }
 
 - (jboolean)testBitZero {
+  
+#line 65
   return [((JavaMathBigInteger *) nil_chk([self toBigInteger])) testBitWithInt:0];
 }
 
 - (NSString *)description {
+  
+#line 70
   return [((JavaMathBigInteger *) nil_chk([self toBigInteger])) toStringWithInt:16];
 }
 
+
+#line 73
 - (IOSByteArray *)getEncoded {
   return OrgBouncycastleUtilBigIntegers_asUnsignedByteArrayWithInt_withJavaMathBigInteger_(([self getFieldSize] + 7) / 8, [self toBigInteger]);
 }
@@ -104,26 +140,46 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECFieldElement_F2m, x_, OrgBouncycastle
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECFieldElement)
 
+
+#line 78
 @implementation OrgBouncycastleMathEcECFieldElement_Fp
 
+
+#line 82
 + (JavaMathBigInteger *)calculateResidueWithJavaMathBigInteger:(JavaMathBigInteger *)p {
   return OrgBouncycastleMathEcECFieldElement_Fp_calculateResidueWithJavaMathBigInteger_(p);
 }
 
+
+#line 99
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)q
                     withJavaMathBigInteger:(JavaMathBigInteger *)x {
-  return [self initOrgBouncycastleMathEcECFieldElement_FpWithJavaMathBigInteger:q withJavaMathBigInteger:OrgBouncycastleMathEcECFieldElement_Fp_calculateResidueWithJavaMathBigInteger_(q) withJavaMathBigInteger:x];
+  return
+#line 101
+  [self initOrgBouncycastleMathEcECFieldElement_FpWithJavaMathBigInteger:q withJavaMathBigInteger:OrgBouncycastleMathEcECFieldElement_Fp_calculateResidueWithJavaMathBigInteger_(q) withJavaMathBigInteger:x];
 }
 
+
+#line 104
 - (instancetype)initOrgBouncycastleMathEcECFieldElement_FpWithJavaMathBigInteger:(JavaMathBigInteger *)q
                                                           withJavaMathBigInteger:(JavaMathBigInteger *)r
                                                           withJavaMathBigInteger:(JavaMathBigInteger *)x {
   if (self = [super init]) {
+    
+#line 106
     if (x == nil || [x signum] < 0 || [x compareToWithId:q] >= 0) {
+      
+#line 108
       @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"x value invalid in Fp field element"];
     }
+    
+#line 111
     self->q_ = q;
+    
+#line 112
     self->r_ = r;
+    
+#line 113
     self->x_ = x;
   }
   return self;
@@ -132,83 +188,143 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECFieldElement)
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)q
                     withJavaMathBigInteger:(JavaMathBigInteger *)r
                     withJavaMathBigInteger:(JavaMathBigInteger *)x {
-  return [self initOrgBouncycastleMathEcECFieldElement_FpWithJavaMathBigInteger:q withJavaMathBigInteger:r withJavaMathBigInteger:x];
+  return [self initOrgBouncycastleMathEcECFieldElement_FpWithJavaMathBigInteger:
+#line 104
+q withJavaMathBigInteger:r withJavaMathBigInteger:x];
 }
 
+
+#line 116
 - (JavaMathBigInteger *)toBigInteger {
+  
+#line 118
   return x_;
 }
 
+
+#line 126
 - (NSString *)getFieldName {
+  
+#line 128
   return @"Fp";
 }
 
+
+#line 131
 - (jint)getFieldSize {
+  
+#line 133
   return [((JavaMathBigInteger *) nil_chk(q_)) bitLength];
 }
 
+
+#line 136
 - (JavaMathBigInteger *)getQ {
+  
+#line 138
   return q_;
 }
 
+
+#line 141
 - (OrgBouncycastleMathEcECFieldElement *)addWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b {
+  
+#line 143
   return [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:[self modAddWithJavaMathBigInteger:x_ withJavaMathBigInteger:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(b)) toBigInteger]]];
 }
 
+
+#line 146
 - (OrgBouncycastleMathEcECFieldElement *)addOne {
+  
+#line 148
   JavaMathBigInteger *x2 = [((JavaMathBigInteger *) nil_chk(x_)) addWithJavaMathBigInteger:OrgBouncycastleMathEcECConstants_get_ONE_()];
   if ([((JavaMathBigInteger *) nil_chk(x2)) compareToWithId:q_] == 0) {
+    
+#line 151
     x2 = OrgBouncycastleMathEcECConstants_get_ZERO_();
   }
   return [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:x2];
 }
 
+
+#line 156
 - (OrgBouncycastleMathEcECFieldElement *)subtractWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b {
   return [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:[self modSubtractWithJavaMathBigInteger:x_ withJavaMathBigInteger:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(b)) toBigInteger]]];
 }
 
+
+#line 161
 - (OrgBouncycastleMathEcECFieldElement *)multiplyWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b {
+  
+#line 163
   return [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:[self modMultWithJavaMathBigInteger:x_ withJavaMathBigInteger:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(b)) toBigInteger]]];
 }
 
+
+#line 166
 - (OrgBouncycastleMathEcECFieldElement *)multiplyMinusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b
                                                              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
+  
+#line 168
   JavaMathBigInteger *ax = self->x_, *bx = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(b)) toBigInteger], *xx = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(x)) toBigInteger], *yx = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(y)) toBigInteger];
   JavaMathBigInteger *ab = [((JavaMathBigInteger *) nil_chk(ax)) multiplyWithJavaMathBigInteger:bx];
   JavaMathBigInteger *xy = [((JavaMathBigInteger *) nil_chk(xx)) multiplyWithJavaMathBigInteger:yx];
   return [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:[self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(ab)) subtractWithJavaMathBigInteger:xy]]];
 }
 
+
+#line 174
 - (OrgBouncycastleMathEcECFieldElement *)multiplyPlusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b
                                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
+  
+#line 176
   JavaMathBigInteger *ax = self->x_, *bx = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(b)) toBigInteger], *xx = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(x)) toBigInteger], *yx = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(y)) toBigInteger];
   JavaMathBigInteger *ab = [((JavaMathBigInteger *) nil_chk(ax)) multiplyWithJavaMathBigInteger:bx];
   JavaMathBigInteger *xy = [((JavaMathBigInteger *) nil_chk(xx)) multiplyWithJavaMathBigInteger:yx];
   return [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:[self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(ab)) addWithJavaMathBigInteger:xy]]];
 }
 
+
+#line 182
 - (OrgBouncycastleMathEcECFieldElement *)divideWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b {
+  
+#line 184
   return [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:[self modMultWithJavaMathBigInteger:x_ withJavaMathBigInteger:[self modInverseWithJavaMathBigInteger:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(b)) toBigInteger]]]];
 }
 
+
+#line 187
 - (OrgBouncycastleMathEcECFieldElement *)negate {
+  
+#line 189
   return [((JavaMathBigInteger *) nil_chk(x_)) signum] == 0 ? self : [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(q_)) subtractWithJavaMathBigInteger:x_]];
 }
 
+
+#line 192
 - (OrgBouncycastleMathEcECFieldElement *)square {
+  
+#line 194
   return [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:[self modMultWithJavaMathBigInteger:x_ withJavaMathBigInteger:x_]];
 }
 
+
+#line 197
 - (OrgBouncycastleMathEcECFieldElement *)squareMinusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                            withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
+  
+#line 199
   JavaMathBigInteger *ax = self->x_, *xx = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(x)) toBigInteger], *yx = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(y)) toBigInteger];
   JavaMathBigInteger *aa = [((JavaMathBigInteger *) nil_chk(ax)) multiplyWithJavaMathBigInteger:ax];
   JavaMathBigInteger *xy = [((JavaMathBigInteger *) nil_chk(xx)) multiplyWithJavaMathBigInteger:yx];
   return [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:[self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(aa)) subtractWithJavaMathBigInteger:xy]]];
 }
 
+
+#line 205
 - (OrgBouncycastleMathEcECFieldElement *)squarePlusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                           withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
   JavaMathBigInteger *ax = self->x_, *xx = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(x)) toBigInteger], *yx = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(y)) toBigInteger];
@@ -218,98 +334,178 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECFieldElement)
 }
 
 - (OrgBouncycastleMathEcECFieldElement *)invert {
+  
+#line 216
   return [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:[self modInverseWithJavaMathBigInteger:x_]];
 }
 
+
+#line 224
 - (OrgBouncycastleMathEcECFieldElement *)sqrt {
+  
+#line 226
   if ([self isZero] || [self isOne]) {
+    
+#line 228
     return self;
   }
+  
+#line 231
   if (![((JavaMathBigInteger *) nil_chk(q_)) testBitWithInt:0]) {
+    
+#line 233
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"not done yet"];
   }
+  
+#line 239
   if ([q_ testBitWithInt:1]) {
+    
+#line 241
     JavaMathBigInteger *e = [((JavaMathBigInteger *) nil_chk([q_ shiftRightWithInt:2])) addWithJavaMathBigInteger:OrgBouncycastleMathEcECConstants_get_ONE_()];
     return OrgBouncycastleMathEcECFieldElement_Fp_checkSqrtWithOrgBouncycastleMathEcECFieldElement_(self, [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(x_)) modPowWithJavaMathBigInteger:e withJavaMathBigInteger:q_]]);
   }
+  
+#line 245
   if ([q_ testBitWithInt:2]) {
+    
+#line 247
     JavaMathBigInteger *t1 = [((JavaMathBigInteger *) nil_chk(x_)) modPowWithJavaMathBigInteger:[q_ shiftRightWithInt:3] withJavaMathBigInteger:q_];
     JavaMathBigInteger *t2 = [self modMultWithJavaMathBigInteger:t1 withJavaMathBigInteger:x_];
     JavaMathBigInteger *t3 = [self modMultWithJavaMathBigInteger:t2 withJavaMathBigInteger:t1];
+    
+#line 251
     if ([((JavaMathBigInteger *) nil_chk(t3)) isEqual:OrgBouncycastleMathEcECConstants_get_ONE_()]) {
+      
+#line 253
       return OrgBouncycastleMathEcECFieldElement_Fp_checkSqrtWithOrgBouncycastleMathEcECFieldElement_(self, [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:t2]);
     }
+    
+#line 257
     JavaMathBigInteger *t4 = [((JavaMathBigInteger *) nil_chk(OrgBouncycastleMathEcECConstants_get_TWO_())) modPowWithJavaMathBigInteger:[q_ shiftRightWithInt:2] withJavaMathBigInteger:q_];
+    
+#line 259
     JavaMathBigInteger *y = [self modMultWithJavaMathBigInteger:t2 withJavaMathBigInteger:t4];
+    
+#line 261
     return OrgBouncycastleMathEcECFieldElement_Fp_checkSqrtWithOrgBouncycastleMathEcECFieldElement_(self, [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:y]);
   }
+  
+#line 266
   JavaMathBigInteger *legendreExponent = [q_ shiftRightWithInt:1];
   if (!([((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(x_)) modPowWithJavaMathBigInteger:legendreExponent withJavaMathBigInteger:q_])) isEqual:OrgBouncycastleMathEcECConstants_get_ONE_()])) {
+    
+#line 269
     return nil;
   }
+  
+#line 272
   JavaMathBigInteger *X = self->x_;
   JavaMathBigInteger *fourX = [self modDoubleWithJavaMathBigInteger:[self modDoubleWithJavaMathBigInteger:X]];
+  
+#line 275
   JavaMathBigInteger *k = [((JavaMathBigInteger *) nil_chk(legendreExponent)) addWithJavaMathBigInteger:OrgBouncycastleMathEcECConstants_get_ONE_()], *qMinusOne = [q_ subtractWithJavaMathBigInteger:OrgBouncycastleMathEcECConstants_get_ONE_()];
+  
+#line 277
   JavaMathBigInteger *U, *V;
   JavaUtilRandom *rand = [[JavaUtilRandom alloc] init];
   do {
+    
+#line 281
     JavaMathBigInteger *P;
     do {
+      
+#line 284
       P = [[JavaMathBigInteger alloc] initWithInt:[q_ bitLength] withJavaUtilRandom:rand];
     }
-    while ([P compareToWithId:q_] >= 0 || ![((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk([self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk([P multiplyWithJavaMathBigInteger:P])) subtractWithJavaMathBigInteger:fourX]])) modPowWithJavaMathBigInteger:legendreExponent withJavaMathBigInteger:q_])) isEqual:qMinusOne]);
+    while ([P compareToWithId:q_] >= 0 ||
+#line 287
+    ![((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk([self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk([P multiplyWithJavaMathBigInteger:P])) subtractWithJavaMathBigInteger:fourX]])) modPowWithJavaMathBigInteger:legendreExponent withJavaMathBigInteger:q_])) isEqual:qMinusOne]);
+    
+#line 289
     IOSObjectArray *result = OrgBouncycastleMathEcECFieldElement_Fp_lucasSequenceWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(self, P, X, k);
     U = IOSObjectArray_Get(nil_chk(result), 0);
     V = IOSObjectArray_Get(result, 1);
+    
+#line 293
     if ([((JavaMathBigInteger *) nil_chk([self modMultWithJavaMathBigInteger:V withJavaMathBigInteger:V])) isEqual:fourX]) {
+      
+#line 295
       return [[OrgBouncycastleMathEcECFieldElement_Fp alloc] initWithJavaMathBigInteger:q_ withJavaMathBigInteger:r_ withJavaMathBigInteger:[self modHalfAbsWithJavaMathBigInteger:V]];
     }
   }
   while ([((JavaMathBigInteger *) nil_chk(U)) isEqual:OrgBouncycastleMathEcECConstants_get_ONE_()] || [U isEqual:qMinusOne]);
+  
+#line 300
   return nil;
 }
 
+
+#line 303
 - (OrgBouncycastleMathEcECFieldElement *)checkSqrtWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)z {
   return OrgBouncycastleMathEcECFieldElement_Fp_checkSqrtWithOrgBouncycastleMathEcECFieldElement_(self, z);
 }
 
+
+#line 308
 - (IOSObjectArray *)lucasSequenceWithJavaMathBigInteger:(JavaMathBigInteger *)P
                                  withJavaMathBigInteger:(JavaMathBigInteger *)Q
                                  withJavaMathBigInteger:(JavaMathBigInteger *)k {
   return OrgBouncycastleMathEcECFieldElement_Fp_lucasSequenceWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(self, P, Q, k);
 }
 
+
+#line 362
 - (JavaMathBigInteger *)modAddWithJavaMathBigInteger:(JavaMathBigInteger *)x1
                               withJavaMathBigInteger:(JavaMathBigInteger *)x2 {
+  
+#line 364
   JavaMathBigInteger *x3 = [((JavaMathBigInteger *) nil_chk(x1)) addWithJavaMathBigInteger:x2];
   if ([((JavaMathBigInteger *) nil_chk(x3)) compareToWithId:q_] >= 0) {
+    
+#line 367
     x3 = [x3 subtractWithJavaMathBigInteger:q_];
   }
   return x3;
 }
 
+
+#line 372
 - (JavaMathBigInteger *)modDoubleWithJavaMathBigInteger:(JavaMathBigInteger *)x {
+  
+#line 374
   JavaMathBigInteger *_2x = [((JavaMathBigInteger *) nil_chk(x)) shiftLeftWithInt:1];
   if ([((JavaMathBigInteger *) nil_chk(_2x)) compareToWithId:q_] >= 0) {
+    
+#line 377
     _2x = [_2x subtractWithJavaMathBigInteger:q_];
   }
   return _2x;
 }
 
+
+#line 382
 - (JavaMathBigInteger *)modHalfWithJavaMathBigInteger:(JavaMathBigInteger *)x {
   if ([((JavaMathBigInteger *) nil_chk(x)) testBitWithInt:0]) {
+    
+#line 386
     x = [((JavaMathBigInteger *) nil_chk(q_)) addWithJavaMathBigInteger:x];
   }
   return [((JavaMathBigInteger *) nil_chk(x)) shiftRightWithInt:1];
 }
 
 - (JavaMathBigInteger *)modHalfAbsWithJavaMathBigInteger:(JavaMathBigInteger *)x {
+  
+#line 393
   if ([((JavaMathBigInteger *) nil_chk(x)) testBitWithInt:0]) {
+    
+#line 395
     x = [((JavaMathBigInteger *) nil_chk(q_)) subtractWithJavaMathBigInteger:x];
   }
   return [((JavaMathBigInteger *) nil_chk(x)) shiftRightWithInt:1];
 }
 
+
+#line 400
 - (JavaMathBigInteger *)modInverseWithJavaMathBigInteger:(JavaMathBigInteger *)x {
   jint bits = [self getFieldSize];
   jint len = RShift32((bits + 31), 5);
@@ -320,61 +516,99 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECFieldElement)
   return OrgBouncycastleMathRawNat_toBigIntegerWithInt_withIntArray_(len, z);
 }
 
+
+#line 411
 - (JavaMathBigInteger *)modMultWithJavaMathBigInteger:(JavaMathBigInteger *)x1
                                withJavaMathBigInteger:(JavaMathBigInteger *)x2 {
+  
+#line 413
   return [self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(x1)) multiplyWithJavaMathBigInteger:x2]];
 }
 
+
+#line 416
 - (JavaMathBigInteger *)modReduceWithJavaMathBigInteger:(JavaMathBigInteger *)x {
   if (r_ != nil) {
+    
+#line 420
     jboolean negative = [((JavaMathBigInteger *) nil_chk(x)) signum] < 0;
     if (negative) {
+      
+#line 423
       x = [x abs];
     }
     jint qLen = [((JavaMathBigInteger *) nil_chk(q_)) bitLength];
     jboolean rIsOne = [r_ isEqual:OrgBouncycastleMathEcECConstants_get_ONE_()];
     while ([((JavaMathBigInteger *) nil_chk(x)) bitLength] > (qLen + 1)) {
+      
+#line 429
       JavaMathBigInteger *u = [x shiftRightWithInt:qLen];
       JavaMathBigInteger *v = [x subtractWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(u)) shiftLeftWithInt:qLen]];
       if (!rIsOne) {
+        
+#line 433
         u = [u multiplyWithJavaMathBigInteger:r_];
       }
       x = [((JavaMathBigInteger *) nil_chk(u)) addWithJavaMathBigInteger:v];
     }
     while ([((JavaMathBigInteger *) nil_chk(x)) compareToWithId:q_] >= 0) {
+      
+#line 439
       x = [x subtractWithJavaMathBigInteger:q_];
     }
     if (negative && [((JavaMathBigInteger *) nil_chk(x)) signum] != 0) {
+      
+#line 443
       x = [q_ subtractWithJavaMathBigInteger:x];
     }
   }
   else {
+    
+#line 448
     x = [((JavaMathBigInteger *) nil_chk(x)) modWithJavaMathBigInteger:q_];
   }
   return x;
 }
 
+
+#line 453
 - (JavaMathBigInteger *)modSubtractWithJavaMathBigInteger:(JavaMathBigInteger *)x1
                                    withJavaMathBigInteger:(JavaMathBigInteger *)x2 {
+  
+#line 455
   JavaMathBigInteger *x3 = [((JavaMathBigInteger *) nil_chk(x1)) subtractWithJavaMathBigInteger:x2];
   if ([((JavaMathBigInteger *) nil_chk(x3)) signum] < 0) {
+    
+#line 458
     x3 = [x3 addWithJavaMathBigInteger:q_];
   }
   return x3;
 }
 
 - (jboolean)isEqual:(id)other {
+  
+#line 465
   if (other == self) {
+    
+#line 467
     return YES;
   }
+  
+#line 470
   if (!([other isKindOfClass:[OrgBouncycastleMathEcECFieldElement_Fp class]])) {
+    
+#line 472
     return NO;
   }
+  
+#line 475
   OrgBouncycastleMathEcECFieldElement_Fp *o = (OrgBouncycastleMathEcECFieldElement_Fp *) check_class_cast(other, [OrgBouncycastleMathEcECFieldElement_Fp class]);
   return [((JavaMathBigInteger *) nil_chk(q_)) isEqual:((OrgBouncycastleMathEcECFieldElement_Fp *) nil_chk(o))->q_] && [((JavaMathBigInteger *) nil_chk(x_)) isEqual:o->x_];
 }
 
 - (NSUInteger)hash {
+  
+#line 481
   return ((jint) [((JavaMathBigInteger *) nil_chk(q_)) hash]) ^ ((jint) [((JavaMathBigInteger *) nil_chk(x_)) hash]);
 }
 
@@ -389,10 +623,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECFieldElement)
 
 JavaMathBigInteger *OrgBouncycastleMathEcECFieldElement_Fp_calculateResidueWithJavaMathBigInteger_(JavaMathBigInteger *p) {
   OrgBouncycastleMathEcECFieldElement_Fp_init();
+  
+#line 84
   jint bitLength = [((JavaMathBigInteger *) nil_chk(p)) bitLength];
   if (bitLength >= 96) {
+    
+#line 87
     JavaMathBigInteger *firstWord = [p shiftRightWithInt:bitLength - 64];
     if ([((JavaMathBigInteger *) nil_chk(firstWord)) longLongValue] == -1LL) {
+      
+#line 90
       return [((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(OrgBouncycastleMathEcECConstants_get_ONE_())) shiftLeftWithInt:bitLength])) subtractWithJavaMathBigInteger:p];
     }
   }
@@ -400,70 +640,116 @@ JavaMathBigInteger *OrgBouncycastleMathEcECFieldElement_Fp_calculateResidueWithJ
 }
 
 OrgBouncycastleMathEcECFieldElement *OrgBouncycastleMathEcECFieldElement_Fp_checkSqrtWithOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECFieldElement_Fp *self, OrgBouncycastleMathEcECFieldElement *z) {
+  
+#line 305
   return [((OrgBouncycastleMathEcECFieldElement *) nil_chk([((OrgBouncycastleMathEcECFieldElement *) nil_chk(z)) square])) isEqual:self] ? z : nil;
 }
 
 IOSObjectArray *OrgBouncycastleMathEcECFieldElement_Fp_lucasSequenceWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcECFieldElement_Fp *self, JavaMathBigInteger *P, JavaMathBigInteger *Q, JavaMathBigInteger *k) {
+  
+#line 315
   jint n = [((JavaMathBigInteger *) nil_chk(k)) bitLength];
   jint s = [k getLowestSetBit];
+  
+#line 320
   JavaMathBigInteger *Uh = OrgBouncycastleMathEcECConstants_get_ONE_();
   JavaMathBigInteger *Vl = OrgBouncycastleMathEcECConstants_get_TWO_();
   JavaMathBigInteger *Vh = P;
   JavaMathBigInteger *Ql = OrgBouncycastleMathEcECConstants_get_ONE_();
   JavaMathBigInteger *Qh = OrgBouncycastleMathEcECConstants_get_ONE_();
+  
+#line 326
   for (jint j = n - 1; j >= s + 1; --j) {
+    
+#line 328
     Ql = [self modMultWithJavaMathBigInteger:Ql withJavaMathBigInteger:Qh];
+    
+#line 330
     if ([k testBitWithInt:j]) {
+      
+#line 332
       Qh = [self modMultWithJavaMathBigInteger:Ql withJavaMathBigInteger:Q];
       Uh = [self modMultWithJavaMathBigInteger:Uh withJavaMathBigInteger:Vh];
       Vl = [self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(Vh)) multiplyWithJavaMathBigInteger:Vl])) subtractWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(P)) multiplyWithJavaMathBigInteger:Ql]]];
       Vh = [self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk([Vh multiplyWithJavaMathBigInteger:Vh])) subtractWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(Qh)) shiftLeftWithInt:1]]];
     }
     else {
+      
+#line 339
       Qh = Ql;
       Uh = [self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(Uh)) multiplyWithJavaMathBigInteger:Vl])) subtractWithJavaMathBigInteger:Ql]];
       Vh = [self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(Vh)) multiplyWithJavaMathBigInteger:Vl])) subtractWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(P)) multiplyWithJavaMathBigInteger:Ql]]];
       Vl = [self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(Vl)) multiplyWithJavaMathBigInteger:Vl])) subtractWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(Ql)) shiftLeftWithInt:1]]];
     }
   }
+  
+#line 346
   Ql = [self modMultWithJavaMathBigInteger:Ql withJavaMathBigInteger:Qh];
   Qh = [self modMultWithJavaMathBigInteger:Ql withJavaMathBigInteger:Q];
   Uh = [self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(Uh)) multiplyWithJavaMathBigInteger:Vl])) subtractWithJavaMathBigInteger:Ql]];
   Vl = [self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(Vh)) multiplyWithJavaMathBigInteger:Vl])) subtractWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(P)) multiplyWithJavaMathBigInteger:Ql]]];
   Ql = [self modMultWithJavaMathBigInteger:Ql withJavaMathBigInteger:Qh];
+  
+#line 352
   for (jint j = 1; j <= s; ++j) {
+    
+#line 354
     Uh = [self modMultWithJavaMathBigInteger:Uh withJavaMathBigInteger:Vl];
     Vl = [self modReduceWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk([((JavaMathBigInteger *) nil_chk(Vl)) multiplyWithJavaMathBigInteger:Vl])) subtractWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(Ql)) shiftLeftWithInt:1]]];
     Ql = [self modMultWithJavaMathBigInteger:Ql withJavaMathBigInteger:Ql];
   }
+  
+#line 359
   return [IOSObjectArray newArrayWithObjects:(id[]){ Uh, Vl } count:2 type:JavaMathBigInteger_class_()];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECFieldElement_Fp)
 
+
+#line 492
 @implementation OrgBouncycastleMathEcECFieldElement_F2m
 
+
+#line 545
 - (instancetype)initOrgBouncycastleMathEcECFieldElement_F2mWithInt:(jint)m
                                                            withInt:(jint)k1
                                                            withInt:(jint)k2
                                                            withInt:(jint)k3
                                             withJavaMathBigInteger:(JavaMathBigInteger *)x {
   if (self = [super init]) {
+    
+#line 552
     if ((k2 == 0) && (k3 == 0)) {
+      
+#line 554
       self->representation_ = OrgBouncycastleMathEcECFieldElement_F2m_TPB;
       self->ks_ = [IOSIntArray newArrayWithInts:(jint[]){ k1 } count:1];
     }
     else {
+      
+#line 559
       if (k2 >= k3) {
-        @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"k2 must be smaller than k3"];
+        
+#line 561
+        @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:
+#line 562
+        @"k2 must be smaller than k3"];
       }
       if (k2 <= 0) {
-        @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"k2 must be larger than 0"];
+        
+#line 566
+        @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:
+#line 567
+        @"k2 must be larger than 0"];
       }
       self->representation_ = OrgBouncycastleMathEcECFieldElement_F2m_PPB;
       self->ks_ = [IOSIntArray newArrayWithInts:(jint[]){ k1, k2, k3 } count:3];
     }
+    
+#line 573
     self->m_ = m;
+    
+#line 574
     self->x_ = [[OrgBouncycastleMathEcLongArray alloc] initWithJavaMathBigInteger:x];
   }
   return self;
@@ -474,175 +760,337 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECFieldElement_Fp)
                     withInt:(jint)k2
                     withInt:(jint)k3
      withJavaMathBigInteger:(JavaMathBigInteger *)x {
-  return [self initOrgBouncycastleMathEcECFieldElement_F2mWithInt:m withInt:k1 withInt:k2 withInt:k3 withJavaMathBigInteger:x];
+  return [self initOrgBouncycastleMathEcECFieldElement_F2mWithInt:
+#line 546
+m withInt:
+#line 547
+k1 withInt:
+#line 548
+k2 withInt:
+#line 549
+k3 withJavaMathBigInteger:
+#line 550
+x];
 }
 
+
+#line 587
 - (instancetype)initWithInt:(jint)m
                     withInt:(jint)k
      withJavaMathBigInteger:(JavaMathBigInteger *)x {
-  return [self initOrgBouncycastleMathEcECFieldElement_F2mWithInt:m withInt:k withInt:0 withInt:0 withJavaMathBigInteger:x];
+  return
+#line 590
+  [self initOrgBouncycastleMathEcECFieldElement_F2mWithInt:m withInt:k withInt:0 withInt:0 withJavaMathBigInteger:x];
 }
 
+
+#line 593
 - (instancetype)initWithInt:(jint)m
                withIntArray:(IOSIntArray *)ks
 withOrgBouncycastleMathEcLongArray:(OrgBouncycastleMathEcLongArray *)x {
   if (self = [super init]) {
+    
+#line 595
     self->m_ = m;
+    
+#line 596
     self->representation_ = (((IOSIntArray *) nil_chk(ks))->size_ == 1) ? OrgBouncycastleMathEcECFieldElement_F2m_TPB : OrgBouncycastleMathEcECFieldElement_F2m_PPB;
+    
+#line 597
     self->ks_ = ks;
+    
+#line 598
     self->x_ = x;
   }
   return self;
 }
 
+
+#line 601
 - (jint)bitLength {
+  
+#line 603
   return [((OrgBouncycastleMathEcLongArray *) nil_chk(x_)) degree];
 }
 
+
+#line 606
 - (jboolean)isOne {
+  
+#line 608
   return [((OrgBouncycastleMathEcLongArray *) nil_chk(x_)) isOne];
 }
 
+
+#line 611
 - (jboolean)isZero {
+  
+#line 613
   return [((OrgBouncycastleMathEcLongArray *) nil_chk(x_)) isZero];
 }
 
+
+#line 616
 - (jboolean)testBitZero {
+  
+#line 618
   return [((OrgBouncycastleMathEcLongArray *) nil_chk(x_)) testBitZero];
 }
 
+
+#line 621
 - (JavaMathBigInteger *)toBigInteger {
+  
+#line 623
   return [((OrgBouncycastleMathEcLongArray *) nil_chk(x_)) toBigInteger];
 }
 
+
+#line 626
 - (NSString *)getFieldName {
+  
+#line 628
   return @"F2m";
 }
 
+
+#line 631
 - (jint)getFieldSize {
+  
+#line 633
   return m_;
 }
 
+
+#line 647
 + (void)checkFieldElementsWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)a
                           withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b {
   OrgBouncycastleMathEcECFieldElement_F2m_checkFieldElementsWithOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(a, b);
 }
 
+
+#line 672
 - (OrgBouncycastleMathEcECFieldElement *)addWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b {
+  
+#line 677
   OrgBouncycastleMathEcLongArray *iarrClone = (OrgBouncycastleMathEcLongArray *) check_class_cast([((OrgBouncycastleMathEcLongArray *) nil_chk(self->x_)) clone], [OrgBouncycastleMathEcLongArray class]);
   OrgBouncycastleMathEcECFieldElement_F2m *bF2m = (OrgBouncycastleMathEcECFieldElement_F2m *) check_class_cast(b, [OrgBouncycastleMathEcECFieldElement_F2m class]);
   [((OrgBouncycastleMathEcLongArray *) nil_chk(iarrClone)) addShiftedByWordsWithOrgBouncycastleMathEcLongArray:((OrgBouncycastleMathEcECFieldElement_F2m *) nil_chk(bF2m))->x_ withInt:0];
   return [[OrgBouncycastleMathEcECFieldElement_F2m alloc] initWithInt:m_ withIntArray:ks_ withOrgBouncycastleMathEcLongArray:iarrClone];
 }
 
+
+#line 683
 - (OrgBouncycastleMathEcECFieldElement *)addOne {
+  
+#line 685
   return [[OrgBouncycastleMathEcECFieldElement_F2m alloc] initWithInt:m_ withIntArray:ks_ withOrgBouncycastleMathEcLongArray:[((OrgBouncycastleMathEcLongArray *) nil_chk(x_)) addOne]];
 }
 
+
+#line 688
 - (OrgBouncycastleMathEcECFieldElement *)subtractWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b {
+  
+#line 691
   return [self addWithOrgBouncycastleMathEcECFieldElement:b];
 }
 
 - (OrgBouncycastleMathEcECFieldElement *)multiplyWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b {
+  
+#line 703
   return [[OrgBouncycastleMathEcECFieldElement_F2m alloc] initWithInt:m_ withIntArray:ks_ withOrgBouncycastleMathEcLongArray:[((OrgBouncycastleMathEcLongArray *) nil_chk(x_)) modMultiplyWithOrgBouncycastleMathEcLongArray:((OrgBouncycastleMathEcECFieldElement_F2m *) nil_chk(((OrgBouncycastleMathEcECFieldElement_F2m *) check_class_cast(b, [OrgBouncycastleMathEcECFieldElement_F2m class]))))->x_ withInt:m_ withIntArray:ks_]];
 }
 
+
+#line 706
 - (OrgBouncycastleMathEcECFieldElement *)multiplyMinusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b
                                                              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
+  
+#line 708
   return [self multiplyPlusProductWithOrgBouncycastleMathEcECFieldElement:b withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y];
 }
 
+
+#line 711
 - (OrgBouncycastleMathEcECFieldElement *)multiplyPlusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b
                                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
+  
+#line 713
   OrgBouncycastleMathEcLongArray *ax = self->x_, *bx = ((OrgBouncycastleMathEcECFieldElement_F2m *) nil_chk(((OrgBouncycastleMathEcECFieldElement_F2m *) check_class_cast(b, [OrgBouncycastleMathEcECFieldElement_F2m class]))))->x_, *xx = ((OrgBouncycastleMathEcECFieldElement_F2m *) nil_chk(((OrgBouncycastleMathEcECFieldElement_F2m *) check_class_cast(x, [OrgBouncycastleMathEcECFieldElement_F2m class]))))->x_, *yx = ((OrgBouncycastleMathEcECFieldElement_F2m *) nil_chk(((OrgBouncycastleMathEcECFieldElement_F2m *) check_class_cast(y, [OrgBouncycastleMathEcECFieldElement_F2m class]))))->x_;
+  
+#line 715
   OrgBouncycastleMathEcLongArray *ab = [((OrgBouncycastleMathEcLongArray *) nil_chk(ax)) multiplyWithOrgBouncycastleMathEcLongArray:bx withInt:m_ withIntArray:ks_];
   OrgBouncycastleMathEcLongArray *xy = [((OrgBouncycastleMathEcLongArray *) nil_chk(xx)) multiplyWithOrgBouncycastleMathEcLongArray:yx withInt:m_ withIntArray:ks_];
+  
+#line 718
   if (ab == ax || ab == bx) {
+    
+#line 720
     ab = (OrgBouncycastleMathEcLongArray *) check_class_cast([((OrgBouncycastleMathEcLongArray *) nil_chk(ab)) clone], [OrgBouncycastleMathEcLongArray class]);
   }
+  
+#line 723
   [((OrgBouncycastleMathEcLongArray *) nil_chk(ab)) addShiftedByWordsWithOrgBouncycastleMathEcLongArray:xy withInt:0];
   [ab reduceWithInt:m_ withIntArray:ks_];
+  
+#line 726
   return [[OrgBouncycastleMathEcECFieldElement_F2m alloc] initWithInt:m_ withIntArray:ks_ withOrgBouncycastleMathEcLongArray:ab];
 }
 
+
+#line 729
 - (OrgBouncycastleMathEcECFieldElement *)divideWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b {
+  
+#line 732
   OrgBouncycastleMathEcECFieldElement *bInv = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(b)) invert];
   return [self multiplyWithOrgBouncycastleMathEcECFieldElement:bInv];
 }
 
 - (OrgBouncycastleMathEcECFieldElement *)negate {
+  
+#line 739
   return self;
 }
 
 - (OrgBouncycastleMathEcECFieldElement *)square {
+  
+#line 744
   return [[OrgBouncycastleMathEcECFieldElement_F2m alloc] initWithInt:m_ withIntArray:ks_ withOrgBouncycastleMathEcLongArray:[((OrgBouncycastleMathEcLongArray *) nil_chk(x_)) modSquareWithInt:m_ withIntArray:ks_]];
 }
 
+
+#line 747
 - (OrgBouncycastleMathEcECFieldElement *)squareMinusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                            withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
+  
+#line 749
   return [self squarePlusProductWithOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y];
 }
 
+
+#line 752
 - (OrgBouncycastleMathEcECFieldElement *)squarePlusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                           withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
   OrgBouncycastleMathEcLongArray *ax = self->x_, *xx = ((OrgBouncycastleMathEcECFieldElement_F2m *) nil_chk(((OrgBouncycastleMathEcECFieldElement_F2m *) check_class_cast(x, [OrgBouncycastleMathEcECFieldElement_F2m class]))))->x_, *yx = ((OrgBouncycastleMathEcECFieldElement_F2m *) nil_chk(((OrgBouncycastleMathEcECFieldElement_F2m *) check_class_cast(y, [OrgBouncycastleMathEcECFieldElement_F2m class]))))->x_;
+  
+#line 756
   OrgBouncycastleMathEcLongArray *aa = [((OrgBouncycastleMathEcLongArray *) nil_chk(ax)) squareWithInt:m_ withIntArray:ks_];
   OrgBouncycastleMathEcLongArray *xy = [((OrgBouncycastleMathEcLongArray *) nil_chk(xx)) multiplyWithOrgBouncycastleMathEcLongArray:yx withInt:m_ withIntArray:ks_];
+  
+#line 759
   if (aa == ax) {
+    
+#line 761
     aa = (OrgBouncycastleMathEcLongArray *) check_class_cast([((OrgBouncycastleMathEcLongArray *) nil_chk(aa)) clone], [OrgBouncycastleMathEcLongArray class]);
   }
+  
+#line 764
   [((OrgBouncycastleMathEcLongArray *) nil_chk(aa)) addShiftedByWordsWithOrgBouncycastleMathEcLongArray:xy withInt:0];
   [aa reduceWithInt:m_ withIntArray:ks_];
+  
+#line 767
   return [[OrgBouncycastleMathEcECFieldElement_F2m alloc] initWithInt:m_ withIntArray:ks_ withOrgBouncycastleMathEcLongArray:aa];
 }
 
+
+#line 770
 - (OrgBouncycastleMathEcECFieldElement *)invert {
+  
+#line 772
   return [[OrgBouncycastleMathEcECFieldElement_F2m alloc] initWithInt:self->m_ withIntArray:self->ks_ withOrgBouncycastleMathEcLongArray:[((OrgBouncycastleMathEcLongArray *) nil_chk(self->x_)) modInverseWithInt:m_ withIntArray:ks_]];
 }
 
+
+#line 775
 - (OrgBouncycastleMathEcECFieldElement *)sqrt {
+  
+#line 777
   OrgBouncycastleMathEcLongArray *x1 = self->x_;
   if ([((OrgBouncycastleMathEcLongArray *) nil_chk(x1)) isOne] || [x1 isZero]) {
+    
+#line 780
     return self;
   }
+  
+#line 783
   OrgBouncycastleMathEcLongArray *x2 = [x1 modSquareNWithInt:m_ - 1 withInt:m_ withIntArray:ks_];
   return [[OrgBouncycastleMathEcECFieldElement_F2m alloc] initWithInt:m_ withIntArray:ks_ withOrgBouncycastleMathEcLongArray:x2];
 }
 
+
+#line 795
 - (jint)getRepresentation {
+  
+#line 797
   return self->representation_;
 }
 
+
+#line 804
 - (jint)getM {
+  
+#line 806
   return self->m_;
 }
 
+
+#line 817
 - (jint)getK1 {
+  
+#line 819
   return IOSIntArray_Get(nil_chk(self->ks_), 0);
 }
 
+
+#line 828
 - (jint)getK2 {
+  
+#line 830
   return ((IOSIntArray *) nil_chk(self->ks_))->size_ >= 2 ? IOSIntArray_Get(self->ks_, 1) : 0;
 }
 
+
+#line 839
 - (jint)getK3 {
+  
+#line 841
   return ((IOSIntArray *) nil_chk(self->ks_))->size_ >= 3 ? IOSIntArray_Get(self->ks_, 2) : 0;
 }
 
 - (jboolean)isEqual:(id)anObject {
+  
+#line 846
   if (anObject == self) {
+    
+#line 848
     return YES;
   }
+  
+#line 851
   if (!([anObject isKindOfClass:[OrgBouncycastleMathEcECFieldElement_F2m class]])) {
+    
+#line 853
     return NO;
   }
+  
+#line 856
   OrgBouncycastleMathEcECFieldElement_F2m *b = (OrgBouncycastleMathEcECFieldElement_F2m *) check_class_cast(anObject, [OrgBouncycastleMathEcECFieldElement_F2m class]);
-  return ((self->m_ == ((OrgBouncycastleMathEcECFieldElement_F2m *) nil_chk(b))->m_) && (self->representation_ == b->representation_) && OrgBouncycastleUtilArrays_areEqualWithIntArray_withIntArray_(self->ks_, b->ks_) && ([((OrgBouncycastleMathEcLongArray *) nil_chk(self->x_)) isEqual:b->x_]));
+  
+#line 858
+  return ((self->m_ == ((OrgBouncycastleMathEcECFieldElement_F2m *) nil_chk(b))->m_) &&
+#line 859
+  (self->representation_ == b->representation_) && OrgBouncycastleUtilArrays_areEqualWithIntArray_withIntArray_(
+#line 860
+  self->ks_, b->ks_) &&
+#line 861
+  ([((OrgBouncycastleMathEcLongArray *) nil_chk(self->x_)) isEqual:b->x_]));
 }
 
 - (NSUInteger)hash {
+  
+#line 866
   return ((jint) [((OrgBouncycastleMathEcLongArray *) nil_chk(x_)) hash]) ^ m_ ^ OrgBouncycastleUtilArrays_hashCodeWithIntArray_(ks_);
 }
 
@@ -658,15 +1106,29 @@ withOrgBouncycastleMathEcLongArray:(OrgBouncycastleMathEcLongArray *)x {
 
 void OrgBouncycastleMathEcECFieldElement_F2m_checkFieldElementsWithOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECFieldElement *a, OrgBouncycastleMathEcECFieldElement *b) {
   OrgBouncycastleMathEcECFieldElement_F2m_init();
+  
+#line 651
   if ((!([a isKindOfClass:[OrgBouncycastleMathEcECFieldElement_F2m class]])) || (!([b isKindOfClass:[OrgBouncycastleMathEcECFieldElement_F2m class]]))) {
+    
+#line 653
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Field elements are not both instances of ECFieldElement.F2m"];
   }
+  
+#line 657
   OrgBouncycastleMathEcECFieldElement_F2m *aF2m = (OrgBouncycastleMathEcECFieldElement_F2m *) check_class_cast(a, [OrgBouncycastleMathEcECFieldElement_F2m class]);
   OrgBouncycastleMathEcECFieldElement_F2m *bF2m = (OrgBouncycastleMathEcECFieldElement_F2m *) check_class_cast(b, [OrgBouncycastleMathEcECFieldElement_F2m class]);
+  
+#line 660
   if (((OrgBouncycastleMathEcECFieldElement_F2m *) nil_chk(aF2m))->representation_ != ((OrgBouncycastleMathEcECFieldElement_F2m *) nil_chk(bF2m))->representation_) {
+    
+#line 663
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"One of the F2m field elements has incorrect representation"];
   }
+  
+#line 666
   if ((aF2m->m_ != bF2m->m_) || !OrgBouncycastleUtilArrays_areEqualWithIntArray_withIntArray_(aF2m->ks_, bF2m->ks_)) {
+    
+#line 668
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Field elements are not elements of the same field F2m"];
   }
 }

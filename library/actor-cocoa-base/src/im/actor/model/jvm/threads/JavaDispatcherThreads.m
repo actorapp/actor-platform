@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/threads/JavaDispatcherThreads.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/threads/JavaDispatcherThreads.java"
+
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorTime.h"
@@ -42,22 +44,40 @@ J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaDispatcherThreads_DispatcherThread
 
 BOOL ImActorModelJvmThreadsJavaDispatcherThreads_initialized = NO;
 
+
+#line 19
 @implementation ImActorModelJvmThreadsJavaDispatcherThreads
 
 JavaUtilConcurrentAtomicAtomicInteger * ImActorModelJvmThreadsJavaDispatcherThreads_INDEX_;
 
+
+#line 43
 - (instancetype)initWithNSString:(NSString *)name
                          withInt:(jint)count
         withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
      withDKAbstractDispatchQueue:(DKAbstractDispatchQueue *)queue
                   withDKDispatch:(id<DKDispatch>)dispatch
                      withBoolean:(jboolean)createThreads {
-  if (self = [super initWithDKAbstractDispatchQueue:queue withDKDispatch:dispatch]) {
-    isClosed_ = NO;
+  if (self =
+#line 44
+  [super initWithDKAbstractDispatchQueue:queue withDKDispatch:dispatch]) {
+    isClosed_ =
+#line 28
+    NO;
+    
+#line 46
     self->id__ = [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(ImActorModelJvmThreadsJavaDispatcherThreads_INDEX_)) getAndIncrement];
+    
+#line 47
     self->name_ = name;
+    
+#line 48
     self->count_ = count;
+    
+#line 49
     self->priority_ = priority;
+    
+#line 51
     if (createThreads) {
       [self startPool];
     }
@@ -65,7 +85,11 @@ JavaUtilConcurrentAtomicAtomicInteger * ImActorModelJvmThreadsJavaDispatcherThre
   return self;
 }
 
+
+#line 56
 - (void)startPool {
+  
+#line 57
   if (self->threads_ != nil) {
     return;
   }
@@ -89,21 +113,33 @@ JavaUtilConcurrentAtomicAtomicInteger * ImActorModelJvmThreadsJavaDispatcherThre
   }
 }
 
+
+#line 83
 - (void)close {
+  
+#line 84
   isClosed_ = YES;
   [self notifyDispatcher];
 }
 
+
+#line 92
 - (void)notifyDispatcher {
+  
+#line 93
   if (threads_ != nil) {
     @synchronized(threads_) {
       [threads_ notifyAll];
       {
-        IOSObjectArray *a__ = threads_;
+        IOSObjectArray *a__ =
+#line 96
+        threads_;
         JavaLangThread * const *b__ = a__->buffer_;
         JavaLangThread * const *e__ = b__ + a__->size_;
         while (b__ < e__) {
           JavaLangThread *thread = *b__++;
+          
+#line 97
           [((ImActorModelJvmThreadsJavaDispatcherThreads_DispatcherThread *) nil_chk(((ImActorModelJvmThreadsJavaDispatcherThreads_DispatcherThread *) check_class_cast(thread, [ImActorModelJvmThreadsJavaDispatcherThreads_DispatcherThread class])))) setChangedWithBoolean:YES];
         }
       }
@@ -123,7 +159,9 @@ JavaUtilConcurrentAtomicAtomicInteger * ImActorModelJvmThreadsJavaDispatcherThre
 
 + (void)initialize {
   if (self == [ImActorModelJvmThreadsJavaDispatcherThreads class]) {
-    ImActorModelJvmThreadsJavaDispatcherThreads_INDEX_ = [[JavaUtilConcurrentAtomicAtomicInteger alloc] initWithInt:1];
+    ImActorModelJvmThreadsJavaDispatcherThreads_INDEX_ =
+#line 21
+    [[JavaUtilConcurrentAtomicAtomicInteger alloc] initWithInt:1];
     J2OBJC_SET_INITIALIZED(ImActorModelJvmThreadsJavaDispatcherThreads)
   }
 }
@@ -132,48 +170,78 @@ JavaUtilConcurrentAtomicAtomicInteger * ImActorModelJvmThreadsJavaDispatcherThre
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaDispatcherThreads)
 
+
+#line 106
 @implementation ImActorModelJvmThreadsJavaDispatcherThreads_DispatcherThread
 
+
+#line 110
 - (jboolean)isChanged {
+  
+#line 111
   return isChanged__;
 }
 
+
+#line 114
 - (void)setChangedWithBoolean:(jboolean)isChanged {
+  
+#line 115
   self->isChanged__ = isChanged;
 }
 
+
+#line 119
 - (void)run {
   while (!this$0_->isClosed_) {
     jlong time = DKActorTime_currentTime();
+    
+#line 123
     @synchronized(this$0_->threads_) {
       isChanged__ = NO;
     }
+    
+#line 127
     DKDispatchResult *action = [((DKAbstractDispatchQueue *) nil_chk([this$0_ getQueue])) dispatchWithLong:time];
+    
+#line 129
     if (![((DKDispatchResult *) nil_chk(action)) isResult]) {
       if (isChanged__) {
         continue;
       }
+      
+#line 134
       @synchronized(this$0_->threads_) {
         jlong delay = [action getDelay];
         [action recycle];
+        
+#line 138
         @try {
           if (delay > 0) {
             [((IOSObjectArray *) nil_chk(this$0_->threads_)) waitWithLong:delay];
           }
           continue;
         }
-        @catch (JavaLangInterruptedException *e) {
+        @catch (
+#line 143
+        JavaLangInterruptedException *e) {
           [((JavaLangInterruptedException *) nil_chk(e)) printStackTrace];
           return;
         }
       }
     }
+    
+#line 150
     @try {
       id actiondData = (id) [action getRes];
       [action recycle];
       [this$0_ dispatchMessageWithId:actiondData];
     }
-    @catch (JavaLangThrowable *t) {
+    @catch (
+#line 154
+    JavaLangThrowable *t) {
+      
+#line 158
       [((JavaLangThrowable *) nil_chk(t)) printStackTrace];
     }
   }
@@ -182,7 +250,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaDispatcherThreads)
 - (instancetype)initWithImActorModelJvmThreadsJavaDispatcherThreads:(ImActorModelJvmThreadsJavaDispatcherThreads *)outer$ {
   this$0_ = outer$;
   if (self = [super init]) {
-    isChanged__ = NO;
+    isChanged__ =
+#line 108
+    NO;
   }
   return self;
 }

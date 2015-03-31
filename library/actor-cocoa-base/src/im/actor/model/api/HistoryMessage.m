@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/HistoryMessage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/HistoryMessage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -26,47 +28,83 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiHistoryMessage, message_, ImActorModelApiMessage *)
 J2OBJC_FIELD_SETTER(ImActorModelApiHistoryMessage, state_, ImActorModelApiMessageStateEnum *)
 
+
+#line 19
 @implementation ImActorModelApiHistoryMessage
 
+
+#line 27
 - (instancetype)initWithInt:(jint)senderUid
                    withLong:(jlong)rid
                    withLong:(jlong)date
  withImActorModelApiMessage:(ImActorModelApiMessage *)message
 withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   if (self = [super init]) {
+    
+#line 28
     self->senderUid_ = senderUid;
+    
+#line 29
     self->rid_ = rid;
+    
+#line 30
     self->date_ = date;
+    
+#line 31
     self->message_ = message;
+    
+#line 32
     self->state_ = state;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getSenderUid {
+  
+#line 40
   return self->senderUid_;
 }
 
+
+#line 43
 - (jlong)getRid {
+  
+#line 44
   return self->rid_;
 }
 
+
+#line 47
 - (jlong)getDate {
+  
+#line 48
   return self->date_;
 }
 
+
+#line 51
 - (ImActorModelApiMessage *)getMessage {
+  
+#line 52
   return self->message_;
 }
 
+
+#line 55
 - (ImActorModelApiMessageStateEnum *)getState {
+  
+#line 56
   return self->state_;
 }
 
+
+#line 60
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->senderUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:2];
@@ -78,13 +116,19 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   }
 }
 
+
+#line 72
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 73
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->senderUid_];
   [writer writeLongWithInt:2 withLong:self->rid_];
   [writer writeLongWithInt:3 withLong:self->date_];
   if (self->message_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
+  
+#line 80
   [writer writeBytesWithInt:5 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
   if (self->state_ != nil) {
     [writer writeIntWithInt:6 withInt:[self->state_ getValue]];
@@ -92,6 +136,8 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
 }
 
 - (NSString *)description {
+  
+#line 88
   NSString *res = @"struct HistoryMessage{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"senderUid=", self->senderUid_));
   res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));

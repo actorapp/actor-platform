@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/messages/TaskError.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/tasks/messages/TaskError.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/tasks/messages/TaskError.h"
 #include "java/lang/Throwable.h"
@@ -16,27 +18,47 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsTasksMessagesTaskError, throwable_, JavaLangThrowable *)
 
+
+#line 8
 @implementation ImActorModelDroidkitActorsTasksMessagesTaskError
 
+
+#line 12
 - (instancetype)initWithInt:(jint)requestId
       withJavaLangThrowable:(JavaLangThrowable *)throwable {
   if (self = [super init]) {
+    
+#line 13
     self->requestId_ = requestId;
+    
+#line 14
     self->throwable_ = throwable;
   }
   return self;
 }
 
+
+#line 17
 - (jint)getRequestId {
+  
+#line 18
   return requestId_;
 }
 
+
+#line 21
 - (JavaLangThrowable *)getThrowable {
+  
+#line 22
   return throwable_;
 }
 
 - (NSString *)description {
-  return JreStrcat("$I$@C", @"TaskError{requestId=", requestId_, @", throwable=", throwable_, '}');
+  return JreStrcat("$I$@C", @"TaskError{requestId=",
+#line 28
+  requestId_, @", throwable=",
+#line 29
+  throwable_, '}');
 }
 
 - (void)copyAllFieldsTo:(ImActorModelDroidkitActorsTasksMessagesTaskError *)other {

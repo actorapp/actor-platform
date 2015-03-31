@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PendingMessage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PendingMessage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,43 +30,71 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessage, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessage, content_, AMAbsContent *)
 
+
+#line 15
 @implementation ImActorModelModulesMessagesEntityPendingMessage
 
 + (ImActorModelModulesMessagesEntityPendingMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesMessagesEntityPendingMessage_fromBytesWithByteArray_(data);
 }
 
+
+#line 26
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
               withAMAbsContent:(AMAbsContent *)content {
   if (self = [super init]) {
+    
+#line 27
     self->peer_ = peer;
+    
+#line 28
     self->rid_ = rid;
+    
+#line 29
     self->content_ = content;
   }
   return self;
 }
 
+
+#line 32
 - (instancetype)init {
   return [super init];
 }
 
 - (AMPeer *)getPeer {
+  
+#line 37
   return peer_;
 }
 
+
+#line 40
 - (AMAbsContent *)getContent {
+  
+#line 41
   return content_;
 }
 
+
+#line 44
 - (jlong)getRid {
+  
+#line 45
   return rid_;
 }
 
+
+#line 48
 - (jboolean)isError {
+  
+#line 49
   return isError__;
 }
 
+
+#line 53
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   rid_ = [values getLongWithInt:2];
@@ -72,7 +102,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessage, content_, A
   isError__ = [values getBoolWithInt:4 withBoolean:NO];
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:rid_];
   [writer writeBytesWithInt:3 withByteArray:[((AMAbsContent *) nil_chk(content_)) toByteArray]];
@@ -91,6 +125,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessage, content_, A
 
 ImActorModelModulesMessagesEntityPendingMessage *ImActorModelModulesMessagesEntityPendingMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityPendingMessage_init();
+  
+#line 18
   return ((ImActorModelModulesMessagesEntityPendingMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityPendingMessage alloc] init], data));
 }
 

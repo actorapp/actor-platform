@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcOk.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcOk.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -11,44 +13,72 @@
 #include "im/actor/model/network/mtp/entity/rpc/RpcOk.h"
 #include "java/io/IOException.h"
 
+
+#line 9
 @implementation MTRpcOk
 
+
+#line 16
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 17
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 20
 - (instancetype)initWithInt:(jint)responseType
               withByteArray:(IOSByteArray *)payload {
   if (self = [super init]) {
     self->responseType_ = responseType;
+    
+#line 22
     self->payload_ = payload;
   }
   return self;
 }
 
+
+#line 25
 - (jint)getResponseType {
+  
+#line 26
   return responseType_;
 }
 
+
+#line 29
 - (IOSByteArray *)getPayload {
+  
+#line 30
   return payload_;
 }
 
+
+#line 34
 - (jbyte)getHeader {
   return MTRpcOk_HEADER;
 }
 
+
+#line 39
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 40
   [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:responseType_];
   [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
+
+#line 45
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   responseType_ = [((BSDataInput *) nil_chk(bs)) readInt];
   payload_ = [bs readProtoBytes];
 }
 
 - (NSString *)description {
+  
+#line 53
   return JreStrcat("$IC", @"RpcOk{", responseType_, ']');
 }
 

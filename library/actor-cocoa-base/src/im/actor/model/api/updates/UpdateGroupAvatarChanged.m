@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupAvatarChanged.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupAvatarChanged.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -26,51 +28,89 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImActorModelApiAvatar *)
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateGroupAvatarChanged
 
+
+#line 23
 + (ImActorModelApiUpdatesUpdateGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateGroupAvatarChanged_fromBytesWithByteArray_(data);
 }
 
+
+#line 33
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)uid
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
                    withLong:(jlong)date {
   if (self = [super init]) {
+    
+#line 34
     self->groupId_ = groupId;
+    
+#line 35
     self->rid_ = rid;
+    
+#line 36
     self->uid_ = uid;
+    
+#line 37
     self->avatar_ = avatar;
+    
+#line 38
     self->date_ = date;
   }
   return self;
 }
 
+
+#line 41
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getGroupId {
+  
+#line 46
   return self->groupId_;
 }
 
+
+#line 49
 - (jlong)getRid {
+  
+#line 50
   return self->rid_;
 }
 
+
+#line 53
 - (jint)getUid {
+  
+#line 54
   return self->uid_;
 }
 
+
+#line 57
 - (ImActorModelApiAvatar *)getAvatar {
+  
+#line 58
   return self->avatar_;
 }
 
+
+#line 61
 - (jlong)getDate {
+  
+#line 62
   return self->date_;
 }
 
+
+#line 66
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:5];
@@ -79,7 +119,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImA
   self->date_ = [values getLongWithInt:4];
 }
 
+
+#line 75
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 76
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:5 withLong:self->rid_];
   [writer writeIntWithInt:2 withInt:self->uid_];
@@ -101,6 +145,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImA
 }
 
 - (jint)getHeaderKey {
+  
+#line 99
   return ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER;
 }
 
@@ -117,6 +163,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImA
 
 ImActorModelApiUpdatesUpdateGroupAvatarChanged *ImActorModelApiUpdatesUpdateGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupAvatarChanged_init();
+  
+#line 24
   return ((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupAvatarChanged alloc] init], data));
 }
 

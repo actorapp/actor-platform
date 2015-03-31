@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/FileLocation.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/FileLocation.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/FileLocation.h"
@@ -17,35 +19,57 @@
 }
 @end
 
+
+#line 19
 @implementation ImActorModelApiFileLocation
 
+
+#line 24
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash {
   if (self = [super init]) {
+    
+#line 25
     self->fileId_ = fileId;
+    
+#line 26
     self->accessHash_ = accessHash;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (jlong)getFileId {
+  
+#line 34
   return self->fileId_;
 }
 
+
+#line 37
 - (jlong)getAccessHash {
+  
+#line 38
   return self->accessHash_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->fileId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
 }
 
+
+#line 48
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 49
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->fileId_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }

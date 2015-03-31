@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/PhoneToImport.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/PhoneToImport.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/PhoneToImport.h"
@@ -19,35 +21,57 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
 
+
+#line 19
 @implementation ImActorModelApiPhoneToImport
 
+
+#line 24
 - (instancetype)initWithLong:(jlong)phoneNumber
                 withNSString:(NSString *)name {
   if (self = [super init]) {
+    
+#line 25
     self->phoneNumber_ = phoneNumber;
+    
+#line 26
     self->name_ = name;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
 - (jlong)getPhoneNumber {
+  
+#line 34
   return self->phoneNumber_;
 }
 
+
+#line 37
 - (NSString *)getName {
+  
+#line 38
   return self->name_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->phoneNumber_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->name_ = [values optStringWithInt:2];
 }
 
+
+#line 48
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 49
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->phoneNumber_];
   if (self->name_ != nil) {
     [writer writeStringWithInt:2 withNSString:self->name_];

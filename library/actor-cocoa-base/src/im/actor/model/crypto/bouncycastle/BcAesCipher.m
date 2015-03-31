@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/bouncycastle/BcAesCipher.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/bouncycastle/BcAesCipher.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/bouncycastle/BcAesCipher.h"
@@ -33,64 +35,106 @@ J2OBJC_FIELD_SETTER(BCBcAesCipher, params_, id<OrgBouncycastleCryptoCipherParame
 J2OBJC_FIELD_SETTER(BCBcAesCipher, encryptionCipher_, OrgBouncycastleCryptoBufferedBlockCipher *)
 J2OBJC_FIELD_SETTER(BCBcAesCipher, decryptionCipher_, OrgBouncycastleCryptoBufferedBlockCipher *)
 
+
+#line 18
 @implementation BCBcAesCipher
 
+
+#line 27
 - (instancetype)initWithByteArray:(IOSByteArray *)key
                     withByteArray:(IOSByteArray *)iv {
   if (self = [super init]) {
+    
+#line 28
     self->key_ = key;
+    
+#line 29
     self->iv_ = iv;
+    
+#line 30
     self->params_ = [[OrgBouncycastleCryptoParamsParametersWithIV alloc] initWithOrgBouncycastleCryptoCipherParameters:[[OrgBouncycastleCryptoParamsKeyParameter alloc] initWithByteArray:key] withByteArray:iv];
   }
   return self;
 }
 
+
+#line 33
 - (IOSByteArray *)getKey {
+  
+#line 34
   return key_;
 }
 
+
+#line 37
 - (IOSByteArray *)getIv {
+  
+#line 38
   return iv_;
 }
 
+
+#line 42
 - (IOSByteArray *)encryptWithByteArray:(IOSByteArray *)source {
   @synchronized(self) {
+    
+#line 43
     if (encryptionCipher_ == nil) {
-      encryptionCipher_ = [[OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher alloc] initWithOrgBouncycastleCryptoBlockCipher:[[OrgBouncycastleCryptoModesCBCBlockCipher alloc] initWithOrgBouncycastleCryptoBlockCipher:[[OrgBouncycastleCryptoEnginesAESFastEngine alloc] init]] withOrgBouncycastleCryptoPaddingsBlockCipherPadding:[[OrgBouncycastleCryptoPaddingsPKCS7Padding alloc] init]];
+      encryptionCipher_ = [[OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher alloc] initWithOrgBouncycastleCryptoBlockCipher:[[OrgBouncycastleCryptoModesCBCBlockCipher alloc] initWithOrgBouncycastleCryptoBlockCipher:[[OrgBouncycastleCryptoEnginesAESFastEngine alloc] init]] withOrgBouncycastleCryptoPaddingsBlockCipherPadding:
+#line 45
+      [[OrgBouncycastleCryptoPaddingsPKCS7Padding alloc] init]];
       [encryptionCipher_ init__WithBoolean:YES withOrgBouncycastleCryptoCipherParameters:params_];
     }
+    
+#line 49
     [((OrgBouncycastleCryptoBufferedBlockCipher *) nil_chk(encryptionCipher_)) reset];
     IOSByteArray *buf = [IOSByteArray newArrayWithLength:[encryptionCipher_ getOutputSizeWithInt:((IOSByteArray *) nil_chk(source))->size_]];
     jint len = [encryptionCipher_ processBytesWithByteArray:source withInt:0 withInt:source->size_ withByteArray:buf withInt:0];
     @try {
       len += [encryptionCipher_ doFinalWithByteArray:buf withInt:len];
     }
-    @catch (OrgBouncycastleCryptoInvalidCipherTextException *e) {
+    @catch (
+#line 54
+    OrgBouncycastleCryptoInvalidCipherTextException *e) {
       [((OrgBouncycastleCryptoInvalidCipherTextException *) nil_chk(e)) printStackTrace];
       return nil;
     }
+    
+#line 59
     IOSByteArray *res = [IOSByteArray newArrayWithLength:len];
     JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(buf, 0, res, 0, len);
     return res;
   }
 }
 
+
+#line 65
 - (IOSByteArray *)decryptWithByteArray:(IOSByteArray *)source {
   @synchronized(self) {
+    
+#line 66
     if (decryptionCipher_ == nil) {
-      decryptionCipher_ = [[OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher alloc] initWithOrgBouncycastleCryptoBlockCipher:[[OrgBouncycastleCryptoModesCBCBlockCipher alloc] initWithOrgBouncycastleCryptoBlockCipher:[[OrgBouncycastleCryptoEnginesAESFastEngine alloc] init]] withOrgBouncycastleCryptoPaddingsBlockCipherPadding:[[OrgBouncycastleCryptoPaddingsPKCS7Padding alloc] init]];
+      decryptionCipher_ = [[OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher alloc] initWithOrgBouncycastleCryptoBlockCipher:[[OrgBouncycastleCryptoModesCBCBlockCipher alloc] initWithOrgBouncycastleCryptoBlockCipher:[[OrgBouncycastleCryptoEnginesAESFastEngine alloc] init]] withOrgBouncycastleCryptoPaddingsBlockCipherPadding:
+#line 68
+      [[OrgBouncycastleCryptoPaddingsPKCS7Padding alloc] init]];
       [decryptionCipher_ init__WithBoolean:NO withOrgBouncycastleCryptoCipherParameters:params_];
     }
+    
+#line 72
     [((OrgBouncycastleCryptoBufferedBlockCipher *) nil_chk(decryptionCipher_)) reset];
     IOSByteArray *buf = [IOSByteArray newArrayWithLength:[decryptionCipher_ getOutputSizeWithInt:((IOSByteArray *) nil_chk(source))->size_]];
     jint len = [decryptionCipher_ processBytesWithByteArray:source withInt:0 withInt:source->size_ withByteArray:buf withInt:0];
     @try {
       len += [decryptionCipher_ doFinalWithByteArray:buf withInt:len];
     }
-    @catch (OrgBouncycastleCryptoInvalidCipherTextException *e) {
+    @catch (
+#line 77
+    OrgBouncycastleCryptoInvalidCipherTextException *e) {
       [((OrgBouncycastleCryptoInvalidCipherTextException *) nil_chk(e)) printStackTrace];
       return nil;
     }
+    
+#line 82
     IOSByteArray *res = [IOSByteArray newArrayWithLength:len];
     JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(buf, 0, res, 0, len);
     return res;

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/IPAddress.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/IPAddress.java"
+
 #include "J2ObjC_source.h"
 #include "java/lang/Integer.h"
 #include "java/lang/NumberFormatException.h"
@@ -16,33 +18,49 @@ __attribute__((unused)) static jboolean OrgBouncycastleUtilIPAddress_isMaskValue
                             withInt:(jint)size;
 @end
 
+
+#line 3
 @implementation OrgBouncycastleUtilIPAddress
 
+
+#line 12
 + (jboolean)isValidWithNSString:(NSString *)address {
   return OrgBouncycastleUtilIPAddress_isValidWithNSString_(address);
 }
 
+
+#line 25
 + (jboolean)isValidWithNetMaskWithNSString:(NSString *)address {
   return OrgBouncycastleUtilIPAddress_isValidWithNetMaskWithNSString_(address);
 }
 
+
+#line 38
 + (jboolean)isValidIPv4WithNSString:(NSString *)address {
   return OrgBouncycastleUtilIPAddress_isValidIPv4WithNSString_(address);
 }
 
+
+#line 79
 + (jboolean)isValidIPv4WithNetmaskWithNSString:(NSString *)address {
   return OrgBouncycastleUtilIPAddress_isValidIPv4WithNetmaskWithNSString_(address);
 }
 
+
+#line 89
 + (jboolean)isValidIPv6WithNetmaskWithNSString:(NSString *)address {
   return OrgBouncycastleUtilIPAddress_isValidIPv6WithNetmaskWithNSString_(address);
 }
 
+
+#line 99
 + (jboolean)isMaskValueWithNSString:(NSString *)component
                             withInt:(jint)size {
   return OrgBouncycastleUtilIPAddress_isMaskValueWithNSString_withInt_(component, size);
 }
 
+
+#line 120
 + (jboolean)isValidIPv6WithNSString:(NSString *)address {
   return OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_(address);
 }
@@ -55,105 +73,191 @@ __attribute__((unused)) static jboolean OrgBouncycastleUtilIPAddress_isMaskValue
 
 jboolean OrgBouncycastleUtilIPAddress_isValidWithNSString_(NSString *address) {
   OrgBouncycastleUtilIPAddress_init();
+  
+#line 15
   return OrgBouncycastleUtilIPAddress_isValidIPv4WithNSString_(address) || OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_(address);
 }
 
 jboolean OrgBouncycastleUtilIPAddress_isValidWithNetMaskWithNSString_(NSString *address) {
   OrgBouncycastleUtilIPAddress_init();
+  
+#line 28
   return OrgBouncycastleUtilIPAddress_isValidIPv4WithNetmaskWithNSString_(address) || OrgBouncycastleUtilIPAddress_isValidIPv6WithNetmaskWithNSString_(address);
 }
 
 jboolean OrgBouncycastleUtilIPAddress_isValidIPv4WithNSString_(NSString *address) {
   OrgBouncycastleUtilIPAddress_init();
+  
+#line 41
   if (((jint) [((NSString *) nil_chk(address)) length]) == 0) {
+    
+#line 43
     return NO;
   }
+  
+#line 46
   jint octet;
   jint octets = 0;
+  
+#line 49
   NSString *temp = JreStrcat("$C", address, '.');
+  
+#line 51
   jint pos;
   jint start = 0;
-  while (start < ((jint) [temp length]) && (pos = [temp indexOf:'.' fromIndex:start]) > start) {
+  while (start < ((jint) [temp length]) &&
+#line 54
+  (pos = [temp indexOf:'.' fromIndex:start]) > start) {
+    
+#line 56
     if (octets == 4) {
+      
+#line 58
       return NO;
     }
     @try {
+      
+#line 62
       octet = JavaLangInteger_parseIntWithNSString_([temp substring:start endIndex:pos]);
     }
     @catch (JavaLangNumberFormatException *ex) {
+      
+#line 66
       return NO;
     }
     if (octet < 0 || octet > 255) {
+      
+#line 70
       return NO;
     }
     start = pos + 1;
     octets++;
   }
+  
+#line 76
   return octets == 4;
 }
 
 jboolean OrgBouncycastleUtilIPAddress_isValidIPv4WithNetmaskWithNSString_(NSString *address) {
   OrgBouncycastleUtilIPAddress_init();
+  
+#line 82
   jint index = [((NSString *) nil_chk(address)) indexOfString:@"/"];
   NSString *mask = [address substring:index + 1];
-  return (index > 0) && OrgBouncycastleUtilIPAddress_isValidIPv4WithNSString_([address substring:0 endIndex:index]) && (OrgBouncycastleUtilIPAddress_isValidIPv4WithNSString_(mask) || OrgBouncycastleUtilIPAddress_isMaskValueWithNSString_withInt_(mask, 32));
+  
+#line 85
+  return (index > 0) && OrgBouncycastleUtilIPAddress_isValidIPv4WithNSString_([address substring:0 endIndex:index]) &&
+#line 86
+  (OrgBouncycastleUtilIPAddress_isValidIPv4WithNSString_(mask) || OrgBouncycastleUtilIPAddress_isMaskValueWithNSString_withInt_(mask, 32));
 }
 
 jboolean OrgBouncycastleUtilIPAddress_isValidIPv6WithNetmaskWithNSString_(NSString *address) {
   OrgBouncycastleUtilIPAddress_init();
+  
+#line 92
   jint index = [((NSString *) nil_chk(address)) indexOfString:@"/"];
   NSString *mask = [address substring:index + 1];
-  return (index > 0) && (OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_([address substring:0 endIndex:index]) && (OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_(mask) || OrgBouncycastleUtilIPAddress_isMaskValueWithNSString_withInt_(mask, 128)));
+  
+#line 95
+  return (index > 0) && (OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_([address substring:0 endIndex:index]) &&
+#line 96
+  (OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_(mask) || OrgBouncycastleUtilIPAddress_isMaskValueWithNSString_withInt_(mask, 128)));
 }
 
 jboolean OrgBouncycastleUtilIPAddress_isMaskValueWithNSString_withInt_(NSString *component, jint size) {
   OrgBouncycastleUtilIPAddress_init();
+  
+#line 101
   @try {
+    
+#line 103
     jint value = JavaLangInteger_parseIntWithNSString_(component);
+    
+#line 105
     return value >= 0 && value <= size;
   }
   @catch (JavaLangNumberFormatException *e) {
+    
+#line 109
     return NO;
   }
 }
 
 jboolean OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_(NSString *address) {
   OrgBouncycastleUtilIPAddress_init();
+  
+#line 123
   if (((jint) [((NSString *) nil_chk(address)) length]) == 0) {
+    
+#line 125
     return NO;
   }
+  
+#line 128
   jint octet;
   jint octets = 0;
+  
+#line 131
   NSString *temp = JreStrcat("$C", address, ':');
   jboolean doubleColonFound = NO;
   jint pos;
   jint start = 0;
-  while (start < ((jint) [temp length]) && (pos = [temp indexOf:':' fromIndex:start]) >= start) {
+  while (start < ((jint) [temp length]) &&
+#line 136
+  (pos = [temp indexOf:':' fromIndex:start]) >= start) {
+    
+#line 138
     if (octets == 8) {
+      
+#line 140
       return NO;
     }
+    
+#line 143
     if (start != pos) {
+      
+#line 145
       NSString *value = [temp substring:start endIndex:pos];
+      
+#line 147
       if (pos == (((jint) [temp length]) - 1) && [((NSString *) nil_chk(value)) indexOf:'.'] > 0) {
+        
+#line 149
         if (!OrgBouncycastleUtilIPAddress_isValidIPv4WithNSString_(value)) {
+          
+#line 151
           return NO;
         }
+        
+#line 154
         octets++;
       }
       else {
+        
+#line 158
         @try {
+          
+#line 160
           octet = JavaLangInteger_parseIntWithNSString_withInt_([temp substring:start endIndex:pos], 16);
         }
         @catch (JavaLangNumberFormatException *ex) {
+          
+#line 164
           return NO;
         }
         if (octet < 0 || octet > (jint) 0xffff) {
+          
+#line 168
           return NO;
         }
       }
     }
     else {
+      
+#line 174
       if (pos != 1 && pos != ((jint) [temp length]) - 1 && doubleColonFound) {
+        
+#line 176
         return NO;
       }
       doubleColonFound = YES;
@@ -161,6 +265,8 @@ jboolean OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_(NSString *address
     start = pos + 1;
     octets++;
   }
+  
+#line 184
   return octets == 8 || doubleColonFound;
 }
 

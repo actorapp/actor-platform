@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestLoadDialogs.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestLoadDialogs.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -20,39 +22,63 @@
 }
 @end
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestLoadDialogs
 
+
+#line 23
 + (ImActorModelApiRpcRequestLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(data);
 }
 
+
+#line 30
 - (instancetype)initWithLong:(jlong)startDate
                      withInt:(jint)limit {
   if (self = [super init]) {
+    
+#line 31
     self->startDate_ = startDate;
+    
+#line 32
     self->limit_ = limit;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (jlong)getStartDate {
+  
+#line 40
   return self->startDate_;
 }
 
+
+#line 43
 - (jint)getLimit {
+  
+#line 44
   return self->limit_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->startDate_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->limit_ = [values getIntWithInt:2];
 }
 
+
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->startDate_];
   [writer writeIntWithInt:2 withInt:self->limit_];
 }
@@ -66,6 +92,8 @@
 }
 
 - (jint)getHeaderKey {
+  
+#line 70
   return ImActorModelApiRpcRequestLoadDialogs_HEADER;
 }
 
@@ -79,6 +107,8 @@
 
 ImActorModelApiRpcRequestLoadDialogs *ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestLoadDialogs_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestLoadDialogs *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestLoadDialogs alloc] init], data));
 }
 

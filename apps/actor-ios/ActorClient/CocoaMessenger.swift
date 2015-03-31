@@ -29,7 +29,7 @@ get{
         builder.setMainThreadProvider(CocoaMainThreadProvider())
         builder.setLocaleProvider(CocoaLocale())
         builder.setPhoneBookProvider(CocoaPhoneBookProvider())
-        builder.setCryptoProvider(BCBouncyCastleProvider())
+        builder.setCryptoProvider(CocoaCryptoProvider())
         builder.setFileSystemProvider(CocoaFileSystem())
         builder.setDispatcherProvider(DispatcherProvider())
         builder.setNotificationProvider(iOSNotificationProvider())

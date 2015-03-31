@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/DialogsHistoryActor.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/DialogsHistoryActor.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/rpc/RequestLoadDialogs.h"
 #include "im/actor/model/api/rpc/ResponseLoadDialogs.h"
@@ -49,21 +51,39 @@ __attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryAct
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor_$1, this$0_, ImActorModelModulesMessagesDialogsHistoryActor *)
 
+
+#line 15
 @implementation ImActorModelModulesMessagesDialogsHistoryActor
 
 NSString * ImActorModelModulesMessagesDialogsHistoryActor_TAG_ = @"DialogsHistoryActor";
-NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ = @"dialogs_history_date";
-NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ = @"dialogs_history_loaded";
-NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ = @"dialogs_history_inited";
+NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ = 
+#line 21
+@"dialogs_history_date";
+NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ = 
+#line 22
+@"dialogs_history_loaded";
+NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ = 
+#line 23
+@"dialogs_history_inited";
 
+
+#line 30
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  if (self = [super initWithImActorModelModulesModules:messenger]) {
-    isLoading_ = NO;
+  if (self =
+#line 31
+  [super initWithImActorModelModulesModules:messenger]) {
+    isLoading_ =
+#line 28
+    NO;
   }
   return self;
 }
 
+
+#line 35
 - (void)preStart {
+  
+#line 36
   historyMaxDate_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLong:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ withDefault:JavaLangLong_MAX_VALUE];
   historyLoaded_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ withDefault:NO];
   if (![((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ withDefault:NO]) {
@@ -71,24 +91,36 @@ NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ = @"d
   }
 }
 
+
+#line 43
 - (void)onLoadMore {
   ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(self);
 }
 
+
+#line 71
 - (void)onLoadedMoreWithInt:(jint)loaded
                    withLong:(jlong)maxLoadedDate {
   ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithInt_withLong_(self, loaded, maxLoadedDate);
 }
 
+
+#line 90
 - (void)onReceiveWithId:(id)message {
+  
+#line 91
   if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsHistoryActor_LoadMore class]]) {
     ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(self);
   }
-  else if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore class]]) {
+  else
+#line 93
+  if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore class]]) {
     ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *loaded = (ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *) check_class_cast(message, [ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore class]);
     ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithInt_withLong_(self, ((ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *) nil_chk(loaded))->loaded_, loaded->maxLoadedDate_);
   }
   else {
+    
+#line 97
     [self dropWithId:message];
   }
 }
@@ -103,6 +135,8 @@ NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ = @"d
 @end
 
 void ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(ImActorModelModulesMessagesDialogsHistoryActor *self) {
+  
+#line 44
   if (self->historyLoaded_) {
     return;
   }
@@ -110,27 +144,43 @@ void ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(ImActorModelModul
     return;
   }
   self->isLoading_ = YES;
+  
+#line 52
   AMLog_dWithNSString_withNSString_(ImActorModelModulesMessagesDialogsHistoryActor_TAG_, JreStrcat("$J", @"Loading history... after ", self->historyMaxDate_));
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestLoadDialogs alloc] initWithLong:self->historyMaxDate_ withInt:ImActorModelModulesMessagesDialogsHistoryActor_LIMIT] withAMRpcCallback:[[ImActorModelModulesMessagesDialogsHistoryActor_$1 alloc] initWithImActorModelModulesMessagesDialogsHistoryActor:self]];
+  
+#line 54
+  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestLoadDialogs alloc] initWithLong:self->historyMaxDate_ withInt:ImActorModelModulesMessagesDialogsHistoryActor_LIMIT] withAMRpcCallback:
+#line 55
+  [[ImActorModelModulesMessagesDialogsHistoryActor_$1 alloc] initWithImActorModelModulesMessagesDialogsHistoryActor:self]];
 }
 
 void ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithInt_withLong_(ImActorModelModulesMessagesDialogsHistoryActor *self, jint loaded, jlong maxLoadedDate) {
+  
+#line 72
   self->isLoading_ = NO;
+  
+#line 74
   if (loaded < ImActorModelModulesMessagesDialogsHistoryActor_LIMIT) {
     self->historyLoaded_ = YES;
   }
   else {
+    
+#line 77
     self->historyLoaded_ = NO;
     self->historyMaxDate_ = maxLoadedDate;
   }
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLong:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ withValue:maxLoadedDate];
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBool:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ withValue:self->historyLoaded_];
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBool:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ withValue:YES];
+  
+#line 84
   AMLog_dWithNSString_withNSString_(ImActorModelModulesMessagesDialogsHistoryActor_TAG_, JreStrcat("$J", @"History loaded, time = ", maxLoadedDate));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor)
 
+
+#line 101
 @implementation ImActorModelModulesMessagesDialogsHistoryActor_LoadMore
 
 - (instancetype)init {
@@ -141,12 +191,20 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor)
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_LoadMore)
 
+
+#line 105
 @implementation ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore
 
+
+#line 109
 - (instancetype)initWithInt:(jint)loaded
                    withLong:(jlong)maxLoadedDate {
   if (self = [super init]) {
+    
+#line 110
     self->loaded_ = loaded;
+    
+#line 111
     self->maxLoadedDate_ = maxLoadedDate;
   }
   return self;
@@ -164,11 +222,19 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_
 
 @implementation ImActorModelModulesMessagesDialogsHistoryActor_$1
 
+
+#line 57
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseLoadDialogs *)response {
+  
+#line 60
   [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalDialogHistoryLoaded alloc] initWithImActorModelApiRpcResponseLoadDialogs:response]];
 }
 
+
+#line 64
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
+  
+#line 65
   [((AMRpcException *) nil_chk(e)) printStackTrace];
 }
 

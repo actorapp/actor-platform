@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditName.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditName.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -21,32 +23,50 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestEditName
 
+
+#line 23
 + (ImActorModelApiRpcRequestEditName *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestEditName_fromBytesWithByteArray_(data);
 }
 
+
+#line 29
 - (instancetype)initWithNSString:(NSString *)name {
   if (self = [super init]) {
+    
+#line 30
     self->name_ = name;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (NSString *)getName {
+  
+#line 38
   return self->name_;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->name_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
 }
 
+
+#line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 48
   if (self->name_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -61,6 +81,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
 }
 
 - (jint)getHeaderKey {
+  
+#line 64
   return ImActorModelApiRpcRequestEditName_HEADER;
 }
 
@@ -73,6 +95,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
 
 ImActorModelApiRpcRequestEditName *ImActorModelApiRpcRequestEditName_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditName_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestEditName *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestEditName alloc] init], data));
 }
 

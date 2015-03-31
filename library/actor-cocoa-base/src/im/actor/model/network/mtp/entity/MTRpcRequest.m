@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/MTRpcRequest.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/MTRpcRequest.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -11,12 +13,20 @@
 #include "im/actor/model/network/mtp/entity/MTRpcRequest.h"
 #include "java/io/IOException.h"
 
+
+#line 8
 @implementation MTMTRpcRequest
 
+
+#line 14
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return [super initWithBSDataInput:stream];
+  return
+#line 15
+  [super initWithBSDataInput:stream];
 }
 
+
+#line 18
 - (instancetype)initWithByteArray:(IOSByteArray *)payload {
   if (self = [super init]) {
     self->payload_ = payload;
@@ -24,23 +34,37 @@
   return self;
 }
 
+
+#line 22
 - (IOSByteArray *)getPayload {
+  
+#line 23
   return payload_;
 }
 
+
+#line 27
 - (jbyte)getHeader {
   return MTMTRpcRequest_HEADER;
 }
 
+
+#line 32
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
+  
+#line 33
   [((BSDataOutput *) nil_chk(bs)) writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
+
+#line 37
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   payload_ = [((BSDataInput *) nil_chk(bs)) readProtoBytes];
 }
 
 - (NSString *)description {
+  
+#line 43
   return @"RequestBox";
 }
 

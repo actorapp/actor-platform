@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/PreferenceApiStorage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/PreferenceApiStorage.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/modules/utils/PreferenceApiStorage.h"
@@ -15,19 +17,31 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsPreferenceApiStorage, preferencesStorage_, id<DKPreferencesStorage>)
 
+
+#line 9
 @implementation ImActorModelModulesUtilsPreferenceApiStorage
 
+
+#line 13
 - (instancetype)initWithDKPreferencesStorage:(id<DKPreferencesStorage>)preferencesStorage {
   if (self = [super init]) {
+    
+#line 14
     self->preferencesStorage_ = preferencesStorage;
   }
   return self;
 }
 
+
+#line 18
 - (jlong)getAuthKey {
+  
+#line 19
   return [((id<DKPreferencesStorage>) nil_chk(preferencesStorage_)) getLong:@"auth_id" withDefault:0];
 }
 
+
+#line 23
 - (void)saveAuthKeyWithLong:(jlong)key {
   [((id<DKPreferencesStorage>) nil_chk(preferencesStorage_)) putLong:@"auth_id" withValue:key];
 }

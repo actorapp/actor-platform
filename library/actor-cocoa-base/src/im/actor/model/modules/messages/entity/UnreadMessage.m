@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/UnreadMessage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/UnreadMessage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -25,45 +27,75 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPeer *)
 
+
+#line 14
 @implementation ImActorModelModulesMessagesEntityUnreadMessage
 
 + (ImActorModelModulesMessagesEntityUnreadMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesMessagesEntityUnreadMessage_fromBytesWithByteArray_(data);
 }
 
+
+#line 25
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
                       withLong:(jlong)sortDate
                    withBoolean:(jboolean)isEncrypted {
   if (self = [super init]) {
+    
+#line 26
     self->peer_ = peer;
+    
+#line 27
     self->rid_ = rid;
+    
+#line 28
     self->sortDate_ = sortDate;
+    
+#line 29
     self->isEncrypted__ = isEncrypted;
   }
   return self;
 }
 
+
+#line 32
 - (instancetype)init {
   return [super init];
 }
 
 - (AMPeer *)getPeer {
+  
+#line 37
   return peer_;
 }
 
+
+#line 40
 - (jlong)getRid {
+  
+#line 41
   return rid_;
 }
 
+
+#line 44
 - (jlong)getSortDate {
+  
+#line 45
   return sortDate_;
 }
 
+
+#line 48
 - (jboolean)isEncrypted {
+  
+#line 49
   return isEncrypted__;
 }
 
+
+#line 53
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   rid_ = [values getLongWithInt:2];
@@ -71,7 +103,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
   isEncrypted__ = [values getBoolWithInt:5];
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:rid_];
   [writer writeLongWithInt:3 withLong:sortDate_];
@@ -81,13 +117,21 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
+  
+#line 73
   ImActorModelModulesMessagesEntityUnreadMessage *that = (ImActorModelModulesMessagesEntityUnreadMessage *) check_class_cast(o, [ImActorModelModulesMessagesEntityUnreadMessage class]);
+  
+#line 75
   if (rid_ != ((ImActorModelModulesMessagesEntityUnreadMessage *) nil_chk(that))->rid_) return NO;
   if (![((AMPeer *) nil_chk(peer_)) isEqual:that->peer_]) return NO;
+  
+#line 78
   return YES;
 }
 
 - (NSUInteger)hash {
+  
+#line 83
   jint result = ((jint) [((AMPeer *) nil_chk(peer_)) hash]);
   result = 31 * result + (jint) (rid_ ^ (URShift64(rid_, 32)));
   return result;
@@ -105,6 +149,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 
 ImActorModelModulesMessagesEntityUnreadMessage *ImActorModelModulesMessagesEntityUnreadMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityUnreadMessage_init();
+  
+#line 17
   return ((ImActorModelModulesMessagesEntityUnreadMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityUnreadMessage alloc] init], data));
 }
 

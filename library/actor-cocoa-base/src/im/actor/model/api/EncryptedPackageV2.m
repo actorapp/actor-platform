@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedPackageV2.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedPackageV2.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,13 +24,21 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
+
+#line 19
 @implementation ImActorModelApiEncryptedPackageV2
 
+
+#line 20
 + (ImActorModelApiEncryptedPackageV2 *)fromBytesWithByteArray:(IOSByteArray *)src {
   return ImActorModelApiEncryptedPackageV2_fromBytesWithByteArray_(src);
 }
 
+
+#line 31
 - (IOSByteArray *)buildContainer {
+  
+#line 32
   BSDataOutput *res = [[BSDataOutput alloc] init];
   BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:res];
   [writer writeIntWithInt:1 withInt:[self getHeader]];
@@ -44,13 +54,19 @@
 
 ImActorModelApiEncryptedPackageV2 *ImActorModelApiEncryptedPackageV2_fromBytesWithByteArray_(IOSByteArray *src) {
   ImActorModelApiEncryptedPackageV2_init();
+  
+#line 21
   BSBserValues *values = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithBSDataInput_([[BSDataInput alloc] initWithByteArray:src withInt:0 withInt:((IOSByteArray *) nil_chk(src))->size_])];
   jint key = [values getIntWithInt:1];
   IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     case 1:
+    
+#line 25
     return ((ImActorModelApiEncryptedMessageV2 *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiEncryptedMessageV2 alloc] init], content));
     default:
+    
+#line 26
     return [[ImActorModelApiEncryptedPackageV2Unsupported alloc] initWithInt:key withByteArray:content];
   }
 }

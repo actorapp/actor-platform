@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/AppStateModule.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/AppStateModule.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
@@ -31,28 +33,54 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAppStateModule, listStatesActor_, DKActor
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesAppStateModule_$1, this$0_, ImActorModelModulesAppStateModule *)
 
+
+#line 14
 @implementation ImActorModelModulesAppStateModule
 
+
+#line 18
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self = [super initWithImActorModelModulesModules:modules]) {
+  if (self =
+#line 19
+  [super initWithImActorModelModulesModules:modules]) {
+    
+#line 20
     self->appStateVM_ = [[AMAppStateVM alloc] initWithImActorModelModulesModules:modules];
   }
   return self;
 }
 
+
+#line 23
 - (void)run {
-  listStatesActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesStateListsStatesActor_class_(), [[ImActorModelModulesAppStateModule_$1 alloc] initWithImActorModelModulesAppStateModule:self]) withNSString:@"actor/app/state"];
+  
+#line 24
+  listStatesActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesStateListsStatesActor_class_(), [[ImActorModelModulesAppStateModule_$1 alloc] initWithImActorModelModulesAppStateModule:self]) withNSString:
+#line 29
+  @"actor/app/state"];
 }
 
+
+#line 32
 - (void)onDialogsUpdateWithBoolean:(jboolean)isEmpty {
+  
+#line 33
   [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:[[ImActorModelModulesStateListsStatesActor_OnDialogsChanged alloc] initWithBoolean:isEmpty]];
 }
 
+
+#line 36
 - (void)onContactsUpdateWithBoolean:(jboolean)isEmpty {
+  
+#line 37
   [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:[[ImActorModelModulesStateListsStatesActor_OnContactsChanged alloc] initWithBoolean:isEmpty]];
 }
 
+
+#line 40
 - (AMAppStateVM *)getAppStateVM {
+  
+#line 41
   return appStateVM_;
 }
 
@@ -68,7 +96,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAppStateModule)
 
 @implementation ImActorModelModulesAppStateModule_$1
 
+
+#line 26
 - (ImActorModelModulesStateListsStatesActor *)create {
+  
+#line 27
   return [[ImActorModelModulesStateListsStatesActor alloc] initWithImActorModelModulesModules:[this$0_ modules]];
 }
 

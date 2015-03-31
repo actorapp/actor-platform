@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestCompleteUpload.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestCompleteUpload.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,46 +26,76 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCompleteUpload, config_, ImActorModelApiUploadConfig *)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestCompleteUpload
 
+
+#line 23
 + (ImActorModelApiRpcRequestCompleteUpload *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestCompleteUpload_fromBytesWithByteArray_(data);
 }
 
+
+#line 31
 - (instancetype)initWithImActorModelApiUploadConfig:(ImActorModelApiUploadConfig *)config
                                             withInt:(jint)blocksCount
                                            withLong:(jlong)crc32 {
   if (self = [super init]) {
+    
+#line 32
     self->config_ = config;
+    
+#line 33
     self->blocksCount_ = blocksCount;
+    
+#line 34
     self->crc32_ = crc32;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiUploadConfig *)getConfig {
+  
+#line 42
   return self->config_;
 }
 
+
+#line 45
 - (jint)getBlocksCount {
+  
+#line 46
   return self->blocksCount_;
 }
 
+
+#line 49
 - (jlong)getCrc32 {
+  
+#line 50
   return self->crc32_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->config_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiUploadConfig alloc] init]];
   self->blocksCount_ = [values getIntWithInt:2];
   self->crc32_ = [values getLongWithInt:3];
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   if (self->config_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -82,6 +114,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCompleteUpload, config_, ImActorMod
 }
 
 - (jint)getHeaderKey {
+  
+#line 82
   return ImActorModelApiRpcRequestCompleteUpload_HEADER;
 }
 
@@ -96,6 +130,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCompleteUpload, config_, ImActorMod
 
 ImActorModelApiRpcRequestCompleteUpload *ImActorModelApiRpcRequestCompleteUpload_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestCompleteUpload_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestCompleteUpload *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestCompleteUpload alloc] init], data));
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestKickUser.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestKickUser.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -26,46 +28,76 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, groupPeer_, ImActorModelApiGroupOutPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUserOutPeer *)
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestKickUser
 
+
+#line 23
 + (ImActorModelApiRpcRequestKickUser *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestKickUser_fromBytesWithByteArray_(data);
 }
 
+
+#line 31
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid
                      withImActorModelApiUserOutPeer:(ImActorModelApiUserOutPeer *)user {
   if (self = [super init]) {
+    
+#line 32
     self->groupPeer_ = groupPeer;
+    
+#line 33
     self->rid_ = rid;
+    
+#line 34
     self->user_ = user;
   }
   return self;
 }
 
+
+#line 37
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiGroupOutPeer *)getGroupPeer {
+  
+#line 42
   return self->groupPeer_;
 }
 
+
+#line 45
 - (jlong)getRid {
+  
+#line 46
   return self->rid_;
 }
 
+
+#line 49
 - (ImActorModelApiUserOutPeer *)getUser {
+  
+#line 50
   return self->user_;
 }
 
+
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
   self->rid_ = [values getLongWithInt:4];
   self->user_ = [values getObjWithInt:3 withBSBserObject:[[ImActorModelApiUserOutPeer alloc] init]];
 }
 
+
+#line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 62
   if (self->groupPeer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -87,6 +119,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUse
 }
 
 - (jint)getHeaderKey {
+  
+#line 85
   return ImActorModelApiRpcRequestKickUser_HEADER;
 }
 
@@ -101,6 +135,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUse
 
 ImActorModelApiRpcRequestKickUser *ImActorModelApiRpcRequestKickUser_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestKickUser_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestKickUser *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestKickUser alloc] init], data));
 }
 

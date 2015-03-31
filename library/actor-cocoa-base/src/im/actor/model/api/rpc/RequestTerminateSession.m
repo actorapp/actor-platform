@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestTerminateSession.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestTerminateSession.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -21,30 +23,46 @@
 
 @implementation ImActorModelApiRpcRequestTerminateSession
 
+
+#line 23
 + (ImActorModelApiRpcRequestTerminateSession *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestTerminateSession_fromBytesWithByteArray_(data);
 }
 
+
+#line 29
 - (instancetype)initWithInt:(jint)id_ {
   if (self = [super init]) {
+    
+#line 30
     self->id__ = id_;
   }
   return self;
 }
 
+
+#line 33
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getId {
+  
+#line 38
   return self->id__;
 }
 
+
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
+
+#line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 48
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
 }
 
@@ -56,6 +74,8 @@
 }
 
 - (jint)getHeaderKey {
+  
+#line 61
   return ImActorModelApiRpcRequestTerminateSession_HEADER;
 }
 
@@ -68,6 +88,8 @@
 
 ImActorModelApiRpcRequestTerminateSession *ImActorModelApiRpcRequestTerminateSession_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestTerminateSession_init();
+  
+#line 24
   return ((ImActorModelApiRpcRequestTerminateSession *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestTerminateSession alloc] init], data));
 }
 

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/AsymmetricCipherKeyPair.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/AsymmetricCipherKeyPair.java"
+
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/crypto/AsymmetricCipherKeyPair.h"
 #include "org/bouncycastle/crypto/CipherParameters.h"
@@ -18,31 +20,51 @@
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoAsymmetricCipherKeyPair, publicParam_, OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoAsymmetricCipherKeyPair, privateParam_, OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)
 
+
+#line 8
 @implementation OrgBouncycastleCryptoAsymmetricCipherKeyPair
 
+
+#line 19
 - (instancetype)initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter:(OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)publicParam
                     withOrgBouncycastleCryptoParamsAsymmetricKeyParameter:(OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)privateParam {
   if (self = [super init]) {
+    
+#line 23
     self->publicParam_ = publicParam;
+    
+#line 24
     self->privateParam_ = privateParam;
   }
   return self;
 }
 
+
+#line 34
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)publicParam
                     withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)privateParam {
   if (self = [super init]) {
+    
+#line 38
     self->publicParam_ = (OrgBouncycastleCryptoParamsAsymmetricKeyParameter *) check_class_cast(publicParam, [OrgBouncycastleCryptoParamsAsymmetricKeyParameter class]);
+    
+#line 39
     self->privateParam_ = (OrgBouncycastleCryptoParamsAsymmetricKeyParameter *) check_class_cast(privateParam, [OrgBouncycastleCryptoParamsAsymmetricKeyParameter class]);
   }
   return self;
 }
 
 - (OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)getPublic {
+  
+#line 49
   return publicParam_;
 }
 
+
+#line 57
 - (OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)getPrivate {
+  
+#line 59
   return privateParam_;
 }
 

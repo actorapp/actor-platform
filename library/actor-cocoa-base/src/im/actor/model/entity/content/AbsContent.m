@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/AbsContent.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/AbsContent.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -30,19 +32,29 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
+
+#line 14
 @implementation AMAbsContent
 
 + (AMAbsContent *)contentFromBytesWithByteArray:(IOSByteArray *)data {
   return AMAbsContent_contentFromBytesWithByteArray_(data);
 }
 
+
+#line 50
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
+
+#line 55
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 56
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((AMAbsContent_ContentTypeEnum *) nil_chk([self getContentType])) getValue]];
 }
 
+
+#line 86
 + (AMAbsContent_ContentTypeEnum *)typeFromValueWithInt:(jint)val {
   return AMAbsContent_typeFromValueWithInt_(val);
 }
@@ -55,6 +67,8 @@
 
 AMAbsContent *AMAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data) {
   AMAbsContent_init();
+  
+#line 17
   BSBserValues *reader = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithBSDataInput_([[BSDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_])];
   AMAbsContent_ContentTypeEnum *type = AMAbsContent_typeFromValueWithInt_([reader getIntWithInt:1]);
   switch ([type ordinal]) {
@@ -89,6 +103,8 @@ AMAbsContent *AMAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data) {
 
 AMAbsContent_ContentTypeEnum *AMAbsContent_typeFromValueWithInt_(jint val) {
   AMAbsContent_init();
+  
+#line 87
   switch (val) {
     default:
     case 1:
@@ -120,22 +136,32 @@ AMAbsContent_ContentTypeEnum *AMAbsContent_typeFromValueWithInt_(jint val) {
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAbsContent)
 
+#line 59
+
 BOOL AMAbsContent_ContentTypeEnum_initialized = NO;
 
 AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_values_[12];
 
 @implementation AMAbsContent_ContentTypeEnum
 
+
+#line 75
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
   if (self = [super initWithNSString:__name withInt:__ordinal]) {
+    
+#line 76
     self->value_ = value;
   }
   return self;
 }
 
+
+#line 79
 - (jint)getValue {
+  
+#line 80
   return value_;
 }
 
@@ -169,18 +195,42 @@ AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_valueOfWithNSString_(
 
 + (void)initialize {
   if (self == [AMAbsContent_ContentTypeEnum class]) {
-    AMAbsContent_ContentTypeEnum_TEXT = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:1 withNSString:@"TEXT" withInt:0];
-    AMAbsContent_ContentTypeEnum_DOCUMENT = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:2 withNSString:@"DOCUMENT" withInt:1];
-    AMAbsContent_ContentTypeEnum_DOCUMENT_PHOTO = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:3 withNSString:@"DOCUMENT_PHOTO" withInt:2];
-    AMAbsContent_ContentTypeEnum_DOCUMENT_VIDEO = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:4 withNSString:@"DOCUMENT_VIDEO" withInt:3];
-    AMAbsContent_ContentTypeEnum_SERVICE = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:5 withNSString:@"SERVICE" withInt:4];
-    AMAbsContent_ContentTypeEnum_SERVICE_CREATED = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:6 withNSString:@"SERVICE_CREATED" withInt:5];
-    AMAbsContent_ContentTypeEnum_SERVICE_AVATAR = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:7 withNSString:@"SERVICE_AVATAR" withInt:6];
-    AMAbsContent_ContentTypeEnum_SERVICE_TITLE = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:8 withNSString:@"SERVICE_TITLE" withInt:7];
-    AMAbsContent_ContentTypeEnum_SERVICE_ADDED = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:9 withNSString:@"SERVICE_ADDED" withInt:8];
-    AMAbsContent_ContentTypeEnum_SERVICE_KICKED = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:10 withNSString:@"SERVICE_KICKED" withInt:9];
-    AMAbsContent_ContentTypeEnum_SERVICE_LEAVE = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:11 withNSString:@"SERVICE_LEAVE" withInt:10];
-    AMAbsContent_ContentTypeEnum_SERVICE_REGISTERED = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:12 withNSString:@"SERVICE_REGISTERED" withInt:11];
+    AMAbsContent_ContentTypeEnum_TEXT = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:
+#line 60
+    1 withNSString:@"TEXT" withInt:0];
+    AMAbsContent_ContentTypeEnum_DOCUMENT = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:
+#line 61
+    2 withNSString:@"DOCUMENT" withInt:1];
+    AMAbsContent_ContentTypeEnum_DOCUMENT_PHOTO = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:
+#line 62
+    3 withNSString:@"DOCUMENT_PHOTO" withInt:2];
+    AMAbsContent_ContentTypeEnum_DOCUMENT_VIDEO = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:
+#line 63
+    4 withNSString:@"DOCUMENT_VIDEO" withInt:3];
+    AMAbsContent_ContentTypeEnum_SERVICE = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:
+#line 64
+    5 withNSString:@"SERVICE" withInt:4];
+    AMAbsContent_ContentTypeEnum_SERVICE_CREATED = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:
+#line 65
+    6 withNSString:@"SERVICE_CREATED" withInt:5];
+    AMAbsContent_ContentTypeEnum_SERVICE_AVATAR = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:
+#line 66
+    7 withNSString:@"SERVICE_AVATAR" withInt:6];
+    AMAbsContent_ContentTypeEnum_SERVICE_TITLE = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:
+#line 67
+    8 withNSString:@"SERVICE_TITLE" withInt:7];
+    AMAbsContent_ContentTypeEnum_SERVICE_ADDED = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:
+#line 68
+    9 withNSString:@"SERVICE_ADDED" withInt:8];
+    AMAbsContent_ContentTypeEnum_SERVICE_KICKED = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:
+#line 69
+    10 withNSString:@"SERVICE_KICKED" withInt:9];
+    AMAbsContent_ContentTypeEnum_SERVICE_LEAVE = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:
+#line 70
+    11 withNSString:@"SERVICE_LEAVE" withInt:10];
+    AMAbsContent_ContentTypeEnum_SERVICE_REGISTERED = [[AMAbsContent_ContentTypeEnum alloc] initWithInt:
+#line 71
+    12 withNSString:@"SERVICE_REGISTERED" withInt:11];
     J2OBJC_SET_INITIALIZED(AMAbsContent_ContentTypeEnum)
   }
 }

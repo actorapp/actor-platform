@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedPackage.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EncryptedPackage.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -30,47 +32,83 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedPackage, v1Crc32_, JavaLangLong *)
 J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedPackage, v2Message_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedPackage, v2HmacSha256_, JavaLangLong *)
 
+
+#line 19
 @implementation ImActorModelApiEncryptedPackage
 
+
+#line 27
 - (instancetype)initWithJavaLangInteger:(JavaLangInteger *)v1MessageType
                           withByteArray:(IOSByteArray *)v1Message
                        withJavaLangLong:(JavaLangLong *)v1Crc32
                           withByteArray:(IOSByteArray *)v2Message
                        withJavaLangLong:(JavaLangLong *)v2HmacSha256 {
   if (self = [super init]) {
+    
+#line 28
     self->v1MessageType_ = v1MessageType;
+    
+#line 29
     self->v1Message_ = v1Message;
+    
+#line 30
     self->v1Crc32_ = v1Crc32;
+    
+#line 31
     self->v2Message_ = v2Message;
+    
+#line 32
     self->v2HmacSha256_ = v2HmacSha256;
   }
   return self;
 }
 
+
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
 - (JavaLangInteger *)getV1MessageType {
+  
+#line 40
   return self->v1MessageType_;
 }
 
+
+#line 43
 - (IOSByteArray *)getV1Message {
+  
+#line 44
   return self->v1Message_;
 }
 
+
+#line 47
 - (JavaLangLong *)getV1Crc32 {
+  
+#line 48
   return self->v1Crc32_;
 }
 
+
+#line 51
 - (IOSByteArray *)getV2Message {
+  
+#line 52
   return self->v2Message_;
 }
 
+
+#line 55
 - (JavaLangLong *)getV2HmacSha256 {
+  
+#line 56
   return self->v2HmacSha256_;
 }
 
+
+#line 60
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->v1MessageType_ = JavaLangInteger_valueOfWithInt_([((BSBserValues *) nil_chk(values)) optIntWithInt:1]);
   self->v1Message_ = [values optBytesWithInt:2];
@@ -79,7 +117,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEncryptedPackage, v2HmacSha256_, JavaLangLong
   self->v2HmacSha256_ = JavaLangLong_valueOfWithLong_([values optLongWithInt:6]);
 }
 
+
+#line 69
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 70
   if (self->v1MessageType_ != nil) {
     [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[self->v1MessageType_ intValue]];
   }

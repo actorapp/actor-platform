@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Sex.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Sex.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Sex.h"
@@ -15,25 +17,37 @@
 }
 @end
 
+#line 8
+
 BOOL ImActorModelApiSexEnum_initialized = NO;
 
 ImActorModelApiSexEnum *ImActorModelApiSexEnum_values_[4];
 
 @implementation ImActorModelApiSexEnum
 
+
+#line 17
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
   if (self = [super initWithNSString:__name withInt:__ordinal]) {
+    
+#line 18
     self->value_ = value;
   }
   return self;
 }
 
+
+#line 21
 - (jint)getValue {
+  
+#line 22
   return value_;
 }
 
+
+#line 25
 + (ImActorModelApiSexEnum *)parseWithInt:(jint)value {
   return ImActorModelApiSexEnum_parseWithInt_(value);
 }
@@ -68,10 +82,18 @@ ImActorModelApiSexEnum *ImActorModelApiSexEnum_valueOfWithNSString_(NSString *na
 
 + (void)initialize {
   if (self == [ImActorModelApiSexEnum class]) {
-    ImActorModelApiSexEnum_UNKNOWN = [[ImActorModelApiSexEnum alloc] initWithInt:1 withNSString:@"UNKNOWN" withInt:0];
-    ImActorModelApiSexEnum_MALE = [[ImActorModelApiSexEnum alloc] initWithInt:2 withNSString:@"MALE" withInt:1];
-    ImActorModelApiSexEnum_FEMALE = [[ImActorModelApiSexEnum alloc] initWithInt:3 withNSString:@"FEMALE" withInt:2];
-    ImActorModelApiSexEnum_UNSUPPORTED_VALUE = [[ImActorModelApiSexEnum alloc] initWithInt:-1 withNSString:@"UNSUPPORTED_VALUE" withInt:3];
+    ImActorModelApiSexEnum_UNKNOWN = [[ImActorModelApiSexEnum alloc] initWithInt:
+#line 10
+    1 withNSString:@"UNKNOWN" withInt:0];
+    ImActorModelApiSexEnum_MALE = [[ImActorModelApiSexEnum alloc] initWithInt:
+#line 11
+    2 withNSString:@"MALE" withInt:1];
+    ImActorModelApiSexEnum_FEMALE = [[ImActorModelApiSexEnum alloc] initWithInt:
+#line 12
+    3 withNSString:@"FEMALE" withInt:2];
+    ImActorModelApiSexEnum_UNSUPPORTED_VALUE = [[ImActorModelApiSexEnum alloc] initWithInt:
+#line 13
+    -1 withNSString:@"UNSUPPORTED_VALUE" withInt:3];
     J2OBJC_SET_INITIALIZED(ImActorModelApiSexEnum)
   }
 }
@@ -80,14 +102,24 @@ ImActorModelApiSexEnum *ImActorModelApiSexEnum_valueOfWithNSString_(NSString *na
 
 ImActorModelApiSexEnum *ImActorModelApiSexEnum_parseWithInt_(jint value) {
   ImActorModelApiSexEnum_init();
+  
+#line 26
   switch (value) {
     case 1:
+    
+#line 27
     return ImActorModelApiSexEnum_UNKNOWN;
     case 2:
+    
+#line 28
     return ImActorModelApiSexEnum_MALE;
     case 3:
+    
+#line 29
     return ImActorModelApiSexEnum_FEMALE;
     default:
+    
+#line 30
     return ImActorModelApiSexEnum_UNSUPPORTED_VALUE;
   }
 }

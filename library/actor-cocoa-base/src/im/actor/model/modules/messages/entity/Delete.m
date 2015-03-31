@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/Delete.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/Delete.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,35 +25,57 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDelete, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDelete, rids_, id<JavaUtilList>)
 
+
+#line 14
 @implementation ImActorModelModulesMessagesEntityDelete
 
+
+#line 19
 - (instancetype)initWithAMPeer:(AMPeer *)peer
               withJavaUtilList:(id<JavaUtilList>)rids {
   if (self = [super init]) {
+    
+#line 20
     self->peer_ = peer;
+    
+#line 21
     self->rids_ = rids;
   }
   return self;
 }
 
+
+#line 24
 - (instancetype)init {
   return [super init];
 }
 
 - (AMPeer *)getPeer {
+  
+#line 29
   return peer_;
 }
 
+
+#line 32
 - (id<JavaUtilList>)getRids {
+  
+#line 33
   return rids_;
 }
 
+
+#line 37
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peer_ = AMPeer_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:1]);
   rids_ = [values getRepeatedLongWithInt:2];
 }
 
+
+#line 43
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 44
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:peer_];
   [writer writeRepeatedLongWithInt:2 withJavaUtilList:rids_];
 }

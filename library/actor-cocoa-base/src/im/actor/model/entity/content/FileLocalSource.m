@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FileLocalSource.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FileLocalSource.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
@@ -22,39 +24,61 @@
 J2OBJC_FIELD_SETTER(AMFileLocalSource, fileName_, NSString *)
 J2OBJC_FIELD_SETTER(AMFileLocalSource, fileDescriptor_, NSString *)
 
+
+#line 11
 @implementation AMFileLocalSource
 
 + (AMFileLocalSource *)fromValuesWithBSBserValues:(BSBserValues *)reader {
   return AMFileLocalSource_fromValuesWithBSBserValues_(reader);
 }
 
+
+#line 23
 - (instancetype)initWithNSString:(NSString *)fileName
                          withInt:(jint)size
                     withNSString:(NSString *)fileDescriptor {
   if (self = [super init]) {
+    
+#line 24
     self->fileName_ = fileName;
+    
+#line 25
     self->size_ = size;
+    
+#line 26
     self->fileDescriptor_ = fileDescriptor;
   }
   return self;
 }
 
+
+#line 29
 - (instancetype)init {
   return [super init];
 }
 
+
+#line 34
 - (NSString *)getFileName {
+  
+#line 35
   return fileName_;
 }
 
+
+#line 39
 - (jint)getSize {
   return size_;
 }
 
 - (NSString *)getFileDescriptor {
+  
+#line 44
   return fileDescriptor_;
 }
 
+
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   fileName_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:2];
@@ -62,7 +86,11 @@ J2OBJC_FIELD_SETTER(AMFileLocalSource, fileDescriptor_, NSString *)
   fileDescriptor_ = [values getStringWithInt:4];
 }
 
+
+#line 56
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  
+#line 57
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:fileName_];
   [writer writeIntWithInt:3 withInt:size_];
@@ -80,6 +108,8 @@ J2OBJC_FIELD_SETTER(AMFileLocalSource, fileDescriptor_, NSString *)
 
 AMFileLocalSource *AMFileLocalSource_fromValuesWithBSBserValues_(BSBserValues *reader) {
   AMFileLocalSource_init();
+  
+#line 14
   AMFileLocalSource *fileLocalSource = [[AMFileLocalSource alloc] init];
   [fileLocalSource parseWithBSBserValues:reader];
   return fileLocalSource;

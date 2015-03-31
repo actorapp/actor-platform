@@ -3,16 +3,22 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ReferenceMultiplier.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ReferenceMultiplier.java"
+
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/math/ec/ECAlgorithms.h"
 #include "org/bouncycastle/math/ec/ECPoint.h"
 #include "org/bouncycastle/math/ec/ReferenceMultiplier.h"
 
+
+#line 5
 @implementation OrgBouncycastleMathEcReferenceMultiplier
 
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k {
+  
+#line 9
   return OrgBouncycastleMathEcECAlgorithms_referenceMultiplyWithOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_(p, k);
 }
 

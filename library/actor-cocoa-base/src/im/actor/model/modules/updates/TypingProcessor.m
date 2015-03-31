@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/TypingProcessor.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/TypingProcessor.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Peer.h"
 #include "im/actor/model/api/PeerType.h"
@@ -20,34 +22,54 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesTypingProcessor, typingActor_, DKActorRef *)
 
+
+#line 16
 @implementation ImActorModelModulesUpdatesTypingProcessor
 
+
+#line 20
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self = [super initWithImActorModelModulesModules:modules]) {
+  if (self =
+#line 21
+  [super initWithImActorModelModulesModules:modules]) {
+    
+#line 22
     self->typingActor_ = ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(modules);
   }
   return self;
 }
 
+
+#line 26
 - (void)onTypingWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                 withInt:(jint)uid
       withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
+  
+#line 27
   if ([((ImActorModelApiPeer *) nil_chk(peer)) getType] == ImActorModelApiPeerTypeEnum_get_PRIVATE()) {
     [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_PrivateTyping alloc] initWithInt:uid withImActorModelApiTypingTypeEnum:type]];
   }
-  else if ([peer getType] == ImActorModelApiPeerTypeEnum_get_GROUP()) {
+  else
+#line 29
+  if ([peer getType] == ImActorModelApiPeerTypeEnum_get_GROUP()) {
     [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_GroupTyping alloc] initWithInt:[peer getId] withInt:uid withImActorModelApiTypingTypeEnum:type]];
   }
   else {
   }
 }
 
+
+#line 37
 - (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                  withInt:(jint)uid {
+  
+#line 38
   if ([((ImActorModelApiPeer *) nil_chk(peer)) getType] == ImActorModelApiPeerTypeEnum_get_PRIVATE()) {
     [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopTyping alloc] initWithInt:uid]];
   }
-  else if ([peer getType] == ImActorModelApiPeerTypeEnum_get_GROUP()) {
+  else
+#line 40
+  if ([peer getType] == ImActorModelApiPeerTypeEnum_get_GROUP()) {
     [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:[[ImActorModelModulesTypingTypingActor_StopGroupTyping alloc] initWithInt:[peer getId] withInt:uid]];
   }
   else {

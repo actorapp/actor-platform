@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserLeft.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserLeft.java"
+
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/ServiceExUserLeft.h"
@@ -10,23 +12,35 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
+
+#line 19
 @implementation ImActorModelApiServiceExUserLeft
 
+
+#line 22
 - (instancetype)init {
   return [super init];
 }
 
 - (jint)getHeader {
+  
+#line 27
   return 3;
 }
 
+
+#line 31
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
+
+#line 35
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
 - (NSString *)description {
+  
+#line 40
   NSString *res = @"struct ServiceExUserLeft{";
   res = JreStrcat("$C", res, '}');
   return res;

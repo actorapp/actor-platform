@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/NafL2RMultiplier.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/NafL2RMultiplier.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
@@ -11,20 +13,36 @@
 #include "org/bouncycastle/math/ec/NafL2RMultiplier.h"
 #include "org/bouncycastle/math/ec/WNafUtil.h"
 
+
+#line 8
 @implementation OrgBouncycastleMathEcNafL2RMultiplier
 
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k {
+  
+#line 12
   IOSIntArray *naf = OrgBouncycastleMathEcWNafUtil_generateCompactNafWithJavaMathBigInteger_(k);
+  
+#line 14
   OrgBouncycastleMathEcECPoint *addP = [((OrgBouncycastleMathEcECPoint *) nil_chk(p)) normalize], *subP = [((OrgBouncycastleMathEcECPoint *) nil_chk(addP)) negate];
+  
+#line 16
   OrgBouncycastleMathEcECPoint *R = [((OrgBouncycastleMathEcECCurve *) nil_chk([p getCurve])) getInfinity];
+  
+#line 18
   jint i = ((IOSIntArray *) nil_chk(naf))->size_;
   while (--i >= 0) {
+    
+#line 21
     jint ni = IOSIntArray_Get(naf, i);
     jint digit = RShift32(ni, 16), zeroes = ni & (jint) 0xFFFF;
+    
+#line 24
     R = [((OrgBouncycastleMathEcECPoint *) nil_chk(R)) twicePlusWithOrgBouncycastleMathEcECPoint:digit < 0 ? subP : addP];
     R = [((OrgBouncycastleMathEcECPoint *) nil_chk(R)) timesPow2WithInt:zeroes];
   }
+  
+#line 28
   return R;
 }
 

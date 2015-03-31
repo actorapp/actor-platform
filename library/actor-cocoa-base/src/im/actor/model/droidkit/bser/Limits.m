@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/Limits.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/Limits.java"
+
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/Limits.h"
 
@@ -10,8 +12,12 @@
 - (instancetype)init;
 @end
 
+
+#line 6
 @implementation BSLimits
 
+
+#line 10
 - (instancetype)init {
   return [super init];
 }

@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/ParametersWithIV.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/ParametersWithIV.java"
+
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "java/lang/System.h"
@@ -19,11 +21,17 @@
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithIV, iv_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithIV, parameters_, id<OrgBouncycastleCryptoCipherParameters>)
 
+
+#line 5
 @implementation OrgBouncycastleCryptoParamsParametersWithIV
 
+
+#line 11
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)parameters
                                                 withByteArray:(IOSByteArray *)iv {
-  return [self initOrgBouncycastleCryptoParamsParametersWithIVWithOrgBouncycastleCryptoCipherParameters:parameters withByteArray:iv withInt:0 withInt:((IOSByteArray *) nil_chk(iv))->size_];
+  return
+#line 15
+  [self initOrgBouncycastleCryptoParamsParametersWithIVWithOrgBouncycastleCryptoCipherParameters:parameters withByteArray:iv withInt:0 withInt:((IOSByteArray *) nil_chk(iv))->size_];
 }
 
 - (instancetype)initOrgBouncycastleCryptoParamsParametersWithIVWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)parameters
@@ -31,8 +39,14 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithIV, parameters_, id
                                                                                                  withInt:(jint)ivOff
                                                                                                  withInt:(jint)ivLen {
   if (self = [super init]) {
+    
+#line 24
     self->iv_ = [IOSByteArray newArrayWithLength:ivLen];
+    
+#line 25
     self->parameters_ = parameters;
+    
+#line 27
     JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(iv, ivOff, self->iv_, 0, ivLen);
   }
   return self;
@@ -42,14 +56,30 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithIV, parameters_, id
                                                 withByteArray:(IOSByteArray *)iv
                                                       withInt:(jint)ivOff
                                                       withInt:(jint)ivLen {
-  return [self initOrgBouncycastleCryptoParamsParametersWithIVWithOrgBouncycastleCryptoCipherParameters:parameters withByteArray:iv withInt:ivOff withInt:ivLen];
+  return [self initOrgBouncycastleCryptoParamsParametersWithIVWithOrgBouncycastleCryptoCipherParameters:
+#line 19
+parameters withByteArray:
+#line 20
+iv withInt:
+#line 21
+ivOff withInt:
+#line 22
+ivLen];
 }
 
+
+#line 30
 - (IOSByteArray *)getIV {
+  
+#line 32
   return iv_;
 }
 
+
+#line 35
 - (id<OrgBouncycastleCryptoCipherParameters>)getParameters {
+  
+#line 37
   return parameters_;
 }
 

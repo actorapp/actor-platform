@@ -3,6 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/paddings/PaddedBufferedBlockCipher.java
 //
 
+#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/paddings/PaddedBufferedBlockCipher.java"
+
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,14 +24,26 @@
 #include "org/bouncycastle/crypto/paddings/PaddedBufferedBlockCipher.h"
 #include "org/bouncycastle/crypto/params/ParametersWithRandom.h"
 
+
+#line 13
 @implementation OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher
 
+
+#line 24
 - (instancetype)initOrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipherWithOrgBouncycastleCryptoBlockCipher:(id<OrgBouncycastleCryptoBlockCipher>)cipher
                                                            withOrgBouncycastleCryptoPaddingsBlockCipherPadding:(id<OrgBouncycastleCryptoPaddingsBlockCipherPadding>)padding {
   if (self = [super init]) {
+    
+#line 28
     self->cipher_ = cipher;
+    
+#line 29
     self->padding_ = padding;
+    
+#line 31
     buf_ = [IOSByteArray newArrayWithLength:[((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher)) getBlockSize]];
+    
+#line 32
     bufOff_ = 0;
   }
   return self;
@@ -37,129 +51,267 @@
 
 - (instancetype)initWithOrgBouncycastleCryptoBlockCipher:(id<OrgBouncycastleCryptoBlockCipher>)cipher
      withOrgBouncycastleCryptoPaddingsBlockCipherPadding:(id<OrgBouncycastleCryptoPaddingsBlockCipherPadding>)padding {
-  return [self initOrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipherWithOrgBouncycastleCryptoBlockCipher:cipher withOrgBouncycastleCryptoPaddingsBlockCipherPadding:padding];
+  return [self initOrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipherWithOrgBouncycastleCryptoBlockCipher:
+#line 25
+cipher withOrgBouncycastleCryptoPaddingsBlockCipherPadding:
+#line 26
+padding];
 }
 
+
+#line 40
 - (instancetype)initWithOrgBouncycastleCryptoBlockCipher:(id<OrgBouncycastleCryptoBlockCipher>)cipher {
-  return [self initOrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipherWithOrgBouncycastleCryptoBlockCipher:cipher withOrgBouncycastleCryptoPaddingsBlockCipherPadding:[[OrgBouncycastleCryptoPaddingsPKCS7Padding alloc] init]];
+  return
+#line 43
+  [self initOrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipherWithOrgBouncycastleCryptoBlockCipher:cipher withOrgBouncycastleCryptoPaddingsBlockCipherPadding:[[OrgBouncycastleCryptoPaddingsPKCS7Padding alloc] init]];
 }
 
+
+#line 55
 - (void)init__WithBoolean:(jboolean)forEncryption
 withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)params {
+  
+#line 60
   self->forEncryption_ = forEncryption;
+  
+#line 62
   [self reset];
+  
+#line 64
   if ([params isKindOfClass:[OrgBouncycastleCryptoParamsParametersWithRandom class]]) {
+    
+#line 66
     OrgBouncycastleCryptoParamsParametersWithRandom *p = (OrgBouncycastleCryptoParamsParametersWithRandom *) check_class_cast(params, [OrgBouncycastleCryptoParamsParametersWithRandom class]);
+    
+#line 68
     [((id<OrgBouncycastleCryptoPaddingsBlockCipherPadding>) nil_chk(padding_)) init__WithBCRandomProvider:[((OrgBouncycastleCryptoParamsParametersWithRandom *) nil_chk(p)) getRandom]];
+    
+#line 70
     [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher_)) init__WithBoolean:forEncryption withOrgBouncycastleCryptoCipherParameters:[p getParameters]];
   }
   else {
+    
+#line 74
     [((id<OrgBouncycastleCryptoPaddingsBlockCipherPadding>) nil_chk(padding_)) init__WithBCRandomProvider:nil];
+    
+#line 76
     [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher_)) init__WithBoolean:forEncryption withOrgBouncycastleCryptoCipherParameters:params];
   }
 }
 
+
+#line 88
 - (jint)getOutputSizeWithInt:(jint)len {
+  
+#line 91
   jint total = len + bufOff_;
   jint leftOver = total % ((IOSByteArray *) nil_chk(buf_))->size_;
+  
+#line 94
   if (leftOver == 0) {
+    
+#line 96
     if (forEncryption_) {
+      
+#line 98
       return total + buf_->size_;
     }
+    
+#line 101
     return total;
   }
+  
+#line 104
   return total - leftOver + buf_->size_;
 }
 
+
+#line 115
 - (jint)getUpdateOutputSizeWithInt:(jint)len {
+  
+#line 118
   jint total = len + bufOff_;
   jint leftOver = total % ((IOSByteArray *) nil_chk(buf_))->size_;
+  
+#line 121
   if (leftOver == 0) {
+    
+#line 123
     return JavaLangMath_maxWithInt_withInt_(0, total - buf_->size_);
   }
+  
+#line 126
   return total - leftOver;
 }
 
+
+#line 139
 - (jint)processByteWithByte:(jbyte)inArg
               withByteArray:(IOSByteArray *)outArg
                     withInt:(jint)outOff {
+  
+#line 145
   jint resultLen = 0;
+  
+#line 147
   if (bufOff_ == ((IOSByteArray *) nil_chk(buf_))->size_) {
+    
+#line 149
     resultLen = [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher_)) processBlockWithByteArray:buf_ withInt:0 withByteArray:outArg withInt:outOff];
     bufOff_ = 0;
   }
+  
+#line 153
   *IOSByteArray_GetRef(buf_, bufOff_++) = inArg;
+  
+#line 155
   return resultLen;
 }
 
+
+#line 170
 - (jint)processBytesWithByteArray:(IOSByteArray *)inArg
                           withInt:(jint)inOff
                           withInt:(jint)len
                     withByteArray:(IOSByteArray *)outArg
                           withInt:(jint)outOff {
+  
+#line 178
   if (len < 0) {
+    
+#line 180
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Can't have a negative input length!"];
   }
+  
+#line 183
   jint blockSize = [self getBlockSize];
   jint length = [self getUpdateOutputSizeWithInt:len];
+  
+#line 186
   if (length > 0) {
+    
+#line 188
     if ((outOff + length) > ((IOSByteArray *) nil_chk(outArg))->size_) {
+      
+#line 190
       @throw [[OrgBouncycastleCryptoOutputLengthException alloc] initWithNSString:@"output buffer too short"];
     }
   }
+  
+#line 194
   jint resultLen = 0;
   jint gapLen = ((IOSByteArray *) nil_chk(buf_))->size_ - bufOff_;
+  
+#line 197
   if (len > gapLen) {
+    
+#line 199
     JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(inArg, inOff, buf_, bufOff_, gapLen);
+    
+#line 201
     resultLen += [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher_)) processBlockWithByteArray:buf_ withInt:0 withByteArray:outArg withInt:outOff];
+    
+#line 203
     bufOff_ = 0;
     len -= gapLen;
     inOff += gapLen;
+    
+#line 207
     while (len > buf_->size_) {
+      
+#line 209
       resultLen += [cipher_ processBlockWithByteArray:inArg withInt:inOff withByteArray:outArg withInt:outOff + resultLen];
+      
+#line 211
       len -= blockSize;
       inOff += blockSize;
     }
   }
+  
+#line 216
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(inArg, inOff, buf_, bufOff_, len);
+  
+#line 218
   bufOff_ += len;
+  
+#line 220
   return resultLen;
 }
 
+
+#line 237
 - (jint)doFinalWithByteArray:(IOSByteArray *)outArg
                      withInt:(jint)outOff {
+  
+#line 242
   jint blockSize = [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher_)) getBlockSize];
   jint resultLen = 0;
+  
+#line 245
   if (forEncryption_) {
+    
+#line 247
     if (bufOff_ == blockSize) {
+      
+#line 249
       if ((outOff + 2 * blockSize) > ((IOSByteArray *) nil_chk(outArg))->size_) {
+        
+#line 251
         [self reset];
+        
+#line 253
         @throw [[OrgBouncycastleCryptoOutputLengthException alloc] initWithNSString:@"output buffer too short"];
       }
+      
+#line 256
       resultLen = [cipher_ processBlockWithByteArray:buf_ withInt:0 withByteArray:outArg withInt:outOff];
       bufOff_ = 0;
     }
+    
+#line 260
     [((id<OrgBouncycastleCryptoPaddingsBlockCipherPadding>) nil_chk(padding_)) addPaddingWithByteArray:buf_ withInt:bufOff_];
+    
+#line 262
     resultLen += [cipher_ processBlockWithByteArray:buf_ withInt:0 withByteArray:outArg withInt:outOff + resultLen];
+    
+#line 264
     [self reset];
   }
   else {
+    
+#line 268
     if (bufOff_ == blockSize) {
+      
+#line 270
       resultLen = [cipher_ processBlockWithByteArray:buf_ withInt:0 withByteArray:buf_ withInt:0];
       bufOff_ = 0;
     }
     else {
+      
+#line 275
       [self reset];
+      
+#line 277
       @throw [[OrgBouncycastleCryptoDataLengthException alloc] initWithNSString:@"last block incomplete in decryption"];
     }
+    
+#line 280
     @try {
+      
+#line 282
       resultLen -= [((id<OrgBouncycastleCryptoPaddingsBlockCipherPadding>) nil_chk(padding_)) padCountWithByteArray:buf_];
+      
+#line 284
       JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(buf_, 0, outArg, outOff, resultLen);
     }
     @finally {
+      
+#line 288
       [self reset];
     }
   }
+  
+#line 292
   return resultLen;
 }
 
