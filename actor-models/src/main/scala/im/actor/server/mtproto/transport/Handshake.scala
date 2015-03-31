@@ -4,4 +4,4 @@ import scodec.bits.BitVector
 
 @SerialVersionUID(1L)
 case class Handshake(protoVersion: Byte, apiMajorVersion: Byte, apiMinorVersion: Byte,
-                     randomBytes: BitVector) extends MTTransport
+                     bytes: BitVector) extends MTTransport
