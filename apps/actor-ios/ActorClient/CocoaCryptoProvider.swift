@@ -9,8 +9,7 @@
 import Foundation
 
 class CocoaCryptoProvider : BCBouncyCastleProvider {
-    override func generateRSA1024KeyPair() -> AMCryptoKeyPair {
-        var data = NSData()
-        return AMCryptoKeyPair(byteArray: data.toJavaBytes(), withByteArray: data.toJavaBytes())
+    override init() {
+        super.init(BCRandomProvider: AMJavaRandomProvider())
     }
 }

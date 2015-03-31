@@ -46,6 +46,8 @@
 #import "im/actor/model/network/ConnectionCallback.h"
 
 #import "im/actor/model/crypto/CryptoKeyPair.h"
+#import "im/actor/model/jvm/JavaRandomProvider.h"
+#import "im/actor/model/crypto/bouncycastle/RandomProvider.h"
 
 // DroidKit Engine
 
