@@ -3,6 +3,9 @@ package im.actor.messenger.app;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.webkit.MimeTypeMap;
+
+import java.io.File;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.activity.AddContactActivity;
@@ -12,6 +15,7 @@ import im.actor.messenger.app.fragment.group.GroupInfoActivity;
 import im.actor.messenger.app.fragment.media.DocumentsActivity;
 import im.actor.messenger.app.fragment.profile.ProfileActivity;
 import im.actor.messenger.app.fragment.settings.EditNameActivity;
+import im.actor.messenger.app.util.io.IOUtils;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Peer;
 
@@ -150,6 +154,17 @@ public class Intents {
 //                .putExtra(Intent.EXTRA_STREAM, getDocUri(downloaded))
 //                .setType("image/jpeg");
 //    }
+
+    public static Intent openDoc(String fileName, String downloadFileName) {
+        String mimeType = MimeTypeMap.getSingleton()
+                .getMimeTypeFromExtension(IOUtils.getFileExtension(fileName));
+        if (mimeType == null) {
+            mimeType = "*/*";
+        }
+
+        return new Intent(Intent.ACTION_VIEW)
+                .setDataAndType(Uri.fromFile(new File(downloadFileName)), mimeType);
+    }
 
     public static Intent shareAvatar(FileReference location) {
         return new Intent(Intent.ACTION_SEND)

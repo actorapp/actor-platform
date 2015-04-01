@@ -94,10 +94,16 @@ public abstract class MessageHolder extends BindedViewHolder
     }
 
     @Override
-    public void onClick(View v) {
+    public final void onClick(View v) {
         if (currentMessage != null) {
-            adapter.getMessagesFragment().onClick(currentMessage);
+            if (!adapter.getMessagesFragment().onClick(currentMessage)) {
+                onClick(currentMessage);
+            }
         }
+    }
+
+    public void onClick(Message currentMessage) {
+
     }
 
     @Override
