@@ -44,8 +44,8 @@ public class BaseActivity extends ActionBarActivity {
         BINDER.bind(textView, container, user);
     }
 
-    public void bind(final TextView textView, GroupVM value) {
-        BINDER.bind(textView, value);
+    public void bind(final TextView textView, View titleContainer, GroupVM value) {
+        BINDER.bind(textView, titleContainer, value);
     }
 
     public void bindGroupTyping(final TextView textView, final View container, final View titleContainer, final ValueModel<int[]> typing) {
