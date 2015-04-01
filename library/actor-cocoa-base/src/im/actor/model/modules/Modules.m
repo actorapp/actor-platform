@@ -191,8 +191,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   [filesModule_ run];
   AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.9 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
   start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
-  [((ImActorModelModulesAppStateModule *) nil_chk(appStateModule_)) run];
   [notifications_ run];
+  [((ImActorModelModulesAppStateModule *) nil_chk(appStateModule_)) run];
+  [contacts_ run];
   [messages_ run];
   AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.10 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
   start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
@@ -203,144 +204,144 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
   AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.12 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
   start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
   
-#line 130
+#line 131
   [presence_ onAppVisible];
   [notifications_ onAppVisible];
 }
 
 
-#line 134
+#line 135
 - (id<DKPreferencesStorage>)getPreferences {
   
-#line 135
+#line 136
   return preferences_;
 }
 
 
-#line 138
+#line 139
 - (AMConfiguration *)getConfiguration {
   
-#line 139
+#line 140
   return configuration_;
 }
 
 
-#line 142
+#line 143
 - (ImActorModelModulesAuth *)getAuthModule {
   
-#line 143
+#line 144
   return auth_;
 }
 
 
-#line 146
+#line 147
 - (ImActorModelModulesUsers *)getUsersModule {
   
-#line 147
+#line 148
   return users_;
 }
 
 
-#line 150
+#line 151
 - (ImActorModelModulesGroups *)getGroupsModule {
   
-#line 151
+#line 152
   return groups_;
 }
 
 
-#line 154
+#line 155
 - (ImActorModelModulesMessages *)getMessagesModule {
   
-#line 155
+#line 156
   return messages_;
 }
 
 
-#line 158
+#line 159
 - (ImActorModelModulesUpdates *)getUpdatesModule {
   
-#line 159
+#line 160
   return updates_;
 }
 
 
-#line 162
+#line 163
 - (ImActorModelModulesTyping *)getTypingModule {
   
-#line 163
+#line 164
   return typing_;
 }
 
 
-#line 166
+#line 167
 - (ImActorModelModulesPresence *)getPresenceModule {
   
-#line 167
+#line 168
   return presence_;
 }
 
 
-#line 170
+#line 171
 - (AMActorApi *)getActorApi {
   
-#line 171
+#line 172
   return actorApi_;
 }
 
 
-#line 174
+#line 175
 - (AMI18nEngine *)getI18nEngine {
   
-#line 175
+#line 176
   return i18nEngine_;
 }
 
 
-#line 178
+#line 179
 - (ImActorModelModulesContacts *)getContactsModule {
   
-#line 179
+#line 180
   return contacts_;
 }
 
 
-#line 182
+#line 183
 - (ImActorModelModulesFiles *)getFilesModule {
   
-#line 183
+#line 184
   return filesModule_;
 }
 
 
-#line 186
+#line 187
 - (ImActorModelModulesNotifications *)getNotifications {
   
-#line 187
+#line 188
   return notifications_;
 }
 
 
-#line 190
+#line 191
 - (ImActorModelModulesSettings *)getSettings {
   
-#line 191
+#line 192
   return settings_;
 }
 
 
-#line 194
+#line 195
 - (ImActorModelModulesProfile *)getProfile {
   
-#line 195
+#line 196
   return profile_;
 }
 
 
-#line 198
+#line 199
 - (ImActorModelModulesAppStateModule *)getAppStateModule {
   
-#line 199
+#line 200
   return appStateModule_;
 }
 

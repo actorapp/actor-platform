@@ -47,17 +47,20 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, appState_, AMValueModel *)
     self->isContactsEmpty_ = [[AMValueModel alloc] initWithNSString:@"app.contacts.empty" withId:JavaLangBoolean_valueOfWithBoolean_([((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBool:@"app.contacts.empty" withDefault:YES])];
     
 #line 20
+    AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$@", @"loaded:", [isContactsEmpty_ get]));
+    
+#line 21
     self->appState_ = [[AMValueModel alloc] initWithNSString:@"app.state" withId:AMAppStateEnum_get_READY()];
   }
   return self;
 }
 
 
-#line 23
+#line 24
 - (void)onDialogsChangedWithBoolean:(jboolean)isEmpty {
   @synchronized(self) {
     
-#line 24
+#line 25
     AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z", @"onDialogsChanged:", isEmpty));
     if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isDialogsEmpty_)) get])) booleanValue] != isEmpty) {
       AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z$", @"onDialogsChanged:", isEmpty, @": apply"));
@@ -68,39 +71,41 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, appState_, AMValueModel *)
 }
 
 
-#line 32
+#line 33
 - (void)onContactsChangedWithBoolean:(jboolean)isEmpty {
   @synchronized(self) {
     
-#line 33
-    if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isDialogsEmpty_)) get])) booleanValue] != isEmpty) {
+#line 34
+    AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z", @"onContactsChanged:", isEmpty));
+    if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isContactsEmpty_)) get])) booleanValue] != isEmpty) {
+      AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z$", @"onContactsChanged:", isEmpty, @": apply"));
       [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.contacts.empty" withValue:isEmpty];
-      [isDialogsEmpty_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(isEmpty)];
+      [isContactsEmpty_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(isEmpty)];
     }
   }
 }
 
 
-#line 39
+#line 42
 - (AMValueModel *)getIsDialogsEmpty {
   
-#line 40
+#line 43
   return isDialogsEmpty_;
 }
 
 
-#line 43
+#line 46
 - (AMValueModel *)getIsContactsEmpty {
   
-#line 44
+#line 47
   return isContactsEmpty_;
 }
 
 
-#line 47
+#line 50
 - (AMValueModel *)getAppState {
   
-#line 48
+#line 51
   return appState_;
 }
 
