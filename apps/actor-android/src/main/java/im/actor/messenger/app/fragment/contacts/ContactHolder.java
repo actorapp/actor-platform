@@ -9,14 +9,13 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import im.actor.android.view.BindedViewHolder;
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.AvatarDrawable;
+import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.SearchHighlight;
-import im.actor.messenger.app.util.Screen;
-import im.actor.android.view.BindedViewHolder;
 import im.actor.model.entity.Contact;
 
 /**
@@ -60,6 +59,7 @@ public class ContactHolder extends BindedViewHolder {
         cont.setBackgroundResource(R.drawable.selector);
 
         avatar = new AvatarView(context);
+        avatar.init(52, 24);
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(52), Screen.dp(52));
             layoutParams.leftMargin = Screen.dp(6);
@@ -136,15 +136,7 @@ public class ContactHolder extends BindedViewHolder {
 //            }
 //        }
 
-        avatar.setEmptyDrawable(new AvatarDrawable(data.getName(),
-                data.getUid(), 24, context));
-
-        if (data.getAvatar() != null) {
-            avatar.bindAvatar(Screen.dp(54), data.getAvatar());
-        } else {
-            avatar.unbind();
-        }
-
+        avatar.bind(data);
         title.setText(data.getName());
 
         if (query.length() > 0) {

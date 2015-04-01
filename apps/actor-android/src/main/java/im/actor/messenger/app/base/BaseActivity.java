@@ -35,9 +35,9 @@ public class BaseActivity extends ActionBarActivity {
         BINDER.bind(textView, value);
     }
 
-    public void bind(final AvatarView avatarView, final int id, final float size,
+    public void bind(final AvatarView avatarView, final int id,
                      final ValueModel<Avatar> avatar, final ValueModel<String> name) {
-        BINDER.bind(avatarView, id, size, avatar, name);
+        BINDER.bind(avatarView, id, avatar, name);
     }
 
     public void bind(final TextView textView, final View container, final UserVM user) {

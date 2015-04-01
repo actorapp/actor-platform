@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.view.AvatarDrawable;
+import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
@@ -33,10 +33,8 @@ public class SignUpFragment extends BaseAuthFragment {
         View v = inflater.inflate(R.layout.fragment_sign_up, container, false);
         keyboardHelper = new KeyboardHelper(getActivity());
         avatarView = (AvatarView) v.findViewById(R.id.avatar);
-        avatarView.setEmptyDrawable(new AvatarDrawable("?", 0, 0, getActivity()));
-        if (avatarPath != null) {
-            avatarView.bindUploading(avatarPath);
-        }
+        avatarView.init(Screen.dp(96), 24);
+
         ((TextView) v.findViewById(R.id.button_confirm_sms_code_text)).setTypeface(Fonts.medium());
 
         firstNameEditText = (EditText) v.findViewById(R.id.et_first_name_enter);
@@ -73,7 +71,7 @@ public class SignUpFragment extends BaseAuthFragment {
             int res = data.getIntExtra(Intents.EXTRA_RESULT, Intents.RESULT_IMAGE);
             if (res == Intents.RESULT_IMAGE) {
                 avatarPath = data.getStringExtra(Intents.EXTRA_IMAGE);
-                avatarView.bindUploading(avatarPath);
+                avatarView.bindRaw(avatarPath);
             } else if (res == Intents.RESULT_DELETE) {
                 avatarPath = null;
                 avatarView.unbind();

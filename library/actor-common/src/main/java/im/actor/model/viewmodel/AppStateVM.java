@@ -17,6 +17,7 @@ public class AppStateVM {
         this.modules = modules;
         this.isDialogsEmpty = new ValueModel<Boolean>("app.dialogs.empty", modules.getPreferences().getBool("app.dialogs.empty", true));
         this.isContactsEmpty = new ValueModel<Boolean>("app.contacts.empty", modules.getPreferences().getBool("app.contacts.empty", true));
+        Log.d("AppStateVM", "loaded:" + isContactsEmpty.get());
         this.appState = new ValueModel<AppState>("app.state", AppState.READY);
     }
 
@@ -30,9 +31,11 @@ public class AppStateVM {
     }
 
     public synchronized void onContactsChanged(boolean isEmpty) {
-        if (isDialogsEmpty.get() != isEmpty) {
+        Log.d("AppStateVM", "onContactsChanged:" + isEmpty);
+        if (isContactsEmpty.get() != isEmpty) {
+            Log.d("AppStateVM", "onContactsChanged:" + isEmpty + ": apply");
             modules.getPreferences().putBool("app.contacts.empty", isEmpty);
-            isDialogsEmpty.change(isEmpty);
+            isContactsEmpty.change(isEmpty);
         }
     }
 
