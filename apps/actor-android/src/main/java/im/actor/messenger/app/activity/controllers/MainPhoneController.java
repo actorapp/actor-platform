@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,7 +31,8 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
 import im.actor.model.entity.Dialog;
-import im.actor.model.log.Log;
+import im.actor.model.mvvm.ValueDoubleChangedListener;
+import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.app.Core.messenger;
@@ -66,9 +66,6 @@ public class MainPhoneController extends MainBaseController {
     private View fabContent;
     private View fabRoot;
 
-    private ImageView emptyContactsImage;
-    private ImageView emptyDialogsImage;
-
     private boolean isFabVisible = false;
 
     public MainPhoneController(MainActivity mainActivity) {
@@ -89,8 +86,6 @@ public class MainPhoneController extends MainBaseController {
 
         syncInProgressView = findViewById(R.id.syncInProgress);
         emptyContactsView = findViewById(R.id.emptyContacts);
-        emptyContactsImage = (ImageView) findViewById(R.id.emptyContactsImage);
-        emptyDialogsImage = (ImageView) findViewById(R.id.emptyDialogsImage);
 
         ((TextView) findViewById(R.id.addContactButtonText)).setTypeface(Fonts.medium());
         ((TextView) findViewById(R.id.inviteButtonText)).setTypeface(Fonts.medium());
@@ -229,56 +224,38 @@ public class MainPhoneController extends MainBaseController {
         barTabs.setVisibility(View.VISIBLE);
         emptyContactsView.setVisibility(View.GONE);
         syncInProgressView.setVisibility(View.GONE);
-        // ProfileSyncState.getSyncState().addUiSubscriber(this);
 
-//        emptyContactsImage.setImageResource(R.drawable.contacts_empty_large);
-//        emptyDialogsImage.setImageResource(R.drawable.contacts_empty_large);
-    }
-
-//    public void onChanged(ProfileSyncState.State value) {
-//        barTabs.setVisibility(View.VISIBLE);
-//        emptyContactsView.setVisibility(View.GONE);
-//        syncInProgressView.setVisibility(View.GONE);
-////        switch (value) {
-////            default:
-////            case READY:
-////                barTabs.setVisibility(View.VISIBLE);
-////                emptyContactsView.setVisibility(View.GONE);
-////                syncInProgressView.setVisibility(View.GONE);
-////                getActivity().invalidateOptionsMenu();
-////                break;
-////            case EMPTY_APP:
-////                barTabs.setVisibility(View.GONE);
-////                emptyContactsView.setVisibility(View.VISIBLE);
-////                syncInProgressView.setVisibility(View.GONE);
-////                getActivity().invalidateOptionsMenu();
-////                break;
-////            case IN_PROGRESS:
-////                barTabs.setVisibility(View.GONE);
-////                emptyContactsView.setVisibility(View.GONE);
-////                syncInProgressView.setVisibility(View.VISIBLE);
-////                getActivity().invalidateOptionsMenu();
-////                break;
-////        }
-//    }
-
-    @Override
-    public void onPause() {
-//        ProfileSyncState.getSyncState().removeUiSubscriber(this);
-//        emptyContactsImage.setImageBitmap(null);
-//        emptyDialogsImage.setImageBitmap(null);
+        getActivity().bind(messenger().getAppState().getIsAppLoaded(),
+                messenger().getAppState().getIsAppEmpty(),
+                new ValueDoubleChangedListener<Boolean, Boolean>() {
+                    @Override
+                    public void onChanged(Boolean isAppLoaded, ValueModel<Boolean> valueModel,
+                                          Boolean isAppEmpty, ValueModel<Boolean> valueModel2) {
+                        if (isAppEmpty) {
+                            if (isAppLoaded) {
+                                barTabs.setVisibility(View.GONE);
+                                emptyContactsView.setVisibility(View.VISIBLE);
+                                syncInProgressView.setVisibility(View.GONE);
+                                getActivity().invalidateOptionsMenu();
+                            } else {
+                                barTabs.setVisibility(View.GONE);
+                                emptyContactsView.setVisibility(View.GONE);
+                                syncInProgressView.setVisibility(View.VISIBLE);
+                                getActivity().invalidateOptionsMenu();
+                            }
+                        } else {
+                            barTabs.setVisibility(View.VISIBLE);
+                            emptyContactsView.setVisibility(View.GONE);
+                            syncInProgressView.setVisibility(View.GONE);
+                            getActivity().invalidateOptionsMenu();
+                        }
+                    }
+                });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-
-        Log.d("MainPhoneController", "onCreateOptionsMenu called");
-        try {
-            throw new Exception();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         MenuItem menuItem = menu.findItem(R.id.profile);
         final AvatarView avatarView = (AvatarView) menuItem.getActionView().findViewById(R.id.avatarView);
@@ -298,7 +275,11 @@ public class MainPhoneController extends MainBaseController {
         });
 
         searchMenu = menu.findItem(R.id.search);
-        // searchMenu.setVisible(ProfileSyncState.getSyncState().getValue() == ProfileSyncState.State.READY);
+        if (messenger().getAppState().getIsAppEmpty().get()) {
+            searchMenu.setVisible(false);
+        } else {
+            searchMenu.setVisible(true);
+        }
         searchView = (SearchView) searchMenu.getActionView();
         searchView.setIconifiedByDefault(true);
 
@@ -418,16 +399,5 @@ public class MainPhoneController extends MainBaseController {
                     return "Contacts";
             }
         }
-//
-//        @Override
-//        public int getPageIconResId(int position) {
-//            switch (position) {
-//                default:
-//                case 0:
-//                    return R.drawable.main_bar_recent_selector;
-//                case 1:
-//                    return R.drawable.main_bar_contacts_selector;
-//            }
-//        }
     }
 }

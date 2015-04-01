@@ -37,6 +37,18 @@ public class AppStateModule extends BaseModule {
         listStatesActor.send(new ListsStatesActor.OnContactsChanged(isEmpty));
     }
 
+    public void onBookImported() {
+        listStatesActor.send(new ListsStatesActor.OnBookImported());
+    }
+
+    public void onContactsLoaded() {
+        listStatesActor.send(new ListsStatesActor.OnContactsLoaded());
+    }
+
+    public void onDialogsLoaded() {
+        listStatesActor.send(new ListsStatesActor.OnDialogsLoaded());
+    }
+
     public AppStateVM getAppStateVM() {
         return appStateVM;
     }

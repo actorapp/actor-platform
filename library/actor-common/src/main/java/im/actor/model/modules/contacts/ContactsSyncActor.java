@@ -123,6 +123,9 @@ public class ContactsSyncActor extends ModuleActor {
         }
 
         isInProgress = false;
+
+        modules().getAppStateModule().onContactsLoaded();
+
         if (result.isNotChanged()) {
             Log.d(TAG, "Sync: Not changed");
             if (isInvalidated) {
