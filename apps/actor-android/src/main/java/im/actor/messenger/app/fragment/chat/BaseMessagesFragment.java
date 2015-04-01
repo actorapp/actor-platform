@@ -19,12 +19,12 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
+import im.actor.android.view.BindedListAdapter;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.DisplayListFragment;
 import im.actor.messenger.app.fragment.chat.adapter.MessageHolder;
 import im.actor.messenger.app.util.Screen;
-import im.actor.android.view.BindedListAdapter;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.TextContent;
@@ -140,7 +140,13 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
             }
             return true;
         }
-
+//        if (message.getContent() instanceof DocumentContent) {
+//            DocumentContent doc = (DocumentContent) message.getContent();
+//            if (doc.getSource() instanceof FileRemoteSource) {
+//
+//            }
+//            messenger().requestState(doc.getSource())
+//        }
         return false;
     }
 

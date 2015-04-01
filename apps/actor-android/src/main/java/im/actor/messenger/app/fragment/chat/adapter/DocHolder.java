@@ -1,5 +1,6 @@
 package im.actor.messenger.app.fragment.chat.adapter;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.MenuItem;
 import android.view.View;
@@ -7,20 +8,22 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import im.actor.images.common.ImageLoadException;
-import im.actor.images.ops.ImageLoading;
 import com.droidkit.progress.CircularView;
 
+import im.actor.images.common.ImageLoadException;
+import im.actor.images.ops.ImageLoading;
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
-import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.util.FileTypes;
+import im.actor.messenger.app.view.TintImageView;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.content.DocumentContent;
 import im.actor.model.entity.content.FileLocalSource;
 import im.actor.model.entity.content.FileRemoteSource;
 import im.actor.model.files.FileSystemReference;
+import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.viewmodel.DownloadCallback;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
@@ -227,9 +230,7 @@ public class DocHolder extends MessageHolder {
     }
 
     @Override
-    public void onClick(View v) {
-        super.onClick(v);
-
+    public void onClick(final Message currentMessage) {
         if (document.getSource() instanceof FileRemoteSource) {
             FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
             final FileReference location = remoteSource.getFileReference();
@@ -245,8 +246,14 @@ public class DocHolder extends MessageHolder {
                 }
 
                 @Override
-                public void onDownloaded(FileSystemReference reference) {
-                    // TODO: Open file
+                public void onDownloaded(final FileSystemReference reference) {
+                    MVVMEngine.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Activity activity = getAdapter().getMessagesFragment().getActivity();
+                            activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                        }
+                    });
                 }
             });
         } else if (document.getSource() instanceof FileLocalSource) {
@@ -267,7 +274,6 @@ public class DocHolder extends MessageHolder {
                 }
             });
         }
-
     }
 
     @Override

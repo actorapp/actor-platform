@@ -1,5 +1,6 @@
 package im.actor.messenger.app.fragment.chat.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -17,11 +18,13 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.io.File;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.messenger.app.fragment.chat.view.FastThumbLoader;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.TintImageView;
+import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.content.DocumentContent;
 import im.actor.model.entity.content.FileLocalSource;
@@ -29,8 +32,11 @@ import im.actor.model.entity.content.FileRemoteSource;
 import im.actor.model.entity.content.PhotoContent;
 import im.actor.model.entity.content.VideoContent;
 import im.actor.model.files.FileSystemReference;
+import im.actor.model.mvvm.MVVMEngine;
+import im.actor.model.viewmodel.DownloadCallback;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
+import im.actor.model.viewmodel.UploadCallback;
 import im.actor.model.viewmodel.UploadFileVM;
 import im.actor.model.viewmodel.UploadFileVMCallback;
 
@@ -231,6 +237,54 @@ public class PhotoHolder extends MessageHolder {
             } else {
                 throw new RuntimeException("Unknown file source type: " + fileMessage.getSource());
             }
+        }
+    }
+
+    @Override
+    public void onClick(final Message currentMessage) {
+        final DocumentContent document = (DocumentContent) currentMessage.getContent();
+        if (document.getSource() instanceof FileRemoteSource) {
+            FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
+            final FileReference location = remoteSource.getFileReference();
+            messenger().requestState(location.getFileId(), new DownloadCallback() {
+                @Override
+                public void onNotDownloaded() {
+                    messenger().startDownloading(location);
+                }
+
+                @Override
+                public void onDownloading(float progress) {
+                    messenger().cancelDownloading(location.getFileId());
+                }
+
+                @Override
+                public void onDownloaded(final FileSystemReference reference) {
+                    MVVMEngine.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Activity activity = getAdapter().getMessagesFragment().getActivity();
+                            activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                        }
+                    });
+                }
+            });
+        } else if (document.getSource() instanceof FileLocalSource) {
+            messenger().requestUploadState(currentMessage.getRid(), new UploadCallback() {
+                @Override
+                public void onNotUploading() {
+                    messenger().resumeUpload(currentMessage.getRid());
+                }
+
+                @Override
+                public void onUploading(float progress) {
+                    messenger().pauseUpload(currentMessage.getRid());
+                }
+
+                @Override
+                public void onUploaded() {
+                    // Nothing to do
+                }
+            });
         }
     }
 
