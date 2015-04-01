@@ -140,13 +140,6 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
             }
             return true;
         }
-//        if (message.getContent() instanceof DocumentContent) {
-//            DocumentContent doc = (DocumentContent) message.getContent();
-//            if (doc.getSource() instanceof FileRemoteSource) {
-//
-//            }
-//            messenger().requestState(doc.getSource())
-//        }
         return false;
     }
 
