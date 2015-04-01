@@ -58,19 +58,19 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesContacts, contactSyncActor_, DKActorRef *
 
 @interface ImActorModelModulesContacts_$1 () {
  @public
-  ImActorModelModulesModules *val$modules_;
+  ImActorModelModulesContacts *this$0_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesContacts_$1, val$modules_, ImActorModelModulesModules *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesContacts_$1, this$0_, ImActorModelModulesContacts *)
 
 @interface ImActorModelModulesContacts_$2 () {
  @public
-  ImActorModelModulesModules *val$modules_;
+  ImActorModelModulesContacts *this$0_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesContacts_$2, val$modules_, ImActorModelModulesModules *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesContacts_$2, this$0_, ImActorModelModulesContacts *)
 
 @interface ImActorModelModulesContacts_$3 () {
  @public
@@ -209,89 +209,92 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesContacts_$5_$2_$2, this$0_, ImActorModelM
     contacts_ = [((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getStorageProvider])) createContactsListWithDKListStorage:
 #line 43
     [((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getStorageProvider])) createList:ImActorModelModulesBaseModule_get_STORAGE_CONTACTS_()]];
-    
-#line 45
-    bookImportActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesContactsBookImportActor_class_(), [[ImActorModelModulesContacts_$1 alloc] initWithImActorModelModulesModules:modules]) withNSString:
-#line 50
-    @"actor/book_import"];
-    
-#line 51
-    contactSyncActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesContactsContactsSyncActor_class_(), [[ImActorModelModulesContacts_$2 alloc] initWithImActorModelModulesModules:modules]) withNSString:
-#line 56
-    @"actor/contacts_sync"];
   }
   return self;
 }
 
 
-#line 59
+#line 46
+- (void)run {
+  
+#line 47
+  bookImportActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesContactsBookImportActor_class_(), [[ImActorModelModulesContacts_$1 alloc] initWithImActorModelModulesContacts:self]) withNSString:
+#line 52
+  @"actor/book_import"];
+  contactSyncActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesContactsContactsSyncActor_class_(), [[ImActorModelModulesContacts_$2 alloc] initWithImActorModelModulesContacts:self]) withNSString:
+#line 58
+  @"actor/contacts_sync"];
+}
+
+
+#line 61
 - (id<DKListEngine>)getContacts {
   
-#line 60
+#line 62
   return contacts_;
 }
 
 
-#line 63
+#line 65
 - (void)onPhoneBookChanged {
   
-#line 64
+#line 66
   [((DKActorRef *) nil_chk(bookImportActor_)) sendWithId:[[ImActorModelModulesContactsBookImportActor_PerformSync alloc] init]];
 }
 
 
-#line 67
+#line 69
 - (DKActorRef *)getContactSyncActor {
   
-#line 68
+#line 70
   return contactSyncActor_;
 }
 
 
-#line 71
+#line 73
 - (void)markContactWithInt:(jint)uid {
   
-#line 72
+#line 74
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBool:JreStrcat("$I", @"contact_", uid) withValue:YES];
 }
 
 
-#line 75
+#line 77
 - (void)markNonContactWithInt:(jint)uid {
   
-#line 76
+#line 78
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBool:JreStrcat("$I", @"contact_", uid) withValue:NO];
 }
 
 
-#line 79
+#line 81
 - (jboolean)isUserContactWithInt:(jint)uid {
   
-#line 80
+#line 82
   return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:JreStrcat("$I", @"contact_", uid) withDefault:NO];
 }
 
 
-#line 83
+#line 85
 - (id<AMCommand>)findUsersWithNSString:(NSString *)query {
   
-#line 84
+#line 86
   return [[ImActorModelModulesContacts_$3 alloc] initWithImActorModelModulesContacts:self withNSString:query];
 }
 
 
-#line 118
+#line 120
 - (id<AMCommand>)addContactWithInt:(jint)uid {
   
-#line 119
+#line 121
   return [[ImActorModelModulesContacts_$4 alloc] initWithImActorModelModulesContacts:self withInt:uid];
 }
 
 
-#line 163
+#line 165
 - (id<AMCommand>)removeContactWithInt:(jint)uid {
   
-#line 164
+#line 166
   return [[ImActorModelModulesContacts_$5 alloc] initWithImActorModelModulesContacts:self withInt:uid];
 }
 
@@ -309,21 +312,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts)
 @implementation ImActorModelModulesContacts_$1
 
 
-#line 47
+#line 49
 - (ImActorModelModulesContactsBookImportActor *)create {
   
-#line 48
-  return [[ImActorModelModulesContactsBookImportActor alloc] initWithImActorModelModulesModules:val$modules_];
+#line 50
+  return [[ImActorModelModulesContactsBookImportActor alloc] initWithImActorModelModulesModules:[this$0_ modules]];
 }
 
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0 {
-  val$modules_ = capture$0;
+- (instancetype)initWithImActorModelModulesContacts:(ImActorModelModulesContacts *)outer$ {
+  this$0_ = outer$;
   return [super init];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesContacts_$1 *)other {
   [super copyAllFieldsTo:other];
-  other->val$modules_ = val$modules_;
+  other->this$0_ = this$0_;
 }
 
 @end
@@ -333,21 +336,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$1)
 @implementation ImActorModelModulesContacts_$2
 
 
-#line 53
+#line 55
 - (ImActorModelModulesContactsContactsSyncActor *)create {
   
-#line 54
-  return [[ImActorModelModulesContactsContactsSyncActor alloc] initWithImActorModelModulesModules:val$modules_];
+#line 56
+  return [[ImActorModelModulesContactsContactsSyncActor alloc] initWithImActorModelModulesModules:[this$0_ modules]];
 }
 
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0 {
-  val$modules_ = capture$0;
+- (instancetype)initWithImActorModelModulesContacts:(ImActorModelModulesContacts *)outer$ {
+  this$0_ = outer$;
   return [super init];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesContacts_$2 *)other {
   [super copyAllFieldsTo:other];
-  other->val$modules_ = val$modules_;
+  other->this$0_ = this$0_;
 }
 
 @end
@@ -357,10 +360,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$2)
 @implementation ImActorModelModulesContacts_$3
 
 
-#line 86
+#line 88
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   
-#line 87
+#line 89
   [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSearchContacts alloc] initWithNSString:val$query_] withAMRpcCallback:[[ImActorModelModulesContacts_$3_$1 alloc] initWithImActorModelModulesContacts_$3:self withAMCommandCallback:callback]];
 }
 
@@ -384,26 +387,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$3)
 @implementation ImActorModelModulesContacts_$3_$1
 
 
-#line 89
+#line 91
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSearchContacts *)response {
   
-#line 90
+#line 92
   if ([((id<JavaUtilList>) nil_chk([((ImActorModelApiRpcResponseSearchContacts *) nil_chk(response)) getUsers])) size] == 0) {
     [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesContacts_$3_$1_$1 alloc] initWithImActorModelModulesContacts_$3_$1:self]];
     
-#line 97
+#line 99
     return;
   }
   
-#line 100
+#line 102
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalUsersFounded alloc] initWithJavaUtilList:[response getUsers] withAMCommandCallback:val$callback_]];
 }
 
 
-#line 104
+#line 106
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 105
+#line 107
   [((AMRpcException *) nil_chk(e)) printStackTrace];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesContacts_$3_$1_$2 alloc] initWithImActorModelModulesContacts_$3_$1:self]];
 }
@@ -428,10 +431,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$3_$1)
 @implementation ImActorModelModulesContacts_$3_$1_$1
 
 
-#line 93
+#line 95
 - (void)run {
   
-#line 94
+#line 96
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:[IOSObjectArray newArrayWithLength:0 type:AMUserVM_class_()]];
 }
 
@@ -452,10 +455,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$3_$1_$1)
 @implementation ImActorModelModulesContacts_$3_$1_$2
 
 
-#line 108
+#line 110
 - (void)run {
   
-#line 109
+#line 111
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:[IOSObjectArray newArrayWithLength:0 type:AMUserVM_class_()]];
 }
 
@@ -476,19 +479,19 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$3_$1_$2)
 @implementation ImActorModelModulesContacts_$4
 
 
-#line 121
+#line 123
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   
-#line 122
+#line 124
   AMUser *user = [((id<DKKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:val$uid_];
   if (user == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesContacts_$4_$1 alloc] initWithAMCommandCallback:callback]];
     
-#line 130
+#line 132
     return;
   }
   
-#line 133
+#line 135
   [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestAddContact alloc] initWithInt:val$uid_ withLong:[((AMUser *) nil_chk(user)) getAccessHash]] withAMRpcCallback:[[ImActorModelModulesContacts_$4_$2 alloc] initWithImActorModelModulesContacts_$4:self withAMCommandCallback:callback]];
 }
 
@@ -512,10 +515,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$4)
 @implementation ImActorModelModulesContacts_$4_$1
 
 
-#line 126
+#line 128
 - (void)run {
   
-#line 127
+#line 129
   [((id<AMCommandCallback>) nil_chk(val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
@@ -536,24 +539,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$4_$1)
 @implementation ImActorModelModulesContacts_$4_$2
 
 
-#line 135
+#line 137
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response {
   
-#line 136
+#line 138
   JavaUtilArrayList *uids = [[JavaUtilArrayList alloc] init];
   [uids addWithId:JavaLangInteger_valueOfWithInt_(this$0_->val$uid_)];
   ImActorModelApiBaseSeqUpdate *update = [[ImActorModelApiBaseSeqUpdate alloc] initWithInt:[((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq] withByteArray:[response getState] withInt:
-#line 139
+#line 141
   ImActorModelApiUpdatesUpdateContactsAdded_HEADER withByteArray:[((ImActorModelApiUpdatesUpdateContactsAdded *) [[ImActorModelApiUpdatesUpdateContactsAdded alloc] initWithJavaUtilList:uids]) toByteArray]];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesContacts_$4_$2_$1 alloc] initWithImActorModelModulesContacts_$4_$2:self]];
 }
 
 
-#line 150
+#line 152
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 151
+#line 153
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesContacts_$4_$2_$2 alloc] initWithImActorModelModulesContacts_$4_$2:self]];
 }
 
@@ -577,10 +580,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$4_$2)
 @implementation ImActorModelModulesContacts_$4_$2_$1
 
 
-#line 143
+#line 145
 - (void)run {
   
-#line 144
+#line 146
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
 
@@ -601,10 +604,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$4_$2_$1)
 @implementation ImActorModelModulesContacts_$4_$2_$2
 
 
-#line 153
+#line 155
 - (void)run {
   
-#line 154
+#line 156
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
@@ -625,19 +628,19 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$4_$2_$2)
 @implementation ImActorModelModulesContacts_$5
 
 
-#line 166
+#line 168
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   
-#line 167
+#line 169
   AMUser *user = [((id<DKKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:val$uid_];
   if (user == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesContacts_$5_$1 alloc] initWithAMCommandCallback:callback]];
     
-#line 175
+#line 177
     return;
   }
   
-#line 178
+#line 180
   [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestRemoveContact alloc] initWithInt:val$uid_ withLong:[((AMUser *) nil_chk(user)) getAccessHash]] withAMRpcCallback:[[ImActorModelModulesContacts_$5_$2 alloc] initWithImActorModelModulesContacts_$5:self withAMCommandCallback:callback]];
 }
 
@@ -661,10 +664,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$5)
 @implementation ImActorModelModulesContacts_$5_$1
 
 
-#line 171
+#line 173
 - (void)run {
   
-#line 172
+#line 174
   [((id<AMCommandCallback>) nil_chk(val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
@@ -685,24 +688,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$5_$1)
 @implementation ImActorModelModulesContacts_$5_$2
 
 
-#line 180
+#line 182
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response {
   
-#line 181
+#line 183
   JavaUtilArrayList *uids = [[JavaUtilArrayList alloc] init];
   [uids addWithId:JavaLangInteger_valueOfWithInt_(this$0_->val$uid_)];
   ImActorModelApiBaseSeqUpdate *update = [[ImActorModelApiBaseSeqUpdate alloc] initWithInt:[((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq] withByteArray:[response getState] withInt:
-#line 184
+#line 186
   ImActorModelApiUpdatesUpdateContactsRemoved_HEADER withByteArray:[((ImActorModelApiUpdatesUpdateContactsRemoved *) [[ImActorModelApiUpdatesUpdateContactsRemoved alloc] initWithJavaUtilList:uids]) toByteArray]];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesContacts_$5_$2_$1 alloc] initWithImActorModelModulesContacts_$5_$2:self]];
 }
 
 
-#line 195
+#line 197
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 196
+#line 198
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesContacts_$5_$2_$2 alloc] initWithImActorModelModulesContacts_$5_$2:self]];
 }
 
@@ -726,10 +729,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$5_$2)
 @implementation ImActorModelModulesContacts_$5_$2_$1
 
 
-#line 188
+#line 190
 - (void)run {
   
-#line 189
+#line 191
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
 
@@ -750,10 +753,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$5_$2_$1)
 @implementation ImActorModelModulesContacts_$5_$2_$2
 
 
-#line 198
+#line 200
 - (void)run {
   
-#line 199
+#line 201
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 

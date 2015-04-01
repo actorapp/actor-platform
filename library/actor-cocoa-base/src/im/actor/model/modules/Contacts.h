@@ -28,6 +28,8 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
+- (void)run;
+
 - (id<DKListEngine>)getContacts;
 
 - (void)onPhoneBookChanged;
@@ -60,7 +62,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContacts)
 
 - (ImActorModelModulesContactsBookImportActor *)create;
 
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0;
+- (instancetype)initWithImActorModelModulesContacts:(ImActorModelModulesContacts *)outer$;
 
 @end
 
@@ -76,7 +78,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContacts_$1)
 
 - (ImActorModelModulesContactsContactsSyncActor *)create;
 
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0;
+- (instancetype)initWithImActorModelModulesContacts:(ImActorModelModulesContacts *)outer$;
 
 @end
 

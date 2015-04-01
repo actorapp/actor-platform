@@ -227,7 +227,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$2_$1_$2)
 
 - (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
                                    withNSString:(NSString *)capture$0
-                                    withBoolean:(jboolean)capture$1;
+                                    withBoolean:(jboolean)capture$1
+                                   withNSString:(NSString *)capture$2;
 
 @end
 
