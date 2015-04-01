@@ -19,4 +19,6 @@
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
 #import <VENTokenField/VENTokenField.h>
 
+#import "ABPhoneField.h"
+
 #import "SLKTextViewController.h"
