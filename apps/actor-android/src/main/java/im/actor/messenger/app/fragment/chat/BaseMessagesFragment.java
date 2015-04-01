@@ -20,6 +20,7 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.DisplayListFragment;
 import im.actor.messenger.app.fragment.chat.adapter.MessageHolder;
 import im.actor.messenger.app.util.Screen;
@@ -119,6 +120,9 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
         messenger().onConversationOpen(peer);
     }
 
+    public void onAvatarClick(int uid) {
+        startActivity(Intents.openProfile(uid, getActivity()));
+    }
 
     public boolean onClick(Message message) {
         if (actionMode != null) {

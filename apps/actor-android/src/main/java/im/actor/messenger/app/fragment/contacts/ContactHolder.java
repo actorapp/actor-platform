@@ -32,7 +32,6 @@ public class ContactHolder extends BindedViewHolder {
 
     private FrameLayout cont;
 
-    private Context context;
     private boolean isSelectable;
 
     private OnItemClickedListener<Contact> onItemClickedListener;
@@ -41,7 +40,6 @@ public class ContactHolder extends BindedViewHolder {
         super(fl);
 
         this.onItemClickedListener = onItemClickedListener;
-        this.context = context;
         this.isSelectable = isSelectable;
 
         int padding = Screen.dp(16);
@@ -73,7 +71,7 @@ public class ContactHolder extends BindedViewHolder {
         fastTitle.setTextColor(context.getResources().getColor(R.color.primary));
         fastTitle.setTextSize(18);
         fastTitle.setGravity(Gravity.CENTER);
-        fastTitle.setTypeface(Fonts.regular());
+        fastTitle.setTypeface(Fonts.medium());
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(40), ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.leftMargin = Screen.dp(6);
@@ -117,24 +115,14 @@ public class ContactHolder extends BindedViewHolder {
         }
     }
 
-    public void bind(final Contact data, String query, boolean selected) {
-        String shortName = getFastName(data.getName());
+    public void bind(final Contact data, String shortName, String query, boolean selected) {
 
-        fastTitle.setVisibility(View.VISIBLE);
-        fastTitle.setText(shortName);
-//        if (position == 0) {
-//            fastTitle.setVisibility(View.VISIBLE);
-//            fastTitle.setText(shortName);
-//        } else {
-//            Contact contact = getUiList().getItem(position - 1);
-//            String prevShortName = getFastName(contact.getName());
-//            if (shortName.equals(prevShortName)) {
-//                fastTitle.setVisibility(View.GONE);
-//            } else {
-//                fastTitle.setVisibility(View.VISIBLE);
-//                fastTitle.setText(shortName);
-//            }
-//        }
+        if (shortName == null) {
+            fastTitle.setVisibility(View.GONE);
+        } else {
+            fastTitle.setVisibility(View.VISIBLE);
+            fastTitle.setText(shortName);
+        }
 
         avatar.bind(data);
         title.setText(data.getName());
@@ -166,17 +154,5 @@ public class ContactHolder extends BindedViewHolder {
 
     public void unbind() {
         avatar.unbind();
-    }
-
-    private static String getFastName(String name) {
-        if (name.length() > 1) {
-            if (Character.isLetter(name.charAt(0))) {
-                return name.substring(0, 1).toUpperCase();
-            } else {
-                return "#";
-            }
-        } else {
-            return "#";
-        }
     }
 }

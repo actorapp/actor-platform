@@ -101,7 +101,7 @@ public class GroupUsersFragment extends BaseContactFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.done) {
             if (getSelectedCount() > 0) {
-                execute(messenger().createGroup(title, BoxUtil.unbox(getSelected())),
+                execute(messenger().createGroup(title, avatarPath, BoxUtil.unbox(getSelected())),
                         R.string.progress_common, new CommandCallback<Integer>() {
                             @Override
                             public void onResult(Integer res) {

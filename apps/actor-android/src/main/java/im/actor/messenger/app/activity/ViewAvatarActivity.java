@@ -21,7 +21,6 @@ import im.actor.images.cache.BitmapReference;
 import im.actor.images.common.ImageLoadException;
 import im.actor.images.loading.ImageReceiver;
 import im.actor.images.loading.ReceiverCallback;
-import im.actor.images.loading.tasks.RawFileTask;
 import im.actor.images.ops.ImageLoading;
 import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
@@ -170,9 +169,9 @@ public class ViewAvatarActivity extends BaseActivity {
     private void performBind(Avatar avatar, AvatarUploadState uploadState) {
         if (uploadState != null && uploadState.isUploading()) {
             if (uploadState.getDescriptor() != null) {
-                receiver.request(new RawFileTask(uploadState.getDescriptor()));
+                photoView.setImageURI(Uri.fromFile(new File(uploadState.getDescriptor())));
             } else {
-                receiver.clear();
+                photoView.setImageURI(null);
             }
             showView(progress);
             goneView(noPhoto);
@@ -290,7 +289,7 @@ public class ViewAvatarActivity extends BaseActivity {
                                         messenger().removeAvatar();
                                     }
                                 } else if (peer.getPeerType() == PeerType.GROUP) {
-                                    // TODO: Implement
+                                    messenger().removeGroupAvatar(peer.getPeerId());
                                 }
                             }
                         }

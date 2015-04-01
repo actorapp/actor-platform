@@ -386,9 +386,9 @@ public class ChatActivity extends BaseActivity {
                     sendUri(data.getData());
                 }
             } else if (requestCode == REQUEST_PHOTO) {
-                // messenger().sendPhoto(peer, fileName);
+                messenger().sendPhoto(peer, fileName);
             } else if (requestCode == REQUEST_VIDEO) {
-                // messenger().sendVideo(peer, fileName);
+                messenger().sendVideo(peer, fileName);
             } else if (requestCode == REQUEST_DOC) {
                 if (data.getData() != null) {
                     sendUri(data.getData());
@@ -396,7 +396,7 @@ public class ChatActivity extends BaseActivity {
                     ArrayList<String> files = data.getStringArrayListExtra("picked");
                     if (files != null) {
                         for (String s : files) {
-                            // messenger().sendDocument(peer, s);
+                            messenger().sendDocument(peer, s);
                         }
                     }
                 }
@@ -457,11 +457,11 @@ public class ChatActivity extends BaseActivity {
                 }
 
                 if (mimeType.startsWith("video/")) {
-                    // messenger().sendVideo(peer, picturePath, fileName);
+                    messenger().sendVideo(peer, picturePath, fileName);
                 } else if (mimeType.startsWith("image/")) {
-                    // messenger().sendPhoto(peer, picturePath, new File(fileName).getName());
+                    messenger().sendPhoto(peer, picturePath, new File(fileName).getName());
                 } else {
-                    // messenger().sendDocument(peer, picturePath, new File(fileName).getName());
+                    messenger().sendDocument(peer, picturePath, new File(fileName).getName());
                 }
 
                 return null;
@@ -491,6 +491,8 @@ public class ChatActivity extends BaseActivity {
             menu.findItem(R.id.groupInfo).setVisible(false);
             menu.findItem(R.id.leaveGroup).setVisible(false);
         }
+
+        menu.findItem(R.id.files).setVisible(false);
 
         return super.onCreateOptionsMenu(menu);
     }

@@ -15,8 +15,6 @@ import im.actor.model.modules.utils.ModuleActor;
  */
 public abstract class PlainCursorActor extends ModuleActor {
 
-
-
     private PlainCursorsStorage plainCursorsStorage;
     private HashSet<Peer> inProgress = new HashSet<Peer>();
     private long cursorId;

@@ -402,6 +402,18 @@ public class I18nEngine {
         return text;
     }
 
+    public String formatFastName(String name) {
+        if (name.length() > 1) {
+            if (Character.isLetter(name.charAt(0))) {
+                return name.substring(0, 1).toUpperCase();
+            } else {
+                return "#";
+            }
+        } else {
+            return "#";
+        }
+    }
+
     private String getTemplateNamed(int senderId, String baseString) {
         return getTemplate(senderId, baseString).replace("{name}",
                 formatPerformerName(senderId));
