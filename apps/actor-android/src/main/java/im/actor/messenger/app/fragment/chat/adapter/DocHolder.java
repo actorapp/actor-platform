@@ -41,7 +41,6 @@ import static im.actor.messenger.app.view.ViewUtils.showView;
 public class DocHolder extends MessageHolder {
 
     // Basic bubble
-    private View bubbleView;
     private View menu;
 
     // Content views
@@ -64,7 +63,7 @@ public class DocHolder extends MessageHolder {
         super(fragment, itemView, false);
 
         // Basic bubble
-        bubbleView = itemView.findViewById(R.id.bubbleContainer);
+        View bubbleView = itemView.findViewById(R.id.bubbleContainer);
         bubbleView.setBackgroundResource(R.drawable.conv_bubble_media_in);
         menu = itemView.findViewById(R.id.menu);
         menu.setOnClickListener(new View.OnClickListener() {
@@ -75,14 +74,31 @@ public class DocHolder extends MessageHolder {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-//                        if (message != null && message.getContent() instanceof DocumentMessage) {
-//                            DocumentMessage documentMessage = (DocumentMessage) message.getContent();
-//                            Downloaded downloaded = downloaded().get(documentMessage.getLocation().getFileId());
-//                            if (downloaded != null) {
-//                                context.startActivity(Intents.shareDoc(downloaded));
-//                            }
-//                        }
+                        if (currentMessage != null && currentMessage.getContent() instanceof DocumentContent) {
+                            final DocumentContent documentContent = (DocumentContent) currentMessage.getContent();
+                            if (documentContent.getSource() instanceof FileRemoteSource) {
+                                FileRemoteSource remoteSource = (FileRemoteSource) documentContent.getSource();
+                                messenger().requestState(remoteSource.getFileReference().getFileId(), new DownloadCallback() {
+                                    @Override
+                                    public void onNotDownloaded() {
 
+                                    }
+
+                                    @Override
+                                    public void onDownloading(float progress) {
+
+                                    }
+
+                                    @Override
+                                    public void onDownloaded(FileSystemReference reference) {
+                                        Activity activity = getAdapter().getMessagesFragment().getActivity();
+                                        activity.startActivity(Intents.shareDoc(documentContent.getName(),
+                                                reference.getDescriptor()));
+                                    }
+                                });
+                            }
+
+                        }
                         return true;
                     }
                 });
