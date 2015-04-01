@@ -251,7 +251,7 @@ public class MyProfileFragment extends BaseFragment {
             startActivity(Intents.editMyName(getActivity()));
             return true;
         } else if (item.getItemId() == R.id.changePhoto) {
-            // startActivity(ViewAvatarActivity.viewAvatar(myUid(), getActivity()));
+            startActivity(ViewAvatarActivity.viewAvatar(myUid(), getActivity()));
             return true;
         }
 
