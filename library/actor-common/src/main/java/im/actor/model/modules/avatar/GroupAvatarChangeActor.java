@@ -6,8 +6,11 @@ import im.actor.model.api.FileLocation;
 import im.actor.model.api.GroupOutPeer;
 import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestEditGroupAvatar;
+import im.actor.model.api.rpc.RequestRemoveAvatar;
 import im.actor.model.api.rpc.ResponseEditGroupAvatar;
+import im.actor.model.api.rpc.ResponseSeq;
 import im.actor.model.api.updates.UpdateGroupAvatarChanged;
+import im.actor.model.api.updates.UpdateUserAvatarChanged;
 import im.actor.model.entity.FileReference;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.file.UploadManager;
@@ -77,6 +80,16 @@ public class GroupAvatarChangeActor extends ModuleActor {
 
             @Override
             public void onError(RpcException e) {
+                if (!tasksMap.containsKey(rid)) {
+                    return;
+                }
+                final int gid = tasksMap.get(rid);
+                if (currentTasks.get(gid) != rid) {
+                    return;
+                }
+                currentTasks.remove(gid);
+                tasksMap.remove(rid);
+
                 modules().getGroupsModule().getAvatarVM(gid).getUploadState().change(new AvatarUploadState(null, false));
             }
         });
@@ -93,6 +106,63 @@ public class GroupAvatarChangeActor extends ModuleActor {
         modules().getGroupsModule().getAvatarVM(gid).getUploadState().change(new AvatarUploadState(null, false));
     }
 
+    public void uploadError(long rid) {
+        if (!tasksMap.containsKey(rid)) {
+            return;
+        }
+        final int gid = tasksMap.get(rid);
+        if (currentTasks.get(gid) != rid) {
+            return;
+        }
+        currentTasks.remove(gid);
+        tasksMap.remove(rid);
+
+        modules().getGroupsModule().getAvatarVM(gid).getUploadState().change(new AvatarUploadState(null, false));
+    }
+
+    public void removeAvatar(final int gid) {
+        if (currentTasks.containsKey(gid)) {
+            modules().getFilesModule().cancelUpload(currentTasks.get(gid));
+            currentTasks.remove(gid);
+        }
+        final long rid = RandomUtils.nextRid();
+        currentTasks.put(gid, rid);
+        tasksMap.put(rid, gid);
+
+        modules().getProfile().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, true));
+        request(new RequestRemoveAvatar(), new RpcCallback<ResponseSeq>() {
+            @Override
+            public void onResult(ResponseSeq response) {
+                updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
+                        response.getState(), UpdateUserAvatarChanged.HEADER,
+                        new UpdateUserAvatarChanged(myUid(), null).toByteArray()));
+
+                // After update applied turn of uploading state
+                updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), new Runnable() {
+                    @Override
+                    public void run() {
+                        self().send(new AvatarChanged(gid, rid));
+                    }
+                }));
+            }
+
+            @Override
+            public void onError(RpcException e) {
+                if (!tasksMap.containsKey(rid)) {
+                    return;
+                }
+                final int gid = tasksMap.get(rid);
+                if (currentTasks.get(gid) != rid) {
+                    return;
+                }
+                currentTasks.remove(gid);
+                tasksMap.remove(rid);
+
+                modules().getGroupsModule().getAvatarVM(gid).getUploadState().change(new AvatarUploadState(null, false));
+            }
+        });
+    }
+
     @Override
     public void onReceive(Object message) {
         if (message instanceof ChangeAvatar) {
@@ -104,6 +174,12 @@ public class GroupAvatarChangeActor extends ModuleActor {
         } else if (message instanceof AvatarChanged) {
             AvatarChanged avatarChanged = (AvatarChanged) message;
             avatarChanged(avatarChanged.getGid(), avatarChanged.getRid());
+        } else if (message instanceof UploadManager.UploadError) {
+            UploadManager.UploadError uploadError = (UploadManager.UploadError) message;
+            uploadError(uploadError.getRid());
+        } else if (message instanceof RemoveAvatar) {
+            RemoveAvatar removeAvatar = (RemoveAvatar) message;
+            removeAvatar(removeAvatar.getGid());
         } else {
             drop(message);
         }
@@ -142,6 +218,18 @@ public class GroupAvatarChangeActor extends ModuleActor {
 
         public String getDescriptor() {
             return descriptor;
+        }
+    }
+
+    public static class RemoveAvatar {
+        private int gid;
+
+        public RemoveAvatar(int gid) {
+            this.gid = gid;
+        }
+
+        public int getGid() {
+            return gid;
         }
     }
 }

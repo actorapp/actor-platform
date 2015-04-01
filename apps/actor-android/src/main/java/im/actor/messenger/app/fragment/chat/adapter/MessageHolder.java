@@ -90,7 +90,7 @@ public abstract class MessageHolder extends BindedViewHolder
 
     @Override
     public void onAvatarClick(int uid) {
-
+        adapter.getMessagesFragment().onAvatarClick(uid);
     }
 
     @Override

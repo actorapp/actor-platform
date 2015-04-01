@@ -1,6 +1,7 @@
 package im.actor.messenger.app.fragment.chat.view;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -27,7 +28,7 @@ public class FastThumbLoader {
                     return;
                 }
                 if (msg.what == currentRequest) {
-                    // preview.setSrc((android.graphics.Bitmap) msg.obj);
+                    preview.getHierarchy().setPlaceholderImage(new BitmapDrawable((Bitmap) msg.obj));
                     isActive = false;
                 } else {
                     return;
@@ -52,7 +53,7 @@ public class FastThumbLoader {
             this.data = null;
             this.isActive = false;
         }
-        // preview.setSrc(null);
+        preview.getHierarchy().setPlaceholderImage(null);
     }
 
     public void request(byte[] data) {
@@ -61,7 +62,7 @@ public class FastThumbLoader {
             this.data = data;
             this.isActive = true;
         }
-        // preview.setSrc(null);
+        preview.getHierarchy().setPlaceholderImage(null);
 
         executor.execute(new CheckRunnable());
     }

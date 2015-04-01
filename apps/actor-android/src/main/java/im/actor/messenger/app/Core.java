@@ -104,7 +104,7 @@ public class Core {
         builder.setApiConfiguration(new ApiConfiguration("Actor Android v0.1", 1, "??", "Android Device",
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
-        this.messenger = new im.actor.android.AndroidMessenger(builder.build());
+        this.messenger = new im.actor.android.AndroidMessenger(AppContext.getContext(), builder.build());
 
         // Bind phone book change
         AppContext.getContext()

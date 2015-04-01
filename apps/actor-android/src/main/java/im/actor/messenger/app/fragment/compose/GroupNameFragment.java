@@ -54,6 +54,9 @@ public class GroupNameFragment extends BaseFragment {
 
         avatarView = (AvatarView) res.findViewById(R.id.avatar);
         avatarView.init(Screen.dp(96), 24);
+        avatarView.getHierarchy().setPlaceholderImage(R.drawable.circle_placeholder);
+        // avatarView.getHierarchy().setControllerOverlay(getResources().getDrawable(R.drawable.circle_selector));
+        avatarView.setImageURI(null);
 
         res.findViewById(R.id.pickAvatar).setOnClickListener(new View.OnClickListener() {
             @Override
