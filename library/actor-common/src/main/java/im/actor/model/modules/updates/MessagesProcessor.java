@@ -80,6 +80,8 @@ public class MessagesProcessor extends BaseModule {
         // Sending updates to dialogs actor
         if (dialogs.size() > 0) {
             dialogsActor().send(new DialogsActor.HistoryLoaded(dialogs));
+        } else {
+            modules().getAppStateModule().onDialogsLoaded();
         }
 
         // Sending notification to history actor

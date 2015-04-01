@@ -110,6 +110,7 @@ public class BookImportActor extends ModuleActor {
             if (ENABLE_LOG) {
                 Log.d(TAG, "No new contacts found");
             }
+            markImported();
             return;
         } else {
             if (ENABLE_LOG) {
@@ -171,6 +172,10 @@ public class BookImportActor extends ModuleActor {
                     importingEmails.remove(emailToImport.getEmail());
                 }
 
+                if (importingEmails.size() == 0 && importingPhones.size() == 0) {
+                    markImported();
+                }
+
                 if (response.getUsers().size() == 0) {
                     if (ENABLE_LOG) {
                         Log.d(TAG, "Import success, but no new contacts found");
@@ -220,6 +225,10 @@ public class BookImportActor extends ModuleActor {
 
     private void markImported(String email) {
         preferences().putBool("book_email_" + email.toLowerCase(), true);
+    }
+
+    private void markImported() {
+        modules().getAppStateModule().onBookImported();
     }
 
     @Override

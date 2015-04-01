@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseFragmentActivity;
-import im.actor.messenger.app.fragment.profile.ProfileFragment;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.UserVM;
@@ -33,6 +32,7 @@ public class ProfileActivity extends BaseFragmentActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowCustomEnabled(false);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        getSupportActionBar().setTitle(null);
 
         uid = getIntent().getIntExtra(Intents.EXTRA_UID, 0);
 
