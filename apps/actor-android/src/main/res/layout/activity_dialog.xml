@@ -87,16 +87,15 @@
             android:id="@+id/kickedFromChat"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/bg_light"
+            android:background="@color/bg_grey"
             android:visibility="gone">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/selector"
                 android:clickable="true"
                 android:gravity="center"
-                android:text="You is not part of this group"
+                android:text="You is not member of this group"
                 android:textAllCaps="true"
                 android:textColor="@color/primary"
                 android:textSize="18sp" />

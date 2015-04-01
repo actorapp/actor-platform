@@ -16,6 +16,7 @@ import im.actor.model.entity.GroupMember;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueModel;
+import im.actor.model.mvvm.ValueTripleChangedListener;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserPresence;
 import im.actor.model.viewmodel.UserVM;
@@ -92,26 +93,29 @@ public class ActorBinder {
         });
     }
 
-    public void bind(final TextView textView, final GroupVM value) {
-        bind(value.getPresence(), value.getMembers(), new ValueDoubleChangedListener<Integer, HashSet<GroupMember>>() {
+    public void bind(final TextView textView, final View titleContainer, final GroupVM value) {
+        bind(value.getPresence(), value.getMembers(), value.isMember(), new ValueTripleChangedListener<Integer, HashSet<GroupMember>, Boolean>() {
             @Override
-            public void onChanged(Integer online,
-                                  ValueModel<Integer> onlineModel,
-                                  HashSet<GroupMember> members,
-                                  ValueModel<HashSet<GroupMember>> membersModel) {
-                if (online <= 0) {
-                    SpannableStringBuilder builder = new SpannableStringBuilder(
-                            messenger().getFormatter().formatGroupMembers(members.size()));
-                    builder.setSpan(new ForegroundColorSpan(0xB7ffffff), 0, builder.length(),
-                            Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                    textView.setText(builder);
+            public void onChanged(Integer online, ValueModel<Integer> onlineModel,
+                                  HashSet<GroupMember> members, ValueModel<HashSet<GroupMember>> membersModel, Boolean isMember, ValueModel<Boolean> isMemberModel) {
+                if (isMember) {
+                    titleContainer.setVisibility(View.VISIBLE);
+                    if (online <= 0) {
+                        SpannableStringBuilder builder = new SpannableStringBuilder(
+                                messenger().getFormatter().formatGroupMembers(members.size()));
+                        builder.setSpan(new ForegroundColorSpan(0xB7ffffff), 0, builder.length(),
+                                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        textView.setText(builder);
+                    } else {
+                        SpannableStringBuilder builder = new SpannableStringBuilder(
+                                messenger().getFormatter().formatGroupMembers(members.size()) + ", ");
+                        builder.setSpan(new ForegroundColorSpan(0xB7ffffff), 0, builder.length(),
+                                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        builder.append(messenger().getFormatter().formatGroupOnline(online));
+                        textView.setText(builder);
+                    }
                 } else {
-                    SpannableStringBuilder builder = new SpannableStringBuilder(
-                            messenger().getFormatter().formatGroupMembers(members.size()) + ", ");
-                    builder.setSpan(new ForegroundColorSpan(0xB7ffffff), 0, builder.length(),
-                            Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                    builder.append(messenger().getFormatter().formatGroupOnline(online));
-                    textView.setText(builder);
+                    titleContainer.setVisibility(View.GONE);
                 }
             }
         });
@@ -166,6 +170,29 @@ public class ActorBinder {
             }
         });
         listener.onChanged(value1.get(), value1, value2.get(), value2);
+    }
+
+    public <T, V, S> void bind(final ValueModel<T> value1, final ValueModel<V> value2, final ValueModel<S> value3,
+                               final ValueTripleChangedListener<T, V, S> listener) {
+        bind(value1, false, new ValueChangedListener<T>() {
+            @Override
+            public void onChanged(T val, ValueModel<T> valueModel) {
+                listener.onChanged(val, valueModel, value2.get(), value2, value3.get(), value3);
+            }
+        });
+        bind(value2, false, new ValueChangedListener<V>() {
+            @Override
+            public void onChanged(V val, ValueModel<V> valueModel) {
+                listener.onChanged(value1.get(), value1, val, valueModel, value3.get(), value3);
+            }
+        });
+        bind(value3, false, new ValueChangedListener<S>() {
+            @Override
+            public void onChanged(S val, ValueModel<S> valueModel) {
+                listener.onChanged(value1.get(), value1, value2.get(), value2, val, valueModel);
+            }
+        });
+        listener.onChanged(value1.get(), value1, value2.get(), value2, value3.get(), value3);
     }
 
     public void unbindAll() {
