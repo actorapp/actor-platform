@@ -19,7 +19,6 @@ import im.actor.model.entity.content.AbsContent;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.DialogHistory;
-import im.actor.model.modules.state.ListsStatesActor;
 import im.actor.model.modules.utils.ModuleActor;
 
 import static im.actor.model.util.JavaUtil.equalsE;
@@ -225,6 +224,7 @@ public class DialogsActor extends ModuleActor {
 
     @Verified
     private void onHistoryLoaded(List<DialogHistory> history) {
+        Log.d("AppStateVM", "onHistoryLoaded");
         ArrayList<Dialog> updated = new ArrayList<Dialog>();
         for (DialogHistory dialogHistory : history) {
             // Ignore already available dialogs
@@ -246,6 +246,7 @@ public class DialogsActor extends ModuleActor {
                     dialogHistory.getSenderId(), dialogHistory.getDate(), description.getRelatedUser()));
         }
         dialogs.addOrUpdateItems(updated);
+        modules().getAppStateModule().onDialogsLoaded();
         notifyState();
     }
 

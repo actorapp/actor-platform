@@ -20,15 +20,45 @@ public class ListsStatesActor extends ModuleActor {
         modules().getAppStateModule().getAppStateVM().onContactsChanged(isEmpty);
     }
 
+    public void onBookImported() {
+        modules().getAppStateModule().getAppStateVM().onPhoneImported();
+    }
+
+    public void onContactsLoaded() {
+        modules().getAppStateModule().getAppStateVM().onContactsLoaded();
+    }
+
+    public void onDialogsLoaded() {
+        modules().getAppStateModule().getAppStateVM().onDialogsLoaded();
+    }
+
     @Override
     public void onReceive(Object message) {
         if (message instanceof OnContactsChanged) {
             onContactsChanged(((OnContactsChanged) message).isEmpty());
         } else if (message instanceof OnDialogsChanged) {
             onDialogsChanged(((OnDialogsChanged) message).isEmpty());
+        } else if (message instanceof OnBookImported) {
+            onBookImported();
+        } else if (message instanceof OnContactsLoaded) {
+            onContactsLoaded();
+        } else if (message instanceof OnDialogsLoaded) {
+            onDialogsLoaded();
         } else {
             drop(message);
         }
+    }
+
+    public static class OnBookImported {
+
+    }
+
+    public static class OnContactsLoaded {
+
+    }
+
+    public static class OnDialogsLoaded {
+
     }
 
     public static class OnContactsChanged {
