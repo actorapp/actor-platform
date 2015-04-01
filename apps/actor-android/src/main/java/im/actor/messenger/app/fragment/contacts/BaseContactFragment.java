@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import im.actor.android.view.BindedListAdapter;
 import im.actor.messenger.R;
+import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.fragment.DisplayListFragment;
 import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.util.Screen;
@@ -88,14 +89,18 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             addFooterAction(R.drawable.ic_share_white_24dp, "Tell friends about Actor", false, new Runnable() {
                 @Override
                 public void run() {
-
+                    String inviteMessage = getResources().getString(R.string.invite_message);
+                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
                 }
             });
 
             addFooterAction(R.drawable.ic_person_add_white_24dp, "Add friend...", true, new Runnable() {
                 @Override
                 public void run() {
-
+                    startActivity(new Intent(getActivity(), AddContactActivity.class));
                 }
             });
 
