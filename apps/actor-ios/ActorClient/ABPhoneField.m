@@ -170,7 +170,29 @@
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    
+    [self setup];
+}
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (id)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+#pragma mark -
+#pragma mark Setup
+
+- (void)setup {
     [self addTarget:self action:@selector(phoneChanged:) forControlEvents:(UIControlEventEditingChanged)];
     
     self.localIso = [self isoFromCarrier];
