@@ -11,6 +11,10 @@ public class AndroidMessenger extends BaseMessenger {
         super(configuration);
     }
 
+//    public void changeAvatarAndroid(String path) {
+//
+//    }
+
 //    public void sendDocument(Peer peer, String fullFilePath) {
 //        sendDocument(peer, fullFilePath, new File(fullFilePath).getName());
 //    }

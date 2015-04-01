@@ -5,19 +5,15 @@
     android:layout_height="match_parent"
     android:background="@color/bg_light">
 
-    <im.actor.messenger.app.fragment.contacts.ContactsStickListView
-        android:id="@+id/contactsList"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/collection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_grey"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:drawSelectorOnTop="true"
-        android:listSelector="@drawable/selector"
-        android:scrollingCache="false" />
+        android:scrollbars="vertical" />
 
     <FrameLayout
-        android:id="@+id/noContacts"
+        android:id="@+id/emptyCollection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_light"
@@ -31,14 +27,12 @@
             android:background="@color/primary" />
 
         <ImageView
-            android:id="@+id/emptyContactsImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:layout_marginTop="8dp"
             android:scaleType="centerInside"
             android:src="@drawable/contacts_empty_large" />
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -90,10 +84,4 @@
         </LinearLayout>
 
     </FrameLayout>
-
-    <com.droidkit.progress.IndeterminateView
-        android:id="@+id/progress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top" />
 </FrameLayout>

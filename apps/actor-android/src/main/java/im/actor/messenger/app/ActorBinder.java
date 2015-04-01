@@ -9,7 +9,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import im.actor.messenger.app.view.AvatarDrawable;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.model.entity.Avatar;
@@ -61,7 +60,7 @@ public class ActorBinder {
     }
 
     public void bindPrivateTyping(final TextView textView, final View container, final View titleContainer,
-                     final ValueModel<Boolean> typing) {
+                                  final ValueModel<Boolean> typing) {
         bind(typing, new ValueChangedListener<Boolean>() {
             @Override
             public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
@@ -118,17 +117,12 @@ public class ActorBinder {
         });
     }
 
-    public void bind(final AvatarView avatarView, final int id, final float size,
+    public void bind(final AvatarView avatarView, final int id,
                      final ValueModel<Avatar> avatar, final ValueModel<String> name) {
         bind(avatar, name, new ValueDoubleChangedListener<Avatar, String>() {
             @Override
             public void onChanged(Avatar val, ValueModel<Avatar> valueModel, String val2, ValueModel<String> valueModel2) {
-                avatarView.setEmptyDrawable(new AvatarDrawable(val2, id, size, AppContext.getContext()));
-                if (val != null) {
-                    avatarView.bindAvatar(0, val);
-                } else {
-                    avatarView.unbind();
-                }
+                avatarView.bind(val, val2, id);
             }
         });
     }

@@ -176,6 +176,11 @@ public class Auth extends BaseModule {
                             public void onError(final RpcException e) {
                                 if ("PHONE_CODE_EXPIRED".equals(e.getTag())) {
                                     resetAuth();
+                                } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag())) {
+                                    preferences().putInt(KEY_SMS_CODE, code);
+                                    state = AuthState.SIGN_UP;
+                                    callback.onResult(AuthState.SIGN_UP);
+                                    return;
                                 }
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -189,8 +194,7 @@ public class Auth extends BaseModule {
         };
     }
 
-    public Command<AuthState> signUp(final String firstName, String avatarPath, final boolean isSilent) {
-        // TODO: Perform avatar upload
+    public Command<AuthState> signUp(final String firstName, final String avatarPath, final boolean isSilent) {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
@@ -217,6 +221,7 @@ public class Auth extends BaseModule {
                                 callback.onResult(state);
                             }
                         }));
+                        modules().getProfile().changeAvatar(avatarPath);
                     }
 
                     @Override

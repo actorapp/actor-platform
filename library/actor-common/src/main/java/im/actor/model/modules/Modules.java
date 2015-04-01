@@ -114,8 +114,9 @@ public class Modules {
         filesModule.run();
         Log.d("CORE_INIT", "Loading stage6.9 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
         start = configuration.getThreadingProvider().getActorTime();
-        appStateModule.run();
         notifications.run();
+        appStateModule.run();
+        contacts.run();
         messages.run();
         Log.d("CORE_INIT", "Loading stage6.10 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
         start = configuration.getThreadingProvider().getActorTime();

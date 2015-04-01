@@ -7,9 +7,9 @@ import android.database.ContentObserver;
 import android.os.Build;
 import android.provider.ContactsContract;
 
+import im.actor.android.AndroidConfigurationBuilder;
 import im.actor.images.cache.BitmapClasificator;
 import im.actor.images.loading.ImageLoader;
-
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.emoji.EmojiProcessor;
 import im.actor.messenger.app.images.AvatarActor;
@@ -23,12 +23,11 @@ import im.actor.messenger.app.images.VideoPreviewActor;
 import im.actor.messenger.app.images.VideoPreviewTask;
 import im.actor.messenger.app.images.VideoTask;
 import im.actor.messenger.app.providers.AndroidNotifications;
-import im.actor.messenger.app.providers.AndroidPhoneBook;
 import im.actor.model.ApiConfiguration;
-import im.actor.android.*;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
 import im.actor.model.mvvm.MVVMCollection;
+import im.actor.model.providers.EmptyPhoneProvider;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
@@ -103,7 +102,8 @@ public class Core {
 
 
         AndroidConfigurationBuilder builder = new AndroidConfigurationBuilder(application);
-        builder.setPhoneBookProvider(new AndroidPhoneBook());
+        // builder.setPhoneBookProvider(new AndroidPhoneBook());
+        builder.setPhoneBookProvider(new EmptyPhoneProvider());
         builder.setNotificationProvider(new AndroidNotifications(AppContext.getContext()));
         if (BuildConfig.API_SSL) {
             builder.addEndpoint("tls://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);

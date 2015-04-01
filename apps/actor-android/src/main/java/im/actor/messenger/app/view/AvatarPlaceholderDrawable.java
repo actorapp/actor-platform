@@ -11,36 +11,12 @@ import android.text.TextPaint;
 import android.util.TypedValue;
 
 import im.actor.messenger.R;
-import im.actor.model.entity.Dialog;
-import im.actor.model.viewmodel.GroupVM;
-import im.actor.model.viewmodel.UserVM;
 
 /**
  * Created by ex3ndr on 12.09.14.
  */
-public class AvatarDrawable extends Drawable {
+public class AvatarPlaceholderDrawable extends Drawable {
 
-    public static AvatarDrawable create(GroupVM groupModel, float fontSize, Context context) {
-        return new AvatarDrawable(groupModel.getName().get(), groupModel.getId(), fontSize, context);
-    }
-
-    public static AvatarDrawable create(Dialog dialogItem, float fontSize, Context context) {
-        return new AvatarDrawable(dialogItem.getDialogTitle(), dialogItem.getPeer().getPeerId(), fontSize, context);
-    }
-
-    public static AvatarDrawable create(UserVM userModel, float fontSize, Context context) {
-        return new AvatarDrawable(userModel.getName().get(), userModel.getId(), fontSize, context);
-    }
-
-//    public static AvatarDrawable create(Contact contact, float fontSize, Context context) {
-//        return new AvatarDrawable(contact.getName(), contact.getUid(), fontSize, context);
-//    }
-
-//    public static AvatarDrawable create(GlobalSearch dialogItem, float fontSize, Context context) {
-//        return new AvatarDrawable(dialogItem.getTitle(), dialogItem.getContId(), fontSize, context);
-//    }
-
-    private int color;
     private String title;
 
     private Paint circlePaint;
@@ -48,7 +24,7 @@ public class AvatarDrawable extends Drawable {
     private int textX;
     private int textY;
 
-    public AvatarDrawable(String title, int id, float fontSize, Context context) {
+    public AvatarPlaceholderDrawable(String title, int id, float fontSize, Context context) {
 
         if (title == null) {
             title = "";
@@ -67,7 +43,7 @@ public class AvatarDrawable extends Drawable {
                 context.getResources().getColor(R.color.placeholder_5),
                 context.getResources().getColor(R.color.placeholder_6),
         };
-        color = colors[Math.abs(id) % colors.length];
+        int color = colors[Math.abs(id) % colors.length];
 
         if (id == 0) {
             color = context.getResources().getColor(R.color.placeholder_empty);

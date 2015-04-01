@@ -24,7 +24,7 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
         V extends BindedViewHolder> extends BaseFragment implements DisplayList.Listener {
 
     private RecyclerView collection;
-    private View emptyCollection;
+    // private View emptyCollection;
 
     private BindedDisplayList<T> displayList;
     private BindedListAdapter<T, V> adapter;
@@ -39,16 +39,16 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
         }
         configureRecyclerView(collection);
 
-        emptyCollection = res.findViewById(R.id.emptyCollection);
+        // emptyCollection = res.findViewById(R.id.emptyCollection);
 
         this.displayList = displayList;
         adapter = onCreateAdapter(displayList, getActivity());
 
         collection.setAdapter(adapter);
 
-        if (emptyCollection != null) {
-            emptyCollection.setVisibility(View.GONE);
-        }
+//        if (emptyCollection != null) {
+//            emptyCollection.setVisibility(View.GONE);
+//        }
 
         return res;
     }
@@ -108,6 +108,7 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
         super.onResume();
         adapter.resume();
         displayList.addListener(this);
+        onCollectionChanged();
     }
 
     @Override
@@ -137,7 +138,7 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
             adapter = null;
         }
 
-        emptyCollection = null;
+        // emptyCollection = null;
         collection = null;
     }
 }

@@ -10,12 +10,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.AvatarDrawable;
-import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.TextUtils;
-import im.actor.model.entity.Avatar;
+import im.actor.messenger.app.view.AvatarView;
+import im.actor.messenger.app.view.Fonts;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.app.Core.users;
@@ -115,8 +113,7 @@ public class BubbleContainer extends ViewGroup {
 
         // AVATAR
         avatarView = new AvatarView(getContext());
-        avatarView.setEmptyDrawable(new AvatarDrawable("??", 1, 12, getContext()));
-        avatarView.unbind();
+        avatarView.init(Screen.dp(42), 12);
         addView(avatarView, new MarginLayoutParams(Screen.dp(42), Screen.dp(42)));
     }
 
@@ -149,15 +146,9 @@ public class BubbleContainer extends ViewGroup {
         mode = MODE_LEFT;
         this.showAvatar = showAvatar;
         if (showAvatar) {
-            avatarView.setVisibility(VISIBLE);
             UserVM u = users().get(uid);
-            avatarView.setEmptyDrawable(new AvatarDrawable(u.getName().get(), u.getId(), 12, getContext()));
-            Avatar avatar = u.getAvatar().get();
-            if (avatar != null) {
-                avatarView.bindAvatar(0, avatar);
-            } else {
-                avatarView.unbind();
-            }
+            avatarView.setVisibility(VISIBLE);
+            avatarView.bind(u);
             avatarView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

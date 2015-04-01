@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
@@ -20,25 +19,27 @@ import android.widget.TextView;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.AddContactActivity;
+import im.actor.messenger.app.activity.MainActivity;
 import im.actor.messenger.app.fragment.compose.ComposeActivity;
 import im.actor.messenger.app.fragment.compose.CreateGroupActivity;
-import im.actor.messenger.app.fragment.help.HelpActivity;
-import im.actor.messenger.app.activity.MainActivity;
-import im.actor.messenger.app.fragment.settings.MyProfileActivity;
 import im.actor.messenger.app.fragment.contacts.ContactsFragment;
 import im.actor.messenger.app.fragment.dialogs.DialogsFragment;
+import im.actor.messenger.app.fragment.help.HelpActivity;
+import im.actor.messenger.app.fragment.settings.MyProfileActivity;
+import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
+import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
-import im.actor.messenger.app.util.Screen;
 import im.actor.model.entity.Dialog;
+import im.actor.model.log.Log;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.view.ViewUtils.goneView;
-import static im.actor.messenger.app.view.ViewUtils.showView;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.myUid;
 import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.view.ViewUtils.goneView;
+import static im.actor.messenger.app.view.ViewUtils.showView;
 
 /**
  * Created by ex3ndr on 25.10.14.
@@ -211,11 +212,17 @@ public class MainPhoneController extends MainBaseController {
         barTabs.setIndicatorColorResource(R.color.main_tab_selected);
         barTabs.setIndicatorHeight(Screen.dp(4));
         barTabs.setDividerColorResource(R.color.main_tab_divider);
+        barTabs.setTextColorResource(R.color.text_primary_light);
         barTabs.setUnderlineHeight(0);
 
         barTabs.setViewPager(pager);
-        tabsContainer.addView(barTabs, new FrameLayout.LayoutParams(Screen.dp(72 * 2), Screen.dp(56)));
-        Toolbar.LayoutParams lp = new Toolbar.LayoutParams(Screen.dp(72 * 2), Screen.dp(56));
+
+        // Icons
+        // int width = Screen.dp(72 * 2);
+        int width = Screen.dp(120 * 2);
+
+        tabsContainer.addView(barTabs, new FrameLayout.LayoutParams(width, Screen.dp(56)));
+        Toolbar.LayoutParams lp = new Toolbar.LayoutParams(width, Screen.dp(56));
         tabsContainer.setLayoutParams(lp);
         ab.setCustomView(tabsContainer);
 
@@ -266,12 +273,21 @@ public class MainPhoneController extends MainBaseController {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
 
+        Log.d("MainPhoneController", "onCreateOptionsMenu called");
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         MenuItem menuItem = menu.findItem(R.id.profile);
         final AvatarView avatarView = (AvatarView) menuItem.getActionView().findViewById(R.id.avatarView);
+        avatarView.init(Screen.dp(40), 18);
+
         if (messenger().isLoggedIn()) {
             UserVM userModel = users().get(myUid());
             if (userModel != null) {
-                getActivity().bind(avatarView, myUid(), 18, userModel.getAvatar(), userModel.getName());
+                getActivity().bind(avatarView, myUid(), userModel.getAvatar(), userModel.getName());
             }
         }
         menuItem.getActionView().setOnClickListener(new View.OnClickListener() {
@@ -366,7 +382,7 @@ public class MainPhoneController extends MainBaseController {
         return false;
     }
 
-    public class HomePagerAdapter extends FragmentStatePagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
+    public class HomePagerAdapter extends FragmentNoMenuStatePagerAdapter {
 
         public HomePagerAdapter(FragmentManager fm) {
             super(fm);
@@ -382,21 +398,36 @@ public class MainPhoneController extends MainBaseController {
             switch (position) {
                 default:
                 case 0:
-                    return new DialogsFragment();
+                    DialogsFragment res = new DialogsFragment();
+                    res.setHasOptionsMenu(false);
+                    return res;
                 case 1:
-                    return new ContactsFragment();
+                    ContactsFragment res2 = new ContactsFragment();
+                    res2.setHasOptionsMenu(false);
+                    return res2;
             }
         }
 
         @Override
-        public int getPageIconResId(int position) {
+        public CharSequence getPageTitle(int position) {
             switch (position) {
                 default:
                 case 0:
-                    return R.drawable.main_bar_recent_selector;
+                    return "Chats";
                 case 1:
-                    return R.drawable.main_bar_contacts_selector;
+                    return "Contacts";
             }
         }
+//
+//        @Override
+//        public int getPageIconResId(int position) {
+//            switch (position) {
+//                default:
+//                case 0:
+//                    return R.drawable.main_bar_recent_selector;
+//                case 1:
+//                    return R.drawable.main_bar_contacts_selector;
+//            }
+//        }
     }
 }

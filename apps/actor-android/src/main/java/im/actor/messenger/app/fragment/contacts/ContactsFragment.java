@@ -2,6 +2,10 @@ package im.actor.messenger.app.fragment.contacts;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
@@ -14,6 +18,11 @@ public class ContactsFragment extends BaseContactFragment {
 
     public ContactsFragment() {
         super(false, false, false);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return onCreateContactsView(R.layout.fragment_contacts, inflater, container, savedInstanceState);
     }
 
     @Override
