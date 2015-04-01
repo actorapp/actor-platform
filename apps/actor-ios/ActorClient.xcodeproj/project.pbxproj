@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		050B225D1ACBE5B900A0E904 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050B225C1ACBE5B900A0E904 /* Colors.swift */; };
+		050B226C1ACC010200A0E904 /* AAAuthCountriesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050B22681ACC010200A0E904 /* AAAuthCountriesController.swift */; };
+		050B226D1ACC010200A0E904 /* AAAuthPhoneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050B22691ACC010200A0E904 /* AAAuthPhoneController.swift */; };
+		050B226E1ACC010200A0E904 /* AAAuthSmsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050B226A1ACC010200A0E904 /* AAAuthSmsController.swift */; };
+		050B226F1ACC010200A0E904 /* AAAuthRegisterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050B226B1ACC010200A0E904 /* AAAuthRegisterController.swift */; };
+		050E99BD1ACB4D410052C06B /* AANavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050E99B71ACB4D410052C06B /* AANavigationController.swift */; };
+		050E99BE1ACB4D410052C06B /* AATableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050E99B81ACB4D410052C06B /* AATableViewController.swift */; };
+		050E99C01ACB510A0052C06B /* AAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050E99BF1ACB510A0052C06B /* AAViewController.swift */; };
+		05B432971ACC08D40073BA69 /* AAAuthCountryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */; };
 		06047D061ABF85FD002091CC /* AASerializationHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D051ABF85FD002091CC /* AASerializationHelpers.m */; };
 		06047D081ABF8611002091CC /* CocoaTcpConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D071ABF8611002091CC /* CocoaTcpConnection.m */; };
 		06147B941AAE76E900931753 /* CocoaMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06147B931AAE76E900931753 /* CocoaMessenger.swift */; };
@@ -760,6 +769,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		050B225C1ACBE5B900A0E904 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Utils/Colors.swift; sourceTree = "<group>"; };
+		050B22681ACC010200A0E904 /* AAAuthCountriesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthCountriesController.swift; sourceTree = "<group>"; };
+		050B22691ACC010200A0E904 /* AAAuthPhoneController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthPhoneController.swift; sourceTree = "<group>"; };
+		050B226A1ACC010200A0E904 /* AAAuthSmsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthSmsController.swift; sourceTree = "<group>"; };
+		050B226B1ACC010200A0E904 /* AAAuthRegisterController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthRegisterController.swift; sourceTree = "<group>"; };
+		050E99B71ACB4D410052C06B /* AANavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AANavigationController.swift; sourceTree = "<group>"; };
+		050E99B81ACB4D410052C06B /* AATableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATableViewController.swift; sourceTree = "<group>"; };
+		050E99BF1ACB510A0052C06B /* AAViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAViewController.swift; sourceTree = "<group>"; };
+		05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAuthCountryCell.swift; path = Views/Auth/AAAuthCountryCell.swift; sourceTree = "<group>"; };
 		06047D041ABF85E9002091CC /* AASerializationHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AASerializationHelpers.h; sourceTree = "<group>"; };
 		06047D051ABF85FD002091CC /* AASerializationHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AASerializationHelpers.m; sourceTree = "<group>"; };
 		06047D071ABF8611002091CC /* CocoaTcpConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaTcpConnection.m; sourceTree = "<group>"; };
@@ -2189,6 +2207,52 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		050B22671ACC010200A0E904 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				050B22691ACC010200A0E904 /* AAAuthPhoneController.swift */,
+				050B22681ACC010200A0E904 /* AAAuthCountriesController.swift */,
+				050B226A1ACC010200A0E904 /* AAAuthSmsController.swift */,
+				050B226B1ACC010200A0E904 /* AAAuthRegisterController.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		050E99B01ACB4D410052C06B /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				050B22671ACC010200A0E904 /* Auth */,
+				050E99B61ACB4D410052C06B /* Root */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		050E99B61ACB4D410052C06B /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				050E99B71ACB4D410052C06B /* AANavigationController.swift */,
+				050E99B81ACB4D410052C06B /* AATableViewController.swift */,
+				050E99BF1ACB510A0052C06B /* AAViewController.swift */,
+			);
+			path = Root;
+			sourceTree = "<group>";
+		};
+		05B432941ACC08810073BA69 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				05B432951ACC088C0073BA69 /* Auth */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		05B432951ACC088C0073BA69 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */,
+			);
+			name = Auth;
+			sourceTree = "<group>";
+		};
 		06047D031ABF85CD002091CC /* network */ = {
 			isa = PBXGroup;
 			children = (
@@ -2200,11 +2264,11 @@
 			name = network;
 			sourceTree = "<group>";
 		};
-		069FE6CA1AC017AA00C6C033 /* Screens */ = {
+		069FE6CA1AC017AA00C6C033 /* ScreensOld */ = {
 			isa = PBXGroup;
 			children = (
 				069FE6D21AC0203100C6C033 /* Common */,
-				2537F8591A972AF6004A02E9 /* Auth */,
+				2537F8591A972AF6004A02E9 /* AuthOld */,
 				069FE6D31AC0204A00C6C033 /* Main */,
 				069FE6D11AC0201000C6C033 /* Conversation */,
 				069FE6D41AC0207A00C6C033 /* Views */,
@@ -2218,7 +2282,7 @@
 				069FE6CE1AC01A6300C6C033 /* ComposeController.xib */,
 				06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */,
 			);
-			name = Screens;
+			name = ScreensOld;
 			sourceTree = "<group>";
 		};
 		069FE6D11AC0201000C6C033 /* Conversation */ = {
@@ -4228,6 +4292,7 @@
 				06E484261AB78D7300AA272F /* SThreadPoolQueue.h */,
 				06E484271AB78D7300AA272F /* SThreadPool.h */,
 				06E484281AB78D7400AA272F /* SThreadPool.m */,
+				050B225C1ACBE5B900A0E904 /* Colors.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -4255,7 +4320,9 @@
 		2537F82F1A966B9D004A02E9 /* ActorClient */ = {
 			isa = PBXGroup;
 			children = (
-				069FE6CA1AC017AA00C6C033 /* Screens */,
+				05B432941ACC08810073BA69 /* Views */,
+				050E99B01ACB4D410052C06B /* Screens */,
+				069FE6CA1AC017AA00C6C033 /* ScreensOld */,
 				2563889E1A99C09D00A5E0E3 /* Model */,
 				06E4842C1AB78D7E00AA272F /* Utils */,
 				2537F8301A966B9D004A02E9 /* Supporting Files */,
@@ -4301,7 +4368,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		2537F8591A972AF6004A02E9 /* Auth */ = {
+		2537F8591A972AF6004A02E9 /* AuthOld */ = {
 			isa = PBXGroup;
 			children = (
 				2537F8601A973A8D004A02E9 /* Auth.storyboard */,
@@ -4314,7 +4381,7 @@
 				253AF10B1AA861D3002B57F4 /* AARegViewController.h */,
 				253AF10C1AA861D3002B57F4 /* AARegViewController.m */,
 			);
-			name = Auth;
+			name = AuthOld;
 			sourceTree = "<group>";
 		};
 		2537F8691A9762DB004A02E9 /* ABPhoneField */ = {
@@ -4457,7 +4524,7 @@
 				TargetAttributes = {
 					2537F82C1A966B9D004A02E9 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = WBZ2456W25;
+						DevelopmentTeam = 6HJFRTMUT9;
 						SystemCapabilities = {
 							com.apple.iCloud = {
 								enabled = 1;
@@ -4677,6 +4744,7 @@
 				06D1F6111ACB3C8400AC22ED /* MTProtoCallback.m in Sources */,
 				06D1F67E1ACB3C8400AC22ED /* NafL2RMultiplier.m in Sources */,
 				06D1F65B1ACB3C8400AC22ED /* PaddedBufferedBlockCipher.m in Sources */,
+				050E99C01ACB510A0052C06B /* AAViewController.swift in Sources */,
 				06D1F5F91ACB3C8400AC22ED /* Container.m in Sources */,
 				06D1F4361ACB3C8400AC22ED /* Email.m in Sources */,
 				06D1F5BB1ACB3C8400AC22ED /* Messages.m in Sources */,
@@ -4815,6 +4883,7 @@
 				06D1F4601ACB3C8400AC22ED /* RequestDeleteChat.m in Sources */,
 				06D1F6531ACB3C8400AC22ED /* RSAEngine.m in Sources */,
 				06D1F4F41ACB3C8400AC22ED /* ASN1OctetString.m in Sources */,
+				050E99BE1ACB4D410052C06B /* AATableViewController.swift in Sources */,
 				062774371AC070F700A4A8B3 /* SearchSource.swift in Sources */,
 				06D1F63E1ACB3C8400AC22ED /* UserVM.m in Sources */,
 				06D1F6311ACB3C8400AC22ED /* FileVM.m in Sources */,
@@ -4893,6 +4962,7 @@
 				06D1F4FB1ACB3C8400AC22ED /* RandomProvider.m in Sources */,
 				06D1F43C1ACB3C8400AC22ED /* EncryptedDocumentV1Ex.m in Sources */,
 				06D1F50D1ACB3C8400AC22ED /* FutureCallback.m in Sources */,
+				05B432971ACC08D40073BA69 /* AAAuthCountryCell.swift in Sources */,
 				06D1F5D51ACB3C8400AC22ED /* PresenceProcessor.m in Sources */,
 				06D1F4C91ACB3C8400AC22ED /* UpdateMessageDelete.m in Sources */,
 				06D1F4531ACB3C8400AC22ED /* UpdatesParser.m in Sources */,
@@ -4917,6 +4987,7 @@
 				06D1F4D51ACB3C8400AC22ED /* UpdateUserEmailAdded.m in Sources */,
 				06D1F5A81ACB3C8400AC22ED /* DialogsHistoryActor.m in Sources */,
 				06D1F69F1ACB3C8400AC22ED /* BigIntegers.m in Sources */,
+				050B226F1ACC010200A0E904 /* AAAuthRegisterController.swift in Sources */,
 				06D1F5321ACB3C8400AC22ED /* TaskStart.m in Sources */,
 				06D1F4811ACB3C8400AC22ED /* RequestSendEncryptedMessage.m in Sources */,
 				06D1F4B11ACB3C8400AC22ED /* TextMessageExUnsupported.m in Sources */,
@@ -4942,6 +5013,7 @@
 				06D1F52B1ACB3C8400AC22ED /* AskProgressCallback.m in Sources */,
 				06D1F66B1ACB3C8400AC22ED /* DoubleAddMultiplier.m in Sources */,
 				06D1F6001ACB3C8400AC22ED /* Ping.m in Sources */,
+				050B225D1ACBE5B900A0E904 /* Colors.swift in Sources */,
 				06D1F4E11ACB3C8400AC22ED /* UserKey.m in Sources */,
 				06D1F46B1ACB3C8400AC22ED /* RequestGetContacts.m in Sources */,
 				06D1F5681ACB3C8400AC22ED /* ServiceGroupTitleChanged.m in Sources */,
@@ -5057,6 +5129,7 @@
 				06BC45151AB87ECB0003F59E /* BubbleMediaCell.swift in Sources */,
 				06D1F44E1ACB3C8400AC22ED /* Message.m in Sources */,
 				06D1F5351ACB3C8400AC22ED /* ThreadPriority.m in Sources */,
+				050B226D1ACC010200A0E904 /* AAAuthPhoneController.swift in Sources */,
 				06D1F56F1ACB3C8400AC22ED /* ContentDescription.m in Sources */,
 				06D1F6301ACB3C8400AC22ED /* DownloadCallback.m in Sources */,
 				06D1F5461ACB3C8400AC22ED /* Utils.m in Sources */,
@@ -5107,6 +5180,7 @@
 				06D1F5731ACB3C8400AC22ED /* FileReference.m in Sources */,
 				06D1F4991ACB3C8400AC22ED /* ResponseGetFile.m in Sources */,
 				06D1F51E1ACB3C8400AC22ED /* Mailbox.m in Sources */,
+				050B226E1ACC010200A0E904 /* AAAuthSmsController.swift in Sources */,
 				06D1F5741ACB3C8400AC22ED /* Group.m in Sources */,
 				06D1F6071ACB3C8400AC22ED /* RequestResend.m in Sources */,
 				06D1F4EA1ACB3C8400AC22ED /* Command.m in Sources */,
@@ -5158,6 +5232,7 @@
 				06D1F62F1ACB3C8400AC22ED /* ConversationVMCallback.m in Sources */,
 				06D1F4271ACB3C8400AC22ED /* Avatar.m in Sources */,
 				06D1F6121ACB3C8400AC22ED /* BaseParser.m in Sources */,
+				050B226C1ACC010200A0E904 /* AAAuthCountriesController.swift in Sources */,
 				06D1F54C1ACB3C8400AC22ED /* KeyValueItem.m in Sources */,
 				06D1F4661ACB3C8400AC22ED /* RequestEditName.m in Sources */,
 				06D1F6231ACB3C8400AC22ED /* AtomicIntegerCompat.m in Sources */,
@@ -5191,6 +5266,7 @@
 				06D1F5911ACB3C8400AC22ED /* Log.m in Sources */,
 				25FAD8B31A9FF38E004F5E19 /* CocoaPhoneBookProvider.m in Sources */,
 				06D1F4DA1ACB3C8400AC22ED /* UpdateUserOffline.m in Sources */,
+				050E99BD1ACB4D410052C06B /* AANavigationController.swift in Sources */,
 				06D1F62C1ACB3C8400AC22ED /* AppStateVM.m in Sources */,
 				06D1F5C51ACB3C8400AC22ED /* Settings.m in Sources */,
 				06ABC77E1AAF458B00C1B932 /* ContactsViewController.swift in Sources */,
