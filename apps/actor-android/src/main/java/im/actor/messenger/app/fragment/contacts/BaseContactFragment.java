@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,18 +15,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import im.actor.android.view.BindedListAdapter;
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.fragment.DisplayListFragment;
+import im.actor.messenger.app.fragment.help.HelpActivity;
+import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.messenger.app.util.Screen;
-import im.actor.android.view.BindedListAdapter;
+import im.actor.messenger.app.view.TintImageView;
 import im.actor.model.entity.Contact;
+import im.actor.model.log.Log;
 import im.actor.model.mvvm.BindedDisplayList;
+import im.actor.model.mvvm.ValueChangedListener;
+import im.actor.model.mvvm.ValueModel;
 
 import static im.actor.messenger.app.Core.messenger;
 
@@ -34,6 +38,7 @@ import static im.actor.messenger.app.Core.messenger;
  */
 public abstract class BaseContactFragment extends DisplayListFragment<Contact, ContactHolder> {
 
+    private View emptyView;
     private final boolean useCompactVersion;
     private final boolean userSearch;
     private final boolean useSelection;
@@ -52,33 +57,49 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
     protected View onCreateContactsView(int layoutId, LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View res = inflate(inflater, container, layoutId, messenger().buildContactDisplayList());
 
-        if (useCompactVersion) {
-            View header = new View(getActivity());
-            header.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
-            addHeaderView(header);
+        emptyView = res.findViewById(R.id.emptyCollection);
 
+        View headerPadding = new View(getActivity());
+        headerPadding.setBackgroundColor(getResources().getColor(R.color.bg_light));
+        headerPadding.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+        addHeaderView(headerPadding);
+
+        if (useCompactVersion) {
             View footer = new View(getActivity());
             footer.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
             addFooterView(footer);
         } else {
-            TextView header = new TextView(getActivity());
-            header.setBackgroundColor(getResources().getColor(R.color.bg_grey));
-            header.setText(R.string.contacts_title);
-            header.setTypeface(Fonts.bold());
-            header.setPadding(Screen.dp(16), 0, 0, 0);
-            header.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-            header.setTextSize(16);
-            header.setTextColor(getResources().getColor(R.color.text_subheader));
+//            TextView header = new TextView(getActivity());
+//            header.setBackgroundColor(getResources().getColor(R.color.bg_grey));
+//            header.setText(R.string.contacts_title);
+//            header.setTypeface(Fonts.bold());
+//            header.setPadding(Screen.dp(16), 0, 0, 0);
+//            header.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+//            header.setTextSize(16);
+//            header.setTextColor(getResources().getColor(R.color.text_subheader));
+//
+//            LinearLayout headerCont = new LinearLayout(getActivity());
+//            headerCont.setBackgroundColor(getResources().getColor(R.color.bg_light));
+//            headerCont.setOrientation(LinearLayout.VERTICAL);
+//            headerCont.addView(header, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(48)));
+//            headerCont.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//            addHeaderView(headerCont);
 
-            LinearLayout headerCont = new LinearLayout(getActivity());
-            headerCont.setBackgroundColor(getResources().getColor(R.color.bg_light));
-            headerCont.setOrientation(LinearLayout.VERTICAL);
-            headerCont.addView(header, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(48)));
-            headerCont.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            addHeaderView(headerCont);
+            addFooterAction(R.drawable.ic_share_white_24dp, "Tell friends about Actor", false, new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+
+            addFooterAction(R.drawable.ic_person_add_white_24dp, "Add friend...", true, new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
 
             FrameLayout footer = new FrameLayout(getActivity());
-            footer.setBackgroundColor(getResources().getColor(R.color.bg_grey));
             footer.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(112)));
             ImageView shadow = new ImageView(getActivity());
             shadow.setImageResource(R.drawable.card_shadow_bottom);
@@ -89,7 +110,85 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             addFooterView(footer);
         }
 
+        bind(messenger().getAppState().getIsContactsEmpty(), new ValueChangedListener<Boolean>() {
+            @Override
+            public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                Log.d("BaseContactFragment", "isContactsEmpty: " + val);
+                if (val) {
+                    emptyView.setVisibility(View.VISIBLE);
+                } else {
+                    emptyView.setVisibility(View.GONE);
+                }
+            }
+        });
+
         return res;
+    }
+
+    private void addFooterAction(int icon, String text, boolean isLast, final Runnable action) {
+        FrameLayout container = new FrameLayout(getActivity());
+        container.setBackgroundColor(getResources().getColor(R.color.bg_light));
+        {
+            container.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+
+        FrameLayout invitePanel = new FrameLayout(getActivity());
+        invitePanel.setBackgroundResource(R.drawable.selector_white);
+        invitePanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                action.run();
+            }
+        });
+        {
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(64));
+            params.leftMargin = Screen.dp(40);
+            invitePanel.setLayoutParams(params);
+            container.addView(invitePanel);
+        }
+
+        TintImageView inviteIcon = new TintImageView(getActivity());
+        inviteIcon.setTint(getResources().getColor(R.color.primary));
+        inviteIcon.setResource(icon);
+        {
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(52), Screen.dp(52));
+            layoutParams.leftMargin = Screen.dp(6);
+            layoutParams.topMargin = Screen.dp(6);
+            layoutParams.bottomMargin = Screen.dp(6);
+            layoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.LEFT;
+            invitePanel.addView(inviteIcon, layoutParams);
+        }
+
+        TextView inviteText = new TextView(getActivity());
+        inviteText.setText(text);
+        inviteText.setTextColor(getResources().getColor(R.color.primary));
+        inviteText.setPadding(Screen.dp(72), 0, Screen.dp(8), 0);
+        inviteText.setTextSize(16);
+        inviteText.setSingleLine(true);
+        inviteText.setEllipsize(TextUtils.TruncateAt.END);
+        inviteText.setTypeface(Fonts.medium());
+        {
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.gravity = Gravity.CENTER_VERTICAL;
+            layoutParams.topMargin = Screen.dp(16);
+            layoutParams.bottomMargin = Screen.dp(16);
+            invitePanel.addView(inviteText, layoutParams);
+        }
+
+        if (!isLast) {
+            View div = new View(getActivity());
+            div.setBackgroundColor(getResources().getColor(R.color.divider));
+            {
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        getResources().getDimensionPixelSize(R.dimen.div_size));
+                layoutParams.gravity = Gravity.BOTTOM;
+                layoutParams.leftMargin = Screen.dp(72);
+                invitePanel.addView(div, layoutParams);
+            }
+        }
+
+        addFooterView(container);
     }
 
     @Override

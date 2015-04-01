@@ -9,11 +9,10 @@ import android.widget.TextView;
 import java.util.Collection;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.AvatarDrawable;
+import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.model.entity.Avatar;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.viewmodel.UserVM;
 
@@ -66,6 +65,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_group_item, viewGroup, false);
             userName = (TextView) res.findViewById(R.id.name);
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
+            avatarView.init(Screen.dp(42), 24);
             admin = res.findViewById(R.id.adminFlag);
             return res;
         }
@@ -74,13 +74,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
         public void bind(GroupMember data, int position, Context context) {
             UserVM user = users().get(data.getUid());
 
-            avatarView.setEmptyDrawable(AvatarDrawable.create(user, 16, context));
-            Avatar avatar = user.getAvatar().get();
-            if (avatar != null) {
-                avatarView.bindAvatar(32, avatar);
-            } else {
-                avatarView.unbind();
-            }
+            avatarView.bind(user);
 
             userName.setText(user.getName().get());
 
@@ -89,6 +83,11 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             } else {
                 admin.setVisibility(View.GONE);
             }
+        }
+
+        @Override
+        public void unbind() {
+            avatarView.unbind();
         }
     }
 }

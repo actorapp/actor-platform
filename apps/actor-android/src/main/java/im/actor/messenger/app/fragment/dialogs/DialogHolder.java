@@ -11,15 +11,13 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-
+import im.actor.android.view.BindedViewHolder;
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.AvatarDrawable;
+import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.android.view.BindedViewHolder;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 import im.actor.model.mvvm.ValueChangedListener;
@@ -33,11 +31,7 @@ import static im.actor.messenger.app.Core.myUid;
  */
 public class DialogHolder extends BindedViewHolder {
 
-    private final int paddingH = Screen.dp(10);
-    private final int paddingV = Screen.dp(9);
-
-    // private AvatarView avatar;
-    private SimpleDraweeView avatar;
+    private AvatarView avatar;
     private TextView title;
     private TextView text;
     private TextView time;
@@ -69,6 +63,9 @@ public class DialogHolder extends BindedViewHolder {
 
         this.context = context;
 
+        final int paddingH = Screen.dp(10);
+        final int paddingV = Screen.dp(9);
+
         pendingColor = context.getResources().getColor(R.color.chats_state_pending);
         sentColor = context.getResources().getColor(R.color.chats_state_sent);
         receivedColor = context.getResources().getColor(R.color.chats_state_delivered);
@@ -78,8 +75,8 @@ public class DialogHolder extends BindedViewHolder {
         fl.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(72)));
         fl.setBackgroundResource(R.drawable.selector_white);
 
-        // avatar = new AvatarView(context);
-        avatar = new SimpleDraweeView(context);
+        avatar = new AvatarView(context);
+        avatar.init(Screen.dp(54), 24);
         {
             FrameLayout.LayoutParams avatarLayoutParams = new FrameLayout.LayoutParams(Screen.dp(54), Screen.dp(54));
             avatarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.LEFT;
@@ -197,17 +194,10 @@ public class DialogHolder extends BindedViewHolder {
     }
 
     public void bind(Dialog data, boolean isLast) {
-
         this.binded = data.getPeer().getUnuqueId();
-
         this.bindedItem = data;
 
-//        avatar.unbind();
-//        avatar.setEmptyDrawable(AvatarDrawable.create(data, 24, context));
-//        if (data.getDialogAvatar() != null && data.getDialogAvatar().getSmallImage() != null) {
-//            avatar.bindAvatar(54, data.getDialogAvatar());
-//        }
-        avatar.getHierarchy().setPlaceholderImage(AvatarDrawable.create(data, 24, context));
+        avatar.bind(data);
 
         if (data.getUnreadCount() > 0) {
             counter.setText(Integer.toString(data.getUnreadCount()));
@@ -332,6 +322,8 @@ public class DialogHolder extends BindedViewHolder {
 
     public void unbind() {
         this.bindedItem = null;
+
+        this.avatar.unbind();
 
         if (privateTypingListener != null) {
             messenger().getTyping(bindedUid).unsubscribe(privateTypingListener);

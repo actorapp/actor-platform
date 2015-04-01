@@ -41,17 +41,19 @@ public class Contacts extends BaseModule {
 
         contacts = modules.getConfiguration().getStorageProvider()
                 .createContactsList(modules.getConfiguration().getStorageProvider().createList(STORAGE_CONTACTS));
+    }
 
+    public void run() {
         bookImportActor = system().actorOf(Props.create(BookImportActor.class, new ActorCreator<BookImportActor>() {
             @Override
             public BookImportActor create() {
-                return new BookImportActor(modules);
+                return new BookImportActor(modules());
             }
         }), "actor/book_import");
         contactSyncActor = system().actorOf(Props.create(ContactsSyncActor.class, new ActorCreator<ContactsSyncActor>() {
             @Override
             public ContactsSyncActor create() {
-                return new ContactsSyncActor(modules);
+                return new ContactsSyncActor(modules());
             }
         }), "actor/contacts_sync");
     }

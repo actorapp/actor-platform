@@ -3,15 +3,21 @@ package im.actor.messenger.app.fragment.compose;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.view.AvatarDrawable;
+import im.actor.messenger.app.fragment.BaseFragment;
+import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.KeyboardHelper;
 
@@ -47,7 +53,8 @@ public class GroupNameFragment extends BaseFragment {
         });
 
         avatarView = (AvatarView) res.findViewById(R.id.avatar);
-        avatarView.setEmptyDrawable(new AvatarDrawable("", 0, 0, getActivity()));
+        avatarView.init(Screen.dp(96), 24);
+
         res.findViewById(R.id.pickAvatar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,10 +101,10 @@ public class GroupNameFragment extends BaseFragment {
             int res = data.getIntExtra(Intents.EXTRA_RESULT, Intents.RESULT_IMAGE);
             if (res == Intents.RESULT_DELETE) {
                 this.avatarPath = null;
-                avatarView.unbind();
+                this.avatarView.unbind();
             } else if (res == Intents.RESULT_IMAGE) {
                 this.avatarPath = data.getStringExtra(Intents.EXTRA_IMAGE);
-                avatarView.bindUploading(avatarPath);
+                this.avatarView.bindRaw(avatarPath);
             }
         }
     }

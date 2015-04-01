@@ -38,6 +38,7 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
+import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.TintImageView;
@@ -123,6 +124,7 @@ public class ChatActivity extends BaseActivity {
         barTypingContainer = barView.findViewById(R.id.typingContainer);
         barTypingContainer.setVisibility(View.INVISIBLE);
         barAvatar = (AvatarView) barView.findViewById(R.id.avatarPreview);
+        barAvatar.init(Screen.dp(32), 18);
         ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
         getSupportActionBar().setCustomView(barView, layout);
         barView.findViewById(R.id.titleContainer).setOnClickListener(new View.OnClickListener() {
@@ -325,7 +327,7 @@ public class ChatActivity extends BaseActivity {
                 return;
             }
 
-            bind(barAvatar, user.getId(), 18, user.getAvatar(), user.getName());
+            bind(barAvatar, user.getId(), user.getAvatar(), user.getName());
             bind(barTitle, user.getName());
             bind(barSubtitle, barSubtitleContainer, user);
             bindPrivateTyping(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
@@ -336,7 +338,7 @@ public class ChatActivity extends BaseActivity {
                 return;
             }
 
-            bind(barAvatar, group.getId(), 18, group.getAvatar(), group.getName());
+            bind(barAvatar, group.getId(), group.getAvatar(), group.getName());
             bind(barTitle, group.getName());
             // Subtitle is always visible for Groups
             barSubtitleContainer.setVisibility(View.VISIBLE);

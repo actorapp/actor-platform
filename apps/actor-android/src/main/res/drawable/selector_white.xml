@@ -4,5 +4,5 @@
     <item android:drawable="@color/selector_selected" android:state_selected="true" />
     <item android:drawable="@color/selector_hover" android:state_focused="true" />
     <item android:drawable="@color/selector_hover" android:state_hovered="true" />
-    <item android:drawable="@android:color/white" />
+    <item android:drawable="@color/bg_light" />
 </selector>
