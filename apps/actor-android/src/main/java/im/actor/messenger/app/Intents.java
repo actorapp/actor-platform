@@ -6,13 +6,12 @@ import android.net.Uri;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.activity.AddContactActivity;
-import im.actor.messenger.app.fragment.chat.ChatActivity;
-import im.actor.messenger.app.fragment.media.DocumentsActivity;
-import im.actor.messenger.app.fragment.settings.EditNameActivity;
-import im.actor.messenger.app.fragment.group.GroupInfoActivity;
-import im.actor.messenger.app.fragment.group.PickUserActivity;
-import im.actor.messenger.app.fragment.profile.ProfileActivity;
 import im.actor.messenger.app.activity.TakePhotoActivity;
+import im.actor.messenger.app.fragment.chat.ChatActivity;
+import im.actor.messenger.app.fragment.group.GroupInfoActivity;
+import im.actor.messenger.app.fragment.media.DocumentsActivity;
+import im.actor.messenger.app.fragment.profile.ProfileActivity;
+import im.actor.messenger.app.fragment.settings.EditNameActivity;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Peer;
 
@@ -84,10 +83,6 @@ public class Intents {
 
     public static Intent openProfile(int uid, Context context) {
         return new Intent(context, ProfileActivity.class).putExtra(EXTRA_UID, uid);
-    }
-
-    public static Intent pickUser(Context context) {
-        return new Intent(context, PickUserActivity.class);
     }
 
     public static Intent call(long phone) {

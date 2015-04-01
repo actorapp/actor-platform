@@ -237,7 +237,7 @@ public class ProfileFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (avatarView != null) {
-            avatarView.close();
+            avatarView.unbind();
             avatarView = null;
         }
     }

@@ -241,6 +241,9 @@
     <string name="create_group_search_hint">Поиск по имени</string>
     <string name="create_group_done">Завершить</string>
 
+    <!-- Group add -->
+    <string name="group_add_title">Добавить в группу</string>
+
     <!-- Documents -->
     <string name="documents_title">Документы</string>
     <string name="documents_empty">Еще нет документов</string>

@@ -2,20 +2,26 @@ package im.actor.messenger.app.fragment.chat.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.droidkit.progress.CircularView;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.generic.RoundingParams;
+import com.facebook.drawee.view.SimpleDraweeView;
+
+import java.io.File;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.messenger.app.fragment.chat.view.FastThumbLoader;
-import im.actor.messenger.app.view.PhotoPreview;
-import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.TextUtils;
+import im.actor.messenger.app.view.TintImageView;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.content.DocumentContent;
 import im.actor.model.entity.content.FileLocalSource;
@@ -51,7 +57,7 @@ public class PhotoHolder extends MessageHolder {
     private View overlay;
 
     // Content Views
-    private PhotoPreview imageKitView;
+    private SimpleDraweeView previewView;
     private FastThumbLoader fastThumbLoader;
 
     private TextView time;
@@ -67,6 +73,7 @@ public class PhotoHolder extends MessageHolder {
     // Binded model
     private FileVM downloadFileVM;
     private UploadFileVM uploadFileVM;
+    private boolean isPhoto;
 
     public PhotoHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
@@ -82,8 +89,19 @@ public class PhotoHolder extends MessageHolder {
         overlay = itemView.findViewById(R.id.photoOverlay);
 
         // Content
-        imageKitView = (PhotoPreview) itemView.findViewById(R.id.image);
-        fastThumbLoader = new FastThumbLoader(imageKitView);
+        previewView = (SimpleDraweeView) itemView.findViewById(R.id.image);
+        GenericDraweeHierarchyBuilder builder =
+                new GenericDraweeHierarchyBuilder(context.getResources());
+
+        GenericDraweeHierarchy hierarchy = builder
+                .setFadeDuration(200)
+                .setRoundingParams(new RoundingParams()
+                        .setCornersRadius(Screen.dp(2))
+                        .setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY))
+                .build();
+        previewView.setHierarchy(hierarchy);
+
+        fastThumbLoader = new FastThumbLoader(previewView);
         time = (TextView) itemView.findViewById(R.id.time);
         duration = (TextView) itemView.findViewById(R.id.duration);
 
@@ -147,10 +165,12 @@ public class PhotoHolder extends MessageHolder {
             if (message.getContent() instanceof PhotoContent) {
                 w = ((PhotoContent) message.getContent()).getW();
                 h = ((PhotoContent) message.getContent()).getH();
+                isPhoto = true;
                 duration.setVisibility(View.GONE);
             } else if (message.getContent() instanceof VideoContent) {
                 w = ((VideoContent) message.getContent()).getW();
                 h = ((VideoContent) message.getContent()).getH();
+                isPhoto = false;
                 duration.setVisibility(View.VISIBLE);
                 duration.setText(messenger().getFormatter().formatDuration(((VideoContent) message.getContent()).getDuration()));
             } else {
@@ -166,7 +186,7 @@ public class PhotoHolder extends MessageHolder {
 
             int bubbleW = (int) (scale * w);
             int bubbleH = (int) (scale * h);
-            imageKitView.setLayoutParams(new FrameLayout.LayoutParams(bubbleW, bubbleH));
+            previewView.setLayoutParams(new FrameLayout.LayoutParams(bubbleW, bubbleH));
             overlay.setLayoutParams(new FrameLayout.LayoutParams(bubbleW, bubbleH));
         }
 
@@ -174,7 +194,7 @@ public class PhotoHolder extends MessageHolder {
         boolean needRebind = false;
         if (isNewMessage) {
             // Resetting old content state
-            imageKitView.noRequest();
+            // imageKitView.noRequest();
             fastThumbLoader.cancel();
 
             // Resetting binding
@@ -199,11 +219,15 @@ public class PhotoHolder extends MessageHolder {
 
             if (fileMessage.getSource() instanceof FileRemoteSource) {
                 boolean autoDownload = fileMessage instanceof PhotoContent;
+                previewView.setImageURI(null);
                 downloadFileVM = messenger().bindFile(((FileRemoteSource) fileMessage.getSource()).getFileReference(),
                         autoDownload, new DownloadVMCallback(fileMessage));
             } else if (fileMessage.getSource() instanceof FileLocalSource) {
                 uploadFileVM = messenger().bindUpload(message.getRid(), new UploadVMCallback());
-                imageKitView.requestPhoto(((FileLocalSource) fileMessage.getSource()).getFileDescriptor());
+                if (isPhoto) {
+                    previewView.setImageURI(Uri.fromFile(
+                            new File(((FileLocalSource) fileMessage.getSource()).getFileDescriptor())));
+                }
             } else {
                 throw new RuntimeException("Unknown file source type: " + fileMessage.getSource());
             }
@@ -227,7 +251,7 @@ public class PhotoHolder extends MessageHolder {
 
         // Releasing images
         fastThumbLoader.cancel();
-        imageKitView.noRequest();
+        previewView.setImageURI(null);
     }
 
     private class UploadVMCallback implements UploadFileVMCallback {
@@ -314,7 +338,9 @@ public class PhotoHolder extends MessageHolder {
 
         @Override
         public void onDownloaded(FileSystemReference reference) {
-            imageKitView.requestPhoto(reference.getDescriptor());
+            if (isPhoto) {
+                previewView.setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
+            }
 
             progressValue.setText(100 + "");
             progressView.setValue(100);
