@@ -28,6 +28,25 @@ public class AndroidMessenger extends BaseMessenger {
     }
 
     @Override
+    public void changeGroupAvatar(int gid, String descriptor) {
+        try {
+            Bitmap bmp = ImageHelper.loadOptimizedHQ(descriptor);
+            if (bmp == null) {
+                return;
+            }
+            String resultFileName = getExternalTempFile("image", "jpg");
+            if (resultFileName == null) {
+                return;
+            }
+            ImageHelper.save(bmp, resultFileName);
+
+            super.changeGroupAvatar(gid, resultFileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void changeAvatar(String descriptor) {
         try {
             Bitmap bmp = ImageHelper.loadOptimizedHQ(descriptor);
