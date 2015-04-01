@@ -12,16 +12,8 @@ import im.actor.images.cache.BitmapClasificator;
 import im.actor.images.loading.ImageLoader;
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.emoji.EmojiProcessor;
-import im.actor.messenger.app.images.AvatarActor;
-import im.actor.messenger.app.images.AvatarTask;
 import im.actor.messenger.app.images.FullAvatarActor;
 import im.actor.messenger.app.images.FullAvatarTask;
-import im.actor.messenger.app.images.ImagePreviewActor;
-import im.actor.messenger.app.images.ImagePreviewTask;
-import im.actor.messenger.app.images.VideoActor;
-import im.actor.messenger.app.images.VideoPreviewActor;
-import im.actor.messenger.app.images.VideoPreviewTask;
-import im.actor.messenger.app.images.VideoTask;
 import im.actor.messenger.app.providers.AndroidNotifications;
 import im.actor.model.ApiConfiguration;
 import im.actor.model.entity.Group;
@@ -93,13 +85,9 @@ public class Core {
                 .endFilter()
 
                 .build();
-        this.imageLoader = new ImageLoader(clasificator, application);
-        this.imageLoader.getTaskResolver().register(ImagePreviewTask.class, ImagePreviewActor.class);
-        this.imageLoader.getTaskResolver().register(VideoPreviewTask.class, VideoPreviewActor.class);
-        this.imageLoader.getTaskResolver().register(VideoTask.class, VideoActor.class);
-        this.imageLoader.getTaskResolver().register(AvatarTask.class, AvatarActor.class);
-        this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
 
+        this.imageLoader = new ImageLoader(clasificator, application);
+        this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
 
         AndroidConfigurationBuilder builder = new AndroidConfigurationBuilder(application);
         // builder.setPhoneBookProvider(new AndroidPhoneBook());

@@ -5,13 +5,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import im.actor.images.common.ImageLoadException;
-import im.actor.images.ops.ImageLoading;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import im.actor.messenger.app.view.PhotoPreview;
+import im.actor.images.common.ImageLoadException;
+import im.actor.images.ops.ImageLoading;
 
 /**
  * Created by ex3ndr on 27.02.15.
@@ -27,7 +27,7 @@ public class FastThumbLoader {
                     return;
                 }
                 if (msg.what == currentRequest) {
-                    preview.setSrc((android.graphics.Bitmap) msg.obj);
+                    // preview.setSrc((android.graphics.Bitmap) msg.obj);
                     isActive = false;
                 } else {
                     return;
@@ -36,13 +36,13 @@ public class FastThumbLoader {
         }
     };
 
-    private PhotoPreview preview;
+    private SimpleDraweeView preview;
     private final Object LOCKER = new Object();
     private int currentRequest = 0;
     private byte[] data;
     private boolean isActive = false;
 
-    public FastThumbLoader(PhotoPreview preview) {
+    public FastThumbLoader(SimpleDraweeView preview) {
         this.preview = preview;
     }
 
@@ -52,7 +52,7 @@ public class FastThumbLoader {
             this.data = null;
             this.isActive = false;
         }
-        preview.setSrc(null);
+        // preview.setSrc(null);
     }
 
     public void request(byte[] data) {
@@ -61,7 +61,7 @@ public class FastThumbLoader {
             this.data = data;
             this.isActive = true;
         }
-        preview.setSrc(null);
+        // preview.setSrc(null);
 
         executor.execute(new CheckRunnable());
     }
