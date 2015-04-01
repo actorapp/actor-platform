@@ -239,6 +239,9 @@
     <string name="create_group_search_hint">Search by name</string>
     <string name="create_group_done">Done</string>
 
+    <!-- Group add -->
+    <string name="group_add_title">Add member</string>
+
     <!-- Documents -->
     <string name="documents_title">Documents</string>
     <string name="documents_empty">No documents yet</string>

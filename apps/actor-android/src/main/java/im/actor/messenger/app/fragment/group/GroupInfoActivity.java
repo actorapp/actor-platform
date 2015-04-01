@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseFragmentActivity;
-import im.actor.messenger.app.fragment.group.GroupInfoFragment;
 
 /**
  * Created by ex3ndr on 07.10.14.
@@ -19,6 +18,7 @@ public class GroupInfoActivity extends BaseFragmentActivity {
         int chatId = getIntent().getIntExtra(Intents.EXTRA_GROUP_ID, 0);
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        getSupportActionBar().setTitle(null);
 
         if (savedInstanceState == null) {
             showFragment(GroupInfoFragment.create(chatId), false, false);

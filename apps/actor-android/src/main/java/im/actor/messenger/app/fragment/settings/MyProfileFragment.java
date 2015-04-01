@@ -261,14 +261,14 @@ public class MyProfileFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        avatar.clear();
+        avatar.unbind();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (avatar != null) {
-            avatar.close();
+            avatar.unbind();
             avatar = null;
         }
     }

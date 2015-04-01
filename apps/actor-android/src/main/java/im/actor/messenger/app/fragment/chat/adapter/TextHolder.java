@@ -10,9 +10,9 @@ import android.widget.TextView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
+import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.messenger.app.util.TextUtils;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.TextContent;

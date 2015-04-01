@@ -21,6 +21,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import im.actor.messenger.R;
@@ -31,12 +36,14 @@ import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.group.view.MembersAdapter;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.util.Screen;
+import im.actor.messenger.app.view.Fonts;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Peer;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupVM;
+import im.actor.model.viewmodel.UserPhone;
 import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.app.Core.groups;
@@ -139,10 +146,13 @@ public class GroupInfoFragment extends BaseFragment {
         listView.addHeaderView(header, null, false);
 
         View add = inflater.inflate(R.layout.fragment_group_add, listView, false);
+        ((TextView) add.findViewById(R.id.name)).setTypeface(Fonts.medium());
+
         add.findViewById(R.id.addUser).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(Intents.pickUser(getActivity()), 0);
+                startActivity(new Intent(getActivity(), AddMemberActivity.class)
+                        .putExtra("GROUP_ID", chatId));
             }
         });
         listView.addFooterView(add, null, false);
@@ -181,7 +191,32 @@ public class GroupInfoFragment extends BaseFragment {
                                     if (which == 0) {
                                         startActivity(Intents.openPrivateDialog(userVM.getId(), true, getActivity()));
                                     } else if (which == 1) {
-                                        // startActivity(Intents.call(userModel.getPhone()));
+                                        final ArrayList<UserPhone> phones = userVM.getPhones().get();
+                                        if (phones.size() == 0) {
+                                            Toast.makeText(getActivity(), "Now phones available", Toast.LENGTH_SHORT).show();
+                                        } else if (phones.size() == 1) {
+                                            startActivity(Intents.call(phones.get(0).getPhone()));
+                                        } else {
+                                            CharSequence[] sequences = new CharSequence[phones.size()];
+                                            for (int i = 0; i < sequences.length; i++) {
+                                                try {
+                                                    Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + phones.get(i).getPhone(), "us");
+                                                    sequences[i] = phones.get(which).getTitle() + ": " + PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
+                                                } catch (NumberParseException e) {
+                                                    e.printStackTrace();
+                                                    sequences[i] = phones.get(which).getTitle() + ": +" + phones.get(i).getPhone();
+                                                }
+                                            }
+                                            new AlertDialog.Builder(getActivity())
+                                                    .setItems(sequences, new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            startActivity(Intents.call(phones.get(which).getPhone()));
+                                                        }
+                                                    })
+                                                    .show()
+                                                    .setCanceledOnTouchOutside(true);
+                                        }
                                     } else if (which == 2) {
                                         startActivity(Intents.openProfile(userVM.getId(), getActivity()));
                                     } else if (which == 3) {
@@ -191,7 +226,17 @@ public class GroupInfoFragment extends BaseFragment {
                                                     @Override
                                                     public void onClick(DialogInterface dialog2, int which) {
                                                         execute(messenger().kickMember(chatId, userVM.getId()),
-                                                                R.string.progress_common);
+                                                                R.string.progress_common, new CommandCallback<Boolean>() {
+                                                                    @Override
+                                                                    public void onResult(Boolean res) {
+
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onError(Exception e) {
+                                                                        Toast.makeText(getActivity(), R.string.toast_unable_kick, Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                });
                                                     }
                                                 })
                                                 .setNegativeButton(R.string.dialog_cancel, null)
@@ -278,7 +323,8 @@ public class GroupInfoFragment extends BaseFragment {
 
             return true;
         } else if (item.getItemId() == R.id.addMember) {
-            startActivityForResult(Intents.pickUser(getActivity()), 0);
+            startActivity(new Intent(getActivity(), AddMemberActivity.class)
+                    .putExtra("GROUP_ID", chatId));
         } else if (item.getItemId() == R.id.editTitle) {
             startActivity(Intents.editGroupTitle(chatId, getActivity()));
         } else if (item.getItemId() == R.id.changePhoto) {
@@ -331,7 +377,7 @@ public class GroupInfoFragment extends BaseFragment {
         super.onDestroyView();
         groupUserAdapter = null;
         if (avatarView != null) {
-            avatarView.clear();
+            avatarView.unbind();
             avatarView = null;
         }
     }

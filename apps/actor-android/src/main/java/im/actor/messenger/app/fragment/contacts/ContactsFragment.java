@@ -2,6 +2,7 @@ package im.actor.messenger.app.fragment.contacts;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,18 @@ public class ContactsFragment extends BaseContactFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return onCreateContactsView(R.layout.fragment_contacts, inflater, container, savedInstanceState);
+        View res = onCreateContactsView(R.layout.fragment_contacts, inflater, container, savedInstanceState);
+        res.findViewById(R.id.inviteButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String inviteMessage = getResources().getString(R.string.invite_message);
+                Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        });
+        return res;
     }
 
     @Override

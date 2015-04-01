@@ -132,9 +132,9 @@ public class ActorBinder {
             @Override
             public void onChanged(Avatar val, ValueModel<Avatar> valueModel) {
                 if (val != null) {
-                    avatarView.request(val);
+                    avatarView.bind(val);
                 } else {
-                    avatarView.clear();
+                    avatarView.unbind();
                 }
             }
         });

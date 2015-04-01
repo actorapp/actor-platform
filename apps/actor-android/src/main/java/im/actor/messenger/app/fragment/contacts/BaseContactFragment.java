@@ -70,22 +70,6 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             footer.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
             addFooterView(footer);
         } else {
-//            TextView header = new TextView(getActivity());
-//            header.setBackgroundColor(getResources().getColor(R.color.bg_grey));
-//            header.setText(R.string.contacts_title);
-//            header.setTypeface(Fonts.bold());
-//            header.setPadding(Screen.dp(16), 0, 0, 0);
-//            header.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-//            header.setTextSize(16);
-//            header.setTextColor(getResources().getColor(R.color.text_subheader));
-//
-//            LinearLayout headerCont = new LinearLayout(getActivity());
-//            headerCont.setBackgroundColor(getResources().getColor(R.color.bg_light));
-//            headerCont.setOrientation(LinearLayout.VERTICAL);
-//            headerCont.addView(header, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(48)));
-//            headerCont.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//            addHeaderView(headerCont);
-
             addFooterAction(R.drawable.ic_share_white_24dp, "Tell friends about Actor", false, new Runnable() {
                 @Override
                 public void run() {
