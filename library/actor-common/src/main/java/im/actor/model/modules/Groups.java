@@ -24,12 +24,12 @@ import im.actor.model.api.updates.UpdateGroupTitleChanged;
 import im.actor.model.api.updates.UpdateGroupUserAdded;
 import im.actor.model.api.updates.UpdateGroupUserKick;
 import im.actor.model.api.updates.UpdateGroupUserLeave;
-import im.actor.model.api.updates.UpdateUserLocalNameChanged;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
+import im.actor.model.droidkit.engine.KeyValueEngine;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
 import im.actor.model.modules.avatar.GroupAvatarChangeActor;
@@ -39,7 +39,6 @@ import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
-import im.actor.model.droidkit.engine.KeyValueEngine;
 import im.actor.model.viewmodel.GroupAvatarVM;
 import im.actor.model.viewmodel.GroupVM;
 
@@ -109,7 +108,11 @@ public class Groups extends BaseModule {
         avatarChangeActor.send(new GroupAvatarChangeActor.ChangeAvatar(gid, descriptor));
     }
 
-    public Command<Integer> createGroup(final String title, final int[] uids) {
+    public void removeAvatar(int gid) {
+        avatarChangeActor.send(new GroupAvatarChangeActor.RemoveAvatar(gid));
+    }
+
+    public Command<Integer> createGroup(final String title, final String avatarDescriptor, final int[] uids) {
         return new Command<Integer>() {
             @Override
             public void start(final CommandCallback<Integer> callback) {
@@ -135,6 +138,10 @@ public class Groups extends BaseModule {
                                 response.getDate());
                         ArrayList<im.actor.model.api.Group> groups = new ArrayList<im.actor.model.api.Group>();
                         groups.add(group);
+
+                        if (avatarDescriptor != null) {
+                            changeAvatar(group.getId(), avatarDescriptor);
+                        }
 
                         updates().onUpdateReceived(new FatSeqUpdate(response.getSeq(),
                                 response.getState(),
@@ -180,7 +187,7 @@ public class Groups extends BaseModule {
                     @Override
                     public void onResult(ResponseSeqDate response) {
                         SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                                UpdateUserLocalNameChanged.HEADER,
+                                UpdateGroupTitleChanged.HEADER,
                                 new UpdateGroupTitleChanged(gid, rid, myUid(),
                                         name, response.getDate()).toByteArray());
                         updates().onUpdateReceived(update);

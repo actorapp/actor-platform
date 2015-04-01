@@ -94,7 +94,10 @@ public class OwnAvatarChangeActor extends ModuleActor {
             modules().getFilesModule().cancelUpload(currentChangeTask);
             currentChangeTask = 0;
         }
+        currentChangeTask = RandomUtils.nextRid();
+
         modules().getProfile().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, true));
+        final long currentRid = currentChangeTask;
         request(new RequestRemoveAvatar(), new RpcCallback<ResponseSeq>() {
             @Override
             public void onResult(ResponseSeq response) {
@@ -106,13 +109,17 @@ public class OwnAvatarChangeActor extends ModuleActor {
                 updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), new Runnable() {
                     @Override
                     public void run() {
-                        modules().getProfile().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, false));
+                        self().send(new AvatarChanged(currentRid));
                     }
                 }));
             }
 
             @Override
             public void onError(RpcException e) {
+                if (currentRid != currentChangeTask) {
+                    return;
+                }
+                currentChangeTask = 0;
                 modules().getProfile().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, false));
             }
         });

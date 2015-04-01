@@ -27,7 +27,6 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.model.entity.Contact;
-import im.actor.model.log.Log;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
@@ -102,11 +101,12 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         bind(messenger().getAppState().getIsContactsEmpty(), new ValueChangedListener<Boolean>() {
             @Override
             public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
-                Log.d("BaseContactFragment", "isContactsEmpty: " + val);
-                if (val) {
-                    emptyView.setVisibility(View.VISIBLE);
-                } else {
-                    emptyView.setVisibility(View.GONE);
+                if (emptyView != null) {
+                    if (val) {
+                        emptyView.setVisibility(View.VISIBLE);
+                    } else {
+                        emptyView.setVisibility(View.GONE);
+                    }
                 }
             }
         });

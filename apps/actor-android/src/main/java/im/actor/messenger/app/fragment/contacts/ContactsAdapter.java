@@ -11,6 +11,8 @@ import im.actor.android.view.BindedListAdapter;
 import im.actor.model.entity.Contact;
 import im.actor.model.mvvm.BindedDisplayList;
 
+import static im.actor.messenger.app.Core.messenger;
+
 public class ContactsAdapter extends BindedListAdapter<Contact, ContactHolder> {
 
     private final HashSet<Integer> selectedUsers = new HashSet<Integer>();
@@ -58,7 +60,17 @@ public class ContactsAdapter extends BindedListAdapter<Contact, ContactHolder> {
 
     @Override
     public void onBindViewHolder(ContactHolder contactHolder, int index, Contact item) {
-        contactHolder.bind(item, query, selectedUsers.contains(item.getUid()));
+        String fastName = null;
+        if (index == 0) {
+            fastName = messenger().getFormatter().formatFastName(item.getName());
+        } else {
+            String prevName = messenger().getFormatter().formatFastName(getItem(index - 1).getName());
+            String currentFastName = messenger().getFormatter().formatFastName(item.getName());
+            if (!prevName.equals(currentFastName)) {
+                fastName = currentFastName;
+            }
+        }
+        contactHolder.bind(item, fastName, query, selectedUsers.contains(item.getUid()));
     }
 
     @Override

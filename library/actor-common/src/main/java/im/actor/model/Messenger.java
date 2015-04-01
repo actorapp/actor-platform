@@ -280,8 +280,8 @@ public class Messenger {
         return modules.getUsersModule().editName(uid, name);
     }
 
-    public Command<Integer> createGroup(String title, int[] uids) {
-        return modules.getGroupsModule().createGroup(title, uids);
+    public Command<Integer> createGroup(String title, String avatarDescriptor, int[] uids) {
+        return modules.getGroupsModule().createGroup(title, avatarDescriptor, uids);
     }
 
     public Command<Boolean> editGroupTitle(final int gid, final String title) {
@@ -434,6 +434,10 @@ public class Messenger {
 
     public void changeGroupAvatar(int gid, String descriptor) {
         modules.getGroupsModule().changeAvatar(gid, descriptor);
+    }
+
+    public void removeGroupAvatar(int gid) {
+        modules.getGroupsModule().removeAvatar(gid);
     }
 
     public void changeAvatar(String descriptor) {
