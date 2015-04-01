@@ -341,8 +341,8 @@ public class ChatActivity extends BaseActivity {
             bind(barAvatar, group.getId(), group.getAvatar(), group.getName());
             bind(barTitle, group.getName());
             // Subtitle is always visible for Groups
-            barSubtitleContainer.setVisibility(View.VISIBLE);
-            bind(barSubtitle, group);
+            // barSubtitleContainer.setVisibility(View.VISIBLE);
+            bind(barSubtitle, barSubtitleContainer, group);
             bindGroupTyping(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
         }
 
@@ -485,8 +485,14 @@ public class ChatActivity extends BaseActivity {
         }
 
         if (peer.getPeerType() == PeerType.GROUP) {
-            menu.findItem(R.id.groupInfo).setVisible(true);
-            menu.findItem(R.id.leaveGroup).setVisible(true);
+            if (groups().get(peer.getPeerId()).isMember().get()) {
+                menu.findItem(R.id.leaveGroup).setVisible(true);
+                menu.findItem(R.id.groupInfo).setVisible(true);
+            } else {
+                menu.findItem(R.id.leaveGroup).setVisible(false);
+                menu.findItem(R.id.groupInfo).setVisible(false);
+            }
+
         } else {
             menu.findItem(R.id.groupInfo).setVisible(false);
             menu.findItem(R.id.leaveGroup).setVisible(false);
