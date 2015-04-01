@@ -166,6 +166,18 @@ public class Intents {
                 .setDataAndType(Uri.fromFile(new File(downloadFileName)), mimeType);
     }
 
+    public static Intent shareDoc(String fileName, String downloadFileName) {
+        String mimeType = MimeTypeMap.getSingleton()
+                .getMimeTypeFromExtension(IOUtils.getFileExtension(fileName));
+        if (mimeType == null) {
+            mimeType = "*/*";
+        }
+
+        return new Intent(Intent.ACTION_SEND)
+                .putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(downloadFileName)))
+                .setType(mimeType);
+    }
+
     public static Intent shareAvatar(FileReference location) {
         return new Intent(Intent.ACTION_SEND)
                 .putExtra(Intent.EXTRA_STREAM, getAvatarUri(location))
