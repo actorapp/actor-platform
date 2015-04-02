@@ -394,6 +394,8 @@ public class PhotoHolder extends MessageHolder {
         public void onDownloaded(FileSystemReference reference) {
             if (isPhoto) {
                 previewView.setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
+            } else {
+                checkFastThumb();
             }
 
             progressValue.setText(100 + "");

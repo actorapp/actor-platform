@@ -2,6 +2,7 @@ package im.actor.android;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+
 import im.actor.android.sql.NoOpOpenHelper;
 import im.actor.android.sql.SQLiteKeyValue;
 import im.actor.android.sql.SQLiteList;

@@ -14,6 +14,7 @@ import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestSendMessage;
 import im.actor.model.api.rpc.ResponseSeqDate;
 import im.actor.model.api.updates.UpdateMessageSent;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
@@ -95,7 +96,7 @@ public class SenderActor extends ModuleActor {
 
     public void doSendText(Peer peer, String text) {
         long rid = RandomUtils.nextRid();
-        long date = System.currentTimeMillis();
+        long date = Environment.getCurrentTime();
 
         Message message = new Message(rid, date, date, myUid(), MessageState.PENDING, new TextContent(text));
         getConversationActor(peer).send(message);
@@ -110,7 +111,7 @@ public class SenderActor extends ModuleActor {
     public void doSendDocument(Peer peer, String fileName, String mimeType, int fileSize,
                                FastThumb fastThumb, String descriptor) {
         long rid = RandomUtils.nextRid();
-        long date = System.currentTimeMillis();
+        long date = Environment.getCurrentTime();
         DocumentContent documentContent = new DocumentContent(
                 new FileLocalSource(fileName, fileSize, descriptor),
                 mimeType, fileName, fastThumb);
@@ -126,7 +127,7 @@ public class SenderActor extends ModuleActor {
     public void doSendPhoto(Peer peer, FastThumb fastThumb, String descriptor, String fileName,
                             int fileSize, int w, int h) {
         long rid = RandomUtils.nextRid();
-        long date = System.currentTimeMillis();
+        long date = Environment.getCurrentTime();
         PhotoContent photoContent = new PhotoContent(
                 new FileLocalSource(fileName, fileSize, descriptor), "image/jpeg", fileName,
                 fastThumb, w, h);
@@ -143,7 +144,7 @@ public class SenderActor extends ModuleActor {
     public void doSendVideo(Peer peer, String fileName, int w, int h, int duration,
                             FastThumb fastThumb, String descriptor, int fileSize) {
         long rid = RandomUtils.nextRid();
-        long date = System.currentTimeMillis();
+        long date = Environment.getCurrentTime();
         VideoContent videoContent = new VideoContent(
                 new FileLocalSource(fileName, fileSize, descriptor), "video/mp4", fileName,
                 fastThumb, duration, w, h);
