@@ -213,12 +213,12 @@
             android:exported="true" />
 
         <receiver
-            android:name="im.actor.messenger.app.receiver.PushReceiver"
+            android:name="im.actor.model.android.modules.push.PushReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-                <category android:name="im.actor" />
+                <category android:name="${applicationId}" />
             </intent-filter>
         </receiver>
     </application>

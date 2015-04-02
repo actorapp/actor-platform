@@ -1,8 +1,10 @@
 package im.actor.android;
 
 import android.content.Context;
+import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
+import android.provider.ContactsContract;
 import android.webkit.MimeTypeMap;
 
 import java.io.File;
@@ -18,13 +20,29 @@ import im.actor.model.entity.content.FastThumb;
 /**
  * Created by ex3ndr on 23.03.15.
  */
-public class AndroidMessenger extends BaseMessenger {
+public class AndroidBaseMessenger extends BaseMessenger {
     private Context context;
-    private Random random = new Random();
+    private final Random random = new Random();
 
-    public AndroidMessenger(Context context, Configuration configuration) {
+    public AndroidBaseMessenger(Context context, Configuration configuration) {
         super(configuration);
         this.context = context;
+
+        // Catch all phone book changes
+        context.getContentResolver()
+                .registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true,
+                        new ContentObserver(null) {
+                            @Override
+                            public void onChange(boolean selfChange) {
+                                onPhoneBookChanged();
+                            }
+                        });
+
+        // TODO: Catch all network changes
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     @Override
