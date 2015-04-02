@@ -16,6 +16,8 @@ public interface ThreadingProvider {
 
     public long getCurrentTime();
 
+    public long getSyncedCurrentTime();
+
     public int getCoresCount();
 
     public AtomicIntegerCompat createAtomicInt(int value);

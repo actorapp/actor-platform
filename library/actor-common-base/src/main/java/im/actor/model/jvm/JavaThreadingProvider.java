@@ -32,6 +32,11 @@ public class JavaThreadingProvider implements ThreadingProvider {
     }
 
     @Override
+    public long getSyncedCurrentTime() {
+        return getCurrentTime();
+    }
+
+    @Override
     public int getCoresCount() {
         return Runtime.getRuntime().availableProcessors();
     }
