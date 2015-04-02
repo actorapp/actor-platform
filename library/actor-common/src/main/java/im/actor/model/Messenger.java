@@ -8,6 +8,7 @@ import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.debug.TraceInterface;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
+import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Peer;
@@ -236,6 +237,16 @@ public class Messenger {
         }
     }
 
+    public void onNetworkChanged() {
+        // TODO: Implement
+    }
+
+    public void onPushReceived(int seq) {
+        if (modules.getUpdatesModule() != null) {
+            modules.getUpdatesModule().onPushReceived(seq);
+        }
+    }
+
     public void saveDraft(Peer peer, String draft) {
         modules.getMessagesModule().saveDraft(peer, draft);
     }
@@ -450,5 +461,17 @@ public class Messenger {
 
     public AppStateVM getAppState() {
         return modules.getAppStateModule().getAppStateVM();
+    }
+
+    public void registerGooglePush(long projectId, String token) {
+        modules.getPushes().registerGooglePush(projectId, token);
+    }
+
+    public void registerApplePush(int apnsId, String token) {
+        modules.getPushes().registerApplePush(apnsId, token);
+    }
+
+    public PreferencesStorage getPreferences() {
+        return modules.getPreferences();
     }
 }

@@ -24,6 +24,7 @@ public class Modules {
     private volatile Groups groups;
     private volatile Updates updates;
     private volatile Messages messages;
+    private volatile Pushes pushes;
     private volatile Presence presence;
     private volatile Typing typing;
     private volatile Files filesModule;
@@ -68,6 +69,7 @@ public class Modules {
         Log.d("CORE_INIT", "Loading stage5.3 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
         start = configuration.getThreadingProvider().getActorTime();
         this.auth = new Auth(this);
+        this.pushes = new Pushes(this);
         Log.d("CORE_INIT", "Loading stage5.4 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
         start = configuration.getThreadingProvider().getActorTime();
         this.appStateModule = new AppStateModule(this);
@@ -198,5 +200,9 @@ public class Modules {
 
     public AppStateModule getAppStateModule() {
         return appStateModule;
+    }
+
+    public Pushes getPushes() {
+        return pushes;
     }
 }

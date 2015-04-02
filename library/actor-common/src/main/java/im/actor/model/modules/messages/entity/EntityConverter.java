@@ -160,7 +160,7 @@ public class EntityConverter {
                 return new ServiceGroupUserLeave();
             } else if (ex instanceof ServiceExGroupCreated) {
                 // TODO: Fix
-                return new ServiceGroupCreated("Group created");
+                return new ServiceGroupCreated("");
             } else {
                 return new ServiceContent(message.getText());
             }

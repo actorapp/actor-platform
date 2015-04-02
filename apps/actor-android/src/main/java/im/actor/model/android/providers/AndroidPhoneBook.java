@@ -1,4 +1,4 @@
-package im.actor.messenger.app.providers;
+package im.actor.model.android.providers;
 
 import android.content.ContentResolver;
 import android.content.Context;
