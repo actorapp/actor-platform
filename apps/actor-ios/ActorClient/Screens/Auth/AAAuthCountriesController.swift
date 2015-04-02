@@ -150,6 +150,6 @@ class AAAuthCountriesController: AATableViewController {
     // MARK: Navigation
     
     private func dismiss() {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
     }
 }

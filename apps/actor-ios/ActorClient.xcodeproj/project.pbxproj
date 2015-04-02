@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		050B225D1ACBE5B900A0E904 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050B225C1ACBE5B900A0E904 /* Colors.swift */; };
+		050B225D1ACBE5B900A0E904 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050B225C1ACBE5B900A0E904 /* ColorExtension.swift */; };
 		050B226C1ACC010200A0E904 /* AAAuthCountriesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050B22681ACC010200A0E904 /* AAAuthCountriesController.swift */; };
 		050B226D1ACC010200A0E904 /* AAAuthPhoneController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050B22691ACC010200A0E904 /* AAAuthPhoneController.swift */; };
 		050B226E1ACC010200A0E904 /* AAAuthSmsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050B226A1ACC010200A0E904 /* AAAuthSmsController.swift */; };
@@ -15,6 +15,7 @@
 		050E99BD1ACB4D410052C06B /* AANavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050E99B71ACB4D410052C06B /* AANavigationController.swift */; };
 		050E99BE1ACB4D410052C06B /* AATableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050E99B81ACB4D410052C06B /* AATableViewController.swift */; };
 		050E99C01ACB510A0052C06B /* AAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050E99BF1ACB510A0052C06B /* AAViewController.swift */; };
+		051542E71ACD18050062E3E3 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051542E61ACD18050062E3E3 /* Utils.swift */; };
 		05B432971ACC08D40073BA69 /* AAAuthCountryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */; };
 		06047D061ABF85FD002091CC /* AASerializationHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D051ABF85FD002091CC /* AASerializationHelpers.m */; };
 		06047D081ABF8611002091CC /* CocoaTcpConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D071ABF8611002091CC /* CocoaTcpConnection.m */; };
@@ -769,7 +770,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		050B225C1ACBE5B900A0E904 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Utils/Colors.swift; sourceTree = "<group>"; };
+		050B225C1ACBE5B900A0E904 /* ColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ColorExtension.swift; path = Utils/ColorExtension.swift; sourceTree = "<group>"; };
 		050B22681ACC010200A0E904 /* AAAuthCountriesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthCountriesController.swift; sourceTree = "<group>"; };
 		050B22691ACC010200A0E904 /* AAAuthPhoneController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthPhoneController.swift; sourceTree = "<group>"; };
 		050B226A1ACC010200A0E904 /* AAAuthSmsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthSmsController.swift; sourceTree = "<group>"; };
@@ -777,6 +778,7 @@
 		050E99B71ACB4D410052C06B /* AANavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AANavigationController.swift; sourceTree = "<group>"; };
 		050E99B81ACB4D410052C06B /* AATableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATableViewController.swift; sourceTree = "<group>"; };
 		050E99BF1ACB510A0052C06B /* AAViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAViewController.swift; sourceTree = "<group>"; };
+		051542E61ACD18050062E3E3 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = Utils/Utils.swift; sourceTree = "<group>"; };
 		05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAuthCountryCell.swift; path = Views/Auth/AAAuthCountryCell.swift; sourceTree = "<group>"; };
 		06047D041ABF85E9002091CC /* AASerializationHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AASerializationHelpers.h; sourceTree = "<group>"; };
 		06047D051ABF85FD002091CC /* AASerializationHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AASerializationHelpers.m; sourceTree = "<group>"; };
@@ -4292,7 +4294,8 @@
 				06E484261AB78D7300AA272F /* SThreadPoolQueue.h */,
 				06E484271AB78D7300AA272F /* SThreadPool.h */,
 				06E484281AB78D7400AA272F /* SThreadPool.m */,
-				050B225C1ACBE5B900A0E904 /* Colors.swift */,
+				050B225C1ACBE5B900A0E904 /* ColorExtension.swift */,
+				051542E61ACD18050062E3E3 /* Utils.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -5013,7 +5016,7 @@
 				06D1F52B1ACB3C8400AC22ED /* AskProgressCallback.m in Sources */,
 				06D1F66B1ACB3C8400AC22ED /* DoubleAddMultiplier.m in Sources */,
 				06D1F6001ACB3C8400AC22ED /* Ping.m in Sources */,
-				050B225D1ACBE5B900A0E904 /* Colors.swift in Sources */,
+				050B225D1ACBE5B900A0E904 /* ColorExtension.swift in Sources */,
 				06D1F4E11ACB3C8400AC22ED /* UserKey.m in Sources */,
 				06D1F46B1ACB3C8400AC22ED /* RequestGetContacts.m in Sources */,
 				06D1F5681ACB3C8400AC22ED /* ServiceGroupTitleChanged.m in Sources */,
@@ -5022,6 +5025,7 @@
 				06D1F5781ACB3C8400AC22ED /* MessageState.m in Sources */,
 				06D1F4891ACB3C8400AC22ED /* RequestSubscribeFromOnline.m in Sources */,
 				06D1F4D71ACB3C8400AC22ED /* UpdateUserLastSeen.m in Sources */,
+				051542E71ACD18050062E3E3 /* Utils.swift in Sources */,
 				06D1F5CE1ACB3C8400AC22ED /* ExecuteAfter.m in Sources */,
 				06D1F5D71ACB3C8400AC22ED /* TypingProcessor.m in Sources */,
 				06D1F4761ACB3C8400AC22ED /* RequestMessageRead.m in Sources */,

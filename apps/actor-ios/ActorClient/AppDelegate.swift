@@ -14,8 +14,26 @@ import Foundation
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         
+//        application.statusBarStyle = UIStatusBarStyle.LightContent
+//        
+//        var navAppearance = UINavigationBar.appearance();
+//        navAppearance.tintColor = UIColor.whiteColor();
+//        navAppearance.barTintColor = UIColor.whiteColor();
+//        navAppearance.backgroundColor = Resources.TintColor;
+//        navAppearance.setBackgroundImage(Imaging.imageWithColor(Resources.TintColor, size: CGSize(width: 1, height: 46)), forBarMetrics: UIBarMetrics.Default)
+//        navAppearance.shadowImage = UIImage(named: "CardBottom2")
+//        navAppearance.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
+//        navAppearance.translucent = false;
+//        
+
+        
         var textFieldAppearance = UITextField.appearance();
         textFieldAppearance.tintColor = Resources.TintColor;
+        
+        //var searchBarAppearance = UISearchBar.appearance();
+        //searchBarAppearance.tintColor = Resources.TintColor;
+        
+
         
         UITabBar.appearance().translucent = false
         UITabBar.appearance().tintColor = Resources.BarTintColor;
@@ -23,7 +41,30 @@ import Foundation
         UITabBar.appearance().shadowImage = UIImage(named: "CardTop2");
         UITabBar.appearance().selectionIndicatorImage = Imaging.imageWithColor(UIColor(red: 0xeb/255.0, green: 0xed/255.0, blue: 0xf2/255.0, alpha: 1), size: CGSize(width: 1, height: 46)).resizableImageWithCapInsets(UIEdgeInsetsZero);
         
+        //        setTitleTextAttributes(NSForegroundColorAttributeName, );
+        
+        //        var barButtonItemAppearance = UIBarButtonItem.appearance();
+        //        barButtonItemAppearance
+        
+        //        [UINavigationBar appearance].tintColor = [UIColor whiteColor];
+        //        [UINavigationBar appearance].barTintColor = BAR_COLOR;
+        //        [UINavigationBar appearance].backgroundColor = BAR_COLOR;
+        //        [UINavigationBar appearance].titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
+        //        [UITextField appearance].tintColor = BAR_COLOR;
+        //        [UISearchBar appearance].tintColor = BAR_COLOR;
+        //        //[UISearchBar appearance].backgroundImage = [UIImage new];
+        //        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class],nil]
+        //        setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]} forState:UIControlStateNormal];
+        //
+        //        [UITableViewCell appearance].tintColor = BAR_COLOR;
+        //        [UITableView appearance].sectionIndexColor = BAR_COLOR;
+        //        [UITabBar appearance].tintColor = BAR_COLOR;
+        //        
+        //        [MagicalRecord setupAutoMigratingCoreDataStack];
+        //        
+        //        [CocoaMessenger messenger];
 
+        
         var rootController = UINavigationController(rootViewController: MainTabController());
     
         window = UIWindow(frame: UIScreen.mainScreen().bounds);
@@ -32,7 +73,7 @@ import Foundation
         window?.backgroundColor = UIColor.whiteColor()
         
         if (MSG.isLoggedIn() == false) {
-            var phoneController = AAAuthPhoneController()
+            let phoneController = AAAuthPhoneController()
             var loginNavigation = AANavigationController(rootViewController: phoneController)
             loginNavigation.makeBarTransparent()
             rootController.presentViewController(loginNavigation, animated: false, completion: nil)

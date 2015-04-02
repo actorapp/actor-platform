@@ -10,8 +10,6 @@ import UIKit
 
 class AAViewController: UIViewController {
     
-    let isRetina = UIScreen.mainScreen().scale > 1
-    
     // MARK: -
     // MARK: Constructors
     
