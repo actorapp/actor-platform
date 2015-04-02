@@ -1,6 +1,7 @@
 package im.actor.android;
 
 import android.content.Context;
+
 import im.actor.model.jvm.JvmConfigurationBuilder;
 
 /**
@@ -10,6 +11,7 @@ public class AndroidConfigurationBuilder extends JvmConfigurationBuilder {
 
     public AndroidConfigurationBuilder(Context context) {
         setMainThreadProvider(new AndroidMainThreadProvider());
+        setThreadingProvider(new AndroidThreadingProvider("europe.pool.ntp.org", context));
         setLog(new AndroidLog());
         setStorage(new AndroidStorageProvider(context));
         setDispatcherProvider(new AndroidCallbackDispatcher());

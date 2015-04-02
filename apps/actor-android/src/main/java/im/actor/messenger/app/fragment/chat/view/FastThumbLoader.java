@@ -1,10 +1,6 @@
 package im.actor.messenger.app.fragment.chat.view;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -13,29 +9,14 @@ import java.util.concurrent.Executors;
 
 import im.actor.images.common.ImageLoadException;
 import im.actor.images.ops.ImageLoading;
+import im.actor.messenger.app.view.FastBitmapDrawable;
+import im.actor.model.mvvm.MVVMEngine;
 
 /**
  * Created by ex3ndr on 27.02.15.
  */
 public class FastThumbLoader {
     private static Executor executor = Executors.newSingleThreadExecutor();
-
-    private Handler handler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-            synchronized (LOCKER) {
-                if (!isActive) {
-                    return;
-                }
-                if (msg.what == currentRequest) {
-                    preview.getHierarchy().setPlaceholderImage(new BitmapDrawable((Bitmap) msg.obj));
-                    isActive = false;
-                } else {
-                    return;
-                }
-            }
-        }
-    };
 
     private SimpleDraweeView preview;
     private final Object LOCKER = new Object();
@@ -71,7 +52,7 @@ public class FastThumbLoader {
 
         @Override
         public void run() {
-            int req;
+            final int req;
             byte[] d;
             synchronized (LOCKER) {
                 if (!isActive) {
@@ -81,8 +62,23 @@ public class FastThumbLoader {
                 d = data;
             }
             try {
-                Bitmap res = ImageLoading.loadBitmap(d);
-                handler.sendMessage(handler.obtainMessage(req, res));
+                final Bitmap res = ImageLoading.loadBitmap(d);
+                MVVMEngine.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (LOCKER) {
+                            if (!isActive) {
+                                return;
+                            }
+                            if (req == currentRequest) {
+                                preview.getHierarchy().setPlaceholderImage(new FastBitmapDrawable(res));
+                                isActive = false;
+                            } else {
+                                return;
+                            }
+                        }
+                    }
+                });
             } catch (ImageLoadException e) {
                 e.printStackTrace();
                 synchronized (LOCKER) {
