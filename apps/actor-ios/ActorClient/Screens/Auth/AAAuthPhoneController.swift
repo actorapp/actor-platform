@@ -21,6 +21,7 @@ class AAAuthPhoneController: AAViewController {
     private var phoneBackgroundView: UIImageView!
     private var countryCodeLabel: UILabel!
     private var phoneTextField: ABPhoneField!
+    private var hintLabel: UILabel!
     
     // MARK: - 
     // MARK: Public vars
@@ -103,10 +104,26 @@ class AAAuthPhoneController: AAViewController {
         phoneTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         view.addSubview(phoneTextField)
         
-        let separatorHeight: CGFloat = isRetina ? 0.5 : 1.0;
+        let separatorHeight: CGFloat = Utils.isRetina() ? 0.5 : 1.0;
         var navigationBarSeparator = UIView(frame: CGRect(x: 0.0, y: grayBackground.bounds.size.height, width: screenSize.width, height: separatorHeight))
         navigationBarSeparator.backgroundColor = UIColor.RGB(0xc8c7cc)
         view.addSubview(navigationBarSeparator)
+        
+        hintLabel = UILabel()
+        hintLabel.font = UIFont.systemFontOfSize(17.0)
+        hintLabel.textColor = UIColor.RGB(0x999999)
+        hintLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        hintLabel.backgroundColor = UIColor.whiteColor()
+        hintLabel.textAlignment = NSTextAlignment.Center
+        hintLabel.contentMode = UIViewContentMode.Center
+        hintLabel.numberOfLines = 0
+        hintLabel.text = "Please confirm your country code and enter your phone number." // TODO: Localize
+        let hintLabelSize = hintLabel.sizeThatFits(CGSize(width: 278.0, height: CGFloat.max))
+        hintLabel.frame = CGRect(x: (screenSize.width - hintLabelSize.width) / 2.0, y: CGFloat(isWidescreen ? 274.0 : 214.0), width: hintLabelSize.width, height: hintLabelSize.height);
+        view.addSubview(hintLabel)
+        
+        var nextBarButton = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed")) // TODO: Localize
+        navigationItem.rightBarButtonItem = nextBarButton
         
         currentIso = phoneTextField.currentIso
     }
@@ -117,6 +134,28 @@ class AAAuthPhoneController: AAViewController {
     }
     
     // MARK: -
+    // MARK: Methods
+    
+    func nextButtonPressed() {
+        let numberLength = count(phoneTextField.phoneNumber) as Int
+        let numberRequiredLength: Int = (ABPhoneField.phoneMinLengthByCountryCode()[currentIso] as! String).toInt()!
+        if (numberLength != numberRequiredLength) {
+            SVProgressHUD.showErrorWithStatus("Wrong phone length")
+        } else {
+            SVProgressHUD.showWithMaskType(SVProgressHUDMaskType.Black)
+            
+            let messenger = CocoaMessenger.messenger().requestSmsWithLong(jlong((phoneTextField.phoneNumber as NSString).longLongValue))
+            messenger.startWithAMCommandCallback(CocoaCallback(result: { (val:Any?) -> () in
+                self.navigateToSms()
+                SVProgressHUD.dismiss()
+                }, error: { (exception) -> () in
+                    SVProgressHUD.showErrorWithStatus(exception.getLocalizedMessage())
+            }))
+
+        }
+    }
+    
+    // MARK: -
     // MARK: Navigation
     
     func showCountriesList() {
@@ -124,7 +163,13 @@ class AAAuthPhoneController: AAViewController {
         countriesController.delegate = self
         countriesController.currentIso = currentIso
         var navigationController = AANavigationController(rootViewController: countriesController)
-        self.presentViewController(navigationController, animated: true, completion: nil)
+        presentViewController(navigationController, animated: true, completion: nil)
+    }
+    
+    func navigateToSms() {
+        var smsController = AAAuthSmsController()
+        smsController.phoneNumber = "+\(phoneTextField.formattedPhoneNumber)"
+        navigationController!.pushViewController(smsController, animated: true)
     }
     
 }
