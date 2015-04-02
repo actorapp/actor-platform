@@ -16,8 +16,9 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.MainActivity;
 import im.actor.model.NotificationProvider;
-import im.actor.model.entity.*;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.model.entity.Notification;
+import im.actor.model.entity.Peer;
+import im.actor.model.entity.PeerType;
 
 import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
@@ -165,9 +166,11 @@ public class AndroidNotifications implements NotificationProvider {
 
     private CharSequence getNotificationTextFull(Notification notification) {
         SpannableStringBuilder res = new SpannableStringBuilder();
-        res.append(getNotificationSender(notification));
-        res.append(": ");
-        res.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, res.length(), 0);
+        if (!messenger().getFormatter().isLargeDialogMessage(notification.getContentDescription().getContentType())) {
+            res.append(getNotificationSender(notification));
+            res.append(": ");
+            res.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, res.length(), 0);
+        }
         res.append(getNotificationText(notification));
         return res;
     }
@@ -185,43 +188,9 @@ public class AndroidNotifications implements NotificationProvider {
     }
 
     private CharSequence getNotificationText(Notification pendingNotification) {
-        // TODO: Better implementation
-        ContentDescription description = pendingNotification.getContentDescription();
-        switch (description.getContentType()) {
-            default:
-            case TEXT:
-                return description.getText();
-            case DOCUMENT_PHOTO:
-                return "Photo";
-            case DOCUMENT_VIDEO:
-                return "Video";
-            case DOCUMENT:
-                if (description.getText() != null) {
-                    return description.getText();
-                }
-                return "Document";
-            case SERVICE_REGISTERED:
-                return "User registered";
-            case SERVICE_CREATED:
-                return "Created group";
-            case SERVICE_ADD:
-                if (description.getRelatedUser() != 0) {
-                    UserVM u = users().get(description.getRelatedUser());
-                    if (u != null) {
-                        return "Added " + u.getName() + " to group";
-                    }
-                }
-                return "Added someone to group";
-            case SERVICE_KICK:
-                if (description.getRelatedUser() != 0) {
-                    UserVM u = users().get(description.getRelatedUser());
-                    if (u != null) {
-                        return "Kicked " + u.getName() + " from group";
-                    }
-                }
-                return "Kicked someone from group";
-            case SERVICE_LEAVE:
-                return "Left group";
-        }
+        return messenger().getFormatter().formatContentDialogText(pendingNotification.getSender(),
+                pendingNotification.getContentDescription().getContentType(),
+                pendingNotification.getContentDescription().getText(),
+                pendingNotification.getContentDescription().getRelatedUser());
     }
 }

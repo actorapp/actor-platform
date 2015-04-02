@@ -1,7 +1,5 @@
 package im.actor.model;
 
-import im.actor.model.Configuration;
-import im.actor.model.Messenger;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
@@ -23,8 +21,9 @@ public class BaseMessenger extends Messenger {
         displayLists = new DisplayLists(modules);
     }
 
-    public ConversationVM buildConversationVM(Peer peer, ConversationVMCallback callback) {
-        return new ConversationVM(peer, callback, modules, displayLists);
+    public ConversationVM buildConversationVM(Peer peer, BindedDisplayList<Message> displayList,
+                                              ConversationVMCallback callback) {
+        return new ConversationVM(peer, callback, modules, displayList);
     }
 
     // Display lists
@@ -35,6 +34,10 @@ public class BaseMessenger extends Messenger {
 
     public BindedDisplayList<Message> getMessagesGlobalList(Peer peer) {
         return displayLists.getMessagesGlobalList(peer);
+    }
+
+    public BindedDisplayList<Message> buildMessagesList(Peer peer) {
+        return displayLists.buildNewChatList(peer, false);
     }
 
     public BindedDisplayList<Contact> getContactsGlobalList() {
