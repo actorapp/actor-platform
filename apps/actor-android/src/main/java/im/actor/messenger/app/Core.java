@@ -3,9 +3,7 @@ package im.actor.messenger.app;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
-import android.database.ContentObserver;
 import android.os.Build;
-import android.provider.ContactsContract;
 
 import im.actor.android.AndroidConfigurationBuilder;
 import im.actor.images.cache.BitmapClasificator;
@@ -14,8 +12,9 @@ import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.emoji.EmojiProcessor;
 import im.actor.messenger.app.images.FullAvatarActor;
 import im.actor.messenger.app.images.FullAvatarTask;
-import im.actor.messenger.app.providers.AndroidNotifications;
 import im.actor.model.ApiConfiguration;
+import im.actor.model.android.AndroidMessenger;
+import im.actor.model.android.providers.AndroidNotifications;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
 import im.actor.model.mvvm.MVVMCollection;
@@ -46,7 +45,7 @@ public class Core {
 
     private ImageLoader imageLoader;
     private EmojiProcessor emojiProcessor;
-    private im.actor.android.AndroidMessenger messenger;
+    private AndroidMessenger messenger;
 
     private Core(Application application) {
 
@@ -104,18 +103,7 @@ public class Core {
         builder.setApiConfiguration(new ApiConfiguration("Actor Android v0.1", 1, "??", "Android Device",
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
-        this.messenger = new im.actor.android.AndroidMessenger(AppContext.getContext(), builder.build());
-
-        // Bind phone book change
-        AppContext.getContext()
-                .getContentResolver()
-                .registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true,
-                        new ContentObserver(null) {
-                            @Override
-                            public void onChange(boolean selfChange) {
-                                messenger.onPhoneBookChanged();
-                            }
-                        });
+        this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
     }
 
     public static EmojiProcessor emoji() {
@@ -130,7 +118,7 @@ public class Core {
         return core().imageLoader;
     }
 
-    public static im.actor.android.AndroidMessenger messenger() {
+    public static AndroidMessenger messenger() {
         return core().messenger;
     }
 

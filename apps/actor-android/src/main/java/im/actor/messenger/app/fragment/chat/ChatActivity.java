@@ -38,13 +38,13 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
+import im.actor.messenger.app.util.RandomUtil;
 import im.actor.messenger.app.util.Screen;
+import im.actor.messenger.app.util.io.IOUtils;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
-import im.actor.messenger.app.util.RandomUtil;
-import im.actor.messenger.app.util.io.IOUtils;
 import im.actor.model.Messenger;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
@@ -212,17 +212,6 @@ public class ChatActivity extends BaseActivity {
 
         kicked = findViewById(R.id.kickedFromChat);
 
-        if (peer.getPeerType() == PeerType.GROUP) {
-            bind(messenger().getGroups().get(peer.getPeerId()).isMember(), new ValueChangedListener<Boolean>() {
-                @Override
-                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
-                    kicked.setVisibility(val ? View.GONE : View.VISIBLE);
-                }
-            });
-        } else {
-            kicked.setVisibility(View.GONE);
-        }
-
         sendButton = (TintImageView) findViewById(R.id.ib_send);
         sendButton.setResource(R.drawable.conv_send);
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -331,6 +320,8 @@ public class ChatActivity extends BaseActivity {
             bind(barTitle, user.getName());
             bind(barSubtitle, barSubtitleContainer, user);
             bindPrivateTyping(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
+
+            kicked.setVisibility(View.GONE);
         } else if (peer.getPeerType() == PeerType.GROUP) {
             GroupVM group = groups().get(peer.getPeerId());
             if (group == null) {
@@ -344,6 +335,13 @@ public class ChatActivity extends BaseActivity {
             // barSubtitleContainer.setVisibility(View.VISIBLE);
             bind(barSubtitle, barSubtitleContainer, group);
             bindGroupTyping(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
+
+            bind(messenger().getGroups().get(peer.getPeerId()).isMember(), new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                    kicked.setVisibility(val ? View.GONE : View.VISIBLE);
+                }
+            });
         }
 
         if (isCompose) {

@@ -4,7 +4,6 @@ package im.actor.model.modules.updates;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import im.actor.model.api.DifferenceUpdate;
 import im.actor.model.api.base.FatSeqUpdate;
@@ -76,6 +75,8 @@ public class SequenceActor extends ModuleActor {
             onUpdateReceived(message);
         } else if (message instanceof ExecuteAfter) {
             onUpdateReceived(message);
+        } else if (message instanceof PushSeq) {
+            onUpdateReceived(message);
         } else {
             drop(message);
         }
@@ -117,6 +118,15 @@ public class SequenceActor extends ModuleActor {
                 after.getRunnable().run();
             } else {
                 pendingRunnables.add(after);
+            }
+            return;
+        } else if (u instanceof PushSeq) {
+            PushSeq pushSeq = (PushSeq) u;
+            if (pushSeq.seq <= this.seq) {
+                Log.d(TAG, "Ignored PushSeq {seq:" + pushSeq.seq + "}");
+            } else {
+                Log.w(TAG, "External Out of sequence: starting timer for invalidation");
+                self().sendOnce(new ForceInvalidate(), INVALIDATE_GAP);
             }
             return;
         } else {

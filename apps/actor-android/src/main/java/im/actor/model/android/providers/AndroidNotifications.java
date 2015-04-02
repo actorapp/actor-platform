@@ -1,4 +1,4 @@
-package im.actor.messenger.app.providers;
+package im.actor.model.android.providers;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -22,7 +22,6 @@ import im.actor.model.viewmodel.UserVM;
 import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
-import static im.actor.model.entity.ContentType.*;
 
 /**
  * Created by ex3ndr on 01.03.15.

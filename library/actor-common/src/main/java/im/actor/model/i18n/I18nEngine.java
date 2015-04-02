@@ -19,6 +19,7 @@ import im.actor.model.entity.content.ServiceGroupUserKicked;
 import im.actor.model.entity.content.ServiceGroupUserLeave;
 import im.actor.model.entity.content.ServiceUserRegistered;
 import im.actor.model.entity.content.TextContent;
+import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.viewmodel.UserPresence;
 
@@ -346,6 +347,8 @@ public class I18nEngine {
                 return getTemplateNamed(senderId, "ServiceGroupAvatarRemoved");
             }
         }
+
+        Log.w("i18NEngine", "Unknown service content: " + content);
 
         return content.getCompatText();
     }
