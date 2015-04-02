@@ -332,7 +332,7 @@ public class I18nEngine {
                             getSubjectName(((ServiceGroupUserAdded) content).getAddedUid()));
         } else if (content instanceof ServiceGroupUserKicked) {
             return getTemplateNamed(senderId, "ServiceGroupKicked")
-                    .replace("{name_added}",
+                    .replace("{name_kicked}",
                             getSubjectName(((ServiceGroupUserKicked) content).getKickedUid()));
         } else if (content instanceof ServiceGroupUserLeave) {
             return getTemplateNamed(senderId, "ServiceGroupLeaved");

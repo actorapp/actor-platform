@@ -2,7 +2,6 @@ package im.actor.model.viewmodel;
 
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
-import im.actor.model.modules.DisplayLists;
 import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
@@ -15,8 +14,8 @@ public class ConversationVM {
     private BindedDisplayList.Listener listener;
     private boolean isLoaded = false;
 
-    public ConversationVM(final Peer peer, final ConversationVMCallback callback, final Modules modules, DisplayLists displayLists) {
-        this.displayList = displayLists.getMessagesGlobalList(peer);
+    public ConversationVM(final Peer peer, final ConversationVMCallback callback, final Modules modules, final BindedDisplayList<Message> displayList) {
+        this.displayList = displayList;
         this.listener = new DisplayList.Listener() {
             @Override
             public void onCollectionChanged() {
@@ -58,7 +57,7 @@ public class ConversationVM {
             }
         };
         this.displayList.addListener(listener);
-        this.listener.onCollectionChanged();
+        listener.onCollectionChanged();
     }
 
     public void release() {

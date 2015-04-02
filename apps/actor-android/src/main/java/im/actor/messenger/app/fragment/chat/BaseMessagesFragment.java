@@ -80,22 +80,26 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
         // Add Header as Footer because of reverse layout
         addFooterView(header);
 
-        conversationVM = messenger().buildConversationVM(peer, new ConversationVMCallback() {
-            @Override
-            public void onLoaded(long unreadId, final int index) {
-                if (messagesAdapter != null) {
-                    messagesAdapter.setFirstUnread(unreadId);
-                }
+        conversationVM = messenger().buildConversationVM(peer, getDisplayList(),
+                new ConversationVMCallback() {
+                    @Override
+                    public void onLoaded(long unreadId, final int index) {
 
-                if (linearLayoutManager != null) {
-                    if (index > 0) {
-                        linearLayoutManager.scrollToPosition(index + 1);
-                    } else {
-                        linearLayoutManager.scrollToPosition(0);
+                        if (messagesAdapter != null) {
+                            messagesAdapter.setFirstUnread(unreadId);
+                        }
+
+                        if (index > 0) {
+                            linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
+                            // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
+                            // linearLayoutManager.scrollToPosition(index + 1);
+                            // getCollection().scrollToPosition(index + 1);
+                        } else {
+                            // linearLayoutManager.scrollToPosition(0);
+                            getCollection().scrollToPosition(0);
+                        }
                     }
-                }
-            }
-        });
+                });
 
         return res;
     }
@@ -110,7 +114,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     protected void configureRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
-        // linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
     }
 
