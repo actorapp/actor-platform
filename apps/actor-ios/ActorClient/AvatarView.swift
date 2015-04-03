@@ -45,6 +45,10 @@ class AvatarView : UIImageView {
     
     var requestId: Int = 0;
     var callback: CocoaDownloadCallback? = nil;
+    
+    init() {
+        super.init(image: nil)
+    }
 
     init(frameSize: Int) {
         self.frameSize = frameSize;
