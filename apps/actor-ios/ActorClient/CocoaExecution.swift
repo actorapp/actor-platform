@@ -9,6 +9,7 @@
 import Foundation
 
 extension UIViewController {
+    
     func execute(command: AMCommand) {
         MBProgressHUD.showHUDAddedTo(UIApplication.sharedApplication().keyWindow, animated: true)
         command.startWithAMCommandCallback(CocoaCallback(result: { (val:Any?) -> () in
@@ -17,4 +18,5 @@ extension UIViewController {
                 MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
         }))
     }
+    
 }
