@@ -160,11 +160,27 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
         MSG.onConversationOpen(peer)
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if count(navigationController!.viewControllers) > 2 {
+            if let tabBarController = navigationController!.viewControllers[0] as? MainTabController,
+               let currentController: AnyObject = navigationController!.viewControllers[count(navigationController!.viewControllers) - 1] as? MessagesViewController {
+                println("\(navigationController!.viewControllers)")
+                navigationController!.setViewControllers([tabBarController, currentController], animated: false)
+                println("\(navigationController!.viewControllers)")
+            }
+        }
+    }
+    
     func onAvatarTap() {
+        let id = Int(peer.getPeerId())
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
-            self.navigationController?.pushViewController(ProfileController(uid: Int(peer.getPeerId())), animated: true)
+            let userInfoController = ProfileController(uid: id)
+            self.navigationController?.pushViewController(userInfoController, animated: true)
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
-            self.navigationController?.pushViewController(GroupController(gid: Int(peer.getPeerId())), animated: true)
+            let groupInfoController = AAConversationGroupInfoController(gid: id)
+            self.navigationController?.pushViewController(groupInfoController, animated: true)
         }
     }
     
