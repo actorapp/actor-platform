@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class EngineListController: UIViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_Listener {
+class EngineListController: AAViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_Listener {
     
     private var engineTableView: UITableView!;
     private var displayList: AMBindedDisplayList!;
@@ -22,7 +22,7 @@ class EngineListController: UIViewController, UITableViewDelegate, UITableViewDa
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil);
     }
     
-    init(){
+    override init() {
        super.init(nibName: nil, bundle: nil);
     }
 
