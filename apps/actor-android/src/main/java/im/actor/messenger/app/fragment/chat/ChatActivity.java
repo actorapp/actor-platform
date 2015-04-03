@@ -247,7 +247,7 @@ public class ChatActivity extends BaseActivity {
                     e.printStackTrace();
                 }
 
-                if (BuildConfig.ENABLE_CHROME) {
+                if (BuildConfig.IS_CHROME_BUILD) {
                     popup.getMenuInflater().inflate(R.menu.attach_popup_chrome, popup.getMenu());
                 } else {
                     popup.getMenuInflater().inflate(R.menu.attach_popup, popup.getMenu());
