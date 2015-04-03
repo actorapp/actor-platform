@@ -1,15 +1,17 @@
 package im.actor.server.persist
 
-import im.actor.server.models
 import slick.driver.PostgresDriver.api._
-import Database.dynamicSession
+
+import im.actor.server.models
 
 class AuthSmsCodeTable(tag: Tag) extends Table[models.AuthSmsCode](tag, "auth_sms_codes") {
   def phoneNumber = column[Long]("phone_number", O.PrimaryKey)
+
   def smsHash = column[String]("sms_hash")
+
   def smsCode = column[String]("sms_code")
 
-  def * = (phoneNumber, smsHash, smsCode) <> (models.AuthSmsCode.tupled, models.AuthSmsCode.unapply)
+  def * = (phoneNumber, smsHash, smsCode) <>(models.AuthSmsCode.tupled, models.AuthSmsCode.unapply)
 }
 
 object AuthSmsCode {
