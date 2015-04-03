@@ -43,9 +43,7 @@ android {
     }
 
     signingConfigs {
-        release {
-
-        }
+        release
     }
 
     dexOptions {
@@ -256,44 +254,40 @@ android {
         }
     }
 
-//    if (project.hasProperty('androidStore') &&
-//            project.hasProperty('androidStorePass') &&
-//            project.hasProperty('androidAliasPass') &&
-//            project.hasProperty('androidAlias')) {
-//        android.signingConfigs.release.storeFile = file(androidStore)
-//        android.signingConfigs.release.storePassword = androidStorePass
-//        android.signingConfigs.release.keyAlias = androidAlias
-//        android.signingConfigs.release.keyPassword = androidAliasPass
-//    } else {
-//        Properties properties = new Properties()
-//        properties.load(project.rootProject.file('local.properties').newDataInputStream())
-//
-//        if (!properties.getProperty('androidStore', '').equals('')) {
-//            def androidStore = properties.getProperty('androidStore')
-//            def androidStorePass = properties.getProperty('androidStorePass')
-//            def androidAliasPass = properties.getProperty('androidAliasPass')
-//            def androidAlias = properties.getProperty('androidAlias')
-//
-//            android.signingConfigs.release.storeFile = file(androidStore)
-//            android.signingConfigs.release.storePassword = androidStorePass
-//            android.signingConfigs.release.keyAlias = androidAlias
-//            android.signingConfigs.release.keyPassword = androidAliasPass
-//        } else {
-//            buildTypes.mchs.signingConfig = null
-//            buildTypes.dev1.signingConfig = null
-//            buildTypes.dev2.signingConfig = null
-//            buildTypes.dev1alt.signingConfig = null
-//            buildTypes.play.signingConfig = null
-//            buildTypes.chrome.signingConfig = null
-//        }
-//    }
+    if (project.hasProperty('androidStore') &&
+            project.hasProperty('androidStorePass') &&
+            project.hasProperty('androidAliasPass') &&
+            project.hasProperty('androidAlias')) {
 
-    buildTypes.mchs.signingConfig = null
-    buildTypes.dev1.signingConfig = null
-    buildTypes.dev2.signingConfig = null
-    buildTypes.dev1alt.signingConfig = null
-    buildTypes.play.signingConfig = null
-    buildTypes.chrome.signingConfig = null
+        android.signingConfigs.release.storeFile = file(androidStore)
+        android.signingConfigs.release.storePassword = androidStorePass
+        android.signingConfigs.release.keyAlias = androidAlias
+        android.signingConfigs.release.keyPassword = androidAliasPass
+
+    } else {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+        if (!properties.getProperty('androidStore', '').equals('')) {
+            def androidStore = properties.getProperty('androidStore')
+            def androidStorePass = properties.getProperty('androidStorePass')
+            def androidAliasPass = properties.getProperty('androidAliasPass')
+            def androidAlias = properties.getProperty('androidAlias')
+
+            android.signingConfigs.release.storeFile = file(androidStore)
+            android.signingConfigs.release.storePassword = androidStorePass
+            android.signingConfigs.release.keyAlias = androidAlias
+            android.signingConfigs.release.keyPassword = androidAliasPass
+        } else {
+            buildTypes.release.signingConfig = null
+            buildTypes.mchs.signingConfig = null
+            buildTypes.dev1.signingConfig = null
+            buildTypes.dev2.signingConfig = null
+            buildTypes.dev1alt.signingConfig = null
+            buildTypes.play.signingConfig = null
+            buildTypes.chrome.signingConfig = null
+        }
+    }
 
     productFlavors {
     }
