@@ -16,7 +16,7 @@ object StringCodec extends Codec[String] {
     for { t <- varint.decode(buf) }
     yield {
       val length = t.value * byteSize
-      DecodeResult(new String(t.remainder.take(length).toByteArray), t.remainder.drop(length))
+      DecodeResult(new String(t.remainder.take(length).toByteArray, "UTF-8"), t.remainder.drop(length))
     }
   }
 }
