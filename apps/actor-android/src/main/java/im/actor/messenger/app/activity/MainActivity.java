@@ -45,8 +45,8 @@ public class MainActivity extends ControllerActivity<MainBaseController> {
     }
 
     private void checkForUpdates() {
-        if (BuildConfig.ENABLE_HOCKEY) {
-            UpdateManager.register(this, getString(R.string.hockey_app_id));
+        if (BuildConfig.HOCKEY != null) {
+            UpdateManager.register(this, BuildConfig.HOCKEY);
         }
     }
 }

@@ -3,26 +3,29 @@ package im.actor.messenger.app;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
+
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.splunk.mint.Mint;
 
 import im.actor.android.AndroidConfigurationBuilder;
 import im.actor.images.cache.BitmapClasificator;
 import im.actor.images.loading.ImageLoader;
 import im.actor.messenger.BuildConfig;
-import im.actor.messenger.app.emoji.EmojiProcessor;
 import im.actor.messenger.app.images.FullAvatarActor;
 import im.actor.messenger.app.images.FullAvatarTask;
+import im.actor.messenger.app.service.KeepAliveService;
 import im.actor.model.ApiConfiguration;
 import im.actor.model.android.AndroidMessenger;
 import im.actor.model.android.providers.AndroidNotifications;
+import im.actor.model.android.providers.AndroidPhoneBook;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.providers.EmptyPhoneProvider;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
-
-import static com.droidkit.actors.ActorSystem.system;
 
 /**
  * Created by ex3ndr on 30.08.14.
@@ -44,19 +47,21 @@ public class Core {
     }
 
     private ImageLoader imageLoader;
-    private EmojiProcessor emojiProcessor;
     private AndroidMessenger messenger;
 
     private Core(Application application) {
 
+        // Integrations
+        if (BuildConfig.MINT != null) {
+            Mint.initAndStartSession(application, BuildConfig.MINT);
+        }
+        Fresco.initialize(application);
+
+        // Keep Alive
+        application.startService(new Intent(application, KeepAliveService.class));
+
         // Helpers
         AppContext.setContext(application);
-
-        // Init actor system
-        system().setClassLoader(AppContext.getContext().getClassLoader());
-
-        // Emoji
-        // this.emojiProcessor = new EmojiProcessor(application);
 
         // Init Image Engine
         ActivityManager activityManager = (ActivityManager) AppContext.getContext().getSystemService(Context.ACTIVITY_SERVICE);
@@ -89,25 +94,24 @@ public class Core {
         this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
 
         AndroidConfigurationBuilder builder = new AndroidConfigurationBuilder(application);
-        // builder.setPhoneBookProvider(new AndroidPhoneBook());
-        builder.setPhoneBookProvider(new EmptyPhoneProvider());
-        builder.setNotificationProvider(new AndroidNotifications(AppContext.getContext()));
-        if (BuildConfig.API_SSL) {
-            builder.addEndpoint("tls://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
+        if (BuildConfig.ENABLE_PHONE_BOOK) {
+            builder.setPhoneBookProvider(new AndroidPhoneBook());
         } else {
-            builder.addEndpoint("tcp://" + BuildConfig.API_HOST + ":" + BuildConfig.API_PORT);
+            builder.setPhoneBookProvider(new EmptyPhoneProvider());
         }
+        builder.setNotificationProvider(new AndroidNotifications(AppContext.getContext()));
+        builder.addEndpoint(BuildConfig.API_URL);
         builder.setEnableContactsLogging(true);
         builder.setEnableNetworkLogging(true);
 
-        builder.setApiConfiguration(new ApiConfiguration("Actor Android v0.1", 1, "??", "Android Device",
+        builder.setApiConfiguration(new ApiConfiguration(
+                BuildConfig.VERSION_TITLE,
+                BuildConfig.API_ID,
+                BuildConfig.API_KEY,
+                "Android Device",
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
         this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
-    }
-
-    public static EmojiProcessor emoji() {
-        return core().emojiProcessor;
     }
 
     public static int myUid() {
