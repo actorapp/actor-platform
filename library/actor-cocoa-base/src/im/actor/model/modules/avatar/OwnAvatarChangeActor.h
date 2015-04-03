@@ -132,7 +132,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarOwnAvatarChangeActor_$1_$1)
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e;
 
-- (instancetype)initWithImActorModelModulesAvatarOwnAvatarChangeActor:(ImActorModelModulesAvatarOwnAvatarChangeActor *)outer$;
+- (instancetype)initWithImActorModelModulesAvatarOwnAvatarChangeActor:(ImActorModelModulesAvatarOwnAvatarChangeActor *)outer$
+                                                             withLong:(jlong)capture$0;
 
 @end
 

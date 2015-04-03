@@ -11,7 +11,8 @@
 
 typedef NS_ENUM(NSUInteger, AMAppState) {
   AMAppState_READY = 0,
-  AMAppState_PREPARING_APP = 1,
+  AMAppState_EMPTY = 1,
+  AMAppState_PREPARING_APP = 2,
 };
 
 @interface AMAppStateEnum : JavaLangEnum < NSCopying > {
@@ -37,6 +38,9 @@ FOUNDATION_EXPORT AMAppStateEnum *AMAppStateEnum_values_[];
 
 #define AMAppStateEnum_READY AMAppStateEnum_values_[AMAppState_READY]
 J2OBJC_ENUM_CONSTANT_GETTER(AMAppStateEnum, READY)
+
+#define AMAppStateEnum_EMPTY AMAppStateEnum_values_[AMAppState_EMPTY]
+J2OBJC_ENUM_CONSTANT_GETTER(AMAppStateEnum, EMPTY)
 
 #define AMAppStateEnum_PREPARING_APP AMAppStateEnum_values_[AMAppState_PREPARING_APP]
 J2OBJC_ENUM_CONSTANT_GETTER(AMAppStateEnum, PREPARING_APP)

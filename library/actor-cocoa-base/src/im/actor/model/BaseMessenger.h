@@ -22,11 +22,14 @@
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration;
 
 - (AMConversationVM *)buildConversationVMWithAMPeer:(AMPeer *)peer
+                            withAMBindedDisplayList:(AMBindedDisplayList *)displayList
                        withAMConversationVMCallback:(id<AMConversationVMCallback>)callback;
 
 - (AMBindedDisplayList *)getDialogsGlobalList;
 
 - (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer;
+
+- (AMBindedDisplayList *)buildMessagesListWithAMPeer:(AMPeer *)peer;
 
 - (AMBindedDisplayList *)getContactsGlobalList;
 

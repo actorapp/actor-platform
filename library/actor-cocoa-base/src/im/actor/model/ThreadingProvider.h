@@ -21,6 +21,8 @@
 
 - (jlong)getCurrentTime;
 
+- (jlong)getSyncedCurrentTime;
+
 - (jint)getCoresCount;
 
 - (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)value;

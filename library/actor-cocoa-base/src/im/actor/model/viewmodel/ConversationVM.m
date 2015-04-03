@@ -9,7 +9,6 @@
 #include "im/actor/model/entity/Message.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/Auth.h"
-#include "im/actor/model/modules/DisplayLists.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/mvvm/BindedDisplayList.h"
@@ -31,6 +30,7 @@ J2OBJC_FIELD_SETTER(AMConversationVM, listener_, id<AMDisplayList_Listener>)
 @interface AMConversationVM_$1 () {
  @public
   AMConversationVM *this$0_;
+  AMBindedDisplayList *val$displayList_;
   ImActorModelModulesModules *val$modules_;
   AMPeer *val$peer_;
   id<AMConversationVMCallback> val$callback_;
@@ -38,45 +38,46 @@ J2OBJC_FIELD_SETTER(AMConversationVM, listener_, id<AMDisplayList_Listener>)
 @end
 
 J2OBJC_FIELD_SETTER(AMConversationVM_$1, this$0_, AMConversationVM *)
+J2OBJC_FIELD_SETTER(AMConversationVM_$1, val$displayList_, AMBindedDisplayList *)
 J2OBJC_FIELD_SETTER(AMConversationVM_$1, val$modules_, ImActorModelModulesModules *)
 J2OBJC_FIELD_SETTER(AMConversationVM_$1, val$peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(AMConversationVM_$1, val$callback_, id<AMConversationVMCallback>)
 
 
-#line 13
+#line 12
 @implementation AMConversationVM
 
 
-#line 18
+#line 17
 - (instancetype)initWithAMPeer:(AMPeer *)peer
   withAMConversationVMCallback:(id<AMConversationVMCallback>)callback
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules
-withImActorModelModulesDisplayLists:(ImActorModelModulesDisplayLists *)displayLists {
+       withAMBindedDisplayList:(AMBindedDisplayList *)displayList {
   if (self = [super init]) {
     isLoaded_ =
-#line 16
+#line 15
     NO;
     
+#line 18
+    self->displayList_ = displayList;
+    
 #line 19
-    self->displayList_ = [((ImActorModelModulesDisplayLists *) nil_chk(displayLists)) getMessagesGlobalListWithAMPeer:peer];
+    self->listener_ = [[AMConversationVM_$1 alloc] initWithAMConversationVM:self withAMBindedDisplayList:displayList withImActorModelModulesModules:modules withAMPeer:peer withAMConversationVMCallback:callback];
     
-#line 20
-    self->listener_ = [[AMConversationVM_$1 alloc] initWithAMConversationVM:self withImActorModelModulesModules:modules withAMPeer:peer withAMConversationVMCallback:callback];
-    
-#line 60
+#line 59
     [((AMBindedDisplayList *) nil_chk(self->displayList_)) addListenerWithAMDisplayList_Listener:listener_];
     
-#line 61
-    [self->listener_ onCollectionChanged];
+#line 60
+    [listener_ onCollectionChanged];
   }
   return self;
 }
 
 
-#line 64
+#line 63
 - (void)release__ {
   
-#line 65
+#line 64
   [((AMBindedDisplayList *) nil_chk(displayList_)) removeListenerWithAMDisplayList_Listener:listener_];
 }
 
@@ -94,35 +95,35 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConversationVM)
 @implementation AMConversationVM_$1
 
 
-#line 22
+#line 21
 - (void)onCollectionChanged {
   
-#line 23
+#line 22
   if (this$0_->isLoaded_) {
     return;
   }
   
-#line 27
-  if ([((AMBindedDisplayList *) nil_chk(this$0_->displayList_)) getSize] == 0) {
+#line 26
+  if ([((AMBindedDisplayList *) nil_chk(val$displayList_)) getSize] == 0) {
     return;
   }
   
-#line 31
+#line 30
   this$0_->isLoaded_ = YES;
   jlong lastRead = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(val$modules_)) getMessagesModule])) loadReadStateWithAMPeer:val$peer_];
   
-#line 34
+#line 33
   if (lastRead == 0) {
     
-#line 36
+#line 35
     return;
   }
   
-#line 39
+#line 38
   jint index = -1;
   jlong unread = -1;
-  for (jint i = [this$0_->displayList_ getSize] - 1; i >= 0; i--) {
-    AMMessage *message = [this$0_->displayList_ getItemWithInt:i];
+  for (jint i = [val$displayList_ getSize] - 1; i >= 0; i--) {
+    AMMessage *message = [val$displayList_ getItemWithInt:i];
     if ([((AMMessage *) nil_chk(message)) getSenderId] == [((ImActorModelModulesAuth *) nil_chk([val$modules_ getAuthModule])) myUid]) {
       continue;
     }
@@ -133,31 +134,34 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConversationVM)
     }
   }
   
-#line 53
+#line 52
   if (index >= 0) {
     [((id<AMConversationVMCallback>) nil_chk(val$callback_)) onLoadedWithLong:unread withInt:index];
   }
   else {
     
-#line 56
+#line 55
     [((id<AMConversationVMCallback>) nil_chk(val$callback_)) onLoadedWithLong:0 withInt:0];
   }
 }
 
 - (instancetype)initWithAMConversationVM:(AMConversationVM *)outer$
-          withImActorModelModulesModules:(ImActorModelModulesModules *)capture$0
-                              withAMPeer:(AMPeer *)capture$1
-            withAMConversationVMCallback:(id<AMConversationVMCallback>)capture$2 {
+                 withAMBindedDisplayList:(AMBindedDisplayList *)capture$0
+          withImActorModelModulesModules:(ImActorModelModulesModules *)capture$1
+                              withAMPeer:(AMPeer *)capture$2
+            withAMConversationVMCallback:(id<AMConversationVMCallback>)capture$3 {
   this$0_ = outer$;
-  val$modules_ = capture$0;
-  val$peer_ = capture$1;
-  val$callback_ = capture$2;
+  val$displayList_ = capture$0;
+  val$modules_ = capture$1;
+  val$peer_ = capture$2;
+  val$callback_ = capture$3;
   return [super init];
 }
 
 - (void)copyAllFieldsTo:(AMConversationVM_$1 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
+  other->val$displayList_ = val$displayList_;
   other->val$modules_ = val$modules_;
   other->val$peer_ = val$peer_;
   other->val$callback_ = val$callback_;

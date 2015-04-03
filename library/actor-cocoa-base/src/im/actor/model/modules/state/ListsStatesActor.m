@@ -52,19 +52,58 @@
 }
 
 
+#line 23
+- (void)onBookImported {
+  
 #line 24
+  [((AMAppStateVM *) nil_chk([((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) getAppStateVM])) onPhoneImported];
+}
+
+
+#line 27
+- (void)onContactsLoaded {
+  
+#line 28
+  [((AMAppStateVM *) nil_chk([((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) getAppStateVM])) onContactsLoaded];
+}
+
+
+#line 31
+- (void)onDialogsLoaded {
+  
+#line 32
+  [((AMAppStateVM *) nil_chk([((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) getAppStateVM])) onDialogsLoaded];
+}
+
+
+#line 36
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesStateListsStatesActor_OnContactsChanged class]]) {
     [self onContactsChangedWithBoolean:[((ImActorModelModulesStateListsStatesActor_OnContactsChanged *) nil_chk(((ImActorModelModulesStateListsStatesActor_OnContactsChanged *) check_class_cast(message, [ImActorModelModulesStateListsStatesActor_OnContactsChanged class])))) isEmpty]];
   }
   else
-#line 27
+#line 39
   if ([message isKindOfClass:[ImActorModelModulesStateListsStatesActor_OnDialogsChanged class]]) {
     [self onDialogsChangedWithBoolean:[((ImActorModelModulesStateListsStatesActor_OnDialogsChanged *) nil_chk(((ImActorModelModulesStateListsStatesActor_OnDialogsChanged *) check_class_cast(message, [ImActorModelModulesStateListsStatesActor_OnDialogsChanged class])))) isEmpty]];
   }
+  else
+#line 41
+  if ([message isKindOfClass:[ImActorModelModulesStateListsStatesActor_OnBookImported class]]) {
+    [self onBookImported];
+  }
+  else
+#line 43
+  if ([message isKindOfClass:[ImActorModelModulesStateListsStatesActor_OnContactsLoaded class]]) {
+    [self onContactsLoaded];
+  }
+  else
+#line 45
+  if ([message isKindOfClass:[ImActorModelModulesStateListsStatesActor_OnDialogsLoaded class]]) {
+    [self onDialogsLoaded];
+  }
   else {
     
-#line 30
+#line 48
     [self dropWithId:message];
   }
 }
@@ -74,25 +113,61 @@
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor)
 
 
-#line 34
+#line 52
+@implementation ImActorModelModulesStateListsStatesActor_OnBookImported
+
+- (instancetype)init {
+  return [super init];
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor_OnBookImported)
+
+
+#line 56
+@implementation ImActorModelModulesStateListsStatesActor_OnContactsLoaded
+
+- (instancetype)init {
+  return [super init];
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor_OnContactsLoaded)
+
+
+#line 60
+@implementation ImActorModelModulesStateListsStatesActor_OnDialogsLoaded
+
+- (instancetype)init {
+  return [super init];
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor_OnDialogsLoaded)
+
+
+#line 64
 @implementation ImActorModelModulesStateListsStatesActor_OnContactsChanged
 
 
-#line 37
+#line 67
 - (instancetype)initWithBoolean:(jboolean)isEmpty {
   if (self = [super init]) {
     
-#line 38
+#line 68
     self->isEmpty__ = isEmpty;
   }
   return self;
 }
 
 
-#line 41
+#line 71
 - (jboolean)isEmpty {
   
-#line 42
+#line 72
   return isEmpty__;
 }
 
@@ -106,25 +181,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor_OnContactsChanged)
 
 
-#line 46
+#line 76
 @implementation ImActorModelModulesStateListsStatesActor_OnDialogsChanged
 
 
-#line 49
+#line 79
 - (instancetype)initWithBoolean:(jboolean)isEmpty {
   if (self = [super init]) {
     
-#line 50
+#line 80
     self->isEmpty__ = isEmpty;
   }
   return self;
 }
 
 
-#line 53
+#line 83
 - (jboolean)isEmpty {
   
-#line 54
+#line 84
   return isEmpty__;
 }
 

@@ -20,6 +20,12 @@
 
 - (void)onContactsChangedWithBoolean:(jboolean)isEmpty;
 
+- (void)onBookImported;
+
+- (void)onContactsLoaded;
+
+- (void)onDialogsLoaded;
+
 - (void)onReceiveWithId:(id)message;
 
 @end
@@ -30,6 +36,48 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor)
+
+@interface ImActorModelModulesStateListsStatesActor_OnBookImported : NSObject {
+}
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesStateListsStatesActor_OnBookImported)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnBookImported)
+
+@interface ImActorModelModulesStateListsStatesActor_OnContactsLoaded : NSObject {
+}
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesStateListsStatesActor_OnContactsLoaded)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnContactsLoaded)
+
+@interface ImActorModelModulesStateListsStatesActor_OnDialogsLoaded : NSObject {
+}
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesStateListsStatesActor_OnDialogsLoaded)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnDialogsLoaded)
 
 @interface ImActorModelModulesStateListsStatesActor_OnContactsChanged : NSObject {
 }
