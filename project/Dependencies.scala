@@ -5,7 +5,7 @@ object Dependencies {
     val akka = "2.3.9"
     val akkaExperimental = "1.0-M5"
     val scalaz = "7.1.1"
-    val slick = "3.0.0-RC1"
+    val slick = "3.0.0-RC3"
   }
 
   object Compile {
