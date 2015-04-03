@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ProfileController: UIViewController, UIAlertViewDelegate {
+class ProfileController: AAViewController, UIAlertViewDelegate {
 
     let uid: Int
     var userVm: AMUserVM?
@@ -59,7 +59,7 @@ class ProfileController: UIViewController, UIAlertViewDelegate {
         self.notificationsIcon.image = UIImage(named: "ic_profile_notification")?.tintImage(Resources.SecondaryTint)
         self.notificationsSwitch.onTintColor = Resources.TintColor
         
-        self.userVm = MSG.getUsers().getWithLong(jlong(uid)) as! AMUserVM
+        self.userVm = MSG.getUsers().getWithLong(jlong(uid)) as? AMUserVM
         
         binder.bind(userVm!.getName()!, closure: { (value: NSString?) -> () in
             self.navigationItem.title = value! as String

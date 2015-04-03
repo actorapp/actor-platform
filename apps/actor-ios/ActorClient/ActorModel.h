@@ -100,6 +100,7 @@
 #import "im/actor/model/entity/PeerType.h"
 #import "im/actor/model/entity/User.h"
 #import "im/actor/model/entity/Sex.h"
+#import "im/actor/model/entity/GroupMember.h"
 #import "im/actor/model/entity/content/AbsContent.h"
 #import "im/actor/model/entity/content/TextContent.h"
 #import "im/actor/model/entity/content/DocumentContent.h"
