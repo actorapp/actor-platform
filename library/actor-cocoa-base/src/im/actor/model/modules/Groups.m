@@ -28,7 +28,6 @@
 #include "im/actor/model/api/updates/UpdateGroupUserAdded.h"
 #include "im/actor/model/api/updates/UpdateGroupUserKick.h"
 #include "im/actor/model/api/updates/UpdateGroupUserLeave.h"
-#include "im/actor/model/api/updates/UpdateUserLocalNameChanged.h"
 #include "im/actor/model/concurrency/Command.h"
 #include "im/actor/model/concurrency/CommandCallback.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
@@ -84,12 +83,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesGroups_$2, val$modules_, ImActorModelModu
   ImActorModelModulesGroups *this$0_;
   IOSIntArray *val$uids_;
   NSString *val$title_;
+  NSString *val$avatarDescriptor_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesGroups_$3, this$0_, ImActorModelModulesGroups *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesGroups_$3, val$uids_, IOSIntArray *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesGroups_$3, val$title_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesGroups_$3, val$avatarDescriptor_, NSString *)
 
 @interface ImActorModelModulesGroups_$3_$1 () {
  @public
@@ -293,38 +294,38 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesGroups_$7_$2_$1, this$0_, ImActorModelMod
 J2OBJC_FIELD_SETTER(ImActorModelModulesGroups_$7_$2_$2, this$0_, ImActorModelModulesGroups_$7_$2 *)
 
 
-#line 51
+#line 50
 @implementation ImActorModelModulesGroups
 
 
-#line 58
+#line 57
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self =
-#line 59
+#line 58
   [super initWithImActorModelModulesModules:modules]) {
     
-#line 60
+#line 59
     collection_ = [[ImActorModelModulesGroups_$1 alloc] initWithDKKeyValueStorage:[((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getStorageProvider])) createKeyValue:ImActorModelModulesBaseModule_get_STORAGE_GROUPS_()]];
     
-#line 81
+#line 80
     groups_ = [collection_ getEngine];
     
-#line 82
+#line 81
     avatarVMs_ = [[JavaUtilHashMap alloc] init];
     
-#line 83
+#line 82
     avatarChangeActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesAvatarGroupAvatarChangeActor_class_(), [[ImActorModelModulesGroups_$2 alloc] initWithImActorModelModulesModules:modules]) withNSString:
-#line 88
+#line 87
     @"actor/avatar/group"];
   }
   return self;
 }
 
 
-#line 91
+#line 90
 - (AMGroupAvatarVM *)getAvatarVMWithInt:(jint)gid {
   
-#line 92
+#line 91
   @synchronized(avatarVMs_) {
     if (![((JavaUtilHashMap *) nil_chk(avatarVMs_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_(gid)]) {
       (void) [avatarVMs_ putWithId:JavaLangInteger_valueOfWithInt_(gid) withId:[[AMGroupAvatarVM alloc] initWithInt:gid]];
@@ -334,71 +335,80 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesGroups_$7_$2_$2, this$0_, ImActorModelMod
 }
 
 
-#line 100
+#line 99
 - (id<DKKeyValueEngine>)getGroups {
   
-#line 101
+#line 100
   return groups_;
 }
 
 
-#line 104
+#line 103
 - (AMMVVMCollection *)getGroupsCollection {
   
-#line 105
+#line 104
   return collection_;
 }
 
 
-#line 108
+#line 107
 - (void)changeAvatarWithInt:(jint)gid
                withNSString:(NSString *)descriptor {
   
-#line 109
+#line 108
   [((DKActorRef *) nil_chk(avatarChangeActor_)) sendWithId:[[ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar alloc] initWithInt:gid withNSString:descriptor]];
 }
 
 
-#line 112
-- (id<AMCommand>)createGroupWithNSString:(NSString *)title
-                            withIntArray:(IOSIntArray *)uids {
+#line 111
+- (void)removeAvatarWithInt:(jint)gid {
   
-#line 113
-  return [[ImActorModelModulesGroups_$3 alloc] initWithImActorModelModulesGroups:self withIntArray:uids withNSString:title];
+#line 112
+  [((DKActorRef *) nil_chk(avatarChangeActor_)) sendWithId:[[ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar alloc] initWithInt:gid]];
 }
 
 
-#line 163
+#line 115
+- (id<AMCommand>)createGroupWithNSString:(NSString *)title
+                            withNSString:(NSString *)avatarDescriptor
+                            withIntArray:(IOSIntArray *)uids {
+  
+#line 116
+  return [[ImActorModelModulesGroups_$3 alloc] initWithImActorModelModulesGroups:self withIntArray:uids withNSString:title withNSString:avatarDescriptor];
+}
+
+
+#line 170
 - (id<AMCommand>)editTitleWithInt:(jint)gid
                      withNSString:(NSString *)name {
   
-#line 164
+#line 171
   return [[ImActorModelModulesGroups_$4 alloc] initWithImActorModelModulesGroups:self withInt:gid withNSString:name];
 }
 
 
-#line 209
+#line 216
 - (id<AMCommand>)leaveGroupWithInt:(jint)gid {
   
-#line 210
+#line 217
   return [[ImActorModelModulesGroups_$5 alloc] initWithImActorModelModulesGroups:self withInt:gid];
 }
 
 
-#line 255
+#line 262
 - (id<AMCommand>)addMemberToGroupWithInt:(jint)gid
                                  withInt:(jint)uid {
   
-#line 256
+#line 263
   return [[ImActorModelModulesGroups_$6 alloc] initWithImActorModelModulesGroups:self withInt:gid withInt:uid];
 }
 
 
-#line 302
+#line 309
 - (id<AMCommand>)kickMemberWithInt:(jint)gid
                            withInt:(jint)uid {
   
-#line 303
+#line 310
   return [[ImActorModelModulesGroups_$7 alloc] initWithImActorModelModulesGroups:self withInt:gid withInt:uid];
 }
 
@@ -417,29 +427,29 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups)
 @implementation ImActorModelModulesGroups_$1
 
 
-#line 62
+#line 61
 - (AMGroupVM *)createNewWithDKKeyValueItem:(AMGroup *)raw {
   
-#line 63
+#line 62
   return [[AMGroupVM alloc] initWithAMGroup:raw];
 }
 
 
-#line 67
+#line 66
 - (IOSByteArray *)serializeWithDKKeyValueItem:(AMGroup *)raw {
   return [((AMGroup *) nil_chk(raw)) toByteArray];
 }
 
 
-#line 72
+#line 71
 - (AMGroup *)deserializeWithByteArray:(IOSByteArray *)raw {
   
-#line 73
+#line 72
   @try {
     return AMGroup_fromBytesWithByteArray_(raw);
   }
   @catch (
-#line 75
+#line 74
   JavaIoIOException *e) {
     [((JavaIoIOException *) nil_chk(e)) printStackTrace];
     return nil;
@@ -457,10 +467,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$1)
 @implementation ImActorModelModulesGroups_$2
 
 
-#line 85
+#line 84
 - (ImActorModelModulesAvatarGroupAvatarChangeActor *)create {
   
-#line 86
+#line 85
   return [[ImActorModelModulesAvatarGroupAvatarChangeActor alloc] initWithImActorModelModulesModules:val$modules_];
 }
 
@@ -481,10 +491,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$2)
 @implementation ImActorModelModulesGroups_$3
 
 
-#line 115
+#line 118
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   
-#line 116
+#line 119
   JavaUtilArrayList *peers = [[JavaUtilArrayList alloc] init];
   {
     IOSIntArray *a__ = val$uids_;
@@ -493,7 +503,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$2)
     while (b__ < e__) {
       jint u = *b__++;
       
-#line 118
+#line 121
       AMUser *user = [((id<DKKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:u];
       if (user != nil) {
         [peers addWithId:[[ImActorModelApiUserOutPeer alloc] initWithInt:u withLong:[user getAccessHash]]];
@@ -501,17 +511,19 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$2)
     }
   }
   
-#line 123
+#line 126
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestCreateGroup alloc] initWithLong:rid withNSString:val$title_ withJavaUtilList:peers] withAMRpcCallback:[[ImActorModelModulesGroups_$3_$1 alloc] initWithImActorModelModulesGroups_$3:self withLong:rid withAMCommandCallback:callback]];
 }
 
 - (instancetype)initWithImActorModelModulesGroups:(ImActorModelModulesGroups *)outer$
                                      withIntArray:(IOSIntArray *)capture$0
-                                     withNSString:(NSString *)capture$1 {
+                                     withNSString:(NSString *)capture$1
+                                     withNSString:(NSString *)capture$2 {
   this$0_ = outer$;
   val$uids_ = capture$0;
   val$title_ = capture$1;
+  val$avatarDescriptor_ = capture$2;
   return [super init];
 }
 
@@ -520,6 +532,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$2)
   other->this$0_ = this$0_;
   other->val$uids_ = val$uids_;
   other->val$title_ = val$title_;
+  other->val$avatarDescriptor_ = val$avatarDescriptor_;
 }
 
 @end
@@ -529,10 +542,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$3)
 @implementation ImActorModelModulesGroups_$3_$1
 
 
-#line 126
+#line 129
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseCreateGroup *)response {
   
-#line 127
+#line 130
   id<JavaUtilList> members = [[JavaUtilArrayList alloc] init];
   {
     IOSIntArray *a__ = this$0_->val$uids_;
@@ -541,44 +554,49 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$3)
     while (b__ < e__) {
       jint u = *b__++;
       
-#line 129
+#line 132
       [members addWithId:[[ImActorModelApiMember alloc] initWithInt:u withInt:[this$0_->this$0_ myUid] withLong:[((ImActorModelApiRpcResponseCreateGroup *) nil_chk(response)) getDate]]];
     }
   }
   
-#line 131
-  ImActorModelApiGroup *group = [[ImActorModelApiGroup alloc] initWithInt:
-#line 132
-  [((ImActorModelApiGroupOutPeer *) nil_chk([((ImActorModelApiRpcResponseCreateGroup *) nil_chk(response)) getGroupPeer])) getGroupId] withLong:
-#line 133
-  [((ImActorModelApiGroupOutPeer *) nil_chk([response getGroupPeer])) getAccessHash] withNSString:this$0_->val$title_ withImActorModelApiAvatar:
 #line 134
-  nil withBoolean:YES withInt:[this$0_->this$0_ myUid] withJavaUtilList:members withLong:
+  ImActorModelApiGroup *group = [[ImActorModelApiGroup alloc] initWithInt:
 #line 135
+  [((ImActorModelApiGroupOutPeer *) nil_chk([((ImActorModelApiRpcResponseCreateGroup *) nil_chk(response)) getGroupPeer])) getGroupId] withLong:
+#line 136
+  [((ImActorModelApiGroupOutPeer *) nil_chk([response getGroupPeer])) getAccessHash] withNSString:this$0_->val$title_ withImActorModelApiAvatar:
+#line 137
+  nil withBoolean:YES withInt:[this$0_->this$0_ myUid] withJavaUtilList:members withLong:
+#line 138
   [response getDate]];
   JavaUtilArrayList *groups = [[JavaUtilArrayList alloc] init];
   [groups addWithId:group];
   
-#line 139
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelApiBaseFatSeqUpdate alloc] initWithInt:[response getSeq] withByteArray:
-#line 140
-  [response getState] withInt:
-#line 141
-  ImActorModelApiUpdatesUpdateGroupInvite_HEADER withByteArray:
 #line 142
+  if (this$0_->val$avatarDescriptor_ != nil) {
+    [this$0_->this$0_ changeAvatarWithInt:[group getId] withNSString:this$0_->val$avatarDescriptor_];
+  }
+  
+#line 146
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelApiBaseFatSeqUpdate alloc] initWithInt:[response getSeq] withByteArray:
+#line 147
+  [response getState] withInt:
+#line 148
+  ImActorModelApiUpdatesUpdateGroupInvite_HEADER withByteArray:
+#line 149
   [((ImActorModelApiUpdatesUpdateGroupInvite *) [[ImActorModelApiUpdatesUpdateGroupInvite alloc] initWithInt:[((ImActorModelApiGroupOutPeer *) nil_chk([response getGroupPeer])) getGroupId] withLong:val$rid_ withInt:
-#line 143
+#line 150
   [this$0_->this$0_ myUid] withLong:[response getDate]]) toByteArray] withJavaUtilList:
-#line 144
+#line 151
   [[JavaUtilArrayList alloc] init] withJavaUtilList:groups withJavaUtilList:[[JavaUtilArrayList alloc] init] withJavaUtilList:[[JavaUtilArrayList alloc] init]]];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalGroupCreated alloc] initWithImActorModelApiGroup:group withAMCommandCallback:val$callback_]];
 }
 
 
-#line 149
+#line 156
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 150
+#line 157
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$3_$1_$1 alloc] initWithImActorModelModulesGroups_$3_$1:self withAMRpcException:e]];
 }
 
@@ -605,10 +623,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$3_$1)
 @implementation ImActorModelModulesGroups_$3_$1_$1
 
 
-#line 152
+#line 159
 - (void)run {
   
-#line 153
+#line 160
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
 }
 
@@ -632,20 +650,20 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$3_$1_$1)
 @implementation ImActorModelModulesGroups_$4
 
 
-#line 166
+#line 173
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   
-#line 167
+#line 174
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([this$0_ getGroups])) getValueWithLong:val$gid_];
   if (group == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$4_$1 alloc] initWithAMCommandCallback:callback]];
     
-#line 175
+#line 182
     return;
   }
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestEditGroupTitle alloc] initWithImActorModelApiGroupOutPeer:[[ImActorModelApiGroupOutPeer alloc] initWithInt:[((AMGroup *) nil_chk(group)) getGroupId] withLong:[group getAccessHash]] withLong:
-#line 179
+#line 186
   rid withNSString:val$name_] withAMRpcCallback:[[ImActorModelModulesGroups_$4_$2 alloc] initWithImActorModelModulesGroups_$4:self withLong:rid withAMCommandCallback:callback]];
 }
 
@@ -672,10 +690,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$4)
 @implementation ImActorModelModulesGroups_$4_$1
 
 
-#line 171
+#line 178
 - (void)run {
   
-#line 172
+#line 179
   [((id<AMCommandCallback>) nil_chk(val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
@@ -696,26 +714,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$4_$1)
 @implementation ImActorModelModulesGroups_$4_$2
 
 
-#line 181
+#line 188
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeqDate *)response {
   
-#line 182
+#line 189
   ImActorModelApiBaseSeqUpdate *update = [[ImActorModelApiBaseSeqUpdate alloc] initWithInt:[((ImActorModelApiRpcResponseSeqDate *) nil_chk(response)) getSeq] withByteArray:[response getState] withInt:
-#line 183
-  ImActorModelApiUpdatesUpdateUserLocalNameChanged_HEADER withByteArray:
-#line 184
+#line 190
+  ImActorModelApiUpdatesUpdateGroupTitleChanged_HEADER withByteArray:
+#line 191
   [((ImActorModelApiUpdatesUpdateGroupTitleChanged *) [[ImActorModelApiUpdatesUpdateGroupTitleChanged alloc] initWithInt:this$0_->val$gid_ withLong:val$rid_ withInt:[this$0_->this$0_ myUid] withNSString:this$0_->val$name_ withLong:
-#line 185
+#line 192
   [response getDate]]) toByteArray]];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$4_$2_$1 alloc] initWithImActorModelModulesGroups_$4_$2:self]];
 }
 
 
-#line 196
+#line 203
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 197
+#line 204
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$4_$2_$2 alloc] initWithImActorModelModulesGroups_$4_$2:self]];
 }
 
@@ -742,10 +760,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$4_$2)
 @implementation ImActorModelModulesGroups_$4_$2_$1
 
 
-#line 189
+#line 196
 - (void)run {
   
-#line 190
+#line 197
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
 
@@ -766,10 +784,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$4_$2_$1)
 @implementation ImActorModelModulesGroups_$4_$2_$2
 
 
-#line 199
+#line 206
 - (void)run {
   
-#line 200
+#line 207
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
@@ -790,20 +808,20 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$4_$2_$2)
 @implementation ImActorModelModulesGroups_$5
 
 
-#line 212
+#line 219
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   
-#line 213
+#line 220
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([this$0_ getGroups])) getValueWithLong:val$gid_];
   if (group == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$5_$1 alloc] initWithAMCommandCallback:callback]];
     
-#line 221
+#line 228
     return;
   }
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestLeaveGroup alloc] initWithImActorModelApiGroupOutPeer:[[ImActorModelApiGroupOutPeer alloc] initWithInt:[((AMGroup *) nil_chk(group)) getGroupId] withLong:[group getAccessHash]] withLong:
-#line 225
+#line 232
   rid] withAMRpcCallback:[[ImActorModelModulesGroups_$5_$2 alloc] initWithImActorModelModulesGroups_$5:self withLong:rid withAMCommandCallback:callback]];
 }
 
@@ -827,10 +845,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$5)
 @implementation ImActorModelModulesGroups_$5_$1
 
 
-#line 217
+#line 224
 - (void)run {
   
-#line 218
+#line 225
   [((id<AMCommandCallback>) nil_chk(val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
@@ -851,26 +869,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$5_$1)
 @implementation ImActorModelModulesGroups_$5_$2
 
 
-#line 227
+#line 234
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeqDate *)response {
   
-#line 228
+#line 235
   ImActorModelApiBaseSeqUpdate *update = [[ImActorModelApiBaseSeqUpdate alloc] initWithInt:[((ImActorModelApiRpcResponseSeqDate *) nil_chk(response)) getSeq] withByteArray:[response getState] withInt:
-#line 229
+#line 236
   ImActorModelApiUpdatesUpdateGroupUserLeave_HEADER withByteArray:
-#line 230
+#line 237
   [((ImActorModelApiUpdatesUpdateGroupUserLeave *) [[ImActorModelApiUpdatesUpdateGroupUserLeave alloc] initWithInt:this$0_->val$gid_ withLong:val$rid_ withInt:[this$0_->this$0_ myUid] withLong:
-#line 231
+#line 238
   [response getDate]]) toByteArray]];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$5_$2_$1 alloc] initWithImActorModelModulesGroups_$5_$2:self]];
 }
 
 
-#line 242
+#line 249
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 243
+#line 250
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$5_$2_$2 alloc] initWithImActorModelModulesGroups_$5_$2:self]];
 }
 
@@ -897,10 +915,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$5_$2)
 @implementation ImActorModelModulesGroups_$5_$2_$1
 
 
-#line 235
+#line 242
 - (void)run {
   
-#line 236
+#line 243
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
 
@@ -921,10 +939,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$5_$2_$1)
 @implementation ImActorModelModulesGroups_$5_$2_$2
 
 
-#line 245
+#line 252
 - (void)run {
   
-#line 246
+#line 253
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
@@ -945,21 +963,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$5_$2_$2)
 @implementation ImActorModelModulesGroups_$6
 
 
-#line 258
+#line 265
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   
-#line 259
+#line 266
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([this$0_ getGroups])) getValueWithLong:val$gid_];
   AMUser *user = [((id<DKKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:val$uid_];
   if (group == nil || user == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$6_$1 alloc] initWithAMCommandCallback:callback]];
     
-#line 268
+#line 275
     return;
   }
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestInviteUser alloc] initWithImActorModelApiGroupOutPeer:[[ImActorModelApiGroupOutPeer alloc] initWithInt:[((AMGroup *) nil_chk(group)) getGroupId] withLong:[group getAccessHash]] withLong:
-#line 272
+#line 279
   rid withImActorModelApiUserOutPeer:[[ImActorModelApiUserOutPeer alloc] initWithInt:val$uid_ withLong:[((AMUser *) nil_chk(user)) getAccessHash]]] withAMRpcCallback:[[ImActorModelModulesGroups_$6_$2 alloc] initWithImActorModelModulesGroups_$6:self withLong:rid withAMCommandCallback:callback]];
 }
 
@@ -986,10 +1004,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$6)
 @implementation ImActorModelModulesGroups_$6_$1
 
 
-#line 264
+#line 271
 - (void)run {
   
-#line 265
+#line 272
   [((id<AMCommandCallback>) nil_chk(val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
@@ -1010,26 +1028,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$6_$1)
 @implementation ImActorModelModulesGroups_$6_$2
 
 
-#line 274
+#line 281
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeqDate *)response {
   
-#line 275
+#line 282
   ImActorModelApiBaseSeqUpdate *update = [[ImActorModelApiBaseSeqUpdate alloc] initWithInt:[((ImActorModelApiRpcResponseSeqDate *) nil_chk(response)) getSeq] withByteArray:[response getState] withInt:
-#line 276
+#line 283
   ImActorModelApiUpdatesUpdateGroupUserAdded_HEADER withByteArray:
-#line 277
+#line 284
   [((ImActorModelApiUpdatesUpdateGroupUserAdded *) [[ImActorModelApiUpdatesUpdateGroupUserAdded alloc] initWithInt:this$0_->val$gid_ withLong:val$rid_ withInt:this$0_->val$uid_ withInt:[this$0_->this$0_ myUid] withLong:
-#line 278
+#line 285
   [response getDate]]) toByteArray]];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$6_$2_$1 alloc] initWithImActorModelModulesGroups_$6_$2:self]];
 }
 
 
-#line 289
+#line 296
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 290
+#line 297
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$6_$2_$2 alloc] initWithImActorModelModulesGroups_$6_$2:self]];
 }
 
@@ -1056,10 +1074,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$6_$2)
 @implementation ImActorModelModulesGroups_$6_$2_$1
 
 
-#line 282
+#line 289
 - (void)run {
   
-#line 283
+#line 290
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
 
@@ -1080,10 +1098,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$6_$2_$1)
 @implementation ImActorModelModulesGroups_$6_$2_$2
 
 
-#line 292
+#line 299
 - (void)run {
   
-#line 293
+#line 300
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
@@ -1104,21 +1122,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$6_$2_$2)
 @implementation ImActorModelModulesGroups_$7
 
 
-#line 305
+#line 312
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   
-#line 306
+#line 313
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([this$0_ getGroups])) getValueWithLong:val$gid_];
   AMUser *user = [((id<DKKeyValueEngine>) nil_chk([this$0_ users])) getValueWithLong:val$uid_];
   if (group == nil || user == nil) {
     [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$7_$1 alloc] initWithAMCommandCallback:callback]];
     
-#line 315
+#line 322
     return;
   }
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestKickUser alloc] initWithImActorModelApiGroupOutPeer:[[ImActorModelApiGroupOutPeer alloc] initWithInt:[((AMGroup *) nil_chk(group)) getGroupId] withLong:[group getAccessHash]] withLong:
-#line 319
+#line 326
   rid withImActorModelApiUserOutPeer:[[ImActorModelApiUserOutPeer alloc] initWithInt:val$uid_ withLong:[((AMUser *) nil_chk(user)) getAccessHash]]] withAMRpcCallback:[[ImActorModelModulesGroups_$7_$2 alloc] initWithImActorModelModulesGroups_$7:self withLong:rid withAMCommandCallback:callback]];
 }
 
@@ -1145,10 +1163,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$7)
 @implementation ImActorModelModulesGroups_$7_$1
 
 
-#line 311
+#line 318
 - (void)run {
   
-#line 312
+#line 319
   [((id<AMCommandCallback>) nil_chk(val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 
@@ -1169,26 +1187,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$7_$1)
 @implementation ImActorModelModulesGroups_$7_$2
 
 
-#line 321
+#line 328
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeqDate *)response {
   
-#line 322
+#line 329
   ImActorModelApiBaseSeqUpdate *update = [[ImActorModelApiBaseSeqUpdate alloc] initWithInt:[((ImActorModelApiRpcResponseSeqDate *) nil_chk(response)) getSeq] withByteArray:[response getState] withInt:
-#line 323
+#line 330
   ImActorModelApiUpdatesUpdateGroupUserKick_HEADER withByteArray:
-#line 324
+#line 331
   [((ImActorModelApiUpdatesUpdateGroupUserKick *) [[ImActorModelApiUpdatesUpdateGroupUserKick alloc] initWithInt:this$0_->val$gid_ withLong:val$rid_ withInt:this$0_->val$uid_ withInt:[this$0_->this$0_ myUid] withLong:
-#line 325
+#line 332
   [response getDate]]) toByteArray]];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$7_$2_$1 alloc] initWithImActorModelModulesGroups_$7_$2:self]];
 }
 
 
-#line 336
+#line 343
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 337
+#line 344
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesGroups_$7_$2_$2 alloc] initWithImActorModelModulesGroups_$7_$2:self]];
 }
 
@@ -1215,10 +1233,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$7_$2)
 @implementation ImActorModelModulesGroups_$7_$2_$1
 
 
-#line 329
+#line 336
 - (void)run {
   
-#line 330
+#line 337
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
 
@@ -1239,10 +1257,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$7_$2_$1)
 @implementation ImActorModelModulesGroups_$7_$2_$2
 
 
-#line 339
+#line 346
 - (void)run {
   
-#line 340
+#line 347
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:[[AMRpcInternalException alloc] init]];
 }
 

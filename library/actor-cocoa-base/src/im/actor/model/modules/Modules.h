@@ -18,6 +18,7 @@
 @class ImActorModelModulesNotifications;
 @class ImActorModelModulesPresence;
 @class ImActorModelModulesProfile;
+@class ImActorModelModulesPushes;
 @class ImActorModelModulesSettings;
 @class ImActorModelModulesTyping;
 @class ImActorModelModulesUpdates;
@@ -69,6 +70,8 @@
 - (ImActorModelModulesProfile *)getProfile;
 
 - (ImActorModelModulesAppStateModule *)getAppStateModule;
+
+- (ImActorModelModulesPushes *)getPushes;
 
 @end
 

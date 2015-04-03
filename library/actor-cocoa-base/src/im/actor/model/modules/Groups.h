@@ -44,7 +44,10 @@
 - (void)changeAvatarWithInt:(jint)gid
                withNSString:(NSString *)descriptor;
 
+- (void)removeAvatarWithInt:(jint)gid;
+
 - (id<AMCommand>)createGroupWithNSString:(NSString *)title
+                            withNSString:(NSString *)avatarDescriptor
                             withIntArray:(IOSIntArray *)uids;
 
 - (id<AMCommand>)editTitleWithInt:(jint)gid
@@ -110,7 +113,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$2)
 
 - (instancetype)initWithImActorModelModulesGroups:(ImActorModelModulesGroups *)outer$
                                      withIntArray:(IOSIntArray *)capture$0
-                                     withNSString:(NSString *)capture$1;
+                                     withNSString:(NSString *)capture$1
+                                     withNSString:(NSString *)capture$2;
 
 @end
 

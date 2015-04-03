@@ -14,7 +14,7 @@
 
 BOOL AMAppStateEnum_initialized = NO;
 
-AMAppStateEnum *AMAppStateEnum_values_[2];
+AMAppStateEnum *AMAppStateEnum_values_[3];
 
 @implementation AMAppStateEnum
 
@@ -25,7 +25,7 @@ AMAppStateEnum *AMAppStateEnum_values_[2];
 
 IOSObjectArray *AMAppStateEnum_values() {
   AMAppStateEnum_init();
-  return [IOSObjectArray arrayWithObjects:AMAppStateEnum_values_ count:2 type:AMAppStateEnum_class_()];
+  return [IOSObjectArray arrayWithObjects:AMAppStateEnum_values_ count:3 type:AMAppStateEnum_class_()];
 }
 + (IOSObjectArray *)values {
   return AMAppStateEnum_values();
@@ -37,7 +37,7 @@ IOSObjectArray *AMAppStateEnum_values() {
 
 AMAppStateEnum *AMAppStateEnum_valueOfWithNSString_(NSString *name) {
   AMAppStateEnum_init();
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 3; i++) {
     AMAppStateEnum *e = AMAppStateEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
@@ -54,7 +54,8 @@ AMAppStateEnum *AMAppStateEnum_valueOfWithNSString_(NSString *name) {
 + (void)initialize {
   if (self == [AMAppStateEnum class]) {
     AMAppStateEnum_READY = [[AMAppStateEnum alloc] initWithNSString:@"READY" withInt:0];
-    AMAppStateEnum_PREPARING_APP = [[AMAppStateEnum alloc] initWithNSString:@"PREPARING_APP" withInt:1];
+    AMAppStateEnum_EMPTY = [[AMAppStateEnum alloc] initWithNSString:@"EMPTY" withInt:1];
+    AMAppStateEnum_PREPARING_APP = [[AMAppStateEnum alloc] initWithNSString:@"PREPARING_APP" withInt:2];
     J2OBJC_SET_INITIALIZED(AMAppStateEnum)
   }
 }

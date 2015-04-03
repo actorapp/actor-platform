@@ -65,6 +65,8 @@
 
 - (NSString *)formatMessagesWithAMMessageArray:(IOSObjectArray *)messages;
 
+- (NSString *)formatFastNameWithNSString:(NSString *)name;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMI18nEngine)

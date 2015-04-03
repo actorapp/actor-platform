@@ -32,6 +32,7 @@
 @protocol AMFileVMCallback;
 @protocol AMUploadCallback;
 @protocol AMUploadFileVMCallback;
+@protocol DKPreferencesStorage;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/debug/TraceInterface.h"
@@ -91,6 +92,10 @@
 
 - (void)onPhoneBookChanged;
 
+- (void)onNetworkChanged;
+
+- (void)onPushReceivedWithInt:(jint)seq;
+
 - (void)saveDraft:(AMPeer *)peer withText:(NSString *)draft;
 
 - (void)deleteMessagesWithAMPeer:(AMPeer *)peer
@@ -132,6 +137,7 @@
                     withNSString:(NSString *)name;
 
 - (id<AMCommand>)createGroupWithNSString:(NSString *)title
+                            withNSString:(NSString *)avatarDescriptor
                             withIntArray:(IOSIntArray *)uids;
 
 - (id<AMCommand>)editGroupTitleWithInt:(jint)gid
@@ -218,11 +224,21 @@
 - (void)changeGroupAvatarWithInt:(jint)gid
                     withNSString:(NSString *)descriptor;
 
+- (void)removeGroupAvatarWithInt:(jint)gid;
+
 - (void)changeAvatarWithNSString:(NSString *)descriptor;
 
 - (void)removeAvatar;
 
 - (AMAppStateVM *)getAppState;
+
+- (void)registerGooglePushWithLong:(jlong)projectId
+                      withNSString:(NSString *)token;
+
+- (void)registerApplePushWithInt:(jint)apnsId
+                    withNSString:(NSString *)token;
+
+- (id<DKPreferencesStorage>)getPreferences;
 
 @end
 

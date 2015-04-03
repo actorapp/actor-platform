@@ -8,7 +8,6 @@
 
 @class AMBindedDisplayList;
 @class AMPeer;
-@class ImActorModelModulesDisplayLists;
 @class ImActorModelModulesModules;
 @protocol AMConversationVMCallback;
 
@@ -21,7 +20,7 @@
 - (instancetype)initWithAMPeer:(AMPeer *)peer
   withAMConversationVMCallback:(id<AMConversationVMCallback>)callback
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules
-withImActorModelModulesDisplayLists:(ImActorModelModulesDisplayLists *)displayLists;
+       withAMBindedDisplayList:(AMBindedDisplayList *)displayList;
 
 - (void)release__;
 
@@ -42,9 +41,10 @@ J2OBJC_TYPE_LITERAL_HEADER(AMConversationVM)
 - (void)onCollectionChanged;
 
 - (instancetype)initWithAMConversationVM:(AMConversationVM *)outer$
-          withImActorModelModulesModules:(ImActorModelModulesModules *)capture$0
-                              withAMPeer:(AMPeer *)capture$1
-            withAMConversationVMCallback:(id<AMConversationVMCallback>)capture$2;
+                 withAMBindedDisplayList:(AMBindedDisplayList *)capture$0
+          withImActorModelModulesModules:(ImActorModelModulesModules *)capture$1
+                              withAMPeer:(AMPeer *)capture$2
+            withAMConversationVMCallback:(id<AMConversationVMCallback>)capture$3;
 
 @end
 

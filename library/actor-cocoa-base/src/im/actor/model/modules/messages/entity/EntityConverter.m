@@ -312,7 +312,7 @@ AMAbsContent *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActo
     if ([ex isKindOfClass:[ImActorModelApiServiceExGroupCreated class]]) {
       
 #line 163
-      return [[AMServiceGroupCreated alloc] initWithNSString:@"Group created"];
+      return [[AMServiceGroupCreated alloc] initWithNSString:@""];
     }
     else {
       
