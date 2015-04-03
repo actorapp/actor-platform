@@ -26,6 +26,12 @@
 
 - (void)onContactsUpdateWithBoolean:(jboolean)isEmpty;
 
+- (void)onBookImported;
+
+- (void)onContactsLoaded;
+
+- (void)onDialogsLoaded;
+
 - (AMAppStateVM *)getAppStateVM;
 
 @end

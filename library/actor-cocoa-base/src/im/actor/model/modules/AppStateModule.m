@@ -78,9 +78,33 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAppStateModule_$1, this$0_, ImActorModelM
 
 
 #line 40
-- (AMAppStateVM *)getAppStateVM {
+- (void)onBookImported {
   
 #line 41
+  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:[[ImActorModelModulesStateListsStatesActor_OnBookImported alloc] init]];
+}
+
+
+#line 44
+- (void)onContactsLoaded {
+  
+#line 45
+  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:[[ImActorModelModulesStateListsStatesActor_OnContactsLoaded alloc] init]];
+}
+
+
+#line 48
+- (void)onDialogsLoaded {
+  
+#line 49
+  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:[[ImActorModelModulesStateListsStatesActor_OnDialogsLoaded alloc] init]];
+}
+
+
+#line 52
+- (AMAppStateVM *)getAppStateVM {
+  
+#line 53
   return appStateVM_;
 }
 

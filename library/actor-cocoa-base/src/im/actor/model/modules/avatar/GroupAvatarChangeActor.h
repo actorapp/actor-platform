@@ -9,6 +9,7 @@
 @class AMFileReference;
 @class AMRpcException;
 @class ImActorModelApiRpcResponseEditGroupAvatar;
+@class ImActorModelApiRpcResponseSeq;
 @class ImActorModelModulesModules;
 @class JavaUtilHashMap;
 
@@ -30,6 +31,10 @@
 
 - (void)avatarChangedWithInt:(jint)gid
                     withLong:(jlong)rid;
+
+- (void)uploadErrorWithLong:(jlong)rid;
+
+- (void)removeAvatarWithInt:(jint)gid;
 
 - (void)onReceiveWithId:(id)message;
 
@@ -80,6 +85,22 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar)
 
+@interface ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar : NSObject {
+}
+
+- (instancetype)initWithInt:(jint)gid;
+
+- (jint)getGid;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar)
+
 @interface ImActorModelModulesAvatarGroupAvatarChangeActor_$1 : NSObject < AMRpcCallback > {
 }
 
@@ -115,5 +136,41 @@ CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1)
+
+@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$2 : NSObject < AMRpcCallback > {
+}
+
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response;
+
+- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor:(ImActorModelModulesAvatarGroupAvatarChangeActor *)outer$
+                                                                withInt:(jint)capture$0
+                                                               withLong:(jlong)capture$1;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_$2)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2)
+
+@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1 : NSObject < JavaLangRunnable > {
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2:(ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1)
+
+CF_EXTERN_C_BEGIN
+CF_EXTERN_C_END
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1)
 
 #endif // _ImActorModelModulesAvatarGroupAvatarChangeActor_H_

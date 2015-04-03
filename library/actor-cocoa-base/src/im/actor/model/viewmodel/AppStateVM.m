@@ -10,103 +10,193 @@
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/mvvm/ValueModel.h"
-#include "im/actor/model/viewmodel/AppState.h"
 #include "im/actor/model/viewmodel/AppStateVM.h"
 #include "java/lang/Boolean.h"
+
+__attribute__((unused)) static void AMAppStateVM_updateLoaded(AMAppStateVM *self);
 
 @interface AMAppStateVM () {
  @public
   ImActorModelModulesModules *modules_;
   AMValueModel *isDialogsEmpty_;
   AMValueModel *isContactsEmpty_;
-  AMValueModel *appState_;
+  AMValueModel *isAppEmpty_;
+  AMValueModel *isAppLoaded_;
+  jboolean isBookImported_;
+  jboolean isDialogsLoaded_;
+  jboolean isContactsLoaded_;
 }
+
+- (void)updateLoaded;
 @end
 
 J2OBJC_FIELD_SETTER(AMAppStateVM, modules_, ImActorModelModulesModules *)
 J2OBJC_FIELD_SETTER(AMAppStateVM, isDialogsEmpty_, AMValueModel *)
 J2OBJC_FIELD_SETTER(AMAppStateVM, isContactsEmpty_, AMValueModel *)
-J2OBJC_FIELD_SETTER(AMAppStateVM, appState_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMAppStateVM, isAppEmpty_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMAppStateVM, isAppLoaded_, AMValueModel *)
 
 
 #line 10
 @implementation AMAppStateVM
 
 
-#line 16
+#line 21
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super init]) {
     
-#line 17
+#line 22
     self->modules_ = modules;
     
-#line 18
+#line 23
     self->isDialogsEmpty_ = [[AMValueModel alloc] initWithNSString:@"app.dialogs.empty" withId:JavaLangBoolean_valueOfWithBoolean_([((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getPreferences])) getBool:@"app.dialogs.empty" withDefault:YES])];
     
-#line 19
+#line 24
     self->isContactsEmpty_ = [[AMValueModel alloc] initWithNSString:@"app.contacts.empty" withId:JavaLangBoolean_valueOfWithBoolean_([((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBool:@"app.contacts.empty" withDefault:YES])];
     
-#line 20
-    AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$@", @"loaded:", [isContactsEmpty_ get]));
+#line 25
+    self->isAppEmpty_ = [[AMValueModel alloc] initWithNSString:@"app.empty" withId:JavaLangBoolean_valueOfWithBoolean_([((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBool:@"app.empty" withDefault:YES])];
     
-#line 21
-    self->appState_ = [[AMValueModel alloc] initWithNSString:@"app.state" withId:AMAppStateEnum_get_READY()];
+#line 27
+    self->isBookImported_ = [((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBool:@"app.contacts.imported" withDefault:NO];
+    
+#line 28
+    self->isDialogsLoaded_ = [((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBool:@"app.dialogs.loaded" withDefault:NO];
+    
+#line 29
+    self->isContactsLoaded_ = [((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBool:@"app.contacts.loaded" withDefault:NO];
+    
+#line 31
+    self->isAppLoaded_ = [[AMValueModel alloc] initWithNSString:@"app.loaded" withId:JavaLangBoolean_valueOfWithBoolean_(isBookImported_ && isDialogsLoaded_ && isContactsLoaded_)];
+    
+#line 33
+    AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z", @"init: ", isBookImported_));
   }
   return self;
 }
 
 
-#line 24
+#line 36
+- (void)updateLoaded {
+  AMAppStateVM_updateLoaded(self);
+}
+
+
+#line 45
 - (void)onDialogsChangedWithBoolean:(jboolean)isEmpty {
   @synchronized(self) {
     
-#line 25
-    AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z", @"onDialogsChanged:", isEmpty));
+#line 46
     if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isDialogsEmpty_)) get])) booleanValue] != isEmpty) {
-      AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z$", @"onDialogsChanged:", isEmpty, @": apply"));
       [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.dialogs.empty" withValue:isEmpty];
       [isDialogsEmpty_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(isEmpty)];
     }
-  }
-}
-
-
-#line 33
-- (void)onContactsChangedWithBoolean:(jboolean)isEmpty {
-  @synchronized(self) {
-    
-#line 34
-    AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z", @"onContactsChanged:", isEmpty));
-    if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isContactsEmpty_)) get])) booleanValue] != isEmpty) {
-      AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z$", @"onContactsChanged:", isEmpty, @": apply"));
-      [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.contacts.empty" withValue:isEmpty];
-      [isContactsEmpty_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(isEmpty)];
+    if (!isEmpty) {
+      if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isAppEmpty_)) get])) booleanValue]) {
+        [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.empty" withValue:NO];
+        [isAppEmpty_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(NO)];
+      }
     }
   }
 }
 
 
-#line 42
+#line 58
+- (void)onContactsChangedWithBoolean:(jboolean)isEmpty {
+  @synchronized(self) {
+    
+#line 59
+    if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isContactsEmpty_)) get])) booleanValue] != isEmpty) {
+      [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.contacts.empty" withValue:isEmpty];
+      [isContactsEmpty_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(isEmpty)];
+    }
+    if (!isEmpty) {
+      if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isAppEmpty_)) get])) booleanValue]) {
+        [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.empty" withValue:NO];
+        [isAppEmpty_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(NO)];
+      }
+    }
+  }
+}
+
+
+#line 71
+- (void)onPhoneImported {
+  @synchronized(self) {
+    
+#line 72
+    AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onPhoneImported");
+    if (!isBookImported_) {
+      AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onPhoneImported:apply");
+      isBookImported_ = YES;
+      [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.contacts.imported" withValue:YES];
+      AMAppStateVM_updateLoaded(self);
+    }
+  }
+}
+
+
+#line 81
+- (void)onDialogsLoaded {
+  @synchronized(self) {
+    
+#line 82
+    AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onDialogsLoaded");
+    if (!isDialogsLoaded_) {
+      AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onDialogsLoaded:apply");
+      isDialogsLoaded_ = YES;
+      [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.dialogs.loaded" withValue:YES];
+      AMAppStateVM_updateLoaded(self);
+    }
+  }
+}
+
+
+#line 91
+- (void)onContactsLoaded {
+  @synchronized(self) {
+    
+#line 92
+    AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onContactsLoaded");
+    if (!isContactsLoaded_) {
+      AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onContactsLoaded:apply");
+      isContactsLoaded_ = YES;
+      [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.contacts.loaded" withValue:YES];
+      AMAppStateVM_updateLoaded(self);
+    }
+  }
+}
+
+
+#line 102
 - (AMValueModel *)getIsDialogsEmpty {
   
-#line 43
+#line 103
   return isDialogsEmpty_;
 }
 
 
-#line 46
+#line 106
 - (AMValueModel *)getIsContactsEmpty {
   
-#line 47
+#line 107
   return isContactsEmpty_;
 }
 
 
-#line 50
-- (AMValueModel *)getAppState {
+#line 110
+- (AMValueModel *)getIsAppLoaded {
   
-#line 51
-  return appState_;
+#line 111
+  return isAppLoaded_;
+}
+
+
+#line 114
+- (AMValueModel *)getIsAppEmpty {
+  
+#line 115
+  return isAppEmpty_;
 }
 
 - (void)copyAllFieldsTo:(AMAppStateVM *)other {
@@ -114,9 +204,24 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, appState_, AMValueModel *)
   other->modules_ = modules_;
   other->isDialogsEmpty_ = isDialogsEmpty_;
   other->isContactsEmpty_ = isContactsEmpty_;
-  other->appState_ = appState_;
+  other->isAppEmpty_ = isAppEmpty_;
+  other->isAppLoaded_ = isAppLoaded_;
+  other->isBookImported_ = isBookImported_;
+  other->isDialogsLoaded_ = isDialogsLoaded_;
+  other->isContactsLoaded_ = isContactsLoaded_;
 }
 
 @end
+
+void AMAppStateVM_updateLoaded(AMAppStateVM *self) {
+  
+#line 37
+  AMLog_dWithNSString_withNSString_(@"AppStateVM", @"updateLoaded");
+  jboolean val = self->isBookImported_ && self->isDialogsLoaded_ && self->isContactsLoaded_;
+  if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(self->isAppLoaded_)) get])) booleanValue] != val) {
+    AMLog_dWithNSString_withNSString_(@"AppStateVM", @"updateLoaded:apply");
+    [self->isAppLoaded_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(val)];
+  }
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAppStateVM)

@@ -20,11 +20,19 @@
 
 - (void)onContactsChangedWithBoolean:(jboolean)isEmpty;
 
+- (void)onPhoneImported;
+
+- (void)onDialogsLoaded;
+
+- (void)onContactsLoaded;
+
 - (AMValueModel *)getIsDialogsEmpty;
 
 - (AMValueModel *)getIsContactsEmpty;
 
-- (AMValueModel *)getAppState;
+- (AMValueModel *)getIsAppLoaded;
+
+- (AMValueModel *)getIsAppEmpty;
 
 @end
 
