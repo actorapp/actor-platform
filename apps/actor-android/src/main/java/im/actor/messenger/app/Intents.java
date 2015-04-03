@@ -185,7 +185,7 @@ public class Intents {
     }
 
     public static Intent openAvatar(FileReference location) {
-        if (BuildConfig.ENABLE_CHROME) {
+        if (BuildConfig.IS_CHROME_BUILD) {
             return shareAvatar(location);
         } else {
             return new Intent(Intent.ACTION_VIEW)
@@ -225,7 +225,7 @@ public class Intents {
 //    }
 
     public static Intent pickFile(Context context) {
-        if (BuildConfig.ENABLE_CHROME) {
+        if (BuildConfig.IS_CHROME_BUILD) {
             return new Intent(Intent.ACTION_PICK).setType("*/*");
         } else {
             return com.droidkit.pickers.Intents.pickFile(context);
