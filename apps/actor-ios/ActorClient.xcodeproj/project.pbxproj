@@ -5475,10 +5475,181 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		06CDF4F81AD048D20001A712 /* ReleaseDev1 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = ReleaseDev1;
+		};
+		06CDF4F91AD048D20001A712 /* ReleaseDev1 */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 53958141732573CD5EF08D97 /* Pods-ActorClient.release.xcconfig */;
+			buildSettings = {
+				API_ID = 1;
+				API_KEY = "??";
+				API_PUSH_ID = 1;
+				API_URL = "tls://mtproto-api-dev1.actor.im:443";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				BUNDLE_ID = im.actor.app.dev1;
+				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				GCC_PREFIX_HEADER = "ActorClient/ActorClient-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/J2ObjC\"",
+					"\"${PODS_ROOT}/Headers/Public/RMPhoneFormat\"",
+					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
+					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
+				);
+				INFOPLIST_FILE = ActorClient/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = 1;
+				USER_HEADER_SEARCH_PATHS = "../../library/actor-cocoa-base/src/**";
+			};
+			name = ReleaseDev1;
+		};
+		06CDF4FA1AD048D20001A712 /* ReleaseDev1 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ActorClientTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ActorClient.app/ActorClient";
+			};
+			name = ReleaseDev1;
+		};
+		06CDF4FB1AD048DC0001A712 /* ReleaseDev2 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = ReleaseDev2;
+		};
+		06CDF4FC1AD048DC0001A712 /* ReleaseDev2 */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 53958141732573CD5EF08D97 /* Pods-ActorClient.release.xcconfig */;
+			buildSettings = {
+				API_ID = 1;
+				API_KEY = "??";
+				API_PUSH_ID = 1;
+				API_URL = "tls://mtproto-api-dev2.actor.im:443";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				BUNDLE_ID = im.actor.app.dev2;
+				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				GCC_PREFIX_HEADER = "ActorClient/ActorClient-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/J2ObjC\"",
+					"\"${PODS_ROOT}/Headers/Public/RMPhoneFormat\"",
+					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
+					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
+				);
+				INFOPLIST_FILE = ActorClient/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = 1;
+				USER_HEADER_SEARCH_PATHS = "../../library/actor-cocoa-base/src/**";
+			};
+			name = ReleaseDev2;
+		};
+		06CDF4FD1AD048DC0001A712 /* ReleaseDev2 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ActorClientTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ActorClient.app/ActorClient";
+			};
+			name = ReleaseDev2;
+		};
 		2537F8511A966B9D004A02E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ACTOR_API_URL = asdasd;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5521,7 +5692,6 @@
 		2537F8521A966B9D004A02E9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ACTOR_API_URL = asdasd;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5561,9 +5731,11 @@
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
+				API_PUSH_ID = 1;
 				API_URL = "tls://mtproto-api.actor.im:443";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				BUNDLE_ID = im.actor.app.debug;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -5577,7 +5749,6 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
-				HOCKEY = "";
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -5597,9 +5768,11 @@
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
+				API_PUSH_ID = 1;
 				API_URL = "tls://mtproto-api.actor.im:443";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				BUNDLE_ID = im.actor.app;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
@@ -5612,7 +5785,6 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
-				HOCKEY = "";
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -5667,6 +5839,8 @@
 			buildConfigurations = (
 				2537F8511A966B9D004A02E9 /* Debug */,
 				2537F8521A966B9D004A02E9 /* Release */,
+				06CDF4FB1AD048DC0001A712 /* ReleaseDev2 */,
+				06CDF4F81AD048D20001A712 /* ReleaseDev1 */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -5676,6 +5850,8 @@
 			buildConfigurations = (
 				2537F8541A966B9D004A02E9 /* Debug */,
 				2537F8551A966B9D004A02E9 /* Release */,
+				06CDF4FC1AD048DC0001A712 /* ReleaseDev2 */,
+				06CDF4F91AD048D20001A712 /* ReleaseDev1 */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -5685,6 +5861,8 @@
 			buildConfigurations = (
 				2537F8571A966B9D004A02E9 /* Debug */,
 				2537F8581A966B9D004A02E9 /* Release */,
+				06CDF4FD1AD048DC0001A712 /* ReleaseDev2 */,
+				06CDF4FA1AD048D20001A712 /* ReleaseDev1 */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
