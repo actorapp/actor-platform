@@ -322,23 +322,6 @@ dependencies {
     compile 'com.splunk.mint:mint:4.0.8'
 }
 
-task packageChromeExtension(type: Exec, dependsOn: ['assembleChrome']) {
-    workingDir = "$project.buildDir"
-    commandLine "chromeos-apk", "--name", "ActorMessenger", "$project.buildDir/apk/Actor-Chrome-" + project.version + ".apk"
-}
-
-task writeChromeIcon(type: Copy, dependsOn: ['packageChromeExtension']) {
-    from "src/icons/icon.png"
-    into "$project.buildDir/im.actor.android/"
-}
-
-task chromeZip(type: Zip, dependsOn: ['writeChromeIcon']) {
-    classifier = 'src'
-    from "$project.buildDir/"
-    include "im.actor.android/**"
-    archiveName = "ActorChrome-" + project.version + ".zip"
-}
-
-task dist(dependsOn: ['assembleRelease', 'chromeZip', 'assemblePlay', 'assembleDev1', 'assembleDev1alt', 'assembleDev2', 'assembleMchs']) {
+task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleDev1alt', 'assembleDev2', 'assembleMchs']) {
 
 }
