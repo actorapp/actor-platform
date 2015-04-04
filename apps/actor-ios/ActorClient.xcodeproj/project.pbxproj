@@ -4589,7 +4589,7 @@
 				TargetAttributes = {
 					2537F82C1A966B9D004A02E9 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = 6HJFRTMUT9;
+						DevelopmentTeam = WBZ2456W25;
 						SystemCapabilities = {
 							com.apple.iCloud = {
 								enabled = 1;
@@ -5478,6 +5478,7 @@
 		2537F8511A966B9D004A02E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ACTOR_API_URL = asdasd;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5520,6 +5521,7 @@
 		2537F8521A966B9D004A02E9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ACTOR_API_URL = asdasd;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5557,6 +5559,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DB5A2C3EB0E63D94843300E3 /* Pods-ActorClient.debug.xcconfig */;
 			buildSettings = {
+				API_ID = 1;
+				API_KEY = "??";
+				API_URL = "tls://mtproto-api.actor.im:443";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
@@ -5572,6 +5577,7 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
+				HOCKEY = "";
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -5589,11 +5595,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 53958141732573CD5EF08D97 /* Pods-ActorClient.release.xcconfig */;
 			buildSettings = {
+				API_ID = 1;
+				API_KEY = "??";
+				API_URL = "tls://mtproto-api.actor.im:443";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_PREFIX_HEADER = "ActorClient/ActorClient-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5603,6 +5612,7 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
+				HOCKEY = "";
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
