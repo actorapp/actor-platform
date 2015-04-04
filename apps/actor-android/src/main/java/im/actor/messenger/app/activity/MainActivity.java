@@ -37,7 +37,7 @@ public class MainActivity extends ControllerActivity<MainBaseController> {
             return;
         }
 
-        getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.bg_light)));
+        getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.bg_main)));
     }
 
     public void onDialogClicked(Dialog item) {

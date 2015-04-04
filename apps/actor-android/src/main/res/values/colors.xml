@@ -18,43 +18,48 @@
     <color name="secondary_selected">#33999999</color>
     <color name="secondary_pressed">#66999999</color>
 
-    <color name="settings_icon">#b5b6b7</color>
-
     <color name="text_primary">#DE000000</color>
     <color name="text_secondary">#8A000000</color>
     <color name="text_hint">#42000000</color>
-    <color name="text_subheader">#ff999999</color>
+    <color name="text_subheader">#8F000000</color>
 
-    <color name="text_primary_light">#DEffffff</color>
-    <color name="text_secondary_light">#8Affffff</color>
-    <color name="text_hint_light">#42ffffff</color>
+    <color name="text_primary_inv">#DEffffff</color>
+    <color name="text_secondary_inv">#8Affffff</color>
+    <color name="text_hint_inv">#42ffffff</color>
+    <color name="text_subheader_inv">#8Fffffff</color>
 
     <color name="selector_selected">#66999999</color>
     <color name="selector_hover">#33999999</color>
 
-    <color name="selector_selected_light">#40cccccc</color>
-    <color name="selector_hover_light">#20cccccc</color>
+    <color name="selector_selected_inv">#40cccccc</color>
+    <color name="selector_hover_inv">#20cccccc</color>
 
     <color name="selector_messages">#44000000</color>
     <color name="selector_messages_selected">#66000000</color>
 
     <color name="divider">#1e000000</color>
-    <color name="divider_light">#1effffff</color>
+    <color name="divider_inv">#1effffff</color>
 
-    <color name="bg_light">#fffffc</color>
-
-    <color name="bg_grey">#eeeeee</color>
-
-    <color name="fab_bg">#ccffffff</color>
+    <color name="bg_main">#fffffc</color>
+    <color name="bg_backyard">#eeeeee</color>
 
     <!-- Main screen -->
     <color name="main_tab_selected">#fffffc</color>
     <color name="main_tab_divider">#15000000</color>
+    <color name="main_tab_text">@color/text_primary_inv</color>
+    <color name="main_fab_bg">#ccffffff</color>
 
     <!-- Profile screen -->
     <color name="upload_overlay">#8c000000</color>
 
     <!-- Dialogs -->
+    <color name="chats_divider">@color/divider</color>
+    <color name="chats_title">@color/text_primary</color>
+    <color name="chats_text">@color/text_primary</color>
+    <color name="chats_time">@color/text_subheader</color>
+    <color name="chats_counter">#ffffff</color>
+    <color name="chats_counter_bg">@color/primary_alt</color>
+    <color name="chats_typing">@color/primary</color>
 
     <color name="chats_state_pending">#40000000</color>
     <color name="chats_state_sent">#40000000</color>
@@ -62,6 +67,10 @@
     <color name="chats_state_read">#ff7ea8ef</color>
     <color name="chats_state_error">#d24a43</color>
     <color name="chats_state_warring">#d24a43</color>
+
+    <!-- Contacts -->
+    <color name="contacts_fast">@color/primary</color>
+    <color name="contacts_action">@color/primary</color>
 
     <!-- Conversation screen -->
 
@@ -93,8 +102,15 @@
 
     <color name="conv_delete">@color/accent</color>
 
-    <!-- Misc -->
+    <!-- Settings -->
+    <color name="settings_title">@color/accent</color>
+    <color name="settings_icon">#b5b6b7</color>
 
-    <color name="black">#000000</color>
+    <!-- Profile -->
+    <color name="profile_title">@color/text_primary_inv</color>
+    <color name="profile_subtitle">@color/text_secondary_inv</color>
+    <color name="profile_icon">@color/accent</color>
+
+    <!-- Misc -->
     <color name="light_gray">#bbbbbb</color>
 </resources>

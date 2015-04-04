@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <drawable name="bg_light">#ffffff</drawable>
+    <drawable name="bg_main">#ffffff</drawable>
 </resources>

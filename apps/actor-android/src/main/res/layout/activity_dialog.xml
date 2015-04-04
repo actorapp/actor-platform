@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:background="@color/bg_light"
+        android:background="@color/bg_main"
         android:minHeight="56dp">
 
         <EditText
@@ -87,7 +87,7 @@
             android:id="@+id/kickedFromChat"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/bg_grey"
+            android:background="@color/bg_backyard"
             android:visibility="gone">
 
             <TextView

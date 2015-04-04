@@ -4,7 +4,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/bg_light"
+              android:background="@color/bg_main"
               android:paddingLeft="16dp"
               android:paddingRight="16dp"
               android:paddingTop="16dp">

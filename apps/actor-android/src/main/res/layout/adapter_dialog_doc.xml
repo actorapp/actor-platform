@@ -20,7 +20,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_margin="4dp"
-            android:background="@color/selector_selected_light">
+            android:background="@color/selector_selected_inv">
 
             <ImageView
                 android:id="@+id/icon"

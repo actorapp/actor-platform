@@ -15,7 +15,7 @@
             android:id="@+id/recordIcon"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            app:tintColor="@color/primary" />
+            app:tintColor="@color/profile_icon" />
 
         <LinearLayout
             android:layout_width="match_parent"

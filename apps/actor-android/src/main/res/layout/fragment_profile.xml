@@ -9,12 +9,12 @@
         android:id="@+id/scrollContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_grey">
+        android:background="@color/bg_backyard">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/bg_light"
+            android:background="@color/bg_main"
             android:orientation="vertical">
 
             <FrameLayout
@@ -54,7 +54,7 @@
                                 android:includeFontPadding="false"
                                 android:lines="1"
                                 android:singleLine="true"
-                                android:textColor="@color/text_primary_light"
+                                android:textColor="@color/profile_title"
                                 android:textSize="26sp" />
 
                             <TextView
@@ -62,7 +62,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="-2dp"
-                                android:textColor="@color/text_secondary_light"
+                                android:textColor="@color/profile_subtitle"
                                 android:textSize="14sp" />
 
                         </LinearLayout>
@@ -81,7 +81,7 @@
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="16dp"
-                        android:background="@color/bg_grey">
+                        android:background="@color/bg_backyard">
 
                         <View
                             android:layout_width="match_parent"
@@ -102,7 +102,7 @@
                         android:gravity="center_vertical|left"
                         android:paddingLeft="72dp"
                         android:text="@string/profile_settings_header"
-                        android:textColor="@color/primary"
+                        android:textColor="@color/settings_title"
                         android:textSize="16sp" />
 
                     <LinearLayout
@@ -136,7 +136,7 @@
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="16dp"
-                        android:background="@color/bg_grey">
+                        android:background="@color/bg_backyard">
 
                         <View
                             android:layout_width="match_parent"

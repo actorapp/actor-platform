@@ -1,7 +1,7 @@
 package im.actor.messenger.app.fragment.dialogs;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -17,6 +17,7 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
+import im.actor.messenger.app.view.TintDrawable;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
@@ -73,7 +74,7 @@ public class DialogHolder extends BindedViewHolder {
         errorColor = context.getResources().getColor(R.color.chats_state_error);
 
         fl.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(72)));
-        fl.setBackgroundResource(R.drawable.selector_white);
+        fl.setBackgroundResource(R.drawable.selector_fill);
 
         avatar = new AvatarView(context);
         avatar.init(Screen.dp(54), 24);
@@ -105,7 +106,7 @@ public class DialogHolder extends BindedViewHolder {
         }
 
         title = new TextView(context);
-        title.setTextColor(0xDD000000);
+        title.setTextColor(context.getResources().getColor(R.color.chats_title));
         title.setTypeface(Fonts.medium());
         title.setTextSize(17);
         title.setPadding(0, 0, 0, 0);
@@ -120,7 +121,7 @@ public class DialogHolder extends BindedViewHolder {
         firstRow.addView(title);
 
         time = new TextView(context);
-        time.setTextColor(context.getResources().getColor(R.color.text_subheader));
+        time.setTextColor(context.getResources().getColor(R.color.chats_time));
         time.setTypeface(Fonts.regular());
         time.setTextSize(12);
         time.setPadding(Screen.dp(8), 0, 0, 0);
@@ -140,7 +141,7 @@ public class DialogHolder extends BindedViewHolder {
         fl.addView(linearLayout);
 
         separator = new View(context);
-        separator.setBackgroundColor(context.getResources().getColor(R.color.divider));
+        separator.setBackgroundColor(context.getResources().getColor(R.color.chats_divider));
         FrameLayout.LayoutParams divLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 context.getResources().getDimensionPixelSize(R.dimen.div_size));
         divLayoutParams.leftMargin = Screen.dp(76);
@@ -158,8 +159,8 @@ public class DialogHolder extends BindedViewHolder {
         }
 
         counter = new TextView(context);
-        counter.setTextColor(Color.WHITE);
-        counter.setBackgroundColor(0xff46aa36);
+        counter.setTextColor(context.getResources().getColor(R.color.chats_counter));
+        counter.setBackgroundColor(context.getResources().getColor(R.color.chats_counter_bg));
         counter.setPadding(Screen.dp(4), 0, Screen.dp(4), 0);
         counter.setTextSize(10);
         counter.setTypeface(Fonts.regular());
@@ -208,12 +209,11 @@ public class DialogHolder extends BindedViewHolder {
 
         title.setText(data.getDialogTitle());
 
-        int left = 0;
+        Drawable left = null;
         if (data.getPeer().getPeerType() == PeerType.GROUP) {
-            left = R.drawable.dialogs_group;
+            left = new TintDrawable(R.drawable.dialogs_group, R.color.chats_title, context);
         }
-
-        title.setCompoundDrawablesWithIntrinsicBounds(left, 0, 0, 0);
+        title.setCompoundDrawablesWithIntrinsicBounds(left, null, null, null);
 
         if (data.getDate() > 0) {
             time.setVisibility(View.VISIBLE);
@@ -252,10 +252,10 @@ public class DialogHolder extends BindedViewHolder {
                 public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
                     if (val) {
                         text.setText(messenger().getFormatter().formatTyping());
-                        text.setTextColor(context.getResources().getColor(R.color.primary));
+                        text.setTextColor(context.getResources().getColor(R.color.chats_typing));
                     } else {
                         text.setText(bindedText);
-                        text.setTextColor(context.getResources().getColor(R.color.text_primary));
+                        text.setTextColor(context.getResources().getColor(R.color.chats_text));
                     }
                 }
             };
@@ -271,17 +271,17 @@ public class DialogHolder extends BindedViewHolder {
                         } else {
                             text.setText(messenger().getFormatter().formatTyping(val.length));
                         }
-                        text.setTextColor(context.getResources().getColor(R.color.primary));
+                        text.setTextColor(context.getResources().getColor(R.color.chats_typing));
                     } else {
                         text.setText(bindedText);
-                        text.setTextColor(context.getResources().getColor(R.color.text_primary));
+                        text.setTextColor(context.getResources().getColor(R.color.chats_text));
                     }
                 }
             };
             messenger().getGroupTyping(bindedGid).subscribe(groupTypingListener);
         } else {
             text.setText(bindedText);
-            text.setTextColor(context.getResources().getColor(R.color.text_primary));
+            text.setTextColor(context.getResources().getColor(R.color.chats_text));
         }
 
         if (data.getSenderId() != myUid()) {

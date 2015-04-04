@@ -173,42 +173,42 @@ android {
 
     sourceSets {
         release {
-            res.srcDirs = ['src/icons/main', 'src/stock']
+            res.srcDirs = ['src/themes/main', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
         mchs {
-            res.srcDirs = ['src/icons/mchs', 'src/styles/mchs', 'src/stock']
+            res.srcDirs = ['src/themes/main', 'src/themes/mchs', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
         play {
-            res.srcDirs = ['src/icons/main', 'src/stock']
+            res.srcDirs = ['src/themes/main', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
         chrome {
-            res.srcDirs = ['src/icons/main', 'src/chrome-res', 'src/stock']
+            res.srcDirs = ['src/themes/chrome', 'src/material-icons']
             java.srcDirs = ['src/noplay/java']
         }
 
         debug {
-            res.srcDirs = ['src/icons/dev', 'src/stock']
+            res.srcDirs = ['src/themes/dev', 'src/themes/dark', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
         dev1 {
-            res.srcDirs = ['src/icons/dev', 'src/stock']
+            res.srcDirs = ['src/themes/dev', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
         dev1alt {
-            res.srcDirs = ['src/icons/dev', 'src/stock']
+            res.srcDirs = ['src/themes/dev', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
         dev2 {
-            res.srcDirs = ['src/icons/dev', 'src/stock']
+            res.srcDirs = ['src/themes/dev', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
     }
