@@ -50,7 +50,7 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
         titleView.frame = CGRectMake(0, 4, 190, 20)
         titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 17)!
         titleView.adjustsFontSizeToFitWidth = false;
-        titleView.textColor = UIColor.whiteColor();
+        titleView.textColor = UIColor.blackColor();
         titleView.textAlignment = NSTextAlignment.Center;
         titleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
         titleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
@@ -58,7 +58,7 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
         subtitleView.frame = CGRectMake(0, 22, 190, 20);
         subtitleView.font = UIFont.systemFontOfSize(13);
         subtitleView.adjustsFontSizeToFitWidth=false;
-        subtitleView.textColor = Resources.SecondaryLightText
+        subtitleView.textColor = Resources.SecondaryDarkText
         subtitleView.textAlignment = NSTextAlignment.Center;
         subtitleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
         subtitleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
@@ -108,15 +108,15 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
                 
                 if (typing != nil && typing!.booleanValue()) {
                     self.subtitleView.text = MSG.getFormatter().formatTyping();
-                    self.subtitleView.textColor = Resources.PrimaryLightText
+                    self.subtitleView.textColor = Resources.PrimaryDarkText
                 } else {
                     var stateText = MSG.getFormatter().formatPresenceWithAMUserPresence(presence, withAMSexEnum: user.getSex())
                     self.subtitleView.text = stateText;
                     var state = UInt(presence!.getState().ordinal())
                     if (state == AMUserPresence_State.ONLINE.rawValue) {
-                        self.subtitleView.textColor = Resources.PrimaryLightText
+                        self.subtitleView.textColor = Resources.PrimaryDarkText
                     } else {
-                        self.subtitleView.textColor = Resources.SecondaryLightText
+                        self.subtitleView.textColor = Resources.SecondaryDarkText
                     }
                 }
             })
@@ -133,7 +133,7 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
             })
             binder.bind(MSG.getGroupTypingWithInt(group.getId())!, valueModel2: group.getMembers(), valueModel3: group.getPresence(), closure: { (value1:IOSIntArray?, value2:JavaUtilHashSet?, value3:JavaLangInteger?) -> () in
                 if (value1!.length() > 0) {
-                    self.subtitleView.textColor = Resources.PrimaryLightText
+                    self.subtitleView.textColor = Resources.PrimaryDarkText
                     if (value1!.length() == 1) {
                         var uid = value1!.intAtIndex(0);
                         var user = MSG.getUsers().getWithLong(jlong(uid)) as! AMUserVM;
@@ -144,13 +144,13 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
                 } else {
                     var membersString = MSG.getFormatter().formatGroupMembersWithInt(value2!.size())
                     if (value3 == nil || value3!.integerValue == 0) {
-                        self.subtitleView.textColor = Resources.SecondaryLightText
+                        self.subtitleView.textColor = Resources.SecondaryDarkText
                         self.subtitleView.text = membersString;
                     } else {
                         membersString = membersString + ", ";
                         var onlineString = MSG.getFormatter().formatGroupOnlineWithInt(value3!.intValue());
                         var attributedString = NSMutableAttributedString(string: (membersString + onlineString))
-                        attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.size(), onlineString.size()))
+                        attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryDarkText, range: NSMakeRange(membersString.size(), onlineString.size()))
                         self.subtitleView.attributedText = attributedString
                     }
                 }
@@ -257,7 +257,7 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
     // Image picker
     
     func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-        UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: false)
+
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {

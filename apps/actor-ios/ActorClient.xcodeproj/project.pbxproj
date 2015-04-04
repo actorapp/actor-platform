@@ -670,6 +670,8 @@
 		0565F7591ACEA416007BE8D7 /* Shorts.m in Sources */ = {isa = PBXBuildFile; fileRef = 0565F4CF1ACEA415007BE8D7 /* Shorts.m */; };
 		0565F75A1ACEA416007BE8D7 /* Strings.m in Sources */ = {isa = PBXBuildFile; fileRef = 0565F4D11ACEA415007BE8D7 /* Strings.m */; };
 		056911F01ACF321300D4D209 /* CocoaExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056911EF1ACF321300D4D209 /* CocoaExecution.swift */; };
+		05B1A46D1AD0015B005F691D /* AAPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B1A46C1AD0015B005F691D /* AAPlaceholderView.swift */; };
+		05B1A4701AD01311005F691D /* AAAddParticipantController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B1A46F1AD01311005F691D /* AAAddParticipantController.swift */; };
 		05B432971ACC08D40073BA69 /* AAAuthCountryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */; };
 		06047D061ABF85FD002091CC /* AASerializationHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D051ABF85FD002091CC /* AASerializationHelpers.m */; };
 		06047D081ABF8611002091CC /* CocoaTcpConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D071ABF8611002091CC /* CocoaTcpConnection.m */; };
@@ -2084,6 +2086,8 @@
 		0565F4D01ACEA415007BE8D7 /* Strings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Strings.h; sourceTree = "<group>"; };
 		0565F4D11ACEA415007BE8D7 /* Strings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Strings.m; sourceTree = "<group>"; };
 		056911EF1ACF321300D4D209 /* CocoaExecution.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaExecution.swift; sourceTree = "<group>"; };
+		05B1A46C1AD0015B005F691D /* AAPlaceholderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAPlaceholderView.swift; path = Views/Root/AAPlaceholderView.swift; sourceTree = "<group>"; };
+		05B1A46F1AD01311005F691D /* AAAddParticipantController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAddParticipantController.swift; path = Conversation/Info/AAAddParticipantController.swift; sourceTree = "<group>"; };
 		05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAuthCountryCell.swift; path = Views/Auth/AAAuthCountryCell.swift; sourceTree = "<group>"; };
 		06047D041ABF85E9002091CC /* AASerializationHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AASerializationHelpers.h; sourceTree = "<group>"; };
 		06047D051ABF85FD002091CC /* AASerializationHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AASerializationHelpers.m; sourceTree = "<group>"; };
@@ -2257,6 +2261,7 @@
 			isa = PBXGroup;
 			children = (
 				0541A0571ACDA57E0028E983 /* AAConversationGroupInfoController.swift */,
+				05B1A46F1AD01311005F691D /* AAAddParticipantController.swift */,
 			);
 			name = Info;
 			sourceTree = "<group>";
@@ -2282,6 +2287,7 @@
 			isa = PBXGroup;
 			children = (
 				0541A0641ACDA7A20028E983 /* AATableViewCell.swift */,
+				05B1A46C1AD0015B005F691D /* AAPlaceholderView.swift */,
 			);
 			name = Root;
 			sourceTree = "<group>";
@@ -5078,6 +5084,7 @@
 				0565F6CD1ACEA416007BE8D7 /* RpcInternalException.m in Sources */,
 				0565F53A1ACEA415007BE8D7 /* RequestSubscribeToOnline.m in Sources */,
 				0565F52C1ACEA415007BE8D7 /* RequestSearchContacts.m in Sources */,
+				05B1A4701AD01311005F691D /* AAAddParticipantController.swift in Sources */,
 				0565F5591ACEA415007BE8D7 /* ServiceExUserAdded.m in Sources */,
 				0565F73E1ACEA416007BE8D7 /* WTauNafPreCompInfo.m in Sources */,
 				0565F59D1ACEA415007BE8D7 /* AesCipher.m in Sources */,
@@ -5415,6 +5422,7 @@
 				0565F69C1ACEA416007BE8D7 /* ValueDoubleChangedListener.m in Sources */,
 				0565F6C41ACEA416007BE8D7 /* MTProtoCallback.m in Sources */,
 				0565F6051ACEA415007BE8D7 /* ListStorageDisplayEx.m in Sources */,
+				05B1A46D1AD0015B005F691D /* AAPlaceholderView.swift in Sources */,
 				0565F5D51ACEA415007BE8D7 /* RunnableActor.m in Sources */,
 				06F6B7141AB0F56300A7DB91 /* Wrappers.swift in Sources */,
 				0565F5211ACEA415007BE8D7 /* RequestKickUser.m in Sources */,

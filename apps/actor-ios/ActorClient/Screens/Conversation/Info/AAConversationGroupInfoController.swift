@@ -20,6 +20,7 @@ class AAConversationGroupInfoController: AATableViewController {
     private var groupMembers: IOSObjectArray?
     
     private var groupNameBeforeEditing: String = ""
+    private var groupNameTextField: UITextField?
     
     // MARK: -
     // MARK: Public vars
@@ -63,7 +64,6 @@ class AAConversationGroupInfoController: AATableViewController {
             }
         })
         
-        
         binder.bind(group!.getAvatar(), closure: { (value: AMAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAConversationGroupInfoCell {
                 cell.groupAvatarView.bind(self.group!.getName().get() as! String, id: jint(self.gid), avatar: value)
@@ -74,13 +74,29 @@ class AAConversationGroupInfoController: AATableViewController {
             if value != nil {
                 let groupMembetsPreviousCount = Int(self.groupMembers != nil ? self.groupMembers!.length() : 0)
                 self.groupMembers = value!.toArray()
-                self.tableView.reloadSections(NSIndexSet(index: 2), withRowAnimation: (groupMembetsPreviousCount == 0 ? UITableViewRowAnimation.None : UITableViewRowAnimation.Top))
+                
+                self.tableView.reloadSections(NSIndexSet(index: 2), withRowAnimation: (groupMembetsPreviousCount == 0 ? UITableViewRowAnimation.None : UITableViewRowAnimation.Automatic))
             }
         })
         
-        navigationItem.rightBarButtonItem = self.editButtonItem()
+        binder.bind(group!.isMember(), closure: { (member: JavaLangBoolean?) -> () in
+            if member != nil {
+                println("isMember: \(member!)")
+                self.tableView.beginUpdates()
+                self.tableView.endUpdates()
+                
+                if Bool(member!.booleanValue()) == true {
+                    self.navigationItem.rightBarButtonItem = self.editButtonItem()
+                    
+                    self.hidePlaceholder()
+                } else {
+                    self.navigationItem.rightBarButtonItem = nil
+                    self.showPlaceholderWithImage(nil, title: "Not a member", subtitle: "Unfortunately, you are not a member of this group.")
+                }
+            }
+        })
+        
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: nil, action: nil) // TODO: Localize
-        // TODO: Hide last two sections when user has left 
     }
     
     // MARK: -
@@ -89,16 +105,25 @@ class AAConversationGroupInfoController: AATableViewController {
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         
-        if let cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAConversationGroupInfoCell {
+        var cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAConversationGroupInfoCell
+        
+        if cell != nil {
             if editing == true {
-                cell.groupNameTextField.becomeFirstResponder()
-                groupNameBeforeEditing = cell.groupName()
+                groupNameBeforeEditing = cell!.groupName()
+                groupNameTextField = cell!.groupNameTextField
             } else {
-                // TODO: Fix issue. When cell is not visible this state is never reached
-                cell.groupNameTextField.resignFirstResponder()
-                if groupNameBeforeEditing != cell.groupName() {
-                    execute(MSG.editGroupTitleWithInt(jint(gid), withNSString: cell.groupName()))
+                if groupNameBeforeEditing != cell!.groupName() {
+                    execute(MSG.editGroupTitleWithInt(jint(gid), withNSString: cell!.groupName()))
                 }
+            }
+        }
+        
+        if groupNameTextField != nil {
+            if editing == true {
+                groupNameTextField!.becomeFirstResponder()
+            } else {
+                groupNameTextField!.resignFirstResponder()
+                groupNameTextField = nil
             }
         }
         
@@ -203,7 +228,7 @@ class AAConversationGroupInfoController: AATableViewController {
             return 1
         case 2:
             if groupMembers != nil {
-                return Int(groupMembers!.length())
+                return Int(groupMembers!.length()) + 1
             }
             return 0
         case 3:
@@ -222,7 +247,7 @@ class AAConversationGroupInfoController: AATableViewController {
             return notificationsCell(indexPath)
         } else if indexPath.section == 2 {
             let groupMembersCount = Int(groupMembers!.length())
-            if indexPath.row < groupMembersCount - 1 {
+            if indexPath.row < groupMembersCount {
                 return setupUserCellForIndexPath(indexPath)
             } else {
                 return addParticipantCell(indexPath)
@@ -275,6 +300,9 @@ class AAConversationGroupInfoController: AATableViewController {
                 }
                 
             } else {
+                let addParticipantController = AAAddParticipantController(gid: gid)
+                let navigationController = AANavigationController(rootViewController: addParticipantController)
+                presentViewController(navigationController, animated: true, completion: nil)
                 // TODO: Allow to add participants
                 // TODO: Allow to delete participants if I am a creator?
             }

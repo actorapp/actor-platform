@@ -26,5 +26,10 @@ class AAViewController: UIViewController {
     }
     
     // MARK: -
+    // MARK: Navigation
+    
+    func dismiss() {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
 
 }

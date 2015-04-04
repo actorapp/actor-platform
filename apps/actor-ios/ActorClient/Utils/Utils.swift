@@ -14,4 +14,11 @@ class Utils: NSObject {
         return UIScreen.mainScreen().scale > 1
     }
     
+    class func retinaPixel() -> CGFloat {
+        if Utils.isRetina() {
+            return 0.5
+        }
+        return 1.0
+    }
+    
 }
