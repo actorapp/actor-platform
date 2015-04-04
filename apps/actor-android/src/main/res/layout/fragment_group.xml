@@ -3,13 +3,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_grey">
+    android:background="@color/bg_backyard">
 
     <ListView
         android:id="@+id/groupList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_light"
+        android:background="@color/bg_main"
         android:divider="@null"
         android:dividerHeight="0dp"
         android:listSelector="@drawable/selector" />
@@ -18,7 +18,7 @@
         android:id="@+id/notMember"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_light">
+        android:background="@color/bg_main">
 
         <TextView
             android:layout_width="wrap_content"

@@ -46,7 +46,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         // Footer
 
         FrameLayout footer = new FrameLayout(getActivity());
-        footer.setBackgroundColor(getResources().getColor(R.color.bg_grey));
+        footer.setBackgroundColor(getResources().getColor(R.color.bg_backyard));
         footer.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(160)));
         ImageView shadow = new ImageView(getActivity());
         shadow.setImageResource(R.drawable.card_shadow_bottom);
@@ -70,7 +70,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
 
         View header = new View(getActivity());
         header.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
-        header.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_light));
+        header.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_main));
         addHeaderView(header);
 
 //        TextView header = new TextView(getActivity());

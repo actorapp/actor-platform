@@ -60,7 +60,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         emptyView = res.findViewById(R.id.emptyCollection);
 
         View headerPadding = new View(getActivity());
-        headerPadding.setBackgroundColor(getResources().getColor(R.color.bg_light));
+        headerPadding.setBackgroundColor(getResources().getColor(R.color.bg_main));
         headerPadding.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
         addHeaderView(headerPadding);
 
@@ -116,14 +116,14 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
     private void addFooterAction(int icon, String text, boolean isLast, final Runnable action) {
         FrameLayout container = new FrameLayout(getActivity());
-        container.setBackgroundColor(getResources().getColor(R.color.bg_light));
+        container.setBackgroundColor(getResources().getColor(R.color.bg_main));
         {
             container.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
         FrameLayout invitePanel = new FrameLayout(getActivity());
-        invitePanel.setBackgroundResource(R.drawable.selector_white);
+        invitePanel.setBackgroundResource(R.drawable.selector_fill);
         invitePanel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,7 +138,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         }
 
         TintImageView inviteIcon = new TintImageView(getActivity());
-        inviteIcon.setTint(getResources().getColor(R.color.primary));
+        inviteIcon.setTint(getResources().getColor(R.color.contacts_action));
         inviteIcon.setResource(icon);
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(52), Screen.dp(52));
@@ -151,7 +151,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
         TextView inviteText = new TextView(getActivity());
         inviteText.setText(text);
-        inviteText.setTextColor(getResources().getColor(R.color.primary));
+        inviteText.setTextColor(getResources().getColor(R.color.contacts_action));
         inviteText.setPadding(Screen.dp(72), 0, Screen.dp(8), 0);
         inviteText.setTextSize(16);
         inviteText.setSingleLine(true);

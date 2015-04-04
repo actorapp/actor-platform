@@ -3,7 +3,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light">
+    android:background="@color/bg_main">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,7 +52,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="16dp"
-            android:background="@color/bg_grey">
+            android:background="@color/bg_backyard">
 
             <View
                 android:layout_width="match_parent"

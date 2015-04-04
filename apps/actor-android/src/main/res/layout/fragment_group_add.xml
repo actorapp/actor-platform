@@ -38,7 +38,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="16dp"
-        android:background="@color/bg_grey">
+        android:background="@color/bg_backyard">
 
         <View
             android:layout_width="match_parent"

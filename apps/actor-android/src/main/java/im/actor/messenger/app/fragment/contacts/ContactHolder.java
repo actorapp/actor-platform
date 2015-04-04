@@ -44,7 +44,7 @@ public class ContactHolder extends BindedViewHolder {
 
         int padding = Screen.dp(16);
 
-        fl.setBackgroundColor(context.getResources().getColor(R.color.bg_light));
+        fl.setBackgroundColor(context.getResources().getColor(R.color.bg_main));
 
         cont = new FrameLayout(context);
 
@@ -68,7 +68,7 @@ public class ContactHolder extends BindedViewHolder {
         }
 
         fastTitle = new TextView(context);
-        fastTitle.setTextColor(context.getResources().getColor(R.color.primary));
+        fastTitle.setTextColor(context.getResources().getColor(R.color.contacts_fast));
         fastTitle.setTextSize(18);
         fastTitle.setGravity(Gravity.CENTER);
         fastTitle.setTypeface(Fonts.medium());

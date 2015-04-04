@@ -207,7 +207,7 @@ public class MainPhoneController extends MainBaseController {
         barTabs.setIndicatorColorResource(R.color.main_tab_selected);
         barTabs.setIndicatorHeight(Screen.dp(4));
         barTabs.setDividerColorResource(R.color.main_tab_divider);
-        barTabs.setTextColorResource(R.color.text_primary_light);
+        barTabs.setTextColorResource(R.color.main_tab_text);
         barTabs.setUnderlineHeight(0);
 
         barTabs.setViewPager(pager);

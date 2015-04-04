@@ -9,7 +9,7 @@
         android:id="@+id/scrollContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_light"
+        android:background="@color/bg_main"
         android:fillViewport="true">
 
         <LinearLayout
@@ -58,7 +58,7 @@
                                 android:shadowDy="1"
                                 android:shadowRadius="1"
                                 android:singleLine="true"
-                                android:textColor="@color/text_primary_light"
+                                android:textColor="@color/profile_title"
                                 android:textSize="26sp" />
 
                         </LinearLayout>
@@ -76,7 +76,7 @@
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="16dp"
-                        android:background="@color/bg_grey">
+                        android:background="@color/bg_backyard">
 
                         <View
                             android:layout_width="match_parent"
@@ -97,7 +97,7 @@
                         android:gravity="center_vertical|left"
                         android:paddingLeft="72dp"
                         android:text="@string/settings_header"
-                        android:textColor="@color/primary"
+                        android:textColor="@color/settings_title"
                         android:textSize="16sp" />
 
                     <LinearLayout
@@ -229,7 +229,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 android:layout_weight="1"
-                android:background="@color/bg_grey">
+                android:background="@color/bg_backyard">
 
                 <View
                     android:layout_width="match_parent"
