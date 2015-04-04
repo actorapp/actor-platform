@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light"
+    android:background="@color/bg_main"
     android:descendantFocusability="beforeDescendants"
     android:fillViewport="true"
     android:gravity="center_horizontal"
@@ -84,7 +84,7 @@
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"
                 android:text="@string/auth_profile_done"
-                android:textColor="@color/text_primary_light"
+                android:textColor="@color/text_primary_inv"
                 android:textSize="15sp" />
         </FrameLayout>
 

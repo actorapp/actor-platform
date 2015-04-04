@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tour_welcome_title"
-            android:textColor="@color/text_primary_light"
+            android:textColor="@color/text_primary_inv"
             android:textSize="21sp" />
 
         <TextView
@@ -63,7 +63,7 @@
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="@string/tour_welcome_subtitle"
-            android:textColor="@color/text_primary_light"
+            android:textColor="@color/text_primary_inv"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -129,7 +129,7 @@
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"
                 android:text="@string/tour_sign_up"
-                android:textColor="@color/text_primary_light"
+                android:textColor="@color/text_primary_inv"
                 android:textSize="15sp" />
         </FrameLayout>
 
@@ -141,7 +141,7 @@
             android:minWidth="88dp"
             android:text="@string/tour_sign_in"
             android:textAllCaps="true"
-            android:textColor="@color/text_primary_light"
+            android:textColor="@color/text_primary_inv"
             android:textSize="14sp" />
 
 

@@ -45,7 +45,7 @@
             android:id="@+id/searchCont"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/bg_light"
+            android:background="@color/bg_main"
             android:clickable="true"
             android:orientation="vertical"
             android:visibility="gone">
@@ -81,7 +81,7 @@
             android:id="@+id/syncInProgress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/bg_light"
+            android:background="@color/bg_main"
             android:clickable="true">
 
             <View
@@ -136,7 +136,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/bg_light"
+                android:background="@color/bg_main"
                 android:clickable="true">
 
                 <View
@@ -201,7 +201,7 @@
                             android:paddingLeft="24dp"
                             android:paddingRight="24dp"
                             android:text="@string/main_empty_invite_action"
-                            android:textColor="@color/text_primary_light"
+                            android:textColor="@color/text_primary_inv"
                             android:textSize="15sp" />
                     </FrameLayout>
 
@@ -254,7 +254,7 @@
         android:id="@+id/fabContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/fab_bg"
+        android:background="@color/main_fab_bg"
         android:visibility="gone">
 
         <LinearLayout
