@@ -15,13 +15,10 @@ get{
     if (holder == nil){
         var dbPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,
             .UserDomainMask, true)[0].stringByAppendingPathComponent("actor.db");
-//        var db = FMDatabase(path: dbPath);
-//        db.open()
-        var builder = AMConfigurationBuilder();
     
 
         // Providers
-        
+        var builder = AMConfigurationBuilder();    
         builder.setLogProvider(CocoaLogProvider())
         builder.setNetworkProvider(SwiftCocoaNetworkProvider())
         builder.setThreadingProvider(AMCocoaThreadingProvider())
@@ -36,7 +33,7 @@ get{
         builder.setEnableNetworkLogging(true)
         
         // Connection
-        builder.addEndpoint("tcp://mtproto-api.actor.im:8080");
+        builder.addEndpoint(NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL") as! String);
         
         var deviceKey = NSUUID().UUIDString;
         
