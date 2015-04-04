@@ -82,8 +82,4 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
         }
     }
 
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
-    }
 }

@@ -145,11 +145,4 @@ class AAAuthCountriesController: AATableViewController {
         let letter = letters()[section] as! String
         return letter
     }
-    
-    // MARK: -
-    // MARK: Navigation
-    
-    private func dismiss() {
-        dismissViewControllerAnimated(true, completion: nil)
-    }
 }

@@ -76,10 +76,6 @@ class SearchSource: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITa
         UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.Default, animated: true)
     }
     
-    func searchDisplayControllerWillEndSearch(controller: UISearchDisplayController) {
-        UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
-    }
-    
     func searchDisplayController(controller: UISearchDisplayController, didShowSearchResultsTableView tableView: UITableView) {
         for v in tableView.subviews {
             if (v is UIImageView) {

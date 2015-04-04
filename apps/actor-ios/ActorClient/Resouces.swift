@@ -96,6 +96,11 @@ import Foundation
     static let PrimaryLightText = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
     
     static let SelectorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 60/255.0)
+    
+    static let PrimaryDarkText = UIColor.RGB(0x787878)
+    static let SecondaryDarkText = UIColor.RGB(0x787878)
+    
+    static let PlaceholderText = UIColor(red: 200/255.0, green: 200/255.0, blue: 200/255.0, alpha: 1.0)
 }
 
 
