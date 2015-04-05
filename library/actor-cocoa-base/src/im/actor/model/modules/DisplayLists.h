@@ -38,6 +38,8 @@
 - (AMBindedDisplayList *)buildNewChatListWithAMPeer:(AMPeer *)peer
                                         withBoolean:(jboolean)isGlobalList;
 
+- (AMBindedDisplayList *)buildNewSearchListWithBoolean:(jboolean)isGlobalList;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesDisplayLists)

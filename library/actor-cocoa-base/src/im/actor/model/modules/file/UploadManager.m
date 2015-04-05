@@ -7,6 +7,7 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/Configuration.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
@@ -32,6 +33,7 @@ __attribute__((unused)) static ImActorModelModulesFileUploadManager_QueueItem *I
 
 @interface ImActorModelModulesFileUploadManager () {
  @public
+  jboolean LOG_;
   JavaUtilArrayList *queue_;
 }
 
@@ -278,27 +280,32 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadManager_$13, val$finalPendingQu
 NSString * ImActorModelModulesFileUploadManager_TAG_ = @"UploadManager";
 
 
-#line 30
+#line 32
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   if (self =
-#line 31
+#line 33
   [super initWithImActorModelModulesModules:messenger]) {
     queue_ =
-#line 28
+#line 30
     [[JavaUtilArrayList alloc] init];
+    
+#line 34
+    self->LOG_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) isEnableFilesLogging];
   }
   return self;
 }
 
 
-#line 36
+#line 39
 - (void)startUploadWithLong:(jlong)rid
                withNSString:(NSString *)descriptor
                withNSString:(NSString *)fileName
              withDKActorRef:(DKActorRef *)requestActor {
   
-#line 37
-  AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$J$$", @"Starting upload #", rid, @" with descriptor ", descriptor));
+#line 40
+  if (LOG_) {
+    AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$J$$", @"Starting upload #", rid, @" with descriptor ", descriptor));
+  }
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = [[ImActorModelModulesFileUploadManager_QueueItem alloc] initWithImActorModelModulesFileUploadManager:self withLong:rid withNSString:descriptor withNSString:fileName withDKActorRef:requestActor];
   queueItem->isStopped_ = NO;
   [((JavaUtilArrayList *) nil_chk(queue_)) addWithId:queueItem];
@@ -306,20 +313,26 @@ NSString * ImActorModelModulesFileUploadManager_TAG_ = @"UploadManager";
 }
 
 
-#line 44
+#line 49
 - (void)stopUploadWithLong:(jlong)rid {
   
-#line 45
-  AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$J", @"Stopping download #", rid));
+#line 50
+  if (LOG_) {
+    AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$J", @"Stopping download #", rid));
+  }
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem == nil) {
-    AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, @"- Not present in queue");
+    if (LOG_) {
+      AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, @"- Not present in queue");
+    }
   }
   else {
     
-#line 50
+#line 59
     if (queueItem->isStarted_) {
-      AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, @"- Stopping actor");
+      if (LOG_) {
+        AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, @"- Stopping actor");
+      }
       [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
       queueItem->taskRef_ = nil;
       queueItem->isStarted_ = NO;
@@ -330,44 +343,44 @@ NSString * ImActorModelModulesFileUploadManager_TAG_ = @"UploadManager";
     }
   }
   
-#line 66
+#line 77
   ImActorModelModulesFileUploadManager_checkQueue(self);
 }
 
 
-#line 69
+#line 80
 - (void)bindUploadWithLong:(jlong)rid
       withAMUploadCallback:(id<AMUploadCallback>)callback {
   
-#line 70
+#line 81
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem == nil) {
     DKEnvironment_dispatchCallbackWithJavaLangRunnable_([[ImActorModelModulesFileUploadManager_$2 alloc] initWithAMUploadCallback:callback]);
   }
   else {
     
-#line 79
+#line 90
     if (queueItem->isStopped_) {
       DKEnvironment_dispatchCallbackWithJavaLangRunnable_([[ImActorModelModulesFileUploadManager_$3 alloc] initWithAMUploadCallback:callback]);
     }
     else {
       
-#line 87
+#line 98
       jfloat progress = queueItem->progress_;
       DKEnvironment_dispatchCallbackWithJavaLangRunnable_([[ImActorModelModulesFileUploadManager_$4 alloc] initWithAMUploadCallback:callback withFloat:progress]);
     }
     
-#line 95
+#line 106
     [((JavaUtilArrayList *) nil_chk(queueItem->callbacks_)) addWithId:callback];
   }
 }
 
 
-#line 99
+#line 110
 - (void)unbindUploadWithLong:(jlong)rid
         withAMUploadCallback:(id<AMUploadCallback>)callback {
   
-#line 100
+#line 111
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem != nil) {
     [((JavaUtilArrayList *) nil_chk(queueItem->callbacks_)) removeWithId:callback];
@@ -375,24 +388,24 @@ NSString * ImActorModelModulesFileUploadManager_TAG_ = @"UploadManager";
 }
 
 
-#line 106
+#line 117
 - (void)requestStateWithLong:(jlong)rid
         withAMUploadCallback:(id<AMUploadCallback>)callback {
   
-#line 107
+#line 118
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem == nil) {
     DKEnvironment_dispatchCallbackWithJavaLangRunnable_([[ImActorModelModulesFileUploadManager_$5 alloc] initWithAMUploadCallback:callback]);
   }
   else {
     
-#line 116
+#line 127
     if (queueItem->isStopped_) {
       DKEnvironment_dispatchCallbackWithJavaLangRunnable_([[ImActorModelModulesFileUploadManager_$6 alloc] initWithAMUploadCallback:callback]);
     }
     else {
       
-#line 124
+#line 135
       jfloat progress = queueItem->progress_;
       DKEnvironment_dispatchCallbackWithJavaLangRunnable_([[ImActorModelModulesFileUploadManager_$7 alloc] initWithAMUploadCallback:callback withFloat:progress]);
     }
@@ -400,10 +413,10 @@ NSString * ImActorModelModulesFileUploadManager_TAG_ = @"UploadManager";
 }
 
 
-#line 135
+#line 146
 - (void)resumeUploadWithLong:(jlong)rid {
   
-#line 136
+#line 147
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem != nil) {
     if (queueItem->isStarted_) {
@@ -417,16 +430,16 @@ NSString * ImActorModelModulesFileUploadManager_TAG_ = @"UploadManager";
       DKEnvironment_dispatchCallbackWithJavaLangRunnable_([[ImActorModelModulesFileUploadManager_$8 alloc] initWithAMUploadCallback:callback]);
     }
     
-#line 153
+#line 164
     ImActorModelModulesFileUploadManager_checkQueue(self);
   }
 }
 
 
-#line 157
+#line 168
 - (void)pauseUploadWithLong:(jlong)rid {
   
-#line 158
+#line 169
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem != nil) {
     if (queueItem->isStarted_) {
@@ -442,196 +455,205 @@ NSString * ImActorModelModulesFileUploadManager_TAG_ = @"UploadManager";
 }
 
 
-#line 179
+#line 190
 - (void)onUploadTaskErrorWithLong:(jlong)rid {
   
-#line 180
-  AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$J$", @"Upload #", rid, @" error"));
+#line 191
+  if (LOG_) {
+    AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$J$", @"Upload #", rid, @" error"));
+  }
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem == nil) {
-    AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, @"- Nothing found");
+    if (LOG_) {
+      AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, @"- Nothing found");
+    }
     return;
   }
   
-#line 187
+#line 202
   if (!((ImActorModelModulesFileUploadManager_QueueItem *) nil_chk(queueItem))->isStarted_) {
     return;
   }
   
-#line 191
+#line 206
   [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
   queueItem->isStopped_ = YES;
   queueItem->isStarted_ = NO;
   
-#line 195
+#line 210
   for (id<AMUploadCallback> __strong callback in nil_chk(queueItem->callbacks_)) {
     DKEnvironment_dispatchCallbackWithJavaLangRunnable_([[ImActorModelModulesFileUploadManager_$10 alloc] initWithAMUploadCallback:callback]);
   }
   
-#line 204
+#line 219
   [((DKActorRef *) nil_chk(queueItem->requestActor_)) sendWithId:[[ImActorModelModulesFileUploadManager_UploadError alloc] initWithLong:rid]];
   
-#line 206
+#line 221
   ImActorModelModulesFileUploadManager_checkQueue(self);
 }
 
 
-#line 209
+#line 224
 - (void)onUploadTaskProgressWithLong:(jlong)rid
                            withFloat:(jfloat)progress {
   
-#line 210
-  AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$J$F", @"Upload #", rid, @" progress ", progress));
+#line 225
+  if (LOG_) {
+    AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$J$F", @"Upload #", rid, @" progress ", progress));
+  }
   
-#line 212
+#line 229
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem == nil) {
     return;
   }
   
-#line 217
+#line 234
   if (!((ImActorModelModulesFileUploadManager_QueueItem *) nil_chk(queueItem))->isStarted_) {
     return;
   }
   
-#line 221
+#line 238
   queueItem->progress_ = progress;
   
-#line 223
+#line 240
   for (id<AMUploadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
     DKEnvironment_dispatchCallbackWithJavaLangRunnable_([[ImActorModelModulesFileUploadManager_$11 alloc] initWithAMUploadCallback:fileCallback withFloat:progress]);
   }
 }
 
 
-#line 233
+#line 250
 - (void)onUploadTaskCompleteWithLong:(jlong)rid
                  withAMFileReference:(AMFileReference *)fileReference
            withAMFileSystemReference:(id<AMFileSystemReference>)reference {
   
-#line 234
-  AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$J$", @"Upload #", rid, @" complete"));
+#line 251
+  if (LOG_) {
+    AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$J$", @"Upload #", rid, @" complete"));
+  }
   
-#line 236
+#line 255
   ImActorModelModulesFileUploadManager_QueueItem *queueItem = ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
   if (queueItem == nil) {
     return;
   }
   
-#line 241
+#line 260
   if (!((ImActorModelModulesFileUploadManager_QueueItem *) nil_chk(queueItem))->isStarted_) {
     return;
   }
   
-#line 245
+#line 264
   [((JavaUtilArrayList *) nil_chk(queue_)) removeWithId:queueItem];
   [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
   
-#line 249
+#line 268
   [((id<DKKeyValueEngine>) nil_chk([((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) getDownloadedEngine])) addOrUpdateItemWithDKKeyValueItem:[[ImActorModelModulesFileEntityDownloaded alloc] initWithLong:[((AMFileReference *) nil_chk(fileReference)) getFileId] withInt:
-#line 250
+#line 269
   [fileReference getFileSize] withNSString:[((id<AMFileSystemReference>) nil_chk(reference)) getDescriptor]]];
   
-#line 252
+#line 271
   for (id<AMUploadCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
     DKEnvironment_dispatchCallbackWithJavaLangRunnable_([[ImActorModelModulesFileUploadManager_$12 alloc] initWithAMUploadCallback:fileCallback]);
   }
   
-#line 261
+#line 280
   [((DKActorRef *) nil_chk(queueItem->requestActor_)) sendWithId:[[ImActorModelModulesFileUploadManager_UploadCompleted alloc] initWithLong:rid withAMFileReference:fileReference]];
   
-#line 263
+#line 282
   ImActorModelModulesFileUploadManager_checkQueue(self);
 }
 
 
-#line 266
+#line 285
 - (void)checkQueue {
   ImActorModelModulesFileUploadManager_checkQueue(self);
 }
 
 
-#line 307
+#line 334
 - (ImActorModelModulesFileUploadManager_QueueItem *)findItemWithLong:(jlong)rid {
   return ImActorModelModulesFileUploadManager_findItemWithLong_(self, rid);
 }
 
 
-#line 338
+#line 365
 - (void)onReceiveWithId:(id)message {
   
-#line 339
+#line 366
   if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_StartUpload class]]) {
     ImActorModelModulesFileUploadManager_StartUpload *startUpload = (ImActorModelModulesFileUploadManager_StartUpload *) check_class_cast(message, [ImActorModelModulesFileUploadManager_StartUpload class]);
     [self startUploadWithLong:[((ImActorModelModulesFileUploadManager_StartUpload *) nil_chk(startUpload)) getRid] withNSString:[startUpload getFileDescriptor] withNSString:
-#line 342
+#line 369
     [startUpload getFileName] withDKActorRef:[self sender]];
   }
   else
-#line 343
+#line 370
   if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_StopUpload class]]) {
     ImActorModelModulesFileUploadManager_StopUpload *cancelUpload = (ImActorModelModulesFileUploadManager_StopUpload *) check_class_cast(message, [ImActorModelModulesFileUploadManager_StopUpload class]);
     [self stopUploadWithLong:[((ImActorModelModulesFileUploadManager_StopUpload *) nil_chk(cancelUpload)) getRid]];
   }
   else
-#line 346
+#line 373
   if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_UploadTaskError class]]) {
     ImActorModelModulesFileUploadManager_UploadTaskError *uploadTaskError = (ImActorModelModulesFileUploadManager_UploadTaskError *) check_class_cast(message, [ImActorModelModulesFileUploadManager_UploadTaskError class]);
     [self onUploadTaskErrorWithLong:[((ImActorModelModulesFileUploadManager_UploadTaskError *) nil_chk(uploadTaskError)) getRid]];
   }
   else
-#line 349
+#line 376
   if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_UploadTaskProgress class]]) {
     ImActorModelModulesFileUploadManager_UploadTaskProgress *taskProgress = (ImActorModelModulesFileUploadManager_UploadTaskProgress *) check_class_cast(message, [ImActorModelModulesFileUploadManager_UploadTaskProgress class]);
     [self onUploadTaskProgressWithLong:[((ImActorModelModulesFileUploadManager_UploadTaskProgress *) nil_chk(taskProgress)) getRid] withFloat:[taskProgress getProgress]];
   }
   else
-#line 352
+#line 379
   if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_UploadTaskComplete class]]) {
     ImActorModelModulesFileUploadManager_UploadTaskComplete *taskComplete = (ImActorModelModulesFileUploadManager_UploadTaskComplete *) check_class_cast(message, [ImActorModelModulesFileUploadManager_UploadTaskComplete class]);
     [self onUploadTaskCompleteWithLong:[((ImActorModelModulesFileUploadManager_UploadTaskComplete *) nil_chk(taskComplete)) getRid] withAMFileReference:[taskComplete getLocation] withAMFileSystemReference:
-#line 355
+#line 382
     [taskComplete getReference]];
   }
   else
-#line 356
+#line 383
   if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_BindUpload class]]) {
     ImActorModelModulesFileUploadManager_BindUpload *bindUpload = (ImActorModelModulesFileUploadManager_BindUpload *) check_class_cast(message, [ImActorModelModulesFileUploadManager_BindUpload class]);
     [self bindUploadWithLong:[((ImActorModelModulesFileUploadManager_BindUpload *) nil_chk(bindUpload)) getRid] withAMUploadCallback:[bindUpload getCallback]];
   }
   else
-#line 359
+#line 386
   if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_UnbindUpload class]]) {
     ImActorModelModulesFileUploadManager_UnbindUpload *unbindUpload = (ImActorModelModulesFileUploadManager_UnbindUpload *) check_class_cast(message, [ImActorModelModulesFileUploadManager_UnbindUpload class]);
     [self unbindUploadWithLong:[((ImActorModelModulesFileUploadManager_UnbindUpload *) nil_chk(unbindUpload)) getRid] withAMUploadCallback:[unbindUpload getCallback]];
   }
   else
-#line 362
+#line 389
   if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_RequestState class]]) {
     ImActorModelModulesFileUploadManager_RequestState *requestState = (ImActorModelModulesFileUploadManager_RequestState *) check_class_cast(message, [ImActorModelModulesFileUploadManager_RequestState class]);
     [self requestStateWithLong:[((ImActorModelModulesFileUploadManager_RequestState *) nil_chk(requestState)) getRid] withAMUploadCallback:[requestState getCallback]];
   }
   else
-#line 365
+#line 392
   if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_PauseUpload class]]) {
     ImActorModelModulesFileUploadManager_PauseUpload *pauseUpload = (ImActorModelModulesFileUploadManager_PauseUpload *) check_class_cast(message, [ImActorModelModulesFileUploadManager_PauseUpload class]);
     [self pauseUploadWithLong:[((ImActorModelModulesFileUploadManager_PauseUpload *) nil_chk(pauseUpload)) getRid]];
   }
   else
-#line 368
+#line 395
   if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_ResumeUpload class]]) {
     ImActorModelModulesFileUploadManager_ResumeUpload *resumeUpload = (ImActorModelModulesFileUploadManager_ResumeUpload *) check_class_cast(message, [ImActorModelModulesFileUploadManager_ResumeUpload class]);
     [self resumeUploadWithLong:[((ImActorModelModulesFileUploadManager_ResumeUpload *) nil_chk(resumeUpload)) getRid]];
   }
   else {
     
-#line 372
+#line 399
     [self dropWithId:message];
   }
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesFileUploadManager *)other {
   [super copyAllFieldsTo:other];
+  other->LOG_ = LOG_;
   other->queue_ = queue_;
 }
 
@@ -639,10 +661,12 @@ NSString * ImActorModelModulesFileUploadManager_TAG_ = @"UploadManager";
 
 void ImActorModelModulesFileUploadManager_checkQueue(ImActorModelModulesFileUploadManager *self) {
   
-#line 267
-  AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, @"- Checking queue");
+#line 286
+  if (self->LOG_) {
+    AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, @"- Checking queue");
+  }
   
-#line 269
+#line 290
   jint activeUploads = 0;
   for (ImActorModelModulesFileUploadManager_QueueItem * __strong queueItem in nil_chk(self->queue_)) {
     if (((ImActorModelModulesFileUploadManager_QueueItem *) nil_chk(queueItem))->isStarted_) {
@@ -650,13 +674,15 @@ void ImActorModelModulesFileUploadManager_checkQueue(ImActorModelModulesFileUplo
     }
   }
   
-#line 276
+#line 297
   if (activeUploads >= ImActorModelModulesFileUploadManager_SIM_MAX_UPLOADS) {
-    AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, @"- Already have max number of simultaneous uploads");
+    if (self->LOG_) {
+      AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, @"- Already have max number of simultaneous uploads");
+    }
     return;
   }
   
-#line 281
+#line 304
   ImActorModelModulesFileUploadManager_QueueItem *pendingQueue = nil;
   for (ImActorModelModulesFileUploadManager_QueueItem * __strong queueItem in self->queue_) {
     if (!((ImActorModelModulesFileUploadManager_QueueItem *) nil_chk(queueItem))->isStarted_ && !queueItem->isStopped_) {
@@ -665,24 +691,28 @@ void ImActorModelModulesFileUploadManager_checkQueue(ImActorModelModulesFileUplo
     }
   }
   if (pendingQueue == nil) {
-    AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, @"- No work for downloading");
+    if (self->LOG_) {
+      AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, @"- No work for downloading");
+    }
     return;
   }
   
-#line 293
-  AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$$", @"- Starting upload file #", ((ImActorModelModulesFileUploadManager_QueueItem *) nil_chk(pendingQueue))->fileDescriptor_));
+#line 318
+  if (self->LOG_) {
+    AMLog_dWithNSString_withNSString_(ImActorModelModulesFileUploadManager_TAG_, JreStrcat("$$", @"- Starting upload file #", ((ImActorModelModulesFileUploadManager_QueueItem *) nil_chk(pendingQueue))->fileDescriptor_));
+  }
   
-#line 295
-  pendingQueue->isStarted_ = YES;
+#line 322
+  ((ImActorModelModulesFileUploadManager_QueueItem *) nil_chk(pendingQueue))->isStarted_ = YES;
   
-#line 297
+#line 324
   ImActorModelModulesFileUploadManager_QueueItem *finalPendingQueue = pendingQueue;
   pendingQueue->taskRef_ = [((DKActorSystem *) nil_chk([self system])) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileUploadTask_class_(), [[ImActorModelModulesFileUploadManager_$13 alloc] initWithImActorModelModulesFileUploadManager:self withImActorModelModulesFileUploadManager_QueueItem:finalPendingQueue]) withNSString:JreStrcat("$J", @"actor/upload/task_", ImActorModelModulesUtilsRandomUtils_nextRid())];
 }
 
 ImActorModelModulesFileUploadManager_QueueItem *ImActorModelModulesFileUploadManager_findItemWithLong_(ImActorModelModulesFileUploadManager *self, jlong rid) {
   
-#line 308
+#line 335
   for (ImActorModelModulesFileUploadManager_QueueItem * __strong q in nil_chk(self->queue_)) {
     if (((ImActorModelModulesFileUploadManager_QueueItem *) nil_chk(q))->rid_ == rid) {
       return q;
@@ -694,11 +724,11 @@ ImActorModelModulesFileUploadManager_QueueItem *ImActorModelModulesFileUploadMan
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager)
 
 
-#line 316
+#line 343
 @implementation ImActorModelModulesFileUploadManager_QueueItem
 
 
-#line 327
+#line 354
 - (instancetype)initWithImActorModelModulesFileUploadManager:(ImActorModelModulesFileUploadManager *)outer$
                                                     withLong:(jlong)rid
                                                 withNSString:(NSString *)fileDescriptor
@@ -706,19 +736,19 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager)
                                               withDKActorRef:(DKActorRef *)requestActor {
   if (self = [super init]) {
     callbacks_ =
-#line 325
+#line 352
     [[JavaUtilArrayList alloc] init];
     
-#line 328
+#line 355
     self->rid_ = rid;
     
-#line 329
+#line 356
     self->fileDescriptor_ = fileDescriptor;
     
-#line 330
+#line 357
     self->requestActor_ = requestActor;
     
-#line 331
+#line 358
     self->fileName_ = fileName;
   }
   return self;
@@ -742,49 +772,49 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_QueueItem)
 
 
-#line 376
+#line 403
 @implementation ImActorModelModulesFileUploadManager_StartUpload
 
 
-#line 381
+#line 408
 - (instancetype)initWithLong:(jlong)rid
                 withNSString:(NSString *)fileDescriptor
                 withNSString:(NSString *)fileName {
   if (self = [super init]) {
     
-#line 382
+#line 409
     self->rid_ = rid;
     
-#line 383
+#line 410
     self->fileDescriptor_ = fileDescriptor;
     
-#line 384
+#line 411
     self->fileName_ = fileName;
   }
   return self;
 }
 
 
-#line 387
+#line 414
 - (jlong)getRid {
   
-#line 388
+#line 415
   return rid_;
 }
 
 
-#line 391
+#line 418
 - (NSString *)getFileDescriptor {
   
-#line 392
+#line 419
   return fileDescriptor_;
 }
 
 
-#line 395
+#line 422
 - (NSString *)getFileName {
   
-#line 396
+#line 423
   return fileName_;
 }
 
@@ -800,37 +830,37 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_QueueItem)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_StartUpload)
 
 
-#line 400
+#line 427
 @implementation ImActorModelModulesFileUploadManager_BindUpload
 
 
-#line 404
+#line 431
 - (instancetype)initWithLong:(jlong)rid
         withAMUploadCallback:(id<AMUploadCallback>)callback {
   if (self = [super init]) {
     
-#line 405
+#line 432
     self->rid_ = rid;
     
-#line 406
+#line 433
     self->callback_ = callback;
   }
   return self;
 }
 
 
-#line 409
+#line 436
 - (jlong)getRid {
   
-#line 410
+#line 437
   return rid_;
 }
 
 
-#line 413
+#line 440
 - (id<AMUploadCallback>)getCallback {
   
-#line 414
+#line 441
   return callback_;
 }
 
@@ -845,37 +875,37 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_StartUploa
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_BindUpload)
 
 
-#line 418
+#line 445
 @implementation ImActorModelModulesFileUploadManager_UnbindUpload
 
 
-#line 422
+#line 449
 - (instancetype)initWithLong:(jlong)rid
         withAMUploadCallback:(id<AMUploadCallback>)callback {
   if (self = [super init]) {
     
-#line 423
+#line 450
     self->rid_ = rid;
     
-#line 424
+#line 451
     self->callback_ = callback;
   }
   return self;
 }
 
 
-#line 427
+#line 454
 - (jlong)getRid {
   
-#line 428
+#line 455
   return rid_;
 }
 
 
-#line 431
+#line 458
 - (id<AMUploadCallback>)getCallback {
   
-#line 432
+#line 459
   return callback_;
 }
 
@@ -890,25 +920,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_BindUpload
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UnbindUpload)
 
 
-#line 436
+#line 463
 @implementation ImActorModelModulesFileUploadManager_StopUpload
 
 
-#line 439
+#line 466
 - (instancetype)initWithLong:(jlong)rid {
   if (self = [super init]) {
     
-#line 440
+#line 467
     self->rid_ = rid;
   }
   return self;
 }
 
 
-#line 443
+#line 470
 - (jlong)getRid {
   
-#line 444
+#line 471
   return rid_;
 }
 
@@ -922,25 +952,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UnbindUplo
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_StopUpload)
 
 
-#line 448
+#line 475
 @implementation ImActorModelModulesFileUploadManager_UploadTaskError
 
 
-#line 451
+#line 478
 - (instancetype)initWithLong:(jlong)rid {
   if (self = [super init]) {
     
-#line 452
+#line 479
     self->rid_ = rid;
   }
   return self;
 }
 
 
-#line 455
+#line 482
 - (jlong)getRid {
   
-#line 456
+#line 483
   return rid_;
 }
 
@@ -954,37 +984,37 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_StopUpload
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UploadTaskError)
 
 
-#line 460
+#line 487
 @implementation ImActorModelModulesFileUploadManager_UploadTaskProgress
 
 
-#line 464
+#line 491
 - (instancetype)initWithLong:(jlong)rid
                    withFloat:(jfloat)progress {
   if (self = [super init]) {
     
-#line 465
+#line 492
     self->rid_ = rid;
     
-#line 466
+#line 493
     self->progress_ = progress;
   }
   return self;
 }
 
 
-#line 469
+#line 496
 - (jlong)getRid {
   
-#line 470
+#line 497
   return rid_;
 }
 
 
-#line 473
+#line 500
 - (jfloat)getProgress {
   
-#line 474
+#line 501
   return progress_;
 }
 
@@ -999,49 +1029,49 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UploadTask
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UploadTaskProgress)
 
 
-#line 478
+#line 505
 @implementation ImActorModelModulesFileUploadManager_UploadTaskComplete
 
 
-#line 483
+#line 510
 - (instancetype)initWithLong:(jlong)rid
          withAMFileReference:(AMFileReference *)location
    withAMFileSystemReference:(id<AMFileSystemReference>)reference {
   if (self = [super init]) {
     
-#line 484
+#line 511
     self->rid_ = rid;
     
-#line 485
+#line 512
     self->location_ = location;
     
-#line 486
+#line 513
     self->reference_ = reference;
   }
   return self;
 }
 
 
-#line 489
+#line 516
 - (jlong)getRid {
   
-#line 490
+#line 517
   return rid_;
 }
 
 
-#line 493
+#line 520
 - (id<AMFileSystemReference>)getReference {
   
-#line 494
+#line 521
   return reference_;
 }
 
 
-#line 497
+#line 524
 - (AMFileReference *)getLocation {
   
-#line 498
+#line 525
   return location_;
 }
 
@@ -1057,37 +1087,37 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UploadTask
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UploadTaskComplete)
 
 
-#line 502
+#line 529
 @implementation ImActorModelModulesFileUploadManager_UploadCompleted
 
 
-#line 506
+#line 533
 - (instancetype)initWithLong:(jlong)rid
          withAMFileReference:(AMFileReference *)fileReference {
   if (self = [super init]) {
     
-#line 507
+#line 534
     self->rid_ = rid;
     
-#line 508
+#line 535
     self->fileReference_ = fileReference;
   }
   return self;
 }
 
 
-#line 511
+#line 538
 - (jlong)getRid {
   
-#line 512
+#line 539
   return rid_;
 }
 
 
-#line 515
+#line 542
 - (AMFileReference *)getFileReference {
   
-#line 516
+#line 543
   return fileReference_;
 }
 
@@ -1102,25 +1132,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UploadTask
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UploadCompleted)
 
 
-#line 520
+#line 547
 @implementation ImActorModelModulesFileUploadManager_UploadError
 
 
-#line 523
+#line 550
 - (instancetype)initWithLong:(jlong)rid {
   if (self = [super init]) {
     
-#line 524
+#line 551
     self->rid_ = rid;
   }
   return self;
 }
 
 
-#line 527
+#line 554
 - (jlong)getRid {
   
-#line 528
+#line 555
   return rid_;
 }
 
@@ -1134,37 +1164,37 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UploadComp
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UploadError)
 
 
-#line 532
+#line 559
 @implementation ImActorModelModulesFileUploadManager_RequestState
 
 
-#line 536
+#line 563
 - (instancetype)initWithLong:(jlong)rid
         withAMUploadCallback:(id<AMUploadCallback>)callback {
   if (self = [super init]) {
     
-#line 537
+#line 564
     self->rid_ = rid;
     
-#line 538
+#line 565
     self->callback_ = callback;
   }
   return self;
 }
 
 
-#line 541
+#line 568
 - (jlong)getRid {
   
-#line 542
+#line 569
   return rid_;
 }
 
 
-#line 545
+#line 572
 - (id<AMUploadCallback>)getCallback {
   
-#line 546
+#line 573
   return callback_;
 }
 
@@ -1179,25 +1209,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_UploadErro
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_RequestState)
 
 
-#line 550
+#line 577
 @implementation ImActorModelModulesFileUploadManager_PauseUpload
 
 
-#line 553
+#line 580
 - (instancetype)initWithLong:(jlong)rid {
   if (self = [super init]) {
     
-#line 554
+#line 581
     self->rid_ = rid;
   }
   return self;
 }
 
 
-#line 557
+#line 584
 - (jlong)getRid {
   
-#line 558
+#line 585
   return rid_;
 }
 
@@ -1211,25 +1241,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_RequestSta
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_PauseUpload)
 
 
-#line 562
+#line 589
 @implementation ImActorModelModulesFileUploadManager_ResumeUpload
 
 
-#line 565
+#line 592
 - (instancetype)initWithLong:(jlong)rid {
   if (self = [super init]) {
     
-#line 566
+#line 593
     self->rid_ = rid;
   }
   return self;
 }
 
 
-#line 569
+#line 596
 - (jlong)getRid {
   
-#line 570
+#line 597
   return rid_;
 }
 
@@ -1245,10 +1275,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_ResumeUplo
 @implementation ImActorModelModulesFileUploadManager_$1
 
 
-#line 60
+#line 71
 - (void)run {
   
-#line 61
+#line 72
   [((id<AMUploadCallback>) nil_chk(val$callback_)) onNotUploading];
 }
 
@@ -1269,10 +1299,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$1)
 @implementation ImActorModelModulesFileUploadManager_$2
 
 
-#line 74
+#line 85
 - (void)run {
   
-#line 75
+#line 86
   [((id<AMUploadCallback>) nil_chk(val$callback_)) onNotUploading];
 }
 
@@ -1293,10 +1323,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$2)
 @implementation ImActorModelModulesFileUploadManager_$3
 
 
-#line 82
+#line 93
 - (void)run {
   
-#line 83
+#line 94
   [((id<AMUploadCallback>) nil_chk(val$callback_)) onNotUploading];
 }
 
@@ -1317,10 +1347,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$3)
 @implementation ImActorModelModulesFileUploadManager_$4
 
 
-#line 90
+#line 101
 - (void)run {
   
-#line 91
+#line 102
   [((id<AMUploadCallback>) nil_chk(val$callback_)) onUploadingWithFloat:val$progress_];
 }
 
@@ -1344,10 +1374,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$4)
 @implementation ImActorModelModulesFileUploadManager_$5
 
 
-#line 111
+#line 122
 - (void)run {
   
-#line 112
+#line 123
   [((id<AMUploadCallback>) nil_chk(val$callback_)) onNotUploading];
 }
 
@@ -1368,10 +1398,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$5)
 @implementation ImActorModelModulesFileUploadManager_$6
 
 
-#line 119
+#line 130
 - (void)run {
   
-#line 120
+#line 131
   [((id<AMUploadCallback>) nil_chk(val$callback_)) onNotUploading];
 }
 
@@ -1392,10 +1422,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$6)
 @implementation ImActorModelModulesFileUploadManager_$7
 
 
-#line 127
+#line 138
 - (void)run {
   
-#line 128
+#line 139
   [((id<AMUploadCallback>) nil_chk(val$callback_)) onUploadingWithFloat:val$progress_];
 }
 
@@ -1419,10 +1449,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$7)
 @implementation ImActorModelModulesFileUploadManager_$8
 
 
-#line 148
+#line 159
 - (void)run {
   
-#line 149
+#line 160
   [((id<AMUploadCallback>) nil_chk(val$callback_)) onUploadingWithFloat:0];
 }
 
@@ -1443,7 +1473,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$8)
 @implementation ImActorModelModulesFileUploadManager_$9
 
 
-#line 169
+#line 180
 - (void)run {
   [((id<AMUploadCallback>) nil_chk(val$callback_)) onNotUploading];
 }
@@ -1465,10 +1495,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$9)
 @implementation ImActorModelModulesFileUploadManager_$10
 
 
-#line 198
+#line 213
 - (void)run {
   
-#line 199
+#line 214
   [((id<AMUploadCallback>) nil_chk(val$callback_)) onNotUploading];
 }
 
@@ -1489,10 +1519,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$10)
 @implementation ImActorModelModulesFileUploadManager_$11
 
 
-#line 226
+#line 243
 - (void)run {
   
-#line 227
+#line 244
   [((id<AMUploadCallback>) nil_chk(val$fileCallback_)) onUploadingWithFloat:val$progress_];
 }
 
@@ -1516,10 +1546,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$11)
 @implementation ImActorModelModulesFileUploadManager_$12
 
 
-#line 255
+#line 274
 - (void)run {
   
-#line 256
+#line 275
   [((id<AMUploadCallback>) nil_chk(val$fileCallback_)) onUploaded];
 }
 
@@ -1540,12 +1570,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$12)
 @implementation ImActorModelModulesFileUploadManager_$13
 
 
-#line 300
+#line 327
 - (ImActorModelModulesFileUploadTask *)create {
   
-#line 301
+#line 328
   return [[ImActorModelModulesFileUploadTask alloc] initWithLong:((ImActorModelModulesFileUploadManager_QueueItem *) nil_chk(val$finalPendingQueue_))->rid_ withNSString:val$finalPendingQueue_->fileDescriptor_ withNSString:
-#line 302
+#line 329
   val$finalPendingQueue_->fileName_ withDKActorRef:[this$0_ self__] withImActorModelModulesModules:[this$0_ modules]];
 }
 

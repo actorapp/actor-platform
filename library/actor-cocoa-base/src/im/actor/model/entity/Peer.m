@@ -165,6 +165,12 @@ J2OBJC_FIELD_SETTER(AMPeer, peerType_, AMPeerTypeEnum *)
   }
 }
 
+- (NSString *)description {
+  
+#line 135
+  return JreStrcat("$@$IC", @"{type:", peerType_, @", id:", peerId_, '}');
+}
+
 - (void)copyAllFieldsTo:(AMPeer *)other {
   [super copyAllFieldsTo:other];
   other->peerType_ = peerType_;

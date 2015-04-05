@@ -24,66 +24,74 @@
 J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLists *)
 
 
-#line 15
+#line 16
 @implementation AMBaseMessenger
 
 
-#line 19
+#line 20
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
   if (self =
-#line 20
+#line 21
   [super initWithAMConfiguration:configuration]) {
     
-#line 21
+#line 22
     displayLists_ = [[ImActorModelModulesDisplayLists alloc] initWithImActorModelModulesModules:modules_];
   }
   return self;
 }
 
 
-#line 24
+#line 25
 - (AMConversationVM *)buildConversationVMWithAMPeer:(AMPeer *)peer
                             withAMBindedDisplayList:(AMBindedDisplayList *)displayList
                        withAMConversationVMCallback:(id<AMConversationVMCallback>)callback {
   
-#line 26
+#line 27
   return [[AMConversationVM alloc] initWithAMPeer:peer withAMConversationVMCallback:callback withImActorModelModulesModules:modules_ withAMBindedDisplayList:displayList];
 }
 
 
-#line 31
+#line 32
 - (AMBindedDisplayList *)getDialogsGlobalList {
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) getDialogsGlobalList];
 }
 
 - (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer {
   
-#line 36
+#line 37
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) getMessagesGlobalListWithAMPeer:peer];
 }
 
 
-#line 39
+#line 40
 - (AMBindedDisplayList *)buildMessagesListWithAMPeer:(AMPeer *)peer {
   
-#line 40
+#line 41
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildNewChatListWithAMPeer:peer withBoolean:NO];
 }
 
 
-#line 43
+#line 44
 - (AMBindedDisplayList *)getContactsGlobalList {
   
-#line 44
+#line 45
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) getContactsGlobalList];
 }
 
 
-#line 47
+#line 48
 - (AMBindedDisplayList *)buildContactDisplayList {
   
-#line 48
+#line 49
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildNewContactListWithBoolean:NO];
+}
+
+
+#line 52
+- (AMBindedDisplayList *)buildSearchList {
+  
+#line 53
+  return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildNewSearchListWithBoolean:NO];
 }
 
 - (void)copyAllFieldsTo:(AMBaseMessenger *)other {

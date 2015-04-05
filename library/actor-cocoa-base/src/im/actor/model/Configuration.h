@@ -39,7 +39,8 @@
                  withAMDispatcherProvider:(id<AMDispatcherProvider>)dispatcherProvider
                    withAMApiConfiguration:(AMApiConfiguration *)apiConfiguration
                               withBoolean:(jboolean)enableContactsLogging
-                              withBoolean:(jboolean)enableNetworkLogging;
+                              withBoolean:(jboolean)enableNetworkLogging
+                              withBoolean:(jboolean)enableFilesLogging;
 
 - (AMApiConfiguration *)getApiConfiguration;
 
@@ -48,6 +49,8 @@
 - (jboolean)isEnableContactsLogging;
 
 - (jboolean)isEnableNetworkLogging;
+
+- (jboolean)isEnableFilesLogging;
 
 - (id<AMCryptoProvider>)getCryptoProvider;
 

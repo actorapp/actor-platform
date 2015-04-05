@@ -209,13 +209,29 @@ J2OBJC_FIELD_SETTER(AMDisplayWindow, currentForwardHead_, JavaLangLong *)
 
 
 #line 110
-- (void)startInitForward {
+- (void)emptyInit {
   @synchronized(self) {
     
 #line 111
+    isInited__ = YES;
+    currentBackwardHead_ = nil;
+    currentForwardHead_ = nil;
+    isForwardCompleted__ = YES;
+    isForwardLoading_ = NO;
+    isBackwardLoaded__ = YES;
+    isBackwardLoading_ = NO;
+  }
+}
+
+
+#line 120
+- (void)startInitForward {
+  @synchronized(self) {
+    
+#line 121
     isInited__ = NO;
     
-#line 113
+#line 123
     isForwardCompleted__ = NO;
     isForwardLoading_ = NO;
     isBackwardLoading_ = NO;
@@ -226,25 +242,25 @@ J2OBJC_FIELD_SETTER(AMDisplayWindow, currentForwardHead_, JavaLangLong *)
 }
 
 
-#line 121
+#line 131
 - (void)completeInitForwardWithJavaLangLong:(JavaLangLong *)tail {
   @synchronized(self) {
     
-#line 122
+#line 132
     isInited__ = YES;
     currentForwardHead_ = tail;
   }
 }
 
 
-#line 126
+#line 136
 - (void)startInitBackward {
   @synchronized(self) {
     
-#line 127
+#line 137
     isInited__ = NO;
     
-#line 129
+#line 139
     isForwardCompleted__ = YES;
     isForwardLoading_ = NO;
     isBackwardLoading_ = NO;
@@ -255,11 +271,11 @@ J2OBJC_FIELD_SETTER(AMDisplayWindow, currentForwardHead_, JavaLangLong *)
 }
 
 
-#line 137
+#line 147
 - (void)completeInitBackwardWithJavaLangLong:(JavaLangLong *)head {
   @synchronized(self) {
     
-#line 138
+#line 148
     isInited__ = YES;
     currentBackwardHead_ = head;
   }
