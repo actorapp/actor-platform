@@ -26,6 +26,8 @@ public class DownloadManager extends ModuleActor {
     private static final String TAG = "DownloadManager";
     private static final int SIM_MAX_DOWNLOADS = 2;
 
+    private boolean LOG;
+
     private ArrayList<QueueItem> queue = new ArrayList<QueueItem>();
 
     private KeyValueEngine<Downloaded> downloaded;
@@ -38,12 +40,15 @@ public class DownloadManager extends ModuleActor {
     public void preStart() {
         super.preStart();
         downloaded = modules().getFilesModule().getDownloadedEngine();
+        LOG = config().isEnableFilesLogging();
     }
 
     // Tasks
 
     public void requestState(long fileId, final DownloadCallback callback) {
-        Log.d(TAG, "Requesting state file #" + fileId);
+        if (LOG) {
+            Log.d(TAG, "Requesting state file #" + fileId);
+        }
 
         Downloaded downloaded1 = downloaded.getValue(fileId);
         if (downloaded1 != null) {
@@ -52,7 +57,9 @@ public class DownloadManager extends ModuleActor {
             boolean isExist = reference.isExist();
             int fileSize = reference.getSize();
             if (isExist && fileSize == downloaded1.getFileSize()) {
-                Log.d(TAG, "- Downloaded");
+                if (LOG) {
+                    Log.d(TAG, "- Downloaded");
+                }
                 final FileSystemReference fileSystemReference = modules().getConfiguration().getFileSystemProvider()
                         .fileFromDescriptor(downloaded1.getDescriptor());
                 Environment.dispatchCallback(new Runnable() {
@@ -63,12 +70,14 @@ public class DownloadManager extends ModuleActor {
                 });
                 return;
             } else {
-                Log.d(TAG, "- File is corrupted");
-                if (!isExist) {
-                    Log.d(TAG, "- File not found");
-                }
-                if (fileSize != downloaded1.getFileSize()) {
-                    Log.d(TAG, "- Incorrect file size. Expected: " + downloaded1.getFileSize() + ", got: " + fileSize);
+                if (LOG) {
+                    Log.d(TAG, "- File is corrupted");
+                    if (!isExist) {
+                        Log.d(TAG, "- File not found");
+                    }
+                    if (fileSize != downloaded1.getFileSize()) {
+                        Log.d(TAG, "- Incorrect file size. Expected: " + downloaded1.getFileSize() + ", got: " + fileSize);
+                    }
                 }
                 downloaded.removeItem(downloaded1.getFileId());
             }
@@ -112,7 +121,9 @@ public class DownloadManager extends ModuleActor {
     }
 
     public void bindDownload(final FileReference fileReference, boolean autoStart, final DownloadCallback callback) {
-        Log.d(TAG, "Binding file #" + fileReference.getFileId());
+        if (LOG) {
+            Log.d(TAG, "Binding file #" + fileReference.getFileId());
+        }
         Downloaded downloaded1 = downloaded.getValue(fileReference.getFileId());
         if (downloaded1 != null) {
             FileSystemProvider provider = modules().getConfiguration().getFileSystemProvider();
@@ -120,7 +131,9 @@ public class DownloadManager extends ModuleActor {
             boolean isExist = reference.isExist();
             int fileSize = reference.getSize();
             if (isExist && fileSize == downloaded1.getFileSize()) {
-                Log.d(TAG, "- Downloaded");
+                if (LOG) {
+                    Log.d(TAG, "- Downloaded");
+                }
                 final FileSystemReference fileSystemReference = modules().getConfiguration().getFileSystemProvider()
                         .fileFromDescriptor(downloaded1.getDescriptor());
                 Environment.dispatchCallback(new Runnable() {
@@ -131,12 +144,14 @@ public class DownloadManager extends ModuleActor {
                 });
                 return;
             } else {
-                Log.d(TAG, "- File is corrupted");
-                if (!isExist) {
-                    Log.d(TAG, "- File not found");
-                }
-                if (fileSize != downloaded1.getFileSize()) {
-                    Log.d(TAG, "- Incorrect file size. Expected: " + downloaded1.getFileSize() + ", got: " + fileSize);
+                if (LOG) {
+                    Log.d(TAG, "- File is corrupted");
+                    if (!isExist) {
+                        Log.d(TAG, "- File not found");
+                    }
+                    if (fileSize != downloaded1.getFileSize()) {
+                        Log.d(TAG, "- Incorrect file size. Expected: " + downloaded1.getFileSize() + ", got: " + fileSize);
+                    }
                 }
                 downloaded.removeItem(downloaded1.getFileId());
             }
@@ -144,7 +159,9 @@ public class DownloadManager extends ModuleActor {
 
         QueueItem queueItem = findItem(fileReference.getFileId());
         if (queueItem == null) {
-            Log.d(TAG, "- Adding to queue");
+            if (LOG) {
+                Log.d(TAG, "- Adding to queue");
+            }
 
             queueItem = new QueueItem(fileReference);
             queueItem.callbacks.add(callback);
@@ -208,15 +225,21 @@ public class DownloadManager extends ModuleActor {
     }
 
     public void startDownload(FileReference fileReference) {
-        Log.d(TAG, "Starting download #" + fileReference.getFileId());
+        if (LOG) {
+            Log.d(TAG, "Starting download #" + fileReference.getFileId());
+        }
         QueueItem queueItem = findItem(fileReference.getFileId());
         if (queueItem == null) {
-            Log.d(TAG, "- Adding to queue");
+            if (LOG) {
+                Log.d(TAG, "- Adding to queue");
+            }
             queueItem = new QueueItem(fileReference);
             queueItem.isStopped = false;
             queue.add(0, queueItem);
         } else {
-            Log.d(TAG, "- Promoting in queue");
+            if (LOG) {
+                Log.d(TAG, "- Promoting in queue");
+            }
             if (queueItem.isStopped) {
                 queueItem.isStopped = false;
                 for (final DownloadCallback callback : queueItem.callbacks) {
@@ -235,18 +258,26 @@ public class DownloadManager extends ModuleActor {
     }
 
     public void cancelDownload(long fileId) {
-        Log.d(TAG, "Stopping download #" + fileId);
+        if (LOG) {
+            Log.d(TAG, "Stopping download #" + fileId);
+        }
         QueueItem queueItem = findItem(fileId);
         if (queueItem == null) {
-            Log.d(TAG, "- Not present in queue");
+            if (LOG) {
+                Log.d(TAG, "- Not present in queue");
+            }
         } else {
             if (queueItem.isStarted) {
-                Log.d(TAG, "- Stopping actor");
+                if (LOG) {
+                    Log.d(TAG, "- Stopping actor");
+                }
                 queueItem.taskRef.send(PoisonPill.INSTANCE);
                 queueItem.taskRef = null;
                 queueItem.isStarted = false;
             }
-            Log.d(TAG, "- Marking as stopped");
+            if (LOG) {
+                Log.d(TAG, "- Marking as stopped");
+            }
             queueItem.isStopped = true;
 
             for (final DownloadCallback callback : queueItem.callbacks) {
@@ -263,21 +294,29 @@ public class DownloadManager extends ModuleActor {
     }
 
     public void unbindDownload(long fileId, boolean autoCancel, DownloadCallback callback) {
-        Log.d(TAG, "Unbind file #" + fileId);
+        if (LOG) {
+            Log.d(TAG, "Unbind file #" + fileId);
+        }
         QueueItem queueItem = findItem(fileId);
         if (queueItem == null) {
-            Log.d(TAG, "- Not present in queue");
+            if (LOG) {
+                Log.d(TAG, "- Not present in queue");
+            }
         } else {
             if (autoCancel) {
                 if (queueItem.isStarted) {
-                    Log.d(TAG, "- Stopping actor");
+                    if (LOG) {
+                        Log.d(TAG, "- Stopping actor");
+                    }
                     queueItem.taskRef.send(PoisonPill.INSTANCE);
                     queueItem.taskRef = null;
                     queueItem.isStarted = false;
                 }
 
                 if (!queueItem.isStopped) {
-                    Log.d(TAG, "- Marking as stopped");
+                    if (LOG) {
+                        Log.d(TAG, "- Marking as stopped");
+                    }
                     queueItem.isStopped = true;
 
                     for (final DownloadCallback c : queueItem.callbacks) {
@@ -293,7 +332,9 @@ public class DownloadManager extends ModuleActor {
                 }
                 queue.remove(queueItem);
             } else {
-                Log.d(TAG, "- Removing callback");
+                if (LOG) {
+                    Log.d(TAG, "- Removing callback");
+                }
                 queueItem.callbacks.remove(callback);
             }
         }
@@ -304,7 +345,9 @@ public class DownloadManager extends ModuleActor {
     // Queue processing
 
     private void checkQueue() {
-        Log.d(TAG, "- Checking queue");
+        if (LOG) {
+            Log.d(TAG, "- Checking queue");
+        }
 
         int activeDownloads = 0;
         for (QueueItem queueItem : queue) {
@@ -314,7 +357,9 @@ public class DownloadManager extends ModuleActor {
         }
 
         if (activeDownloads >= SIM_MAX_DOWNLOADS) {
-            Log.d(TAG, "- Already have max number of simultaneous downloads");
+            if (LOG) {
+                Log.d(TAG, "- Already have max number of simultaneous downloads");
+            }
             return;
         }
 
@@ -326,11 +371,14 @@ public class DownloadManager extends ModuleActor {
             }
         }
         if (pendingQueue == null) {
-            Log.d(TAG, "- No work for downloading");
+            if (LOG) {
+                Log.d(TAG, "- No work for downloading");
+            }
             return;
         }
-
-        Log.d(TAG, "- Starting download file #" + pendingQueue.fileReference.getFileId());
+        if (LOG) {
+            Log.d(TAG, "- Starting download file #" + pendingQueue.fileReference.getFileId());
+        }
 
         pendingQueue.isStarted = true;
 
@@ -344,7 +392,9 @@ public class DownloadManager extends ModuleActor {
     }
 
     public void onDownloadProgress(long fileId, final float progress) {
-        Log.d(TAG, "onDownloadProgress file #" + fileId + " " + progress);
+        if (LOG) {
+            Log.d(TAG, "onDownloadProgress file #" + fileId + " " + progress);
+        }
         QueueItem queueItem = findItem(fileId);
         if (queueItem == null) {
             return;
@@ -367,7 +417,9 @@ public class DownloadManager extends ModuleActor {
     }
 
     public void onDownloaded(long fileId, final FileSystemReference reference) {
-        Log.d(TAG, "onDownloaded file #" + fileId);
+        if (LOG) {
+            Log.d(TAG, "onDownloaded file #" + fileId);
+        }
         QueueItem queueItem = findItem(fileId);
         if (queueItem == null) {
             return;
@@ -396,7 +448,9 @@ public class DownloadManager extends ModuleActor {
     }
 
     public void onDownloadError(long fileId) {
-        Log.d(TAG, "onDownloadError file #" + fileId);
+        if (LOG) {
+            Log.d(TAG, "onDownloadError file #" + fileId);
+        }
         QueueItem queueItem = findItem(fileId);
         if (queueItem == null) {
             return;

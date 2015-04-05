@@ -30,6 +30,7 @@ public class ConfigurationBuilder {
 
     private boolean enableContactsLogging = false;
     private boolean enableNetworkLogging = false;
+    private boolean enableFilesLogging = false;
 
     private NotificationProvider notificationProvider;
 
@@ -59,6 +60,11 @@ public class ConfigurationBuilder {
 
     public ConfigurationBuilder setEnableNetworkLogging(boolean enableNetworkLogging) {
         this.enableNetworkLogging = enableNetworkLogging;
+        return this;
+    }
+
+    public ConfigurationBuilder setEnableFilesLogging(boolean enableFilesLogging) {
+        this.enableFilesLogging = enableFilesLogging;
         return this;
     }
 
@@ -181,6 +187,7 @@ public class ConfigurationBuilder {
         return new Configuration(networkProvider, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
                 threadingProvider, mainThreadProvider, enginesFactory, log, localeProvider,
                 phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider,
-                dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging);
+                dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging,
+                enableFilesLogging);
     }
 }

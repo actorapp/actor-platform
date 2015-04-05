@@ -25,16 +25,21 @@ public class UploadManager extends ModuleActor {
 
     private static final int SIM_MAX_UPLOADS = 2;
 
+    private final boolean LOG;
+
     private ArrayList<QueueItem> queue = new ArrayList<QueueItem>();
 
     public UploadManager(Modules messenger) {
         super(messenger);
+        this.LOG = messenger.getConfiguration().isEnableFilesLogging();
     }
 
     // Tasks
 
     public void startUpload(long rid, String descriptor, String fileName, ActorRef requestActor) {
-        Log.d(TAG, "Starting upload #" + rid + " with descriptor " + descriptor);
+        if (LOG) {
+            Log.d(TAG, "Starting upload #" + rid + " with descriptor " + descriptor);
+        }
         QueueItem queueItem = new QueueItem(rid, descriptor, fileName, requestActor);
         queueItem.isStopped = false;
         queue.add(queueItem);
@@ -42,13 +47,19 @@ public class UploadManager extends ModuleActor {
     }
 
     public void stopUpload(long rid) {
-        Log.d(TAG, "Stopping download #" + rid);
+        if (LOG) {
+            Log.d(TAG, "Stopping download #" + rid);
+        }
         QueueItem queueItem = findItem(rid);
         if (queueItem == null) {
-            Log.d(TAG, "- Not present in queue");
+            if (LOG) {
+                Log.d(TAG, "- Not present in queue");
+            }
         } else {
             if (queueItem.isStarted) {
-                Log.d(TAG, "- Stopping actor");
+                if (LOG) {
+                    Log.d(TAG, "- Stopping actor");
+                }
                 queueItem.taskRef.send(PoisonPill.INSTANCE);
                 queueItem.taskRef = null;
                 queueItem.isStarted = false;
@@ -177,10 +188,14 @@ public class UploadManager extends ModuleActor {
     // Queue processing
 
     public void onUploadTaskError(long rid) {
-        Log.d(TAG, "Upload #" + rid + " error");
+        if (LOG) {
+            Log.d(TAG, "Upload #" + rid + " error");
+        }
         QueueItem queueItem = findItem(rid);
         if (queueItem == null) {
-            Log.d(TAG, "- Nothing found");
+            if (LOG) {
+                Log.d(TAG, "- Nothing found");
+            }
             return;
         }
 
@@ -207,7 +222,9 @@ public class UploadManager extends ModuleActor {
     }
 
     public void onUploadTaskProgress(long rid, final float progress) {
-        Log.d(TAG, "Upload #" + rid + " progress " + progress);
+        if (LOG) {
+            Log.d(TAG, "Upload #" + rid + " progress " + progress);
+        }
 
         QueueItem queueItem = findItem(rid);
         if (queueItem == null) {
@@ -231,7 +248,9 @@ public class UploadManager extends ModuleActor {
     }
 
     public void onUploadTaskComplete(long rid, FileReference fileReference, FileSystemReference reference) {
-        Log.d(TAG, "Upload #" + rid + " complete");
+        if (LOG) {
+            Log.d(TAG, "Upload #" + rid + " complete");
+        }
 
         QueueItem queueItem = findItem(rid);
         if (queueItem == null) {
@@ -264,7 +283,9 @@ public class UploadManager extends ModuleActor {
     }
 
     private void checkQueue() {
-        Log.d(TAG, "- Checking queue");
+        if (LOG) {
+            Log.d(TAG, "- Checking queue");
+        }
 
         int activeUploads = 0;
         for (QueueItem queueItem : queue) {
@@ -274,7 +295,9 @@ public class UploadManager extends ModuleActor {
         }
 
         if (activeUploads >= SIM_MAX_UPLOADS) {
-            Log.d(TAG, "- Already have max number of simultaneous uploads");
+            if (LOG) {
+                Log.d(TAG, "- Already have max number of simultaneous uploads");
+            }
             return;
         }
 
@@ -286,11 +309,15 @@ public class UploadManager extends ModuleActor {
             }
         }
         if (pendingQueue == null) {
-            Log.d(TAG, "- No work for downloading");
+            if (LOG) {
+                Log.d(TAG, "- No work for downloading");
+            }
             return;
         }
 
-        Log.d(TAG, "- Starting upload file #" + pendingQueue.fileDescriptor);
+        if (LOG) {
+            Log.d(TAG, "- Starting upload file #" + pendingQueue.fileDescriptor);
+        }
 
         pendingQueue.isStarted = true;
 

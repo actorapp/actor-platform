@@ -21,6 +21,7 @@ public class DownloadTask extends ModuleActor {
     private static final int SIM_BLOCKS_COUNT = 4;
 
     private final String TAG;
+    private final boolean LOG;
 
     private FileReference fileReference;
     private ActorRef manager;
@@ -40,6 +41,7 @@ public class DownloadTask extends ModuleActor {
     public DownloadTask(FileReference fileReference, ActorRef manager, Modules messenger) {
         super(messenger);
         this.TAG = "DownloadTask{" + fileReference.getFileId() + "}";
+        this.LOG = messenger.getConfiguration().isEnableFilesLogging();
         this.fileReference = fileReference;
         this.manager = manager;
     }
@@ -47,26 +49,34 @@ public class DownloadTask extends ModuleActor {
     @Override
     public void preStart() {
 
-        Log.d(TAG, "Creating file...");
+        if (LOG) {
+            Log.d(TAG, "Creating file...");
+        }
 
         fileSystemProvider = modules().getConfiguration().getFileSystemProvider();
         if (fileSystemProvider == null) {
             reportError();
-            Log.d(TAG, "No FileSystem available");
+            if (LOG) {
+                Log.d(TAG, "No FileSystem available");
+            }
             return;
         }
 
         destReference = fileSystemProvider.createTempFile();
         if (destReference == null) {
             reportError();
-            Log.d(TAG, "Unable to create reference");
+            if (LOG) {
+                Log.d(TAG, "Unable to create reference");
+            }
             return;
         }
 
         outputFile = destReference.openWrite(fileReference.getFileSize());
         if (outputFile == null) {
             reportError();
-            Log.d(TAG, "Unable to write wile");
+            if (LOG) {
+                Log.d(TAG, "Unable to write wile");
+            }
             return;
         }
 
@@ -79,7 +89,9 @@ public class DownloadTask extends ModuleActor {
             blocksCount++;
         }
 
-        Log.d(TAG, "Starting downloading " + blocksCount + " blocks");
+        if (LOG) {
+            Log.d(TAG, "Starting downloading " + blocksCount + " blocks");
+        }
         checkQueue();
     }
 
@@ -88,7 +100,9 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        Log.d(TAG, "Closing file...");
+        if (LOG) {
+            Log.d(TAG, "Closing file...");
+        }
         if (!outputFile.close()) {
             reportError();
             return;
@@ -100,7 +114,9 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        Log.d(TAG, "Complete download {" + reference.getDescriptor() + "}");
+        if (LOG) {
+            Log.d(TAG, "Complete download {" + reference.getDescriptor() + "}");
+        }
         reportComplete(reference);
     }
 
@@ -109,7 +125,9 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        Log.d(TAG, "checkQueue " + currentDownloads + "/" + nextBlock);
+        if (LOG) {
+            Log.d(TAG, "checkQueue " + currentDownloads + "/" + nextBlock);
+        }
         if (currentDownloads == 0 && nextBlock >= blocksCount) {
             completeDownload();
         } else if (currentDownloads < SIM_BLOCKS_COUNT && nextBlock < blocksCount) {
@@ -117,13 +135,17 @@ public class DownloadTask extends ModuleActor {
             int blockIndex = nextBlock++;
             int offset = blockIndex * blockSize;
 
-            Log.d(TAG, "Starting part #" + blockIndex + " download");
+            if (LOG) {
+                Log.d(TAG, "Starting part #" + blockIndex + " download");
+            }
 
             downloadPart(blockIndex, offset);
 
             checkQueue();
         } else {
-            Log.d(TAG, "Task queue is full");
+            if (LOG) {
+                Log.d(TAG, "Task queue is full");
+            }
         }
     }
 
@@ -133,7 +155,9 @@ public class DownloadTask extends ModuleActor {
             @Override
             public void onResult(ResponseGetFile response) {
                 downloaded++;
-                Log.d(TAG, "Download part #" + blockIndex + " completed");
+                if (LOG) {
+                    Log.d(TAG, "Download part #" + blockIndex + " completed");
+                }
                 if (!outputFile.write(fileOffset, response.getPayload(), 0,
                         response.getPayload().length)) {
                     reportError();
@@ -146,7 +170,9 @@ public class DownloadTask extends ModuleActor {
 
             @Override
             public void onError(RpcException e) {
-                Log.d(TAG, "Download part #" + blockIndex + " failure");
+                if (LOG) {
+                    Log.d(TAG, "Download part #" + blockIndex + " failure");
+                }
                 reportError();
             }
         });

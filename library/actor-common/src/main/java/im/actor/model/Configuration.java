@@ -26,6 +26,7 @@ public class Configuration {
 
     private boolean enableContactsLogging = false;
     private boolean enableNetworkLogging = false;
+    private boolean enableFilesLogging = false;
 
     private FileSystemProvider fileSystemProvider;
 
@@ -46,7 +47,8 @@ public class Configuration {
                          DispatcherProvider dispatcherProvider,
                          ApiConfiguration apiConfiguration,
                          boolean enableContactsLogging,
-                         boolean enableNetworkLogging) {
+                         boolean enableNetworkLogging,
+                         boolean enableFilesLogging) {
         this.networkProvider = networkProvider;
         this.endpoints = endpoints;
         this.threadingProvider = threadingProvider;
@@ -59,6 +61,7 @@ public class Configuration {
         this.fileSystemProvider = fileSystemProvider;
         this.enableContactsLogging = enableContactsLogging;
         this.enableNetworkLogging = enableNetworkLogging;
+        this.enableFilesLogging = enableFilesLogging;
         this.notificationProvider = notificationProvider;
         this.apiConfiguration = apiConfiguration;
         this.dispatcherProvider = dispatcherProvider;
@@ -78,6 +81,10 @@ public class Configuration {
 
     public boolean isEnableNetworkLogging() {
         return enableNetworkLogging;
+    }
+
+    public boolean isEnableFilesLogging() {
+        return enableFilesLogging;
     }
 
     public CryptoProvider getCryptoProvider() {
