@@ -100,16 +100,14 @@
     <color name="conv_media_state_error">#ffed534b</color>
     <color name="conv_media_state_warring">#ffed534b</color>
 
-    <color name="conv_delete">@color/accent</color>
-
     <!-- Settings -->
-    <color name="settings_title">@color/accent</color>
+    <color name="settings_title">@color/primary</color>
     <color name="settings_icon">#b5b6b7</color>
 
     <!-- Profile -->
     <color name="profile_title">@color/text_primary_inv</color>
     <color name="profile_subtitle">@color/text_secondary_inv</color>
-    <color name="profile_icon">@color/accent</color>
+    <color name="profile_icon">@color/primary</color>
 
     <!-- Misc -->
     <color name="light_gray">#bbbbbb</color>

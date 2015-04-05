@@ -5,7 +5,9 @@ import java.util.List;
 
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Peer;
 import im.actor.model.entity.SearchEntity;
+import im.actor.model.entity.User;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 
@@ -13,6 +15,8 @@ import im.actor.model.modules.utils.ModuleActor;
  * Created by ex3ndr on 05.04.15.
  */
 public class SearchActor extends ModuleActor {
+
+    private static final long CONTACTS_PREFIX = 1L << 32;
 
     private ListEngine<SearchEntity> listEngine;
 
@@ -36,11 +40,24 @@ public class SearchActor extends ModuleActor {
         listEngine.addOrUpdateItems(updated);
     }
 
+    private void onContactsUpdated(int[] contactsList) {
+        List<SearchEntity> updated = new ArrayList<SearchEntity>();
+        for (int i = 0; i < contactsList.length; i++) {
+            User user = users().getValue(contactsList[i]);
+            updated.add(new SearchEntity(Peer.user(user.getUid()), CONTACTS_PREFIX + i, user.getAvatar(),
+                    user.getName()));
+        }
+        listEngine.addOrUpdateItems(updated);
+    }
+
     @Override
     public void onReceive(Object message) {
         if (message instanceof OnDialogsUpdated) {
             OnDialogsUpdated onDialogsUpdated = (OnDialogsUpdated) message;
             onDialogsUpdated(onDialogsUpdated.getDialogs());
+        } else if (message instanceof OnContactsUpdated) {
+            OnContactsUpdated contactsUpdated = (OnContactsUpdated) message;
+            onContactsUpdated(contactsUpdated.getContactsList());
         } else {
             drop(message);
         }

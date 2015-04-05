@@ -42,4 +42,12 @@ public class SearchModule extends BaseModule {
     public void onDialogsChanged(List<Dialog> dialogs) {
         actorRef.send(new SearchActor.OnDialogsUpdated(dialogs));
     }
+
+    public void onContactsChanged(Integer[] contacts) {
+        int[] res = new int[contacts.length];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = contacts[i];
+        }
+        actorRef.send(new SearchActor.OnContactsUpdated(res));
+    }
 }
