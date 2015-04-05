@@ -210,11 +210,17 @@ class AAConversationGroupInfoController: AATableViewController {
     // MARK: -
     // MARK: Methods
     
-    func askSetPhoto() {
+    private func askSetPhoto() {
         var actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Take Photo", "Choose Photo") // TODO: Localize
         actionSheet.addButtonWithTitle("Delete Photo")
         actionSheet.destructiveButtonIndex = 3
         actionSheet.showInView(view)
+    }
+    
+    private func changeAvatarToImage(image: UIImage) {
+        let avatarPath = NSTemporaryDirectory().stringByAppendingPathComponent("avatar.jpg")
+        UIImageJPEGRepresentation(image, 0.8).writeToFile(avatarPath, atomically: true) // TODO: Check smallest 100x100, crop to 800x800
+        MSG.changeGroupAvatarWithInt(jint(gid), withNSString: "/tmp/avatar.jpg")
     }
     
     // MARK: - 
@@ -369,13 +375,17 @@ extension AAConversationGroupInfoController: UIImagePickerControllerDelegate {
     
     // TODO: Allow to crop rectangle
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
-        // TODO: Implement change avatar
+
+        changeAvatarToImage(image)
+        
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        // TODO: Implement change avatar
+
+        changeAvatarToImage(image)
+        
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
     }
     

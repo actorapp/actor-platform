@@ -189,11 +189,11 @@ class AAAuthRegisterController: AAViewController {
             
             if avatarImageView.image != nil {
                 avatarPath = NSTemporaryDirectory().stringByAppendingPathComponent("avatar.jpg")
-                UIImageJPEGRepresentation(avatarImageView.image, 0.8).writeToFile(avatarPath, atomically: true)
+                UIImageJPEGRepresentation(avatarImageView.image, 0.8).writeToFile(avatarPath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
             }
             
             SVProgressHUD.showWithStatus("Saving profile")
-            let messenger = CocoaMessenger.messenger().signUpWithNSString(fullName, withNSString: avatarPath, withBoolean: true)
+            let messenger = CocoaMessenger.messenger().signUpWithNSString(fullName, withNSString: "/tmp/avatar.jpg", withBoolean: true)
             messenger.startWithAMCommandCallback(CocoaCallback(result: { (val:Any?) -> () in
                 SVProgressHUD.dismiss()
                 self.navigationController!.presentingViewController!.dismissViewControllerAnimated(true, completion: nil)
