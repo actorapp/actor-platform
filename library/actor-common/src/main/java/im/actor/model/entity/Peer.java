@@ -129,4 +129,9 @@ public class Peer extends BserObject {
                 break;
         }
     }
+
+    @Override
+    public String toString() {
+        return "{type:" + peerType + ", id:" + peerId + "}";
+    }
 }

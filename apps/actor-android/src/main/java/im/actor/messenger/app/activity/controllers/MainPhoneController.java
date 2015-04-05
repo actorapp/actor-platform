@@ -365,7 +365,7 @@ public class MainPhoneController extends MainBaseController {
         HeaderViewRecyclerAdapter recyclerAdapter = new HeaderViewRecyclerAdapter(searchAdapter);
 
         View header = new View(getActivity());
-        header.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
         header.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_main));
         recyclerAdapter.addHeaderView(header);
 

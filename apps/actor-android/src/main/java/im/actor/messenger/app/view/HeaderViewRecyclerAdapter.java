@@ -18,6 +18,7 @@ package im.actor.messenger.app.view;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,11 +115,11 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        if (viewType < HEADERS_START + getHeaderCount())
+        if (viewType < HEADERS_START + getHeaderCount()) {
             return new StaticViewHolder(mHeaderViews.get(viewType - HEADERS_START));
-        else if (viewType < FOOTERS_START + getFooterCount())
+        } else if (viewType < FOOTERS_START + getFooterCount()) {
             return new StaticViewHolder(mFooterViews.get(viewType - FOOTERS_START));
-        else {
+        } else {
             return mWrappedAdapter.onCreateViewHolder(viewGroup, viewType - getAdapterTypeOffset());
         }
     }
@@ -228,10 +229,21 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         }
     };
 
+    private static View wrap(View src) {
+        if (src.getParent() != null) {
+            ((ViewGroup) src.getParent()).removeView(src);
+        }
+        FrameLayout frameLayout = new FrameLayout(src.getContext());
+        frameLayout.setLayoutParams(
+                new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        frameLayout.addView(src);
+        return frameLayout;
+    }
+
     private static class StaticViewHolder extends RecyclerView.ViewHolder {
 
         public StaticViewHolder(View itemView) {
-            super(itemView);
+            super(wrap(itemView));
         }
     }
 }
