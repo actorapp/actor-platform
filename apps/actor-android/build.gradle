@@ -57,6 +57,7 @@ android {
     def HOCKEY_MAIN = "\"38d528f118a899bbd503bda195609003\""
     def HOCKEY_DEV1 = "\"e2fb9a8444e1d8a5d90dba0e0c9ed534\""
     def HOCKEY_DEV2 = "\"0280d81114489bc0f306f5d94a38def1\""
+    def HOCKEY_LLECTRO = "\"95bd155a24b62dceb159444f8bfda949\""
 
     def MINT_MAIN = "\"4345135a\""
 
@@ -95,6 +96,13 @@ android {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Release)\""
             signingConfig signingConfigs.release
             buildConfigField STRING, HOCKEY, HOCKEY_MAIN
+        }
+
+        llectro {
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Llectro)\""
+            applicationIdSuffix ".llectro"
+            signingConfig signingConfigs.release
+            buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
         }
 
         mchs {
@@ -166,6 +174,8 @@ android {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Dev2-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-mchs.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-MCHS-" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-android-llectro.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Llectro-" + defaultConfig.versionName + ".apk")
                 }
             }
         }
@@ -174,6 +184,11 @@ android {
     sourceSets {
         release {
             res.srcDirs = ['src/themes/main', 'src/material-icons']
+            java.srcDirs = ['src/play/java']
+        }
+
+        llectro {
+            res.srcDirs = ['src/themes/main', 'src/themes/dark', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
@@ -193,7 +208,7 @@ android {
         }
 
         debug {
-            res.srcDirs = ['src/themes/dev', 'src/themes/dark', 'src/material-icons']
+            res.srcDirs = ['src/themes/dev', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
@@ -245,6 +260,7 @@ android {
             buildTypes.dev1alt.signingConfig = null
             buildTypes.play.signingConfig = null
             buildTypes.chrome.signingConfig = null
+            buildTypes.llectro.signingConfig = null
         }
     }
 
@@ -322,6 +338,6 @@ dependencies {
     compile 'com.splunk.mint:mint:4.0.8'
 }
 
-task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleDev1alt', 'assembleDev2', 'assembleMchs']) {
+task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleLlectro', 'assembleDev1alt', 'assembleDev2', 'assembleMchs']) {
 
 }
