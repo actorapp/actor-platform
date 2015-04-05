@@ -16,7 +16,7 @@ public class DialogsHistoryActor extends ModuleActor {
 
     private static final String TAG = "DialogsHistoryActor";
 
-    private static final int LIMIT = 5;
+    private static final int LIMIT = 20;
 
     private static final String KEY_LOADED_DATE = "dialogs_history_date";
     private static final String KEY_LOADED = "dialogs_history_loaded";

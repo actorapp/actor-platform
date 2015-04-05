@@ -138,6 +138,7 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
      */
     public void addHeaderView(View view) {
         mHeaderViews.add(view);
+        notifyDataSetChanged();
     }
 
     /**
@@ -148,6 +149,7 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
      */
     public void addFooterView(View view) {
         mFooterViews.add(view);
+        notifyDataSetChanged();
     }
 
     @Override

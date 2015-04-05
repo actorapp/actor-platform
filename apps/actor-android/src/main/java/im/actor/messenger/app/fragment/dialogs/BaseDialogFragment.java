@@ -43,7 +43,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
 
         setAnimationsEnabled(false);
 
-        // Footer
+//        // Footer
 
         FrameLayout footer = new FrameLayout(getActivity());
         footer.setBackgroundColor(getResources().getColor(R.color.bg_backyard));
@@ -72,23 +72,6 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         header.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
         header.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_main));
         addHeaderView(header);
-
-//        TextView header = new TextView(getActivity());
-//        header.setBackgroundColor(getResources().getColor(R.color.bg_grey));
-//        header.setText(R.string.dialogs_title);
-//        header.setTypeface(Fonts.bold());
-//        header.setPadding(Screen.dp(16), 0, 0, 0);
-//        header.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-//        header.setTextSize(16);
-//        header.setTextColor(getResources().getColor(R.color.text_subheader));
-//
-//        LinearLayout headerCont = new LinearLayout(getActivity());
-//        headerCont.setBackgroundColor(getResources().getColor(R.color.bg_light));
-//        headerCont.setOrientation(LinearLayout.VERTICAL);
-//        headerCont.addView(header, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(48)));
-//        headerCont.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//
-//        addHeaderView(headerCont);
 
         // Empty View
         emptyDialogs = res.findViewById(R.id.emptyDialogs);
