@@ -33,6 +33,7 @@ public class Modules {
     private volatile Settings settings;
     private volatile Profile profile;
     private volatile SearchModule search;
+    private volatile Security security;
 
     public Modules(Configuration configuration) {
         this.configuration = configuration;
@@ -87,6 +88,7 @@ public class Modules {
         start = configuration.getThreadingProvider().getActorTime();
         groups = new Groups(this);
         search = new SearchModule(this);
+        security = new Security(this);
         Log.d("CORE_INIT", "Loading stage6.2 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
         start = configuration.getThreadingProvider().getActorTime();
         messages = new Messages(this);
@@ -207,6 +209,10 @@ public class Modules {
 
     public Pushes getPushes() {
         return pushes;
+    }
+
+    public Security getSecurity() {
+        return security;
     }
 
     public SearchModule getSearch() {
