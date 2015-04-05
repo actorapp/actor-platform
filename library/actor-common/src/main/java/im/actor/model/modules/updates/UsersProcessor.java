@@ -6,6 +6,7 @@ import java.util.Collection;
 import im.actor.model.annotation.Verified;
 import im.actor.model.api.Avatar;
 import im.actor.model.entity.User;
+import im.actor.model.log.Log;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.contacts.ContactsSyncActor;
@@ -29,6 +30,8 @@ public class UsersProcessor extends BaseModule {
     public void applyUsers(Collection<im.actor.model.api.User> updated, boolean forced) {
         ArrayList<User> batch = new ArrayList<User>();
         for (im.actor.model.api.User u : updated) {
+            Log.d("UsersProcessor", "UserUpdated: " + u.getId());
+
             User saved = users().getValue(u.getId());
             if (saved == null) {
                 batch.add(EntityConverter.convert(u));

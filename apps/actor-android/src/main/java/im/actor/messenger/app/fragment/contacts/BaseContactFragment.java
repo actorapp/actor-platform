@@ -61,12 +61,12 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
         View headerPadding = new View(getActivity());
         headerPadding.setBackgroundColor(getResources().getColor(R.color.bg_main));
-        headerPadding.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+        headerPadding.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
         addHeaderView(headerPadding);
 
         if (useCompactVersion) {
             View footer = new View(getActivity());
-            footer.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+            footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
             addFooterView(footer);
         } else {
             addFooterAction(R.drawable.ic_share_white_24dp, "Tell friends about Actor", false, new Runnable() {
@@ -88,7 +88,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             });
 
             FrameLayout footer = new FrameLayout(getActivity());
-            footer.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(112)));
+            footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(112)));
             ImageView shadow = new ImageView(getActivity());
             shadow.setImageResource(R.drawable.card_shadow_bottom);
             shadow.setScaleType(ImageView.ScaleType.FIT_XY);
