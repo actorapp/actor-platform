@@ -10,9 +10,11 @@ import UIKit
 
 enum AATableViewCellStyle {
     case Normal
+    case DestructiveCentered
     case Destructive
     case Switch
     case Blue
+    case Green
 }
 
 class AATableViewCell: UITableViewCell {
@@ -21,6 +23,7 @@ class AATableViewCell: UITableViewCell {
     // MARK: Private vars
     
     private var switcher: UISwitch?
+    private var bottomSeparator: UIView?
     
     // MARK: -
     // MARK: Public vars
@@ -54,9 +57,14 @@ class AATableViewCell: UITableViewCell {
             textLabel!.textColor = UIColor.blackColor()
             switcher?.hidden = true
             break
-        case .Destructive:
+        case .DestructiveCentered:
             textLabel!.textColor = UIColor.redColor()
             textLabel!.textAlignment = NSTextAlignment.Center
+            switcher?.hidden = true
+            break
+        case .Destructive:
+            textLabel!.textColor = UIColor.redColor()
+            textLabel!.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             break
         case .Switch:
@@ -66,6 +74,11 @@ class AATableViewCell: UITableViewCell {
             break
         case .Blue:
             textLabel!.textColor = UIColor.RGB(0x007ee5)
+            textLabel!.textAlignment = NSTextAlignment.Left
+            switcher?.hidden = true
+            break
+        case .Green:
+            textLabel!.textColor = UIColor(red: 76/255.0, green: 216/255.0, blue: 100/255.0, alpha: 1.0) // TODO: Change color
             textLabel!.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             break
@@ -82,12 +95,24 @@ class AATableViewCell: UITableViewCell {
         }
     }
     
-    // MARK: -
-    // MARK: Methods
-    
     func switcherSwitched() {
         if switchBlock != nil {
             switchBlock!(switcher!.on)
+        }
+    }
+    
+    func showBottomSeparator() {
+        if bottomSeparator == nil {
+            bottomSeparator = UIView()
+            bottomSeparator!.backgroundColor = UIColor.RGB(0xc8c7cc)
+        }
+        
+        contentView.addSubview(bottomSeparator!)
+    }
+    
+    func hindBottomSeparator() {
+        if bottomSeparator != nil {
+            bottomSeparator!.removeFromSuperview()
         }
     }
     
@@ -114,7 +139,11 @@ class AATableViewCell: UITableViewCell {
         
         if switcher != nil {
             let switcherSize = switcher!.bounds.size
-            switcher!.frame = CGRect(x: contentView.bounds.size.width - switcherSize.width - 15, y: (contentView.bounds.size.height - switcherSize.height) / 2, width: switcherSize.width, height: switcherSize.height)
+            switcher!.frame = CGRect(x: contentView.bounds.width - switcherSize.width - 15, y: (contentView.bounds.height - switcherSize.height) / 2, width: switcherSize.width, height: switcherSize.height)
+        }
+        
+        if bottomSeparator != nil {
+            bottomSeparator!.frame = CGRect(x: separatorInset.left, y: contentView.bounds.height - Utils.retinaPixel(), width: contentView.bounds.width - separatorInset.left, height: Utils.retinaPixel())
         }
     }
 
