@@ -14,7 +14,7 @@ import im.actor.model.network.RpcException;
  */
 public class ConversationHistoryActor extends ModuleActor {
 
-    private static final int LIMIT = 50;
+    private static final int LIMIT = 20;
 
     private final String KEY_LOADED_DATE;
     private final String KEY_LOADED;

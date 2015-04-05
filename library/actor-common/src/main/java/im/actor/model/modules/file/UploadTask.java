@@ -28,6 +28,7 @@ public class UploadTask extends ModuleActor {
     private static final int SIM_BLOCKS_COUNT = 4;
 
     private final String TAG;
+    private final boolean LOG;
 
     private long rid;
     private String fileName;
@@ -53,6 +54,7 @@ public class UploadTask extends ModuleActor {
 
     public UploadTask(long rid, String descriptor, String fileName, ActorRef manager, Modules modules) {
         super(modules);
+        this.LOG = modules.getConfiguration().isEnableFilesLogging();
         this.rid = rid;
         this.fileName = fileName;
         this.descriptor = descriptor;
@@ -64,21 +66,27 @@ public class UploadTask extends ModuleActor {
     public void preStart() {
         srcReference = config().getFileSystemProvider().fileFromDescriptor(descriptor);
         if (srcReference == null) {
-            Log.d(TAG, "Error during file reference creating");
+            if (LOG) {
+                Log.d(TAG, "Error during file reference creating");
+            }
             reportError();
             return;
         }
 
         destReference = config().getFileSystemProvider().createTempFile();
         if (destReference == null) {
-            Log.d(TAG, "Error during file dest reference creating");
+            if (LOG) {
+                Log.d(TAG, "Error during file dest reference creating");
+            }
             reportError();
             return;
         }
 
         inputFile = srcReference.openRead();
         if (inputFile == null) {
-            Log.d(TAG, "Error during file open");
+            if (LOG) {
+                Log.d(TAG, "Error during file open");
+            }
             reportError();
             return;
         }
@@ -86,7 +94,9 @@ public class UploadTask extends ModuleActor {
         outputFile = destReference.openWrite(srcReference.getSize());
         if (outputFile == null) {
             inputFile.close();
-            Log.d(TAG, "Error during dest file open");
+            if (LOG) {
+                Log.d(TAG, "Error during dest file open");
+            }
             reportError();
             return;
         }
@@ -102,20 +112,25 @@ public class UploadTask extends ModuleActor {
             blocksCount++;
         }
 
-        Log.d(TAG, "Starting uploading " + blocksCount + " blocks");
-
-        Log.d(TAG, "Requesting upload config...");
+        if (LOG) {
+            Log.d(TAG, "Starting uploading " + blocksCount + " blocks");
+            Log.d(TAG, "Requesting upload config...");
+        }
         request(new RequestStartUpload(), new RpcCallback<ResponseStartUpload>() {
             @Override
             public void onResult(ResponseStartUpload response) {
-                Log.d(TAG, "Upload config loaded");
+                if (LOG) {
+                    Log.d(TAG, "Upload config loaded");
+                }
                 uploadConfig = response.getConfig();
                 checkQueue();
             }
 
             @Override
             public void onError(RpcException e) {
-                Log.d(TAG, "Upload config load error");
+                if (LOG) {
+                    Log.d(TAG, "Upload config load error");
+                }
                 reportError();
             }
         });
@@ -127,18 +142,24 @@ public class UploadTask extends ModuleActor {
         }
 
         if (nextBlock == blocksCount && uploadCount == 0) {
-            Log.d(TAG, "Completing...");
+            if (LOG) {
+                Log.d(TAG, "Completing...");
+            }
             long crc = crc32.getValue();
-            Log.d(TAG, "Src #" + crc);
+            if (LOG) {
+                Log.d(TAG, "Src #" + crc);
 
-            Log.d(TAG, "Closing files...");
+                Log.d(TAG, "Closing files...");
+            }
             inputFile.close();
             outputFile.close();
 
             request(new RequestCompleteUpload(uploadConfig, blocksCount, crc), new RpcCallback<ResponseCompleteUpload>() {
                 @Override
                 public void onResult(ResponseCompleteUpload response) {
-                    Log.d(TAG, "Upload completed...");
+                    if (LOG) {
+                        Log.d(TAG, "Upload completed...");
+                    }
 
                     FileReference location = EntityConverter.convert(response.getLocation(), fileName, srcReference.getSize());
 
@@ -149,7 +170,9 @@ public class UploadTask extends ModuleActor {
 
                 @Override
                 public void onError(RpcException e) {
-                    Log.d(TAG, "Upload complete error");
+                    if (LOG) {
+                        Log.d(TAG, "Upload complete error");
+                    }
                     reportError();
                 }
             });
@@ -167,25 +190,33 @@ public class UploadTask extends ModuleActor {
             byte[] data = new byte[size];
 
             if (!inputFile.read(fileOffset, data, 0, size)) {
-                Log.d(TAG, "read #" + blockIndex + " error");
+                if (LOG) {
+                    Log.d(TAG, "read #" + blockIndex + " error");
+                }
                 reportError();
                 return;
             }
             if (!outputFile.write(fileOffset, data, 0, size)) {
-                Log.d(TAG, "write #" + blockIndex + " error");
+                if (LOG) {
+                    Log.d(TAG, "write #" + blockIndex + " error");
+                }
                 reportError();
                 return;
             }
 
             crc32.update(data, 0, size);
 
-            Log.d(TAG, "Starting block upload #" + blockIndex);
+            if (LOG) {
+                Log.d(TAG, "Starting block upload #" + blockIndex);
+            }
 
             uploadCount++;
             uploadPart(blockIndex, fileOffset, data);
             checkQueue();
         } else {
-            Log.d(TAG, "Nothing to do");
+            if (LOG) {
+                Log.d(TAG, "Nothing to do");
+            }
         }
     }
 
@@ -193,7 +224,9 @@ public class UploadTask extends ModuleActor {
         request(new RequestUploadPart(uploadConfig, offset, data), new RpcCallback<ResponseVoid>() {
             @Override
             public void onResult(ResponseVoid response) {
-                Log.d(TAG, "Block #" + blockIndex + " uploaded");
+                if (LOG) {
+                    Log.d(TAG, "Block #" + blockIndex + " uploaded");
+                }
                 uploadCount--;
                 uploaded++;
 

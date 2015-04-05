@@ -81,7 +81,7 @@ public class SecuritySettingsFragment extends BaseFragment {
     }
 
     private void performLoad() {
-        loading.setText("Unable to load. Press to try again.");
+        loading.setText("Loading...");
         loading.setClickable(true);
         showView(loading, false);
 
