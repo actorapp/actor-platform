@@ -253,6 +253,12 @@ public class ContactsSyncActor extends ModuleActor {
             registeredContacts.add(contact);
         }
         modules().getContactsModule().getContacts().replaceItems(registeredContacts);
+        Integer[] sorted = new Integer[contacts.size()];
+        int sindex = 0;
+        for (User userModel : userList) {
+            sorted[sindex++] = userModel.getUid();
+        }
+        modules().getSearch().onContactsChanged(sorted);
 
         notifyState();
     }
