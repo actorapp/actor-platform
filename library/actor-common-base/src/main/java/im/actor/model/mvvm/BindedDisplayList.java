@@ -1,15 +1,15 @@
 package im.actor.model.mvvm;
 
-import im.actor.model.annotation.MainThread;
-import im.actor.model.droidkit.bser.BserObject;
-import im.actor.model.droidkit.engine.ListEngineDisplayLoadCallback;
-import im.actor.model.droidkit.engine.ListEngineDisplayExt;
-import im.actor.model.droidkit.engine.ListEngineDisplayListener;
-import im.actor.model.droidkit.engine.ListEngineItem;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import im.actor.model.annotation.MainThread;
+import im.actor.model.droidkit.bser.BserObject;
+import im.actor.model.droidkit.engine.ListEngineDisplayExt;
+import im.actor.model.droidkit.engine.ListEngineDisplayListener;
+import im.actor.model.droidkit.engine.ListEngineDisplayLoadCallback;
+import im.actor.model.droidkit.engine.ListEngineItem;
 
 /**
  * Created by ex3ndr on 14.03.15.
@@ -64,6 +64,10 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         return isGlobalList;
     }
 
+    public boolean isInSearchState() {
+        return mode == ListMode.SEARCH;
+    }
+
     @MainThread
     public void touch(int index) {
         MVVMEngine.checkMainThread();
@@ -88,6 +92,20 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     }
 
     // Init methods
+
+    @MainThread
+    public void initEmpty() {
+        MVVMEngine.checkMainThread();
+
+        mode = ListMode.FORWARD;
+        query = null;
+
+        editList((Modification) DisplayModifications.clear());
+
+        stateModel.change(State.LOADING_EMPTY);
+        currentGeneration++;
+        window.emptyInit();
+    }
 
     @MainThread
     public void initTop(boolean refresh) {

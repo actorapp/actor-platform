@@ -4,6 +4,7 @@ import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.SearchEntity;
 import im.actor.model.modules.DisplayLists;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.viewmodel.ConversationVM;
@@ -46,5 +47,9 @@ public class BaseMessenger extends Messenger {
 
     public BindedDisplayList<Contact> buildContactDisplayList() {
         return displayLists.buildNewContactList(false);
+    }
+
+    public BindedDisplayList<SearchEntity> buildSearchList() {
+        return displayLists.buildNewSearchList(false);
     }
 }

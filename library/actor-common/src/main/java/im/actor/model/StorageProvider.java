@@ -8,6 +8,7 @@ import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.droidkit.engine.PreferencesStorage;
+import im.actor.model.entity.SearchEntity;
 
 /**
  * Created by ex3ndr on 08.02.15.
@@ -23,6 +24,8 @@ public interface StorageProvider {
     public ListStorage createList(String name);
 
     // Engines
+
+    public ListEngine<SearchEntity> createSearchList(ListStorage storage);
 
     public ListEngine<Contact> createContactsList(ListStorage storage);
 
