@@ -30,6 +30,7 @@ import im.actor.model.entity.content.PhotoContent;
 import im.actor.model.entity.content.ServiceUserRegistered;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.entity.content.VideoContent;
+import im.actor.model.log.Log;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.ConversationActor;
@@ -67,6 +68,9 @@ public class MessagesProcessor extends BaseModule {
             maxLoadedDate = Math.min(dialog.getSortDate(), maxLoadedDate);
 
             Peer peer = convert(dialog.getPeer());
+
+            Log.d("MessagesProcessor", "HistoryDialog: " + peer);
+
             AbsContent msgContent = convert(dialog.getMessage());
 
             if (msgContent == null) {

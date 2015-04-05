@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -71,12 +72,12 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
         View res = inflate(inflater, container, R.layout.fragment_messages, messenger().getMessagesGlobalList(peer));
 
         View footer = new View(getActivity());
-        footer.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
+        footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
         // Add Footer as Header because of reverse layout
         addHeaderView(footer);
 
         View header = new View(getActivity());
-        header.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(64)));
+        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(64)));
         // Add Header as Footer because of reverse layout
         addFooterView(header);
 
