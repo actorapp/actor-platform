@@ -100,7 +100,7 @@ public class SecuritySettingsFragment extends BaseFragment {
                 for (final AuthSession item : items) {
                     View view = getActivity().getLayoutInflater().inflate(R.layout.adapter_auth, authItems, false);
 
-                    boolean isThisDevice = item.getAuthHolder() == AuthHolder.THISDEVICE;
+                    boolean isThisDevice = item.getAuthHolder() == AuthHolder.OTHERDEVICE;
                     String deviceTitle = (isThisDevice ? "(This) " : "") + item.getDeviceTitle();
                     ((TextView) view.findViewById(R.id.date)).setText(messenger().getFormatter().formatShortDate(item.getAuthTime() * 1000L));
                     ((TextView) view.findViewById(R.id.appTitle)).setText(item.getAppTitle());
