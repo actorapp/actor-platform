@@ -33,22 +33,28 @@ class AAAuthCountriesController: AATableViewController {
     // MARK: -
     // MARK: Contructors
     
-    override init() {
-        super.init()
+    init() {
+        super.init(style: UITableViewStyle.Plain)
         
         self.title = "Country" // TODO: Localize
         
         let cancelButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("cancelButtonPressed")) // TODO: Localize
         self.navigationItem.setLeftBarButtonItem(cancelButtonItem, animated: false)
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: -
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
         tableView.registerClass(AAAuthCountryCell.self, forCellReuseIdentifier: countryCellIdentifier)
         tableView.tableFooterView = UIView()
         tableView.rowHeight = 44.0
         tableView.sectionIndexBackgroundColor = UIColor.clearColor()
-    }
-
-    required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: -
@@ -91,11 +97,11 @@ class AAAuthCountriesController: AATableViewController {
     // MARK: -
     // MARK: UITableView Data Source
     
-    override func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
+    func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
         return [UITableViewIndexSearch] + letters() as [AnyObject]
     }
     
-    override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+    func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         if title == UITableViewIndexSearch {
             return 0
         }
@@ -126,7 +132,7 @@ class AAAuthCountriesController: AATableViewController {
     // MARK: -
     // MARK: UITableView Delegate
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         if (delegate?.respondsToSelector(Selector("countriesController:didChangeCurrentIso:")) != nil) {
             let letter = letters()[indexPath.section] as! String
@@ -137,11 +143,11 @@ class AAAuthCountriesController: AATableViewController {
         dismiss()
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 25.0
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let letter = letters()[section] as! String
         return letter
     }
