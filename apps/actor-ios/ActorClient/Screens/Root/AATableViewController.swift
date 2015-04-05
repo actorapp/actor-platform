@@ -8,22 +8,23 @@
 
 import UIKit
 
-class AATableViewController: UITableViewController {
+class AATableViewController: AAViewController {
     
     // MARK: -
     // MARK: Public vars
+    
+    var tableView: UITableView!
+    var tableViewStyle: UITableViewStyle!
     
     var placeholderView: AAPlaceholderView?
     
     // MARK: - 
     // MARK: Constructors
     
-    init() {
-        super.init(style: UITableViewStyle.Plain)
-    }
-    
-    override init(style: UITableViewStyle) {
-        super.init(style: style)
+    init(style: UITableViewStyle) {
+        super.init()
+        
+        tableViewStyle = style
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -31,15 +32,16 @@ class AATableViewController: UITableViewController {
     }
     
     // MARK: -
-
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        adjustPlaceholderWhenDisappearIfNeeded()
-    }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        adjustPlaceholderWhenAppearIfNeeded()
+    override func loadView() {
+        super.loadView()
+        
+        view.backgroundColor = UIColor.whiteColor()
+        
+        tableView = UITableView(frame: view.bounds, style: tableViewStyle)
+        tableView.delegate = self
+        tableView.dataSource = self
+        view.addSubview(tableView)
     }
 
     // MARK: -
@@ -52,7 +54,7 @@ class AATableViewController: UITableViewController {
         
         self.placeholderView!.frame = placeholderViewFrame()
         self.placeholderView!.setImage(image, title: title, subtitle: subtitle)
-        self.navigationController!.view.addSubview(self.placeholderView!)
+        view.addSubview(self.placeholderView!)
     }
     
     func hidePlaceholder() {
@@ -61,20 +63,12 @@ class AATableViewController: UITableViewController {
         }
     }
     
-    private func adjustPlaceholderWhenAppearIfNeeded() {
-        if self.placeholderView != nil {
-            self.placeholderView!.removeFromSuperview()
-            self.placeholderView!.frame = placeholderViewFrame()
-            self.navigationController!.view.addSubview(self.placeholderView!)
-        }
-    }
+    // MARK: -
+    // MARK: Setters
     
-    private func adjustPlaceholderWhenDisappearIfNeeded() {
-        if self.placeholderView != nil {
-            self.placeholderView!.removeFromSuperview()
-            self.placeholderView!.frame = placeholderViewFrameInTableView()
-            self.tableView.addSubview(self.placeholderView!)
-        }
+    override func setEditing(editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        tableView.setEditing(editing, animated: animated)
     }
     
     // MARK: -
@@ -82,20 +76,30 @@ class AATableViewController: UITableViewController {
     
     private func placeholderViewFrame() -> CGRect {
         let navigationBarHeight: CGFloat = 64.0 + Utils.retinaPixel() // TODO: if will be landscape then change to manual calc
-        println("\(self.navigationController) ... \(navigationController)")
-        return CGRect(x: 0, y: navigationBarHeight, width: self.navigationController!.view.bounds.size.width, height: self.navigationController!.view.bounds.size.height - navigationBarHeight)
+        return CGRect(x: 0, y: navigationBarHeight, width: view.bounds.size.width, height: view.bounds.size.height - navigationBarHeight)
     }
     
-    private func placeholderViewFrameInTableView() -> CGRect {
-        let navigationBarHeight: CGFloat = 64.0 + Utils.retinaPixel() // TODO: if will be landscape then change to manual calc
-        return CGRect(x: 0, y: navigationBarHeight + self.tableView.contentOffset.y, width: self.navigationController!.view.bounds.size.width, height: self.navigationController!.view.bounds.size.height - navigationBarHeight)
+}
+
+// MARK: -
+// MARK: UITableViewController
+
+extension AATableViewController: UITableViewDataSource {
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 0
     }
     
-    // MARK: -
-    // MARK: Navigation
-    
-    func dismiss() {
-        dismissViewControllerAnimated(true, completion: nil)
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 0
     }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+    
+}
+
+extension AATableViewController: UITableViewDelegate {
     
 }

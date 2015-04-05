@@ -13,6 +13,7 @@ class AAConversationGroupInfoCell: AATableViewCell {
     // MARK: -
     // MARK: Private vars
     
+    private var groupNameBeforeEditing: String?
     private var textFieldSeparator: UIView!
     
     // MARK: -
@@ -20,6 +21,8 @@ class AAConversationGroupInfoCell: AATableViewCell {
     
     var groupNameTextField: UITextField!
     var groupAvatarView: AvatarView!
+    
+    var groupNameChangedBlock: ((String) -> ())?
     
     // MARK: -
     // MARK: Constructors
@@ -38,6 +41,7 @@ class AAConversationGroupInfoCell: AATableViewCell {
         groupNameTextField.enabled = false
         groupNameTextField.text = " "
         groupNameTextField.sizeToFit()
+        groupNameTextField.delegate = self
         contentView.addSubview(groupNameTextField)
         
         textFieldSeparator = UIView()
@@ -59,7 +63,7 @@ class AAConversationGroupInfoCell: AATableViewCell {
     }
     
     override func setEditing(editing: Bool, animated: Bool) {
-        UIView.animateWithDuration(0.2, animations: { () -> Void in
+        UIView.animateWithDuration(0.3, animations: { () -> Void in
             self.textFieldSeparator.alpha = (editing ? 1.0 : 0.0)
         })
         groupNameTextField.enabled = editing
@@ -86,6 +90,23 @@ class AAConversationGroupInfoCell: AATableViewCell {
         
         let separatorHeight: CGFloat = Utils.isRetina() ? 0.5 : 1.0;
         textFieldSeparator.frame = CGRect(x: groupNameTextField.frame.origin.x, y: groupNameTextField.frame.origin.y + groupNameTextField.bounds.size.height + 10, width: groupNameTextField.bounds.size.width, height: separatorHeight)
+    }
+    
+}
+
+// MARK: -
+// MARK: UITextField Delegate
+
+extension AAConversationGroupInfoCell: UITextFieldDelegate {
+
+    func textFieldDidBeginEditing(textField: UITextField) {
+        groupNameBeforeEditing = textField.text
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        if groupNameBeforeEditing != nil && groupNameBeforeEditing != textField.text {
+            groupNameChangedBlock?(textField.text)
+        }
     }
     
 }

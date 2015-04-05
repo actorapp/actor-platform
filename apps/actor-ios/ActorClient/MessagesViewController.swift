@@ -176,7 +176,7 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
-            let userInfoController = ProfileController(uid: id)
+            let userInfoController = AAUserInfoController(uid: id)
             self.navigationController?.pushViewController(userInfoController, animated: true)
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
             let groupInfoController = AAConversationGroupInfoController(gid: id)
