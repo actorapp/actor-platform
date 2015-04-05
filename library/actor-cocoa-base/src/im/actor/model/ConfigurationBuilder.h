@@ -36,6 +36,8 @@
 
 - (AMConfigurationBuilder *)setEnableNetworkLogging:(jboolean)enableNetworkLogging;
 
+- (AMConfigurationBuilder *)setEnableFilesLoggingWithBoolean:(jboolean)enableFilesLogging;
+
 - (AMConfigurationBuilder *)setCryptoProvider:(id<AMCryptoProvider>)cryptoProvider;
 
 - (AMConfigurationBuilder *)setPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider;

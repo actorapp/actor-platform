@@ -19,6 +19,8 @@
 @class ImActorModelModulesPresence;
 @class ImActorModelModulesProfile;
 @class ImActorModelModulesPushes;
+@class ImActorModelModulesSearchModule;
+@class ImActorModelModulesSecurity;
 @class ImActorModelModulesSettings;
 @class ImActorModelModulesTyping;
 @class ImActorModelModulesUpdates;
@@ -72,6 +74,10 @@
 - (ImActorModelModulesAppStateModule *)getAppStateModule;
 
 - (ImActorModelModulesPushes *)getPushes;
+
+- (ImActorModelModulesSecurity *)getSecurity;
+
+- (ImActorModelModulesSearchModule *)getSearch;
 
 @end
 

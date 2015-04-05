@@ -23,6 +23,8 @@
 - (id<DKListEngine>)createMessagesListWithAMPeer:(AMPeer *)peer
                                withDKListStorage:(id<DKListStorage>)storage;
 
+- (id<DKListEngine>)createSearchListWithDKListStorage:(id<DKListStorage>)storage;
+
 - (instancetype)init;
 
 @end

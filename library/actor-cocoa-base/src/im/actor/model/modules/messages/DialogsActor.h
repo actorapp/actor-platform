@@ -8,6 +8,7 @@
 
 @class AMAbsContent;
 @class AMAvatar;
+@class AMDialog;
 @class AMGroup;
 @class AMMessage;
 @class AMMessageStateEnum;

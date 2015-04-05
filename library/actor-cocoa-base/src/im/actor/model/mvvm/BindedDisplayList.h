@@ -36,7 +36,11 @@
 
 - (jboolean)isGlobalList;
 
+- (jboolean)isInSearchState;
+
 - (void)touchWithInt:(jint)index;
+
+- (void)initEmpty OBJC_METHOD_FAMILY_NONE;
 
 - (void)initTopWithBoolean:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
 

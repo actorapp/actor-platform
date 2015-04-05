@@ -238,6 +238,12 @@
 - (void)registerApplePushWithInt:(jint)apnsId
                     withNSString:(NSString *)token;
 
+- (id<AMCommand>)loadSessions;
+
+- (id<AMCommand>)terminateAllSessions;
+
+- (id<AMCommand>)terminateSessionWithInt:(jint)id_;
+
 - (id<DKPreferencesStorage>)getPreferences;
 
 @end

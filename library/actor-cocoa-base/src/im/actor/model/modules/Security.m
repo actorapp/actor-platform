@@ -6,21 +6,502 @@
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Security.java"
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/rpc/RequestGetAuthSessions.h"
+#include "im/actor/model/api/rpc/RequestTerminateAllSessions.h"
+#include "im/actor/model/api/rpc/RequestTerminateSession.h"
+#include "im/actor/model/api/rpc/ResponseGetAuthSessions.h"
+#include "im/actor/model/api/rpc/ResponseVoid.h"
+#include "im/actor/model/concurrency/Command.h"
+#include "im/actor/model/concurrency/CommandCallback.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Security.h"
+#include "im/actor/model/network/RpcException.h"
+#include "java/lang/Boolean.h"
+#include "java/util/List.h"
+
+@interface ImActorModelModulesSecurity_$1 () {
+ @public
+  ImActorModelModulesSecurity *this$0_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$1, this$0_, ImActorModelModulesSecurity *)
+
+@interface ImActorModelModulesSecurity_$1_$1 () {
+ @public
+  ImActorModelModulesSecurity_$1 *this$0_;
+  id<AMCommandCallback> val$callback_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$1_$1, this$0_, ImActorModelModulesSecurity_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$1_$1, val$callback_, id<AMCommandCallback>)
+
+@interface ImActorModelModulesSecurity_$1_$1_$1 () {
+ @public
+  ImActorModelModulesSecurity_$1_$1 *this$0_;
+  ImActorModelApiRpcResponseGetAuthSessions *val$response_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$1_$1_$1, this$0_, ImActorModelModulesSecurity_$1_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$1_$1_$1, val$response_, ImActorModelApiRpcResponseGetAuthSessions *)
+
+@interface ImActorModelModulesSecurity_$1_$1_$2 () {
+ @public
+  ImActorModelModulesSecurity_$1_$1 *this$0_;
+  AMRpcException *val$e_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$1_$1_$2, this$0_, ImActorModelModulesSecurity_$1_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$1_$1_$2, val$e_, AMRpcException *)
+
+@interface ImActorModelModulesSecurity_$2 () {
+ @public
+  ImActorModelModulesSecurity *this$0_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$2, this$0_, ImActorModelModulesSecurity *)
+
+@interface ImActorModelModulesSecurity_$2_$1 () {
+ @public
+  ImActorModelModulesSecurity_$2 *this$0_;
+  id<AMCommandCallback> val$callback_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$2_$1, this$0_, ImActorModelModulesSecurity_$2 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$2_$1, val$callback_, id<AMCommandCallback>)
+
+@interface ImActorModelModulesSecurity_$2_$1_$1 () {
+ @public
+  ImActorModelModulesSecurity_$2_$1 *this$0_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$2_$1_$1, this$0_, ImActorModelModulesSecurity_$2_$1 *)
+
+@interface ImActorModelModulesSecurity_$2_$1_$2 () {
+ @public
+  ImActorModelModulesSecurity_$2_$1 *this$0_;
+  AMRpcException *val$e_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$2_$1_$2, this$0_, ImActorModelModulesSecurity_$2_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$2_$1_$2, val$e_, AMRpcException *)
+
+@interface ImActorModelModulesSecurity_$3 () {
+ @public
+  ImActorModelModulesSecurity *this$0_;
+  jint val$id_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$3, this$0_, ImActorModelModulesSecurity *)
+
+@interface ImActorModelModulesSecurity_$3_$1 () {
+ @public
+  ImActorModelModulesSecurity_$3 *this$0_;
+  id<AMCommandCallback> val$callback_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$3_$1, this$0_, ImActorModelModulesSecurity_$3 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$3_$1, val$callback_, id<AMCommandCallback>)
+
+@interface ImActorModelModulesSecurity_$3_$1_$1 () {
+ @public
+  ImActorModelModulesSecurity_$3_$1 *this$0_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$3_$1_$1, this$0_, ImActorModelModulesSecurity_$3_$1 *)
+
+@interface ImActorModelModulesSecurity_$3_$1_$2 () {
+ @public
+  ImActorModelModulesSecurity_$3_$1 *this$0_;
+  AMRpcException *val$e_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$3_$1_$2, this$0_, ImActorModelModulesSecurity_$3_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$3_$1_$2, val$e_, AMRpcException *)
 
 
-#line 6
+#line 19
 @implementation ImActorModelModulesSecurity
 
 
-#line 7
+#line 20
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   return
-#line 8
+#line 21
   [super initWithImActorModelModulesModules:modules];
+}
+
+
+#line 24
+- (id<AMCommand>)loadSessions {
+  
+#line 25
+  return [[ImActorModelModulesSecurity_$1 alloc] initWithImActorModelModulesSecurity:self];
+}
+
+
+#line 53
+- (id<AMCommand>)terminateAllSessions {
+  
+#line 54
+  return [[ImActorModelModulesSecurity_$2 alloc] initWithImActorModelModulesSecurity:self];
+}
+
+
+#line 82
+- (id<AMCommand>)terminateSessionWithInt:(jint)id_ {
+  
+#line 83
+  return [[ImActorModelModulesSecurity_$3 alloc] initWithImActorModelModulesSecurity:self withInt:id_];
 }
 
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity)
+
+@implementation ImActorModelModulesSecurity_$1
+
+
+#line 27
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
+  
+#line 28
+  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestGetAuthSessions alloc] init] withAMRpcCallback:[[ImActorModelModulesSecurity_$1_$1 alloc] initWithImActorModelModulesSecurity_$1:self withAMCommandCallback:callback]];
+}
+
+- (instancetype)initWithImActorModelModulesSecurity:(ImActorModelModulesSecurity *)outer$ {
+  this$0_ = outer$;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesSecurity_$1 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$1)
+
+@implementation ImActorModelModulesSecurity_$1_$1
+
+
+#line 30
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetAuthSessions *)response {
+  
+#line 31
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesSecurity_$1_$1_$1 alloc] initWithImActorModelModulesSecurity_$1_$1:self withImActorModelApiRpcResponseGetAuthSessions:response]];
+}
+
+
+#line 40
+- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+  
+#line 41
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesSecurity_$1_$1_$2 alloc] initWithImActorModelModulesSecurity_$1_$1:self withAMRpcException:e]];
+}
+
+- (instancetype)initWithImActorModelModulesSecurity_$1:(ImActorModelModulesSecurity_$1 *)outer$
+                                 withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
+  this$0_ = outer$;
+  val$callback_ = capture$0;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesSecurity_$1_$1 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+  other->val$callback_ = val$callback_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$1_$1)
+
+@implementation ImActorModelModulesSecurity_$1_$1_$1
+
+
+#line 33
+- (void)run {
+  
+#line 34
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:[((ImActorModelApiRpcResponseGetAuthSessions *) nil_chk(val$response_)) getUserAuths]];
+}
+
+- (instancetype)initWithImActorModelModulesSecurity_$1_$1:(ImActorModelModulesSecurity_$1_$1 *)outer$
+            withImActorModelApiRpcResponseGetAuthSessions:(ImActorModelApiRpcResponseGetAuthSessions *)capture$0 {
+  this$0_ = outer$;
+  val$response_ = capture$0;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesSecurity_$1_$1_$1 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+  other->val$response_ = val$response_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$1_$1_$1)
+
+@implementation ImActorModelModulesSecurity_$1_$1_$2
+
+
+#line 43
+- (void)run {
+  
+#line 44
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
+}
+
+- (instancetype)initWithImActorModelModulesSecurity_$1_$1:(ImActorModelModulesSecurity_$1_$1 *)outer$
+                                       withAMRpcException:(AMRpcException *)capture$0 {
+  this$0_ = outer$;
+  val$e_ = capture$0;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesSecurity_$1_$1_$2 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+  other->val$e_ = val$e_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$1_$1_$2)
+
+@implementation ImActorModelModulesSecurity_$2
+
+
+#line 56
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
+  
+#line 57
+  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestTerminateAllSessions alloc] init] withAMRpcCallback:[[ImActorModelModulesSecurity_$2_$1 alloc] initWithImActorModelModulesSecurity_$2:self withAMCommandCallback:callback]];
+}
+
+- (instancetype)initWithImActorModelModulesSecurity:(ImActorModelModulesSecurity *)outer$ {
+  this$0_ = outer$;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesSecurity_$2 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$2)
+
+@implementation ImActorModelModulesSecurity_$2_$1
+
+
+#line 59
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
+  
+#line 60
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesSecurity_$2_$1_$1 alloc] initWithImActorModelModulesSecurity_$2_$1:self]];
+}
+
+
+#line 69
+- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+  
+#line 70
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesSecurity_$2_$1_$2 alloc] initWithImActorModelModulesSecurity_$2_$1:self withAMRpcException:e]];
+}
+
+- (instancetype)initWithImActorModelModulesSecurity_$2:(ImActorModelModulesSecurity_$2 *)outer$
+                                 withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
+  this$0_ = outer$;
+  val$callback_ = capture$0;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesSecurity_$2_$1 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+  other->val$callback_ = val$callback_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$2_$1)
+
+@implementation ImActorModelModulesSecurity_$2_$1_$1
+
+
+#line 62
+- (void)run {
+  
+#line 63
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
+}
+
+- (instancetype)initWithImActorModelModulesSecurity_$2_$1:(ImActorModelModulesSecurity_$2_$1 *)outer$ {
+  this$0_ = outer$;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesSecurity_$2_$1_$1 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$2_$1_$1)
+
+@implementation ImActorModelModulesSecurity_$2_$1_$2
+
+
+#line 72
+- (void)run {
+  
+#line 73
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
+}
+
+- (instancetype)initWithImActorModelModulesSecurity_$2_$1:(ImActorModelModulesSecurity_$2_$1 *)outer$
+                                       withAMRpcException:(AMRpcException *)capture$0 {
+  this$0_ = outer$;
+  val$e_ = capture$0;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesSecurity_$2_$1_$2 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+  other->val$e_ = val$e_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$2_$1_$2)
+
+@implementation ImActorModelModulesSecurity_$3
+
+
+#line 85
+- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
+  
+#line 86
+  [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestTerminateSession alloc] initWithInt:val$id_] withAMRpcCallback:[[ImActorModelModulesSecurity_$3_$1 alloc] initWithImActorModelModulesSecurity_$3:self withAMCommandCallback:callback]];
+}
+
+- (instancetype)initWithImActorModelModulesSecurity:(ImActorModelModulesSecurity *)outer$
+                                            withInt:(jint)capture$0 {
+  this$0_ = outer$;
+  val$id_ = capture$0;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesSecurity_$3 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+  other->val$id_ = val$id_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$3)
+
+@implementation ImActorModelModulesSecurity_$3_$1
+
+
+#line 88
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
+  
+#line 89
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesSecurity_$3_$1_$1 alloc] initWithImActorModelModulesSecurity_$3_$1:self]];
+}
+
+
+#line 98
+- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+  
+#line 99
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesSecurity_$3_$1_$2 alloc] initWithImActorModelModulesSecurity_$3_$1:self withAMRpcException:e]];
+}
+
+- (instancetype)initWithImActorModelModulesSecurity_$3:(ImActorModelModulesSecurity_$3 *)outer$
+                                 withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
+  this$0_ = outer$;
+  val$callback_ = capture$0;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesSecurity_$3_$1 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+  other->val$callback_ = val$callback_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$3_$1)
+
+@implementation ImActorModelModulesSecurity_$3_$1_$1
+
+
+#line 91
+- (void)run {
+  
+#line 92
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
+}
+
+- (instancetype)initWithImActorModelModulesSecurity_$3_$1:(ImActorModelModulesSecurity_$3_$1 *)outer$ {
+  this$0_ = outer$;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesSecurity_$3_$1_$1 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$3_$1_$1)
+
+@implementation ImActorModelModulesSecurity_$3_$1_$2
+
+
+#line 101
+- (void)run {
+  
+#line 102
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
+}
+
+- (instancetype)initWithImActorModelModulesSecurity_$3_$1:(ImActorModelModulesSecurity_$3_$1 *)outer$
+                                       withAMRpcException:(AMRpcException *)capture$0 {
+  this$0_ = outer$;
+  val$e_ = capture$0;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesSecurity_$3_$1_$2 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+  other->val$e_ = val$e_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$3_$1_$2)

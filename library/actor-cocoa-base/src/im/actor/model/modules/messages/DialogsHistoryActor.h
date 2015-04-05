@@ -14,7 +14,7 @@
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/network/RpcCallback.h"
 
-#define ImActorModelModulesMessagesDialogsHistoryActor_LIMIT 5
+#define ImActorModelModulesMessagesDialogsHistoryActor_LIMIT 20
 
 @interface ImActorModelModulesMessagesDialogsHistoryActor : ImActorModelModulesUtilsModuleActor {
 }
