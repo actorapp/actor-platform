@@ -1,8 +1,8 @@
 package im.actor.model.mvvm;
 
 /**
-* Created by ex3ndr on 14.03.15.
-*/
+ * Created by ex3ndr on 14.03.15.
+ */
 class DisplayWindow {
 
     private boolean isForwardLoading = false;
@@ -105,6 +105,16 @@ class DisplayWindow {
         isInited = true;
         currentForwardHead = forwardHead;
         currentBackwardHead = backwardHead;
+    }
+
+    public synchronized void emptyInit() {
+        isInited = true;
+        currentBackwardHead = null;
+        currentForwardHead = null;
+        isForwardCompleted = true;
+        isForwardLoading = false;
+        isBackwardLoaded = true;
+        isBackwardLoading = false;
     }
 
     public synchronized void startInitForward() {

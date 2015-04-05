@@ -32,6 +32,7 @@ public class Modules {
     private volatile Notifications notifications;
     private volatile Settings settings;
     private volatile Profile profile;
+    private volatile SearchModule search;
 
     public Modules(Configuration configuration) {
         this.configuration = configuration;
@@ -85,6 +86,7 @@ public class Modules {
         Log.d("CORE_INIT", "Loading stage6.1 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
         start = configuration.getThreadingProvider().getActorTime();
         groups = new Groups(this);
+        search = new SearchModule(this);
         Log.d("CORE_INIT", "Loading stage6.2 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
         start = configuration.getThreadingProvider().getActorTime();
         messages = new Messages(this);
@@ -114,6 +116,7 @@ public class Modules {
         Log.d("CORE_INIT", "Loading stage6.8.2 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
         start = configuration.getThreadingProvider().getActorTime();
         filesModule.run();
+        search.run();
         Log.d("CORE_INIT", "Loading stage6.9 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
         start = configuration.getThreadingProvider().getActorTime();
         notifications.run();
@@ -204,5 +207,9 @@ public class Modules {
 
     public Pushes getPushes() {
         return pushes;
+    }
+
+    public SearchModule getSearch() {
+        return search;
     }
 }

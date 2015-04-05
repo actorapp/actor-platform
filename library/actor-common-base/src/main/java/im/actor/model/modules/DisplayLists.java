@@ -1,15 +1,16 @@
 package im.actor.model.modules;
 
+import java.util.HashMap;
+
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.droidkit.engine.ListEngineDisplayExt;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.SearchEntity;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.MVVMEngine;
-
-import java.util.HashMap;
 
 /**
  * Created by ex3ndr on 27.03.15.
@@ -132,5 +133,20 @@ public class DisplayLists extends BaseModule {
                 isGlobalList, LOAD_PAGE, LOAD_GAP, hook);
         chatList.initTop(false);
         return chatList;
+    }
+
+
+    public BindedDisplayList<SearchEntity> buildNewSearchList(boolean isGlobalList) {
+        MVVMEngine.checkMainThread();
+
+        ListEngine<SearchEntity> contactsEngine = modules().getSearch().getSearchList();
+        if (!(contactsEngine instanceof ListEngineDisplayExt)) {
+            throw new RuntimeException("Search ListEngine must implement ListEngineDisplayExt for using global list");
+        }
+
+        BindedDisplayList<SearchEntity> contactList = new BindedDisplayList<SearchEntity>((ListEngineDisplayExt<SearchEntity>) contactsEngine,
+                isGlobalList, LOAD_PAGE, LOAD_GAP, null);
+        contactList.initEmpty();
+        return contactList;
     }
 }

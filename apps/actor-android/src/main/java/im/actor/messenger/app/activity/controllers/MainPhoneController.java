@@ -4,15 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
@@ -24,13 +27,19 @@ import im.actor.messenger.app.fragment.compose.CreateGroupActivity;
 import im.actor.messenger.app.fragment.contacts.ContactsFragment;
 import im.actor.messenger.app.fragment.dialogs.DialogsFragment;
 import im.actor.messenger.app.fragment.help.HelpActivity;
+import im.actor.messenger.app.fragment.main.SearchAdapter;
 import im.actor.messenger.app.fragment.settings.MyProfileActivity;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
+import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
+import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.SearchEntity;
+import im.actor.model.mvvm.BindedDisplayList;
+import im.actor.model.mvvm.DisplayList;
 import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.UserVM;
@@ -50,10 +59,20 @@ public class MainPhoneController extends MainBaseController {
 
     private HomePagerAdapter homePagerAdapter;
 
-    private ListView searchList;
+    private RecyclerView searchList;
     private View searchContainer;
     private View searchEmptyView;
     private View searchHintView;
+
+    private boolean isSearchVisible = false;
+    private final DisplayList.Listener searchListener = new DisplayList.Listener() {
+        @Override
+        public void onCollectionChanged() {
+            onSearchChanged();
+        }
+    };
+    private SearchAdapter searchAdapter;
+    private BindedDisplayList<SearchEntity> searchDisplay;
 
     private SearchView searchView;
     private MenuItem searchMenu;
@@ -109,42 +128,14 @@ public class MainPhoneController extends MainBaseController {
             }
         });
 
-        searchList = (ListView) findViewById(R.id.searchList);
+        searchList = (RecyclerView) findViewById(R.id.searchList);
+        searchList.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         searchContainer = findViewById(R.id.searchCont);
         searchEmptyView = findViewById(R.id.empty);
         searchHintView = findViewById(R.id.searchHint);
-//        searchAdapter = new SearchAdapter(SearchEngines.userSearch().getResultList(), getActivity());
-//        searchList.setAdapter(searchAdapter);
-//        searchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Object pos = parent.getItemAtPosition(position);
-//                if (pos != null && pos instanceof GlobalSearch) {
-//                    startActivity(Intents.openDialog(((GlobalSearch) pos).getContType(), ((GlobalSearch) pos).getContId(), false,
-//                            getActivity()));
-//                    searchMenu.collapseActionView();
-//                }
-//            }
-//        });
-//        SearchEngines.userSearch().getResultList().addListener(new UiListListener() {
-//            @Override
-//            public void onListUpdated() {
-//                if (SearchEngines.userSearch().getResultList().getSize() > 0) {
-//                    goneView(searchHintView);
-//                    goneView(searchEmptyView);
-//                    showView(searchList);
-//                } else {
-//                    if (SearchEngines.userSearch().getCurrentQuery().length() > 0) {
-//                        goneView(searchHintView);
-//                        showView(searchEmptyView);
-//                    } else {
-//                        showView(searchHintView);
-//                        goneView(searchEmptyView);
-//                    }
-//                    goneView(searchList);
-//                }
-//            }
-//        });
+        searchHintView.setVisibility(View.GONE);
+        searchEmptyView.setVisibility(View.GONE);
 
         pager = (ViewPager) findViewById(R.id.vp_pager);
         homePagerAdapter = new HomePagerAdapter(getFragmentManager());
@@ -283,40 +274,39 @@ public class MainPhoneController extends MainBaseController {
         searchView = (SearchView) searchMenu.getActionView();
         searchView.setIconifiedByDefault(true);
 
-//        SearchViewHacker.setIcon(searchView, R.drawable.bar_search);
-//        SearchViewHacker.setCloseIcon(searchView, R.drawable.bar_clear_search);
-//        SearchViewHacker.setHint(searchView, "", R.drawable.bar_search,
-//                getResources().getColor(R.color.text_hint_light),
-//                getResources());
-//        SearchViewHacker.setEditText(searchView, R.drawable.search_selector);
-//        MenuItemCompat.setOnActionExpandListener(searchMenu, new MenuItemCompat.OnActionExpandListener() {
-//            @Override
-//            public boolean onMenuItemActionExpand(MenuItem item) {
-//                SearchEngines.userSearch().clear();
-//                showView(searchContainer);
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onMenuItemActionCollapse(MenuItem item) {
-//                SearchEngines.userSearch().clear();
-//                goneView(searchContainer);
-//                return true;
-//            }
-//        });
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                searchAdapter.setQuery(newText.toLowerCase());
-//                SearchEngines.userSearch().query(newText);
-//                return false;
-//            }
-//        });
+        MenuItemCompat.setOnActionExpandListener(searchMenu, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                showSearch();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                hideSearch();
+                return true;
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (isSearchVisible) {
+                    if (s.trim().length() > 0) {
+                        searchDisplay.initSearch(s, false);
+                        searchAdapter.setQuery(s.trim().toLowerCase());
+                    } else {
+                        searchDisplay.initEmpty();
+                    }
+                }
+                return false;
+            }
+        });
         return true;
     }
 
@@ -326,13 +316,18 @@ public class MainPhoneController extends MainBaseController {
             goneFab();
             return true;
         }
-        if (searchMenu != null) {
-            if (searchMenu.isActionViewExpanded()) {
-                searchMenu.collapseActionView();
-                return true;
-            }
+        if (isSearchVisible) {
+            hideSearch();
+            return true;
         }
+
         return false;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideSearch();
     }
 
     private void showFab() {
@@ -346,6 +341,76 @@ public class MainPhoneController extends MainBaseController {
         if (isFabVisible) {
             isFabVisible = false;
             goneView(fabContent, true, false);
+        }
+    }
+
+    private void showSearch() {
+        if (isSearchVisible) {
+            return;
+        }
+        isSearchVisible = true;
+
+        searchDisplay = messenger().buildSearchList();
+        searchAdapter = new SearchAdapter(getActivity(), searchDisplay, new OnItemClickedListener<SearchEntity>() {
+            @Override
+            public void onClicked(SearchEntity item) {
+                startActivity(Intents.openDialog(item.getPeer(), false, getActivity()));
+            }
+
+            @Override
+            public boolean onLongClicked(SearchEntity item) {
+                return false;
+            }
+        });
+        HeaderViewRecyclerAdapter recyclerAdapter = new HeaderViewRecyclerAdapter(searchAdapter);
+
+        View header = new View(getActivity());
+        header.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+        header.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_main));
+        recyclerAdapter.addHeaderView(header);
+
+        searchList.setAdapter(recyclerAdapter);
+        searchDisplay.addListener(searchListener);
+
+        showView(searchHintView, false);
+        goneView(searchEmptyView, false);
+
+        showView(searchContainer);
+    }
+
+    private void onSearchChanged() {
+        if (!searchDisplay.isInSearchState()) {
+            showView(searchHintView);
+            goneView(searchEmptyView);
+        } else {
+            goneView(searchHintView);
+            if (searchDisplay.getSize() == 0) {
+                showView(searchEmptyView);
+            } else {
+                goneView(searchEmptyView);
+            }
+        }
+    }
+
+    private void hideSearch() {
+        if (!isSearchVisible) {
+            return;
+        }
+        isSearchVisible = false;
+
+        if (searchDisplay != null) {
+            searchDisplay.dispose();
+            searchDisplay = null;
+        }
+        searchAdapter = null;
+        searchList.setAdapter(null);
+
+        goneView(searchContainer);
+
+        if (searchMenu != null) {
+            if (searchMenu.isActionViewExpanded()) {
+                searchMenu.collapseActionView();
+            }
         }
     }
 

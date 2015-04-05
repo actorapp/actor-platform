@@ -99,7 +99,7 @@ public class DialogsActor extends ModuleActor {
                         .setSortKey(message.getSortDate());
             }
 
-            dialogs.addOrUpdateItem(builder.createDialog());
+            addOrUpdateItem(builder.createDialog());
             notifyState();
         }
     }
@@ -115,7 +115,7 @@ public class DialogsActor extends ModuleActor {
             }
 
             // Update dialog peer info
-            dialogs.addOrUpdateItem(dialog.editPeerInfo(user.getName(), user.getAvatar()));
+            addOrUpdateItem(dialog.editPeerInfo(user.getName(), user.getAvatar()));
         }
     }
 
@@ -130,7 +130,7 @@ public class DialogsActor extends ModuleActor {
             }
 
             // Update dialog peer info
-            dialogs.addOrUpdateItem(dialog.editPeerInfo(group.getTitle(), group.getAvatar()));
+            addOrUpdateItem(dialog.editPeerInfo(group.getTitle(), group.getAvatar()));
         }
     }
 
@@ -150,7 +150,7 @@ public class DialogsActor extends ModuleActor {
         if (dialog != null) {
 
             // Update dialog
-            dialogs.addOrUpdateItem(new DialogBuilder(dialog)
+            addOrUpdateItem(new DialogBuilder(dialog)
                     .setMessageType(ContentType.EMPTY)
                     .setText("")
                     .setTime(0)
@@ -170,7 +170,7 @@ public class DialogsActor extends ModuleActor {
         if (dialog != null && dialog.getRid() == rid) {
 
             // Update dialog
-            dialogs.addOrUpdateItem(new DialogBuilder(dialog)
+            addOrUpdateItem(new DialogBuilder(dialog)
                     .setStatus(state)
                     .createDialog());
         }
@@ -184,7 +184,7 @@ public class DialogsActor extends ModuleActor {
         if (dialog != null && dialog.getRid() == rid) {
 
             // Update dialog
-            dialogs.addOrUpdateItem(new DialogBuilder(dialog)
+            addOrUpdateItem(new DialogBuilder(dialog)
                     .setStatus(MessageState.SENT)
                     .setTime(date)
                     .createDialog());
@@ -200,7 +200,7 @@ public class DialogsActor extends ModuleActor {
 
             // Update dialog
             ContentDescription description = ContentDescription.fromContent(content);
-            dialogs.addOrUpdateItem(new DialogBuilder(dialog)
+            addOrUpdateItem(new DialogBuilder(dialog)
                     .setText(description.getText())
                     .setRelatedUid(description.getRelatedUser())
                     .setMessageType(description.getContentType())
@@ -216,7 +216,7 @@ public class DialogsActor extends ModuleActor {
         if (dialog != null) {
 
             // Update dialog
-            dialogs.addOrUpdateItem(new DialogBuilder(dialog)
+            addOrUpdateItem(new DialogBuilder(dialog)
                     .setUnreadCount(count)
                     .createDialog());
         }
@@ -245,12 +245,24 @@ public class DialogsActor extends ModuleActor {
                     dialogHistory.getRid(), description.getContentType(), description.getText(), dialogHistory.getStatus(),
                     dialogHistory.getSenderId(), dialogHistory.getDate(), description.getRelatedUser()));
         }
-        dialogs.addOrUpdateItems(updated);
+        addOrUpdateItems(updated);
         modules().getAppStateModule().onDialogsLoaded();
         notifyState();
     }
 
     // Utils
+
+    private void addOrUpdateItems(List<Dialog> updated) {
+        dialogs.addOrUpdateItems(updated);
+        modules().getSearch().onDialogsChanged(updated);
+    }
+
+    private void addOrUpdateItem(Dialog dialog) {
+        dialogs.addOrUpdateItem(dialog);
+        ArrayList<Dialog> d = new ArrayList<Dialog>();
+        d.add(dialog);
+        modules().getSearch().onDialogsChanged(d);
+    }
 
     private void notifyState() {
         boolean isEmpty = this.dialogs.isEmpty();

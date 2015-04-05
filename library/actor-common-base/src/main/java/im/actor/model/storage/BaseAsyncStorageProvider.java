@@ -9,6 +9,7 @@ import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.SearchEntity;
 
 /**
  * Created by ex3ndr on 15.03.15.
@@ -37,5 +38,13 @@ public abstract class BaseAsyncStorageProvider implements StorageProvider {
             throw new RuntimeException("Storage MUST implement ListStorageDisplayEx");
         }
         return new AsyncListEngine<Message>((ListStorageDisplayEx) storage, Message.CREATOR);
+    }
+
+    @Override
+    public ListEngine<SearchEntity> createSearchList(ListStorage storage) {
+        if (!(storage instanceof ListStorageDisplayEx)) {
+            throw new RuntimeException("Storage MUST implement ListStorageDisplayEx");
+        }
+        return new AsyncListEngine<SearchEntity>((ListStorageDisplayEx) storage, SearchEntity.CREATOR);
     }
 }

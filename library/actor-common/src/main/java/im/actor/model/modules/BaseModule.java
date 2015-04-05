@@ -24,6 +24,7 @@ public class BaseModule {
     public static final String STORAGE_DOWNLOADS = "downloads";
     public static final String STORAGE_CONTACTS = "contacts";
     public static final String STORAGE_NOTIFICATIONS = "notifications";
+    public static final String STORAGE_SEARCH = "search";
 
     public static final String STORAGE_CHAT_PREFIX = "chat_";
     public static final String STORAGE_PENDING = "chat_pending";
