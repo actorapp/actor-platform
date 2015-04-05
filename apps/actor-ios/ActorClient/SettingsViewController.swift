@@ -38,6 +38,9 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0)
+        tableView.scrollIndicatorInsets = UIEdgeInsetsMake(64, 0, 0, 0)
+        
         tableView.backgroundColor = Resources.BackyardColor
         tableView.registerNib(UINib(nibName: "AvatarCell", bundle: nil), forCellReuseIdentifier: "cell_avatar")
         tableView.registerNib(UINib(nibName: "ContactRecordCell", bundle: nil), forCellReuseIdentifier: "cell_contact")

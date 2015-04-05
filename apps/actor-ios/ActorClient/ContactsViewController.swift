@@ -36,6 +36,9 @@ class ContactsViewController: ContactsBaseController {
     override func viewDidLoad() {
         bindTable(tableView);
         
+        tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0)
+        tableView.scrollIndicatorInsets = UIEdgeInsetsMake(64, 0, 0, 0)
+        
         emptyView.hidden = true;
     
         super.viewDidLoad();
