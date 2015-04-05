@@ -333,6 +333,8 @@ dependencies {
     dev1altCompile 'com.google.android.gms:play-services:6.+'
     dev2Compile 'com.google.android.gms:play-services:6.+'
     mchsCompile 'com.google.android.gms:play-services:6.+'
+    llectroCompile 'com.google.android.gms:play-services:6.+'
+    
     // Integration
     compile files('libs/HockeySDK-3.0.2.jar')
     compile 'com.splunk.mint:mint:4.0.8'
