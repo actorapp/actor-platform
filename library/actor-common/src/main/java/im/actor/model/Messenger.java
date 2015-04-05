@@ -1,5 +1,8 @@
 package im.actor.model;
 
+import java.util.List;
+
+import im.actor.model.api.AuthSession;
 import im.actor.model.concurrency.Command;
 import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.droidkit.actors.Actor;
@@ -469,6 +472,18 @@ public class Messenger {
 
     public void registerApplePush(int apnsId, String token) {
         modules.getPushes().registerApplePush(apnsId, token);
+    }
+
+    public Command<List<AuthSession>> loadSessions() {
+        return modules.getSecurity().loadSessions();
+    }
+
+    public Command<Boolean> terminateAllSessions() {
+        return modules.getSecurity().terminateAllSessions();
+    }
+
+    public Command<Boolean> terminateSession(int id) {
+        return modules.getSecurity().terminateSession(id);
     }
 
     public PreferencesStorage getPreferences() {

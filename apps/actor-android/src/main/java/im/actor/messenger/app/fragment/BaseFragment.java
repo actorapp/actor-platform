@@ -68,6 +68,10 @@ public class BaseFragment extends BinderCompatFragment {
         });
     }
 
+    public <T> void executeSilent(Command<T> cmd,final CommandCallback<T> callback) {
+        cmd.start(callback);
+    }
+
     public <T> void execute(Command<T> cmd, int title, final CommandCallback<T> callback) {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(title));

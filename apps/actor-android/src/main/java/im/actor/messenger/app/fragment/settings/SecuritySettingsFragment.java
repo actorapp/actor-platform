@@ -8,9 +8,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
+import im.actor.model.api.AuthHolder;
+import im.actor.model.api.AuthSession;
+import im.actor.model.concurrency.CommandCallback;
+
+import static im.actor.messenger.app.Core.messenger;
 
 /**
  * Created by ex3ndr on 09.10.14.
@@ -41,7 +52,21 @@ public class SecuritySettingsFragment extends BaseFragment {
                         .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // removeAuth();
+                                execute(messenger().terminateAllSessions(), R.string.progress_common,
+                                        new CommandCallback<Boolean>() {
+                                            @Override
+                                            public void onResult(Boolean res) {
+                                                performLoad();
+                                            }
+
+                                            @Override
+                                            public void onError(Exception e) {
+                                                performLoad();
+                                                Toast.makeText(getActivity(),
+                                                        "Unable to remove auth", Toast.LENGTH_SHORT)
+                                                        .show();
+                                            }
+                                        });
                             }
                         })
                         .setNegativeButton(R.string.dialog_no, null)
@@ -56,119 +81,70 @@ public class SecuritySettingsFragment extends BaseFragment {
     }
 
     private void performLoad() {
-//        ask(AuthController.authController().requestAuth(), new UiAskCallback<ResponseGetAuthSessions>() {
-//            @Override
-//            public void onPreStart() {
-//                loading.setText("Loading...");
-//                loading.setClickable(false);
-//                authItems.removeAllViews();
-//                showView(loading, false);
-//            }
-//
-//            @Override
-//            public void onCompleted(ResponseGetAuthSessions res) {
-//                goneView(loading, false);
-//                authItems.removeAllViews();
-//                ArrayList<AuthSession> items = new ArrayList<AuthSession>(res.getUserAuths());
-//                Collections.sort(items, new Comparator<AuthSession>() {
-//                    @Override
-//                    public int compare(AuthSession lhs, AuthSession rhs) {
-//                        return rhs.getAuthTime() - lhs.getAuthTime();
-//                    }
-//                });
-//                for (final AuthSession item : items) {
-//                    View view = getActivity().getLayoutInflater().inflate(R.layout.adapter_auth, authItems, false);
-//
-//                    boolean isThisDevice = item.getAuthHolder() == 0;
-//                    String deviceTitle = (isThisDevice ? "(This) " : "") + item.getDeviceTitle();
-//                    ((TextView) view.findViewById(R.id.date)).setText(Formatter.formatShortDate(item.getAuthTime() * 1000L));
-//                    ((TextView) view.findViewById(R.id.appTitle)).setText(item.getAppTitle());
-//                    ((TextView) view.findViewById(R.id.deviceTitle)).setText(deviceTitle);
-//                    if (!isThisDevice) {
-//                        view.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                new AlertDialog.Builder(getActivity())
-//                                        .setMessage("Are you sure want to logout " + item.getDeviceTitle() + " device? All data will be lost on this device.")
-//                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                                            @Override
-//                                            public void onClick(DialogInterface dialog, int which) {
-//                                                removeAuth(item);
-//                                            }
-//                                        })
-//                                        .setNegativeButton("No", null)
-//                                        .show()
-//                                        .setCanceledOnTouchOutside(true);
-//                            }
-//                        });
-//                    }
-//                    authItems.addView(view);
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Throwable t) {
-//                loading.setText("Unable to load. Press to try again.");
-//                loading.setClickable(true);
-//                showView(loading, false);
-//            }
-//        });
+        loading.setText("Unable to load. Press to try again.");
+        loading.setClickable(true);
+        showView(loading, false);
+
+        executeSilent(messenger().loadSessions(), new CommandCallback<List<AuthSession>>() {
+            @Override
+            public void onResult(List<AuthSession> res) {
+                goneView(loading, false);
+                authItems.removeAllViews();
+                ArrayList<AuthSession> items = new ArrayList<AuthSession>(res);
+                Collections.sort(items, new Comparator<AuthSession>() {
+                    @Override
+                    public int compare(AuthSession lhs, AuthSession rhs) {
+                        return rhs.getAuthTime() - lhs.getAuthTime();
+                    }
+                });
+                for (final AuthSession item : items) {
+                    View view = getActivity().getLayoutInflater().inflate(R.layout.adapter_auth, authItems, false);
+
+                    boolean isThisDevice = item.getAuthHolder() == AuthHolder.THISDEVICE;
+                    String deviceTitle = (isThisDevice ? "(This) " : "") + item.getDeviceTitle();
+                    ((TextView) view.findViewById(R.id.date)).setText(messenger().getFormatter().formatShortDate(item.getAuthTime() * 1000L));
+                    ((TextView) view.findViewById(R.id.appTitle)).setText(item.getAppTitle());
+                    ((TextView) view.findViewById(R.id.deviceTitle)).setText(deviceTitle);
+                    if (!isThisDevice) {
+                        view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                new AlertDialog.Builder(getActivity())
+                                        .setMessage("Are you sure want to logout " + item.getDeviceTitle() + " device? All data will be lost on this device.")
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                execute(messenger().terminateSession(item.getId()), R.string.progress_common,
+                                                        new CommandCallback<Boolean>() {
+                                                            @Override
+                                                            public void onResult(Boolean res) {
+                                                                performLoad();
+                                                            }
+
+                                                            @Override
+                                                            public void onError(Exception e) {
+                                                                Toast.makeText(getActivity(), "Unable to remove auth", Toast.LENGTH_SHORT).show();
+                                                                performLoad();
+                                                            }
+                                                        });
+                                            }
+                                        })
+                                        .setNegativeButton("No", null)
+                                        .show()
+                                        .setCanceledOnTouchOutside(true);
+                            }
+                        });
+                    }
+                    authItems.addView(view);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                loading.setText("Unable to load. Press to try again.");
+                loading.setClickable(true);
+                showView(loading, false);
+            }
+        });
     }
-
-//    private void removeAuth(AuthSession item) {
-//        ask(AuthController.authController().removeAuth(item), new UiAskCallback<Boolean>() {
-//
-//            private ProgressDialog progressDialog;
-//
-//            @Override
-//            public void onPreStart() {
-//                progressDialog = new ProgressDialog(getActivity());
-//                progressDialog.setMessage("Terminating auth...");
-//                progressDialog.setCancelable(false);
-//                progressDialog.show();
-//            }
-//
-//            @Override
-//            public void onCompleted(Boolean res) {
-//                progressDialog.dismiss();
-//                performLoad();
-//            }
-//
-//            @Override
-//            public void onError(Throwable t) {
-//                progressDialog.dismiss();
-//                performLoad();
-//                Toast.makeText(getActivity(), "Unable to remove auth", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-//
-//    private void removeAuth() {
-//        ask(AuthController.authController().removeAllAuth(), new UiAskCallback<Boolean>() {
-//
-//            private ProgressDialog progressDialog;
-//
-//            @Override
-//            public void onPreStart() {
-//                progressDialog = new ProgressDialog(getActivity());
-//                progressDialog.setMessage("Removing auth...");
-//                progressDialog.setCancelable(false);
-//                progressDialog.show();
-//            }
-//
-//            @Override
-//            public void onCompleted(Boolean res) {
-//                progressDialog.dismiss();
-//                performLoad();
-//            }
-//
-//            @Override
-//            public void onError(Throwable t) {
-//                progressDialog.dismiss();
-//                performLoad();
-//                Toast.makeText(getActivity(), "Unable to remove auth", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-
 }
