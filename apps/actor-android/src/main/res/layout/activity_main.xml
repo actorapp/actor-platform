@@ -50,11 +50,10 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <ListView
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/searchList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
+                android:layout_height="match_parent" />
 
             <TextView
                 android:id="@+id/empty"
