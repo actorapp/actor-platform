@@ -15,20 +15,21 @@
 #include "im/actor/model/entity/Dialog.h"
 #include "im/actor/model/entity/Message.h"
 #include "im/actor/model/entity/Peer.h"
+#include "im/actor/model/entity/SearchEntity.h"
 #include "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #include "java/lang/RuntimeException.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
 
 
-#line 16
+#line 17
 @implementation AMBaseAsyncStorageProvider
 
 
-#line 19
+#line 20
 - (id<DKListEngine>)createContactsListWithDKListStorage:(id<DKListStorage>)storage {
   
-#line 20
+#line 21
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Storage MUST implement ListStorageDisplayEx"];
   }
@@ -36,7 +37,7 @@
 }
 
 
-#line 27
+#line 28
 - (id<DKListEngine>)createDialogsListWithDKListStorage:(id<DKListStorage>)storage {
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Storage MUST implement ListStorageDisplayEx"];
@@ -45,15 +46,26 @@
 }
 
 
-#line 35
+#line 36
 - (id<DKListEngine>)createMessagesListWithAMPeer:(AMPeer *)peer
                                withDKListStorage:(id<DKListStorage>)storage {
   
-#line 36
+#line 37
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Storage MUST implement ListStorageDisplayEx"];
   }
   return [[DKAsyncListEngine alloc] initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)) withBSBserCreator:AMMessage_get_CREATOR_()];
+}
+
+
+#line 44
+- (id<DKListEngine>)createSearchListWithDKListStorage:(id<DKListStorage>)storage {
+  
+#line 45
+  if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Storage MUST implement ListStorageDisplayEx"];
+  }
+  return [[DKAsyncListEngine alloc] initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)) withBSBserCreator:AMSearchEntity_get_CREATOR_()];
 }
 
 - (instancetype)init {

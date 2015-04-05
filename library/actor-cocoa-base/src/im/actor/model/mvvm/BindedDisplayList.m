@@ -236,11 +236,19 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
 }
 
 
+#line 67
+- (jboolean)isInSearchState {
+  
 #line 68
+  return mode_ == AMBindedDisplayList_ListModeEnum_get_SEARCH();
+}
+
+
+#line 72
 - (void)touchWithInt:(jint)index {
   AMMVVMEngine_checkMainThread();
   
-#line 71
+#line 75
   if (index >= [self getSize] - loadGap_) {
     if ([((AMDisplayWindow *) nil_chk(window_)) isForwardCompleted]) {
       if (bindHook_ != nil) {
@@ -249,197 +257,217 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
     }
     else {
       
-#line 77
+#line 81
       AMBindedDisplayList_loadMoreForward(self);
     }
   }
   
-#line 81
+#line 85
   if (index < loadGap_) {
     AMBindedDisplayList_loadMoreBackward(self);
   }
   
-#line 85
+#line 89
   if (bindHook_ != nil) {
     [bindHook_ onItemTouchedWithId:[self getItemWithInt:index]];
   }
 }
 
 
-#line 93
-- (void)initTopWithBoolean:(jboolean)refresh {
-  
-#line 94
-  AMMVVMEngine_checkMainThread();
+#line 97
+- (void)initEmpty {
   
 #line 98
+  AMMVVMEngine_checkMainThread();
+  
+#line 100
+  mode_ = AMBindedDisplayList_ListModeEnum_get_FORWARD();
+  query_ = nil;
+  
+#line 103
+  [self editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>) check_protocol_cast(AMDisplayModifications_clear(), @protocol(AMDisplayList_Modification))];
+  
+#line 105
+  [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
+  currentGeneration_++;
+  [((AMDisplayWindow *) nil_chk(window_)) emptyInit];
+}
+
+
+#line 111
+- (void)initTopWithBoolean:(jboolean)refresh {
+  
+#line 112
+  AMMVVMEngine_checkMainThread();
+  
+#line 116
   if (mode_ != nil && mode_ == AMBindedDisplayList_ListModeEnum_get_FORWARD()) {
     
-#line 100
+#line 118
     return;
   }
   mode_ = AMBindedDisplayList_ListModeEnum_get_FORWARD();
   query_ = nil;
   
-#line 105
+#line 123
   if (refresh) {
     
-#line 107
+#line 125
     [self editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>) check_protocol_cast(AMDisplayModifications_clear(), @protocol(AMDisplayList_Modification))];
   }
   
-#line 110
+#line 128
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitForward];
   
-#line 115
+#line 133
   [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, [[AMBindedDisplayList_$2 alloc] initWithAMBindedDisplayList:self],
-#line 130
+#line 148
   currentGeneration_)];
 }
 
 
-#line 134
+#line 152
 - (void)initBottomWithBoolean:(jboolean)refresh {
   
-#line 135
+#line 153
   AMMVVMEngine_checkMainThread();
   
-#line 137
+#line 155
   if (isGlobalList__) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Global DisplayList can't grow from bottom"];
   }
   
-#line 141
+#line 159
   if (mode_ != nil && mode_ == AMBindedDisplayList_ListModeEnum_get_BACKWARD()) {
     return;
   }
   mode_ = AMBindedDisplayList_ListModeEnum_get_BACKWARD();
   
-#line 146
+#line 164
   if (refresh) {
     [self editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>) check_protocol_cast(AMDisplayModifications_clear(), @protocol(AMDisplayList_Modification))];
   }
   
-#line 150
+#line 168
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   isLoadMoreBackwardRequested_ = NO;
   isLoadMoreBackwardRequested_ = NO;
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitBackward];
   
-#line 156
+#line 174
   [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadBackwardWithInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, [[AMBindedDisplayList_$3 alloc] initWithAMBindedDisplayList:self],
-#line 169
+#line 187
   currentGeneration_)];
 }
 
 
-#line 173
+#line 191
 - (void)initCenterWithLong:(jlong)centerSortKey
                withBoolean:(jboolean)refresh {
   
-#line 174
+#line 192
   AMMVVMEngine_checkMainThread();
   
-#line 176
+#line 194
   if (mode_ != nil && mode_ == AMBindedDisplayList_ListModeEnum_get_CENTER()) {
     return;
   }
   mode_ = AMBindedDisplayList_ListModeEnum_get_CENTER();
   
-#line 181
+#line 199
   if (refresh) {
     [self editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>) check_protocol_cast(AMDisplayModifications_clear(), @protocol(AMDisplayList_Modification))];
   }
   
-#line 185
+#line 203
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   isLoadMoreBackwardRequested_ = NO;
   isLoadMoreBackwardRequested_ = NO;
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitCenter];
   
-#line 191
+#line 209
   [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadCenterWithLong:centerSortKey withInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, [[AMBindedDisplayList_$4 alloc] initWithAMBindedDisplayList:self],
-#line 205
+#line 223
   currentGeneration_)];
 }
 
 
-#line 209
+#line 227
 - (void)initSearchWithNSString:(NSString *)query
                    withBoolean:(jboolean)refresh {
   
-#line 210
+#line 228
   AMMVVMEngine_checkMainThread();
   
-#line 212
+#line 230
   if (isGlobalList__) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Global DisplayList can't perform search"];
   }
   
-#line 216
+#line 234
   if (query == nil || ((jint) [((NSString *) nil_chk([query trim])) length]) == 0) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Query can't be null or empty"];
   }
   
-#line 220
+#line 238
   if (mode_ != nil && mode_ == AMBindedDisplayList_ListModeEnum_get_SEARCH() && [((NSString *) nil_chk(self->query_)) isEqual:query]) {
     return;
   }
   self->mode_ = AMBindedDisplayList_ListModeEnum_get_SEARCH();
   self->query_ = query;
   
-#line 226
+#line 244
   if (refresh) {
     [self editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>) check_protocol_cast(AMDisplayModifications_clear(), @protocol(AMDisplayList_Modification))];
   }
   
-#line 230
+#line 248
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   isLoadMoreBackwardRequested_ = NO;
   isLoadMoreBackwardRequested_ = NO;
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitForward];
   
-#line 236
+#line 254
   [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithNSString:query withInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, [[AMBindedDisplayList_$5 alloc] initWithAMBindedDisplayList:self],
-#line 249
+#line 267
   currentGeneration_)];
 }
 
 
-#line 255
+#line 273
 - (void)loadMoreForward {
   AMBindedDisplayList_loadMoreForward(self);
 }
 
 
-#line 310
+#line 328
 - (void)loadMoreBackward {
   AMBindedDisplayList_loadMoreBackward(self);
 }
 
 
-#line 356
+#line 374
 - (void)dispose {
   
-#line 357
+#line 375
   AMMVVMEngine_checkMainThread();
   
-#line 359
+#line 377
   if (isGlobalList__) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Global DisplayList can't be disposed"];
   }
   
-#line 363
+#line 381
   [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) unsubscribeWithDKListEngineDisplayListener:engineListener_];
 }
 
 
-#line 366
+#line 384
 - (id<DKListEngineDisplayLoadCallback>)coverWithDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback
                                                                         withInt:(jint)generation {
   return AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, callback, generation);
@@ -475,32 +503,32 @@ id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
 
 void AMBindedDisplayList_loadMoreForward(AMBindedDisplayList *self) {
   
-#line 256
+#line 274
   AMMVVMEngine_checkMainThread();
   
-#line 260
+#line 278
   if (self->isLoadMoreForwardRequested_) {
     
-#line 262
+#line 280
     return;
   }
   
-#line 265
+#line 283
   if (![((AMDisplayWindow *) nil_chk(self->window_)) startForwardLoading]) {
     
-#line 267
+#line 285
     return;
   }
   
-#line 270
+#line 288
   self->isLoadMoreForwardRequested_ = YES;
   jint gen = self->currentGeneration_;
   id<DKListEngineDisplayLoadCallback> callback = AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, [[AMBindedDisplayList_$6 alloc] initWithAMBindedDisplayList:self withInt:gen], self->currentGeneration_);
   
-#line 300
+#line 318
   if (self->mode_ != AMBindedDisplayList_ListModeEnum_get_SEARCH()) {
     
-#line 302
+#line 320
     [((id<DKListEngineDisplayExt>) nil_chk(self->listEngine_)) loadForwardWithLong:[((JavaLangLong *) nil_chk([self->window_ getCurrentForwardHead])) longLongValue] withInt:self->pageSize_ withDKListEngineDisplayLoadCallback:callback];
   }
   else {
@@ -510,68 +538,68 @@ void AMBindedDisplayList_loadMoreForward(AMBindedDisplayList *self) {
 
 void AMBindedDisplayList_loadMoreBackward(AMBindedDisplayList *self) {
   
-#line 311
+#line 329
   AMMVVMEngine_checkMainThread();
   
-#line 313
+#line 331
   if (self->isLoadMoreBackwardRequested_) {
     return;
   }
   
-#line 317
+#line 335
   if (![((AMDisplayWindow *) nil_chk(self->window_)) startBackwardLoading]) {
     return;
   }
   
-#line 321
+#line 339
   self->isLoadMoreBackwardRequested_ = YES;
   jint gen = self->currentGeneration_;
   id<DKListEngineDisplayLoadCallback> callback = AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, [[AMBindedDisplayList_$7 alloc] initWithAMBindedDisplayList:self withInt:gen], self->currentGeneration_);
   
-#line 348
+#line 366
   if (self->mode_ != AMBindedDisplayList_ListModeEnum_get_SEARCH()) {
     [((id<DKListEngineDisplayExt>) nil_chk(self->listEngine_)) loadBackwardWithLong:[((JavaLangLong *) nil_chk([self->window_ getCurrentBackwardHead])) longLongValue] withInt:self->pageSize_ withDKListEngineDisplayLoadCallback:callback];
   }
   else {
     
-#line 351
+#line 369
     [((id<DKListEngineDisplayExt>) nil_chk(self->listEngine_)) loadBackwardWithNSString:self->query_ withLong:[((JavaLangLong *) nil_chk([self->window_ getCurrentBackwardHead])) longLongValue] withInt:self->pageSize_ withDKListEngineDisplayLoadCallback:callback];
   }
 }
 
 id<DKListEngineDisplayLoadCallback> AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(AMBindedDisplayList *self, id<DKListEngineDisplayLoadCallback> callback, jint generation) {
   
-#line 367
+#line 385
   return [[AMBindedDisplayList_$8 alloc] initWithAMBindedDisplayList:self withInt:generation withDKListEngineDisplayLoadCallback:callback];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList)
 
 
-#line 383
+#line 401
 @implementation AMBindedDisplayList_ListEngineComparator
 
 
-#line 386
+#line 404
 - (jint)compareWithId:(id<DKListEngineItem>)o1
                withId:(id<DKListEngineItem>)o2 {
   
-#line 387
+#line 405
   jlong lKey = [((id<DKListEngineItem>) nil_chk(o1)) getEngineSort];
   jlong rKey = [((id<DKListEngineItem>) nil_chk(o2)) getEngineSort];
   
-#line 390
+#line 408
   if (lKey > rKey) {
     return -1;
   }
   else
-#line 392
+#line 410
   if (lKey < rKey) {
     return 1;
   }
   else {
     
-#line 395
+#line 413
     return 0;
   }
 }
@@ -585,45 +613,45 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_ListEngineComparator)
 
 
-#line 400
+#line 418
 @implementation AMBindedDisplayList_EngineListener
 
 
-#line 403
+#line 421
 - (void)onItemRemovedWithLong:(jlong)id_ {
   
-#line 405
+#line 423
   [this$0_ editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>) check_protocol_cast(AMDisplayModifications_removeWithLong_(id_), @protocol(AMDisplayList_Modification))];
 }
 
 - (void)onItemsRemovedWithLongArray:(IOSLongArray *)ids {
   
-#line 411
+#line 429
   [this$0_ editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>) check_protocol_cast(AMDisplayModifications_removeWithLongArray_(ids), @protocol(AMDisplayList_Modification))];
 }
 
 - (void)addOrUpdateWithId:(BSBserObject<DKListEngineItem> *)item {
   
-#line 417
+#line 435
   [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithDKListEngineItem_(item)];
 }
 
 - (void)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items {
   
-#line 423
+#line 441
   [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithJavaUtilList_(items)];
 }
 
 - (void)onItemsReplacedWithJavaUtilList:(id<JavaUtilList>)items {
   
-#line 429
+#line 447
   [this$0_ editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>) check_protocol_cast(AMDisplayModifications_clear(), @protocol(AMDisplayList_Modification))];
   [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithJavaUtilList_(items)];
 }
 
 - (void)onListClear {
   
-#line 436
+#line 454
   [this$0_ editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>) check_protocol_cast(AMDisplayModifications_clear(), @protocol(AMDisplayList_Modification))];
 }
 
@@ -641,7 +669,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_ListEngineComparator)
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_EngineListener)
 
-#line 440
+#line 458
 
 BOOL AMBindedDisplayList_ListModeEnum_initialized = NO;
 
@@ -696,7 +724,7 @@ AMBindedDisplayList_ListModeEnum *AMBindedDisplayList_ListModeEnum_valueOfWithNS
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_ListModeEnum)
 
-#line 444
+#line 462
 
 BOOL AMBindedDisplayList_StateEnum_initialized = NO;
 
@@ -773,24 +801,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$1)
 @implementation AMBindedDisplayList_$2
 
 
-#line 117
+#line 135
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   
-#line 118
+#line 136
   AMMVVMEngine_checkMainThread();
   
-#line 122
+#line 140
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitForwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
   
-#line 124
+#line 142
   if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
     [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_replaceWithJavaUtilList_(items)];
   }
   else {
     
-#line 127
+#line 145
     [this$0_->window_ onForwardCompleted];
   }
 }
@@ -812,24 +840,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$2)
 @implementation AMBindedDisplayList_$3
 
 
-#line 158
+#line 176
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   
-#line 159
+#line 177
   AMMVVMEngine_checkMainThread();
   
-#line 161
+#line 179
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitBackwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(topSortKey)];
   
-#line 163
+#line 181
   if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
     [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_replaceWithJavaUtilList_(items)];
   }
   else {
     
-#line 166
+#line 184
     [this$0_->window_ onBackwardCompleted];
   }
 }
@@ -851,24 +879,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$3)
 @implementation AMBindedDisplayList_$4
 
 
-#line 193
+#line 211
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   
-#line 194
+#line 212
   AMMVVMEngine_checkMainThread();
   
-#line 196
+#line 214
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitCenterWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey) withJavaLangLong:JavaLangLong_valueOfWithLong_(topSortKey)];
   
-#line 198
+#line 216
   if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
     [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithJavaUtilList_(items)];
   }
   else {
     
-#line 201
+#line 219
     [this$0_->window_ onForwardCompleted];
     [this$0_->window_ onBackwardCompleted];
   }
@@ -891,21 +919,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$4)
 @implementation AMBindedDisplayList_$5
 
 
-#line 238
+#line 256
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   
-#line 239
+#line 257
   AMMVVMEngine_checkMainThread();
   
-#line 241
+#line 259
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitForwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
   
-#line 243
+#line 261
   [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_replaceWithJavaUtilList_(items)];
   
-#line 245
+#line 263
   if ([((id<JavaUtilList>) nil_chk(items)) size] == 0) {
     [this$0_->window_ onForwardCompleted];
   }
@@ -928,27 +956,27 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$5)
 @implementation AMBindedDisplayList_$6
 
 
-#line 274
+#line 292
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   
-#line 275
+#line 293
   AMMVVMEngine_checkMainThread();
   
-#line 279
+#line 297
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeForwardLoading];
   
-#line 281
+#line 299
   if ([((id<JavaUtilList>) nil_chk(items)) size] == 0) {
     [this$0_->window_ onForwardCompleted];
     
-#line 284
+#line 302
     this$0_->isLoadMoreForwardRequested_ = NO;
   }
   else {
     
-#line 286
+#line 304
     [this$0_->window_ onForwardSliceLoadedWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
     [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOnlyWithJavaUtilList_(items) withJavaLangRunnable:[[AMBindedDisplayList_$6_$1 alloc] initWithAMBindedDisplayList_$6:self]];
   }
@@ -974,13 +1002,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$6)
 @implementation AMBindedDisplayList_$6_$1
 
 
-#line 289
+#line 307
 - (void)run {
   
-#line 290
+#line 308
   if (this$0_->val$gen_ == this$0_->this$0_->currentGeneration_) {
     
-#line 292
+#line 310
     this$0_->this$0_->isLoadMoreForwardRequested_ = NO;
   }
 }
@@ -1002,27 +1030,27 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$6_$1)
 @implementation AMBindedDisplayList_$7
 
 
-#line 325
+#line 343
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   
-#line 326
+#line 344
   AMMVVMEngine_checkMainThread();
   
-#line 328
+#line 346
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) endBackwardLoading];
   
-#line 330
+#line 348
   if ([((id<JavaUtilList>) nil_chk(items)) size] == 0) {
     [this$0_->window_ onBackwardCompleted];
     
-#line 333
+#line 351
     this$0_->isLoadMoreBackwardRequested_ = NO;
   }
   else {
     
-#line 335
+#line 353
     [this$0_->window_ onBackwardSliceLoadedWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
     [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOnlyWithJavaUtilList_(items) withJavaLangRunnable:[[AMBindedDisplayList_$7_$1 alloc] initWithAMBindedDisplayList_$7:self]];
   }
@@ -1048,10 +1076,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$7)
 @implementation AMBindedDisplayList_$7_$1
 
 
-#line 338
+#line 356
 - (void)run {
   
-#line 339
+#line 357
   if (this$0_->val$gen_ == this$0_->this$0_->currentGeneration_) {
     this$0_->this$0_->isLoadMoreBackwardRequested_ = NO;
   }
@@ -1074,12 +1102,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$7_$1)
 @implementation AMBindedDisplayList_$8
 
 
-#line 369
+#line 387
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   
-#line 370
+#line 388
   AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_([[AMBindedDisplayList_$8_$1 alloc] initWithAMBindedDisplayList_$8:self withJavaUtilList:items withLong:topSortKey withLong:bottomSortKey]);
 }
 
@@ -1106,10 +1134,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$8)
 @implementation AMBindedDisplayList_$8_$1
 
 
-#line 372
+#line 390
 - (void)run {
   
-#line 373
+#line 391
   if (this$0_->val$generation_ != this$0_->this$0_->currentGeneration_) {
     return;
   }

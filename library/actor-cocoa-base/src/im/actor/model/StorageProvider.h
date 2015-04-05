@@ -22,6 +22,8 @@
 
 - (id<DKListStorage>)createList:(NSString *)name;
 
+- (id<DKListEngine>)createSearchListWithDKListStorage:(id<DKListStorage>)storage;
+
 - (id<DKListEngine>)createContactsListWithDKListStorage:(id<DKListStorage>)storage;
 
 - (id<DKListEngine>)createDialogsListWithDKListStorage:(id<DKListStorage>)storage;

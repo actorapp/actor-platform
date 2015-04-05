@@ -35,6 +35,8 @@
 
 - (AMBindedDisplayList *)buildContactDisplayList;
 
+- (AMBindedDisplayList *)buildSearchList;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMBaseMessenger)

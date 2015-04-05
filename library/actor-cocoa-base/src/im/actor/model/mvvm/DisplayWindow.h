@@ -44,6 +44,8 @@
 - (void)completeInitCenterWithJavaLangLong:(JavaLangLong *)forwardHead
                           withJavaLangLong:(JavaLangLong *)backwardHead;
 
+- (void)emptyInit;
+
 - (void)startInitForward;
 
 - (void)completeInitForwardWithJavaLangLong:(JavaLangLong *)tail;
