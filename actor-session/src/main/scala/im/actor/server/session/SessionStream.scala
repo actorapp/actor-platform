@@ -22,13 +22,13 @@ private[session] object SessionStream {
   @SerialVersionUID(1L)
   case class HandleRpcRequest(messageId: Long, requestBytes: BitVector, clientData: ClientData) extends SessionStreamMessage
 
-  def graph(in: Source[SessionStreamMessage, _], rpcApiService: ActorRef, rpcResponsePublisher: ActorRef)(implicit system: ActorSystem): RunnableFlow[_] =
+  def graph(in: Source[SessionStreamMessage, _], rpcApiService: ActorRef, protoMessagePublisher: ActorRef)(implicit system: ActorSystem): RunnableFlow[_] =
     FlowGraph.closed() { implicit builder =>
       import FlowGraph.Implicits._
 
       val discriminator = builder.add(new SessionMessageDiscriminator)
 
-      val rpcRequestHandlerActor = system.actorOf(RpcRequestHandler.props(rpcApiService, rpcResponsePublisher))
+      val rpcRequestHandlerActor = system.actorOf(RpcRequestHandler.props(rpcApiService, protoMessagePublisher))
 
       val rpcRequestHandler = builder.add(Sink(ActorSubscriber[HandleRpcRequest](rpcRequestHandlerActor)))
 

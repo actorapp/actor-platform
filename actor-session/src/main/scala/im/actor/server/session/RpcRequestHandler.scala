@@ -5,7 +5,7 @@ import akka.event.LoggingReceive
 import akka.stream.actor._
 
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.mtproto.protocol.RpcResponseBox
+import im.actor.server.mtproto.protocol.{ MessageAck, RpcResponseBox }
 
 import scala.concurrent.duration._
 import scala.collection.immutable
@@ -21,7 +21,7 @@ object RpcRequestHandler {
   ) = Props(classOf[RpcRequestHandler], rpcApiService, rpcResponseManager)
 }
 
-class RpcRequestHandler(rpcApiService: ActorRef, rpcResponsePublisher: ActorRef) extends ActorSubscriber with ActorLogging {
+class RpcRequestHandler(rpcApiService: ActorRef, protoMessagePublisher: ActorRef) extends ActorSubscriber with ActorLogging {
   import ActorSubscriberMessage._
   import SessionStream._
 
@@ -39,16 +39,19 @@ class RpcRequestHandler(rpcApiService: ActorRef, rpcResponsePublisher: ActorRef)
       requestQueue += (messageId -> requestBytes)
       assert(requestQueue.size <= MaxRequestQueueSize, s"queued too many: ${requestQueue.size}")
 
+      log.debug("Publishing acknowledge for messageId: {}", messageId)
+      protoMessagePublisher ! MessageAck(Vector(messageId))
+
       log.debug("Making an rpc request for messageId: {}", messageId)
       rpcApiService ! RpcApiService.HandleRpcRequest(messageId, requestBytes, clientData)
     case RpcApiService.RpcResponse(messageId, responseBytes) =>
       requestQueue -= messageId
 
       log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
-      rpcResponsePublisher ! RpcResponseBox(messageId, responseBytes)
+      protoMessagePublisher ! RpcResponseBox(messageId, responseBytes)
     case OnError(cause) =>
       log.error(cause, "Received OnError, sending PoisonPill to ResponseManager")
-      rpcResponsePublisher ! PoisonPill
+      protoMessagePublisher ! PoisonPill
     case unmatched =>
       log.error("Unmatched msg {}", unmatched)
   }

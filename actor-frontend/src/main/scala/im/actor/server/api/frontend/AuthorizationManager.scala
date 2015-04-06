@@ -1,19 +1,21 @@
-package im.actor.server.api.service
+package im.actor.server.api.frontend
+
+import scala.annotation.tailrec
+import scala.concurrent.Future
+import scala.util.{ Failure, Success }
 
 import akka.actor._
 import akka.stream.actor.ActorPublisher
+import slick.driver.PostgresDriver.api.Database
+
+import im.actor.server.api.util.rand
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
-import im.actor.server.api.util.rand
 import im.actor.server.persist
-import scala.annotation.tailrec
-import scala.concurrent.Future
-import scala.util.{ Success, Failure }
-import scalaz._
-import slick.driver.PostgresDriver.api.Database
 
 object AuthorizationManager {
+
   @SerialVersionUID(1L)
   case class FrontendPackage(p: MTPackage)
 
@@ -24,12 +26,14 @@ object AuthorizationManager {
 }
 
 class AuthorizationManager(db: Database) extends Actor with ActorLogging with ActorPublisher[MTTransport] {
+
   import akka.stream.actor.ActorPublisherMessage._
-  import AuthorizationManager._
   import context.dispatcher
 
-  private var authId: Long = 0L
-  private var buf = Vector.empty[MTProto]
+  import AuthorizationManager._
+
+  private[this] var authId: Long = 0L
+  private[this] var buf = Vector.empty[MTProto]
 
   def receive = {
     case FrontendPackage(p) =>
@@ -38,15 +42,17 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
         case Right(res) => handleMessageBox(p.authId, p.sessionId, res.value, replyTo)
         case Left(e) => replyTo ! ProtoPackage(Drop(0, 0, e.message))
       }
-    case SessionPackage(p) =>
+    /*case SessionPackage(p) =>
       if (buf.isEmpty && totalDemand > 0)
         onNext(ProtoPackage(p))
       else {
         buf :+= p
         deliverBuf()
-      }
+      }*/
     case Request(_) =>
       deliverBuf()
+    case Cancel =>
+      context.stop(self)
   }
 
   private def handleMessageBox(pAuthId: Long, pSessionId: Long, mb: MessageBox, replyTo: ActorRef) = {
@@ -73,12 +79,10 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
             case Success(_) => sendPackage(mb.messageId, ResponseAuthId(authId))
             case Failure(e) => sendDrop(e.getMessage)
           }
-        case _ => sendDrop("non RequestAuthId message")
+        case _ => sendDrop("not a RequestAuthId message")
       }
     } else {
-      if (authId == 0L) authId = pAuthId
-      if (authId == pAuthId) ??? // sessionRegion.tell(SessionProtocol.Envelope(p.authId, p.sessionId, mb)
-      else sendDrop("authId cannot be changed more than once")
+      log.error("AuthorizationManager can handle packages with authId: 0 only")
     }
   }
 
