@@ -1,4 +1,4 @@
-package im.actor.server.api.service
+package im.actor.server.api.frontend
 
 import scala.annotation.tailrec
 import scala.concurrent.Future
@@ -11,10 +11,10 @@ import org.apache.commons.codec.digest.DigestUtils
 import scodec.DecodeResult
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api.Database
-
 import im.actor.server.mtproto.codecs._
 import im.actor.server.mtproto.codecs.transport._
 import im.actor.server.mtproto.transport._
+import im.actor.server.session.SessionMessage
 import im.actor.server.util.streams.SourceWatchManager
 
 object MTProto {
@@ -25,31 +25,40 @@ object MTProto {
   val protoVersions: Set[Byte] = Set(1)
   val apiMajorVersions: Set[Byte] = Set(1)
 
-  def flow(maxBufferSize: Int)
+  def flow(maxBufferSize: Int, sessionRegion: ActorRef)
           (implicit db: Database, system: ActorSystem, timeout: Timeout) = {
     val authManager = system.actorOf(AuthorizationManager.props(db))
     val authSource = Source(ActorPublisher[MTTransport](authManager))
+
+    val sessionClient = system.actorOf(SessionClient.props(sessionRegion))
+    val sessionClientSource = Source(ActorPublisher[MTTransport](sessionClient))
+
     val (watchManager, watchSource) = SourceWatchManager[MTTransport](authManager)
 
     val mtprotoFlow = Flow[ByteString]
       .transform(() => MTProto.parse(maxBufferSize))
-      .mapAsyncUnordered(MTProto.handlePackage(_, authManager))
+      .mapAsyncUnordered(MTProto.handlePackage(_, authManager, sessionClient))
+      .mapConcat(optM => optM.map(Vector(_)).getOrElse(Vector.empty))
+
     val mapRespFlow = Flow[MTTransport]
       .transform(() => MTProto.mapResponse())
+
     val completeSink = Sink.onComplete {
       case _ =>
         watchManager ! PoisonPill
         authManager ! PoisonPill
+        sessionClient ! PoisonPill
     }
 
     Flow() { implicit builder =>
       import FlowGraph.Implicits._
 
       val bcast = builder.add(Broadcast[ByteString](2))
-      val merge = builder.add(Merge[MTTransport](3))
+      val merge = builder.add(Merge[MTTransport](4))
 
       val mtproto = builder.add(mtprotoFlow)
       val auth = builder.add(authSource)
+      val session = builder.add(sessionClientSource)
       val watch = builder.add(watchSource)
       val mapResp = builder.add(mapRespFlow)
       val complete = builder.add(completeSink)
@@ -58,6 +67,7 @@ object MTProto {
 
       mtproto ~> merge
       auth    ~> merge
+      session ~> merge
       watch   ~> merge
                  merge ~> mapResp ~> bcast
                                      bcast.out(0) ~> complete
@@ -136,7 +146,6 @@ object MTProto {
               ((state, buf), pSeq)
             } else {
               val (body, remainder) = buf.splitAt(bitsLength)
-
               (new SignedMTProtoDecoder(header, size)).decode(body).toEither match {
                 case Right(DecodeResult(body, BitVector.empty)) =>
                   doParse(AwaitPackageHeader, remainder)(pSeq :+ ProtoPackage(body))
@@ -160,15 +169,22 @@ object MTProto {
     override def onPush(elem: MTTransport, ctx: Context[ByteString]): Directive = elem match {
       case h @ Handshake(protoVersion, apiMajorVersion, _, _) =>
         val res = ByteString(HandshakeCodec.encode(h).require.toByteBuffer)
-        if (protoVersion == 0 || apiMajorVersion == 0) ctx.pushAndFinish(res)
+
+        if (protoVersion == 0 || apiMajorVersion == 0) {
+          ctx.pushAndFinish(res)
+        }
+
         ctx.push(res)
       case ProtoPackage(p) =>
         packageIndex += 1
         val pkg = TransportPackage(packageIndex, p)
         val res = ByteString(TransportPackageCodec.encode(pkg).require.toByteBuffer)
+
         p match {
-          case _: Drop => ctx.pushAndFinish(res)
-          case _ => ctx.push(res)
+          case _: Drop =>
+            ctx.pushAndFinish(res)
+          case _ =>
+            ctx.push(res)
         }
       case SilentClose => ctx.finish()
     }
@@ -176,23 +192,28 @@ object MTProto {
     override def onPull(ctx: Context[ByteString]): Directive = ctx.pull()
   }
 
-  def handlePackage(req: MTTransport, actorRef: ActorRef)
-                   (implicit system: ActorSystem, timeout: Timeout): Future[MTTransport] = {
+  def handlePackage(req: MTTransport, authManager: ActorRef, sessionClient: ActorRef)
+                   (implicit system: ActorSystem, timeout: Timeout): Future[Option[MTTransport]] = {
     import system.dispatcher
 
     req match {
-      case ProtoPackage(p) =>
-        p match {
+      case p @ ProtoPackage(body) =>
+        body match {
           case m: MTPackage =>
-            actorRef.ask(AuthorizationManager.FrontendPackage(m)).mapTo[MTTransport].recover {
-              case e: AskTimeoutException =>
-                val msg = s"handleAsk within $timeout"
-                system.log.error(e, msg)
-                ProtoPackage(InternalError(0, 0, msg))
+            if (m.authId == 0) {
+              authManager.ask(AuthorizationManager.FrontendPackage(m)).mapTo[MTTransport].map(Some.apply).recover {
+                case e: AskTimeoutException =>
+                  val msg = s"handleAsk within $timeout"
+                  system.log.error(e, msg)
+                  Some(ProtoPackage(InternalError(0, 0, msg)))
+              }
+            } else {
+              sessionClient ! SessionClient.SendToSession(m)
+              Future.successful(None)
             }
-          case Ping(bytes) => Future.successful(ProtoPackage(Pong(bytes)))
-          case Pong(bytes) => Future.successful(ProtoPackage(Ping(bytes)))
-          case m => Future.successful(ProtoPackage(m))
+          case Ping(bytes) => Future.successful(Some(ProtoPackage(Pong(bytes))))
+          case Pong(bytes) => Future.successful(Some(ProtoPackage(Ping(bytes))))
+          case m => Future.successful(Some(ProtoPackage(m)))
         }
       case h: Handshake => Future.successful {
         val clientBytes = BitVector(h.protoVersion, h.apiMajorVersion, h.apiMinorVersion) ++ h.bytes
@@ -200,8 +221,11 @@ object MTProto {
         val protoVersion: Byte = if (protoVersions.contains(h.protoVersion)) h.protoVersion else 0
         val apiMajorVersion: Byte = if (apiMajorVersions.contains(h.apiMajorVersion)) h.apiMajorVersion else 0
         val apiMinorVersion: Byte = if (apiMajorVersion == 0) 0 else h.apiMinorVersion
-        Handshake(protoVersion, apiMajorVersion, apiMinorVersion, sha1Sign)
+        Some(Handshake(protoVersion, apiMajorVersion, apiMinorVersion, sha1Sign))
       }
+      case SilentClose =>
+        // FIXME: do the real silent close?
+        throw new NotImplementedError("SilentClose handler is not implemented")
     }
   }
 }

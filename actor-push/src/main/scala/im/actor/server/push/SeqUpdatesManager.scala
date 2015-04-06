@@ -159,7 +159,6 @@ class SeqUpdatesManager extends PersistentActor {
 
   override def receiveRecover: Receive = {
     case SeqChanged(value) =>
-      println(s"SeqChanged $value")
       seq = value
     case RecoveryCompleted =>
       recoveryCompleted()

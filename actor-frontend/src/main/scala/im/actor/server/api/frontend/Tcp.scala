@@ -3,6 +3,8 @@ package im.actor.server.api.frontend
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
+import scala.util.Try
+
 import akka.actor._
 import akka.event.Logging
 import akka.stream.FlowMaterializer
@@ -11,7 +13,7 @@ import akka.util.Timeout
 import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api.Database
 
-import im.actor.server.api.service.MTProto
+import im.actor.server.session.Session
 
 object Tcp {
   def start(appConf: Config)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
@@ -26,10 +28,18 @@ object Tcp {
 
     val connections = StreamTcp().bind(serverAddress)
 
+    val sessionRegion = Session.startRegionProxy()
+
     connections runForeach { conn =>
       log.info(s"Client connected from: ${conn.remoteAddress}")
-      val flow = MTProto.flow(maxBufferSize)
-      conn.handleWith(flow)
+
+      try {
+        val flow = MTProto.flow(maxBufferSize, sessionRegion)
+        conn.handleWith(flow)
+      } catch {
+        case e: Exception =>
+          log.error(e, "Failed to create connection flow")
+      }
     }
   }
 }

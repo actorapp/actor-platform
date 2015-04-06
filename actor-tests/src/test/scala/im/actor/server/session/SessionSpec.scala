@@ -7,9 +7,10 @@ import akka.actor._
 import akka.stream.ActorFlowMaterializer
 import akka.testkit.TestProbe
 import org.specs2.matcher.ThrownExpectations
+import org.specs2.specification.core.Fragments
 import scodec.bits._
 
-import im.actor.api.rpc.auth.{ ResponseAuth, RequestSignUp, RequestSignOut, RequestSendAuthCode, ResponseSendAuthCode }
+import im.actor.api.rpc.auth.{ RequestSendAuthCode, RequestSignOut, RequestSignUp, ResponseAuth, ResponseSendAuthCode }
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
@@ -30,20 +31,20 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
     handle user authorization ${sessions().e4}
   """
 
+  implicit val materializer = ActorFlowMaterializer()
+  implicit val (ds, db) = migrateAndInitDb()
+
+  val rpcApiService = system.actorOf(RpcApiService.props())
+  val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
+
+  val authService = new AuthServiceImpl(sessionRegion)
+  rpcApiService ! RpcApiService.AttachService(authService)
+
   case class sessions() {
 
     import SessionMessage._
 
-    implicit val materializer = ActorFlowMaterializer()
-    implicit val (ds, db) = migrateAndInitDb()
-
     val authId = Random.nextLong()
-
-    val rpcApiService = system.actorOf(RpcApiService.props())
-    val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
-
-    val authService = new AuthServiceImpl(sessionRegion)
-    rpcApiService ! RpcApiService.AttachService(authService)
 
     val probe = TestProbe()
 
@@ -68,6 +69,7 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
 
       expectNewSession(authId, sessionId, messageId)
       probe.receiveOne(1.second)
+      probe.receiveOne(1.second)
     }
 
     def e3() = {
@@ -78,7 +80,9 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
       sendMessageBox(authId, sessionId, sessionRegion, messageId, RpcRequestBox(encodedRequest))
 
       expectNewSession(authId, sessionId, messageId)
-      receiveRpcResult() must beLike {
+      expectMessageAck(authId, sessionId, messageId)
+
+      expectRpcResult() must beLike {
         case RpcOk(ResponseSendAuthCode(_, false)) => ok
       }
     }
@@ -93,8 +97,9 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
       sendMessageBox(authId, sessionId, sessionRegion, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
+      expectMessageAck(authId, sessionId, firstMessageId)
 
-      val smsHash = receiveRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
+      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
 
       val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUp(
         phoneNumber = phoneNumber,
@@ -108,21 +113,27 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
         appKey = "appKey",
         isSilent = false
       ))).require
-      sendMessageBox(authId, sessionId, sessionRegion, Random.nextLong(), RpcRequestBox(encodedSignUpRequest))
 
-      receiveRpcResult() must beLike {
+      val secondMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion, secondMessageId, RpcRequestBox(encodedSignUpRequest))
+
+      expectMessageAck(authId, sessionId, secondMessageId)
+      expectRpcResult() must beLike {
         case RpcOk(ResponseAuth(_, _, _)) => ok
       }
 
       val encodedSignOutRequest = RequestCodec.encode(Request(RequestSignOut)).require
-      sendMessageBox(authId, sessionId, sessionRegion, Random.nextLong(), RpcRequestBox(encodedSignOutRequest))
 
-      receiveRpcResult() must beLike {
+      val thirdMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion, thirdMessageId, RpcRequestBox(encodedSignOutRequest))
+
+      expectMessageAck(authId, sessionId, thirdMessageId)
+      expectRpcResult() must beLike {
         case RpcOk(ResponseVoid) => ok
       }
     }
 
-    private def receiveRpcResult(): RpcResult = {
+    private def expectRpcResult(): RpcResult = {
       Option(probe.receiveOne(1.second)) match {
         case Some(MTPackage(authId, sessionId, mbBytes)) =>
           MessageBoxCodec.decode(mbBytes).require.value.body match {
@@ -135,15 +146,31 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
       }
     }
 
-    private def expectNewSession(authId: Long, sessionId: Long, messageId: Long) =
-      expectMessageBox(authId, sessionId, 1L, NewSession(sessionId, messageId))
+    private def expectMessageAck(authId: Long, sessionId: Long, messageId: Long): MessageAck = {
+      val mb = expectMessageBox(authId, sessionId)
+      mb.body must beAnInstanceOf[MessageAck]
 
-    private def expectMessageBox(authId: Long, sessionId: Long, messageId: Long, body: ProtoMessage) = {
-      probe.expectMsg(MTPackage(
-        authId,
-        sessionId,
-        MessageBoxCodec.encode(MessageBox(messageId, body)).require
-      ))
+      val ack = mb.body.asInstanceOf[MessageAck]
+      ack.messageIds must be_==(Vector(messageId))
+      ack
+    }
+
+    private def expectNewSession(authId: Long, sessionId: Long, messageId: Long): NewSession = {
+      val mb = expectMessageBox(authId, sessionId)
+      mb.body must beAnInstanceOf[NewSession]
+
+      val ns = mb.body.asInstanceOf[NewSession]
+      ns must be_==(NewSession(sessionId, messageId))
+
+      ns
+    }
+
+    private def expectMessageBox(authId: Long, sessionId: Long): MessageBox = {
+      val packageBody = probe.expectMsgPF() {
+        case MTPackage(aid, sid, body) if aid == authId && sid == sessionId => body
+      }
+
+      MessageBoxCodec.decode(packageBody).require.value
     }
 
     private def sendMessageBox(authId: Long, sessionId: Long, session: ActorRef, messageId: Long, body: ProtoMessage) =
@@ -162,4 +189,9 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
 
   }
 
+  override def map(fragments: => Fragments) =
+    super.map(fragments) ^ step(closeDb())
+
+  private def closeDb(): Unit =
+    ds.close()
 }

@@ -1,3 +1,17 @@
 package im.actor.server.mtproto.transport
 
-trait MTTransport
+import scodec.bits.BitVector
+
+sealed trait MTTransport
+
+@SerialVersionUID(1L)
+case class Handshake(protoVersion: Byte,
+                     apiMajorVersion: Byte,
+                     apiMinorVersion: Byte,
+                     bytes: BitVector) extends MTTransport
+
+@SerialVersionUID(1L)
+case class ProtoPackage(m: MTProto) extends MTTransport
+
+@SerialVersionUID(1L)
+case object SilentClose extends MTTransport
