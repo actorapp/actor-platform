@@ -56,7 +56,7 @@ object Dependencies {
     val akkaTestkit     = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka % "test,e2e"
 
     val akkaPersistenceInmem =
-      "com.github.dnvriend" %% "akka-persistence-inmemory" % "1.0.0" % "test"
+      "com.github.dnvriend" %% "akka-persistence-inmemory" % "1.0.0" % "test,e2e"
 
     val scalacheck      = "org.scalacheck"                %% "scalacheck"                    % "1.12.2" % "test"
     val specs2          = "org.specs2"                    %% "specs2-core"                   % "3.0" % "test,e2e"

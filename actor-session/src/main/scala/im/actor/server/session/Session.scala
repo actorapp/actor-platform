@@ -20,7 +20,7 @@ object Session {
   import SessionMessage._
 
   private[this] val idExtractor: ShardRegion.IdExtractor = {
-    case env@Envelope(authId, sessionId, payload) => (authId.toString + "-" + sessionId.toString, env)
+    case env @ Envelope(authId, sessionId, payload) => (authId.toString + "-" + sessionId.toString, env)
   }
 
   private[this] val shardResolver: ShardRegion.ShardResolver = msg => msg match {
@@ -35,6 +35,8 @@ object Session {
       shardResolver = shardResolver
     )
 
+  def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
+
   def props(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) = Props(classOf[Session], rpcApiService, materializer)
 }
 
@@ -48,7 +50,7 @@ class Session(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) 
   def receive = receiveAnonymous
 
   def receiveAnonymous: Receive = {
-    case env@Envelope(authId, sessionId, HandleMessageBox(messageBoxBytes)) =>
+    case env @ Envelope(authId, sessionId, HandleMessageBox(messageBoxBytes)) =>
       val client = sender()
 
       recordClient(client)
@@ -57,16 +59,16 @@ class Session(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) 
         sendProtoMessage(authId, sessionId)(client, NewSession(sessionId, mb.messageId))
 
         val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props())
-        val rpcResponsePublisher = context.actorOf(RpcResponseManager.props())
+        val protoMessagePublisher = context.actorOf(ProtoMessagePublisher.props())
 
         val source = Source(ActorPublisher[SessionStream.SessionStreamMessage](sessionMessagePublisher))
         val graph = SessionStream.graph(
-          in = source, rpcApiService = rpcApiService, rpcResponsePublisher = rpcResponsePublisher
+          in = source, rpcApiService = rpcApiService, protoMessagePublisher = protoMessagePublisher
         )(context.system)
 
         graph.run()
 
-        val rpcResponseSource = Source(ActorPublisher[ProtoMessage](rpcResponsePublisher))
+        val rpcResponseSource = Source(ActorPublisher[ProtoMessage](protoMessagePublisher))
         val flow = rpcResponseSource.to(Sink.foreach[ProtoMessage](m => self ! SendProtoMessage(m)))
         flow.run()
 
@@ -80,7 +82,7 @@ class Session(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) 
   }
 
   def receiveResolved(authId: Long, sessionId: Long, publisher: ActorRef): Receive = {
-    case env@Envelope(eauthId, esessionId, msg) =>
+    case env @ Envelope(eauthId, esessionId, msg) =>
       val client = sender()
 
       recordClient(client)
