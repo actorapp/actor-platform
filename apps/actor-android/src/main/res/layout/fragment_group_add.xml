@@ -19,7 +19,7 @@
             android:layout_width="72dp"
             android:layout_height="58dp"
             app:src="@drawable/ic_person_add_white_24dp"
-            app:tintColor="@color/primary" />
+            app:tintColor="@color/group_action_add_icon" />
 
         <TextView
             android:id="@+id/name"
@@ -31,7 +31,7 @@
             android:lines="1"
             android:singleLine="true"
             android:text="@string/group_add_member"
-            android:textColor="@color/primary"
+            android:textColor="@color/group_action_add_text"
             android:textSize="16sp" />
     </LinearLayout>
 

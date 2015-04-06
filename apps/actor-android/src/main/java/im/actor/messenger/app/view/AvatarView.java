@@ -64,7 +64,7 @@ public class AvatarView extends SimpleDraweeView {
                 .setRoundingParams(new RoundingParams()
                         .setRoundAsCircle(true)
                         .setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY))
-                .setOverlay(new AvatarBorderDrawable())
+                        // .setOverlay(new AvatarBorderDrawable())
                 .build();
         setHierarchy(hierarchy);
     }

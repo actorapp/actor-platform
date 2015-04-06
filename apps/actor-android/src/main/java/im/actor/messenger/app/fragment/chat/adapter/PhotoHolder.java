@@ -10,10 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.droidkit.progress.CircularView;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.File;
 
@@ -393,7 +398,16 @@ public class PhotoHolder extends MessageHolder {
         @Override
         public void onDownloaded(FileSystemReference reference) {
             if (isPhoto) {
-                previewView.setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
+                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(new File(reference.getDescriptor())))
+                        .setResizeOptions(new ResizeOptions(previewView.getLayoutParams().width,
+                                previewView.getLayoutParams().height))
+                        .build();
+                PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+                        .setOldController(previewView.getController())
+                        .setImageRequest(request)
+                        .build();
+                previewView.setController(controller);
+                // previewView.setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
             } else {
                 checkFastThumb();
             }
