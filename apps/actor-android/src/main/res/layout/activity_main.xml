@@ -38,7 +38,7 @@
             android:layout_marginBottom="16dp"
             android:layout_marginRight="16dp"
             app:fab_colorNormal="@color/accent"
-            app:fab_colorPressed="@color/accent_selected"
+            app:fab_colorPressed="@color/accent_pressed"
             app:fab_icon="@drawable/ic_plus_white_24dp" />
 
         <FrameLayout
@@ -283,7 +283,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:fab_colorNormal="@color/primary"
-                    app:fab_colorPressed="@color/primary_light"
+                    app:fab_colorPressed="@color/primary_pressed"
                     app:fab_icon="@drawable/ic_person_add_white_24dp" />
             </LinearLayout>
 
@@ -305,7 +305,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:fab_colorNormal="@color/accent"
-                    app:fab_colorPressed="@color/accent_selected"
+                    app:fab_colorPressed="@color/accent_pressed"
                     app:fab_icon="@drawable/ic_group_white_24dp" />
             </LinearLayout>
 
@@ -327,7 +327,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:fab_colorNormal="@color/accent"
-                    app:fab_colorPressed="@color/accent_selected"
+                    app:fab_colorPressed="@color/accent_pressed"
                     app:fab_icon="@drawable/ic_message_white_24dp" />
             </LinearLayout>
         </LinearLayout>

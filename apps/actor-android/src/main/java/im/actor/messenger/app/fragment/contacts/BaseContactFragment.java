@@ -69,7 +69,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
             addFooterView(footer);
         } else {
-            addFooterAction(R.drawable.ic_share_white_24dp, "Tell friends about Actor", false, new Runnable() {
+            addFooterAction(R.color.contacts_action_share, R.drawable.ic_share_white_24dp, "Tell friends about Actor", false, new Runnable() {
                 @Override
                 public void run() {
                     String inviteMessage = getResources().getString(R.string.invite_message);
@@ -80,7 +80,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
                 }
             });
 
-            addFooterAction(R.drawable.ic_person_add_white_24dp, "Add friend...", true, new Runnable() {
+            addFooterAction(R.color.contacts_action_add, R.drawable.ic_person_add_white_24dp, "Add friend...", true, new Runnable() {
                 @Override
                 public void run() {
                     startActivity(new Intent(getActivity(), AddContactActivity.class));
@@ -114,7 +114,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         return res;
     }
 
-    private void addFooterAction(int icon, String text, boolean isLast, final Runnable action) {
+    private void addFooterAction(int color, int icon, String text, boolean isLast, final Runnable action) {
         FrameLayout container = new FrameLayout(getActivity());
         container.setBackgroundColor(getResources().getColor(R.color.bg_main));
         {
@@ -138,7 +138,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         }
 
         TintImageView inviteIcon = new TintImageView(getActivity());
-        inviteIcon.setTint(getResources().getColor(R.color.contacts_action));
+        inviteIcon.setTint(getResources().getColor(color));
         inviteIcon.setResource(icon);
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(52), Screen.dp(52));
@@ -151,7 +151,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
         TextView inviteText = new TextView(getActivity());
         inviteText.setText(text);
-        inviteText.setTextColor(getResources().getColor(R.color.contacts_action));
+        inviteText.setTextColor(getResources().getColor(color));
         inviteText.setPadding(Screen.dp(72), 0, Screen.dp(8), 0);
         inviteText.setTextSize(16);
         inviteText.setSingleLine(true);
@@ -167,7 +167,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
         if (!isLast) {
             View div = new View(getActivity());
-            div.setBackgroundColor(getResources().getColor(R.color.divider));
+            div.setBackgroundColor(getResources().getColor(R.color.contacts_divider));
             {
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                         getResources().getDimensionPixelSize(R.dimen.div_size));
